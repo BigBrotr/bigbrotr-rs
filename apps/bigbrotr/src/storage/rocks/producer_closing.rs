@@ -78,6 +78,16 @@ impl IngestRecovery {
         epoch: ProducerEpoch,
         permit: OwnedPermit,
     ) -> Result<ProducerClosing, BootstrapError> {
+        self.observe_closed_producer_in(slot, epoch, permit, self.manifest())
+    }
+
+    pub(super) fn observe_closed_producer_in(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        permit: OwnedPermit,
+        manifest: &IngestManifest,
+    ) -> Result<ProducerClosing, BootstrapError> {
         if permit.request().units().data_bytes() < 4096
             || permit.request().units().native_bytes() < 4096
             || permit.request().units().items() == 0
@@ -87,7 +97,7 @@ impl IngestRecovery {
         if self.store.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
-        if epoch.get() != 1 || self.manifest().identity().owner_epoch.get() != 1 {
+        if epoch.get() != 1 || manifest.identity().owner_epoch.get() != 1 {
             return Err(BootstrapError::InvalidIntent);
         }
         let state = self
@@ -99,7 +109,7 @@ impl IngestRecovery {
         Ok(ProducerClosing {
             slot,
             epoch,
-            manifest: *self.manifest(),
+            manifest: *manifest,
             state,
             _permit: permit,
         })

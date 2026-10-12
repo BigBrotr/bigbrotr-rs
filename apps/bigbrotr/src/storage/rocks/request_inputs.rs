@@ -3,7 +3,7 @@
 use super::IngestStore;
 use crate::runtime::OwnedPermit;
 use bigbrotr_model::{
-    Digest256, ProducerRequestId,
+    Digest256, ProducerEpoch, ProducerRequestId, ProducerSlotId, RequestSequence,
     codec::{
         CodecError,
         request::{MutationIntent, RequestDecodeLimits, decode_request},
@@ -76,6 +76,57 @@ impl RetainedRequestInput {
     }
 }
 impl IngestStore {
+    /// A prepared successor has staged no request, including a request whose PG
+    /// reservation never committed. Inspect the same finite shared spool; do not
+    /// infer emptiness from SQL or create the directory while checking it.
+    pub(super) fn require_no_epoch_inputs(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+    ) -> Result<(), RequestInputError> {
+        let directory = match self.input_directory(false) {
+            Ok(directory) => directory,
+            Err(RequestInputError::Missing) => return Ok(()),
+            Err(error) => return Err(error),
+        };
+        let mut prefix = name(ProducerRequestId {
+            producer_slot_id: slot,
+            producer_epoch: epoch,
+            request_sequence: RequestSequence::new(1).expect("nonzero fixed boundary"),
+        });
+        prefix.truncate(50);
+        let mut count = 0usize;
+        let mut total = 0u64;
+        for entry in Dir::read_from(&directory).map_err(|_| RequestInputError::Filesystem)? {
+            let entry = entry.map_err(|_| RequestInputError::Filesystem)?;
+            let raw = entry.file_name().to_bytes();
+            if raw == b"." || raw == b".." {
+                continue;
+            }
+            count += 1;
+            if count > MAX_FILES {
+                return Err(RequestInputError::Limit);
+            }
+            if !valid_name(raw) {
+                return Err(RequestInputError::Identity);
+            }
+            let filename = std::str::from_utf8(raw).map_err(|_| RequestInputError::Identity)?;
+            let file = open_input(&directory, filename)?;
+            total = total
+                .checked_add(
+                    file.metadata()
+                        .map_err(|_| RequestInputError::Filesystem)?
+                        .len(),
+                )
+                .filter(|n| *n <= MAX_TOTAL)
+                .ok_or(RequestInputError::Limit)?;
+            if raw.starts_with(prefix.as_bytes()) {
+                return Err(RequestInputError::Conflict);
+            }
+        }
+        Ok(())
+    }
+
     pub(super) fn stage_producer_request(
         &mut self,
         request: ProducerRequestId,

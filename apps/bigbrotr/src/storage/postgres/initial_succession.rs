@@ -111,7 +111,13 @@ impl ControlSession {
             insert_registry(&tx, &input, &domains).await?;
             insert_intent(&tx, &input, policy, self.identity).await?;
         }
-        require_prepared(&tx, &input, &domains).await?;
+        require_prepared_target(
+            &tx,
+            input.previous_registration,
+            input.role_instance_id,
+            &domains,
+        )
+        .await?;
         let current_epoch = PolicyEpoch::new(policy.policy_revision);
         let remaining: i64 = tx.query_one(
             "SELECT lease_expires_at_us - (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint
@@ -152,7 +158,13 @@ impl ControlSession {
         ingest_registry::require_retirement_registration(&tx, input.previous_registration)
             .await
             .map_err(InitialSuccessionError::Registry)?;
-        require_prepared(&tx, &input, &domains).await?;
+        require_prepared_target(
+            &tx,
+            input.previous_registration,
+            input.role_instance_id,
+            &domains,
+        )
+        .await?;
         check_delivery(&mut lease, current_epoch, input.cancelled)?;
         let observed = recovery
             .apply_initial_handoff(input.handoff, permit, || {
@@ -277,12 +289,12 @@ async fn observe_intent(
     }
 }
 
-async fn require_prepared(
+pub(super) async fn require_prepared_target(
     tx: &Transaction<'_>,
-    input: &InitialSuccessionRequest<'_>,
+    s: &ingest_registry::InitialRegistration,
+    role_instance_id: [u8; 16],
     expected_domains: &[(DictionaryKind, AllocationDomainId)],
 ) -> Result<(), InitialSuccessionError> {
-    let s = input.previous_registration;
     let dataset = &s.dataset_id.as_bytes().as_slice();
     let resource = &s.ingest_resource_id.as_bytes().as_slice();
     // Same parent-before-dependent order as retirement/renewal. Existing rows
@@ -293,7 +305,7 @@ async fn require_prepared(
     )
     .await
     .map_err(backend)?;
-    tx.query_one("SELECT role_instance_id FROM control.role_instances WHERE role_instance_id=$1::bytea FOR SHARE", &[&&input.role_instance_id[..]]).await.map_err(backend)?;
+    tx.query_one("SELECT role_instance_id FROM control.role_instances WHERE role_instance_id=$1::bytea FOR SHARE", &[&&role_instance_id[..]]).await.map_err(backend)?;
     let domains = tx
         .query(
             "SELECT dictionary_kind,allocation_domain FROM control.allocation_domains

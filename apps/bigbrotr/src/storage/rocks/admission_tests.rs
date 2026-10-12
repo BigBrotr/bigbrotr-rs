@@ -1338,5 +1338,8 @@ mod source_closure_tests;
 #[path = "initial_handoff_tests.rs"]
 mod initial_handoff_tests;
 
+#[path = "initial_reconstruction_tests.rs"]
+mod initial_reconstruction_tests;
+
 #[path = "observation_tests.rs"]
 mod observation_tests;

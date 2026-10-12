@@ -103,6 +103,7 @@ pub use source_closure::{ResolvedSource, SourceResolution};
 
 #[path = "initial_handoff.rs"]
 mod initial_handoff;
+pub(in crate::storage) use initial_handoff::HistoricalInitial;
 pub use initial_handoff::{EncodedHandoff, InitialHandoff, ObservedHandoff};
 
 #[cfg(test)]

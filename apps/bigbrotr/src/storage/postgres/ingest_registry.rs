@@ -20,6 +20,7 @@ const MAX_DOMAINS: usize = 9;
 #[path = "ingest_history.rs"]
 mod history;
 pub use history::load_historical;
+pub(super) use history::reconstruct as reconstruct_historical;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RegistryError {

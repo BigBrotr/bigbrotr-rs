@@ -104,11 +104,28 @@ operator-controlled roots must remain stable. Reapplying the same
 retained plan requires the exact receipt, manifest and complete empty successor
 state and performs no write; conflicting or partial state refuses. This local
 plan can survive closing/reopening the native handle within the same caller.
-Reconstructing it after process loss, completing an abandoned empty incarnation,
-and activating a fresh actual writer remain separate required adapters. An
+The bounded historical adapter below reconstructs only an observed completed
+preparation. Completing an abandoned empty incarnation and activating a fresh
+actual writer remain separate required adapters. An
 observer or a durable prepared row cannot impersonate that writer. Until explicit
 activation is implemented, PostgreSQL refuses successor reservations and input
 bindings. This format is an implementation contract, not installed qualification.
+
+`HistoricalInitial` is an opaque borrowed read context. Decoding the retained
+handoff grants no authority: the actual singleton, handoff, explicit zero source,
+OPEN/zero producer, empty target namespaces and absent target input sidecars must
+all match. Reads use the retained predecessor manifest only for historical
+interpretation. Every positive request witness is bound to its actual native
+directory device/inode and Rocks sequence before entering a source accumulator.
+Matching portable identities do not permit combining observations across stores.
+
+Reconstruction replays every original input and effect, permits precisely the
+original and prepared producer markers, then checks the recomputed closure/count/
+cut before rebinding a local guard. It writes no native key or input. A changed
+sequence invalidates a previously read witness even when current bytes match.
+Its bounded decoder and close/reopen tests are candidate implementation, pending
+execution; separate-process and connected authority evidence are tracked in the
+[recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json).
 
 `apps/bigbrotr/tests/rocks_manifest.rs` uses independently specified literal
 bytes, nonuniform identities, unsigned boundary coordinates, empty and full

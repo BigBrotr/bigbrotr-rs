@@ -129,44 +129,7 @@ impl ControlSession {
         if resolved.input_bytes() != reservation.input_bytes {
             return Err(ProducerResolveError::Outcome(OutcomeError::Conflict));
         }
-        let copy = resolved.native_outcome();
-        let digest: [u8; 32] = Sha256::digest(copy.bytes()).into();
-        const EXISTING_COPY: &str = "
-            SELECT o.dataset_id=$4::bytea AND o.request_digest=$5::bytea
-                   AND o.manifest_sha256=$6::bytea AND o.outcome_kind=$7::smallint
-                   AND o.policy_epoch=$8::text::numeric AND o.outcome_bytes=$9::bytea
-                   AND o.outcome_sha256=$10::bytea,
-                   r.acquisition_job_id IS NOT NULL
-              FROM control.producer_outcomes o JOIN control.producer_requests r
-                USING (producer_slot_id,producer_epoch,request_sequence)
-             WHERE o.producer_slot_id=$1::bytea AND o.producer_epoch=$2::text::numeric
-                   AND o.request_sequence=$3::text::numeric";
-        let row = tx
-            .query_opt(
-                EXISTING_COPY,
-                &[
-                    &&input.request.producer_slot_id.as_bytes()[..],
-                    &input.request.producer_epoch.get().to_string(),
-                    &input.request.request_sequence.get().to_string(),
-                    &&copy.dataset().as_bytes()[..],
-                    &&copy.digest().as_bytes()[..],
-                    &&manifest[..],
-                    &(copy.kind() as i16),
-                    &copy.policy_epoch().get().to_string(),
-                    &copy.bytes(),
-                    &&digest[..],
-                ],
-            )
-            .await
-            .map_err(backend)?
-            .ok_or(ProducerResolveError::Outcome(OutcomeError::Conflict))?;
-        // Old Event inputs can be entirely unbound, unlike dictionary requests.
-        // Their native classification, not nullable SQL fields, selects this veto.
-        if !row.try_get::<_, bool>(0).map_err(backend)?
-            || (resolved.is_event() && !row.try_get::<_, bool>(1).map_err(backend)?)
-        {
-            return Err(ProducerResolveError::Outcome(OutcomeError::Conflict));
-        }
+        require_retirement_copy(&tx, &resolved, input.request, manifest).await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
@@ -334,6 +297,55 @@ impl ControlSession {
         self.available = true;
         u64::try_from(gaps).map_err(|_| OwnerError::InvalidMetadata.into())
     }
+}
+
+/// Shared exact immutable PG copy comparison for current and historical native
+/// contexts. The caller supplies the already validated original manifest digest.
+pub(super) async fn require_retirement_copy(
+    tx: &Transaction<'_>,
+    resolved: &ResolvedProducerRequest,
+    request: bigbrotr_model::ProducerRequestId,
+    manifest: [u8; 32],
+) -> Result<(), ProducerResolveError> {
+    let copy = resolved.native_outcome();
+    let digest: [u8; 32] = Sha256::digest(copy.bytes()).into();
+    const EXISTING_COPY: &str = "
+        SELECT o.dataset_id=$4::bytea AND o.request_digest=$5::bytea
+               AND o.manifest_sha256=$6::bytea AND o.outcome_kind=$7::smallint
+               AND o.policy_epoch=$8::text::numeric AND o.outcome_bytes=$9::bytea
+               AND o.outcome_sha256=$10::bytea,
+               r.acquisition_job_id IS NOT NULL
+          FROM control.producer_outcomes o JOIN control.producer_requests r
+            USING (producer_slot_id,producer_epoch,request_sequence)
+         WHERE o.producer_slot_id=$1::bytea AND o.producer_epoch=$2::text::numeric
+               AND o.request_sequence=$3::text::numeric";
+    let row = tx
+        .query_opt(
+            EXISTING_COPY,
+            &[
+                &&request.producer_slot_id.as_bytes()[..],
+                &request.producer_epoch.get().to_string(),
+                &request.request_sequence.get().to_string(),
+                &&copy.dataset().as_bytes()[..],
+                &&copy.digest().as_bytes()[..],
+                &&manifest[..],
+                &(copy.kind() as i16),
+                &copy.policy_epoch().get().to_string(),
+                &copy.bytes(),
+                &&digest[..],
+            ],
+        )
+        .await
+        .map_err(backend)?
+        .ok_or(ProducerResolveError::Outcome(OutcomeError::Conflict))?;
+    // Old Event inputs can be entirely unbound, unlike dictionary requests.
+    // Their native classification, not nullable SQL fields, selects this veto.
+    if !row.try_get::<_, bool>(0).map_err(backend)?
+        || (resolved.is_event() && !row.try_get::<_, bool>(1).map_err(backend)?)
+    {
+        return Err(ProducerResolveError::Outcome(OutcomeError::Conflict));
+    }
+    Ok(())
 }
 
 fn check_delivery<E>(

@@ -40,7 +40,7 @@ pub async fn load_historical(
     result
 }
 
-async fn reconstruct(
+pub(in crate::storage::postgres) async fn reconstruct(
     tx: &Transaction<'_>,
     instance_id: [u8; 16],
     manifest: &IngestManifest,

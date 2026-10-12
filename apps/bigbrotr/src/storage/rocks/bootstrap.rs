@@ -1,5 +1,7 @@
 //! One initial dictionary batch. The connected Control owner is the only caller.
+use super::producer_recovery::ReplayContext;
 use super::{IngestStore, PendingBatchHeader, StoredReceipt};
+use crate::storage::rocks::manifest::IngestManifest;
 use crate::{
     runtime::OwnedPermit,
     storage::rocks::keys::{ColumnFamily, EncodedKey, IngestKey},
@@ -185,7 +187,7 @@ impl IngestStore {
         if self.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
-        self.validate_bootstrap(request, intent, limits)?;
+        Self::validate_bootstrap(request, intent, limits, &self.manifest)?;
         self.require_open_producer(request)?;
         let bytes = intent
             .encode_request_preimage(request, limits.max_batch_bytes)
@@ -220,7 +222,7 @@ impl IngestStore {
         if self.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
-        self.validate_bootstrap(request, intent, limits)?;
+        Self::validate_bootstrap(request, intent, limits, &self.manifest)?;
         self.require_open_producer(request)?;
         if let Some(receipt) = self.replay_bootstrap(request, intent, limits)? {
             let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
@@ -228,7 +230,7 @@ impl IngestStore {
             return Ok(StoredReceipt::new(receipt, copy, permit));
         }
         let (mut prepared, receipt) =
-            self.prepare_bootstrap(request, intent, recorded_at, limits)?;
+            Self::prepare_bootstrap(request, intent, recorded_at, limits, &self.manifest)?;
         let outcome_copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
         prepared.sort();
         let manifest = Entry {
@@ -259,7 +261,28 @@ impl IngestStore {
         intent: &EvidenceIntent,
         limits: BootstrapLimits,
     ) -> Result<Option<Receipt>, BootstrapError> {
-        self.validate_bootstrap(request, intent, limits)?;
+        self.replay_bootstrap_in(
+            request,
+            intent,
+            limits,
+            ReplayContext {
+                manifest: &self.manifest,
+                current_manifest: &self.manifest,
+            },
+        )
+    }
+
+    pub(super) fn replay_bootstrap_in(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        limits: BootstrapLimits,
+        context: ReplayContext<'_>,
+    ) -> Result<Option<Receipt>, BootstrapError> {
+        if &self.manifest != context.current_manifest {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Self::validate_bootstrap(request, intent, limits, context.manifest)?;
         let digest = intent.request_digest(request);
         let receipts = self
             .db
@@ -322,8 +345,9 @@ impl IngestStore {
         let Some(recorded_at) = retry_time else {
             return Ok(None);
         };
-        let (prepared, receipt) = self.prepare_bootstrap(request, intent, recorded_at, limits)?;
-        self.require_bootstrap_replay(&prepared.entries)?;
+        let (prepared, receipt) =
+            Self::prepare_bootstrap(request, intent, recorded_at, limits, context.manifest)?;
+        self.require_bootstrap_replay(&prepared.entries, context.current_manifest)?;
         Ok(Some(receipt))
     }
 
@@ -359,12 +383,12 @@ impl IngestStore {
     }
 
     fn validate_bootstrap(
-        &self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
         limits: BootstrapLimits,
+        manifest: &IngestManifest,
     ) -> Result<(), BootstrapError> {
-        let identity = self.manifest.identity();
+        let identity = manifest.identity();
         if request.producer_epoch.get() != 1
             || request.request_sequence.get() != 1
             || identity.owner_epoch.get() != 1
@@ -390,10 +414,7 @@ impl IngestStore {
             let r = entry.reference();
             let counter = &mut through[r.dictionary_kind as usize - 1];
             if r.dictionary_kind == DictionaryKind::Event
-                || self
-                    .manifest
-                    .allocation_namespaces()
-                    .domain(r.dictionary_kind)
+                || manifest.allocation_namespaces().domain(r.dictionary_kind)
                     != Some(r.allocation_domain)
                 || r.ordinal.get() != *counter + 1
                 || intent.dictionaries()[..index]
@@ -408,18 +429,15 @@ impl IngestStore {
     }
 
     fn prepare_bootstrap(
-        &self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
         recorded_at: ObservedTime,
         limits: BootstrapLimits,
+        manifest: &IngestManifest,
     ) -> Result<(Prepared, Receipt), BootstrapError> {
         let mut prepared = Prepared::new(limits)?;
-        prepared.put(
-            IngestKey::Manifest,
-            self.manifest.encode().as_bytes().to_vec(),
-        )?;
-        let identity = self.manifest.identity();
+        prepared.put(IngestKey::Manifest, manifest.encode().as_bytes().to_vec())?;
+        let identity = manifest.identity();
         let mut refs = Vec::new();
         refs.try_reserve_exact(intent.dictionaries().len())
             .map_err(|_| BootstrapError::Allocation)?;
@@ -497,8 +515,7 @@ impl IngestStore {
         {
             let kind = DictionaryKind::try_from(index as u16 + 1)
                 .map_err(|_| BootstrapError::InvalidIntent)?;
-            let domain = self
-                .manifest
+            let domain = manifest
                 .allocation_namespaces()
                 .domain(kind)
                 .ok_or(BootstrapError::InvalidIntent)?;
@@ -593,7 +610,11 @@ impl IngestStore {
         Ok(())
     }
 
-    fn require_bootstrap_replay(&self, expected: &[Entry]) -> Result<(), BootstrapError> {
+    fn require_bootstrap_replay(
+        &self,
+        expected: &[Entry],
+        current_manifest: &IngestManifest,
+    ) -> Result<(), BootstrapError> {
         for entry in expected {
             let cf = self
                 .db
@@ -605,6 +626,9 @@ impl IngestStore {
                 .map_err(|_| BootstrapError::EngineRead)?
                 .ok_or(BootstrapError::StateMismatch)?;
             let matches = match entry.key.as_bytes()[..2] {
+                // A checked historical view retains the old manifest through
+                // its exact handoff; the actual singleton must still match.
+                [1, 1] => value.as_ref() == current_manifest.encode().as_bytes(),
                 // Later admissions may advance source, allocation and issued counters.
                 // This verifies the retained bootstrap, not a complete later cut
                 // or a contiguous producer checkpoint. No ACK/GC exists yet.

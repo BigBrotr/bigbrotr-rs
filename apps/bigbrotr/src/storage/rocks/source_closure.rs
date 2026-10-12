@@ -1,7 +1,8 @@
 //! Bounded positive prefix proof under continuous exclusive native custody.
 use super::bootstrap::read_options;
 use super::{
-    AdmissionOutcome, BootstrapError, IngestRecovery, ProducerClosing, ResolvedProducerRequest,
+    AdmissionOutcome, BootstrapError, HistoricalInitial, IngestRecovery, ProducerClosing,
+    ResolvedProducerRequest,
 };
 use crate::storage::rocks::keys::IngestKey;
 use bigbrotr_model::{Sequence, SourceRecordId};
@@ -17,6 +18,7 @@ pub struct SourceResolution<'a> {
     source_through: u64,
     digest: Sha256,
     event_requests: u64,
+    historical: Option<HistoricalInitial<'a>>,
 }
 
 /// Only complete positive resolution can construct this native witness. Its
@@ -27,6 +29,7 @@ pub struct ResolvedSource<'a> {
     source_through: u64,
     digest: [u8; 32],
     event_requests: u64,
+    historical: Option<HistoricalInitial<'a>>,
 }
 impl ResolvedSource<'_> {
     pub fn last_complete_sequence(&self) -> u64 {
@@ -46,6 +49,11 @@ impl ResolvedSource<'_> {
     }
     pub(in crate::storage) fn producer(&self) -> &ProducerClosing {
         &self.closing
+    }
+    pub(super) fn matches_historical(&self, historical: &HistoricalInitial<'_>) -> bool {
+        self.historical
+            .as_ref()
+            .is_some_and(|view| view.same_view(historical))
     }
     pub(in crate::storage) fn matches_recorded(
         &self,
@@ -83,7 +91,19 @@ impl ProducerClosing {
         recovery: &IngestRecovery,
         reserved_through: u64,
     ) -> Result<SourceResolution<'_>, BootstrapError> {
-        if self.manifest() != recovery.manifest() || self.issued_through() != reserved_through {
+        self.source_resolution_in(recovery, reserved_through, None)
+    }
+
+    pub(super) fn source_resolution_in<'a>(
+        self,
+        recovery: &'a IngestRecovery,
+        reserved_through: u64,
+        historical: Option<HistoricalInitial<'a>>,
+    ) -> Result<SourceResolution<'a>, BootstrapError> {
+        let manifest = historical
+            .as_ref()
+            .map_or(recovery.manifest(), |view| view.manifest());
+        if self.manifest() != manifest || self.issued_through() != reserved_through {
             return Err(BootstrapError::StateMismatch);
         }
         let manifest_digest: [u8; 32] = Sha256::digest(self.manifest().encode().as_bytes()).into();
@@ -96,12 +116,14 @@ impl ProducerClosing {
             source_through: 0,
             digest,
             event_requests: 0,
+            historical,
         })
     }
 }
 
 impl<'a> SourceResolution<'a> {
     pub fn record(&mut self, resolved: &ResolvedProducerRequest) -> Result<(), BootstrapError> {
+        resolved.require_native_context(self.recovery)?;
         let copy = resolved.native_outcome();
         let request = copy.request();
         if copy.manifest_sha256() != self.manifest_digest
@@ -114,7 +136,7 @@ impl<'a> SourceResolution<'a> {
         }
         let mut next_source = self.source_through;
         if let AdmissionOutcome::Durable(receipt) = resolved.outcome() {
-            let identity = self.recovery.manifest().identity();
+            let identity = self.closing.manifest().identity();
             if let Some(batch) = receipt.batch() {
                 let first = batch.first();
                 if first.dataset_id != identity.dataset_id
@@ -164,9 +186,12 @@ impl<'a> SourceResolution<'a> {
         if store.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
-        // Initial closure supports exactly one registered native producer. This
-        // bounded census also refuses another empty/closed producer, not just one
-        // whose NewFacts would have created a gap in the source prefix.
+        if let Some(view) = &self.historical {
+            view.validate()?;
+        }
+        // Initial closure supports exactly one producer, with only the checked
+        // prepared successor allowed through a historical read view. Refuse any
+        // other marker even if it has never emitted a fact.
         let producer = IngestKey::ProducerState {
             producer_slot_id: self.closing.producer_slot_id(),
             producer_epoch: self.closing.producer_epoch(),
@@ -185,6 +210,20 @@ impl<'a> SourceResolution<'a> {
         }
         iterator.next();
         iterator.status().map_err(|_| BootstrapError::EngineRead)?;
+        if let Some(view) = &self.historical {
+            let target = IngestKey::ProducerState {
+                producer_slot_id: view.producer_slot_id(),
+                producer_epoch: bigbrotr_model::ProducerEpoch::new(2)
+                    .expect("checked initial successor"),
+            }
+            .encode()
+            .map_err(|_| BootstrapError::InvalidIntent)?;
+            if iterator.key() != Some(target.as_bytes()) {
+                return Err(BootstrapError::StateMismatch);
+            }
+            iterator.next();
+            iterator.status().map_err(|_| BootstrapError::EngineRead)?;
+        }
         if iterator.key().is_some_and(|k| k.starts_with(&[1, 0x31])) {
             return Err(BootstrapError::StateMismatch);
         }
@@ -202,7 +241,7 @@ impl<'a> SourceResolution<'a> {
         {
             return Err(BootstrapError::StateMismatch);
         }
-        let identity = store.manifest.identity();
+        let identity = self.closing.manifest().identity();
         let key = IngestKey::SourceStream {
             dataset_id: identity.dataset_id,
             shard_id: identity.shard_id,
@@ -265,6 +304,7 @@ impl<'a> SourceResolution<'a> {
             source_through: self.source_through,
             digest: self.digest.finalize().into(),
             event_requests: self.event_requests,
+            historical: self.historical,
         })
     }
 }

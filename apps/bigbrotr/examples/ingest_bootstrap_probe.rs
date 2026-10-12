@@ -38,6 +38,8 @@ mod ingest_dictionary_faults;
 mod ingest_event;
 #[path = "support/ingest_history.rs"]
 mod ingest_history;
+#[path = "support/ingest_initial_history.rs"]
+mod ingest_initial_history;
 #[path = "support/ingest_lease.rs"]
 mod ingest_lease;
 #[path = "support/ingest_observation.rs"]
@@ -879,6 +881,10 @@ fn main() {
         dump(Path::new(&args[2]));
         return;
     }
+    if args.len() == 4 && args[1] == "history-corrupt" {
+        ingest_initial_history::corrupt(Path::new(&args[2]), &args[3]);
+        return;
+    }
     assert_eq!(
         args.len(),
         if args[1].starts_with("history-") {
@@ -931,6 +937,8 @@ fn main() {
                 .await;
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
+            } else if args[1] == "successor-history" {
+                ingest_initial_history::run(config, Path::new(&args[4])).await;
             } else if args[1].starts_with("successor-") {
                 ingest_succession::run(
                     config,

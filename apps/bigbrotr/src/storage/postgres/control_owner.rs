@@ -80,8 +80,11 @@ pub use initial_ingest_basis::InitialIngestBasis;
 mod acquisition_abandonment;
 #[path = "initial_batch.rs"]
 mod initial_batch;
+#[path = "initial_history.rs"]
+mod initial_history;
 #[path = "initial_succession.rs"]
 mod initial_succession;
+pub use initial_history::{InitialHistoryRequest, PreparedInitialHistory};
 #[path = "producer_closing.rs"]
 mod producer_closing;
 #[path = "producer_recovery.rs"]

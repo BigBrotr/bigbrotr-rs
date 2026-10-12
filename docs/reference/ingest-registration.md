@@ -154,10 +154,11 @@ Control before retry. Exact retry uses the same retained plan and request fields
 it cannot invent a new attempted incarnation over the old intent. The original
 retired producer and native detail remain untouched. Migration0030 refuses
 preexisting unrecognized successor history and vetoes successor request/input
-binding INSERTs, even when their producer lacks an intent. No activation phase,
-writer conversion, cross-process plan reconstruction or abandoned-empty-attempt
-retirement is implemented by this slice. These are required subsequent work,
-not authority inferred from an OPEN scheduling row or a completed native batch.
+binding INSERTs, even when their producer lacks an intent. This preparation call
+does not reconstruct a lost plan. The read-only adapter below observes a completed
+preparation; activation, writer conversion and abandoned-empty-attempt retirement
+remain required work. An OPEN scheduling row or completed native batch grants none
+of that authority.
 
 The [connected recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
 records four actual PostgreSQL 16.15/RocksDB 11.8.1 cases at harness `ac644ef`,
@@ -184,3 +185,35 @@ The independent oracle checks 24 full snapshots and rejects 34 corrupted capture
 This still retains the local plan in one process. Process-loss reconstruction,
 abandoned-attempt retirement, writer activation and installed restart remain
 unqualified. Prepared metadata does not grant admission.
+
+## Read-only prepared history
+
+`ControlSession::inspect_prepared_initial_history` reads an already completed
+epoch2 preparation under fresh actual Control and the exclusive configured native
+owner. It decodes one bounded exact intent and validates the retired original
+registration, original preparing Control attribution, retained policy/configuration,
+complete prepared target and native handoff. The original Control may already be
+released; the new Control must positively exclude its backend through the existing
+claim protocol. Expired historical scheduling times never become new authority.
+
+The returned `PreparedInitialHistory` borrows the native owner and retains its
+metadata grant. It selects epoch1 input/receipt interpretation without changing the
+epoch2 singleton manifest. Each `inspect_prepared_initial_request` refreshes policy
+custody, checks the complete history and compares the original reservation, exact
+input, positive native effects and existing PostgreSQL outcome copy. Confirmed
+rollback ends each read transaction; cancellation or unknown delivery poisons
+Control reuse. Explicit caller Control renewal is a separate scheduling write.
+
+The source accumulator requires every original request in order and the exact
+retained count, cut and closure digest. Only this positive proof may reconstruct
+the local handoff guard. Missing intent/detail, nonempty target, target sidecars,
+inconsistent attribution and obsolete native observations refuse without repair.
+The bounded intent/registration grant is at least128KiB; callers independently
+retain policy-document, input, outcome, native and driver grants and deadlines.
+
+This API introduces no migration or persistent-format change. The installed
+recovery command still accepts only its original epoch1 path. Native component
+and separate-process PostgreSQL qualification are pending for this candidate;
+the existence of the API is not a passing restart claim. Completing a PG/native
+gap, retiring an empty attempt, activating a writer and repeated lifetimes remain
+separate requirements in the existing plan.

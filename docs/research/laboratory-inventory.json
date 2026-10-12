@@ -39421,5 +39421,36 @@
         "artifacts": true
       }
     }
+  },
+  "implementation_initial_history_reconstruction_20261012": {
+    "status": "CANDIDATE_IMPLEMENTED_NOT_RUN",
+    "owner": "root sole integrating owner",
+    "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
+    "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
+    "canonical": "/home/tux/bigbrotr-rs",
+    "scope": "Read-only positive initial source reconstruction under a prepared empty successor; no writer, retirement or native completion",
+    "native_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/successor-reconstruction-native-20261012",
+      "branch": "qualification/successor-history-probe",
+      "owner": "successor_restart_design native implementation committed; finite history probe and isolated native corruption helpers",
+      "native_commit": "c8f4bff026e91df9e2783304356750d333c1770e",
+      "probe_commit": "05946b48e8e11e67295ed34a79a18a3b085b06b2"
+    },
+    "tests_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/successor-reconstruction-oracle-20261012",
+      "branch": "qualification/successor-reconstruction-native",
+      "owner": "recovery_review native tests committed; independent connected Python oracle",
+      "native_tests_commit": "559cf822e3df7e5b59248add6f38b5d92974f4eb"
+    },
+    "root_scope": "PostgreSQL checked intent/history adapter, connected probe/fixture, integration, contracts and evidence",
+    "readonly_review": "cleanup_review completed independent PG adapter/contract inspection before harness assignment; found and fixed reexport visibility; no further blocking source counterexample found in that scope",
+    "free_bytes_before": 71653728256,
+    "preservation": "All predecessor sources/labs/datasets/faults and shared compiler cache retained; no engines started for this slice yet.",
+    "harness_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-history-harness-20261012",
+      "branch": "qualification/initial-history-harness",
+      "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
+      "owner": "cleanup_review connected fixture and bindings dispatch only; no engines"
+    }
   }
 }

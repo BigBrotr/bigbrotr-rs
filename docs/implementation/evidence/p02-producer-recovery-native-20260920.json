@@ -4273,7 +4273,7 @@
       }
     },
     "next_reconstruction_slice": {
-      "status": "SOURCE_REVIEW_PROPOSAL_NOT_IMPLEMENTED",
+      "status": "CANDIDATE_IMPLEMENTED_NOT_RUN",
       "task": "Existing P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4",
       "scope": "Read-only reconstruction of the fully retired initial source beneath an exact prepared empty successor; no native completion, retirement or writer conversion in this prerequisite.",
       "observed_blockers": [
@@ -4291,9 +4291,24 @@
       ],
       "subsequent_required_work": "Finite native completion then abandoned-empty retirement with synced CLOSING/zero and additive SQL validator; handle exact old-native/prepared-native/native-closing/terminal states without adopting target incarnation, rewriting intent/history or synthesizing ACK/GC. Check target sidecars and zero-request workflow obligations, not only reservation count.",
       "delegated_read_boundary": "Independent read-only AI design review read complete native store/manifest/handoff/tests/closing/recovery/source_closure/bootstrap/dictionary_append/admission/receipt_effects/outcome_copy/request_inputs; PG registry/history/succession/closing/retirement/source_closure; installed initial_ingest/recovery;0029/0030 and relevant complete earlier guard functions; governing registration/handoff and recovery contracts.",
-      "root_read_boundary": "Root additionally read complete native initial_handoff/source_closure/producer_recovery, PG initial_succession, migrations0029/0030 and manifest/registration contracts; deeper replay/installed owners require root inspection before integration.",
+      "root_read_boundary": "Root read the complete affected native admission/bootstrap/dictionary_append/receipt_effects/request_inputs/store/producer_recovery/initial_handoff/source_closure and independent reconstruction tests, installed initial_ingest/recovery, PG history/registry/Control/succession/closing/recovery/retirement/source_closure owners,0029/0030 and registration/manifest contracts. Linked deeper unchanged validators also inspected by scoped native/PG agents; no new Archive/Sync consumer integration claim.",
       "uninspected": "Archive and Sync only mapped by the design reviewer; full epoch-history consumer inspection remains required before changes there.",
-      "authority": "Proposal inside the existing task/evidence pipeline, not a new execution plan or completed capability."
+      "authority": "Candidate in the existing task/evidence pipeline; no task completion or qualified capability before actual checks.",
+      "observed_blockers_context": "Original source-review findings before this candidate; first three are addressed by explicit historical read context and bounded exact validation. Terminal epoch2 and installed consumers remain subsequent work.",
+      "candidate": {
+        "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
+        "native_commit": "c8f4bff026e91df9e2783304356750d333c1770e",
+        "independent_tests_commit": "559cf822e3df7e5b59248add6f38b5d92974f4eb",
+        "postgres_owner": "root canonical initial_history.rs and shared exact registration/prepared-target/outcome readers",
+        "native_tests": "Seven independent focused cases; original bootstrap/dictionary/event/AlreadyDurable effects, corruption, empty target, malformed handoff, physical-store proof composition, stale sequence, limits and authority. Written and source-reviewed, NOT_RUN; no executed RED claim.",
+        "connected": "Finite separate-process probe integrated; actual fresh Control, explicit renewal versus per-request full snapshots, terminal native close and Control driver join. Harness and independent oracle remain in assigned worktrees; all connected cases NOT_RUN.",
+        "checks": "rustfmt, Python AST and git diff --check passed; structural verify_artifacts passed190Markdown/424JSON; no native build or engines for candidate yet",
+        "probe_commit": "05946b48e8e11e67295ed34a79a18a3b085b06b2"
+      },
+      "review_findings": [
+        "Independent PG source review found restricted helper reexport visibility; fixed before build.",
+        "Native proof-composition review found positive request witnesses could be supplied to an equal-identity different store. Each observation now binds actual device/inode and native sequence, verified before source accumulation; independent equal-state wrong-store and stale-sequence controls written."
+      ]
     }
   }
 }

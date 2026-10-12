@@ -1,9 +1,10 @@
 //! Positive original-request resolution under exclusive historical ownership.
 use super::{
-    AdmissionError, AdmissionLimits, AdmissionOutcome, BootstrapLimits, IngestRecovery,
-    NativeOutcomeCopy, RequestInputError, StoredOutcome,
+    AdmissionError, AdmissionLimits, AdmissionOutcome, BootstrapError, BootstrapLimits,
+    IngestRecovery, NativeOutcomeCopy, RequestInputError, StoredOutcome,
 };
 use crate::runtime::OwnedPermit;
+use crate::storage::rocks::manifest::IngestManifest;
 use bigbrotr_model::{
     Digest256, ProducerRequestId,
     codec::request::{MutationIntent, RequestDecodeLimits},
@@ -52,6 +53,16 @@ pub struct ResolvedProducerRequest {
     outcome: StoredOutcome,
     input_bytes: u32,
     event: bool,
+    native_root: (u64, u64),
+    native_sequence: u64,
+}
+
+/// Read interpretation is explicit and cannot replace the owner's singleton or
+/// enter a mutation operation. Historical construction belongs to its checked view.
+#[derive(Clone, Copy)]
+pub(super) struct ReplayContext<'a> {
+    pub manifest: &'a IngestManifest,
+    pub current_manifest: &'a IngestManifest,
 }
 impl ResolvedProducerRequest {
     pub fn outcome(&self) -> &AdmissionOutcome {
@@ -65,6 +76,20 @@ impl ResolvedProducerRequest {
     }
     pub(in crate::storage) fn is_event(&self) -> bool {
         self.event
+    }
+    pub(super) fn require_native_context(
+        &self,
+        recovery: &IngestRecovery,
+    ) -> Result<(), BootstrapError> {
+        if recovery.store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if recovery.store.handoff_root_identity()? != self.native_root
+            || recovery.store.db.latest_sequence_number() != self.native_sequence
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
     }
 }
 
@@ -83,7 +108,35 @@ impl IngestRecovery {
         limits: ProducerRecoveryLimits,
         input_permit: OwnedPermit,
         outcome_permit: OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<ResolvedProducerRequest, ProducerRecoveryError> {
+        self.resolve_original_request_in(
+            request,
+            digest,
+            limits,
+            input_permit,
+            outcome_permit,
+            authority,
+            ReplayContext {
+                manifest: self.manifest(),
+                current_manifest: self.manifest(),
+            },
+        )
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit historical read context and owned grants"
+    )]
+    pub(super) fn resolve_original_request_in(
+        &self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        limits: ProducerRecoveryLimits,
+        input_permit: OwnedPermit,
+        outcome_permit: OwnedPermit,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
+        context: ReplayContext<'_>,
     ) -> Result<ResolvedProducerRequest, ProducerRecoveryError> {
         if outcome_permit.request().units().data_bytes() < limits.required_data_bytes()?
             || outcome_permit.request().units().items() == 0
@@ -94,7 +147,15 @@ impl IngestRecovery {
         if self.store.write_uncertain {
             return Err(AdmissionError::CommitUnknown.into());
         }
-        if request.producer_epoch.get() != 1 || self.manifest().identity().owner_epoch.get() != 1 {
+        let native_root = self
+            .store
+            .handoff_root_identity()
+            .map_err(AdmissionError::from)?;
+        let native_sequence = self.store.db.latest_sequence_number();
+        if request.producer_epoch.get() != 1
+            || context.manifest.identity().owner_epoch.get() != 1
+            || self.manifest() != context.current_manifest
+        {
             return Err(AdmissionError::InvalidInput.into());
         }
         let state = self
@@ -123,14 +184,18 @@ impl IngestRecovery {
             MutationIntent::Evidence(ref intent) => {
                 let receipt = if request.request_sequence.get() == 1 {
                     self.store
-                        .replay_bootstrap(request, intent, limits.bootstrap)
+                        .replay_bootstrap_in(request, intent, limits.bootstrap, context)
                         .map_err(AdmissionError::from)?
                 } else {
-                    self.store
-                        .replay_dictionary_append(request, intent, limits.event)?
+                    self.store.replay_dictionary_append_in(
+                        request,
+                        intent,
+                        limits.event,
+                        context,
+                    )?
                 }
                 .ok_or(ProducerRecoveryError::Unresolved)?;
-                let copy = NativeOutcomeCopy::receipt(&receipt, self.manifest())
+                let copy = NativeOutcomeCopy::receipt(&receipt, context.manifest)
                     .map_err(AdmissionError::from)?;
                 (AdmissionOutcome::Durable(receipt), copy)
             }
@@ -144,7 +209,7 @@ impl IngestRecovery {
                 let verified =
                     super::admission::verify_event(intent.into_event(), 4 * 1024 * 1024)?;
                 self.store
-                    .replay_event(
+                    .replay_event_in(
                         request,
                         digest,
                         verified.as_ref().ok().map(|event| {
@@ -158,15 +223,16 @@ impl IngestRecovery {
                         None,
                         limits.event,
                         &mut super::admission::ReadBudget::new(limits.event),
+                        context,
                     )?
                     .ok_or(ProducerRecoveryError::Unresolved)?
             }
         };
         if let AdmissionOutcome::Durable(receipt) = &outcome {
-            let context = receipt.protection_context();
-            let identity = self.manifest().identity();
-            if context.topology_generation != identity.topology_generation
-                || context.recovery_generation != identity.recovery_generation
+            let identity = context.manifest.identity();
+            let protection = receipt.protection_context();
+            if protection.topology_generation != identity.topology_generation
+                || protection.recovery_generation != identity.recovery_generation
             {
                 return Err(ProducerRecoveryError::UnsupportedContext);
             }
@@ -174,10 +240,16 @@ impl IngestRecovery {
             // authority. Never rewrite it from the manifest/current PG snapshot.
         }
         authority()?;
-        Ok(ResolvedProducerRequest {
+        let resolved = ResolvedProducerRequest {
             outcome: StoredOutcome::new(outcome, copy, outcome_permit),
             input_bytes,
             event,
-        })
+            native_root,
+            native_sequence,
+        };
+        resolved
+            .require_native_context(self)
+            .map_err(AdmissionError::from)?;
+        Ok(resolved)
     }
 }

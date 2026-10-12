@@ -1,10 +1,12 @@
 //! Fixed-reference dictionary admission after bootstrap. Preparation is not a write.
+use super::producer_recovery::ReplayContext;
 use super::{
     AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, IngestStore,
     PendingBatchHeader, StoredReceipt,
     admission::{ReadBudget, add_dependency},
     bootstrap::{Prepared, frame},
 };
+use crate::storage::rocks::manifest::IngestManifest;
 use crate::{runtime::OwnedPermit, storage::rocks::keys::IngestKey};
 use bigbrotr_model::*;
 use sha2::{Digest, Sha256};
@@ -98,7 +100,7 @@ impl IngestStore {
         recorded_at: ObservedTime,
         limits: AdmissionLimits,
     ) -> Result<(Option<Prepared>, Receipt), AdmissionError> {
-        self.validate_dictionary_append(request, intent, limits)?;
+        self.validate_dictionary_append(request, intent, limits, &self.manifest)?;
         let state = self
             .producer_state(request.producer_slot_id, request.producer_epoch)?
             .ok_or(AdmissionError::StateMismatch)?;
@@ -132,7 +134,7 @@ impl IngestStore {
         let mut dependencies = fact_refs(limits)?;
         let mut records = fact_refs(limits)?;
         let mut through = [None; 9];
-        let source_key = self.dictionary_source_key();
+        let source_key = dictionary_source_key(&self.manifest);
         let mut last = self
             .dictionary_counter(source_key, &mut reads)?
             .ok_or(AdmissionError::StateMismatch)?;
@@ -263,7 +265,7 @@ impl IngestStore {
         let dependencies =
             SourceDependencies::new(self.manifest.identity().dataset_id, dependencies)
                 .map_err(|_| AdmissionError::StateMismatch)?;
-        let context = self.dictionary_context();
+        let context = dictionary_context(&self.manifest);
         let receipt = if records.is_empty() {
             Receipt::already_durable(
                 request,
@@ -322,7 +324,28 @@ impl IngestStore {
         intent: &EvidenceIntent,
         limits: AdmissionLimits,
     ) -> Result<Option<Receipt>, AdmissionError> {
-        self.validate_dictionary_append(request, intent, limits)?;
+        self.replay_dictionary_append_in(
+            request,
+            intent,
+            limits,
+            ReplayContext {
+                manifest: &self.manifest,
+                current_manifest: &self.manifest,
+            },
+        )
+    }
+
+    pub(super) fn replay_dictionary_append_in(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        limits: AdmissionLimits,
+        context: ReplayContext<'_>,
+    ) -> Result<Option<Receipt>, AdmissionError> {
+        if &self.manifest != context.current_manifest {
+            return Err(AdmissionError::StateMismatch);
+        }
+        self.validate_dictionary_append(request, intent, limits, context.manifest)?;
         let mut reads = ReadBudget::dictionaries(limits);
         let Some(value) = self.admission_value(
             IngestKey::Request {
@@ -337,7 +360,7 @@ impl IngestStore {
         let receipt = Receipt::decode_persistent(&value, dictionary_receipts(limits))
             .map_err(BootstrapError::from)?;
         if receipt.request_id() != request
-            || receipt.protection_context() != &self.dictionary_context()
+            || receipt.protection_context() != &dictionary_context(context.manifest)
         {
             return Err(AdmissionError::StateMismatch);
         }
@@ -407,7 +430,7 @@ impl IngestStore {
                 return Err(AdmissionError::StateMismatch);
             }
             if self
-                .dictionary_counter(self.dictionary_source_key(), &mut reads)?
+                .dictionary_counter(dictionary_source_key(context.manifest), &mut reads)?
                 .is_none_or(|high| high < batch.last().sequence.get())
             {
                 return Err(AdmissionError::StateMismatch);
@@ -421,12 +444,13 @@ impl IngestStore {
         request: ProducerRequestId,
         intent: &EvidenceIntent,
         limits: AdmissionLimits,
+        manifest: &IngestManifest,
     ) -> Result<(), AdmissionError> {
         limits.required_dictionary_data_bytes()?;
         if self.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
         }
-        let identity = self.manifest.identity();
+        let identity = manifest.identity();
         if request.producer_epoch.get() != 1
             || request.request_sequence.get() <= 1
             || identity.owner_epoch.get() != 1
@@ -443,8 +467,7 @@ impl IngestStore {
         for entry in intent.dictionaries() {
             let reference = entry.reference();
             if reference.dictionary_kind == DictionaryKind::Event
-                || self
-                    .manifest
+                || manifest
                     .allocation_namespaces()
                     .domain(reference.dictionary_kind)
                     != Some(reference.allocation_domain)
@@ -501,14 +524,6 @@ impl IngestStore {
             })
             .transpose()
     }
-    fn dictionary_source_key(&self) -> IngestKey {
-        let identity = self.manifest.identity();
-        IngestKey::SourceStream {
-            dataset_id: identity.dataset_id,
-            shard_id: identity.shard_id,
-            owner_epoch: identity.owner_epoch,
-        }
-    }
     fn dictionary_source(&self, sequence: u64) -> Result<SourceRecordId, AdmissionError> {
         let identity = self.manifest.identity();
         Ok(SourceRecordId {
@@ -517,16 +532,6 @@ impl IngestStore {
             owner_epoch: identity.owner_epoch,
             sequence: Sequence::new(sequence).map_err(|_| AdmissionError::Limit)?,
         })
-    }
-    fn dictionary_context(&self) -> ProtectionContext {
-        let identity = self.manifest.identity();
-        ProtectionContext {
-            dataset_id: identity.dataset_id,
-            topology_generation: identity.topology_generation,
-            protection_class: ProtectionClass::LocalSynced,
-            recovery_generation: identity.recovery_generation,
-            policy_epoch: identity.policy_epoch,
-        }
     }
 }
 
@@ -594,4 +599,24 @@ fn encode_input(
             EvidenceIntentError::AllocationFailed => AdmissionError::Allocation,
             _ => AdmissionError::Limit,
         })
+}
+
+fn dictionary_source_key(manifest: &IngestManifest) -> IngestKey {
+    let identity = manifest.identity();
+    IngestKey::SourceStream {
+        dataset_id: identity.dataset_id,
+        shard_id: identity.shard_id,
+        owner_epoch: identity.owner_epoch,
+    }
+}
+
+fn dictionary_context(manifest: &IngestManifest) -> ProtectionContext {
+    let identity = manifest.identity();
+    ProtectionContext {
+        dataset_id: identity.dataset_id,
+        topology_generation: identity.topology_generation,
+        protection_class: ProtectionClass::LocalSynced,
+        recovery_generation: identity.recovery_generation,
+        policy_epoch: identity.policy_epoch,
+    }
 }

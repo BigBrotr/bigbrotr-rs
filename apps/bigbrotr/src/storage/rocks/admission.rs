@@ -1,5 +1,6 @@
 //! Serialized event admission. Only a connected storage authority may dispatch it.
 use super::bootstrap::{Prepared, frame, read_options};
+use super::producer_recovery::ReplayContext;
 use super::{BootstrapError, BootstrapLimits, IngestStore, PendingBatchHeader};
 use crate::{
     runtime::OwnedPermit,
@@ -515,7 +516,38 @@ impl IngestStore {
         limits: AdmissionLimits,
         reads: &mut ReadBudget,
     ) -> Result<Option<(AdmissionOutcome, super::NativeOutcomeCopy)>, AdmissionError> {
-        let identity = *self.manifest.identity();
+        self.replay_event_in(
+            request,
+            digest,
+            input,
+            size_limited_input,
+            limits,
+            reads,
+            ReplayContext {
+                manifest: &self.manifest,
+                current_manifest: &self.manifest,
+            },
+        )
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit read interpretation and independently bounded inputs"
+    )]
+    pub(super) fn replay_event_in(
+        &self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        input: Option<super::receipt_effects::ReplayEventIntent<'_>>,
+        size_limited_input: Option<(&[u8], usize)>,
+        limits: AdmissionLimits,
+        reads: &mut ReadBudget,
+        context: ReplayContext<'_>,
+    ) -> Result<Option<(AdmissionOutcome, super::NativeOutcomeCopy)>, AdmissionError> {
+        if &self.manifest != context.current_manifest {
+            return Err(AdmissionError::StateMismatch);
+        }
+        let identity = *context.manifest.identity();
         let Some(value) = self.admission_value(
             IngestKey::Request {
                 request_id: request,
@@ -530,7 +562,13 @@ impl IngestStore {
             let (outcome, policy) = read_rejection(&value, request, digest, identity.dataset_id)?;
             (
                 outcome,
-                super::NativeOutcomeCopy::rejection(request, digest, policy, &self.manifest, value),
+                super::NativeOutcomeCopy::rejection(
+                    request,
+                    digest,
+                    policy,
+                    context.manifest,
+                    value,
+                ),
             )
         } else {
             let receipt = Receipt::decode_persistent(&value, limits.receipts())
@@ -612,7 +650,7 @@ impl IngestStore {
                     return Err(AdmissionError::StateMismatch);
                 }
             }
-            let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
+            let copy = super::NativeOutcomeCopy::receipt(&receipt, context.manifest)?;
             (AdmissionOutcome::Durable(receipt), copy)
         };
         Ok(Some((outcome, native_outcome)))

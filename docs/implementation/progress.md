@@ -29,10 +29,9 @@ Main remains
 The separate `.research/initial-successor-pg-20261012` worktree preserves
 qualification/successor-commit-probe at 60c455230fb728bfcef35d071f6bd4eea1732e42,
 integrated into 3969a61. `.research/initial-successor-oracle-20261012` preserves
-qualification/successor-commit-oracle at eddd15b, integrated into 64419a5. Both are
-clean; source writers, independent evidence reviewers and bounded read-only
-next-slice design investigation have finished. No agent has pending source edits. Earlier implementation/probe/oracle
-branches remain preserved. Original lab exports and recovered bundle remain
+qualification/successor-commit-oracle at eddd15b, integrated into 64419a5. Both earlier worktrees remain preserved. The new bounded reconstruction agents
+are active in separately inventoried worktrees, as described below; earlier
+implementation/probe/oracle branches remain preserved. Original lab exports and recovered bundle remain
 unchanged. The
 [dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation;
 a same-disk bundle is not host-loss backup. Missing Mac captures remain unavailable.
@@ -160,24 +159,29 @@ native syscall/power-loss, ACK/GC or full restart claim follows from this wave.
 
 ## Next bounded action
 
-First implement read-only reconstruction of the retired initial source beneath
-an exact prepared empty successor. The source review proposal and read boundaries
-are in the same recovery evidence under `next_reconstruction_slice`; no new API
-or engine result is claimed. The historical loader, closing/recovery resolver,
-source accumulator, bootstrap/dictionary/event replay all assume the singleton
-manifest names epoch 1; source closure also insists on exactly one producer marker.
-Removing epoch checks or swapping the store manifest would corrupt attribution.
+Root has integrated a candidate read-only reconstruction of the retired initial
+source beneath an exact prepared empty successor. Native commit c8f4bff and
+independent tests559cf822 are staged in the canonical checkout; root owns the new
+PostgreSQL initial_history adapter and shared exact validators. Base is d2b1dc8.
+Seven native cases and affected original replay regressions are ready but NOT_RUN.
+The same recovery evidence under `next_reconstruction_slice` owns source findings.
 
-Add a bounded exact-intent loader under fresh actual Control and an opaque borrowed
-historical read context that retains predecessor identity separately from the
-actual current manifest. Validate the exact handoff/empty target, replay all
-original positive outcomes with unchanged attribution, permit precisely the two
-expected markers, and match the recomputed closure/count/cut before rebinding
-local native guards. It returns observation only. Qualify a genuinely separate
-replacement process with no in-memory plan transfer, retained full captures and
-corruption/nonempty/old-owner exclusion controls. Read the complete affected replay
-and installed callers before integrating; the design agent read those owners but
-root has not yet completed their renewed inspection.
+The opaque historical context retains predecessor interpretation separately from
+the actual epoch2 singleton. It validates the exact handoff/empty target, reads
+original positive outcomes, permits precisely the expected two producer markers,
+and matches recomputed closure/count/cut before rebinding local guards. Root and
+independent review caught and fixed helper visibility and cross-store proof
+composition; each positive request now carries actual directory/sequence custody.
+
+Immediately finish probe integration and build the exact coherent commit with the
+isolated ingest-history profile, then run genuine separate-process prepared-history
+cases. The native/probe worktree is now qualification/successor-history-probe;
+the independent test worktree writes its Python oracle; a new inventoried
+qualification/initial-history-harness worktree writes the engine fixture. Only
+root may execute builds/engines. At this checkpoint six unrelated services remain
+running, no candidate engine/build has started, and71,559,487,488bytes are free.
+All original fixtures remain preserved. Candidate source and docs are dirty and
+root-owned; no new qualified outcome or private push is claimed yet.
 
 Then complete any recorded PG/native gap and retire the abandoned empty attempt
 without adopting its incarnation. Migration0029 only retires epoch1 and0030's

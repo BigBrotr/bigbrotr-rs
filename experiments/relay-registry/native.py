@@ -53,7 +53,7 @@ steps = [
                 '--bin','bigbrotr','--example',probe,'--','-D','warnings']),
 ]
 if mode == 'ingest-history':
-    identity['scope'] = 'Initial successor metadata and historical recovery native components, closed codecs and actual CLI refusals; connected PostgreSQL, process reconstruction and activation remain separate'
+    identity['scope'] = 'Read-only prepared-successor reconstruction and affected original replay native components, closed codecs and CLI refusals; connected PostgreSQL, separate-process qualification and activation remain separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                    '--test','control_runtime_entrypoint','--test','control_schema']))
     steps.insert(2, ('source-closure', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -62,7 +62,24 @@ if mode == 'ingest-history':
                          '--lib',selection,'--message-format=json','--','--test-threads=1'])
                   for name, selection in [('producer-closing','producer_closing_tests'),
                                           ('producer-recovery','producer_recovery_tests'),
-                                          ('initial-handoff','initial_handoff_tests')]]
+                                          ('initial-handoff','initial_handoff_tests'),
+                                          ('initial-reconstruction','initial_reconstruction_tests'),
+                                          ('bootstrap','bootstrap_tests'),
+                                          ('dictionary-append','dictionary_append_tests')]]
+    # Replay shares event internals. Exercise these original admission callers;
+    # the packaged Archive worker needs its separately qualified mounted bundle.
+    event_replays = [
+        'actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
+        'all_fifteen_independently_signed_fixture_operations_match_native_inventory',
+        'retained_replay_with_reduced_dependency_limit_is_not_corrupt_state',
+        'inconsistent_counter_or_scope_inventory_cannot_recreate_scientific_state',
+        'invalid_signature_has_only_strict_operational_detail_and_replays_after_reopen',
+        'missing_receipt_or_retained_fact_is_never_a_new_request_or_successful_replay',
+        'last_authority_check_and_bounded_outstanding_window_leave_no_partial_effects',
+    ]
+    steps[-1:-1] = [('event-replay', ['cargo','test','--locked','--offline','--release',
+                                     '-p','bigbrotr','--lib','--message-format=json','--',
+                                     '--test-threads=1', *event_replays])]
     steps[-1:-1] = [(name, ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                            '--test',name,'--message-format=json','--','--test-threads=1'])
                     for name in ['rocks_manifest', 'rocks_keys']]
@@ -228,7 +245,8 @@ if mode in ('observation', 'relay-transfer'):
 if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
     import re
     counts, executables = {}, set()
-    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure','producer-closing','producer-recovery','initial-handoff'] if mode == 'ingest-history'
+    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure','producer-closing','producer-recovery','initial-handoff',
+                                                                               'initial-reconstruction','bootstrap','dictionary-append','event-replay'] if mode == 'ingest-history'
                   else ['dictionary-append', 'bootstrap', 'recovery'])
     target_kind = ['test'] if mode == 'ingest-recovery' else ['lib']
     retained_name = ('rocks_store' if mode == 'ingest-recovery' else 'source_closure_components' if mode == 'ingest-history'
@@ -238,6 +256,8 @@ if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
         summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
         assert summary, 'missing executed native test result: ' + name
         counts[name] = int(summary.group(1))
+        if mode == 'ingest-history' and name in ('initial-reconstruction', 'event-replay'):
+            assert counts[name] == 7, 'incomplete focused native selection: ' + name
         for line in content.splitlines():
             if not line.startswith('{'): continue
             message = json.loads(line)
