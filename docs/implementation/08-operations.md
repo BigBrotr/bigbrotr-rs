@@ -4,7 +4,7 @@ Status: implementation authorized by the owner. Unchecked steps and scenario com
 
 **Goal:** install, operate, diagnose, upgrade and recover the complete product through the delivered binary/image, documented CLI and authenticated management API.
 
-Follow [development and delivery](../engineering/development-and-delivery.md) for Mac/Tux source identity, GitHub Actions, Docker Hub, release authentication, build-once promotion and ordinary Compose upgrade. These are normative refinements of the tasks below, not a separate pipeline.
+Follow [development and delivery](../engineering/development-and-delivery.md) for Tux authoring and isolated exact-revision source identity, GitHub Actions, Docker Hub, release authentication, build-once promotion and ordinary Compose upgrade. These are normative refinements of the tasks below, not a separate pipeline.
 
 **Architecture:** one Rust application with explicit roles; typed management commands own transactions and durable job receipts. PostgreSQL coordinates control state, exclusive/fenced owners protect mutations, and backups bind engine-compatible artifacts at declared cuts. Public and private listeners remain distinct. `packaging/` is the canonical distribution directory; this supersedes the earlier product sketch's `deploy/`. `apps/admin/` is a separate static artifact using the same frontend stack as `apps/dashboard/`.
 

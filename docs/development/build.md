@@ -193,7 +193,8 @@ release assembly are not implied by a local build.
 
 ## Native targets and limitations
 
-Mac development uses the actual local architecture. CI defines native Linux amd64
+Current authoring and tests run on Tux Linux amd64 under Q34. Historical Mac
+development evidence retains its actual architecture. CI defines native Linux amd64
 (`ubuntu-24.04`), Linux arm64 (`ubuntu-24.04-arm`) and macOS arm64 (`macos-15`)
 checks. A configured runner is not an executed qualification; the
 [checkpoint](../implementation/progress.md) and evidence record actual outcomes.
@@ -201,8 +202,8 @@ Native storage, packaged installation and workload qualification remain separate
 gates before any platform is advertised as a supported product deployment.
 
 Follow [development and delivery](../engineering/development-and-delivery.md)
-for Tux: inventory resources, transfer a candidate through a Git bundle, compare
-commit/tree and clean state, then build in a fresh owned lab. No mutable directory
+for Tux: inventory resources, isolate a candidate through local Git/archive or a
+bundle, compare commit/tree and clean state, then build in a fresh owned lab. No mutable directory
 sync or release credentials are needed. Tux Linux amd64 never qualifies arm64.
 
 The optional `tests/acceptance/linux/Dockerfile` is a development lab image, not

@@ -2487,7 +2487,7 @@
     "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
   },
   "initial_retirement_20261002": {
-    "status": "IMPLEMENTING; not qualified",
+    "status": "CORRECTED_NATIVE_BUILD_PASS; installed corrected rerun NOT_RUN",
     "tasks": [
       "P02-T01 Step5",
       "P02-T02 Step4",
@@ -2503,7 +2503,6 @@
     "red_result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN",
     "scope": "Explicit initial producer/domain retirement and Ingest release; retained ACK/GC zero; successor and full M1 remain",
     "pending": [
-      "Native candidate build",
       "Installed signed retirement and exact completed retry",
       "Refusals including zero-request workflow and native unbound Event",
       "Populated additive migration/reapply",
@@ -2538,7 +2537,7 @@
         "Clippy warnings denied"
       ]
     },
-    "review_pending": "Confirmed clock-regression defect is corrected by rejecting now < locked source.closed_at_us before any terminal UPDATE; corrected build/engine qualification pending.",
+    "review_pending": "Clock correction f12dbf0 and its native build are recovered and verified. Corrected installed ten-case run plus actual interruption/authority/lock qualification remain pending. Original failure is unchanged.",
     "original_engine_failure": {
       "capture": {
         "label": "retirement-engine-first",
@@ -2649,6 +2648,33 @@
       "failure": "Actual retirement returned0 and committed retired_at_us below the already retained source.closed_at_us. Final clock case failed its required refusal; first9 cases passed. Completed retry of this bad state was not separately executed in this run.",
       "retired_at_us": 1790952594527468,
       "source_closed_at_us": 1790952654135022
+    },
+    "correction_build_reconciled_20261012": {
+      "observed_at": "2026-10-12T08:35:30.676340+00:00",
+      "activity": "read-only reinspection, not new product execution",
+      "source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "tree": "7dd4e343f51b50a6055096ef14a0aaec03a0a8e5",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f12dbf0",
+      "original_finished_at": "2026-10-02T14:54:53Z",
+      "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "artifacts": {
+        "binary_sha256": "b0aa597b383ee44dc7407edfe683f0c10572f5206a635163133a3714d83db2cd",
+        "probe_sha256": "59e307ab7df0001cc52c9a46759ec38109ee565e3216cc4ce8797340e4aa1bbb",
+        "source_manifest_sha256": "06847c50496281cb824a9d4e55501c2f9f56132f8272deb363b60a19cfc589b9"
+      },
+      "source_manifest_files_verified": 1718,
+      "passed_cases": {
+        "entrypoints": 4,
+        "migration_catalog": 35,
+        "source_closure": 3,
+        "producer_closing": 9,
+        "producer_recovery": 11
+      },
+      "command_groups": 6,
+      "clippy": "PASS",
+      "installed_corrected_engine": "NOT_RUN",
+      "original_failed_engine_preserved": "ingest-recovery-engine-6bc2005/bindings/result.json",
+      "next": "Fresh exact-f12 sibling run via experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement BUILD_ARTIFACT_DIR; more than 2 GiB free and live prerequisites required."
     }
   }
 }

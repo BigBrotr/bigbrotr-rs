@@ -1,5 +1,24 @@
 # Current mandate
 
+## Tux-only resumption — 2026-10-12
+
+The owner requests recovery of interrupted development, preserving current work,
+reconciling GitHub with Tux, a concrete resource-retirement plan and preparation
+of the continuing full-product Codex goal. Tux is now the sole authoring/Git,
+development and test host; the Mac is no longer required. This overrides the
+older host split below, without changing the selected product or its quality,
+private distribution and evidence obligations.
+
+The canonical working checkout is `/home/tux/bigbrotr-rs`. GitHub remains the
+published baseline; recovered unpublished commits retain their own branch until
+qualified and reconciled. Old lab snapshots are evidence, not writable development
+copies. See [Q34](questions.md), the [delivery contract](../engineering/development-and-delivery.md)
+and [resumption audit](../research/tux-resumption-20261012.md). Preserve retained
+datasets, fault states and unrelated workloads while identifying regenerable
+caches. The 2026-09-17 retirement authorization is not permission to erase labs
+created afterwards. The existing checkpoint and task plan remain the only
+execution authorities; this recovery session does not declare the product done.
+
 ## Owner-started implementation — 2026-09-17
 
 The owner explicitly authorizes autonomous implementation of the complete selected
@@ -11,9 +30,9 @@ archive, read/export and restart. Scaffolding or passing unit tests do not compl
 this objective. The authorization supersedes the historical planning-only stage
 below and persists through resumption.
 
-Use the Mac as the editing/Git authority and inventoried exact-revision Tux labs
-for native Linux qualification. Coherent commits and verified pushes to this
-private repository are authorized. Keep all initial Cargo packages unpublished;
+Use Tux as the editing/Git authority and inventoried exact-revision Tux labs
+for native Linux qualification (host policy updated by Q34). Coherent commits and
+verified pushes to this private repository are authorized. Keep all initial Cargo packages unpublished;
 no public release, repository rename or change to the neighboring Go checkout is
 authorized. Preserve unrelated workloads and retained current experiments.
 Use the [execution guide](../implementation/agent-handoff.md),

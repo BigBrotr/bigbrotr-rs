@@ -6,7 +6,7 @@ complete selected product through the existing task plan; earlier planning-only
 statements describe the previous stage, not a current implementation restriction.
 Isolated research experiments are authorized and must be clearly labeled. The
 owner explicitly authorizes substantial, long-running, realistic experiments on
-`ssh tux` when scale can change a critical decision; research is not limited to
+Tux when scale can change a critical decision; research is not limited to
 small probes. Preserve the local legacy repository and unrelated workloads.
 The owner explicitly retired and authorized deletion of all pre-existing
 BigBrotr resources on Tux on 2026-09-17; do not reuse those environments. New
@@ -53,8 +53,10 @@ is the agent entrypoint; do not maintain a competing agent.txt instruction set.
 The current specification is authoritative over historical review suggestions.
 
 Follow the [development and delivery contract](docs/engineering/development-and-delivery.md):
-Mac as the primary editing/Git workspace, isolated exact-revision Linux runs on
-Tux, GitHub Actions for CI and Docker Hub for images. Keep ordinary installation
+Tux as the sole editing/Git, development and test host under the owner's
+2026-10-12 instruction, with isolated exact-revision Linux runs, GitHub Actions
+for available isolated CI and Docker Hub for images. The former Mac authoring
+rule is historical. Keep ordinary installation
 on Docker Compose with explicit initialization/migrations. All initial Cargo
 packages remain unpublished. Linear coherent commits are acceptable; branches
 and parallel agents are tools for concrete needs, not mandatory ceremony. Keep

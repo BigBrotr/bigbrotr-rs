@@ -17,7 +17,8 @@ Use [the agent execution guide](agent-handoff.md) for the implementation/audit p
 Use the single [current checkpoint](progress.md) to resume, after verifying its
 claims against Git and actual process/evidence state.
 Use [development and delivery](../engineering/development-and-delivery.md) for
-Mac/Tux execution, existing planning checks, CI, Docker Hub and commit policy.
+Tux-only authoring and isolated execution, existing planning checks, CI, Docker
+Hub and commit policy.
 Begin with [the newcomer guide](../start-here.md), then the
 [storage catalog](../specification/storage-catalog.md),
 [interface catalog](../specification/interface-catalog.md) and

@@ -1,220 +1,148 @@
 # Current execution checkpoint
 
-Observed 2026-10-02 in the primary Mac workspace; Tux timestamps are UTC.
-Navigation, not evidence or another plan. Follow the
-[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
+Observed 2026-10-12 on Tux during recovery/preparation. Navigation, not another
+plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+and verify current Git, resources and evidence before using this record.
 
-## Mandate and Git
+## Mandate and repository
 
-The complete selected product remains owner-authorized and INCOMPLETE. Keep private
-bigbrotr-rs, unpublished Cargo and the read-only Go neighbor. Mac owns edits/Git;
-trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
-blocked. No public release, rename, native arm64 or complete release claim.
-The active unbudgeted goal covers the whole product, not the slice below.
+The complete selected product remains authorized and INCOMPLETE. Q34 makes Tux
+the sole editing/Git, development and test host. Preserve private bigbrotr-rs,
+unpublished Cargo, legacy reference repositories and unrelated workloads. No public
+release, rename or complete-product claim. This session prepared the continuing
+[goal](agent-handoff.md#starting-the-continuing-goal-on-tux); it did not activate it.
 
-Primary `main` is unpublished fixture6bc2005, built product64f60b0;
-private `origin/main` remains54ad09d. Root owns the clock-regression correction
-and evidence/checkpoint updates. No parallel writer or active BigBrotr experiment.
-Native64f60b0 passed release CLI/probe,4 entrypoints,35 catalog,23 actual native
-tests and Clippy; capture1717 source files/18 outputs SHA c301b638.
+Canonical checkout: `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
+Recovered product base/last observed source HEAD is
+`f12dbf04677f8afa8c62aa1c8638e199dad0abc1`, tree
+`7dd4e343f51b50a6055096ef14a0aaec03a0a8e5`.
+Freshly fetched `origin/main` and local tracking `main` are
+`54ad09dc6659bfe67e3bf2871e43ce619c199a5c`. Four recovered commits are ahead,
+none behind: f36a09e, 64f60b0, 6bc2005, f12dbf0. They are retained on the recovery
+branch and are not yet a qualified private push. Before integration/publication,
+fetch again and qualify the affected recovered behavior; do not force-push.
 
-Installed fixture6bc2005 ran all ten cases: first9 passed; final clock case
-correctly detected a product defect (CLI incorrectly returned0 and committed
-retirement before the retained source closure timestamp). The original result
-remains FAIL,144 captures SHA346d3cad;1718 source files/SHAf49cfee7. Root replayed
-all nine successful 70-table/49-native-row/four-input cases independently.
-All original seed Control/catalog/files preserved. Preserve the failed clock
-clone; no retry of its incompatible completed state was executed yet.
-Runs/ingest-recovery-engine-6bc2005 is stopped-retained, free67,118,084,096 B;
-report/inventory hold full owner/container/database identities. Shared compiler
-1154757 is released; no Mac Rust builds.
+Root owns the Tux-only recovery documentation/evidence change on top of that base.
+Its scope is AGENTS/PLAN, mandate/questions, development/delivery/build and Rust
+workflow references, phase index, this checkpoint, the existing agent guide's goal,
+lab inventory and dated resumption/producer-recovery evidence. No product code,
+lockfile, migration or task checkbox changes. Read actual `git status` and log:
+a subsequent coherent recovery-documentation commit may be HEAD; do not guess its
+hash from this record. No active merge/rebase or second writable source owner was
+observed. Two independently tasked read-only AI reviews covered recovery/cache
+questions; they are not certification of the whole source tree.
 
-The uncommitted correction checks the locked source's closed_at_us against the
-actual current SQL timestamp before any terminal UPDATE. Independent review
-confirmed this closes the static counterexample; it needs corrected build and
-actual ten-case rerun. Applied0029 is unchanged. Next run then extends actual
-rollback/ambiguous-COMMIT recovery, zero-request producer and lock obligations.
+Original laboratory checkouts/bundles remain unchanged. The new checkout has
+independent Git objects. `.research/tux-resumption-20261012/source-before-migration.bundle`
+contains complete selected reachable Git history and verifies successfully;
+`git fsck --full` passed. This same-disk preservation is not host-loss backup.
+The [dated audit](../research/tux-resumption-20261012.md) and its
+[evidence](../research/evidence/tux-resumption-20261012.json) own reconciliation details.
 
-## Active responsibility and next bounded action
+## Verified interruption boundary
 
-The next useful journey is M1/P01-T09 Step4: restart/resend of the real signed
-event with unchanged first admission and provenance off. Concrete prerequisites
-remain P02-T01 Step5/P02-T02 Step4: initial producer/domain retirement, positive
-Ingest release and explicit successor. Whole Discovery/Monitor/Ranker services
-are not prerequisites. No whole task or phase checkbox closes here.
+The former checkpoint was stale: f12dbf0's clock-regression correction was committed
+and built, not uncommitted. Its retained run is
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f12dbf0`.
+`out/qualification.json` records PASS_INGEST_HISTORY_BUILD_ONLY, finishing
+2026-10-02 14:54:53 UTC: release CLI/probe, 4 entrypoints, 35 migration catalog,
+3 source-closure + 9 producer-closing + 11 producer-recovery native tests and Clippy.
+Fresh read-only verification matched actual artifact hashes and all 1,718 source
+manifest files. No rebuild is needed merely because the session changed.
 
-Initial acquisition abandonment now has its bounded qualification below.
-Next: build the corrected exact candidate on Tux, rerun the installed ten-case
-fixture, then qualify rollback/ambiguous COMMIT and authority/lock schedules.
-SQL0011 deliberately rejects every nonempty retirement; replace that rule only
-additively, checking complete original outcomes and workflow obligations. Keep
-retirement, ACK/GC and successor semantics distinct. A retry after retirement
-needs a dedicated completed observation; do not relax admission or the historical
-closing loader's deliberate retired/released refusal. Existing native marker is
-v2, issued4/ACK0/retired0; no reclamation or negative outcome is implemented.
+The [producer recovery report](evidence/p02-producer-recovery-native-20260920.json)
+now records that reconciliation. The corrected connected ten-case engine run
+remains NOT_RUN: standard run receipts yielded no f12 engine result. Original
+`ingest-recovery-engine-6bc2005/bindings/result.json` stays FAIL on product 64f60b0;
+first 9 cases passed, last clock-regression case committed an invalid earlier
+retirement timestamp. Preserve that deliberately incompatible clock clone.
+The correction rejects current SQL time before locked source.closed_at_us prior
+to terminal updates. Applied 0029 is unchanged.
 
-Inspected for this next action: complete0002/0011/0013/0014/0020/0021/0023/0024/0027,
-PG/native producer closing, source resolution, connected recovery and historical
-registry, plus retirement/operations contracts. Initial registry currently hardcodes
-epoch1 and reads domains across the owner resource; successor must account for
-that persistent history without adopting old custody. SQL0029 has been applied to isolated signed clones. Original migration checksums remain unchanged.
+Mac-side ignored captures such as `.research/implementation/ingest-recovery-20261002`
+were not recovered. Existing Tux raw artifacts are available; missing capture
+bundles remain unavailable evidence, not regenerated PASS claims.
 
-Selected bounded route: `ingest recover --retire-initial` requires the prior
-explicit source closure and whole-intent abandonment. A dedicated read-only native
-closing observation and existing positive resolver reconstruct the source witness;
-PostgreSQL outcome comparison requires already retained rows and cannot insert
-new copies. The final transaction retires the producer, closes allocation domains,
-positively releases Ingest and retires its role. Its completed observation accepts
-only the coherent whole terminal state and preserves attribution/xmin on retry.
-Ordinary admission and closing still reject retired/released history. Keep the
-native v2 closing marker and ACK/GC at zero; no new ledger or format is needed.
-Import bindings/checkpoints and original-Control import claims are refused,
-including zero-request producers. Native Event classification refuses old Events
-without an acquisition job even when no SQL relay binding exists. These two
-review findings are included in the draft and still need discriminating engine
-regressions. A nonpersistent 64-bit Event mask in the resolved witness preserves
-the same final-effect check for callers using ordinary positive recovery; no
-native format or closure-digest change. Ordinary Evidence may remain unbound.
+## Next bounded action and dependencies
 
-## Qualified initial abandonment boundary
+First reconcile the selected run's space/ownership preflight using the concrete
+[cleanup sequence](../research/tux-resumption-20261012.md#concrete-cleanup-sequence)
+and existing lab inventory. The audit deleted no resources. Current disk headroom
+is below the existing export runner's64GiB reserve; do not lower the reserve or
+launch a broad fresh build to repeat already verified evidence.
 
-Owner: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
-initial_acquisition_abandonment_20261002; existing inventory
-implementation_network_20260928.installed_ingest_recovery.acquisition_abandonment.
-Recipes/captures: .research/implementation/ingest-recovery-20261002.
+Then use verified retained f12 CLI/probe outputs with the existing installed
+retirement fixture on **new inventoried clones**. Recheck exact executable/input
+hashes, source/fixture identity, required image, current PG owner and locks before
+launch. Expected discrimination: all ten cases satisfy their own oracles;
+retire-clock-regressed returns exit4/InvalidMetadata with no terminal writes.
+Record actual PASS/FAIL/NOT_RUN, original-state preservation and stopped/retained
+resources in the existing producer recovery report and lab inventory.
 
-Product257d232 introduced `ingest recover --abandon-acquisition --file ROOT` and
-0027. It first resolves all original positive outcomes and closes the source,
-then atomically cancels the original Control's queued checkpoint-zero jobs with
-immutable whole-intent gaps. This includes jobs with no mutation request; unclaimed
-accepted jobs remain untouched. At most64 old claims plus retained gaps. It keeps
-the actual exclusive native witness and current Control fence, dataset UPDATE
-before registry/source/producer/job locks, original attribution on retries, bounded
-work/cancellation and ambiguous-COMMIT semantics. No native format, dependency,
-scientific ledger, ACK/GC or successor change.
+Use tracked `experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement
+BUILD_ARTIFACT_DIR`; the audit contains the exact invocation. RUN_ROOT must be a
+fresh sibling under the old `runs/` parent with clean exact f12 source: the launcher
+resolves retained inputs by sibling paths, and its artifact-reuse guard would
+reject the new AGENTS/PLAN governance changes. Required retained inputs and image
+exist; live database collision/preconditions remain to check. This fixture's
+preflight needs more than 2 GiB free, not the larger export wave's 64 GiB reserve;
+it can proceed at current headroom if fresh checks pass. Do not claim cleanup is
+a prerequisite for every small useful task.
 
-Product20ce916/tree3a21bb5d adds corrective0028, leaving0027/checksums unchanged.
-It removes a redundant deferred jobs UPDATE trigger that forced ordinary acceptance
-to read the recovery gap table. Gap INSERT's deferred complete-terminal check and
-terminal job/gap immutability retain the invariant. One focused schema helper under
-the existing migration lock refuses27 without28 before acceptance/execution startup
-and acceptance/claim writes. Earlier schemas retain their floors and grants.
-No blanket grant, security-definer product function or generic compatibility layer.
+Active product responsibility remains P02-T01 Step 5 /P02-T02 Step 4, enabling
+M1/P01-T09 Step 4: explicit successor, restart/resend of the signed event with
+unchanged first admission, repeated with provenance off. After the ten cases,
+qualify retirement rollback/ambiguous COMMIT, zero-request workflow/import
+obligations, authority and lock schedules. Do not treat retirement as ACK/GC or
+successor activation: native v2 is closing, issued 4 / ACK 0 / retired 0. Ordinary
+admission and historical closing retain their deliberate retired/released refusal.
+No whole task/phase closes from this recovery or a happy-path retirement.
 
-Actual evidence, all Linux amd64 PG16.15/Rocks11.8.1:
+Earlier [initial Archive evidence](evidence/p02-initial-archive-native-20261002.json)
+qualifies product 3a7f884 / fixture b7b60f9 through signed acquisition, durable admission,
+timer publication, private history and 353-byte signed JSONL export. Full M1 still
+needs successor/replay, provenance-off restart, online indexing, dependency outages
+and installed bundle journeys. Five exports under 256 MiB remain NOT_RUN. Whole
+Discovery/Monitor/Ranker services are not prerequisites for the next M1 slice.
+The selected analytics, interfaces, operations, browser and website work remains;
+use the existing task dependencies rather than another backlog.
 
--257d232 build: release CLI/probe,4 entrypoints,35 migration catalog tests,
- 3 actual Rocks prefix cases,Clippy. Fixturebff0bc3 passes six initial cases:
- signed abandonment/retry, synthetic zero-request claimed plus unclaimed intent,
- revoked actor/grants, advanced checkpoint and missing0027 refusal.
--20ce916 build: release CLI/probe,12 actual Rocks store tests,Clippy. The launcher
- default selected ingest-recovery, so no new catalog/entrypoint execution is claimed.
- CLI SHAfb476ec023d8cb98e1215af4dfbe58ad6dc185ed6803c7d29d637d9ec74250a3;
- probe SHAd3e7b8daf87493e955d12eb22825664fe5c88613ffded7777fc964f19dd5c0cd.
- Its five installed cases pass26/28 HTTP acceptance/replay/status and28 signed Sync
- without gap SELECT;27 refuses before bind for acceptance and Sync independently.
--0137713 passes actual28 abandonment/retry, eight raw23514 refusals with complete
- 70-table/xmin rollback and a missing-trigger negative that commits an incomplete
- gap as expected. The fixture-only synthetic backend setup ends before real
- application-login DML; origin replication is explicitly checked. No product
- security-definer or permission change. Preserve its deliberately broken clone.
--97f9a8d passes six count/upgrade cases:64 queued+identical retry,65 queued refusal,
- 64 retained gaps+1 queued refusal, populated27→28 migration/reapply and CLI retry.
- Added intents are synthetic complete records with independent command digests.
- Prior rows/xmin/filenodes and the retained bff0bc3 parent remain unchanged.
--3ef3777 passes four INSERT/COMMIT schedules: actual INSERT blocked+SIGTERM exits4
- unforced/reaped in2.374s and rolls back; COMMIT blocked+natural deadline exits4
- unforced/reaped in3.174s, then commits after client death. Both exact retries pass
- with fresh positive Control fencing after natural lease expiry. Both server
- backends remain waiting until fixture unlock: joining the Rust driver/process
- is not synchronous PostgreSQL cancellation.
+## Resources and preservation
 
-All applicable cases compare70 Control tables,49 native rows/four original inputs
-and original32-table catalog/files. The independent closure digest remains
-9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501.
-Root matched exact source manifests/capture hashes and replayed the SQL/native/
-receipt/gap oracles. Latest62 captures SHA1059f5b5,1715 source files/SHAca87636b;
-prior detailed identities are in the report/inventory rather than copied here.
+Fresh Docker census: 1,182 containers, 1,163 BigBrotr names, zero BigBrotr running.
+Six unrelated services remain running: inspirehep-reindex-db/mq/cache/es, ollama
+and tgdataset-mongo. Accessible process inspection found only audit processes;
+privileged/inaccessible processes were not fully audited. Recheck actual owners,
+open handles/mounts and cache locks before cleanup or launch.
 
-Preserve original failures:48d298a entrypoint RED; b14489d real ordinary acceptance
-regression (listener bound, then disconnect/CLI Backend; PG gap-table permission
-error);64fda0f raw fixture setup failure (SET ROLE hides the real login backend's
-start time). No original FAIL was relabeled. Independent read-only AI review found
-the ordinary grant regression; follow-up20ce916 found no further actionable issue
-in complete changed product/fixture files and relevant callers/guards. No new
-engine execution by that reviewer. Concurrent migration between preflight and
-first mutation is statically guarded but was not separately executed.
+The resource inventory now links this audit's census. The three retained lab roots
+consume approximately 975 GiB combined; implementation/object-storage figures have
+unreadable entries and are lower bounds. Initial free disk was about 38 GiB; remeasure
+before allocation. The independent cache plan identifies about 41.46 GiB of candidate
+intermediates, not a deletion-ready allowlist or reclaimed space. No global prune,
+whole-run removal or retained dataset deletion was performed/authorized by the plan.
 
-Structural decision: focused recovery adapter and shared exact-prefix comparison;
-finite consumer uses the existing joined supervisor. The two SQL interruption
-sites now share process/barrier/retry machinery with separate explicit effect
-oracles. Ordinary Serve/read/export orchestration and unrelated native internals
-were not re-audited or cosmetically rewritten. Blocked native calls, crashes/ENOSPC,
-aged/mixed/load, general acquisition progress, retirement, successor, ACK/GC and
-full M1 remain outside this bounded qualification.
+Preserve shared compiler `network-1154757/out/build/{target,cargo-home}` under
+its exclusive `.compiler-cache.lock`; no build from this audit holds it. Preserve
+qualified ELFs outside mutable caches. The retained native image/compiler is
+clang 14; available host clang 19 is separately discovered, not qualified by that
+old result. Local Rust 1.98.1 and Node 26.4.0 are present; pinned pnpm 9.15.9 lives in
+`.research/tooling`. The audit documents local PATH setup without global changes.
 
-## Earlier useful journey and prerequisites
+Borrowed PG at `relay-source-recheck-e06f580/pg` was observed stopped through Docker;
+verify container ID/labels against the inventory before using it. Preserve secrets,
+bb_source_template, all original/fault clones, intentionally broken 0137713_gap_relations,
+original signed seed installed-archive-export-b7b60f9, bff0bc3 populated gap parent,
+source-closure/fault/job-lock clones and their original catalogs/files.
+Protect private-history-32dd58d/history-capture-b5c862a's dependency
+installed-publication-61271e2/out/archive-worker, 4e6b5c0 assets, 8fa/f677 inputs,
+649 cache,network e38/1a2 evidence, 03b0197 artifacts and corrupt 91d5 clones.
+Never merge/push negative sources 9fa8b98/8effc76/5f1582c/a334ac8/
+network-direct-no-poll-1154757. Historical Mac negative/dirty worktree claims are
+not claims that those worktrees were recovered. Full identities remain in the
+inventory; previous cleanup receipts are history and must not be replayed.
 
-[Initial Archive evidence](evidence/p02-initial-archive-native-20261002.json)
-qualifies product3a7f884/fixtureb7b60f9 signed acquisition→durable admission→timer
-publication→captured frontier→ordinary private history→JSONL export. All49 native
-rows/four requests/twelve scientific rows/four batch headers match independent
-encodings; frontier snapshot5, export353B SHA71fcfc6c. Original seed is retained.
-M1 still needs successor/replay, provenance-off restart, online indexing, outages
-and installed bundle journeys. Five exports under256MiB remain NOT_RUN.
-
-The same producer recovery report separately qualifies positive recovery5512161
-with fixture851d116 and signed suppl e8317e9; source closuref873d92 with d90b718,
-UPDATE/COMMIT faults10c2eca and current-schema job-cut racesd824180. The latter's
-0815 dataset lock correctly serializes both job13/source12 orders; it does not
-claim an isolated source-row lock. Their original failures/captures remain.
-Native inspection20e0e5e and registryfc695d2 retain separate bounded evidence.
-No unchanged broad suite should be rerun without a new risk or change.
-MON-001/002/004/005/006/007/009/010 retain earlier scoped closures absent new evidence.
-
-Full analytics/ranking, public/private/browser surfaces, website/blog, packaging,
-CI/CD and release journeys remain selected work. No complete product claim.
-
-## Live resources, protected inputs and maintenance
-
-Fresh final check: no BigBrotr container/build/process active; eight unrelated
-containers remain inspirehep-reindex-db/mq/cache/es, ollama, fileshare-lan,
-fileshare-tailnet and tgdataset-mongo. Latest resumption: Mac7,832,360 KiB and
-Tux67,490,275,328 B free; only the SSH inventory command matches process search.
-Check space before each large allocation; Tux remains below the old export run's
-64GiB+577MiB reserve. Do not lower it to fit another export experiment.
-
-Latest engine runs/ingest-recovery-engine-3ef3777 is STOPPED_RETAINED,
-owner3ddbbd0a353ac84696d9d35129c7d5f2/clientfa8e73d9e3a0920bead6aa813fbdda081758656b79030131b7b1ddb33ca225ed.
-No OOM/cleanup/unrelated changes. Retain both fault clones and all original evidence.
-Build runs/ingest-recovery-20ce916 is stopped, shared compiler1154757 released.
-The shared cache is network-1154757/out/build/{target,cargo-home},
-owner8b21a13162699a6038154874c2ac89da, protected by exclusive .compiler-cache.lock.
-Rust1.98.1/clang14/native image7e946a0c; qualified ELFs live outside caches.
-
-Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
-owner5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped.
-PG16.15/fsync/full_page_writes on. Preserve secrets, bb_source_template, every
-prior fault clone and especially intentionally broken0137713_gap_relations.
-Do not reuse that negative database as a valid deployment.
-Original signed seed installed-archive-export-b7b60f9 and its32-table catalog/files,
-bff0bc3 populated gap parent, source-closure/fault/job-lock clones remain retained.
-
-Owner-requested cache retirement is COMPLETE; never replay deletion scripts.
-Inventory implementation_20260917.cache_retirement_20260928 owns receipts.
-Latest Mac removal was only .research/targets/product/debug/incremental:
-31,848 regenerable files,12,318,892,032 allocated bytes; immediate free bytes
-1,319,854,080→9,757,089,792 (later APFS/concurrent writes change readings).
-All336,527 outside entries/worktree states preserved. Earlier rocks-store and
-rocks-binding targets stay absent; their111 final executable/library paths remain.
-Tux's earlier scoped retirement recovered observed22,287,560,704B from16 caches,
-then3,004,112,896B from network-1a2a8be build caches. Required artifacts preserved;
-no datasets, containers or volumes deleted in this current boundary.
-
-Protect private-history-32dd58d and history-capture-b5c862a's dependency
-installed-publication-61271e2/out/archive-worker. Qualification/object-storage
-datasets/backups/archives/catalogs/indices/fault states remain untouched. Preserve
-4e6b5c0 assets,8fa/f677 inputs,649 cache,network e38/1a2 evidence,03b0197 artifacts
-and deliberately corrupt91d5 clones. Negative worktrees9fa8b98/8effc76/5f1582c/
-a334ac8/network-direct-no-poll-1154757 never merge/push; dirty private-panel-no-revoke
-and detacheded2a93b remain untouched. Inventory owns full resource identities.
+GitHub's latest observed run 37017677570 did not start its jobs due to billing/
+spending restrictions. Q33 authorizes isolated trusted native Tux checks, separately
+reported. Native arm64, actual signing/registry provisioning and public promotion
+retain their own gates. No emulated or amd64 run can supply native arm64 evidence.

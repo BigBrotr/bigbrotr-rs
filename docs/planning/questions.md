@@ -226,3 +226,16 @@ them as GitHub job success or native arm64/macOS evidence. This does not authori
 untrusted PR execution on the shared host, billing changes, added spending,
 release credentials or publication. Docker Hub and private candidate/release
 boundaries remain unchanged.
+
+Q34 (2026-10-12): The owner asks to recover interrupted BigBrotr development and
+continue entirely on Tux: editing, Git, testing and research. Reconcile the private
+GitHub baseline with retained local source before resuming; preserve unpublished
+work, original evidence and unrelated applications. Prepare an explicit cleanup
+plan and a full-product Codex goal using Astra with xhigh reasoning and bounded
+subagent collaboration under the existing guide. Replace the former Mac/Tux
+authoring split in current instructions, without rewriting historical evidence.
+Use `/home/tux/bigbrotr-rs` as the single integrating checkout, separate writable
+worktrees for parallel implementation, and isolated immutable run inputs.
+The [recovery audit](../research/tux-resumption-20261012.md) records the verified
+baseline, space candidates, tooling and limitations. No new architecture, public
+release, removal of retained datasets or arbitrary quality quota is implied.

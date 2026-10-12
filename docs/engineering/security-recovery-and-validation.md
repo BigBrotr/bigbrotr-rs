@@ -7,7 +7,7 @@ reference model is design evidence; real engine/process/release acceptance below
 remains required.
 
 The [development and delivery contract](development-and-delivery.md) owns
-Mac/Tux revision transfer, isolated CI trust, Docker Hub artifacts, release
+Tux authoring and isolated exact-revision runs, isolated CI trust, Docker Hub artifacts, release
 authentication and ordinary Compose upgrade. Apply these boundaries to the
 practical scenarios below; a shared lab host is not an untrusted PR runner.
 
@@ -166,12 +166,16 @@ declared environment. The implemented harness distinguishes PASS, FAIL, SKIP and
 NOT_RUN; missing execution cannot become PASS. This is the shared obligation for
 P01–P10, including website tutorials, rather than a test-category quota on each edit.
 
-## Current experimental evidence
+## Historical planning evidence — 2026-09-11
 
-Completed now: isolated SDK receive-handler reproduction, its relay parser tests,
+This records the planning baseline, not current implementation status.
+See the [current checkpoint](../implementation/progress.md) and its linked
+evidence for the verified implementation state.
+
+Completed at that baseline: isolated SDK receive-handler reproduction, its relay parser tests,
 DuckLake PostgreSQL commit/rollback and process-death/concurrent-writer probe,
 RocksDB synchronized batch/process-death probe, plus the prior component lab.
-Not completed: future BigBrotr executable, production Rust RocksDB adapter,
+Not completed at that baseline: future BigBrotr executable, production Rust RocksDB adapter,
 power-loss/ENOSPC/fencing drills, end-to-end real-relay capacity, browser journeys,
 website build and billion-row serving layout. These are explicit implementation
 acceptance work, not silently satisfied by planning documents.

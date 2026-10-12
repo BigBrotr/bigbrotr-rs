@@ -1,0 +1,359 @@
+{
+  "format": "bigbrotr-tux-resumption-audit/1",
+  "observed_at": "2026-10-12T08:35:30.676340+00:00",
+  "status": "RECOVERY_PREPARED; cleanup and product execution not performed",
+  "scope": "Repository recovery, Tux-only authoring policy, resource census/cleanup planning, tool discovery and future goal preparation. Not whole-product qualification.",
+  "repository": {
+    "path": "/home/tux/bigbrotr-rs",
+    "origin": "https://github.com/BigBrotr/bigbrotr-rs",
+    "private": true,
+    "owner_login": "VincenzoImp",
+    "branch": "recovery/tux-20261012",
+    "remote_main": "54ad09dc6659bfe67e3bf2871e43ce619c199a5c",
+    "recovered_head": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+    "recovered_tree": "7dd4e343f51b50a6055096ef14a0aaec03a0a8e5",
+    "remote_only_commits": 0,
+    "recovered_only_commits": [
+      "f36a09e",
+      "64f60b0",
+      "6bc2005",
+      "f12dbf0"
+    ],
+    "open_prs_observed": 0,
+    "open_issues_observed": 0,
+    "original_repositories_modified": false,
+    "remote_mutations": false,
+    "fsck": "PASS",
+    "bundle_verify": "PASS",
+    "unpublished_mac_only_work": "UNKNOWN; not recovered",
+    "git_census": {
+      "scope": "implementation root, depth <=5, pruning caches/engine directories",
+      "repositories": 504,
+      "unique_heads": 474,
+      "dirty": 0
+    }
+  },
+  "reconciled_product_build": {
+    "observed_at": "2026-10-12T08:35:30.676340+00:00",
+    "activity": "read-only reinspection, not new product execution",
+    "source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+    "tree": "7dd4e343f51b50a6055096ef14a0aaec03a0a8e5",
+    "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f12dbf0",
+    "original_finished_at": "2026-10-02T14:54:53Z",
+    "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+    "artifacts": {
+      "binary_sha256": "b0aa597b383ee44dc7407edfe683f0c10572f5206a635163133a3714d83db2cd",
+      "probe_sha256": "59e307ab7df0001cc52c9a46759ec38109ee565e3216cc4ce8797340e4aa1bbb",
+      "source_manifest_sha256": "06847c50496281cb824a9d4e55501c2f9f56132f8272deb363b60a19cfc589b9"
+    },
+    "source_manifest_files_verified": 1718,
+    "passed_cases": {
+      "entrypoints": 4,
+      "migration_catalog": 35,
+      "source_closure": 3,
+      "producer_closing": 9,
+      "producer_recovery": 11
+    },
+    "command_groups": 6,
+    "clippy": "PASS",
+    "installed_corrected_engine": "NOT_RUN",
+    "original_failed_engine_preserved": "ingest-recovery-engine-6bc2005/bindings/result.json",
+    "next": "Fresh exact-f12 sibling run via experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement BUILD_ARTIFACT_DIR; more than 2 GiB free and live prerequisites required."
+  },
+  "storage": {
+    "observed_at": "2026-10-12T08:26:51.657476+00:00",
+    "roots": [
+      {
+        "path": "/home/tux/bigbrotr-qualification-20260917",
+        "allocated_bytes": 677384060928,
+        "exit_code": 0,
+        "inspection_errors": 0
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917",
+        "allocated_bytes": 360376532992,
+        "exit_code": 1,
+        "inspection_errors": 225
+      },
+      {
+        "path": "/home/tux/bigbrotr-object-storage-20260917",
+        "allocated_bytes": 8903888896,
+        "exit_code": 1,
+        "inspection_errors": 1
+      }
+    ],
+    "disk": "Filesystem         1B-blocks          Used   Available Use% Mounted on\n/dev/nvme0n1p2 1900107571200 1764043431936 39468429312  98% /\n"
+  },
+  "docker": {
+    "containers_total": 1182,
+    "name_matched_bigbrotr": 1163,
+    "bigbrotr_running": 0,
+    "unrelated_running": 6,
+    "root_process_audit": "NOT_RUN; unprivileged inspection only"
+  },
+  "cleanup": {
+    "status": "PROPOSED_ONLY",
+    "bytes_reclaimed_claimed": 0,
+    "deleted_resources": [],
+    "candidate_non_elf_singlelink_bytes": 44514267136,
+    "candidate_target_count": 18,
+    "retained_elf_count": 2881,
+    "candidate_ceiling_not_allowlist": true,
+    "candidates": [
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-0dabfaa/out/ci/target",
+        "candidate_bytes": 3928817664
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-6314639/out/ci/target",
+        "candidate_bytes": 3947040768
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-d0644ac/out/ci/target",
+        "candidate_bytes": 3950571520
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-f83ac99/out/build/target",
+        "candidate_bytes": 2284761088
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-ac86c16/out/build/target",
+        "candidate_bytes": 2284761088
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0/out/build/target",
+        "candidate_bytes": 2285776896
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0-checked/out/build/target",
+        "candidate_bytes": 2285780992
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-7a0f4b6/out/build/target",
+        "candidate_bytes": 2058371072
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-d37e81f/out/build/target",
+        "candidate_bytes": 2058371072
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3/out/build/target",
+        "candidate_bytes": 2299629568
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/build/target",
+        "candidate_bytes": 2301259776
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/wal-recovery-ec386ac/out/build/target",
+        "candidate_bytes": 2038013952
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-outcomes-efeb4e0/out/build/target",
+        "candidate_bytes": 2037436416
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-recovery-55dba36/out/build/target",
+        "candidate_bytes": 1575583744
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be/out/build/target",
+        "candidate_bytes": 2293092352
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-grants-923f186/out/build/target",
+        "candidate_bytes": 2293231616
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07/out/build/target",
+        "candidate_bytes": 2296893440
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-destination-a75d0fa/out/build/target",
+        "candidate_bytes": 2294874112
+      }
+    ],
+    "simpler_incremental_subset": [
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-0dabfaa/out/ci/target/debug/incremental",
+        "allocated_bytes": 564719616,
+        "observed_file_types": [
+          "Rust .o object files",
+          ".bin incremental metadata",
+          ".rmeta Rust metadata",
+          ".lock locks"
+        ],
+        "final_elf_count": 0
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-6314639/out/ci/target/debug/incremental",
+        "allocated_bytes": 579723264,
+        "observed_file_types": [
+          "Rust .o object files",
+          ".bin incremental metadata",
+          ".rmeta Rust metadata",
+          ".lock locks"
+        ],
+        "final_elf_count": 0
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-d0644ac/out/ci/target/debug/incremental",
+        "allocated_bytes": 583233536,
+        "observed_file_types": [
+          "Rust .o object files",
+          ".bin incremental metadata",
+          ".rmeta Rust metadata",
+          ".lock locks"
+        ],
+        "final_elf_count": 0
+      }
+    ],
+    "prerequisites": [
+      "Verify no active compiler/cache owner and inspect all relevant host FDs/maps/cwd with sufficient access; reacquire appropriate exclusive maintenance/compiler lock.",
+      "Freeze exact canonical allowlist and reject symlinks/mount changes/new or unaccounted files; preserve source revision/dirty state and source manifests.",
+      "Hash and retain every needed executable/shared ELF outside targets (prior inventory retirement used retained-cache-artifacts directories); preserve original relative-path mapping and runtime dependencies.",
+      "Snapshot/hash outside evidence and artifacts, record all Docker ownership/state/mount projections, and verify after deletion; do not delete containers, volumes or whole runs.",
+      "Reconcile evidence references and cross-run dependencies before approving each target; update laboratory inventory with a new dated receipt. Never replay prior deletion scripts.",
+      "Measure actual filesystem free space before/after; estimate is not recovered space, and retained hardlinks remain allocated. Rebuilding retired caches costs time/CPU/disk; preserve current shared cache."
+    ],
+    "preserve_shared_cache": "network-1154757/out/build/{target,cargo-home}",
+    "export_reserve_bytes": 68719476736
+  },
+  "tooling": {
+    "rust": "1.98.1",
+    "node": "26.4.0",
+    "pnpm": "9.15.9",
+    "pnpm_location": ".research/tooling/node_modules/.bin/pnpm",
+    "pnpm_install_scripts": false,
+    "native_discovery": "PASS_TOOL_DISCOVERY_ONLY; host clang19 differs from retained clang14 lab",
+    "codex_cli": "0.162.1",
+    "model": "gpt-6-astra",
+    "reasoning": "xhigh",
+    "model_configuration_modified": false,
+    "goal_started": false
+  },
+  "github_actions": {
+    "latest_observed_run": 37017677570,
+    "head": "54ad09dc6659bfe67e3bf2871e43ce619c199a5c",
+    "status": "failure",
+    "reason": "Jobs not started due to billing/spending restriction; annotations inspected",
+    "new_run_started": false
+  },
+  "reviews": {
+    "recovery": "Independent read-only AI review: governing files plus complete producer_retirement.rs,0029_initial_retirement.sql,initial_retirement.py and producer-request-inputs.md; retained hashes/source files/receipts and local launcher dependencies verified. Not all callers/product source reaudited.",
+    "cleanup": "Independent read-only AI review of 18 cache targets, original inventory/receipts, required artifacts and mounts; root-level process inspection unavailable."
+  },
+  "validation": {
+    "documentation_checks": "PASS",
+    "artifact_check": {
+      "command": "python3 experiments/verify_artifacts.py",
+      "markdown_files": 190,
+      "json_files": 424,
+      "errors": []
+    },
+    "handoff_check": {
+      "command": "python3 experiments/verify_handoff.py --output .research/tux-resumption-20261012/handoff-check.json",
+      "canonical_slugger_prepared": true,
+      "markdown_files": 190,
+      "fragments": 501,
+      "tasks": 123,
+      "steps": 756,
+      "errors": [],
+      "existing_prose_cycle_candidates": [
+        [
+          "P03-T02",
+          "P04-T02"
+        ],
+        [
+          "P04-T13",
+          "P05-T08"
+        ],
+        [
+          "P04-T14",
+          "P05-T05"
+        ]
+      ],
+      "interpretation": "No task dependencies changed; prose cycle candidates retain existing foundation-versus-acceptance treatment, not a new DAG proof."
+    },
+    "git_diff_check": "PASS",
+    "product_diff_vs_recovered_f12": "EMPTY for apps/crates/migrations/locks/tools/experiments/tests/contracts/config/packaging/CI",
+    "product_tests_this_session": "NOT_RUN; no product change",
+    "engine_rerun": "NOT_RUN",
+    "heavy_build": "NOT_RUN",
+    "git_fsck": "PASS",
+    "bundle_verify": "PASS"
+  },
+  "raw_evidence": {
+    "containers.json": {
+      "path": ".research/tux-resumption-20261012/containers.json",
+      "bytes": 1349662,
+      "sha256": "8a124a9c39f56b1a2b1fd740d495e389ff3e15776896c58905793a41f37a51df"
+    },
+    "git-census.json": {
+      "path": ".research/tux-resumption-20261012/git-census.json",
+      "bytes": 102669,
+      "sha256": "a3509db08c76ea8ea5e7c7f2dd8af36d6de3334ac158c8e3150a027d6b906410"
+    },
+    "process-census.json": {
+      "path": ".research/tux-resumption-20261012/process-census.json",
+      "bytes": 630,
+      "sha256": "4bb3e2ae9807405fbc0acb712b43dc27746a13d3f891eedca853acb682f13e1e"
+    },
+    "storage-census.json": {
+      "path": ".research/tux-resumption-20261012/storage-census.json",
+      "bytes": 710,
+      "sha256": "9980ad0f695bcba3f7a846138dbcca50780f2caca9c5f177138fbba525c17db9"
+    },
+    "cleanup-cache-candidates.json": {
+      "path": ".research/tux-resumption-20261012/cleanup-cache-candidates.json",
+      "bytes": 14189,
+      "sha256": "225037ae06b283c82f854f9363385d7579b2be8407d82316c86a8001e8116fb2"
+    },
+    "host-native-toolchain.json": {
+      "path": ".research/tux-resumption-20261012/host-native-toolchain.json",
+      "bytes": 1935,
+      "sha256": "f1e5a103797a491f73f0b6003ee91b57712f32716cefa7287665c28b1d1325bc"
+    },
+    "source-before-migration.bundle": {
+      "path": ".research/tux-resumption-20261012/source-before-migration.bundle",
+      "bytes": 10693521,
+      "sha256": "7716a797af4033b56be4a671015982939540c85b14f527a11177ea3814e85b79"
+    },
+    "artifacts-check.json": {
+      "path": ".research/tux-resumption-20261012/artifacts-check.json",
+      "bytes": 226,
+      "sha256": "bc169ba84a5fafc6f3b0c42e235d153e207628b2ca0f545e32adaaa78e56cbb4"
+    },
+    "handoff-check.json": {
+      "path": ".research/tux-resumption-20261012/handoff-check.json",
+      "bytes": 61201,
+      "sha256": "ba1122260340a48c4d509451bd0d8f0735a846ec55a9020e86c2b3642552bf1f"
+    },
+    "name-discovery.json": {
+      "path": ".research/tux-resumption-20261012/name-discovery.json",
+      "bytes": 478,
+      "sha256": "081ae28a6a651419ffb5f960d4aca419f43b357a549588851d7f6d5b9aa3ac84"
+    }
+  },
+  "final_disk_observation": {
+    "at": "2026-10-12T08:39:23.250169+00:00",
+    "df": "Filesystem         1B-blocks          Used   Available Use% Mounted on\n/dev/nvme0n1p2 1900107571200 1764139036672 39372824576  98% /\n",
+    "note": "About 37 GiB free after tooling setup/concurrent host activity; no cleanup/reclaimed-space claim."
+  },
+  "discovery": {
+    "scope": "Name-only discovery under selected roots to depth three; excluded known labs, caches and database directories. No config/secret content read.",
+    "paths": [
+      "/home/tux/bigbrotr-implementation-20260917",
+      "/home/tux/bigbrotr-object-storage-20260917",
+      "/home/tux/bigbrotr-qualification-20260917",
+      "/home/tux/bigbrotr-rs"
+    ],
+    "system_unit_names": [],
+    "errors": [
+      {
+        "path": "/opt/containerd",
+        "error": "PermissionError"
+      }
+    ]
+  }
+}

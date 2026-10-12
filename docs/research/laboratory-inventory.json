@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-27T19:28:53.190193+00:00",
+  "updated_at": "2026-10-12",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -38908,5 +38908,53 @@
       "evidence": "docs/implementation/evidence/p04-source-races-native-20260928.json",
       "retention": "Keep all seven clones/native stores, exact source/export, original logs, manifests and ELFs. Borrowed e06 PostgreSQL stopped. No deletion/new network/cache."
     }
+  },
+  "tux_resumption_20261012": {
+    "observed_at": "2026-10-12T08:35:30.676340+00:00",
+    "owner": "root recovery session; read-only recovery/cache AI reviewers",
+    "status": "RECOVERY_CHECKOUT_PREPARED; NO_CLEANUP_OR_PRODUCT_RUN",
+    "canonical_checkout": "/home/tux/bigbrotr-rs",
+    "branch": "recovery/tux-20261012",
+    "source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+    "remote_main": "54ad09dc6659bfe67e3bf2871e43ce619c199a5c",
+    "report": "docs/research/tux-resumption-20261012.md",
+    "evidence": "docs/research/evidence/tux-resumption-20261012.json",
+    "raw_root": ".research/tux-resumption-20261012",
+    "prior_source_checkouts": "Preserved unchanged; 504 inspected clean Git repositories,474 unique heads",
+    "containers": {
+      "containers_total": 1182,
+      "name_matched_bigbrotr": 1163,
+      "bigbrotr_running": 0,
+      "unrelated_running": 6,
+      "root_process_audit": "NOT_RUN; unprivileged inspection only"
+    },
+    "cleanup": {
+      "status": "PLAN_ONLY",
+      "candidate_bytes_ceiling": 44514267136,
+      "actual_bytes_reclaimed_claimed": 0,
+      "deletions": [],
+      "required_preflight": "Reconcile exact allowlist/ownership/active handles/references and retained artifact closure before any deletion."
+    },
+    "tooling": {
+      "rust": "1.98.1",
+      "node": "26.4.0",
+      "pnpm": "9.15.9",
+      "pnpm_location": ".research/tooling/node_modules/.bin/pnpm",
+      "pnpm_install_scripts": false,
+      "native_discovery": "PASS_TOOL_DISCOVERY_ONLY; host clang19 differs from retained clang14 lab",
+      "codex_cli": "0.162.1",
+      "model": "gpt-6-astra",
+      "reasoning": "xhigh",
+      "model_configuration_modified": false,
+      "goal_started": false
+    },
+    "reconciled_product_build": {
+      "source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f12dbf0",
+      "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "installed_corrected_engine": "NOT_RUN",
+      "evidence": "/home/tux/bigbrotr-rs/docs/research/evidence/tux-resumption-20261012.json"
+    },
+    "preserve": "All old lab paths, datasets, backup/catalog/native/fault states, original failure evidence, qualified artifacts and unrelated workloads. No blanket reuse of 2026-09-17 retirement authority."
   }
 }

@@ -151,7 +151,7 @@ collecting a historical archive. See [probe evidence](../research/evidence/nostr
 
 ## Maintenance and release
 
-Follow [development and delivery](development-and-delivery.md) for Mac/Tux
+Follow [development and delivery](development-and-delivery.md) for Tux-only
 source identity, linear commits, isolated CI, Docker Hub, signed manifests and
 Compose upgrade. GitHub Actions does not require GitHub Container Registry.
 

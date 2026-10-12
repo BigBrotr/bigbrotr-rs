@@ -11,14 +11,17 @@ implementation deliverables, not claims of passing acceptance.
 
 ## One source revision, different execution environments
 
-Use the local Mac checkout as the primary editing, review and Git workspace.
-Use `ssh tux` for native Linux builds, actual engines, resource measurements,
-crash/recovery and large practical scenarios. The recorded Tux host is Linux
-amd64; verify its identity/resources before a run. Tux is a laboratory, not a
-second independently evolving source branch or a production release authority.
+Under the owner's 2026-10-12 instruction (Q34), Tux is the sole editing, review,
+Git, development and test host. The canonical integrating checkout is
+`/home/tux/bigbrotr-rs`; use separate writable worktrees for actual parallel
+implementation. Native Linux builds, engines, resource measurements and
+crash/recovery scenarios still use isolated, inventoried exact-revision runs.
+The recorded Tux host is Linux amd64; verify identity and resources before a run.
+Neither the working checkout nor a lab run is a production release authority.
+The prior Mac workspace and SSH transport are no longer prerequisites.
 
 ```text
-Mac: edit, inspect, fast checks, coherent candidate commit
+Tux: edit, inspect, fast checks, coherent candidate commit
   ├── exact Git revision → isolated Tux checkout → Linux practical evidence
   └── verified commit → private GitHub repository → GitHub Actions
                                                  ├── isolated CI checks
@@ -40,9 +43,10 @@ For a practical Linux run:
 
 1. Form one coherent local candidate commit after fast checks and diff review.
    It can remain unpublished while Linux qualification runs. Transfer/fetch its
-   exact commit using ordinary Git; a Git bundle over SSH avoids installing broad
-   GitHub credentials on Tux. If fetching directly, use repository-scoped read
-   access. Record and compare the source commit and tree at both ends.
+   exact commit using ordinary local Git cloning/archive extraction or a bundle.
+   Keep authenticated Git access in the authoring context; do not mount credentials
+   into test containers. Record and compare source commit and tree in the
+   authoring checkout and isolated run.
    Verify staged, unstaged and untracked source state before building; candidate
    qualification refuses undeclared modifications. Matching HEAD alone is not
    enough. Source inputs come from the selected Git tree (a clean checkout or
@@ -55,8 +59,8 @@ For a practical Linux run:
    directories. Preserve unrelated workloads and separately retained research.
 3. Record command, source/tree identity, locks, compiler/native/extension/image
    identities, architecture, workload manifest, resource envelope, results and
-   owned resources. Return concise evidence to the Mac; retain raw output under
-   the inventoried ignored run root. An SSH disconnect or missing result means
+   owned resources. Return concise evidence to the canonical checkout; retain raw
+   output under the inventoried ignored run root. A disconnect or missing result means
    unknown, not PASS. Use the owning receipt/recovery protocol before retrying.
 4. If the candidate changes, qualify the affected behavior again. Amending an
    unpublished candidate is allowed; never rewrite published history. Link each
@@ -66,11 +70,37 @@ For a practical Linux run:
 5. Stop only owned finished processes and record retained data and unfinished
    obligations. Large run directories are not release assets or source files.
 
-A developer may instead use Remote SSH and edit on Tux for a Linux-heavy slice.
-Declare that checkout the sole editing authority for the slice and hand it back
-through Git. Do not edit two unsynchronized copies. No specification hardcodes
-the current Mac user, absolute workspace path or the SSH alias as an end-user
-installation requirement.
+An editor or agent may connect to Tux remotely, but authoring remains on Tux.
+Do not edit two unsynchronized copies or modify historical run snapshots.
+The workspace path is a development convention, not an end-user installation
+requirement. Historical Mac-only raw captures are unavailable unless actually
+recovered; retained Tux artifacts must be inspected before reusing their claims.
+
+### Resource retention on the shared development host
+
+Keep new generated work under inventoried ignored `.research/` roots where the
+owning runner supports them. Existing run roots retain their paths until callers,
+manifests and container mounts are reconciled; do not move them for cosmetic
+organization. The laboratory inventory owns resource identities and lifecycle.
+Record source, inputs, outputs, receipts and cleanup scope before a substantial run.
+
+Use one bounded mutable compiler cache per qualified toolchain/profile when the
+existing runner supports it, protected by its exclusive lock. Source inputs and
+qualified executables/manifests remain outside that cache. A cache hit never
+replaces an input hash check. Separate trusted and untrusted build contexts.
+
+After a useful slice, inspect owned processes and retain concise evidence and
+needed executable/input closure. Retire only enumerated regenerable intermediates
+after proving that required artifacts do not exist solely there. Record before/
+after allocated bytes and preservation checks. A stopped container can still own
+required data; whole-run removal and global Docker/system pruning are not cleanup
+policies. Original failures, deliberate negative fixtures and retained datasets
+need explicit disposition or a verified external copy before removal.
+
+Check free disk before allocation against the selected scenario's actual reserve
+and setup peak. The existing export executor's 64 GiB reserve must not be lowered
+to fit the host. Reuse valid evidence when behavior and input identity are
+unchanged; do not multiply build trees or broad reruns without a concrete reason.
 
 ## Commit and collaboration policy
 

@@ -235,3 +235,67 @@ The final implementation report identifies the exact tested revision, supported
 deployment/workload envelope and remaining gates. “All tests passed,” “100k
 connections,” and “zero loss” are incomplete claims without the exercised
 boundary, offered workload and failure class.
+
+## Starting the continuing goal on Tux
+
+The owner selected Astra with xhigh reasoning for the continuing session. On
+2026-10-12 the local Codex 0.162.1 configuration and model catalog expose
+`gpt-6-astra` and `xhigh`. Select the model in the session settings; writing its
+name inside a prompt does not change the running model. From a Tux terminal:
+
+```sh
+codex -C /home/tux/bigbrotr-rs -m gpt-6-astra -c 'model_reasoning_effort="xhigh"'
+```
+
+Then submit the following as a goal. This is an invocation of the existing
+contracts, not a separate task plan or authorization for public publication.
+
+```text
+/goal Complete the selected BigBrotr product in this private repository, following
+AGENTS.md, docs/planning/mandate.md, docs/implementation/agent-handoff.md and the
+existing phase/task/step plan through M1–M5. Work entirely on Tux from the canonical
+checkout /home/tux/bigbrotr-rs. First verify docs/implementation/progress.md against
+GitHub, local Git, retained artifacts and current resources; preserve recovered
+unpublished work and original failures. Reconcile the documented cleanup and
+headroom prerequisites before substantial allocations. Resume the exact next
+bounded action in that checkpoint, then select useful dependency-ready slices
+until the complete selected product is demonstrated.
+
+Completion requires real delivered journeys for acquisition, durable signed-event
+archive and optional provenance, restart/replay, analytics/ranking, selected read
+and publication interfaces, public dashboard, private administration, website/docs/
+blog, installation, upgrade, backup/restore and private release rehearsal. Bind
+evidence to actual source/artifact/dependency identities and state the supported
+workload and failure envelope. Implement and qualify selected optional features;
+disabling one or completing a single milestone does not complete this goal.
+
+Use the smallest maintainable responsibility, idiomatic Rust, explicit ownership
+and errors, finite CPU/RAM/disk/network work and cancellation. Measure performance
+with equal semantics and preservation guarantees; include mixed load, failures,
+refusals and maintenance costs where relevant. Read complete affected owners and
+callers, use independent expected results and actual engines/clients at meaningful
+boundaries, review the integrated diff, and update contracts/tests/docs together.
+Do not invent a new architecture or expand scope to every historical suggestion.
+
+Use bounded subagents when useful, one integrating owner, separate writable
+worktrees for parallel implementation, and independent review at consequential
+boundaries. Preserve unrelated workloads, historical/negative fixtures and the
+read-only legacy repositories. Keep migrations additive, credentials private and
+packages unpublished. Commit coherent outcomes and push verified private work
+after reconciling the remote; do not publish, rename or deploy publicly.
+
+Maintain only the existing progress checkpoint, task evidence and lab inventory.
+Continue autonomously across ordinary task boundaries without requesting routine
+confirmation. Reuse unchanged valid evidence and retire only verified regenerable
+resources within the established cleanup scope. If a real external prerequisite
+prevents a required outcome, complete independent available work, record the
+precise blocker and what would resolve it, and report incomplete status honestly.
+Never turn FAIL, SKIP, NOT_RUN, missing evidence or an interrupted result into PASS.
+```
+
+Goals provide persistent continuation, not a guarantee against host failure,
+service limits, interruption or missing external prerequisites. See the official
+[Goals guide](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex)
+for lifecycle controls. The existing resumption protocol remains necessary.
+The model identifier is documented in the official
+[Astra reference](https://developers.openai.com/api/docs/models/gpt-6-astra).
