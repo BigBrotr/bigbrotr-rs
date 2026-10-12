@@ -5087,7 +5087,7 @@
       }
     },
     "next_gap_completion_slice": {
-      "status": "IMPLEMENTING_NOT_QUALIFIED",
+      "status": "PASS_NATIVE_BUILD_CONNECTED_NOT_RUN",
       "task": "P02-T01 Step5 / P02-T02 Step4, prerequisite to P01-T09 Step4/M1",
       "base": "e92f3d7b48c5291bb4755621c5df2380818ff919",
       "scope": "Complete an already committed initial successor intent from native epoch1 in a fresh process; no writer activation or empty-attempt retirement.",
@@ -5103,7 +5103,7 @@
         "Old retirement reads finish with read-only COMMIT; transport failure retains CommitUnknown semantics. New loader/completion use confirmed ROLLBACK."
       ],
       "read_boundary": "Independent design review read complete current initial_history, initial_succession, migration0030, ingest_history/registry, PG producer_closing/retirement/source_closure/control_owner and native initial_handoff/source_closure/producer_recovery/producer_closing/store, owning references and readiness. Only called portions of bootstrap, request_inputs and initialization were reread at this design stage; implementation must complete its affected boundaries.",
-      "qualification": "NOT_RUN. Candidate product, independent native fixtures, finite Rust probe and connected Python harness/oracle are integrated. Source review is ongoing; exact isolated build is the next action, followed by real separate-process qualification.",
+      "qualification": "Native build 162caeb PASS with all 13 checks/117 test executions. Connected seven-case gap completion and affected seven-case completed-history regression are NOT_RUN.",
       "tests_commit": "35e6bf561709d6f368a783a0613a0fe2b36a3a2c",
       "probe_commit": "31f6caad007b4774a524d68f9176fde7ad9fe84a",
       "native_fixture_scope": "Two new tests: fresh positive rereading after close/reopen, literal exact four-write completion and unchanged completed replay; target input sidecar before proof, after proof and on replay. Existing reconstruction selection now nine tests. No executed RED claim.",
@@ -5114,11 +5114,173 @@
         "gap-target-input",
         "gap-missing-input",
         "gap-missing-outcome",
-        "gap-cancelled"
+        "gap-cancelled",
+        "affected seven-case completed-history regression via unchanged retained seed"
       ],
       "root_read_boundary": "Complete previous and changed initial_history/initial_succession/initial_handoff, new initial_gap and native gap tests, full succession/history probes and owning registration/manifest references; complete new Python harness/oracle and shared succession/history oracles, bindings dispatch owner and build runners. Native owner/callers also independently read by scoped agents. No full installed Archive/Sync consumer audit or arbitrary alternate bindings-mode dependency review in this slice.",
       "reused_oracle_regression": "Independent read-only replay of all seven actual e92 captures: 67 full snapshots and 90 perturbations still pass after sharing the retained expected-byte helper and adding explicit active-predecessor exclusion support. No engine rerun.",
-      "product_commit": "96df1e27b57932b0a22099cdb9fab897fa8e45bc"
+      "product_commit": "96df1e27b57932b0a22099cdb9fab897fa8e45bc",
+      "native_build": {
+        "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+        "source": "162caeb28f1fa5b47f38f8022d7ba96211d8e14f",
+        "tree": "3c69fc88e097f0c7e7225e3e126ccf453ac41d3e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-162caeb",
+        "owner": "a108a9a21fbed2d21131b41289f2df3c",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "e7ed258c2e76a388e0f355b8477646ad73a8bc1c88d01cc6ccac9297bd81d607"
+          },
+          {
+            "name": "native",
+            "id": "4d5597700879c18432b3316ba70c49299ef083a84db6d12539d8bbc039ab9d14"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "finished_at": "2026-10-12T12:01:37.738285+00:00",
+        "free_bytes_after": 70857261056,
+        "source_files": 1738,
+        "archive_sha256": "6d78a8603117bc9ce2042ca22479d028fa913b6f1419d4d37a44ded61b7835a2",
+        "source_manifest_sha256": "cee94c252e3e42fbfd80afa5d6708315bf28407f91a987f0e5f9a425a5935c17",
+        "native_tests": {
+          "source-closure": 3,
+          "producer-closing": 9,
+          "producer-recovery": 11,
+          "initial-handoff": 7,
+          "initial-reconstruction": 9,
+          "bootstrap": 5,
+          "dictionary-append": 13,
+          "event-replay": 7,
+          "rocks_manifest": 4,
+          "rocks_keys": 9
+        },
+        "entrypoint_tests": 4,
+        "schema_tests": 36,
+        "test_executions": 117,
+        "checks_passed": 13,
+        "artifact_sha256": {
+          "bigbrotr": "3f057d90d73692dfc35623f08e874e7748019de8bffab4d460f789fb144c7b2d",
+          "ingest_bootstrap_probe": "188f64791c086f2727adc91450203d2f34185021e6fe4fc201ce3ceaf04ba4e7",
+          "source_closure_components": "ca817ee2eae16d2d99f259441e541eb56e60a535b269c336cde8ad2b066c6346",
+          "rocks_manifest": "1899016824ad508e5bb347200735cad532e64cde4850fb87d0fb58d7c2c31956",
+          "rocks_keys": "fd29aa829e7a6b512dc5221241fd456ac8d612ac9c01c75fd754871883562202"
+        },
+        "receipt_sha256": "6b9e5512a7edfe48cd63e5d8a3e86628b63f3646060520c3c5dc1ef0760f7d0c",
+        "checks_sha256": "1225d594adfa959ccb7774eaad5534621533188432131962617ad0cc99639bd3",
+        "terminal": [
+          {
+            "Id": "e7ed258c2e76a388e0f355b8477646ad73a8bc1c88d01cc6ccac9297bd81d607",
+            "Name": "/bigbrotr-ingest-history-162caeb-fetch",
+            "Image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-12T11:59:34.558668045Z",
+              "FinishedAt": "2026-10-12T11:59:34.824149609Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-162caeb/out",
+                "Destination": "/out",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home",
+                "Destination": "/out/build/cargo-home",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-162caeb/out/build/source",
+                "Destination": "/out/build/source",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/target",
+                "Destination": "/out/build/target",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "4d5597700879c18432b3316ba70c49299ef083a84db6d12539d8bbc039ab9d14",
+            "Name": "/bigbrotr-ingest-history-162caeb-native",
+            "Image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-12T11:59:35.1235079Z",
+              "FinishedAt": "2026-10-12T12:01:37.052011509Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-162caeb/out",
+                "Destination": "/out",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home",
+                "Destination": "/out/build/cargo-home",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-162caeb/out/build/source",
+                "Destination": "/out/build/source",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/target",
+                "Destination": "/out/build/target",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "inventory_changed": [],
+        "toolchain": "Rust 1.98.1 / LLVM clang 14.0.6 / pinned Linux amd64 image; exclusive network-1154757 compiler cache",
+        "independent_ai_audit": "Pending source/archive/artifact/resource recheck; product source review found no blocking counterexample.",
+        "scope": "Native components, exact-source CLI/probe build and Clippy only; actual connected PG gap completion not yet executed."
+      },
+      "independent_source_review": "Read-only AI review of complete six product owners, registry/history/request-input/retirement/replay/source-closure callers and migration0030, independent native fixtures and contracts found no blocking counterexample. Missing intent has no insertion path; current policy and original attribution remain independent; positive root/sequence guards and target sidecar checks survive source borrow end.",
+      "oracle_checks": "Artificial gap cases cover 84 snapshots and initially 93 perturbations; three propagated impossible-renewal cases were additionally rejected and are now included in the tracked negative controls. Artificial gap-only preparation checks seven snapshots/12 perturbations. Existing real capture regressions replayed 135 snapshots/162 perturbations. These are oracle checks, not new product execution."
     }
   }
 }

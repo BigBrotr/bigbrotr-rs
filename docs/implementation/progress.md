@@ -200,11 +200,15 @@ and 523 prior run entries retain their recorded state, except the explicitly
 borrowed PostgreSQL lifecycle. No blocking counterexample was found. Prepared fixture493ca5e was never executed and
 is preserved; observation fixes were reviewed before any engine allocation.
 
-The next candidate implements finite completion of an exact PGprepared/nativeepoch1
-gap in a new process. Native fixtures and the finite probe have been integrated;
-the PG/native adapter is integrated and independent review is active. Next
-commit the coherent candidate and execute the isolated ingest-history build,
-then the seven-case config-only gap wave from its exact artifacts. Reconstruct the original source from positive input/native/PG copies,
+The gap adapter, native fixtures and finite probe are integrated at
+162caeb28f1fa5b47f38f8022d7ba96211d8e14f. Its isolated build is
+PASS_INGEST_HISTORY_BUILD_ONLY: all 13 checks and 117 test executions pass,
+including nine reconstruction tests. Build root `runs/ingest-history-162caeb`
+retains exact artifacts; both containers stopped without OOM or unrelated changes.
+Independent product source review found no blocking counterexample.
+Next execute the seven-case config-only gap wave plus the affected seven-case
+completed-history regression, using those exact binaries. Connected outcome is
+NOT_RUN; a Python-only followup adds the regression and records build evidence. Reconstruct the original source from positive input/native/PG copies,
 match every immutable intent field, then apply only the existing four-put native
 handoff under fresh actual Control/current policy custody. Preserve the target's
 original incarnation, times and historical policy; current policy must not rewrite
@@ -228,11 +232,11 @@ Root is sole integrator/engine executor. Native/probe05946b48, tests559cf822,
 oraclef4063bc+4b76505 and harness52f6ff1+2fda655 are integrated; their worktrees are
 clean. Three agents now own separate new worktrees for the gap adapter, independent
 native fixtures and finite Rust probe. Root owns connected Python qualification
-and integration. This next slice remains unqualified; no engines are running. Last measured free space71,116,517,376bytes. All build/fixture
+and integration. This next slice remains unqualified; no engines are running. Last measured free space70,857,261,056bytes. All build/fixture
 resources are inventoried and stopped; six unrelated services remain running.
 Root-owned changes now include the product candidate, native tests, Rust probe,
-Python harness/oracle, build profile and owning contracts/evidence. Build and
-connected qualification are NOT_RUN. Preserve the current branch/worktrees and
+Python harness/oracle, build profile and owning contracts/evidence. Native build is PASS;
+connected qualification is NOT_RUN. Preserve the current branch/worktrees and
 verify the next exact source before running either laboratory.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial

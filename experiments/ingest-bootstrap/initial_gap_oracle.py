@@ -226,6 +226,17 @@ def negative_controls(events, original, native, inputs, mode, **context):
         check('intent-xmin', lambda e: sql(e,
             lambda pg: pg['initial_ingest_successions'][0].update(xmin='999999999')))
     if any(e['event'] == 'successor-gap-request' for e in events):
+        def future_renewals(changed):
+            epoch = only(changed, event='successor-control', phase='claimed')['epoch']
+            active = False
+            for event in changed:
+                if event['event'] != 'successor-state':
+                    continue
+                active |= event['stage'] == 'gap-refreshed-1'
+                if active:
+                    sql(changed, lambda pg: only(pg['owner_epochs'], role='control',
+                        epoch=epoch).update(lease_expires_at_us=(1 << 63) - 1), event['stage'])
+        check('consistently-future-renewals', future_renewals)
         check('original-outcome', lambda e: only(e, event='successor-gap-request', sequence=1).update(receipt='00'))
         check('request-read-writes', lambda e: sql(e,
             lambda pg: pg['producer_outcomes'][0].update(xmin='999999999'), 'gap-resolved-1'))

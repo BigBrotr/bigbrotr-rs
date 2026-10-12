@@ -12,7 +12,7 @@ import lab
 from installed import set_value
 import initial_succession as preparing
 from initial_succession_oracle import verify as verify_preparation, negative_controls as perturb_preparation
-from initial_history import capture, inputs_at, observe_backend_absence, server_clock
+from initial_history import capture, inputs_at, observe_backend_absence, server_clock, run as history_regression
 from initial_gap_oracle import verify, negative_controls, known_gap, preparation
 
 CASES = ('gap-normal', 'gap-missing-intent', 'gap-corrupt-intent', 'gap-target-input',
@@ -169,6 +169,12 @@ def run(pg, client, output, rows, clone):
                 negative_controls=perturbations, server_window=window, backend_absence=absence,
                 removed_input_retained=removed is not None))
             lab.write_json(output / 'gap-cases.json', cases)
+        # The product shares immutable-intent validation and the probe shares
+        # history replay helpers. Repeat the affected actual completed-history
+        # wave with these new binaries, on its own seven isolated copies.
+        regression = history_regression(pg, client, output, rows, clone)
+        assert regression['status'] == 'PASS' and len(regression['cases']) == 7
+        lab.write_json(output / 'gap-history-regression.json', regression)
     finally:
         preserved = dict(control=rows(preparing.DATABASE) == original, files=preparing.census(store) == files,
             artifacts=all(preparing.digest(basis / n) == h for n, h in preparing.FROZEN.items()))
@@ -180,6 +186,6 @@ def run(pg, client, output, rows, clone):
     return dict(name='prepared-initial-gap-completion', status='PASS', cases=cases,
         source_lab=str(basis.parent), source_revision=preparing.SOURCE, source_owner=preparing.OWNER,
         source_preserved=preserved, source_artifacts=preparing.FROZEN,
-        preparation=qualified, preparation_negative_controls=mutations,
+        preparation=qualified, preparation_negative_controls=mutations, history_regression=regression,
         scope='actual post-COMMIT gap followed by config-only process reconstruction and existing-intent native completion',
         excluded='writer activation, empty-attempt retirement, installed restart/resend, native syscall uncertainty/power loss, current policy advancement and full M1')

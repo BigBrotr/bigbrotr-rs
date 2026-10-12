@@ -39681,7 +39681,7 @@
     }
   },
   "implementation_initial_gap_completion_20261012": {
-    "status": "IMPLEMENTING_NOT_QUALIFIED",
+    "status": "PASS_NATIVE_BUILD_CONNECTED_NOT_RUN",
     "owner": "root sole integrator and engine executor",
     "base": "e92f3d7b48c5291bb4755621c5df2380818ff919",
     "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
@@ -39711,8 +39711,29 @@
         "commit": "31f6caad007b4774a524d68f9176fde7ad9fe84a"
       }
     ],
-    "resources": "No build or engine allocation yet. Next root allocation is isolated ingest-history build of the integrated commit, followed by a separate exact-source process fixture. Labels/containers/data are recorded by the existing runners; retain every outcome. Previous worktrees/branches and original labs are preserved.",
+    "resources": "Exact build stopped without OOM or unrelated lifecycle changes; all runner evidence retained. Next allocation is a fresh exact-source bindings wave reusing these verified binaries. Original and negative labs remain protected.",
     "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json / initial_successor_preparation_20261012.next_gap_completion_slice",
-    "free_bytes_before_build": 71020220416
+    "free_bytes_before_build": 71020220416,
+    "build": {
+      "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "source": "162caeb28f1fa5b47f38f8022d7ba96211d8e14f",
+      "tree": "3c69fc88e097f0c7e7225e3e126ccf453ac41d3e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-162caeb",
+      "owner": "a108a9a21fbed2d21131b41289f2df3c",
+      "owner_label": "org.bigbrotr.network-transport",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "e7ed258c2e76a388e0f355b8477646ad73a8bc1c88d01cc6ccac9297bd81d607"
+        },
+        {
+          "name": "native",
+          "id": "4d5597700879c18432b3316ba70c49299ef083a84db6d12539d8bbc039ab9d14"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "finished_at": "2026-10-12T12:01:37.738285+00:00",
+      "free_bytes_after": 70857261056
+    }
   }
 }
