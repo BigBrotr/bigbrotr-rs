@@ -1,7 +1,9 @@
 # Current execution checkpoint
 
-Observed 2026-10-12 on Tux during autonomous implementation. Navigation, not
-another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+Observed 2026-10-12T15:12:52Z on Tux at the owner-requested safe pause.
+Execution is paused for exhausted credits; resume only on an explicit owner request.
+The full selected product remains incomplete. No new implementation or test campaign
+was started after the pause instruction. Navigation, not another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, evidence and resources before continuing.
 
 ## Mandate and repository
@@ -14,14 +16,14 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last privately pushed/fetched HEAD eb0877224f657fdfc1d40329316b82c957a1e9fb was
-verified ahead0/behind0 with a clean checkout (push wrapper16715 joined0). Main
-remains54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase in progress.
-Current observed HEAD788f9711e19776c4441042747ef68d5f2057605f integrates worker0feef1f,
-root CLI/test/profile/contracts and installed qualification e2c6712/5cd4590. Root owns dirty build/evidence governance
-for the selected installed empty-attempt consumer. The preceding historical-claim
-wave is qualified, independently audited and privately pushed. Three separate
-worktrees are committed and retained below. Do not assume these pending edits are qualified.
+Last completed product/evidence commit3f7d442a816a4f91e48736004c7ba9215263cc87 was
+privately pushed and freshly fetched, ahead0/behind0 with a clean checkout
+(push wrapper29841 joined0). Main remains54ad09dc6659bfe67e3bf2871e43ce619c199a5c.
+No merge/rebase is in progress. The pause checkpoint/inventory-only successor
+commit preserves this tested product state; inspect Git for its exact identity.
+No product changes await verification. Three helper worktrees below are clean,
+committed and retained. Their agents have finished; the read-only next-slice
+analyst was interrupted at the owner's pause request. No agent work is pending.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -200,7 +202,7 @@ cleanup/missing/unrelated arrays empty. Original f12 SQL/files/artifacts preserv
 by captured-run checks. Independent actual-capture audit passed16/39, all external captures,15 protected
 executables and f12/ac/gap censuses;1218 nonborrowed projections remain unchanged.
 
-## Current bounded work and next action
+## Last completed slice and next action after explicit resumption
 
 Qualified explicit `ingest recover --retire-empty-attempt` through the
 [installed consumer contract](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation).
@@ -251,13 +253,43 @@ missing PG outcome3, schema30, actual held native owner, preclaim SQL wait/SIGTE
 No repeated blocked stdout/native full suite without a new finding; prior qualification
 remains separately pinned. New build profile `ingest-empty-installed` runs compile,
 five actual entrypoint tests and Clippy. Build and engine completed as above. All owned containers stopped without OOM,
-cleanup/missing/unrelated arrays empty. Next privately push coherent qualified work,
-then select the next actual restart/activation dependency through the existing task plan.
-Read-only source analysis confirms that a new process must mint and retain its own
-writer candidate; observed prepared identity cannot authorize adoption. Activation
-needs durable distinction even before request1, because existing empty/history/gap
-classifiers otherwise cannot distinguish an activated zero-work owner. Native/PG
-first-request and renewal paths plus Sync/Archive initial assumptions remain gates.
+cleanup/missing/unrelated arrays empty. This qualified slice is privately pushed.
+
+The next bounded action, only after the owner resumes the goal, is to finish the
+source/contract review and specify fresh live1→2 activation in the existing
+registration/store contracts and recovery evidence before changing code. Continue
+P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4/M1. The read-only analysis
+has not implemented or qualified activation; its proposals remain to be reviewed:
+
+- A genuinely new native-owning process mints and retains its own nonportable live
+  candidate. Observed prepared identity cannot authorize adoption. Keep ordinary
+  `IngestRecovery`/`ObservedHandoff` without public writer conversion.
+- A durable additive PG activation receipt must distinguish activated-zero from
+  prepared-zero before request1. Keep0030 prepared-only checks strict; active
+  validation/renewal and history/gap/empty refusal need explicit separate checks.
+  No applied migration or native format was changed for this proposal.
+- Review native first-request handling: source0 is valid for the live successor,
+  while absent/malformed source and zero allocation counters remain distinct.
+  A rejected/AlreadyDurable request may leave source0 with issued>0. In
+  `producer_recovery.rs`, Evidence request1 currently means bootstrap; that must
+  remain limited to the actual initial epoch1 path before epoch2 append replay.
+- Review a shared validated authority context around `initial_batch.rs` rather
+  than copying its reservation/native-dispatch/outcome protocol. Existing native
+  admission/certification/dictionary paths reject owner2. Sync assumes request3/
+  epoch1, Archive assumes next1/revision0/epoch1 with no retained prior inputs;
+  those consumers are not restart-capable yet.
+
+Relevant source owners include `storage/rocks/{initial_handoff,initial_empty,
+store,admission,certification,dictionary_preparation,dictionary_append,
+producer_recovery}.rs`, `storage/postgres/{initial_succession,initial_history,
+initial_gap,initial_empty,initial_batch}.rs`, additive0030/0031 and the installed
+initial_ingest commands/Sync/Archive owners. Read their complete affected callers
+before implementation. Next-slice acceptance must discriminate actual live
+candidate versus observed/foreign candidate, first append1, no-fact request1 then
+new-fact request2, immutable original rows/inputs, activated-zero recovery refusal,
+renewal and ambiguous activation COMMIT. These tests are NOT_RUN and unallocated.
+General repeated lifetimes, retired-empty2→fresh3 and installed restart remain
+selected requirements, not completion implied by a bounded1→2 capability.
 
 Preserve strict frozen ac644/f12 oracles and all earlier worktrees. Unknown process
 outcomes must not reopen a possibly owned native directory. Keep exact source/build
@@ -284,7 +316,15 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Last free space67,917,443,072 bytes (about63.3GiB); remeasure
+and dated observations. At15:12:52Z the two current build containers, borrowed
+PostgreSQL and installed engine client were freshly inspected: stopped/PID0/noOOM,
+exit0/0/0/143 respectively. Build84756 and engine46588 wrappers were already joined0.
+No matching qualification/build/probe process remained; six unrelated services
+remain running unchanged. No background task requires joining at resumption.
+All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
+external laboratories under `/home/tux/bigbrotr-implementation-20260917/`, retained
+containers/volumes and protected executables are preserved. No cleanup was run
+while pausing. Do not mistake Git cleanliness for permission to delete ignored data. Last free space67,911,995,392 bytes (about63.2GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.

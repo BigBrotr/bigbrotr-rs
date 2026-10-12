@@ -40788,6 +40788,18 @@
     "qualification_sources": [
       "e2c6712",
       "5cd4590"
-    ]
+    ],
+    "pause_observation": {
+      "observed_at": "2026-10-12T15:12:52Z",
+      "reason": "Explicit owner pause for exhausted credits; resume only on request",
+      "last_product_head": "3f7d442a816a4f91e48736004c7ba9215263cc87",
+      "remote": "Privately pushed/fetched ahead0/behind0; wrapper29841 joined0",
+      "active_owned_build_or_engine_processes": false,
+      "current_build": "Both retained containers stopped0/PID0/noOOM",
+      "current_engine": "BorrowedPG stopped0, retained idleclient143/PID0/noOOM; wrapper46588 joined0",
+      "helper_worktrees": "Three committed worktrees retained clean; agents completed or interrupted read-only analysis",
+      "preservation": "All ignored .research data, external lab roots, raw failures, seeds, executables, containers and volumes retained; no cleanup during pause",
+      "free_bytes": 67911995392
+    }
   }
 }
