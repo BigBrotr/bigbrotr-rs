@@ -3551,7 +3551,7 @@
     }
   },
   "initial_successor_preparation_20261012": {
-    "status": "PASS_PREPARED_INITIAL_SUCCESSOR_FIRST_WAVE",
+    "status": "PASS_PREPARED_INITIAL_SUCCESSOR_AND_COMMIT_LOSS",
     "scope": "Prepared-only initial successor; no activation, cross-process reconstruction or empty-attempt retirement",
     "pg_agent_source": "93be672a79035c33b484209afcf4113b53727a1a",
     "native_contract": "docs/reference/ingest-manifest-format.md#initial-owner-handoff-receipt",
@@ -3957,7 +3957,7 @@
       }
     },
     "next_ambiguity_slice": {
-      "status": "SOURCE_REVIEW_ONLY_NOT_RUN",
+      "status": "COMPLETED_64419A5",
       "scope": "Real preparation COMMIT loss with same-process retained plan, before process-loss reconstruction",
       "commit_number": 12,
       "prior_commits": "claim1, observe-retirement2, four refresh/inspect pairs3-10, final refresh11",
@@ -3992,7 +3992,285 @@
       ],
       "custody": "Retain original IngestRecovery, historical spec and Attempt in one probe process. Drop poisoned Control, join failed driver, independently observe exact old backend PID/start/database absent before fresh actual claim.",
       "transport": "Reuse existing one-connection fault_proxy.py; route only initial Control via cloned Config with explicit dynamic port. Observer/retry direct; TOML alone does not select this probe port.",
-      "capture": "Normal/gap transcripts about1.99/2.61MiB; Process helper default64KiB is insufficient. Use finite retained file/full-response path. after-complete suppresses response and closes; no indefinite hold claim."
+      "capture": "Normal/gap transcripts about1.99/2.61MiB; Process helper default64KiB is insufficient. Use finite retained file/full-response path. after-complete suppresses response and closes; no indefinite hold claim.",
+      "evidence": "connected_commit_loss"
+    },
+    "connected_commit_loss": {
+      "status": "PASS_INITIAL_SUCCESSOR_COMMIT_LOSS",
+      "harness_source": "64419a547cdb4d33981eaf3616f4991d48d5f994",
+      "harness_tree": "bc071e98dfa98f3683bbc09528b3f50246cdab59",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-commits-64419a5",
+      "started_at": "2026-10-12T10:48:23.108191+00:00",
+      "finished_at": "2026-10-12T10:48:32.888002+00:00",
+      "result_sha256": "555e5ff906c3cb25c709007e82646229651b49eedb14b67276c144cd9f9e2a16",
+      "cases_sha256": "86f3e32c530772687bbe4df2f7fa58b37742b952456c5c98a6c1ec17d9b21d77",
+      "source_sha256": "f61d7f727de7b2ff1ef4143e7a480b9b1df40140e7586808bd098fd9903160a1",
+      "source_preserved_sha256": "899e16242dbc7adb2a69fbabd4a95d2fcda73576bcb3e347a544c3a46be6f884",
+      "build": {
+        "source": "3969a612883674fe900a9b309624f5ceae6b336b",
+        "tree": "c909b499aab3c9c9ee9300279ee535e26329daa6",
+        "source_manifest_sha256": "b31352713866d56df7180a02bd0659fbf1418aaf29fa2b7f8861847aa0cfaf48",
+        "binary_sha256": "141e786d12aeeddcf3505a4946c505fbba24609935ccd6d826da2bf3c1713e39",
+        "probe_sha256": "b3dba410b74111201c22d0285ba913e3d4b3d2700c4ad0d99267acad2a35a3d9",
+        "test_executables_sha256": {
+          "source_closure_components": "44f2e99ccae2aa1bc2a58113d2ecac84e2ae51ad53a2960a7e20bbaada9a8163",
+          "rocks_manifest": "7bfe60cb1840174354b49b88907aa0eff63475c99f8674263aa27a4ff1ac4efa",
+          "rocks_keys": "1b75eefd3226663f9187305bc144df162484514438c4440f7bd2d1795b88a0bb"
+        },
+        "native_tests_passed": {
+          "source-closure": 3,
+          "producer-closing": 9,
+          "producer-recovery": 11,
+          "initial-handoff": 7,
+          "rocks_manifest": 4,
+          "rocks_keys": 9
+        },
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-3969a61",
+        "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+        "source_files_verified": 1729,
+        "archive_sha256": "8744857ec78b12921b9a33c84b38757ae4ed899300fd2373b38022169e64ddac",
+        "qualification_sha256": "371909d00fdc5dfa053958154709884bdfdb2cd8bc34548a0100239230f9c1a0",
+        "build_result_sha256": "4f67f3118cb5b66a3bc0d70b38aebaf1fff4e0a1600d7d932f41dc56c954d508",
+        "checks_sha256": "8585029731f80281065074b640b58d44a38bd01e7de0fdcc46babe439a645786"
+      },
+      "cases": [
+        {
+          "name": "successor-commit-before",
+          "status": "PASS",
+          "oracle": {
+            "status": "PASS",
+            "mode": "successor-commit-before",
+            "snapshots": 12,
+            "control_tables": 71,
+            "original_native_rows": 49,
+            "final_native_rows": 52,
+            "native_sequence_delta": 4,
+            "original_inputs": 4,
+            "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+            "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+            "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410",
+            "prepared_only": true,
+            "admission": false,
+            "retained_same_process_plan": true,
+            "commit_unknown": true,
+            "native_rows_after_unknown": 49,
+            "preparation_after_unknown": "absent",
+            "excluded_backend": {
+              "backend_start": "2026-10-12T10:48:26.709129+00:00",
+              "control_epoch": 8,
+              "database": "bb_scope_bind_64419a5_successor_commit_before",
+              "event": "successor-backend",
+              "pid": 239,
+              "present": false,
+              "stage": "initial"
+            },
+            "exclusion_observed_before_fresh_claim": true,
+            "intent_prepared_by_epoch": 9
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "rejected": [
+              "native-byte",
+              "historical-slot-registrar",
+              "historical-row-xmin",
+              "original-input-digest",
+              "native-sequence",
+              "missing-snapshot",
+              "product-plan-encoding",
+              "intent-attribution",
+              "intent-xmin-rewrite",
+              "old-topology-rewrite",
+              "missing-successor-producer",
+              "fabricated-successor-bound",
+              "unknown-native-dispatched",
+              "wrong-valid-preparing-Control",
+              "backend-still-present",
+              "backend-identity-substitution",
+              "unjoined-failed-driver"
+            ]
+          },
+          "wire": {
+            "status": "PASS",
+            "proxy_sha256": "84e99e5ed844652e770c57b7f218d6770bb837e394c099e90c438e7a83117fca",
+            "counter_fields": [
+              "commits_seen",
+              "commits_forwarded",
+              "server_commit_complete",
+              "client_commit_complete",
+              "faults"
+            ],
+            "counters": [
+              12,
+              11,
+              11,
+              11,
+              1
+            ],
+            "wrapper_exit": 0,
+            "stderr_nonempty": false,
+            "forced_wrapper_stop": false
+          },
+          "captures_sha256": {
+            "response": "c7ba9716efd186c0aaddcfa50c3798c28e24c87f1ff730f95694801adf38a6c6",
+            "wire": "c3db86a3ee9551457368382af7c9c91f4504b2fa5d16eb852713db25cbac85fa",
+            "before": "cf5c00423338da96922d09de7f79a3fd6a3fcaed75c6ecafab47582719c73d60",
+            "after": "26476b2b7c53feebb5270c9a09777ea8bf6b9da8aaf9cda3eaa387b972898ed1",
+            "after-native": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "upgrade": "3acca99092797d182959b1129d65f3fe2e8c8d3f9861bb96f469f3570404c130"
+          }
+        },
+        {
+          "name": "successor-commit-after",
+          "status": "PASS",
+          "oracle": {
+            "status": "PASS",
+            "mode": "successor-commit-after",
+            "snapshots": 12,
+            "control_tables": 71,
+            "original_native_rows": 49,
+            "final_native_rows": 52,
+            "native_sequence_delta": 4,
+            "original_inputs": 4,
+            "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+            "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+            "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410",
+            "prepared_only": true,
+            "admission": false,
+            "retained_same_process_plan": true,
+            "commit_unknown": true,
+            "native_rows_after_unknown": 49,
+            "preparation_after_unknown": "committed",
+            "excluded_backend": {
+              "backend_start": "2026-10-12T10:48:29.598864+00:00",
+              "control_epoch": 8,
+              "database": "bb_scope_bind_64419a5_successor_commit_after",
+              "event": "successor-backend",
+              "pid": 419,
+              "present": false,
+              "stage": "initial"
+            },
+            "exclusion_observed_before_fresh_claim": true,
+            "intent_prepared_by_epoch": 8
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "rejected": [
+              "native-byte",
+              "historical-slot-registrar",
+              "historical-row-xmin",
+              "original-input-digest",
+              "native-sequence",
+              "missing-snapshot",
+              "product-plan-encoding",
+              "intent-attribution",
+              "intent-xmin-rewrite",
+              "old-topology-rewrite",
+              "missing-successor-producer",
+              "fabricated-successor-bound",
+              "unknown-native-dispatched",
+              "wrong-valid-preparing-Control",
+              "backend-still-present",
+              "backend-identity-substitution",
+              "unjoined-failed-driver"
+            ]
+          },
+          "wire": {
+            "status": "PASS",
+            "proxy_sha256": "84e99e5ed844652e770c57b7f218d6770bb837e394c099e90c438e7a83117fca",
+            "counter_fields": [
+              "commits_seen",
+              "commits_forwarded",
+              "server_commit_complete",
+              "client_commit_complete",
+              "faults"
+            ],
+            "counters": [
+              12,
+              12,
+              12,
+              11,
+              1
+            ],
+            "wrapper_exit": 0,
+            "stderr_nonempty": false,
+            "forced_wrapper_stop": false
+          },
+          "captures_sha256": {
+            "response": "fabb317e70f2d5e270f777be6ec9f74c0e3a17d223be56fb120b238469c3097a",
+            "wire": "8bc2c8e04629997515199bffa4d4106f1aaf1c2f5f472679603d600b5ce9bc9c",
+            "before": "53e631785b783e80097fe80d79f85bc30012b1514d704b14514c84891c349e75",
+            "after": "57fb8a7bdffe35f55fdc10da92cdb1017d3a3a35e2b7c2d42ff205acd9fd3d46",
+            "after-native": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "upgrade": "0fd087655c1795e8ce335c8ebe564abbd4f0c0930e06315953b027f7c35a4a24"
+          }
+        }
+      ],
+      "scope": "actual preparation COMMIT loss with backend exclusion and retained in-process proof",
+      "source_artifacts": {
+        "result.json": "93eb62bbef23f00a64c2d3441ccd0b63309f3249d35300d0ade70cae654db357",
+        "retire-signed-retry-after.json": "9aa8a79a0d4889ff13644675d9a2e9cf083b057b733321976da1cad672b3b25e",
+        "retire-signed-retry-native.json": "fef491ee502b2a1fc548165d0a2a2a7cb6411269b2eb6355fed546f831d93465"
+      },
+      "source_preserved": {
+        "control": true,
+        "files": true,
+        "artifacts": true
+      },
+      "not_run": [
+        "process-loss plan reconstruction and abandoned empty attempt retirement",
+        "writer activation, lifetime, installed restart/resend and full M1",
+        "recovery while the old backend still holds exclusion; native syscall failure",
+        "ACK/GC, capacity/load/aged-state and arm64/release"
+      ],
+      "terminal": {
+        "owner": "1e9c146e854b754dd43aacddd60c4066",
+        "client": {
+          "id": "3395d3a926feb95d44cfbd9e89f7dc6d3eae68b744bb796bd558258818ca41d1",
+          "name": "bigbrotr-acquisition-binding-64419a5"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "all_stopped_no_oom": true,
+        "free_bytes_after": 71658369024
+      },
+      "review": {
+        "source": "Root and bounded independent AI reviews inspected affected Rust probe, independent oracle, Python fixture and proxy ownership. Product implementation remains4f62b52.",
+        "diagnostic_fix": "Malformed/truncated proxy metadata now retains complete safe events and marks INCOMPLETE; this diagnostic failure path was not injected.",
+        "old_capture_regression": "Existing four-case oracle replay preserved44 snapshots/38 negative controls; no unnecessary engine rerun."
+      },
+      "independent_post_run_ai_review": {
+        "status": "NO_DISCREPANCY_FOUND",
+        "source_files_rehashed_against_git": 1729,
+        "retained_executables": 5,
+        "build_checks": 9,
+        "entrypoint_tests": 4,
+        "schema_tests": 36,
+        "native_tests": 43,
+        "exact_oracle_sha256": "8b07a54514c1c92e4edf550611e1e7cc353380c6ca94873ad8fed09105b45f9b",
+        "events_replayed": 56,
+        "ordered_snapshots_replayed": 24,
+        "semantic_perturbations_rejected": 34,
+        "retired_seed_paths_preserved": 21,
+        "retired_seed_regular_files": 19,
+        "retired_seed_bytes": 302273,
+        "original_inputs_preserved": 4,
+        "frozen_artifacts_preserved": 3,
+        "preexisting_build_container_projections_unchanged": 1193,
+        "preexisting_nonborrowed_engine_container_projections_unchanged": 1194,
+        "actual_container_census": 1196,
+        "unrelated_running_services": 6,
+        "limits": "Read-only AI reviews; exact captures replayed and stored SQL/native independently compared. Seed PG equality relies on captured all-table comparison during run; no repeated server startup. Same-process local plan only; no process-loss or activation qualification."
+      },
+      "structure_checks": {
+        "markdown_files": 190,
+        "json_files": 424,
+        "local_fragments": 504,
+        "tasks": 123,
+        "steps": 756,
+        "errors": [],
+        "dependency_cycle_candidates": "Three existing prose cycle candidates unchanged; structural checks are not product qualification"
+      }
     }
   }
 }

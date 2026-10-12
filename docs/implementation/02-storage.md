@@ -77,8 +77,11 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   The [prepared initial successor](../reference/ingest-registration.md#prepared-initial-successor)
   now has native component and four connected signed-seed cases at `ac644ef`
   using `4b89687` binaries. Exact retries, the confirmed PG/native gap, schema
-  refusal and insert rollback preserve full history. Actual ambiguous COMMIT
-  transport, process reconstruction and activation remain separate requirements.
+  refusal and insert rollback preserve full history. Actual COMMIT loss before
+  forwarding and after server completion passes at `64419a5` with `3969a61`
+  binaries: exact backend exclusion precedes fresh Control and retry preserves
+  the correct intent attribution. Process reconstruction and activation remain
+  separate requirements.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
@@ -247,9 +250,11 @@ One owner serializes exact identity decisions for each writable directory.
   evidence records seven native tests and four connected cases at `ac644ef`:
   44 full snapshots, unchanged original inputs, native 49→52 rows/sequence +4,
   exact retry under fresh Control, intent conflict and explicit activation veto.
-  The local plan remains in one process. Ambiguous transport, process-loss
-  reconstruction, abandoned-attempt retirement, activation and restart/resend
-  remain unqualified; no whole-step completion follows.
+  Two actual COMMIT-loss cases at `64419a5` add 24 snapshots and 34 rejected
+  corrupted captures, with unchanged native state until fresh-Control retry.
+  The local plan remains in one process. Process-loss reconstruction,
+  abandoned-attempt retirement, activation and restart/resend remain unqualified;
+  no whole-step completion follows.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

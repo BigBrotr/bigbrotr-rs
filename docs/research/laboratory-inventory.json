@@ -39208,7 +39208,7 @@
     "resources_state": "STOPPED_RETAINED"
   },
   "implementation_initial_successor_20261012": {
-    "status": "CONNECTED_PREPARATION_FIRST_WAVE_PASS",
+    "status": "CONNECTED_PREPARATION_AND_COMMIT_LOSS_PASS",
     "owner": "root sole integrating owner; bounded source and independent oracle/review agents",
     "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
     "canonical": "/home/tux/bigbrotr-rs",
@@ -39352,7 +39352,7 @@
       "branch": "qualification/successor-commit-probe",
       "base": "0202319f005fea9043f8d28cb217369555ece6e4",
       "owner": "cleanup_review: Rust probe/dispatch only",
-      "state": "CLEAN_INTEGRATED_BUILD_PASS_ENGINE_NOT_RUN",
+      "state": "CLEAN_INTEGRATED_BUILD_AND_ENGINE_PASS",
       "commit": "60c455230fb728bfcef35d071f6bd4eea1732e42"
     },
     "commit_fault_oracle_worktree": {
@@ -39360,7 +39360,7 @@
       "branch": "qualification/successor-commit-oracle",
       "base": "0202319f005fea9043f8d28cb217369555ece6e4",
       "owner": "recovery_review: independent Python oracle only",
-      "state": "CLEAN_INTEGRATED_ENGINE_NOT_RUN",
+      "state": "CLEAN_INTEGRATED_ENGINE_PASS",
       "commit": "eddd15ba29f411c80dfd9f1d770702e0d480850f",
       "old_capture_regression": {
         "snapshots": 44,
@@ -39394,6 +39394,32 @@
       "finished_at": "2026-10-12T10:45:15.964154+00:00",
       "source_files_verified": 1729,
       "artifacts_verified": 5
+    },
+    "connected_commits_64419a5": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-commits-64419a5",
+      "source": "64419a547cdb4d33981eaf3616f4991d48d5f994",
+      "owner": "1e9c146e854b754dd43aacddd60c4066",
+      "label": "org.bigbrotr.acquisition-binding",
+      "client": {
+        "id": "3395d3a926feb95d44cfbd9e89f7dc6d3eae68b744bb796bd558258818ca41d1",
+        "name": "bigbrotr-acquisition-binding-64419a5"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "databases": [
+        "bb_scope_bind_64419a5_successor_commit_before",
+        "bb_scope_bind_64419a5_successor_commit_after"
+      ],
+      "status": "PASS_INITIAL_SUCCESSOR_COMMIT_LOSS",
+      "state": "stopped-retained",
+      "finished_at": "2026-10-12T10:48:32.888002+00:00",
+      "result_sha256": "555e5ff906c3cb25c709007e82646229651b49eedb14b67276c144cd9f9e2a16",
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "source_preserved": {
+        "control": true,
+        "files": true,
+        "artifacts": true
+      }
     }
   }
 }

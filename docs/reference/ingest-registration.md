@@ -173,6 +173,14 @@ Control claim/renewal/release changes are accounted for separately.
 Both successor request and input-binding attempts reach the named activation
 veto with SQLSTATE 23514 under the application role. The latter is a synthetic
 envelope, not a completed import workflow. The probe retains its local proof
-inside one process; real ambiguous COMMIT transport, process-loss reconstruction,
+inside one process. The subsequent `64419a5` fixture with `3969a61` binaries
+interrupts the actual preparation COMMIT before forwarding and after server
+completion but before the client reply. Both return CommitUnknown without native
+dispatch. The failed driver is joined and the original backend's exact
+PID/start/database tuple is independently observed absent before fresh Control
+claims authority. Before forwarding, retry creates the absent intent with fresh
+attribution; after completion, it preserves the original intent and row version.
+The independent oracle checks 24 full snapshots and rejects 34 corrupted captures.
+This still retains the local plan in one process. Process-loss reconstruction,
 abandoned-attempt retirement, writer activation and installed restart remain
-separate unqualified boundaries. Prepared metadata does not grant admission.
+unqualified. Prepared metadata does not grant admission.

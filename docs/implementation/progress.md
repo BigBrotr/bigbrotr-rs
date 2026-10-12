@@ -14,23 +14,25 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-The prepared-only product implementation remains 4f62b52; the latest qualified
-CLI/probe build is 4b896879151168422784d073cfca20cd35013ec8, tree
-59bae50438da69dd31f8fb251a1469eb2d720730. The connected fixture is committed at
-ac644ef566a0f61a6315a480e196e189bc359977 and passed with those exact binaries.
-Evidence commit a826fefc755247636187cc64a3a62c245309c385 was pushed and freshly
-verified against private origin with ahead 0/behind 0 and a clean canonical
-worktree. Root owns this subsequent checkpoint note; a later documentation
-commit may be actual HEAD. Verify Git and its private push before continuing.
-Main remains 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
+The prepared-only product implementation remains 4f62b52. Latest qualified
+CLI/probe build is 3969a612883674fe900a9b309624f5ceae6b336b, tree
+c909b499aab3c9c9ee9300279ee535e26329daa6. The actual COMMIT-loss fixture is
+64419a547cdb4d33981eaf3616f4991d48d5f994 and passed with those exact binaries.
+The previous connected first wave ac644ef remains valid with build 4b89687.
+Last freshly verified private remote checkpoint was 0202319; current source and
+this evidence update still need their coherent private push. Root owns the four
+evidence/inventory/reference/task documents and this checkpoint. A later commit
+may be actual HEAD; verify Git and private origin before continuing. Main remains
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
-The separate `.research/initial-successor-pg-20261012` worktree now preserves
-qualification/initial-successor-probe at b7fac03, integrated into dd1539a with the
-subsequent Clippy-only correction at 4b89687. The earlier implementation branch
-at 93be672 remains preserved. `.research/initial-successor-oracle-20261012` preserves
-qualification/initial-successor-oracle at 4d89a4c, integrated into ac644ef. Both
-source agents finished their writes; bounded read-only review may remain active.
-Original lab exports and recovered bundle remain unchanged. The
+The separate `.research/initial-successor-pg-20261012` worktree preserves
+qualification/successor-commit-probe at 60c455230fb728bfcef35d071f6bd4eea1732e42,
+integrated into 3969a61. `.research/initial-successor-oracle-20261012` preserves
+qualification/successor-commit-oracle at eddd15b, integrated into 64419a5. Both are
+clean; source writers and independent evidence reviewers finished. Bounded
+read-only next-slice design investigation may remain active. Earlier implementation/probe/oracle
+branches remain preserved. Original lab exports and recovered bundle remain
+unchanged. The
 [dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation;
 a same-disk bundle is not host-loss backup. Missing Mac captures remain unavailable.
 
@@ -82,7 +84,7 @@ cache artifacts remained unchanged.
 This is actual native component evidence, not cross-process reconstruction,
 PG/native atomicity, power-loss durability or successor admission qualification.
 
-## Connected first wave and next bounded action
+## Connected preparation and actual COMMIT loss
 
 `runs/ingest-succession-ac644ef/bindings/result.json` is
 PASS_INITIAL_SUCCESSOR_PREPARATION, finished 2026-10-12T10:33:13Z; SHA256
@@ -122,21 +124,42 @@ privilege for SELECT FOR SHARE on the new intent; explicit lab provisioning was
 corrected. Immutable guards still reject changes. A probe timeout now preserves
 partial output as UNKNOWN_TIMEOUT; that timeout path was not injected.
 
-Next qualify actual ambiguous preparation COMMIT transport with the existing
-fault proxy on isolated clones, retaining the local plan and original registration.
-Prepare is COMMIT 12 in the present probe: claim 1, retirement observation 2, four
-refresh/inspection pairs 3–10, final refresh 11, prepare 12. Check this against any
-probe changes. Exercise before-forward rollback versus after-complete lost reply,
-confirm the old backend is excluded under fresh actual Control, and independently
-observe absence versus durable intent before exact retry. Do not infer server
-rollback from client exit. Preserve full SQL/native/input observations and record
-the result in the same evidence/inventory. No API widening or historical loader
-use after native epoch 2 is justified by this fixture. Route only the initial
-Control connection through the one-connection proxy; observer/retry connections
-stay direct. The full probe transcript exceeds the old Process helper's 64KiB
-stdout bound, so preserve the existing file/full-response capture path.
+The subsequent `runs/ingest-succession-commits-64419a5/bindings/result.json`
+is PASS_INITIAL_SUCCESSOR_COMMIT_LOSS, finished 2026-10-12T10:48:32.888002Z;
+SHA256 555e5ff906c3cb25c709007e82646229651b49eedb14b67276c144cd9f9e2a16.
+The two isolated signed-seed clones interrupt actual preparation COMMIT 12:
+before-forward counts 12/11/11/11/1 and after-complete 12/12/12/11/1
+(seen/forwarded/server-complete/client-complete/faults). Both return CommitUnknown,
+leave native 49 rows/unchanged sequence, poison Control reuse and join a failed
+driver. The exact original PostgreSQL PID/backend_start/database is independently
+observed absent before the fresh actual Control claim. Proxy exit alone is not
+server exclusion. Before-forward leaves no intent; retry creates it attributed
+to fresh Control 9. After-complete retains the committed intent's Control 8 and
+xmin during retry. Both finally have 52 rows/sequence +4 and all 4 original inputs.
+The independent oracle checks 24 ordered full snapshots and rejects 34 deliberately
+corrupted captures, including early native dispatch, substituted backend identity,
+unjoined driver and wrong otherwise-valid Control attribution. Independent
+read-only AI review replayed all 56 events, verified external post-SQL/native
+captures and rehashed the original 21 seed paths plus three frozen artifacts;
+no discrepancy was found in this scope. Seed SQL equality is the captured
+comparison made during the run, without a later server restart.
 
-Then implement cross-process plan reconstruction and abandoned-empty-attempt
+Build 3969a61 is PASS_INGEST_HISTORY_BUILD_ONLY, finished 10:45:15.964154Z:
+9/9 executed checks, 4 entrypoint/36 schema/43 native tests and Clippy. All 1,729
+source files, exact Git archive and 5 retained ELFs were independently rehashed.
+The owning evidence records exact build/proxy/capture hashes. Both build containers,
+fixture client and borrowed PostgreSQL are stopped with no OOM; all 1,194
+nonborrowed engine-preflight container projections remain unchanged. Original
+seed native files/inputs, captured SQL and frozen artifacts remain preserved.
+A truncated proxy metadata line now persists INCOMPLETE rather than stale RUNNING;
+that diagnostic failure path was not injected. The original four-case oracle
+capture replay still passes 44 snapshots/38 perturbations without repeating engines.
+No process-loss reconstruction, delayed old-backend exclusion, writer activation,
+native syscall/power-loss, ACK/GC or full restart claim follows from this wave.
+
+## Next bounded action
+
+Implement cross-process plan reconstruction and abandoned-empty-attempt
 completion without adopting its incarnation; only an actual continuing process
 may retain custody into a writer lifetime. Keep historical receipts/topology,
 source 1 final cut plus source 2 explicit zero, and shared per-store 64-input / 32 MiB
@@ -164,8 +187,10 @@ browser and website work; optional enablement does not finish selected scope.
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
 Before cleanup, implementation/qualification/object-storage labs totaled about
-975 GiB (lower bounds where access is denied). The latest connected wave left about 66.9 GiB free; remeasure before allocation because this is a shared host. Small retirement fixtures need >2 GiB; the
-larger export wave still requires 64 GiB. Never lower that reserve to force a run.
+975 GiB (lower bounds where access is denied). The latest connected wave left
+71,658,369,024 bytes (about 66.7 GiB) free; remeasure before allocation because this
+is a shared host. Small retirement fixtures need >2 GiB; the larger export wave
+still requires 64 GiB. Never lower that reserve to force a run.
 
 Targeted cleanup is RETIRED_VERIFIED. The reviewed one-off executor removed
 48,725 format-verified single-link compiler intermediates (40.96GiB allocated)
