@@ -160,8 +160,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path) {
                     false,
                 )
                 .await
-                .err()
-                .expect("post-prepare policy refusal");
+                .expect_err("post-prepare policy refusal");
             assert_eq!(
                 error,
                 InitialSuccessionError::Control(OwnerError::InvalidPolicy)
@@ -181,8 +180,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path) {
                     true,
                 )
                 .await
-                .err()
-                .expect("changed target role refused");
+                .expect_err("changed target role refused");
             assert_eq!(
                 error,
                 InitialSuccessionError::Control(OwnerError::InvalidMetadata)
@@ -222,8 +220,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path) {
                     false,
                 )
                 .await
-                .err()
-                .expect("required refusal");
+                .expect_err("required refusal");
             assert_eq!(
                 error,
                 InitialSuccessionError::Control(if mode == "successor-old-schema" {

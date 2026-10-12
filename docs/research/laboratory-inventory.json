@@ -39261,6 +39261,33 @@
       "base": "d2701b5951322d010ddf9f8f3e8de3f5ba1d63e9",
       "owner": "recovery_review: independent Python successor oracle only",
       "status": "IMPLEMENTING_NOT_QUALIFIED"
+    },
+    "build_candidate_dd1539a": {
+      "source": "dd1539a8b88f7cd2ef7d0d699b10c8b1f055b936",
+      "tree": "e0ef1dd3f670e7c65232633d904a979671be34da",
+      "owner": "f76df5ce527892d949c687267ba359fa",
+      "owner_label": "org.bigbrotr.network-transport",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-dd1539a",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "0f82442af6e95ce9bea5830358fdede429779bea9aa65b5cb801353b9ac946b4"
+        },
+        {
+          "name": "native",
+          "id": "2286e6ee66c8d5b2d79c376bf5dcb4cf65bc2160a01766e218b35b6ed2267312"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-10-12T10:26:04.041966+00:00",
+      "inventory_changed": [],
+      "free_bytes_after": 72133111808,
+      "finished_at": "2026-10-12T10:28:02.038059+00:00",
+      "result": "FAIL_CLIPPY_PROBE_ERR_EXPECT",
+      "preservation": "Retain original failed exact-source build; compilation and scoped native checks passed but overall qualification failed. Three Result<(),E> .err().expect calls corrected to expect_err in next candidate."
     }
   }
 }
