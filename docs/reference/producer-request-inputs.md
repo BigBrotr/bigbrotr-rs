@@ -623,6 +623,12 @@ COMMIT/deadline followed by durable completion after client death. Each same-roo
 retry positively fences the preceding Control; completed retirement preserves
 its original timestamps/digest/xmin. All 70 tables, 49 native rows/four inputs and
 the original signed Control/catalog/files/report are checked. These schedules
-do not establish server cancellation on client exit. Current-authority/lock
-orders, true zero-issued producers, import obligations and successor remain
-separate qualification. No full M1 or whole-task completion is claimed.
+do not establish server cancellation on client exit. Fixture3f36784 adds four
+passing cases with the same artifacts: current policy expiry during observed SQL
+execution rolls back retirement; same-root fresh-Control retry succeeds; Ingest
+draining before retirement is preserved, and draining after retirement refuses
+23514 against released history. Product owner guards remain enabled; actual
+blocked SQL and complete row/native effects are captured. Current Control UTC
+expiry, other row-contention schedules, true zero-issued interrupted startup,
+import obligations and successor retain separate qualification. No full M1 or
+whole-task completion is claimed.

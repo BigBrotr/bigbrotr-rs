@@ -2487,7 +2487,7 @@
     "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
   },
   "initial_retirement_20261002": {
-    "status": "PASS_NATIVE_BUILD_INSTALLED_FIRST_WAVE_AND_FAULTS; authority/lock/remaining obligations pending",
+    "status": "PASS_NATIVE_BUILD_INSTALLED_FIRST_WAVE_FAULTS_AND_POLICY_INGEST_LOCKS; remaining import/empty/successor obligations pending",
     "tasks": [
       "P02-T01 Step5",
       "P02-T02 Step4",
@@ -2503,8 +2503,8 @@
     "red_result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN",
     "scope": "Explicit initial producer/domain retirement and Ingest release; retained ACK/GC zero; successor and full M1 remain",
     "pending": [
-      "Current Control authority and concurrent lock schedules",
-      "True zero-issued producer, zero-request import, workflow binding/checkpoint obligations",
+      "Import claims with no mutation request, retained producer input bindings and producer checkpoints",
+      "True zero-issued interrupted startup and current Control UTC expiry remain separate unqualified boundaries",
       "Explicit successor, unchanged signed-event restart/resend and remaining M1"
     ],
     "product_source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
@@ -2536,7 +2536,7 @@
         "Clippy warnings denied"
       ]
     },
-    "review_pending": "First-wave f12 PASS10 and fixture0d81400/f12 fault PASS4. Independent AI review found no blocking fixture defect; current-authority/lock and remaining empty/import obligations are not qualified.",
+    "review_pending": "Fixture3f36784/f12 authority/Ingest locks PASS4. Independent pre-run AI review corrected fixture policy setup. Post-run review and import obligation guards are next; no full-step completion.",
     "original_engine_failure": {
       "capture": {
         "label": "retirement-engine-first",
@@ -3054,6 +3054,242 @@
         "Zero-issued producer and zero-request import obligations",
         "Successor and remaining M1",
         "Capacity/crash/ENOSPC/native blocking/arm64/release"
+      ]
+    },
+    "authority_and_ingest_locks_20261012": {
+      "status": "PASS_INSTALLED_INITIAL_RETIREMENT_LOCKS",
+      "source": "3f367849312c4f917e36b02a4d199798ae682bfc",
+      "owner": "2b559453f98b21e362b98ae2cec109df",
+      "started_at": "2026-10-12T09:19:44.438199+00:00",
+      "finished_at": "2026-10-12T09:20:24.316675+00:00",
+      "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "client": {
+        "id": "37d94383ef4686947726edb5e8063bd9f3aff0c0d61f4c30f78d749055fc4000",
+        "name": "bigbrotr-acquisition-binding-3f36784"
+      },
+      "databases": [
+        "bb_scope_bind_3f36784_retire_policy_expiry",
+        "bb_scope_bind_3f36784_retire_drain_first",
+        "bb_scope_bind_3f36784_retire_retirement_first"
+      ],
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "missing_owned": [],
+      "not_run": [
+        "Control UTC expiry, dataset/job and standalone producer-row contention",
+        "zero-issued producer and zero-request import obligations",
+        "native syscall/crash/ENOSPC, capacity/load/aged-state",
+        "successor, ACK/GC and full M1",
+        "arm64/release"
+      ],
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-locks-3f36784",
+      "result_sha256": "b35a98c3b261cb9a873f64bc08e703cd9f04eff3930190cf9630ddbc3c40f5ae",
+      "cases_sha256": "dba307981d206c895011d3252a824d066a95e4006e8464478013990bef7d37a6",
+      "build_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "binary_sha256": "b0aa597b383ee44dc7407edfe683f0c10572f5206a635163133a3714d83db2cd",
+      "probe_sha256": "59e307ab7df0001cc52c9a46759ec38109ee565e3216cc4ce8797340e4aa1bbb",
+      "cases": [
+        {
+          "name": "retire_policy_expiry",
+          "status": "PASS",
+          "terminal": {
+            "pid": 173,
+            "start_ticks": "517904532",
+            "config": "/lab/bb_scope_bind_3f36784_retire_policy_expiry.toml",
+            "prefix": "/lab/retire_policy_expiry",
+            "exit_code": 4,
+            "elapsed_seconds": 5.778068367391825,
+            "forced": false,
+            "reaped": true
+          },
+          "observations": {
+            "barrier": [
+              {
+                "pid": 426,
+                "backend_start": "2026-10-12T09:19:51.259549+00:00",
+                "query": "UPDATE control.producer_epochs SET state='retired',retired_at_us=$2::bigint,\n                    closure_digest=$3::bytea WHERE producer_slot_id=$1::bytea AND producer_epoch=1",
+                "blockers": [
+                  418
+                ],
+                "wait_event": "advisory"
+              }
+            ],
+            "execution_delay": [
+              {
+                "pid": 426,
+                "backend_start": "2026-10-12T09:19:51.259549+00:00",
+                "query": "UPDATE control.producer_epochs SET state='retired',retired_at_us=$2::bigint,\n                    closure_digest=$3::bytea WHERE producer_slot_id=$1::bytea AND producer_epoch=1",
+                "wait_event": "PgSleep"
+              }
+            ],
+            "unlock_to_terminal_seconds": 5.549342850223184
+          },
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "DeliveryUnknown",
+          "qualification": "Current policy expiry"
+        },
+        {
+          "name": "retire_policy_expiry-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.22556986846029758
+        },
+        {
+          "name": "retire_drain_first",
+          "status": "PASS",
+          "terminal": {
+            "pid": 396,
+            "start_ticks": "517906994",
+            "config": "/lab/bb_scope_bind_3f36784_retire_drain_first.toml",
+            "prefix": "/lab/retire_drain_first",
+            "exit_code": 0,
+            "elapsed_seconds": 0.36434892751276493,
+            "forced": false,
+            "reaped": true
+          },
+          "observations": {
+            "barrier": [
+              {
+                "pid": 1761,
+                "backend_start": "2026-10-12T09:20:15.887113+00:00",
+                "query": "COMMIT",
+                "blockers": [
+                  1745
+                ],
+                "wait_event": "advisory"
+              }
+            ],
+            "writer": {
+              "sqlstate": "00000",
+              "rows": 1,
+              "lines": [
+                "{\"role\": \"ingest\", \"xmin\": \"25822\", \"epoch\": 1, \"state\": \"draining\", \"dataset_id\": \"\\\\x309d9507c5b5c39e9947e1406482d519\", \"resource_id\": \"\\\\xaa511a37992b16088b57d03c63e03d90\", \"acquired_at_us\": 1790930660623452, \"released_at_us\": null, \"exclusion_digest\": null, \"exclusion_method\": null, \"role_instance_id\": \"\\\\x561ff0092e35b3f6379f4cbc50aa45f3\", \"control_backend_pid\": null, \"lease_expires_at_us\": 1790930705265276, \"process_incarnation\": \"\\\\x74118693bb37d0bb1cd2ba89fc9a9d56\", \"control_backend_start\": null, \"control_fence_version\": null, \"archive_frontier_protocol\": null}"
+              ]
+            },
+            "retirement_wait": [
+              {
+                "pid": 1761,
+                "backend_start": "2026-10-12T09:20:15.887113+00:00",
+                "query": "SELECT epoch FROM control.owner_epochs\n            WHERE resource_id=$1::bytea AND epoch=1 FOR UPDATE",
+                "blockers": [
+                  1753
+                ],
+                "wait_event": "transactionid"
+              }
+            ]
+          },
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "qualification": "Actual retirement versus privileged relational Ingest draining; product triggers active"
+        },
+        {
+          "name": "retire_retirement_first",
+          "status": "PASS",
+          "terminal": {
+            "pid": 555,
+            "start_ticks": "517907447",
+            "config": "/lab/bb_scope_bind_3f36784_retire_retirement_first.toml",
+            "prefix": "/lab/retire_retirement_first",
+            "exit_code": 0,
+            "elapsed_seconds": 0.36426752619445324,
+            "forced": false,
+            "reaped": true
+          },
+          "observations": {
+            "barrier": [
+              {
+                "pid": 2135,
+                "backend_start": "2026-10-12T09:20:20.417314+00:00",
+                "query": "COMMIT",
+                "blockers": [
+                  2120
+                ],
+                "wait_event": "advisory"
+              }
+            ],
+            "writer_wait": [
+              {
+                "pid": 2127,
+                "backend_start": "2026-10-12T09:20:20.303437+00:00",
+                "query": "UPDATE control.owner_epochs o SET state='draining' WHERE resource_id=decode('aa511a37992b16088b57d03c63e03d90','hex') AND epoch=1 RETURNING to_jsonb(o)||jsonb_build_object('xmin',xmin::text);",
+                "blockers": [
+                  2135
+                ],
+                "wait_event": "transactionid"
+              }
+            ],
+            "writer": {
+              "sqlstate": "23514",
+              "rows": 0,
+              "lines": [
+                "ERROR:  23514"
+              ]
+            }
+          },
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "qualification": "Actual retirement versus privileged relational Ingest draining; product triggers active"
+        }
+      ],
+      "source_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "oracle": {
+        "native_rows": 49,
+        "original_requests": 4,
+        "dictionary_recorded_us": 1790930661589775,
+        "event_received_us": 1790930661641775,
+        "event_recorded_us": 1790930661689041
+      },
+      "terminal": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T09:19:44.540110677Z",
+            "FinishedAt": "2026-10-12T09:20:23.465893731Z"
+          }
+        },
+        {
+          "id": "37d94383ef4686947726edb5e8063bd9f3aff0c0d61f4c30f78d749055fc4000",
+          "name": "/bigbrotr-acquisition-binding-3f36784",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T09:19:45.926900516Z",
+            "FinishedAt": "2026-10-12T09:20:22.092648693Z"
+          }
+        }
       ]
     }
   }

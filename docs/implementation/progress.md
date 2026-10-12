@@ -14,21 +14,19 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is 7cd7cb2cc172b563f3bc5335836b9aaa76c2f895,
-including goal activation, both retirement waves and verified cache retirement.
-The exact same hash was freshly confirmed on private
-`origin/recovery/tux-20261012`, now this branch's upstream. All seven commits over
-`origin/main` (54ad09dc6659bfe67e3bf2871e43ce619c199a5c) are preserved remotely;
-main is unchanged, no force push or public release. Product binaries remain
+Last observed committed HEAD is 3f367849312c4f917e36b02a4d199798ae682bfc,
+containing the authority/Ingest locking fixture. Private upstream was last
+verified at a3c39cfdfe0a3d5aa439e13e805535c3a4e2d41f; the new fixture and this
+result record still need a verified private push. Main stays
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Product binaries remain
 f12dbf04677f8afa8c62aa1c8638e199dad0abc1, tree
-7dd4e343f51b50a6055096ef14a0aaec03a0a8e5; fault fixture is0d81400.
+7dd4e343f51b50a6055096ef14a0aaec03a0a8e5. No Rust/migration/dependency changes.
 
-The working tree was clean at that verification. Root owns only this subsequent
-publication/checkpoint note; a later documentation commit may be actual HEAD.
-Read actual status/log and fetch upstream on resumption. No merge/rebase,
-concurrent source writer or running BigBrotr test/maintenance process remains.
-The full-product goal stays active. Two completed bounded AI reviews covered
-recovery/fixture and cache questions, not the entire product.
+Root owns the current evidence/inventory/reference/checkpoint updates. No
+merge/rebase or concurrent source writer. Latest retirement launcher exited0;
+owned client/borrowed PG are stopped. The full-product goal stays active.
+A bounded read-only AI review audits remaining retirement gates and captured
+lock outcomes; no overall product certification is implied.
 
 Original lab source snapshots remain unchanged. The independent canonical Git
 checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
@@ -80,35 +78,30 @@ unchanged. Original seed and native detail remained unchanged, all owned contain
 stopped, no OOM, no cleanup/unrelated changes. This does not prove server cancellation
 on client exit. Independent AI review confirmed the captured outcomes and oracles.
 
-The next authority/Ingest lock fixture is prepared, NOT_RUN. Root owns the new
-initial_retirement_locks.py and wiring in initial_retirement.py,
-installed_signed_recovery.py and acquisition-scope/bindings.py, plus evidence and
-inventory/checkpoint changes. No Rust, migration or dependency changes. Commit a
-reviewed exact fixture revision and run `--ingest-retirement-locks` with retained
-f12 CLI/probe in a fresh sibling `runs/ingest-retirement-locks-<revision>`.
-Expected four cases: current policy expiry under observed SQL execution delay,
-same-root fresh-Control retry, and Ingest draining versus retirement in both orders.
+`runs/ingest-retirement-locks-3f36784/bindings/result.json` is now
+PASS_INSTALLED_INITIAL_RETIREMENT_LOCKS, finished2026-10-12T09:20:24Z, four PASS.
+Policy expiry: unchanged accepted5s policy, local Control lease20s/timeout8s;
+actual producer UPDATE observed in PgSleep after prompt advisory unlock, exit4
+DeliveryUnknown in5.778s, complete rollback. After removing only fixture SQL and
+natural lease expiry, same-root fresh-Control retry succeeds. Both actual Ingest
+lock orders pass: draining first commits only state/xmin, retirement then succeeds;
+retirement first commits, draining writer refuses23514. All product owner guards
+remain enabled with replication_role origin. All70 tables,49 native rows/four
+inputs and original seed preserved; no cleanup/unrelated changes or OOM. No server
+cancellation or broader concurrency guarantee follows. The owning recovery report
+contains exact backend observations, artifact/source hashes and result digest.
 
-A root-only250ms authorization limit would conflict with the retained accepted5s
-read policy; independent review caught this before any engine run. Keep accepted
-policy unchanged. This clone uses local Control lease20s/operation timeout8s, an
-AFTER producer UPDATE fixture delay5.5s, and requires observed PgSleep on the exact
-backend/query followed by DeliveryUnknown and complete rollback. Release the
-advisory observation gate promptly, avoiding SQL lock_timeout5s. Remove only the
-fixture trigger before retry and observe natural Control expiry with22s bound.
+Next bounded action: qualify the three independent import retirement vetoes using
+fresh signed-store clones: original-Control import claim with no request, retained
+producer input binding, and retained producer checkpoint even at zero. Reuse the
+complete refusal/native oracle and f12 artifacts; label synthetic incompatible
+SQL history explicitly. Review found that successful initial startup always has
+two dictionary requests; true zero-issued is a real interrupted earlier startup
+boundary, covered by native empty closing but not installed retirement. Keep that
+limit explicit. Control UTC expiry and other row-contention schedules also remain
+separate unqualified boundaries; do not impose an arbitrary exhaustive matrix.
 
-For writer-first, gate fresh Control acquisition COMMIT after historical lookup;
-then observe actual current retirement Ingest FOR UPDATE behind draining. Check
-the writer's returned row independently: only state and xmin may change. For
-retirement-first, observe draining UPDATE behind retirement COMMIT, then require
-23514 against released history. All product owner guards must remain enabled and
-observer/writer sessions use replication_role origin. Every case compares all70
-SQL tables and native bytes, records exact identities, and stops owned resources.
-Dataset/job and standalone source/producer contention remain separately unqualified.
-
-Remaining retirement qualification includes current Control authority,
-concurrent lock orders, true zero-issued producer, zero-request import and persisted
-workflow binding/checkpoint obligations. Explicit successor/restart/resend must
+Explicit successor/restart/resend must
 retain first admission and repeat with provenance off. The earlier archive evidence
 qualifies signed acquisition→durable admission→timer archive→private history→353-byte
 signed JSONL export; full M1 additionally needs online indexing, outages and installed
