@@ -376,6 +376,11 @@ completion: four processes,86 full snapshots and128 corrupted-capture controls.
 Both failed owners refuse reuse and their exact backends are observed absent.
 Fresh config-only recovery completes prepared SQL or preserves already terminal
 SQL, including its original timestamp/xmin, without another native write.
-Concurrent claim/expiry schedules, native syscall ambiguity and installed
-entrypoint integration remain separate gates in the existing recovery evidence
-and task plan. No epoch3 or writer activation is added.
+Connected1d3b93c adds four actual current-Control claim/expiry schedules:86 full
+snapshots and201 corrupted-capture controls. Claim COMMIT prevents retirement;
+ROLLBACK permits it. A held retirement COMMIT6 blocks the claim, then its later
+completion leaves terminal retry unchanged. Real Control UTC expiry while waiting
+refuses before native closing. These are guarded relational import claims, not an
+installed import executor. Historical preparer claims, native syscall ambiguity
+and installed entrypoint integration remain separate gates in the existing
+recovery evidence and task plan. No epoch3 or writer activation is added.

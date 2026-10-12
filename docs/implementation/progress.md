@@ -17,9 +17,14 @@ Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Observed HEAD a692dbb8a792adf9c7f04cb8c554243301ab7583 was privately pushed,
 freshly fetched and verified ahead0/behind0 with a clean checkout. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
-Current observed HEAD64b09da4db71e5dd3f326e5e34551f163e7cbf6e integrates
-probe9166d78, build profile8339297, harness2afe681 and oracle64b09da. Root owns uncommitted lock-wave
-dispatch, evidence, inventory and this checkpoint. Separate agents own only the scopes below.
+Current observed HEAD1d3b93c866e84a64dc1c0c37180a69d62b7c4993 integrates
+probe9166d78, build profile8339297, harness2afe681, oracle64b09da and root dispatch.
+Root owns uncommitted qualification documentation/evidence/inventory. Exact engine
+source worktree is `runs/ingest-empty-locks-engine-1d3b93c/source`; wrapper22537,
+ownerb894a769752a80a5513f0b227fb28a7d, clientce75ae6f5d51fdc11b1747828d47bfb96ae3b8335c9e61ddb6e56a6562383db3.
+The engine is PASS_INITIAL_EMPTY_RETIREMENT_LOCKS; wrapper22537 joined0.
+Independent actual-capture audit passed86 snapshots/201 controls, original seed
+files/artifacts/executables and1215 nonborrowed container projections. Separate agents own only the scopes below.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -134,62 +139,66 @@ loopback tests pass, including both COMMIT6 boundaries; those are separate from
 actual PG qualification. Build wrapper31785 and engine wrapper66235 joined0;
 borrowedPG stopped0, idle client wrapper143, no OOM/cleanup error. No active engine/build remains from either completed wave.
 
+## Qualified current-Control claim and expiry races
+
+Exact build833929700e78eb4837e78021cc69b41d0e701109 is
+PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY: compile and Clippy only. Wrapper67773
+joined0, both build containers exited0/noOOM. Read-only artifact audit verified
+1751 source/export files, both current and protected prior executables, native
+toolchain identities and all1214 unchanged preflight projections. Native product
+code/build inputs remain those qualified at30a88ae; its122 tests were not repeated.
+
+`runs/ingest-empty-locks-engine-1d3b93c/bindings/result.json` is
+PASS_INITIAL_EMPTY_RETIREMENT_LOCKS, finished2026-10-12T14:16:47.214896Z;
+SHA256 fa7bc10fd1663b408798be6c34a3f2b8c79733f3200802fb42440246d4644598.
+Four actual processes on four new ac644 clones pass86 full snapshots and201
+rehashed perturbations. Each ordinary application-role fixture creates/seals its
+zero-request import before the race with all guards active. Original state, four
+inputs, intent and registrar3/preparer8 remain exact; current Control is10.
+
+Claim-first COMMIT holds Control SHARE against retirement UPDATE, then its named
+`require_initial_empty_claims` veto refuses before native closing. The default
+server log omits SQLSTATE; recorded code is null, not an invented observed23514.
+Claim ROLLBACK permits one native write52/sequence62→63 and13 terminal SQL changes
+at1791814565708904/xmin26709. Retirement-first holds actual frontend COMMIT6,
+blocking the claimant on terminal transaction26726. After release and a later
+claim COMMIT, retry preserves1791814572951979/xmin26726/native52/63; proxy completes
+8/8/8/8/1. Actual UTC expiry crosses lease1791814601189104 while blocked and is
+released1,689,388us after the observed wait, within the5s lock timeout. It returns
+Control(Unavailable) without native/target SQL changes. Both refusals demonstrate
+unavailable Control reuse, clean joined drivers and positive exact backend absence.
+
+Setup SQL declaration checking was strengthened after independent oracle/bindings
+review; the corresponding negative control passes. Independent actual-capture
+audit passed all86/201, three seed censuses (63paths/57files), frozen artifacts,
+13 protected executables and1215 unchanged nonborrowed projections. BorrowedPG stopped0/client idle-wrapper143, PID0/noOOM;
+cleanup/missing/unrelated arrays are empty. No active build or engine remains.
+
 ## Current bounded work and next action
 
-Four current-Control claim/expiry schedules have been integrated froma692dbb in
-separate worktrees; root remains sole integrator and engine executor:
+Next: finish recording/auditing/pushing the lock wave, then qualify a historical
+preparer claim with one genuine new f12 clone and two processes. New separate
+worktrees share base1d3b93c; prior worktrees remain clean and retained:
 
 | Worktree | Owner | Writable scope |
 |---|---|---|
-| `.research/empty-lock-probe-20261012` | recovery_review | Two existing finite-probe example files |
-| `.research/empty-lock-harness-20261012` | successor_restart_design | New `initial_empty_locks.py` |
-| `.research/empty-lock-oracle-20261012` | cleanup_review | New lock oracle; two narrow shared refusal modes |
+| `.research/empty-preparer-harness-20261012` | successor_restart_design | New `initial_empty_preparer.py` |
+| `.research/empty-preparer-oracle-20261012` | cleanup_review | New `initial_empty_preparer_oracle.py`; coordinate any shared changes |
 
-Root owns `bindings.py` and governance updates; the two build-profile
-dispatchers are committed. Flag `--ingest-empty-locks` is ready. Profile `ingest-empty-locks` is
-committed8339297; its exact build under
-`runs/ingest-empty-locks-8339297` is PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY.
-Wrapper67773 joined0; fetch/native containers exited0 without OOM. Independent
-artifact audit verified1751 source files, two current executables, prior protected
-executables and all1214 unchanged preflight projections. Engine remains NOT_RUN. The only selected build checks are compilation
-and Clippy; unchanged native122-test evidence remains at30a88ae. Review their actual
-diffs and agent commits before running. Expected wrapper interface is
-`run(pg,client,output,rows,clone)` with four ordered `CASES` and statusPASS.
+Root owns the finite-probe command, build profile, bindings and governance. No
+new preparer build/engine is allocated. The read-only design review selected actual
+Control8 preparation plus same-Control retry, then a bounded post-retry gate while8
+is still live. Ordinary application-role SQL inserts/seals/claims one zero-request
+import with its observed8 tuple. Actual release8, native/driver join and positive
+backend absence precede a fresh config-only empty-retire process under9. It must
+refuse at empty-load with the named claim veto, retaining the original claim8 and
+native52/sequence62. This remains a relational claim fixture, not typed import.
 
-Next bounded action: commit the reviewed integration and execute four new ac644
-clones from an exact source worktree, using the verified8339297 build. All new
-helper source and affected probe/product/guard boundaries are reviewed. The
-independent oracle review finding (unchecked setup SQL declaration) is fixed.
-Synthetic checks pass86 snapshots/201 controls; prior actual COMMIT capture replay
-remains86/128. None of these is a new lock-engine outcome. The cases are claim-first COMMIT versus
-ROLLBACK, retirement-first with frontend COMMIT6 held, and actual Control UTC
-expiry while waiting on a SHARE holder. Fresh Control is10, not the older gap
-seed's9. A fixed accepted zero-request import is created and sealed before the
-race; ordinary application-role guarded SQL claims it. This checks the relational
-claim path, not an installed import executor. No optional fifth recovery process
-is selected for this focused wave.
-
-A bounded post-proof file gate must precede dispatch START11. Retirement-first
-also needs a postdispatch gate to commit its unblocked claim before the next
-snapshot/retry; proxy permits two later commits for retry7/release8. Bind both
-waiter and holder PID/backend_start/database and observe real blocking. A frontend
-COMMIT hold leaves the server idle in transaction after its last query, not on
-an unreceived COMMIT. Expiry pre-ages the actual20s lease outside a transaction,
-then waits across its server-clock deadline for less than5s; never rewrite leases.
-Both refusals must precede native closing and preserve the prepared target.
-
-The oracle may project out fixture job rows/gates only after independently
-validating their complete fields,xmin,phase and original snapshot hashes. Do not
-normalize away unchecked changes. Persist final external observations before
-assertions. Unknown process timeout must not reopen a potentially owned Rocks
-root. Preserve each failed derivative and scope every claim to its actual run.
-
-Historical preparer8 claims require a separate genuinely live preparation
-fixture; never revive released8 on ac644. Existing history/handoff remain OPEN0
-only. Empty retirement distinguishes prepared+OPEN, prepared+CLOSING and
-terminal+CLOSING; terminal+OPEN and partial state refuse. Positive original replay,
-native directory/sequence identity, bounded grants and current Control custody
-remain mandatory. No epoch3, writer adoption or activation is added.
+Never revive released8 on ac644, rewrite immutable intent, reassign the claim to9
+or bypass guards. Preserve the strict frozen ac644 oracle; verify the new dynamic
+prepared seed independently from the actual preparation transcript before using
+it. Unknown process outcomes must not reopen a possibly owned native directory.
+Record exact build/source/artifact identities and full external final captures.
 
 ## Remaining product gates
 
@@ -212,7 +221,7 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Last free space68,756,312,064 bytes (about64.0GiB); remeasure
+and dated observations. Last free space68,584,402,944 bytes (about63.9GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.
@@ -233,8 +242,13 @@ and Clang14; host Clang19 discovery is not native qualification. Node26.4.0 and
 local pinned pnpm9.15.9 are available. Preserve all inventoried source/fault clones,
 Archive worker/assets, input dependencies and original binaries.
 
-Negative sources9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll1154757 must
-never be merged/pushed. Six unrelated services remain running: inspirehep-reindex
+Keep the isolated negative variants9fa8b98/8effc76/5f1582c/a334ac8 and the historical
+`network-direct-no-poll-1154757` worktree unmerged/unpushed. The latter name refers
+to a separate dirty variant, not a ban on its original1154757 base commit, which
+is already in remote history. The documented negative worktree path is absent
+from this canonical checkout.
+The current push diff contains no network product changes. Six unrelated services
+remain running: inspirehep-reindex
 db/mq/cache/es,ollama,tgdataset-mongo; recheck actual owners before allocations.
 GitHub run37017677570 could not start jobs due to billing/spending restrictions;
 Q33 authorizes isolated trusted Tux CI, independently recorded. Native arm64,

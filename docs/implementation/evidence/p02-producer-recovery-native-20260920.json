@@ -10170,9 +10170,9 @@
         "measured": "Both actual proxy counts matched COMMIT6; before-forward6/5/5/5/1 and after-complete6/6/6/5/1. Both return bareCommitUnknown and unavailable reuse, join a failed driver and observe exact backend absence before newControl11. Native stays52rows/seq63 through recovery. Before completes13SQLrows atT1791812843492372/xmin26646; after retainsT1791812850933041/xmin26663 unchanged. Originalregistrar3/preparer8/intent/inputs retained. START11 remains source-derived."
       },
       "connected_locks": {
-        "status": "READY_ENGINE_NOT_RUN",
-        "source": "64b09da4db71e5dd3f326e5e34551f163e7cbf6e",
-        "tree": "38b5521c5089e0492739f89e40d49ae960b09650",
+        "status": "PASS_INITIAL_EMPTY_RETIREMENT_LOCKS",
+        "source": "1d3b93c866e84a64dc1c0c37180a69d62b7c4993",
+        "tree": "3e5f6907aab041ee777cfca735a5bbd7f8c14d2f",
         "build": {
           "source": "833929700e78eb4837e78021cc69b41d0e701109",
           "tree": "b00784ed07161c3eb0249381ecd3601f42709582",
@@ -10270,7 +10270,1224 @@
             "checks": "Exact checkout/export/Git archive and manifest; two current, seven prior and four original cache executables; actual native toolchain hashes; terminal exit0/noOOM and resource bounds. No engine or SQL executed."
           }
         },
-        "engine": "NOT_RUN",
+        "engine": {
+          "source": "1d3b93c866e84a64dc1c0c37180a69d62b7c4993",
+          "owner": "b894a769752a80a5513f0b227fb28a7d",
+          "label": "org.bigbrotr.acquisition-binding",
+          "status": "PASS_INITIAL_EMPTY_RETIREMENT_LOCKS",
+          "client": {
+            "id": "ce75ae6f5d51fdc11b1747828d47bfb96ae3b8335c9e61ddb6e56a6562383db3",
+            "name": "bigbrotr-acquisition-binding-1d3b93c"
+          },
+          "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "started_at": "2026-10-12T14:15:52.287839+00:00",
+          "finished_at": "2026-10-12T14:16:47.214896+00:00",
+          "databases": [
+            "bb_scope_bind_1d3b93c_empty_claim_commit",
+            "bb_scope_bind_1d3b93c_empty_claim_rollback",
+            "bb_scope_bind_1d3b93c_empty_retirement_first",
+            "bb_scope_bind_1d3b93c_empty_control_expiry"
+          ],
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 68722434048,
+          "free_bytes_after": 68584402944,
+          "not_run": [
+            "historical preparer claim requires a separate live preparation fixture",
+            "installed import execution; this wave checks the guarded relational claim path",
+            "native syscall uncertainty/power loss, next incarnation activation and installed restart/resend",
+            "ACK/GC, full M1, capacity/load/aged-state and arm64/release"
+          ],
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-locks-engine-1d3b93c",
+          "tree": "3e5f6907aab041ee777cfca735a5bbd7f8c14d2f",
+          "wrapper_session": 22537,
+          "wrapper_joined_exit_code": 0,
+          "result_sha256": "fa7bc10fd1663b408798be6c34a3f2b8c79733f3200802fb42440246d4644598",
+          "snapshots": 86,
+          "rejected_perturbations": 201,
+          "cases": [
+            {
+              "name": "empty-claim-commit",
+              "status": "PASS",
+              "oracle": {
+                "status": "PASS",
+                "mode": "empty-claim-commit",
+                "snapshots": 21,
+                "control_tables": 71,
+                "resolved_requests": [
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                "native_sequence_delta": 0,
+                "native_rows": 52,
+                "retired_at_us": null,
+                "retirement_transaction": null,
+                "target_rows_changed": 0,
+                "original_rows_and_xmin_preserved": true,
+                "original_inputs": 4,
+                "immutable_intent_preserved": true,
+                "terminal_retry_unchanged": false,
+                "admission": false,
+                "result_error": "Control(Backend)",
+                "control_epoch": 10,
+                "historical_registrar": 3,
+                "historical_preparer": 8,
+                "server_clock_window": {
+                  "before_us": 1791814557578165,
+                  "after_us": 1791814558846154
+                },
+                "qualification": "guarded generic import SQL and observed PostgreSQL custody; installed import execution is not qualified",
+                "final": {
+                  "control_sha256": "0d33959fc5ddf21884f4735348e7aa7ab0890ecb946245cb7108f72081ee5b60",
+                  "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                  "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                  "sequence": 62,
+                  "control_epoch": 10,
+                  "control_state": "active"
+                },
+                "fixture_job": "\\xe1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+                "fixture_job_claim_committed": true,
+                "actual_control_block_observed": true,
+                "current_control_epoch": 10,
+                "control_expired_during_wait": false,
+                "historical_preparer_claim": "NOT_RUN"
+              },
+              "negative_controls": {
+                "status": "PASS",
+                "rejected": [
+                  "history-native-byte-refreshed-hash",
+                  "history-producer-marker-refreshed-hash",
+                  "history-native-extra-write",
+                  "history-original-outcome-xmin",
+                  "history-original-source-cut",
+                  "history-original-registrar",
+                  "history-target-reservation",
+                  "history-topology-handoff-rewritten",
+                  "history-original-input-hash",
+                  "history-current-policy-digest",
+                  "history-admission-claimed",
+                  "history-backend-absence-another-tuple",
+                  "history-backend-still-present",
+                  "history-driver-not-joined",
+                  "history-driver-error-misclassified",
+                  "history-missing-phase",
+                  "history-intent-attribution",
+                  "history-intent-xmin",
+                  "history-original-receipt",
+                  "history-request-read-rewrites-PG",
+                  "history-consistently-future-renewals",
+                  "history-original-closure",
+                  "history-empty-closure",
+                  "history-wrong-initial-native-state",
+                  "history-unrelated-refusal",
+                  "history-wrong-poisoning-result",
+                  "unverified-original-capture-hash",
+                  "setup-privileged-writer",
+                  "setup-declared-replica-bypass",
+                  "claim-replica-bypass",
+                  "fixture-job-request-binding",
+                  "fixture-admission-xmin",
+                  "fixture-checkpoint-advance",
+                  "unchecked-job-addition",
+                  "wrong-waiter-incarnation",
+                  "wrong-holder-database",
+                  "missing-real-blocker",
+                  "no-waiting-lock",
+                  "unrelated-blocked-query",
+                  "missing-before-dispatch-gate",
+                  "wrong-current-Control-epoch",
+                  "transaction-not-completed",
+                  "wrong-claim-transaction-ending",
+                  "consistently-historical-claim-attribution",
+                  "claim-xmin-not-holder-transaction",
+                  "generic-Backend-without-named-veto",
+                  "named-veto-from-another-backend"
+                ]
+              },
+              "backend_absence": {
+                "database": "bb_scope_bind_1d3b93c_empty_claim_commit",
+                "user": "bigbrotr_control",
+                "limit_seconds": 5,
+                "status": "OBSERVED_ABSENT",
+                "attempts": [
+                  {
+                    "seconds": 0.0817207982763648,
+                    "count": 0,
+                    "backends": []
+                  }
+                ],
+                "seconds": 0.08172567654401064
+              },
+              "verification_sha256": "3f1cecb4c4b4a245e68f8599cf70c2b305b8c94dfeee0af2fb5659da7df100e1"
+            },
+            {
+              "name": "empty-claim-rollback",
+              "status": "PASS",
+              "oracle": {
+                "status": "PASS",
+                "mode": "empty-claim-rollback",
+                "snapshots": 22,
+                "control_tables": 71,
+                "resolved_requests": [
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                "native_sequence_delta": 1,
+                "native_rows": 52,
+                "retired_at_us": 1791814565708904,
+                "retirement_transaction": "26709",
+                "target_rows_changed": 13,
+                "original_rows_and_xmin_preserved": true,
+                "original_inputs": 4,
+                "immutable_intent_preserved": true,
+                "terminal_retry_unchanged": true,
+                "admission": false,
+                "result_error": null,
+                "control_epoch": 10,
+                "historical_registrar": 3,
+                "historical_preparer": 8,
+                "server_clock_window": {
+                  "before_us": 1791814564626392,
+                  "after_us": 1791814565942419
+                },
+                "qualification": "guarded generic import SQL and observed PostgreSQL custody; installed import execution is not qualified",
+                "final": {
+                  "control_sha256": "1b282cf0a6c6f049bb896846135690a1d8ea0b8560f700df43b300b8beeffd2e",
+                  "native_sha256": "05d004960801963a552bc5434309b1d85f7437f70c6f51091d3d96c8ccd29d2a",
+                  "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                  "sequence": 63,
+                  "control_epoch": 10,
+                  "control_state": "released"
+                },
+                "fixture_job": "\\xe1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+                "fixture_job_claim_committed": false,
+                "actual_control_block_observed": true,
+                "current_control_epoch": 10,
+                "control_expired_during_wait": false,
+                "historical_preparer_claim": "NOT_RUN"
+              },
+              "negative_controls": {
+                "status": "PASS",
+                "rejected": [
+                  "history-native-byte-refreshed-hash",
+                  "history-producer-marker-refreshed-hash",
+                  "history-native-extra-write",
+                  "history-original-outcome-xmin",
+                  "history-original-source-cut",
+                  "history-original-registrar",
+                  "history-target-reservation",
+                  "history-topology-handoff-rewritten",
+                  "history-original-input-hash",
+                  "history-current-policy-digest",
+                  "history-admission-claimed",
+                  "history-backend-absence-another-tuple",
+                  "history-backend-still-present",
+                  "history-driver-not-joined",
+                  "history-driver-error-misclassified",
+                  "history-missing-phase",
+                  "history-intent-attribution",
+                  "history-intent-xmin",
+                  "history-original-receipt",
+                  "history-request-read-rewrites-PG",
+                  "history-consistently-future-renewals",
+                  "history-original-closure",
+                  "history-empty-closure",
+                  "history-wrong-initial-native-state",
+                  "history-terminal-source-digest",
+                  "history-terminal-source-cut",
+                  "history-terminal-domain-time",
+                  "history-terminal-owner-xmin",
+                  "history-terminal-producer-only-closing",
+                  "history-retry-rewrites-PG",
+                  "history-retirement-result-wrong-time",
+                  "history-native-before-dispatch",
+                  "unverified-original-capture-hash",
+                  "setup-privileged-writer",
+                  "setup-declared-replica-bypass",
+                  "claim-replica-bypass",
+                  "fixture-job-request-binding",
+                  "fixture-admission-xmin",
+                  "fixture-checkpoint-advance",
+                  "unchecked-job-addition",
+                  "wrong-waiter-incarnation",
+                  "wrong-holder-database",
+                  "missing-real-blocker",
+                  "no-waiting-lock",
+                  "unrelated-blocked-query",
+                  "missing-before-dispatch-gate",
+                  "wrong-current-Control-epoch",
+                  "transaction-not-completed",
+                  "wrong-claim-transaction-ending",
+                  "consistently-historical-claim-attribution",
+                  "claim-xmin-not-holder-transaction"
+                ]
+              },
+              "backend_absence": {
+                "database": "bb_scope_bind_1d3b93c_empty_claim_rollback",
+                "user": "bigbrotr_control",
+                "limit_seconds": 5,
+                "status": "OBSERVED_ABSENT",
+                "attempts": [
+                  {
+                    "seconds": 0.08997288718819618,
+                    "count": 0,
+                    "backends": []
+                  }
+                ],
+                "seconds": 0.08997634425759315
+              },
+              "verification_sha256": "8522e61461eca7426b4b704170cd2caeb5429c3dd0f681fabe3089518a16d2d8"
+            },
+            {
+              "name": "empty-retirement-first",
+              "status": "PASS",
+              "oracle": {
+                "status": "PASS",
+                "mode": "empty-retirement-first",
+                "snapshots": 22,
+                "control_tables": 71,
+                "resolved_requests": [
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                "native_sequence_delta": 1,
+                "native_rows": 52,
+                "retired_at_us": 1791814572951979,
+                "retirement_transaction": "26726",
+                "target_rows_changed": 13,
+                "original_rows_and_xmin_preserved": true,
+                "original_inputs": 4,
+                "immutable_intent_preserved": true,
+                "terminal_retry_unchanged": true,
+                "admission": false,
+                "result_error": null,
+                "control_epoch": 10,
+                "historical_registrar": 3,
+                "historical_preparer": 8,
+                "server_clock_window": {
+                  "before_us": 1791814571993985,
+                  "after_us": 1791814573726407
+                },
+                "qualification": "guarded generic import SQL and observed PostgreSQL custody; installed import execution is not qualified",
+                "final": {
+                  "control_sha256": "c0582bcf804d31646bcdd6852f83162694d9139f0dd0bdc87bc043946c948a8f",
+                  "native_sha256": "05d004960801963a552bc5434309b1d85f7437f70c6f51091d3d96c8ccd29d2a",
+                  "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                  "sequence": 63,
+                  "control_epoch": 10,
+                  "control_state": "released"
+                },
+                "fixture_job": "\\xe1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+                "fixture_job_claim_committed": true,
+                "actual_control_block_observed": true,
+                "current_control_epoch": 10,
+                "control_expired_during_wait": false,
+                "historical_preparer_claim": "NOT_RUN"
+              },
+              "negative_controls": {
+                "status": "PASS",
+                "rejected": [
+                  "history-native-byte-refreshed-hash",
+                  "history-producer-marker-refreshed-hash",
+                  "history-native-extra-write",
+                  "history-original-outcome-xmin",
+                  "history-original-source-cut",
+                  "history-original-registrar",
+                  "history-target-reservation",
+                  "history-topology-handoff-rewritten",
+                  "history-original-input-hash",
+                  "history-current-policy-digest",
+                  "history-admission-claimed",
+                  "history-backend-absence-another-tuple",
+                  "history-backend-still-present",
+                  "history-driver-not-joined",
+                  "history-driver-error-misclassified",
+                  "history-missing-phase",
+                  "history-intent-attribution",
+                  "history-intent-xmin",
+                  "history-original-receipt",
+                  "history-request-read-rewrites-PG",
+                  "history-consistently-future-renewals",
+                  "history-original-closure",
+                  "history-empty-closure",
+                  "history-wrong-initial-native-state",
+                  "history-terminal-source-digest",
+                  "history-terminal-source-cut",
+                  "history-terminal-domain-time",
+                  "history-terminal-owner-xmin",
+                  "history-terminal-producer-only-closing",
+                  "history-retry-rewrites-PG",
+                  "history-retirement-result-wrong-time",
+                  "history-native-before-dispatch",
+                  "unverified-original-capture-hash",
+                  "setup-privileged-writer",
+                  "setup-declared-replica-bypass",
+                  "claim-replica-bypass",
+                  "fixture-job-request-binding",
+                  "fixture-admission-xmin",
+                  "fixture-checkpoint-advance",
+                  "unchecked-job-addition",
+                  "wrong-waiter-incarnation",
+                  "wrong-holder-database",
+                  "missing-real-blocker",
+                  "no-waiting-lock",
+                  "unrelated-blocked-query",
+                  "missing-before-dispatch-gate",
+                  "wrong-current-Control-epoch",
+                  "transaction-not-completed",
+                  "wrong-claim-transaction-ending",
+                  "consistently-historical-claim-attribution",
+                  "claim-xmin-not-holder-transaction",
+                  "held-transaction-not-retirement",
+                  "claim-observed-before-retirement-release",
+                  "COMMIT-forwarded-before-lock-observation",
+                  "held-COMMIT-never-released",
+                  "consistently-terminal-time-after-held-transaction"
+                ]
+              },
+              "backend_absence": {
+                "database": "bb_scope_bind_1d3b93c_empty_retirement_first",
+                "user": "bigbrotr_control",
+                "limit_seconds": 5,
+                "status": "OBSERVED_ABSENT",
+                "attempts": [
+                  {
+                    "seconds": 0.08720378950238228,
+                    "count": 0,
+                    "backends": []
+                  }
+                ],
+                "seconds": 0.08720749616622925
+              },
+              "verification_sha256": "aded18237e455c039417b189f3f56b203771ff879fd8730dad904af5bef98662"
+            },
+            {
+              "name": "empty-control-expiry",
+              "status": "PASS",
+              "oracle": {
+                "status": "PASS",
+                "mode": "empty-control-expiry",
+                "snapshots": 21,
+                "control_tables": 71,
+                "resolved_requests": [
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                "native_sequence_delta": 0,
+                "native_rows": 52,
+                "retired_at_us": null,
+                "retirement_transaction": null,
+                "target_rows_changed": 0,
+                "original_rows_and_xmin_preserved": true,
+                "original_inputs": 4,
+                "immutable_intent_preserved": true,
+                "terminal_retry_unchanged": false,
+                "admission": false,
+                "result_error": "Control(Unavailable)",
+                "control_epoch": 10,
+                "historical_registrar": 3,
+                "historical_preparer": 8,
+                "server_clock_window": {
+                  "before_us": 1791814580841120,
+                  "after_us": 1791814601518540
+                },
+                "qualification": "guarded generic import SQL and observed PostgreSQL custody; installed import execution is not qualified",
+                "final": {
+                  "control_sha256": "bf31bc66bdefeb5c9a9e391da29794f3794751760434642d5eb5d0d7e57a67a7",
+                  "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                  "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                  "sequence": 62,
+                  "control_epoch": 10,
+                  "control_state": "active"
+                },
+                "fixture_job": "\\xe1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+                "fixture_job_claim_committed": false,
+                "actual_control_block_observed": true,
+                "current_control_epoch": 10,
+                "control_expired_during_wait": true,
+                "historical_preparer_claim": "NOT_RUN"
+              },
+              "negative_controls": {
+                "status": "PASS",
+                "rejected": [
+                  "history-native-byte-refreshed-hash",
+                  "history-producer-marker-refreshed-hash",
+                  "history-native-extra-write",
+                  "history-original-outcome-xmin",
+                  "history-original-source-cut",
+                  "history-original-registrar",
+                  "history-target-reservation",
+                  "history-topology-handoff-rewritten",
+                  "history-original-input-hash",
+                  "history-current-policy-digest",
+                  "history-admission-claimed",
+                  "history-backend-absence-another-tuple",
+                  "history-backend-still-present",
+                  "history-driver-not-joined",
+                  "history-driver-error-misclassified",
+                  "history-missing-phase",
+                  "history-intent-attribution",
+                  "history-intent-xmin",
+                  "history-original-receipt",
+                  "history-request-read-rewrites-PG",
+                  "history-consistently-future-renewals",
+                  "history-original-closure",
+                  "history-empty-closure",
+                  "history-wrong-initial-native-state",
+                  "history-unrelated-refusal",
+                  "history-wrong-poisoning-result",
+                  "unverified-original-capture-hash",
+                  "setup-privileged-writer",
+                  "setup-declared-replica-bypass",
+                  "claim-replica-bypass",
+                  "fixture-job-request-binding",
+                  "fixture-admission-xmin",
+                  "fixture-checkpoint-advance",
+                  "unchecked-job-addition",
+                  "wrong-waiter-incarnation",
+                  "wrong-holder-database",
+                  "missing-real-blocker",
+                  "no-waiting-lock",
+                  "unrelated-blocked-query",
+                  "missing-before-dispatch-gate",
+                  "wrong-current-Control-epoch",
+                  "transaction-not-completed",
+                  "wrong-claim-transaction-ending",
+                  "lease-not-expired-at-release",
+                  "lock-acquired-after-expiry",
+                  "expiry-crossing-lock-timeout",
+                  "pre-age-fictional-remaining-time"
+                ]
+              },
+              "backend_absence": {
+                "database": "bb_scope_bind_1d3b93c_empty_control_expiry",
+                "user": "bigbrotr_control",
+                "limit_seconds": 5,
+                "status": "OBSERVED_ABSENT",
+                "attempts": [
+                  {
+                    "seconds": 0.08746417611837387,
+                    "count": 0,
+                    "backends": []
+                  }
+                ],
+                "seconds": 0.08746830374002457
+              },
+              "verification_sha256": "4ef40051acfc2bacca027a461bcd5545c53d01cdfc05fbca62bdc983e74931f4"
+            }
+          ],
+          "source_preserved": {
+            "control": true,
+            "files": true,
+            "artifacts": true
+          },
+          "terminal": [
+            {
+              "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-12T14:15:52.369840995Z",
+                "FinishedAt": "2026-10-12T14:16:46.418606142Z"
+              }
+            },
+            {
+              "Id": "ce75ae6f5d51fdc11b1747828d47bfb96ae3b8335c9e61ddb6e56a6562383db3",
+              "Name": "/bigbrotr-acquisition-binding-1d3b93c",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-12T14:15:53.284681746Z",
+                "FinishedAt": "2026-10-12T14:16:44.982790678Z"
+              }
+            }
+          ],
+          "artifact_hashes": {
+            "empty-claim-commit-after-dump-response.json": "2713b3ecfc091045d0cb35e468d118d645de22e54c43da327883f6c6975c9c9f",
+            "empty-claim-commit-after-guards.json": "6d77c782026c46bf75c748cfad13d68af982445fd92accf46e5ce7ba4c094958",
+            "empty-claim-commit-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-claim-commit-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-claim-commit-after.json": "5ec6a1498459b5b411cee7f0b4497d8bdcceffcf2e837d2e6d8d088fe2283958",
+            "empty-claim-commit-backends.json": "774b0048b5e669faabda6bf59393c47f70ded041aa0c6532fa19ede4789d3e9a",
+            "empty-claim-commit-before-dump-response.json": "3ca623ee3a6cab68dc0696e087d38e75a359de706bdd4fdc1070f3c5a41f4f49",
+            "empty-claim-commit-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-claim-commit-before.json": "a5dae1636620fedd779a3b14cc2a9f7b3615e7ea24cb807dd0e6a34e7a0e8e0a",
+            "empty-claim-commit-clock.json": "e1794183a1d4d042ea39f9d29d0f389dc5d3fd147d4f2c9de334166d5691e306",
+            "empty-claim-commit-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-claim-commit-migration.json": "088e544380836ea461931fd622c052f69529b056d71f8c11e0d82c2d069f99ff",
+            "empty-claim-commit-response.json": "5502c7e035825743bb9b3322ea536f37c17b76cb7cc988f5e052d060e070fbe1",
+            "empty-claim-commit-schedule.json": "1d0b95643810cdbeadf01602744bc07fd796dbb807c3162f84f4fd639c76b6bb",
+            "empty-claim-commit-seed-dump-response.json": "03ef360f1e6f5d8e8828c0e849ac9ed47c1dcb8d8ae558fb45192b4a21557850",
+            "empty-claim-commit-seed-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-claim-commit-setup.json": "3e2bbc8f2fb5a5d1ca739f4a5c0d93fb6ee960f11307f6135f3fa492048b46ec",
+            "empty-claim-commit-upgrade.json": "621d6456135c8519346b4d086433195632302de837f45c377731e8e452b55ab4",
+            "empty-claim-commit-verification.json": "3f1cecb4c4b4a245e68f8599cf70c2b305b8c94dfeee0af2fb5659da7df100e1",
+            "empty-claim-commit-wire.json": "6178d747a07ef1c1ff1e3cab2af752ec27904622cc2586e519af67e8a7b4c275",
+            "empty-claim-rollback-after-dump-response.json": "cda6c090079ac88ee01082fc8877e5d8c3cfdaaf54c91075be27f2199ed3bb52",
+            "empty-claim-rollback-after-guards.json": "6d77c782026c46bf75c748cfad13d68af982445fd92accf46e5ce7ba4c094958",
+            "empty-claim-rollback-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-claim-rollback-after-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-claim-rollback-after.json": "6d08cf6f748aa384c8bd41c303b1d4c66a5b9fd49657926264b50e9cb56361b2",
+            "empty-claim-rollback-backends.json": "3660e7138198c95e3c233959975be98de3d253025d4e67aebe25d0ec17d87381",
+            "empty-claim-rollback-before-dump-response.json": "ea0bc0d2b22fc490316234c045d1080d033b3cef3f12f27553c7bc845b1810cc",
+            "empty-claim-rollback-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-claim-rollback-before.json": "e763413345dd4d83662ace3bea7bb1183d7405b27f87b35fc04f004df09e0456",
+            "empty-claim-rollback-clock.json": "bf7feda852e9a4cb73a6cca15712082f267c8fb29d445cebefe29ce6740e0d40",
+            "empty-claim-rollback-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-claim-rollback-migration.json": "088e544380836ea461931fd622c052f69529b056d71f8c11e0d82c2d069f99ff",
+            "empty-claim-rollback-response.json": "741627931be96b92ea8a751fe906852549c3428c297037f514714631c46edca9",
+            "empty-claim-rollback-schedule.json": "bc6f88ebe45323d08ee415958574e462d2852ff732ec6bbf94e91f2d62a147e9",
+            "empty-claim-rollback-seed-dump-response.json": "039dbda5c6eeee80dfb9eefbfe23c71ea7d81e72300395d39a79de1f9e9440e3",
+            "empty-claim-rollback-seed-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-claim-rollback-setup.json": "fc5003c5ddc9ed7abf0314c6b0cb49660374e66f94959a5e42992a12230da954",
+            "empty-claim-rollback-upgrade.json": "47f0d4c04ed192c7022c1919179c1eda2734fa348e82b67c0f70dffc96ad670d",
+            "empty-claim-rollback-verification.json": "8522e61461eca7426b4b704170cd2caeb5429c3dd0f681fabe3089518a16d2d8",
+            "empty-claim-rollback-wire.json": "6178d747a07ef1c1ff1e3cab2af752ec27904622cc2586e519af67e8a7b4c275",
+            "empty-control-expiry-after-dump-response.json": "32ee53f67d8b3c3c5eee29d3d71df717998e19c16028de88dcda052b881b3572",
+            "empty-control-expiry-after-guards.json": "6d77c782026c46bf75c748cfad13d68af982445fd92accf46e5ce7ba4c094958",
+            "empty-control-expiry-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-control-expiry-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-control-expiry-after.json": "9f038bf17140d41d6d8356b487a0d55f227a7212776d9765d222c8370ea53e59",
+            "empty-control-expiry-backends.json": "dec1e85840e84c25bcbc52b6b7ff2dc6617c15e34e9de4b3d174079884b8b797",
+            "empty-control-expiry-before-dump-response.json": "90d5692409b2c64d5150ca495af5e817d044dd49ff2b40510520222290f11c76",
+            "empty-control-expiry-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-control-expiry-before.json": "7fc4ca57c7c1e76f17eb8fcaa855e6bcbafdd8a0872fde251aeea69a54b20ac9",
+            "empty-control-expiry-clock.json": "2a8ddf7c0ccd6ebccd6d0b98365f946a889f9167d80262e4af54456a90deb309",
+            "empty-control-expiry-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-control-expiry-migration.json": "088e544380836ea461931fd622c052f69529b056d71f8c11e0d82c2d069f99ff",
+            "empty-control-expiry-response.json": "877a61b7c098d98e745f45c6bbb14d1a673441629eb08f900469c7c5a053fea6",
+            "empty-control-expiry-schedule.json": "ad44f50cf5a08dab15b210495d1c609d89d1ee7f9c377cfd3699782f1768d548",
+            "empty-control-expiry-seed-dump-response.json": "9f0dbb468078812e65c37ad6986608d0e91a40b852480518df6f2883c740a390",
+            "empty-control-expiry-seed-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-control-expiry-setup.json": "a689a87b99c353968c1490248d82911c13112af69c5bc17dd3e4cd41f7b39e6c",
+            "empty-control-expiry-upgrade.json": "1690daebd67111795ab69e2bb7df99e1d02b2288244c5fcfdf81e5b54e1d87dd",
+            "empty-control-expiry-verification.json": "4ef40051acfc2bacca027a461bcd5545c53d01cdfc05fbca62bdc983e74931f4",
+            "empty-control-expiry-wire.json": "6178d747a07ef1c1ff1e3cab2af752ec27904622cc2586e519af67e8a7b4c275",
+            "empty-lock-cases.json": "2263cc01ea46dfd6c28f262ee78d73a78c3b47ba02170e3df8f1a5a5d1d5fc13",
+            "empty-lock-source-backends.json": "f7f120b81f09047c8ca3a3da49d2ca1b5acb02abc1e9d39660574e91ee2560b2",
+            "empty-lock-source-preserved.json": "899e16242dbc7adb2a69fbabd4a95d2fcda73576bcb3e347a544c3a46be6f884",
+            "empty-lock-source.json": "f462419a85619b38e3fb1cb09a0744e56f0debcd8a4e8a08439d5a7ee7774f19",
+            "empty-retirement-first-after-dump-response.json": "86fca677c911f6ba08918004e873fa0c244b4a69795535e327597fa091d2dec7",
+            "empty-retirement-first-after-guards.json": "6d77c782026c46bf75c748cfad13d68af982445fd92accf46e5ce7ba4c094958",
+            "empty-retirement-first-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-retirement-first-after-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-retirement-first-after.json": "a723a2178d94b6aac8deb3cb132fccfc5cd8847e4ede55868ceea0e3f1bc5b3f",
+            "empty-retirement-first-backends.json": "dbc7016df0a0e7d305979a56fed6086a820238700286ba63175a7b8879742df1",
+            "empty-retirement-first-before-dump-response.json": "e50e8c951435df2a89390aacd25b263670c4a70d7957c4125acd09e1a82510d1",
+            "empty-retirement-first-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-retirement-first-before.json": "323668c7c5031de76427c25e6a3e6ba6d6c1cf9e2a610ae86e4fd89bc8dcd65a",
+            "empty-retirement-first-clock.json": "9ef32a75cafb2c5d0243432ba8c56b92196d98e691509ddaab8001305f953f97",
+            "empty-retirement-first-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-retirement-first-migration.json": "088e544380836ea461931fd622c052f69529b056d71f8c11e0d82c2d069f99ff",
+            "empty-retirement-first-response.json": "2a0c2fa4bbfc50c934894a5d7e6a10264f4367cb7fa121aeb15845ba0f0102e9",
+            "empty-retirement-first-schedule.json": "b6f7938c908f6715f18a9f3f62bb3559926512853ca8f0fe3e33d47b74846c42",
+            "empty-retirement-first-seed-dump-response.json": "66457422dcc864e7fd2ef94fd0a764148a5518cbb5f41b66f915396c45a9e3c7",
+            "empty-retirement-first-seed-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-retirement-first-setup.json": "24081bb573cfedcca5a23aa9df14b901784f8ec8bbc7c72851d61a6818dd8f0d",
+            "empty-retirement-first-upgrade.json": "b8d6a9c4be9c71431a8b3524660e135cf9305779539ca883c0f88bfddc40dc6c",
+            "empty-retirement-first-verification.json": "aded18237e455c039417b189f3f56b203771ff879fd8730dad904af5bef98662",
+            "empty-retirement-first-wire.json": "2b0c61f5c1e9f317ab1adf1e03a0734b5161a5f304912797cc04cc3e3c45e0ce",
+            "preflight.json": "94df7165e3095918389189951acbe66b913f11d3444b873df09b4e661a990008",
+            "result.json": "fa7bc10fd1663b408798be6c34a3f2b8c79733f3200802fb42440246d4644598"
+          },
+          "schedules": {
+            "empty-claim-commit": {
+              "blocking": [
+                {
+                  "observed_at_us": 1791814558648046,
+                  "waiter": {
+                    "pid": 359,
+                    "backend_start": "2026-10-12 14:15:57.78054+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_claim_commit",
+                    "user": "bigbrotr_control",
+                    "application": "bigbrotr-ingest-bootstrap-probe",
+                    "query": "SELECT epoch FROM control.owner_epochs WHERE resource_id=$1::bytea\n                 AND epoch=$2::text::numeric FOR UPDATE",
+                    "state": "active",
+                    "wait_event_type": "Lock",
+                    "wait_event": "transactionid",
+                    "blockers": [
+                      356
+                    ],
+                    "backend_xid": null
+                  },
+                  "holder": {
+                    "pid": 356,
+                    "backend_start": "2026-10-12 14:15:57.623549+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_claim_commit",
+                    "user": "bigbrotr_control",
+                    "application": "empty-claim-commit_claimant",
+                    "query": "UPDATE control.jobs j SET state='queued',job_revision=2,owner_resource_id=decode('dee70383e0809dc9685af8039f08d4c7','hex'),owner_epoch=10,owner_incarnation=decode('57f1364325ce5a5a87797b3adee1e897','hex') WHERE job_id=decode('e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1','hex') AND state='accepted' AND job_revision=1 RETURNING to_jsonb(j)||jsonb_build_object('xmin',xmin::text);",
+                    "state": "idle in transaction",
+                    "wait_event_type": "Client",
+                    "wait_event": "ClientRead",
+                    "blockers": [],
+                    "backend_xid": "26691"
+                  },
+                  "waiting_locks": [
+                    {
+                      "type": "transactionid",
+                      "mode": "ShareLock",
+                      "transaction": "26691",
+                      "relation": null,
+                      "granted": false
+                    }
+                  ],
+                  "sample_seconds": 0.08054053038358688
+                }
+              ],
+              "gate_observations": [
+                {
+                  "gate": "before-retirement",
+                  "phase": "waiting",
+                  "server_us": 1791814558114095
+                },
+                {
+                  "gate": "before-retirement",
+                  "phase": "released",
+                  "server_us": 1791814558566437
+                }
+              ],
+              "claim_guard": {
+                "backend": {
+                  "pid": 359,
+                  "backend_start": "2026-10-12T14:15:57.78054+00:00",
+                  "database": "bb_scope_bind_1d3b93c_empty_claim_commit"
+                },
+                "since": "2026-10-12T14:15:57.578165+00:00",
+                "until": "2026-10-12T14:15:58.846154+00:00",
+                "observed_sqlstate": null,
+                "errors": [
+                  "2026-10-12T14:15:58.660700024Z 2026-10-12 14:15:58.660 UTC [359] ERROR:  empty attempt Control workflow claims remain unresolved"
+                ],
+                "contexts": [
+                  "2026-10-12T14:15:58.660714651Z 2026-10-12 14:15:58.660 UTC [359] CONTEXT:  PL/pgSQL function control.require_initial_empty_claims(control.initial_ingest_successions) line 15 at RAISE"
+                ]
+              },
+              "setup_identity": {
+                "pid": 263,
+                "database": "bb_scope_bind_1d3b93c_empty_claim_commit",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "claim_identity": {
+                "pid": 356,
+                "database": "bb_scope_bind_1d3b93c_empty_claim_commit",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "ending": "COMMIT;"
+            },
+            "empty-claim-rollback": {
+              "blocking": [
+                {
+                  "observed_at_us": 1791814565692449,
+                  "waiter": {
+                    "pid": 745,
+                    "backend_start": "2026-10-12 14:16:04.777021+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_claim_rollback",
+                    "user": "bigbrotr_control",
+                    "application": "bigbrotr-ingest-bootstrap-probe",
+                    "query": "SELECT epoch FROM control.owner_epochs WHERE resource_id=$1::bytea\n                 AND epoch=$2::text::numeric FOR UPDATE",
+                    "state": "active",
+                    "wait_event_type": "Lock",
+                    "wait_event": "transactionid",
+                    "blockers": [
+                      742
+                    ],
+                    "backend_xid": null
+                  },
+                  "holder": {
+                    "pid": 742,
+                    "backend_start": "2026-10-12 14:16:04.670489+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_claim_rollback",
+                    "user": "bigbrotr_control",
+                    "application": "empty-claim-rollback_claimant",
+                    "query": "UPDATE control.jobs j SET state='queued',job_revision=2,owner_resource_id=decode('dee70383e0809dc9685af8039f08d4c7','hex'),owner_epoch=10,owner_incarnation=decode('4958e06e795d4c018fa226f58242fa74','hex') WHERE job_id=decode('e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1','hex') AND state='accepted' AND job_revision=1 RETURNING to_jsonb(j)||jsonb_build_object('xmin',xmin::text);",
+                    "state": "idle in transaction",
+                    "wait_event_type": "Client",
+                    "wait_event": "ClientRead",
+                    "blockers": [],
+                    "backend_xid": "26708"
+                  },
+                  "waiting_locks": [
+                    {
+                      "type": "transactionid",
+                      "mode": "ShareLock",
+                      "transaction": "26708",
+                      "relation": null,
+                      "granted": false
+                    }
+                  ],
+                  "sample_seconds": 0.04869375471025705
+                }
+              ],
+              "gate_observations": [
+                {
+                  "gate": "before-retirement",
+                  "phase": "waiting",
+                  "server_us": 1791814565123388
+                },
+                {
+                  "gate": "before-retirement",
+                  "phase": "released",
+                  "server_us": 1791814565643013
+                }
+              ],
+              "claim_guard": null,
+              "setup_identity": {
+                "pid": 651,
+                "database": "bb_scope_bind_1d3b93c_empty_claim_rollback",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "claim_identity": {
+                "pid": 742,
+                "database": "bb_scope_bind_1d3b93c_empty_claim_rollback",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "ending": "ROLLBACK;"
+            },
+            "empty-retirement-first": {
+              "blocking": [
+                {
+                  "observed_at_us": 1791814573195976,
+                  "waiter": {
+                    "pid": 1134,
+                    "backend_start": "2026-10-12 14:16:12.089276+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_retirement_first",
+                    "user": "bigbrotr_control",
+                    "application": "empty-retirement-first_claimant",
+                    "query": "UPDATE control.jobs j SET state='queued',job_revision=2,owner_resource_id=decode('dee70383e0809dc9685af8039f08d4c7','hex'),owner_epoch=10,owner_incarnation=decode('96fde62f138e135831a6ef52fa320966','hex') WHERE job_id=decode('e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1','hex') AND state='accepted' AND job_revision=1 RETURNING to_jsonb(j)||jsonb_build_object('xmin',xmin::text);",
+                    "state": "active",
+                    "wait_event_type": "Lock",
+                    "wait_event": "transactionid",
+                    "blockers": [
+                      1139
+                    ],
+                    "backend_xid": "26727"
+                  },
+                  "holder": {
+                    "pid": 1139,
+                    "backend_start": "2026-10-12 14:16:12.364542+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_retirement_first",
+                    "user": "bigbrotr_control",
+                    "application": "bigbrotr-ingest-bootstrap-probe",
+                    "query": "SELECT control.require_empty_initial_retirement($1::bytea,$2::bytea)",
+                    "state": "idle in transaction",
+                    "wait_event_type": "Client",
+                    "wait_event": "ClientRead",
+                    "blockers": [],
+                    "backend_xid": "26726"
+                  },
+                  "waiting_locks": [
+                    {
+                      "type": "transactionid",
+                      "mode": "ShareLock",
+                      "transaction": "26726",
+                      "relation": null,
+                      "granted": false
+                    }
+                  ],
+                  "sample_seconds": 0.09041782934218645
+                }
+              ],
+              "gate_observations": [
+                {
+                  "gate": "before-retirement",
+                  "phase": "waiting",
+                  "server_us": 1791814572734438
+                },
+                {
+                  "gate": "before-retirement",
+                  "phase": "released",
+                  "server_us": 1791814572991023
+                },
+                {
+                  "gate": "after-retirement",
+                  "phase": "waiting",
+                  "server_us": 1791814573311767
+                },
+                {
+                  "gate": "after-retirement",
+                  "phase": "released",
+                  "server_us": 1791814573547483
+                }
+              ],
+              "claim_guard": null,
+              "setup_identity": {
+                "pid": 1037,
+                "database": "bb_scope_bind_1d3b93c_empty_retirement_first",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "claim_identity": {
+                "pid": 1134,
+                "database": "bb_scope_bind_1d3b93c_empty_retirement_first",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "ending": "COMMIT;",
+              "wire": {
+                "status": "PASS",
+                "ready": {
+                  "client_commit_complete": 0,
+                  "commit_number": 6,
+                  "commits_forwarded": 0,
+                  "commits_seen": 0,
+                  "deadline_seconds": 30.0,
+                  "elapsed_ns": 294490,
+                  "event": "ready",
+                  "faults": 0,
+                  "format": "bigbrotr-pg-fault-proxy/1",
+                  "held": false,
+                  "hold_action": null,
+                  "listen_host": "127.0.0.1",
+                  "listen_port": 44909,
+                  "max_frame_bytes": 1048576,
+                  "max_messages": 20000,
+                  "max_wire_bytes": 67108864,
+                  "mode": "hold",
+                  "pid": 4382,
+                  "proxy_sha256": "6e737de8223818d0b05b47cb25f16038233d43181b12aec97bd13e3b44e3f829",
+                  "server_commit_complete": 0,
+                  "upstream_port": 5432
+                },
+                "proxy_sha256": "6e737de8223818d0b05b47cb25f16038233d43181b12aec97bd13e3b44e3f829",
+                "held": {
+                  "client_commit_complete": 5,
+                  "commit_number": 6,
+                  "commits_forwarded": 5,
+                  "commits_seen": 6,
+                  "elapsed_ns": 743241694,
+                  "event": "held",
+                  "faults": 1,
+                  "format": "bigbrotr-pg-fault-proxy/1",
+                  "held": true,
+                  "hold_action": null,
+                  "mode": "hold",
+                  "server_commit_complete": 5
+                },
+                "released": {
+                  "client_commit_complete": 5,
+                  "commit_number": 6,
+                  "commits_forwarded": 5,
+                  "commits_seen": 6,
+                  "elapsed_ns": 984547125,
+                  "event": "released",
+                  "faults": 1,
+                  "format": "bigbrotr-pg-fault-proxy/1",
+                  "held": false,
+                  "hold_action": "release",
+                  "mode": "hold",
+                  "server_commit_complete": 5
+                },
+                "receipt": {
+                  "client_commit_complete": 8,
+                  "commit_number": 6,
+                  "commits_forwarded": 8,
+                  "commits_seen": 8,
+                  "declared_wire_bytes": 525851,
+                  "elapsed_ns": 1377505548,
+                  "event": "receipt",
+                  "faults": 1,
+                  "format": "bigbrotr-pg-fault-proxy/1",
+                  "frames": {
+                    "backend": 4789,
+                    "frontend": 3146
+                  },
+                  "held": false,
+                  "hold_action": "release",
+                  "mode": "hold",
+                  "reason": "frontend-eof",
+                  "server_commit_complete": 8,
+                  "tags": {
+                    "backend": {
+                      "31": 388,
+                      "32": 388,
+                      "33": 388,
+                      "43": 479,
+                      "44": 1147,
+                      "4b": 1,
+                      "52": 4,
+                      "53": 14,
+                      "54": 373,
+                      "5a": 1204,
+                      "6e": 15,
+                      "74": 388
+                    },
+                    "frontend": {
+                      "42": 388,
+                      "43": 388,
+                      "44": 388,
+                      "45": 388,
+                      "50": 388,
+                      "51": 39,
+                      "53": 1164,
+                      "58": 1,
+                      "70": 2
+                    }
+                  }
+                },
+                "exit_code": 0,
+                "events": [
+                  {
+                    "client_commit_complete": 0,
+                    "commit_number": 6,
+                    "commits_forwarded": 0,
+                    "commits_seen": 0,
+                    "deadline_seconds": 30.0,
+                    "elapsed_ns": 294490,
+                    "event": "ready",
+                    "faults": 0,
+                    "format": "bigbrotr-pg-fault-proxy/1",
+                    "held": false,
+                    "hold_action": null,
+                    "listen_host": "127.0.0.1",
+                    "listen_port": 44909,
+                    "max_frame_bytes": 1048576,
+                    "max_messages": 20000,
+                    "max_wire_bytes": 67108864,
+                    "mode": "hold",
+                    "pid": 4382,
+                    "proxy_sha256": "6e737de8223818d0b05b47cb25f16038233d43181b12aec97bd13e3b44e3f829",
+                    "server_commit_complete": 0,
+                    "upstream_port": 5432
+                  },
+                  {
+                    "client_commit_complete": 5,
+                    "commit_number": 6,
+                    "commits_forwarded": 5,
+                    "commits_seen": 6,
+                    "elapsed_ns": 743241694,
+                    "event": "held",
+                    "faults": 1,
+                    "format": "bigbrotr-pg-fault-proxy/1",
+                    "held": true,
+                    "hold_action": null,
+                    "mode": "hold",
+                    "server_commit_complete": 5
+                  },
+                  {
+                    "client_commit_complete": 5,
+                    "commit_number": 6,
+                    "commits_forwarded": 5,
+                    "commits_seen": 6,
+                    "elapsed_ns": 984547125,
+                    "event": "released",
+                    "faults": 1,
+                    "format": "bigbrotr-pg-fault-proxy/1",
+                    "held": false,
+                    "hold_action": "release",
+                    "mode": "hold",
+                    "server_commit_complete": 5
+                  },
+                  {
+                    "client_commit_complete": 8,
+                    "commit_number": 6,
+                    "commits_forwarded": 8,
+                    "commits_seen": 8,
+                    "declared_wire_bytes": 525851,
+                    "elapsed_ns": 1377505548,
+                    "event": "receipt",
+                    "faults": 1,
+                    "format": "bigbrotr-pg-fault-proxy/1",
+                    "frames": {
+                      "backend": 4789,
+                      "frontend": 3146
+                    },
+                    "held": false,
+                    "hold_action": "release",
+                    "mode": "hold",
+                    "reason": "frontend-eof",
+                    "server_commit_complete": 8,
+                    "tags": {
+                      "backend": {
+                        "31": 388,
+                        "32": 388,
+                        "33": 388,
+                        "43": 479,
+                        "44": 1147,
+                        "4b": 1,
+                        "52": 4,
+                        "53": 14,
+                        "54": 373,
+                        "5a": 1204,
+                        "6e": 15,
+                        "74": 388
+                      },
+                      "frontend": {
+                        "42": 388,
+                        "43": 388,
+                        "44": 388,
+                        "45": 388,
+                        "50": 388,
+                        "51": 39,
+                        "53": 1164,
+                        "58": 1,
+                        "70": 2
+                      }
+                    }
+                  }
+                ],
+                "forced_wrapper_stop": false,
+                "wrapper_exit": 0,
+                "stderr_nonempty": false
+              }
+            },
+            "empty-control-expiry": {
+              "blocking": [
+                {
+                  "observed_at_us": 1791814599644187,
+                  "waiter": {
+                    "pid": 1597,
+                    "backend_start": "2026-10-12 14:16:20.993684+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_control_expiry",
+                    "user": "bigbrotr_control",
+                    "application": "bigbrotr-ingest-bootstrap-probe",
+                    "query": "SELECT epoch FROM control.owner_epochs WHERE resource_id=$1::bytea\n                 AND epoch=$2::text::numeric FOR UPDATE",
+                    "state": "active",
+                    "wait_event_type": "Lock",
+                    "wait_event": "transactionid",
+                    "blockers": [
+                      1594
+                    ],
+                    "backend_xid": null
+                  },
+                  "holder": {
+                    "pid": 1594,
+                    "backend_start": "2026-10-12 14:16:20.885534+00",
+                    "database": "bb_scope_bind_1d3b93c_empty_control_expiry",
+                    "user": "bigbrotr_control",
+                    "application": "empty-control-expiry_claimant",
+                    "query": "SELECT to_jsonb(o)||jsonb_build_object('xmin',xmin::text) FROM control.owner_epochs o WHERE resource_id=decode('dee70383e0809dc9685af8039f08d4c7','hex') AND epoch=10 AND process_incarnation=decode('9144ceb0c94eeef1d8a4ebb726201afd','hex') AND role='control' AND state='active' FOR SHARE;",
+                    "state": "idle in transaction",
+                    "wait_event_type": "Client",
+                    "wait_event": "ClientRead",
+                    "blockers": [],
+                    "backend_xid": "26744"
+                  },
+                  "waiting_locks": [
+                    {
+                      "type": "transactionid",
+                      "mode": "ShareLock",
+                      "transaction": "26744",
+                      "relation": null,
+                      "granted": false
+                    }
+                  ],
+                  "sample_seconds": 0.08420092519372702
+                }
+              ],
+              "gate_observations": [
+                {
+                  "gate": "before-retirement",
+                  "phase": "waiting",
+                  "server_us": 1791814581311241
+                },
+                {
+                  "gate": "before-retirement",
+                  "phase": "released",
+                  "server_us": 1791814599558926
+                }
+              ],
+              "claim_guard": null,
+              "setup_identity": {
+                "pid": 1497,
+                "database": "bb_scope_bind_1d3b93c_empty_control_expiry",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "claim_identity": {
+                "pid": 1594,
+                "database": "bb_scope_bind_1d3b93c_empty_control_expiry",
+                "user": "bigbrotr_control",
+                "role": "bigbrotr_control",
+                "superuser": false,
+                "session_replication_role": "origin",
+                "isolation": "read committed"
+              },
+              "ending": "ROLLBACK;",
+              "expiry": {
+                "lease_expires_at_us": 1791814601189104,
+                "lock_started_us": 1791814599644187,
+                "expired_server_us": 1791814601259193,
+                "released_server_us": 1791814601333575,
+                "pre_age_observations": 54,
+                "observed_block_to_release_us": 1689388
+              }
+            }
+          },
+          "interpretation": [
+            "Four actual processes on four new ac644 clones; current Control10, immutable registrar3/preparer8 and all four original inputs preserved. Every claim runs as ordinary bigbrotr_control with origin replication and all guards active. Fixed zero-request import admission is committed and sealed before each race.",
+            "Claim COMMIT holds current Control SHARE against retirement first Control UPDATE; exact named require_initial_empty_claims veto after unblock preserves native52/sequence62 and all prepared target rows. Server default logs omit SQLSTATE; no observed23514 is synthesized. SQL source identifies the veto code separately.",
+            "Claim ROLLBACK removes its uncommitted row delta and permits one native closing marker write plus13 target SQL changes at1791814565708904/xmin26709. Same-Control retry preserves both stores.",
+            "Retirement-first proxy holds actual frontend COMMIT6 before forwarding, server idle after require_empty_initial_retirement with xid26726; the exact claimant waits on that xid. Releasing allows retirement and then claimCOMMIT; postdispatch gate gives a stable snapshot. Retry preserves terminal1791814572951979/xmin26726/native52/sequence63 despite later unrelated unbound claim. Proxy finishes8/8/8/8/1.",
+            "Expiry waits across actual lease1791814601189104 while retirement is blocked on Control SHARE; observedblock1791814599644187, UTCexpired1791814601259193, release1791814601333575 (1,689,388us from observed blocking, below5s lock timeout). Control(Unavailable), actual unavailable reuse, joined clean driver and positive exact backend absence; no native closing or target SQL rewrite.",
+            "Both refusals retain active Control10 rows after dropping the unavailable session; backend absence is independently observed. No owner revival, historical attribution rewrite, target activation or lease rewriting."
+          ],
+          "independent_actual_ai_audit": {
+            "reviewer": "recovery_review, independent harness/oracle/actual-capture review; finite probe author",
+            "status": "PASS_NO_DISCREPANCY_IN_SCOPE",
+            "captures": "Replayed all four actual verifier contexts and201 perturbations/86 snapshots; external final SQL/native/input/clock/guard captures match. Exact backend/xid blocking and actual8 completed COMMIT counters checked. Both refusals preserve52/62 and show actual Unavailable reuse, clean joined driver and positive exact backend absence.",
+            "claim_veto": "Named require_initial_empty_claims veto tied to actual backend359; observed SQLSTATE null because default logs omit it.",
+            "expiry": "Actual UTC lease1791814601189104 crossed while blocked;1.689388s from observedwait to release, below5s timeout. No rewritten lease.",
+            "preservation": "Three seed native censuses exact:63paths/57regularfiles. Six frozen ac artifacts, three f12 artifacts and51-gap result unchanged. Two current, seven prior and four original-cache executables rehashed unchanged.",
+            "resources": "All1215 nonborrowed preflight container projections unchanged. Exact clean source identity, current stoppedPG/client receipts and owner labels checked; no live SQL/engine/build or edits by reviewer.",
+            "limits": "Original SQL preservation is captured-run evidence. Relational generic claim only; no installed import, historical preparer claim, native power-loss or full M1/release claim."
+          }
+        },
         "cases": [
           "empty-claim-commit",
           "empty-claim-rollback",
@@ -10280,7 +11497,7 @@
         "scope": "Four real current-Control claim/expiry schedules on new ac644 clones; relational guarded import claims, not installed import execution. Historical preparer8 fixture remains separate.",
         "source_review": "Root read full finite empty probe, current PG empty owner, initial-history custody, complete 0815 and current generic job guards/Control fence. Full new harness/oracle drafts reviewed; wire/veto extension reviewed. Root bindings integration preserves exact build reuse, owner-checked PG lifecycle and external preservation. Independent actual run remains NOT_RUN. No product/native API change.",
         "expected": "Claim-first COMMIT refusesbefore native close; ROLLBACK permitsretirement. Retirement-first COMMIT6holds UPDATE againstclaimSHARE, thenlaterclaim preservesterminalretry. ActualControlUTCexpirywhileblocking<5srefusesbefore nativeclose withoutlease rewriting. Gatebounds25s/10s remainfixture-only.",
-        "qualification": "Compile and Clippy PASS; actual lock engine remains NOT_RUN.",
+        "qualification": "Four actual current-Control claim/expiry schedules PASS; 86 full snapshots and201 rejected capture perturbations. Independent actual-capture audit PASS.",
         "structural_checks": {
           "status": "PASS",
           "commands": [

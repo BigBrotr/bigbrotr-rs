@@ -40403,7 +40403,7 @@
     }
   },
   "implementation_initial_empty_locks_20261012": {
-    "status": "READY_ENGINE_NOT_RUN",
+    "status": "PASS_INITIAL_EMPTY_RETIREMENT_LOCKS",
     "owner": "root sole integrator and engine executor",
     "worktrees": [
       {
@@ -40432,8 +40432,8 @@
       }
     ],
     "resources": [],
-    "free_bytes_last_observed": 68756312064,
-    "preserve": "All earlier labs, seeds, fault derivatives and binaries retained. Exact lock probe build stopped-retained. No lock-wave engine allocated. Never replay retired-cache cleanup executor.",
+    "free_bytes_last_observed": 68584402944,
+    "preserve": "Both build and four-case lock engine are stopped-retained. Preserve original ac644 seed and all four new clones/captures. Never replay retired-cache cleanup executor.",
     "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
     "build": {
       "source": "833929700e78eb4837e78021cc69b41d0e701109",
@@ -40462,6 +40462,89 @@
       "finished_at": "2026-10-12T14:00:46.880979+00:00"
     },
     "wrapper_session": 67773,
-    "wrapper_joined_exit_code": 0
+    "wrapper_joined_exit_code": 0,
+    "engine": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-locks-engine-1d3b93c",
+      "source": "1d3b93c866e84a64dc1c0c37180a69d62b7c4993",
+      "tree": "3e5f6907aab041ee777cfca735a5bbd7f8c14d2f",
+      "owner": "b894a769752a80a5513f0b227fb28a7d",
+      "label": "org.bigbrotr.acquisition-binding",
+      "client": {
+        "id": "ce75ae6f5d51fdc11b1747828d47bfb96ae3b8335c9e61ddb6e56a6562383db3",
+        "name": "bigbrotr-acquisition-binding-1d3b93c"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "started_at": "2026-10-12T14:15:52.287839+00:00",
+      "finished_at": "2026-10-12T14:16:47.214896+00:00",
+      "databases": [
+        "bb_scope_bind_1d3b93c_empty_claim_commit",
+        "bb_scope_bind_1d3b93c_empty_claim_rollback",
+        "bb_scope_bind_1d3b93c_empty_retirement_first",
+        "bb_scope_bind_1d3b93c_empty_control_expiry"
+      ],
+      "terminal": [
+        {
+          "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T14:15:52.369840995Z",
+            "FinishedAt": "2026-10-12T14:16:46.418606142Z"
+          }
+        },
+        {
+          "Id": "ce75ae6f5d51fdc11b1747828d47bfb96ae3b8335c9e61ddb6e56a6562383db3",
+          "Name": "/bigbrotr-acquisition-binding-1d3b93c",
+          "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T14:15:53.284681746Z",
+            "FinishedAt": "2026-10-12T14:16:44.982790678Z"
+          }
+        }
+      ],
+      "wrapper_session": 22537,
+      "wrapper_joined_exit_code": 0,
+      "result_sha256": "fa7bc10fd1663b408798be6c34a3f2b8c79733f3200802fb42440246d4644598",
+      "cleanup_errors": [],
+      "missing_owned": [],
+      "unrelated_changed": []
+    }
+  },
+  "implementation_initial_empty_preparer_20261012": {
+    "status": "HARNESS_ORACLE_IMPLEMENTATION_ENGINE_NOT_RUN",
+    "owner": "root sole integrator and engine executor",
+    "base": "1d3b93c866e84a64dc1c0c37180a69d62b7c4993",
+    "scope": "One genuine f12 clone and two actual processes; claim under live preparing Control8 then fresh9 empty-load refusal. No owner revival or installed import claim.",
+    "worktrees": [
+      {
+        "root": ".research/empty-preparer-harness-20261012",
+        "branch": "qualification/empty-preparer-harness",
+        "owner": "successor_restart_design",
+        "scope": "new initial_empty_preparer.py only"
+      },
+      {
+        "root": ".research/empty-preparer-oracle-20261012",
+        "branch": "qualification/empty-preparer-oracle",
+        "owner": "cleanup_review",
+        "scope": "new initial_empty_preparer_oracle.py; shared changes require root coordination"
+      }
+    ],
+    "resources": []
   }
 }
