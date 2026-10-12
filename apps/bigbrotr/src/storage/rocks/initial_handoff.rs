@@ -19,6 +19,19 @@ use std::os::unix::fs::MetadataExt;
 
 const MAX_HANDOFF_BYTES: usize = 78 + 2 * MAX_MANIFEST_BYTES;
 
+#[path = "initial_empty.rs"]
+mod initial_empty;
+pub(in crate::storage) use initial_empty::EmptyInitialAttempt;
+pub use initial_empty::{EmptyInitialRetirement, ObservedEmptyInitialRetirement};
+
+// A historical reader must name the exact target marker it validated. Closing
+// is available only to empty-attempt retirement, never handoff reconstruction.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum EmptyTargetState {
+    Open,
+    Closing,
+}
+
 /// A positive, bounded initial source proof and exact proposed target. This is
 /// data, not authority. No external decoder can fabricate its native witness.
 #[derive(Clone, Debug)]
@@ -253,6 +266,7 @@ pub(in crate::storage) struct HistoricalInitial<'a> {
     record: InitialHandoffRecord,
     sequence: u64,
     root: (u64, u64),
+    target: EmptyTargetState,
 }
 
 impl IngestRecovery {
@@ -265,6 +279,7 @@ impl IngestRecovery {
             record: InitialHandoffRecord::decode(handoff)?,
             sequence: self.store.db.latest_sequence_number(),
             root: self.store.handoff_root_identity()?,
+            target: EmptyTargetState::Open,
         };
         view.validate()?;
         Ok(view)
@@ -366,18 +381,10 @@ impl<'a> HistoricalInitial<'a> {
         &self,
         source: &ResolvedSource<'_>,
     ) -> Result<InitialHandoff, BootstrapError> {
-        self.validate()?;
-        if !std::ptr::eq(source.recovery(), self.recovery)
-            || source.producer().manifest() != self.manifest()
-            || source.producer().producer_slot_id() != self.record.slot
-            || source.producer().producer_epoch() != self.record.epoch
-            || source.resolved_requests() != self.record.issued
-            || source.last_complete_sequence() != self.last_complete_sequence()
-            || source.digest() != self.closure_digest()
-            || !source.matches_historical(self)
-        {
+        if self.target != EmptyTargetState::Open {
             return Err(BootstrapError::StateMismatch);
         }
+        self.validate_source(source)?;
         let handoff = InitialHandoff {
             record: self.record,
             native_sequence: self
@@ -390,10 +397,27 @@ impl<'a> HistoricalInitial<'a> {
         Ok(handoff)
     }
 
+    fn validate_source(&self, source: &ResolvedSource<'_>) -> Result<(), BootstrapError> {
+        self.validate()?;
+        if !std::ptr::eq(source.recovery(), self.recovery)
+            || source.producer().manifest() != self.manifest()
+            || source.producer().producer_slot_id() != self.record.slot
+            || source.producer().producer_epoch() != self.record.epoch
+            || source.resolved_requests() != self.record.issued
+            || source.last_complete_sequence() != self.last_complete_sequence()
+            || source.digest() != self.closure_digest()
+            || !source.matches_historical(self)
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
     pub(super) fn same_view(&self, other: &HistoricalInitial<'_>) -> bool {
         std::ptr::eq(self.recovery, other.recovery)
             && self.sequence == other.sequence
             && self.root == other.root
+            && self.target == other.target
             && self.record.encode().as_bytes() == other.record.encode().as_bytes()
     }
 
@@ -408,7 +432,7 @@ impl<'a> HistoricalInitial<'a> {
         {
             return Err(BootstrapError::StateMismatch);
         }
-        store.require_handoff_state(&self.record, true)
+        store.require_handoff_state(&self.record, Some(self.target))
     }
 }
 
@@ -504,7 +528,8 @@ impl IngestRecovery {
         {
             return Err(BootstrapError::StateMismatch);
         }
-        self.store.require_handoff_state(&handoff.record, completed)
+        self.store
+            .require_handoff_state(&handoff.record, completed.then_some(EmptyTargetState::Open))
     }
 
     /// Portable intent metadata may inspect the old state but cannot dispatch
@@ -519,15 +544,16 @@ impl IngestRecovery {
         if self.manifest() != record.previous_manifest() {
             return Err(BootstrapError::StateMismatch);
         }
-        self.store.require_handoff_state(record, false)
+        self.store.require_handoff_state(record, None)
     }
 }
 impl IngestStore {
     fn require_handoff_state(
         &self,
         record: &InitialHandoffRecord,
-        completed: bool,
+        target: Option<EmptyTargetState>,
     ) -> Result<(), BootstrapError> {
+        let completed = target.is_some();
         let manifest = if completed {
             record.next
         } else {
@@ -536,12 +562,19 @@ impl IngestStore {
         self.handoff_value(IngestKey::Manifest, Some(manifest.encode().as_bytes()))?;
         let encoded = record.encode();
         let source_zero = [1, 2, 0, 0, 0, 0, 0, 0, 0, 0];
-        let mut producer_zero = [0; 26];
-        producer_zero[..2].copy_from_slice(&[1, 49]);
+        let mut producer_zero = [0; 27];
+        let producer_zero = if target == Some(EmptyTargetState::Closing) {
+            producer_zero[..2].copy_from_slice(&[2, 49]);
+            producer_zero[26] = 1;
+            &producer_zero[..]
+        } else {
+            producer_zero[..2].copy_from_slice(&[1, 49]);
+            &producer_zero[..26]
+        };
         for (key, bytes) in [
             (record.key(), encoded.as_bytes()),
             (record.source_key(), &source_zero),
-            (record.producer_key(), &producer_zero),
+            (record.producer_key(), producer_zero),
         ] {
             self.handoff_value(key, if completed { Some(bytes) } else { None })?;
         }
