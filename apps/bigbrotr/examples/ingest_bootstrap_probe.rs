@@ -887,19 +887,28 @@ fn main() {
         ingest_initial_history::corrupt(Path::new(&args[2]), &args[3]);
         return;
     }
+    let empty_lock = matches!(
+        args[1].as_str(),
+        "empty-claim-commit"
+            | "empty-claim-rollback"
+            | "empty-retirement-first"
+            | "empty-control-expiry"
+    );
     assert_eq!(
         args.len(),
-        if args[1].starts_with("history-") {
+        if args[1].starts_with("history-") || args[1] == "empty-retirement-first" {
             7
-        } else if matches!(
-            args[1].as_str(),
-            "successor-commit-before"
-                | "successor-commit-after"
-                | "successor-gap-loss-before"
-                | "successor-gap-loss-after"
-                | "empty-commit-before"
-                | "empty-commit-after"
-        ) {
+        } else if empty_lock
+            || matches!(
+                args[1].as_str(),
+                "successor-commit-before"
+                    | "successor-commit-after"
+                    | "successor-gap-loss-before"
+                    | "successor-gap-loss-after"
+                    | "empty-commit-before"
+                    | "empty-commit-after"
+            )
+        {
             6
         } else {
             5
@@ -952,8 +961,9 @@ fn main() {
                     config,
                     Path::new(&args[4]),
                     &args[1],
-                    args.get(5)
+                    args.get(if empty_lock { 6 } else { 5 })
                         .map(|port| port.parse().expect("explicit proxy port")),
+                    empty_lock.then(|| Path::new(&args[5])),
                 )
                 .await;
             } else if args[1] == "successor-history" {

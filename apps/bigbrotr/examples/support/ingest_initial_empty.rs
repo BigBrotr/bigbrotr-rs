@@ -28,6 +28,8 @@ struct Probe {
     cancelled: AtomicBool,
     database: String,
     commit_loss: bool,
+    require_unavailable: bool,
+    gate_prefix: Option<PathBuf>,
 }
 struct Backend {
     pid: i32,
@@ -65,7 +67,13 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
         .expect("empty retirement probe deadline; preserve unknown outcomes")
 }
 
-pub async fn run(config: Config, config_file: &Path, command: &str, proxy_port: Option<u16>) {
+pub async fn run(
+    config: Config,
+    config_file: &Path,
+    command: &str,
+    proxy_port: Option<u16>,
+    gate_prefix: Option<&Path>,
+) {
     assert!(matches!(
         command,
         "empty-retire"
@@ -73,10 +81,31 @@ pub async fn run(config: Config, config_file: &Path, command: &str, proxy_port: 
             | "empty-cancelled"
             | "empty-commit-before"
             | "empty-commit-after"
+            | "empty-claim-commit"
+            | "empty-claim-rollback"
+            | "empty-retirement-first"
+            | "empty-control-expiry"
     ));
     let commit_loss = matches!(command, "empty-commit-before" | "empty-commit-after");
-    assert_eq!(commit_loss, proxy_port.is_some());
+    let lock_schedule = matches!(
+        command,
+        "empty-claim-commit"
+            | "empty-claim-rollback"
+            | "empty-retirement-first"
+            | "empty-control-expiry"
+    );
+    assert_eq!(lock_schedule, gate_prefix.is_some());
+    assert_eq!(
+        commit_loss || command == "empty-retirement-first",
+        proxy_port.is_some()
+    );
     assert!(proxy_port.is_none_or(|port| port != 0));
+    if let Some(prefix) = gate_prefix {
+        assert!(prefix.is_absolute());
+        for extension in ["go", "done"] {
+            assert!(!prefix.with_extension(extension).try_exists().unwrap());
+        }
+    }
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
     assert_eq!(config.get_dbname(), root.text("postgres.control.database"));
@@ -113,6 +142,9 @@ pub async fn run(config: Config, config_file: &Path, command: &str, proxy_port: 
         cancelled: AtomicBool::new(false),
         database: config.get_dbname().unwrap().into(),
         commit_loss,
+        require_unavailable: commit_loss
+            || matches!(command, "empty-claim-commit" | "empty-control-expiry"),
+        gate_prefix: gate_prefix.map(Path::to_path_buf),
     };
     drop(probe.replay_grants());
     let mut role = [0; 16];
@@ -185,24 +217,41 @@ pub async fn run(config: Config, config_file: &Path, command: &str, proxy_port: 
     );
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
-    if command == "empty-cancelled" || commit_loss {
+    let expected_error = match command {
+        "empty-cancelled" => Some("Native(AuthorityUnavailable)"),
+        "empty-commit-before" | "empty-commit-after" => Some("CommitUnknown"),
+        "empty-claim-commit" => Some("Control(Backend)"),
+        "empty-control-expiry" => Some("Control(Unavailable)"),
+        _ => None,
+    };
+    if let Some(expected) = expected_error {
         let Err(error) = result else {
             panic!("retirement refusal fixture unexpectedly completed")
         };
         assert_eq!(error.stage, "retirement");
         assert_eq!(error.sequence, None);
-        assert_eq!(
-            error.error,
-            if commit_loss {
-                "CommitUnknown"
-            } else {
-                "Native(AuthorityUnavailable)"
-            }
-        );
+        assert_eq!(error.error, expected);
+    } else if lock_schedule {
+        assert!(result.is_ok(), "retirement lock fixture did not complete");
     }
 }
 
 impl Probe {
+    async fn gate(&self, name: &str, extension: &str, wait: Duration) {
+        // Qualification-only pause outside product transactions. Retain native
+        // and driver custody without refreshing the actual Control deadline.
+        let file = self.gate_prefix.as_ref().unwrap().with_extension(extension);
+        emit(serde_json::json!({"event":"successor-empty-gate","gate":name,"phase":"waiting"}));
+        tokio::time::timeout(wait, async {
+            while !file.try_exists().unwrap() {
+                tokio::time::sleep(Duration::from_millis(5)).await;
+            }
+            assert!(file.is_file());
+        })
+        .await
+        .expect("empty retirement qualification gate expired; preserve unknown outcome");
+        emit(serde_json::json!({"event":"successor-empty-gate","gate":name,"phase":"released"}));
+    }
     fn validate(&self, document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
         crate::config::validate_fixture_policy(document, digest, &self.root)
     }
@@ -271,7 +320,7 @@ impl Probe {
     async fn observe_reuse(&self, owner: &mut ControlSession) {
         let result =
             bounded(owner.refresh(|document, digest| self.validate(document, digest))).await;
-        if self.commit_loss {
+        if self.require_unavailable {
             assert_eq!(result, Err(OwnerError::Unavailable));
         }
         match result {
@@ -364,6 +413,10 @@ impl Probe {
         );
         drop(source);
         self.snapshot("proof").await;
+        if self.gate_prefix.is_some() {
+            self.gate("before-retirement", "go", Duration::from_secs(25))
+                .await;
+        }
         if command == "empty-inspect" {
             return Ok(());
         }
@@ -375,6 +428,10 @@ impl Probe {
         let result = self.dispatch(owner, recovery, &plan).await;
         if let Ok(time) = result {
             Self::emit_retirement(&plan, "initial", time);
+            if command == "empty-retirement-first" {
+                self.gate("after-retirement", "done", Duration::from_secs(10))
+                    .await;
+            }
         }
         self.snapshot("after-retirement").await;
         let retired_at = result.map_err(|e| Refusal::at("retirement", None, e))?;
