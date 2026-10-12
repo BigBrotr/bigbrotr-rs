@@ -17,15 +17,16 @@ from installed import terminal, wait_for
 LOCK = (180023441, 20261002)
 
 
-def install_barrier(pg, database, deferred, *, abandon_acquisition=False):
+def install_barrier(pg, database, deferred, *, abandon_acquisition=False, retire_initial=False):
+    assert not (abandon_acquisition and retire_initial)
     event = 'INSERT' if abandon_acquisition else 'UPDATE'
-    table = 'acquisition_gaps' if abandon_acquisition else 'source_streams'
-    condition = 'true' if abandon_acquisition else "NEW.state = 'closed'"
+    table = 'producer_epochs' if retire_initial else 'acquisition_gaps' if abandon_acquisition else 'source_streams'
+    condition = "NEW.state = 'retired'" if retire_initial else 'true' if abandon_acquisition else "NEW.state = 'closed'"
     commit_trigger = 'recovery_commit_barrier' if abandon_acquisition else 'source_commit_barrier'
     write_trigger = 'recovery_write_barrier' if abandon_acquisition else 'source_update_barrier'
     timing = (f'CONSTRAINT TRIGGER {commit_trigger} AFTER {event} '
         f'ON control.{table} DEFERRABLE INITIALLY DEFERRED' if deferred else
-        f'TRIGGER {write_trigger} BEFORE {event} ON control.{table}')
+        f'TRIGGER {write_trigger} {"AFTER" if retire_initial else "BEFORE"} {event} ON control.{table}')
     statement = f"""
         CREATE SCHEMA source_closure_fixture;
         CREATE FUNCTION source_closure_fixture.wait_for_observer() RETURNS trigger
@@ -40,9 +41,9 @@ def install_barrier(pg, database, deferred, *, abandon_acquisition=False):
     return statement
 
 
-def signal(client, prefix, *, abandon_acquisition=False):
+def signal(client, prefix, *, abandon_acquisition=False, retire_initial=False):
     identity = json.loads(Path(str(prefix) + '.pid.json').read_text())
-    flag = '--abandon-acquisition' if abandon_acquisition else '--close-source'
+    flag = '--retire-initial' if retire_initial else '--abandon-acquisition' if abandon_acquisition else '--close-source'
     script = '''import json,os,signal
 from pathlib import Path
 r=json.loads(%r)
@@ -117,10 +118,15 @@ def assert_reclaimed(before, after, current):
     assert all(r in after['role_instances'] for r in before['role_instances'] if r != old_role)
 
 
-def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *, abandon_acquisition=False):
-    # Both consumers share process ownership, the independent SQL barrier and
+def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *, abandon_acquisition=False, retire_initial=False):
+    assert not (abandon_acquisition and retire_initial)
+    # Consumers share process ownership, the independent SQL barrier and
     # retry timing. Their durable effects remain separate explicit oracles.
     def effects(before, after, committed):
+        if retire_initial:
+            from initial_retirement import assert_retired
+            assert_retired(before, after, digest, committed=committed, released=False)
+            return
         if not abandon_acquisition:
             assert_effects(before, after, committed, digest)
             return
@@ -134,13 +140,15 @@ def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *
         assert_effects(isolated, after, True, digest)
 
     shutil.copy2(Path(__file__).with_name('installed_client.py'), output / 'installed_client.py')
-    schedules = ([('abandon_insert_signal', False), ('abandon_commit_deadline', True)] if abandon_acquisition
+    schedules = ([('retire_update_signal', False), ('retire_commit_deadline', True)] if retire_initial
+        else [('abandon_insert_signal', False), ('abandon_commit_deadline', True)] if abandon_acquisition
         else [('source_update_signal', False), ('source_commit_deadline', True)])
     for name, deferred in schedules:
         database, config, directory = prepare(name)
         before = rows(database)
         lab.write_json(output / (name + '-before.json'), before)
-        ddl = install_barrier(pg, database, deferred, abandon_acquisition=abandon_acquisition)
+        ddl = install_barrier(pg, database, deferred, abandon_acquisition=abandon_acquisition,
+            retire_initial=retire_initial)
         (output / (name + '-barrier.sql')).write_text(ddl)
         # The advisory key is database-local, absent before this isolated owner.
         assert lab.sql(pg, database, f"SELECT count(*) FROM pg_locks WHERE database = "
@@ -157,7 +165,7 @@ def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *
                 holder = int(wait_for(lambda: lock_out.read_text().strip(), 'source-barrier-owned', 5))
                 prefix = output / name
                 lab.docker('exec', '-d', client, 'python3', '/lab/installed_client.py', config,
-                    '/lab/' + name, 'abandonment' if abandon_acquisition else 'source-closure')
+                    '/lab/' + name, 'retirement' if retire_initial else 'abandonment' if abandon_acquisition else 'source-closure')
                 wait_for(lambda: Path(str(prefix) + '.pid.json').exists(), 'source-CLI-pid', 5)
 
                 def blocked():
@@ -173,6 +181,8 @@ def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *
                 query = observed[0]['query'].strip()
                 if deferred:
                     assert query == 'COMMIT', query
+                elif retire_initial:
+                    assert 'UPDATE control.producer_epochs' in query and "state='retired'" in query, query
                 elif abandon_acquisition:
                     assert 'INSERT INTO control.acquisition_gaps' in query, query
                 else:
@@ -180,7 +190,7 @@ def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *
                 lab.write_json(output / (name + '-blocked.json'), observed)
                 measured = time.monotonic()
                 if not deferred:
-                    signal(client, prefix, abandon_acquisition=abandon_acquisition)
+                    signal(client, prefix, abandon_acquisition=abandon_acquisition, retire_initial=retire_initial)
                 ended = terminal(prefix)
                 elapsed = time.monotonic() - measured
                 assert ended['exit_code'] == 4 and not ended['forced'] and elapsed < 6, ended
@@ -205,17 +215,22 @@ def run(pg, client, output, rows, prepare, check_native, retry, cases, digest, *
             "WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'source-backend-ended', 5)
         after = rows(database)
         lab.write_json(output / (name + '-after.json'), after)
+        # Retirement's immediate AFTER trigger holds after its first row update;
+        # source/abandonment retain their original BEFORE trigger schedules.
         # UPDATE without a sent COMMIT rolls back; COMMIT already executing may
         # finish after client death. This case qualifies the observed durable path.
         effects(before, after, deferred)
         check_native(directory, name + '-after')
         result = dict(name=name, status='PASS', terminal=ended, native_rows=49,
-            original_requests=4, control_tables=len(after), source_closed=abandon_acquisition or deferred,
+            original_requests=4, control_tables=len(after), source_closed=retire_initial or abandon_acquisition or deferred,
             seconds_after_observed_block=elapsed, backends_after_client=len(remaining or []),
             schedule='deadline during COMMIT; durable after client death' if deferred else
+                'SIGTERM after producer UPDATE; rollback' if retire_initial else
                 'SIGTERM during INSERT; rollback' if abandon_acquisition else 'SIGTERM during UPDATE; rollback')
         if abandon_acquisition:
             result['acquisition_abandoned'] = deferred
+        if retire_initial:
+            result['initial_retired'] = deferred
         cases.append(result)
         lab.write_json(output / (name + '-result.json'), result)
         # Preserve lease semantics. Retry uses a fresh real claim only after the

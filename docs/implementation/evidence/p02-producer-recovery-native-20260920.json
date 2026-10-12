@@ -2487,7 +2487,7 @@
     "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
   },
   "initial_retirement_20261002": {
-    "status": "CORRECTED_NATIVE_BUILD_PASS; installed corrected rerun NOT_RUN",
+    "status": "PASS_NATIVE_BUILD_AND_INSTALLED_FIRST_WAVE; retirement fault/authority/lock qualification pending",
     "tasks": [
       "P02-T01 Step5",
       "P02-T02 Step4",
@@ -2503,10 +2503,10 @@
     "red_result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN",
     "scope": "Explicit initial producer/domain retirement and Ingest release; retained ACK/GC zero; successor and full M1 remain",
     "pending": [
-      "Installed signed retirement and exact completed retry",
-      "Refusals including zero-request workflow and native unbound Event",
-      "Populated additive migration/reapply",
-      "Actual rollback, ambiguous COMMIT and authority/lock schedules"
+      "Actual rollback and ambiguous COMMIT with same-root fresh-Control retry",
+      "Current Control authority and concurrent lock schedules",
+      "True zero-issued producer, zero-request import, workflow binding/checkpoint obligations",
+      "Explicit successor, unchanged signed-event restart/resend and remaining M1"
     ],
     "product_source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
     "product_tree": "6d54e7cc8bbab5cb9337b173a6db08e14983bccb",
@@ -2537,7 +2537,7 @@
         "Clippy warnings denied"
       ]
     },
-    "review_pending": "Clock correction f12dbf0 and its native build are recovered and verified. Corrected installed ten-case run plus actual interruption/authority/lock qualification remain pending. Original failure is unchanged.",
+    "review_pending": "First-wave f12 installed cases pass on 2026-10-12; preserved original failure remains FAIL. Fault fixture prepared for actual execution, not yet qualified.",
     "original_engine_failure": {
       "capture": {
         "label": "retirement-engine-first",
@@ -2675,6 +2675,214 @@
       "installed_corrected_engine": "NOT_RUN",
       "original_failed_engine_preserved": "ingest-recovery-engine-6bc2005/bindings/result.json",
       "next": "Fresh exact-f12 sibling run via experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement BUILD_ARTIFACT_DIR; more than 2 GiB free and live prerequisites required."
+    },
+    "corrected_installed_first_wave_20261012": {
+      "status": "PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE",
+      "source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "owner": "0413e7dbcebefbf84c90b3948f4bb24b",
+      "started_at": "2026-10-12T08:52:17.028213+00:00",
+      "finished_at": "2026-10-12T08:52:55.644643+00:00",
+      "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "client": {
+        "id": "79937583b1888499f9e520023b7967cbf774f28dceba227636f3083e54b457e0",
+        "name": "bigbrotr-acquisition-binding-f12dbf0"
+      },
+      "databases": [
+        "bb_scope_bind_f12dbf0_retire_signed",
+        "bb_scope_bind_f12dbf0_retire_pending",
+        "bb_scope_bind_f12dbf0_retire_missing_copy",
+        "bb_scope_bind_f12dbf0_retire_unbound_event",
+        "bb_scope_bind_f12dbf0_retire_mixed",
+        "bb_scope_bind_f12dbf0_retire_old_schema",
+        "bb_scope_bind_f12dbf0_retire_revoked",
+        "bb_scope_bind_f12dbf0_retire_no_request_job",
+        "bb_scope_bind_f12dbf0_retire_clock_regressed"
+      ],
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "missing_owned": [],
+      "not_run": [
+        "retirement SQL interruption/COMMIT and concurrent lock schedules",
+        "native syscall/crash/ENOSPC, capacity/load/aged-state",
+        "successor, ACK/GC and full M1",
+        "arm64/release"
+      ],
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-f12dbf0",
+      "result_sha256": "93eb62bbef23f00a64c2d3441ccd0b63309f3249d35300d0ade70cae654db357",
+      "build_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "binary_sha256": "b0aa597b383ee44dc7407edfe683f0c10572f5206a635163133a3714d83db2cd",
+      "probe_sha256": "59e307ab7df0001cc52c9a46759ec38109ee565e3216cc4ce8797340e4aa1bbb",
+      "cases": [
+        {
+          "name": "retire-signed",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.1884776884689927
+        },
+        {
+          "name": "retire-signed-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.18526754714548588
+        },
+        {
+          "name": "retire-pending",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.14176600333303213
+        },
+        {
+          "name": "retire-missing-copy",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Conflict",
+          "seconds": 0.1644492382183671
+        },
+        {
+          "name": "retire-unbound-event",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Conflict",
+          "seconds": 0.17812106758356094
+        },
+        {
+          "name": "retire-mixed",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "InvalidMetadata",
+          "seconds": 0.19400508049875498
+        },
+        {
+          "name": "retire-old-schema",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "IncompatibleDeployment",
+          "seconds": 0.0871869195252657
+        },
+        {
+          "name": "retire-revoked",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.19370972830802202
+        },
+        {
+          "name": "retire-no-request-job",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.1817050976678729
+        },
+        {
+          "name": "retire-clock-regressed",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "InvalidMetadata",
+          "seconds": 0.19991503935307264
+        }
+      ],
+      "source_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "oracle": {
+        "native_rows": 49,
+        "original_requests": 4,
+        "dictionary_recorded_us": 1790930661589775,
+        "event_received_us": 1790930661641775,
+        "event_recorded_us": 1790930661689041
+      },
+      "terminal": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T08:52:17.11091914Z",
+            "FinishedAt": "2026-10-12T08:52:54.85523189Z"
+          }
+        },
+        {
+          "id": "79937583b1888499f9e520023b7967cbf774f28dceba227636f3083e54b457e0",
+          "name": "/bigbrotr-acquisition-binding-f12dbf0",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T08:52:18.051764273Z",
+            "FinishedAt": "2026-10-12T08:52:51.806710504Z"
+          }
+        }
+      ],
+      "clock_refusal": {
+        "exit": 4,
+        "no_stdout": true,
+        "reason": "InvalidMetadata"
+      }
+    },
+    "retirement_fault_fixture_20261012": {
+      "status": "PREPARED_NOT_RUN",
+      "entrypoint": "experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement-faults BUILD",
+      "scope": "Immediate AFTER producer UPDATE + SIGTERM rollback, deferred retirement COMMIT + deadline and durable completion after client death, same-root fresh-Control exact retry for each",
+      "expected_cases": 4,
+      "product_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "no_product_or_migration_changes": true,
+      "guard": "Exact retained CLI/probe hashes; reviewed unchanged production/build inputs, governance docs excluded from path refusal; original binary source remains f12",
+      "review": "Independent read-only AI review found no blocking defect in five-file diff; not external certification",
+      "local_checks": {
+        "syntax_modules": 5,
+        "existing_capture_oracle_replays": 10,
+        "corrupt_after_states_rejected": 6,
+        "synthetic_reclaim_controls": "Both first-success and already-retired shapes accepted; corrupted prior-Control fence, Ingest fence and domain timestamp rejected; not engine evidence",
+        "artifact_checker_errors": 0,
+        "handoff_checker_errors": 0,
+        "unchanged_prose_cycle_candidates": [
+          "P03-T02/P04-T02",
+          "P04-T13/P05-T08",
+          "P04-T14/P05-T05"
+        ]
+      }
     }
   }
 }

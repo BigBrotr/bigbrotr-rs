@@ -2,6 +2,11 @@
 
 ## Tux-only resumption — 2026-10-12
 
+Q35 activates the continuing full-product goal and appoints this session the sole
+integrating owner. Continue implementation, verification, private Git delivery
+and evidence-preserving maintenance autonomously through the existing selected
+scope. The goal is active, not merely prepared for another session.
+
 The owner requests recovery of interrupted development, preserving current work,
 reconciling GitHub with Tux, a concrete resource-retirement plan and preparation
 of the continuing full-product Codex goal. Tux is now the sole authoring/Git,

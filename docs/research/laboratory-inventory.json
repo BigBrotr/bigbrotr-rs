@@ -38956,5 +38956,46 @@
       "evidence": "/home/tux/bigbrotr-rs/docs/research/evidence/tux-resumption-20261012.json"
     },
     "preserve": "All old lab paths, datasets, backup/catalog/native/fault states, original failure evidence, qualified artifacts and unrelated workloads. No blanket reuse of 2026-09-17 retirement authority."
+  },
+  "implementation_initial_retirement_20261012": {
+    "observed_at": "2026-10-12T08:52:06.645852+00:00",
+    "owner": "0413e7dbcebefbf84c90b3948f4bb24b",
+    "status": "PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-f12dbf0",
+    "fixture_revision": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+    "build_artifacts": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f12dbf0/out/artifacts",
+    "borrowed_pg": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg",
+    "seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9/bindings",
+    "resources": "New per-case Control/native clones and one labeled client; harness returns borrowed PG to stopped; originals preserved",
+    "terminal_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-f12dbf0/bindings/result.json",
+    "cleanup": "Retain original and new evidence; no databases or containers deleted",
+    "finished_at": "2026-10-12T08:52:55.644643+00:00",
+    "resources_state": "STOPPED_RETAINED",
+    "client": {
+      "id": "79937583b1888499f9e520023b7967cbf774f28dceba227636f3083e54b457e0",
+      "name": "bigbrotr-acquisition-binding-f12dbf0"
+    },
+    "databases": [
+      "bb_scope_bind_f12dbf0_retire_signed",
+      "bb_scope_bind_f12dbf0_retire_pending",
+      "bb_scope_bind_f12dbf0_retire_missing_copy",
+      "bb_scope_bind_f12dbf0_retire_unbound_event",
+      "bb_scope_bind_f12dbf0_retire_mixed",
+      "bb_scope_bind_f12dbf0_retire_old_schema",
+      "bb_scope_bind_f12dbf0_retire_revoked",
+      "bb_scope_bind_f12dbf0_retire_no_request_job",
+      "bb_scope_bind_f12dbf0_retire_clock_regressed"
+    ],
+    "result_sha256": "93eb62bbef23f00a64c2d3441ccd0b63309f3249d35300d0ade70cae654db357",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+  },
+  "implementation_retirement_faults_20261012": {
+    "status": "PREPARED_NOT_RUN",
+    "owner": "root sole integrating owner under Q35",
+    "root_policy": "Fresh sibling runs/ingest-retirement-faults-<fixture revision>; immutable clean source and retained f12 artifacts",
+    "borrowed_pg": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg",
+    "seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9/bindings",
+    "resources": "New clone per fault schedule, native copies and one labeled client; stop borrowed PG/client; preserve every original and new failure receipt",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
   }
 }

@@ -1,148 +1,130 @@
 # Current execution checkpoint
 
-Observed 2026-10-12 on Tux during recovery/preparation. Navigation, not another
-plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
-and verify current Git, resources and evidence before using this record.
+Observed 2026-10-12 on Tux during autonomous implementation. Navigation, not
+another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+and verify Git, evidence and resources before continuing.
 
 ## Mandate and repository
 
-The complete selected product remains authorized and INCOMPLETE. Q34 makes Tux
-the sole editing/Git, development and test host. Preserve private bigbrotr-rs,
-unpublished Cargo, legacy reference repositories and unrelated workloads. No public
-release, rename or complete-product claim. This session prepared the continuing
-[goal](agent-handoff.md#starting-the-continuing-goal-on-tux); it did not activate it.
+The complete selected product remains INCOMPLETE. Q34 makes Tux the sole editing,
+Git, development and test host; Q35 appoints this session sole integrating owner
+and activates the full-product goal through M1–M5. Continue ordinary authorized
+work autonomously. Preserve private distribution, unpublished Cargo packages,
+legacy reference repositories and unrelated workloads. No public release,
+repository rename or production deployment is authorized.
 
-Canonical checkout: `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Recovered product base/last observed source HEAD is
-`f12dbf04677f8afa8c62aa1c8638e199dad0abc1`, tree
-`7dd4e343f51b50a6055096ef14a0aaec03a0a8e5`.
-Freshly fetched `origin/main` and local tracking `main` are
-`54ad09dc6659bfe67e3bf2871e43ce619c199a5c`. Four recovered commits are ahead,
-none behind: f36a09e, 64f60b0, 6bc2005, f12dbf0. They are retained on the recovery
-branch and are not yet a qualified private push. Before integration/publication,
-fetch again and qualify the affected recovered behavior; do not force-push.
+Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
+Last observed committed HEAD is c71864a100316c7d169d64c523207e64d9dfb963, containing
+recovery documentation over recovered product f12dbf04677f8afa8c62aa1c8638e199dad0abc1
+(tree7dd4e343f51b50a6055096ef14a0aaec03a0a8e5). Fresh origin/main is
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c: five commits ahead, none behind at that
+observation. Fetch again before private integration; no force push.
 
-Root owns the Tux-only recovery documentation/evidence change on top of that base.
-Its scope is AGENTS/PLAN, mandate/questions, development/delivery/build and Rust
-workflow references, phase index, this checkpoint, the existing agent guide's goal,
-lab inventory and dated resumption/producer-recovery evidence. No product code,
-lockfile, migration or task checkbox changes. Read actual `git status` and log:
-a subsequent coherent recovery-documentation commit may be HEAD; do not guess its
-hash from this record. No active merge/rebase or second writable source owner was
-observed. Two independently tasked read-only AI reviews covered recovery/cache
-questions; they are not certification of the whole source tree.
+Root owns pending goal-activation, first-wave evidence and retirement fault-fixture
+changes in planning mandate/questions, this checkpoint, the existing recovery
+report and lab inventory, acquisition-scope/bindings.py and four ingest-bootstrap
+helpers. No product Rust, migration, lockfile or task checkbox changes. Read actual
+status/log: subsequent coherent commits may be HEAD. No merge/rebase or concurrent
+source writer is active. Two AI reviewers cover bounded recovery/fixture and cache
+questions; neither certifies the entire product.
 
-Original laboratory checkouts/bundles remain unchanged. The new checkout has
-independent Git objects. `.research/tux-resumption-20261012/source-before-migration.bundle`
-contains complete selected reachable Git history and verifies successfully;
-`git fsck --full` passed. This same-disk preservation is not host-loss backup.
-The [dated audit](../research/tux-resumption-20261012.md) and its
-[evidence](../research/evidence/tux-resumption-20261012.json) own reconciliation details.
+Original lab source snapshots remain unchanged. The independent canonical Git
+checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
+preserve recovered history; a same-disk bundle is not host-loss backup. The
+[dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation.
+Missing historical Mac captures remain unavailable evidence.
 
-## Verified interruption boundary
+## Current responsibility and executed evidence
 
-The former checkpoint was stale: f12dbf0's clock-regression correction was committed
-and built, not uncommitted. Its retained run is
-`/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f12dbf0`.
-`out/qualification.json` records PASS_INGEST_HISTORY_BUILD_ONLY, finishing
-2026-10-02 14:54:53 UTC: release CLI/probe, 4 entrypoints, 35 migration catalog,
-3 source-closure + 9 producer-closing + 11 producer-recovery native tests and Clippy.
-Fresh read-only verification matched actual artifact hashes and all 1,718 source
-manifest files. No rebuild is needed merely because the session changed.
+Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. Initial producer/domain
+retirement is distinct from successor activation and native ACK/reclamation.
+Native marker v2 remains closing, issued4 / ACK0 / retired0; historical closing
+and ordinary admission retain their deliberate retired/released refusals.
+Applied migrations0027/0028/0029 are immutable; corrections are additive.
 
-The [producer recovery report](evidence/p02-producer-recovery-native-20260920.json)
-now records that reconciliation. The corrected connected ten-case engine run
-remains NOT_RUN: standard run receipts yielded no f12 engine result. Original
-`ingest-recovery-engine-6bc2005/bindings/result.json` stays FAIL on product 64f60b0;
-first 9 cases passed, last clock-regression case committed an invalid earlier
-retirement timestamp. Preserve that deliberately incompatible clock clone.
-The correction rejects current SQL time before locked source.closed_at_us prior
-to terminal updates. Applied 0029 is unchanged.
+The retained `runs/ingest-history-f12dbf0/out/qualification.json` is
+PASS_INGEST_HISTORY_BUILD_ONLY: release CLI/probe,4 entrypoint,35 migration catalog,
+23 native tests and Clippy. Exact artifacts and all1718 source-manifest files were
+rechecked. No rebuild is needed for unchanged production/build inputs.
 
-Mac-side ignored captures such as `.research/implementation/ingest-recovery-20261002`
-were not recovered. Existing Tux raw artifacts are available; missing capture
-bundles remain unavailable evidence, not regenerated PASS claims.
+New `runs/ingest-recovery-engine-f12dbf0/bindings/result.json` is
+PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE, finished2026-10-12T08:52:55Z.
+All ten signed-store cases pass, including completed retry, pending workflow,
+missing copy, unbound Event, mixed terminal state, old schema, historical actor
+revocation, a zero-request acquisition job on a four-request producer, and clock
+regression. Clock regression now returns exit4/InvalidMetadata with no terminal
+writes. Complete70-table effects,49 native rows/four original inputs, additive
+migration/reapply and original69-table Control/32-table catalog/files/report
+preservation are checked. Original `ingest-recovery-engine-6bc2005` stays FAIL;
+do not overwrite or remove its deliberately incompatible clock clone.
 
-## Next bounded action and dependencies
+The [owning recovery evidence](evidence/p02-producer-recovery-native-20260920.json)
+records hashes, cases, source/build identities and limits. Borrowed PG and the new
+client finished stopped, no OOM, no cleanup errors or unrelated lifecycle changes.
+No whole task or milestone closes from these ten cases.
 
-First reconcile the selected run's space/ownership preflight using the concrete
-[cleanup sequence](../research/tux-resumption-20261012.md#concrete-cleanup-sequence)
-and existing lab inventory. The audit deleted no resources. Current disk headroom
-is below the existing export runner's64GiB reserve; do not lower the reserve or
-launch a broad fresh build to repeat already verified evidence.
+## Next bounded action
 
-Then use verified retained f12 CLI/probe outputs with the existing installed
-retirement fixture on **new inventoried clones**. Recheck exact executable/input
-hashes, source/fixture identity, required image, current PG owner and locks before
-launch. Expected discrimination: all ten cases satisfy their own oracles;
-retire-clock-regressed returns exit4/InvalidMetadata with no terminal writes.
-Record actual PASS/FAIL/NOT_RUN, original-state preservation and stopped/retained
-resources in the existing producer recovery report and lab inventory.
+Review and commit the prepared fault-only fixture, then execute its clean exact
+revision in a fresh sibling `runs/ingest-retirement-faults-<revision>`:
+`python3 SOURCE/experiments/acquisition-scope/bindings.py RUN_ROOT
+--ingest-retirement-faults runs/ingest-history-f12dbf0/out/artifacts`.
+Use absolute paths, SOURCE=RUN_ROOT/source. The launcher requires all BigBrotr
+containers stopped, exact borrowed PG ownership, fresh names and >2GiB free.
+Governance-only AGENTS.md/PLAN.md differences now have an explicit reuse allowance;
+fixture review still checks unchanged production/build inputs and retains f12 as
+the binary source identity. This is not an automatic proof for arbitrary experiments.
 
-Use tracked `experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement
-BUILD_ARTIFACT_DIR`; the audit contains the exact invocation. RUN_ROOT must be a
-fresh sibling under the old `runs/` parent with clean exact f12 source: the launcher
-resolves retained inputs by sibling paths, and its artifact-reuse guard would
-reject the new AGENTS/PLAN governance changes. Required retained inputs and image
-exist; live database collision/preconditions remain to check. This fixture's
-preflight needs more than 2 GiB free, not the larger export wave's 64 GiB reserve;
-it can proceed at current headroom if fresh checks pass. Do not claim cleanup is
-a prerequisite for every small useful task.
+Expected four cases: actual AFTER producer UPDATE/SIGTERM rolls back; deferred
+retirement COMMIT/deadline can complete after client death; each same-root retry
+uses fresh Control after natural lease expiry and preserves exact terminal history.
+Observe the actual blocked SQL and compare all70 tables and native bytes. Check
+previous-Control fencing separately from Ingest retirement; do not normalize an
+unchecked effect. Record actual failure or pass, retained clones and terminal
+ownership in the existing evidence and inventory. Do not overwrite a failed run.
 
-Active product responsibility remains P02-T01 Step 5 /P02-T02 Step 4, enabling
-M1/P01-T09 Step 4: explicit successor, restart/resend of the signed event with
-unchanged first admission, repeated with provenance off. After the ten cases,
-qualify retirement rollback/ambiguous COMMIT, zero-request workflow/import
-obligations, authority and lock schedules. Do not treat retirement as ACK/GC or
-successor activation: native v2 is closing, issued 4 / ACK 0 / retired 0. Ordinary
-admission and historical closing retain their deliberate retired/released refusal.
-No whole task/phase closes from this recovery or a happy-path retirement.
+After faults, remaining retirement qualification includes current Control authority,
+concurrent lock orders, true zero-issued producer, zero-request import and persisted
+workflow binding/checkpoint obligations. Explicit successor/restart/resend must
+retain first admission and repeat with provenance off. The earlier archive evidence
+qualifies signed acquisition→durable admission→timer archive→private history→353-byte
+signed JSONL export; full M1 additionally needs online indexing, outages and installed
+bundle journeys. Five exports under256MiB remain NOT_RUN. Follow existing dependencies
+for subsequent analytics, interfaces, operations, browser and website work.
 
-Earlier [initial Archive evidence](evidence/p02-initial-archive-native-20261002.json)
-qualifies product 3a7f884 / fixture b7b60f9 through signed acquisition, durable admission,
-timer publication, private history and 353-byte signed JSONL export. Full M1 still
-needs successor/replay, provenance-off restart, online indexing, dependency outages
-and installed bundle journeys. Five exports under 256 MiB remain NOT_RUN. Whole
-Discovery/Monitor/Ranker services are not prerequisites for the next M1 slice.
-The selected analytics, interfaces, operations, browser and website work remains;
-use the existing task dependencies rather than another backlog.
+## Resources and maintenance
 
-## Resources and preservation
+The [lab inventory](../research/laboratory-inventory.json) owns resource records.
+Original implementation/qualification/object-storage labs total about975GiB
+(lower bounds where access is denied). Roughly36GiB free remains after first-wave
+clones; remeasure before allocation. Small retirement fixtures need >2GiB; the
+larger export wave still requires64GiB. Never lower that reserve to force a run.
 
-Fresh Docker census: 1,182 containers, 1,163 BigBrotr names, zero BigBrotr running.
-Six unrelated services remain running: inspirehep-reindex-db/mq/cache/es, ollama
-and tgdataset-mongo. Accessible process inspection found only audit processes;
-privileged/inaccessible processes were not fully audited. Recheck actual owners,
-open handles/mounts and cache locks before cleanup or launch.
+Cleanup reviewer owns only ignored `.research/tux-maintenance-20261012/`.
+A manifest/executor is being prepared for approximately41GiB of recognized
+single-link compiler intermediates in18 explicitly selected old targets. No deletion
+yet. Root must inspect the frozen manifest and executor before execution. Preserve
+all original executable/shared-library paths, artifacts, reports and datasets;
+retired targets must never be reused incrementally. No global prune or whole-run
+removal. Inaccessible unrelated processes are an explicit inspection boundary.
 
-The resource inventory now links this audit's census. The three retained lab roots
-consume approximately 975 GiB combined; implementation/object-storage figures have
-unreadable entries and are lower bounds. Initial free disk was about 38 GiB; remeasure
-before allocation. The independent cache plan identifies about 41.46 GiB of candidate
-intermediates, not a deletion-ready allowlist or reclaimed space. No global prune,
-whole-run removal or retained dataset deletion was performed/authorized by the plan.
+Shared compiler `runs/network-1154757/out/build/{target,cargo-home}` and exclusive
+`.compiler-cache.lock` stay protected. Retained native build uses clang14; host
+clang19 discovery is not its qualification. Rust1.98.1/Node26.4.0 and local pinned
+pnpm9.15.9 (`.research/tooling/node_modules/.bin`) are available. Keep large outputs
+off RAM-backed /tmp and artifacts outside mutable caches.
 
-Preserve shared compiler `network-1154757/out/build/{target,cargo-home}` under
-its exclusive `.compiler-cache.lock`; no build from this audit holds it. Preserve
-qualified ELFs outside mutable caches. The retained native image/compiler is
-clang 14; available host clang 19 is separately discovered, not qualified by that
-old result. Local Rust 1.98.1 and Node 26.4.0 are present; pinned pnpm 9.15.9 lives in
-`.research/tooling`. The audit documents local PATH setup without global changes.
+Borrowed PG `relay-source-recheck-e06f580/pg` and signed seed
+`installed-archive-export-b7b60f9` retain their original owner labels and evidence.
+Preserve every original/fault clone, bb_source_template, broken0137713_gap_relations,
+bff0bc3 gap parent, private-history32dd/history-captureb5c dependencies,
+installed-publication61271e2 worker,4e6b5c0 assets,8fa/f677 inputs,649 cache,network
+e38/1a2 evidence,03b0197 artifacts and corrupt91d5 clones. Negative sources
+9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll1154757 must never be merged/pushed.
+All identities remain in the inventory; old cleanup receipts are not scripts to replay.
 
-Borrowed PG at `relay-source-recheck-e06f580/pg` was observed stopped through Docker;
-verify container ID/labels against the inventory before using it. Preserve secrets,
-bb_source_template, all original/fault clones, intentionally broken 0137713_gap_relations,
-original signed seed installed-archive-export-b7b60f9, bff0bc3 populated gap parent,
-source-closure/fault/job-lock clones and their original catalogs/files.
-Protect private-history-32dd58d/history-capture-b5c862a's dependency
-installed-publication-61271e2/out/archive-worker, 4e6b5c0 assets, 8fa/f677 inputs,
-649 cache,network e38/1a2 evidence, 03b0197 artifacts and corrupt 91d5 clones.
-Never merge/push negative sources 9fa8b98/8effc76/5f1582c/a334ac8/
-network-direct-no-poll-1154757. Historical Mac negative/dirty worktree claims are
-not claims that those worktrees were recovered. Full identities remain in the
-inventory; previous cleanup receipts are history and must not be replayed.
-
-GitHub's latest observed run 37017677570 did not start its jobs due to billing/
-spending restrictions. Q33 authorizes isolated trusted native Tux checks, separately
-reported. Native arm64, actual signing/registry provisioning and public promotion
-retain their own gates. No emulated or amd64 run can supply native arm64 evidence.
+Six unrelated services remain running: inspirehep-reindex db/mq/cache/es,ollama,
+tgdataset-mongo. Recheck actual processes and container owners before allocations.
+GitHub run37017677570 could not start jobs because of billing/spending restrictions;
+Q33 authorizes isolated trusted Tux CI, recorded independently. Native arm64,
+actual signing/registry provisioning and public promotion keep their separate gates.

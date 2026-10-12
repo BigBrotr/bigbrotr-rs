@@ -64,7 +64,8 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
-ingest_retirement = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement'
+ingest_retirement_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-faults'
+ingest_retirement = ingest_retirement_faults or len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement'
 ingest_abandonment_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-abandonment-faults'
 ingest_abandonment_limits = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-abandonment-limits'
 ingest_abandonment_guards = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-abandonment-guards'
@@ -92,9 +93,11 @@ build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/a
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
 if reuse_build:
-    # Reuse only reviewed exact artifacts whose complete Rust/build inputs match.
+    # Reuse only reviewed exact artifacts with unchanged production/build inputs.
+    # Governance documents are not compiled; retain the original binary identity.
+    # Review experiment changes too: this path filter is not a build-input proof.
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
-    assert all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
+    assert all(n in ('AGENTS.md', 'PLAN.md') or n.startswith(('docs/', 'experiments/')) for n in changed), changed
 else:
     assert built['source'] == revision
 sha = lambda value: hashlib.sha256(value).hexdigest()
@@ -179,9 +182,15 @@ if ingest_abandonment_faults:
         'blocked native calls/crash/ENOSPC, capacity/load/aged-state', 'arm64/release']
 
 if ingest_retirement:
-    report['wave'] = 'installed-initial-retirement'
+    report['wave'] = 'installed-initial-retirement-faults' if ingest_retirement_faults else 'installed-initial-retirement'
     report['not_run'] = ['retirement SQL interruption/COMMIT and concurrent lock schedules',
         'native syscall/crash/ENOSPC, capacity/load/aged-state', 'successor, ACK/GC and full M1', 'arm64/release']
+
+if ingest_retirement_faults:
+    report['not_run'] = ['retirement current-authority and concurrent lock schedules',
+        'zero-issued producer and zero-request import obligations',
+        'native syscall/crash/ENOSPC, capacity/load/aged-state',
+        'successor, ACK/GC and full M1', 'arm64/release']
 
 if ingest_history:
     report['wave'] = 'ingest-history'
@@ -656,7 +665,8 @@ if ingest_abandonment:
         else 'PASS_INSTALLED_ACQUISITION_GAP_GUARDS' if ingest_abandonment_guards
         else 'PASS_INSTALLED_INITIAL_ACQUISITION_ABANDONMENT_FIRST_WAVE')
 if ingest_retirement:
-    success_status = 'PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE'
+    success_status = ('PASS_INSTALLED_INITIAL_RETIREMENT_FAULTS' if ingest_retirement_faults
+        else 'PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE')
 if ingest_history:
     success_status = 'PASS_HISTORICAL_INGEST_LOOKUP'
 if ingest_windows:
@@ -930,7 +940,7 @@ try:
                 from installed_signed_recovery import run as run_signed_recovery
                 report['cases'].append(run_signed_recovery(pg,client,output,rows,clone,
                     close_source=ingest_source_closure,
-                    schedules='retire' if ingest_retirement else 'abandon-faults' if ingest_abandonment_faults else 'abandon-limits' if ingest_abandonment_limits else 'abandon-guards' if ingest_abandonment_guards else 'abandon' if ingest_abandonment else 'locks' if ingest_source_locks else 'faults' if ingest_source_faults else None))
+                    schedules='retire-faults' if ingest_retirement_faults else 'retire' if ingest_retirement else 'abandon-faults' if ingest_abandonment_faults else 'abandon-limits' if ingest_abandonment_limits else 'abandon-guards' if ingest_abandonment_guards else 'abandon' if ingest_abandonment else 'locks' if ingest_source_locks else 'faults' if ingest_source_faults else None))
             else:
                 from installed_recovery import run as run_recovery
                 completed = clone(name, 'bb_source_template')
@@ -1041,7 +1051,7 @@ try:
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
     if ingest_recovery:
-        expected = 10 if ingest_retirement else 4 if ingest_abandonment_faults else 6 if ingest_abandonment_limits else 11 if ingest_abandonment_guards else 6 if ingest_abandonment else 2 if ingest_source_locks else 4 if ingest_source_closure else 3 if ingest_recovery_interruptions or ingest_recovery_signed else 9
+        expected = 4 if ingest_retirement_faults else 10 if ingest_retirement else 4 if ingest_abandonment_faults else 6 if ingest_abandonment_limits else 11 if ingest_abandonment_guards else 6 if ingest_abandonment else 2 if ingest_source_locks else 4 if ingest_source_closure else 3 if ingest_recovery_interruptions or ingest_recovery_signed else 9
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
             and len(report['cases'][0]['cases']) == expected, 'positive-recovery-case-set')
     if ingest_history:

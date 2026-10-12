@@ -13,13 +13,14 @@ from acquisition_abandonment import assert_abandoned, duplicate_intent
 from source_closure_faults import assert_effects
 
 
-def assert_retired(before, after, digest, *, committed, released):
+def assert_retired(before, after, digest, *, committed, released, reclaims_control=False):
     changed = {'owner_epochs', 'role_instances', 'producer_epochs', 'allocation_domains'}
     assert before.keys() == after.keys()
     for table in before.keys() - changed:
         assert before[table] == after[table], table
     old_controls = [r for r in before['owner_epochs'] if r['role'] == 'control']
-    current, = [r for r in after['owner_epochs'] if r['role'] == 'control' and r not in old_controls]
+    current, = [r for r in after['owner_epochs'] if r['role'] == 'control'
+        and r['epoch'] == max(r['epoch'] for r in old_controls) + 1]
     assert len(after['owner_epochs']) == len(before['owner_epochs']) + 1
     assert len(after['role_instances']) == len(before['role_instances']) + 1
     assert current['epoch'] == max(r['epoch'] for r in old_controls) + 1
@@ -30,6 +31,25 @@ def assert_retired(before, after, digest, *, committed, released):
     assert (current_role['retired_at_us'] is not None) == released
     old_ingest, = [r for r in before['owner_epochs'] if r['role'] == 'ingest']
     old_role, = [r for r in before['role_instances'] if r['role_instance_id'] == old_ingest['role_instance_id']]
+    if reclaims_control:
+        from source_closure_faults import assert_reclaimed
+        # Retirement may also release Ingest. Its real transition is checked
+        # below; the separate Control-fence oracle must see only its own effect.
+        fenced = dict(after,
+            owner_epochs=[old_ingest if r['role'] == 'ingest' else r for r in after['owner_epochs']],
+            role_instances=[old_role if r['role_instance_id'] == old_role['role_instance_id'] else r
+                for r in after['role_instances']])
+        assert_reclaimed(before, fenced, current)
+        previous = max(old_controls, key=lambda r: r['epoch'])
+        owner, = [r for r in after['owner_epochs'] if (r['resource_id'], r['epoch']) ==
+            (previous['resource_id'], previous['epoch'])]
+        role, = [r for r in after['role_instances'] if r['role_instance_id'] == previous['role_instance_id']]
+        # Normalize only the independently verified predecessor, keeping every
+        # original Ingest/producer/domain row for the retirement oracle.
+        before = dict(before,
+            owner_epochs=[owner if r == previous else r for r in before['owner_epochs']],
+            role_instances=[role if r['role_instance_id'] == role['role_instance_id'] else r
+                for r in before['role_instances']])
     assert all(r in after['owner_epochs'] for r in before['owner_epochs'] if r != old_ingest)
     assert all(r in after['role_instances'] for r in before['role_instances'] if r != old_role)
     ingest, = [r for r in after['owner_epochs'] if r['role'] == 'ingest']
@@ -61,7 +81,7 @@ def assert_retired(before, after, digest, *, committed, released):
             closure_digest='\\x' + digest, xmin=new['xmin'])
 
 
-def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized):
+def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, faults=False):
     def upgrade(database, config, name, target):
         before = rows(database)
         physical = lab.sql(pg, database, "SELECT jsonb_object_agg(relname,pg_relation_filenode(c.oid)) "
@@ -119,7 +139,7 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
             upgrade(database, config, name + '-29', 29)
         return database, config, directory, before
 
-    def invoke(database, config, directory, name, *, error=None):
+    def invoke(database, config, directory, name, *, error=None, reclaims_control=False):
         before = rows(database)
         lab.write_json(output / (name + '-before.json'), before)
         started = time.monotonic()
@@ -142,11 +162,21 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
                 source_closure=dict(last_complete_sequence='12', sha256=digest),
                 ingest_retirement=dict(allocation_domains=str(len(before['allocation_domains'])), acquisition_gaps='1',
                     owner_release='committed', native_acknowledged='0', native_retired='0'))
-        assert_retired(before, after, digest, committed=not error, released=not error)
+        assert_retired(before, after, digest, committed=not error, released=not error,
+            reclaims_control=reclaims_control)
         assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
         cases.append(dict(name=name, status='PASS', control_tables=len(after), native_rows=49,
             original_requests=4, expected_refusal=error, seconds=elapsed))
         lab.write_json(output / 'signed-recovery-cases.json', cases)
+
+    if faults:
+        from source_closure_faults import run as run_faults
+        def prepare_retirement(name):
+            database, config, directory, _ = ready(name)
+            return database, config, directory
+        run_faults(pg, client, output, rows, prepare_retirement, check_native, invoke, cases, digest,
+            retire_initial=True)
+        return
 
     database, config, directory, _ = ready('retire_signed')
     invoke(database, config, directory, 'retire-signed')

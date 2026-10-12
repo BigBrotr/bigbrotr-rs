@@ -239,3 +239,14 @@ worktrees for parallel implementation, and isolated immutable run inputs.
 The [recovery audit](../research/tux-resumption-20261012.md) records the verified
 baseline, space candidates, tooling and limitations. No new architecture, public
 release, removal of retained datasets or arbitrary quality quota is implied.
+
+Q35 (2026-10-12): After reviewing the recovery, the owner appoints this session
+the sole integrating owner and explicitly requests activation of the goal to
+complete the entire selected product. Autonomous implementation, verification,
+coherent commits, verified private pushes and evidence-preserving resource
+maintenance continue on Tux. The full-product goal is now active; the existing
+task plan, execution guide and single checkpoint remain authoritative. Use bounded
+subagents where useful under that guide, with one integrating source owner.
+Ask only for missing information or authority that blocks a correct required
+outcome. Preserve retained datasets, negative fixtures and unrelated applications;
+the instruction does not authorize public release or production deployment.
