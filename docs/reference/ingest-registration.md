@@ -182,9 +182,10 @@ PID/start/database tuple is independently observed absent before fresh Control
 claims authority. Before forwarding, retry creates the absent intent with fresh
 attribution; after completion, it preserves the original intent and row version.
 The independent oracle checks 24 full snapshots and rejects 34 corrupted captures.
-This still retains the local plan in one process. Process-loss reconstruction,
-abandoned-attempt retirement, writer activation and installed restart remain
-unqualified. Prepared metadata does not grant admission.
+That wave retains the local plan in one process. The read-only extension below
+qualifies a separate replacement process. Abandoned-attempt retirement, writer
+activation and installed restart remain unqualified. Prepared metadata does not
+grant admission.
 
 ## Read-only prepared history
 
@@ -213,7 +214,19 @@ retain policy-document, input, outcome, native and driver grants and deadlines.
 
 This API introduces no migration or persistent-format change. The installed
 recovery command still accepts only its original epoch1 path. Exact-source build39e7468 passes seven focused native reconstruction cases and
-affected replay regressions. Separate-process PostgreSQL qualification remains
-pending; this is not a passing installed restart claim. Completing a PG/native
-gap, retiring an empty attempt, activating a writer and repeated lifetimes remain
-separate requirements in the existing plan.
+affected replay regressions. Harness e92f3d7 passes seven actual PostgreSQL16.15/
+RocksDB11.8.1 cases from copies of an already completed prepared signed store.
+A genuinely new process receives configuration only, claims fresh Control10 and
+reconstructs four original positive outcomes/cut12 while preserving registrar3
+and preparing Control8. All71tables,52native rows/sequence62 and four input hashes
+are checked; explicit claim/renewal/release effects are accounted for separately.
+Missing/changed intent, missing native handoff, nonzero successor, missing original
+input and missing PostgreSQL outcome all refuse without repair. The independent
+oracle checks67snapshots and rejects90corrupted captures, including a consistently
+fabricated future renewal. Actual server-clock bounds and observed backend absence
+are retained. The original seed and six frozen artifacts remain unchanged.
+
+The preparing process had already finished; this wave does not inject concurrent
+live-owner loss or interruption during preparation. Completing a PG/native gap,
+retiring an empty attempt, activating a writer, installed restart/resend and
+repeated lifetimes remain separate requirements in the existing plan.

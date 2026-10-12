@@ -4273,7 +4273,7 @@
       }
     },
     "next_reconstruction_slice": {
-      "status": "PASS_NATIVE_COMPONENTS_CONNECTED_NOT_RUN",
+      "status": "PASS_PREPARED_INITIAL_HISTORY",
       "task": "Existing P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4",
       "scope": "Read-only reconstruction of the fully retired initial source beneath an exact prepared empty successor; no native completion, retirement or writer conversion in this prerequisite.",
       "observed_blockers": [
@@ -4300,8 +4300,8 @@
         "native_commit": "c8f4bff026e91df9e2783304356750d333c1770e",
         "independent_tests_commit": "559cf822e3df7e5b59248add6f38b5d92974f4eb",
         "postgres_owner": "root canonical initial_history.rs and shared exact registration/prepared-target/outcome readers",
-        "native_tests": "Seven independent focused cases; original bootstrap/dictionary/event/AlreadyDurable effects, corruption, empty target, malformed handoff, physical-store proof composition, stale sequence, limits and authority. Written and source-reviewed, NOT_RUN; no executed RED claim.",
-        "connected": "Finite separate-process probe integrated; actual fresh Control, explicit renewal versus per-request full snapshots, terminal native close and Control driver join. Harness and independent oracle remain in assigned worktrees; all connected cases NOT_RUN.",
+        "native_tests": "Seven independent focused cases written before candidate execution; first67fixture setup failed, corrected39passes allseven. See preserved_failures/native_build; no preimplementation RED claim.",
+        "connected": "Probe05946b48 integrated, qualified in build39e7468 and actual e92f3d7 wave; detailed connected evidence below.",
         "checks": "rustfmt, Python AST and git diff --check passed; structural verify_artifacts passed190Markdown/424JSON; no native build or engines for candidate yet",
         "probe_commit": "05946b48e8e11e67295ed34a79a18a3b085b06b2"
       },
@@ -4397,11 +4397,11 @@
           }
         ],
         "free_bytes_after": 71312113664,
-        "scope": "Seven independent close/reopen history tests plus affected original replay/closing/recovery/handoff/codec checks; no separate-process PG qualification or installed restart/activation yet",
+        "scope": "Seven independent close/reopen history tests plus affected original replay/closing/recovery/handoff/codec checks; separate-process PG qualification is recorded separately below, not implied by build.",
         "independent_ai_review": "Read-only audit rehashed all1732sourcefiles and exactGitarchive, all5ELFs and build-info; reproduced13checks/115testexecutions. Both ownedcontainers exited0/noOOM; all1198preexistingprojections and521priorrunentries preserved; original67FAILretained. PG source review found no further blocking counterexample in read-only scope."
       },
       "connected_candidate": {
-        "status": "NOT_RUN",
+        "status": "EXECUTED_AT_E92F3D7",
         "harness_commit": "52f6ff14654279ef547883636fa3899430f0a4d3",
         "oracle_commit": "f4063bc0cd183db8a97bfb4861505df5665ea523",
         "build": "39e746834c1587952a28c2c1e78ca8ea62d62831",
@@ -4422,7 +4422,688 @@
         "harness_observation_commit": "2fda65565ab375db7d9066f89bf9926f37b1e68d",
         "oracle_clock_commit": "4b7650579d206314131ae6e7bead525f43343784",
         "pre_engine_ai_review": "No blocking counterexample found in full new harness/oracle/probe, changed dispatch and invoked helpers. Improved actual backend absence to bounded five-second observations; added external PostgreSQL before/after clock window bounding claim/renewal/release, plus propagated extreme-expiry negative control. Window is an enclosing server observation, not exact per-statement timing. Root reviewed the corrections; no Rust/product changes."
+      },
+      "connected": {
+        "status": "PASS_PREPARED_INITIAL_HISTORY",
+        "source": "e92f3d7b48c5291bb4755621c5df2380818ff919",
+        "tree": "73ac61e5aaa59444244c436f582a9a11aae65b75",
+        "build_source": "39e746834c1587952a28c2c1e78ca8ea62d62831",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-process-e92f3d7/bindings",
+        "owner": "aa09685a70346d92f192096e94bc810d",
+        "owner_label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "7e8bf8c4b3abe4cc411c7102590f521140de247c82d95ca0cf1f633534a8b54a",
+          "name": "bigbrotr-acquisition-binding-e92f3d7"
+        },
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_e92f3d7_history_normal",
+          "bb_scope_bind_e92f3d7_history_missing_intent",
+          "bb_scope_bind_e92f3d7_history_corrupt_intent",
+          "bb_scope_bind_e92f3d7_history_missing_handoff",
+          "bb_scope_bind_e92f3d7_history_nonempty_target",
+          "bb_scope_bind_e92f3d7_history_missing_input",
+          "bb_scope_bind_e92f3d7_history_missing_outcome"
+        ],
+        "finished_at": "2026-10-12T11:36:15.696818+00:00",
+        "result_sha256": "072d770d47257ff9e7bc97bba2ead875775b6efe2de9a407f5982664c2a9d294",
+        "cases": [
+          {
+            "name": "history-normal",
+            "status": "PASS",
+            "result": {
+              "error": null,
+              "event": "successor-history-result",
+              "sequence": null,
+              "stage": "complete"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-normal",
+              "snapshots": 17,
+              "control_tables": 71,
+              "native_rows": 52,
+              "native_sequence": 62,
+              "read_sequence_delta": 0,
+              "original_inputs": 4,
+              "resolved_requests": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "original_batches": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  3
+                ],
+                [
+                  4,
+                  7
+                ],
+                [
+                  8,
+                  12
+                ]
+              ],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 4,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": null,
+              "proof_reconstructed": true,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804958646323,
+                "after_us": 1791804959123141,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 18,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_normal",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.09631600044667721,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.09632120095193386
+            }
+          },
+          {
+            "name": "history-missing-intent",
+            "status": "PASS",
+            "result": {
+              "error": "Control(InvalidMetadata)",
+              "event": "successor-history-result",
+              "sequence": null,
+              "stage": "history-load"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-missing-intent",
+              "snapshots": 7,
+              "control_tables": 71,
+              "native_rows": 52,
+              "native_sequence": 62,
+              "read_sequence_delta": 0,
+              "original_inputs": 4,
+              "resolved_requests": [],
+              "original_batches": [],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 0,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": "Control(InvalidMetadata)",
+              "proof_reconstructed": false,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804961192666,
+                "after_us": 1791804961511038,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 10,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_missing_intent",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.04525625612586737,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.04526011273264885
+            }
+          },
+          {
+            "name": "history-corrupt-intent",
+            "status": "PASS",
+            "result": {
+              "error": "Control(InvalidMetadata)",
+              "event": "successor-history-result",
+              "sequence": null,
+              "stage": "history-load"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-corrupt-intent",
+              "snapshots": 7,
+              "control_tables": 71,
+              "native_rows": 52,
+              "native_sequence": 62,
+              "read_sequence_delta": 0,
+              "original_inputs": 4,
+              "resolved_requests": [],
+              "original_batches": [],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 0,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": "Control(InvalidMetadata)",
+              "proof_reconstructed": false,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804963049515,
+                "after_us": 1791804963343456,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 11,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_corrupt_intent",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.09424179140478373,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.09424483776092529
+            }
+          },
+          {
+            "name": "history-missing-handoff",
+            "status": "PASS",
+            "result": {
+              "error": "Native(StateMismatch)",
+              "event": "successor-history-result",
+              "sequence": null,
+              "stage": "history-load"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-missing-handoff",
+              "snapshots": 7,
+              "control_tables": 71,
+              "native_rows": 51,
+              "native_sequence": 63,
+              "read_sequence_delta": 0,
+              "original_inputs": 4,
+              "resolved_requests": [],
+              "original_batches": [],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 0,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": "Native(StateMismatch)",
+              "proof_reconstructed": false,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804964816317,
+                "after_us": 1791804965105989,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 11,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_missing_handoff",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.043616460636258125,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.04361974727362394
+            }
+          },
+          {
+            "name": "history-nonempty-target",
+            "status": "PASS",
+            "result": {
+              "error": "Native(StateMismatch)",
+              "event": "successor-history-result",
+              "sequence": null,
+              "stage": "history-load"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-nonempty-target",
+              "snapshots": 7,
+              "control_tables": 71,
+              "native_rows": 52,
+              "native_sequence": 63,
+              "read_sequence_delta": 0,
+              "original_inputs": 4,
+              "resolved_requests": [],
+              "original_batches": [],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 0,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": "Native(StateMismatch)",
+              "proof_reconstructed": false,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804966782792,
+                "after_us": 1791804967105757,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 11,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_nonempty_target",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.08103788923472166,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.0810409439727664
+            }
+          },
+          {
+            "name": "history-missing-input",
+            "status": "PASS",
+            "result": {
+              "error": "Native(Input(Missing))",
+              "event": "successor-history-result",
+              "sequence": 4,
+              "stage": "request"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-missing-input",
+              "snapshots": 15,
+              "control_tables": 71,
+              "native_rows": 52,
+              "native_sequence": 62,
+              "read_sequence_delta": 0,
+              "original_inputs": 3,
+              "resolved_requests": [
+                1,
+                2,
+                3
+              ],
+              "original_batches": [
+                [
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  3
+                ],
+                [
+                  4,
+                  7
+                ]
+              ],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 4,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": "Native(Input(Missing))",
+              "proof_reconstructed": false,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804968549585,
+                "after_us": 1791804969010325,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 17,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_missing_input",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.08826247416436672,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.08826598059386015
+            }
+          },
+          {
+            "name": "history-missing-outcome",
+            "status": "PASS",
+            "result": {
+              "error": "Control(Backend)",
+              "event": "successor-history-result",
+              "sequence": null,
+              "stage": "history-load"
+            },
+            "oracle": {
+              "status": "PASS",
+              "mode": "history-missing-outcome",
+              "snapshots": 7,
+              "control_tables": 71,
+              "native_rows": 52,
+              "native_sequence": 62,
+              "read_sequence_delta": 0,
+              "original_inputs": 4,
+              "resolved_requests": [],
+              "original_batches": [],
+              "control_epoch": 10,
+              "registrar_epoch": 3,
+              "prepared_by_epoch": 8,
+              "control_refreshes": 0,
+              "historical_rows_and_xmin_preserved": true,
+              "target_incarnation_inherited": false,
+              "admission": false,
+              "read_only": true,
+              "result_error": "Control(Backend)",
+              "proof_reconstructed": false,
+              "process_boundary": "established separately by the owning harness",
+              "control_clock": {
+                "before_us": 1791804970952404,
+                "after_us": 1791804971270234,
+                "renewal_ttl_us": 20000000,
+                "qualification": "observed server-clock envelope, not exact per-statement time"
+              },
+              "previous_manifest_sha256": "f236a429f7751e2669d9f0501d91af3a9c47bd1f82ca9d550e570a9b5dd20488",
+              "target_manifest_sha256": "978d712a5a4d8d1741669baad4d66b84832ef30898e30a496d0ff2f2bbd0a99f",
+              "handoff_sha256": "1d9c17e0bdd1a4aee066700da13b8ef8377f11bd419d11ab528207dbbaf5d410"
+            },
+            "negative_controls": 12,
+            "backend_absence": {
+              "database": "bb_scope_bind_e92f3d7_history_missing_outcome",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.07734296005219221,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.07734614610671997
+            }
+          }
+        ],
+        "snapshots": 67,
+        "rejected_capture_perturbations": 90,
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "artifacts": true
+        },
+        "source_backend_absence": {
+          "database": "bb_scope_bind_ac644ef_successor_normal",
+          "user": "bigbrotr_control",
+          "limit_seconds": 5,
+          "status": "OBSERVED_ABSENT",
+          "attempts": [
+            {
+              "seconds": 0.09180138073861599,
+              "count": 0,
+              "backends": []
+            }
+          ],
+          "seconds": 0.0918061900883913
+        },
+        "source_artifacts": {
+          "result.json": "769db38827d8efaab5cfde11af91ef7a82a6414889772db0ab6bb2f99dbc778a",
+          "successor-normal-after.json": "216d261d06b3533220c5b87217d3e4d2a9c3e27aa895654da47da4aedf0c3899",
+          "successor-normal-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "successor-normal-response.json": "0b1f07dbbfff71fe700a0ce55ae3390646529acf1bacff811a9b01921c1711ce",
+          "successor-source.json": "f61d7f727de7b2ff1ef4143e7a480b9b1df40140e7586808bd098fd9903160a1",
+          "successor-source-preserved.json": "899e16242dbc7adb2a69fbabd4a95d2fcda73576bcb3e347a544c3a46be6f884"
+        },
+        "capture_hashes": {
+          "result.json": "072d770d47257ff9e7bc97bba2ead875775b6efe2de9a407f5982664c2a9d294",
+          "history-source.json": "01e015e711d271fcaefb2ecc4a75e8ac6e777e28d8a31d5443a46892e1739898",
+          "history-source-preserved.json": "899e16242dbc7adb2a69fbabd4a95d2fcda73576bcb3e347a544c3a46be6f884",
+          "history-source-backends.json": "dfcf7143676590c44f494a899ac1361e1b5051f30af16c4ac9b4a00c47898a9b",
+          "history-cases.json": "4df884447a53880cce081662c14bc76f77f95ecb2603f12c13d3a0626729139c",
+          "history-normal-response.json": "bd74dbc6649a6b71e8a562447f6bd20f805e44c793dbf4ae483e72b026c0d21c",
+          "history-normal-before.json": "216d261d06b3533220c5b87217d3e4d2a9c3e27aa895654da47da4aedf0c3899",
+          "history-normal-after.json": "88ccf6d50e6cb1507ae36c7d407a79b6506a63e0fb907b7203fbd5c13849a359",
+          "history-normal-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-normal-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-normal-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "history-normal-clock.json": "e8878e8e8783592225edb06d43d6e0ae025b47c61844a931a92dafb6621dd1f2",
+          "history-normal-backends.json": "d8be4059a93291f79b3b6d6f77b40dc507c1bee7a832b646614b84087a3ccb8b",
+          "history-missing-intent-response.json": "600fbe944fe4037c2bb9627e2d83455d2ce9bae1cfb8b1bb0cbe7fb45190f3bc",
+          "history-missing-intent-before.json": "504ba3fee6ba98aaaef85e5ff0fbc14d37dfd0e2ef9dec2b177fbc27edd5d9ed",
+          "history-missing-intent-after.json": "229f0b7d23f3291fc0cdeaa2e6357e139069a595bb994aa6c2481e9e424cae84",
+          "history-missing-intent-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-missing-intent-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-missing-intent-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "history-missing-intent-clock.json": "f0fde363a3f9c358df962e9848b6ddfca83061e1855c237a02c1330adfc5c50a",
+          "history-missing-intent-backends.json": "1bb8591270f27ae034abf410d186a25a685288aa3d74e18dc19e41941a714f05",
+          "history-corrupt-intent-response.json": "213e9a09da83cfeccb54390a63272e84e58c46d98896a9460f9039f8fa1aa188",
+          "history-corrupt-intent-before.json": "bf41b35f4348f14f7cd60ba9b869542f7b7054a66a610c8fdb58d5c7480895f3",
+          "history-corrupt-intent-after.json": "1084b75379d45e46a9440d3a38bb14a1cb9c867ad3793cf98be72695ae3a7e50",
+          "history-corrupt-intent-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-corrupt-intent-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-corrupt-intent-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "history-corrupt-intent-clock.json": "75c59a05f8300ca3655cf7cbb829b18417539768ac1bcdcaa0f6859eaaf5d03c",
+          "history-corrupt-intent-backends.json": "4e99ecf152900cddb0d1669b5f44fa42dc575e4879bd6ef384cbaafd4b9dd387",
+          "history-missing-handoff-response.json": "f45ad01379c210996709dc7ac218b485a5b93083a7889b2da6d0bf9b9438c4ab",
+          "history-missing-handoff-before.json": "216d261d06b3533220c5b87217d3e4d2a9c3e27aa895654da47da4aedf0c3899",
+          "history-missing-handoff-after.json": "f7d02477191dc3db9375e3c33f55a9241f2893833969479bb8dfcfc6a31e5ea6",
+          "history-missing-handoff-before-native.json": "d1125a29acae12cc54851d0de274518dadbf7c7aac2ab75c695b35d1c54270a0",
+          "history-missing-handoff-after-native.json": "d1125a29acae12cc54851d0de274518dadbf7c7aac2ab75c695b35d1c54270a0",
+          "history-missing-handoff-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "history-missing-handoff-clock.json": "161e1463c7fc4bc9d213cc108721d6b090e9b21790deccc60cc6318c24a37274",
+          "history-missing-handoff-backends.json": "f2db2a140b71e517e16a8f5c960f6b244bb9eee9682e92420bb1088f147f2847",
+          "history-missing-handoff-native-corruption.jsonl": "3bef18635aa25d6f31256a5fb20b8a4b23989745c1e421ae67447329a99d9023",
+          "history-nonempty-target-response.json": "429ae9cb53faa3fb22d75d47ee668759c1a65964e4014aab4668e7c6f857bcf6",
+          "history-nonempty-target-before.json": "216d261d06b3533220c5b87217d3e4d2a9c3e27aa895654da47da4aedf0c3899",
+          "history-nonempty-target-after.json": "d1cbf8055a7dc6cb02c09359600cb47fb85e408a5cd3df66953ff0c86b09bf21",
+          "history-nonempty-target-before-native.json": "0c1c03201a88d8f58aacb1aba3932839ffb75e189953ca4203eec966fc0b2bb3",
+          "history-nonempty-target-after-native.json": "0c1c03201a88d8f58aacb1aba3932839ffb75e189953ca4203eec966fc0b2bb3",
+          "history-nonempty-target-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "history-nonempty-target-clock.json": "f195487f0c4bfe1ed3d0e129647c54e0f31c2784b845d45986de6da57b6202c3",
+          "history-nonempty-target-backends.json": "f9708e8231e0c35ffda0b55194bc3ddc3186d6815e44de548f6165e7c52c38e1",
+          "history-nonempty-target-native-corruption.jsonl": "7314c728a58b80fe40412114393ba0dfca00018d153179a225293192feed2512",
+          "history-missing-input-response.json": "ecdd41b8bd11d282a994d59b5797311d4587f6296197498fca3836479b7c88cc",
+          "history-missing-input-before.json": "216d261d06b3533220c5b87217d3e4d2a9c3e27aa895654da47da4aedf0c3899",
+          "history-missing-input-after.json": "d8c79a9982d70326946576ab04e3f478d381676a4d79cee60ea831072808b047",
+          "history-missing-input-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-missing-input-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-missing-input-inputs.json": "54b8db45f00fc6a6babb91e054751d54ed73499253ee524401446a975449c78e",
+          "history-missing-input-clock.json": "b9a734f399a0fd467588c80ff80996062f9b793c9e2374be373a35ff6cb92d21",
+          "history-missing-input-backends.json": "cb787cf093993d4314f8a303eb47fb22ee00c1a8571c99f37a56e0d51579c70a",
+          "history-missing-outcome-response.json": "dfcf7b6c07ed0c2d32036bfdf88d5193298b8abd70730019e4246732b792a4e6",
+          "history-missing-outcome-before.json": "8ec83e39357e2af5bc02f91c89d72da4145a79160b3c234fdc5b495209880025",
+          "history-missing-outcome-after.json": "4c62851fd05af10feb387b83fab48a61c17628a5c9806cd7753bbf2c760d16cc",
+          "history-missing-outcome-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-missing-outcome-after-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+          "history-missing-outcome-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "history-missing-outcome-clock.json": "5f8fe700a586d8aa85710b3770a54d745de1ad6873a5b944ef90d339f4f0d074",
+          "history-missing-outcome-backends.json": "193dd06ec6a90f82c2483c6499a356bd5723393ea0fcfdaf09819f2fbeb13936"
+        },
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-12T11:35:55.844941247Z",
+              "FinishedAt": "2026-10-12T11:36:14.894544963Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "7e8bf8c4b3abe4cc411c7102590f521140de247c82d95ca0cf1f633534a8b54a",
+            "Name": "/bigbrotr-acquisition-binding-e92f3d7",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-12T11:35:56.701197106Z",
+              "FinishedAt": "2026-10-12T11:36:12.442996338Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-39e7468/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-process-e92f3d7/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 71116517376,
+        "scope": "Genuine new process reconstructs all4original positive outcomes/cut12 beneath already-prepared nativeepoch2 under fresh actualControl10, without caller-retained plan. Registrar3/preparer8 remain original. Read-only71PGtables/52native rows/4inputs; allowed actualControl lifecycle mutations separately accounted. All seven probes exited0; client idle wrapper stopped143 by outer runner, borrowedPG stopped0; noOOM.",
+        "limits": [
+          "Original preparing process completed before this wave; concurrent live original owner and actual processkill during preparation not injected.",
+          "No PG/native gap completion, terminal empty-attempt retirement, writer activation or installed restart/resend.",
+          "No native syscall/power-loss, ACK/GC, sustained capacity or full M1/release claim.",
+          "Serverclock envelope bounds fresh Control times; not exact per-statement timing or an independent general heartbeat qualification."
+        ],
+        "independent_ai_review": {
+          "status": "PASS_WITH_SCOPED_LIMITS",
+          "reviewer": "successor_restart_design, independent read-only AI audit",
+          "captures": "Replayed all seven actual captures and 90 perturbations; identical stored reports across 67 snapshots. Both native corruption captures have exactly one changed key and sequence 62 to 63. No read-phase native sequence change.",
+          "source": "All 1,734 tracked source files match e92f3d7 and its exact Git archive; SHA256 05284c2a0fbebb56e6e1a6bc669f9994944e2149d71d0d5fe0346837cff259fa. Only eight documentation/experiment paths differ from qualified build39. All five reused ELF hashes and build receipt match.",
+          "preservation": "Six frozen seed artifacts and the complete 21-entry original native file census retain metadata, inode and content. Current input files and separately retained removed input match. All 1,200 pre-existing container projections preserve nonborrowed state; 523 prior run entries remain.",
+          "observations": "Backend absence observed within 0.043 to 0.097 seconds. PostgreSQL clock windows span 0.29 to 0.48 seconds; propagated extreme-expiry perturbation rejects at the clock bound.",
+          "terminal": "Borrowed PostgreSQL exited 0, intentionally stopped idle client exited 143, no OOM. Exact owner identities and terminal receipts match.",
+          "limits": "No engines, server restart or mutations during audit. Original SQL preservation is supported by the captured run comparison; no later live SQL claim. No blocking counterexample found within these boundaries."
+        }
       }
+    },
+    "next_gap_completion_slice": {
+      "status": "IMPLEMENTING_NOT_QUALIFIED",
+      "task": "P02-T01 Step5 / P02-T02 Step4, prerequisite to P01-T09 Step4/M1",
+      "base": "e92f3d7b48c5291bb4755621c5df2380818ff919",
+      "scope": "Complete an already committed initial successor intent from native epoch1 in a fresh process; no writer activation or empty-attempt retirement.",
+      "design": [
+        "Reuse original epoch1 retirement observation and request reads to reconstruct positive source closure under actual current Control.",
+        "Share bounded immutable intent loading/verification with completed history; compare every field and exact handoff bytes before producing an owned root/sequence-bound plan.",
+        "Complete only an existing intent under a read-only schema30 transaction, current policy and row custody; use the existing four-put native handoff and confirmed ROLLBACK. No new PG preparation, incarnation, timestamps or policy attribution.",
+        "Reject retained target input sidecars before native dispatch; drop source borrows before taking mutable recovery custody. Completed native2 after an ambiguous response follows the qualified historical reader."
+      ],
+      "source_findings": [
+        "Existing prepare_initial_successor already permits current policy greater than historical target policy for an existing intent; equality is required only on insertion.",
+        "Existing epoch1 registration/recovery reads accept Matching{current:false}; historical native replay context is unnecessary for a pending gap.",
+        "Old retirement reads finish with read-only COMMIT; transport failure retains CommitUnknown semantics. New loader/completion use confirmed ROLLBACK."
+      ],
+      "read_boundary": "Independent design review read complete current initial_history, initial_succession, migration0030, ingest_history/registry, PG producer_closing/retirement/source_closure/control_owner and native initial_handoff/source_closure/producer_recovery/producer_closing/store, owning references and readiness. Only called portions of bootstrap, request_inputs and initialization were reread at this design stage; implementation must complete its affected boundaries.",
+      "qualification": "NOT_RUN. Independent native fixtures and a separate-process connected probe are being written in separate worktrees. Original gap will be produced by actual preparation followed by native-authority refusal and process exit, never by forged partial native state."
     }
   }
 }

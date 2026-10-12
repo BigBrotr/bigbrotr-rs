@@ -124,8 +124,10 @@ original and prepared producer markers, then checks the recomputed closure/count
 cut before rebinding a local guard. It writes no native key or input. A changed
 sequence invalidates a previously read witness even when current bytes match.
 Seven focused decoder/close-reopen tests pass in exact-source build39e7468, with
-affected original replay regressions. Separate-process and connected authority
-evidence are tracked in the
+affected original replay regressions. Harness e92f3d7 additionally qualifies a
+genuinely new process reconstructing the prepared signed history under fresh
+actual Control, with no native read-phase writes. Its seven connected cases and
+remaining completion/activation gates are tracked in the
 [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json).
 
 `apps/bigbrotr/tests/rocks_manifest.rs` uses independently specified literal

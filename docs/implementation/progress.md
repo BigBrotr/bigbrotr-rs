@@ -14,15 +14,15 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-The prepared-only product implementation remains 4f62b52. Latest qualified
-CLI/probe build is 3969a612883674fe900a9b309624f5ceae6b336b, tree
-c909b499aab3c9c9ee9300279ee535e26329daa6. The actual COMMIT-loss fixture is
-64419a547cdb4d33981eaf3616f4991d48d5f994 and passed with those exact binaries.
-The previous connected first wave ac644ef remains valid with build 4b89687.
-Evidence commit 0aec65609968e0c5b7c9d21cb10f96dca9bc385d was pushed and freshly
-verified against private origin with ahead 0/behind 0 and a clean canonical
-worktree. Root owns this subsequent checkpoint/design note; a later documentation
-commit may be actual HEAD. Verify Git and its private push before continuing.
+Read-only prepared-history product and probe are qualified at build
+39e746834c1587952a28c2c1e78ca8ea62d62831, tree
+c8df1d5242a3512d8a323b778eb8dc13f1908a57. The connected replacement-process harness
+is e92f3d7b48c5291bb4755621c5df2380818ff919 and passes with those exact binaries.
+Actual canonical HEAD was e92f3d7 before the current evidence/checkpoint update;
+root owns subsequent documentation. No source writer has pending code. The
+original prepared-only 4f62b52, first wave ac644ef and COMMIT-loss 64419a5/build3969a61
+evidence remain preserved for their exact scope. A fresh fetch confirmed private
+origin d2b1dc8 is an ancestor; current new commits are not yet claimed pushed.
 Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
@@ -176,30 +176,58 @@ independent review caught and fixed helper visibility and cross-store proof
 composition; every positive request carries actual directory/sequence custody.
 No installed command, gap completion, retirement or activation is claimed.
 
-Next integrate the seven-case separate-process Python harness52f6ff14 and its
-independent oracle, source-review, commit and execute against retained39e7468
-binaries. The fixture copies the completed ac644ef prepared signed lab, preserves
-all71tables/52native rows/4originalinputs and frozen artifacts, and separates
-actual Control renewal/release effects from each read-only phase. Connected
-qualification remains NOT_RUN. The harness is staged in canonical; oracle agent
-still owns its separate worktree. Root is sole engine/build executor.
+The genuine replacement-process wave e92f3d7 is now
+PASS_PREPARED_INITIAL_HISTORY, finished2026-10-12T11:36:15.696818Z. Result SHA256
+072d770d47257ff9e7bc97bba2ead875775b6efe2de9a407f5982664c2a9d294;
+root `runs/ingest-history-process-e92f3d7/bindings`. Seven separate native/PG
+copies preserve the completed ac644ef signed seed. A new actual Control10 reads
+all4original outcomes/cut12 beneath prepared nativeepoch2, retaining registrar3
+and preparer8. Every read phase preserves all71PGtables, native rows/sequence and
+input hashes; actual Control claim, renewal and release are checked separately.
+The normal store stays52rows/sequence62. Six corrupt/missing-detail cases refuse,
+including missing PGoutcome before replay; no repaired copy or writer is created.
 
-The inventoried native/probe worktree qualification/successor-history-probe is
-clean at05946b48; native implementation c8f4bff and tests559cf822 are integrated.
-Both new build labs are stopped without OOM and all prior container projections
-preserved. Last measured free space71,312,113,664bytes; six unrelated services
-remain running. Actual canonical HEAD is39e7468 before the next fixture/evidence
-commit. Current root-owned dirty files are that fixture dispatch and qualification
-docs/inventory. No new private push is claimed yet.
+The independent oracle checks67snapshots and rejects90corrupted captures. External
+server clock windows bound claim/renewal/release times, and bounded observations
+establish actual application backend absence after each process. Original seed
+files, captured SQL and six frozen artifacts remain unchanged. Both client and
+borrowedPG are stopped withoutOOM; all probes exited0, the idle client wrapper
+was intentionally stopped143. No unrelated lifecycle changes. Independent read-only AI audit replayed all captures and perturbations, verified
+1,734 exact source files, all five reused executables, six frozen artifacts and
+the original 21-entry file census. All 1,200 pre-existing container projections
+and 523 prior run entries retain their recorded state, except the explicitly
+borrowed PostgreSQL lifecycle. No blocking counterexample was found. Prepared fixture493ca5e was never executed and
+is preserved; observation fixes were reviewed before any engine allocation.
 
-Then complete any recorded PG/native gap and retire the abandoned empty attempt
-without adopting its incarnation. Migration0029 only retires epoch1 and0030's
-validator requires active/open target metadata, so an additive empty-attempt
-validator and explicit resumed/terminal states are needed. Persist native
-CLOSING/zero before terminal PG retirement; retain exact intent, source1 final cut,
-source2 explicit zero, all inputs/history and shared per-store64-input/32MiB
-allowance. Check workflow claims and target sidecars as well as reserved counters.
-Only a continuing actual owner can retain custody into a writer lifetime.
+Next implement finite completion of an exact PGprepared/nativeepoch1 gap in a
+new process. Reconstruct the original source from positive input/native/PG copies,
+match every immutable intent field, then apply only the existing four-put native
+handoff under fresh actual Control/current policy custody. Preserve the target's
+original incarnation, times and historical policy; current policy must not rewrite
+that attribution. Source review confirms existing durable-intent retry already accepts advanced
+current policy; equality applies only to insertion. Original epoch1 retirement
+reads also accept the now-historical registry. The new existing-only completion
+uses a checked owned plan after source borrows end, retains root/sequence guards,
+and rejects target input sidecars before native dispatch.
+Qualify the original signed gap plus ambiguity/refusal states with no retained
+caller plan. This is the same P02-T01Step5/P02-T02Step4 prerequisite, not M1 closure.
+
+Then retire the abandoned empty attempt without adopting its incarnation.
+Migration0029 only retires epoch1 and0030's validator requires active/open target
+metadata, so an additive empty-attempt validator and explicit terminal states
+remain necessary. Persist native CLOSING/zero before terminal PG retirement;
+retain exact intent, source1 final cut, source2 zero, all inputs/history and shared
+64-input/32MiB allowance. Check workflow claims and target sidecars as well as
+reserved counters. Only a continuing actual owner may hold a writer lifetime.
+
+Root is sole integrator/engine executor. Native/probe05946b48, tests559cf822,
+oraclef4063bc+4b76505 and harness52f6ff1+2fda655 are integrated; their worktrees are
+clean. Three agents now own separate new worktrees for the gap adapter, independent
+native fixtures and finite Rust probe. Root owns connected Python qualification
+and integration. This next slice remains unqualified; no engines are running. Last measured free space71,116,517,376bytes. All build/fixture
+resources are inventoried and stopped; six unrelated services remain running.
+Current root-owned dirty files are qualification docs/inventory only. Verify the
+subsequent evidence commit, structural checks and private push before resuming.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming
@@ -228,7 +256,7 @@ browser and website work; optional enablement does not finish selected scope.
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
 Before cleanup, implementation/qualification/object-storage labs totaled about
 975 GiB (lower bounds where access is denied). The latest connected wave left
-71,658,369,024 bytes (about 66.7 GiB) free; remeasure before allocation because this
+71,116,517,376 bytes (about 66.2 GiB) free; remeasure before allocation because this
 is a shared host. Small retirement fixtures need >2 GiB; the larger export wave
 still requires 64 GiB. Never lower that reserve to force a run.
 

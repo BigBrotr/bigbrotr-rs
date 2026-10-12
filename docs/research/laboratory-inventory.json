@@ -39423,7 +39423,7 @@
     }
   },
   "implementation_initial_history_reconstruction_20261012": {
-    "status": "PASS_NATIVE_COMPONENTS_CONNECTED_NOT_RUN",
+    "status": "PASS_PREPARED_INITIAL_HISTORY",
     "owner": "root sole integrating owner",
     "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
     "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
@@ -39435,7 +39435,7 @@
       "owner": "successor_restart_design native implementation committed; finite history probe and isolated native corruption helpers",
       "native_commit": "c8f4bff026e91df9e2783304356750d333c1770e",
       "probe_commit": "05946b48e8e11e67295ed34a79a18a3b085b06b2",
-      "state": "clean, source assignments complete; read-only independent pre-engine review"
+      "state": "clean, source assignments and independent actual connected audit complete"
     },
     "tests_worktree": {
       "path": "/home/tux/bigbrotr-rs/.research/successor-reconstruction-oracle-20261012",
@@ -39449,7 +39449,7 @@
     "root_scope": "PostgreSQL checked intent/history adapter, connected probe/fixture, integration, contracts and evidence",
     "readonly_review": "cleanup_review completed independent PG adapter/contract inspection before harness assignment; found and fixed reexport visibility; no further blocking source counterexample found in that scope",
     "free_bytes_before": 71653728256,
-    "preservation": "Both new build labs stopped and retained; initial67FAIL preserved. No connected history engines started. Original seed/datasets and negative fixtures remain protected.",
+    "preservation": "All original prepared/retired seeds, frozen artifacts, negative clones and failed67 build retained. Independent actual audit replayed all captures and perturbations, rehashed sources/artifacts/original files and verified resource projections. Both new builds, history client and borrowed PostgreSQL stopped without OOM; no unrelated lifecycle changes. Detailed review is in the owning recovery evidence.",
     "harness_worktree": {
       "path": "/home/tux/bigbrotr-rs/.research/initial-history-harness-20261012",
       "branch": "qualification/initial-history-harness",
@@ -39561,6 +39561,154 @@
         "seed": "ingest-succession-ac644ef/bindings/successor-normal/store and bb_scope_bind_ac644ef_successor_normal; copy only",
         "reason": "Pre-engine review added bounded actual backend absence and server-clock envelope; preserve source worktree, no containers/databases created here."
       }
-    ]
+    ],
+    "connected_candidate": {
+      "status": "PASS_PREPARED_INITIAL_HISTORY",
+      "source": "e92f3d7b48c5291bb4755621c5df2380818ff919",
+      "tree": "73ac61e5aaa59444244c436f582a9a11aae65b75",
+      "build_source": "39e746834c1587952a28c2c1e78ca8ea62d62831",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-process-e92f3d7/bindings",
+      "owner": "aa09685a70346d92f192096e94bc810d",
+      "owner_label": "org.bigbrotr.acquisition-binding",
+      "client": {
+        "id": "7e8bf8c4b3abe4cc411c7102590f521140de247c82d95ca0cf1f633534a8b54a",
+        "name": "bigbrotr-acquisition-binding-e92f3d7"
+      },
+      "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_scope_bind_e92f3d7_history_normal",
+        "bb_scope_bind_e92f3d7_history_missing_intent",
+        "bb_scope_bind_e92f3d7_history_corrupt_intent",
+        "bb_scope_bind_e92f3d7_history_missing_handoff",
+        "bb_scope_bind_e92f3d7_history_nonempty_target",
+        "bb_scope_bind_e92f3d7_history_missing_input",
+        "bb_scope_bind_e92f3d7_history_missing_outcome"
+      ],
+      "finished_at": "2026-10-12T11:36:15.696818+00:00",
+      "result_sha256": "072d770d47257ff9e7bc97bba2ead875775b6efe2de9a407f5982664c2a9d294",
+      "terminal": [
+        {
+          "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T11:35:55.844941247Z",
+            "FinishedAt": "2026-10-12T11:36:14.894544963Z"
+          },
+          "Mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+              "Destination": "/run/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+              "Destination": "/var/lib/postgresql/data",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "Id": "7e8bf8c4b3abe4cc411c7102590f521140de247c82d95ca0cf1f633534a8b54a",
+          "Name": "/bigbrotr-acquisition-binding-e92f3d7",
+          "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+          "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T11:35:56.701197106Z",
+            "FinishedAt": "2026-10-12T11:36:12.442996338Z"
+          },
+          "Mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-39e7468/out/artifacts",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-process-e92f3d7/bindings",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+              "Destination": "/run/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        }
+      ],
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "free_bytes_after": 71116517376,
+      "source_preserved": {
+        "control": true,
+        "files": true,
+        "artifacts": true
+      },
+      "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json / initial_successor_preparation_20261012.next_reconstruction_slice.connected"
+    }
+  },
+  "implementation_initial_gap_completion_20261012": {
+    "status": "IMPLEMENTING_NOT_QUALIFIED",
+    "owner": "root sole integrator and engine executor",
+    "base": "e92f3d7b48c5291bb4755621c5df2380818ff919",
+    "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
+    "worktrees": [
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-gap-completion-20261012",
+        "branch": "qualification/initial-gap-completion",
+        "owner": "cleanup_review",
+        "scope": "PG/native product adapters only",
+        "state": "assigned; verify actual Git before integration"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-gap-fixtures-20261012",
+        "branch": "qualification/initial-gap-fixtures",
+        "owner": "recovery_review",
+        "scope": "Independent native fixtures only",
+        "state": "assigned; verify actual Git before integration"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-gap-probe-20261012",
+        "branch": "qualification/initial-gap-probe",
+        "owner": "successor_restart_design",
+        "scope": "Finite Rust probe and dispatch only",
+        "state": "assigned; verify actual Git before integration"
+      }
+    ],
+    "resources": "No build or engine allocation. Previous worktrees/branches and all original labs are preserved. Root owns connected Python fixture and documentation in canonical.",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json / initial_successor_preparation_20261012.next_gap_completion_slice"
   }
 }
