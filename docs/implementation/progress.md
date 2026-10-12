@@ -14,20 +14,17 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is 115d8889e5b20ed7358621a375237b2a750297e7,
-containing the import-obligation fixture. The prior 20ddd02b92bc86f58f4185a62aa3d5e4fb0505f2
-was freshly verified on private origin/recovery/tux-20261012. Main stays
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Product binaries remain
+Last observed committed HEAD is 9af1c91e42f25eeef7348285e9634a3bc6630782,
+including both new qualification waves and their passing evidence. The exact same
+hash was freshly verified on private origin/recovery/tux-20261012; the worktree
+was clean. Main stays 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Product binaries remain
 f12dbf04677f8afa8c62aa1c8638e199dad0abc1, tree
-7dd4e343f51b50a6055096ef14a0aaec03a0a8e5.
-No Rust/migration/dependency changes in these new fixture waves.
+7dd4e343f51b50a6055096ef14a0aaec03a0a8e5. No Rust/migration/dependency changes.
 
-Root owns the current result/evidence/inventory/task/reference/checkpoint updates;
-the latest fixture and records need a private verified push. No merge/rebase or
-concurrent source writer. Latest obligation launcher exited0; client and borrowed
-PG stopped, with no cleanup/unrelated changes. The full-product goal stays active.
-Bounded independent AI reviews cover the completed captures and successor mapping;
-no overall product certification is implied.
+Root owns only this subsequent bounded successor-review/checkpoint note; a later
+documentation commit may be actual HEAD. Verify Git/upstream on resumption. No
+merge/rebase, concurrent source writer or running BigBrotr test process remains.
+Both independent read-only AI reviews completed. The full-product goal is active.
 
 Original lab source snapshots remain unchanged. The independent canonical Git
 checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
@@ -105,14 +102,28 @@ or logical-closure claim: the third case concerns producer_checkpoints, not
 import_checkpoints. Independent post-run AI audit replayed all three oracles,
 rejected six corrupted captures and rechecked 73 original filesystem paths.
 
-Next bounded action: implement the explicit successor/restart responsibility from
-the existing P02-T01 Step5/P02-T02 Step4 and P01-T09 Step4 contracts. First finish
-complete owning-source/contract reading and review the persistent transition before
-writing it. Fresh-only initialize, hardcoded initial registration and epoch-one
-bootstrap are deliberate boundaries; do not weaken them or rerun dictionaries on
-an existing store. A successor needs positive native/Control exclusion, preserved
-scientific state, a new owner/source epoch and fresh allocation domains, with exact
-ambiguous-outcome recovery. A bounded independent read-only mapping is underway.
+Next bounded action: specify and implement the smallest explicit recoverable
+handoff from the fully retired initial owner, under existing P02-T01 Step5 /
+P02-T02 Step4 / P01-T09 Step4. Finish remaining owning-file reads, record the
+persistent transition in the owning reference, and add an independent RED before
+implementation. Qualify the handoff with admission disabled, then connect the
+existing writer/lifetime. Do not weaken fresh initialization or rerun dictionaries.
+
+The bounded review maps stable Ingest resource/producer slot with owner, source
+and producer epochs 1→2; topology G→G+1 retains the old final cut and adds an explicit
+empty stream; fresh allocation domains leave old mappings/counters unchanged.
+Keep historical visibility references/scopes and original manifest bytes: old
+reservations bind its hash, so merely replacing the singleton manifest breaks
+recovery. Current Control attribution must be separate from the slot's original
+registrar. A replacement process must not reuse an attempted incarnation.
+
+Actual implementation boundaries include explicit source-zero validation, scoped
+historical lookup (current initial readers assume one epoch/marker/domain set),
+current-authority admission/renewal, Sync's hardcoded epoch1/request3 and Archive's
+one-stream cut. Keep ACK/GC separate and honor the per-store 64-input/32MiB spool;
+new epochs cannot manufacture capacity. Existing 0029 retirement remains initial
+only. The owning recovery report's successor_boundary_review_20261012 records full
+reviewed files and remaining reads. This is a source-based proposed slice, NOT_RUN.
 
 Successful initial startup has two dictionary requests. True zero-issued is a real
 interrupted earlier startup boundary already covered by native empty closing/source

@@ -3472,6 +3472,82 @@
       "qualification": "Explicitly synthetic retained relational import obligations, each on an isolated signed-store clone; not genuine import admission. Exact additive preparation checked, all226 product triggers enabled and retirement function unchanged before/after actual CLI.",
       "review": "Independent read-only AI audit replayed all three frozen115d888 preparation/refusal oracles, isolated obligation counts(1,0,0)/(0,1,0)/(0,0,1), checked all70tables/xmin,49native rows/four original input bytes, exact PG veto/backend,226enabled triggers, unchanged function and terminal custody. Six corrupted snapshots rejected;73 original filesystem paths and signed report independently unchanged. Original69Control/32catalog comparison uses saved captures, not new live SQL.",
       "interpretation": "The fixture label retire_import_checkpoint means producer_checkpoints with complete_through_request0. It does not qualify the separate import_checkpoints relation or genuine import execution."
+    },
+    "successor_boundary_review_20261012": {
+      "status": "SOURCE_REVIEW_ONLY; successor NOT_IMPLEMENTED_NOT_RUN",
+      "scope": "Independent read-only AI mapping after initial retirement qualification; not a new master plan or completed task",
+      "next_responsibility": "Explicit durable PG/native handoff from fully retired initial owner; preserve both identities, verified closure and exact interrupted-attempt observation; admission remains disabled until activation is qualified",
+      "coordinates": [
+        "Stable Ingest resource and stable producer slot; new role/incarnation, owner/source/producer epochs1 to2, new producer request1",
+        "TopologyG+1 carries predecessor final cut and explicit empty new stream; retainG unchanged",
+        "Fresh current allocation domains; old domains/mappings/counters remain closed/unchanged",
+        "Preserve visibility references, accepted scopes/jobs, canonical event indexes and original manifest context; no dictionary bootstrap rerun",
+        "Preserve recovery generation for same-data handoff; restore/revalidation separate"
+      ],
+      "boundaries": [
+        "Current manifest replacement alone breaks original reservation hashes and epoch-one historical loader",
+        "Historical registry/domain/retirement/source-resolution readers assume one initial epoch/marker; need scoped historical context",
+        "Admission and dictionary append require populated nonzero source; new-source zero needs explicit bounded validation, not inference from absent counter",
+        "Current Control must authorize successor without reusing original slot registrar attribution",
+        "Sync hardcodes epoch1/request3; Archive hardcodes epoch1/single-stream cut",
+        "Migration0029 supports retirement of initial epoch only; successor activation is not repeated-lifetime retirement",
+        "Per-store spool64inputs/32MiB remains; new epochs do not bypass outstanding capacity or ACK/GC"
+      ],
+      "empty_start_cases": [
+        "Registry committed/native absent or partial: no adoption or invented recovery metadata",
+        "Durable manifest before first input/reservation: real zero-issued installed fixture remains needed",
+        "Reservation with missing native receipt remains unresolved; successful reopen/zeroissued is not noncommit proof",
+        "Committed native request/missing PGcopy: existing exact positive resolver",
+        "Missing/malformed manifest or partial input: preserve/refuse, no automatic repair"
+      ],
+      "full_reviewed_files": [
+        "AGENTS.md",
+        "docs/engineering/development-and-delivery.md",
+        "docs/implementation/agent-handoff.md",
+        "docs/implementation/progress.md",
+        "docs/planning/specification-readiness.md",
+        "docs/reference/ingest-registration.md",
+        "docs/reference/ingest-manifest-format.md",
+        "docs/reference/ingest-bootstrap.md",
+        "docs/reference/ingest-store.md",
+        "docs/reference/ingest-admission.md",
+        "docs/reference/producer-request-inputs.md",
+        "apps/bigbrotr/src/storage/rocks/manifest.rs",
+        "apps/bigbrotr/src/storage/rocks/store.rs",
+        "apps/bigbrotr/src/storage/rocks/bootstrap.rs",
+        "apps/bigbrotr/src/storage/rocks/producer_closing.rs",
+        "apps/bigbrotr/src/storage/rocks/producer_recovery.rs",
+        "apps/bigbrotr/src/storage/rocks/source_closure.rs",
+        "apps/bigbrotr/src/storage/rocks/dictionary_preparation.rs",
+        "apps/bigbrotr/src/storage/rocks/certification.rs",
+        "apps/bigbrotr/src/storage/postgres/ingest_registry.rs",
+        "apps/bigbrotr/src/storage/postgres/ingest_history.rs",
+        "apps/bigbrotr/src/storage/postgres/ingest_lease.rs",
+        "apps/bigbrotr/src/storage/postgres/initial_ingest_basis.rs",
+        "apps/bigbrotr/src/storage/postgres/producer_retirement.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/dictionaries.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/supervision.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/sync.rs",
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/sync/observation.rs",
+        "migrations/postgres/0011_producer_requests.sql",
+        "migrations/postgres/0029_initial_retirement.sql"
+      ],
+      "remaining_complete_reading": [
+        "Native initial_batch.rs, admission.rs, dictionary_append.rs; inspected relevant sections only by reviewer",
+        "Installed initial_ingest/archive.rs; inspected relevant sections only",
+        "Migrations0001/0002 complete owning schemas/guards",
+        "Producer request/outcome/source-binding adapters and recovery preflight/SQLsource-closure adapter",
+        "Archive restart/frontier consumer, affected CLI dispatch and engine fixtures",
+        "Affected identity/data/storage-catalog/planning contracts beyond reviewed sections"
+      ],
+      "additional_root_full_reads": [
+        "docs/specification/operations-contract.md",
+        "docs/architecture/storage-services.md"
+      ],
+      "limits": "No implementation, native/SQL engine or cleanup operation in this mapping. Existing P02 steps and M1 remain incomplete."
     }
   }
 }
