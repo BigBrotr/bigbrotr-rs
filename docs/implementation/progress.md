@@ -14,18 +14,21 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is 0d81400 (goal activation and fault fixture) over
-recovery documentation c71864a and recovered product f12dbf04677f8afa8c62aa1c8638e199dad0abc1
-(tree 7dd4e343f51b50a6055096ef14a0aaec03a0a8e5). Fresh origin/main is
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c: six commits ahead, none behind before
-the evidence/cleanup commit. Fetch again before private integration; no force push.
+Last observed committed HEAD is 7cd7cb2cc172b563f3bc5335836b9aaa76c2f895,
+including goal activation, both retirement waves and verified cache retirement.
+The exact same hash was freshly confirmed on private
+`origin/recovery/tux-20261012`, now this branch's upstream. All seven commits over
+`origin/main` (54ad09dc6659bfe67e3bf2871e43ce619c199a5c) are preserved remotely;
+main is unchanged, no force push or public release. Product binaries remain
+f12dbf04677f8afa8c62aa1c8638e199dad0abc1, tree
+7dd4e343f51b50a6055096ef14a0aaec03a0a8e5; fault fixture is0d81400.
 
-The goal activation, first-wave evidence and fault fixture are committed as
-0d81400. Root currently owns their fault-result evidence, resource maintenance
-and checkpoint update. No product Rust, migration, lockfile or task checkbox
-changes. Read actual status/log: subsequent coherent commits may be HEAD.
-No merge/rebase or concurrent source writer is active. Two AI reviewers cover
-bounded recovery/fixture and cache questions, not the entire product.
+The working tree was clean at that verification. Root owns only this subsequent
+publication/checkpoint note; a later documentation commit may be actual HEAD.
+Read actual status/log and fetch upstream on resumption. No merge/rebase,
+concurrent source writer or running BigBrotr test/maintenance process remains.
+The full-product goal stays active. Two completed bounded AI reviews covered
+recovery/fixture and cache questions, not the entire product.
 
 Original lab source snapshots remain unchanged. The independent canonical Git
 checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
