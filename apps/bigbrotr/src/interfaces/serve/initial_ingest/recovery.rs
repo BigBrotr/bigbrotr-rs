@@ -1,4 +1,4 @@
-//! Finite positive recovery of the original producer under exclusive native custody.
+//! Finite positive producer recovery under exclusive native custody.
 use super::*;
 use bigbrotr::storage::{
     postgres::{
@@ -16,12 +16,15 @@ use bigbrotr_model::{
 };
 use tokio::sync::oneshot;
 
+mod empty;
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(in crate::interfaces::serve) enum Action {
     Resolve,
     CloseSource,
     AbandonAcquisition,
     RetireInitial,
+    RetireEmptyAttempt,
 }
 
 fn limits() -> ProducerRecoveryLimits {
@@ -155,7 +158,11 @@ async fn own(
     // Check overlapping worst-case replay grants before a claim or barrier.
     // There is only this worker, so later per-request acquisition cannot race
     // another consumer. Never retain a vector of requests or decoded outcomes.
-    drop(replay_grants(&budget)?);
+    if action == Action::RetireEmptyAttempt {
+        empty::preflight(&budget)?;
+    } else {
+        drop(replay_grants(&budget)?);
+    }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared)
@@ -204,6 +211,9 @@ async fn connected(
     mut client: tokio_postgres::Client,
     action: Action,
 ) -> Result<(ControlSession, Value)> {
+    if action == Action::RetireEmptyAttempt {
+        return empty::connected(root, budget, progress, cancellation, recovery, client).await;
+    }
     let instance: DatasetId = required(root, "topology.instance_id")?
         .parse()
         .map_err(|_| (3, "invalid instance".into()))?;
@@ -383,6 +393,7 @@ async fn connected(
             Action::RetireInitial => "initial-retired",
             Action::AbandonAcquisition => "acquisition-abandoned",
             Action::CloseSource | Action::Resolve => "source-closed",
+            Action::RetireEmptyAttempt => unreachable!("separate empty-attempt recovery"),
         });
         report["source_closure"] = json!({"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":bigbrotr_model::Digest256::from_bytes(source.digest())});
