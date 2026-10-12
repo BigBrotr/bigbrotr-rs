@@ -5781,7 +5781,7 @@
       }
     },
     "next_empty_attempt_retirement_slice": {
-      "status": "PASS_EMPTY_RETIREMENT_FIRST_WAVE_AMBIGUITY_AND_LOCK_GATES_REMAIN",
+      "status": "PASS_EMPTY_RETIREMENT_AND_COMMIT_LOSS_CLAIM_EXPIRY_GATES_REMAIN",
       "task": "Same P02-T01 Step5 / P02-T02 Step4 prerequisite to P01-T09 Step4/M1",
       "prerequisite": "Satisfied by qualified4c283e2 policy/deliveryloss build and six actual processes; evidencef0796da privately pushed and verified0/0.",
       "scope": "Retire only the exact empty prepared epoch2 attempt; no epoch3 or writer activation.",
@@ -9269,6 +9269,905 @@
           "limits": "Captured SQL comparisons only; no fresh SQL, engine restart or build. COMMIT ambiguity, concurrent claims, power loss, activation and installed restart remain unqualified.",
           "followup_replay": "First-wave followup verification.json stores seven direct arguments; replay additionally requires its separately retained first-attempt predecessor context. Both followups were independently replayed with that context. Future harness will persist the explicit context link; original artifacts remain unchanged."
         }
+      },
+      "connected_commit_loss": {
+        "status": "PASS_INITIAL_EMPTY_RETIREMENT_COMMIT_LOSS",
+        "source": "c31312f38b3a57a4686e6a1bbdcead8c5ad1376a",
+        "tree": "1900c1db90e96378b81961b6a17585ea5ef1deff",
+        "scope": "Two actual terminal COMMIT losses, each followed by a separate config-only process; no product/native API change.",
+        "source_review": "Independent AI successor_restart_design read complete affected harness/proxy/build owners and integrated diff; no blocker found. Root reviewed complete changed finite probe and affected command dispatch; earlier product ownership unchanged.",
+        "schedule": "Source-derived first retirement START11/COMMIT6. Actual proxy must demonstrate before6/5/5/5/1 or after6/6/6/5/1; START count is not measured by existing proxy.",
+        "capture_custody": "Retain response and external SQL/native/input/clock observations even if wire qualification fails after completed process. Unknown timeout does not reopen a potentially owned native root. Followup verification includes full predecessor context.",
+        "loopback": {
+          "command": "python3 -B -m unittest discover -s experiments/control-migrations -p test_fault_proxy.py -v",
+          "status": "PASS",
+          "tests": 24,
+          "seconds": 1.666,
+          "scope": "real loopback protocol fixtures, not PG or product qualification"
+        },
+        "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f",
+          "owner": "48afcad92274899740bae62188a8583a",
+          "status": "PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY",
+          "profile": "ingest-empty-faults",
+          "scope": "CLI/probe release compilation and Clippy; unchanged native tests retained at30a88ae",
+          "tree": "1900c1db90e96378b81961b6a17585ea5ef1deff",
+          "resources": {
+            "source": "c31312f38b3a57a4686e6a1bbdcead8c5ad1376a",
+            "tree": "1900c1db90e96378b81961b6a17585ea5ef1deff",
+            "owner": "48afcad92274899740bae62188a8583a",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "75976b367fc54a7a588842275e0275c7c5795bcaf794f664fb9191ba9918ef4d"
+              },
+              {
+                "name": "native",
+                "id": "83964ccd2ae6cbd9d8b9c314b7c1521f7904e46117350264144ebc1ff9ffb6db"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-12T13:41:18.706975+00:00",
+            "qualification": "PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 68992118784,
+            "finished_at": "2026-10-12T13:42:45.645745+00:00"
+          },
+          "source_files": 1751,
+          "checks": [
+            {
+              "name": "compile",
+              "command": [
+                "cargo",
+                "build",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 79.16481266729534
+            },
+            {
+              "name": "clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 5.574307112023234
+            }
+          ],
+          "artifacts": {
+            "source": "c31312f38b3a57a4686e6a1bbdcead8c5ad1376a",
+            "tree": "1900c1db90e96378b81961b6a17585ea5ef1deff",
+            "native_toolchain": {
+              "os": "Linux",
+              "architecture": "x86_64",
+              "discovery": "llvm-config",
+              "environment": {
+                "CC": "/usr/lib/llvm-14/bin/clang",
+                "CXX": "/usr/lib/llvm-14/bin/clang++",
+                "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+                "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+                "CARGO_BUILD_JOBS": "2",
+                "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+              },
+              "tools": {
+                "CC": {
+                  "path": "/usr/lib/llvm-14/bin/clang",
+                  "realpath": "/usr/lib/llvm-14/bin/clang",
+                  "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                  "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+                },
+                "CXX": {
+                  "path": "/usr/lib/llvm-14/bin/clang++",
+                  "realpath": "/usr/lib/llvm-14/bin/clang",
+                  "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                  "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+                },
+                "AR": {
+                  "path": "/usr/lib/llvm-14/bin/llvm-ar",
+                  "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+                  "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+                  "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+                },
+                "LIBCLANG_PATH": {
+                  "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                  "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                  "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+                  "version": "Debian clang version 14.0.6"
+                },
+                "discovery": {
+                  "path": "/usr/lib/llvm-14/bin/llvm-config",
+                  "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+                  "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+                  "version": "14.0.6"
+                }
+              },
+              "sdk": null
+            },
+            "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+            "source_manifest_sha256": "4bc09857b242d441ad5e8396c295ca4a9a33dbf274eedefac2b07c08d929cacd",
+            "scope": "Finite empty-retirement COMMIT-loss probe build and Clippy only; unchanged native tests retained at30a88ae; actual engine schedules remain separate",
+            "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+            "format": "bigbrotr-registry-build/1",
+            "binary_sha256": "ffe04c62cdd2ada31c872110cb9cb053f423c00be8c35c0faab143793e13c2f3",
+            "probe_name": "ingest_bootstrap_probe",
+            "probe_sha256": "200d274e42c25dbf8e1e53be5a4dcf55ee6f53fd36a23fe166398fa0ea5041a4",
+            "build_info": {
+              "archive_worker": null,
+              "capabilities": [
+                "event-verification",
+                "config-static"
+              ],
+              "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; internal preserving relay-envelope decoder and bounded collection selector; offline static configuration candidates and incomplete read-only doctor diagnostics. Advertised entrypoint capabilities remain event-verification and config-static; no installed acquisition, source policy or general NIP conformance claim",
+              "debug_info": "false",
+              "format": "bigbrotr-build/1",
+              "inputs_sha256": {
+                "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+                "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+                "contracts/protocol/versions.json": "f25d67a448dca1a17b7378d887c4ccce73a715fc7565a626748e06d22fb76385",
+                "contracts/release/dependencies.json": "430dc7baa5bb22954286b56d1cb6aa24b39b87f537e26ece40deed8018834a9b",
+                "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+              },
+              "optimization": "3",
+              "product": "BigBrotr",
+              "profile_assertion": "release",
+              "protocol_registry_format": "bigbrotr-protocol-versions/1",
+              "protocols": {
+                "collection_selector": "bigbrotr-collection-selector/1",
+                "event_verifier": "bigbrotr-nip01-verifier/1",
+                "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+                "relay_envelope_decoder": "bigbrotr-relay-envelope/1"
+              },
+              "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+              "schemas": {
+                "build_info": "bigbrotr-build/1",
+                "config_static": "bigbrotr-config-static/1",
+                "doctor": "bigbrotr-doctor/1",
+                "signed_event": "nip01-event/1"
+              },
+              "source": {
+                "dirty": false,
+                "manifest_sha256": "4bc09857b242d441ad5e8396c295ca4a9a33dbf274eedefac2b07c08d929cacd",
+                "revision": "c31312f38b3a57a4686e6a1bbdcead8c5ad1376a",
+                "state": "builder-supplied",
+                "tree": "1900c1db90e96378b81961b6a17585ea5ef1deff"
+              },
+              "target": "x86_64-unknown-linux-gnu",
+              "version": "0.1.0-dev"
+            }
+          },
+          "receipts": {
+            "out/qualification.json": "68ab15a140342fb2e88d13774c48ed7c1eee85343c11d23470d86085be7033d3",
+            "out/artifacts/build-result.json": "7cfc75820d76781e1a49251dca2afa80e73454691391d1bf0980b264839ab349",
+            "out/build/source-manifest.json": "4bc09857b242d441ad5e8396c295ca4a9a33dbf274eedefac2b07c08d929cacd",
+            "out/build-checks/result.json": "da9f2b0063e146a33fd76274ca74f623fa17cebbea9579a83b8e21de6b3f7f8d"
+          },
+          "archive_sha256": "4fc3237f43384ce18330911fea5e56f1fed9df5d4aa8c6e6774d3eb5d48f8bb4",
+          "terminal": [
+            {
+              "Id": "75976b367fc54a7a588842275e0275c7c5795bcaf794f664fb9191ba9918ef4d",
+              "Name": "/bigbrotr-ingest-empty-faults-c31312f-fetch",
+              "Image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-12T13:41:19.268203221Z",
+                "FinishedAt": "2026-10-12T13:41:19.511802849Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f/out",
+                  "Destination": "/out",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home",
+                  "Destination": "/out/build/cargo-home",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f/out/build/source",
+                  "Destination": "/out/build/source",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/target",
+                  "Destination": "/out/build/target",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ]
+            },
+            {
+              "Id": "83964ccd2ae6cbd9d8b9c314b7c1521f7904e46117350264144ebc1ff9ffb6db",
+              "Name": "/bigbrotr-ingest-empty-faults-c31312f-native",
+              "Image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-12T13:41:19.809513639Z",
+                "FinishedAt": "2026-10-12T13:42:44.901757645Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f/out",
+                  "Destination": "/out",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home",
+                  "Destination": "/out/build/cargo-home",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f/out/build/source",
+                  "Destination": "/out/build/source",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/target",
+                  "Destination": "/out/build/target",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ]
+            }
+          ],
+          "independent_audit": {
+            "status": "PASS_READ_ONLY_BUILD_IDENTITY",
+            "reviewer": "independent AI recovery_review",
+            "sources": "Exact Git archive, manifest and all1751 checkout/export files rehashed; both currentELFs plus5 retained30a88ae and4 original cache evidenceELFs match.",
+            "toolchain": "Clang14,llvm-ar,libclang,llvm-config independently rehashed via read-only docker cp from stopped build container, matching receipts and prior build.",
+            "checks": "Exactly2 executed PASS checks:compile79.16481266729534s/Clippy5.574307112023234s. Previous122 native/codec/entrypoint test executions retained, not rerun; relevant product/native/build inputs unchanged.",
+            "resources": "Both build terminals match ownership/exit0/noOOM. Live1210of1211 preflightprojections unchanged; soleexception borrowedPG intentionally restarted later for5938617 engine. Build-boundary inventory_changed=[] is captured evidence.",
+            "limits": "No builds,engine,SQL,lifecycle changes or source mutations by reviewer; this audit establishes build identity, not COMMIT-loss behavior."
+          }
+        },
+        "engine": {
+          "status": "PASS_INITIAL_EMPTY_RETIREMENT_COMMIT_LOSS",
+          "source": "5938617fc7950adb0d13dee2faeda88b2e1c2870",
+          "tree": "119bea322e6aa5ec44c8d62cb2a446cef71302ea",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-commits-5938617",
+          "build_reuse": "Only independent Python oracle changed from exact c31312f; root rechecked1751 exported source hashes and2ELFs/two checks/terminal states.",
+          "result_sha256": "23900c0f3c024276e616ceb21d4dbe93ad9137ee9294f3a44e8abfde0288755c",
+          "owner": "8092cda1bdc88a6829fa92ec69593d70",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "edf749e63c54a3a209037b6ef9f90afc8df17087d67060f7edc1ab43b055a111",
+            "name": "bigbrotr-acquisition-binding-5938617"
+          },
+          "databases": [
+            "bb_scope_bind_5938617_empty_commit_before",
+            "bb_scope_bind_5938617_empty_commit_after"
+          ],
+          "started_at": "2026-10-12T13:47:15.842417+00:00",
+          "finished_at": "2026-10-12T13:47:40.424478+00:00",
+          "free_bytes_after": 68986761216,
+          "counts": {
+            "processes": 4,
+            "snapshots": 86,
+            "perturbations": 128
+          },
+          "cases": [
+            {
+              "name": "empty-commit-before",
+              "status": "PASS",
+              "guard_catalog_unchanged": true,
+              "attempts": [
+                {
+                  "name": "empty-commit-before",
+                  "mode": "empty-commit-before",
+                  "status": "PASS",
+                  "seconds": 0.673806413076818,
+                  "oracle": {
+                    "status": "PASS",
+                    "mode": "empty-commit-before",
+                    "snapshots": 21,
+                    "control_tables": 71,
+                    "resolved_requests": [
+                      1,
+                      2,
+                      3,
+                      4
+                    ],
+                    "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                    "native_sequence_delta": 1,
+                    "native_rows": 52,
+                    "retired_at_us": null,
+                    "retirement_transaction": null,
+                    "target_rows_changed": 0,
+                    "original_rows_and_xmin_preserved": true,
+                    "original_inputs": 4,
+                    "immutable_intent_preserved": true,
+                    "terminal_retry_unchanged": false,
+                    "admission": false,
+                    "result_error": "CommitUnknown",
+                    "control_epoch": 10,
+                    "historical_registrar": 3,
+                    "historical_preparer": 8,
+                    "server_clock_window": {
+                      "before_us": 1791812840005597,
+                      "after_us": 1791812840774701
+                    },
+                    "qualification": "process separation, fixture fault and backend query execution are established by the harness",
+                    "final": {
+                      "control_sha256": "a4da71d3ff8c3316377111054acca36d9aa20ca46d054b69f55683a012cd6183",
+                      "native_sha256": "05d004960801963a552bc5434309b1d85f7437f70c6f51091d3d96c8ccd29d2a",
+                      "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                      "sequence": 63,
+                      "control_epoch": 10,
+                      "control_state": "active"
+                    }
+                  },
+                  "perturbations": [
+                    "native-byte-refreshed-hash",
+                    "producer-marker-refreshed-hash",
+                    "native-extra-write",
+                    "original-outcome-xmin",
+                    "original-source-cut",
+                    "original-registrar",
+                    "target-reservation",
+                    "topology-handoff-rewritten",
+                    "original-input-hash",
+                    "current-policy-digest",
+                    "admission-claimed",
+                    "backend-absence-another-tuple",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "driver-error-misclassified",
+                    "missing-phase",
+                    "intent-attribution",
+                    "intent-xmin",
+                    "original-receipt",
+                    "request-read-rewrites-PG",
+                    "consistently-future-renewals",
+                    "original-closure",
+                    "empty-closure",
+                    "wrong-initial-native-state",
+                    "native-before-dispatch",
+                    "native-first-failure-without-native-effect",
+                    "wrapped-commit-unknown",
+                    "commit-unknown-delivered-success-receipt",
+                    "consistently-opposite-commit-outcome",
+                    "unrelated-refusal",
+                    "wrong-poisoning-result"
+                  ],
+                  "wire": {
+                    "status": "PASS",
+                    "proxy_sha256": "6e737de8223818d0b05b47cb25f16038233d43181b12aec97bd13e3b44e3f829",
+                    "exit_code": 0,
+                    "wrapper_exit": 0,
+                    "forced_wrapper_stop": false,
+                    "stderr_nonempty": false,
+                    "counters": {
+                      "reason": "before-forward",
+                      "commit_number": 6,
+                      "commits_seen": 6,
+                      "commits_forwarded": 5,
+                      "server_commit_complete": 5,
+                      "client_commit_complete": 5,
+                      "faults": 1
+                    }
+                  },
+                  "verification_sha256": "9267e55dc1392994680de1c12d622a948a083cbba3043f62ad671e55b9614e8c"
+                },
+                {
+                  "name": "empty-commit-before-recovered",
+                  "mode": "empty-fresh-completion",
+                  "status": "PASS",
+                  "seconds": 0.4908858425915241,
+                  "oracle": {
+                    "status": "PASS",
+                    "mode": "empty-fresh-completion",
+                    "snapshots": 22,
+                    "control_tables": 71,
+                    "resolved_requests": [
+                      1,
+                      2,
+                      3,
+                      4
+                    ],
+                    "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                    "native_sequence_delta": 0,
+                    "native_rows": 52,
+                    "retired_at_us": 1791812843492372,
+                    "retirement_transaction": "26646",
+                    "target_rows_changed": 13,
+                    "original_rows_and_xmin_preserved": true,
+                    "original_inputs": 4,
+                    "immutable_intent_preserved": true,
+                    "terminal_retry_unchanged": true,
+                    "admission": false,
+                    "result_error": null,
+                    "control_epoch": 11,
+                    "historical_registrar": 3,
+                    "historical_preparer": 8,
+                    "server_clock_window": {
+                      "before_us": 1791812843121234,
+                      "after_us": 1791812843722659
+                    },
+                    "qualification": "process separation, fixture fault and backend query execution are established by the harness",
+                    "final": {
+                      "control_sha256": "44f3c8230ae8f0a286f7f23ce228c6040588c29223ad39938a4809f02dfb8647",
+                      "native_sha256": "05d004960801963a552bc5434309b1d85f7437f70c6f51091d3d96c8ccd29d2a",
+                      "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                      "sequence": 63,
+                      "control_epoch": 11,
+                      "control_state": "released"
+                    }
+                  },
+                  "perturbations": [
+                    "native-byte-refreshed-hash",
+                    "producer-marker-refreshed-hash",
+                    "native-extra-write",
+                    "original-outcome-xmin",
+                    "original-source-cut",
+                    "original-registrar",
+                    "target-reservation",
+                    "topology-handoff-rewritten",
+                    "original-input-hash",
+                    "current-policy-digest",
+                    "admission-claimed",
+                    "backend-absence-another-tuple",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "driver-error-misclassified",
+                    "missing-phase",
+                    "intent-attribution",
+                    "intent-xmin",
+                    "original-receipt",
+                    "request-read-rewrites-PG",
+                    "consistently-future-renewals",
+                    "original-closure",
+                    "empty-closure",
+                    "wrong-initial-native-state",
+                    "terminal-source-digest",
+                    "terminal-source-cut",
+                    "terminal-domain-time",
+                    "terminal-owner-xmin",
+                    "terminal-producer-only-closing",
+                    "retry-rewrites-PG",
+                    "retirement-result-wrong-time",
+                    "predecessor-proof-not-trusted",
+                    "predecessor-backend-absence-not-trusted",
+                    "predecessor-driver-failure-not-trusted"
+                  ],
+                  "wire": null,
+                  "verification_sha256": "ab0e852924a16874151f5427739cf6850f11d05d70cc727c1647affcd5f5d905"
+                }
+              ]
+            },
+            {
+              "name": "empty-commit-after",
+              "status": "PASS",
+              "guard_catalog_unchanged": true,
+              "attempts": [
+                {
+                  "name": "empty-commit-after",
+                  "mode": "empty-commit-after",
+                  "status": "PASS",
+                  "seconds": 0.6636533699929714,
+                  "oracle": {
+                    "status": "PASS",
+                    "mode": "empty-commit-after",
+                    "snapshots": 21,
+                    "control_tables": 71,
+                    "resolved_requests": [
+                      1,
+                      2,
+                      3,
+                      4
+                    ],
+                    "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                    "native_sequence_delta": 1,
+                    "native_rows": 52,
+                    "retired_at_us": 1791812850933041,
+                    "retirement_transaction": "26663",
+                    "target_rows_changed": 13,
+                    "original_rows_and_xmin_preserved": true,
+                    "original_inputs": 4,
+                    "immutable_intent_preserved": true,
+                    "terminal_retry_unchanged": false,
+                    "admission": false,
+                    "result_error": "CommitUnknown",
+                    "control_epoch": 10,
+                    "historical_registrar": 3,
+                    "historical_preparer": 8,
+                    "server_clock_window": {
+                      "before_us": 1791812850370689,
+                      "after_us": 1791812851139085
+                    },
+                    "qualification": "process separation, fixture fault and backend query execution are established by the harness",
+                    "final": {
+                      "control_sha256": "fc22b09869756f9e9eb1f4741edc12522ecdcae9bd78fb546ad0f96d1dcfee48",
+                      "native_sha256": "05d004960801963a552bc5434309b1d85f7437f70c6f51091d3d96c8ccd29d2a",
+                      "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                      "sequence": 63,
+                      "control_epoch": 10,
+                      "control_state": "active"
+                    }
+                  },
+                  "perturbations": [
+                    "native-byte-refreshed-hash",
+                    "producer-marker-refreshed-hash",
+                    "native-extra-write",
+                    "original-outcome-xmin",
+                    "original-source-cut",
+                    "original-registrar",
+                    "target-reservation",
+                    "topology-handoff-rewritten",
+                    "original-input-hash",
+                    "current-policy-digest",
+                    "admission-claimed",
+                    "backend-absence-another-tuple",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "driver-error-misclassified",
+                    "missing-phase",
+                    "intent-attribution",
+                    "intent-xmin",
+                    "original-receipt",
+                    "request-read-rewrites-PG",
+                    "consistently-future-renewals",
+                    "original-closure",
+                    "empty-closure",
+                    "wrong-initial-native-state",
+                    "terminal-source-digest",
+                    "terminal-source-cut",
+                    "terminal-domain-time",
+                    "terminal-owner-xmin",
+                    "terminal-producer-only-closing",
+                    "native-before-dispatch",
+                    "native-first-failure-without-native-effect",
+                    "wrapped-commit-unknown",
+                    "commit-unknown-delivered-success-receipt",
+                    "consistently-opposite-commit-outcome",
+                    "unrelated-refusal",
+                    "wrong-poisoning-result"
+                  ],
+                  "wire": {
+                    "status": "PASS",
+                    "proxy_sha256": "6e737de8223818d0b05b47cb25f16038233d43181b12aec97bd13e3b44e3f829",
+                    "exit_code": 0,
+                    "wrapper_exit": 0,
+                    "forced_wrapper_stop": false,
+                    "stderr_nonempty": false,
+                    "counters": {
+                      "reason": "after-complete",
+                      "commit_number": 6,
+                      "commits_seen": 6,
+                      "commits_forwarded": 6,
+                      "server_commit_complete": 6,
+                      "client_commit_complete": 5,
+                      "faults": 1
+                    }
+                  },
+                  "verification_sha256": "75c62aebe214180f38e65f23f3510630cf0eaa3b214772f3ba440a9b735ded93"
+                },
+                {
+                  "name": "empty-commit-after-recovered",
+                  "mode": "empty-terminal-retry",
+                  "status": "PASS",
+                  "seconds": 0.48754426557570696,
+                  "oracle": {
+                    "status": "PASS",
+                    "mode": "empty-terminal-retry",
+                    "snapshots": 22,
+                    "control_tables": 71,
+                    "resolved_requests": [
+                      1,
+                      2,
+                      3,
+                      4
+                    ],
+                    "empty_closure_digest": "a986d2d60810f0249801dcddd4730e062c30399ec6748c330f9327627412016c",
+                    "native_sequence_delta": 0,
+                    "native_rows": 52,
+                    "retired_at_us": 1791812850933041,
+                    "retirement_transaction": "26663",
+                    "target_rows_changed": 0,
+                    "original_rows_and_xmin_preserved": true,
+                    "original_inputs": 4,
+                    "immutable_intent_preserved": true,
+                    "terminal_retry_unchanged": true,
+                    "admission": false,
+                    "result_error": null,
+                    "control_epoch": 11,
+                    "historical_registrar": 3,
+                    "historical_preparer": 8,
+                    "server_clock_window": {
+                      "before_us": 1791812853831109,
+                      "after_us": 1791812854421815
+                    },
+                    "qualification": "process separation, fixture fault and backend query execution are established by the harness",
+                    "final": {
+                      "control_sha256": "48b7750077a7820e0d483310031ca83628ea498a551086035cfea98cdbeb8405",
+                      "native_sha256": "05d004960801963a552bc5434309b1d85f7437f70c6f51091d3d96c8ccd29d2a",
+                      "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                      "sequence": 63,
+                      "control_epoch": 11,
+                      "control_state": "released"
+                    }
+                  },
+                  "perturbations": [
+                    "native-byte-refreshed-hash",
+                    "producer-marker-refreshed-hash",
+                    "native-extra-write",
+                    "original-outcome-xmin",
+                    "original-source-cut",
+                    "original-registrar",
+                    "target-reservation",
+                    "topology-handoff-rewritten",
+                    "original-input-hash",
+                    "current-policy-digest",
+                    "admission-claimed",
+                    "backend-absence-another-tuple",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "driver-error-misclassified",
+                    "missing-phase",
+                    "intent-attribution",
+                    "intent-xmin",
+                    "original-receipt",
+                    "request-read-rewrites-PG",
+                    "consistently-future-renewals",
+                    "original-closure",
+                    "empty-closure",
+                    "wrong-initial-native-state",
+                    "predecessor-proof-not-trusted",
+                    "predecessor-backend-absence-not-trusted",
+                    "predecessor-driver-failure-not-trusted"
+                  ],
+                  "wire": null,
+                  "verification_sha256": "38013a2dafa9e916c0f9455fbe706b079b5d6181600527f782b6730822636958"
+                }
+              ]
+            }
+          ],
+          "source_preserved": {
+            "control": true,
+            "files": true,
+            "artifacts": true
+          },
+          "terminal": [
+            {
+              "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-12T13:47:15.924904273Z",
+                "FinishedAt": "2026-10-12T13:47:39.594707347Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                  "Destination": "/var/lib/postgresql/data",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ]
+            },
+            {
+              "Id": "edf749e63c54a3a209037b6ef9f90afc8df17087d67060f7edc1ab43b055a111",
+              "Name": "/bigbrotr-acquisition-binding-5938617",
+              "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-12T13:47:16.752309944Z",
+                "FinishedAt": "2026-10-12T13:47:38.760970538Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-faults-c31312f/out/artifacts",
+                  "Destination": "/build",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-commits-5938617/bindings",
+                  "Destination": "/lab",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                }
+              ]
+            }
+          ],
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "capture_sha256": {
+            "empty-cases.json": "fc3424dcfc82b60bb015b4861d21336f51a7fe0e72f5022d71f713bd36f7e013",
+            "empty-commit-after-after-dump-response.json": "bfc631c80a2574876ca47c108814fbb59671064ec1404e0e6ce641e041aefa16",
+            "empty-commit-after-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-after-after-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-commit-after-after.json": "f83a4833df6ea332b1131b6eafb5786204f4c81d0a2042d9b765bb64e01d7776",
+            "empty-commit-after-backends.json": "a5523a2f80d03d9c13eaf51608b77e99d8819add4023e174df454a6fb455fa3f",
+            "empty-commit-after-before-dump-response.json": "f88cdc34214dd120c8430968355a25c75de39c5f56853733d4b09733633d8530",
+            "empty-commit-after-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-commit-after-before.json": "2c253a1807d42a9d784b927372704c90d4c4048d1b73ad69bae0e4516826550b",
+            "empty-commit-after-clock.json": "c4210670d5fe3f277099300e5d41e2a06336c29c4ecf99d4b1fc83171bddd76b",
+            "empty-commit-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-after-migration.json": "088e544380836ea461931fd622c052f69529b056d71f8c11e0d82c2d069f99ff",
+            "empty-commit-after-recovered-after-dump-response.json": "5b1dbb5e7eb57d7d07c75c0995d679d5c8cd60633795e4af52aaf67c1fdda6a0",
+            "empty-commit-after-recovered-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-after-recovered-after-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-commit-after-recovered-after.json": "ec2cd9780c0026a11a5015794e68a531887379c868d9d7d5cb2ae79ca76f72f0",
+            "empty-commit-after-recovered-backends.json": "083cf77b5e4344e48eaec6197fbaf23250c28ab49ad45370f9ffc5a4765c48f7",
+            "empty-commit-after-recovered-before-dump-response.json": "ce413d89d31b9fa27cb00c87cdf24fd0d28f8b7327f56e131a00d886f4c8c65d",
+            "empty-commit-after-recovered-before-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-commit-after-recovered-before.json": "f83a4833df6ea332b1131b6eafb5786204f4c81d0a2042d9b765bb64e01d7776",
+            "empty-commit-after-recovered-clock.json": "117c72224669d24be0b466a06d4a401488c95425b8772ed79eb44d8549d10517",
+            "empty-commit-after-recovered-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-after-recovered-response.json": "271d6cf2296b1cedd14dd7af92e086a1538b6bf0de322d5f960cc6532d126063",
+            "empty-commit-after-recovered-verification.json": "38013a2dafa9e916c0f9455fbe706b079b5d6181600527f782b6730822636958",
+            "empty-commit-after-response.json": "e5772e5e779920f965cc02cbdc58899a0388dea940d935b4cbb53511248ea127",
+            "empty-commit-after-seed-dump-response.json": "2ee5ddaf51356deeba98c34c86f45b20bd89e748eeb193de214d8171a7e7eea7",
+            "empty-commit-after-seed-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-commit-after-upgrade.json": "cefeac4be8ff73d1dbbcc40555a65210db701070c3c64f8107d44143339502ca",
+            "empty-commit-after-verification.json": "75c62aebe214180f38e65f23f3510630cf0eaa3b214772f3ba440a9b735ded93",
+            "empty-commit-after-wire.json": "83cc3555661b75498b9f6740ca5327b13552b78db2216359b0d226ad343f5177",
+            "empty-commit-before-after-dump-response.json": "f4ff8bc22432e66c86810d6a53357b99562aeac0fa4a0598b5c0e1967e96082b",
+            "empty-commit-before-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-before-after-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-commit-before-after.json": "6f94bb6158046b9ec5a0a5070bbca456784dabd7f38589d8812fb115c08e2fa2",
+            "empty-commit-before-backends.json": "8623861848c50764eaadbbac9558414ec1e4b01fb57619ae0a526f0b938ed812",
+            "empty-commit-before-before-dump-response.json": "a1ccb365492920034894bc1da370f16fd6ba022ea5af8efb8d757d648f61d54f",
+            "empty-commit-before-before-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-commit-before-before.json": "cd1e767aa7fdd1ecbb61fdfbe60c25ca48a89d46b572a599089d2742b8ebe65d",
+            "empty-commit-before-clock.json": "2c280b5f8bbe353fdd7b1dbd941fc59bfae7f627d343078863f19691264cdfaf",
+            "empty-commit-before-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-before-migration.json": "088e544380836ea461931fd622c052f69529b056d71f8c11e0d82c2d069f99ff",
+            "empty-commit-before-recovered-after-dump-response.json": "a22446b6fd20dbed7f206e142dbf0c00e7073253a42eee58d2d983265f31f062",
+            "empty-commit-before-recovered-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-before-recovered-after-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-commit-before-recovered-after.json": "2f531b7203ed0220f5212c9bc29a59c79e5e60f9671a77781e090764cda44650",
+            "empty-commit-before-recovered-backends.json": "cbc833f4b5e6900ba2197bf9b31e24cf581544ff5f5390f4eba39fe527d13502",
+            "empty-commit-before-recovered-before-dump-response.json": "8132ba8dfe377818b18fd237baaa86505813dd2988b5f69f7c5db714f1f30f9b",
+            "empty-commit-before-recovered-before-native.json": "244e8dc053d74c395f26d0223cda5e8a78f13e4b6bc0b1a128ffe589fb16af91",
+            "empty-commit-before-recovered-before.json": "6f94bb6158046b9ec5a0a5070bbca456784dabd7f38589d8812fb115c08e2fa2",
+            "empty-commit-before-recovered-clock.json": "6b0f3a61f5566a9c768eb1075b24522a26cc518407d3ca99518f86acd5593fea",
+            "empty-commit-before-recovered-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+            "empty-commit-before-recovered-response.json": "f4aa6045096424cb4f23c09b16adf5fea91698c3d175405fc40100bcfd6bd739",
+            "empty-commit-before-recovered-verification.json": "ab0e852924a16874151f5427739cf6850f11d05d70cc727c1647affcd5f5d905",
+            "empty-commit-before-response.json": "a5f4539c478e1460fb0ff3cc833e916230be7f8905b5b809000205c9c188dc95",
+            "empty-commit-before-seed-dump-response.json": "1775937272d53e03f856904656643a6614cace4422e125a292369cbe5976dda0",
+            "empty-commit-before-seed-native.json": "011e08b3a4efde2379b143b23e539a93ba912b4ef0bb72062a2bcaf9188be4d8",
+            "empty-commit-before-upgrade.json": "6dc089892c20d40f0915a11872eae573e6d4d530cc160a44b630f4e3e9f34d02",
+            "empty-commit-before-verification.json": "9267e55dc1392994680de1c12d622a948a083cbba3043f62ad671e55b9614e8c",
+            "empty-commit-before-wire.json": "42991e5149642e491fdffe6fd2462cc3b8e18453110354649158a907e53249f9",
+            "empty-source-backends.json": "dc9b7171a9183da56f572ea651bf0db92d06cb7215727d2c3aa782f347ebd41f",
+            "empty-source-preserved.json": "899e16242dbc7adb2a69fbabd4a95d2fcda73576bcb3e347a544c3a46be6f884",
+            "empty-source.json": "1e937c89432c0111f2e99f1f03ad03ad2f319d7b11bb75f5d062e564320211ca",
+            "preflight.json": "2f6dde6c946a2e4c9cf2dc3f988be5ee43896a66d2a556e0c4babc9e47709197"
+          },
+          "independent_audit": {
+            "status": "PASS_READ_ONLY_ACTUAL_CAPTURE_REPLAY",
+            "reviewer": "independent AI cleanup_review",
+            "replay": "Four self-contained contexts replay86 snapshots/128 controls and exactly matchstdout,external71-table/native/input captures,clocks,result reports and verification hashes.",
+            "wire": "Both receipt/fault tuples match6/5/5/5/1 and6/6/6/5/1; proxy hash matches5938617 source.",
+            "outcomes": "Before createsT1791812843492372/xmin26646 only on freshcompletion; after preservesT1791812850933041/xmin26663 throughfreshdispatch/retry.",
+            "custody": "All1751 engine-source trackedfiles,2 retainedELFs,21 seedpaths/19files and6 frozenartifacts rehashed;4 originalinputs per derivative retained. c31312f\u21925938617 only oracle changed.",
+            "resources": "1212 nonborrowed preflightcontainer projections unchanged; terminalprojections/ownership match. BorrowedPG0/client143,noOOM,sixunrelatedservicesstillrunning.",
+            "limits": "No SQL/engine restart or writes by reviewer. OriginalSQL preservation remains captured-run evidence; concurrentclaim/expiry,nativeI/O/powerloss andactivation outside scope."
+          }
+        },
+        "remaining": "Claim/expiry schedules, native syscall/power loss, activation, installed restart and general subsequent lifetimes remain required.",
+        "independent_oracle": {
+          "author": "independent AI cleanup_review",
+          "commit": "33319ab5c021fc4cbd9727de971cd09ebb6e56e9",
+          "integrated": "5938617",
+          "status": "PASS_PURE_CAPTURE_REPLAY_ONLY",
+          "regression": "11 actual retained processes/175 snapshots/267 controls unchanged",
+          "artificial": "4 explicitly artificial transcripts/86 snapshots/128 perturbations; not product qualification",
+          "review": "Root read complete changed oracle and matched agreed finite-probe grammar; exact engine execution remains NOT_RUN."
+        },
+        "measured": "Both actual proxy counts matched COMMIT6; before-forward6/5/5/5/1 and after-complete6/6/6/5/1. Both return bareCommitUnknown and unavailable reuse, join a failed driver and observe exact backend absence before newControl11. Native stays52rows/seq63 through recovery. Before completes13SQLrows atT1791812843492372/xmin26646; after retainsT1791812850933041/xmin26663 unchanged. Originalregistrar3/preparer8/intent/inputs retained. START11 remains source-derived."
       }
     },
     "gap_policy_delivery_qualification": {

@@ -90,8 +90,9 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   Exact empty-attempt retirement now passes build30a88ae and connected83db9d8:
   11new process probes/175snapshots plus affected history/gap regressions, one
   native closing write and13atomic target SQL row changes. Fourteen raw SQL cases
-  check partial commits and zero-request claims. Retirement COMMIT/claim/expiry
-  schedules, activation and installed restart remain separate requirements.
+  check partial commits and zero-request claims. Actual retirement COMMIT loss
+  and fresh recovery also pass at5938617 (four processes/86 snapshots). Concurrent
+  claim/expiry schedules, activation and installed restart remain requirements.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
@@ -275,8 +276,9 @@ One owner serializes exact identity decisions for each writable directory.
   30a88ae/83db9d8: normal and exact retries, a new process after native-first SQL
   failure, positive readonly proof/cancellation and missing/conflicting inputs.
   All333snapshots/465capture perturbations across26processes include affected
-  gap/history regressions. Retirement COMMIT/claim/expiry schedules, next owner
-  activation and installed restart/resend remain open; no whole-step completion
+  gap/history regressions. Actual COMMIT-loss recovery passes at5938617 without
+  duplicate native writes or terminal SQL rewrites. Claim/expiry schedules, next
+  owner activation and installed restart/resend remain open; no whole-step completion
   follows.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained

@@ -370,7 +370,12 @@ Fourteen raw SQL cases reject partial lifecycle commits and current zero-request
 claims, while a later unrelated unbound claim preserves terminal classification.
 
 The original be4f284 fixture diagnostic mismatch remains FAIL; only its expected
-legacy function display name changed before the corrected run. Retirement COMMIT
-loss, concurrent claim/expiry schedules, native syscall ambiguity and installed
+legacy function display name changed before the corrected run. Connected5938617
+also qualifies actual terminal COMMIT loss before forwarding and after server
+completion: four processes,86 full snapshots and128 corrupted-capture controls.
+Both failed owners refuse reuse and their exact backends are observed absent.
+Fresh config-only recovery completes prepared SQL or preserves already terminal
+SQL, including its original timestamp/xmin, without another native write.
+Concurrent claim/expiry schedules, native syscall ambiguity and installed
 entrypoint integration remain separate gates in the existing recovery evidence
 and task plan. No epoch3 or writer activation is added.

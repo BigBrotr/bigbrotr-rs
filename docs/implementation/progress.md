@@ -14,16 +14,14 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-The latest connected empty-retirement qualification uses source
-83db9d8495a13e88c73ee2a0d7f6e857c365e2b7 and the exact native build
-30a88aed82f0506b275f3886c7118b3f59a21f67. Current observed HEAD is 83db9d8;
-root owns only the evidence, contract/task annotations, inventory and checkpoint
-updates for its completed qualification. Evidence commit f0796da was last
-privately pushed and verified ahead0/behind0; the newer commits await a fresh
-remote reconciliation and authorized private push. No merge/rebase is in progress.
-Original qualified builds, the failed be4f284 fixture run and all prior preparation,
-history, gap and COMMIT-loss artifacts remain retained for their exact scopes.
-Full product, M1 and the active task steps remain INCOMPLETE.
+The qualified empty-retirement wave uses83db9d8 and native build30a88ae.
+Evidence commit2053f80 was privately pushed, fetched and verified ahead0/behind0
+with a clean checkout. Current observed HEAD5938617 integrates COMMIT-loss probe f7920ed, focused
+harness/build profile c31312f and the independently authored oracle33319ab. Root
+owns checkpoint/evidence/inventory edits; both new agent worktrees are clean and
+retained. No merge/rebase is in progress. Original qualified builds,
+failed be4f284 and all earlier artifacts remain retained for their exact scopes.
+Full product, M1 and active task steps remain INCOMPLETE.
 
 Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
@@ -284,20 +282,49 @@ First wavebe4f284 remains FAIL: the actual legacy owner guard refused correctly,
 but PostgreSQL printed its unqualified function name. Commit83db9d8 corrects only
 that expected diagnostic; no failed artifact was rewritten or relabeled.
 
-Next bounded action: qualify actual loss of the terminal empty-retirement COMMIT
-before forwarding and after server completion, using separately inventoried
-copies of the frozen ac644 prepared seed and the existing wire proxy. Reviewed
-call flow places this at COMMIT6/START11; confirm actual proxy counters. Both
-cases must retain native52/sequence63, poison Control reuse, join the failed
-driver and observe exact backend absence before a config-only recovery process.
-Before-forward retains prepared SQL; after-complete retains the13-row terminal
-transaction and its timestamp/xmin through retry. Persist predecessor verification
-context explicitly for followups; first-wave followup captures require the
-separately retained first-attempt context for independent replay.
+The focused COMMIT-loss build c31312f is
+PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY: two executed release CLI/probe
+compile and Clippy checks. Root rehashed all1751 exported files and both ELFs;
+independent build audit passed, including exact toolchain binaries and preserved
+artifacts. All1210 nonborrowed build-preflight container projections remain
+unchanged; the borrowed PG was intentionally restarted for the later engine. Wrapper31785 joined0, both containers
+stopped0 without OOM or unrelated changes. Product/native code is unchanged from
+the qualified30a88ae build. All24 loopback proxy tests passed. The independent
+oracle retained original175/267 capture checks; artificial transcripts were
+explicitly kept separate from the following actual qualification.
 
-Then qualify claim/expiry serialization and the historical preparer claim window.
-Native syscall/power-loss, installed restart, activation and later incarnations
-remain separate required gates. No task/M1 checkbox closes from this first wave.
+`runs/ingest-empty-commits-5938617/bindings/result.json` is
+PASS_INITIAL_EMPTY_RETIREMENT_COMMIT_LOSS, finished2026-10-12T13:47:40.424478Z;
+SHA256 23900c0f3c024276e616ceb21d4dbe93ad9137ee9294f3a44e8abfde0288755c.
+Four actual processes check86 full snapshots and128 rehashed perturbations.
+Wire counters confirm COMMIT6: before-forward6/5/5/5/1, after-complete6/6/6/5/1.
+START11 is source-derived, not an independently measured proxy counter.
+Both failed Control10 sessions return CommitUnknown, refuse reuse, join the failed
+driver and observe their exact backend absent before fresh Control11 recovery.
+Native52 rows/sequence63 persist without another write. Before-forward leaves
+prepared SQL; recovery changes13 target rows at timestamp1791812843492372/xmin26646.
+After-complete already retains timestamp1791812850933041/xmin26663, preserved by
+fresh-process dispatch and same-Control retry. All originals, intent and historical
+attribution remain exact. Followup verification artifacts contain their complete
+predecessor context. Independent actual-capture audit passed:86/128 replayed,1751 source files/two
+ELFs/21 seed paths/six frozen artifacts rehashed and1212 nonborrowed container
+projections unchanged. Original SQL preservation remains captured-run evidence.
+Engine wrapper66235 joined0; borrowedPG stopped0 and idle client wrapper143,
+without OOM/cleanup error/unrelated changes. No engine/build remains active.
+
+Next bounded action: qualify four current-Control concurrency cases
+on new ac644 copies: import claim first COMMIT versus ROLLBACK, retirement first
+with COMMIT6 held and later claim, and actual UTC expiry during Control lock wait.
+Use fresh Control10, not the earlier gap seed's9. Create and seal an accepted
+zero-request import before the race; ordinary application-role guarded SQL
+claims it. This tests the relational claim path, not installed import execution.
+A bounded post-proof gate must precede retirement START11 so the race exercises
+dispatch. Bind waiter/holder PID,backend_start,database; observe real blocking.
+Expiry must occur inside a wait shorter than5s, without rewriting a lease row.
+A historical preparer8 claim requires a separate genuinely live preparation
+fixture; never revive released8 on the ac644 seed. Native syscall/power-loss,
+installed restart, activation and later incarnations remain separate gates.
+No task/M1 checkbox closes from these bounded waves.
 
 Existing history and handoff stay OPEN0-only. New context replays every original
 request under the same bounded metadata/input grants before constructing the plan.
@@ -316,9 +343,9 @@ no retained retired-by attribution permits reconstructing that historical window
 The existing evidence records the selected semantics and independent design review.
 
 Root remains sole integrator and engine executor. Earlier separate worktrees are
-clean/retained; new agent worktrees may be dirty within assigned scopes. No engine
-or build session is active. Root owns evidence/contract/task/inventory/checkpoint edits.
-Last observed free space69,189,029,888bytes; remeasure before allocation.
+clean/retained; new agent worktrees may be dirty within assigned scopes. Build31785 and engine66235 joined0; no engine/build is active. Root owns
+evidence/inventory/checkpoint edits.
+Last observed free space68,986,761,216bytes; remeasure before allocation.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming
@@ -347,7 +374,7 @@ browser and website work; optional enablement does not finish selected scope.
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
 Before cleanup, implementation/qualification/object-storage labs totaled about
 975 GiB (lower bounds where access is denied). The latest connected wave left
-69,189,029,888 bytes (about 64.4 GiB) free; remeasure before allocation because this
+68,986,761,216 bytes (about 64.2 GiB) free; remeasure before allocation because this
 is a shared host. Small retirement fixtures need >2 GiB; the larger export wave
 still requires 64 GiB. Never lower that reserve to force a run.
 
