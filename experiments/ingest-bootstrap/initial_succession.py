@@ -142,8 +142,9 @@ def activation_veto(pg, database, state, target_manifest, event):
     return dict(identity=identity, cases=answers, scope='named prepared-only SQL capability fences')
 
 
-def invoke(client, output, database, config, name, wire_mode=None):
+def invoke(client, output, database, config, name, wire_mode=None, *, commit_number=12):
     """Own the bounded proxy wrapper; outer runner owns remote process cleanup."""
+    assert type(commit_number) is int and 1 <= commit_number <= 64
     proxy = None
     wire = dict(status='NOT_RUN')
     started = time.monotonic()
@@ -158,12 +159,12 @@ def invoke(client, output, database, config, name, wire_mode=None):
             assert digest(target) == digest(source)
             proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
                 '/lab/' + target.name, '--upstream-port', '5432', '--mode', wire_mode,
-                '--commit-number', '12', '--deadline-seconds', '30'], input_pipe=True)
+                '--commit-number', str(commit_number), '--deadline-seconds', '30'], input_pipe=True)
             ready = proxy.event('ready', 5)
             wire = dict(status='RUNNING', ready=ready, proxy_sha256=digest(source))
             lab.write_json(output / (name + '-wire.json'), wire)
             assert ready['proxy_sha256'] == digest(source) and ready['listen_host'] == '127.0.0.1'
-            assert ready['upstream_port'] == 5432 and ready['commit_number'] == 12
+            assert ready['upstream_port'] == 5432 and ready['commit_number'] == commit_number
             extra = [str(ready['listen_port'])]
         response = lab.docker('exec', client, '/build/ingest_bootstrap_probe', name,
             database, '/run/secrets/application', config, *extra, check=False, timeout=90)
@@ -176,22 +177,28 @@ def invoke(client, output, database, config, name, wire_mode=None):
             code = proxy.wait(3)
             wire.update(receipt=receipt, exit_code=code)
             assert code == 0 and not proxy.stderr
-            assert receipt['reason'] == wire_mode and receipt['commit_number'] == 12
+            assert receipt['reason'] == wire_mode and receipt['commit_number'] == commit_number
             fields = ['commits_seen', 'commits_forwarded', 'server_commit_complete',
                 'client_commit_complete', 'faults']
-            expected = [12, 11, 11, 11, 1] if wire_mode == 'before-forward' else [12, 12, 12, 11, 1]
+            previous = commit_number - 1
+            expected = ([commit_number, previous, previous, previous, 1] if wire_mode == 'before-forward'
+                else [commit_number, commit_number, commit_number, previous, 1])
             assert [receipt[k] for k in fields] == expected
             assert [e['event'] for e in proxy.events] == ['ready', 'fault', 'receipt']
             assert proxy.events[1]['reason'] == wire_mode
             wire['status'] = 'PASS'
         return response, elapsed, wire
     except subprocess.TimeoutExpired as error:
+        wire.update(status='INCOMPLETE', error='UNKNOWN_TIMEOUT')
         def partial(value):
             return value.decode(errors='replace') if isinstance(value, bytes) else value or ''
         lab.write_json(output / (name + '-response.json'), dict(returncode=None,
             stdout=partial(error.stdout), stderr=partial(error.stderr),
             seconds=time.monotonic() - started, outcome='UNKNOWN_TIMEOUT',
             cleanup='outer owner-checked client stop; no inferred SQL/native rollback'))
+        raise
+    except BaseException as error:
+        wire.update(status='INCOMPLETE', error=type(error).__name__)
         raise
     finally:
         if proxy:

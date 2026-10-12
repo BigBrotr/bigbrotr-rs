@@ -174,6 +174,43 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         result = await self.finish()
         self.assertEqual((result["commits_seen"], result["server_commit_complete"], result["client_commit_complete"], result["faults"]), (3, 3, 2, 1))
 
+    async def selected_sixth_commit(self, mode):
+        async def scenario(reader, writer):
+            for _ in range(5):
+                for statement, tag in [(b"COMMIT", b"COMMIT"), (b"ROLLBACK", b"ROLLBACK")]:
+                    self.assertEqual(await receive(reader), (b"Q", statement + b"\x00"))
+                    writer.write(frame(b"C", tag + b"\x00") + frame(b"Z", b"I"))
+                    await writer.drain()
+            if mode == "after-complete":
+                self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+                writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I"))
+                await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start(mode, scenario, "--commit-number", "6")
+        await self.authenticate(reader, writer)
+        for _ in range(5):
+            for statement in (b"COMMIT", b"ROLLBACK"):
+                writer.write(frame(b"Q", statement + b"\x00"))
+                await writer.drain()
+                self.assertEqual(await receive(reader), (b"C", statement + b"\x00"))
+                self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00"))
+        await writer.drain()
+        self.assertEqual(await reader.read(), b"")
+        result = await self.finish()
+        self.assertEqual(result["reason"], mode)
+        self.assertEqual(result["commit_number"], 6)
+        fields = ("commits_seen", "commits_forwarded", "server_commit_complete",
+                  "client_commit_complete", "faults")
+        expected = (6, 5, 5, 5, 1) if mode == "before-forward" else (6, 6, 6, 5, 1)
+        self.assertEqual(tuple(result[key] for key in fields), expected)
+
+    async def test_sixth_commit_before_forward_with_intervening_rollbacks(self):
+        await self.selected_sixth_commit("before-forward")
+
+    async def test_sixth_commit_after_complete_with_intervening_rollbacks(self):
+        await self.selected_sixth_commit("after-complete")
+
     async def test_before_forward_never_delivers_commit(self):
         async def server(reader, writer):
             self.assertEqual(await reader.read(), b"")

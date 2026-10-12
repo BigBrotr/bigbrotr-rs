@@ -64,7 +64,8 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
-ingest_empty_retirement = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-retirement'
+ingest_empty_commits = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-commits'
+ingest_empty_retirement = ingest_empty_commits or len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-retirement'
 ingest_gap_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-gap-faults'
 ingest_successor_gap = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-successor-gap'
 ingest_successor_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-successor-history'
@@ -404,8 +405,9 @@ if ingest_gap_faults:
 
 
 if ingest_empty_retirement:
-    report['wave'] = 'initial-empty-retirement'
-    report['not_run'] = ['empty-retirement COMMIT loss and concurrent Control claim schedules',
+    report['wave'] = 'initial-empty-commit-loss' if ingest_empty_commits else 'initial-empty-retirement'
+    report['not_run'] = (['concurrent Control claim/expiry schedules'] if ingest_empty_commits else
+        ['empty-retirement COMMIT loss and concurrent Control claim schedules']) + [
         'native syscall uncertainty/power loss, next incarnation activation and installed restart/resend',
         'ACK/GC, full M1, capacity/load/aged-state and arm64/release']
 
@@ -797,7 +799,7 @@ if ingest_gap_faults:
     success_status = 'PASS_PREPARED_GAP_POLICY_DELIVERY'
 
 if ingest_empty_retirement:
-    success_status = 'PASS_INITIAL_EMPTY_RETIREMENT'
+    success_status = 'PASS_INITIAL_EMPTY_RETIREMENT_COMMIT_LOSS' if ingest_empty_commits else 'PASS_INITIAL_EMPTY_RETIREMENT'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -1024,7 +1026,7 @@ try:
         elif ingest_empty_retirement:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
             from initial_empty import run as run_initial_empty
-            report['cases'].append(run_initial_empty(pg, client, output, rows, clone))
+            report['cases'].append(run_initial_empty(pg, client, output, rows, clone, commits=ingest_empty_commits))
             save()
         elif ingest_gap_faults:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1163,10 +1165,12 @@ try:
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
     if ingest_empty_retirement:
-        from initial_empty import CASES as EMPTY_CASES
+        from initial_empty import CASES as EMPTY_CASES, COMMIT_CASES as EMPTY_COMMIT_CASES
+        selected_empty = EMPTY_COMMIT_CASES if ingest_empty_commits else EMPTY_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
-            and [r['name'] for r in report['cases'][0]['cases']] == list(EMPTY_CASES)
-            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']), 'initial-empty-retirement-case-set')
+            and [r['name'] for r in report['cases'][0]['cases']] == list(selected_empty)
+            and all(r['status'] == 'PASS' and (not ingest_empty_commits or len(r['attempts']) == 2)
+                for r in report['cases'][0]['cases']), 'initial-empty-retirement-case-set')
     if ingest_gap_faults:
         from initial_gap_faults import CASES as GAP_FAULT_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'

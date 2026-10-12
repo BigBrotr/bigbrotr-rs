@@ -11,7 +11,7 @@ import shutil
 import lab
 import initial_history as history
 from initial_gap import configuration
-from initial_succession import census, digest, physical
+from initial_succession import census, digest, physical, invoke
 from initial_gap_policy import GUARDS, require_guards
 from initial_empty_oracle import verify, negative_controls
 from initial_empty_guards import run_prepared, run_terminal
@@ -19,6 +19,7 @@ from initial_empty_guards import run_prepared, run_terminal
 CASES = ('empty-normal', 'empty-native-first-failure', 'empty-inspect', 'empty-cancelled',
     'empty-missing-input', 'empty-missing-outcome', 'empty-nonempty-target',
     'empty-missing-intent', 'empty-old-schema')
+COMMIT_CASES = ('empty-commit-before', 'empty-commit-after')
 
 
 def upgrade(pg, client, output, database, config, label, rows):
@@ -88,7 +89,7 @@ CREATE TRIGGER fixture_empty_source_rollback BEFORE UPDATE ON control.source_str
     return observed
 
 
-def run(pg, client, output, rows, clone):
+def run(pg, client, output, rows, clone, *, commits=False):
     basis = output.parent.parent / history.SEED / 'bindings'
     store = basis / 'successor-normal/store'
     assert all(digest(basis / n) == h for n, h in history.FROZEN.items())
@@ -133,34 +134,58 @@ def run(pg, client, output, rows, clone):
         window = dict(before_us=history.server_clock(pg, database))
         lab.write_json(output / (label + '-clock.json'), window)
         command = {'empty-inspect': 'empty-inspect', 'empty-cancelled': 'empty-cancelled'}.get(mode, 'empty-retire')
-        response, seconds = history.capture(client, output, label, command, database,
-            '/run/secrets/application', config)
-        window['after_us'] = history.server_clock(pg, database)
-        lab.write_json(output / (label + '-clock.json'), window)
-        absence = history.observe_backend_absence(pg, database, output, label)
-        # Preserve external terminal observations before any oracle assertion.
-        after, final_native = rows(database), dump(label + '-after', directory)
-        lab.write_json(output / (label + '-after.json'), after)
+        wire = None
+        try:
+            if mode in COMMIT_CASES:
+                wire_mode = 'before-forward' if mode == 'empty-commit-before' else 'after-complete'
+                response, seconds, wire = invoke(client, output, database, config, label,
+                    wire_mode, commit_number=6)
+            else:
+                response, seconds = history.capture(client, output, label, command, database,
+                    '/run/secrets/application', config)
+        finally:
+            # A proxy assertion must not discard external observations of a
+            # completed process. Unknown process outcome cannot safely reopen
+            # its native directory; the outer owner performs bounded cleanup.
+            retained = output / (label + '-response.json')
+            completed = retained.exists() and json.loads(retained.read_text())['returncode'] is not None
+            if completed:
+                window['after_us'] = history.server_clock(pg, database)
+                lab.write_json(output / (label + '-clock.json'), window)
+                after = rows(database)
+                lab.write_json(output / (label + '-after.json'), after)
+                final_native = dump(label + '-after', directory)
+                final_inputs = history.inputs_at(directory / 'store')
+                lab.write_json(output / (label + '-after-inputs.json'), final_inputs)
+                absence = history.observe_backend_absence(pg, database, output, label)
+            else:
+                lab.write_json(output / (label + '-external-unavailable.json'), dict(
+                    status='NOT_RUN_UNKNOWN_PROCESS_OUTCOME',
+                    reason='Native directory may still have an owner; outer cleanup must complete first'))
         assert response.returncode == 0 and not response.stderr, (label, response.stderr)
         events = [json.loads(line) for line in response.stdout.splitlines()]
         backends = [e for e in events if e['event'] == 'successor-backend']
         assert len(backends) == 2 and all(e['database'] == database for e in backends)
+        prior = dict(events=events, original=before, native=native, inputs=present, mode=mode,
+            seed=seed, server_window=window)
+        if predecessor is not None:
+            prior['predecessor'] = predecessor
+        lab.write_json(output / (label + '-verification.json'), prior)
         context = dict(seed=seed, server_window=window, predecessor=predecessor)
         checked = verify(events, before, native, present, mode, **context)
         mutations = negative_controls(events, before, native, present, mode, **context)
         final, = [e for e in events if e['event'] == 'successor-state' and e['stage'] == 'empty-final']
         assert after == {t: json.loads(v) for t, v in final['state']['control_tables']}
         assert final_native == dict(native, rows=final['rows'])
-        assert history.inputs_at(directory / 'store') == present
-        prior = dict(events=events, original=before, native=native, inputs=present, mode=mode,
-            seed=seed, server_window=window)
-        lab.write_json(output / (label + '-verification.json'), prior)
+        assert final_inputs == present
+        if wire is not None:
+            assert wire['status'] == 'PASS' and not wire['forced_wrapper_stop']
         return dict(name=label, mode=mode, status='PASS', seconds=seconds, oracle=checked,
-            negative_controls=mutations, server_window=window, backend_absence=absence,
+            negative_controls=mutations, server_window=window, backend_absence=absence, commit_wire=wire,
             verification_sha256=digest(output / (label + '-verification.json'))), prior
 
     try:
-        for mode in CASES:
+        for mode in COMMIT_CASES if commits else CASES:
             database = clone(mode, history.DATABASE)
             directory = output / mode
             directory.mkdir(mode=0o700)
@@ -201,6 +226,10 @@ def run(pg, client, output, rows, clone):
                 assert guarded_fault(pg, database, output, mode, remove=True) == guard_before
                 attempt, _ = execute(mode + '-recovered', 'empty-fresh-completion', database, config, directory, prior)
                 attempts.append(attempt)
+            if mode in COMMIT_CASES:
+                recovery = 'empty-fresh-completion' if mode == 'empty-commit-before' else 'empty-terminal-retry'
+                attempt, _ = execute(mode + '-recovered', recovery, database, config, directory, prior)
+                attempts.append(attempt)
             if mode == 'empty-normal':
                 terminal = run_terminal(pg, database, output, rows, mode + '-terminal')
                 attempt, _ = execute(mode + '-terminal', 'empty-terminal-retry', database, config, directory, prior)
@@ -214,19 +243,22 @@ def run(pg, client, output, rows, clone):
             cases.append(dict(name=mode, status='PASS', attempts=attempts, guards=guards,
                 removed_input_retained=removed is not None, guard_catalog_unchanged=True))
             lab.write_json(output / 'empty-cases.json', cases)
-        # Shared original-input resolver changed; both old history and gap paths
-        # are exercised on their existing independent fixtures with these binaries.
-        from initial_gap import run as gap_regression
-        regression = gap_regression(pg, client, output, rows, clone)
-        assert regression['status'] == 'PASS'
-        lab.write_json(output / 'empty-gap-regression.json', regression)
+        regression = dict(status='NOT_RUN', reason='Unchanged product and native fixtures remain qualified at30a88ae/83db9d8')
+        if not commits:
+            # Shared original-input resolver changed in the first wave.
+            from initial_gap import run as gap_regression
+            regression = gap_regression(pg, client, output, rows, clone)
+            assert regression['status'] == 'PASS'
+            lab.write_json(output / 'empty-gap-regression.json', regression)
     finally:
         preserved = dict(control=rows(history.DATABASE) == original, files=census(store) == files,
             artifacts=all(digest(basis / n) == h for n, h in history.FROZEN.items()))
         lab.write_json(output / 'empty-source-preserved.json', preserved)
         assert all(preserved.values()), preserved
-    return dict(name='initial-empty-retirement', status='PASS', cases=cases,
+    return dict(name='initial-empty-commit-loss' if commits else 'initial-empty-retirement', status='PASS', cases=cases,
         source_lab=str(basis.parent), source_revision=history.SOURCE, source_owner=history.OWNER,
         source_preserved=preserved, source_artifacts=history.FROZEN, gap_regression=regression,
-        scope='exact empty epoch2 retirement and config-only recovery after native close; no attempted incarnation activation',
-        excluded='ambiguous retirement COMMIT, concurrent claim races, native I/O/power loss, next incarnation and installed restart/resend/M1')
+        scope='actual terminal COMMIT loss with config-only fresh recovery' if commits else
+            'exact empty epoch2 retirement and config-only recovery after native close; no attempted incarnation activation',
+        excluded=('' if commits else 'ambiguous retirement COMMIT, ') +
+            'concurrent claim races, native I/O/power loss, next incarnation and installed restart/resend/M1')
