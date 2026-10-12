@@ -230,7 +230,13 @@ One owner serializes exact identity decisions for each writable directory.
   completed retry, zero-request workflow and unbound Event refusals, populated
   migration/reapply, rollback/ambiguous COMMIT and coherent locking/authority.
   It releases Ingest and closes domains atomically, without ACK/GC or successor.
-  This is under implementation; no task step closes from its entrypoint RED.
+  Corrected product f12dbf0 and fixtures 0d81400/3f36784/115d888 now have signed first-wave,
+  UPDATE/SIGTERM, ambiguous COMMIT/retry, policy-expiry and both Ingest-draining
+  lock orders, plus three isolated import-obligation refusal cases. All 70 SQL
+  tables/native detail and the original signed seed are checked. Import histories
+  are explicitly synthetic; genuine import closure, installed empty-start recovery,
+  current Control UTC expiry, successor and broader acceptance remain separate.
+  This scoped initial retirement does not close Step 4 or the whole task.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

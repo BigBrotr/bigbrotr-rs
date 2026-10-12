@@ -629,6 +629,13 @@ execution rolls back retirement; same-root fresh-Control retry succeeds; Ingest
 draining before retirement is preserved, and draining after retirement refuses
 23514 against released history. Product owner guards remain enabled; actual
 blocked SQL and complete row/native effects are captured. Current Control UTC
-expiry, other row-contention schedules, true zero-issued interrupted startup,
-import obligations and successor retain separate qualification. No full M1 or
+expiry, other row-contention schedules, true zero-issued interrupted startup
+and successor retain separate qualification. Fixture 115d888 also passes three
+independent import-obligation refusals: an original-Control claim with no request,
+a retained input binding without such a claim, and a retained producer checkpoint
+whose complete-through bound is zero. Exact PostgreSQL veto/context is correlated
+to the fresh Control backend; all 226 product triggers remain enabled and the
+retirement function unchanged. Complete 70-table/native effects and original seed
+preservation pass. These are explicitly synthetic incompatible relational inputs,
+not qualification of genuine import admission or logical closure. No full M1 or
 whole-task completion is claimed.

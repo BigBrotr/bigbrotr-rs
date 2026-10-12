@@ -2487,7 +2487,7 @@
     "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
   },
   "initial_retirement_20261002": {
-    "status": "PASS_NATIVE_BUILD_INSTALLED_FIRST_WAVE_FAULTS_AND_POLICY_INGEST_LOCKS; remaining import/empty/successor obligations pending",
+    "status": "PASS_SCOPED_INITIAL_RETIREMENT; broader handoff/ACK/restart tasks remain incomplete",
     "tasks": [
       "P02-T01 Step5",
       "P02-T02 Step4",
@@ -2503,9 +2503,9 @@
     "red_result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN",
     "scope": "Explicit initial producer/domain retirement and Ingest release; retained ACK/GC zero; successor and full M1 remain",
     "pending": [
-      "Import claims with no mutation request, retained producer input bindings and producer checkpoints",
-      "True zero-issued interrupted startup and current Control UTC expiry remain separate unqualified boundaries",
-      "Explicit successor, unchanged signed-event restart/resend and remaining M1"
+      "Explicit successor and unchanged signed-event restart/resend, including provenance off",
+      "True zero-issued installed interrupted startup and current Control UTC expiry remain separately unqualified",
+      "Broader row-contention, native crash/ENOSPC/aged-load, ACK/GC and remaining M1/product acceptance"
     ],
     "product_source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
     "product_tree": "6d54e7cc8bbab5cb9337b173a6db08e14983bccb",
@@ -2536,7 +2536,7 @@
         "Clippy warnings denied"
       ]
     },
-    "review_pending": "Fixture3f36784/f12 authority/Ingest locks PASS4. Independent pre-run AI review corrected fixture policy setup. Post-run review and import obligation guards are next; no full-step completion.",
+    "review_pending": "No remaining blocking finding in the scoped retirement fixture/capture reviews. Broader successor/restart/ACK and whole-product acceptance remains incomplete.",
     "original_engine_failure": {
       "capture": {
         "label": "retirement-engine-first",
@@ -3316,6 +3316,162 @@
         "Four Python modules parse",
         "Three pure setup/oracle replays on actual captured signed state, with unrelated producer mutation refused; not engine evidence"
       ]
+    },
+    "obligations_20261012": {
+      "status": "PASS_INSTALLED_INITIAL_RETIREMENT_OBLIGATIONS",
+      "source": "115d8889e5b20ed7358621a375237b2a750297e7",
+      "owner": "3ee1b0f15db6371de2097d546e93e5e9",
+      "started_at": "2026-10-12T09:34:08.378526+00:00",
+      "finished_at": "2026-10-12T09:34:26.903807+00:00",
+      "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "client": {
+        "id": "fc883f78bb6e7adc4740f9455651814d410fe77972f29e66fe5bcc049294587f",
+        "name": "bigbrotr-acquisition-binding-115d888"
+      },
+      "databases": [
+        "bb_scope_bind_115d888_retire_import_claim",
+        "bb_scope_bind_115d888_retire_import_binding",
+        "bb_scope_bind_115d888_retire_import_checkpoint"
+      ],
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "missing_owned": [],
+      "not_run": [
+        "Genuine installed import admission/logical closure",
+        "True zero-issued installed interrupted startup, Control UTC expiry and other row contention",
+        "Native syscall/crash/ENOSPC, capacity/load/aged-state",
+        "Successor, ACK/GC and full M1",
+        "arm64/release"
+      ],
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-obligations-115d888",
+      "result_sha256": "2926993c4f1c7b7621c2c324db348905db4c2f3763fbce12ef73cba37a455898",
+      "build_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "binary_sha256": "b0aa597b383ee44dc7407edfe683f0c10572f5206a635163133a3714d83db2cd",
+      "probe_sha256": "59e307ab7df0001cc52c9a46759ec38109ee565e3216cc4ce8797340e4aa1bbb",
+      "cases": [
+        {
+          "name": "retire_import_claim",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.18010365217924118,
+          "qualification": "Synthetic retained import claim; all product guards active",
+          "postgres_refusal": "original producer workflow claims remain unresolved"
+        },
+        {
+          "name": "retire_import_binding",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.18678512424230576,
+          "qualification": "Synthetic retained import binding; all product guards active",
+          "postgres_refusal": "unsupported initial producer retirement history"
+        },
+        {
+          "name": "retire_import_checkpoint",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.18452791403979063,
+          "qualification": "Synthetic retained import checkpoint; all product guards active",
+          "postgres_refusal": "unsupported initial producer retirement history"
+        }
+      ],
+      "source_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "oracle": {
+        "native_rows": 49,
+        "original_requests": 4,
+        "dictionary_recorded_us": 1790930661589775,
+        "event_received_us": 1790930661641775,
+        "event_recorded_us": 1790930661689041
+      },
+      "terminal": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T09:34:08.459721954Z",
+            "FinishedAt": "2026-10-12T09:34:26.098267654Z"
+          }
+        },
+        {
+          "id": "fc883f78bb6e7adc4740f9455651814d410fe77972f29e66fe5bcc049294587f",
+          "name": "/bigbrotr-acquisition-binding-115d888",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T09:34:09.242666681Z",
+            "FinishedAt": "2026-10-12T09:34:24.980783346Z"
+          }
+        }
+      ],
+      "refusal_observations": [
+        {
+          "since": "2026-10-12T09:34:14.074188+00:00",
+          "backend_pid": 469,
+          "backend_start": "2026-10-12T09:34:14.380677+00:00",
+          "errors": [
+            "2026-10-12 09:34:14.455 UTC [469] ERROR:  original producer workflow claims remain unresolved"
+          ],
+          "contexts": [
+            "2026-10-12 09:34:14.455 UTC [469] CONTEXT:  PL/pgSQL function control.require_initial_retirement(bytea,numeric,bytea) line 82 at RAISE"
+          ]
+        },
+        {
+          "since": "2026-10-12T09:34:18.963569+00:00",
+          "backend_pid": 880,
+          "backend_start": "2026-10-12T09:34:19.228448+00:00",
+          "errors": [
+            "2026-10-12 09:34:19.297 UTC [880] ERROR:  unsupported initial producer retirement history"
+          ],
+          "contexts": [
+            "2026-10-12 09:34:19.297 UTC [880] CONTEXT:  PL/pgSQL function control.require_initial_retirement(bytea,numeric,bytea) line 37 at RAISE"
+          ]
+        },
+        {
+          "since": "2026-10-12T09:34:23.309776+00:00",
+          "backend_pid": 1283,
+          "backend_start": "2026-10-12T09:34:23.534152+00:00",
+          "errors": [
+            "2026-10-12 09:34:23.603 UTC [1283] ERROR:  unsupported initial producer retirement history"
+          ],
+          "contexts": [
+            "2026-10-12 09:34:23.603 UTC [1283] CONTEXT:  PL/pgSQL function control.require_initial_retirement(bytea,numeric,bytea) line 37 at RAISE"
+          ]
+        }
+      ],
+      "qualification": "Explicitly synthetic retained relational import obligations, each on an isolated signed-store clone; not genuine import admission. Exact additive preparation checked, all226 product triggers enabled and retirement function unchanged before/after actual CLI.",
+      "review": "Independent read-only AI audit replayed all three frozen115d888 preparation/refusal oracles, isolated obligation counts(1,0,0)/(0,1,0)/(0,0,1), checked all70tables/xmin,49native rows/four original input bytes, exact PG veto/backend,226enabled triggers, unchanged function and terminal custody. Six corrupted snapshots rejected;73 original filesystem paths and signed report independently unchanged. Original69Control/32catalog comparison uses saved captures, not new live SQL.",
+      "interpretation": "The fixture label retire_import_checkpoint means producer_checkpoints with complete_through_request0. It does not qualify the separate import_checkpoints relation or genuine import execution."
     }
   }
 }

@@ -39183,12 +39183,28 @@
     "resources_state": "STOPPED_RETAINED"
   },
   "implementation_retirement_obligations_20261012": {
-    "status": "PREPARING_NOT_RUN",
-    "owner": "root sole integrating owner under Q35",
+    "status": "PASS_INSTALLED_INITIAL_RETIREMENT_OBLIGATIONS",
+    "owner": "3ee1b0f15db6371de2097d546e93e5e9",
     "root_policy": "Fresh sibling runs/ingest-retirement-obligations-<fixture revision>; clean immutable source, retained f12 artifacts",
     "borrowed_pg": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg",
     "seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9/bindings",
     "resources": "Three isolated Control/native clones and one labeled client; synthetic import obligations only; stop owned resources and preserve original/negative evidence",
-    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-obligations-115d888",
+    "fixture_revision": "115d8889e5b20ed7358621a375237b2a750297e7",
+    "build_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+    "terminal_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-obligations-115d888/bindings/result.json",
+    "finished_at": "2026-10-12T09:34:26.903807+00:00",
+    "client": {
+      "id": "fc883f78bb6e7adc4740f9455651814d410fe77972f29e66fe5bcc049294587f",
+      "name": "bigbrotr-acquisition-binding-115d888"
+    },
+    "databases": [
+      "bb_scope_bind_115d888_retire_import_claim",
+      "bb_scope_bind_115d888_retire_import_binding",
+      "bb_scope_bind_115d888_retire_import_checkpoint"
+    ],
+    "result_sha256": "2926993c4f1c7b7621c2c324db348905db4c2f3763fbce12ef73cba37a455898",
+    "resources_state": "STOPPED_RETAINED"
   }
 }

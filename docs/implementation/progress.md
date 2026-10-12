@@ -14,20 +14,20 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is 20ddd02b92bc86f58f4185a62aa3d5e4fb0505f2,
-containing the authority/Ingest locking fixture and its passing evidence. The
-exact same hash was freshly verified on private origin/recovery/tux-20261012. Main stays
+Last observed committed HEAD is 115d8889e5b20ed7358621a375237b2a750297e7,
+containing the import-obligation fixture. The prior 20ddd02b92bc86f58f4185a62aa3d5e4fb0505f2
+was freshly verified on private origin/recovery/tux-20261012. Main stays
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Product binaries remain
 f12dbf04677f8afa8c62aa1c8638e199dad0abc1, tree
-7dd4e343f51b50a6055096ef14a0aaec03a0a8e5. No Rust/migration/dependency changes.
+7dd4e343f51b50a6055096ef14a0aaec03a0a8e5.
+No Rust/migration/dependency changes in these new fixture waves.
 
-Root owns the new initial_retirement_obligations.py, its three existing launcher
-wiring files, and evidence/inventory/checkpoint updates. No
-merge/rebase or concurrent source writer. Latest retirement launcher exited0;
-owned client/borrowed PG are stopped. The full-product goal stays active.
-Independent AI review replayed captured lock outcomes and preservation checks.
-Another bounded read-only review maps the successor responsibility; neither is
-overall product certification.
+Root owns the current result/evidence/inventory/task/reference/checkpoint updates;
+the latest fixture and records need a private verified push. No merge/rebase or
+concurrent source writer. Latest obligation launcher exited0; client and borrowed
+PG stopped, with no cleanup/unrelated changes. The full-product goal stays active.
+Bounded independent AI reviews cover the completed captures and successor mapping;
+no overall product certification is implied.
 
 Original lab source snapshots remain unchanged. The independent canonical Git
 checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
@@ -80,7 +80,7 @@ stopped, no OOM, no cleanup/unrelated changes. This does not prove server cancel
 on client exit. Independent AI review confirmed the captured outcomes and oracles.
 
 `runs/ingest-retirement-locks-3f36784/bindings/result.json` is now
-PASS_INSTALLED_INITIAL_RETIREMENT_LOCKS, finished2026-10-12T09:20:24Z, four PASS.
+PASS_INSTALLED_INITIAL_RETIREMENT_LOCKS, finished 2026-10-12T09:20:24Z, four PASS.
 Policy expiry: unchanged accepted5s policy, local Control lease20s/timeout8s;
 actual producer UPDATE observed in PgSleep after prompt advisory unlock, exit4
 DeliveryUnknown in5.778s, complete rollback. After removing only fixture SQL and
@@ -92,16 +92,33 @@ inputs and original seed preserved; no cleanup/unrelated changes or OOM. No serv
 cancellation or broader concurrency guarantee follows. The owning recovery report
 contains exact backend observations, artifact/source hashes and result digest.
 
-The three independent import retirement veto fixtures are prepared, NOT_RUN.
-Commit the reviewed fixture and run --ingest-retirement-obligations using
-fresh signed-store clones: original-Control import claim with no request, retained
-producer input binding, and retained producer checkpoint even at zero. Reuse the
-complete refusal/native oracle and f12 artifacts; synthetic incompatible SQL
-history is explicitly labeled. Review corrected record_sha256 to include LF. Review found that successful initial startup always has
-two dictionary requests; true zero-issued is a real interrupted earlier startup
-boundary, covered by native empty closing but not installed retirement. Keep that
-limit explicit. Control UTC expiry and other row-contention schedules also remain
-separate unqualified boundaries; do not impose an arbitrary exhaustive matrix.
+`runs/ingest-retirement-obligations-115d888/bindings/result.json` is
+PASS_INSTALLED_INITIAL_RETIREMENT_OBLIGATIONS, finished 2026-10-12T09:34:26Z.
+Three distinct synthetic histories refuse: original-Control import claim with no
+request/binding, unowned import with retained producer_input_bindings, and retained
+producer_checkpoint at complete_through_request=0. Exact additive preparation and
+all 70 tables/xmin/native 49 rows/four inputs are checked. Each expected PG error and
+require_initial_retirement context matches its fresh Control backends 469/880/1283;
+all 226 product triggers stay enabled and the function definition is unchanged.
+Original signed Control/catalog/files/report preserved. No real import execution
+or logical-closure claim: the third case concerns producer_checkpoints, not
+import_checkpoints. Independent post-run AI audit replayed all three oracles,
+rejected six corrupted captures and rechecked 73 original filesystem paths.
+
+Next bounded action: implement the explicit successor/restart responsibility from
+the existing P02-T01 Step5/P02-T02 Step4 and P01-T09 Step4 contracts. First finish
+complete owning-source/contract reading and review the persistent transition before
+writing it. Fresh-only initialize, hardcoded initial registration and epoch-one
+bootstrap are deliberate boundaries; do not weaken them or rerun dictionaries on
+an existing store. A successor needs positive native/Control exclusion, preserved
+scientific state, a new owner/source epoch and fresh allocation domains, with exact
+ambiguous-outcome recovery. A bounded independent read-only mapping is underway.
+
+Successful initial startup has two dictionary requests. True zero-issued is a real
+interrupted earlier startup boundary already covered by native empty closing/source
+closure tests, but not installed retirement. Carry this into actual restart work.
+Control UTC expiry and other row-contention schedules remain separate unqualified
+limits; there is no arbitrary exhaustive schedule prerequisite before successor.
 
 Explicit successor/restart/resend must
 retain first admission and repeat with provenance off. The earlier archive evidence
