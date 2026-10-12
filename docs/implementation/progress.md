@@ -17,8 +17,8 @@ Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Last privately pushed/fetched HEAD eb0877224f657fdfc1d40329316b82c957a1e9fb was
 verified ahead0/behind0 with a clean checkout (push wrapper16715 joined0). Main
 remains54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase in progress.
-Current observed HEAD5cd4590 integrates worker0feef1f, root CLI/test/profile/contracts
-and the separate installed harness/oracle commits e2c6712/5cd4590. Root owns dirty build/evidence governance
+Current observed HEAD788f9711e19776c4441042747ef68d5f2057605f integrates worker0feef1f,
+root CLI/test/profile/contracts and installed qualification e2c6712/5cd4590. Root owns dirty build/evidence governance
 for the selected installed empty-attempt consumer. The preceding historical-claim
 wave is qualified, independently audited and privately pushed. Three separate
 worktrees are committed and retained below. Do not assume these pending edits are qualified.
@@ -202,7 +202,7 @@ executables and f12/ac/gap censuses;1218 nonborrowed projections remain unchange
 
 ## Current bounded work and next action
 
-Implement and qualify explicit `ingest recover --retire-empty-attempt` through the
+Qualified explicit `ingest recover --retire-empty-attempt` through the
 [installed consumer contract](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation).
 Root owns CLI serve.rs, actual entrypoint tests, native build profile, read-only
 `dump-state` helper exposing actual Rocks sequence, bindings, documentation and
@@ -232,16 +232,32 @@ authored the worker; its independent review covers root changes/artifacts only.
 Harness/oracle implementation is committed and independently reviewed: no remaining
 material blocker. Seven pure wrapper/custody checks and eleven artificial oracle
 modes/296 perturbations passed; these are not installed qualification. Root read
-both complete new helpers. Actual engine remains NOT_RUN.
+both complete new helpers. Actual engine788f971 is PASS_INSTALLED_EMPTY_RETIREMENT; wrapper46588 joined0.
+Eleven CLI commands/eight clones pass22 external observations and296 perturbations.
+ResultSHA ff1d2e111dc42ff4026c7e42985a7814dbf058eb0bd1d7ba92c5e269e7642d34.
+Normal native62→63/13SQLrows at1791817304721319/xmin26787; terminal retry unchanged.
+Native-first failure leaves native63/SQLprepared; fresh Control11 completes13rows
+at1791817312804301/xmin26840 with no native write. Both preclaim wait cases preserve
+all state; their exact server backend remains until fixture unlock, then actual
+global/exact absence precedes native reopen. Root retained all raw captures.
+Independent actual-capture audit passed11/22/296, all external captures,18 retained
+executables,63 seedpaths/57files and14 frozen artifacts. All1221 nonborrowed
+container projections remain unchanged. Reviewer authored harness; independent
+harness source review is separately recorded. Original SQL remains captured-run evidence.
 
-Expected installed wave: eight new clones/11 CLI invocations covering normal/default
+Executed installed wave: eight new clones/11 CLI invocations covering normal/default
 refusal/terminal retry, native-first SQL failure/fresh completion, missing input4,
 missing PG outcome3, schema30, actual held native owner, preclaim SQL wait/SIGTERM and deadline.
 No repeated blocked stdout/native full suite without a new finding; prior qualification
 remains separately pinned. New build profile `ingest-empty-installed` runs compile,
-five actual entrypoint tests and Clippy. Build completed as above; no engine allocated yet. Next run the eight-clone engine
-from an exact clean source revision with retained7e820b9 artifacts, then inspect
-external captures and obtain independent actual-capture audit.
+five actual entrypoint tests and Clippy. Build and engine completed as above. All owned containers stopped without OOM,
+cleanup/missing/unrelated arrays empty. Next privately push coherent qualified work,
+then select the next actual restart/activation dependency through the existing task plan.
+Read-only source analysis confirms that a new process must mint and retain its own
+writer candidate; observed prepared identity cannot authorize adoption. Activation
+needs durable distinction even before request1, because existing empty/history/gap
+classifiers otherwise cannot distinguish an activated zero-work owner. Native/PG
+first-request and renewal paths plus Sync/Archive initial assumptions remain gates.
 
 Preserve strict frozen ac644/f12 oracles and all earlier worktrees. Unknown process
 outcomes must not reopen a possibly owned native directory. Keep exact source/build
@@ -268,7 +284,7 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Last free space68,160,081,920 bytes (about63.5GiB); remeasure
+and dated observations. Last free space67,917,443,072 bytes (about63.3GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.

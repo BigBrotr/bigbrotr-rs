@@ -40689,7 +40689,7 @@
     "oracle_commit": "88806d4"
   },
   "implementation_installed_empty_retirement_20261012": {
-    "status": "BUILD_PASS_ENGINE_NOT_RUN",
+    "status": "PASS_INSTALLED_EMPTY_RETIREMENT",
     "base": "eb0877224f657fdfc1d40329316b82c957a1e9fb",
     "owner": "root sole integrator/build/engine executor",
     "scope": "Explicit installed --retire-empty-attempt using existing qualified storage APIs under the existing supervised native owner; no storage format or migration change.",
@@ -40748,9 +40748,43 @@
         "kind": "isolated-build",
         "wrapper": 84756,
         "wrapper_exit": 0
+      },
+      {
+        "kind": "installed-engine",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-installed-engine-788f971",
+        "source": "788f9711e19776c4441042747ef68d5f2057605f",
+        "tree": "a6c507c882a02f79457007e2f527a08f9a4eaa38",
+        "owner": "a736fb2609186b694cf08d128696083b",
+        "owner_label": "org.bigbrotr.acquisition-binding",
+        "state": "stopped-retained",
+        "client": {
+          "id": "40f8a4e5f9c86ed6c5c0600b1d47c3d3ecf24ac0382252326e1d2effad84b8ff",
+          "name": "bigbrotr-acquisition-binding-788f971"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_788f971_installed_empty_normal",
+          "bb_scope_bind_788f971_installed_empty_native_first_failure",
+          "bb_scope_bind_788f971_installed_empty_missing_input",
+          "bb_scope_bind_788f971_installed_empty_missing_outcome",
+          "bb_scope_bind_788f971_installed_empty_old_schema",
+          "bb_scope_bind_788f971_installed_empty_held",
+          "bb_scope_bind_788f971_installed_empty_signal",
+          "bb_scope_bind_788f971_installed_empty_deadline"
+        ],
+        "started_at": "2026-10-12T15:01:38.913708+00:00",
+        "finished_at": "2026-10-12T15:02:25.268090+00:00",
+        "wrapper": 46588,
+        "wrapper_exit": 0,
+        "qualification": "PASS_INSTALLED_EMPTY_RETIREMENT",
+        "free_bytes_after": 67917443072,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": []
       }
     ],
-    "source": "7e820b9c0517893f451c5e994faf78c61937e7b1",
+    "source": "788f9711e19776c4441042747ef68d5f2057605f",
     "qualification_sources": [
       "e2c6712",
       "5cd4590"

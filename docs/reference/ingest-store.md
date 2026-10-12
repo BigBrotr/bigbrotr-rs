@@ -157,7 +157,8 @@ ordinary restart/handoff and partial-initialization repair are not implemented.
 The separate `ingest recover` command closes an initial producer and resolves its
 retained positive outcomes; it cannot resume fresh admission. The explicit
 [empty-attempt retirement mode](ingest-registration.md#installed-empty-attempt-retirement-under-implementation)
-is a separate existing-preparation consumer under implementation.
+is a separate existing-preparation consumer, qualified on eleven actual installed
+commands at788f971. It retires an empty attempted owner; it does not activate one.
 
 ## Explicit initial owning lifetime
 

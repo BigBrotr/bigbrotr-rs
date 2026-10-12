@@ -11733,7 +11733,7 @@
         ]
       },
       "installed_consumer": {
-        "status": "BUILD_PASS_ENGINE_NOT_RUN",
+        "status": "PASS_INSTALLED_EMPTY_RETIREMENT",
         "base": "eb0877224f657fdfc1d40329316b82c957a1e9fb",
         "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
         "contract": "docs/reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation",
@@ -11880,7 +11880,236 @@
             "scope": "Independent full root CLI/test/buildprofile/dump-state/contract review found no issue. No SQL/build/engine actions by reviewer; retained CLI build-info executed only."
           }
         },
-        "engine": "NOT_RUN",
+        "engine": {
+          "status": "PASS_INSTALLED_EMPTY_RETIREMENT",
+          "resources": {
+            "kind": "installed-engine",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-installed-engine-788f971",
+            "source": "788f9711e19776c4441042747ef68d5f2057605f",
+            "tree": "a6c507c882a02f79457007e2f527a08f9a4eaa38",
+            "owner": "a736fb2609186b694cf08d128696083b",
+            "owner_label": "org.bigbrotr.acquisition-binding",
+            "state": "stopped-retained",
+            "client": {
+              "id": "40f8a4e5f9c86ed6c5c0600b1d47c3d3ecf24ac0382252326e1d2effad84b8ff",
+              "name": "bigbrotr-acquisition-binding-788f971"
+            },
+            "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "databases": [
+              "bb_scope_bind_788f971_installed_empty_normal",
+              "bb_scope_bind_788f971_installed_empty_native_first_failure",
+              "bb_scope_bind_788f971_installed_empty_missing_input",
+              "bb_scope_bind_788f971_installed_empty_missing_outcome",
+              "bb_scope_bind_788f971_installed_empty_old_schema",
+              "bb_scope_bind_788f971_installed_empty_held",
+              "bb_scope_bind_788f971_installed_empty_signal",
+              "bb_scope_bind_788f971_installed_empty_deadline"
+            ],
+            "started_at": "2026-10-12T15:01:38.913708+00:00",
+            "finished_at": "2026-10-12T15:02:25.268090+00:00",
+            "wrapper": 46588,
+            "wrapper_exit": 0,
+            "qualification": "PASS_INSTALLED_EMPTY_RETIREMENT",
+            "free_bytes_after": 67917443072,
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": []
+          },
+          "result_sha256": "ff1d2e111dc42ff4026c7e42985a7814dbf058eb0bd1d7ba92c5e269e7642d34",
+          "installed_cli_invocations": 11,
+          "clones": 8,
+          "external_state_pairs": 11,
+          "negative_controls": 296,
+          "cases": [
+            {
+              "name": "installed-empty-normal",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-normal-default",
+                  "mode": "installed-empty-default",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": null,
+                  "negative_controls": 19
+                },
+                {
+                  "name": "installed-empty-normal",
+                  "mode": "installed-empty-normal",
+                  "status": "PASS",
+                  "native_sequence_delta": 1,
+                  "target_rows_changed": 13,
+                  "control_epoch": 10,
+                  "negative_controls": 33
+                },
+                {
+                  "name": "installed-empty-normal-terminal",
+                  "mode": "installed-empty-terminal-retry",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": 11,
+                  "negative_controls": 34
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-native-first-failure",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-native-first-failure",
+                  "mode": "installed-empty-native-first-failure",
+                  "status": "PASS",
+                  "native_sequence_delta": 1,
+                  "target_rows_changed": 0,
+                  "control_epoch": 10,
+                  "negative_controls": 27
+                },
+                {
+                  "name": "installed-empty-native-first-failure-recovered",
+                  "mode": "installed-empty-fresh-completion",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 13,
+                  "control_epoch": 11,
+                  "negative_controls": 35
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-missing-input",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-missing-input",
+                  "mode": "installed-empty-missing-input",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": 10,
+                  "negative_controls": 26
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-missing-outcome",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-missing-outcome",
+                  "mode": "installed-empty-missing-outcome",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": 10,
+                  "negative_controls": 25
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-old-schema",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-old-schema",
+                  "mode": "installed-empty-old-schema",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": 10,
+                  "negative_controls": 25
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-held",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-held",
+                  "mode": "installed-empty-held",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": null,
+                  "negative_controls": 20
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-signal",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-signal",
+                  "mode": "installed-empty-signal",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": null,
+                  "negative_controls": 26
+                }
+              ]
+            },
+            {
+              "name": "installed-empty-deadline",
+              "status": "PASS",
+              "attempts": [
+                {
+                  "name": "installed-empty-deadline",
+                  "mode": "installed-empty-deadline",
+                  "status": "PASS",
+                  "native_sequence_delta": 0,
+                  "target_rows_changed": 0,
+                  "control_epoch": null,
+                  "negative_controls": 26
+                }
+              ]
+            }
+          ],
+          "verification_sha256": {
+            "installed-empty-normal-default": "a3d0d9236050c58e7349e2460c3ebb12609eb37881ce4fd8d1e8088218527ed3",
+            "installed-empty-normal": "6d8fd3b816ca18e2a52171e11d79c548ccadf3fd6eba4049f83cd5bf82c529df",
+            "installed-empty-normal-terminal": "3802cfce18da75320ccb2b9f6b5c49f11c077a2f0d258168c2610f6593f65187",
+            "installed-empty-native-first-failure": "aa0dec70d8d7ceda5d49f2d53d5a7aa12826bad692c16cfc3dc0d118a7f3d68f",
+            "installed-empty-native-first-failure-recovered": "332a1dadd513c1b44f8e841ebe000c537aee39c355e4deb37357d165775cd68b",
+            "installed-empty-missing-input": "275ab7105cdeb79ab1fc5d25b3073dd8a47bee597cc90b6193b7cf4c0deae133",
+            "installed-empty-missing-outcome": "fa3d96d6103e0bf0d9258071cde1f212ecf9698a20efc635cc671c5970d99bad",
+            "installed-empty-old-schema": "29f8c0bb91af44bfe0099e5dc6765c588ce3275fd25fb9b5b3c4c189854c0d26",
+            "installed-empty-held": "548b0ff3e25f4c5bb9775f982827df2496406bc8622d0552d9fb38c135e68536",
+            "installed-empty-signal": "9fa09c6a87b2363697d492ccb8c695fc6f309dd38bebbc796026e7d2338ff43c",
+            "installed-empty-deadline": "e108bedf9e008953ecf3cf3c5fa66ee2048756538283df290bd414332756552d"
+          },
+          "source_preserved": {
+            "control": true,
+            "files": true,
+            "artifacts": true
+          },
+          "root_audit": "Joined wrapper46588 exit0. Rehashed all11 verification captures and retained CLI/probe. Actual default/refusal diagnostics, success reports, process identities/terminal joins and exact backend observations inspected. BorrowedPG0 and idleclient143 stopped/PID0/noOOM. All original71tables,52native rows/sequence62 and four inputs checked by independent oracle; only selected target13SQLrows/native1write and separate validated Control lifecycle effects permitted.",
+          "independent_ai_audit": {
+            "reviewer": "cleanup_review; authored harness, independent oracle/product source and actual-capture audit",
+            "status": "PASS",
+            "captures": "Replayed all11 actual verification contexts:22 external states/296 rejected perturbations. All verification hashes, recursive predecessors, raw response/PID/terminal/config/clock/backend/guard/input/native dump and external71table captures matched. Generated client wrapper matches exact committed CLIENT and reported digest.",
+            "source": "1756 build files match fresh Git archive, saved tar, manifest/export;1758 engineGit files match clean788f971. Product/build inputs unchanged from7e820b9; only permitted governance/experiment changes. Actual compile/five entrypoint tests/Clippy logs corroborate receipt.",
+            "preservation": "18 executables(15 prior/cache plus3current),63 original ac/f12/gap seedpaths including57regularfiles, and14 frozen artifacts unchanged. Original SQL preservation established by retained-run comparisons only; no new audit SQL.",
+            "resources": "All1221 nonborrowed preflight container projections unchanged; six unrelated running services unchanged. PGexit0/client143 stopped/PID0/noOOM; owner labels and exact retained terminal projections match fresh inspect.",
+            "boundaries": "No audit builds/engines/restarts/edits. Compiler container paths were not reread from host; prior independent actual toolchain/build audit retained. Independent harness source review is separately attributed to successor_restart_design."
+          },
+          "not_run": [
+            "installed CLI COMMIT loss; finite adapter COMMIT loss is separately qualified",
+            "blocked native syscalls/power loss, next incarnation activation and full installed restart/resend",
+            "installed import execution, ACK/GC, full M1, capacity/load/aged-state and arm64/release"
+          ],
+          "outcomes": {
+            "normal": "Control10 released; native sequence62\u219263;13 targetSQL rows at1791817304721319/xmin26787. Fresh Control11 terminal retry preserves targetSQL and native.",
+            "native_first_sql_failure": "Actual guarded trigger P0001 hit once; Control10 unavailable/active; native63 and SQLprepared. New process Control11 fences10 and finishes13rows at1791817312804301/xmin26840 without native write.",
+            "refusals": "Missing input4, outcome3 and schema30 refuse with validated fresh Control10 effects only. Default and held-native refuse without Control claim or target writes. Removed input preserved outside clone store.",
+            "signal_deadline": "Observed actual relation wait against fixture holder. SIGTERM exact child completes2.267764s, deadline3.071788s; each returns explicit cancelled error. One exact app backend remains before fixture unlock; global and exact absence are positively observed after rollback before native reopen. All SQL/native/input state unchanged."
+          }
+        },
         "product_commit": "0feef1f",
         "source_review": "Root read full recovery owner, supervision, full CLIserve.rs and entrypointtests, current PGempty and finite empty probe. Newprivateempty branch/grantpreflight/sourceproof/onefinaldispatch/reportedepochs reviewed; no productstorage/native/migration change. Long-running Sync/Archive consumers are not invoked or newly qualified.",
         "static_checks": "Scoped rustfmt, Python AST/import and diffcheck PASS. Actual build and five entrypoint tests PASS as separately recorded; connected installed engine NOT_RUN.",

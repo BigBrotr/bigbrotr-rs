@@ -97,7 +97,8 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   16snapshots/39controls). The explicit
   [installed empty-attempt consumer](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation)
   is implemented at7e820b9 with compile/five entrypoint tests/Clippy passing;
-  its connected CLI qualification remains NOT_RUN. Activation and full installed
+  connected788f971 passes eleven actual CLI commands across eight clones, including
+  native-first failure/fresh completion and cancellation. Activation and full installed
   restart remain requirements.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
@@ -289,8 +290,8 @@ One owner serializes exact identity decisions for each writable directory.
   and installed restart/resend remain open; no whole-step completion follows.
   The explicit installed `--retire-empty-attempt` consumer at7e820b9 reuses the
   same storage protocol under supervised native/Control custody. Its focused
-  build and five entrypoint tests pass; actual installed engine qualification
-  remains NOT_RUN.
+  build and five entrypoint tests pass. Connected788f971 passes eleven actual commands,
+  22 external observations and296 capture controls; independent actual audit passed.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

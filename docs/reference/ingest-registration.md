@@ -211,8 +211,9 @@ inconsistent attribution and obsolete native observations refuse without repair.
 The bounded intent/registration grant is at least 128KiB; callers independently
 retain policy-document, input, outcome, native and driver grants and deadlines.
 
-This API introduces no migration or persistent-format change. The installed
-recovery command still accepts only its original epoch1 path. Exact-source build39e7468 passes seven focused native reconstruction cases and
+This API introduces no migration or persistent-format change. At this wave the
+installed recovery command accepted only its original epoch1 path; the explicit
+empty-attempt consumer below extends that entrypoint. Exact-source build39e7468 passes seven focused native reconstruction cases and
 affected replay regressions. Harness e92f3d7 passes seven actual PostgreSQL16.15/
 RocksDB11.8.1 cases from copies of an already completed prepared signed store.
 A genuinely new process receives configuration only, claims fresh Control10 and
@@ -386,9 +387,9 @@ Control8 is still live, then ends that process and confirms its backend absent.
 A new config-only Control9 refuses at empty-load with the named historical-claim
 veto. Sixteen full snapshots and39 corrupted-capture controls preserve claim8,
 immutable intent, originals and native52/sequence62; no target retirement occurs.
-Native syscall ambiguity and installed entrypoint integration remain separate gates
-in the existing recovery evidence and task plan. No epoch3 or writer activation
-is added.
+Native syscall ambiguity remains a separate gate in the existing recovery evidence
+and task plan. The installed entrypoint is qualified below. No epoch3 or writer
+activation is added.
 
 
 ### Installed empty-attempt retirement (under implementation)
@@ -432,10 +433,20 @@ are decimal strings. Common dataset/resource/slot identities, `native: closed`,
 current `owner_release: committed` and `ready: false` retain their existing meaning.
 A second invocation must preserve terminal timestamps and row versions.
 
-This installed consumer is being implemented; finite-probe evidence above does
-not qualify its command, supervision or output. Its actual acceptance uses the
-installed CLI on new signed-seed clones: normal/repeated completion, native-first
-SQL failure and fresh completion, missing input/outcome, old schema, held native
-custody, observed SQL wait with SIGTERM and deadline. Ordinary recovery must still
-refuse the prepared epoch2 store. Blocked native syscalls, power loss, writer
-activation and full restart/resend remain separate requirements.
+Exact build7e820b9 passes compilation, five actual entrypoint tests and Clippy.
+Connected788f971 then passes eleven actual recovery commands on eight new
+signed-seed clones, with22 external full-state observations and296 rejected
+capture perturbations. Normal retirement changes one native marker and13 target
+SQL rows; a second process preserves terminal timestamps and row versions. A
+guarded SQL rejection after native closing is completed by fresh Control11
+without another native write. Missing input/outcome, schema30, occupied native
+custody and ordinary epoch1 recovery all refuse as specified. Original signed
+inputs, registrar3, preparer8 and immutable intent remain exact.
+
+Observed preclaim SQL waits qualify SIGTERM and deadline. The actual CLI and
+its driver finish while the server backend can remain blocked until fixture
+unlock. Positive global and exact PID/start/database absence is required before
+external native reopening; client exit alone is not a rollback receipt. These
+commands make no target or Control claim changes. This wave does not exercise
+installed CLI COMMIT loss, blocked native syscalls, power loss, writer activation
+or full restart/resend. The adapter COMMIT-loss evidence remains separately pinned.
