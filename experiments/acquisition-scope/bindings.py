@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_succession = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession'
 ingest_retirement_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-faults'
 ingest_retirement_locks = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-locks'
 ingest_retirement_obligations = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-obligations'
@@ -79,7 +80,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -365,6 +366,14 @@ if lease:
         'native worker interruption', 'capacity/load/aged-state', 'arm64/release']
 
 
+if ingest_succession:
+    report['wave'] = 'initial-successor-preparation'
+    report['not_run'] = ['process-loss plan reconstruction and abandoned empty attempt retirement',
+        'writer activation, lifetime, installed restart/resend and full M1',
+        'actual ambiguous preparation COMMIT, process kill and native syscall failure',
+        'ACK/GC, capacity/load/aged-state and arm64/release']
+
+
 def require(condition, reason):
     if not condition:
         raise RuntimeError(reason)
@@ -381,7 +390,7 @@ def containers():
 def rows(db):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in (64, 66, 67, 68, 69, 70) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in (64, 66, 67, 68, 69, 70, 71) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
@@ -740,6 +749,9 @@ if dictionary_faults:
     report['wave'] = 'dictionary-append-faults'
     success_status = 'PASS_DICTIONARY_APPEND_COMMIT_FAULTS'
 
+if ingest_succession:
+    success_status = 'PASS_INITIAL_SUCCESSOR_PREPARATION'
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -908,6 +920,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_succession:
+        cases = ['initial-successor-preparation']
     elif ingest_recovery:
         cases = ['positive-recovery-signed' if ingest_recovery_signed
             else 'positive-recovery-interruptions' if ingest_recovery_interruptions else 'positive-recovery']
@@ -951,6 +965,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_succession:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from initial_succession import run as run_succession
+            report['cases'].append(run_succession(pg, client, output, rows, clone))
             save()
         elif ingest_recovery:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1068,6 +1087,11 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_succession:
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and [r['name'] for r in report['cases'][0]['cases']] ==
+                ['successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback']
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']), 'initial-successor-case-set')
     if ingest_recovery:
         expected = 3 if ingest_retirement_obligations else 4 if ingest_retirement_locks or ingest_retirement_faults else 10 if ingest_retirement else 4 if ingest_abandonment_faults else 6 if ingest_abandonment_limits else 11 if ingest_abandonment_guards else 6 if ingest_abandonment else 2 if ingest_source_locks else 4 if ingest_source_closure else 3 if ingest_recovery_interruptions or ingest_recovery_signed else 9
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
