@@ -256,7 +256,8 @@ def prepared(before, after, plan, control):
 
 def verify(events, original, native, inputs, mode):
     """Verify every ordered snapshot and return finite evidence, never authority."""
-    assert mode in ('successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback')
+    commit_fault = mode in ('successor-commit-before', 'successor-commit-after')
+    assert commit_fault or mode in ('successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback')
     plans = [e for e in events if e['event'] == 'successor-plan']
     observed_plan, = plans
     plan, old_rows, new_rows = expected(original, native, inputs, observed_plan['created_at_us'])
@@ -313,15 +314,37 @@ def verify(events, original, native, inputs, mode):
             role=control['role_instance_id'][2:], incarnation=control['process_incarnation'][2:])
         current_pg = after
 
-    def end(stage, release):
+    def end(stage, release, *, failed_driver=False):
         nonlocal current_pg
         same(current_pg, snapshot(stage + '-before-control-end'))
+        if failed_driver:
+            assert not release
+            event = take('successor-driver', stage)
+            assert event['failed'] is True and event['joined'] is True
+            assert event == dict(event='successor-driver',
+                stage=stage, failed=True, joined=True)
         phase = 'released-and-joined' if release else 'dropped-and-joined'
         assert take('successor-control', stage, phase) == dict(event='successor-control', stage=stage,
             phase=phase, resource=control['resource_id'][2:], epoch=control['epoch'])
         after = snapshot(stage + '-after-control-end')
         ended(current_pg, after, control, release)
         current_pg = after
+
+    def backend(present, previous=None):
+        event = take('successor-backend', 'initial')
+        database = event['database']
+        # The runner separately binds this name to its actual cloned database.
+        # SQL table rows do not contain datname, so it cannot be derived here.
+        assert isinstance(database, str) and 1 <= len(database) <= 63
+        assert database.isascii() and database.replace('_', '').isalnum()
+        assert event['present'] is present
+        wanted = dict(event='successor-backend', stage='initial', database=database,
+            pid=control['control_backend_pid'], backend_start=control['control_backend_start'],
+            control_epoch=control['epoch'], present=present)
+        assert event == wanted
+        if previous is not None:
+            assert event == dict(previous, present=False), 'backend absence used another tuple'
+        return event
 
     def attempt(stage, *, new_intent=False, native_commit=False, error=None, validations=4, conflict=False):
         nonlocal current_pg, completed_native
@@ -346,7 +369,19 @@ def verify(events, original, native, inputs, mode):
     after = snapshot('before-prepare')
     control = renewed(current_pg, after, control, plan['created_at_us'])
     current_pg = after
-    if mode == 'successor-normal':
+    if commit_fault:
+        previous_backend = backend(True)
+        committed = mode == 'successor-commit-after'
+        # Client uncertainty never permits native dispatch, including when the
+        # independent observer already sees the complete SQL preparation.
+        attempt('commit-unknown', new_intent=committed, error='CommitUnknown', validations=2)
+        end('unknown', False, failed_driver=True)
+        excluded_backend = backend(False, previous_backend)
+        # Only a new actual claim may proceed; the retained local plan and its
+        # root/sequence proof stay in this same process through both branches.
+        acquire('completion', 2)
+        attempt('completed', new_intent=not committed, native_commit=True)
+    elif mode == 'successor-normal':
         attempt('prepared', new_intent=True, native_commit=True)
         attempt('same-control-retry')
         end('first', True)
@@ -365,19 +400,26 @@ def verify(events, original, native, inputs, mode):
         attempt('old-schema-refused' if old_schema else 'rollback-refused',
             error='Control(IncompatibleDeployment)' if old_schema else 'Control(Backend)',
             validations=0 if old_schema else 2)
-    release = mode in ('successor-normal', 'successor-gap')
+    release = completed_native
     end('final', release)
     same(current_pg, snapshot('final'))
     assert take('successor-complete') == dict(event='successor-complete', mode=mode, native='closed',
         control='released-and-joined' if release else 'dropped-and-joined', admission=False)
     assert position == len(events), 'unclassified trailing events'
-    return dict(status='PASS', mode=mode, snapshots=snapshots, control_tables=len(original),
+    evidence = dict(status='PASS', mode=mode, snapshots=snapshots, control_tables=len(original),
         original_native_rows=49, final_native_rows=52 if completed_native else 49,
         native_sequence_delta=4 if completed_native else 0, original_inputs=len(inputs),
         previous_manifest_sha256=digest(bytes.fromhex(plan['previous_manifest'])),
         target_manifest_sha256=digest(bytes.fromhex(plan['target_manifest'])),
         handoff_sha256=digest(bytes.fromhex(plan['handoff'])),
         prepared_only=True, admission=False, retained_same_process_plan=True)
+    if commit_fault:
+        evidence.update(commit_unknown=True, native_rows_after_unknown=49,
+            preparation_after_unknown='committed' if committed else 'absent',
+            excluded_backend=excluded_backend,
+            exclusion_observed_before_fresh_claim=True,
+            intent_prepared_by_epoch=only(current_pg['initial_ingest_successions'])['prepared_by_epoch'])
+    return evidence
 
 
 def negative_controls(events, original, native, inputs, mode):
@@ -425,10 +467,39 @@ def negative_controls(events, original, native, inputs, mode):
     check('native-sequence', lambda e: final(e)['state'].update(sequence=final(e)['state']['sequence'] + 1))
     check('missing-snapshot', lambda e: e.pop(next(i for i, v in enumerate(e) if v['event'] == 'successor-state')))
     check('product-plan-encoding', lambda e: only(e, event='successor-plan').update(target_manifest='00' * 266))
-    if mode in ('successor-normal', 'successor-gap'):
+    if mode in ('successor-normal', 'successor-gap', 'successor-commit-before', 'successor-commit-after'):
         check('intent-attribution', lambda e: sql(e, lambda pg: pg['initial_ingest_successions'][0].update(prepared_by_epoch=3), all_prepared=True))
         check('intent-xmin-rewrite', lambda e: sql(e, lambda pg: pg['initial_ingest_successions'][0].update(xmin='999999999')))
         check('old-topology-rewrite', lambda e: sql(e, lambda pg: only(pg['topology_streams'], topology_generation=0).update(handoff_last_complete_sequence=12), all_prepared=True))
         check('missing-successor-producer', lambda e: sql(e, lambda pg: pg['producer_epochs'].remove(only(pg['producer_epochs'], producer_epoch=2)), all_prepared=True))
         check('fabricated-successor-bound', lambda e: sql(e, lambda pg: only(pg['source_streams'], owner_epoch=2).update(last_complete_sequence=0), all_prepared=True))
+    if mode in ('successor-commit-before', 'successor-commit-after'):
+        def unknown_native(changed):
+            observation = only(changed, event='successor-state', stage='commit-unknown')
+            completed = final(changed)
+            observation['rows'] = copy.deepcopy(completed['rows'])
+            for field in ('native_rows', 'native_sha256', 'sequence'):
+                observation['state'][field] = completed['state'][field]
+
+        def wrong_preparer(changed):
+            # Exchange the two actual valid Control tuples, rather than merely
+            # corrupting an identifier. Only one owns immutable preparation.
+            stage = 'initial-after-claim' if mode == 'successor-commit-before' else 'completion-after-claim'
+            event = only(changed, event='successor-state', stage=stage)
+            pg = {name: json.loads(rows) for name, rows in event['state']['control_tables']}
+            owner = max((r for r in pg['owner_epochs'] if r['role'] == 'control'), key=lambda r: r['epoch'])
+            # At completion both owner tuples exist. Preserve the earlier
+            # uncertainty observations so this specifically tests retry effects.
+            offset = next(i for i, e in enumerate(changed)
+                if e['event'] == 'successor-state' and e['stage'] == 'completed')
+            sql(changed[offset:], lambda tables: tables['initial_ingest_successions'][0].update(
+                prepared_by_resource=owner['resource_id'], prepared_by_epoch=owner['epoch'],
+                prepared_by_incarnation=owner['process_incarnation']), all_prepared=True)
+
+        check('unknown-native-dispatched', unknown_native)
+        check('wrong-valid-preparing-Control', wrong_preparer)
+        check('backend-still-present', lambda e: only(e, event='successor-backend', present=False).update(present=True))
+        check('backend-identity-substitution', lambda e: only(e, event='successor-backend', present=False).update(
+            pid=only(e, event='successor-backend', present=False)['pid'] + 1))
+        check('unjoined-failed-driver', lambda e: only(e, event='successor-driver').update(joined=False))
     return dict(status='PASS', rejected=rejected)

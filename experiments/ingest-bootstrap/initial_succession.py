@@ -14,6 +14,7 @@ import time
 import lab
 from installed import set_value
 from initial_succession_oracle import verify, negative_controls
+from fault_cases import Incomplete, Process, safe_event
 
 SEED = 'ingest-recovery-engine-f12dbf0'
 DATABASE = 'bb_scope_bind_f12dbf0_retire_signed'
@@ -141,7 +142,79 @@ def activation_veto(pg, database, state, target_manifest, event):
     return dict(identity=identity, cases=answers, scope='named prepared-only SQL capability fences')
 
 
-def run(pg, client, output, rows, clone):
+def invoke(client, output, database, config, name, wire_mode=None):
+    """Own the bounded proxy wrapper; outer runner owns remote process cleanup."""
+    proxy = None
+    wire = dict(status='NOT_RUN')
+    started = time.monotonic()
+    try:
+        extra = []
+        if wire_mode:
+            assert wire_mode in ('before-forward', 'after-complete')
+            source = Path(__file__).resolve().parents[2] / 'experiments/control-migrations/fault_proxy.py'
+            target = output / 'successor-fault-proxy.py'
+            if not target.exists():
+                shutil.copy2(source, target)
+            assert digest(target) == digest(source)
+            proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
+                '/lab/' + target.name, '--upstream-port', '5432', '--mode', wire_mode,
+                '--commit-number', '12', '--deadline-seconds', '30'], input_pipe=True)
+            ready = proxy.event('ready', 5)
+            wire = dict(status='RUNNING', ready=ready, proxy_sha256=digest(source))
+            lab.write_json(output / (name + '-wire.json'), wire)
+            assert ready['proxy_sha256'] == digest(source) and ready['listen_host'] == '127.0.0.1'
+            assert ready['upstream_port'] == 5432 and ready['commit_number'] == 12
+            extra = [str(ready['listen_port'])]
+        response = lab.docker('exec', client, '/build/ingest_bootstrap_probe', name,
+            database, '/run/secrets/application', config, *extra, check=False, timeout=90)
+        elapsed = time.monotonic() - started
+        # Preserve the actual probe outcome even if wire qualification fails.
+        lab.write_json(output / (name + '-response.json'), dict(returncode=response.returncode,
+            stdout=response.stdout, stderr=response.stderr, seconds=elapsed))
+        if proxy:
+            receipt = proxy.event('receipt', 5)
+            code = proxy.wait(3)
+            wire.update(receipt=receipt, exit_code=code)
+            assert code == 0 and not proxy.stderr
+            assert receipt['reason'] == wire_mode and receipt['commit_number'] == 12
+            fields = ['commits_seen', 'commits_forwarded', 'server_commit_complete',
+                'client_commit_complete', 'faults']
+            expected = [12, 11, 11, 11, 1] if wire_mode == 'before-forward' else [12, 12, 12, 11, 1]
+            assert [receipt[k] for k in fields] == expected
+            assert [e['event'] for e in proxy.events] == ['ready', 'fault', 'receipt']
+            assert proxy.events[1]['reason'] == wire_mode
+            wire['status'] = 'PASS'
+        return response, elapsed, wire
+    except subprocess.TimeoutExpired as error:
+        def partial(value):
+            return value.decode(errors='replace') if isinstance(value, bytes) else value or ''
+        lab.write_json(output / (name + '-response.json'), dict(returncode=None,
+            stdout=partial(error.stdout), stderr=partial(error.stderr),
+            seconds=time.monotonic() - started, outcome='UNKNOWN_TIMEOUT',
+            cleanup='outer owner-checked client stop; no inferred SQL/native rollback'))
+        raise
+    finally:
+        if proxy:
+            forced = proxy.process.poll() is None
+            proxy.stop()
+            events = []
+            try:
+                for line in proxy.stdout.splitlines():
+                    events.append(safe_event(json.loads(line)))
+            except (ValueError, TypeError, Incomplete) as error:
+                # Preserve known-safe complete metadata even if the final line
+                # was truncated. Never leave an interrupted capture as RUNNING.
+                wire.update(status='INCOMPLETE', metadata_error=type(error).__name__)
+            wire.update(events=events,
+                wrapper_exit=proxy.process.returncode, stderr_nonempty=bool(proxy.stderr),
+                forced_wrapper_stop=forced,
+                cleanup='Wrapper joined; outer owner-checked client stop confirms remote closure')
+            if forced or proxy.stderr:
+                wire['status'] = 'INCOMPLETE'
+            lab.write_json(output / (name + '-wire.json'), wire)
+
+
+def run(pg, client, output, rows, clone, *, commits=False):
     basis = output.parent.parent / SEED / 'bindings'
     store = basis / 'retire_signed/store'
     assert all(digest(basis / name) == value for name, value in FROZEN.items())
@@ -178,7 +251,8 @@ def run(pg, client, output, rows, clone):
         return json.loads(response.stdout)
 
     try:
-        for mode in ['normal', 'gap', 'old-schema', 'rollback']:
+        modes = ['commit-before', 'commit-after'] if commits else ['normal', 'gap', 'old-schema', 'rollback']
+        for mode in modes:
             name = 'successor-' + mode
             database = clone(name, DATABASE)
             directory = output / name
@@ -229,26 +303,17 @@ def run(pg, client, output, rows, clone):
                 assert lab.sql(pg, database, 'SELECT is_called FROM successor_fixture.intent_hit') == 'f'
             before = rows(database)
             lab.write_json(output / (name + '-before.json'), before)
-            started = time.monotonic()
-            try:
-                response = lab.docker('exec', client, '/build/ingest_bootstrap_probe', name,
-                    database, '/run/secrets/application', config, check=False, timeout=90)
-            except subprocess.TimeoutExpired as error:
-                def partial(value):
-                    return value.decode(errors='replace') if isinstance(value, bytes) else value or ''
-                lab.write_json(output / (name + '-response.json'), dict(returncode=None,
-                    stdout=partial(error.stdout), stderr=partial(error.stderr),
-                    seconds=time.monotonic() - started, outcome='UNKNOWN_TIMEOUT',
-                    cleanup='outer owner-checked client stop; no inferred SQL/native rollback'))
-                raise
-            elapsed = time.monotonic() - started
-            lab.write_json(output / (name + '-response.json'), dict(returncode=response.returncode,
-                stdout=response.stdout, stderr=response.stderr, seconds=elapsed))
+            wire_mode = ('before-forward' if mode == 'commit-before' else 'after-complete') if commits else None
+            response, elapsed, wire = invoke(client, output, database, config, name, wire_mode)
             after = rows(database)
             final_native = dump(name + '-after', directory)
             lab.write_json(output / (name + '-after.json'), after)
             assert response.returncode == 0 and not response.stderr, (name, response.stderr)
             events = [json.loads(line) for line in response.stdout.splitlines()]
+            if commits:
+                backends = [e for e in events if e['event'] == 'successor-backend']
+                assert len(backends) == 2 and all(e['database'] == database for e in backends)
+                assert wire['status'] == 'PASS' and not wire['forced_wrapper_stop']
             evidence = verify(events, before, baseline, inputs, name)
             mutations = negative_controls(events, before, baseline, inputs, name)
             final, = [e for e in events if e.get('stage') == 'final' and e['event'] == 'successor-state']
@@ -269,15 +334,17 @@ def run(pg, client, output, rows, clone):
             assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE "
                 "datname=current_database() AND usename='bigbrotr_control'") == '0'
             cases.append(dict(name=name, status='PASS', seconds=elapsed, oracle=evidence,
-                negative_controls=mutations, activation_veto=veto, rollback_trigger_hit=mode == 'rollback'))
+                negative_controls=mutations, activation_veto=veto, rollback_trigger_hit=mode == 'rollback',
+                commit_wire=wire))
             lab.write_json(output / 'successor-cases.json', cases)
     finally:
         preserved = dict(control=rows(DATABASE) == original, files=census(store) == files,
             artifacts=all(digest(basis / name) == value for name, value in FROZEN.items()))
         lab.write_json(output / 'successor-source-preserved.json', preserved)
         assert all(preserved.values()), preserved
-    return dict(name='initial-successor-preparation', status='PASS', cases=cases,
+    return dict(name='initial-successor-commit-loss' if commits else 'initial-successor-preparation', status='PASS', cases=cases,
         source_lab=str(basis.parent), source_revision=SOURCE, source_owner=OWNER,
         source_preserved=preserved, source_artifacts=FROZEN,
-        scope='public typed preparation with retained in-process proof, actual PG and RocksDB',
+        scope='actual preparation COMMIT loss with backend exclusion and retained in-process proof' if commits else
+            'public typed preparation with retained in-process proof, actual PG and RocksDB',
         excluded='process-loss reconstruction, writer activation, ACK/GC, restart/resend and full M1')

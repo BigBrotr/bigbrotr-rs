@@ -64,7 +64,8 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
-ingest_succession = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession'
+ingest_succession_commits = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession-commits'
+ingest_succession = ingest_succession_commits or len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession'
 ingest_retirement_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-faults'
 ingest_retirement_locks = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-locks'
 ingest_retirement_obligations = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-obligations'
@@ -371,6 +372,12 @@ if ingest_succession:
     report['not_run'] = ['process-loss plan reconstruction and abandoned empty attempt retirement',
         'writer activation, lifetime, installed restart/resend and full M1',
         'actual ambiguous preparation COMMIT, process kill and native syscall failure',
+        'ACK/GC, capacity/load/aged-state and arm64/release']
+if ingest_succession_commits:
+    report['wave'] = 'initial-successor-commit-loss'
+    report['not_run'] = ['process-loss plan reconstruction and abandoned empty attempt retirement',
+        'writer activation, lifetime, installed restart/resend and full M1',
+        'recovery while the old backend still holds exclusion; native syscall failure',
         'ACK/GC, capacity/load/aged-state and arm64/release']
 
 
@@ -750,7 +757,7 @@ if dictionary_faults:
     success_status = 'PASS_DICTIONARY_APPEND_COMMIT_FAULTS'
 
 if ingest_succession:
-    success_status = 'PASS_INITIAL_SUCCESSOR_PREPARATION'
+    success_status = 'PASS_INITIAL_SUCCESSOR_COMMIT_LOSS' if ingest_succession_commits else 'PASS_INITIAL_SUCCESSOR_PREPARATION'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -969,7 +976,7 @@ try:
         elif ingest_succession:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
             from initial_succession import run as run_succession
-            report['cases'].append(run_succession(pg, client, output, rows, clone))
+            report['cases'].append(run_succession(pg, client, output, rows, clone, commits=ingest_succession_commits))
             save()
         elif ingest_recovery:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1088,9 +1095,10 @@ try:
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
     if ingest_succession:
+        expected = (['successor-commit-before', 'successor-commit-after'] if ingest_succession_commits else
+            ['successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback'])
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
-            and [r['name'] for r in report['cases'][0]['cases']] ==
-                ['successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback']
+            and [r['name'] for r in report['cases'][0]['cases']] == expected
             and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']), 'initial-successor-case-set')
     if ingest_recovery:
         expected = 3 if ingest_retirement_obligations else 4 if ingest_retirement_locks or ingest_retirement_faults else 10 if ingest_retirement else 4 if ingest_abandonment_faults else 6 if ingest_abandonment_limits else 11 if ingest_abandonment_guards else 6 if ingest_abandonment else 2 if ingest_source_locks else 4 if ingest_source_closure else 3 if ingest_recovery_interruptions or ingest_recovery_signed else 9

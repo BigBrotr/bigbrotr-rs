@@ -39352,7 +39352,7 @@
       "branch": "qualification/successor-commit-probe",
       "base": "0202319f005fea9043f8d28cb217369555ece6e4",
       "owner": "cleanup_review: Rust probe/dispatch only",
-      "state": "SOURCE_REVIEWED_BUILD_NOT_RUN",
+      "state": "CLEAN_INTEGRATED_BUILD_PASS_ENGINE_NOT_RUN",
       "commit": "60c455230fb728bfcef35d071f6bd4eea1732e42"
     },
     "commit_fault_oracle_worktree": {
@@ -39360,7 +39360,40 @@
       "branch": "qualification/successor-commit-oracle",
       "base": "0202319f005fea9043f8d28cb217369555ece6e4",
       "owner": "recovery_review: independent Python oracle only",
-      "state": "IMPLEMENTING_NOT_RUN"
+      "state": "CLEAN_INTEGRATED_ENGINE_NOT_RUN",
+      "commit": "eddd15ba29f411c80dfd9f1d770702e0d480850f",
+      "old_capture_regression": {
+        "snapshots": 44,
+        "negative_controls": 38
+      }
+    },
+    "build_candidate_3969a61": {
+      "source": "3969a612883674fe900a9b309624f5ceae6b336b",
+      "tree": "c909b499aab3c9c9ee9300279ee535e26329daa6",
+      "owner": "36a7da71eb3d6ffac1dc191924042f19",
+      "owner_label": "org.bigbrotr.network-transport",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-3969a61",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "d229e54de5f0748a8d01f984581d6c9611210411b86a961960f87f51172fa438"
+        },
+        {
+          "name": "native",
+          "id": "972e11afa1ff11fbf878087564151d989589b4f4e6e46b95bd17e71ecfa599c5"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-10-12T10:43:17.186424+00:00",
+      "qualification": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "inventory_changed": [],
+      "free_bytes_after": 71716712448,
+      "finished_at": "2026-10-12T10:45:15.964154+00:00",
+      "source_files_verified": 1729,
+      "artifacts_verified": 5
     }
   }
 }
