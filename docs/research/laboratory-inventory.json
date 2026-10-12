@@ -39208,7 +39208,7 @@
     "resources_state": "STOPPED_RETAINED"
   },
   "implementation_initial_successor_20261012": {
-    "status": "IMPLEMENTING_NOT_QUALIFIED",
+    "status": "NATIVE_COMPONENTS_PASS_CONNECTED_NOT_RUN",
     "owner": "root integrating owner; cleanup_review owns PostgreSQL source only",
     "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
     "canonical": "/home/tux/bigbrotr-rs",
@@ -39216,6 +39216,35 @@
     "branch": "implementation/initial-successor-pg",
     "base_revision": "20fc08cdb7d281cf2dd0ad630b4b964b933a9b84",
     "purpose": "Separate writable PostgreSQL prepared-only initial successor implementation; root owns native format and integration. No writer activation or new engine resources yet.",
-    "preservation": "Preserve all predecessor laboratories, source snapshots and current shared compiler cache."
+    "preservation": "Preserve all predecessor laboratories, source snapshots and current shared compiler cache.",
+    "build_candidate_4f62b52": {
+      "source": "4f62b52f785d1e9567e562528c0be7697963f489",
+      "tree": "4d3a3496f23fcf39dbd186fb2e021b9024f86810",
+      "owner": "411b1aa576ec66a512a9a01733df3127",
+      "owner_label": "org.bigbrotr.network-transport",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-4f62b52",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "e6d80f02e89c3d0780293c60f92839b311889b71296325bcc6af922f7711c818"
+        },
+        {
+          "name": "native",
+          "id": "b711594380c1201fec2a1ace454cbdd6c54cbb41587a9063e9942c6ebc4b1709"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-10-12T10:06:25.236240+00:00",
+      "qualification": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "inventory_changed": [],
+      "free_bytes_after": 72252882944,
+      "finished_at": "2026-10-12T10:08:23.254724+00:00",
+      "receipt_sha256": "a7e0eec6661b40c2c4404bbb6a92af9f212487709b86b249be61c8e497d61c92",
+      "source_files_verified": 1726,
+      "artifacts_verified": 5
+    }
   }
 }

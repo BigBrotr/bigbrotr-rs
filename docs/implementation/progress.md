@@ -4,33 +4,9 @@ Observed 2026-10-12 on Tux during autonomous implementation. Navigation, not
 another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, evidence and resources before continuing.
 
-## Current implementation boundary
-
-The current candidate adds prepared-only initial successor metadata under the
-same P02-T01 Step5 / P02-T02 Step4. Root integrated PostgreSQL agent commit
-93be672a79035c33b484209afcf4113b53727a1a from the separately inventoried worktree;
-root owns native schema2/handoff, actual-engine tests, references and runner.
-The candidate is NOT_RUN pending its new exact-source clang14 build. Previous
-f12 artifacts remain valid only for the unchanged earlier retirement evidence.
-
-Native proof is bound to the actual directory device/inode and local Rocks
-sequence. Independent AI review found and corrected the original wrong-store
-risk. Tests cover exact four-key effects, zero/nonzero history, preserved old
-rows, local-plan reopen/replay, conflicting/stale state and authority boundaries.
-The independent fixture was written before its native implementation; no executed
-preimplementation RED result is claimed. Compilation and actual engines must
-still establish its results. PostgreSQL migration0030 is new and unqualified;
-applied0027/0028/0029 remain unchanged.
-
-Next action: commit the candidate, run the existing isolated ingest-history
-profile with handoff/codecs added, fix concrete findings, then qualify the
-connected PostgreSQL preparation before process-recovery or writer activation.
-No real successor is enabled and no task/milestone is complete. Agent worktree
-is clean and preserved; all previous laboratories remain protected.
-
 ## Mandate and repository
 
-The complete selected product remains INCOMPLETE. Q34 makes Tux the sole editing,
+The full selected product remains INCOMPLETE. Q34 makes Tux the sole editing,
 Git, development and test host; Q35 appoints this session sole integrating owner
 and activates the full-product goal through M1–M5. Continue ordinary authorized
 work autonomously. Preserve private distribution, unpublished Cargo packages,
@@ -38,136 +14,111 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is 9af1c91e42f25eeef7348285e9634a3bc6630782,
-including both new qualification waves and their passing evidence. The exact same
-hash was freshly verified on private origin/recovery/tux-20261012; the worktree
-was clean. Main stays 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Product binaries remain
-f12dbf04677f8afa8c62aa1c8638e199dad0abc1, tree
-7dd4e343f51b50a6055096ef14a0aaec03a0a8e5. No Rust/migration/dependency changes.
+Current tested product commit is 4f62b52f785d1e9567e562528c0be7697963f489,
+tree 4d3a3496f23fcf39dbd186fb2e021b9024f86810. At this observation, private origin
+still held 20fc08c and fresh fetch showed ahead 1/behind 0. Root owns the subsequent
+evidence/inventory/checkpoint edits; a later documentation commit may be actual
+HEAD. Verify Git and the eventual private push before continuing. Main remains
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
-Root owns only this subsequent bounded successor-review/checkpoint note; a later
-documentation commit may be actual HEAD. Verify Git/upstream on resumption. No
-merge/rebase, concurrent source writer or running BigBrotr test process remains.
-Both independent read-only AI reviews completed. The full-product goal is active.
+Root integrated agent commit 93be672a79035c33b484209afcf4113b53727a1a from the
+separate clean writable worktree `.research/initial-successor-pg-20261012`, branch
+implementation/initial-successor-pg. Preserve that commit/worktree; no source
+writer is active there. Agents subsequently perform only bounded read-only reviews.
+Original lab exports and recovered bundle remain unchanged. The
+[dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation;
+a same-disk bundle is not host-loss backup. Missing Mac captures remain unavailable.
 
-Original lab source snapshots remain unchanged. The independent canonical Git
-checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
-preserve recovered history; a same-disk bundle is not host-loss backup. The
-[dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation.
-Missing historical Mac captures remain unavailable evidence.
+## Current responsibility and verified native result
 
-## Current responsibility and executed evidence
+Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. Neither these steps
+nor M1 are complete. Commit 4f62b52 implements the prepared-only initial successor:
+immutable handoff receipt retaining exact predecessor/target manifests, schema 2
+compatibility fence, explicit source 2 zero and producer 2 OPEN/zero, and one synced
+four-put batch. Original native rows remain unchanged except the singleton
+manifest. There is no writer activation, ACK, reclamation or dictionary bootstrap.
 
-Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. Initial producer/domain
-retirement is distinct from successor activation and native ACK/reclamation.
-Native marker v2 remains closing, issued4 / ACK0 / retired0; historical closing
-and ordinary admission retain their deliberate retired/released refusals.
-Applied migrations 0027/0028/0029 are immutable; corrections are additive.
+A local plan can only originate from the positive initial source witness. It is
+bound to actual directory device/inode and Rocks sequence, including across
+native close/reopen while retaining the plan. Independent AI review found and
+corrected the earlier cross-store proof gap. A callback is only the native
+component authority seam; actual connected Control qualification is separate.
+No executed preimplementation RED result is claimed: the independent fixture
+was written before implementation but first executed with the candidate.
 
-The retained `runs/ingest-history-f12dbf0/out/qualification.json` is
-PASS_INGEST_HISTORY_BUILD_ONLY: release CLI/probe, 4 entrypoint, 35 migration catalog,
-23 native tests and Clippy. Exact artifacts and all 1,718 source-manifest files were
-rechecked. No rebuild is needed for unchanged production/build inputs.
+Migration 0030 adds immutable PostgreSQL preparation, confirms its COMMIT before
+native dispatch, retains current Control/policy custody across the bounded local
+deadline, and vetoes successor reservation/input binding even without an intent.
+It preserves original slot registrar attribution. Applied 0027/0028/0029 are
+unchanged. Fresh global allocation-domain identity relies on the retained SQL
+uniqueness constraint. PostgreSQL/installed execution of 0030 remains NOT_RUN.
+The relevant owners are [manifest/handoff](../reference/ingest-manifest-format.md#initial-owner-handoff-receipt)
+and [prepared registration](../reference/ingest-registration.md#prepared-initial-successor).
 
-New `runs/ingest-recovery-engine-f12dbf0/bindings/result.json` is
-PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE, finished 2026-10-12T08:52:55Z.
-All ten signed-store cases pass, including completed retry, pending workflow,
-missing copy, unbound Event, mixed terminal state, old schema, historical actor
-revocation, a zero-request acquisition job on a four-request producer, and clock
-regression. Clock regression now returns exit 4/InvalidMetadata with no terminal
-writes. Complete 70-table effects,49 native rows/four original inputs, additive
-migration/reapply and original 69-table Control/32-table catalog/files/report
-preservation are checked. Original `ingest-recovery-engine-6bc2005` stays FAIL;
-do not overwrite or remove its deliberately incompatible clock clone.
+`runs/ingest-history-4f62b52/out/qualification.json` is
+PASS_INGEST_HISTORY_BUILD_ONLY, finished 2026-10-12T10:08:23Z. Release CLI/probe,
+4 entrypoint and 36 migration-catalog tests, 7 actual native handoff tests,
+3 source-closure / 9 producer-closing / 11 recovery regressions, 4 manifest / 9 key
+codec tests and Clippy passed. The 7 handoff tests cover zero/nonzero history,
+independent four-key delta, unchanged replay, equal-sequence wrong-store refusal,
+conflicts predating the proof, constructor invariants and pre/post-write authority.
 
-The [owning recovery evidence](evidence/p02-producer-recovery-native-20260920.json)
-records hashes, cases, source/build identities and limits. Borrowed PG and the new
-client finished stopped, no OOM, no cleanup errors or unrelated lifecycle changes.
-No whole task or milestone closes from these ten cases.
+All 1,726 exact source files and 5 retained executable hashes were independently
+rechecked. Source manifest SHA256
+50473e3dff1c38de877d101e5ce37a56350dcf04b7e052fc2e58c80802ed893a;
+CLI 5fdb78f84f29e95980f62d513c49870381c1d43112ebf6ee0538f3d0cde696dd.
+The owning [recovery evidence](evidence/p02-producer-recovery-native-20260920.json)
+records remaining artifacts/toolchain/receipt hashes and qualification limits.
+The owned build containers stopped, no OOM, no unrelated lifecycle changes.
+Independent read-only AI audit reproduced all source/artifact hashes and test
+counts; all 1,186 pre-existing container projections and four original compiler
+cache artifacts remained unchanged.
+This is actual native component evidence, not cross-process reconstruction,
+PG/native atomicity, power-loss durability or successor admission qualification.
 
-## Fault qualification and next bounded action
+## Next bounded action and retained earlier evidence
 
-`runs/ingest-retirement-faults-0d81400/bindings/result.json` is
-PASS_INSTALLED_INITIAL_RETIREMENT_FAULTS with exact fixture 0d81400 and retained
-product f12 artifacts. All four cases passed. Actual AFTER producer UPDATE held
-its first mutation; SIGTERM joined the CLI in 2.318s, leaving one blocked backend;
-after unlock the entire retirement rolled back. Deferred COMMIT joined the CLI
-with exit 4 in 3.170s while one backend remained; after unlock the complete terminal
-shape committed. Both stdout streams were empty on failure. Each same-root retry
-used fresh Control after natural expiry and independently checked the old owner's
-fence; already committed producer/domain/Ingest timestamps, digest and xmin stayed
-unchanged. Original seed and native detail remained unchanged, all owned containers
-stopped, no OOM, no cleanup/unrelated changes. This does not prove server cancellation
-on client exit. Independent AI review confirmed the captured outcomes and oracles.
+Qualify the connected PostgreSQL preparation on an isolated exact-source clone,
+using the retained signed retired seed and the actual typed Control adapter.
+First finish the finite probe design: obtain positive source proof under the
+existing terminal observation path, retain the native handle/local plan, call
+prepare_initial_successor and independently check all 71 SQL tables, the exact
+native four-key delta and original input preservation. Include confirmed retry,
+changed-intent/old-schema/unretired/history refusals and the distinct PG/native
+ambiguity boundaries. Preserve every original fixture and record results in the
+same recovery evidence/inventory. Do not turn a SQL-only script into evidence
+for the actual adapter. Component build need not be repeated unless product or
+build inputs change.
 
-`runs/ingest-retirement-locks-3f36784/bindings/result.json` is now
-PASS_INSTALLED_INITIAL_RETIREMENT_LOCKS, finished 2026-10-12T09:20:24Z, four PASS.
-Policy expiry: unchanged accepted5s policy, local Control lease20s/timeout8s;
-actual producer UPDATE observed in PgSleep after prompt advisory unlock, exit4
-DeliveryUnknown in5.778s, complete rollback. After removing only fixture SQL and
-natural lease expiry, same-root fresh-Control retry succeeds. Both actual Ingest
-lock orders pass: draining first commits only state/xmin, retirement then succeeds;
-retirement first commits, draining writer refuses23514. All product owner guards
-remain enabled with replication_role origin. All70 tables,49 native rows/four
-inputs and original seed preserved; no cleanup/unrelated changes or OOM. No server
-cancellation or broader concurrency guarantee follows. The owning recovery report
-contains exact backend observations, artifact/source hashes and result digest.
+Then implement cross-process plan reconstruction and abandoned-empty-attempt
+completion without adopting its incarnation; only an actual continuing process
+may retain custody into a writer lifetime. Keep historical receipts/topology,
+source 1 final cut plus source 2 explicit zero, and shared per-store 64-input / 32 MiB
+allowance. Archive currently assumes snapshot 1 and one epoch 1 stream; Sync has
+initial request/epoch assumptions. Connect these consumers before claiming real
+restart/resend, and repeat the unchanged signed event with provenance disabled.
 
-`runs/ingest-retirement-obligations-115d888/bindings/result.json` is
-PASS_INSTALLED_INITIAL_RETIREMENT_OBLIGATIONS, finished 2026-10-12T09:34:26Z.
-Three distinct synthetic histories refuse: original-Control import claim with no
-request/binding, unowned import with retained producer_input_bindings, and retained
-producer_checkpoint at complete_through_request=0. Exact additive preparation and
-all 70 tables/xmin/native 49 rows/four inputs are checked. Each expected PG error and
-require_initial_retirement context matches its fresh Control backends 469/880/1283;
-all 226 product triggers stay enabled and the function definition is unchanged.
-Original signed Control/catalog/files/report preserved. No real import execution
-or logical-closure claim: the third case concerns producer_checkpoints, not
-import_checkpoints. Independent post-run AI audit replayed all three oracles,
-rejected six corrupted captures and rechecked 73 original filesystem paths.
+Previous f12 product artifacts and the first 10 installed retirement cases remain
+valid for their exact scope. The four fault cases 0d81400 establish client exit
+versus later rollback/COMMIT, not server cancellation. Four locks cases 3f36784
+establish policy deadline and both Ingest lock orders. Three obligations cases
+115d888 refuse synthetic import claim, input binding and producer_checkpoint 0;
+the latter is not import_checkpoints and no real import execution is claimed.
+All old SQL/native/input preservation and independent oracle audits are retained
+in the owning recovery evidence. The original 6bc2005 clock failure remains FAIL.
+No rerun or cleanup is needed merely because this successor slice is new.
 
-Next bounded action: specify and implement the smallest explicit recoverable
-handoff from the fully retired initial owner, under existing P02-T01 Step5 /
-P02-T02 Step4 / P01-T09 Step4. Finish remaining owning-file reads, record the
-persistent transition in the owning reference, and add an independent RED before
-implementation. Qualify the handoff with admission disabled, then connect the
-existing writer/lifetime. Do not weaken fresh initialization or rerun dictionaries.
-
-The bounded review maps stable Ingest resource/producer slot with owner, source
-and producer epochs 1→2; topology G→G+1 retains the old final cut and adds an explicit
-empty stream; fresh allocation domains leave old mappings/counters unchanged.
-Keep historical visibility references/scopes and original manifest bytes: old
-reservations bind its hash, so merely replacing the singleton manifest breaks
-recovery. Current Control attribution must be separate from the slot's original
-registrar. A replacement process must not reuse an attempted incarnation.
-
-Actual implementation boundaries include explicit source-zero validation, scoped
-historical lookup (current initial readers assume one epoch/marker/domain set),
-current-authority admission/renewal, Sync's hardcoded epoch1/request3 and Archive's
-one-stream cut. Keep ACK/GC separate and honor the per-store 64-input/32MiB spool;
-new epochs cannot manufacture capacity. Existing 0029 retirement remains initial
-only. The owning recovery report's successor_boundary_review_20261012 records full
-reviewed files and remaining reads. This is a source-based proposed slice, NOT_RUN.
-
-Successful initial startup has two dictionary requests. True zero-issued is a real
-interrupted earlier startup boundary already covered by native empty closing/source
-closure tests, but not installed retirement. Carry this into actual restart work.
-Control UTC expiry and other row-contention schedules remain separate unqualified
-limits; there is no arbitrary exhaustive schedule prerequisite before successor.
-
-Explicit successor/restart/resend must
-retain first admission and repeat with provenance off. The earlier archive evidence
-qualifies signed acquisition→durable admission→timer archive→private history→353-byte
-signed JSONL export; full M1 additionally needs online indexing, outages and installed
-bundle journeys. Five exports under 256 MiB remain NOT_RUN. Follow existing dependencies
-for subsequent analytics, interfaces, operations, browser and website work.
+Earlier Archive evidence qualifies signed acquisition→durable admission→timer
+archive→private history→353-byte signed JSONL export. M1 also needs online indexing,
+outages and installed bundle journeys. Five exports under 256 MiB remain NOT_RUN.
+Follow the existing cross-phase dependencies for analytics, interfaces, operations,
+browser and website work; optional enablement does not finish selected scope.
 
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
 Before cleanup, implementation/qualification/object-storage labs totaled about
-975 GiB (lower bounds where access is denied). The targeted cache retirement left
-67.64 GiB free; remeasure before allocation because this is a shared host. Small retirement fixtures need >2 GiB; the
+975 GiB (lower bounds where access is denied). The latest successor build left about 67.3 GiB free; remeasure before allocation because this is a shared host. Small retirement fixtures need >2 GiB; the
 larger export wave still requires 64 GiB. Never lower that reserve to force a run.
 
 Targeted cleanup is RETIRED_VERIFIED. The reviewed one-off executor removed

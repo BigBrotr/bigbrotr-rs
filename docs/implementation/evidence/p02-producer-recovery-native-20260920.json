@@ -3551,7 +3551,7 @@
     }
   },
   "initial_successor_preparation_20261012": {
-    "status": "IMPLEMENTED_NOT_QUALIFIED",
+    "status": "PASS_NATIVE_INITIAL_SUCCESSOR_COMPONENTS",
     "scope": "Prepared-only initial successor; no activation, cross-process reconstruction or empty-attempt retirement",
     "pg_agent_source": "93be672a79035c33b484209afcf4113b53727a1a",
     "native_contract": "docs/reference/ingest-manifest-format.md#initial-owner-handoff-receipt",
@@ -3563,6 +3563,94 @@
       "disposition": "Bind fixed-size local plan to directory device/inode; independently test equal-manifest/equal-sequence different roots",
       "other_boundaries": "Explicit preproof conflicts, constructor invariants and pre/post-write authority tests added; local guards excluded from portable receipt"
     },
-    "qualification": "New exact source build required; PostgreSQL/installed successor NOT_RUN"
+    "qualification": "Connected PostgreSQL preparation, installed successor, process reconstruction and activation NOT_RUN",
+    "build": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-4f62b52",
+      "source": "4f62b52f785d1e9567e562528c0be7697963f489",
+      "tree": "4d3a3496f23fcf39dbd186fb2e021b9024f86810",
+      "source_manifest_sha256": "50473e3dff1c38de877d101e5ce37a56350dcf04b7e052fc2e58c80802ed893a",
+      "source_files_verified": 1726,
+      "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "qualification_sha256": "4965d70943a15868500bd84c9fe4aa779e787929c8c467484ebc2fe460f24d14",
+      "build_result_sha256": "73d46e0abab3f22f9da6ff2bf7af40145ecfcddffe3cc3bf524f00a6daddfb03",
+      "checks_sha256": "87a3d31bf72ae688e3d3833ab2a500729cb2963ebb48835f95279a2350fe632f",
+      "binary_sha256": "5fdb78f84f29e95980f62d513c49870381c1d43112ebf6ee0538f3d0cde696dd",
+      "probe_sha256": "29c6db834c09a2f3a7c3f821699e7da3c3ef997a7f5ff3e6e4742aa8411519cd",
+      "test_executables_sha256": {
+        "source_closure_components": "44f2e99ccae2aa1bc2a58113d2ecac84e2ae51ad53a2960a7e20bbaada9a8163",
+        "rocks_manifest": "7bfe60cb1840174354b49b88907aa0eff63475c99f8674263aa27a4ff1ac4efa",
+        "rocks_keys": "1b75eefd3226663f9187305bc144df162484514438c4440f7bd2d1795b88a0bb"
+      },
+      "native_tests_passed": {
+        "source-closure": 3,
+        "producer-closing": 9,
+        "producer-recovery": 11,
+        "initial-handoff": 7,
+        "rocks_manifest": 4,
+        "rocks_keys": 9
+      },
+      "other_checks": "4 control runtime entrypoint and 36 migration catalog tests; release CLI/probe; Clippy warnings denied",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      }
+    },
+    "preservation": {
+      "before_after": "Tests independently compare entire logical Rocks rows with exact four-key delta, preserve predecessor rows, and require unchanged Rocks sequence on replay/refusal",
+      "limits": "Actual native process components, not power-loss, cross-process plan reconstruction, connected PG/native protocol or admission. Same local proof retained across native close/reopen. No claims for arbitrary directory replacement."
+    },
+    "independent_post_run_ai_review": {
+      "status": "NO_DISCREPANCY_FOUND",
+      "source_files_recomputed": 1726,
+      "retained_executables_verified": 5,
+      "preexisting_container_projections_unchanged": 1186,
+      "shared_cache_original_artifacts_verified": 4,
+      "actual_checks": 9,
+      "initial_handoff_log_sha256": "a2b92460785db91d8b20e413ad782a00d41aaaabea13aa0a8c30f497823c41d1",
+      "limits": "Read-only AI review; no build/test repetition. Zero/one bootstrap histories, local plan across same-process reopen. Actual old binary and connected PG/process-loss/activation/power-loss NOT_RUN."
+    }
   }
 }
