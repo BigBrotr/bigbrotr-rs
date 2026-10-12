@@ -3,7 +3,8 @@
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
-        InitialHistoryRequest, PreparedInitialHistory, ProducerCloseRequest, ProducerResolveRequest,
+        InitialHistoryRequest, PolicySnapshot, PreparedInitialHistory, ProducerCloseRequest,
+        ProducerResolveRequest,
     },
     rocks::store::{
         AdmissionLimits, AdmissionOutcome, IngestRecovery, InitialHandoff, ProducerRecoveryLimits,
@@ -36,6 +37,35 @@ impl Mode {
     }
 }
 
+#[derive(Clone, Copy)]
+enum Loss {
+    BeforeNative,
+    AfterNative,
+}
+
+#[derive(Clone, Copy)]
+struct Qualification {
+    select_route: bool,
+    loss: Option<Loss>,
+    proxy_port: Option<u16>,
+}
+
+struct Backend {
+    pid: i32,
+    start: String,
+    database: String,
+    control_epoch: u64,
+}
+impl Backend {
+    fn emit(&self, mode: Mode, present: bool) {
+        emit(
+            serde_json::json!({"event":"successor-backend","stage":mode.name(),
+            "pid":self.pid,"backend_start":self.start,"database":self.database,
+            "control_epoch":self.control_epoch,"present":present}),
+        );
+    }
+}
+
 struct Probe {
     mode: Mode,
     root: config::Resolved,
@@ -43,6 +73,8 @@ struct Probe {
     budget: ResourceBudget,
     observer: tokio_postgres::Client,
     cancelled: AtomicBool,
+    qualification: Option<Qualification>,
+    database: String,
 }
 
 struct Refusal {
@@ -133,7 +165,7 @@ pub fn corrupt(path: &Path, mutation: &str) {
 }
 
 pub async fn run(config: Config, config_file: &Path) {
-    run_mode(config, config_file, Mode::History).await;
+    run_mode(config, config_file, Mode::History, None).await;
 }
 
 pub async fn run_gap(config: Config, config_file: &Path, cancel_before_completion: bool) {
@@ -143,11 +175,46 @@ pub async fn run_gap(config: Config, config_file: &Path, cancel_before_completio
         Mode::Gap {
             cancel_before_completion,
         },
+        None,
     )
     .await;
 }
 
-async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
+pub async fn run_qualification(
+    config: Config,
+    config_file: &Path,
+    command: &str,
+    proxy_port: Option<u16>,
+) {
+    let loss = match command {
+        "successor-gap-loss-before" => Some(Loss::BeforeNative),
+        "successor-gap-loss-after" => Some(Loss::AfterNative),
+        "successor-gap-policy" | "successor-prepared-recover" => None,
+        _ => panic!("unknown initial gap qualification"),
+    };
+    assert_eq!(loss.is_some(), proxy_port.is_some());
+    assert!(proxy_port.is_none_or(|port| port != 0));
+    run_mode(
+        config,
+        config_file,
+        Mode::Gap {
+            cancel_before_completion: false,
+        },
+        Some(Qualification {
+            select_route: command == "successor-prepared-recover",
+            loss,
+            proxy_port,
+        }),
+    )
+    .await;
+}
+
+async fn run_mode(
+    config: Config,
+    config_file: &Path,
+    mut mode: Mode,
+    qualification: Option<Qualification>,
+) {
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
     assert_eq!(config.get_dbname(), root.text("postgres.control.database"));
@@ -174,6 +241,24 @@ async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
     let _metadata = grant(&budget, 16 * MIB, 0);
     let mut recovery =
         IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    if let Some(qualification) = qualification {
+        // This dispatch is only a finite fixture. The selected product adapter
+        // still proves the complete retained history under a fresh Control.
+        let manifest = recovery.manifest();
+        let route = match (manifest.identity().owner_epoch.get(), manifest.key_schema()) {
+            (1, 1) => Mode::Gap {
+                cancel_before_completion: false,
+            },
+            (2, 2) if qualification.select_route => Mode::History,
+            _ => panic!("unsupported actual prepared recovery state"),
+        };
+        mode = route;
+        emit(
+            serde_json::json!({"event":"successor-recovery-selection","route":mode.name(),
+            "owner_epoch":manifest.identity().owner_epoch.get(),"key_schema":manifest.key_schema(),
+            "manifest":hex(manifest.encode().as_bytes()),"admission":false}),
+        );
+    }
     let (observer, observer_driver) = bounded(config.connect(NoTls)).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
     let probe = Probe {
@@ -183,6 +268,8 @@ async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
         budget,
         observer,
         cancelled: AtomicBool::new(false),
+        qualification,
+        database: config.get_dbname().unwrap().into(),
     };
     drop(probe.replay_grants());
     let mut role = [0; 16];
@@ -196,9 +283,16 @@ async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
         "role":hex(&role),"incarnation":hex(&incarnation),"lease_ttl_us":CONTROL_TTL.as_micros().to_string()}),
     );
     probe.snapshot("before-claim").await;
-    let (client, driver) = bounded(config.connect(NoTls)).await.unwrap();
+    // The observer remains direct. Only this dedicated owner connection crosses
+    // the bounded laboratory proxy, and no connection or plan crosses processes.
+    let mut owner_config = config;
+    if let Some(port) = qualification.and_then(|value| value.proxy_port) {
+        assert!(owner_config.get_ports().is_empty());
+        owner_config.port(port);
+    }
+    let (client, driver) = bounded(owner_config.connect(NoTls)).await.unwrap();
     let driver = tokio::spawn(driver);
-    let (mut owner, _) = bounded(ControlSession::acquire(
+    let (mut owner, policy) = bounded(ControlSession::acquire(
         client,
         ClaimRequest {
             dataset,
@@ -218,6 +312,12 @@ async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
         "resource":hex(owner.identity().resource_id.as_bytes()),"epoch":owner.identity().epoch.get(),
         "role":hex(&role),"incarnation":hex(&incarnation)}),
     );
+    probe.emit_policy(&owner, "acquired", None, policy);
+    let backend = if qualification.is_some() {
+        Some(probe.observe_backend(&owner).await)
+    } else {
+        None
+    };
     probe.snapshot("after-claim").await;
     probe.snapshot("before-read").await;
     let result = match mode {
@@ -236,11 +336,16 @@ async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
         Err(error) => emit(serde_json::json!({"event":mode.event("result"),
             "stage":error.stage,"sequence":error.sequence,"error":error.error})),
     }
+    if qualification.is_some_and(|value| value.loss.is_some()) && result.is_err() {
+        probe.check_poisoned(&mut owner).await;
+    }
     probe.snapshot("after-read").await;
     // All borrowed historical witnesses have ended. Close/join native custody
     // before releasing the actual Control owner, matching the installed order.
     drop(recovery);
-    probe.end_control(owner, driver, result.is_ok()).await;
+    probe
+        .end_control(owner, driver, result.is_ok(), backend.as_ref())
+        .await;
     probe.snapshot("final").await;
     emit(
         serde_json::json!({"event":mode.event("complete"),"native":"closed",
@@ -249,9 +354,108 @@ async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
     );
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
+    if let Some(loss) = qualification.and_then(|value| value.loss) {
+        let Err(error) = result else {
+            panic!("delivery-loss fixture unexpectedly completed");
+        };
+        assert_eq!(error.stage, "completion");
+        assert_eq!(error.sequence, None);
+        assert_eq!(
+            error.error,
+            match loss {
+                Loss::BeforeNative => "Control(Backend)",
+                Loss::AfterNative => "DeliveryUnknown",
+            }
+        );
+    }
 }
 
 impl Probe {
+    fn emit_policy(
+        &self,
+        owner: &ControlSession,
+        phase: &str,
+        sequence: Option<u64>,
+        policy: PolicySnapshot,
+    ) {
+        if self.qualification.is_some() {
+            emit(
+                serde_json::json!({"event":"successor-policy","stage":self.mode.name(),
+                "phase":phase,"sequence":sequence,"control_epoch":owner.identity().epoch.get(),
+                "config_revision":policy.config_revision,"policy_revision":policy.policy_revision,
+                "config_digest":hex(&policy.config_digest),"policy_digest":hex(&policy.policy_digest)}),
+            );
+        }
+    }
+
+    async fn observe_backend(&self, owner: &ControlSession) -> Backend {
+        let identity = owner.identity();
+        let row = bounded(self.observer.query_one(
+            "SELECT json_build_object('pid',o.control_backend_pid,
+                'backend_start',o.control_backend_start,'database',a.datname)::text
+             FROM control.owner_epochs o JOIN pg_catalog.pg_stat_activity a
+               ON a.pid=o.control_backend_pid AND a.backend_start=o.control_backend_start
+             WHERE o.resource_id=$1::bytea AND o.epoch=$2::text::numeric
+               AND o.process_incarnation=$3::bytea AND o.role='control'
+               AND o.state='active' AND a.datname=current_database()",
+            &[
+                &&identity.resource_id.as_bytes()[..],
+                &identity.epoch.get().to_string(),
+                &&identity.process_incarnation.as_bytes()[..],
+            ],
+        ))
+        .await
+        .unwrap();
+        let value: serde_json::Value = serde_json::from_str(row.get::<_, &str>(0)).unwrap();
+        let backend = Backend {
+            pid: i32::try_from(value["pid"].as_i64().unwrap()).unwrap(),
+            start: value["backend_start"].as_str().unwrap().into(),
+            database: value["database"].as_str().unwrap().into(),
+            control_epoch: identity.epoch.get(),
+        };
+        assert!(backend.pid > 0 && !backend.start.is_empty());
+        assert_eq!(backend.database, self.database);
+        backend.emit(self.mode, true);
+        backend
+    }
+
+    async fn require_backend_absent(&self, backend: &Backend) {
+        // A closed client does not prove server exclusion. Observe the exact
+        // frozen tuple without terminating it or changing its retained row.
+        bounded(async {
+            loop {
+                let present: bool = self
+                    .observer
+                    .query_one(
+                        "SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_stat_activity
+                         WHERE pid=$1::integer AND backend_start=$2::text::timestamptz
+                           AND datname=$3::text)",
+                        &[&backend.pid, &backend.start, &backend.database],
+                    )
+                    .await
+                    .unwrap()
+                    .get(0);
+                if !present {
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(25)).await;
+            }
+        })
+        .await;
+        backend.emit(self.mode, false);
+    }
+
+    async fn check_poisoned(&self, owner: &mut ControlSession) {
+        assert_eq!(
+            bounded(owner.refresh(|document, digest| self.validate(document, digest))).await,
+            Err(OwnerError::Unavailable)
+        );
+        emit(
+            serde_json::json!({"event":"successor-session-poisoned","stage":self.mode.name(),
+            "control_epoch":owner.identity().epoch.get()}),
+        );
+    }
+
     fn validate(&self, document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
         crate::config::validate_fixture_policy(document, digest, &self.root)
     }
@@ -278,7 +482,13 @@ impl Probe {
             serde_json::json!({"event":"successor-state","stage":stage,"state":state,"rows":rows}),
         );
     }
-    async fn end_control(&self, owner: ControlSession, driver: Driver, release: bool) {
+    async fn end_control(
+        &self,
+        owner: ControlSession,
+        driver: Driver,
+        release: bool,
+        backend: Option<&Backend>,
+    ) {
         self.snapshot("before-control-end").await;
         let identity = owner.identity();
         if release {
@@ -288,7 +498,16 @@ impl Probe {
             // release or invent terminal SQL state for that actual claimant.
             drop(owner);
         }
-        crate::ingest_closing::join(driver, false).await;
+        let failed = self.qualification.is_some_and(|value| value.loss.is_some());
+        assert!(!failed || !release);
+        crate::ingest_closing::join(driver, failed).await;
+        if let Some(backend) = backend {
+            emit(
+                serde_json::json!({"event":"successor-driver","stage":self.mode.name(),
+                "failed":failed,"joined":true}),
+            );
+            self.require_backend_absent(backend).await;
+        }
         emit(
             serde_json::json!({"event":"successor-control","stage":self.mode.name(),
             "phase":if release {"released-and-joined"} else {"dropped-and-joined"},
@@ -423,9 +642,10 @@ impl Probe {
     ) -> Result<ResolvedSource<'a>, Refusal> {
         assert!(issued <= 64);
         for sequence in 1..=issued {
-            bounded(owner.refresh(|document, digest| self.validate(document, digest)))
+            let policy = bounded(owner.refresh(|document, digest| self.validate(document, digest)))
                 .await
                 .map_err(|error| Refusal::at("policy-refresh", Some(sequence), error))?;
+            self.emit_policy(owner, "refreshed", Some(sequence), policy);
             self.snapshot(&format!("refreshed-{sequence}")).await;
             let (input, outcome) = self.replay_grants();
             let request = ProducerResolveRequest {

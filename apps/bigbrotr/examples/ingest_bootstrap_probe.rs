@@ -891,7 +891,10 @@ fn main() {
             7
         } else if matches!(
             args[1].as_str(),
-            "successor-commit-before" | "successor-commit-after"
+            "successor-commit-before"
+                | "successor-commit-after"
+                | "successor-gap-loss-before"
+                | "successor-gap-loss-after"
         ) {
             6
         } else {
@@ -947,6 +950,21 @@ fn main() {
                     config,
                     Path::new(&args[4]),
                     args[1] == "successor-gap-cancelled",
+                )
+                .await;
+            } else if matches!(
+                args[1].as_str(),
+                "successor-gap-policy"
+                    | "successor-gap-loss-before"
+                    | "successor-gap-loss-after"
+                    | "successor-prepared-recover"
+            ) {
+                ingest_initial_history::run_qualification(
+                    config,
+                    Path::new(&args[4]),
+                    &args[1],
+                    args.get(5)
+                        .map(|port| port.parse().expect("explicit proxy port")),
                 )
                 .await;
             } else if args[1].starts_with("successor-") {
