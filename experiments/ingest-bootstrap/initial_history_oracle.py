@@ -154,7 +154,13 @@ def preparation(original, native, inputs, mode, seed, known):
     return SEED_SEQUENCE + int(mode in ('history-missing-handoff', 'history-nonempty-target'))
 
 
-def claim(before, after, planned):
+def inside_window(value, server_window):
+    assert type(value) is int
+    assert server_window['before_us'] <= value <= server_window['after_us'], \
+        'Control time outside observed server-clock window'
+
+
+def claim(before, after, planned, server_window):
     """Exactly one fresh Control, preserving the finished preparing process."""
     previous = max((r for r in before['owner_epochs'] if r['role'] == 'control'),
         key=lambda r: r['epoch'])
@@ -166,6 +172,8 @@ def claim(before, after, planned):
     assert not any(r['role_instance_id'] == role for r in before['role_instances'])
     assert not any(r['process_incarnation'] == incarnation for r in before['owner_epochs'])
     actual_role = only(after['role_instances'], role_instance_id=role)
+    inside_window(actual_role['created_at_us'], server_window)
+    inside_window(current['acquired_at_us'], server_window)
     assert isinstance(current['control_backend_pid'], int) and current['control_backend_pid'] > 0
     assert isinstance(current['control_backend_start'], str) and current['control_backend_start']
     assert previous['released_at_us'] <= actual_role['created_at_us'] <= current['acquired_at_us']
@@ -186,8 +194,10 @@ def claim(before, after, planned):
     return current
 
 
-def refresh(before, after, control):
+def refresh(before, after, control, server_window):
     current = only(after['owner_epochs'], resource_id=control['resource_id'], epoch=control['epoch'])
+    assert type(current['lease_expires_at_us']) is int
+    inside_window(current['lease_expires_at_us'] - 20_000_000, server_window)
     assert current['lease_expires_at_us'] >= control['lease_expires_at_us']
     assert current['xmin'].isdecimal() and all(current['xmin'] != r['xmin']
         for table in before.values() for r in table)
@@ -198,9 +208,12 @@ def refresh(before, after, control):
     return current
 
 
-def verify(events, original, native, inputs, mode, *, seed):
+def verify(events, original, native, inputs, mode, *, seed, server_window):
     """Classify every phase, including explicit renewals; return evidence only."""
     assert mode == 'history-normal' or mode in FAILURES
+    assert set(server_window) == {'before_us', 'after_us'}
+    assert all(type(value) is int and value > 0 for value in server_window.values())
+    assert 0 <= server_window['after_us'] - server_window['before_us'] <= 120_000_000
     known = seed_expected(seed)
     native_sequence = preparation(original, native, inputs, mode, seed, known)
     position = snapshots = 0
@@ -241,7 +254,7 @@ def verify(events, original, native, inputs, mode, *, seed):
     same(current, snapshot('history-before-claim'))
     claimed = take('successor-control', 'history', 'claimed')
     after = snapshot('history-after-claim')
-    control = claim(current, after, planned)
+    control = claim(current, after, planned, server_window)
     assert claimed == dict(event='successor-control', stage='history', phase='claimed',
         resource=control['resource_id'][2:], epoch=control['epoch'],
         role=control['role_instance_id'][2:], incarnation=control['process_incarnation'][2:])
@@ -253,7 +266,7 @@ def verify(events, original, native, inputs, mode, *, seed):
         same(current, snapshot('history-loaded'))
         for sequence in range(1, 5):
             after = snapshot(f'history-refreshed-{sequence}')
-            control = refresh(current, after, control)
+            control = refresh(current, after, control, server_window)
             current = after
             if mode == 'history-missing-input' and sequence == 4:
                 break
@@ -274,6 +287,11 @@ def verify(events, original, native, inputs, mode, *, seed):
         stage='history', phase=phase, resource=control['resource_id'][2:], epoch=control['epoch'])
     after = snapshot('history-after-control-end')
     ended(current, after, control, normal)
+    if normal:
+        inside_window(only(after['owner_epochs'], resource_id=control['resource_id'],
+            epoch=control['epoch'])['released_at_us'], server_window)
+        inside_window(only(after['role_instances'],
+            role_instance_id=control['role_instance_id'])['retired_at_us'], server_window)
     same(after, snapshot('history-final'))
     assert take('successor-history-complete') == dict(event='successor-history-complete',
         native='closed', control=phase, admission=False, success=normal)
@@ -288,22 +306,26 @@ def verify(events, original, native, inputs, mode, *, seed):
         target_incarnation_inherited=False, admission=False, read_only=True,
         result_error=error, proof_reconstructed=normal,
         process_boundary='established separately by the owning harness',
+        control_clock=dict(server_window, renewal_ttl_us=20_000_000,
+            qualification='observed server-clock envelope, not exact per-statement time'),
         previous_manifest_sha256=digest(bytes.fromhex(known['proof']['previous_manifest'])),
         target_manifest_sha256=digest(bytes.fromhex(known['proof']['target_manifest'])),
         handoff_sha256=digest(bytes.fromhex(known['proof']['handoff'])))
 
 
-def negative_controls(events, original, native, inputs, mode, *, seed):
+def negative_controls(events, original, native, inputs, mode, *, seed, server_window):
     """Alter captures and refresh hashes, so semantic checks must reject them."""
-    verify(events, original, native, inputs, mode, seed=seed)
+    verify(events, original, native, inputs, mode, seed=seed, server_window=server_window)
     rejected = []
 
-    def check(name, mutate):
+    def check(name, mutate, reason=None):
         changed = copy.deepcopy(events)
         mutate(changed)
         try:
-            verify(changed, original, native, inputs, mode, seed=seed)
-        except (AssertionError, KeyError, ValueError, TypeError):
+            verify(changed, original, native, inputs, mode, seed=seed, server_window=server_window)
+        except (AssertionError, KeyError, ValueError, TypeError) as error:
+            if reason is not None:
+                assert str(error) == reason, (name, error)
             rejected.append(name)
         else:
             raise AssertionError('oracle accepted perturbation: ' + name)
@@ -344,6 +366,19 @@ def negative_controls(events, original, native, inputs, mode, *, seed):
         check('intent-attribution-rewritten', lambda e: sql(e,
             lambda pg: pg['initial_ingest_successions'][0].update(prepared_by_epoch=10)))
     if mode in ('history-normal', 'history-missing-input'):
+        def future_renewals(changed):
+            control_epoch = only(changed, event='successor-control', phase='claimed')['epoch']
+            active = False
+            for event in changed:
+                if event['event'] != 'successor-state':
+                    continue
+                active |= event['stage'] == 'history-refreshed-1'
+                if active:
+                    sql(changed, lambda pg: only(pg['owner_epochs'], role='control',
+                        epoch=control_epoch).update(lease_expires_at_us=(1 << 63) - 1), event['stage'])
+
+        check('consistently-future-renewals', future_renewals,
+            'Control time outside observed server-clock window')
         check('historical-registration-impersonation', lambda e:
             only(e, event='successor-history-registration').update(control_epoch=10))
         check('original-outcome-bytes', lambda e:

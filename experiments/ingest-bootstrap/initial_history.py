@@ -40,6 +40,47 @@ def inputs_at(store):
         for p in (store / 'producer-inputs-v1').iterdir()}
 
 
+def observe_backend_absence(pg, database, output, label):
+    """Observe actual server absence within five seconds; never terminate it."""
+    started = time.monotonic()
+    observation = dict(database=database, user='bigbrotr_control', limit_seconds=5,
+        status='INCOMPLETE', attempts=[])
+    statement = "SELECT json_build_object('count',count(*),'backends',coalesce(" \
+        "json_agg(json_build_object('pid',pid,'backend_start',backend_start) ORDER BY pid),'[]')) " \
+        "FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'"
+    try:
+        while True:
+            remaining = 5 - (time.monotonic() - started)
+            if remaining <= 0:
+                raise TimeoutError('Control backend absence not observed within five seconds')
+            # lab.sql has a longer default command timeout. Bound this actual
+            # observation command by the remaining monotonic polling deadline.
+            response = lab.docker('exec', '-i', pg['postgres'], 'psql', '-X', '-A', '-t', '-q',
+                '--no-password', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', database,
+                data=statement, timeout=remaining)
+            sample = json.loads(response.stdout)
+            elapsed = time.monotonic() - started
+            observation['attempts'].append(dict(seconds=elapsed, **sample))
+            assert type(sample['count']) is int and sample['count'] == len(sample['backends'])
+            if sample['count'] == 0 and elapsed <= 5:
+                observation['status'] = 'OBSERVED_ABSENT'
+                return observation
+            remaining = 5 - (time.monotonic() - started)
+            if remaining > 0:
+                time.sleep(min(.05, remaining))
+    except BaseException as error:
+        observation['error'] = type(error).__name__
+        raise
+    finally:
+        observation['seconds'] = time.monotonic() - started
+        lab.write_json(output / (label + '-backends.json'), observation)
+
+
+def server_clock(pg, database):
+    return int(lab.sql(pg, database,
+        'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+
+
 def capture(client, output, label, *arguments):
     started = time.monotonic()
     try:
@@ -132,11 +173,11 @@ def run(pg, client, output, rows, clone):
     seed_sequence = final['state']['sequence']
     assert seed_sequence == 62
     assert all(r['state'] == 'released' for r in original['owner_epochs'] if r['role'] == 'control')
-    assert lab.sql(pg, DATABASE, "SELECT count(*) FROM pg_stat_activity WHERE "
-        "datname=current_database() AND usename='bigbrotr_control'") == '0'
+    seed_absence = observe_backend_absence(pg, DATABASE, output, 'history-source')
     seed = dict(control=original, native=baseline, inputs=inputs)
     lab.write_json(output / 'history-source.json', dict(**seed, files=files,
         sequence=seed_sequence, frozen=FROZEN, previous_client=retained['client'],
+        backend_absence=seed_absence,
         previous_process='completed and owned source client stopped; no original Control backend'))
     cases = []
 
@@ -224,15 +265,25 @@ def run(pg, client, output, rows, clone):
             require_setup(mode, before, native, present_inputs, seed)
             lab.write_json(output / (mode + '-before.json'), before)
             lab.write_json(output / (mode + '-inputs.json'), present_inputs)
+            window = dict(before_us=server_clock(pg, database))
+            lab.write_json(output / (mode + '-clock.json'), window)
             captured, elapsed = capture(client, output, mode, 'successor-history', database,
                 '/run/secrets/application', config)
+            window['after_us'] = server_clock(pg, database)
+            lab.write_json(output / (mode + '-clock.json'), window)
+            # The actual probe has a 90s outer deadline. Allow only its finite
+            # enclosing server-clock window, including both observation calls.
+            assert 0 < window['before_us'] <= window['after_us'] <= window['before_us'] + 120_000_000
+            absence = observe_backend_absence(pg, database, output, mode)
             after = rows(database)
             final_native = dump(mode + '-after', directory)
             lab.write_json(output / (mode + '-after.json'), after)
             assert captured.returncode == 0 and not captured.stderr, (mode, captured.stderr)
             observed = [json.loads(line) for line in captured.stdout.splitlines()]
-            evidence = verify(observed, before, native, present_inputs, mode, seed=seed)
-            mutations = negative_controls(observed, before, native, present_inputs, mode, seed=seed)
+            evidence = verify(observed, before, native, present_inputs, mode,
+                seed=seed, server_window=window)
+            mutations = negative_controls(observed, before, native, present_inputs, mode,
+                seed=seed, server_window=window)
             snapshots = [e for e in observed if e['event'] == 'successor-state']
             assert snapshots[0]['state']['sequence'] == seed_sequence + int(mode in NATIVE_FAULTS)
             final, = [e for e in snapshots if e['stage'] == 'history-final']
@@ -241,11 +292,10 @@ def run(pg, client, output, rows, clone):
             assert inputs_at(directory / 'store') == present_inputs
             if removed:
                 assert dict(bytes=removed.stat().st_size, sha256=digest(removed)) == inputs[name]
-            assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE "
-                "datname=current_database() AND usename='bigbrotr_control'") == '0'
             result, = [e for e in observed if e['event'] == 'successor-history-result']
             cases.append(dict(name=mode, status='PASS', seconds=elapsed, result=result,
                 oracle=evidence, negative_controls=mutations, native_corruption=native_corruption,
+                server_window=window, backend_absence=absence,
                 removed_input_retained=removed is not None))
             lab.write_json(output / 'history-cases.json', cases)
     finally:
@@ -255,6 +305,6 @@ def run(pg, client, output, rows, clone):
         assert all(preserved.values()), preserved
     return dict(name='prepared-initial-history', status='PASS', cases=cases,
         source_lab=str(basis.parent), source_revision=SOURCE, source_owner=OWNER,
-        source_preserved=preserved, source_artifacts=FROZEN,
+        source_preserved=preserved, source_artifacts=FROZEN, source_backend_absence=seed_absence,
         scope='separate-process positive predecessor reconstruction under fresh actual Control; read-only stores',
         excluded='PG/native gap completion, abandoned empty-attempt retirement, writer activation, ACK/GC, installed restart/resend and full M1')

@@ -4418,7 +4418,10 @@
         "limits": [
           "Preparing process has already finished and originalControl is released/excluded; no simultaneous live-original schedule.",
           "No PG/native gap completion, terminal empty-attempt retirement, writer activation, installed restart/resend, ACK/GC, capacity or release claim."
-        ]
+        ],
+        "harness_observation_commit": "2fda65565ab375db7d9066f89bf9926f37b1e68d",
+        "oracle_clock_commit": "4b7650579d206314131ae6e7bead525f43343784",
+        "pre_engine_ai_review": "No blocking counterexample found in full new harness/oracle/probe, changed dispatch and invoked helpers. Improved actual backend absence to bounded five-second observations; added external PostgreSQL before/after clock window bounding claim/renewal/release, plus propagated extreme-expiry negative control. Window is an enclosing server observation, not exact per-statement timing. Root reviewed the corrections; no Rust/product changes."
       }
     }
   }

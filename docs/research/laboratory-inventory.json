@@ -39443,7 +39443,8 @@
       "owner": "recovery_review native tests committed; independent connected Python oracle",
       "native_tests_commit": "559cf822e3df7e5b59248add6f38b5d92974f4eb",
       "oracle_commit": "f4063bc0cd183db8a97bfb4861505df5665ea523",
-      "state": "clean, source assignments complete"
+      "state": "clean, source assignments complete",
+      "clock_commit": "4b7650579d206314131ae6e7bead525f43343784"
     },
     "root_scope": "PostgreSQL checked intent/history adapter, connected probe/fixture, integration, contracts and evidence",
     "readonly_review": "cleanup_review completed independent PG adapter/contract inspection before harness assignment; found and fixed reexport visibility; no further blocking source counterexample found in that scope",
@@ -39455,7 +39456,8 @@
       "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
       "owner": "cleanup_review connected fixture and bindings dispatch only; no engines",
       "commit": "52f6ff14654279ef547883636fa3899430f0a4d3",
-      "state": "clean, source assignment complete"
+      "state": "clean, source assignment complete",
+      "observation_commit": "2fda65565ab375db7d9066f89bf9926f37b1e68d"
     },
     "build_candidate": {
       "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
@@ -39546,6 +39548,18 @@
           "out/build-checks/initial-reconstruction.log": "91ea111a964faf4efdfa50c9255ef8305de86aa78d8a3f6e3e9d7f2502e4f2b8",
           "native-terminal.json": "3e0d550cb9c82b5ff6116c61ecdb052067687e93dc133a1d8c80760fda3e4a31"
         }
+      }
+    ],
+    "unexecuted_fixture_roots": [
+      {
+        "source": "493ca5e59b6f6d4917953b8ec43e07e7d4571e74",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-process-493ca5e",
+        "build_source": "39e746834c1587952a28c2c1e78ca8ea62d62831",
+        "build_artifacts": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-39e7468/out/artifacts",
+        "status": "NOT_RUN_SUPERSEDED_BEFORE_ENGINE_ALLOCATION",
+        "owner": "root sole engine executor; labeled identities allocated by frozen runner",
+        "seed": "ingest-succession-ac644ef/bindings/successor-normal/store and bb_scope_bind_ac644ef_successor_normal; copy only",
+        "reason": "Pre-engine review added bounded actual backend absence and server-clock envelope; preserve source worktree, no containers/databases created here."
       }
     ]
   }
