@@ -3651,6 +3651,50 @@
       "actual_checks": 9,
       "initial_handoff_log_sha256": "a2b92460785db91d8b20e413ad782a00d41aaaabea13aa0a8c30f497823c41d1",
       "limits": "Read-only AI review; no build/test repetition. Zero/one bootstrap histories, local plan across same-process reopen. Actual old binary and connected PG/process-loss/activation/power-loss NOT_RUN."
+    },
+    "connected_qualification_next_slice": {
+      "status": "SOURCE_REVIEW_ONLY_NOT_RUN",
+      "retired_seed": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-f12dbf0/bindings/retire_signed/store",
+      "retired_seed_database": "bb_scope_bind_f12dbf0_retire_signed",
+      "retired_seed_result_sha256": "93eb62bbef23f00a64c2d3441ccd0b63309f3249d35300d0ade70cae654db357",
+      "retained_seed_shape": "70 tables; 9 closed domains; 4 original requests; source cut12; preserve seed unchanged",
+      "public_proof_path": [
+        "load_historical with original manifest epoch1",
+        "acquire fresh current Control",
+        "observe_initial_retirement, not close_initial_producer",
+        "InitialProducerClosing::source_resolution",
+        "inspect_initial_retirement_request for original sequences1..4; record every result; finish",
+        "InitialHandoff::from_source; drop borrowed ResolvedSource; retain IngestRecovery and local plan",
+        "prepare_initial_successor using exact original registration and new target fields"
+      ],
+      "minimal_fixture_owners": [
+        "apps/bigbrotr/examples/support/ingest_succession.rs (new finite probe support)",
+        "apps/bigbrotr/examples/ingest_bootstrap_probe.rs (finite dispatch)",
+        "experiments/ingest-bootstrap/initial_succession.py (new fixture)",
+        "experiments/acquisition-scope/bindings.py (bounded dispatch/table-count wiring)"
+      ],
+      "boundary": "Clone retired derivative. Same local plan and original registration retained across exact retries; public APIs suffice. Cross-process reconstruction after native epoch2 remains separate unfinished work.",
+      "source_closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501",
+      "seed_snapshots": [
+        "retire-signed-retry-after.json",
+        "retire-signed-retry-native.json"
+      ],
+      "first_wave_proposal": [
+        "Complete preparation and exact retry, then fresh Control with retained local plan; exact SQL vetoes for successor request and input binding INSERTs",
+        "Confirmed PG preparation followed by real policy-validator refusal on third preparation validation (second snapshot before native dispatch); preserve old native state, refuse changed intent, complete under fresh Control retaining same local plan",
+        "Schema29 refusal; after migration30, deterministic intent INSERT error must roll back all registry/topology preparation"
+      ],
+      "oracle": "PG all71 tables/xmin plus native49->52 logical records and exact sequence+4; independent four-key delta; old rows/four original inputs unchanged. Confirmed PG/native gap keeps49 rows/unchanged sequence. Fresh Control rows accounted separately.",
+      "fixture_policy_validator": "acquisition_config::validate_fixture_policy delegates actual PolicySeed::restore; old hardcoded probe validator does not match signed seed",
+      "build_boundary": "New Rust support requires new exact-source probe/build receipt; old d295-specific build_recovery_probe.py is not directly reusable. Current bindings reuse allows only docs/experiments changes.",
+      "ai_review_boundary": "Relevant recovery/retirement/source-closure/history/probe/support/snapshot/fixture/bindings owners fully read by delegated reviewer. Config resolve/policy large owners, deep sync/archive oracles and full network inventory projection not newly read; reuse existing owners, inspect fully before changing them.",
+      "not_qualified": [
+        "actual ambiguous COMMIT response",
+        "process-loss plan reconstruction",
+        "empty-attempt retirement",
+        "successor activation or writer lifetime",
+        "installed true zero-request startup"
+      ]
     }
   }
 }

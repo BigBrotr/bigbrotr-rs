@@ -15,10 +15,10 @@ repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Current tested product commit is 4f62b52f785d1e9567e562528c0be7697963f489,
-tree 4d3a3496f23fcf39dbd186fb2e021b9024f86810. At this observation, private origin
-still held 20fc08c and fresh fetch showed ahead 1/behind 0. Root owns the subsequent
-evidence/inventory/checkpoint edits; a later documentation commit may be actual
-HEAD. Verify Git and the eventual private push before continuing. Main remains
+tree 4d3a3496f23fcf39dbd186fb2e021b9024f86810. Evidence commit 8925e8cb37ba358009eec33505b3285f229bdb6d was freshly verified on
+private origin with ahead 0/behind 0 and a clean canonical worktree. Root owns this
+subsequent bounded next-slice/checkpoint note; a later documentation commit may
+be actual HEAD. Verify Git and its private push before continuing. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
 Root integrated agent commit 93be672a79035c33b484209afcf4113b53727a1a from the
@@ -79,7 +79,13 @@ PG/native atomicity, power-loss durability or successor admission qualification.
 ## Next bounded action and retained earlier evidence
 
 Qualify the connected PostgreSQL preparation on an isolated exact-source clone,
-using the retained signed retired seed and the actual typed Control adapter.
+using the retained signed retired derivative `ingest-recovery-engine-f12dbf0/
+bindings/retire_signed/store` and DB `bb_scope_bind_f12dbf0_retire_signed`.
+The owning evidence records the finite probe change map. Public
+`observe_initial_retirement` plus `inspect_initial_retirement_request` can
+construct the positive source witness after retirement; do not reopen closing
+or change API visibility. Keep the original registration and local plan across
+retries, since loading historical registration after native epoch2 is unsupported.
 First finish the finite probe design: obtain positive source proof under the
 existing terminal observation path, retain the native handle/local plan, call
 prepare_initial_successor and independently check all 71 SQL tables, the exact
