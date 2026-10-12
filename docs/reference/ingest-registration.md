@@ -290,3 +290,74 @@ All 114 full snapshots and 123 corrupted-capture controls pass. Policy advanceme
 is a privileged isolated fixture with normal guards, not a product activation
 writer. Installed recovery, empty-attempt retirement, writer activation, native
 syscall ambiguity and general subsequent lifetimes remain separate requirements.
+
+## Empty prepared attempt retirement (under implementation)
+
+The next bounded consumer retires only the exact unactivated epoch2 attempt.
+It retains the complete predecessor proof and immutable preparation. A separate
+native context accepts an explicit OPEN/zero or CLOSING/zero target producer;
+ordinary handoff application and completed-history reconstruction remain strict
+OPEN/zero operations. Decoding a handoff alone cannot construct a retirement plan.
+Every original input, native effect and existing SQL outcome must be revalidated.
+
+The owned plan retains its metadata grant, exact directory identity and Rocks
+sequence after the source borrow ends. Native dispatch rechecks the singleton,
+handoff, explicit zero source, exact producer marker, empty target namespaces
+and absence of target input sidecars. OPEN/zero becomes CLOSING/zero in one
+synchronized producer-marker write. An exact closing retry makes no write.
+An OPEN-derived plan recognizes only that one-write completion; unrelated sequence
+changes, equal-sequence foreign roots, missing/nonzero markers and sidecars refuse.
+
+The empty closure digest is SHA-256 of the following concatenation, with fixed
+width binary inputs and unsigned BE64 integers:
+
+```text
+ASCII("bigbrotr/initial-empty-attempt-closure/1") || NUL
+|| SHA256(exact retained handoff bytes)
+|| SHA256(exact target manifest bytes)
+|| producer_slot[16] || BE64(2) || BE64(0 issued) || BE64(0 source cut)
+```
+
+This distinct digest binds the abandoned attempt and empty target. The original
+source closure digest is preserved. It does not certify a new scientific outcome,
+ACK, restored-state guarantee or permission to reuse the attempted incarnation.
+
+The PostgreSQL consumer requires additive0031 and current accepted policy. It
+holds the actual current Control row FOR UPDATE before dataset and ordered
+target parent custody, then rechecks authority after waits. This also excludes
+concurrent generic import claims whose existing guard takes SHARE on that Control
+row. Dataset custody alone does not exclude a zero-request import claim.
+
+Before a prepared attempt can retire, acquisition/import claims attributed to its
+preparing Control through current Control must be absent, including zero-request
+claims. These are Control lifetimes, not the target Ingest owner or original slot
+registrar. Target requests/outcomes, input bindings, checkpoints (even zero) and
+gap history also refuse. Unclaimed jobs remain unchanged. After native closing,
+one SQL transaction closes source2 at explicit zero, retires producer2, closes
+domains2, releases owner2 with storage fencing and retires role2. All terminal
+fields share one database timestamp and the empty closure digest. Applied0029,
+0030 intent immutability and the successor admission veto remain in force.
+Sealed topology membership, including the target NULL handoff bound, is unchanged.
+
+Only these durable combinations are supported:
+
+| Native target | PostgreSQL target | Operation |
+|---|---|---|
+| OPEN/zero | Exact prepared | Close native, then retire SQL |
+| CLOSING/zero | Exact prepared | Finish SQL retirement |
+| CLOSING/zero | Exact terminal | Observe unchanged completion |
+| OPEN/zero | Terminal, or either side partial | Refuse |
+
+Transaction-internal monotone staging is not a loader-accepted partial state.
+An exact terminal observation revalidates original proof, target identities,
+digest, common timestamp and absent target-bound detail without rewriting xmin.
+It does not repeat the claim-window assertion against later unrelated Control
+jobs: no retained retiring-Control attribution exists to reconstruct that earlier
+upper bound. The absence assertion is made while performing the terminal change.
+
+Unknown native completion or SQL COMMIT retains custody and poisons failed Control
+reuse. Fresh recovery must positively exclude the old backend, rebuild the proof
+and distinguish exact prepared from exact terminal state. This selected contract
+is not executed qualification. Native component, SQL migration, connected failure
+cases and installed entrypoint integration remain separately tracked in the
+existing recovery evidence and task plan. No epoch3 or writer activation is added.

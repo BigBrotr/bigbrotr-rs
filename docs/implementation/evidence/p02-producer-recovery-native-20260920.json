@@ -5781,9 +5781,9 @@
       }
     },
     "next_empty_attempt_retirement_slice": {
-      "status": "READ_ONLY_DESIGN_NOT_IMPLEMENTED",
+      "status": "IMPLEMENTATION_STARTED_NATIVE_SQL_AND_FIXTURES_NOT_RUN",
       "task": "Same P02-T01 Step5 / P02-T02 Step4 prerequisite to P01-T09 Step4/M1",
-      "prerequisite": "Qualify remaining advanced-policy and ambiguous-delivery cases for the newly implemented gap completion; preserve all existing original/negative states.",
+      "prerequisite": "Satisfied by qualified4c283e2 policy/deliveryloss build and six actual processes; evidencef0796da privately pushed and verified0/0.",
       "scope": "Retire only the exact empty prepared epoch2 attempt; no epoch3 or writer activation.",
       "states": [
         "Native OPEN/zero + exact prepared PG: reconstruct positive old history and empty-target proof, close native then retire PG.",
@@ -5807,7 +5807,19 @@
         "advancedpolicy",
         "expiry at parent lock"
       ],
-      "review_boundary": "Independent read-only design review covered full0029/0030, PG retirement/closing/source-closure/history/gap, native closing/sourceproof/handoff and owning references; relevant0001/0002 guards and0013/0022\u20130024 workflow attribution. Broader migrations and Archive/Sync consumers not re-audited. No source edits or engines."
+      "review_boundary": "Independent read-only design review covered full0029/0030, PG retirement/closing/source-closure/history/gap, native closing/sourceproof/handoff and owning references; relevant0001/0002 guards and0013/0022\u20130024 workflow attribution. Broader migrations and Archive/Sync consumers not re-audited. No source edits or engines.",
+      "selected_contract": "docs/reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation",
+      "native_api": "Opaque EmptyInitialAttempt borrowed context and EmptyInitialRetirement owned plan; strict existing handoff/history remain OPEN0. One native marker write,4096data+4096native+item grant; PG wrapper retains128KiB metadata permit.",
+      "digest": "SHA256(ASCII bigbrotr/initial-empty-attempt-closure/1 + NUL + SHA256 exacthandoff + SHA256 exacttargetmanifest + slot16 + BE64(2) + BE64(0issued) + BE64(0cut)). Independent fixture assembles literal bytes.",
+      "claim_serialization": "Take actual current Control row FOR UPDATE before dataset and orderedtargetparents, recheck clock after waits. Existing generic zero-request import claim guard takes only Control SHARE, so dataset custody alone is insufficient.",
+      "terminal_observation": "Assert preparer-through-current Control acquisition/import claim absence during prepared retirement only. Exact terminal observation retains proof, complete terminal fields and absence of target-bound detail; later unrelated unbound jobs do not invalidate it. No persisted retired-by attribution exists, and timestamps cannot reconstruct its historical upper bound.",
+      "responsibilities": {
+        "root": "contracts, PG Rust integration, migration catalog, finite connected probe/oracle and all engines/builds",
+        "cleanup_review": "native component in separate initial-empty-native worktree",
+        "recovery_review": "independent new native fixtures in separate initial-empty-fixtures worktree",
+        "successor_restart_design": "new additive0031SQL only in separate initial-empty-sql worktree"
+      },
+      "qualification": "All new native/SQL/connected behavior NOT_RUN. No installed entrypoint, epoch3 or writer activation added. Existing117native tests and all qualified previous captures remain retained; affected checks rerun once new source exists."
     },
     "gap_policy_delivery_qualification": {
       "status": "PASS_PREPARED_GAP_POLICY_DELIVERY",

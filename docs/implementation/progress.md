@@ -16,13 +16,12 @@ repository rename or production deployment is authorized.
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Latest qualified finite probe build and connected policy/delivery-loss wave use
 4c283e20ab1bdc186e192cd68fc08833718e2fa8, tree
-be7c9249b3814ceebdc431aea01b01ac87d285a3. That is observed HEAD before the current
-root-owned evidence/checkpoint update. Product source remains the qualified
-162caeb28f1fa5b47f38f8022d7ba96211d8e14f implementation; its native tests are reused.
-No merge/rebase or source edit is in progress; all agent worktrees remain clean.
-Evidence commit ef8376602c39231dcaad7f1ad1e2e063eef5b174 was privately pushed and
-freshly verified ahead0/behind0 with a clean checkout. The newer qualification
-commits and this documentation require a fresh verified private push.
+be7c9249b3814ceebdc431aea01b01ac87d285a3. Evidence commit f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b is current observed HEAD
+before this root-owned contract/checkpoint update. Product source remains the
+qualified162caeb implementation; its native tests are reused. f0796da was privately
+pushed, freshly fetched and verified ahead0/behind0 with a clean canonical checkout.
+No merge/rebase is in progress. Three new separate worktrees now hold assigned
+native, independent fixture and additive SQL implementation responsibilities.
 Earlier prepared-only, COMMIT-loss, history and gap-completion artifacts remain
 retained for their exact scopes. Full product and M1 remain INCOMPLETE.
 
@@ -245,26 +244,33 @@ No product policy activation, native syscall/power-loss, installed restart/resen
 or full M1 claim follows. Previous preparation COMMIT-loss remains separate:
 this completion fault loses a read-only ROLLBACK reply after native dispatch.
 
-Next record the final evidence commit and verified private push, then implement
-exact retirement of the abandoned empty epoch2 attempt. Preserve all
-positive original proof, configured-root/sequence, current authority and immutable
-history requirements; do not adopt that incarnation or activate a writer lifetime.
+Next implement and qualify exact retirement of the abandoned empty epoch2 attempt
+under the [selected contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation).
+Native agent owns a distinct OPEN0/CLOSING0 context and positive owned plan;
+independent fixtures own literal digest/marker/delta and refusal expectations;
+SQL agent owns additive0031 only. Root owns contracts, PG Rust/catalog integration,
+connected fixtures and all engine/build execution. The new source remains NOT_RUN.
 
-Scoped read-only design identified that native closing/history currently assumes
-producer1 or OPEN/zero producer2; terminal recovery needs an explicit checked
-CLOSING/zero context. Additive SQL must preserve 0030 intent/veto and 0029 initial
-behavior, close source2 with explicit zero, retire producer2/domains2/owner2/role2
-under one terminal transaction, and retain sealed topology unchanged. Its existing
-source2 membership bound remains NULL. Check zero-request workflow claims under
-the preparing and subsequent Control lifetimes, because jobs belong to Control,
-not the attempted Ingest owner. Preserve target input/namespace absence checks,
-original positive history and the shared 64-file/32MiB allowance. The design is
-recorded as a proposal in the existing evidence, not implemented qualification.
+Existing history and handoff stay OPEN0-only. New context replays every original
+request under the same bounded metadata/input grants before constructing the plan.
+Exactly one synced producer2 CLOSING0 write precedes the terminal SQL transaction.
+Keep explicit source2 zero, absent target namespaces/inputs/details, complete
+original proof and exact native root/sequence. Prepared+OPEN, prepared+CLOSING,
+terminal+CLOSING are distinct; terminal+OPEN or partial state refuses. Terminal
+SQL closes source2, retires producer/domains/owner/role2 with one timestamp and the
+distinct documented digest, preserving0030 intent/admission veto and sealed topology.
 
-Root remains sole integrator and engine executor. All separate agent worktrees
-are clean and retained. Build session 1149 and connected session 23590 joined exit 0;
-no engine/build session remains active. Root owns only documentation/evidence
-updates. Last measured free space 70,198,644,736bytes; remeasure before allocation.
+Current Control FOR UPDATE must precede dataset/target custody because generic
+zero-request import claims currently take only Control SHARE. Check the preparing
+through current Control claim window during the actual retirement. Exact terminal
+observation must not reinterpret later unrelated unbound jobs as old obligations;
+no retained retired-by attribution permits reconstructing that historical window.
+The existing evidence records the selected semantics and independent design review.
+
+Root remains sole integrator and engine executor. Earlier separate worktrees are
+clean/retained; new agent worktrees may be dirty within assigned scopes. No engine
+or build session is active. Root owns current contract/evidence/checkpoint edits.
+Last connected free space70,198,644,736bytes; remeasure before allocation.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming

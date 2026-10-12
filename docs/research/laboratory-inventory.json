@@ -39942,5 +39942,33 @@
       },
       "independent_ai_review": "Complete: six actual processes114snapshots/123controls and external before/held/after captures; guardedpolicy metadata, original files/inputs/artifacts and1205nonborrowed container projections verified. No live SQL/restart."
     }
+  },
+  "implementation_initial_empty_retirement_20261012": {
+    "status": "IMPLEMENTATION_NATIVE_SQL_FIXTURES_NOT_RUN",
+    "owner": "root sole integrating and engine owner",
+    "worktrees": [
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/initial-empty-native-20261012",
+        "base": "f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b",
+        "branch": "implementation/initial-empty-native",
+        "status": "ASSIGNED_WRITABLE_AGENT_SCOPE"
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/initial-empty-fixtures-20261012",
+        "base": "f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b",
+        "branch": "qualification/initial-empty-fixtures",
+        "status": "ASSIGNED_WRITABLE_AGENT_SCOPE"
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/initial-empty-sql-20261012",
+        "base": "f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b",
+        "branch": "implementation/initial-empty-sql",
+        "status": "ASSIGNED_WRITABLE_AGENT_SCOPE"
+      }
+    ],
+    "resources": [],
+    "free_bytes_before": 70108876800,
+    "preserve": "All previous original/positive/negative labs retained; no engine/build active. Existing cache remains exclusive and retired18targets stay retired.",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
   }
 }
