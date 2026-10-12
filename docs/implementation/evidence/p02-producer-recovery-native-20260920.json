@@ -5781,7 +5781,7 @@
       }
     },
     "next_empty_attempt_retirement_slice": {
-      "status": "IMPLEMENTED_NATIVE_SQL_PG_ADAPTER_CONNECTED_FIXTURES_IN_PROGRESS_NOT_RUN",
+      "status": "PASS_NATIVE_COMPONENT_BUILD_CONNECTED_QUALIFICATION_PENDING",
       "task": "Same P02-T01 Step5 / P02-T02 Step4 prerequisite to P01-T09 Step4/M1",
       "prerequisite": "Satisfied by qualified4c283e2 policy/deliveryloss build and six actual processes; evidencef0796da privately pushed and verified0/0.",
       "scope": "Retire only the exact empty prepared epoch2 attempt; no epoch3 or writer activation.",
@@ -5819,20 +5819,433 @@
         "recovery_review": "independent new native fixtures in separate initial-empty-fixtures worktree",
         "successor_restart_design": "new additive0031SQL only in separate initial-empty-sql worktree"
       },
-      "qualification": "New native/SQL/connected behavior NOT_RUN. Rootrustfmt anddiffcheck only. Nextbuildexactcandidate with14reconstruction tests plusaffectedregressions; rootenginefirstwave then ambiguity/claim/expiry schedules remain required.",
+      "qualification": "Exact30a88ae build PASS:13checks/122testexecutions (69native,13codecs,40entrypoint/schema),Clippy. ConnectedSQL/actualprocessfirstwave NOT_RUN; remaining COMMIT-loss/claim/expiry schedules required. No installed entrypoint or epoch3 activation.",
       "implementation": {
         "native_commit": "9b08239",
         "independent_native_fixtures_commit": "71ad688cb133b2a3502a6dfb44b72af146c9f7ec",
         "sql_commit": "207ae63",
         "sql_sha256": "52819215086abb15c06b25ebb536b16955256e4707aaf0f1a89060c66fc96b8a",
-        "root_adapter": "Pending coherent commit: bounded shared original resolver and strict immutable intent, distinct empty context/opaqueplan, metadata/native grant custody throughCOMMIT; schema31 catalog additive.",
-        "native_fixtures": "Five groups,14 total reconstruction tests planned; literal D2/marker/delta, exact retries, sameKV crossroot, interveningwrite/sidecar, authority/grant refusal. Not executed yet."
+        "root_adapter": "a027cb6; compiled/tested30a88ae",
+        "native_fixtures": "Five groups,14 total reconstruction tests planned; literal D2/marker/delta, exact retries, sameKV crossroot, interveningwrite/sidecar, authority/grant refusal. Not executed yet.",
+        "finite_probe": "30a88aed82f0506b275f3886c7118b3f59a21f67",
+        "independent_oracle": "dad05ca (agentfeb09724d3a8a4bc5a20870462f90f8022a9fcb4)",
+        "raw_sql_fixture": "bf4c0fd (agent8cff897a9b8f147c3b6cdb0348258a3126ceb9d0)"
       },
       "independent_implementation_review": {
         "reviewer": "cleanup_review; independent AI read-only review",
         "result": "No concrete blocker found within scoped source review; no build/engine executed",
         "inspected": "Full newPGempty/history/producer_retirement, migrations0029/0030/0031/0007; actual registryRetirement lock/reconstruction, Controlrequire/snapshot/release,0001owner/job and0002domain/source/membership guards. OriginalparentUPDATE before target is supplied by RegistryLocks::Retirement; targetControlUPDATE precedesdataset. Allsixnewfunction grants required includingdeferreddependencies.",
         "boundary": "Full installed entrypoint/credential grant provisioning and unrelatedmigrations/functions not reaudit. Installedrestart/nextincarnation/activation NOT_RUN."
+      },
+      "native_build": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-30a88ae",
+        "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+        "source": "30a88aed82f0506b275f3886c7118b3f59a21f67",
+        "tree": "baff860c3b92fcb578c8676346d38b182d0243ae",
+        "owner": "7fda855273d8ee0d5d42c52501581cbc",
+        "finished_at": "2026-10-12T13:20:04.178114+00:00",
+        "command": "python3 -B experiments/network-transport/lab.py 30a88aed82f0506b275f3886c7118b3f59a21f67 baff860c3b92fcb578c8676346d38b182d0243ae ingest-history",
+        "source_files": 1748,
+        "source_archive_sha256": "9aa9e67caede18267362d7b8c20516f379186cb0293b4830c67171b1a53555e2",
+        "source_manifest_sha256": "dcb8cf9353c1993a5f8294ea1e0a657bb00f1543a60b13956969113fc2c2b905",
+        "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        },
+        "artifacts_sha256": {
+          "bigbrotr": "187da299c6c43c546f6f415cbd13dd1d3581bb9e7d9737f16b551901fbc61651",
+          "ingest_bootstrap_probe": "4094c3f4b2a88a45224f870cda247c3690ca885e68797be459211758878f269e",
+          "source_closure_components": "443928c2b753d787a0a58e510903c12b6ea2b6aed32d5cb095114520d040607a",
+          "rocks_manifest": "0b6141e85082e72d81cdb800eade9762206f47a3756677e91907742120a0d95a",
+          "rocks_keys": "f1891c6c2e48396d0c781f41271f7e8386b519b62c0c5428296d3a77757b133d"
+        },
+        "test_executions": 122,
+        "native_tests_passed": {
+          "source-closure": 3,
+          "producer-closing": 9,
+          "producer-recovery": 11,
+          "initial-handoff": 7,
+          "initial-reconstruction": 14,
+          "bootstrap": 5,
+          "dictionary-append": 13,
+          "event-replay": 7,
+          "rocks_manifest": 4,
+          "rocks_keys": 9
+        },
+        "checks": [
+          {
+            "name": "compile",
+            "command": [
+              "cargo",
+              "build",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--bin",
+              "bigbrotr",
+              "--example",
+              "ingest_bootstrap_probe"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 79.1755332229659
+          },
+          {
+            "name": "entrypoints",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--test",
+              "control_runtime_entrypoint",
+              "--test",
+              "control_schema"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 6.877028246410191
+          },
+          {
+            "name": "source-closure",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "source_closure_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 23.15569530799985
+          },
+          {
+            "name": "producer-closing",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "producer_closing_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.26429725997149944
+          },
+          {
+            "name": "producer-recovery",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "producer_recovery_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.31600037869066
+          },
+          {
+            "name": "initial-handoff",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "initial_handoff_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.3157196333631873
+          },
+          {
+            "name": "initial-reconstruction",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "initial_reconstruction_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 1.0171867925673723
+          },
+          {
+            "name": "bootstrap",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "bootstrap_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.16529846284538507
+          },
+          {
+            "name": "dictionary-append",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "dictionary_append_tests",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.21556612849235535
+          },
+          {
+            "name": "event-replay",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "--message-format=json",
+              "--",
+              "--test-threads=1",
+              "actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt",
+              "all_fifteen_independently_signed_fixture_operations_match_native_inventory",
+              "retained_replay_with_reduced_dependency_limit_is_not_corrupt_state",
+              "inconsistent_counter_or_scope_inventory_cannot_recreate_scientific_state",
+              "invalid_signature_has_only_strict_operational_detail_and_replays_after_reopen",
+              "missing_receipt_or_retained_fact_is_never_a_new_request_or_successful_replay",
+              "last_authority_check_and_bounded_outstanding_window_leave_no_partial_effects"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.2153595918789506
+          },
+          {
+            "name": "rocks_manifest",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--test",
+              "rocks_manifest",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 3.3214164720848203
+          },
+          {
+            "name": "rocks_keys",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--test",
+              "rocks_keys",
+              "--message-format=json",
+              "--",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 3.269396142102778
+          },
+          {
+            "name": "clippy",
+            "command": [
+              "cargo",
+              "clippy",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "--bin",
+              "bigbrotr",
+              "--example",
+              "ingest_bootstrap_probe",
+              "--",
+              "-D",
+              "warnings"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 5.573968504555523
+          }
+        ],
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "c424ef75a219943600f8f1e39a97b20782154e1d1b9920265a7baaab18ae32e4"
+          },
+          {
+            "name": "native",
+            "id": "d423d90ac36427aa82625748114a5af7126556d9876827eba798a9ce3f81ac87"
+          }
+        ],
+        "inventory_changed": [],
+        "free_bytes_after": 69935493120,
+        "receipts_sha256": {
+          "resources.json": "20f83e72c2405be5de24f871809c1b7a8cb0ae82b2238bd5b157f00c7702f978",
+          "preflight.json": "a5161816e924bb11c8f588a91db84da48fc0ddc393ad2cf9e82cf407dfeff389",
+          "out/qualification.json": "c9f1ea285b92449e24539395e5d3afa3381fe92f25add1c515f821ec607fb9dc",
+          "out/artifacts/build-result.json": "7251cd9a4d400f9558dbb960cf6e1dce01403f05a8910852b2c39307afa34ece",
+          "out/build-checks/result.json": "334ad30ca84e7b9665c7464e25217986ed1d8e04603c34cdd29820ddaa50e70c",
+          "fetch-terminal.json": "98c2c7cf0a6a1a222a4cbdf212195ace2f7111a970c75b0c77fcc93db3b65794",
+          "native-terminal.json": "6b8442647aa50433f3df47b6c385e977cb36acd86fd6ec4c7805e0fec23e7b1c"
+        },
+        "independent_audit": "IN_PROGRESS_READ_ONLY",
+        "scope": "Nativecomponents/CLI/schema catalog only, not actual PostgreSQL retirement or fullrestart."
+      },
+      "fixture_source_review": {
+        "reviewer": "recovery_review; independent AI read-only",
+        "findings": "Fixed actualbackend databasebinding and externalfinalcapture persistence beforeoracle assertions. Root alsofixed prepared/terminalguard filenamecollision. Seven-key predecessorcontext recursivelyrechecksfirstattempt; onlytwo-processchains claimed.",
+        "scope": "Fullrootnewharness, bindingsrunner, history/gap/preparation, SQLguardfixture andlabowners. Neworacle notyetintegrated/readbythisreviewer. No engines/builds."
+      },
+      "independent_oracle_selfcheck": "Agentreported11artificial transcripts/175fullsnapshots/267rehashedcaptureperturbations; syntax/diffchecksPASS. Artificialselfchecks only, notproductexecution. Rootfullyread434lineoracleand331lineSQLguardfixture beforeintegration.",
+      "connected_first_wave": {
+        "status": "NOT_RUN",
+        "cases": [
+          "empty-normal andnewprocess terminalretry",
+          "empty-native-first-failure andnewprocess completion",
+          "empty-inspect",
+          "empty-cancelled",
+          "empty-missing-input",
+          "empty-missing-outcome",
+          "empty-nonempty-target",
+          "empty-missing-intent",
+          "empty-old-schema"
+        ],
+        "processes_planned": 26,
+        "scope": "11emptyprobes +affectedrealpreparation/7gap/7historyregressions;12prepared/2terminal rawSQLguardtransactions allrollback/refuse. NoactualfirstwavePASSyet.",
+        "fault": "Actualnativeclose thenisolatedBEFOREsourceUPDATE rejection, nontransactionalsequenceproveshit; properdriverjoin/actualbackendabsence beforefreshproof. Onlyfixturetrigger/function/sequence/schema removed onnewclone; coreguardcatalogunchanged.",
+        "remaining": "ActualemptyretirementCOMMIT-loss, claim/expiry locks, preparerControlzerorequestclaims needseparatefixture; rawlaterunboundterminalclaim checks onlyrelationalbehavior. Installedrestart/nextincarnation/activation remainrequired."
       }
     },
     "gap_policy_delivery_qualification": {

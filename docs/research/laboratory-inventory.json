@@ -39944,7 +39944,7 @@
     }
   },
   "implementation_initial_empty_retirement_20261012": {
-    "status": "NATIVE_SQL_INTEGRATED_ROOT_PG_ADAPTER_CANDIDATE_NOT_RUN",
+    "status": "PASS_NATIVE_BUILD_CONNECTED_FIXTURES_PENDING",
     "owner": "root sole integrating and engine owner",
     "worktrees": [
       {
@@ -39972,9 +39972,35 @@
         "current_scope": "Independent raw SQL guard fixtures"
       }
     ],
-    "resources": [],
+    "resources": [
+      {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-30a88ae",
+        "source": "30a88aed82f0506b275f3886c7118b3f59a21f67",
+        "tree": "baff860c3b92fcb578c8676346d38b182d0243ae",
+        "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+        "owner": "7fda855273d8ee0d5d42c52501581cbc",
+        "profile": "ingest-history",
+        "scope": "new native empty retirement14reconstruction tests plus affected regressions/CLI/schema/Clippy, connected engines separate",
+        "cache": "exclusive network-1154757 current compiler; original cache ELFs preserved",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "c424ef75a219943600f8f1e39a97b20782154e1d1b9920265a7baaab18ae32e4"
+          },
+          {
+            "name": "native",
+            "id": "d423d90ac36427aa82625748114a5af7126556d9876827eba798a9ce3f81ac87"
+          }
+        ],
+        "state": "stopped-retained",
+        "finished_at": "2026-10-12T13:20:04.178114+00:00",
+        "free_bytes_after": 69935493120,
+        "inventory_changed": []
+      }
+    ],
     "free_bytes_before": 70108876800,
-    "preserve": "All previous original/positive/negative labs retained; no engine/build active. Six unrelatedservices freshly running as before; sharedcacheexclusive, retired18targets not reused. Root owns in-progress harness/adapter/catalog files.",
+    "preserve": "All previous original/positive/negative labs retained; exact30a88ae buildstopped,wrapperjoined0. No engineactive. OriginalsharedcompilerELFs preserved; retired18targets not reused.",
     "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
     "integration": {
       "native": "9b08239",

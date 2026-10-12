@@ -19,10 +19,11 @@ Latest qualified finite probe build and connected policy/delivery-loss wave use
 be7c9249b3814ceebdc431aea01b01ac87d285a3. Evidence commit
 f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b was privately pushed, freshly fetched and
 verified ahead0/behind0 with a clean canonical checkout. Current observed HEAD
-207ae63 integrates new empty-attempt SQL; native9b08239 and independent fixtures
-71ad688 precede it. Root now owns the PG adapter/catalog candidate and connected
-runner edits; three separate worktrees implement the finite probe, independent
-oracle and raw SQL guard fixtures. New product source has no build/engine result yet.
+dad05ca integrates the independent empty-retirement oracle after SQLguardfixture
+bf4c0fd and finite probe30a88ae. Product adapter/cataloga027cb6, native9b08239,
+nativefixtures71ad688 and SQL207ae63 pass exactbuild30a88ae. Root now owns the
+connected runner and current evidence/checkpoint edits. New PostgreSQL/process
+engine qualification has not run yet.
 No merge/rebase is in progress. The original qualified162caeb/4c283e2 source remains
 retained for its original scope.
 Earlier prepared-only, COMMIT-loss, history and gap-completion artifacts remain
@@ -249,16 +250,20 @@ this completion fault loses a read-only ROLLBACK reply after native dispatch.
 
 Next complete and qualify exact retirement of the abandoned empty epoch2 attempt
 under the [selected contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation).
-Native component, five independent native fixture groups and additive0031 are
-integrated. Root PG adapter and catalog are ready for coherent commit; source
-review found no concrete blocker within the documented boundary. No compilation
-or new engine execution has occurred. All six new SQL helpers need explicit lab
+Native component, five independent native fixture groups, additive0031, root PG
+adapter/catalog and finite probe are integrated. Exactingest-history build30a88ae
+is PASS:13checks/122testexecutions, including14reconstruction tests, affected
+replay/codecs,40entrypoint/schema checks andClippy. All buildcontainers exited0,
+noOOM/unrelatedlifecyclechanges; wrapper joined0. Independent artifact audit is
+in progress. Source review found no concrete blocker within its stated boundary.
+New PostgreSQL/process engine qualification has not run yet. All six new SQL helpers need explicit lab
 grants, including the deferred constraints' invoker dependencies.
 
-Next bounded action: integrate the finite Rust probe, commit the coherent candidate
-and run the exact existing ingest-history build profile (14 reconstruction tests,
-affected native replay/codecs, entrypoint/schema checks and Clippy). In parallel,
-finish the root harness and independent Python/SQL expected results. Connected
+Next bounded action: commit the reviewed connected harness with integrated
+independent Python/SQL expected results, export that exact revision and run
+`bindings.py <new-root> --ingest-empty-retirement <30a88ae-artifacts>`.
+The only changes since the passing build are experiments and evidence; confirm
+that exact relationship before reuse. Connected
 first wave uses copies of the frozen ac644 prepared seed: normal/idempotent closure,
 actual native-first SQL failure followed by config-only new-process completion,
 readonly proof/cancellation and conflicting/missing input/metadata refusals. Never
@@ -285,7 +290,7 @@ The existing evidence records the selected semantics and independent design revi
 Root remains sole integrator and engine executor. Earlier separate worktrees are
 clean/retained; new agent worktrees may be dirty within assigned scopes. No engine
 or build session is active. Root owns adapter/catalog/contract/evidence/checkpoint and connected harness edits.
-Last connected free space70,198,644,736bytes; remeasure before allocation.
+Last build free space69,935,493,120bytes; remeasure before allocation.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming
