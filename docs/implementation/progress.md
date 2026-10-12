@@ -173,13 +173,17 @@ and matches recomputed closure/count/cut before rebinding local guards. Root and
 independent review caught and fixed helper visibility and cross-store proof
 composition; each positive request now carries actual directory/sequence custody.
 
-Immediately finish probe integration and build the exact coherent commit with the
-isolated ingest-history profile, then run genuine separate-process prepared-history
-cases. The native/probe worktree is now qualification/successor-history-probe;
+Probe05946b48 is integrated in candidate67eff40. Its isolated build compiled and
+passed4entrypoint/36schema plus30existing native cases, then all7new cases refused
+their fixture setup with InsufficientReservation before testing reconstruction.
+The original failed run is stopped/retained; root corrected only the dictionary
+append test grant. Next build the corrected exact commit, then run the connected
+prepared-history cases. The native/probe worktree is now qualification/successor-history-probe;
 the independent test worktree writes its Python oracle; a new inventoried
 qualification/initial-history-harness worktree writes the engine fixture. Only
-root may execute builds/engines. At this checkpoint six unrelated services remain
-running, no candidate engine/build has started, and71,559,487,488bytes are free.
+root may execute builds/engines. After the failed build six unrelated services remain running, both owned build
+containers are stopped without OOM, and71,472,848,896bytes are free. Connected
+engines remain NOT_RUN.
 All original fixtures remain preserved. Candidate source and docs are dirty and
 root-owned; no new qualified outcome or private push is claimed yet.
 

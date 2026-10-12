@@ -197,13 +197,18 @@ fn prepared_fixture() -> Fixture {
     .unwrap();
     let bootstrap = evidence(entries(false));
     let dictionary = evidence(vec![observer.clone()]);
+    let append_limits = AdmissionLimits::default();
     let append = store
         .append_dictionaries(
             request(7, 2),
             &dictionary,
             ObservedTime::new(20),
-            AdmissionLimits::default(),
-            grant(&budget, 40 * MIB, 10 * MIB),
+            append_limits,
+            grant(
+                &budget,
+                append_limits.required_dictionary_data_bytes().unwrap(),
+                append_limits.required_native_bytes().unwrap(),
+            ),
             || Ok(()),
         )
         .unwrap();

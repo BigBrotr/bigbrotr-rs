@@ -4273,7 +4273,7 @@
       }
     },
     "next_reconstruction_slice": {
-      "status": "CANDIDATE_IMPLEMENTED_NOT_RUN",
+      "status": "CANDIDATE_FIX_PENDING_REQUALIFICATION",
       "task": "Existing P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4",
       "scope": "Read-only reconstruction of the fully retired initial source beneath an exact prepared empty successor; no native completion, retirement or writer conversion in this prerequisite.",
       "observed_blockers": [
@@ -4308,6 +4308,44 @@
       "review_findings": [
         "Independent PG source review found restricted helper reexport visibility; fixed before build.",
         "Native proof-composition review found positive request witnesses could be supplied to an equal-identity different store. Each observation now binds actual device/inode and native sequence, verified before source accumulation; independent equal-state wrong-store and stale-sequence controls written."
+      ],
+      "preserved_failures": [
+        {
+          "source": "67eff409edfa436ad8ca2b2970b983063d7791c2",
+          "tree": "cb68e93c811b9f449746e9b04833eeb2c4d18920",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-67eff40",
+          "status": "FAIL",
+          "reason": "All seven new reconstruction tests refused the fixture dictionary append with InsufficientReservation at line209 before exercising history; fixed test grant to the existing operation reservation requirements. No product limit relaxed.",
+          "checks_passed": [
+            "compile",
+            "entrypoints (4+36)",
+            "source-closure (3)",
+            "producer-closing (9)",
+            "producer-recovery (11)",
+            "initial-handoff (7)"
+          ],
+          "not_run": [
+            "bootstrap",
+            "dictionary-append",
+            "event-replay",
+            "rocks_manifest",
+            "rocks_keys",
+            "clippy"
+          ],
+          "native_reconstruction": "0passed/7failed during setup; no executed original-history behavior result",
+          "artifacts": "No published qualified binaries; source and failure logs preserved",
+          "owner": "c55c70e127020b46882540862daab898",
+          "terminal": "stopped-retained",
+          "inventory_changed": [],
+          "free_bytes_after": 71472848896,
+          "hashes": {
+            "resources.json": "0b2c90ee9a23942c4a02edca5d772e895b4564a6a42f7f09db54d21c384f807d",
+            "out/build/source-manifest.json": "f0d484ceb2bd87f1f2fb449203c7a9d23b209838ab5a0102775f5647eaf8cff6",
+            "out/build-checks/result.json": "3d2aa8cafea7afa30be466627bfda18623d766ce122df7d916049f08986d3953",
+            "out/build-checks/initial-reconstruction.log": "91ea111a964faf4efdfa50c9255ef8305de86aa78d8a3f6e3e9d7f2502e4f2b8",
+            "native-terminal.json": "3e0d550cb9c82b5ff6116c61ecdb052067687e93dc133a1d8c80760fda3e4a31"
+          }
+        }
       ]
     }
   }
