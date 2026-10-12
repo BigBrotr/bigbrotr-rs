@@ -894,11 +894,13 @@ fn main() {
             | "empty-retirement-first"
             | "empty-control-expiry"
     );
+    let preparer_claim = args[1] == "successor-preparer-claim";
     assert_eq!(
         args.len(),
         if args[1].starts_with("history-") || args[1] == "empty-retirement-first" {
             7
         } else if empty_lock
+            || preparer_claim
             || matches!(
                 args[1].as_str(),
                 "successor-commit-before"
@@ -999,7 +1001,9 @@ fn main() {
                     &args[1],
                     Path::new(&args[4]),
                     args.get(5)
+                        .filter(|_| !preparer_claim)
                         .map(|port| port.parse().expect("explicit proxy port")),
+                    preparer_claim.then(|| Path::new(&args[5])),
                 )
                 .await;
             } else {

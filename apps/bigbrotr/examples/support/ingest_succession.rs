@@ -67,10 +67,17 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
         .expect("successor probe deadline; preserve all outcomes")
 }
 
-pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Option<u16>) {
+pub async fn run(
+    config: Config,
+    mode: &str,
+    config_file: &Path,
+    proxy_port: Option<u16>,
+    gate_prefix: Option<&Path>,
+) {
     assert!(matches!(
         mode,
         "successor-normal"
+            | "successor-preparer-claim"
             | "successor-gap"
             | "successor-gap-only"
             | "successor-old-schema"
@@ -80,6 +87,11 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
     ));
     let commit_fault = matches!(mode, "successor-commit-before" | "successor-commit-after");
     assert_eq!(proxy_port.is_some(), commit_fault);
+    assert_eq!(gate_prefix.is_some(), mode == "successor-preparer-claim");
+    if let Some(prefix) = gate_prefix {
+        assert!(prefix.is_absolute());
+        assert!(!prefix.with_extension("go").try_exists().unwrap());
+    }
     if let Some(port) = proxy_port {
         assert_ne!(port, 0);
         assert!(
@@ -138,6 +150,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
     let (mut owner, mut driver) = probe.acquire("initial", &spec, 1).await;
     let attempt = probe.plan(&mut owner, &recovery, &spec).await;
     probe.snapshot("before-prepare").await;
+    let mut preparing_backend = None;
 
     match mode {
         "successor-commit-before" | "successor-commit-after" => {
@@ -179,7 +192,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
                 .unwrap();
             probe.snapshot("completed").await;
         }
-        "successor-normal" => {
+        "successor-normal" | "successor-preparer-claim" => {
             probe
                 .prepare(
                     &mut owner,
@@ -206,21 +219,26 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
                 .await
                 .unwrap();
             probe.snapshot("same-control-retry").await;
-            probe.end_control("first", owner, driver, true).await;
-            (owner, driver) = probe.acquire("fresh", &spec, 2).await;
-            probe
-                .prepare(
-                    &mut owner,
-                    &mut recovery,
-                    &spec,
-                    &attempt,
-                    "fresh-control-retry",
-                    false,
-                    false,
-                )
-                .await
-                .unwrap();
-            probe.snapshot("fresh-control-retry").await;
+            if let Some(prefix) = gate_prefix {
+                preparing_backend = Some(probe.observe_backend(&owner).await);
+                wait_preparer_claim(prefix).await;
+            } else {
+                probe.end_control("first", owner, driver, true).await;
+                (owner, driver) = probe.acquire("fresh", &spec, 2).await;
+                probe
+                    .prepare(
+                        &mut owner,
+                        &mut recovery,
+                        &spec,
+                        &attempt,
+                        "fresh-control-retry",
+                        false,
+                        false,
+                    )
+                    .await
+                    .unwrap();
+                probe.snapshot("fresh-control-retry").await;
+            }
         }
         "successor-gap" | "successor-gap-only" => {
             let error = probe
@@ -331,11 +349,36 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
     }
     drop(recovery);
     probe.end_control("final", owner, driver, true).await;
+    if let Some(backend) = preparing_backend {
+        emit(
+            serde_json::json!({"event":"successor-driver","stage":"final",
+            "failed":false,"joined":true}),
+        );
+        probe.require_backend_absent(&backend).await;
+    }
     probe.snapshot("final").await;
     emit(serde_json::json!({"event":"successor-complete","mode":mode,
         "native":"closed","control":"released-and-joined","admission":false}));
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
+}
+
+async fn wait_preparer_claim(prefix: &Path) {
+    // Qualification-only pause after preparation/retry, outside transactions.
+    // The live preparing Control may acquire a genuine guarded import claim;
+    // never revive or rewrite its retained attribution after this process ends.
+    let file = prefix.with_extension("go");
+    emit(serde_json::json!({"event":"successor-preparer-gate",
+        "gate":"preparer-claim","phase":"waiting"}));
+    bounded(async {
+        while !file.try_exists().unwrap() {
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+        assert!(file.is_file());
+    })
+    .await;
+    emit(serde_json::json!({"event":"successor-preparer-gate",
+        "gate":"preparer-claim","phase":"released"}));
 }
 
 impl Probe {
