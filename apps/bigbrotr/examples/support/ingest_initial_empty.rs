@@ -27,6 +27,7 @@ struct Probe {
     observer: tokio_postgres::Client,
     cancelled: AtomicBool,
     database: String,
+    commit_loss: bool,
 }
 struct Backend {
     pid: i32,
@@ -64,11 +65,18 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
         .expect("empty retirement probe deadline; preserve unknown outcomes")
 }
 
-pub async fn run(config: Config, config_file: &Path, command: &str) {
+pub async fn run(config: Config, config_file: &Path, command: &str, proxy_port: Option<u16>) {
     assert!(matches!(
         command,
-        "empty-retire" | "empty-inspect" | "empty-cancelled"
+        "empty-retire"
+            | "empty-inspect"
+            | "empty-cancelled"
+            | "empty-commit-before"
+            | "empty-commit-after"
     ));
+    let commit_loss = matches!(command, "empty-commit-before" | "empty-commit-after");
+    assert_eq!(commit_loss, proxy_port.is_some());
+    assert!(proxy_port.is_none_or(|port| port != 0));
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
     assert_eq!(config.get_dbname(), root.text("postgres.control.database"));
@@ -104,6 +112,7 @@ pub async fn run(config: Config, config_file: &Path, command: &str) {
         observer,
         cancelled: AtomicBool::new(false),
         database: config.get_dbname().unwrap().into(),
+        commit_loss,
     };
     drop(probe.replay_grants());
     let mut role = [0; 16];
@@ -117,7 +126,14 @@ pub async fn run(config: Config, config_file: &Path, command: &str) {
         "role":hex(&role),"incarnation":hex(&incarnation),"lease_ttl_us":CONTROL_TTL.as_micros().to_string()}),
     );
     probe.snapshot("before-claim").await;
-    let (client, driver) = bounded(config.connect(NoTls)).await.unwrap();
+    // Only the dedicated Control transport crosses the fault proxy. The direct
+    // observer independently sees committed state and the actual backend tuple.
+    let mut owner_config = config;
+    if let Some(port) = proxy_port {
+        assert!(owner_config.get_ports().is_empty());
+        owner_config.port(port);
+    }
+    let (client, driver) = bounded(owner_config.connect(NoTls)).await.unwrap();
     let driver = tokio::spawn(driver);
     let (mut owner, policy) = bounded(ControlSession::acquire(
         client,
@@ -169,13 +185,20 @@ pub async fn run(config: Config, config_file: &Path, command: &str) {
     );
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
-    if command == "empty-cancelled" {
+    if command == "empty-cancelled" || commit_loss {
         let Err(error) = result else {
-            panic!("cancelled retirement unexpectedly completed")
+            panic!("retirement refusal fixture unexpectedly completed")
         };
         assert_eq!(error.stage, "retirement");
         assert_eq!(error.sequence, None);
-        assert_eq!(error.error, "Native(AuthorityUnavailable)");
+        assert_eq!(
+            error.error,
+            if commit_loss {
+                "CommitUnknown"
+            } else {
+                "Native(AuthorityUnavailable)"
+            }
+        );
     }
 }
 
@@ -248,6 +271,9 @@ impl Probe {
     async fn observe_reuse(&self, owner: &mut ControlSession) {
         let result =
             bounded(owner.refresh(|document, digest| self.validate(document, digest))).await;
+        if self.commit_loss {
+            assert_eq!(result, Err(OwnerError::Unavailable));
+        }
         match result {
             Ok(policy) => {
                 emit(
@@ -273,15 +299,17 @@ impl Probe {
     ) {
         self.snapshot("before-control-end").await;
         let identity = owner.identity();
+        assert!(!self.commit_loss || !release);
         if release {
             bounded(owner.release()).await.unwrap();
         } else {
             drop(owner);
         }
-        // An injected SQL exception poisons the product session, not its TCP driver.
-        crate::ingest_closing::join(driver, false).await;
+        // A SQL refusal keeps a clean transport; the COMMIT-loss proxy closes
+        // it. Join the actual result before separately observing server absence.
+        crate::ingest_closing::join(driver, self.commit_loss).await;
         emit(
-            serde_json::json!({"event":"successor-driver","stage":"empty","failed":false,"joined":true}),
+            serde_json::json!({"event":"successor-driver","stage":"empty","failed":self.commit_loss,"joined":true}),
         );
         bounded(async {
             loop {

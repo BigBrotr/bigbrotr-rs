@@ -897,6 +897,8 @@ fn main() {
                 | "successor-commit-after"
                 | "successor-gap-loss-before"
                 | "successor-gap-loss-after"
+                | "empty-commit-before"
+                | "empty-commit-after"
         ) {
             6
         } else {
@@ -946,7 +948,14 @@ fn main() {
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else if args[1].starts_with("empty-") {
-                ingest_initial_empty::run(config, Path::new(&args[4]), &args[1]).await;
+                ingest_initial_empty::run(
+                    config,
+                    Path::new(&args[4]),
+                    &args[1],
+                    args.get(5)
+                        .map(|port| port.parse().expect("explicit proxy port")),
+                )
+                .await;
             } else if args[1] == "successor-history" {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
             } else if matches!(
