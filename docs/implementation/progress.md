@@ -14,20 +14,16 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Latest qualified finite probe build and connected policy/delivery-loss wave use
-4c283e20ab1bdc186e192cd68fc08833718e2fa8, tree
-be7c9249b3814ceebdc431aea01b01ac87d285a3. Evidence commit
-f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b was privately pushed, freshly fetched and
-verified ahead0/behind0 with a clean canonical checkout. Current observed HEAD
-dad05ca integrates the independent empty-retirement oracle after SQLguardfixture
-bf4c0fd and finite probe30a88ae. Product adapter/cataloga027cb6, native9b08239,
-nativefixtures71ad688 and SQL207ae63 pass exactbuild30a88ae. Root now owns the
-connected runner and current evidence/checkpoint edits. First connectedwavebe4f284 failed an exact legacyfunctiondiagnostic expectation;
-its originalresult remainsFAIL andnew productprobes stillNOT_RUN.
-No merge/rebase is in progress. The original qualified162caeb/4c283e2 source remains
-retained for its original scope.
-Earlier prepared-only, COMMIT-loss, history and gap-completion artifacts remain
-retained for their exact scopes. Full product and M1 remain INCOMPLETE.
+The latest connected empty-retirement qualification uses source
+83db9d8495a13e88c73ee2a0d7f6e857c365e2b7 and the exact native build
+30a88aed82f0506b275f3886c7118b3f59a21f67. Current observed HEAD is 83db9d8;
+root owns only the evidence, contract/task annotations, inventory and checkpoint
+updates for its completed qualification. Evidence commit f0796da was last
+privately pushed and verified ahead0/behind0; the newer commits await a fresh
+remote reconciliation and authorized private push. No merge/rebase is in progress.
+Original qualified builds, the failed be4f284 fixture run and all prior preparation,
+history, gap and COMMIT-loss artifacts remain retained for their exact scopes.
+Full product, M1 and the active task steps remain INCOMPLETE.
 
 Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
@@ -248,32 +244,60 @@ No product policy activation, native syscall/power-loss, installed restart/resen
 or full M1 claim follows. Previous preparation COMMIT-loss remains separate:
 this completion fault loses a read-only ROLLBACK reply after native dispatch.
 
-Next complete and qualify exact retirement of the abandoned empty epoch2 attempt
-under the [selected contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation).
-Native component, five independent native fixture groups, additive0031, root PG
-adapter/catalog and finite probe are integrated. Exactingest-history build30a88ae
-is PASS:13checks/122testexecutions, including14reconstruction tests, affected
-replay/codecs,40entrypoint/schema checks andClippy. All buildcontainers exited0,
-noOOM/unrelatedlifecyclechanges; wrapper joined0. Independent artifact audit is
-in progress. Source review found no concrete blocker within its stated boundary.
-First connectedwavebe4f284 is retainedFAIL at the legacy owner-guard diagnostic
-name assertion. Six earlierrawguards passed; actualowner-only23514/messagewas
-correct butPostgreSQLprinted its unqualifiedfunctionname. All71tables/xmin and
-originalfiles/artifacts remainedunchanged; noemptyproductprobe started. Root
-narrowlycorrected thatfixtureexpectation; use a newrevision/lab, preservingfailure. All six new SQL helpers need explicit lab
-grants, including the deferred constraints' invoker dependencies.
+Exact retirement of the abandoned empty epoch2 attempt is implemented under the
+[selected contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation).
+Native component, five independent fixture groups, additive0031, PG adapter,
+catalog, finite probe and independent Python/SQL oracles are integrated.
+Exact build30a88ae is PASS_INGEST_HISTORY_BUILD_ONLY:13 checks/122 actual tests,
+including69 native,13 codecs and40 entrypoint/schema executions, plus Clippy.
+Independent read-only AI audit verified all1748 source files, five retained ELFs,
+actual toolchain/build receipts, original cache evidence and1207 preflight
+container projections. Both owned build containers exited0, without OOM.
 
-Next bounded action: commit the reviewed connected harness with integrated
-independent Python/SQL expected results, export that exact revision and run
-`bindings.py <new-root> --ingest-empty-retirement <30a88ae-artifacts>`.
-The only changes since the passing build are experiments and evidence; confirm
-that exact relationship before reuse. Connected
-first wave uses copies of the frozen ac644 prepared seed: normal/idempotent closure,
-actual native-first SQL failure followed by config-only new-process completion,
-readonly proof/cancellation and conflicting/missing input/metadata refusals. Never
-widen native authority merely to inject that gap: a labeled isolated BEFORE UPDATE
-SQL fault exercises the actual production dispatch. COMMIT loss, claim/expiry locks
-and remaining required cases stay explicit subsequent gates.
+`runs/ingest-empty-83db9d8/bindings/result.json` is
+PASS_INITIAL_EMPTY_RETIREMENT, finished2026-10-12T13:27:52.265218Z;
+SHA256 9e3a18dc3c0aeadced5a23a1021bc457849aa2eebe7ac38496d66a611746e8af.
+All26 actual probes pass333 full snapshots and465 rehashed capture perturbations.
+Eleven empty-retirement processes cover normal/idempotent closure, fresh-process
+terminal observation, native-first SQL failure and fresh-process completion,
+inspection/cancellation and missing/conflicting native/input/metadata refusals.
+Fifteen affected preparation/gap/history processes also pass. Fourteen raw SQL
+transactions check ten precise23514 refusals and four positive rollback cases;
+all71 tables/xmin and core guard definitions remain unchanged by those fixtures.
+
+Normal closure performs one producer2 native marker replacement,52 rows/sequence
+62→63, then exactly13 target SQL rows in five families share timestamp/xmin/D2.
+Same-Control and fresh-Control retries preserve the terminal timestamp/xmin and
+make no native write. The isolated native-first SQL failure leaves native CLOSING
+and SQL prepared. After the failed Control10 backend is observed absent, new
+Control11 reconstructs all four originals and completes SQL without another
+native write. Registrar3/preparer8 and immutable intent remain unchanged.
+
+Independent read-only AI audit replayed all333 snapshots/465 perturbations,
+matched all26 external final captures/server-clock windows, checked63 source
+paths/57 files,97 input files,nine frozen artifacts and five build executables.
+The1209 nonborrowed container projections are unchanged. BorrowedPG exited0;
+the idle client wrapper was intentionally stopped143; no OOM/cleanup errors.
+Original seed files, captured SQL and frozen artifacts remain preserved. SQL
+preservation is captured-run evidence, without another server restart.
+First wavebe4f284 remains FAIL: the actual legacy owner guard refused correctly,
+but PostgreSQL printed its unqualified function name. Commit83db9d8 corrects only
+that expected diagnostic; no failed artifact was rewritten or relabeled.
+
+Next bounded action: qualify actual loss of the terminal empty-retirement COMMIT
+before forwarding and after server completion, using separately inventoried
+copies of the frozen ac644 prepared seed and the existing wire proxy. Reviewed
+call flow places this at COMMIT6/START11; confirm actual proxy counters. Both
+cases must retain native52/sequence63, poison Control reuse, join the failed
+driver and observe exact backend absence before a config-only recovery process.
+Before-forward retains prepared SQL; after-complete retains the13-row terminal
+transaction and its timestamp/xmin through retry. Persist predecessor verification
+context explicitly for followups; first-wave followup captures require the
+separately retained first-attempt context for independent replay.
+
+Then qualify claim/expiry serialization and the historical preparer claim window.
+Native syscall/power-loss, installed restart, activation and later incarnations
+remain separate required gates. No task/M1 checkbox closes from this first wave.
 
 Existing history and handoff stay OPEN0-only. New context replays every original
 request under the same bounded metadata/input grants before constructing the plan.
@@ -293,8 +317,8 @@ The existing evidence records the selected semantics and independent design revi
 
 Root remains sole integrator and engine executor. Earlier separate worktrees are
 clean/retained; new agent worktrees may be dirty within assigned scopes. No engine
-or build session is active. Root owns adapter/catalog/contract/evidence/checkpoint and connected harness edits.
-Last build free space69,935,493,120bytes; remeasure before allocation.
+or build session is active. Root owns evidence/contract/task/inventory/checkpoint edits.
+Last observed free space69,189,029,888bytes; remeasure before allocation.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming
@@ -323,7 +347,7 @@ browser and website work; optional enablement does not finish selected scope.
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
 Before cleanup, implementation/qualification/object-storage labs totaled about
 975 GiB (lower bounds where access is denied). The latest connected wave left
-70,198,644,736 bytes (about 65.4 GiB) free; remeasure before allocation because this
+69,189,029,888 bytes (about 64.4 GiB) free; remeasure before allocation because this
 is a shared host. Small retirement fixtures need >2 GiB; the larger export wave
 still requires 64 GiB. Never lower that reserve to force a run.
 

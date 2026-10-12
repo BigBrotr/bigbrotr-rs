@@ -293,7 +293,7 @@ syscall ambiguity and general subsequent lifetimes remain separate requirements.
 
 ## Empty prepared attempt retirement (under implementation)
 
-The next bounded consumer retires only the exact unactivated epoch2 attempt.
+The separate recovery consumer retires only the exact unactivated epoch2 attempt.
 It retains the complete predecessor proof and immutable preparation. A separate
 native context accepts an explicit OPEN/zero or CLOSING/zero target producer;
 ordinary handoff application and completed-history reconstruction remain strict
@@ -357,7 +357,20 @@ upper bound. The absence assertion is made while performing the terminal change.
 
 Unknown native completion or SQL COMMIT retains custody and poisons failed Control
 reuse. Fresh recovery must positively exclude the old backend, rebuild the proof
-and distinguish exact prepared from exact terminal state. This selected contract
-is not executed qualification. Native component, SQL migration, connected failure
-cases and installed entrypoint integration remain separately tracked in the
-existing recovery evidence and task plan. No epoch3 or writer activation is added.
+and distinguish exact prepared from exact terminal state. Exact build30a88ae
+qualifies the native component and affected regressions:13checks/122test executions,
+including14reconstruction tests. Connected83db9d8 uses26 actual processes, including
+11 empty-attempt probes and15 affected history/gap regressions. The independent
+oracles check333full snapshots and reject465corrupted captures. One27-byte native
+marker write precedes one SQL transaction changing13target rows with common time
+and digest. Same-Control and fresh-process terminal retries preserve both stores.
+A real SQL rejection after native closing leaves prepared metadata; new Control
+reconstructs all four original requests and finishes without another native write.
+Fourteen raw SQL cases reject partial lifecycle commits and current zero-request
+claims, while a later unrelated unbound claim preserves terminal classification.
+
+The original be4f284 fixture diagnostic mismatch remains FAIL; only its expected
+legacy function display name changed before the corrected run. Retirement COMMIT
+loss, concurrent claim/expiry schedules, native syscall ambiguity and installed
+entrypoint integration remain separate gates in the existing recovery evidence
+and task plan. No epoch3 or writer activation is added.
