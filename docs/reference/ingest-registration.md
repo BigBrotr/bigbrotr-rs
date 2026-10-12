@@ -389,3 +389,53 @@ immutable intent, originals and native52/sequence62; no target retirement occurs
 Native syscall ambiguity and installed entrypoint integration remain separate gates
 in the existing recovery evidence and task plan. No epoch3 or writer activation
 is added.
+
+
+### Installed empty-attempt retirement (under implementation)
+
+`bigbrotr ingest recover --retire-empty-attempt --file ROOT` selects only this
+existing-attempt operation. It conflicts with `--close-source`,
+`--abandon-acquisition` and `--retire-initial`; the default original-producer
+recovery keeps its existing behavior. The command requires local Control/Ingest,
+existing exclusive native custody, migration0031 and immutable preparation intent.
+It accepts no caller-supplied replacement identity and creates no new attempt.
+
+The existing supervised blocking owner opens the configured native store before
+reading protected credentials or claiming Control. This mode then uses configured
+dataset/instance and a fresh actual Control claimant; the original-only registry
+loader cannot classify a prepared epoch2 manifest. The dedicated empty-attempt
+inspector validates the exact retained state. One bounded input/outcome pair
+replays each original request in order, with current accepted policy and the
+existing64-request spool bound. The metadata grant remains held while the original
+source proof becomes an owned retirement plan. Preclaim admission verifies the
+simultaneous native/connection, metadata, source-witness and replay grants, plus
+the later plan/dispatch overlap. Missing originals, unresolved claims, mixed state
+or insufficient resources refuse; no missing outcome is synthesized.
+
+After positive replay, the existing native-first/SQL-terminal adapter retires the
+exact empty target, or observes its unchanged completion. The worker destroys
+native custody before releasing current Control. The parent retains the actual
+driver/grant through its join and emits success only afterward. Cancellation,
+timeout, failed output or unknown completion preserve retained state for the same
+root/mode; an unjoined blocking worker follows the existing process fail-stop.
+No listener, acquisition, Archive worker or writer activation is started.
+
+The `bigbrotr-ingest-recovery/1` success state is `empty-attempt-retired`.
+Top-level `producer_epoch`, `issued_through` and `reserved_through` describe the
+empty target:2,0,0. `resolved_original_requests` counts the positively replayed
+predecessor requests. `original_source_closure` names predecessor epoch1, its
+issued/resolved counts, complete source sequence and original digest.
+`empty_attempt_retirement` names owner epoch2, its attempted incarnation, retained
+terminal timestamp, empty closure digest, domain count and committed target owner
+release. Native acknowledged/retired watermarks remain0. Integer counts and times
+are decimal strings. Common dataset/resource/slot identities, `native: closed`,
+current `owner_release: committed` and `ready: false` retain their existing meaning.
+A second invocation must preserve terminal timestamps and row versions.
+
+This installed consumer is being implemented; finite-probe evidence above does
+not qualify its command, supervision or output. Its actual acceptance uses the
+installed CLI on new signed-seed clones: normal/repeated completion, native-first
+SQL failure and fresh completion, missing input/outcome, old schema, held native
+custody, observed SQL wait with SIGTERM and deadline. Ordinary recovery must still
+refuse the prepared epoch2 store. Blocked native syscalls, power loss, writer
+activation and full restart/resend remain separate requirements.

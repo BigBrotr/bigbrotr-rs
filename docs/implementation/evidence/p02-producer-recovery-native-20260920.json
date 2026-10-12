@@ -11731,6 +11731,30 @@
           "Native syscall/power loss and installed restart/resend not exercised",
           "No activation or full M1 claim"
         ]
+      },
+      "installed_consumer": {
+        "status": "IMPLEMENTED_BUILD_ENGINE_NOT_RUN",
+        "base": "eb0877224f657fdfc1d40329316b82c957a1e9fb",
+        "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
+        "contract": "docs/reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation",
+        "scope": "Explicit config-only --retire-empty-attempt under existing supervisor; early branch before original-only historical loader; positive original replay and existing opaque empty plan/dispatch. No new storage API/schema, automatic prepare/adoption or activation.",
+        "expected_cases": [
+          "normal/default-refusal/second-process-terminal-retry",
+          "native-first-SQL-failure/fresh-completion",
+          "missing-original-input4",
+          "missing-PG-outcome3",
+          "schema30",
+          "held-native-owner",
+          "observed-preclaim-SQL-wait-SIGTERM",
+          "observed-preclaim-SQL-wait-deadline"
+        ],
+        "expected_cli_invocations": 11,
+        "build_profile": "ingest-empty-installed: compile,5actualentrypointtests,Clippy; unchanged native/storage tests retained separately",
+        "build": "NOT_RUN",
+        "engine": "NOT_RUN",
+        "product_commit": "0feef1f",
+        "source_review": "Root read full recovery owner, supervision, full CLIserve.rs and entrypointtests, current PGempty and finite empty probe. Newprivateempty branch/grantpreflight/sourceproof/onefinaldispatch/reportedepochs reviewed; no productstorage/native/migration change. Long-running Sync/Archive consumers are not invoked or newly qualified.",
+        "static_checks": "Scoped rustfmt and Python AST/diffcheck PASS; build/actual CLI execution NOT_RUN"
       }
     },
     "gap_policy_delivery_qualification": {

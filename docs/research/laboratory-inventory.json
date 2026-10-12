@@ -40687,5 +40687,32 @@
     "probe_commit": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
     "harness_commit": "7dc822b",
     "oracle_commit": "88806d4"
+  },
+  "implementation_installed_empty_retirement_20261012": {
+    "status": "IMPLEMENTATION_BUILD_ENGINE_NOT_RUN",
+    "base": "eb0877224f657fdfc1d40329316b82c957a1e9fb",
+    "owner": "root sole integrator/build/engine executor",
+    "scope": "Explicit installed --retire-empty-attempt using existing qualified storage APIs under the existing supervised native owner; no storage format or migration change.",
+    "worktrees": [
+      {
+        "root": ".research/installed-empty-recovery-20261012",
+        "branch": "implementation/installed-empty-recovery",
+        "owner": "successor_restart_design",
+        "scope": "recovery.rs and private recovery/empty.rs only"
+      },
+      {
+        "root": ".research/installed-empty-fixture-20261012",
+        "branch": "qualification/installed-empty-recovery",
+        "owner": "cleanup_review",
+        "scope": "new installed_empty.py harness only"
+      },
+      {
+        "root": ".research/installed-empty-oracle-20261012",
+        "branch": "qualification/installed-empty-oracle",
+        "owner": "recovery_review",
+        "scope": "new installed_empty_oracle.py only"
+      }
+    ],
+    "resources": []
   }
 }

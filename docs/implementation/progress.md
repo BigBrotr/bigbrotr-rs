@@ -14,16 +14,14 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last privately pushed/fetched HEAD a1928dba45207caf040dd51701f5f38f3f0b087a was
-verified ahead0/behind0 with a clean checkout. Main remains
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
-Current observed HEAD17ccb8ab24e1e7bcbf5270219bdf7680f99a2fc2 integrates finite
-preparer probe/build5866e1e, harness7dc822b, oracle88806d4 and root dispatch.
-Root owns the dirty qualification documentation/evidence/inventory. Exact engine
-source is runs/ingest-empty-preparer-engine-17ccb8a/source; wrapper11934 joined0.
-PASS_INITIAL_EMPTY_PREPARER_CLAIM checks two processes/16snapshots/39controls.
-Independent actual-capture audit passed16/39 and1218 unchanged nonborrowed projections. Helper implementation
-worktrees remain clean at5469cf1 and76e88f8; preserve them.
+Last privately pushed/fetched HEAD eb0877224f657fdfc1d40329316b82c957a1e9fb was
+verified ahead0/behind0 with a clean checkout (push wrapper16715 joined0). Main
+remains54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase in progress.
+Current observed HEAD0feef1f integrates the installed worker. Root owns dirty
+CLI/test/buildprofile/readonly dump-state probe and governance
+for the selected installed empty-attempt consumer. The preceding historical-claim
+wave is qualified, independently audited and privately pushed. Three new separate
+worktrees are active below. Do not assume these pending edits are qualified.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -204,21 +202,39 @@ executables and f12/ac/gap censuses;1218 nonborrowed projections remain unchange
 
 ## Current bounded work and next action
 
-Privately push the recorded and independently audited historical-claim wave.
-The next selected product consumer is explicit `ingest recover --retire-empty-attempt`,
-using
-existing qualified preparation/history/empty-retirement APIs and real supervisor
-custody; do not claim activation or installed restart from finite probes. Root is
-sole integrator/engine executor. successor_restart_design is doing read-only next
-product boundary design; cleanup_review maps independent installed CLI acceptance.
-The historical actual-capture audit is complete. Separate
-harness/oracle worktrees `.research/empty-preparer-{harness,oracle}-20261012` remain
-clean and retained; neither author ran engines/builds.
+Implement and qualify explicit `ingest recover --retire-empty-attempt` through the
+[installed consumer contract](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation).
+Root owns CLIserve.rs, actual entrypoint tests, native build profile, readonly
+`dump-state` helper exposing actual Rocks sequence, bindings, documentation and
+all build/engine execution. Three worktrees share baseeb08772:
 
-Preserve strict frozen ac644/f12 oracles. A dynamic prepared seed must be verified
-from its actual preparation before use. Unknown process outcomes must not reopen
-a possibly owned native directory. Keep exact build/source identities and external
-final captures; no additional build or engine is currently running.
+| Worktree | Owner | Writable scope |
+|---|---|---|
+| `.research/installed-empty-recovery-20261012` | successor_restart_design | recovery.rs and private recovery/empty.rs |
+| `.research/installed-empty-fixture-20261012` | cleanup_review | new installed_empty.py |
+| `.research/installed-empty-oracle-20261012` | recovery_review | new installed_empty_oracle.py |
+
+The mode branches before original-only load_historical, acquires fresh actual
+Control from configured identities under native exclusion and positively replays
+all originals through existing PGempty APIs. It retains source/metadata/replay
+reservations and checks worst-case overlap before claim; the opaque plan survives
+source-borrow release. Existing worker/native-close/Control-release/driver-join
+and post-join output remain. No storeAPI, migration, activation or ordinary-mode
+semantic change is selected. Report explicitly separates original epoch1 replay
+from empty target2. Worker implementation0feef1f and rootCLI integration are written; scopedrustfmt/
+AST/diffcheck pass. Independent productreview is pending; actual build/engine
+remain NOT_RUN until executed. Harness/oracle implementation continues.
+
+Expected installed wave: eightnewclones/11CLI invocations covering normal/default
+refusal/terminalretry, nativefirstSQLfailure/freshcompletion, missinginput4,
+missingPGoutcome3, schema30, actualheldnative, preclaimSQLwaitSIGTERM and deadline.
+No repeated blockedstdout/nativefullsuite without a new finding; prior qualification
+remains separately pinned. New buildprofileingest-empty-installed runs compile,
+five actual entrypoint tests and Clippy. No new build/engine is allocated yet.
+
+Preserve strict frozenac644/f12 oracles and all earlierworktrees. Unknown process
+outcomes must not reopen a possiblyowned native directory. Keep exact source/build
+identities and independent external final captures.
 
 ## Remaining product gates
 

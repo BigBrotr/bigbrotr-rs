@@ -879,6 +879,11 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
+    if args.len() == 3 && args[1] == "dump-state" {
+        let (rows, sequence) = raw_state(Path::new(&args[2]));
+        emit(serde_json::json!({"event":"dump-state","rows":rows,"sequence":sequence}));
+        return;
+    }
     if args.len() == 3 && args[1] == "dump" {
         dump(Path::new(&args[2]));
         return;
