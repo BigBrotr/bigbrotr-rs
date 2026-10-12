@@ -39944,31 +39944,42 @@
     }
   },
   "implementation_initial_empty_retirement_20261012": {
-    "status": "IMPLEMENTATION_NATIVE_SQL_FIXTURES_NOT_RUN",
+    "status": "NATIVE_SQL_INTEGRATED_ROOT_PG_ADAPTER_CANDIDATE_NOT_RUN",
     "owner": "root sole integrating and engine owner",
     "worktrees": [
       {
         "root": "/home/tux/bigbrotr-rs/.research/initial-empty-native-20261012",
         "base": "f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b",
         "branch": "implementation/initial-empty-native",
-        "status": "ASSIGNED_WRITABLE_AGENT_SCOPE"
+        "status": "INTEGRATED_PRIOR_SCOPE_NEW_ASSIGNED_WRITABLE_SCOPE",
+        "completed_commit": "fe685a37aa324d82b65ae106a6b9aea9f8fe1a4e",
+        "current_scope": "Independent Python actual-capture oracle"
       },
       {
         "root": "/home/tux/bigbrotr-rs/.research/initial-empty-fixtures-20261012",
         "base": "f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b",
         "branch": "qualification/initial-empty-fixtures",
-        "status": "ASSIGNED_WRITABLE_AGENT_SCOPE"
+        "status": "INTEGRATED_PRIOR_SCOPE_NEW_ASSIGNED_WRITABLE_SCOPE",
+        "completed_commit": "3f725d88585523ffd6f9130c5853fab64f3a8538",
+        "current_scope": "Finite Rust connected probe"
       },
       {
         "root": "/home/tux/bigbrotr-rs/.research/initial-empty-sql-20261012",
         "base": "f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b",
         "branch": "implementation/initial-empty-sql",
-        "status": "ASSIGNED_WRITABLE_AGENT_SCOPE"
+        "status": "INTEGRATED_PRIOR_SCOPE_NEW_ASSIGNED_WRITABLE_SCOPE",
+        "completed_commit": "3954ec0a510336c971ee16ee992c6366410e5ae0",
+        "current_scope": "Independent raw SQL guard fixtures"
       }
     ],
     "resources": [],
     "free_bytes_before": 70108876800,
-    "preserve": "All previous original/positive/negative labs retained; no engine/build active. Existing cache remains exclusive and retired18targets stay retired.",
-    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+    "preserve": "All previous original/positive/negative labs retained; no engine/build active. Six unrelatedservices freshly running as before; sharedcacheexclusive, retired18targets not reused. Root owns in-progress harness/adapter/catalog files.",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+    "integration": {
+      "native": "9b08239",
+      "native_fixtures": "71ad688cb133b2a3502a6dfb44b72af146c9f7ec",
+      "sql": "207ae63"
+    }
   }
 }

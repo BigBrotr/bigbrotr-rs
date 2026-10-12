@@ -16,12 +16,15 @@ repository rename or production deployment is authorized.
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Latest qualified finite probe build and connected policy/delivery-loss wave use
 4c283e20ab1bdc186e192cd68fc08833718e2fa8, tree
-be7c9249b3814ceebdc431aea01b01ac87d285a3. Evidence commit f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b is current observed HEAD
-before this root-owned contract/checkpoint update. Product source remains the
-qualified162caeb implementation; its native tests are reused. f0796da was privately
-pushed, freshly fetched and verified ahead0/behind0 with a clean canonical checkout.
-No merge/rebase is in progress. Three new separate worktrees now hold assigned
-native, independent fixture and additive SQL implementation responsibilities.
+be7c9249b3814ceebdc431aea01b01ac87d285a3. Evidence commit
+f0796da4032c1ad3b5e0cb49d51ad73a4f79a16b was privately pushed, freshly fetched and
+verified ahead0/behind0 with a clean canonical checkout. Current observed HEAD
+207ae63 integrates new empty-attempt SQL; native9b08239 and independent fixtures
+71ad688 precede it. Root now owns the PG adapter/catalog candidate and connected
+runner edits; three separate worktrees implement the finite probe, independent
+oracle and raw SQL guard fixtures. New product source has no build/engine result yet.
+No merge/rebase is in progress. The original qualified162caeb/4c283e2 source remains
+retained for its original scope.
 Earlier prepared-only, COMMIT-loss, history and gap-completion artifacts remain
 retained for their exact scopes. Full product and M1 remain INCOMPLETE.
 
@@ -244,12 +247,24 @@ No product policy activation, native syscall/power-loss, installed restart/resen
 or full M1 claim follows. Previous preparation COMMIT-loss remains separate:
 this completion fault loses a read-only ROLLBACK reply after native dispatch.
 
-Next implement and qualify exact retirement of the abandoned empty epoch2 attempt
+Next complete and qualify exact retirement of the abandoned empty epoch2 attempt
 under the [selected contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation).
-Native agent owns a distinct OPEN0/CLOSING0 context and positive owned plan;
-independent fixtures own literal digest/marker/delta and refusal expectations;
-SQL agent owns additive0031 only. Root owns contracts, PG Rust/catalog integration,
-connected fixtures and all engine/build execution. The new source remains NOT_RUN.
+Native component, five independent native fixture groups and additive0031 are
+integrated. Root PG adapter and catalog are ready for coherent commit; source
+review found no concrete blocker within the documented boundary. No compilation
+or new engine execution has occurred. All six new SQL helpers need explicit lab
+grants, including the deferred constraints' invoker dependencies.
+
+Next bounded action: integrate the finite Rust probe, commit the coherent candidate
+and run the exact existing ingest-history build profile (14 reconstruction tests,
+affected native replay/codecs, entrypoint/schema checks and Clippy). In parallel,
+finish the root harness and independent Python/SQL expected results. Connected
+first wave uses copies of the frozen ac644 prepared seed: normal/idempotent closure,
+actual native-first SQL failure followed by config-only new-process completion,
+readonly proof/cancellation and conflicting/missing input/metadata refusals. Never
+widen native authority merely to inject that gap: a labeled isolated BEFORE UPDATE
+SQL fault exercises the actual production dispatch. COMMIT loss, claim/expiry locks
+and remaining required cases stay explicit subsequent gates.
 
 Existing history and handoff stay OPEN0-only. New context replays every original
 request under the same bounded metadata/input grants before constructing the plan.
@@ -269,7 +284,7 @@ The existing evidence records the selected semantics and independent design revi
 
 Root remains sole integrator and engine executor. Earlier separate worktrees are
 clean/retained; new agent worktrees may be dirty within assigned scopes. No engine
-or build session is active. Root owns current contract/evidence/checkpoint edits.
+or build session is active. Root owns adapter/catalog/contract/evidence/checkpoint and connected harness edits.
 Last connected free space70,198,644,736bytes; remeasure before allocation.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial

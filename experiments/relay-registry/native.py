@@ -55,7 +55,7 @@ steps = [
 if mode == 'ingest-gap-faults':
     identity['scope'] = 'Finite initial-gap policy/delivery-loss probe build and Clippy only; unchanged native tests retained at162caeb; actual engine schedules remain separate'
 if mode == 'ingest-history':
-    identity['scope'] = 'Prepared-successor history, positive initial-gap completion and target-input refusal native components, affected replay, closed codecs and CLI refusals; connected PostgreSQL, separate-process qualification and activation remain separate'
+    identity['scope'] = 'Prepared-successor history, positive initial-gap completion and exact empty-attempt native retirement, affected replay, closed codecs and CLI refusals; connected PostgreSQL, separate-process qualification and activation remain separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                    '--test','control_runtime_entrypoint','--test','control_schema']))
     steps.insert(2, ('source-closure', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -259,7 +259,7 @@ if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
         assert summary, 'missing executed native test result: ' + name
         counts[name] = int(summary.group(1))
         if mode == 'ingest-history' and name in ('initial-reconstruction', 'event-replay'):
-            assert counts[name] == (9 if name == 'initial-reconstruction' else 7), 'incomplete focused native selection: ' + name
+            assert counts[name] == (14 if name == 'initial-reconstruction' else 7), 'incomplete focused native selection: ' + name
         for line in content.splitlines():
             if not line.startswith('{'): continue
             message = json.loads(line)

@@ -185,6 +185,10 @@
     {
       "version": 30,
       "name": "0030_initial_succession.sql"
+    },
+    {
+      "version": 31,
+      "name": "0031_initial_empty_retirement.sql"
     }
   ],
   "reserved": [

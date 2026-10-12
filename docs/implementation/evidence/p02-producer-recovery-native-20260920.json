@@ -5781,7 +5781,7 @@
       }
     },
     "next_empty_attempt_retirement_slice": {
-      "status": "IMPLEMENTATION_STARTED_NATIVE_SQL_AND_FIXTURES_NOT_RUN",
+      "status": "IMPLEMENTED_NATIVE_SQL_PG_ADAPTER_CONNECTED_FIXTURES_IN_PROGRESS_NOT_RUN",
       "task": "Same P02-T01 Step5 / P02-T02 Step4 prerequisite to P01-T09 Step4/M1",
       "prerequisite": "Satisfied by qualified4c283e2 policy/deliveryloss build and six actual processes; evidencef0796da privately pushed and verified0/0.",
       "scope": "Retire only the exact empty prepared epoch2 attempt; no epoch3 or writer activation.",
@@ -5792,7 +5792,7 @@
         "Native OPEN/zero + terminal PG, mixed/missing/nonzero target detail: refuse without repair."
       ],
       "native": "A dedicated checked context must accept only exact OPEN0/CLOSING0 producer2 while preserving exact target manifest/handoff, source2 explicit zero, absent target request/fact/pending/allocation/dictionary prefixes and input sidecars. Existing handoff completion remains strict OPEN0. One synced native producer2 CLOSING write precedes terminal SQL; retain actual root/sequence proof and metadata grant after all positive original requests are reread.",
-      "postgres": "Additive migration0031 proposal: preserve0030 immutable intent/admission veto and0029 epoch1 behavior. Under currentControl, dataset/currentpolicy and ordered target UPDATE custody, atomically close source2(cut0), retire producer2, close domains2, release owner2(storage_fenced) and retire role2 with one server timestamp and distinct empty-source closure digest. Preserve original intent fields and every old history row. Keep sealed topology membership unchanged, including target2 NULL handoff bound.",
+      "postgres": "Additive0031 implemented at207ae63; original0029/0030 unchanged. Typed adapter requires explicit31, currentControlUPDATE before dataset and orderedtargetparents, atomic five-family terminal transition with commonT/D2; deferred guards refuse incomplete lifecycle COMMIT. Original intent/admission veto, old history and sealed topology remain retained.",
       "workflow_obligations": "Jobs belong to Control, not Ingest. Target owner2-only checks cannot establish absent claims. Explicitly refuse unsupported acquisition/import claims from the preparing and relevant subsequent Control lifetimes, including zero-request claims; reject target request/outcome, binding, producer checkpoint evenzero and gap history. Absence of a binding is not absence of accepted obligations.",
       "ambiguity": "After native dispatch, cancellation/result loss may leave CLOSING durable. Retain/join workers and driver, positively exclude old backend, reconstruct under freshControl. Unknown terminal COMMIT resolves only to exact prepared or exact terminal PG; completed retries preserve timestamps/xmin. Partial terminal shape refuses.",
       "required_cases": [
@@ -5819,7 +5819,21 @@
         "recovery_review": "independent new native fixtures in separate initial-empty-fixtures worktree",
         "successor_restart_design": "new additive0031SQL only in separate initial-empty-sql worktree"
       },
-      "qualification": "All new native/SQL/connected behavior NOT_RUN. No installed entrypoint, epoch3 or writer activation added. Existing117native tests and all qualified previous captures remain retained; affected checks rerun once new source exists."
+      "qualification": "New native/SQL/connected behavior NOT_RUN. Rootrustfmt anddiffcheck only. Nextbuildexactcandidate with14reconstruction tests plusaffectedregressions; rootenginefirstwave then ambiguity/claim/expiry schedules remain required.",
+      "implementation": {
+        "native_commit": "9b08239",
+        "independent_native_fixtures_commit": "71ad688cb133b2a3502a6dfb44b72af146c9f7ec",
+        "sql_commit": "207ae63",
+        "sql_sha256": "52819215086abb15c06b25ebb536b16955256e4707aaf0f1a89060c66fc96b8a",
+        "root_adapter": "Pending coherent commit: bounded shared original resolver and strict immutable intent, distinct empty context/opaqueplan, metadata/native grant custody throughCOMMIT; schema31 catalog additive.",
+        "native_fixtures": "Five groups,14 total reconstruction tests planned; literal D2/marker/delta, exact retries, sameKV crossroot, interveningwrite/sidecar, authority/grant refusal. Not executed yet."
+      },
+      "independent_implementation_review": {
+        "reviewer": "cleanup_review; independent AI read-only review",
+        "result": "No concrete blocker found within scoped source review; no build/engine executed",
+        "inspected": "Full newPGempty/history/producer_retirement, migrations0029/0030/0031/0007; actual registryRetirement lock/reconstruction, Controlrequire/snapshot/release,0001owner/job and0002domain/source/membership guards. OriginalparentUPDATE before target is supplied by RegistryLocks::Retirement; targetControlUPDATE precedesdataset. Allsixnewfunction grants required includingdeferreddependencies.",
+        "boundary": "Full installed entrypoint/credential grant provisioning and unrelatedmigrations/functions not reaudit. Installedrestart/nextincarnation/activation NOT_RUN."
+      }
     },
     "gap_policy_delivery_qualification": {
       "status": "PASS_PREPARED_GAP_POLICY_DELIVERY",

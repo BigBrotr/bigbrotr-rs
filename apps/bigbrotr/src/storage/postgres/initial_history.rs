@@ -59,7 +59,7 @@ impl<'a> PreparedInitialHistory<'a> {
 pub(super) struct Intent {
     pub(super) handoff: Vec<u8>,
     pub(super) record: InitialHandoffRecord,
-    role: [u8; 16],
+    pub(super) role: [u8; 16],
     created_at_us: i64,
     lease_expires_at_us: i64,
     request_limit: u32,
@@ -145,45 +145,17 @@ impl ControlSession {
         require_intent(&tx, &history.registration, &history.intent, current, epoch)
             .await
             .map_err(history_resolve_error)?;
-        let reservation =
-            producer_requests::read(&tx, history.registration.dataset_id, input.request)
-                .await
-                .map_err(ProducerResolveError::Reservation)?
-                .ok_or(ProducerResolveError::Native(
-                    ProducerRecoveryError::Unresolved,
-                ))?;
-        let manifest: [u8; 32] =
-            Sha256::digest(history.native.manifest().encode().as_bytes()).into();
-        if reservation.manifest_sha256 != manifest {
-            return Err(OwnerError::InvalidMetadata.into());
-        }
-        let resolved = history
-            .native
-            .resolve_original_request(
-                input.request,
-                reservation.digest,
-                input.limits,
-                input_permit,
-                outcome_permit,
-                || {
-                    if input.cancelled.load(Ordering::Relaxed) {
-                        return Err(AdmissionError::AuthorityUnavailable);
-                    }
-                    lease
-                        .check_delivery(epoch)
-                        .map_err(|_| AdmissionError::AuthorityUnavailable)
-                },
-            )
-            .map_err(ProducerResolveError::Native)?;
-        if resolved.input_bytes() != reservation.input_bytes
-            || resolved.native_outcome().manifest_sha256() != manifest
-        {
-            return Err(ProducerResolveError::Outcome(
-                super::super::producer_outcomes::OutcomeError::Conflict,
-            ));
-        }
-        producer_retirement::require_retirement_copy(&tx, &resolved, input.request, manifest)
-            .await?;
+        let resolved = resolve_original(
+            &tx,
+            &history.native,
+            &history.registration,
+            &input,
+            input_permit,
+            outcome_permit,
+            &mut lease,
+            epoch,
+        )
+        .await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
@@ -197,6 +169,28 @@ impl ControlSession {
         recovery: &IngestRecovery,
         input: &InitialHistoryRequest<'_>,
         owner_epoch: u64,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
+        self.begin_initial_history_locked(recovery, input, owner_epoch, false, validate)
+            .await
+    }
+
+    pub(super) async fn begin_empty_initial_history<'a, E>(
+        &'a mut self,
+        recovery: &IngestRecovery,
+        input: &InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
+        self.begin_initial_history_locked(recovery, input, 2, true, validate)
+            .await
+    }
+
+    async fn begin_initial_history_locked<'a, E>(
+        &'a mut self,
+        recovery: &IngestRecovery,
+        input: &InitialHistoryRequest<'_>,
+        owner_epoch: u64,
+        exclusive_control: bool,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
         let identity = recovery.manifest().identity();
@@ -222,9 +216,23 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 30)
+        let tx = application_transaction(&mut self.client, if exclusive_control { 31 } else { 30 })
             .await
             .map_err(transaction_error)?;
+        if exclusive_control {
+            // Generic zero-request import claims take SHARE on this Control.
+            // Exclude them before dataset/target custody and any absence check.
+            tx.query_one(
+                "SELECT epoch FROM control.owner_epochs WHERE resource_id=$1::bytea
+                 AND epoch=$2::text::numeric FOR UPDATE",
+                &[
+                    &&self.identity.resource_id.as_bytes()[..],
+                    &self.identity.epoch.get().to_string(),
+                ],
+            )
+            .await
+            .map_err(backend)?;
+        }
         require(&tx, self.request.dataset, self.identity).await?;
         // snapshot takes dataset UPDATE before historical parent/producer locks.
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
@@ -263,6 +271,65 @@ impl ControlSession {
         check_delivery(&mut lease, epoch, input.cancelled)?;
         Ok((tx, lease, epoch))
     }
+}
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "distinct native context, original metadata and retained input/outcome grants"
+)]
+pub(super) async fn resolve_original(
+    tx: &Transaction<'_>,
+    native: &HistoricalInitial<'_>,
+    registration: &ingest_registry::InitialRegistration,
+    input: &ProducerResolveRequest<'_>,
+    input_permit: OwnedPermit,
+    outcome_permit: OwnedPermit,
+    lease: &mut PolicyLeaseTracker,
+    epoch: PolicyEpoch,
+) -> Result<ResolvedProducerRequest, ProducerResolveError> {
+    if input.registration != registration
+        || input.request.producer_slot_id != native.producer_slot_id()
+        || input.request.producer_epoch.get() != 1
+        || input.request.request_sequence.get() > native.issued_through()
+    {
+        return Err(OwnerError::InvalidInput.into());
+    }
+    let reservation = producer_requests::read(tx, registration.dataset_id, input.request)
+        .await
+        .map_err(ProducerResolveError::Reservation)?
+        .ok_or(ProducerResolveError::Native(
+            ProducerRecoveryError::Unresolved,
+        ))?;
+    let manifest: [u8; 32] = Sha256::digest(native.manifest().encode().as_bytes()).into();
+    if reservation.manifest_sha256 != manifest {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    let resolved = native
+        .resolve_original_request(
+            input.request,
+            reservation.digest,
+            input.limits,
+            input_permit,
+            outcome_permit,
+            || {
+                if input.cancelled.load(Ordering::Relaxed) {
+                    return Err(AdmissionError::AuthorityUnavailable);
+                }
+                lease
+                    .check_delivery(epoch)
+                    .map_err(|_| AdmissionError::AuthorityUnavailable)
+            },
+        )
+        .map_err(ProducerResolveError::Native)?;
+    if resolved.input_bytes() != reservation.input_bytes
+        || resolved.native_outcome().manifest_sha256() != manifest
+    {
+        return Err(ProducerResolveError::Outcome(
+            super::super::producer_outcomes::OutcomeError::Conflict,
+        ));
+    }
+    producer_retirement::require_retirement_copy(tx, &resolved, input.request, manifest).await?;
+    Ok(resolved)
 }
 
 pub(super) async fn read_intent(
@@ -322,6 +389,29 @@ pub(super) async fn read_intent(
 /// history or dispatching an existing pending preparation. No current head is
 /// substituted for the target's original policy, times or preparing Control.
 pub(super) async fn require_intent(
+    tx: &Transaction<'_>,
+    s: &ingest_registry::InitialRegistration,
+    i: &Intent,
+    current: ingest_registry::ControlOwner,
+    current_epoch: PolicyEpoch,
+) -> Result<(), InitialSuccessionError> {
+    require_intent_identity(tx, s, i, current, current_epoch).await?;
+    let expected: Vec<_> = (1_u16..=9)
+        .filter_map(|n| {
+            let kind = bigbrotr_model::DictionaryKind::try_from(n).expect("assigned bounded kind");
+            i.record
+                .next_manifest()
+                .allocation_namespaces()
+                .domain(kind)
+                .map(|domain| (kind, domain))
+        })
+        .collect();
+    initial_succession::require_prepared_target(tx, s, i.role, &expected).await
+}
+
+/// Immutable original attribution shared by strict preparation and exact empty
+/// retirement. Every caller separately validates its own complete target shape.
+pub(super) async fn require_intent_identity(
     tx: &Transaction<'_>,
     s: &ingest_registry::InitialRegistration,
     i: &Intent,
@@ -404,16 +494,6 @@ pub(super) async fn require_intent(
         )
         .map_err(|_| OwnerError::InvalidMetadata)?;
     }
-    let expected: Vec<_> = (1_u16..=9)
-        .filter_map(|n| {
-            let kind = bigbrotr_model::DictionaryKind::try_from(n).expect("assigned bounded kind");
-            h.next_manifest()
-                .allocation_namespaces()
-                .domain(kind)
-                .map(|domain| (kind, domain))
-        })
-        .collect();
-    initial_succession::require_prepared_target(tx, s, i.role, &expected).await?;
     Ok(())
 }
 
@@ -440,7 +520,7 @@ pub(super) async fn finish<E>(
         .map_err(|_| ProducerOperationError::DeliveryUnknown)?;
     check_delivery(lease, epoch, cancelled)
 }
-fn history_resolve_error(error: InitialSuccessionError) -> ProducerResolveError {
+pub(super) fn history_resolve_error(error: InitialSuccessionError) -> ProducerResolveError {
     match error {
         ProducerOperationError::Control(e) => ProducerOperationError::Control(e),
         ProducerOperationError::Registry(e) => ProducerOperationError::Registry(e),
