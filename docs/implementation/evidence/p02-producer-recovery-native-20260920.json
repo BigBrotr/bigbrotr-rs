@@ -5808,6 +5808,60 @@
         "expiry at parent lock"
       ],
       "review_boundary": "Independent read-only design review covered full0029/0030, PG retirement/closing/source-closure/history/gap, native closing/sourceproof/handoff and owning references; relevant0001/0002 guards and0013/0022\u20130024 workflow attribution. Broader migrations and Archive/Sync consumers not re-audited. No source edits or engines."
+    },
+    "gap_policy_delivery_qualification": {
+      "status": "CANDIDATE_BUILD_AND_ENGINES_NOT_RUN",
+      "observed_at": "2026-10-12",
+      "task": "P02-T01 Step5 / P02-T02 Step4; prerequisite to P01-T09 Step4/M1, no checkbox closed",
+      "base": "ef8376602c39231dcaad7f1ad1e2e063eef5b174",
+      "integrated_probe": "03b72cd",
+      "integrated_policy_fixture": "8ecbc25",
+      "integrated_independent_oracle": "55acd33c7a287e993c70bb254522e0c8df0e6c77",
+      "product_source": "Unchanged since qualified162caeb; new finite probe, fixture, oracle and runner only. Shared framing proxy has bounded close-order correction.",
+      "planned_cases": [
+        "gap-policy then prepared-recover",
+        "gap-loss-before then prepared-recover",
+        "gap-loss-after then prepared-recover"
+      ],
+      "policy": "Guarded privileged fixture advances config/policy heads1 to2 only in an isolated clone, with all normal triggers and constraints active. Independent full71-table/xmin oracle expects exactly two revision rows and one dataset-head update in one transaction. This is not a product policy activation writer.",
+      "delivery": "Exact transaction START12 held before forwarding, or backend completion of ROLLBACK2 held after four native writes. Both have ten completed COMMITs. Explicit close; current Control must poison, failed driver join, and actual PID/backend_start/database disappear. A config-only new process selects native1 gap or native2 history and preserves preparer8/registrar3.",
+      "independent_expectations": "Artificial six-transcript oracle exercise passed114 snapshots/123 perturbations; no actual product execution follows from artificial captures. Prior-final hashes bind each new recovery to the preceding attempt.",
+      "pre_engine_proxy_checks": {
+        "status": "PASS_AFTER_FIXTURE_CORRECTION",
+        "executed_tests": {
+          "shared_fault_proxy": 22,
+          "rollback_proxy": 2,
+          "gap_proxy": 2
+        },
+        "commands": [
+          "python3 -B -m unittest discover -s experiments/control-migrations -p test_fault_proxy.py",
+          "python3 -B -m unittest discover -s experiments/relay-source -p test_rollback_proxy.py",
+          "python3 -B -m unittest discover -s experiments/ingest-bootstrap -p test_initial_gap_proxy.py"
+        ],
+        "preserved_observations": "Two first unit attempts hung in fixture cleanup; positively identified test processes were killed and wrappers joined137. After bounded test teardown the next attempt failed waiting for receipt. Python3.13 Server.wait_closed awaited accepted connections before owned sockets were closed. Close/join writers and pumps first, then bound listener join. All26 regressions passed; two new tests repeated after bounding final teardown also passed. These are tool-observed unit outcomes, not invented retained raw engine artifacts.",
+        "diagnostic": "Standalone no-peer proxy deadline exited3 after30s; host /dev/null stdin lacked pipe permission. No engine used by unit/diagnostic attempts."
+      },
+      "independent_ai_source_review": {
+        "status": "COMPLETE_NO_BLOCKER_IN_REVIEWED_SCOPE",
+        "read": "Two read-only AI reviews covered complete new harness/proxy, finite probe, independent oracle, policy helper, inherited framing/rollback owners and affected build/bindings diffs. Root read complete affected owners/callers in this slice; unrelated historical runner branches were not re-audited.",
+        "findings_fixed": [
+          "Add readonly /source mount for new proxy in connected client.",
+          "Correct Python3.13 listener/writer close order and affected test teardown.",
+          "Bind actual backend database and policy setup transaction id independently."
+        ],
+        "remaining_limit": "External observations at held boundary remain inside existing10s probe deadline. A slow observation is INCOMPLETE/UNKNOWN, never product refusal or a successful loss discriminator."
+      },
+      "preservation": "Five frozen actual51a6b86 gap-seed artifact hashes rechecked. Original71tables/49native rows/sequence58/fourinputs retained. No engine or build for this candidate has run.",
+      "next": "Commit coherent fixture source; exact isolated ingest-gap-faults build (CLI/probe and Clippy only), then execute six actual probes under owned runner, retain all outcomes and obtain read-only actual-capture audit.",
+      "not_run": [
+        "new candidate build",
+        "actual advanced-policy and gap delivery-loss schedules",
+        "empty epoch2 retirement",
+        "writer activation",
+        "native I/O uncertainty/power loss",
+        "installed restart/resend",
+        "full M1 and product"
+      ]
     }
   }
 }

@@ -67,10 +67,11 @@ class RollbackProxyTest(unittest.IsolatedAsyncioTestCase):
         finally:
             if process.returncode is None:
                 process.terminate(); await process.wait()
-            server.close(); await server.wait_closed()
+            server.close()
             for writer in sockets: writer.close()
             for task in tasks: task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
+            await asyncio.wait_for(server.wait_closed(), 3)
 
 
 if __name__ == '__main__':

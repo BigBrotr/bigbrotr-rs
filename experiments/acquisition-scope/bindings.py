@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_gap_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-gap-faults'
 ingest_successor_gap = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-successor-gap'
 ingest_successor_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-successor-history'
 ingest_succession_commits = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession-commits'
@@ -83,7 +84,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -393,6 +394,12 @@ if ingest_successor_gap:
     report['not_run'] = ['empty attempt retirement, writer activation and installed restart/resend',
         'native syscall uncertainty/power loss, advanced current policy, ACK/GC and full M1',
         'capacity/load/aged-state and arm64/release']
+
+if ingest_gap_faults:
+    report['wave'] = 'prepared-gap-policy-delivery'
+    report['not_run'] = ['product policy activation, empty attempt retirement and writer activation',
+        'native syscall uncertainty/power loss and installed restart/resend',
+        'ACK/GC, full M1, capacity/load/aged-state and arm64/release']
 
 
 def require(condition, reason):
@@ -778,6 +785,9 @@ if ingest_successor_history:
 if ingest_successor_gap:
     success_status = 'PASS_PREPARED_INITIAL_GAP_COMPLETION'
 
+if ingest_gap_faults:
+    success_status = 'PASS_PREPARED_GAP_POLICY_DELIVERY'
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -800,7 +810,7 @@ try:
         from interruptions import prepare_instrument
         instrument = prepare_instrument(root, prior, SOURCE)
         instrument_mount = ['--mount', f'type=bind,src={instrument},dst=/instrument,readonly']
-    if commits or registration_faults or dictionary_faults:
+    if commits or registration_faults or dictionary_faults or ingest_gap_faults:
         instrument_mount = ['--mount', f'type=bind,src={SOURCE},dst=/source,readonly']
     if native_inspector is not None:
         instrument_mount += ['--mount', f'type=bind,src={native_inspector},dst=/native-inspect,readonly']
@@ -946,6 +956,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_gap_faults:
+        cases = ['prepared-gap-policy-delivery']
     elif ingest_successor_gap:
         cases = ['prepared-initial-gap-completion']
     elif ingest_successor_history:
@@ -995,6 +1007,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_gap_faults:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from initial_gap_faults import run as run_gap_faults
+            report['cases'].append(run_gap_faults(pg, client, output, rows, clone))
             save()
         elif ingest_successor_gap:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1127,6 +1144,12 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_gap_faults:
+        from initial_gap_faults import CASES as GAP_FAULT_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and [r['name'] for r in report['cases'][0]['cases']] == list(GAP_FAULT_CASES)
+            and all(r['status'] == 'PASS' and len(r['attempts']) == 2
+                for r in report['cases'][0]['cases']), 'prepared-gap-policy-delivery-case-set')
     if ingest_successor_gap:
         from initial_gap import CASES as GAP_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'

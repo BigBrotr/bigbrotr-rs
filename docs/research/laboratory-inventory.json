@@ -39817,5 +39817,32 @@
       },
       "independent_ai_review": "Complete read-only AI audit:158snapshots/198controls, source/file/artifact identities and terminal custody verified;1202 nonborrowed preflight projections unchanged. Source SQL preservation is captured-run evidence only."
     }
+  },
+  "implementation_initial_gap_policy_delivery_20261012": {
+    "status": "FIXTURE_READY_BUILD_ENGINE_NOT_RUN",
+    "owner": "root sole integrating and engine owner",
+    "base": "ef8376602c39231dcaad7f1ad1e2e063eef5b174",
+    "worktrees": [
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/initial-gap-policy-20261012",
+        "head": "8c7eafedd90a399de52464fa6102515b6d45d4b2",
+        "status": "CLEAN_INTEGRATED_RETAINED"
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/initial-gap-fault-probe-20261012",
+        "head": "087b702faa45b885e15aa257d15e1ada1912a1b7",
+        "status": "CLEAN_INTEGRATED_RETAINED"
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/initial-gap-fault-oracle-20261012",
+        "head": "39336e1bbee6ab70a927e0f4b30ddfcdf3978fd3",
+        "status": "CLEAN_INTEGRATED_RETAINED"
+      }
+    ],
+    "resources": [],
+    "free_bytes_before_build": 70391721984,
+    "root_policy": "New separately inventoried ingest-gap-faults and ingest-gap-delivery exact-source roots; exclusive current compiler cache; no retired cache reuse.",
+    "preservation": "All original, positive and negative labs/worktrees retained; borrowed PG stopped. Six unrelated services running; no new fixture/build process active.",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
   }
 }

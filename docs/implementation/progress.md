@@ -18,12 +18,12 @@ Latest qualified CLI/probe build is
 162caeb28f1fa5b47f38f8022d7ba96211d8e14f, tree
 3c69fc88e097f0c7e7225e3e126ccf453ac41d3e. Connected gap completion and affected
 history regression pass at51a6b86c28d1278662f733d82721c844b8009631 using those
-exact binaries. That was actual HEAD before this evidence/checkpoint update;
-root owns subsequent documentation. All product/probe/test worktrees are clean.
-Evidence checkpoint acd1194bed0a0542fd5ba429b3a99c7c6093ebf5 was pushed to private
-origin and freshly verified ahead0/behind0 with a clean canonical checkout.
-The newer gap commits and current evidence update need a fresh verified private
-push. Prior prepared-only4f62b52, firstwaveac644ef, COMMIT-loss64419a5 and
+exact binaries. The qualified evidence commit ef8376602c39231dcaad7f1ad1e2e063eef5b174 was
+privately pushed and freshly verified ahead0/behind0 with a clean checkout.
+Current observed HEAD55acd33c7a287e993c70bb254522e0c8df0e6c77 integrates the next
+finite probe, guarded policy fixture and independent oracle; product source is
+unchanged. Root owns dirty harness/proxy/build-runner tests and this documentation.
+New candidate build and actual engines remain NOT_RUN. Prior prepared-only4f62b52, firstwaveac644ef, COMMIT-loss64419a5 and
 read-only historye92f3d7/build39e7468 remain retained for their exact scope.
 
 Main remains
@@ -206,10 +206,22 @@ container observations. Source SQL preservation remains captured-run evidence,
 without restarting the server for another audit. Evidence and raw paths are
 in the existing recovery report; no task or M1 checkbox is closed by this slice.
 
-Next qualify advanced current policy and ambiguous delivery around the new gap
-completion boundary, preserving original intent and selecting actual epoch1 versus
-epoch2 recovery after interruption. Existing preparation COMMIT-loss and native
-callback tests do not automatically qualify this new PG adapter's delivery path.
+Next commit and build the finite `ingest-gap-faults` candidate, then run the
+three isolated policy/before-native/after-native cases and a fresh config-only
+recovery for each. Policy fixture advances current heads to2 with normal guards,
+preserving historical1. Proxy holds START12 before forwarding or ROLLBACK2's reply
+after native dispatch. Actual failed-driver join, poisoned Control and exact old
+backend absence precede fresh recovery. The new independent oracle checks all71
+tables, native/input state and previous-final hashes. Its artificial114snapshots/
+123perturbations pass; actual six-process schedules are NOT_RUN.
+
+Two independent AI source reviews found no remaining blocker. Missing readonly
+source mount and Python3.13 fixture socket-close order were corrected. The first
+two unit attempts hung and were explicitly stopped/joined137, then a bounded
+receipt check failed before the close-order fix; no engine started. All26 shared
+and new proxy tests now pass. Held-boundary observations retain the existing10s
+probe deadline; timeout cannot qualify the intended loss. Existing preparation
+COMMIT-loss and native callback tests retain their exact earlier scopes.
 Keep all positive proof, root/sequence, current authority and immutable history
 requirements. Then implement exact retirement of the abandoned empty epoch2
 attempt, without adopting its incarnation or advancing to a writer lifetime.
@@ -225,11 +237,11 @@ not the attempted Ingest owner. Preserve target input/namespace absence checks,
 original positive history and the shared 64-file/32MiB allowance. The design is
 recorded as a proposal in the existing evidence, not implemented qualification.
 
-Root remains sole integrator and engine executor. Product96df1e2, tests35e6bf5 and
-probe31f6caa are integrated; three separate worktrees are clean. No source writer
-or engine session remains active. Current root-owned changes are documentation
-and evidence only. Last measured free space 70,488,989,696 bytes; all new resources
-are inventoried and stopped. Verify the final evidence commit and private push.
+Root remains sole integrator and engine executor. Earlier product/test/probe
+worktrees and three new policy/probe/oracle worktrees remain clean and retained.
+No engine/build session is active. Root-owned fixture/build-runner changes and
+current documentation await the coherent candidate commit. Last measured free
+space70,391,943,168bytes; remeasure before allocation. No task is completed here.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming

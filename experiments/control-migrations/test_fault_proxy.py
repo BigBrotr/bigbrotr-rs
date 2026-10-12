@@ -45,7 +45,6 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
             self.process.terminate()
             await asyncio.wait_for(self.process.wait(), 3)
         self.server.close()
-        await self.server.wait_closed()
         for writer in self.writers:
             writer.close()
         for task in self.tasks:
@@ -57,6 +56,7 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
                 await writer.wait_closed()
             except (ConnectionError, OSError):
                 pass
+        await asyncio.wait_for(self.server.wait_closed(), 3)
         if self.backend_done.done() and not self.backend_done.cancelled():
             self.backend_done.exception()  # Retrieved even after a failed client assertion.
 

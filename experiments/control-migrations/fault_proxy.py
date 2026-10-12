@@ -249,7 +249,6 @@ class Session:
         finally:
             if listener:
                 listener.close()
-                await listener.wait_closed()
             for task in tasks:
                 task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
@@ -262,6 +261,13 @@ class Session:
                 await asyncio.wait_for(drain(), 2)
             except asyncio.TimeoutError:
                 reason = "close-deadline"
+            if listener:
+                # Python 3.13 waits for accepted connections as well as the
+                # listening socket. Close our writers before joining the server.
+                try:
+                    await asyncio.wait_for(listener.wait_closed(), 2)
+                except asyncio.TimeoutError:
+                    reason = "close-deadline"
             if control_transport:
                 control_transport.close()
             for signum in (signal.SIGINT, signal.SIGTERM):
