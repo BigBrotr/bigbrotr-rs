@@ -223,7 +223,7 @@ def _run(pg, database, output, rows, label, role, terminal):
             schedules.append((name + '-only', mutations[name], PARTIAL, True, False))
         schedules += [
             ('owner-only', mutations['owner'], ('ingest owner release requires closed domains, streams and producer epochs',
-                'control.guard_owner_ingest_dependents()'), False, False),
+                'guard_owner_ingest_dependents()'), False, False),
             ('wrong-cut', mutations['wrong_cut'], ('empty retirement requires its exact atomic transition staging',
                 'control.require_initial_empty_transition(bytea,bytea,bigint)'), False, False),
             ('wrong-common-time', mutations['wrong_time'], PARTIAL, True, False),

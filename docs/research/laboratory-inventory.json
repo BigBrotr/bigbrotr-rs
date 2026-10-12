@@ -39997,6 +39997,112 @@
         "finished_at": "2026-10-12T13:20:04.178114+00:00",
         "free_bytes_after": 69935493120,
         "inventory_changed": []
+      },
+      {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-be4f284",
+        "source": "be4f2840ab143c8efe90afde4ce760ef417c8ae3",
+        "tree": "53ac0bf9aecddbf27d4aba4b7d51f1d1fe8aae13",
+        "status": "FAIL_FIXTURE_DIAGNOSTIC_RETAINED",
+        "owner": "826bae6c02c6e196aaf92c36d53f3333",
+        "build": "runs/ingest-history-30a88ae/out/artifacts",
+        "borrowed_pg": "runs/relay-source-recheck-e06f580/pg; existing owner5e69b0f060b1607c25230d1dbd3e5608",
+        "seed": "unchanged ac644ef preparednormal andf12dbf0 retired signed original; newclonesonly",
+        "cases": "9empty derivatives/11emptyprobes +15gap/historyregressions +12prepared/2terminal rawguardtransactions",
+        "preserve": "all original/failure/raw inputs retained; runner stops onlyownedclient andborrowedPG; unrelatedservices preserved",
+        "client": {
+          "id": "e74b2a4291c63eda63d5f7a1a6b6072f290b375786bffe19d586ea8be6cc26d4",
+          "name": "bigbrotr-acquisition-binding-be4f284"
+        },
+        "databases": [
+          "bb_scope_bind_be4f284_empty_normal"
+        ],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-12T13:24:31.738775009Z",
+              "FinishedAt": "2026-10-12T13:24:39.800483402Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "e74b2a4291c63eda63d5f7a1a6b6072f290b375786bffe19d586ea8be6cc26d4",
+            "Name": "/bigbrotr-acquisition-binding-be4f284",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-12T13:24:32.650277194Z",
+              "FinishedAt": "2026-10-12T13:24:39.303686938Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-30a88ae/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-be4f284/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "finished_at": "2026-10-12T13:24:40.624307+00:00",
+        "result_sha256": "47d9e61a00b84c6e640010cf24a5986716ccb126f36341650e4dd161bda9c885",
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": []
       }
     ],
     "free_bytes_before": 70108876800,

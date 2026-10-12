@@ -22,8 +22,8 @@ verified ahead0/behind0 with a clean canonical checkout. Current observed HEAD
 dad05ca integrates the independent empty-retirement oracle after SQLguardfixture
 bf4c0fd and finite probe30a88ae. Product adapter/cataloga027cb6, native9b08239,
 nativefixtures71ad688 and SQL207ae63 pass exactbuild30a88ae. Root now owns the
-connected runner and current evidence/checkpoint edits. New PostgreSQL/process
-engine qualification has not run yet.
+connected runner and current evidence/checkpoint edits. First connectedwavebe4f284 failed an exact legacyfunctiondiagnostic expectation;
+its originalresult remainsFAIL andnew productprobes stillNOT_RUN.
 No merge/rebase is in progress. The original qualified162caeb/4c283e2 source remains
 retained for its original scope.
 Earlier prepared-only, COMMIT-loss, history and gap-completion artifacts remain
@@ -256,7 +256,11 @@ is PASS:13checks/122testexecutions, including14reconstruction tests, affected
 replay/codecs,40entrypoint/schema checks andClippy. All buildcontainers exited0,
 noOOM/unrelatedlifecyclechanges; wrapper joined0. Independent artifact audit is
 in progress. Source review found no concrete blocker within its stated boundary.
-New PostgreSQL/process engine qualification has not run yet. All six new SQL helpers need explicit lab
+First connectedwavebe4f284 is retainedFAIL at the legacy owner-guard diagnostic
+name assertion. Six earlierrawguards passed; actualowner-only23514/messagewas
+correct butPostgreSQLprinted its unqualifiedfunctionname. All71tables/xmin and
+originalfiles/artifacts remainedunchanged; noemptyproductprobe started. Root
+narrowlycorrected thatfixtureexpectation; use a newrevision/lab, preservingfailure. All six new SQL helpers need explicit lab
 grants, including the deferred constraints' invoker dependencies.
 
 Next bounded action: commit the reviewed connected harness with integrated
