@@ -28,7 +28,7 @@ impl Fixture {
         self.root.path().join("db")
     }
     fn reopen(&self) -> IngestRecovery {
-        // The next manifest is read from native state, not supplied as an owner
+        // The manifest is read from native state, not supplied as an owner
         // identity and not recovered from a retained InitialHandoff object.
         IngestRecovery::inspect(
             &self.path(),
@@ -181,6 +181,14 @@ fn assert_receipt(receipt: &Receipt, sequence: u64) {
 }
 
 fn prepared_fixture() -> Fixture {
+    initial_fixture(true)
+}
+
+fn closed_fixture() -> Fixture {
+    initial_fixture(false)
+}
+
+fn initial_fixture(complete_handoff: bool) -> Fixture {
     let (root, mut store, budget, previous, native) = setup(false);
     let observer = DictionaryEntry::new(
         reference(DictionaryKind::Observer, 2),
@@ -332,11 +340,13 @@ fn prepared_fixture() -> Fixture {
             assert_eq!(proof.last_complete_sequence(), 9);
             InitialHandoff::from_source(&proof, next).unwrap()
         };
-        drop(
-            recovery
-                .apply_initial_handoff(&handoff, grant(&budget, 8192, 8192), || Ok(()))
-                .unwrap(),
-        );
+        if complete_handoff {
+            drop(
+                recovery
+                    .apply_initial_handoff(&handoff, grant(&budget, 8192, 8192), || Ok(()))
+                    .unwrap(),
+            );
+        }
         // Both the preparation plan and its native proof die before reopen.
     }
     drop(recovery);
@@ -351,6 +361,9 @@ fn prepared_fixture() -> Fixture {
         closure,
     }
 }
+
+#[path = "initial_gap_tests.rs"]
+mod initial_gap_tests;
 
 fn reconstruct(fixture: &Fixture, recovery: &IngestRecovery) -> Result<InitialHandoff, String> {
     let bytes = value(&recovery.store, handoff_key());

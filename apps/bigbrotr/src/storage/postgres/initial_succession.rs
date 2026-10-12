@@ -43,9 +43,10 @@ impl ControlSession {
     /// Keep the bounded owner worker, native exclusion and connection driver
     /// retained and joined. Cancellation poisons this Control session. A lost
     /// prepare COMMIT never dispatches native work; retry requires a fresh actual
-    /// Control claim and the identical request. Reconstruction of a plan after
-    /// process loss and retirement of an unactivated attempted target remain
-    /// unimplemented; neither absence nor observed metadata grants admission.
+    /// Control claim and the identical request. The existing-only gap adapter
+    /// reconstructs a lost plan from retained intent and positive source proof.
+    /// Retirement of the unactivated attempt remains separate required work;
+    /// neither absence nor observed metadata grants admission.
     pub async fn prepare_initial_successor(
         &mut self,
         recovery: &mut IngestRecovery,

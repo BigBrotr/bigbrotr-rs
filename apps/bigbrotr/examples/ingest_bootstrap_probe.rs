@@ -939,6 +939,16 @@ fn main() {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else if args[1] == "successor-history" {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
+            } else if matches!(
+                args[1].as_str(),
+                "successor-gap-recover" | "successor-gap-cancelled"
+            ) {
+                ingest_initial_history::run_gap(
+                    config,
+                    Path::new(&args[4]),
+                    args[1] == "successor-gap-cancelled",
+                )
+                .await;
             } else if args[1].starts_with("successor-") {
                 ingest_succession::run(
                     config,

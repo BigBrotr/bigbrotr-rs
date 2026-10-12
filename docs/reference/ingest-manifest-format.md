@@ -104,9 +104,12 @@ operator-controlled roots must remain stable. Reapplying the same
 retained plan requires the exact receipt, manifest and complete empty successor
 state and performs no write; conflicting or partial state refuses. This local
 plan can survive closing/reopening the native handle within the same caller.
-The bounded historical adapter below reconstructs only an observed completed
-preparation. Completing an abandoned empty incarnation and activating a fresh
-actual writer remain separate required adapters. An
+The bounded historical adapter below reconstructs an observed completed
+preparation. The existing-gap adapter also reconstructs a positive old-state plan
+from original history and exact PostgreSQL intent. Both native preflight and
+dispatch reject retained successor input files, including files added without a
+Rocks sequence change. Retiring an abandoned empty incarnation and activating a
+fresh actual writer remain separate required adapters. An
 observer or a durable prepared row cannot impersonate that writer. Until explicit
 activation is implemented, PostgreSQL refuses successor reservations and input
 bindings. This format is an implementation contract, not installed qualification.

@@ -18,11 +18,12 @@ Read-only prepared-history product and probe are qualified at build
 39e746834c1587952a28c2c1e78ca8ea62d62831, tree
 c8df1d5242a3512d8a323b778eb8dc13f1908a57. The connected replacement-process harness
 is e92f3d7b48c5291bb4755621c5df2380818ff919 and passes with those exact binaries.
-Actual canonical HEAD was e92f3d7 before the current evidence/checkpoint update;
-root owns subsequent documentation. No source writer has pending code. The
+Evidence commit acd1194bed0a0542fd5ba429b3a99c7c6093ebf5 was pushed to private
+origin and freshly verified ahead 0/behind 0 with a clean canonical checkout.
+Root now owns the integrated gap candidate, fixture and documentation changes. The
 original prepared-only 4f62b52, first wave ac644ef and COMMIT-loss 64419a5/build3969a61
-evidence remain preserved for their exact scope. A fresh fetch confirmed private
-origin d2b1dc8 is an ancestor; current new commits are not yet claimed pushed.
+evidence remain preserved for their exact scope. That verified private checkpoint includes all earlier reconstruction commits.
+The current gap candidate has not yet been built or pushed.
 Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
@@ -199,8 +200,11 @@ and 523 prior run entries retain their recorded state, except the explicitly
 borrowed PostgreSQL lifecycle. No blocking counterexample was found. Prepared fixture493ca5e was never executed and
 is preserved; observation fixes were reviewed before any engine allocation.
 
-Next implement finite completion of an exact PGprepared/nativeepoch1 gap in a
-new process. Reconstruct the original source from positive input/native/PG copies,
+The next candidate implements finite completion of an exact PGprepared/nativeepoch1
+gap in a new process. Native fixtures and the finite probe have been integrated;
+the PG/native adapter is integrated and independent review is active. Next
+commit the coherent candidate and execute the isolated ingest-history build,
+then the seven-case config-only gap wave from its exact artifacts. Reconstruct the original source from positive input/native/PG copies,
 match every immutable intent field, then apply only the existing four-put native
 handoff under fresh actual Control/current policy custody. Preserve the target's
 original incarnation, times and historical policy; current policy must not rewrite
@@ -226,8 +230,10 @@ clean. Three agents now own separate new worktrees for the gap adapter, independ
 native fixtures and finite Rust probe. Root owns connected Python qualification
 and integration. This next slice remains unqualified; no engines are running. Last measured free space71,116,517,376bytes. All build/fixture
 resources are inventoried and stopped; six unrelated services remain running.
-Current root-owned dirty files are qualification docs/inventory only. Verify the
-subsequent evidence commit, structural checks and private push before resuming.
+Root-owned changes now include the product candidate, native tests, Rust probe,
+Python harness/oracle, build profile and owning contracts/evidence. Build and
+connected qualification are NOT_RUN. Preserve the current branch/worktrees and
+verify the next exact source before running either laboratory.
 
 Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
 request/epoch assumptions. Inspect and connect those consumers before claiming

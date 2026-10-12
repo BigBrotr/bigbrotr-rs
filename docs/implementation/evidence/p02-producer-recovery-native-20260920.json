@@ -5103,7 +5103,22 @@
         "Old retirement reads finish with read-only COMMIT; transport failure retains CommitUnknown semantics. New loader/completion use confirmed ROLLBACK."
       ],
       "read_boundary": "Independent design review read complete current initial_history, initial_succession, migration0030, ingest_history/registry, PG producer_closing/retirement/source_closure/control_owner and native initial_handoff/source_closure/producer_recovery/producer_closing/store, owning references and readiness. Only called portions of bootstrap, request_inputs and initialization were reread at this design stage; implementation must complete its affected boundaries.",
-      "qualification": "NOT_RUN. Independent native fixtures and a separate-process connected probe are being written in separate worktrees. Original gap will be produced by actual preparation followed by native-authority refusal and process exit, never by forged partial native state."
+      "qualification": "NOT_RUN. Candidate product, independent native fixtures, finite Rust probe and connected Python harness/oracle are integrated. Source review is ongoing; exact isolated build is the next action, followed by real separate-process qualification.",
+      "tests_commit": "35e6bf561709d6f368a783a0613a0fe2b36a3a2c",
+      "probe_commit": "31f6caad007b4774a524d68f9176fde7ad9fe84a",
+      "native_fixture_scope": "Two new tests: fresh positive rereading after close/reopen, literal exact four-write completion and unchanged completed replay; target input sidecar before proof, after proof and on replay. Existing reconstruction selection now nine tests. No executed RED claim.",
+      "connected_cases": [
+        "gap-normal",
+        "gap-missing-intent",
+        "gap-corrupt-intent",
+        "gap-target-input",
+        "gap-missing-input",
+        "gap-missing-outcome",
+        "gap-cancelled"
+      ],
+      "root_read_boundary": "Complete previous and changed initial_history/initial_succession/initial_handoff, new initial_gap and native gap tests, full succession/history probes and owning registration/manifest references; complete new Python harness/oracle and shared succession/history oracles, bindings dispatch owner and build runners. Native owner/callers also independently read by scoped agents. No full installed Archive/Sync consumer audit or arbitrary alternate bindings-mode dependency review in this slice.",
+      "reused_oracle_regression": "Independent read-only replay of all seven actual e92 captures: 67 full snapshots and 90 perturbations still pass after sharing the retained expected-byte helper and adding explicit active-predecessor exclusion support. No engine rerun.",
+      "product_commit": "96df1e27b57932b0a22099cdb9fab897fa8e45bc"
     }
   }
 }

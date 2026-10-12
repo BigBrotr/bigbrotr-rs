@@ -39691,24 +39691,28 @@
         "branch": "qualification/initial-gap-completion",
         "owner": "cleanup_review",
         "scope": "PG/native product adapters only",
-        "state": "assigned; verify actual Git before integration"
+        "state": "clean, product source committed and integrated",
+        "commit": "96df1e27b57932b0a22099cdb9fab897fa8e45bc"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/initial-gap-fixtures-20261012",
         "branch": "qualification/initial-gap-fixtures",
         "owner": "recovery_review",
         "scope": "Independent native fixtures only",
-        "state": "assigned; verify actual Git before integration"
+        "state": "clean, tests committed; independent Python review active",
+        "commit": "35e6bf561709d6f368a783a0613a0fe2b36a3a2c"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/initial-gap-probe-20261012",
         "branch": "qualification/initial-gap-probe",
         "owner": "successor_restart_design",
         "scope": "Finite Rust probe and dispatch only",
-        "state": "assigned; verify actual Git before integration"
+        "state": "clean, probe committed; independent product review active",
+        "commit": "31f6caad007b4774a524d68f9176fde7ad9fe84a"
       }
     ],
-    "resources": "No build or engine allocation. Previous worktrees/branches and all original labs are preserved. Root owns connected Python fixture and documentation in canonical.",
-    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json / initial_successor_preparation_20261012.next_gap_completion_slice"
+    "resources": "No build or engine allocation yet. Next root allocation is isolated ingest-history build of the integrated commit, followed by a separate exact-source process fixture. Labels/containers/data are recorded by the existing runners; retain every outcome. Previous worktrees/branches and original labs are preserved.",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json / initial_successor_preparation_20261012.next_gap_completion_slice",
+    "free_bytes_before_build": 71020220416
   }
 }

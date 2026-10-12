@@ -257,7 +257,7 @@ def prepared(before, after, plan, control):
 def verify(events, original, native, inputs, mode):
     """Verify every ordered snapshot and return finite evidence, never authority."""
     commit_fault = mode in ('successor-commit-before', 'successor-commit-after')
-    assert commit_fault or mode in ('successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback')
+    assert commit_fault or mode in ('successor-normal', 'successor-gap', 'successor-gap-only', 'successor-old-schema', 'successor-rollback')
     plans = [e for e in events if e['event'] == 'successor-plan']
     observed_plan, = plans
     plan, old_rows, new_rows = expected(original, native, inputs, observed_plan['created_at_us'])
@@ -387,6 +387,8 @@ def verify(events, original, native, inputs, mode):
         end('first', True)
         acquire('fresh', 2)
         attempt('fresh-control-retry')
+    elif mode == 'successor-gap-only':
+        attempt('prepared-native-old', new_intent=True, error='Control(InvalidPolicy)', validations=3)
     elif mode == 'successor-gap':
         attempt('prepared-native-old', new_intent=True, error='Control(InvalidPolicy)', validations=3)
         end('gap', False)
@@ -467,7 +469,7 @@ def negative_controls(events, original, native, inputs, mode):
     check('native-sequence', lambda e: final(e)['state'].update(sequence=final(e)['state']['sequence'] + 1))
     check('missing-snapshot', lambda e: e.pop(next(i for i, v in enumerate(e) if v['event'] == 'successor-state')))
     check('product-plan-encoding', lambda e: only(e, event='successor-plan').update(target_manifest='00' * 266))
-    if mode in ('successor-normal', 'successor-gap', 'successor-commit-before', 'successor-commit-after'):
+    if mode in ('successor-normal', 'successor-gap', 'successor-gap-only', 'successor-commit-before', 'successor-commit-after'):
         check('intent-attribution', lambda e: sql(e, lambda pg: pg['initial_ingest_successions'][0].update(prepared_by_epoch=3), all_prepared=True))
         check('intent-xmin-rewrite', lambda e: sql(e, lambda pg: pg['initial_ingest_successions'][0].update(xmin='999999999')))
         check('old-topology-rewrite', lambda e: sql(e, lambda pg: only(pg['topology_streams'], topology_generation=0).update(handoff_last_complete_sequence=12), all_prepared=True))

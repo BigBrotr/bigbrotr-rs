@@ -9,7 +9,8 @@ use crate::{
     },
     storage::rocks::store::{
         AdmissionError, BootstrapError, HistoricalInitial, IngestRecovery, InitialHandoff,
-        ProducerRecoveryError, ResolvedProducerRequest, ResolvedSource, SourceResolution,
+        InitialHandoffRecord, ProducerRecoveryError, ResolvedProducerRequest, ResolvedSource,
+        SourceResolution,
     },
 };
 use bigbrotr_model::PolicyEpoch;
@@ -55,8 +56,9 @@ impl<'a> PreparedInitialHistory<'a> {
     }
 }
 
-struct Intent {
-    handoff: Vec<u8>,
+pub(super) struct Intent {
+    pub(super) handoff: Vec<u8>,
+    pub(super) record: InitialHandoffRecord,
     role: [u8; 16],
     created_at_us: i64,
     lease_expires_at_us: i64,
@@ -69,8 +71,9 @@ struct Intent {
 
 impl ControlSession {
     /// Inspect an already completed native preparation in a new actual owner.
-    /// Missing intent, native epoch1 and inconsistent state refuse. Completion
-    /// of a PG/native gap and retirement of the empty attempt are separate work.
+    /// Missing intent, native epoch1 and inconsistent state refuse. The separate
+    /// gap adapter handles a pending epoch1 transition; neither path activates
+    /// a writer or retires the empty attempted incarnation.
     pub async fn inspect_prepared_initial_history<'a>(
         &mut self,
         recovery: &'a IngestRecovery,
@@ -88,7 +91,7 @@ impl ControlSession {
         let instance = *self.request.instance.as_bytes();
         let current = self.identity;
         let (tx, mut lease, epoch) = self
-            .begin_initial_history(recovery, &input, validate)
+            .begin_initial_history(recovery, &input, 2, validate)
             .await?;
         let intent = read_intent(&tx, recovery).await?;
         let native = recovery
@@ -104,7 +107,7 @@ impl ControlSession {
             intent,
             _permit: permit,
         };
-        require_history(&tx, &history, current).await?;
+        require_intent(&tx, &history.registration, &history.intent, current, epoch).await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);
@@ -137,9 +140,9 @@ impl ControlSession {
             cancelled: input.cancelled,
         };
         let (tx, mut lease, epoch) = self
-            .begin_initial_history(history.native.recovery(), &request, validate)
+            .begin_initial_history(history.native.recovery(), &request, 2, validate)
             .await?;
-        require_history(&tx, history, current)
+        require_intent(&tx, &history.registration, &history.intent, current, epoch)
             .await
             .map_err(history_resolve_error)?;
         let reservation =
@@ -189,10 +192,11 @@ impl ControlSession {
         Ok(resolved)
     }
 
-    async fn begin_initial_history<'a, E>(
+    pub(super) async fn begin_initial_history<'a, E>(
         &'a mut self,
         recovery: &IngestRecovery,
         input: &InitialHistoryRequest<'_>,
+        owner_epoch: u64,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
         let identity = recovery.manifest().identity();
@@ -201,8 +205,11 @@ impl ControlSession {
         }
         if !recovery.matches_configured_root(input.ingest_root)
             || identity.dataset_id != self.request.dataset
-            || identity.owner_epoch.get() != 2
-            || recovery.manifest().key_schema() != 2
+            || identity.owner_epoch.get() != owner_epoch
+            || !matches!(
+                (owner_epoch, recovery.manifest().key_schema()),
+                (1, 1) | (2, 2)
+            )
         {
             return Err(OwnerError::InvalidInput.into());
         }
@@ -258,7 +265,7 @@ impl ControlSession {
     }
 }
 
-async fn read_intent(
+pub(super) async fn read_intent(
     tx: &Transaction<'_>,
     recovery: &IngestRecovery,
 ) -> Result<Intent, InitialSuccessionError> {
@@ -287,6 +294,7 @@ async fn read_intent(
     };
     let intent = Intent {
         handoff: handoff.to_vec(),
+        record: InitialHandoffRecord::decode(handoff).map_err(InitialSuccessionError::Native)?,
         role: nonzero(1)?,
         created_at_us: row.try_get(2).map_err(backend)?,
         lease_expires_at_us: row.try_get(3).map_err(backend)?,
@@ -310,25 +318,31 @@ async fn read_intent(
     Ok(intent)
 }
 
-async fn require_history(
+/// The same exact immutable attribution is required before reading completed
+/// history or dispatching an existing pending preparation. No current head is
+/// substituted for the target's original policy, times or preparing Control.
+pub(super) async fn require_intent(
     tx: &Transaction<'_>,
-    history: &PreparedInitialHistory<'_>,
+    s: &ingest_registry::InitialRegistration,
+    i: &Intent,
     current: ingest_registry::ControlOwner,
+    current_epoch: PolicyEpoch,
 ) -> Result<(), InitialSuccessionError> {
-    let h = &history.native;
-    let s = &history.registration;
-    let i = &history.intent;
+    let h = &i.record;
+    if current_epoch.get() < i.policy.policy_revision {
+        return Err(OwnerError::InvalidPolicy.into());
+    }
     if s.producer_slot_id != h.producer_slot_id()
-        || i.policy.policy_revision != h.target_manifest().identity().policy_epoch.get()
+        || i.policy.policy_revision != h.next_manifest().identity().policy_epoch.get()
     {
         return Err(OwnerError::InvalidMetadata.into());
     }
     ingest_registry::require_retirement_registration(tx, s)
         .await
         .map_err(InitialSuccessionError::Registry)?;
-    let old = h.manifest().encode();
-    let target = h.target_manifest().encode();
-    let next = h.target_manifest().identity();
+    let old = h.previous_manifest().encode();
+    let target = h.next_manifest().encode();
+    let next = h.next_manifest().identity();
     let valid: bool = tx.query_one(
         "SELECT dataset_id=$2::bytea AND owner_role='ingest' AND target_epoch=2 AND producer_epoch=2
              AND target_incarnation=$3::bytea AND target_role_instance_id=$4::bytea
@@ -347,7 +361,7 @@ async fn require_history(
          FROM control.initial_ingest_successions WHERE owner_resource_id=$1::bytea FOR SHARE",
         &[&&s.ingest_resource_id.as_bytes()[..],&&s.dataset_id.as_bytes()[..],&&next.process_incarnation.as_bytes()[..],
           &&i.role[..],&&s.producer_slot_id.as_bytes()[..],&i64::from(s.shard_id),
-          &h.manifest().identity().topology_generation.get().to_string(),&next.topology_generation.get().to_string(),
+          &h.previous_manifest().identity().topology_generation.get().to_string(),&next.topology_generation.get().to_string(),
           &h.issued_through().to_string(),&h.last_complete_sequence().to_string(),&&h.closure_digest()[..],
           &old.as_bytes(),&target.as_bytes(),&&i.handoff[..],&i.policy.config_revision.to_string(),
           &i.policy.policy_revision.to_string(),&&i.policy.config_digest[..],&&i.policy.policy_digest[..],
@@ -393,7 +407,7 @@ async fn require_history(
     let expected: Vec<_> = (1_u16..=9)
         .filter_map(|n| {
             let kind = bigbrotr_model::DictionaryKind::try_from(n).expect("assigned bounded kind");
-            h.target_manifest()
+            h.next_manifest()
                 .allocation_namespaces()
                 .domain(kind)
                 .map(|domain| (kind, domain))
@@ -403,7 +417,7 @@ async fn require_history(
     Ok(())
 }
 
-fn check_delivery<E>(
+pub(super) fn check_delivery<E>(
     lease: &mut PolicyLeaseTracker,
     epoch: PolicyEpoch,
     cancelled: &AtomicBool,
@@ -414,7 +428,7 @@ fn check_delivery<E>(
         Ok(())
     }
 }
-async fn finish<E>(
+pub(super) async fn finish<E>(
     tx: Transaction<'_>,
     lease: &mut PolicyLeaseTracker,
     epoch: PolicyEpoch,

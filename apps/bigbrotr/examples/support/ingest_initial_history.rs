@@ -1,23 +1,43 @@
-//! Finite connected history reconstruction in a new process, never admission.
+//! Finite connected reconstruction in a new process, never admission.
 //! Only configuration and retained PostgreSQL/native state cross the boundary.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::{InitialHistoryRequest, ProducerResolveRequest},
+    postgres::control_owner::{
+        InitialHistoryRequest, PreparedInitialHistory, ProducerCloseRequest, ProducerResolveRequest,
+    },
     rocks::store::{
-        AdmissionLimits, AdmissionOutcome, IngestRecovery, ProducerRecoveryLimits,
-        RetainedRequestInput,
+        AdmissionLimits, AdmissionOutcome, IngestRecovery, InitialHandoff, ProducerRecoveryLimits,
+        ResolvedSource, RetainedRequestInput, SourceResolution,
     },
 };
 use bigbrotr_model::{
     DatasetId, ProducerEpoch, ProducerRequestId, RequestSequence,
     codec::{FactDecodeLimits, request::RequestDecodeLimits},
 };
-use std::{fmt::Debug, future::Future, path::PathBuf};
+use std::{fmt::Debug, future::Future, path::PathBuf, sync::atomic::Ordering};
 
 type Driver = tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>;
 const CONTROL_TTL: Duration = Duration::from_secs(20);
 
+#[derive(Clone, Copy)]
+enum Mode {
+    History,
+    Gap { cancel_before_completion: bool },
+}
+impl Mode {
+    fn name(self) -> &'static str {
+        match self {
+            Self::History => "history",
+            Self::Gap { .. } => "gap",
+        }
+    }
+    fn event(self, suffix: &str) -> String {
+        format!("successor-{}-{suffix}", self.name())
+    }
+}
+
 struct Probe {
+    mode: Mode,
     root: config::Resolved,
     path: PathBuf,
     budget: ResourceBudget,
@@ -113,6 +133,21 @@ pub fn corrupt(path: &Path, mutation: &str) {
 }
 
 pub async fn run(config: Config, config_file: &Path) {
+    run_mode(config, config_file, Mode::History).await;
+}
+
+pub async fn run_gap(config: Config, config_file: &Path, cancel_before_completion: bool) {
+    run_mode(
+        config,
+        config_file,
+        Mode::Gap {
+            cancel_before_completion,
+        },
+    )
+    .await;
+}
+
+async fn run_mode(config: Config, config_file: &Path, mode: Mode) {
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
     assert_eq!(config.get_dbname(), root.text("postgres.control.database"));
@@ -137,11 +172,12 @@ pub async fn run(config: Config, config_file: &Path) {
         .unwrap(),
     );
     let _metadata = grant(&budget, 16 * MIB, 0);
-    let recovery =
+    let mut recovery =
         IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
     let (observer, observer_driver) = bounded(config.connect(NoTls)).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
     let probe = Probe {
+        mode,
         root,
         path,
         budget,
@@ -156,10 +192,10 @@ pub async fn run(config: Config, config_file: &Path) {
     assert_ne!(role, [0; 16]);
     assert_ne!(incarnation, [0; 16]);
     emit(
-        serde_json::json!({"event":"successor-control","stage":"history","phase":"claim-planned",
+        serde_json::json!({"event":"successor-control","stage":mode.name(),"phase":"claim-planned",
         "role":hex(&role),"incarnation":hex(&incarnation),"lease_ttl_us":CONTROL_TTL.as_micros().to_string()}),
     );
-    probe.snapshot("history-before-claim").await;
+    probe.snapshot("before-claim").await;
     let (client, driver) = bounded(config.connect(NoTls)).await.unwrap();
     let driver = tokio::spawn(driver);
     let (mut owner, _) = bounded(ControlSession::acquire(
@@ -178,27 +214,36 @@ pub async fn run(config: Config, config_file: &Path) {
     .await
     .unwrap();
     emit(
-        serde_json::json!({"event":"successor-control","stage":"history","phase":"claimed",
+        serde_json::json!({"event":"successor-control","stage":mode.name(),"phase":"claimed",
         "resource":hex(owner.identity().resource_id.as_bytes()),"epoch":owner.identity().epoch.get(),
         "role":hex(&role),"incarnation":hex(&incarnation)}),
     );
-    probe.snapshot("history-after-claim").await;
-    probe.snapshot("history-before-read").await;
-    let result = probe.read(&mut owner, &recovery).await;
+    probe.snapshot("after-claim").await;
+    probe.snapshot("before-read").await;
+    let result = match mode {
+        Mode::History => probe.read(&mut owner, &recovery).await,
+        Mode::Gap {
+            cancel_before_completion,
+        } => {
+            probe
+                .complete_gap(&mut owner, &mut recovery, cancel_before_completion)
+                .await
+        }
+    };
     match &result {
-        Ok(()) => emit(serde_json::json!({"event":"successor-history-result",
+        Ok(()) => emit(serde_json::json!({"event":mode.event("result"),
             "stage":"complete","sequence":null,"error":null})),
-        Err(error) => emit(serde_json::json!({"event":"successor-history-result",
+        Err(error) => emit(serde_json::json!({"event":mode.event("result"),
             "stage":error.stage,"sequence":error.sequence,"error":error.error})),
     }
-    probe.snapshot("history-after-read").await;
+    probe.snapshot("after-read").await;
     // All borrowed historical witnesses have ended. Close/join native custody
     // before releasing the actual Control owner, matching the installed order.
     drop(recovery);
     probe.end_control(owner, driver, result.is_ok()).await;
-    probe.snapshot("history-final").await;
+    probe.snapshot("final").await;
     emit(
-        serde_json::json!({"event":"successor-history-complete","native":"closed",
+        serde_json::json!({"event":mode.event("complete"),"native":"closed",
         "control":if result.is_ok() {"released-and-joined"} else {"dropped-and-joined"},
         "admission":false,"success":result.is_ok()}),
     );
@@ -225,6 +270,7 @@ impl Probe {
         )
     }
     async fn snapshot(&self, stage: &str) {
+        let stage = format!("{}-{stage}", self.mode.name());
         let state = bounded(crate::ingest_snapshot::state(&self.observer, &self.path)).await;
         let (rows, sequence) = raw_state(&self.path);
         assert_eq!(state["sequence"].as_u64(), Some(sequence));
@@ -233,7 +279,7 @@ impl Probe {
         );
     }
     async fn end_control(&self, owner: ControlSession, driver: Driver, release: bool) {
-        self.snapshot("history-before-control-end").await;
+        self.snapshot("before-control-end").await;
         let identity = owner.identity();
         if release {
             bounded(owner.release()).await.unwrap();
@@ -244,11 +290,11 @@ impl Probe {
         }
         crate::ingest_closing::join(driver, false).await;
         emit(
-            serde_json::json!({"event":"successor-control","stage":"history",
+            serde_json::json!({"event":"successor-control","stage":self.mode.name(),
             "phase":if release {"released-and-joined"} else {"dropped-and-joined"},
             "resource":hex(identity.resource_id.as_bytes()),"epoch":identity.epoch.get()}),
         );
-        self.snapshot("history-after-control-end").await;
+        self.snapshot("after-control-end").await;
     }
     async fn read(
         &self,
@@ -268,39 +314,151 @@ impl Probe {
         .await
         .map_err(|error| Refusal::at("history-load", None, error))?;
         let spec = history.registration();
-        emit_registration(spec);
-        self.snapshot("history-loaded").await;
-        let mut source = history
+        emit_registration(spec, &self.mode.event("registration"));
+        self.snapshot("loaded").await;
+        let source = history
             .source_resolution(grant(&self.budget, 4096, 4096))
             .map_err(|error| Refusal::at("source-start", None, error))?;
-        let issued = history.issued_through();
+        let source = self
+            .resolve_originals(
+                owner,
+                recovery,
+                spec,
+                source,
+                history.issued_through(),
+                Some(&history),
+            )
+            .await?;
+        let handoff = history
+            .reconstruct_handoff(&source)
+            .map_err(|error| Refusal::at("reconstruct", None, error))?;
+        self.emit_proof(&source, &handoff);
+        self.snapshot("proof").await;
+        Ok(())
+    }
+    async fn complete_gap(
+        &self,
+        owner: &mut ControlSession,
+        recovery: &mut IngestRecovery,
+        cancel_before_completion: bool,
+    ) -> Result<(), Refusal> {
+        let gap = bounded(owner.inspect_prepared_initial_gap(
+            recovery,
+            InitialHistoryRequest {
+                ingest_root: &self.path,
+                policy_ttl: self.policy_ttl(),
+                cancelled: &self.cancelled,
+            },
+            grant(&self.budget, 128 * 1024, 0),
+            |document, digest| self.validate(document, digest),
+        ))
+        .await
+        .map_err(|error| Refusal::at("gap-load", None, error))?;
+        let spec = gap.registration();
+        emit_registration(spec, &self.mode.event("registration"));
+        self.snapshot("loaded").await;
+        let closing = bounded(owner.observe_initial_retirement(
+            recovery,
+            ProducerCloseRequest {
+                ingest_root: &self.path,
+                registration: spec,
+                policy_ttl: self.policy_ttl(),
+                cancelled: &self.cancelled,
+            },
+            grant(&self.budget, 4096, 4096),
+            |document, digest| self.validate(document, digest),
+        ))
+        .await
+        .map_err(|error| Refusal::at("source-start", None, error))?;
+        let source = closing
+            .source_resolution(recovery)
+            .map_err(|error| Refusal::at("source-start", None, error))?;
+        self.snapshot("source-started").await;
+        let source = self
+            .resolve_originals(owner, recovery, spec, source, gap.issued_through(), None)
+            .await?;
+        let plan = gap
+            .reconstruct_handoff(&source)
+            .map_err(|error| Refusal::at("reconstruct", None, error))?;
+        self.emit_proof(&source, plan.handoff());
+        // Only the owned, positively reconstructed plan crosses dispatch. Its
+        // metadata grant and actual root/sequence guard survive this borrow.
+        drop(source);
+        self.snapshot("proof").await;
+        if cancel_before_completion {
+            self.cancelled.store(true, Ordering::Relaxed);
+            emit(serde_json::json!({"event":self.mode.event("cancellation"),"cancelled":true}));
+        }
+        self.snapshot("before-completion").await;
+        let completion = bounded(owner.complete_prepared_initial_gap(
+            recovery,
+            &plan,
+            InitialHistoryRequest {
+                ingest_root: &self.path,
+                policy_ttl: self.policy_ttl(),
+                cancelled: &self.cancelled,
+            },
+            grant(&self.budget, 8192, 8192),
+            |document, digest| self.validate(document, digest),
+        ))
+        .await;
+        if let Ok(observed) = &completion {
+            emit(serde_json::json!({"event":self.mode.event("completion"),
+                "handoff":hex(observed.handoff().encode().as_bytes()),"admission":false}));
+        }
+        // Capture both returned success and returned refusal. A timeout above
+        // remains an unknown process outcome with its partial evidence retained.
+        self.snapshot("after-completion").await;
+        completion.map_err(|error| Refusal::at("completion", None, error))?;
+        Ok(())
+    }
+    async fn resolve_originals<'a>(
+        &self,
+        owner: &mut ControlSession,
+        recovery: &'a IngestRecovery,
+        spec: &InitialRegistration,
+        mut source: SourceResolution<'a>,
+        issued: u64,
+        history: Option<&PreparedInitialHistory<'a>>,
+    ) -> Result<ResolvedSource<'a>, Refusal> {
         assert!(issued <= 64);
         for sequence in 1..=issued {
             bounded(owner.refresh(|document, digest| self.validate(document, digest)))
                 .await
                 .map_err(|error| Refusal::at("policy-refresh", Some(sequence), error))?;
-            self.snapshot(&format!("history-refreshed-{sequence}"))
-                .await;
+            self.snapshot(&format!("refreshed-{sequence}")).await;
             let (input, outcome) = self.replay_grants();
-            let resolved = bounded(owner.inspect_prepared_initial_request(
-                &history,
-                ProducerResolveRequest {
-                    ingest_root: &self.path,
-                    registration: spec,
-                    request: ProducerRequestId {
-                        producer_slot_id: spec.producer_slot_id,
-                        producer_epoch: ProducerEpoch::new(1).unwrap(),
-                        request_sequence: RequestSequence::new(sequence).unwrap(),
-                    },
-                    limits: recovery_limits(),
-                    policy_ttl: self.policy_ttl(),
-                    cancelled: &self.cancelled,
+            let request = ProducerResolveRequest {
+                ingest_root: &self.path,
+                registration: spec,
+                request: ProducerRequestId {
+                    producer_slot_id: spec.producer_slot_id,
+                    producer_epoch: ProducerEpoch::new(1).unwrap(),
+                    request_sequence: RequestSequence::new(sequence).unwrap(),
                 },
-                input,
-                outcome,
-                |document, digest| self.validate(document, digest),
-            ))
-            .await
+                limits: recovery_limits(),
+                policy_ttl: self.policy_ttl(),
+                cancelled: &self.cancelled,
+            };
+            let resolved = if let Some(history) = history {
+                bounded(owner.inspect_prepared_initial_request(
+                    history,
+                    request,
+                    input,
+                    outcome,
+                    |document, digest| self.validate(document, digest),
+                ))
+                .await
+            } else {
+                bounded(owner.inspect_initial_retirement_request(
+                    recovery,
+                    request,
+                    input,
+                    outcome,
+                    |document, digest| self.validate(document, digest),
+                ))
+                .await
+            }
             .map_err(|error| Refusal::at("request", Some(sequence), error))?;
             let (outcome, receipt, rejection) = match resolved.outcome() {
                 AdmissionOutcome::Durable(receipt) => (
@@ -316,29 +474,26 @@ impl Probe {
                 .record(&resolved)
                 .map_err(|error| Refusal::at("source-record", Some(sequence), error))?;
             emit(
-                serde_json::json!({"event":"successor-history-request","sequence":sequence,
+                serde_json::json!({"event":self.mode.event("request"),"sequence":sequence,
                 "outcome":outcome,"receipt":receipt,"rejection":rejection}),
             );
             drop(resolved);
-            self.snapshot(&format!("history-resolved-{sequence}")).await;
+            self.snapshot(&format!("resolved-{sequence}")).await;
         }
-        let source = source
+        source
             .finish()
-            .map_err(|error| Refusal::at("source-finish", None, error))?;
-        let handoff = history
-            .reconstruct_handoff(&source)
-            .map_err(|error| Refusal::at("reconstruct", None, error))?;
-        emit(serde_json::json!({"event":"successor-history-proof",
+            .map_err(|error| Refusal::at("source-finish", None, error))
+    }
+    fn emit_proof(&self, source: &ResolvedSource<'_>, handoff: &InitialHandoff) {
+        emit(serde_json::json!({"event":self.mode.event("proof"),
             "issued_through":source.resolved_requests(),"last_complete_sequence":source.last_complete_sequence(),
             "closure_digest":hex(&source.digest()),"previous_manifest":hex(handoff.previous_manifest().encode().as_bytes()),
             "target_manifest":hex(handoff.next_manifest().encode().as_bytes()),"handoff":hex(handoff.encode().as_bytes())}));
-        self.snapshot("history-proof").await;
-        Ok(())
     }
 }
 
-fn emit_registration(s: &InitialRegistration) {
-    emit(serde_json::json!({"event":"successor-history-registration",
+fn emit_registration(s: &InitialRegistration, event: &str) {
+    emit(serde_json::json!({"event":event,
         "dataset_id":hex(s.dataset_id.as_bytes()),"instance_id":hex(&s.instance_id),
         "control_resource":hex(s.control.resource_id.as_bytes()),"control_epoch":s.control.epoch.get(),
         "control_role_instance":hex(&s.control.role_instance_id),"control_incarnation":hex(s.control.process_incarnation.as_bytes()),

@@ -155,8 +155,7 @@ it cannot invent a new attempted incarnation over the old intent. The original
 retired producer and native detail remain untouched. Migration0030 refuses
 preexisting unrecognized successor history and vetoes successor request/input
 binding INSERTs, even when their producer lacks an intent. This preparation call
-does not reconstruct a lost plan. The read-only adapter below observes a completed
-preparation; activation, writer conversion and abandoned-empty-attempt retirement
+does not reconstruct a lost plan. The adapters below inspect completed preparation or complete an existing gap; activation, writer conversion and abandoned-empty-attempt retirement
 remain required work. An OPEN scheduling row or completed native batch grants none
 of that authority.
 
@@ -230,3 +229,41 @@ The preparing process had already finished; this wave does not inject concurrent
 live-owner loss or interruption during preparation. Completing a PG/native gap,
 retiring an empty attempt, activating a writer, installed restart/resend and
 repeated lifetimes remain separate requirements in the existing plan.
+
+
+## Completion of an existing initial gap
+
+`ControlSession::inspect_prepared_initial_gap` handles the complementary state:
+PostgreSQL has an exact committed preparation, while the excluded native store
+still has its original epoch1 manifest. The loader uses the same bounded intent,
+attribution and prepared-target checks as completed-history inspection. It also
+requires absent native transition/target markers, empty target namespaces and
+absent target input files. Missing or mixed state refuses without initialization.
+
+`PreparedInitialGap` retains the actual native borrow and metadata reservation.
+Ordinary initial-retirement reads reconstruct every original input, native effect
+and existing PostgreSQL copy. Consuming that metadata together with the complete
+positive source witness produces an owned `InitialGapPlan` only if all encoded
+handoff bytes agree. The caller ends the source borrow before mutable dispatch;
+the plan retains its exact native directory/sequence guards and metadata grant.
+
+`complete_prepared_initial_gap` checks the same existing intent under fresh actual
+Control, accepted current policy and retained row custody, then applies the four
+native writes and confirms a read-only PostgreSQL rollback. It cannot insert a
+missing intent or rewrite the original target incarnation, timestamps, policy or
+preparing Control. Current policy may have advanced; it must be at least the
+retained target policy and pass current validation. No preparation COMMIT is
+needed because the intent must already be durable.
+
+Cancellation before dispatch leaves native unchanged. Failure during or after
+dispatch can leave the batch durable; retain and join actual worker/driver custody
+and inspect state under fresh authority. Same-process exact plan replay may
+observe completed native2 without another write. A replacement process observing
+native2 uses the separate completed-history reader. Neither path activates a writer
+or retires the empty attempted owner.
+
+These additions are an unqualified implementation candidate until the exact
+native build and separate-process engine wave in the
+[recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+finish. The installed recovery command, advanced-policy practical case, native
+syscall ambiguity and general subsequent lifetimes remain separate requirements.

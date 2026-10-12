@@ -23,13 +23,15 @@ const MAX_HANDOFF_BYTES: usize = 78 + 2 * MAX_MANIFEST_BYTES;
 /// data, not authority. No external decoder can fabricate its native witness.
 #[derive(Clone, Debug)]
 pub struct InitialHandoff {
-    record: HandoffRecord,
+    record: InitialHandoffRecord,
     native_sequence: u64,
     native_root: (u64, u64),
 }
 
+/// Bounded portable metadata only. Its decoder cannot create a positive local
+/// witness or authorize application; that still requires every original input.
 #[derive(Clone, Copy, Debug)]
-struct HandoffRecord {
+pub(in crate::storage) struct InitialHandoffRecord {
     previous: IngestManifest,
     next: IngestManifest,
     slot: ProducerSlotId,
@@ -49,7 +51,7 @@ impl InitialHandoff {
         }
         validate_transition(previous, next, source.producer().producer_epoch())?;
         Ok(Self {
-            record: HandoffRecord {
+            record: InitialHandoffRecord {
                 previous,
                 next,
                 slot: source.producer().producer_slot_id(),
@@ -132,8 +134,8 @@ fn validate_transition(
     Ok(())
 }
 
-impl HandoffRecord {
-    fn decode(bytes: &[u8]) -> Result<Self, BootstrapError> {
+impl InitialHandoffRecord {
+    pub(in crate::storage) fn decode(bytes: &[u8]) -> Result<Self, BootstrapError> {
         if !(78 + 2 * 104..=MAX_HANDOFF_BYTES).contains(&bytes.len()) {
             return Err(BootstrapError::StateMismatch);
         }
@@ -180,6 +182,24 @@ impl HandoffRecord {
             source_through,
             closure_digest,
         })
+    }
+    pub(in crate::storage) fn previous_manifest(&self) -> &IngestManifest {
+        &self.previous
+    }
+    pub(in crate::storage) fn next_manifest(&self) -> &IngestManifest {
+        &self.next
+    }
+    pub(in crate::storage) fn producer_slot_id(&self) -> ProducerSlotId {
+        self.slot
+    }
+    pub(in crate::storage) fn issued_through(&self) -> u64 {
+        self.issued
+    }
+    pub(in crate::storage) fn last_complete_sequence(&self) -> u64 {
+        self.source_through
+    }
+    pub(in crate::storage) fn closure_digest(&self) -> [u8; 32] {
+        self.closure_digest
     }
     fn key(&self) -> IngestKey {
         let id = self.previous.identity();
@@ -230,7 +250,7 @@ impl HandoffRecord {
 #[derive(Clone, Copy)]
 pub(in crate::storage) struct HistoricalInitial<'a> {
     recovery: &'a IngestRecovery,
-    record: HandoffRecord,
+    record: InitialHandoffRecord,
     sequence: u64,
     root: (u64, u64),
 }
@@ -242,7 +262,7 @@ impl IngestRecovery {
     ) -> Result<HistoricalInitial<'_>, BootstrapError> {
         let view = HistoricalInitial {
             recovery: self,
-            record: HandoffRecord::decode(handoff)?,
+            record: InitialHandoffRecord::decode(handoff)?,
             sequence: self.store.db.latest_sequence_number(),
             root: self.store.handoff_root_identity()?,
         };
@@ -352,8 +372,8 @@ impl<'a> HistoricalInitial<'a> {
             || source.producer().producer_slot_id() != self.record.slot
             || source.producer().producer_epoch() != self.record.epoch
             || source.resolved_requests() != self.record.issued
-            || source.last_complete_sequence() != self.record.source_through
-            || source.digest() != self.record.closure_digest
+            || source.last_complete_sequence() != self.last_complete_sequence()
+            || source.digest() != self.closure_digest()
             || !source.matches_historical(self)
         {
             return Err(BootstrapError::StateMismatch);
@@ -388,25 +408,7 @@ impl<'a> HistoricalInitial<'a> {
         {
             return Err(BootstrapError::StateMismatch);
         }
-        store.handoff_value(
-            IngestKey::Manifest,
-            Some(self.record.next.encode().as_bytes()),
-        )?;
-        store.handoff_value(self.record.key(), Some(self.record.encode().as_bytes()))?;
-        store.handoff_value(
-            self.record.source_key(),
-            Some(&[1, 2, 0, 0, 0, 0, 0, 0, 0, 0]),
-        )?;
-        let mut producer = [0; 26];
-        producer[..2].copy_from_slice(&[1, 49]);
-        store.handoff_value(self.record.producer_key(), Some(&producer))?;
-        store.require_empty_handoff_target(&self.record)?;
-        store
-            .require_no_epoch_inputs(
-                self.record.slot,
-                ProducerEpoch::new(2).expect("initial successor"),
-            )
-            .map_err(BootstrapError::RequestInput)
+        store.require_handoff_state(&self.record, true)
     }
 }
 
@@ -479,7 +481,7 @@ impl IngestRecovery {
             _permit: permit,
         })
     }
-    /// Read-only preflight before PostgreSQL prepares persistent metadata.
+    /// Read-only local preflight before coordination or native handoff dispatch.
     pub(in crate::storage) fn validate_initial_handoff(
         &self,
         handoff: &InitialHandoff,
@@ -502,33 +504,54 @@ impl IngestRecovery {
         {
             return Err(BootstrapError::StateMismatch);
         }
+        self.store.require_handoff_state(&handoff.record, completed)
+    }
+
+    /// Portable intent metadata may inspect the old state but cannot dispatch
+    /// its transition. Application still requires a complete positive proof.
+    pub(in crate::storage) fn validate_pending_initial_handoff(
+        &self,
+        record: &InitialHandoffRecord,
+    ) -> Result<(), BootstrapError> {
+        if self.store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if self.manifest() != record.previous_manifest() {
+            return Err(BootstrapError::StateMismatch);
+        }
+        self.store.require_handoff_state(record, false)
+    }
+}
+impl IngestStore {
+    fn require_handoff_state(
+        &self,
+        record: &InitialHandoffRecord,
+        completed: bool,
+    ) -> Result<(), BootstrapError> {
         let manifest = if completed {
-            handoff.record.next
+            record.next
         } else {
-            handoff.record.previous
+            record.previous
         };
-        self.store
-            .handoff_value(IngestKey::Manifest, Some(manifest.encode().as_bytes()))?;
-        let encoded = handoff.encode();
+        self.handoff_value(IngestKey::Manifest, Some(manifest.encode().as_bytes()))?;
+        let encoded = record.encode();
         let source_zero = [1, 2, 0, 0, 0, 0, 0, 0, 0, 0];
         let mut producer_zero = [0; 26];
         producer_zero[..2].copy_from_slice(&[1, 49]);
         for (key, bytes) in [
-            (handoff.record.key(), encoded.as_bytes()),
-            (handoff.record.source_key(), &source_zero),
-            (handoff.record.producer_key(), &producer_zero),
+            (record.key(), encoded.as_bytes()),
+            (record.source_key(), &source_zero),
+            (record.producer_key(), &producer_zero),
         ] {
-            self.store
-                .handoff_value(key, if completed { Some(bytes) } else { None })?;
+            self.handoff_value(key, if completed { Some(bytes) } else { None })?;
         }
-        // The sequence guard preserves the entire prior positive proof, not
-        // merely its last receipt. Validate the explicit empty target domains
-        // separately: they were not part of the initial source closure census.
-        self.store.require_empty_handoff_target(&handoff.record)?;
-        Ok(())
+        self.require_empty_handoff_target(record)?;
+        self.require_no_epoch_inputs(
+            record.slot,
+            ProducerEpoch::new(2).expect("initial successor"),
+        )
+        .map_err(BootstrapError::RequestInput)
     }
-}
-impl IngestStore {
     pub(super) fn handoff_root_identity(&self) -> Result<(u64, u64), BootstrapError> {
         let metadata =
             std::fs::metadata(&self._reservation.path.0).map_err(|_| BootstrapError::EngineRead)?;
@@ -564,7 +587,10 @@ impl IngestStore {
         }
         Ok(())
     }
-    fn require_empty_handoff_target(&self, handoff: &HandoffRecord) -> Result<(), BootstrapError> {
+    fn require_empty_handoff_target(
+        &self,
+        handoff: &InitialHandoffRecord,
+    ) -> Result<(), BootstrapError> {
         let id = handoff.next.identity();
         let first = SourceRecordId {
             dataset_id: id.dataset_id,

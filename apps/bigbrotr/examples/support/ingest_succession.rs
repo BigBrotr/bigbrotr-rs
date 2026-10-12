@@ -72,6 +72,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
         mode,
         "successor-normal"
             | "successor-gap"
+            | "successor-gap-only"
             | "successor-old-schema"
             | "successor-rollback"
             | "successor-commit-before"
@@ -221,7 +222,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
                 .unwrap();
             probe.snapshot("fresh-control-retry").await;
         }
-        "successor-gap" => {
+        "successor-gap" | "successor-gap-only" => {
             let error = probe
                 .prepare(
                     &mut owner,
@@ -240,6 +241,19 @@ pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Opt
             );
             probe.check_poisoned(&mut owner).await;
             probe.snapshot("prepared-native-old").await;
+            if mode == "successor-gap-only" {
+                // End this real preparation process with the confirmed SQL
+                // intent and old native store. A later process receives only
+                // their durable state, never this retained local plan.
+                drop(recovery);
+                probe.end_control("final", owner, driver, false).await;
+                probe.snapshot("final").await;
+                emit(serde_json::json!({"event":"successor-complete","mode":mode,
+                    "native":"closed","control":"dropped-and-joined","admission":false}));
+                drop(probe);
+                crate::ingest_closing::join(observer_driver, false).await;
+                return;
+            }
             probe.end_control("gap", owner, driver, false).await;
             (owner, driver) = probe.acquire("conflict", &spec, 2).await;
             let error = probe

@@ -43,6 +43,12 @@ def seed_expected(seed):
     assert digest(encoded({k: sorted(v, key=encoded) for k, v in pg.items()})) == SEED_CONTROL
     assert digest(encoded(native)) == SEED_NATIVE
     assert digest(encoded(inputs)) == SEED_INPUTS
+    return retained_expected(pg, native, inputs)
+
+
+def retained_expected(pg, native, inputs):
+    """Independent bytes for a separately verified complete prepared state."""
+    assert len(pg) == 71 and len(native['rows']) == 52 and len(inputs) == 4
     intent = only(pg['initial_ingest_successions'])
     old = binary(intent['previous_manifest'])
     ds, resource, slot = (binary(intent[k]) for k in
@@ -160,11 +166,11 @@ def inside_window(value, server_window):
         'Control time outside observed server-clock window'
 
 
-def claim(before, after, planned, server_window):
+def claim(before, after, planned, server_window, *, exclude_previous=False):
     """Exactly one fresh Control, preserving the finished preparing process."""
     previous = max((r for r in before['owner_epochs'] if r['role'] == 'control'),
         key=lambda r: r['epoch'])
-    assert previous['state'] == 'released'
+    assert previous['state'] == ('active' if exclude_previous else 'released')
     current = only(after['owner_epochs'], role='control', epoch=previous['epoch'] + 1)
     role, incarnation = '\\x' + planned['role'], '\\x' + planned['incarnation']
     for value in (planned['role'], planned['incarnation']):
@@ -176,10 +182,26 @@ def claim(before, after, planned, server_window):
     inside_window(current['acquired_at_us'], server_window)
     assert isinstance(current['control_backend_pid'], int) and current['control_backend_pid'] > 0
     assert isinstance(current['control_backend_start'], str) and current['control_backend_start']
-    assert previous['released_at_us'] <= actual_role['created_at_us'] <= current['acquired_at_us']
+    assert actual_role['created_at_us'] <= current['acquired_at_us']
+    if not exclude_previous:
+        assert previous['released_at_us'] <= actual_role['created_at_us']
     tx = current['xmin']
     assert tx.isdecimal() and all(tx != r['xmin'] for table in before.values() for r in table)
     wanted = copy.deepcopy(before)
+    if exclude_previous:
+        from initial_succession_oracle import exclusion
+        released = only(after['owner_epochs'], resource_id=previous['resource_id'], epoch=previous['epoch'])
+        old_role = only(before['role_instances'], role_instance_id=previous['role_instance_id'])
+        retired = only(after['role_instances'], role_instance_id=previous['role_instance_id'])
+        assert previous['released_at_us'] is None and old_role['retired_at_us'] is None
+        inside_window(released['released_at_us'], server_window)
+        inside_window(retired['retired_at_us'], server_window)
+        assert previous['acquired_at_us'] <= released['released_at_us'] <= retired['retired_at_us'] <= actual_role['created_at_us']
+        wanted['owner_epochs'][wanted['owner_epochs'].index(previous)] = dict(previous,
+            state='released', released_at_us=released['released_at_us'], exclusion_method='storage_fenced',
+            exclusion_digest=exclusion(previous, current['process_incarnation']), xmin=tx)
+        wanted['role_instances'][wanted['role_instances'].index(old_role)] = dict(old_role,
+            retired_at_us=retired['retired_at_us'], xmin=tx)
     wanted['owner_epochs'].append(dict(previous, epoch=previous['epoch'] + 1,
         role_instance_id=role, process_incarnation=incarnation, state='active',
         acquired_at_us=current['acquired_at_us'], lease_expires_at_us=current['acquired_at_us'] + 20_000_000,
