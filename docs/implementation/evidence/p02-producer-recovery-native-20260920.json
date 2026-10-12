@@ -3028,6 +3028,33 @@
           }
         }
       ]
+    },
+    "authority_and_ingest_locks_fixture_20261012": {
+      "status": "PREPARED_NOT_RUN",
+      "entrypoint": "experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement-locks BUILD",
+      "product_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "expected_cases": 4,
+      "scenarios": [
+        "Five-second current policy authority expires during an observed 5.5s fixture SQL execution delay after producer UPDATE; eight-second operation timeout and twenty-second Control lease distinguish expiry from other deadlines",
+        "Same-root fresh-Control retry after natural lease expiry, removing only the fixture delay trigger",
+        "Original Ingest draining writer first, observed current retirement Ingest FOR UPDATE blocked after historical lookup",
+        "Retirement COMMIT first, observed draining writer blocked then refusing23514 against released immutable history"
+      ],
+      "oracle": "All70 tables, original native49rows/four input bytes; complete terminal output; independent writer RETURNING row permits only active-to-draining and xmin",
+      "review": "Independent read-only AI review corrected an invalid250ms-root/accepted5s-policy setup before any engine run; existing accepted documents stay unchanged. No blocking remaining fixture finding.",
+      "local_checks": [
+        "Four Python modules parse",
+        "Actual prior successful retirement response equals extracted literal expected_output",
+        "Draining literal positive preserves every unrelated row; five unrelated mutations rejected"
+      ],
+      "not_run": [
+        "Actual four-case engine wave",
+        "Control UTC expiry",
+        "Dataset/job and standalone source/producer-row contention",
+        "Zero-issued producer and zero-request import obligations",
+        "Successor and remaining M1",
+        "Capacity/crash/ENOSPC/native blocking/arm64/release"
+      ]
     }
   }
 }

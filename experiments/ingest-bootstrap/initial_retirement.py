@@ -81,7 +81,18 @@ def assert_retired(before, after, digest, *, committed, released, reclaims_contr
             closure_digest='\\x' + digest, xmin=new['xmin'])
 
 
-def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, faults=False):
+def expected_output(initialized, domains, digest):
+    return dict(format='bigbrotr-ingest-recovery/1', state='initial-retired',
+        dataset_id=initialized['dataset_id'], owner_resource_id=initialized['owner_resource_id'],
+        producer_slot_id=initialized['producer_slot_id'], producer_epoch='1', issued_through='4',
+        reserved_through='4', resolved_requests='4', native='closed', owner_release='committed', ready=False,
+        source_closure=dict(last_complete_sequence='12', sha256=digest),
+        ingest_retirement=dict(allocation_domains=str(domains), acquisition_gaps='1',
+            owner_release='committed', native_acknowledged='0', native_retired='0'))
+
+
+def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, faults=False, locks=False):
+    assert not (faults and locks)
     def upgrade(database, config, name, target):
         before = rows(database)
         physical = lab.sql(pg, database, "SELECT jsonb_object_agg(relname,pg_relation_filenode(c.oid)) "
@@ -155,19 +166,18 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
         else:
             assert response.returncode == 0 and not response.stderr, response
             actual, = [json.loads(line) for line in response.stdout.splitlines()]
-            assert actual == dict(format='bigbrotr-ingest-recovery/1', state='initial-retired',
-                dataset_id=initialized['dataset_id'], owner_resource_id=initialized['owner_resource_id'],
-                producer_slot_id=initialized['producer_slot_id'], producer_epoch='1', issued_through='4',
-                reserved_through='4', resolved_requests='4', native='closed', owner_release='committed', ready=False,
-                source_closure=dict(last_complete_sequence='12', sha256=digest),
-                ingest_retirement=dict(allocation_domains=str(len(before['allocation_domains'])), acquisition_gaps='1',
-                    owner_release='committed', native_acknowledged='0', native_retired='0'))
+            assert actual == expected_output(initialized, len(before['allocation_domains']), digest)
         assert_retired(before, after, digest, committed=not error, released=not error,
             reclaims_control=reclaims_control)
         assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
         cases.append(dict(name=name, status='PASS', control_tables=len(after), native_rows=49,
             original_requests=4, expected_refusal=error, seconds=elapsed))
         lab.write_json(output / 'signed-recovery-cases.json', cases)
+
+    if locks:
+        from initial_retirement_locks import run as run_locks
+        run_locks(pg, client, output, rows, ready, check_native, invoke, cases, digest, initialized)
+        return
 
     if faults:
         from source_closure_faults import run as run_faults

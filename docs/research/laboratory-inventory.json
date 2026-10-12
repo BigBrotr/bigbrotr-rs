@@ -39155,5 +39155,15 @@
     "preserved_readable_file_hashes": 472825,
     "preserved_other_entries": 86033,
     "initial_attempt": "Refused on concurrent read-only checker maintenance lock before execution-started; no deletion. Checker stopped and lock released before second attempt."
+  },
+  "implementation_retirement_locks_20261012": {
+    "status": "PREPARED_NOT_RUN",
+    "owner": "root sole integrating owner under Q35",
+    "root_policy": "Fresh sibling runs/ingest-retirement-locks-<fixture revision>; clean immutable source, retained f12 artifacts",
+    "borrowed_pg": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg",
+    "seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9/bindings",
+    "resources": "Three new isolated Control/native clones, one labeled client; fixture SQL barriers and local lifetime settings only; original seed and all product triggers preserved",
+    "cleanup": "Close all exact fixture session incarnations, stop owned client and borrowed PG; retain all rows/artifacts/failures",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
   }
 }

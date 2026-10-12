@@ -80,26 +80,31 @@ unchanged. Original seed and native detail remained unchanged, all owned contain
 stopped, no OOM, no cleanup/unrelated changes. This does not prove server cancellation
 on client exit. Independent AI review confirmed the captured outcomes and oracles.
 
-Next implement the smallest retirement current-authority/lock wave using the
-existing signed fixture and unchanged product f12 artifacts. Read
-source_closure_locks.py, the retirement adapter/registry lock order and complete
-linked authority contracts before adapting it: source-job13 cannot simply be
-reused because this seed is already closed at 12. Qualify real policy expiry before
-COMMIT separately from query deadline/SQL lock_timeout 5s; an authority ceiling
-held longer than 5s would conflate those errors. Observe actual blocking statements
-and both relevant orders; dataset-parent blocking is not proof of every subordinate
-source/producer lock. Reuse exact artifacts, fresh inventoried sibling runs, all 70
-SQL tables/native oracle and preservation/terminal audits. Record outcomes in the
-existing recovery report. The concrete next wave is policy expiry plus original
-Ingest active→draining versus retirement in both observed lock orders. Gate fresh
-Control claim after historical lookup so an earlier history SHARE does not mask
-the retirement lock. Independently verify the draining writer changes only state
-and xmin; use that single row as baseline only after its own oracle passes. Set
-clone authorization_ttl and read.authorization.lease_ttl to 250ms, hold the actual
-producer UPDATE 500–600ms below the 1s operation deadline, and require DeliveryUnknown
-rather than Backend/cancelled. Validate the configuration and timing positively.
-Dataset/job and standalone producer-row contention remain separately unqualified.
-Recheck free space before another large allocation; cleanup has its verified receipt.
+The next authority/Ingest lock fixture is prepared, NOT_RUN. Root owns the new
+initial_retirement_locks.py and wiring in initial_retirement.py,
+installed_signed_recovery.py and acquisition-scope/bindings.py, plus evidence and
+inventory/checkpoint changes. No Rust, migration or dependency changes. Commit a
+reviewed exact fixture revision and run `--ingest-retirement-locks` with retained
+f12 CLI/probe in a fresh sibling `runs/ingest-retirement-locks-<revision>`.
+Expected four cases: current policy expiry under observed SQL execution delay,
+same-root fresh-Control retry, and Ingest draining versus retirement in both orders.
+
+A root-only250ms authorization limit would conflict with the retained accepted5s
+read policy; independent review caught this before any engine run. Keep accepted
+policy unchanged. This clone uses local Control lease20s/operation timeout8s, an
+AFTER producer UPDATE fixture delay5.5s, and requires observed PgSleep on the exact
+backend/query followed by DeliveryUnknown and complete rollback. Release the
+advisory observation gate promptly, avoiding SQL lock_timeout5s. Remove only the
+fixture trigger before retry and observe natural Control expiry with22s bound.
+
+For writer-first, gate fresh Control acquisition COMMIT after historical lookup;
+then observe actual current retirement Ingest FOR UPDATE behind draining. Check
+the writer's returned row independently: only state and xmin may change. For
+retirement-first, observe draining UPDATE behind retirement COMMIT, then require
+23514 against released history. All product owner guards must remain enabled and
+observer/writer sessions use replication_role origin. Every case compares all70
+SQL tables and native bytes, records exact identities, and stops owned resources.
+Dataset/job and standalone source/producer contention remain separately unqualified.
 
 Remaining retirement qualification includes current Control authority,
 concurrent lock orders, true zero-issued producer, zero-request import and persisted
