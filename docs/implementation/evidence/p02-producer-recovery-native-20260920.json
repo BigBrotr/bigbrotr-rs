@@ -14990,7 +14990,19 @@
           "audit": "Root independently replayed67 full snapshots/108 rehashed perturbations and matched raw stdout/external finals; wrapper50688 joined0. Independent AI harness/artifact/custody audit PASS:1772 exact Git files;1771 buildsource/archive/manifest and18 ELF hashes preserved; only4 doc/oracle reuse differences, compiled inputs identical. All1234 nonborrowed projections unchanged, PG0/client143/PID0/noOOM. Frozen f12 exact21paths302273regularbytes/4 frozen artifacts/4 inputs/source-client owner preserved. Five final72SQL/native/input captures and catalogs1045triggers/721constraints/14functions restored; six exact backend absences/globalzero. Audit author wrote oracle; root replay supplies independent oracle check. No auditor SQL/restart/build/engine; original SQL preservation remains captured-run evidence.",
           "observed_boundaries": "Actual Control8 manifest trigger rejects two wrong-first-manifest rows with named23514 in outer27119; original catalog restored then typed admission reaches69rows/seq84/7inputs. Real Control9 renewal InvalidInput/commit_started=false precedes actual successful refresh; native writer retained until close. Five-second target expiry observed while refreshed20s Control lives, renewal Backend/false and poisoned session; named SQL guard, observed SQLSTATE null. Both renewal COMMIT15 losses return CommitUnknown/true/poisoned Control/failed joined driver. Only after-complete changes target deadline1791879931246517to1791879891362924 and xmin27218to27223; all immutable receipts/native52seq62/4inputs unchanged. START counts source-derived."
         }
-      ]
+      ],
+      "installed_consumer_20261013": {
+        "status": "IMPLEMENTED_NOT_QUALIFIED",
+        "observed_at": "2026-10-13T08:57:06.561429+00:00",
+        "contract": "docs/reference/ingest-registration.md#installed-live-initial-successor-under-implementation",
+        "adapter_source": "6c134e3e65e21c05d15b4e1472ecbdf970da5b04",
+        "adapter_integrated": "ff317e5",
+        "owner_source": "1593f1faf2a2785dc02f64a56858b02d7c9b7df4",
+        "owner_integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
+        "checks": "Scoped rustfmt/diff-check PASS; build/test/SQL/installed NOT_RUN",
+        "review": "Root and independently tasked AI source review of CLI/profile, native-first custody, current policy/window and preclaim overlap found no blocker. Parent imports consumed by empty.rs were restored before owner commit.",
+        "next": "Exact build profile15affected tests/Clippy then real installed off/on network/renewal/refusal journeys and affected initial/recovery regressions."
+      }
     }
   }
 }

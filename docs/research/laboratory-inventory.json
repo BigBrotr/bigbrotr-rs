@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_ZERO_ROUTES_PASS_NEXT_LIVE_REFUSALS",
+    "status": "ACTIVE_REFUSALS_PASS_INSTALLED_CONSUMER_IMPLEMENTATION",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40851,7 +40851,7 @@
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-5fe7cc0",
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-routes-engine-a80710a"
     ],
-    "qualification": "c640b2f135tests,finite2c142c6fivecases,probeee24e86compile/Clippy and guards5fe7cc0actual16snapshots/14SQL/35controls PASS; failed915478c retained. Wholeproduct/M1 incomplete.",
+    "qualification": "c640b2f135tests, finite2c142c6fivecases, guards5fe7cc0, routesa80710a and refusals983342e PASS within their recorded envelope. Whole product/M1 and installed consumer incomplete.",
     "pause_observation": {
       "observed_at": "2026-10-13T06:15:07Z",
       "reason": "Explicit owner pause for exhausted credits; resume only on explicit request",
@@ -42807,6 +42807,49 @@
         "audit": "Root independently replayed67 full snapshots/108 rehashed perturbations and matched raw stdout/external finals; wrapper50688 joined0. Independent AI harness/artifact/custody audit PASS:1772 exact Git files;1771 buildsource/archive/manifest and18 ELF hashes preserved; only4 doc/oracle reuse differences, compiled inputs identical. All1234 nonborrowed projections unchanged, PG0/client143/PID0/noOOM. Frozen f12 exact21paths302273regularbytes/4 frozen artifacts/4 inputs/source-client owner preserved. Five final72SQL/native/input captures and catalogs1045triggers/721constraints/14functions restored; six exact backend absences/globalzero. Audit author wrote oracle; root replay supplies independent oracle check. No auditor SQL/restart/build/engine; original SQL preservation remains captured-run evidence.",
         "observed_boundaries": "Actual Control8 manifest trigger rejects two wrong-first-manifest rows with named23514 in outer27119; original catalog restored then typed admission reaches69rows/seq84/7inputs. Real Control9 renewal InvalidInput/commit_started=false precedes actual successful refresh; native writer retained until close. Five-second target expiry observed while refreshed20s Control lives, renewal Backend/false and poisoned session; named SQL guard, observed SQLSTATE null. Both renewal COMMIT15 losses return CommitUnknown/true/poisoned Control/failed joined driver. Only after-complete changes target deadline1791879931246517to1791879891362924 and xmin27218to27223; all immutable receipts/native52seq62/4inputs unchanged. START counts source-derived."
       }
-    ]
+    ],
+    "installed_consumer": {
+      "status": "IMPLEMENTING_NOT_QUALIFIED",
+      "observed_at": "2026-10-13T08:57:06.561429+00:00",
+      "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
+      "root_integrated_head": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
+      "owner": "root sole integration/build/engine executor",
+      "contract": "docs/reference/ingest-registration.md#installed-live-initial-successor-under-implementation",
+      "worktrees": [
+        {
+          "root": ".research/installed-live-adapters-20261013",
+          "branch": "implementation/installed-live-adapters",
+          "owner": "recovery_review",
+          "head": "6c134e3e65e21c05d15b4e1472ecbdf970da5b04",
+          "state": "clean-committed-not-pushed",
+          "scope": "PG current successor basis and opaque live reads; integrated as ff317e56999fbbbaadf51853fb8912c68a6c1012",
+          "checks": "Scoped rustfmt/diff-check/old-kernel preservation PASS; Rust/SQL/installed NOT_RUN"
+        },
+        {
+          "root": ".research/installed-live-owner-20261013",
+          "branch": "implementation/installed-live-owner",
+          "owner": "successor_restart_design",
+          "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
+          "state": "clean-committed-not-pushed",
+          "scope": "Installed native owner/startup/shared command/finite Sync/recovery replay",
+          "head": "1593f1faf2a2785dc02f64a56858b02d7c9b7df4",
+          "integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
+          "checks": "Scoped rustfmt/diff-check PASS; root and independent AI custody/policy/window/preclaim source reviews found no blocker; compile/installed NOT_RUN"
+        },
+        {
+          "root": ".research/installed-live-qualification-20261013",
+          "branch": "qualification/installed-live-consumer",
+          "owner": "cleanup_review",
+          "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
+          "state": "fixture-design-in-progress",
+          "scope": "Independent actual installed off/on/renewal/refusal journey and full preservation oracle"
+        }
+      ],
+      "root_work": "CLI and seven refusal tests implemented; build profile compiles CLI/probe, seven entrypoint/three Serve/five supervisor tests and Clippy, preserving four ELFs; NOT_RUN. New Python dispatcher pending separate fixture integration; no engine allocated.",
+      "previous_processes": "All refusal build/engine/root replay/push wrappers terminal joined0; prior engine stopped PG0/client143 at recorded final audit; no audit restart",
+      "preservation": "All ignored/external artifacts and prior worktrees retained",
+      "free_bytes": 66329108480,
+      "review": "Root complete changed owning sources/callers; independent AI CLI/profile and installed owner review no blocker. Root found removed parent imports consumed by unchanged recovery/empty.rs; author restored before commit. Old PG read bodies preserved bytewise after authority parameterization; fresh basis unchanged. No arbitrary repeat-review requirement."
+    }
   }
 }

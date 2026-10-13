@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T08:32:18.985475+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T08:57:06.561429+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,23 +16,27 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEAD983342ea34c8c82fe8fba3ef58b79c85b942615a. Probe, harness, oracle and exact
-build profiles are integrated. Last verified private root is176cfa27820403e816a5ba3e7c056e790d29a428;
-routes helpersc65164f/2b51795 are also pushed, main unchanged54ad09d. No merge/rebase/
-cherry-pick is pending. Dirty root task/contract/evidence/inventory/checkpoint record
-the completed refusal engine and selected next installed consumer. Root owns Serve
+HEAD6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba. Adapter6c134e3 and installed owner1593f1f are integrated. Root Serve CLI,
+entrypoint tests, exact build profile, docs/checkpoint/inventory and pending Python
+dispatcher are dirty and owned by root; independent fixture remains separate.
+Last verified private root is92c621fa597866d1f59a30c0b81997bc547dc3b7;
+refusal helpersddbb838/aba294b/039e77e and routes helpersc65164f/2b51795 are also
+pushed. Main remains54ad09d. No merge/rebase/cherry-pick is pending. Root owns Serve
 CLI, documentation, integration and all build/engine execution.
 
-| Agent | Next bounded responsibility |
+| Agent | Bounded responsibility |
 |---|---|
-| successor_restart_design | Installed native owner/startup/shared command and finite Sync loop; API design read-only so far |
-| recovery_review | PG opaque live read/basis adapters and current policy/window; API design read-only so far |
-| cleanup_review | Completed actual refusal custody audit; next independent installed journey/oracle planning |
+| successor_restart_design | Installed native owner/startup/shared command/Sync committed1593f1f and integrated; compile/engine NOT_RUN |
+| recovery_review | PG opaque live read/basis adapters committed6c134e3, integrated; compilation/SQL NOT_RUN |
+| cleanup_review | Independent installed journey/oracle design; previous actual refusal custody audit complete |
 
-The three refusal worktrees remain clean atddbb838/aba294b/039e77e and await private
-push. Routes worktrees remain clean/pushed atc65164f/2b51795. All older worktrees and
-artifacts are retained. New installed worktrees will be separately inventoried;
-no installed implementation, build or engine has started yet.
+New worktrees `.research/installed-live-adapters-20261013`,
+`.research/installed-live-owner-20261013` and
+`.research/installed-live-qualification-20261013` were created from92c621f and
+are inventoried under `implementation_live_initial_activation_20261013.installed_consumer`.
+Adapter and installed owner worktrees are clean; independent fixture is in progress.
+Prior refusal/routes worktrees and all artifacts are retained. No installed
+build or engine is allocated; previous build/engine/replay/push wrappers joined0.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
@@ -161,10 +165,12 @@ are terminal; no PostgreSQL audit restart or untracked cleanup was performed.
 
 ## Current next bounded action
 
-Commit and privately push the completed refusal wave, then implement the selected
+The completed refusal wave is committed and privately pushed. Compile and verify the selected
 [installed live initial successor](../reference/ingest-registration.md#installed-live-initial-successor-under-implementation).
 Root owns `serve --activate-initial-successor`, CLI checks/docs and integration.
-Use separate writable worktrees for PG live adapters versus installed owner/Sync.
+Both product owners are integrated and independently source-reviewed. Use the
+`ingest-installed-live` exact-source profile: compile,15 affected tests and Clippy;
+then integrate and review the separate actual off/on/refusal fixture and oracle.
 The old initializer and recovery flags retain their contracts. No schema/native
 format change is selected. A fenced basis supplies real server time/current policy;
 use activation policy/window, not the historical registration, for new work.
@@ -211,7 +217,8 @@ tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
 volume, input, executable and `.research` artifact. Private Git pushes do not back up
 ignored laboratory data; Git cleanliness is never permission to delete it.
 
-Free space after983342e:66,425,847,808 bytes (about61.9GiB); remeasure before allocation.
+Free space after983342e:66,425,847,808 bytes; source-work observation is about61.8GiB.
+Remeasure before allocation.
 Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
 currently unavailable; never lower that reserve. No large export is allocated.
 The one-off cleanup is RETIRED_VERIFIED:48,725 verified compiler intermediates removed

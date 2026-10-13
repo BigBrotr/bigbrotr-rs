@@ -325,6 +325,34 @@ refused the competing owner before process exit. Original bootstrap and all
 unrelated SQL rows remain unchanged. These bounded observations do not qualify
 worker panic, renewal-specific ambiguous COMMIT, successor recovery or capacity.
 
+## Explicit initial successor (under implementation)
+
+After stopping and fully retiring the initial signed lifetime, the selected
+successor command is:
+
+```sh
+bigbrotr serve --file ROOT --roles control,ingest,sync --activate-initial-successor
+```
+
+Omit `sync` for ownership and private administration without acquisition. The
+deployment must assign the selected roles and retain its Archive counterpart;
+this command cannot select Archive. It conflicts with `--initialize-ingest`.
+Keep the existing native directory and every original producer input. Startup
+checks exclusive native custody before opening protected PostgreSQL credentials,
+positively replays the predecessor and uses the current accepted policy to prepare
+and activate epoch2. It requires no caller-supplied target identities. An existing
+epoch2, missing retirement proof or competing native owner refuses startup.
+
+This lifetime starts producer request1 without another visibility bootstrap.
+Finite Sync needs two current outstanding slots: attribution dictionaries and one
+new event. It uses retained explicitly selected visibility scopes and fresh
+attribution domains. Current policy and scheduling renewal govern new work;
+historical registration remains evidence of the predecessor. Provenance-off keeps
+local receive evidence while suppressing new provenance. The detailed
+[activation and acceptance contract](ingest-registration.md#installed-live-initial-successor-under-implementation)
+owns this unfinished slice. General activated-owner recovery, repeated lifetimes,
+Archive restart, coverage and ACK/GC remain unimplemented here.
+
 ## Exact dependency source basis
 
 The pinned Rust [open implementation](https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db.rs#L630)

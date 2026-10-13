@@ -93,11 +93,14 @@ pub(super) fn inspect_receipt(args: &ArgMatches) -> ! {
 
 pub(crate) fn command() -> Command {
     Command::new("serve")
-        .about("Run Control or the explicit initial Control/Ingest lifetime")
+        .about("Run Control or an explicitly selected Control/Ingest lifetime")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
         .arg(Arg::new("initialize-ingest").long("initialize-ingest").action(clap::ArgAction::SetTrue)
+            .conflicts_with("activate-initial-successor")
             .help("Explicit fresh-only native initialization under retained Control; select control,ingest with optional sync and archive roles. Keeps ownership until stopped; accepted administration exposes sessions, source registration, enrollment, acquisition scopes and finite job acceptance/status. Explicit Sync selects the bounded initial acquisition executor, without coverage or job-completion claims. Explicit Archive publishes complete pending batches and captures their frontier; requires initialized fresh catalog/coordinator, reader credentials and installed worker. This publication profile is under qualification"))
+        .arg(Arg::new("activate-initial-successor").long("activate-initial-successor").action(clap::ArgAction::SetTrue)
+            .help("Explicitly prepare and activate epoch2 from a fully retired initial Ingest lifetime; select control,ingest with optional sync. Requires retained original inputs and complete positive predecessor outcomes. Uses current accepted policy and keeps native custody until stopped. Existing epoch2, missing retirement proof and selected Archive refuse. Starts no Archive publication; general successor recovery is not implemented. This profile is under qualification"))
         .after_help("Requires explicit initialization, migrations and initial policy activation. Configured read.cursor.keyring_ref loads existing keys before connecting and requires migration0602 plus SELECT on cursor_keyrings/cursor_key_materials. This verifies enrolled local material only, granting no cursor authority; it applies even to headless Control. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. POST /management/v1/jobs/{job_id}/resume is under qualification with migration0814 and explicit SQL privileges; it queues the same paused unit after current grants/destination/CAS, without a fresh reader pin. Historical retries preserve the original receipt. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
@@ -155,6 +158,18 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                 "invalid role selection: require distinct roles assigned in the deployment root"
                     .into(),
             ));
+        }
+        if args.get_flag("activate-initial-successor") {
+            if distinct != BTreeSet::from(["control", "ingest"])
+                && distinct != BTreeSet::from(["control", "ingest", "sync"])
+            {
+                return Err((
+                    3,
+                    "initial successor requires control,ingest with optional sync; Archive is unsupported"
+                        .into(),
+                ));
+            }
+            return initial_ingest::successor::run(root, distinct.contains("sync"), &mut output);
         }
         if args.get_flag("initialize-ingest") {
             let sync = distinct.contains("sync");
@@ -1014,6 +1029,7 @@ mod tests {
             .try_get_matches_from(["serve", "--file", "/unused"])
             .unwrap();
         assert!(!ordinary.get_flag("initialize-ingest"));
+        assert!(!ordinary.get_flag("activate-initial-successor"));
         let explicit = command()
             .try_get_matches_from([
                 "serve",
@@ -1025,6 +1041,19 @@ mod tests {
             ])
             .unwrap();
         assert!(explicit.get_flag("initialize-ingest"));
+        assert!(!explicit.get_flag("activate-initial-successor"));
+        let successor = command()
+            .try_get_matches_from([
+                "serve",
+                "--file",
+                "/unused",
+                "--roles",
+                "control,ingest,sync",
+                "--activate-initial-successor",
+            ])
+            .unwrap();
+        assert!(successor.get_flag("activate-initial-successor"));
+        assert!(!successor.get_flag("initialize-ingest"));
     }
 
     #[test]
