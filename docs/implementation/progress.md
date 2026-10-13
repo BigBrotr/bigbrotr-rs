@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T14:02Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T14:15Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption. The selected M1–M5 product remains INCOMPLETE. This checkpoint is
 navigation; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -29,11 +29,14 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: execute fourteen raw SQL guard cases fromcb1→c517b22 using protectedec6
-artifacts, after root fullsource/helper review and exact14 rendered statement pins.
-The claims wave has passed one finite seed and two installed commands; root replay
-passes15seed snapshots/four installed observations/44 controls. Separate artifact
-and custody audit is ongoing; frozenDocker observation14:09:09Z permits next run.
+Next: run a fresh exact fourteen-case SQL guard engine usingec6 after the narrow
+oracle context-label correction. First9e74 engine remainsFAIL: ten acceptedcases,
+case11 correctSQL23514 but wrong expected schema prefix, lastthreeNOT_RUN.
+Root57694 retrospectively verifies all11capturedcases without relabeling the run;
+corrected14artificialcases/37states/21controls PASS at66313. Failedrun custodiaudit
+ongoing; frozenDocker14:13:43Z permits the next engine. No product/migration changed.
+Claimsda839 artifact/custodyaudit now PASS:1819engine/1812build files,66ELFs,
+1274unchangednonborrowedprojections and frozenf12original intact.
 
 Current agents:
 
@@ -124,8 +127,7 @@ Claims engineda839b7 PASS1finite+2CLI,1887joined0; root
 existinga6request1 and newa7zero-request; a8 staysaccepted/unclaimed. First closes
 source2(native53/64→65/five inputs) and abandons bothclaims in one transaction;
 retry preserves issuer/time/xmin. Session/unclaimed/copies/native/input exact.
-Root37928 replay15seed snapshots/four installed states/44controls PASS. Separate
-artifact/custody audit pending; no engine/build active at this update.
+Root37928 replay15seed snapshots/four installed states/44controls PASS. Artifact/custody audit PASS; no engine/build active at this update.
 
 ## Processes, resources and maintenance
 

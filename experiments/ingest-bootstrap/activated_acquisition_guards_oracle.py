@@ -44,9 +44,11 @@ SQL_SHA256 = {
 ACTIVATOR = ('activated acquisition gap requires its activating Control', 'control.guard_acquisition_gap()')
 SOURCE = ('acquisition gap requires its closed resolved initial source', 'control.guard_acquisition_gap()')
 PARTIAL = ('whole-intent gap and terminal job must commit atomically', 'control.require_acquisition_gap_complete()')
-HISTORY = ('immutable control history cannot be changed', 'control.reject_history_mutation()')
+# These unchanged 0001 functions include control in their own search_path,
+# so PostgreSQL's error context renders their names without a schema prefix.
+HISTORY = ('immutable control history cannot be changed', 'reject_history_mutation()')
 ERRORS = dict(zip(CASES[1:], (SOURCE, ACTIVATOR, ACTIVATOR, ACTIVATOR, SOURCE, SOURCE,
-    PARTIAL, PARTIAL, PARTIAL, ('invalid finite job transition', 'control.guard_job_update()'),
+    PARTIAL, PARTIAL, PARTIAL, ('invalid finite job transition', 'guard_job_update()'),
     HISTORY, HISTORY, HISTORY), strict=True))
 
 
