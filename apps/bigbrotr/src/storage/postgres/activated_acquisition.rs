@@ -171,7 +171,7 @@ impl ControlSession {
     }
 }
 
-async fn require_current(
+pub(super) async fn require_current(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     current: ingest_registry::ControlOwner,

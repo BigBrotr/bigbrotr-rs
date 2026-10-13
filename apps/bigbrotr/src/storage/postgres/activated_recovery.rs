@@ -36,18 +36,25 @@ pub(super) struct Metadata {
     purpose: Purpose,
     _permit: OwnedPermit,
 }
+impl Metadata {
+    pub(super) fn target_role(&self) -> &[u8; 16] {
+        &self.intent.role
+    }
+}
 /// Only the distinct public factories select a protocol. No caller supplies a
 /// relaxed validator or converts an ordinary recovery result into source proof.
 #[derive(Clone, Copy)]
 pub(super) enum Purpose {
     Positive,
     Source,
+    Retirement,
 }
 impl Purpose {
     fn schema(self) -> u32 {
         match self {
             Self::Positive => 34,
             Self::Source => 35,
+            Self::Retirement => 37,
         }
     }
 }
@@ -131,8 +138,9 @@ impl ControlSession {
         let state = require_target(&tx, &previous, &intent, purpose).await?;
         if native.issued_through() > state.reserved_through
             || (state.producer_closing && !native.is_closing())
-            || (matches!(purpose, Purpose::Source)
+            || (matches!(purpose, Purpose::Source | Purpose::Retirement)
                 && native.issued_through() != state.reserved_through)
+            || (matches!(purpose, Purpose::Retirement) && !native.is_closing())
         {
             return Err(OwnerError::InvalidMetadata.into());
         }
@@ -166,6 +174,9 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ClosedActivatedInitialProducer, InitialSuccessionError> {
+        if matches!(inspected.metadata.purpose, Purpose::Retirement) {
+            return Err(OwnerError::InvalidInput.into());
+        }
         if permit.request().units().data_bytes() < 4096
             || permit.request().units().native_bytes() < 4096
             || permit.request().units().items() == 0
@@ -212,6 +223,63 @@ impl ControlSession {
             .await
             .map_err(|_| InitialSuccessionError::CommitUnknown)?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        if self.client.is_closed() {
+            return Err(InitialSuccessionError::DeliveryUnknown);
+        }
+        self.available = true;
+        Ok(ClosedActivatedInitialProducer {
+            native,
+            metadata: inspected.metadata,
+        })
+    }
+
+    /// Retirement observes an existing barrier only. It cannot call the native
+    /// close kernel or turn an OPEN target into a supported retirement attempt.
+    pub(super) async fn observe_activated_producer(
+        &mut self,
+        recovery: &IngestRecovery,
+        inspected: ActivatedInitialRecovery,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ClosedActivatedInitialProducer, InitialSuccessionError> {
+        if !matches!(inspected.metadata.purpose, Purpose::Retirement) {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        if permit.request().units().data_bytes() < 4096
+            || permit.request().units().native_bytes() < 4096
+            || permit.request().units().items() == 0
+        {
+            return Err(InitialSuccessionError::Native(
+                BootstrapError::InsufficientReservation,
+            ));
+        }
+        inspected
+            .native
+            .validate(recovery)
+            .map_err(InitialSuccessionError::Native)?;
+        require_deployment(&inspected.metadata, self)?;
+        let current = self.identity;
+        let (tx, mut lease, epoch) = self
+            .begin_initial_history_locked(recovery, &input, 2, 37, validate)
+            .await?;
+        require_metadata(&tx, &inspected.metadata, current, epoch).await?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        let native = inspected
+            .native
+            .observe_closed_producer(recovery, permit, || {
+                if input.cancelled.load(Ordering::Relaxed) {
+                    return Err(BootstrapError::AuthorityUnavailable);
+                }
+                lease
+                    .check_delivery(epoch)
+                    .map_err(|_| BootstrapError::AuthorityUnavailable)
+            })
+            .map_err(InitialSuccessionError::Native)?;
+        native
+            .validate(recovery)
+            .map_err(InitialSuccessionError::Native)?;
+        initial_history::finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);
         }
@@ -300,7 +368,20 @@ impl ControlSession {
                 },
             )
             .map_err(ProducerResolveError::Native)?;
-        if state.source_closed {
+        if matches!(closed.metadata.purpose, Purpose::Retirement) {
+            if resolved.input_bytes() != reservation.input_bytes {
+                return Err(ProducerResolveError::Outcome(
+                    producer_outcomes::OutcomeError::Conflict,
+                ));
+            }
+            producer_retirement::require_retirement_copy(
+                &tx,
+                &resolved,
+                input.request,
+                reservation.manifest_sha256,
+            )
+            .await?;
+        } else if state.source_closed {
             producer_outcomes::require_recovered(&tx, &reservation, &resolved)
                 .await
                 .map_err(ProducerResolveError::Outcome)?;
@@ -364,6 +445,7 @@ async fn require_target(
         match purpose {
             Purpose::Positive => "SELECT control.require_activated_initial_recovery($1::bytea)",
             Purpose::Source => "SELECT control.require_activated_initial_source($1::bytea)",
+            Purpose::Retirement => "SELECT control.require_activated_initial_retirement($1::bytea)",
         },
         &[&&previous.ingest_resource_id.as_bytes()[..]],
     )
@@ -400,11 +482,11 @@ async fn require_target(
     }
     let row = tx
         .query_one(
-            "SELECT p.reserved_through_request::text,p.state='closing',s.state='closed'
+            "SELECT p.reserved_through_request::text,(p.state='closing' OR ($2::boolean AND p.state='retired')),s.state='closed'
         FROM control.producer_epochs p JOIN control.source_streams s
             ON s.dataset_id=p.dataset_id AND s.owner_resource_id=p.owner_resource_id AND s.owner_epoch=p.owner_epoch
         WHERE p.producer_slot_id=$1::bytea AND p.producer_epoch=2",
-            &[&&previous.producer_slot_id.as_bytes()[..]],
+            &[&&previous.producer_slot_id.as_bytes()[..], &matches!(purpose, Purpose::Retirement)],
         )
         .await
         .map_err(backend)?;

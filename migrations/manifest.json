@@ -209,6 +209,10 @@
     {
       "version": 36,
       "name": "0036_activated_acquisition_abandonment.sql"
+    },
+    {
+      "version": 37,
+      "name": "0037_activated_initial_retirement.sql"
     }
   ],
   "reserved": [

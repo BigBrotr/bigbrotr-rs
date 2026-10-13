@@ -195,6 +195,11 @@ impl ControlSession {
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
         let identity = recovery.manifest().identity();
         if input.cancelled.load(Ordering::Relaxed) {
+            if required_schema == 37 {
+                // The retirement protocol never returns reusable authority after
+                // cancellation, including before the first SQL transaction.
+                self.available = false;
+            }
             return Err(OwnerError::Unavailable.into());
         }
         if !recovery.matches_configured_root(input.ingest_root)

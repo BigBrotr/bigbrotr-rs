@@ -78,6 +78,9 @@ mod initial_ingest_basis;
 pub use initial_ingest_basis::{InitialIngestBasis, InitialSuccessorBasis};
 #[path = "acquisition_abandonment.rs"]
 mod acquisition_abandonment;
+#[path = "activated_retirement.rs"]
+mod activated_retirement;
+pub use activated_retirement::{ActivatedInitialRetirement, ClosedActivatedInitialRetirement};
 #[path = "activated_acquisition.rs"]
 mod activated_acquisition;
 #[path = "activated_source.rs"]
