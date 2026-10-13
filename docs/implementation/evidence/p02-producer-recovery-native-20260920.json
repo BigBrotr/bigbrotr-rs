@@ -17768,7 +17768,7 @@
       },
       "activated_source_closure_20261013": {
         "status": "PASS_SOURCE_CLOSURE_POSITIVES_COMMIT_LOSS_AND_JOB_LOCKS_PREFIX_GATES_OPEN",
-        "observed_at": "2026-10-13T12:42:49.651037+00:00",
+        "observed_at": "2026-10-13T12:46:27.865661+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
@@ -18162,7 +18162,7 @@
             "workflowretirement/repeatedlifetimes/Archive/fullM1"
           ]
         },
-        "next": "Build reviewed prefix probe on exact source with existing ingest-activated-refusals compile/Clippy profile; finish independent three-case Python fixture, then run one finite seed plus three installed refusals.",
+        "next": "Finish independent three-case sourceprefix fixture/review and pure expectations; integrate then execute1finite+3installedCLI with protectedbb53 artifacts. Next workflow design read-only until prerequisite closure qualifications complete.",
         "final_commit_fault_fixture": {
           "source": "5b6b176e059dc865b29778bf4d76c9b4f6a0c2e3",
           "integrated": "fee9793a0cc3de09d72d0112348717fad061cd6a",
@@ -18459,19 +18459,62 @@
             "controls": 46
           },
           "custody_audit": {
-            "status": "IN_PROGRESS",
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-locks-engine-14b7bd4/recovery-review-source-lock-custody-final-20261013.json",
+            "sha256": "63ca3d332615d9957ff595fa55e8681d74de0169fba9a2a88fa8d2760a437b29",
+            "status": "PASS_READ_ONLY_SOURCE_LOCK_CUSTODY_AUDIT",
+            "engine_files": 1808,
+            "build_files": 1804,
+            "retained_elf_paths": 59,
+            "unchanged_nonborrowed_containers": 1265,
+            "raw_captures": 49,
+            "complete_states": 4,
+            "scope": "Fixture-author artifact/raw/custody audit; root independently reviewed and replayed expectations. Five exact backend tuples absent; two old outcome bytes/xmins and six inputs preserved; originaloff23paths/fourfrozenartifacts retained.",
+            "corrections": "Audit v1 hardcoded filecount and v2 expected testELF metadata on compile-only receipt; corrected without altering run artifacts. Failed scripts/logs retained.",
+            "terminal": "PG0/client143 stoppedPID0/noOOM",
             "frozen_observation": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-locks-engine-14b7bd4/recovery-review-custody-projections-20261013.json",
-            "sha256": "5921419118609bd91fb20dc0e2528814797a10be9ae1402a135807d558a2337e"
+            "observation_sha256": "5921419118609bd91fb20dc0e2528814797a10be9ae1402a135807d558a2337e"
           },
           "scope": "Privileged guarded relational job source1cut12/source2cut6 versus actual CLI source2cut5. Job-first commit survives; CLI refuses guard_source_closure_bounds, sourceopen. Source-first deferred CLI COMMITbarrier\u2192jobwait\u2192sourceclosed; job COMMIT refuses require_complete_job_input and rolls back. Both SQLSTATE23514; exact PID/start locks, full72SQL/native70seq85/6inputs. No authenticated export acceptance/workflow retirement."
         },
         "prefix_probe": {
           "source": "e1f74d7bd370c07d28c3d309ff35819ccbdfd271",
           "integrated": "3748eceaf93784cb67fb5b1fae7d0f259903d42c",
-          "status": "REVIEWED_COMMITTED_BUILD_NOT_RUN",
+          "status": "BUILD_PASS_CONNECTED_ENGINE_NOT_RUN",
           "scope": "Four existing example files only. Actual firstdictionary reservation COMMIT14 aftercomplete loss leaves native52/62 unchanged, retainedinput5, issued0/reserved1. Fixed isolated native receipt2 deletion and issued2\u21921 synced batch leaves69/86/sourcecut5/facts retained. Third terminalSQLcopyconflict needs no new native seam.",
           "review": "Root complete changed helper/mode/call path and corruption owner; earlier unchanged lifecycle owners reused. Formatting/diffPASS. Independent Python fixture inprogress; no new productAPI.",
-          "build_profile": "ingest-activated-refusals compile+Clippy only; unchanged product91tests at9dbc reused after exactdiff audit"
+          "build_profile": "ingest-activated-refusals compile+Clippy only; unchanged product91tests at9dbc reused after exactdiff audit",
+          "build": {
+            "source": "bb53bf52f94c4556faaa847b79eab753c22485d1",
+            "tree": "85710fca65b39bdc19f9756d2beacba0e2916240",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-bb53bf5",
+            "owner": "291d7509db26a7a3adc3dc54b1c29ac6",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "2142afeab5af02573c09ec1742f143a719556ce8ae72e90f693617ea2c697429"
+              },
+              {
+                "name": "native",
+                "id": "027d6772e7feb11c154435cb1cf6ae7d88f33cab678b2ce0fd0cd477787edac4"
+              }
+            ],
+            "started_at": "2026-10-13T12:43:04.979790+00:00",
+            "finished_at": "2026-10-13T12:44:39.377434+00:00",
+            "status": "PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY",
+            "wrapper": "15173 joined0",
+            "checks": "Compile+Clippy PASS;91unchanged product tests reused from9dbc after exact input diff verification. No finite prefix engine yet.",
+            "receipt_sha256": "afe90bd53c6226f8c220979f34a047809a8af221eeabdc5c4f26fc7c3a172dbb",
+            "binary_sha256": "0a5bad4a062b12ea75760a9f95928e2d6272549d68ffacddf27462246e01ff2e",
+            "probe_sha256": "d0a3484a43bb5a97ce6a4899dcb9e604a0e8b8c0fc66cf4204bd4680eeae88fe",
+            "audit": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-bb53bf5/root-build-audit.json",
+              "sha256": "7026ba4aec86dee4144e735eae5a8a47a7cd711e550be3bdd122c46d72220548",
+              "wrapper": "35416 joined0",
+              "files": 1808,
+              "retained_elf_paths": 61,
+              "unchanged_prior_containers": 1267
+            }
+          }
         }
       }
     }

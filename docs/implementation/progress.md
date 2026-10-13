@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:42Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:46Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,11 +14,11 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-3748eceaf93784cb67fb5b1fae7d0f259903d42c. Last verified private push939cf13; main54ad09d unchanged.
-No merge/rebase/cherry-pick pending. Durable engine0e4917f and lockengine14b7bd4
-PASS. Native prefix probe e1f74d7 integrated3748ece; root owns evidence/buildscope
-update. Independent Python three-case refusal fixture in progress in separate
-worktree. Root alone integrates/builds/executes; preserve all artifacts/originals.
+bb53bf52f94c4556faaa847b79eab753c22485d1, verified pushed privately with three qualification branches.
+Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
+update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
+integrated3748ece, buildbb53PASS. Three-case Python fixture remains in separate
+worktree; next workflow design is read-only. Root alone integrates/builds/executes.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -92,19 +92,32 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Build the exact committed prefix probe with existing ingest-activated-refusals
-profile (compile+Clippy only). Product inputs unchanged from91tests at9dbc; four
-example files differ. Finish independent three-case Python fixture and full review,
-then run actual reservation-C14 loss seed plus three installed source refusals.
-Native ordering/shared corruption evidence is unchanged and reused. e1f74d7 adds
-only genuine reservation loss and fixed receipt-prefix truncation laboratory seams.
+Finish complete independent Python fixture for three source refusals; review and
+integrate before exact engine1finite+3CLI using protectedbb53artifacts. Selected cases:
+actual firstdictionary reservation C14 after-complete loss, issued0/reserved1 refuses
+Control(InvalidMetadata) beforeclosing; retainedtargettail69/86→69/87 refuses
+StateMismatch at prefixfinish; successful939terminalclone outcome2byteconflict
+refuses Outcome(Conflict) with no nativewrite/repair. Preserve raw operator states,
+failed Control/backend custody and every original. No invented SQL diagnostic.
+Next workflow/producer retirement design proceeds read-only within existing tasks.
+
+Prefixbuildbb53 PASS compile+Clippy onRust1.98.1/Clang14, wrapper15173 joined0,
+12:43:04–12:44:39Z. Root `/runs/ingest-activated-refusals-bb53bf5`,
+owner291d7509db26a7a3adc3dc54b1c29ac6. ReceiptSHA
+afe90bd53c6226f8c220979f34a047809a8af221eeabdc5c4f26fc7c3a172dbb.
+Rootaudit35416 joined0:1808exactGit/export/archivefiles,61retainedELFs,1267unchanged
+priorcontainerprojections+2ownedterminal0. Productinputs unchanged from91tests at9dbc;
+only five examplefiles since9dbc differ, with docs/experiments. No prefixengine yet.
 
 Lockengine14b7bd4 PASS2CLI: job-first commits cut6 and prevents sourcecut5 closure
 (guard_source_closure_bounds/23514); source-first commits cut5, then job COMMIT
 refuses require_complete_job_input/23514 and rolls back. Exact PID/start observed
 waits; full72SQL/native70seq85/sixinputs preserved. Privileged relational job with
 origin triggers, not authenticated job acceptance. Root4states/46controls rawreplay
-14147 joined0 PASS. Artifact audit IN_PROGRESS using frozen1267container observation.
+14147 joined0 PASS. Artifact/raw/custody audit PASS:1808engine/1804build files,59ELFs,1265unchanged
+nonborrowed projections;49rawbindings/fivebackendtuples absent/barrier restored.
+First audit helper filecount/testELF assumptions corrected with failed artifacts
+preserved; no run/product change. Frozen observation contains1267containers.
 Root `/runs/ingest-activated-source-locks-engine-14b7bd4`, ownerbf0439eec4210b35e371f748e076dfa1,
 wrapper46534 joined0,12:38:58–12:39:26Z. ResultSHA
 e9ba6c86f90c265a60e5213f69890ec4fada9b642a573b469a016b0c8b714548.
@@ -277,12 +290,11 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-Latest lockengine46534/rootreplay14147 joined0; actual custody audit inprogress.
-Earlier durable engine79115/rootreplay60632 joined0, PG0/client143 stopped.
-Latest build31588/rootaudit72470 joined0, allbuildcontainers stopped0/PID0/noOOM;
-59ELFs preserved outsideexclusivecache. Latestfaultengine19724/replay14178joined0;
-PG0/client143 stopped. No engine/build active at thischeckpoint. Threeagents edit
-separatefixtures/reviewonly; originalseed, failedbuild5e57 andallaudits preserved.
+Latest prefixbuild15173/rootaudit35416 joined0, allbuildcontainers stopped0/PID0/
+noOOM.61ELFs retained outsideexclusivecache. Lockengine46534/replay14147 joined0,
+PG0/client143 stopped, custodyaudit complete. No engine/build active at checkpoint.
+Agents edit isolated prefixfixtures and read nextworkflowdesign only. Preserve all
+originals, failedbuilds, failedaudit scripts/logs and every ignored/external artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
@@ -307,7 +319,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space observed atf7 completion12:16Z: 60,961,304,576 bytes. Remeasure before allocation.
+Free space observed atbb53 completion12:44Z: 60,497,752,064 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18
