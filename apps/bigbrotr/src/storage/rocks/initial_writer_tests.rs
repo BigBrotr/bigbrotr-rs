@@ -6,6 +6,9 @@ use super::*;
 use crate::storage::rocks::store::{ActiveInitialWriter, InitialWriterCandidate};
 use std::{collections::BTreeMap, os::unix::fs::PermissionsExt};
 
+#[path = "activated_recovery_tests.rs"]
+mod activated_recovery_tests;
+
 type Snapshot = (Rows, u64, Vec<(String, Vec<u8>)>);
 
 fn positive<'a>(fixture: &Fixture, recovery: &'a IngestRecovery) -> ResolvedSource<'a> {

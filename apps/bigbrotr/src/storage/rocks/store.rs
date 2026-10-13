@@ -104,7 +104,8 @@ pub use source_closure::{ResolvedSource, SourceResolution};
 #[path = "initial_handoff.rs"]
 mod initial_handoff;
 pub(in crate::storage) use initial_handoff::{
-    EmptyInitialAttempt, HistoricalInitial, InitialHandoffRecord,
+    ActivatedInitial, ActivatedProducerClosing, EmptyInitialAttempt, HistoricalInitial,
+    InitialHandoffRecord,
 };
 pub use initial_handoff::{
     EmptyInitialRetirement, EncodedHandoff, InitialHandoff, ObservedEmptyInitialRetirement,

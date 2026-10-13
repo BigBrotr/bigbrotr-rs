@@ -137,8 +137,32 @@ impl IngestRecovery {
         if epoch.get() != 1 || self.store.manifest.identity().owner_epoch.get() != 1 {
             return Err(BootstrapError::InvalidIntent);
         }
-        let mut state = self.store.producer_state(slot, epoch)?.unwrap_or_default();
+        let state = self.store.producer_state(slot, epoch)?.unwrap_or_default();
         self.store.require_producer_boundary(slot, epoch, state)?;
+        let state = self
+            .store
+            .close_producer_marker(slot, epoch, state, &mut authority)?;
+        authority()?;
+        Ok(ProducerClosing {
+            slot,
+            epoch,
+            manifest: self.store.manifest,
+            state,
+            _permit: permit,
+        })
+    }
+}
+
+impl IngestStore {
+    /// The caller checks its selected lifetime, existing state and retained
+    /// grant. This shared kernel only installs the same one-way native marker.
+    pub(super) fn close_producer_marker(
+        &mut self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        mut state: ProducerState,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ProducerState, BootstrapError> {
         if !state.closing {
             let mut batch = Prepared::new(BootstrapLimits {
                 max_mappings: 1,
@@ -158,21 +182,11 @@ impl IngestRecovery {
             )?;
             // The same exclusive mutable owner serializes this with admission.
             // A prior prepared input has no right to cross this durable barrier.
-            self.store.commit_prepared(batch, &mut authority)?;
+            self.commit_prepared(batch, &mut authority)?;
             state.closing = true;
         }
-        authority()?;
-        Ok(ProducerClosing {
-            slot,
-            epoch,
-            manifest: self.store.manifest,
-            state,
-            _permit: permit,
-        })
+        Ok(state)
     }
-}
-
-impl IngestStore {
     pub(super) fn producer_state(
         &self,
         slot: ProducerSlotId,
@@ -206,7 +220,7 @@ impl IngestStore {
         }
         Ok(())
     }
-    fn require_producer_boundary(
+    pub(super) fn require_producer_boundary(
         &self,
         slot: ProducerSlotId,
         epoch: ProducerEpoch,

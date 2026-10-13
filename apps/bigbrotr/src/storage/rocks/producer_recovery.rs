@@ -1,7 +1,7 @@
 //! Positive original-request resolution under exclusive historical ownership.
 use super::{
-    AdmissionError, AdmissionLimits, AdmissionOutcome, BootstrapError, BootstrapLimits,
-    IngestRecovery, NativeOutcomeCopy, RequestInputError, StoredOutcome,
+    ActivatedInitial, AdmissionError, AdmissionLimits, AdmissionOutcome, BootstrapError,
+    BootstrapLimits, IngestRecovery, NativeOutcomeCopy, RequestInputError, StoredOutcome,
 };
 use crate::runtime::OwnedPermit;
 use crate::storage::rocks::manifest::IngestManifest;
@@ -64,6 +64,13 @@ pub(super) struct ReplayContext<'a> {
     pub manifest: &'a IngestManifest,
     pub current_manifest: &'a IngestManifest,
 }
+
+/// Original epoch1 interpretation and checked activated epoch2 recovery have
+/// different fences. Neither read profile can grant admission or source closure.
+pub(super) enum RecoveryContext<'a> {
+    Initial(ReplayContext<'a>),
+    Activated(&'a ActivatedInitial),
+}
 impl ResolvedProducerRequest {
     pub fn outcome(&self) -> &AdmissionOutcome {
         self.outcome.outcome()
@@ -117,10 +124,10 @@ impl IngestRecovery {
             input_permit,
             outcome_permit,
             authority,
-            ReplayContext {
+            RecoveryContext::Initial(ReplayContext {
                 manifest: self.manifest(),
                 current_manifest: self.manifest(),
-            },
+            }),
         )
     }
 
@@ -136,7 +143,7 @@ impl IngestRecovery {
         input_permit: OwnedPermit,
         outcome_permit: OwnedPermit,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
-        context: ReplayContext<'_>,
+        profile: RecoveryContext<'_>,
     ) -> Result<ResolvedProducerRequest, ProducerRecoveryError> {
         if outcome_permit.request().units().data_bytes() < limits.required_data_bytes()?
             || outcome_permit.request().units().items() == 0
@@ -152,10 +159,29 @@ impl IngestRecovery {
             .handoff_root_identity()
             .map_err(AdmissionError::from)?;
         let native_sequence = self.store.db.latest_sequence_number();
-        if request.producer_epoch.get() != 1
-            || context.manifest.identity().owner_epoch.get() != 1
-            || self.manifest() != context.current_manifest
-        {
+        let context = match &profile {
+            RecoveryContext::Initial(context) => {
+                if request.producer_epoch.get() != 1
+                    || context.manifest.identity().owner_epoch.get() != 1
+                {
+                    return Err(AdmissionError::InvalidInput.into());
+                }
+                *context
+            }
+            RecoveryContext::Activated(view) => {
+                view.validate(self).map_err(AdmissionError::from)?;
+                if request.producer_epoch.get() != 2
+                    || request.producer_slot_id != view.producer_slot_id()
+                {
+                    return Err(AdmissionError::InvalidInput.into());
+                }
+                ReplayContext {
+                    manifest: view.manifest(),
+                    current_manifest: view.manifest(),
+                }
+            }
+        };
+        if self.manifest() != context.current_manifest {
             return Err(AdmissionError::InvalidInput.into());
         }
         let state = self
@@ -241,6 +267,9 @@ impl IngestRecovery {
             }
             // Policy belongs to the historical decision, not today's recovery
             // authority. Never rewrite it from the manifest/current PG snapshot.
+            if let RecoveryContext::Activated(view) = &profile {
+                view.require_receipt_bounds(receipt)?;
+            }
         }
         authority()?;
         let resolved = ResolvedProducerRequest {

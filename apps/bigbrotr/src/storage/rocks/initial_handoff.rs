@@ -24,6 +24,10 @@ mod initial_empty;
 pub(in crate::storage) use initial_empty::EmptyInitialAttempt;
 pub use initial_empty::{EmptyInitialRetirement, ObservedEmptyInitialRetirement};
 
+#[path = "activated_recovery.rs"]
+mod activated_recovery;
+pub(in crate::storage) use activated_recovery::{ActivatedInitial, ActivatedProducerClosing};
+
 // A historical reader must name the exact target marker it validated. Closing
 // is available only to empty-attempt retirement, never handoff reconstruction.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -353,10 +357,12 @@ impl<'a> HistoricalInitial<'a> {
             input_permit,
             outcome_permit,
             authority,
-            super::producer_recovery::ReplayContext {
-                manifest: self.manifest(),
-                current_manifest: self.target_manifest(),
-            },
+            super::producer_recovery::RecoveryContext::Initial(
+                super::producer_recovery::ReplayContext {
+                    manifest: self.manifest(),
+                    current_manifest: self.target_manifest(),
+                },
+            ),
         )
     }
 
