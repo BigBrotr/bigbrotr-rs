@@ -15756,13 +15756,13 @@
         "qualification_integrated": "94a16a0eae1466cb257757c86719ec6086b3cbf1"
       },
       "activated_recovery_20261013": {
-        "status": "IMPLEMENTED_NOT_QUALIFIED",
-        "observed_at": "2026-10-13T10:12:53.425218+00:00",
+        "status": "BUILD_FAILED_TEST_EXPECTATION_CORRECTED",
+        "observed_at": "2026-10-13T10:19:59.210482+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
         "native": {
           "source": "0fb6362ce45a8a3b6fdc38f5e1a64a6969789a9d",
           "integrated": "ac38e7a58f6703db7b68ccd7b7f24e5c4fa96879",
-          "tests": "Seven authored groups NOT_RUN"
+          "tests": "First execution five new groups pass; two share independently diagnosed expected Observer1 source-number error. Seven corrected groups await exact rebuild."
         },
         "postgres": {
           "source": "0e21919484baae550dea4bbff79fde0ef32069ad",
@@ -15770,11 +15770,11 @@
           "migration0033_sha256": "4f22eb019e831126bf3f5c712d0ddf1e8213dfdfcdf9afaf5b38c80418cb5804",
           "sql_execution": "NOT_RUN"
         },
-        "root_consumer": "Pending commit: explicit mutually exclusive --activated-successor; exclusive native before credentials, preclaim overlapping grants, per-request Control refresh and positive resolution; native close before Control release, joined driver before report",
+        "root_consumer": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
         "review": "Root and independently tasked AI reviewers read affected native/PostgreSQL/installed owners and seams; no concrete source blocker. Source-only review does not qualify runtime behavior. Scoped format/diff/catalog/Python AST checks pass.",
         "fixture": {
           "source": "d578ec8a0d37978993735d6ff068df7ec8153158",
-          "integrated": null,
+          "integrated": "8fd7b15",
           "scope": "First eight installed invocations from retained off/on/zero seeds; positive/retry/missing-copy, historical policy2/current3 for off/on, expired old scheduling and complete before/after preservation",
           "pure_checks": "Author reports eight artificial complete contexts and124 controls; not actual engine evidence",
           "engines": "NOT_RUN"
@@ -15784,6 +15784,110 @@
           "First eight actual installed invocations and independent raw replay",
           "Issued-positive/source-zero actual process; corruption, held-native and COMMIT-loss recovery",
           "Source2 closure/retirement, repeated lifetimes and remaining M1\u2013M5 journeys are separate obligations"
+        ],
+        "builds": [
+          {
+            "source": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
+            "tree": "56682e47d42f5cf8d1fefb1810e36da381fed32e",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-3827bc2",
+            "owner": "e18631226755ea0c871674352c2bba08",
+            "state": "stopped-retained",
+            "status": "FAIL",
+            "wrapper": {
+              "session": 51191,
+              "joined_exit_code": 1
+            },
+            "started_at": "2026-10-13T10:13:13.151946+00:00",
+            "finished_at": "2026-10-13T10:15:15.247077+00:00",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "ecd7cd95f59fff71bcf7df8d2672d741a316ae74f66bc9801c2bd9f5dc2e20a5"
+              },
+              {
+                "name": "native",
+                "id": "079f489512472cbdb4f7a33aeb85e11c8559ae04f3a2d4d4dbdbb18d8df96086"
+              }
+            ],
+            "inventory_changed": [],
+            "checks": [
+              {
+                "name": "compile",
+                "status": "PASS",
+                "exit_code": 0
+              },
+              {
+                "name": "entrypoints",
+                "status": "PASS",
+                "exit_code": 0
+              },
+              {
+                "name": "source-closure",
+                "status": "PASS",
+                "exit_code": 0
+              },
+              {
+                "name": "producer-closing",
+                "status": "PASS",
+                "exit_code": 0
+              },
+              {
+                "name": "producer-recovery",
+                "status": "PASS",
+                "exit_code": 0
+              },
+              {
+                "name": "initial-handoff",
+                "status": "PASS",
+                "exit_code": 0
+              },
+              {
+                "name": "initial-reconstruction",
+                "status": "FAIL",
+                "exit_code": 101
+              },
+              {
+                "name": "bootstrap",
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "dictionary-append",
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "event-replay",
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "rocks_manifest",
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "rocks_keys",
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "certification",
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "clippy",
+                "status": "NOT_RUN"
+              }
+            ],
+            "failure": "Two new native tests shared wrong expected old dependency2; frozen bootstrap order and network intent independently require Observer1 at source3. No product defect identified by this failure.",
+            "preserved_artifacts": {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-3827bc2/out/failed-artifacts",
+              "executables": 6,
+              "receipt_sha256": "192903d1b035285be7fe713d0bdc6342eb60e6506b4bc030941dc18b2990e170"
+            },
+            "correction": {
+              "source": "b0fbf834be453661b6ed2319aeef7f4cc7a22850",
+              "integrated": "a7210283cfae92c5e3c329e6ab915471a45d7180",
+              "scope": "One literal dependency and explanatory frozen-order comment; product and fixture input bytes unchanged"
+            },
+            "remaining": "Corrected exact build, later NOT_RUN tests/Clippy, installed engines"
+          }
         ]
       }
     }

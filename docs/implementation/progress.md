@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T10:12Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T10:19Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,24 +14,25 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-ac38e7a58f6703db7b68ccd7b7f24e5c4fa96879. Completed qualification checkpoint1efc7db
+a7210283cfae92c5e3c329e6ab915471a45d7180. Completed qualification checkpoint1efc7db
 and qualification branchf9e751f are privately pushed and verified. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase/cherry-pick pending.
 Activated contract1a7fd52 and inventory02c9be6 are committed. PostgreSQL0e21919
-integrated97f1301; native0fb6362 integratedac38e7a. Root owns dirty installed CLI,
-recovery/activated worker, entrypoint tests, ingest-store docs, exact build profile,
-and current checkpoint/evidence/inventory update. No runtime qualification yet.
+integrated97f1301; native0fb6362 integratedac38e7a. Installed consumer/build profile
+committed3827bc2; first8 fixtured578ec8 integrated8fd7b15; test-only correctionb0fbf83
+integrateda721028. Root owns dirty dispatcher, provisioning docs and current evidence/
+checkpoint/inventory. No merge/rebase/cherry-pick pending; installed NOT_RUN.
 
 Three separately inventoried worktrees from1a7fd52 are retained clean:
 
 | Worktree under `.research/` | Owner | Source / responsibility |
 |---|---|---|
-| activated-recovery-native-20261013 | successor_restart_design | 0fb6362 checked native recovery, seven test groups |
+| activated-recovery-native-20261013 | successor_restart_design | b0fbf83 checked native recovery, corrected Observer1 expectation |
 | activated-recovery-postgres-20261013 | recovery_review | 0e21919 additive0033 and current-Control adapters |
-| activated-recovery-qualification-20261013 | cleanup_review | d578ec8 first eight installed invocations; not yet integrated |
+| activated-recovery-qualification-20261013 | cleanup_review | d578ec8 first eight installed invocations, integrated8fd7b15 |
 
 Root alone executes builds, engines and integration. Independent AI source reviews
-of the native/PG/installed seams report no blocker; runtime checks are NOT_RUN.
+of the native/PG/installed seams report no blocker; first build failed on a test expectation, described below.
 Resource records are in `implementation_activated_initial_recovery_20261013`.
 
 ## Active task and completed prerequisite
@@ -102,23 +103,31 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit the root installed activated-recovery consumer and exact build profile, then
-run the isolated `ingest-activated-recovery` build at that exact clean revision.
-Preserve all artifacts outside the exclusive compiler cache. Check compile, selected
-native groups (including seven new groups), actual CLI/schema/migration tests and
-Clippy before the first engine. The [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
-and `activated_recovery_20261013` in existing recovery evidence own semantics/results.
+Commit the prepared installed dispatcher/provisioning docs and run a fresh exact
+`ingest-activated-recovery` build. First build3827bc2 FAIL: compile,46 actual
+entrypoint/schema/migration tests and30 closing/recovery/handoff tests PASS;
+initial reconstruction25PASS/2FAIL on one wrong expected predecessor dependency.
+Fixed fixture order is public scope1/private scope2/Observer1 at source3; network
+B_note uses public+Observer1. Correctionb0fbf83/a721028 changes expectation2→3 and
+comment only. All original inputs/product behavior unchanged. Later groups and
+Clippy NOT_RUN. Six produced executables retained under failed build's
+`out/failed-artifacts`, receiptSHA192903d1b035285be7fe713d0bdc6342eb60e6506b4bc030941dc18b2990e170.
+Wrapper51191 joined1; build owner e18631226755ea0c871674352c2bba08 and terminal
+resources in existing evidence/inventory. Never relabel the failed original.
 
-Integrate and review fixtured578ec8 during compilation, then dispatch its first eight
-actual invocations from copied off/on/zero retained seeds. It must prove positive,
-retry and missing PG copy with currentpolicy3 over historical2, expired old Ingest
-scheduling and complete raw native/SQL/input/recorder preservation. Artificial fixture
-checks are not engine evidence. Actual issued-positive/source-zero, identity/input/
-dependency refusals, held native and closing/outcome COMMIT-loss followed by fresh
-configuration-only recovery remain owed. Source2 closure/retirement, epoch3/repeated
-lifetimes and Archive/Sync restart remain separate obligations; no writer conversion,
-ACK/GC or fabricated epoch2 InitialRegistration. Archive frontier/catalog recovery
-internals have not yet been fully reviewed.
+After corrected build PASS and review of integrated fixtured578ec8, run the first
+eight actual commands on copied off/on/zero retained seeds using
+`experiments/acquisition-scope/bindings.py ROOT --ingest-activated-recovery ARTIFACTS`.
+It must prove positive/retry/missingcopy under currentpolicy3 over historical2,
+expired scheduling and complete native/SQL/input/recorder preservation. Artificial
+fixture checks are not engine evidence. The [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
+and `activated_recovery_20261013` in recovery evidence own semantics/results.
+
+Actual issued-positive/source-zero, identity/input/dependency refusals, held native
+and closing/outcome COMMIT-loss followed by fresh configuration-only recovery remain
+owed. Source2 closure/retirement, epoch3/repeated lifetimes and Archive/Sync restart
+remain separate obligations; no writer conversion, ACK/GC or fabricated epoch2
+InitialRegistration. Archive frontier/catalog recovery internals not fully reviewed.
 
 M1 additionally owes archive/index/read/export/restart journeys and outages; five
 exports under256MiB remain NOT_RUN. Follow existing cross-phase dependencies through
@@ -127,9 +136,9 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-All build/engine/replay wrappers are terminal, including latest49363(engine) and
+All build/engine/replay wrappers are terminal, including51191(failed build),49363(engine) and
 21498(root replay), both joined0. Latest PG/client terminal states were rechecked
-10:14Z: PG0/client143, stopped/PID0/noOOM. No current engine or build. Preserve all
+10:14Z: PG0/client143, stopped/PID0/noOOM. No current engine or build; failed build3827bc2 is stopped-retained. Preserve all
 artifacts and inspect ownership afresh before reusing the authorized borrowed PG.
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 

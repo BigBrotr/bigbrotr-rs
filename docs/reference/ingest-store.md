@@ -364,7 +364,16 @@ bigbrotr ingest recover --file ROOT --activated-successor
 ```
 
 Apply migration0033 explicitly first and retain the native directory and original
-inputs. The command requires local Control/Ingest, exclusive native custody and
+inputs. Using the provisioning credential, grant the configured PostgreSQL
+application role `EXECUTE` on `control.require_activated_initial_recovery(bytea)`
+and retain its existing Control/Ingest grants. For the qualified application role:
+
+```sql
+GRANT EXECUTE ON FUNCTION control.require_activated_initial_recovery(bytea) TO bigbrotr_control;
+```
+
+Run recovery with the application credential. The command requires local
+Control/Ingest, exclusive native custody and
 the exact retained preparation/activation. It uses fresh Control and current
 accepted policy; the old Ingest scheduling lease may already have expired. It
 closes producer2 and verifies retained positive outcomes, copying a missing

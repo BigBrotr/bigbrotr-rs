@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_activated_recovery = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-recovery'
 ingest_installed_live = len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live'
 ingest_live_refusals = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-refusals'
 ingest_live_routes = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-routes'
@@ -94,7 +95,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_installed_live or ingest_live_refusals or ingest_live_routes or ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_activated_recovery or ingest_installed_live or ingest_live_refusals or ingest_live_routes or ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -452,6 +453,13 @@ if ingest_live_guards:
         'first-request manifest mismatch, real network provenance and installed successor consumers',
         'native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1',
         'capacity/load/aged-state and arm64/release']
+
+if ingest_activated_recovery:
+    report['wave'] = 'installed-activated-recovery'
+    report['not_run'] = ['issued-positive source-zero, corrupt inputs/dependencies and held-native refusal',
+        'closing/outcome COMMIT loss and configuration-only recovery',
+        'source2 closure/retirement, repeated lifetimes, Archive restart, ACK/GC and full M1',
+        'native syscall uncertainty/power loss, capacity/load/aged-state and arm64/release']
 
 if ingest_installed_live:
     report['wave'] = 'installed-live-initial-successor'
@@ -877,6 +885,9 @@ if ingest_live:
 if ingest_live_guards:
     success_status = 'PASS_LIVE_INITIAL_GUARDS'
 
+if ingest_activated_recovery:
+    success_status = 'PASS_INSTALLED_ACTIVATED_RECOVERY'
+
 if ingest_installed_live:
     success_status = 'PASS_INSTALLED_LIVE_INITIAL_SUCCESSOR'
 
@@ -1054,6 +1065,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_activated_recovery:
+        cases = ['installed-activated-recovery']
     elif ingest_installed_live:
         cases = ['installed-live-initial-successor']
     elif ingest_live_refusals:
@@ -1123,6 +1136,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_activated_recovery:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from activated_recovery import run_all as run_activated_recovery
+            report['cases'].append(run_activated_recovery(pg, client, output, rows, clone))
             save()
         elif ingest_installed_live:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1305,6 +1323,15 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_activated_recovery:
+        from activated_recovery import CASES as ACTIVATED_RECOVERY_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and report['cases'][0]['name'] == 'installed-activated-recovery'
+            and report['cases'][0]['cli_invocations'] == 8
+            and [r['name'] for r in report['cases'][0]['cases']] == list(ACTIVATED_RECOVERY_CASES)
+            and [len(r['attempts']) for r in report['cases'][0]['cases']] == [3, 3, 2]
+            and all(r['status'] == 'PASS' and all(a['status'] == 'PASS' for a in r['attempts'])
+                for r in report['cases'][0]['cases']), 'installed-activated-recovery-case-set')
     if ingest_installed_live:
         from installed_live import CASES as INSTALLED_LIVE_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
