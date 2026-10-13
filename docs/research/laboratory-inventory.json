@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-12",
+  "updated_at": "2026-10-13",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -40810,5 +40810,61 @@
       "resources": "Current two buildcontainers, borrowedPG and788f971client stopped/PID0/noOOM; six unrelatedservices running; no cleanup/restart",
       "free_bytes": 67928608768
     }
+  },
+  "implementation_live_initial_activation_20261013": {
+    "status": "PAUSED_INCOMPLETE_NATIVE_WIP_NOT_RUN",
+    "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
+    "owner": "root sole integrator/build/engine executor",
+    "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
+    "worktrees": [
+      {
+        "root": ".research/live-initial-native-20261013",
+        "branch": "implementation/live-initial-native",
+        "owner": "successor_restart_design",
+        "head": "a54cf1b6c26119a18d928451881a945e755090de",
+        "state": "paused-clean-committed-privately-pushed",
+        "scope": "Eight native Rust files; incomplete unqualified candidate/private activation and epoch2 zero-source draft; no integration"
+      },
+      {
+        "root": ".research/live-initial-control-20261013",
+        "branch": "implementation/live-initial-control",
+        "owner": "recovery_review",
+        "head": "4253907546efb50cba1a4d62ca08020b84ea700c",
+        "state": "paused-clean-privately-pushed",
+        "scope": "Source and contract review only; no PG edits, migration or implementation"
+      },
+      {
+        "root": ".research/live-initial-tests-20261013",
+        "branch": "qualification/live-initial-native",
+        "owner": "cleanup_review",
+        "head": "4253907546efb50cba1a4d62ca08020b84ea700c",
+        "state": "paused-clean-no-new-commit",
+        "scope": "Source review and fixture design only; no test file or module declaration"
+      }
+    ],
+    "resources": [],
+    "qualification": "No new build, native tests, SQL migration or connected engine campaign allocated or executed",
+    "pause_observation": {
+      "observed_at": "2026-10-13T05:51:29Z",
+      "reason": "Explicit owner pause for exhausted credits; resume only on explicit request",
+      "canonical_head_before_checkpoint": "4253907546efb50cba1a4d62ca08020b84ea700c",
+      "last_qualified_product_evidence": "3f7d442a816a4f91e48736004c7ba9215263cc87",
+      "active_owned_build_or_engine_processes": false,
+      "process_observation": "Read-only /proc and Docker inspection at05:50:51Z found no matching qualification/build/probe process and no running BigBrotr container; all three helpers stopped with no owned process",
+      "current_build": "Both retained7e820b9 containers freshly inspected stopped0/PID0/noOOM",
+      "current_engine": "BorrowedPG stopped0, retained788f971 idleclient143/PID0/noOOM; prior wrappers already joined",
+      "unrelated_running_services": [
+        "inspirehep-reindex-db-1",
+        "inspirehep-reindex-mq-1",
+        "inspirehep-reindex-cache-1",
+        "inspirehep-reindex-es-1",
+        "ollama",
+        "tgdataset-mongo"
+      ],
+      "preservation": "All ignored .research worktrees/data, external lab roots, original datasets, raw failed runs, frozen seeds, executables, retained containers/volumes and older worktrees preserved; no cleanup or engine restart during pause",
+      "free_bytes": 67827175424,
+      "free_bytes_observed_at": "2026-10-13T05:50:51Z"
+    },
+    "next_action": "Only on explicit resume: verify saved worktree/remote identities and review complete4253907..a54cf1b native diff against PG authority consumer and independent fixtures before integration or build allocation"
   }
 }

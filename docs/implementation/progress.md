@@ -1,8 +1,10 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T05:39:37Z on Tux after the owner explicitly reactivated the
-goal. The previous turn made progress by saving and privately pushing the verified
-safe-pause checkpoint61fc6e3. The full selected product remains incomplete.
+Observed 2026-10-13T05:51:29Z on Tux at the owner's explicit safe-stop request
+for exhausted credits. Execution is PAUSED; resume only on an explicit owner
+request. The full selected product remains incomplete. No new implementation or
+test campaign was started while stopping; unfinished native work is preserved
+separately, without integration.
 Navigation, not another plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -10,20 +12,32 @@ Navigation, not another plan. Follow the
 
 The full selected product remains INCOMPLETE. Q34 makes Tux the sole editing,
 Git, development and test host; Q35 appoints this session sole integrating owner
-and activates the full-product goal through M1–M5. Continue ordinary authorized
-work autonomously. Preserve private distribution, unpublished Cargo packages,
+and defines the full-product goal through M1–M5. The latest explicit pause
+overrides autonomous continuation until the owner resumes it. Preserve private
+distribution, unpublished Cargo packages,
 legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Current observed HEAD61fc6e3e21424f22d007b496e947986d2b70c4a0 is the saved pause
-checkpoint over qualified product/evidence3f7d442. Fresh fetch confirms ahead0/
-behind0 and the checkout was clean before this resumption update. Main remains
+Current observed HEAD4253907546efb50cba1a4d62ca08020b84ea700c records the selected
+live-activation contract over pause checkpoint61fc6e3 and qualified
+product/evidence3f7d442. The checkout was clean before this pause update and one
+commit ahead of origin/recovery/tux-20261012. This checkpoint commit and push are
+the remaining safe-stop operation; verify their actual final SHA on resumption.
+Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase is in progress.
-Root owns the current checkpoint/inventory update. No product change awaits
-verification. Three earlier helper worktrees remain committed and retained.
-Successor_restart_design and recovery_review have resumed read-only activation
-contract/source review; neither owns implementation edits yet.
+Root owns only the current checkpoint/evidence/inventory update. Native WIP
+a54cf1b6c26119a18d928451881a945e755090de is committed and privately pushed on
+implementation/live-initial-native, outside the canonical branch; it is incomplete
+and unqualified. The three current helper worktrees are stopped and clean:
+
+| Worktree | Owner | Saved state |
+|---|---|---|
+| `.research/live-initial-native-20261013` | successor_restart_design | a54cf1b, pushed; eight native Rust files changed |
+| `.research/live-initial-control-20261013` | recovery_review | 4253907, pushed; source review only, no edits |
+| `.research/live-initial-tests-20261013` | cleanup_review | 4253907, no edits or new commit; source review only |
+
+All earlier helper worktrees remain retained. No merge/cherry-pick is pending.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -255,12 +269,27 @@ remains separately pinned. New build profile `ingest-empty-installed` runs compi
 five actual entrypoint tests and Clippy. Build and engine completed as above. All owned containers stopped without OOM,
 cleanup/missing/unrelated arrays empty. This qualified slice is privately pushed.
 
-The current bounded action implements the selected
+The paused bounded action concerns the selected
 [live1→2 activation contract](../reference/ingest-registration.md#live-initial-successor-activation-under-implementation).
 Its locally minted candidate, immutable activation receipt, shared admission
-protocol and zero-start semantics are recorded before implementation. Continue
-P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4/M1. The read-only analysis
-has not implemented or qualified activation; the selected requirements are:
+protocol and zero-start semantics were recorded before implementation. Native WIP
+changes `store.rs`, new `initial_writer.rs`, `initial_handoff.rs`, `admission.rs`,
+`certification.rs`, `dictionary_preparation.rs`, `dictionary_append.rs` and
+`producer_recovery.rs` under `apps/bigbrotr/src/storage/rocks/`. The author reports
+scoped Rust 2024 formatting and `git diff --check` PASS before the stop. The draft
+owns a candidate/private activation capability and epoch2 zero-source handling;
+existing recovery remains epoch1-only. Root has not reviewed the complete saved
+diff. Compilation, Clippy, independent native tests and connected acceptance are
+NOT_RUN. No PG activation receipt/migration0032, PG consumer, test file/module
+registration, live probe, harness or new build profile has been written.
+
+On explicit resume, first verify these three saved worktrees and remote heads,
+then review the complete native diff4253907..a54cf1b against the selected contract
+and settle its API with the PG authority consumer and independent test author.
+Record findings in the same evidence record before integration or allocation.
+The immediate result must be a reviewed implementation boundary, with unfinished
+PG/schema/fixture obligations explicit. Then continue P02-T01 Step5 / P02-T02
+Step4, enabling P01-T09 Step4/M1. The selected requirements remain:
 
 - A genuinely new native-owning process mints and retains its own nonportable live
   candidate. Observed prepared identity cannot authorize adoption. Keep ordinary
@@ -288,7 +317,14 @@ initial_ingest commands/Sync/Archive owners. Read their complete affected caller
 before implementation. Next-slice acceptance must discriminate actual live
 candidate versus observed/foreign candidate, first append1, no-fact request1 then
 new-fact request2, immutable original rows/inputs, activated-zero recovery refusal,
-renewal and ambiguous activation COMMIT. These tests are NOT_RUN and unallocated.
+renewal and ambiguous activation COMMIT. These tests are NOT_RUN; the independent
+test worktree exists but contains no test implementation. The proposed fixture
+module belongs under `admission_tests::initial_reconstruction_tests` to reuse its
+signed fixture; its declaration has not been added. PG implementation must finish
+the manifest/control-schema and ownership-guard reads before adding0032 and a
+shared validated batch authority. Root read existing finite succession/empty
+probes and initial_batch.rs lines1–520; its remaining lines and final integration
+boundaries still need full review.
 General repeated lifetimes, retired-empty2→fresh3 and installed restart remain
 selected requirements, not completion implied by a bounded1→2 capability.
 
@@ -317,18 +353,22 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. At2026-10-13T05:39:37Z the two current build containers, borrowed
+and dated observations. At2026-10-13T05:51:29Z the two current build containers, borrowed
 PostgreSQL and installed engine client were freshly inspected: stopped/PID0/noOOM,
 exit0/0/0/143 respectively. Build84756 and engine46588 wrappers were already joined0.
-No matching qualification/build/probe process remained; six unrelated services
-remain running unchanged. No build/engine background task requires joining. The retained788f971 result and
+No matching qualification/build/probe process remained in the read-only process
+inspection at05:50:51Z; no BigBrotr container was running. All three helpers
+confirmed no owned process and stopped. Six unrelated services remain running;
+none was stopped or changed. No build/engine background task requires joining.
+The retained788f971 result and
 7e820b9 CLI/probe hashes were rechecked and match their recorded identities; the
-prior qualification exclusions remain explicit. No new test campaign ran during
-this resumption inspection.
+prior qualification exclusions remain explicit. Those hashes were checked during
+the05:39:37Z resumption inspection, not rerun as a pause-time test campaign.
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
 external laboratories under `/home/tux/bigbrotr-implementation-20260917/`, retained
 containers/volumes and protected executables are preserved. No cleanup was run
-while pausing. Do not mistake Git cleanliness for permission to delete ignored data. Last free space67,928,608,768 bytes (about63.3GiB); remeasure
+while pausing. Do not mistake Git cleanliness for permission to delete ignored data.
+Last free space67,827,175,424 bytes at05:50:51Z (about63.2GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.
