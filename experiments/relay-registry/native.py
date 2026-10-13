@@ -138,7 +138,7 @@ if mode == 'ingest-activated-source':
 if mode == 'ingest-activated-durable':
     identity['scope'] = 'Genuine network AlreadyDurable/source-zero finite probe compile and Clippy only; unchanged product91-test evidence retained at9dbc5b2. Connected finite seed and installed source closure qualification remain separate'
 if mode == 'ingest-activated-refusals':
-    identity['scope'] = 'Fixed isolated activated-recovery corruption probe and CLI compile with Clippy only; unchanged product tests retained atfaa1390/2a018ea after exact input comparison. Actual installed refusal qualification remains separate'
+    identity['scope'] = 'Fixed isolated activated-recovery/source-prefix corruption and actual reservation-loss probe plus CLI compile with Clippy only; unchanged product91-test evidence retained at9dbc5b2 after exact input comparison. Actual connected refusal qualification remains separate'
 if mode == 'ingest-activated-installed':
     identity['scope'] = 'Activated installed recovery, additive Control retirement correction and finite rejected/source-zero probe compile; actual entrypoint/schema/migration tests and Clippy. Unchanged101 native tests retained atfaa1390; connected qualification remains separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',

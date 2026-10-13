@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:38Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:42Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,12 +14,11 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-d96af60a3c7eab32d6d550f521701dec96eafad5. Last verified private push939cf13; main54ad09d unchanged.
-No merge/rebase/cherry-pick pending. AlreadyDurable fixture integrated6ffa9cb and
-engine source0e4917f qualified. Lock fixture17de5cd integratedd96af60; root owns
-its dispatcher and evidence update. Native prefix probe e1f74d7 remains isolated
-until the lock engine finishes. Root alone integrates/builds/executes. Preserve
-all ignored/external artifacts and originals.
+3748eceaf93784cb67fb5b1fae7d0f259903d42c. Last verified private push939cf13; main54ad09d unchanged.
+No merge/rebase/cherry-pick pending. Durable engine0e4917f and lockengine14b7bd4
+PASS. Native prefix probe e1f74d7 integrated3748ece; root owns evidence/buildscope
+update. Independent Python three-case refusal fixture in progress in separate
+worktree. Root alone integrates/builds/executes; preserve all artifacts/originals.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -93,12 +92,22 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Run two installed job/source lock schedules using the committed driver/oracle and
-preserved f7 artifacts. Root and independent native reviewer read complete affected
-owners. Pure2contexts/4states/46controls and3custody mocks PASS; actual lockengine
-NOT_RUN. Both cases use a privileged guarded relational job, not authenticated export
-acceptance. Then integrate e1f74d7 prefix probe, compile and qualify only the three
-remaining connected refusal cases; their independent Python fixtures are in progress.
+Build the exact committed prefix probe with existing ingest-activated-refusals
+profile (compile+Clippy only). Product inputs unchanged from91tests at9dbc; four
+example files differ. Finish independent three-case Python fixture and full review,
+then run actual reservation-C14 loss seed plus three installed source refusals.
+Native ordering/shared corruption evidence is unchanged and reused. e1f74d7 adds
+only genuine reservation loss and fixed receipt-prefix truncation laboratory seams.
+
+Lockengine14b7bd4 PASS2CLI: job-first commits cut6 and prevents sourcecut5 closure
+(guard_source_closure_bounds/23514); source-first commits cut5, then job COMMIT
+refuses require_complete_job_input/23514 and rolls back. Exact PID/start observed
+waits; full72SQL/native70seq85/sixinputs preserved. Privileged relational job with
+origin triggers, not authenticated job acceptance. Root4states/46controls rawreplay
+14147 joined0 PASS. Artifact audit IN_PROGRESS using frozen1267container observation.
+Root `/runs/ingest-activated-source-locks-engine-14b7bd4`, ownerbf0439eec4210b35e371f748e076dfa1,
+wrapper46534 joined0,12:38:58–12:39:26Z. ResultSHA
+e9ba6c86f90c265a60e5213f69890ec4fada9b642a573b469a016b0c8b714548.
 
 AlreadyDurable engine0e4917f PASS: one genuine finite authenticated WebSocket resend
 plus two installed source closure commands.53native/seq64/five inputs, request1,
@@ -268,7 +277,8 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-Latest durable engine79115/rootreplay60632 joined0, PG0/client143 stopped.
+Latest lockengine46534/rootreplay14147 joined0; actual custody audit inprogress.
+Earlier durable engine79115/rootreplay60632 joined0, PG0/client143 stopped.
 Latest build31588/rootaudit72470 joined0, allbuildcontainers stopped0/PID0/noOOM;
 59ELFs preserved outsideexclusivecache. Latestfaultengine19724/replay14178joined0;
 PG0/client143 stopped. No engine/build active at thischeckpoint. Threeagents edit

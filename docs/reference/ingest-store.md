@@ -438,8 +438,10 @@ the earlier repaired outcome and any completed closure retain their original
 attribution. A genuine authenticated network resend also qualifies an
 AlreadyDurable-only prefix, followed by installed source closure and exact retry
 without new facts or retry writes. Its job remains queued and its session remains
-unrevoked. Concurrent job bounds and remaining connected prefix/copy/tail refusals
-remain pending scenarios.
+unrevoked. Both concurrent job/source orders also pass: the second incompatible
+commit refuses. These use a privileged relational job with all product guards
+enabled; authenticated job acceptance is a separate journey. Remaining connected
+prefix/copy/tail refusals are pending.
 
 ## Exact dependency source basis
 
