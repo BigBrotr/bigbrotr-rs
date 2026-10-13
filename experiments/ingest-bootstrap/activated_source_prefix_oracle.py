@@ -19,7 +19,7 @@ from activated_recovery_faults_oracle import (COUNTERS, PROXY_SHA256, backend_ch
 from activated_source_durable_oracle import migrated_seed
 from initial_live_routes_oracle import backend_checked as finite_backend
 from initial_succession_oracle import claim, ended, only, prepared, renewed, same
-from installed_empty_oracle import exclusion, fresh_xmin, native, window
+from installed_empty_oracle import exclusion, fresh_identity, fresh_xmin, native, window
 from installed_live_oracle import catalog_identity, instant
 
 CASES = ('installed-source-reservation-tail', 'installed-source-retained-tail',
@@ -204,8 +204,9 @@ def seed_state(events, original, native_before, inputs, *, retired, server_windo
 def failed_fresh_control(before, after, clock):
     """The failed finite owner's physical absence precedes a new fenced claim.
 
-Only after validating the complete exclusion rows do we remove their effect to
-reuse the aggregate fresh-claim checker. No unobserved release is synthesized.
+    ControlSession::acquire fences and retires the old identity and inserts the
+    new identity in one transaction. Freshness is relative to the original
+    capture, not an intermediate state containing those same transaction rows.
 """
     previous = max((r for r in before['owner_epochs'] if r['role'] == 'control'), key=lambda r:r['epoch'])
     assert previous['state'] == 'active'
@@ -213,18 +214,33 @@ reuse the aggregate fresh-claim checker. No unobserved release is synthesized.
     fenced = only(after['owner_epochs'], role='control', epoch=previous['epoch'])
     old_role = only(before['role_instances'], role_instance_id=previous['role_instance_id'])
     retired = only(after['role_instances'], role_instance_id=previous['role_instance_id'])
+    role = only(after['role_instances'], role_instance_id=current['role_instance_id'])
     fresh_xmin(fenced['xmin'], before)
-    assert fenced['xmin'] == retired['xmin'] and fenced['xmin'] != current['xmin']
+    assert fenced['xmin'] == retired['xmin'] == current['xmin'] == role['xmin']
     for at in (fenced['released_at_us'], retired['retired_at_us']): live.clock(at, clock)
     assert fenced['released_at_us'] <= retired['retired_at_us'] <= current['acquired_at_us']
-    assert retired['retired_at_us'] <= only(after['role_instances'], role_instance_id=current['role_instance_id'])['created_at_us']
+    assert retired['retired_at_us'] <= role['created_at_us']
     assert fenced == dict(previous, state='released', released_at_us=fenced['released_at_us'],
         exclusion_method='storage_fenced', exclusion_digest=exclusion(previous, current['process_incarnation']), xmin=fenced['xmin'])
     assert retired == dict(old_role, retired_at_us=retired['retired_at_us'], xmin=fenced['xmin'])
-    basis = copy.deepcopy(before)
-    basis['owner_epochs'][basis['owner_epochs'].index(previous)] = fenced
-    basis['role_instances'][basis['role_instances'].index(old_role)] = retired
-    projected, current = failed_control(basis, after, 'close', clock)
+    for field in ('role_instance_id', 'process_incarnation'): fresh_identity(current[field])
+    assert not any(r['role_instance_id'] == current['role_instance_id'] for r in before['role_instances'])
+    assert not any(r['process_incarnation'] == current['process_incarnation'] for r in before['owner_epochs'])
+    assert type(current['control_backend_pid']) is int and current['control_backend_pid'] > 0
+    for at in (instant(current['control_backend_start']), role['created_at_us'], current['acquired_at_us']):
+        live.clock(at, clock)
+    assert instant(current['control_backend_start']) <= role['created_at_us'] <= current['acquired_at_us']
+    assert current == dict(previous, epoch=previous['epoch'] + 1,
+        role_instance_id=current['role_instance_id'], process_incarnation=current['process_incarnation'],
+        acquired_at_us=current['acquired_at_us'], lease_expires_at_us=current['acquired_at_us'] + 20_000_000,
+        state='active', released_at_us=None, exclusion_method=None, exclusion_digest=None,
+        archive_frontier_protocol=None, control_fence_version=1, control_backend_pid=current['control_backend_pid'],
+        control_backend_start=current['control_backend_start'], xmin=fenced['xmin'])
+    assert role == dict(role_instance_id=current['role_instance_id'], dataset_id=previous['dataset_id'],
+        role='control', created_at_us=role['created_at_us'], retired_at_us=None, xmin=fenced['xmin'])
+    projected = copy.deepcopy(after)
+    projected['owner_epochs'].remove(current)
+    projected['role_instances'].remove(role)
     projected['owner_epochs'][projected['owner_epochs'].index(fenced)] = previous
     projected['role_instances'][projected['role_instances'].index(retired)] = old_role
     return projected, current
@@ -372,6 +388,13 @@ def negative_controls(**context):
     reject('retained-fact-corrupt', change_fact)
     if context['mode'] == CASES[0]:
         reject('failed-owner-not-fenced', lambda c:only(c['after']['owner_epochs'], role='control', epoch=8).update(state='active'))
+        def split_claim(c):
+            current = only(c['after']['owner_epochs'], role='control', epoch=9)
+            current['xmin'] = '999999998'
+            only(c['after']['role_instances'], role_instance_id=current['role_instance_id'])['xmin'] = current['xmin']
+        reject('fencing-and-claim-split-transactions', split_claim)
+        reject('old-role-retired-separate-transaction', lambda c:only(c['after']['role_instances'],
+            role_instance_id=only(c['before']['owner_epochs'], role='control', epoch=8)['role_instance_id']).update(xmin='999999997'))
         reject('reservation-lost', lambda c:c['after']['producer_requests'].remove(only(c['after']['producer_requests'], producer_epoch=2)))
         def other_database(c):
             db = 'bb_foreign_prefix'
