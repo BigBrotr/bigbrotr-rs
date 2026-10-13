@@ -1,8 +1,8 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T07:29:35.903380+00:00 on Tux after the owner explicitly resumed the goal.
+Observed 2026-10-13T07:37:56.549945+00:00 on Tux after the owner explicitly resumed the goal.
 The runtime Goal is ACTIVE; the full selected product remains INCOMPLETE.
-Canonical2c142c6 and helper3553108/127a937 were privately pushed and verified by
+Canonical44ba71c and helper3553108/127a937 were privately pushed and verified by
 ls-remote. Finite connected engine2c142c6 and its read-only evidence audit pass.
 Retained788f971 evidence rehash matches its recorded result.
 Navigation, not another plan. Follow the
@@ -17,7 +17,7 @@ Cargo packages, legacy reference repositories and unrelated workloads remain
 protected. No public release, repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Observed HEAD915478c integrates guard harness9f45f83, oracle dc02056 and its
+Observed HEADb48c714 integrates guard harness9f45f83, oracle dc02056 and its
 phase-clock correction338927d. Native/PG product remains qualified by c640b2f;
 the extended probe was compiled at ee24e86. Root bindings and these evidence
 updates now record the first guard engine failure; root bindings are committed. Independent oracle review found two coherent
@@ -25,14 +25,14 @@ backdated refresh transcripts accepted by7abcc498; correctiond0f96f7 rejects bot
 at exact phase-clock assertions, while the valid16-snapshot transcript passes35
 controls. Root reviewed the complete sources and delta; independent AI replay
 confirmed the findings closed. No native rebuild is needed.
-Private rootee24e86 and helpers3553108/127a937 are verified. No merge/rebase/cherry-pick
+Private root44ba71c and helpers3553108/127a937 are verified. No merge/rebase/cherry-pick
 is pending. Main is unchanged.
 
 | Worktree | Owner | Current responsibility |
 |---|---|---|
 | `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; independent build audit completed; harness/oracle review completed |
-| `.research/live-initial-control-20261013` | recovery_review | fa19135; guard harness integrated; independent oracle review |
-| `.research/live-initial-tests-20261013` | cleanup_review | d0f96f7; corrected guard oracle integrated; pure evidence retained |
+| `.research/live-initial-control-20261013` | recovery_review | 18bf166; corrected guard harness integrated |
+| `.research/live-initial-tests-20261013` | cleanup_review | ea625e7; corrected reviewed template integrated; pure evidence retained |
 
 All earlier helper worktrees, ignored data and external laboratories remain retained.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
@@ -347,8 +347,7 @@ artifacts; helpercleanup_review audited1226 nonborrowed resource projections and
 both terminal resources. Helper authored the oracle, not the harness/resources.
 Original SQL preservation remains captured-run evidence; no audit restart.
 
-Next bounded action: correct the request fixture after failed915478c, review the
-SQL/template pin, commit and run a fresh exact `--ingest-live-guards` clone with the already
+Next bounded action: commit the corrected fixture evidence and run a fresh exact `--ingest-live-guards` clone with the already
 compiled ee24e86 artifacts. The14 SQL discriminators execute on
 the actual preparing Control backend, followed by actual live renewal and admission.
 Root wrote Rust probe/profile and owns later bindings; recovery_review owns the new
@@ -378,7 +377,12 @@ prepared capture, native remains52/sequence62 and four inputs remain exact; orig
 seed preservation and exact backend absence were captured. No guard/renewal PASS
 is inferred. Raw PostgreSQL log and all failure artifacts remain in that run.
 BorrowedPG stopped0 and client143/PID0/noOOM; cleanup/missing/unrelated arrays empty.
-Only Python SQL fixture/oracle correction is needed; unchanged binaries are retained.
+Correction18bf166 selects the exact old dictionary request3 with STRICT cardinality
+and all six source fields NULL; independent review and corrected template pin ea625e7
+are integrated. Pure16snapshots/14cases/35controls pass; old template is refused.
+Independent failed-run custody audit verified1767Gitfiles/twoELFs/21seedpaths/four
+frozenartifacts and1229 unchanged nonborrowed projections. Only the fixture changed;
+unchanged binaries are retained. All original synthetic and failed artifacts remain.
 
 General repeated lifetimes, retired-empty2→fresh3, activated-owner recovery,
 installed Sync/Archive restart/resend and ACK/GC remain selected requirements.

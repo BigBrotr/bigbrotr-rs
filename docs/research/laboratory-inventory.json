@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_GUARDS_FIXTURE_CORRECTION_AFTER_FAIL",
+    "status": "ACTIVE_GUARDS_CORRECTED_ENGINE_READY",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40829,17 +40829,17 @@
         "root": ".research/live-initial-control-20261013",
         "branch": "implementation/live-initial-control",
         "owner": "recovery_review",
-        "head": "fa191358807e566da64f3aa8bc460bc6ef5ca946",
+        "head": "18bf1660bdd5111461efe325d0d156431d1ff06c",
         "state": "clean-read-only-independent-review",
-        "scope": "Guard harness integrated; independent temporal oracle correction review"
+        "scope": "Corrected request fixture integrated; retained original failure"
       },
       {
         "root": ".research/live-initial-tests-20261013",
         "branch": "qualification/live-initial-native",
         "owner": "cleanup_review",
-        "head": "d0f96f73255d986043ee2614795beaee2ba5ab84",
+        "head": "ea625e7bbacee945e53782ec841c7c417ca24298",
         "state": "clean-retained-pure-evidence",
-        "scope": "Corrected guards oracle integrated; artificial before/after artifacts retained"
+        "scope": "Corrected reviewed template pin integrated; both artificial evidence versions retained"
       }
     ],
     "resources": [
@@ -40873,7 +40873,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Correct only the raw request fixture to reach the intended activation fence with otherwise eligible authority; independently review changed SQL/template pin, then run a fresh exact engine clone using unchanged ee24e86 artifacts. Preserve failed915478c and all prior evidence.",
+    "next_action": "Execute fresh exact guard engine with corrected reviewed request fixture and unchanged ee24e86 binaries, preserve failed915478c, audit actual evidence.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -41396,14 +41396,14 @@
       }
     ],
     "guards_fixture": {
-      "status": "ENGINE915478c_FAIL_INELIGIBLE_HISTORICAL_JOB",
+      "status": "CORRECTED_REVIEWED_ENGINE_NOT_RUN",
       "probe_owner": "root",
       "harness_owner": "recovery_review",
       "oracle_owner": "cleanup_review",
       "scope": "14 rollback-only SQL discriminators on actual preparing Control backend, restored product catalog, confirmed typed activation then actual Control refresh/Ingest renewal and signed admission",
       "checks": "AST/import/API/diff-check PASS; artificial16snapshots/14SQLcases/35rehashed controls. Exact old oracle accepts two propagated backdated transcripts; corrected oracle rejects both with exact phase-clock diagnostics.",
       "excluded": "Expired/refused renewal, activated-zero old-loader routes, first-request manifest mismatch, real network/provenance and installed/general successor recovery remain owed",
-      "observed_at": "2026-10-13T07:30:14.622295+00:00",
+      "observed_at": "2026-10-13T07:37:56.549945+00:00",
       "harness_source": "fa191358807e566da64f3aa8bc460bc6ef5ca946",
       "harness_integrated": "9f45f83",
       "oracle_source": "7abcc498affec87c041daf140441a6718fdaf30f",
@@ -41417,6 +41417,16 @@
         "valid_sha256": "c184f0a471aa527975456f28b1740cfdd536835292cf500a2c538c5cb95485cb",
         "guard_backdated_sha256": "1fb62d3ef5c3cee5ab839cdb3569eb5057f35c03d58853d3a8790e238d18a4c8",
         "postactivation_backdated_sha256": "815d87ec935b8ae4c5568102c3b32ffd6c8926434c1151442374631e327dd720"
+      },
+      "request_fixture_source": "18bf1660bdd5111461efe325d0d156431d1ff06c",
+      "request_fixture_integrated": "9c8b16a",
+      "template_correction_source": "ea625e7bbacee945e53782ec841c7c417ca24298",
+      "template_correction_integrated": "b48c714cbad7bd58c457f51a51199bae2a2c4e09",
+      "request_fixture_review": "Root and independent AI reviewed STRICT original dictionary request3/all6sourcefieldsNULL;814-byte frozen input08c9b935. Exact14case set and named guard assertions unchanged. Corrected pure16snapshots/14cases/35controls PASS; old failed template rejected as unreviewed.",
+      "corrected_artificial_evidence": {
+        "root": ".research/live-initial-tests-20261013/.research/live-guards-oracle-fixture-v2-20261013",
+        "generator_sha256": "1bb0905832a71d649ef533d3e9dfe66e1662f02b2499241205e60ee8442cb047",
+        "valid_sha256": "b6aaf207c83acf3cb6e93a5c78ce7b7c6ffc32f0c38c7e4f665cb020beff1bdd"
       }
     },
     "guard_builds": [
@@ -41594,7 +41604,8 @@
           "files": true,
           "inputs": true,
           "artifacts": true
-        }
+        },
+        "audit": "Independent read-only AI custody audit:1767 exactGitfiles/two currentELFs/unchangedcompiledinputs;1229 nonborrowed projections unchanged of1230 priorcontainers,only ownedclient added;terminalPG0/client143/PID0/noOOM;21 seedpaths302273regularfilebytes/four frozenartifacts unchanged;external72SQL/native52seq62/input4 equals lastprepared,exactbackendabsence. No guard/oracle PASS."
       }
     ]
   }
