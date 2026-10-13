@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:59Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:14Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,10 +14,10 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-1dc001a1d0b9a4155d0eb8ac3bd581b5cd193428. Last verified private push198e2a5; three prior qualification branches pushed.
+4d99fa22bab4f6cac9f44391370ddfbfeb462291. Last verified private push198e2a5; three prior qualification branches pushed.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
-integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; rootdispatcher committing; next workflow design is read-only. Root alone integrates/builds/executes.
+integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; next contract c0024b8 remains separate. Root alone integrates/builds/executes.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -91,18 +91,24 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Run exact committed sourceprefix engine with protectedbb53 artifacts: one actual
-C14 reservation-loss finite seed and three installed refusals. Driver285/oracle404
-reviewed by root and independent PG reviewer, pure9seed snapshots+6installed
-observations/43controls and4capture/custody mocks PASS. CTE explicit aliases,
-external capture before missingwire parsing, orchestrationerror refusal and same
-seed/CLI database binding corrected before engine. Actual engine NOT_RUN.
-Cases: issued0/reserved1 refuses Control(InvalidMetadata) beforeclosing;
-retainedtargettail69/86→69/87 refuses StateMismatch at prefixfinish; successful939
-terminalclone outcome2byteconflict refuses Outcome(Conflict), no nativewrite/repair.
-Next bounded product after qualification is activated acquisition abandonment,
-with additive0036 exact epoch2 gap branch and activatorControl claimed jobs; design
-only, no implementation yet. No draining, producer/domain retirement or ACK/GC.
+Run corrected committed sourceprefix engine on fresh copies with protectedbb53
+artifacts: one actual C14 finite seed and three installed refusals. First engine
+`ingest-activated-source-prefix-engine-d115647` remains FAIL, wrapper26090 joined1,
+13:00:24–13:00:38Z, owner75b60bf66d82759f308cf3914ad821c3. ResultSHA
+84f5ab0b46d1473cb862464926368decb864576c27ea7c27bb33446133b681d4.
+Finite9snapshots PASS; first installed CLI4 Control(InvalidMetadata) preserved all
+scientific data. Oracle wrongly assumed separate transactions for old Control
+fencing and new claim; all four rows actually share fresh xmin28750. Narrow oracle
+55dcdb2 integrated4d99fa2 checks exact atomic delta from original baseline. Root and
+independent PG review PASS;3purecontexts/45controls and retrospective firstcapture
+9seed+2states/18controls PASS. Original wave stays FAIL; retained-tail/copy-conflict
+NOT_RUN. No product change. Custody audit1810engine/1808build files,61ELFs,
+1268unchanged nonborrowed projections of1270 observed;48rawbindings/5externalstates,
+originalf12 intact. Off/closed seeds not visited and no new physical census claimed.
+PG0/client143 stopped/PID0/noOOM; no engine/build active.
+Next bounded product after qualification is activated acquisition abandonment;
+contract c0024b8 defines additive0036 paired epoch2 gaps and activatorControl jobs,
+awaiting independent PG review/integration. No implementation/draining/retirement.
 
 Prefixbuildbb53 PASS compile+Clippy onRust1.98.1/Clang14, wrapper15173 joined0,
 12:43:04–12:44:39Z. Root `/runs/ingest-activated-refusals-bb53bf5`,
@@ -110,7 +116,7 @@ owner291d7509db26a7a3adc3dc54b1c29ac6. ReceiptSHA
 afe90bd53c6226f8c220979f34a047809a8af221eeabdc5c4f26fc7c3a172dbb.
 Rootaudit35416 joined0:1808exactGit/export/archivefiles,61retainedELFs,1267unchanged
 priorcontainerprojections+2ownedterminal0. Productinputs unchanged from91tests at9dbc;
-only five examplefiles since9dbc differ, with docs/experiments. No prefixengine yet.
+only five examplefiles since9dbc differ, with docs/experiments. First prefixengine failed in its oracle; corrected engine pending.
 
 Lockengine14b7bd4 PASS2CLI: job-first commits cut6 and prevents sourcecut5 closure
 (guard_source_closure_bounds/23514); source-first commits cut5, then job COMMIT
@@ -296,7 +302,7 @@ or this passing bounded wave does not finish the product.
 Latest prefixbuild15173/rootaudit35416 joined0, allbuildcontainers stopped0/PID0/
 noOOM.61ELFs retained outsideexclusivecache. Lockengine46534/replay14147 joined0,
 PG0/client143 stopped, custodyaudit complete. No engine/build active at checkpoint.
-Agents edit isolated prefixfixtures and read nextworkflowdesign only. Preserve all
+Agents completed narrow prefixcorrection and read nextworkflowcontract only. Preserve all
 originals, failedbuilds, failedaudit scripts/logs and every ignored/external artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:

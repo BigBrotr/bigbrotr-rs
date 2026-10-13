@@ -17768,7 +17768,7 @@
       },
       "activated_source_closure_20261013": {
         "status": "PASS_SOURCE_CLOSURE_POSITIVES_COMMIT_LOSS_AND_JOB_LOCKS_PREFIX_GATES_OPEN",
-        "observed_at": "2026-10-13T12:59:58.338827+00:00",
+        "observed_at": "2026-10-13T13:14:39.944919+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
@@ -18162,7 +18162,7 @@
             "workflowretirement/repeatedlifetimes/Archive/fullM1"
           ]
         },
-        "next": "Run exact committed sourceprefix engine1finite+3CLI using protectedbb53artifacts. Preserve failed states; root semantic/raw replay and independent artifact/custody audit after terminal outcome.",
+        "next": "Execute corrected committed prefix wave on three fresh clones with unchanged protectedbb53 artifacts; then root raw semantic replay and independent custody audit. First d115 engine remains FAIL.",
         "final_commit_fault_fixture": {
           "source": "5b6b176e059dc865b29778bf4d76c9b4f6a0c2e3",
           "integrated": "fee9793a0cc3de09d72d0112348717fad061cd6a",
@@ -18519,7 +18519,7 @@
         "prefix_fixture": {
           "source": "bdf6548057451791232b6a535fbfbd3b849e91e6",
           "integrated": "1dc001a1d0b9a4155d0eb8ac3bd581b5cd193428",
-          "status": "REVIEWED_COMMITTED_ENGINE_NOT_RUN",
+          "status": "CORRECTED_AFTER_FIRST_ENGINE_FAIL_FRESH_ENGINE_NOT_RUN",
           "cases": [
             "installed-source-reservation-tail",
             "installed-source-retained-tail",
@@ -18535,6 +18535,56 @@
             "installed_observations": 6,
             "controls": 43,
             "custody_capture_mocks": 4
+          }
+        },
+        "failed_prefix_wave": {
+          "status": "FAIL",
+          "source": "d1156478b06a6f766c2c5c33f0b6437bc562ce2e",
+          "owner": "75b60bf66d82759f308cf3914ad821c3",
+          "client": {
+            "id": "4667fb6aa2c1d0c3846014665807d435e8402bfc602de9eb3b6639d3538722d9",
+            "name": "bigbrotr-acquisition-binding-d115647"
+          },
+          "started_at": "2026-10-13T13:00:24.401791+00:00",
+          "finished_at": "2026-10-13T13:00:38.637104+00:00",
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-prefix-engine-d115647",
+          "wrapper": "26090 joined exit1",
+          "result_sha256": "84f5ab0b46d1473cb862464926368decb864576c27ea7c27bb33446133b681d4",
+          "cause": "Oracle wrongly required fencing and fresh Control claim to use different xmins. ControlSession::acquire performs both in one transaction; old owner/role8 and new owner/role9 all have fresh xmin28750. Shared helper reused an invalid intermediate freshness baseline.",
+          "actual": "Finite C14 after-complete reservation loss PASS:9snapshots,52native/sequence62,5inputs,issued0/reserved1/sourcecut0; actual driver poisoned/dropped/joined/backend absent. First CLI4 Control(InvalidMetadata), reaped/nonforced, exact four Control rows and no other SQL/native/input changes.",
+          "not_run": [
+            "installed-source-retained-tail",
+            "installed-source-copy-conflict"
+          ],
+          "correction": {
+            "source": "55dcdb26bcd6744ea1a672f675732e78defb176c",
+            "integrated": "4d99fa22bab4f6cac9f44391370ddfbfeb462291",
+            "scope": "Only local failed_fresh_control reducer and two split-transaction controls; no product/shared-helper change. Root complete affected owner/source and independent PG delta reviews PASS.",
+            "pure_contexts": 3,
+            "pure_controls": 45,
+            "retrospective_seed_snapshots": 9,
+            "retrospective_installed_states": 2,
+            "retrospective_controls": 18,
+            "manifest": ".research/activated-recovery-qualification-20261013/.research/activated-prefix-selfcheck-20261013/correction-manifest.json",
+            "manifest_sha256": "424bc8fa49f0a157c7adb8cad6ed6b625a823fed9e0325f12e6a58584627a056",
+            "original_result": "FAIL unchanged; retrospective first-case check does not qualify unexecuted cases"
+          },
+          "custody": {
+            "report": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-prefix-engine-d115647/cleanup-review-artifact-custody-20261013.json",
+            "sha256": "3f36b6a61824ee6a01208e4907302327370cb139b2328a1e7fccfc0fc55a8be4",
+            "exact_engine_files": 1810,
+            "exact_build_files": 1808,
+            "retained_elfs": 61,
+            "observed_containers": 1270,
+            "unchanged_nonborrowed_projections": 1268,
+            "bound_raw_artifacts": 48,
+            "external_states": 5,
+            "original_f12": "21paths/19files/302273bytes and3frozen artifacts unchanged",
+            "unvisited_originals": "off and closed not reached; no new physical census claimed",
+            "terminal": "PG0/client143 stopped/PID0/noOOM"
           }
         }
       }
