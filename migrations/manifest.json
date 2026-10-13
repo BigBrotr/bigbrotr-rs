@@ -205,6 +205,10 @@
     {
       "version": 35,
       "name": "0035_activated_source_closure.sql"
+    },
+    {
+      "version": 36,
+      "name": "0036_activated_acquisition_abandonment.sql"
     }
   ],
   "reserved": [

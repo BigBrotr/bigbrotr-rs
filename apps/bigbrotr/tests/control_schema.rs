@@ -11,6 +11,7 @@ fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_
         (32, 33, "0033_activated_initial_recovery.sql"),
         (33, 34, "0034_activated_control_retirement.sql"),
         (34, 35, "0035_activated_source_closure.sql"),
+        (35, 36, "0036_activated_acquisition_abandonment.sql"),
     ] {
         let applied: Vec<_> = plan(&[], previous)
             .unwrap()
@@ -34,6 +35,34 @@ fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_
         );
         assert!(migrations::require_applied(&applied, previous).is_ok());
     }
+}
+
+#[test]
+fn activated_abandonment_preserves_older_consumer_floors_and_rejects_changed_history() {
+    let mut applied: Vec<_> = plan(&[], 36)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    for prerequisite in [22, 23, 27, 28, 29, 34, 35, 36] {
+        assert!(migrations::require_applied(&applied, prerequisite).is_ok());
+    }
+    assert!(plan(&applied, 36).unwrap().pending.is_empty());
+    applied.last_mut().unwrap().checksum[0] ^= 1;
+    // An earlier consumer may retain its minimum, but it must not ignore later
+    // applied ledger bytes or treat a changed recovery protocol as compatible.
+    assert_eq!(
+        migrations::require_applied(&applied, 23),
+        Err(MigrationError::ChecksumMismatch(36))
+    );
 }
 
 #[test]

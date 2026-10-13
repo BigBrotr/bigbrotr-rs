@@ -11,7 +11,7 @@ use crate::{
 use bigbrotr_model::ProducerSlotId;
 
 pub struct ActivatedInitialSourceRecovery(ActivatedInitialRecovery);
-pub struct ClosedActivatedInitialSource(ClosedActivatedInitialProducer);
+pub struct ClosedActivatedInitialSource(pub(super) ClosedActivatedInitialProducer);
 
 impl ActivatedInitialSourceRecovery {
     pub fn producer_slot_id(&self) -> ProducerSlotId {
@@ -43,6 +43,20 @@ impl ClosedActivatedInitialSource {
         self.0
             .native
             .source_resolution(recovery, self.reserved_through())
+    }
+
+    pub(super) fn require_source(
+        &self,
+        source: &ResolvedActivatedSource<'_>,
+    ) -> Result<(), SourceCloseError> {
+        if !source.matches_closed(&self.0.native)
+            || source.producer_slot_id() != self.producer_slot_id()
+            || source.resolved_requests() != self.reserved_through()
+            || source.resolved_requests() != self.issued_through()
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        source.validate().map_err(SourceCloseError::Native)
     }
 }
 
@@ -121,14 +135,7 @@ impl ControlSession {
             ));
         }
         let _permit = permit;
-        if !source.matches_closed(&closed.0.native)
-            || source.producer_slot_id() != closed.producer_slot_id()
-            || source.resolved_requests() != closed.reserved_through()
-            || source.resolved_requests() != closed.issued_through()
-        {
-            return Err(OwnerError::InvalidInput.into());
-        }
-        source.validate().map_err(SourceCloseError::Native)?;
+        closed.require_source(source)?;
         activated_recovery::require_deployment(&closed.0.metadata, self)?;
         let current = self.identity;
         let (tx, mut lease, epoch) = self
@@ -186,7 +193,7 @@ impl ControlSession {
     }
 }
 
-async fn require_recorded(
+pub(super) async fn require_recorded(
     tx: &Transaction<'_>,
     source: &ResolvedActivatedSource<'_>,
 ) -> Result<(), SourceCloseError> {

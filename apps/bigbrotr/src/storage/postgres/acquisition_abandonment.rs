@@ -213,13 +213,13 @@ const INSERT_GAP: &str = "
            (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'initial_producer_abandoned'
       FROM control.jobs WHERE job_id=$1::bytea";
 
-const REQUEST_CANCELLATION: &str = "
+pub(super) const REQUEST_CANCELLATION: &str = "
     UPDATE control.jobs j SET state='cancel_requested',job_revision=j.job_revision+1,
            reason_code=g.reason,owner_resource_id=g.issuer_resource,
            owner_epoch=g.issuer_epoch,owner_incarnation=g.issuer_incarnation
       FROM control.acquisition_gaps g WHERE j.job_id=$1::bytea AND g.job_id=j.job_id";
 
-const COMPLETE_CANCELLATION: &str = "
+pub(super) const COMPLETE_CANCELLATION: &str = "
     UPDATE control.jobs j SET state='cancelled',job_revision=j.job_revision+1,
            completed_at_us=g.abandoned_at_us
       FROM control.acquisition_gaps g WHERE j.job_id=$1::bytea AND g.job_id=j.job_id";
