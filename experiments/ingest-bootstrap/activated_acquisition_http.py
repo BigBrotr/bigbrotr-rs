@@ -133,7 +133,7 @@ def run_all(pg, client, output, rows, clone):
         lab.write_json(output / (MODE + '-source-preserved.json'), preserved)
         assert all(preserved.values()), preserved
     context = dict(capture=raw, migration=migration, acl=acl)
-    lab.write_json(output / (MODE + '-verification.json'), context)
+    lab.write_json(output / (MODE + '-http-verification.json'), context)
     checked, controls = verify(**context), negative_controls(**context)
     return dict(name='activated-acquisition-http', status='PASS', cli_invocations=1,
         cases=[dict(name=MODE, status='PASS', oracle=checked, negative_controls=controls)],
