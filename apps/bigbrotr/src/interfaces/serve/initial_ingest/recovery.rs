@@ -16,6 +16,7 @@ use bigbrotr_model::{
 };
 use tokio::sync::oneshot;
 
+mod activated;
 mod empty;
 pub(super) mod replay;
 
@@ -26,6 +27,7 @@ pub(in crate::interfaces::serve) enum Action {
     AbandonAcquisition,
     RetireInitial,
     RetireEmptyAttempt,
+    ActivatedSuccessor,
 }
 
 pub(super) fn limits() -> ProducerRecoveryLimits {
@@ -74,6 +76,9 @@ pub(in crate::interfaces::serve) fn run(
             3,
             "Ingest recovery requires local Control and Ingest".into(),
         ));
+    }
+    if action == Action::ActivatedSuccessor {
+        return activated::run(root, output);
     }
     let budget = budget(&root, false, false)?;
     supervision::run_owned(
@@ -335,7 +340,9 @@ async fn connected(
             Action::RetireInitial => "initial-retired",
             Action::AbandonAcquisition => "acquisition-abandoned",
             Action::CloseSource | Action::Resolve => "source-closed",
-            Action::RetireEmptyAttempt => unreachable!("separate empty-attempt recovery"),
+            Action::RetireEmptyAttempt | Action::ActivatedSuccessor => {
+                unreachable!("separate successor recovery")
+            }
         });
         report["source_closure"] = json!({"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":bigbrotr_model::Digest256::from_bytes(source.digest())});

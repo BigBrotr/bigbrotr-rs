@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T09:46Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T10:12Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,24 +14,25 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-1a7fd528fe7442d4009bbe86b6332c6537cb2977. Completed qualification checkpoint1efc7db
+ac38e7a58f6703db7b68ccd7b7f24e5c4fa96879. Completed qualification checkpoint1efc7db
 and qualification branchf9e751f are privately pushed and verified. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase/cherry-pick pending.
-New activated-recovery contract1a7fd52 is committed; root owns pending inventory/
-checkpoint/task updates and the installed CLI/worker. Previous installed worktrees
-and all artifacts remain retained and clean.
+Activated contract1a7fd52 and inventory02c9be6 are committed. PostgreSQL0e21919
+integrated97f1301; native0fb6362 integratedac38e7a. Root owns dirty installed CLI,
+recovery/activated worker, entrypoint tests, ingest-store docs, exact build profile,
+and current checkpoint/evidence/inventory update. No runtime qualification yet.
 
-Three separately inventoried worktrees from1a7fd52 are active:
+Three separately inventoried worktrees from1a7fd52 are retained clean:
 
-| Worktree under `.research/` | Owner | Responsibility |
+| Worktree under `.research/` | Owner | Source / responsibility |
 |---|---|---|
-| activated-recovery-native-20261013 | successor_restart_design | Checked native context, closing barrier, two-stream positive replay |
-| activated-recovery-postgres-20261013 | recovery_review | Additive0033 and opaque current-Control recovery adapters |
-| activated-recovery-qualification-20261013 | cleanup_review | Independent installed/corruption/COMMIT-loss fixture |
+| activated-recovery-native-20261013 | successor_restart_design | 0fb6362 checked native recovery, seven test groups |
+| activated-recovery-postgres-20261013 | recovery_review | 0e21919 additive0033 and current-Control adapters |
+| activated-recovery-qualification-20261013 | cleanup_review | d578ec8 first eight installed invocations; not yet integrated |
 
-Root alone executes builds, engines and integration. Native/PG API seams are being
-coordinated; no new implementation is qualified and no new engine/build allocated.
-Resources are in `implementation_activated_initial_recovery_20261013` in the lab inventory.
+Root alone executes builds, engines and integration. Independent AI source reviews
+of the native/PG/installed seams report no blocker; runtime checks are NOT_RUN.
+Resource records are in `implementation_activated_initial_recovery_20261013`.
 
 ## Active task and completed prerequisite
 
@@ -101,31 +102,23 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-The completed consumer and fixture are privately pushed. Implement explicit positive
-recovery of the activated epoch2 producer, including its necessary one-way closing
-barrier, under the [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation).
-Native, PostgreSQL and independent fixture work use separate worktrees above; root
-owns installed CLI/worker integration and all build/engine execution. Agree concrete
-API seams and review source before building the exact integrated revision.
+Commit the root installed activated-recovery consumer and exact build profile, then
+run the isolated `ingest-activated-recovery` build at that exact clean revision.
+Preserve all artifacts outside the exclusive compiler cache. Check compile, selected
+native groups (including seven new groups), actual CLI/schema/migration tests and
+Clippy before the first engine. The [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
+and `activated_recovery_20261013` in existing recovery evidence own semantics/results.
 
-Design inspection found current0031 deferred empty-attempt validation prevents an
-activated epoch2 OPEN→CLOSING transition. Add0033 with a precise activated recovery
-validator while preserving old unactivated retirement and activation guards. Native
-recovery must bind the actual retained handoff, both streams and root/sequence,
-require an existing target marker, accept valid zero work, and verify predecessor
-reference closure. Fresh Control/current policy may recover old positively proven
-outcomes despite expired historical Ingest scheduling. Keep immutable reservation,
-issuer/policy/input bytes and prior recorder rows unchanged. Never adopt a writer,
-reopen a closing barrier, infer uncommitted gaps or fabricate epoch2 InitialRegistration.
-
-Select a separate finite installed action before epoch1 historical lookup, reserve
-all overlapping replay/native/Control resources before claims, replay sequentially
-and retain actual driver/native ownership through joined shutdown. Acceptance owes
-positive/retry/missing-copy/zero/source-zero cases; exact identity/input/dependency
-refusals; current policy/old scheduling; held native; actual closing/outcome COMMIT
-loss followed by fresh configuration-only recovery. Source2 closure/retirement,
-epoch3/repeated lifetimes and Archive/Sync restart remain later obligations.
-Archive frontier/catalog recovery internals have not yet been fully reviewed.
+Integrate and review fixtured578ec8 during compilation, then dispatch its first eight
+actual invocations from copied off/on/zero retained seeds. It must prove positive,
+retry and missing PG copy with currentpolicy3 over historical2, expired old Ingest
+scheduling and complete raw native/SQL/input/recorder preservation. Artificial fixture
+checks are not engine evidence. Actual issued-positive/source-zero, identity/input/
+dependency refusals, held native and closing/outcome COMMIT-loss followed by fresh
+configuration-only recovery remain owed. Source2 closure/retirement, epoch3/repeated
+lifetimes and Archive/Sync restart remain separate obligations; no writer conversion,
+ACK/GC or fabricated epoch2 InitialRegistration. Archive frontier/catalog recovery
+internals have not yet been fully reviewed.
 
 M1 additionally owes archive/index/read/export/restart journeys and outages; five
 exports under256MiB remain NOT_RUN. Follow existing cross-phase dependencies through
@@ -136,7 +129,7 @@ or this passing bounded wave does not finish the product.
 
 All build/engine/replay wrappers are terminal, including latest49363(engine) and
 21498(root replay), both joined0. Latest PG/client terminal states were rechecked
-09:46Z: PG0/client143, stopped/PID0/noOOM. No current engine or build. Preserve all
+10:14Z: PG0/client143, stopped/PID0/noOOM. No current engine or build. Preserve all
 artifacts and inspect ownership afresh before reusing the authorized borrowed PG.
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
@@ -161,7 +154,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space checked09:46Z:65,698,803,712bytes(about61.2GiB). Remeasure before allocation.
+Free space checked10:14Z:65,550,876,672bytes(about61.0GiB). Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18

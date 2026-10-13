@@ -355,6 +355,30 @@ journeys, renewal and the three startup refusals, retaining original signed data
 General activated-owner recovery, repeated lifetimes,
 Archive restart, coverage and ACK/GC remain unimplemented here.
 
+## Recovering the activated successor (under implementation)
+
+After stopping the epoch2 owner, the selected finite recovery command is:
+
+```sh
+bigbrotr ingest recover --file ROOT --activated-successor
+```
+
+Apply migration0033 explicitly first and retain the native directory and original
+inputs. The command requires local Control/Ingest, exclusive native custody and
+the exact retained preparation/activation. It uses fresh Control and current
+accepted policy; the old Ingest scheduling lease may already have expired. It
+closes producer2 and verifies retained positive outcomes, copying a missing
+PostgreSQL outcome only after positive native proof. Existing outcomes retain their
+original attribution. An identical retry observes the same closed producer.
+
+This mode conflicts with the initial source-closure and retirement flags. It
+leaves source2 open, starts no listener or acquisition, and returns no writer.
+Missing inputs, incompatible identities or unresolved reservations refuse; preserve
+the state and retry this same mode after resolving the reported prerequisite.
+An interrupted or unknown outcome is never permission to reinitialize the store.
+The [recovery contract](ingest-registration.md#activated-initial-producer-recovery-under-implementation)
+owns qualification; this new command has not yet passed installed acceptance.
+
 ## Exact dependency source basis
 
 The pinned Rust [open implementation](https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db.rs#L630)

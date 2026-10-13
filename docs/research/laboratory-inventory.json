@@ -43609,8 +43609,8 @@
     }
   },
   "implementation_activated_initial_recovery_20261013": {
-    "status": "IMPLEMENTING_NOT_QUALIFIED",
-    "observed_at": "2026-10-13T09:50:08.384948+00:00",
+    "status": "IMPLEMENTED_NOT_QUALIFIED",
+    "observed_at": "2026-10-13T10:12:53.425218+00:00",
     "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
@@ -43621,7 +43621,9 @@
         "owner": "successor_restart_design",
         "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
         "scope": "Native checked two-stream context, closing barrier and positive replay",
-        "state": "source-work-in-progress; no builds or engines"
+        "state": "committed clean; no builds or engines by agent",
+        "source": "0fb6362ce45a8a3b6fdc38f5e1a64a6969789a9d",
+        "integrated": "ac38e7a58f6703db7b68ccd7b7f24e5c4fa96879"
       },
       {
         "root": ".research/activated-recovery-postgres-20261013",
@@ -43629,7 +43631,9 @@
         "owner": "recovery_review",
         "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
         "scope": "Additive0033 complete activated closing validation and opaque metadata/resolve adapters",
-        "state": "source-work-in-progress; no builds or engines"
+        "state": "committed clean; no builds or engines by agent",
+        "source": "0e21919484baae550dea4bbff79fde0ef32069ad",
+        "integrated": "97f13013ac6f4c3d04757b9f20ce0c4265fe4517"
       },
       {
         "root": ".research/activated-recovery-qualification-20261013",
@@ -43637,12 +43641,15 @@
         "owner": "cleanup_review",
         "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
         "scope": "Independent installed/corruption/COMMIT-loss fixture and expected results",
-        "state": "source-work-in-progress; no builds or engines"
+        "state": "committed clean; no builds or engines by agent",
+        "source": "d578ec8a0d37978993735d6ff068df7ec8153158",
+        "integrated": null
       }
     ],
-    "root_work": "Installed finite action and supervised worker, docs and integration",
-    "resources": "No new build/engine/client/PG allocation. Existing resources stopped; preserve all prior artifacts/worktrees.",
-    "checks": "NOT_RUN",
-    "next": "Agree native/PG API seams, implement and review before exact isolated build"
+    "root_work": "Installed finite action and supervised worker integrated locally; root exact build profile and documentation pending commit",
+    "resources": "Prior PG/client freshly inspected stopped/PID0/noOOM; no new build or engine yet allocated. Preserve all artifacts.",
+    "checks": "Source review, scoped rustfmt/diff/Python AST PASS; build/native/SQL/installed NOT_RUN",
+    "next": "Commit root consumer and exact build profile; run isolated ingest-activated-recovery build before first eight installed invocations",
+    "free_bytes_observed": 65550876672
   }
 }

@@ -15754,6 +15754,37 @@
         ],
         "qualification_source": "f9e751fc0d09f92a0f1c663b40479ed85ea9609b",
         "qualification_integrated": "94a16a0eae1466cb257757c86719ec6086b3cbf1"
+      },
+      "activated_recovery_20261013": {
+        "status": "IMPLEMENTED_NOT_QUALIFIED",
+        "observed_at": "2026-10-13T10:12:53.425218+00:00",
+        "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
+        "native": {
+          "source": "0fb6362ce45a8a3b6fdc38f5e1a64a6969789a9d",
+          "integrated": "ac38e7a58f6703db7b68ccd7b7f24e5c4fa96879",
+          "tests": "Seven authored groups NOT_RUN"
+        },
+        "postgres": {
+          "source": "0e21919484baae550dea4bbff79fde0ef32069ad",
+          "integrated": "97f13013ac6f4c3d04757b9f20ce0c4265fe4517",
+          "migration0033_sha256": "4f22eb019e831126bf3f5c712d0ddf1e8213dfdfcdf9afaf5b38c80418cb5804",
+          "sql_execution": "NOT_RUN"
+        },
+        "root_consumer": "Pending commit: explicit mutually exclusive --activated-successor; exclusive native before credentials, preclaim overlapping grants, per-request Control refresh and positive resolution; native close before Control release, joined driver before report",
+        "review": "Root and independently tasked AI reviewers read affected native/PostgreSQL/installed owners and seams; no concrete source blocker. Source-only review does not qualify runtime behavior. Scoped format/diff/catalog/Python AST checks pass.",
+        "fixture": {
+          "source": "d578ec8a0d37978993735d6ff068df7ec8153158",
+          "integrated": null,
+          "scope": "First eight installed invocations from retained off/on/zero seeds; positive/retry/missing-copy, historical policy2/current3 for off/on, expired old scheduling and complete before/after preservation",
+          "pure_checks": "Author reports eight artificial complete contexts and124 controls; not actual engine evidence",
+          "engines": "NOT_RUN"
+        },
+        "remaining": [
+          "Exact isolated compile, selected native/entrypoint/schema/migration tests and Clippy",
+          "First eight actual installed invocations and independent raw replay",
+          "Issued-positive/source-zero actual process; corruption, held-native and COMMIT-loss recovery",
+          "Source2 closure/retirement, repeated lifetimes and remaining M1\u2013M5 journeys are separate obligations"
+        ]
       }
     }
   }

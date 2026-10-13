@@ -282,6 +282,7 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
         Some("--abandon-acquisition"),
         Some("--retire-initial"),
         Some("--retire-empty-attempt"),
+        Some("--activated-successor"),
     ] {
         let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
         command
@@ -306,28 +307,44 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
 }
 
 #[test]
-fn empty_attempt_retirement_conflicts_before_configuration_io() {
-    for other in [
-        "--close-source",
-        "--abandon-acquisition",
-        "--retire-initial",
-    ] {
-        let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
-            .env_clear()
-            .args([
-                "ingest",
-                "recover",
-                "--file",
-                "/nonexistent/recovery-root.toml",
+fn explicit_recovery_modes_conflict_before_configuration_io() {
+    for (selected, others) in [
+        (
+            "--retire-empty-attempt",
+            &[
+                "--close-source",
+                "--abandon-acquisition",
+                "--retire-initial",
+            ][..],
+        ),
+        (
+            "--activated-successor",
+            &[
+                "--close-source",
+                "--abandon-acquisition",
+                "--retire-initial",
                 "--retire-empty-attempt",
-                other,
-            ])
-            .output()
-            .unwrap();
-        assert_eq!(result.status.code(), Some(2));
-        assert!(result.stdout.is_empty());
-        let error = String::from_utf8_lossy(&result.stderr);
-        assert!(error.contains("cannot be used with"), "{error}");
-        assert!(error.contains("--retire-empty-attempt") && error.contains(other));
+            ][..],
+        ),
+    ] {
+        for other in others {
+            let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+                .env_clear()
+                .args([
+                    "ingest",
+                    "recover",
+                    "--file",
+                    "/nonexistent/recovery-root.toml",
+                    selected,
+                    other,
+                ])
+                .output()
+                .unwrap();
+            assert_eq!(result.status.code(), Some(2));
+            assert!(result.stdout.is_empty());
+            let error = String::from_utf8_lossy(&result.stderr);
+            assert!(error.contains("cannot be used with"), "{error}");
+            assert!(error.contains(selected) && error.contains(other));
+        }
     }
 }
