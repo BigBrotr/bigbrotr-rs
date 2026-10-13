@@ -306,8 +306,10 @@ One owner serializes exact identity decisions for each writable directory.
   checks10 intermediate+10 complete before/after observations and98 controls;
   affected signed3/initial Sync-window2 regressions pass on build787e1fe. The first
   catalog/release-oracle failure2032894 remains retained. Next is positive recovery
-  of an activated epoch2 producer under fresh Control, including its closing
-  barrier without writer adoption; source2 closure and repeated lifetimes remain
+  of an activated epoch2 producer under fresh Control via explicit
+  `ingest recover --activated-successor`, including its closing barrier under the
+  [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
+  without writer adoption; source2 closure and repeated lifetimes remain
   separate obligations. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

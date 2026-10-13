@@ -42823,7 +42823,7 @@
           "head": "6c134e3e65e21c05d15b4e1472ecbdf970da5b04",
           "state": "clean-committed-pushed",
           "scope": "PG current successor basis and opaque live reads; integrated as ff317e56999fbbbaadf51853fb8912c68a6c1012",
-          "checks": "Scoped rustfmt/diff-check/old-kernel preservation PASS; Rust/SQL/installed NOT_RUN; integrated exact787e1fe build and15 affected tests/Clippy PASS, actual installed/SQL NOT_RUN"
+          "checks": "Scoped rustfmt/diff-check/old-kernel preservation PASS; Rust/SQL/installed NOT_RUN; integrated exact787e1fe build and15 affected tests/Clippy PASS, actual installed/SQL NOT_RUN; completed installed61a3de1 five-case qualification and root98-control replay PASS, artifact/custody audit complete"
         },
         {
           "root": ".research/installed-live-owner-20261013",
@@ -42834,18 +42834,18 @@
           "scope": "Installed native owner/startup/shared command/finite Sync/recovery replay",
           "head": "1593f1faf2a2785dc02f64a56858b02d7c9b7df4",
           "integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
-          "checks": "Scoped rustfmt/diff-check PASS; root and independent AI custody/policy/window/preclaim source reviews found no blocker; compile/installed NOT_RUN; integrated exact787e1fe build and15 affected tests/Clippy PASS, actual installed/SQL NOT_RUN"
+          "checks": "Scoped rustfmt/diff-check PASS; root and independent AI custody/policy/window/preclaim source reviews found no blocker; compile/installed NOT_RUN; integrated exact787e1fe build and15 affected tests/Clippy PASS, actual installed/SQL NOT_RUN; completed installed61a3de1 five-case qualification and root98-control replay PASS, artifact/custody audit complete"
         },
         {
           "root": ".research/installed-live-qualification-20261013",
           "branch": "qualification/installed-live-consumer",
           "owner": "cleanup_review",
           "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
-          "state": "clean-committed-not-pushed",
+          "state": "clean-committed-pushed",
           "scope": "Independent actual installed off/on/renewal/refusal journey and full preservation oracle",
           "head": "f9e751fc0d09f92a0f1c663b40479ed85ea9609b",
           "integrated": "94a16a0",
-          "checks": "Root/independentAI exact-source fixes reviewed; captured actualoff replay5snapshots/31controls PASS; original engineFAIL remains"
+          "checks": "Root/independentAI exact-source fixes reviewed; captured actualoff replay5snapshots/31controls PASS; original engineFAIL remains; completed installed61a3de1 five-case qualification and root98-control replay PASS, artifact/custody audit complete"
         }
       ],
       "root_work": "Installed consumer and corrected independent fixture integrated; fresh complete engine61a3de1 PASS and audit complete. Root owns current evidence/docs/checkpoint updates.",
@@ -43259,7 +43259,7 @@
           "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
         }
       ],
-      "next": "Implement explicit activated-epoch2 positive recovery with the necessary one-way closing barrier; no writer adoption or source2 closure. Contract and task own acceptance.",
+      "next": "Completed evidence committed1efc7db and private root/fixture pushes verified. Activated recovery contract1a7fd52 and distinct native/PG/qualification worktrees selected.",
       "engines": [
         {
           "source": "20328945680bbd9a91e08d901af58e6ae5e7e101",
@@ -43607,5 +43607,42 @@
       "qualification_source": "f9e751fc0d09f92a0f1c663b40479ed85ea9609b",
       "qualification_integrated": "94a16a0eae1466cb257757c86719ec6086b3cbf1"
     }
+  },
+  "implementation_activated_initial_recovery_20261013": {
+    "status": "IMPLEMENTING_NOT_QUALIFIED",
+    "observed_at": "2026-10-13T09:50:08.384948+00:00",
+    "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
+    "owner": "root sole integrator/build/engine executor",
+    "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
+    "worktrees": [
+      {
+        "root": ".research/activated-recovery-native-20261013",
+        "branch": "implementation/activated-recovery-native",
+        "owner": "successor_restart_design",
+        "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
+        "scope": "Native checked two-stream context, closing barrier and positive replay",
+        "state": "source-work-in-progress; no builds or engines"
+      },
+      {
+        "root": ".research/activated-recovery-postgres-20261013",
+        "branch": "implementation/activated-recovery-postgres",
+        "owner": "recovery_review",
+        "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
+        "scope": "Additive0033 complete activated closing validation and opaque metadata/resolve adapters",
+        "state": "source-work-in-progress; no builds or engines"
+      },
+      {
+        "root": ".research/activated-recovery-qualification-20261013",
+        "branch": "qualification/activated-recovery",
+        "owner": "cleanup_review",
+        "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
+        "scope": "Independent installed/corruption/COMMIT-loss fixture and expected results",
+        "state": "source-work-in-progress; no builds or engines"
+      }
+    ],
+    "root_work": "Installed finite action and supervised worker, docs and integration",
+    "resources": "No new build/engine/client/PG allocation. Existing resources stopped; preserve all prior artifacts/worktrees.",
+    "checks": "NOT_RUN",
+    "next": "Agree native/PG API seams, implement and review before exact isolated build"
   }
 }

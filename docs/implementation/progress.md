@@ -14,20 +14,24 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-61a3de10e458b891babbf4bd52212473ec52164a. Root owns pending updates to this checkpoint,
-02-storage, ingest-registration, ingest-store, recovery evidence and lab inventory.
-Adapter6c134e3 and installed owner1593f1f are integrated. Fixturebf93bcc is integrated
-as8511b4f; correctionf9e751f as94a16a0, dispatcher2032894 and failed-run record61a3de1.
-Last verified private root isaad70200e1cd6bf649b2450d6c22557e880e38a1; adapter/owner
-branches are pushed. Qualification branchf9e751f is clean, not yet pushed. Main is
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase/cherry-pick is pending.
+1a7fd528fe7442d4009bbe86b6332c6537cb2977. Completed qualification checkpoint1efc7db
+and qualification branchf9e751f are privately pushed and verified. Main remains
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase/cherry-pick pending.
+New activated-recovery contract1a7fd52 is committed; root owns pending inventory/
+checkpoint/task updates and the installed CLI/worker. Previous installed worktrees
+and all artifacts remain retained and clean.
 
-All three installed worktrees are retained under `.research/installed-live-*` and
-inventoried. Agents are idle after bounded work: successor_restart_design supplied
-the activated-recovery design, recovery_review independently reviewed oracle fixes,
-and cleanup_review completed artifact/custody audit. Root alone executes builds,
-engines and integration. Create distinct inventoried writable worktrees before the
-next parallel implementation; do not repurpose prior fixture or source worktrees.
+Three separately inventoried worktrees from1a7fd52 are active:
+
+| Worktree under `.research/` | Owner | Responsibility |
+|---|---|---|
+| activated-recovery-native-20261013 | successor_restart_design | Checked native context, closing barrier, two-stream positive replay |
+| activated-recovery-postgres-20261013 | recovery_review | Additive0033 and opaque current-Control recovery adapters |
+| activated-recovery-qualification-20261013 | cleanup_review | Independent installed/corruption/COMMIT-loss fixture |
+
+Root alone executes builds, engines and integration. Native/PG API seams are being
+coordinated; no new implementation is qualified and no new engine/build allocated.
+Resources are in `implementation_activated_initial_recovery_20261013` in the lab inventory.
 
 ## Active task and completed prerequisite
 
@@ -97,12 +101,12 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit and verify private pushes for completed installed consumer evidence and the
-qualification branch. Then implement explicit positive recovery of the activated
-epoch2 producer, including its necessary one-way closing barrier. Record the exact
-contract in the existing registration reference before coding and split native,
-PostgreSQL and independent fixture work in separate worktrees; root owns installed
-CLI/worker integration and all build/engine execution.
+The completed consumer and fixture are privately pushed. Implement explicit positive
+recovery of the activated epoch2 producer, including its necessary one-way closing
+barrier, under the [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation).
+Native, PostgreSQL and independent fixture work use separate worktrees above; root
+owns installed CLI/worker integration and all build/engine execution. Agree concrete
+API seams and review source before building the exact integrated revision.
 
 Design inspection found current0031 deferred empty-attempt validation prevents an
 activated epoch2 OPEN→CLOSING transition. Add0033 with a precise activated recovery
