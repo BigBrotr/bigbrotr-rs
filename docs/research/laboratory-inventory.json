@@ -46549,8 +46549,8 @@
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
   },
   "implementation_activated_acquisition_abandonment_20261013": {
-    "status": "PASS_BUILD_INSTALLED_QUALIFICATION_OPEN",
-    "observed_at": "2026-10-13T13:47:26.732901+00:00",
+    "status": "PASS_FIRST_WAVE_REPLAY_CUSTODY_AUDIT_OPEN",
+    "observed_at": "2026-10-13T13:51:31.214800+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
     "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -46563,7 +46563,7 @@
       "behavior": "Exact paired1/1/initialreason or2/2/activatedreason; complete35classifier plusclosed/closing/cutdigest/nativeprefix. ActivatorControl claims includingzero-request, prior+selected<=64 withindexedLIMIT65, entirebatch beforewrites; gap+twojob revisionsatomic/exactretry preservesissuer/xmin. No extraordinaryjobtablegrants ortrigger; old0028boundary preserved."
     },
     "root_consumer": {
-      "state": "committed and compiled; actualinstalledqualificationNOT_RUN",
+      "state": "Compiled and first4 actualCLI PASS withrootrawreplay; selectedqualification incomplete",
       "flag": "--abandon-activated-acquisition",
       "resource": "Native/Control+128KiBmetadata+4096closing and1replaypair preclaim; sequential64KiBsource and128KiBabandon grant. Freshrefresh beforefinal; sourceproof borrowed untilreturn; parentnativeclose/Controlrelease/driverjoinbefore report",
       "tests": "47actualentrypoint/schema/migration tests PASS",
@@ -46582,16 +46582,16 @@
       "owner": "cleanup_review",
       "worktree": ".research/activated-recovery-qualification-20261013",
       "branch": "qualification/activated-acquisition-fixtures",
-      "state": "Committed; root and independent PG-author full source review; 4 artificial contexts/8 full states/104 rejected controls plus4 custody mocks PASS. Actual4CLI NOT_RUN.",
+      "state": "Committed and exactfirst4CLI PASS; 8installed+2seedrawstates/104 controls rootreplay PASS.",
       "source": "c868c5acb9564f4a2981dc7416dc98cbc0f628fa",
       "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
       "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
     },
-    "next": "Execute first4CLI on two copied closed seeds with --ingest-activated-acquisition, protectedec6 artifacts; retain all raw finals before semantic validation, then root replay and custody audit.",
+    "next": "Close first-wave artifact/custody audit; execute C10before/after andfreshretry4CLI, sameec6build. Genuineextraintents, SQLguards, ordinaryHTTPoldgrants remain.",
     "owner": "root sole integrator/build/engine executor",
-    "processes": "No engine/build active; root will launch exact4CLI. SQL guard and genuine extra-intent agents edit separate new files; C10 fault source5c2e33b committed awaiting integration.",
+    "processes": "45753/41369 joined0; no engine/build active. Separate read-only custody audit pending; genuineclaims and SQLguard agents edit separate files.",
     "last_private_push": "2dd28e9d59e2d2ffbb21b98b949bcd2adfc7545a verified; e2d0/fe44 branches also verified",
-    "head": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
+    "head": "d03fb21f812e380454b0e2306357d3b983cb2ded",
     "build": {
       "source": "ec6ff3963161e956fd18226396897b559ac15afe",
       "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",
@@ -46637,6 +46637,39 @@
         "terminal": "both0/PID0/noOOM"
       },
       "reused": "Unchanged native45test source from9dbc checked; new47entry/schema/migration tests execute here. No actualabandonmentengine run yet."
+    },
+    "first_wave": {
+      "source": "1d64cd7c5c6bc1fb72ac7eb0435d0e7164831a0a",
+      "owner": "2c7d9912914b8958ea6ffe3f9f47723d",
+      "status": "PASS_INSTALLED_ACTIVATED_ACQUISITION_ABANDONMENT_FIRST_WAVE",
+      "client": {
+        "id": "ae48f3e374cec7571626d56dc4a2dcce1c5ba9fb26415595f7dcb4eec76c498f",
+        "name": "bigbrotr-acquisition-binding-1d64cd7"
+      },
+      "started_at": "2026-10-13T13:47:39.754229+00:00",
+      "finished_at": "2026-10-13T13:48:32.205463+00:00",
+      "free_bytes_after": 59316535296,
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7",
+      "wrapper": "45753 joined0",
+      "result_sha256": "03545615b8c2e84fc1a545ccf47b33aeed8fb02e4e76e44d3f1ffd246315054c",
+      "cli_invocations": 4,
+      "finite_seed_invocations": 0,
+      "semantics": "Two closed seeds: off NewFacts sourcecut5/native70/85/input6 and genuineAlreadyDurable sourcecut0/native53/65/input5. Each first command creates one activator8 gap and cancels job2\u21924 atomically; fresh retry preserves originalissuer/time/xmin. Full72SQL/copies/source/session/input/native unchanged except currentControl and exactgap/job delta.",
+      "root_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7/root-independent-replay.json",
+        "sha256": "94cb13f81c41e55fedac0b628d50adf7ed3d34b1801dda4dd65433c931c23865",
+        "wrapper": "41369 joined0",
+        "full_states": 10,
+        "negative_controls": 104
+      },
+      "custody": "Run terminalPG0/client143/PID0/noOOM, originalpreservation true. Separate artifact/custody audit in progress; no further engine before projection freeze."
+    },
+    "fault_fixture": {
+      "source": "5c2e33be0cb72859623868fe2e00d8411979af18",
+      "integrated": "d03fb21",
+      "checks": "Root and independentPG complete source review no blocker;4artificialcontexts/102controls/4custodymocks PASS",
+      "status": "ENGINE_NOT_RUN",
+      "scope": "C10before-forward/after-complete,freshdirectretry; unchangedclosed939seed/proxy"
     }
   }
 }

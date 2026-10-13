@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:47Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:51Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -92,15 +92,22 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Execute exact four-CLI first/retry fixture for closed seeds939off/0e4917durable,
-reusing protectedec6 artifacts. Fixturec868 integrated84757a5; root and independent
-source reviews closed; four artificial contexts/104 rejected controls/four custody
-mocks PASS. Actual engine NOT_RUN; preserve final captures before oracle checks.
-PG e2d0 integrated30f0127, finiteclaimsfe44 integrated117d648, rootCLIec6ff39.
-Root complete source review plus independentnativeauthor PG/CLI review PASS. New
-actualabandonment SQL/CLI qualification remains NOT_RUN. Afterwards genuineextra
-zero-request claim/unclaimed acceptance, SQLguards/immutability, finalCOMMITloss/
-freshretry and ordinaryHTTPoldgrant gate. Allsourceclosure evidence remainsvalid.
+Close first-wave artifact/custody audit, then execute C10 abandonment reply loss
+before-forward/after-complete and fresh direct retry: two copied closed939 seeds,
+four CLI using unchanged protectedec6 build. Fault5c2e33b integratedd03fb21;
+root/independent source reviews and4artificialcontexts/102controls/4custodymocks PASS.
+Genuineextraintent, SQLguard and ordinaryHTTPoldgrant gates remain open.
+
+First engine1d64cd7 PASS4CLI,45753joined0,13:47:39–13:48:32Z,
+owner2c7d9912914b8958ea6ffe3f9f47723d; root
+`/runs/ingest-activated-acquisition-engine-1d64cd7`. ResultSHA
+03545615b8c2e84fc1a545ccf47b33aeed8fb02e4e76e44d3f1ffd246315054c.
+Off sourcecut5/native70/85/input6; durable sourcecut0/native53/65/input5.
+Each first stores one exactactivator8 gap and queued2→cancelled4 atomically;
+retry preserves issuer/time/xmin. Sources/copies/sessions/native/input unchanged.
+Root41369joined0:8installed+2seedfullstates/104negativecontrols rawreplay PASS.
+Separate artifact/custody audit pending; PG0/client143/PID0/noOOM, originals
+preserved. No engine/build active; faultcode committed, twoagents work separately.
 
 Exactec6ff3963161e956fd18226396897b559ac15afe build PASScompile,47actualentry/schema/
 migrationtests andClippy Rust1.98.1/Clang14;93208joined0,13:30:42–13:32:25Z.
