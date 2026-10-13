@@ -82,8 +82,9 @@ def finish_proxy(proxy, wire):
             wire['status'] = 'CAPTURED'
 
 
-def invoke(pg, client, output, database, config, mode, helper, proxy_source, fault=None):
+def invoke(pg, client, output, database, config, mode, helper, proxy_source, fault=None, *, action=None):
     """The unchanged wrapper owns the real CLI; this owner only faults its wire."""
+    assert action in (None, '--retire-activated-initial')
     prefix = output / mode
     proxy = None
     terminal = None
@@ -109,7 +110,7 @@ def invoke(pg, client, output, database, config, mode, helper, proxy_source, fau
         clock['before_us'] = server_clock(pg, database)
         lab.write_json(output / (mode + '-clock.json'), clock)
         lab.docker('exec', '-d', client, 'python3', '/lab/' + helper.name,
-            config, '/lab/' + mode, timeout=5)
+            config, '/lab/' + mode, *([] if action is None else [action]), timeout=5)
         wait_for(lambda: Path(str(prefix) + '.terminal.json').exists(), 'activated recovery joined', 50)
         terminal = json.loads(Path(str(prefix) + '.terminal.json').read_text())
         clock['after_us'] = server_clock(pg, database)
