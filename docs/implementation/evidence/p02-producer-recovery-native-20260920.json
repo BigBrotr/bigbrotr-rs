@@ -18689,7 +18689,7 @@
       },
       "activated_acquisition_abandonment_20261013": {
         "status": "PASS_FIRST_AND_COMMIT_WAVES_REMAINING_QUALIFICATION_OPEN",
-        "observed_at": "2026-10-13T13:59:15.739730+00:00",
+        "observed_at": "2026-10-13T14:06:44.378887+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
         "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
         "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -18726,7 +18726,7 @@
           "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
           "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
         },
-        "next": "Integrate genuine sameControl extraintentfixture and raw14SQLguards after finalsource/pure review, exactengine usingec6. OrdinaryHTTPoldgrants and review of remainingcontractgates follow.",
+        "next": "Execute genuineclaims1finite+2CLI usingec6, then integratecb1SQL14. HTTP36 ordinarygrants and genuine64/65/fullbatch fixtures prepared separately. Finaljobwaitcancel and actualpostwaitControlUTCexpiry remain NOT_RUN.",
         "build": {
           "source": "ec6ff3963161e956fd18226396897b559ac15afe",
           "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",
@@ -18862,7 +18862,24 @@
             "scope": "Read-only artifact/source/raw/custody audit; original SQL/catalog preservation captured-run evidence, root owns independent semantics",
             "unique_originals": 1
           }
-        }
+        },
+        "claims_fixture": {
+          "source": "03f1f6a4d63b096368688ef537c3879ee07250bc",
+          "integrated": "d7d5fe5",
+          "status": "ENGINE_NOT_RUN",
+          "checks": "Fullrootreview including2preexecution fixes;15seed snapshots/4installed states/44controls/4capturemocks PASS",
+          "manifest_sha256": "9d84ca00a744daa6f3e9d50a4a73d9029b8b8dbb82e2560338c766f87fb719c0",
+          "flag": "--ingest-activated-acquisition-claims",
+          "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
+        },
+        "remaining_gates": [
+          "genuine selected2/unclaimed1 installed journey",
+          "14 rawSQLguards",
+          "ordinaryschema36HTTP withoutrecoveryprivileges",
+          "combined retained+selected<=64 and fullbatchrefusal beforewrites",
+          "SIGTERM duringfinal selectedjoblockwait",
+          "actualControlUTCexpiry acrossfinaljobwait (requiresfinite pre-agedlease proof; CLIlocaltimeoutisnotexpiry)"
+        ]
       }
     }
   }

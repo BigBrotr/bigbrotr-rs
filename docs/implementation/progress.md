@@ -29,13 +29,13 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: integrate the genuine extra-intent fixture after its final checks, wire its
-one finite probe plus two installed commands, and execute an exact fresh engine
+Next: execute the integrated genuine extra-intent fixture (03f1→d7d5fe5),
+one finite probe plus two installed commands, in an exact fresh engine
 using protectedec6 artifacts. It must abandon two actual activator-owned jobs
 (including one with zero requests), preserve an accepted-unclaimed job and its
 session, close source2 once, and make the retry immutable. Then execute the fourteen
-raw SQL guard cases. Neither new wave has run yet. Root has read both complete
-drafts and affected helpers; final deltas/commits remain to inspect.
+raw SQL guard cases. Neither new wave has run yet. Root has read both complete drafts and affected helpers; claims finaldelta
+review closed, SQL pins/finaldelta remain to inspect.
 
 Current agents:
 
@@ -44,7 +44,8 @@ Current agents:
   `activated_acquisition_claims.py` and `_oracle.py`. Draft pure15seed snapshots,
   four installed states/44 rejected controls and four custody mocks pass. Found
   migration receipt filename collision fixed with a distinct abandonment label;
-  explicit gap-before-Control-deadline bound added. Commit03f1f6a ready; root integration pending.
+  explicit gap-before-Control-deadline bound added. Commit03f1f6a integratedd7d5fe5. Now designs genuine64/65/fullbatch fixtures
+  in a new branch; no engine authority.
 - `recovery_review`: `.research/activated-recovery-postgres-20261013`, branch
   `qualification/activated-acquisition-guards`; owns only new guards driver/oracle.
   Fourteen artificial transcripts/37 states/21 controls pass; three capture mocks pass; commitcb1ed4e ready, integration pending. Genuine historical queued claim is preserved; each raw
@@ -52,15 +53,16 @@ Current agents:
   HTTP runner is now authorized: two new files and a narrow extraction of the
   existing single-case capture owner; actual HTTP qualification remains NOT_RUN.
 - `successor_restart_design`: `.research/activated-recovery-native-20261013`;
-  fault5c2 committed/preserved. Both artifact audits complete. Now read-only
-  assessment of remaining contract gates, particularly retained+selected<=64,
-  whole-batch refusal and final-lock cancellation/expiry. No new implementation.
+  fault5c2 committed/preserved. Both artifact audits complete. Now authorized to implement bounded genuine64/65 typed-claim probe modes
+  in example helper files; no build/engine authority.
 
 Remaining qualification must distinguish internal typed calls from management
 HTTP. For the ordinary HTTP grant case, revoke recovery-only privileges only
 after legitimate activation completes and before starting the HTTP client.
 Current two-job seed and raw guards do not establish the combined64 boundary or
-full-batch refusal. Do not silently drop those concerns or repeat broad unchanged
+full-batch refusal; genuine-count campaign is authorized. Final-job-wait SIGTERM
+and actual post-wait Control UTC expiry also remain NOT_RUN, with expiry requiring
+a continuously owned finite probe/pre-aged lease rather than a local CLI timeout. Do not silently drop those concerns or repeat broad unchanged
 suites. Later producer/domain/owner retirement, repeated lifetimes, Archive restart,
 ACK/GC and full M1 remain separate responsibilities.
 
