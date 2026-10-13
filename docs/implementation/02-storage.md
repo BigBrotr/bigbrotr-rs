@@ -311,8 +311,10 @@ One owner serializes exact identity decisions for each writable directory.
   Additive34 preserves applied33 and corrects historical Control retirement checks.
   Faultdb6dd37 passes four actual C2closing/C6outcome before/after COMMIT losses and
   four fresh recoveries,16complete observations/132controls. Native closing remains
-  durable and existing recorder attribution immutable. Sourcezero and corrupt/held
-  refusal qualification remain. Recovery uses fresh Control via explicit
+  durable and existing recorder attribution immutable. Sourcezeroced4c42 adds one
+  actual Signature rejection and two installed recoveries,9seed snapshots plus
+  4complete observations/34controls;53native rows/fiveinputs/source0 stay exact.
+  Corrupt/held refusal qualification remains. Recovery uses fresh Control via explicit
   `ingest recover --activated-successor`, including its closing barrier under the
   [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
   without writer adoption; source2 closure and repeated lifetimes remain

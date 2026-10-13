@@ -43609,8 +43609,8 @@
     }
   },
   "implementation_activated_initial_recovery_20261013": {
-    "status": "PASS_POSITIVE_AND_COMMIT_LOSS_SOURCE_ZERO_PENDING",
-    "observed_at": "2026-10-13T10:55:11.861866+00:00",
+    "status": "PASS_POSITIVE_COMMIT_LOSS_AND_SOURCE_ZERO_REFUSALS_PENDING",
+    "observed_at": "2026-10-13T11:02:35.311795+00:00",
     "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
@@ -43649,11 +43649,11 @@
         "previous_branch": "qualification/activated-recovery-faults"
       }
     ],
-    "root_work": "Sourcezero fixture4da99bc integrated; rootdispatcher/checkpoint/evidence pendingcommit, thenactualengine",
-    "resources": "All wrappers terminal, latestfault28333 joined0/replay52626 joined0. PG0/client143 stopped/PID0/noOOM at10:51:29.787850Z;1251nonborrowed projections preserved;43retainedELFs. Noengine/build active.",
-    "checks": "First8 actualPASS/root124controls/auditPASS; fault8CLI actualPASS/root132controls/auditPASS. Sourcezero actualNOT_RUN",
-    "next": "Exact committed --ingest-activated-zero run with retained2a018ea CLI/probe",
-    "free_bytes_observed": 62794448896,
+    "root_work": "Record qualifiedsourcezero; compile-only refusalprofile pending and nativeprobe draftindependentreview, then build/review9caseharness",
+    "resources": "All wrappers terminal: zeroengine9264 joined0/rootaudit44574 joined0; latestPG0/client143/PID0/noOOM,1252nonborrowed projections unchanged.43 retainedELFs. No engine/buildactive.",
+    "checks": "First8/root124controls, fault8/root132controls and sourcezero1finite+2CLI/root34controls allPASS. Nine refusals NOT_RUN",
+    "next": "Complete/review fixedfive native fixture mutations, compileprobe only+Clippy, then exact9caseengine with independent expected states",
+    "free_bytes_observed": 62738038784,
     "builds": [
       {
         "source": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
@@ -44910,6 +44910,263 @@
           "scope": "AI oracle author audits artifact/raw binding/custody, not a second independent semantic oracle"
         },
         "interpretation": "Four actual installed C2 closing/C6 outcome2 COMMIT before/after loss cases and four direct fresh-process recoveries. Wire seen/forwarded/server-complete/client-complete/fault vectors2,1,1,1,1 /2,2,2,1,1 /6,5,5,5,1 /6,6,6,5,1. Firstfailed native70/85 closing, recovery no nativewrites. SQLclosebefore remainsopen; closeafter remainsclosing. Outcome2 missing beforeforward is copied by freshControl10; completedunknown copy retains failedControl9 recorder/xmin. Full72SQL/sixinputs preserved, exactbackends absent, everyactualprocess joinednonforced. No installed driverresult/poison telemetry claim."
+      },
+      {
+        "source": "ced4c4278bd3a2b7aeee4d388686c240780d45dc",
+        "owner": "2af3dcd04cdcfd171269969c72e551ce",
+        "status": "PASS_INSTALLED_ACTIVATED_RECOVERY_SOURCE_ZERO",
+        "started_at": "2026-10-13T10:57:53.291328+00:00",
+        "finished_at": "2026-10-13T10:58:09.899904+00:00",
+        "client": {
+          "id": "088c96955cc16102e8006a50b614386268c54d16e94f1dce43e9e75e164f3394",
+          "name": "bigbrotr-acquisition-binding-ced4c42"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_ced4c42_installed_activated_source_zero"
+        ],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:57:53.375254143Z",
+              "FinishedAt": "2026-10-13T10:58:09.067122523Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "088c96955cc16102e8006a50b614386268c54d16e94f1dce43e9e75e164f3394",
+            "Name": "/bigbrotr-acquisition-binding-ced4c42",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:57:54.223642796Z",
+              "FinishedAt": "2026-10-13T10:58:08.553198203Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-2a018ea/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-zero-engine-ced4c42/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "missing_owned": [],
+        "not_run": [
+          "installed import, network provenance and AlreadyDurable source-zero",
+          "corrupt inputs/dependencies, held-native refusal and COMMIT loss in this wave",
+          "source2 closure/retirement, repeated lifetimes, Archive restart, ACK/GC and full M1",
+          "native syscall uncertainty/power loss, capacity/load/aged-state and arm64/release"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-zero-engine-ced4c42",
+        "wrapper": {
+          "session": 9264,
+          "joined_exit_code": 0
+        },
+        "result_sha256": "08f408ddd7ff15185b3f56ccd7b6f70c589d08852bcaf848e79a36a11bcbfc6b",
+        "build_source": "2a018eaf0b113835339cc547ea3858036e3aa3fd",
+        "cases": [
+          {
+            "name": "installed-activated-source-zero",
+            "status": "PASS",
+            "seed": {
+              "oracle": {
+                "status": "PASS",
+                "snapshots": 9,
+                "control_tables": 72,
+                "native_rows": 53,
+                "native_sequence": 64,
+                "retained_inputs": 5,
+                "issued": 1,
+                "reserved": 1,
+                "source_sequence": 0,
+                "rejection": "Signature",
+                "installed_import": false,
+                "network_provenance": false
+              },
+              "negative_controls": {
+                "status": "PASS",
+                "rejected": [
+                  "new-source-record",
+                  "rejection-reason",
+                  "wrong-signature-input",
+                  "wrong-preimage",
+                  "rejection-copy-kind",
+                  "old-science-mutated",
+                  "old-sql-xmin-mutated",
+                  "invented-source-closure",
+                  "reservation-missing",
+                  "backend-present",
+                  "original-input-mutated",
+                  "native-extra-write"
+                ],
+                "count": 12
+              },
+              "verification_sha256": "3ebec4b031683e8cf1b6515a1406666a7b7b57f0345d151e22ef2d8915edd053"
+            },
+            "attempts": [
+              {
+                "name": "installed-activated-source-zero",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-source-zero",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 53,
+                  "native_sequence": 65,
+                  "retained_inputs": 5,
+                  "issued": 1,
+                  "reserved": 1,
+                  "source_sequence": 0,
+                  "resolved_requests": 1,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "extra-native-write",
+                    "barrier-not-durable",
+                    "rejection-recorder-rewritten",
+                    "rejection-bytes-rewritten",
+                    "source-closed",
+                    "lost-old-row",
+                    "original-input-mutated",
+                    "not-joined",
+                    "wrong-cli",
+                    "backend-present",
+                    "catalog-drift"
+                  ],
+                  "count": 11
+                },
+                "verification_sha256": "20e256947c184b0ee34c2af0fed88f801638c06de2cb071ee839da073a40c94e"
+              },
+              {
+                "name": "installed-activated-source-zero-retry",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-source-zero-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 53,
+                  "native_sequence": 65,
+                  "retained_inputs": 5,
+                  "issued": 1,
+                  "reserved": 1,
+                  "source_sequence": 0,
+                  "resolved_requests": 1,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "extra-native-write",
+                    "barrier-not-durable",
+                    "rejection-recorder-rewritten",
+                    "rejection-bytes-rewritten",
+                    "source-closed",
+                    "lost-old-row",
+                    "original-input-mutated",
+                    "not-joined",
+                    "wrong-cli",
+                    "backend-present",
+                    "catalog-drift"
+                  ],
+                  "count": 11
+                },
+                "verification_sha256": "70c88b13e045e1e9e6943a08a93def46967ee5352e9e2a811ed4275f8a69ce6c"
+              }
+            ]
+          }
+        ],
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "inputs": true,
+          "contents": true,
+          "client": true,
+          "artifacts": true
+        },
+        "independent_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-zero-engine-ced4c42/root-independent-audit.json",
+          "sha256": "9666ea76adbf4be13323e82090b5499bd70f065fc474728be3f564980a19e1eb",
+          "wrapper": {
+            "session": 44574,
+            "joined_exit_code": 0
+          },
+          "status": "PASS_ROOT_SOURCE_ZERO_RAW_REPLAY_ARTIFACT_CUSTODY",
+          "source_files": 1792,
+          "retained_executables": 43,
+          "seed_snapshots": 9,
+          "complete_before_after_observations": 4,
+          "controls": 34,
+          "unchanged_nonborrowed_containers": 1252,
+          "observed_at": "2026-10-13T13:00:03.417660+02:00"
+        },
+        "interpretation": "Actual finite typed successor activation and invalid-signature rejection produce issued1/reserved1/source0 with53native rows/sequence64/fiveinputs. Installed first/retry config-only processes resolve the positive rejection, make exactly one native closing write total(sequence65) and preserve original input/rejection/issuer/recorder/xmin. Full72SQL and nine seed snapshots plus four installed observations independently replayed with34controls. Source2 remainsopen; no installed import/network provenance/AlreadyDurable source-zero claim."
       }
     ],
     "fault_qualification": {
@@ -44927,10 +45184,31 @@
     "source_zero_fixture": {
       "source": "b6345a9efa691e8dd72d377442905e811199cda2",
       "integrated": "4da99bc",
-      "status": "IMPLEMENTED_NOT_QUALIFIED",
+      "status": "PASS_INSTALLED_ACTIVATED_RECOVERY_SOURCE_ZERO",
       "scope": "One real finite Signature rejection issued1/source0 then two installed first/retry CLI; no installed import claim",
-      "checks": "Root and independent AI full source review closed; post-exit clock capture edge fixed. Pure9seed snapshots+4installed observations/34controls PASS. Actual engine NOT_RUN",
-      "next": "Exact committed --ingest-activated-zero run with retained2a018ea CLI/probe"
+      "checks": "One actual finite seed/nine snapshots and two installed CLI/four completeobservations PASS; root34controls/exact1792files/43ELFs/1252nonborrowedcustody PASS",
+      "next": "Qualified selected Signature rejection issued1/source0; installed import remains separate",
+      "engine_source": "ced4c4278bd3a2b7aeee4d388686c240780d45dc",
+      "engine_result_sha256": "08f408ddd7ff15185b3f56ccd7b6f70c589d08852bcaf848e79a36a11bcbfc6b"
+    },
+    "refusal_qualification": {
+      "status": "IMPLEMENTING_NOT_QUALIFIED",
+      "cases": [
+        "missing-input2",
+        "corrupt-input2",
+        "missing-old-dependency1/3",
+        "corrupt-old-dependency1/3",
+        "wrong-activation",
+        "wrong-handoff",
+        "extra-producer",
+        "foreign-stream",
+        "held-native"
+      ],
+      "scope": "Nine fresh off-seed clones, one actual installed CLI each; complete operator preimage and intended corruption, no writes to original",
+      "next": "Exact compile-only ingest-activated-refusals build then ninecaseengine after driver/oracle source review",
+      "probe_source": "c48cc66a4f510367233e4d75dc8f5b8e8d1f4fa2",
+      "probe_integrated": "d4f1133",
+      "probe_checks": "Root full helper/main diff and author complete caller/codec/native/PG review; pure frozenbytes/5literalmutations, rustfmt/diff PASS. Build NOT_RUN"
     }
   }
 }

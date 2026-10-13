@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
+    'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
     'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims',
@@ -188,6 +188,7 @@ try:
         'initial-ingest': ['initial-ingest'],
         'ingest-recovery': ['ingest-recovery'],
         'ingest-history': ['ingest-history'],
+        'ingest-activated-refusals': ['ingest-activated-refusals'],
         'ingest-activated-installed': ['ingest-activated-installed'],
         'ingest-activated-recovery': ['ingest-activated-recovery'],
         'ingest-installed-live': ['ingest-installed-live'],
@@ -207,7 +208,7 @@ try:
                      else native_path + '/native.py')
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
-    expected = {'ingest-activated-installed':'PASS_ACTIVATED_INSTALLED_BUILD_ONLY', 'ingest-activated-recovery':'PASS_ACTIVATED_INITIAL_RECOVERY_BUILD_ONLY', 'ingest-installed-live':'PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY', 'ingest-live-refusals':'PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY', 'ingest-live-guards':'PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY', 'ingest-live':'PASS_LIVE_INITIAL_BUILD_ONLY', 'ingest-empty-installed':'PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY', 'ingest-empty-preparer':'PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY', 'ingest-empty-locks':'PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY', 'ingest-empty-faults':'PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY', 'ingest-gap-faults':'PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY', 'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery': 'PASS_INGEST_RECOVERY_INSPECTION', 'archive-worker-budgets': 'PASS_ARCHIVE_WORKER_BUDGETS', 'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
+    expected = {'ingest-activated-refusals':'PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY', 'ingest-activated-installed':'PASS_ACTIVATED_INSTALLED_BUILD_ONLY', 'ingest-activated-recovery':'PASS_ACTIVATED_INITIAL_RECOVERY_BUILD_ONLY', 'ingest-installed-live':'PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY', 'ingest-live-refusals':'PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY', 'ingest-live-guards':'PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY', 'ingest-live':'PASS_LIVE_INITIAL_BUILD_ONLY', 'ingest-empty-installed':'PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY', 'ingest-empty-preparer':'PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY', 'ingest-empty-locks':'PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY', 'ingest-empty-faults':'PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY', 'ingest-gap-faults':'PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY', 'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery': 'PASS_INGEST_RECOVERY_INSPECTION', 'archive-worker-budgets': 'PASS_ARCHIVE_WORKER_BUDGETS', 'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
                 'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
                 'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
                 'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',
