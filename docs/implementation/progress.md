@@ -17,10 +17,10 @@ Cargo packages, legacy reference repositories and unrelated workloads remain
 protected. No public release, repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Observed HEAD338927d integrates guard harness9f45f83, oracle dc02056 and its
+Observed HEAD915478c integrates guard harness9f45f83, oracle dc02056 and its
 phase-clock correction338927d. Native/PG product remains qualified by c640b2f;
 the extended probe was compiled at ee24e86. Root bindings and these evidence
-updates are the remaining dirty files. Independent oracle review found two coherent
+updates now record the first guard engine failure; root bindings are committed. Independent oracle review found two coherent
 backdated refresh transcripts accepted by7abcc498; correctiond0f96f7 rejects both
 at exact phase-clock assertions, while the valid16-snapshot transcript passes35
 controls. Root reviewed the complete sources and delta; independent AI replay
@@ -347,8 +347,8 @@ artifacts; helpercleanup_review audited1226 nonborrowed resource projections and
 both terminal resources. Helper authored the oracle, not the harness/resources.
 Original SQL preservation remains captured-run evidence; no audit restart.
 
-Next bounded action: commit integrated bindings/checkpoint, then run exact
-`--ingest-live-guards` from a new isolated source worktree with the already
+Next bounded action: correct the request fixture after failed915478c, review the
+SQL/template pin, commit and run a fresh exact `--ingest-live-guards` clone with the already
 compiled ee24e86 artifacts. The14 SQL discriminators execute on
 the actual preparing Control backend, followed by actual live renewal and admission.
 Root wrote Rust probe/profile and owns later bindings; recovery_review owns the new
@@ -363,12 +363,22 @@ Wrapper55142 joined0, finished2026-10-13T07:12:37.317446Z. Root read-only audit
 verified1765 exactGit/checkout/export/archive files, two new and14 retainedELFs,
 1228 unchanged preflight projections and stopped0/PID0/noOOM build containers.
 BuildreceiptSHA f0612c0e08bce8670329ff5e5541215004b6acae15aea62d578912ed48c2270e.
-The new engine slice is NOT_RUN. The135 unchanged
+The first new engine915478c is FAIL; details below. The135 unchanged
 product/native/schema tests are retained atc640b2f and will not be repeated for a
 probe-only addition. Renewal synchronizes the Ingest deadline with actual Control
 and may shorten the initial60s target to20s; no lifetime extension is assumed.
 Activated-zero old-loader, real network provenance-off
 and installed successor consumers remain explicit subsequent obligations.
+
+First guard engine915478c989b97d1ba62ebd8e1b15bfa566baae53 failed at07:30:43Z;
+wrapper30812 joined1. The fixture copied epoch1/request4 with a retired acquisition
+job, so actual preparing Control failed in require_acquisition_job_authority before
+the intended activation veto. Probe exit101 is known. All72 SQL tables equal the
+prepared capture, native remains52/sequence62 and four inputs remain exact; original
+seed preservation and exact backend absence were captured. No guard/renewal PASS
+is inferred. Raw PostgreSQL log and all failure artifacts remain in that run.
+BorrowedPG stopped0 and client143/PID0/noOOM; cleanup/missing/unrelated arrays empty.
+Only Python SQL fixture/oracle correction is needed; unchanged binaries are retained.
 
 General repeated lifetimes, retired-empty2→fresh3, activated-owner recovery,
 installed Sync/Archive restart/resend and ACK/GC remain selected requirements.
@@ -403,9 +413,8 @@ and dated observations. Connected engine2c142c6 finished with borrowedPG stopped
 and idle client stopped143, both PID0/noOOM; wrapper78690 joined0. Cleanup/missing/
 unrelated arrays are empty. Buildc640b2f remains stopped-retained. Resource audit
 confirms1226 unchanged nonborrowed projections. Subsequent ee24e86 build is also
-stopped-retained; audit confirms1228 unchanged preflight projections. No guard
-engine has been allocated. PostgreSQL was freshly inspected stopped0/PID0/noOOM
-at07:26Z and no build/engine process was observed. Root and helper
+stopped-retained; audit confirms1228 unchanged preflight projections. Failed guard engine915478c is stopped-retained with borrowedPG0/client143,
+both PID0/noOOM; wrapper30812 joined1 at07:30:43Z. Root and helper
 source work continues; all earlier runs and six unrelated services are preserved.
 
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,

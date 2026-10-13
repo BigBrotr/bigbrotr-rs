@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_GUARDS_EXACT_ENGINE_READY",
+    "status": "ACTIVE_GUARDS_FIXTURE_CORRECTION_AFTER_FAIL",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40846,7 +40846,8 @@
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-7337ac4",
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-c640b2f",
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-engine-2c142c6",
-      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86"
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86",
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-915478c"
     ],
     "qualification": "c640b2f PASS14checks/135tests; finite2c142c6 PASS5cases/48snapshots/116controls and read-only evidence audit. Guard probeee24e86 compile/Clippy and artifact audit PASS; connected guard engine NOT_RUN.",
     "pause_observation": {
@@ -40872,7 +40873,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Run a fresh isolated exact --ingest-live-guards engine with retained ee24e86 binaries;14 rollback-only SQL cases, typed activation/renewal and signed admission. Record actual outcome and audit before qualification.",
+    "next_action": "Correct only the raw request fixture to reach the intended activation fence with otherwise eligible authority; independently review changed SQL/template pin, then run a fresh exact engine clone using unchanged ee24e86 artifacts. Preserve failed915478c and all prior evidence.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -41395,7 +41396,7 @@
       }
     ],
     "guards_fixture": {
-      "status": "INTEGRATED_REVIEWED_ENGINE_NOT_RUN",
+      "status": "ENGINE915478c_FAIL_INELIGIBLE_HISTORICAL_JOB",
       "probe_owner": "root",
       "harness_owner": "recovery_review",
       "oracle_owner": "cleanup_review",
@@ -41465,6 +41466,135 @@
         "state": "stopped-retained",
         "inventory_changed": [],
         "free_bytes_after": 67153551360
+      }
+    ],
+    "guard_engines": [
+      {
+        "source": "915478c989b97d1ba62ebd8e1b15bfa566baae53",
+        "status": "FAIL",
+        "owner": "534cdfaf98e1c023da512b17db8a3194",
+        "label": "org.bigbrotr.acquisition-binding",
+        "started_at": "2026-10-13T07:30:35.528317+00:00",
+        "finished_at": "2026-10-13T07:30:43.645249+00:00",
+        "client": {
+          "id": "10f614225b0f5bbf017a11e371ad81a402d7820446626264e09a3b38b17c921f",
+          "name": "bigbrotr-acquisition-binding-915478c"
+        },
+        "databases": [
+          "bb_scope_bind_915478c_successor_live_guards"
+        ],
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "free_bytes_before": 67104108544,
+        "free_bytes_after": 67117494272,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "not_run": [
+          "renewal refusal/expiry/COMMIT loss and activated-zero old-loader routes",
+          "first-request manifest mismatch, real network provenance and installed successor consumers",
+          "native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1",
+          "capacity/load/aged-state and arm64/release"
+        ],
+        "failure": "AssertionError: live guard gate unobserved",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-915478c",
+        "tree": "ed61e073ea7e1977fbfdc44b03d9ca73522433e5",
+        "wrapper": 30812,
+        "exit_code": 1,
+        "result_sha256": "9b4baccd6a9a3d1622c34cdbbdfceb8159984474008a7828495f00b31b113781",
+        "build_source": "ee24e86d6ad0e800305d5aa48d8a01879aeeafc1",
+        "diagnosis": "Fixture copied original request4 carrying a retired acquisition job. Actual preparing backend refused at require_acquisition_job_authority / guard_producer_acquisition_job before the intended activation guard. No product fix inferred.",
+        "postgres_log_sha256": "2950addb22fe71fae9b186cb9a1c96131058d7c9e315c5cc6a0e4feadc85d3ff",
+        "retained_state": "Known probe exit101; external72-table SQL equals prepared snapshot exactly, native52rows/sequence62 and4inputs unchanged, exact backend absent before native reopening. Outer refresh rolled back all fixture cases; no raw-case or renewal qualification.",
+        "resources": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T07:30:35.611444674Z",
+              "FinishedAt": "2026-10-13T07:30:42.828383304Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "10f614225b0f5bbf017a11e371ad81a402d7820446626264e09a3b38b17c921f",
+            "Name": "/bigbrotr-acquisition-binding-915478c",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T07:30:36.470202919Z",
+              "FinishedAt": "2026-10-13T07:30:42.311763526Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-915478c/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "inputs": true,
+          "artifacts": true
+        }
       }
     ]
   }
