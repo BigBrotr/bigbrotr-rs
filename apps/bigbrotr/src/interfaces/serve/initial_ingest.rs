@@ -1,7 +1,10 @@
-//! Explicit first lifetime. The worker never returns a live native handle.
+//! Explicit initial lifetimes. The worker never returns a live native handle.
 mod archive;
 mod commands;
 mod dictionaries;
+mod owner;
+pub(super) mod successor;
+use owner::{NativeOwner, Profile};
 pub(super) mod recovery;
 mod supervision;
 mod sync;
@@ -65,7 +68,7 @@ struct PreparedInitial {
 /// Field order also protects unwind: native close completes before Client Drop.
 /// Construct and destroy this value only on the blocking owner thread.
 struct Custody {
-    store: Option<IngestStore>,
+    store: Option<NativeOwner>,
     sync: Option<sync::Sync>,
     archive: Option<archive::Archive>,
     owner: ControlSession,
@@ -115,10 +118,16 @@ fn selected_roots(root: &Resolved) -> Result<()> {
 }
 
 fn accepted_profile(root: &Resolved) -> std::result::Result<(), OwnerError> {
+    accepted_owner_profile(root, Profile::Initial)
+}
+fn accepted_owner_profile(
+    root: &Resolved,
+    profile: Profile,
+) -> std::result::Result<(), OwnerError> {
     selected_roots(root).map_err(|_| OwnerError::InvalidPolicy)?;
-    // Both accepted documents must fund bootstrap and the private scope append.
-    // A managed file's unused seed must not veto their valid producer window.
-    if root.number("ingest.producer_outstanding_requests") < 2 {
+    // Each accepted document must fund this explicitly selected lifetime.
+    // A managed file's unused seed must not veto its valid producer window.
+    if root.number("ingest.producer_outstanding_requests") < profile.minimum(false) {
         return Err(OwnerError::InvalidPolicy);
     }
     Ok(())
@@ -140,8 +149,16 @@ fn native_limits() -> RocksNativeLimits {
 }
 
 fn budget(root: &Resolved, sync: bool, archive: bool) -> Result<ResourceBudget> {
+    owner_budget(root, sync, archive, 0)
+}
+fn owner_budget(
+    root: &Resolved,
+    sync: bool,
+    archive: bool,
+    retained: u64,
+) -> Result<ResourceBudget> {
     let n = |field: &str| root.number(&format!("runtime.processes.application.{field}"));
-    let items = (3 + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 })
+    let items = (3 + retained + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 })
         .checked_add(if archive { archive::ITEMS } else { 0 })
         .and_then(|items| {
             items.checked_add(if archive {
@@ -305,7 +322,7 @@ fn prepare(
         budget,
     )?;
     initial.sync = sync
-        .then(|| sync::Sync::prepare(root, budget))
+        .then(|| sync::Sync::prepare(root, budget, Profile::Initial))
         .transpose()?;
     initial.archive = archive
         .then(|| archive::Archive::prepare(root, budget, deadline, cancelled))
@@ -354,8 +371,16 @@ fn validate(
     document: &str,
     digest: [u8; 32],
 ) -> std::result::Result<(), OwnerError> {
+    validate_owner(root, Profile::Initial, document, digest)
+}
+fn validate_owner(
+    root: &Resolved,
+    profile: Profile,
+    document: &str,
+    digest: [u8; 32],
+) -> std::result::Result<(), OwnerError> {
     let restored = super::accepted_policy(root, document, digest)?;
-    accepted_profile(&restored)
+    accepted_owner_profile(&restored, profile)
 }
 fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Result<()> {
     let now = Instant::now();
@@ -516,10 +541,10 @@ async fn own(
             "initialization cancelled after registration; preserve original registry".into(),
         ));
     }
-    custody.store = Some(
+    custody.store = Some(NativeOwner::Initial(Box::new(
         IngestStore::initialize(path, manifest, native_limits(), initial.native)
             .map_err(|e| (4, e.to_string()))?,
-    );
+    )));
     let (public, private) = dictionaries::initialize(
         &mut custody,
         &spec,

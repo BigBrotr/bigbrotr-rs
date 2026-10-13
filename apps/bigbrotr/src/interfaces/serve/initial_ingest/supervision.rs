@@ -70,6 +70,79 @@ pub(super) async fn collect<T>(
     }
 }
 
+/// Shared shell for owners that must open existing native state before reading
+/// protected connection files. The handle never leaves its blocking worker.
+pub(super) type DriverCustody = tokio::sync::oneshot::Sender<(
+    crate::interfaces::postgres_command::DriverHandle,
+    bigbrotr::runtime::OwnedPermit,
+)>;
+pub(super) fn run_owned<F, Work>(
+    root: crate::config::Resolved,
+    budget: bigbrotr::runtime::ResourceBudget,
+    output: &mut crate::interfaces::lifecycle_output::LifecycleOutput,
+    label: &'static str,
+    graceful_stop: bool,
+    blocking_threads: usize,
+    work: F,
+) -> Result<()>
+where
+    F: FnOnce(
+            crate::config::Resolved,
+            bigbrotr::runtime::ResourceBudget,
+            watch::Sender<Progress>,
+            std::sync::Arc<Cancellation>,
+            DriverCustody,
+        ) -> Work
+        + Send
+        + 'static,
+    Work: Future<Output = Result<Value>>,
+{
+    use super::{Stop, duration, postgres_command};
+    use std::sync::{Arc, atomic::Ordering};
+    let timeout = duration(&root, "renewal_timeout");
+    let grace = duration(&root, "graceful_shutdown_timeout");
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .max_blocking_threads(blocking_threads)
+        .build()
+        .map_err(|_| (1, format!("{label} runtime unavailable")))?;
+    let result = runtime.block_on(async {
+        let mut stop = Stop::new()?;
+        let cancellation = Arc::new(Cancellation::new());
+        let (progress, mut observed) = watch::channel(Progress {
+            deadline: Instant::now() + timeout, initialized: None, shutdown: None,
+        });
+        let (send_driver, receive_driver) = tokio::sync::oneshot::channel();
+        let worker_cancel = cancellation.clone();
+        // Keep progress alive through collection, including the join boundary.
+        let worker_progress = progress.clone();
+        let handle = tokio::runtime::Handle::current();
+        let mut worker = tokio::task::spawn_blocking(move || {
+            handle.block_on(work(root, budget, worker_progress, worker_cancel, send_driver))
+        });
+        let (terminal, interrupted) = match collect(&mut worker, &mut observed,
+            &cancellation, stop.requested(), grace, |report| output.emit(report, false)).await {
+            Collected::Joined { terminal, interrupted } => (terminal, interrupted),
+            Collected::Unjoined => {
+                output.emit(format!("error: {label} worker not joined; preserve native and Control outcomes; terminating process"), true);
+                std::process::exit(4);
+            }
+        };
+        if let Ok((driver, grant)) = receive_driver.await {
+            postgres_command::join(driver).await;
+            drop(grant);
+        }
+        let report = terminal.map_err(|_| (4, format!("{label} worker panicked; preserve retained state")))??;
+        if interrupted || (!graceful_stop && cancellation.requested.load(Ordering::Acquire)) {
+            return Err((4, format!("{label} cancelled or expired; preserve retained state")));
+        }
+        output.emit(report, false);
+        Ok(())
+    });
+    runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

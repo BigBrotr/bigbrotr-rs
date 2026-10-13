@@ -48,6 +48,7 @@ pub(super) async fn initialize(
             .store
             .as_ref()
             .unwrap()
+            .initial()?
             .manifest()
             .allocation_namespaces()
             .domain(DictionaryKind::VisibilityScope)
@@ -86,7 +87,7 @@ pub(super) async fn initialize(
         custody
             .owner
             .bootstrap_initial_dictionaries(
-                custody.store.as_mut().unwrap(),
+                custody.store.as_mut().unwrap().initial_mut()?,
                 InitialBatchRequest {
                     ingest_root: path,
                     registration: spec,
@@ -137,7 +138,7 @@ pub(super) async fn initialize(
         custody
             .owner
             .append_initial_dictionaries(
-                custody.store.as_mut().unwrap(),
+                custody.store.as_mut().unwrap().initial_mut()?,
                 InitialDictionaryAppendRequest {
                     ingest_root: path,
                     registration: spec,

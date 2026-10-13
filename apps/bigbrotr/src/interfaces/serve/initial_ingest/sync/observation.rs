@@ -26,10 +26,10 @@ impl Dispatch<'_> {
         let limits = AdmissionLimits {
             max_batch_bytes: 64 * 1024,
             max_dependencies: 8,
-            max_outstanding_requests: u64::from(self.spec.outstanding_request_limit),
+            max_outstanding_requests: u64::from(self.writer.limit(self.spec)),
         };
         let visible = scope.scope().visibility();
-        let mut prepared = match self.store.prepare_dictionaries(
+        let mut prepared = match self.writer.prepare_dictionaries(
             visible,
             limits,
             grant(
@@ -104,11 +104,12 @@ impl Dispatch<'_> {
                 .text("storage.ingest_root")
                 .expect("validated path"),
         );
+        let lifecycle = self.writer.profile()?;
         let ttl = self.remaining()?;
         let existing = self
-            .owner
-            .read_initial_observation(
-                self.store,
+            .writer
+            .observation(
+                self.owner,
                 InitialObservationRequest {
                     ingest_root: path,
                     registration: self.spec,
@@ -118,23 +119,23 @@ impl Dispatch<'_> {
                     cancelled: &self.cancel.requested,
                 },
                 grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate(self.root, d, h),
+                |d, h| validate_sync(self.root, lifecycle, d, h),
             )
             .await
             .map_err(error)?;
         if let Some(existing) = existing {
             return Ok(Some(existing));
         }
-        if *next_request > u64::from(self.spec.outstanding_request_limit) {
+        if *next_request > u64::from(self.writer.limit(self.spec)) {
             // This new descriptor set needs a mutation slot. A full initial
             // window defers it without ending HTTP, renewal or existing reads.
             return Ok(None);
         }
         let ttl = self.remaining()?;
         let appended = self
-            .owner
-            .append_initial_dictionaries(
-                self.store,
+            .writer
+            .append(
+                self.owner,
                 InitialDictionaryAppendRequest {
                     ingest_root: path,
                     registration: self.spec,
@@ -150,16 +151,16 @@ impl Dispatch<'_> {
                     limits.required_dictionary_data_bytes().map_err(error)?,
                     limits.required_native_bytes().map_err(error)?,
                 )?,
-                |d, h| validate(self.root, d, h),
+                |d, h| validate_sync(self.root, lifecycle, d, h),
             )
             .await
             .map_err(error)?;
         drop(appended);
         *next_request += 1;
         let ttl = self.remaining()?;
-        self.owner
-            .read_initial_observation(
-                self.store,
+        self.writer
+            .observation(
+                self.owner,
                 InitialObservationRequest {
                     ingest_root: path,
                     registration: self.spec,
@@ -169,7 +170,7 @@ impl Dispatch<'_> {
                     cancelled: &self.cancel.requested,
                 },
                 grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate(self.root, d, h),
+                |d, h| validate_sync(self.root, lifecycle, d, h),
             )
             .await
             .map_err(error)?

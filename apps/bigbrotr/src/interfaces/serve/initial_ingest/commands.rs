@@ -2,11 +2,14 @@
 //! HTTP and password tasks run on the parent runtime; neither borrows native state.
 use super::*;
 use bigbrotr::runtime::policy_authority::{LeaseError, PolicyLeaseTracker, PolicyLeaseTtl};
+use bigbrotr::storage::postgres::control_owner::PolicySnapshot;
 use std::time::Duration;
 
 pub(super) struct CommandOwner<'a> {
     pub(super) owner: &'a mut ControlSession,
     pub(super) spec: &'a InitialRegistration,
+    policy: PolicySnapshot,
+    profile: Profile,
     pub(super) root: &'a Resolved,
     progress: &'a watch::Sender<Progress>,
     pub(super) cancellation: &'a Cancellation,
@@ -42,6 +45,18 @@ impl CommandOwner<'_> {
     }
 
     async fn renew(&mut self) -> Result<Instant> {
+        // Archive callbacks remain strictly initial-only. They never borrow a
+        // live writer or turn historical registration into current authority.
+        if self.profile != Profile::Initial {
+            return Err((4, "initial Archive cannot renew a successor".into()));
+        }
+        self.renew_for(None).await
+    }
+
+    async fn renew_for(&mut self, native: Option<&NativeOwner>) -> Result<Instant> {
+        if self.profile == Profile::Successor && !matches!(native, Some(NativeOwner::Live(_))) {
+            return Err((4, "successor renewal requires its retained writer".into()));
+        }
         let ttl = duration(self.root, "authorization_ttl");
         let maximum = if self.administration.is_some() {
             duration(self.root, "renewal_timeout")
@@ -59,7 +74,7 @@ impl CommandOwner<'_> {
                 .owner
                 .refresh(|doc, digest| {
                     let restored = super::super::accepted_policy(self.root, doc, digest)?;
-                    accepted_profile(&restored)?;
+                    accepted_owner_profile(&restored, self.profile)?;
                     if let Some(sync) = self.sync.as_deref_mut() {
                         sync.accept(&restored)?;
                     }
@@ -72,22 +87,35 @@ impl CommandOwner<'_> {
                 })
                 .await
                 .map_err(owner_error)?;
-            if snapshot.config_revision != self.spec.config_revision
-                || snapshot.policy_revision != self.spec.policy_revision
-                || snapshot.config_digest != *self.spec.config_digest.as_bytes()
-                || snapshot.policy_digest != *self.spec.policy_digest.as_bytes()
-            {
+            if snapshot != self.policy {
                 return Err((4, "accepted policy changed; initial Ingest stopped".into()));
             }
-            self.owner
-                .renew_initial_ingest(
-                    self.spec,
-                    ttl,
-                    |doc, digest| validate(self.root, doc, digest),
-                    &Cell::new(false),
-                )
-                .await
-                .map_err(owner_error)?;
+            match native {
+                Some(NativeOwner::Live(writer)) => {
+                    self.owner
+                        .renew_live_initial_ingest(
+                            writer,
+                            ttl,
+                            |doc, digest| validate_owner(self.root, self.profile, doc, digest),
+                            &Cell::new(false),
+                        )
+                        .await
+                }
+                Some(NativeOwner::Candidate(_)) => {
+                    return Err((4, "candidate cannot renew".into()));
+                }
+                Some(NativeOwner::Initial(_)) | None => {
+                    self.owner
+                        .renew_initial_ingest(
+                            self.spec,
+                            ttl,
+                            |doc, digest| validate(self.root, doc, digest),
+                            &Cell::new(false),
+                        )
+                        .await
+                }
+            }
+            .map_err(owner_error)?;
             Ok(snapshot)
         })
         .await?;
@@ -262,16 +290,23 @@ pub(super) async fn maintain(
         owner,
     } = custody;
     let store = store.as_mut().expect("initialized native owner");
+    let profile = store.profile()?;
+    let policy = store.policy(spec)?;
+    if profile == Profile::Successor && archive.is_some() {
+        return Err((3, "successor Archive is not available".into()));
+    }
     let lease = PolicyLeaseTracker::new(
         spec.dataset_id,
         owner.identity().process_incarnation,
-        PolicyEpoch::new(spec.policy_revision),
+        PolicyEpoch::new(policy.policy_revision),
         PolicyLeaseTtl::new(duration(root, "authorization_ttl")).map_err(authority)?,
     )
     .map_err(authority)?;
     let mut state = CommandOwner {
         owner,
         spec,
+        policy,
+        profile,
         root,
         progress,
         cancellation,
@@ -281,7 +316,7 @@ pub(super) async fn maintain(
         sync: sync.as_mut(),
         archive_selected: archive.is_some(),
     };
-    let started = state.renew().await?;
+    let started = state.renew_for(Some(store)).await?;
     if state.sync.is_some() {
         let maximum = state.maximum()?;
         phase(progress, maximum)?;
@@ -404,7 +439,7 @@ pub(super) async fn maintain(
                 biased;
                 _ = cancellation.wait() => return Ok(()),
                 _ = tokio::time::sleep_until(due) => {
-                    let started = state.renew().await?;
+                    let started = state.renew_for(Some(store)).await?;
                     due = state.next_renewal(started)?;
                     state.idle_phase(due)?;
                     if let Some(management) = &management {
@@ -418,7 +453,7 @@ pub(super) async fn maintain(
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
                     let archive = archive.as_mut().expect("selected Archive");
-                    let published = archive.publish(store, budget, &mut state, &mut due,
+                    let published = archive.publish(store.initial()?, budget, &mut state, &mut due,
                         &mut management, &cancellation.requested).await?;
                     // Drain available complete batches without another formation
                     // delay, but allow management/renewal between each pass.
@@ -434,7 +469,7 @@ pub(super) async fn maintain(
                     // The hard deadline and independent parent watchdog remain.
                     tokio::time::timeout(maximum,
                         state.sync.as_deref_mut().expect("selected Sync").dispatch(sync::Dispatch {
-                            owner: state.owner, store, spec, root, budget, cancel: cancellation,
+                            owner: state.owner, writer: store, spec, root, budget, cancel: cancellation,
                             deadline: Instant::now() + maximum,
                         }),
                     ).await.map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))??;

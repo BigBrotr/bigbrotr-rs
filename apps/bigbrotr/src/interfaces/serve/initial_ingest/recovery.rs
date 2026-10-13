@@ -17,6 +17,7 @@ use bigbrotr_model::{
 use tokio::sync::oneshot;
 
 mod empty;
+pub(super) mod replay;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(in crate::interfaces::serve) enum Action {
@@ -27,7 +28,7 @@ pub(in crate::interfaces::serve) enum Action {
     RetireEmptyAttempt,
 }
 
-fn limits() -> ProducerRecoveryLimits {
+pub(super) fn limits() -> ProducerRecoveryLimits {
     ProducerRecoveryLimits {
         input: RequestDecodeLimits {
             values: FactDecodeLimits {
@@ -49,7 +50,7 @@ fn limits() -> ProducerRecoveryLimits {
     }
 }
 
-fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, OwnedPermit)> {
+pub(super) fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, OwnedPermit)> {
     let limits = limits();
     let input = RetainedRequestInput::required_data_bytes(limits.input).map_err(|e| {
         (
@@ -75,54 +76,17 @@ pub(in crate::interfaces::serve) fn run(
         ));
     }
     let budget = budget(&root, false, false)?;
-    let timeout = duration(&root, "renewal_timeout");
-    let grace = duration(&root, "graceful_shutdown_timeout");
-    let runtime = tokio::runtime::Builder::new_current_thread()
-        .enable_all()
-        .max_blocking_threads(1)
-        .build()
-        .map_err(|_| (1, "Ingest recovery runtime unavailable".into()))?;
-    let result = runtime.block_on(async {
-        let mut stop = Stop::new()?;
-        let cancellation = Arc::new(Cancellation::new());
-        let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout,
-            initialized: None,
-            shutdown: None,
-        });
-        // Transfer the transport straight to the independent supervisor. Even a
-        // panic in the native owner cannot detach its driver or release its grant.
-        let (send_driver, receive_driver) = oneshot::channel();
-        let worker_cancel = cancellation.clone();
-        // Keep the sender alive through collection. A normal worker return must
-        // not close the watch first and trigger the collector's cancellation.
-        let worker_progress = progress.clone();
-        let handle = tokio::runtime::Handle::current();
-        let mut worker = tokio::task::spawn_blocking(move || {
-            handle.block_on(own(root, budget, worker_progress, worker_cancel, send_driver, action))
-        });
-        let (terminal, interrupted) = match supervision::collect(
-            &mut worker, &mut observed, &cancellation, stop.requested(), grace, |_| {},
-        ).await {
-            supervision::Collected::Joined { terminal, interrupted } => (terminal, interrupted),
-            supervision::Collected::Unjoined => {
-                output.emit("error: Ingest recovery worker not joined; preserve native and Control outcomes; terminating process", true);
-                std::process::exit(4);
-            }
-        };
-        if let Ok((driver, grant)) = receive_driver.await {
-            postgres_command::join(driver).await;
-            drop(grant);
-        }
-        let report = terminal.map_err(|_| (4, "Ingest recovery worker panicked; preserve retained state".into()))??;
-        if interrupted || cancellation.requested.load(Ordering::Acquire) {
-            return Err((4, "Ingest recovery cancelled or expired; preserve retained state".into()));
-        }
-        output.emit(report, false);
-        Ok(())
-    });
-    runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
-    result
+    supervision::run_owned(
+        root,
+        budget,
+        output,
+        "Ingest recovery",
+        false,
+        1,
+        move |root, budget, progress, cancellation, driver| {
+            own(root, budget, progress, cancellation, driver, action)
+        },
+    )
 }
 
 async fn own(
@@ -281,46 +245,24 @@ async fn connected(
         drop(closed);
         None
     };
-    let mut resolved = 0_u64;
-    for sequence in 1..=reserved {
-        phase(progress, timeout)?;
-        bounded(timeout, cancellation, async {
-            owner.refresh(validate).await.map_err(owner_error)
-        })
-        .await?;
-        let (input, outcome) = replay_grants(budget)?;
-        phase(progress, timeout)?;
-        let result = bounded(timeout, cancellation, async {
-            let request = ProducerResolveRequest {
-                ingest_root: path,
-                registration: &spec,
-                request: ProducerRequestId {
-                    producer_slot_id: spec.producer_slot_id,
-                    producer_epoch: ProducerEpoch::new(1).expect("initial producer"),
-                    request_sequence: RequestSequence::new(sequence).expect("nonzero sequence"),
-                },
-                limits: limits(),
-                policy_ttl: duration(root, "authorization_ttl"),
-                cancelled: &cancellation.requested,
-            };
-            let result = if action == Action::RetireInitial {
-                owner
-                    .inspect_initial_retirement_request(recovery, request, input, outcome, validate)
-                    .await
-            } else {
-                owner
-                    .resolve_initial_producer_request(recovery, request, input, outcome, validate)
-                    .await
-            };
-            result.map_err(|e| (4, e.to_string()))
-        })
-        .await?;
-        if let Some(prefix) = &mut prefix {
-            prefix.record(&result).map_err(|e| (4, e.to_string()))?;
-        }
-        drop(result);
-        resolved += 1;
-    }
+    let resolved = replay::originals(
+        root,
+        budget,
+        progress,
+        cancellation,
+        &mut owner,
+        recovery,
+        &spec,
+        reserved,
+        prefix.as_mut(),
+        if action == Action::RetireInitial {
+            replay::Mode::InspectRetirement
+        } else {
+            replay::Mode::Resolve
+        },
+        validate,
+    )
+    .await?;
     let mut report = json!({"format":"bigbrotr-ingest-recovery/1",
         "state":"positive-outcomes-resolved", "dataset_id":spec.dataset_id,
         "owner_resource_id":spec.ingest_resource_id, "producer_slot_id":spec.producer_slot_id,

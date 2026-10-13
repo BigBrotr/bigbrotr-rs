@@ -39,10 +39,64 @@ use std::time::Duration;
 pub(super) const ITEMS: u64 = 16;
 pub(super) const INTERVAL: Duration = Duration::from_millis(250);
 
+/// Preclaim capacity check for the complete fixed finite profile. TLS roots are
+/// already retained by Sync::prepare. Conservatively overlap formation, wire
+/// and admission scratch although those phases normally release some grants.
+pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
+    use bigbrotr::acquisition::session::{ActiveRequest, RelaySession, RetainedRelayEvent};
+    use bigbrotr_model::LocalObservation;
+    let wire = EventLimits::default();
+    let read = CertificationLimits::default();
+    let observation = CertificationLimits {
+        max_fact_bytes: 64 * 1024,
+        max_dependencies: 8,
+    };
+    let dictionaries = AdmissionLimits {
+        max_batch_bytes: 64 * 1024,
+        max_dependencies: 8,
+        max_outstanding_requests: 64,
+    };
+    let event = AdmissionLimits::default();
+    let session = wire.wire_bytes
+        + wire.parse_bytes
+        + size_of::<ActiveRequest<'_>>()
+        + size_of::<RelaySession<'_, '_, '_>>();
+    let arrivals = 3
+        * (wire.wire_bytes + size_of::<RetainedRelayEvent<'_>>() + size_of::<LocalObservation>())
+        + size_of::<receive::Arrivals<'_>>()
+        + bigbrotr_protocol::endpoint::MAX_ENDPOINT_BYTES;
+    let data = AcquisitionScan::REQUIRED_BYTES + StoredRelaySource::REQUIRED_BYTES
+        + wire.parse_bytes as u64
+        + 2 * read.required_data_bytes().map_err(error)?
+        + observation.required_data_bytes().map_err(error)?
+        + dictionaries.required_dictionary_preparation_data_bytes().map_err(error)?
+        + dictionaries.required_dictionary_data_bytes().map_err(error)?
+        + event.required_data_bytes().map_err(error)?
+        + (wire.parse_bytes + 4 * wire.event_bytes + session + arrivals) as u64
+        // Current DirectConnector and DNS each charge 4MiB. RelayWebSocket
+        // charges eight maximum frames plus 1MiB handshake/buffer overhead.
+        + 8 * MIB + 8 * wire.wire_bytes as u64 + MIB;
+    drop(
+        budget
+            .try_acquire(
+                ResourceRequest::data(
+                    data,
+                    ITEMS,
+                    event.required_native_bytes().map_err(error)?
+                        + dictionaries.required_native_bytes().map_err(error)?,
+                )
+                .map_err(error)?,
+            )
+            .map_err(error)?,
+    );
+    Ok(())
+}
+
 pub(super) struct Sync {
     connector: DirectConnector,
     scan: Option<AcquisitionScan>,
     next_request: u64,
+    lifecycle: Profile,
     profile: Option<(usize, bool)>,
 }
 
@@ -51,7 +105,11 @@ fn error(error: impl std::fmt::Debug) -> (u8, String) {
 }
 
 impl Sync {
-    pub(super) fn prepare(root: &Resolved, budget: &ResourceBudget) -> Result<Self> {
+    pub(super) fn prepare(
+        root: &Resolved,
+        budget: &ResourceBudget,
+        lifecycle: Profile,
+    ) -> Result<Self> {
         if !root.local("sync") {
             return Err((3, "initial Sync requires local placement".into()));
         }
@@ -74,7 +132,8 @@ impl Sync {
                 budget.clone(),
             ),
             scan: None,
-            next_request: 3,
+            next_request: if lifecycle == Profile::Initial { 3 } else { 1 },
+            lifecycle,
             profile: None,
         })
     }
@@ -86,7 +145,8 @@ impl Sync {
         // and decoder bounds. Larger configured events need the later scheduler.
         if !accepted.local("sync")
             || !accepted.flag("sync.enabled")
-            || accepted.number("ingest.producer_outstanding_requests") < 4
+            || accepted.number("ingest.producer_outstanding_requests")
+                < self.lifecycle.minimum(true)
             || bytes == 0
             || bytes > EventLimits::default().event_bytes
         {
@@ -165,9 +225,9 @@ impl Sync {
         );
         let ttl = work.remaining()?;
         let Some(visible) = work
-            .owner
-            .read_initial_visibility(
-                work.store,
+            .writer
+            .visibility(
+                work.owner,
                 InitialVisibilityRequest {
                     ingest_root: path,
                     registration: work.spec,
@@ -177,7 +237,7 @@ impl Sync {
                     cancelled: &work.cancel.requested,
                 },
                 grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate(work.root, d, h),
+                |d, h| validate_sync(work.root, self.lifecycle, d, h),
             )
             .await
             .map_err(error)?
@@ -317,9 +377,9 @@ impl Sync {
                 PreparedCertification::new(intent, max_event_bytes, permit).map_err(error)?;
             let ttl = work.remaining()?;
             let certified = work
-                .owner
-                .certify_initial_event(
-                    work.store,
+                .writer
+                .certify(
+                    work.owner,
                     InitialCertificationRequest {
                         ingest_root: path,
                         registration: work.spec,
@@ -342,7 +402,7 @@ impl Sync {
             if !needs_admission {
                 continue;
             }
-            if self.next_request > u64::from(work.spec.outstanding_request_limit) {
+            if self.next_request > u64::from(work.writer.limit(work.spec)) {
                 // No ACK or slot retirement is implied by copying receipts.
                 // This owner can keep serving/certifying without new mutations.
                 return Ok(());
@@ -351,7 +411,7 @@ impl Sync {
             let event = PreparedEvent::new(
                 ProducerRequestId {
                     producer_slot_id: work.spec.producer_slot_id,
-                    producer_epoch: ProducerEpoch::new(1).unwrap(),
+                    producer_epoch: ProducerEpoch::new(work.writer.epoch()).map_err(error)?,
                     request_sequence: RequestSequence::new(self.next_request).map_err(error)?,
                 },
                 intent,
@@ -362,9 +422,9 @@ impl Sync {
             let admission = work.admission_limits();
             let ttl = work.remaining()?;
             let outcome = work
-                .owner
-                .admit_initial_event(
-                    work.store,
+                .writer
+                .admit(
+                    work.owner,
                     InitialEventRequest {
                         ingest_root: path,
                         registration: work.spec,
@@ -397,7 +457,7 @@ impl Sync {
 
 pub(super) struct Dispatch<'a> {
     pub owner: &'a mut ControlSession,
-    pub store: &'a mut IngestStore,
+    pub writer: &'a mut NativeOwner,
     pub spec: &'a InitialRegistration,
     pub root: &'a Resolved,
     pub budget: &'a ResourceBudget,
@@ -416,7 +476,7 @@ impl Dispatch<'_> {
     }
     fn admission_limits(&self) -> AdmissionLimits {
         AdmissionLimits {
-            max_outstanding_requests: u64::from(self.spec.outstanding_request_limit),
+            max_outstanding_requests: u64::from(self.writer.limit(self.spec)),
             ..AdmissionLimits::default()
         }
     }
@@ -430,4 +490,14 @@ fn recorded() -> Result<bigbrotr_model::ObservedTime> {
         .sample()
         .map_err(error)?
         .received_at())
+}
+
+fn validate_sync(
+    root: &Resolved,
+    profile: Profile,
+    document: &str,
+    digest: [u8; 32],
+) -> std::result::Result<(), OwnerError> {
+    let restored = super::super::accepted_policy(root, document, digest)?;
+    accepted_owner_profile(&restored, profile)
 }
