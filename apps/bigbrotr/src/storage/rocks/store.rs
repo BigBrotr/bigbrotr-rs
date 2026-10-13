@@ -193,8 +193,9 @@ pub struct IngestStore {
     live_initial: Option<initial_writer::LiveInitialBinding>,
 }
 
-/// Exclusive historical-state recovery. There is no conversion or mutable
+/// Exclusive historical-state recovery. There is no direct conversion or mutable
 /// exposure to IngestStore, and opening never grants fresh admission authority.
+/// A live candidate must retain custody through connected preparation/activation.
 pub struct IngestRecovery {
     store: IngestStore,
 }
@@ -202,7 +203,7 @@ impl IngestRecovery {
     /// Inspect retained historical identity under the actual exclusive native
     /// lock. The connected recovery consumer must still bind this manifest to
     /// the complete registry before any monotone recovery operation. This handle
-    /// cannot issue fresh admissions or become an IngestStore.
+    /// cannot issue fresh admissions or directly become an IngestStore.
     pub fn inspect(
         path: &Path,
         dataset: DatasetId,

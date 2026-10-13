@@ -368,6 +368,9 @@ mod initial_gap_tests;
 #[path = "initial_empty_tests.rs"]
 mod initial_empty_tests;
 
+#[path = "initial_writer_tests.rs"]
+mod initial_writer_tests;
+
 fn reconstruct(fixture: &Fixture, recovery: &IngestRecovery) -> Result<InitialHandoff, String> {
     let bytes = value(&recovery.store, handoff_key());
     let historical = recovery
