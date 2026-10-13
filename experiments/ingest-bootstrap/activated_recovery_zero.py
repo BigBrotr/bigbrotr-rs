@@ -22,7 +22,8 @@ from initial_succession import census, digest
 from installed import wait_for
 
 
-def invoke(pg, client, output, database, config, mode, helper):
+def invoke(pg, client, output, database, config, mode, helper, *, action=None):
+    assert action in (None, '--retire-activated-initial')
     prefix = output / mode
     terminal = None
     response = dict(returncode=None, stdout='', stderr='', outcome='OUTCOME_UNKNOWN')
@@ -30,7 +31,7 @@ def invoke(pg, client, output, database, config, mode, helper):
     started = time.monotonic()
     try:
         lab.docker('exec', '-d', client, 'python3', '/lab/' + helper.name,
-            config, '/lab/' + mode, timeout=5)
+            config, '/lab/' + mode, *(() if action is None else (action,)), timeout=5)
         wait_for(lambda: Path(str(prefix) + '.terminal.json').exists(), 'source-zero recovery joined', 50)
         terminal = json.loads(Path(str(prefix) + '.terminal.json').read_text())
         clock['after_us'] = server_clock(pg, database)
