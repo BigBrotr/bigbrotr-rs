@@ -29,7 +29,7 @@ def upgrade(pg, client, output, database, config, rows):
                 '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '36')
             value['responses'].append(dict(returncode=answer.returncode, stdout=answer.stdout, stderr=answer.stderr))
             value[stage] = rows(database)
-            lab.write_json(output / (MODE + '-migration.json'), value)
+            lab.write_json(output / (MODE + '-migration36.json'), value)
             assert answer.returncode == 0 and not answer.stderr
         value.update(physical_after=preparing.physical(pg, database), catalog_after=acquisition.catalog(pg, database))
         value['server_window']['after_us'] = server_clock(pg, database)
@@ -41,7 +41,7 @@ def upgrade(pg, client, output, database, config, rows):
             stdout=text(error.stdout), stderr=text(error.stderr)))
         raise
     finally:
-        lab.write_json(output / (MODE + '-migration.json'), value)
+        lab.write_json(output / (MODE + '-migration36.json'), value)
 
 
 def run_all(pg, client, output, rows, clone):
