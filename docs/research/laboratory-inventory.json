@@ -46549,8 +46549,8 @@
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
   },
   "implementation_activated_acquisition_abandonment_20261013": {
-    "status": "IMPLEMENTED_BUILD_AND_ENGINE_NOT_RUN",
-    "observed_at": "2026-10-13T13:30:12.266186+00:00",
+    "status": "PASS_BUILD_INSTALLED_QUALIFICATION_OPEN",
+    "observed_at": "2026-10-13T13:35:07.545940+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
     "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -46563,19 +46563,20 @@
       "behavior": "Exact paired1/1/initialreason or2/2/activatedreason; complete35classifier plusclosed/closing/cutdigest/nativeprefix. ActivatorControl claims includingzero-request, prior+selected<=64 withindexedLIMIT65, entirebatch beforewrites; gap+twojob revisionsatomic/exactretry preservesissuer/xmin. No extraordinaryjobtablegrants ortrigger; old0028boundary preserved."
     },
     "root_consumer": {
-      "state": "implemented uncommitted at checkpoint; complete commit follows",
+      "state": "committed and compiled; actualinstalledqualificationNOT_RUN",
       "flag": "--abandon-activated-acquisition",
       "resource": "Native/Control+128KiBmetadata+4096closing and1replaypair preclaim; sequential64KiBsource and128KiBabandon grant. Freshrefresh beforefinal; sourceproof borrowed untilreturn; parentnativeclose/Controlrelease/driverjoinbefore report",
-      "tests": "Existing actualentrypointmissingstore andmutualexclusion cases extended; NOT_RUN"
+      "tests": "47actualentrypoint/schema/migration tests PASS",
+      "source": "ec6ff3963161e956fd18226396897b559ac15afe"
     },
     "finite_probe": {
       "source": "fe44e19042d8c2874b12910c62014d8652da0378",
       "integrated": "117d648",
       "mode": "successor-live-acquisition-claims DB PASSWORD CONFIG",
       "behavior": "GenuineAlreadyDurable request1 underliveControl8; refresh; typedaccepta7/claima7zero-request; typedaccepta8unclaimed. Fullnative53/seq64/input5 prepost; typedcalls captured beforeassert. Existinga6queued2 remainsboundrequest1; olddurable mode unchanged",
-      "status": "SOURCE_REVIEWED_NOT_RUN"
+      "status": "COMPILE_CLIPPY_PASS_ENGINE_NOT_RUN"
     },
-    "review": "Root complete newPGadapter/0036, affected closed-source/nativeprefix/Controlacquire+beginhistory andold0027/28/23/0035 owners andcurrentCLI/probe paths reviewed. No concreteblocker; additional independentnativeauthor review pending. Scopedrustfmt/diffchecksPASS only.",
+    "review": "Root complete affected owner/contracts/callers and independent nativeauthor fullnewPG/0036/CLI review PASS withoutconcreteblocker. Actualengine, privileges, negativeSQL andCOMMITloss remain separate.",
     "build_plan": "Reuse existing ingest-activated-installed profile: exactRust1.98.1/Clang14 compile, entry/schema/migration tests andClippy. Nativeproof implementations unchanged9dbc asideequivalent PGhelper extraction; retainnative45tests, no broadrepeat.",
     "fixture": {
       "owner": "cleanup_review",
@@ -46583,10 +46584,56 @@
       "branch": "qualification/activated-acquisition-fixtures",
       "state": "Newindependentfixture inprogress: successful939offclosed and0e4917durableclosed, first+retry4CLI/fullSQL/native/input/session/catalog; noneexecuted"
     },
-    "next": "Finish independentreview/integration, commitclean exactsource then isolatedbuild. Complete firstfixture pure expectations/review then4actualCLI. Later genuinezero-request seed, SQLnegative/immutability, finalCOMMITloss+freshrecovery andordinaryHTTPexistinggrant regression.",
+    "next": "Complete independent first/retryfixture for successful939offclosed and0e4917durableclosed; review/pure controls then exact4CLI engine reusing protectedec6 artifacts. Subsequent genuinezero-request seed/SQLnegative/finalCOMMITloss/ordinaryHTTPoldgrants gates remain.",
     "owner": "root sole integrator/build/engine executor",
-    "processes": "No engine/build active; all priorbuildandprefixengine wrappersjoined. Threeagents separateworktrees; preserve61ELFs, failures, allignored/externallabs.",
+    "processes": "Allbuildcontainers androot93208/74029 joined0; noengine/buildactive. PG/nativeagents read-only design laterqualification, fixtureagentisolatedfiles.66ELFs and allfailures preserved.",
     "last_private_push": "da7bd07040aaf45062cb7e25e69e8d8cccda6245 verified plusprefix55dc andcontractc002branches",
-    "head": "117d64842668496c026659f0057459f784e45d20"
+    "head": "ec6ff3963161e956fd18226396897b559ac15afe",
+    "build": {
+      "source": "ec6ff3963161e956fd18226396897b559ac15afe",
+      "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",
+      "owner": "865a2554ea1534a1781966c4425d3f73",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "295a286e851711fdd4aa692327649a33a48faf8c611112b02d7011beec47706f"
+        },
+        {
+          "name": "native",
+          "id": "4282d32f43020585f11cb72647189f8bddff3b11f9450c75749e76c428099322"
+        }
+      ],
+      "started_at": "2026-10-13T13:30:42.153974+00:00",
+      "finished_at": "2026-10-13T13:32:25.921740+00:00",
+      "free_bytes_after": 59970093056,
+      "status": "PASS_ACTIVATED_INSTALLED_BUILD_ONLY",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-ec6ff39",
+      "wrapper": "93208 joined0",
+      "checks": "compile+47actualentrypoint/schema/migration tests+Clippy onRust1.98.1/Clang14",
+      "receipt_sha256": "68dd599f8a5093d51b25efdecec3ca049a116a03aedc23f355a64e13d1e9901c",
+      "binary_sha256": "489e7d38e6feb6116d1ad43c7515069e7cf654798d9642003814d826dc7211fc",
+      "probe_sha256": "2e8863ecf6f0862ceda16a357bde764e65eb769bdd39916ee197ea982a07c966",
+      "test_executables_sha256": {
+        "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+        "control_runtime_entrypoint": "4e2da0e167b3b5a59efd8dddc40ee4e9e7041dbc3d05d9810318d3cd6a5051e4",
+        "control_schema": "cf848576f8c3352a89cdb5c9321d9a59830c0aeebe5a2a9eb0a59493bd1459ed"
+      },
+      "source_manifest_sha256": "6724e728d35559f7ad8323782d4df46502c41ae0b63febf284d0ad2d35628ed0",
+      "archive_sha256": "f6dbe563e6c117523f83a8e241c0d6f44a70722df3d004a602ebae41538dbcd4",
+      "audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-ec6ff39/root-build-audit.json",
+        "sha256": "a702a48c5a7e01f2ccf5b6b3b04eba6024f6876c364b884d2e1f0a1177e3a98d",
+        "wrapper": "74029 joined0",
+        "files": 1812,
+        "retained_elfs": 66,
+        "unchanged_prior_projections": 1271,
+        "owned_additions": [
+          "295a286e851711fdd4aa692327649a33a48faf8c611112b02d7011beec47706f",
+          "4282d32f43020585f11cb72647189f8bddff3b11f9450c75749e76c428099322"
+        ],
+        "terminal": "both0/PID0/noOOM"
+      },
+      "reused": "Unchanged native45test source from9dbc checked; new47entry/schema/migration tests execute here. No actualabandonmentengine run yet."
+    }
   }
 }

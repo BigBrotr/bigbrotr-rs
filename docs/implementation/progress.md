@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:30Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:35Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,10 +14,10 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-117d64842668496c026659f0057459f784e45d20. Last verified private pushda7bd07040aaf45062cb7e25e69e8d8cccda6245; prefix55dcdb2 and contractc0024b8 branches also verified.
+ec6ff3963161e956fd18226396897b559ac15afe. Last verified private pushda7bd07040aaf45062cb7e25e69e8d8cccda6245; prefix55dcdb2 and contractc0024b8 branches also verified.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
-integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; contractc002 integratedb6ec515, PG e2d0 integrated30f0127 and finitefe44 integrated117d648. Root CLI/docs/buildprofile changes owned and beingcommitted. Root alone integrates/builds/executes.
+integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; contractc002 integratedb6ec515, PG e2d0 integrated30f0127 and finitefe44 integrated117d648. Root CLI/docs/buildprofile committedec6ff39 and qualifiedbuild; current evidence update owned byroot. Root alone integrates/builds/executes.
 
 Current authority: `implementation_activated_acquisition_abandonment_20261013` lab inventory
 and `activated_acquisition_abandonment_20261013` in existing recovery evidence; sourceclosure
@@ -92,17 +92,24 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit complete activated acquisition implementation then run isolated exact build
-using existing ingest-activated-installed profile (entry/schema/migration+Clippy).
-PG e2d0 integrated30f0127, finiteclaims fe44 integrated117d648; root owns seven
-uncommitted CLI/help/test/buildprofile files plus current evidence/docs update.
-New source/tests/engine NOT_RUN. Root complete affected contract/owners/callers
-review finds no blocker; additional independent native-author review pending.
-Fixtureauthor prepares four actual first/retry invocations on two qualifiedclosed
-seeds939off/0e4917durable. Then genuinezero-request claim/unclaimed acceptance,
-SQLnegative/immutability, finalCOMMITloss/freshretry andordinaryHTTPoldgrant gate.
-Reuse complete borrowed source proof; no fabricated epoch2 InitialRegistration or
-historical claims. No draining, producer/domain retirement, ACK/GC or Archive.
+Finish independent four-CLI first/retry fixture for two qualified closed seeds939off/
+0e4917durable, review and purecontrols, then exact engine reusingec6 protectedartifacts.
+PG e2d0 integrated30f0127, finiteclaimsfe44 integrated117d648, rootCLIec6ff39.
+Root complete source review plus independentnativeauthor PG/CLI review PASS. New
+actualabandonment SQL/CLI qualification remains NOT_RUN. Afterwards genuineextra
+zero-request claim/unclaimed acceptance, SQLguards/immutability, finalCOMMITloss/
+freshretry and ordinaryHTTPoldgrant gate. Allsourceclosure evidence remainsvalid.
+
+Exactec6ff3963161e956fd18226396897b559ac15afe build PASScompile,47actualentry/schema/
+migrationtests andClippy Rust1.98.1/Clang14;93208joined0,13:30:42–13:32:25Z.
+Root `/runs/ingest-activated-installed-ec6ff39`, owner865a2554ea1534a1781966c4425d3f73.
+ReceiptSHA68dd599f8a5093d51b25efdecec3ca049a116a03aedc23f355a64e13d1e9901c.
+Rootaudit74029joined0:1812exactGit/export/archivefiles/66retainedELFs/1271unchanged
+priorcontainerprojections plus2ownedterminal0/PID0/noOOM. Nativeimplementation and
+45native tests unchanged9dbc; currententry/schema tests rerun. All51priorSQLfiles
+byte-identical;0036SHA19e2390b46d9eba7e4eac765eafc30fc7b2cac03e03c0918df64ed0b87642e54.
+Noengine/buildactive; fixtureagenteditsseparateworktree, otheragentsdesign latercases.
+No draining, producer/domain retirement, ACK/GC or Archive claim.
 
 Corrected prefixengineb23a597 PASS3CLI+1finite, wrapper47161 joined0,
 13:14:56–13:15:35Z, owner988b58c4b3e0982d799019dcd70d901a. Root
@@ -315,7 +322,7 @@ or this passing bounded wave does not finish the product.
 ## Processes, retained resources and maintenance
 
 Latest prefixbuild15173/rootaudit35416 joined0, allbuildcontainers stopped0/PID0/
-noOOM.61ELFs retained outsideexclusivecache. Lockengine46534/replay14147 joined0,
+noOOM.66ELFs retained outsideexclusivecache. Lockengine46534/replay14147 joined0,
 PG0/client143 stopped, custodyaudit complete. No engine/build active at checkpoint; corrected prefix47161/replay85439 joined0.
 Agents now implement separate PG abandonment and prepare its finite seed. Preserve all
 originals, failedbuilds, failedaudit scripts/logs and every ignored/external artifact.
@@ -343,7 +350,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space observed atbb53 completion12:44Z: 60,497,752,064 bytes. Remeasure before allocation.
+Free space observed atec6 completion13:32Z: 59,970,093,056 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18
