@@ -41,6 +41,24 @@ def instant(text):
     return (delta.days * 86400 + delta.seconds) * 1_000_000 + delta.microseconds
 
 
+def catalog_identity(catalog):
+    # FK trigger names include catalog-assigned OIDs, newly allocated when the
+    # same migrations run in a fresh clone. Preserve every other field and the
+    # full multiset; raw names must still remain exact within this invocation.
+    normalized = copy.deepcopy(catalog)
+    identities = set()
+    for trigger in normalized['triggers']:
+        key = trigger['table'], trigger['name']
+        assert key not in identities
+        identities.add(key)
+        if trigger['internal']:
+            assert re.fullmatch(r'RI_ConstraintTrigger_[ac]_[1-9][0-9]*', trigger['name'])
+            trigger['name'] = trigger['name'].rsplit('_', 1)[0]
+    normalized['triggers'].sort(key=encoded)
+    # Derived from the qualified 2c142c6 schema32 catalog, not this run.
+    assert digest(encoded(normalized)) == '27758551dcec655548798ecacec07bdb21ffda5ac50080926c059d09a3a3247a'
+
+
 def policy_setup(seed, setup, original, window, provenance):
     migrated(seed, setup['before'], seed['native'], seed['inputs'], window)
     assert setup['authority'] == 'privileged-isolated-fixture'
@@ -304,7 +322,8 @@ def renewed(wanted, observed, previous, window, *, stopped=False):
             clock(at, window)
             assert deadline - 6_000_000 <= at < deadline
             assert tx != old['xmin']
-            row.update(state='released', released_at_us=at)
+            row.update(state='released', released_at_us=at, exclusion_method='storage_fenced',
+                exclusion_digest=exclusion(old, old['process_incarnation']))
             role_row = only(wanted['role_instances'], role_instance_id=row['role_instance_id'])
             ended = only(observed['role_instances'], role_instance_id=row['role_instance_id'])
             clock(ended['retired_at_us'], window)
@@ -446,7 +465,7 @@ def verify(mode, original, after, native_before, native_after, inputs_before, in
     check_window(server_window)
     assert len(original) == len(after) == 72
     assert catalog_before == catalog_after
-    assert digest(encoded(catalog_before)) == '6d862e28f9d6f8c4441a690eb5b79e8fab30f08f5a659c14137438546fb45b90'
+    catalog_identity(catalog_before)
     assert setup['guards_before'] == {k: v for k, v in catalog_before.items() if k not in ('functions', 'tables')}
     assert fixture['cleanup_errors'] == []
     terminal = response['terminal']
@@ -640,6 +659,22 @@ def negative_controls(**context):
     case('missing-historical-row', lambda c: c['after']['producer_outcomes'].pop(0))
     case('changed-original-input', lambda c: c['input_contents'].update({next(iter(c['input_contents'])): '00'}))
     case('catalog-drift', lambda c: c['catalog_after'].update(session_replication_role='replica'))
+    def catalogs(c):
+        return [c['catalog_before'], c['catalog_after'], c['setup']['guards_before'], c['setup']['guards_after']]
+    def corrupt_internal(c, action):
+        for catalog in catalogs(c):
+            trigger = next(t for t in catalog['triggers'] if t['internal'])
+            action(catalog, trigger)
+    case('coherent-internal-trigger-disabled', lambda c: corrupt_internal(c,
+        lambda _, t: t.update(enabled='D')))
+    case('coherent-internal-trigger-missing', lambda c: corrupt_internal(c,
+        lambda catalog, t: catalog['triggers'].remove(t)))
+    case('coherent-internal-trigger-duplicated', lambda c: corrupt_internal(c,
+        lambda catalog, t: catalog['triggers'].append(copy.deepcopy(t))))
+    case('coherent-invalid-internal-trigger-name', lambda c: corrupt_internal(c,
+        lambda _, t: t.update(name='unrecognized_internal_trigger')))
+    case('coherent-internal-trigger-wrong-function', lambda c: corrupt_internal(c,
+        lambda _, t: t.update(function='control.unrelated()')))
     if context['mode'] in CASES[:2]:
         case('wire-missing-predecessor', lambda c: c['journey']['closed'][0]['event_ids'].__setitem__(1, EVENT_ID.hex()))
         case('historical-window-adoption', lambda c: only(c['after']['producer_epochs'], producer_epoch=2).update(outstanding_request_limit=32))
@@ -647,6 +682,8 @@ def negative_controls(**context):
         case('wrong-network-job', lambda c: only(c['after']['producer_requests'], producer_epoch=2, request_sequence=2).update(acquisition_job_id=None))
         case('forged-outcome', lambda c: only(c['after']['producer_outcomes'], producer_epoch=2, request_sequence=2).update(outcome_bytes='\\x00'))
         case('unreleased-control', lambda c: only(c['after']['owner_epochs'], role='control', epoch=8).update(state='active', released_at_us=None))
+        case('released-control-missing-fence', lambda c: only(c['after']['owner_epochs'], role='control', epoch=8).update(exclusion_method=None))
+        case('released-control-wrong-fence-digest', lambda c: only(c['after']['owner_epochs'], role='control', epoch=8).update(exclusion_digest='\\x' + '00' * 32))
         case('old-owner-retirement', lambda c: only(c['after']['owner_epochs'], role='ingest', epoch=1).update(released_at_us=0))
         case('premature-renewal-proof', lambda c: c['fixture']['renewal'].update(observed_at_us=c['fixture']['renewal']['initial_deadline_us']))
         case('job-false-completion', lambda c: only(c['after']['jobs'], request_key='\\x' + 'f4' * 16).update(state='succeeded'))
