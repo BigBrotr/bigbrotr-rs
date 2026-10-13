@@ -42809,10 +42809,10 @@
       }
     ],
     "installed_consumer": {
-      "status": "IMPLEMENTING_NOT_QUALIFIED",
-      "observed_at": "2026-10-13T08:57:06.561429+00:00",
+      "status": "BUILD_QUALIFIED_INSTALLED_NOT_RUN",
+      "observed_at": "2026-10-13T09:09:21.536794+00:00",
       "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
-      "root_integrated_head": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
+      "root_integrated_head": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
       "owner": "root sole integration/build/engine executor",
       "contract": "docs/reference/ingest-registration.md#installed-live-initial-successor-under-implementation",
       "worktrees": [
@@ -42823,7 +42823,7 @@
           "head": "6c134e3e65e21c05d15b4e1472ecbdf970da5b04",
           "state": "clean-committed-not-pushed",
           "scope": "PG current successor basis and opaque live reads; integrated as ff317e56999fbbbaadf51853fb8912c68a6c1012",
-          "checks": "Scoped rustfmt/diff-check/old-kernel preservation PASS; Rust/SQL/installed NOT_RUN"
+          "checks": "Scoped rustfmt/diff-check/old-kernel preservation PASS; Rust/SQL/installed NOT_RUN; integrated exact787e1fe build and15 affected tests/Clippy PASS, actual installed/SQL NOT_RUN"
         },
         {
           "root": ".research/installed-live-owner-20261013",
@@ -42834,7 +42834,7 @@
           "scope": "Installed native owner/startup/shared command/finite Sync/recovery replay",
           "head": "1593f1faf2a2785dc02f64a56858b02d7c9b7df4",
           "integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
-          "checks": "Scoped rustfmt/diff-check PASS; root and independent AI custody/policy/window/preclaim source reviews found no blocker; compile/installed NOT_RUN"
+          "checks": "Scoped rustfmt/diff-check PASS; root and independent AI custody/policy/window/preclaim source reviews found no blocker; compile/installed NOT_RUN; integrated exact787e1fe build and15 affected tests/Clippy PASS, actual installed/SQL NOT_RUN"
         },
         {
           "root": ".research/installed-live-qualification-20261013",
@@ -42845,10 +42845,10 @@
           "scope": "Independent actual installed off/on/renewal/refusal journey and full preservation oracle"
         }
       ],
-      "root_work": "CLI and seven refusal tests implemented; build profile compiles CLI/probe, seven entrypoint/three Serve/five supervisor tests and Clippy, preserving four ELFs; NOT_RUN. New Python dispatcher pending separate fixture integration; no engine allocated.",
+      "root_work": "CLI/profile/owner integrated and exact build PASS:7 entrypoint,3 Serve,5 supervisor tests + Clippy. Four new ELFs retained and audited alongside20 prior ELF paths. Pending installed dispatcher/independent fixture; no new engine allocated.",
       "previous_processes": "All refusal build/engine/root replay/push wrappers terminal joined0; prior engine stopped PG0/client143 at recorded final audit; no audit restart",
       "preservation": "All ignored/external artifacts and prior worktrees retained",
-      "free_bytes": 66329108480,
+      "free_bytes": 66025529344,
       "review": "Root complete changed owning sources/callers; independent AI CLI/profile and installed owner review no blocker. Root found removed parent imports consumed by unchanged recovery/empty.rs; author restored before commit. Old PG read bodies preserved bytewise after authority parameterization; fresh basis unchanged. No arbitrary repeat-review requirement.",
       "builds": [
         {
@@ -42971,6 +42971,151 @@
           "failed_artifacts": "out/failed-artifacts/receipt.json",
           "diagnosis": "Root CLI evaluated distinct.contains(sync) after moving root; Rust E0505. Save bool before moving root. No runtime behavior change or test weakening.",
           "qualification": "entrypoints/Serve/supervision/Clippy NOT_RUN; old CLI4eef and produced probe snapshot retained without claiming current successful build."
+        },
+        {
+          "source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
+          "tree": "0114dccae06179208f6caf4386cdd9fede7ce666",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-installed-live-787e1fe",
+          "owner": "318f55f8aff39a08cbaf126a24efce96",
+          "started_at": "2026-10-13T09:00:57.588199+00:00",
+          "finished_at": "2026-10-13T09:02:51.310411+00:00",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "1aa8e5c0086781a12bbda22b191f2b68872d2a5a985d1de4617918c82c859741"
+            },
+            {
+              "name": "native",
+              "id": "277aee85a66aabb5e1201b77d6c6b2bc34e426f0a8a57ce1ecb04588295bfdbb"
+            }
+          ],
+          "inventory_changed": [],
+          "free_bytes_after": 66025529344,
+          "status": "PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY",
+          "wrapper": 43909,
+          "exit_code": 0,
+          "profile": "ingest-installed-live",
+          "checks": [
+            {
+              "name": "compile",
+              "command": [
+                "cargo",
+                "build",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 82.77528287190944
+            },
+            {
+              "name": "entrypoints",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--test",
+                "control_runtime_entrypoint",
+                "--message-format=json"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 3.2702845046296716
+            },
+            {
+              "name": "serve",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "interfaces::serve::tests::",
+                "--message-format=json"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 19.44967203680426
+            },
+            {
+              "name": "supervision",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "interfaces::serve::initial_ingest::supervision::tests::",
+                "--message-format=json"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 0.21460884809494019
+            },
+            {
+              "name": "clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe",
+                "--test",
+                "control_runtime_entrypoint",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 5.82436188776046
+            }
+          ],
+          "entrypoint_tests_passed": 7,
+          "serve_tests_passed": 3,
+          "supervision_tests_passed": 5,
+          "binary_sha256": "0b483e9c07aeafa82227b24fc03bfd1bd4add496c9b321fb056b5f68e105ec2e",
+          "probe_sha256": "5883fdc59de1334451387504a55091ff20fb9e0a9259a2c04530e6494ab3cd36",
+          "test_executables_sha256": {
+            "control_runtime_entrypoint": "7bcc0a66f2914f3721c6f29ad60454a6c0a031a79421c821e376d528da7eb82e",
+            "serve_components": "9de15c3ce6faabde899eb59858d0b96da18c431a22062367053b37b9f4f9aa57"
+          },
+          "build_receipt_sha256": "b8a8ab7019ee62e07889e4389d75c615d5e291df2ca9f410a80602a088165b54",
+          "source_manifest_sha256": "95c88b81b0d82c86d7bcca8723eef06cd3723ea4c472064779bc1229e7c9ee86",
+          "archive_sha256": "e7bb036b7529ec0efd5cf2b5ec67291afd8bee2c22f31703284b5d25d6d9b015",
+          "audit": "root-build-audit.json: PASS; 1775 exact Git/export/archive files, 24 current/prior ELFs, all1238 prior container projections unchanged, exactly two new owned exited0/PID0/noOOM containers. Read-only audit, no extra tests or engines.",
+          "qualification": "Compile,7 actual entrypoint,3 Serve,5 shared supervisor tests and Clippy PASS. Actual connected installed successor remains NOT_RUN; original ec3e failed build and both failed ELF snapshots preserved."
         }
       ]
     }

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T09:00:37.475798+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T09:09:21.536794+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,9 +16,9 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEADec3e2c4f413a5e3eb33aaa52c5f572215c23a056. Adapter6c134e3 and installed owner1593f1f are integrated. Root Serve CLI,
-entrypoint tests, exact build profile, docs/checkpoint/inventory and pending Python
-dispatcher are dirty and owned by root; independent fixture remains separate.
+HEAD787e1fed0b537c8e3c3dd39b7e9b079f73b230b7. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
+Python dispatcher and build evidence/checkpoint/inventory updates; independent
+fixture remains in its separate worktree. CLI/profile/tests are committed.
 Last verified private root is92c621fa597866d1f59a30c0b81997bc547dc3b7;
 refusal helpersddbb838/aba294b/039e77e and routes helpersc65164f/2b51795 are also
 pushed. Main remains54ad09d. No merge/rebase/cherry-pick is pending. Root owns Serve
@@ -26,8 +26,8 @@ CLI, documentation, integration and all build/engine execution.
 
 | Agent | Bounded responsibility |
 |---|---|
-| successor_restart_design | Installed native owner/startup/shared command/Sync committed1593f1f and integrated; compile/engine NOT_RUN |
-| recovery_review | PG opaque live read/basis adapters committed6c134e3, integrated; compilation/SQL NOT_RUN |
+| successor_restart_design | Installed native owner/startup/shared command/Sync committed1593f1f and integrated; build PASS, engine NOT_RUN |
+| recovery_review | PG opaque live read/basis adapters committed6c134e3, integrated; build PASS, SQL NOT_RUN |
 | cleanup_review | Independent installed journey/oracle design; previous actual refusal custody audit complete |
 
 New worktrees `.research/installed-live-adapters-20261013`,
@@ -40,7 +40,14 @@ wrapper52962 joined1. Fetch0/native1 stopped/PID0/noOOM; inventory_changed empty
 finished08:58:20Z. Root precomputes the Sync flag before moving config. The old
 CLI4eef and produced probe are retained at `out/failed-artifacts`, with no successful
 current-build claim. All15tests and Clippy are NOT_RUN. No installed engine allocated.
-The next exact corrected build has not started; prior wrappers are terminal.
+Corrected exact build787e1fe is PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY, wrapper43909
+joined0, finished09:02:51Z, root `/runs/ingest-installed-live-787e1fe`. Compile,
+7 actual entrypoint/3 Serve/5 supervisor tests and Clippy PASS on Rust1.98.1/Clang14.
+Root read-only audit matched1775 Git/export/archive files,24 current/prior retained
+ELFs and all1238 prior container projections; exactly two owned containers exited0,
+PID0/noOOM. ReceiptSHAb8a8ab7019ee62e07889e4389d75c615d5e291df2ca9f410a80602a088165b54.
+CLI SHA0b483e9c07aeafa82227b24fc03bfd1bd4add496c9b321fb056b5f68e105ec2e.
+No installed engine is allocated; all build/engine wrappers are terminal.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
@@ -169,12 +176,14 @@ are terminal; no PostgreSQL audit restart or untracked cleanup was performed.
 
 ## Current next bounded action
 
-The completed refusal wave is committed and privately pushed. Compile and verify the selected
+The completed refusal wave is committed and privately pushed. Qualify the selected
 [installed live initial successor](../reference/ingest-registration.md#installed-live-initial-successor-under-implementation).
 Root owns `serve --activate-initial-successor`, CLI checks/docs and integration.
 Both product owners are integrated and independently source-reviewed. Use the
-`ingest-installed-live` exact-source profile: compile,15 affected tests and Clippy;
-then integrate and review the separate actual off/on/refusal fixture and oracle.
+`ingest-installed-live` exact-source build787e1fe has passed compile,15 affected tests
+and Clippy. Integrate and review the separate actual off/on/refusal fixture and oracle;
+execute the reviewed affected initial Sync-window and signed-recovery regressions
+using the same retained artifacts while the independent fixture is completed.
 The old initializer and recovery flags retain their contracts. No schema/native
 format change is selected. A fenced basis supplies real server time/current policy;
 use activation policy/window, not the historical registration, for new work.
@@ -221,7 +230,7 @@ tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
 volume, input, executable and `.research` artifact. Private Git pushes do not back up
 ignored laboratory data; Git cleanliness is never permission to delete it.
 
-Free space after983342e:66,425,847,808 bytes; source-work observation is about61.8GiB.
+Free space after787e1fe build:66,025,529,344 bytes (about61.5GiB).
 Remeasure before allocation.
 Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
 currently unavailable; never lower that reserve. No large export is allocated.
