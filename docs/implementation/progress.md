@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T15:20Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T15:40Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption. The selected M1–M5 product remains INCOMPLETE. This checkpoint is
 navigation; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,10 +14,10 @@ unrelated workloads and every ignored/external artifact. The latest resumption
 revokes the earlier pause; no resume confirmation is needed.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-`aad54e8e92f6dc68bda2a69ee2d9affc67c55021`. Root owns the current evidence/inventory,
-storage task and checkpoint edits. No merge/rebase/cherry-pick is pending.
-Last verified private push is `bd4da0d9f59ca1d8e99a6a9142c983edfd4d8dc0`
-(wrapper1497 joined0); subsequent source/evidence commits are local until verified.
+`bae95c4f1d54e60f82f1c11ed876f545b8fe2cbc`. Root owns dirty evidence/inventory,
+storage-task/checkpoint and retirement dispatcher edits. No Git operation pending.
+Last verified private push is `eea6854b53d755798cea4dd167cfec823351fe10`
+(wrapper58960 joined0); subsequent helper/native/PG/CLI source commits await push.
 Main remains `54ad09dc6659bfe67e3bf2871e43ce619c199a5c`. Original prior qualification
 branches through the expiry probe were verified pushed. Root alone integrates,
 builds and executes; agents use separate writable worktrees.
@@ -33,12 +33,20 @@ Acquisition evidence node:
 Inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
 Selected activated acquisition abandonment qualification is complete within its
-recorded finite/installed envelope. Next: integrate the reviewed activated producer
-retirement contract `3b12e26c41a6a9f288d47efbcd198a6c597c1964` after its narrow role
-immutability clarification, then implement that dependency-ready responsibility.
-The independent PG review found that changing a retired target role's created_at
-without changing retired_at can evade the existing deferred trigger;0037 must
-protect all terminal target-role fields, including after SET CONSTRAINTS.
+recorded finite/installed envelope. Activated retirement is implemented at388a01a;
+native9931 integrated8fd74ec and PGf412 integrated001cae7. Root/independent source
+reviews closed without further blocker after fixing private Metadata.intent access.
+Exact build388a01a wrapper35099 joined0:48 native tests,48 entrypoint/schema/
+migration tests and Clippy PASS. Root audit47257 joined0:1834 exact Git/export/
+archive files,76 retained ELFs,1287 prior projections unchanged, two owned
+containers stopped0/PID0/noOOM. No connected retirement engine has run. Static profile selection preserves all44 previous modes.
+
+Next: finish first-wave fixture review and run four installed commands on two qualified
+acquisition-abandoned1d64 copies. The owning contract retains zero/Event/workflow/
+import/SQL immutability, COMMIT-loss, cancellation and UTC-expiry gates.
+New evidence node under next_live_activation_20261013:
+activated_initial_retirement_20261013; matching inventory node:
+implementation_activated_initial_retirement_20261013.
 
 Retirement is an explicit separate command, existing-copy-only replay under an
 already CLOSING native proof. Preserve positive Event classification, including
@@ -49,15 +57,13 @@ transition, epoch3 activation, Archive restart or implicit workflow repair.
 
 Current isolated agents, with no independent engine/build authority:
 
-- `cleanup_review`: `.research/activated-recovery-qualification-20261013`, branch
-  `qualification/activated-acquisition-expiry-fixtures` at95d7009. Driver/oracle and
-  custody correction integrated; both failed and successful expiry audits closed.
-- `recovery_review`: `.research/activated-recovery-postgres-20261013`, branch
-  `qualification/activated-acquisition-interruptions` at0c497. Expiry independent
-  review and retirement contract review complete; PG API proposal sent to root.
-- `successor_restart_design`: `.research/activated-recovery-native-20261013`, branch
-  `docs/activated-retirement-contract` at3b12e26. Owns only contract clarification;
-  product implementation has not started. Prior expiry-probe branch1b8 preserved.
+- cleanup_review: qualification worktree, qualification/activated-retirement-fixtures;
+  owns new driver/oracle, final pins and pure checks. No engine execution.
+- recovery_review: PG worktree, frozen implementation/activated-retirement-postgres
+  atf412dbd integrated001cae7. Next: separate qualification/activated-retirement-guards
+  branch, two new raw-SQL fixture/oracle files only; case proposal/review pending.
+- successor_restart_design: native worktree at9931e9b integrated8fd74ec. Independent
+  PG review complete. Read-only COMMIT-loss fixture design now; no edits yet.
 
 ## Latest completed evidence
 
@@ -107,9 +113,11 @@ preserved. Completion of this bounded operation does not complete M1.
 
 ## Processes, resources and maintenance
 
-No engine/build active at this observation. Latest engine4291, root replay97263 and
-author audit48844 joined0. Agents are idle or preparing the contract clarification;
-no product edits or dependent builds are active.
+No build/engine active. Build388a01a wrapper35099 and audit47257 joined0;
+resources.json records stopped-retained for owner e506f075f2dd2b847bc4a4a2191236fb.
+Both owned containers exited0/PID0/noOOM; cache lock released. PG was last inspected
+exited0/PID0/noOOM and has not been started. Agents prepare source only. Latest prior
+engine4291, replay97263 and artifact audit48844 joined0. Preserve all76 compiled ELFs.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`; `/runs/` above is
 relative to it. Borrowed PG root `relay-source-recheck-e06f580/pg`, owner
@@ -124,7 +132,7 @@ tgdataset-mongo. Preserve all worktrees, containers, volumes, datasets and execu
 artifacts. Private Git does not back up ignored labs; unavailable Mac captures
 remain unavailable. Recovery details: [Tux audit](../research/tux-resumption-20261012.md).
 
-Free bytes at checkpoint update: 53,884,624,896. Remeasure before allocations.
+Free bytes after build: 52,281,073,664. Remeasure before allocations.
 Small engines require2GiB, native builds12GiB; larger exports64GiB+577MiB remain
 unavailable. Never lower the reserve. Five exports under256MiB and other M1 release
 gates remain NOT_RUN. No generic cleanup or removal of retained experiments.

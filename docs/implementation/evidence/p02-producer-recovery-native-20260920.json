@@ -19358,6 +19358,131 @@
         },
         "scope_boundary": "Selected acquisition abandonment qualification closed, including actual final-job SIGTERM and finite actual UTC expiry. Producer/domain/owner retirement, import closure, repeated lifetimes, ACK/GC, Archive restart and complete M1-M5 remain incomplete.",
         "operational_finding": "Failed53a PostgreSQL checkpointer SIGSEGV remains unexplained. Follow-up aad54 startup explicitly reports prior database shutdown and clean final exit0; no WAL/crash recovery evidence or server fault remediation is claimed. Observational query parallelism is now bounded locally; production/global PG settings unchanged."
+      },
+      "activated_initial_retirement_20261013": {
+        "status": "IMPLEMENTED_UNDER_QUALIFICATION",
+        "observed_at": "2026-10-13T15:49:46.913534+00:00",
+        "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
+        "contract": "docs/reference/ingest-registration.md#activated-initial-producer-retirement-under-implementation",
+        "scope": "Explicit existing-CLOSING, existing-copy-only retirement of activated producer2, nine domains, Ingest owner and role. Exact source2, native/input state, outcome recorder and workflow history retained; no replacement writer, import closure or ACK/GC.",
+        "source": {
+          "native_original": "9931e9bff90dcbc6c98bab157ea7c1404709e2f9",
+          "native_integrated": "8fd74ec04f5c9a7f966a0cb6dd011e2360327739",
+          "postgres_original": "f412dbdc35366d97ea2371bbefbb76debeaa7f0e",
+          "postgres_integrated": "001cae75784878b97e2c730beb48065c35990096",
+          "cli": "388a01abd6dadf2a894a88c16e585ace6b382ffa",
+          "migration": "0037_activated_initial_retirement.sql",
+          "migration_sha256": "ea882fd887d0800ab1880646026ac85eeb6485f5fa4fd3323eee09b4bf96eac8"
+        },
+        "review": {
+          "root": "Complete changed native owners/tests, new PostgreSQL owner/0037 and affected kernel/callers/contracts reviewed. Private Metadata.intent access found and corrected through scoped target_role accessor before compilation.",
+          "independent": "successor_restart_design read-only AI source review: no further concrete blocker. Checked lock order/UTC after waits, historical gap issuers, Event mask, no copy repair, ready/completed classifier and role history/earlier grant branches. Runtime behavior remains unqualified.",
+          "static": "Rustfmt/diff checks; all52 prior migrations unchanged, additive ledger53;44 older build profile command selections identical."
+        },
+        "build": {
+          "status": "PASS_ACTIVATED_RETIREMENT_BUILD_ONLY",
+          "wrapper": "35099 joined0",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-388a01a",
+          "source": "388a01abd6dadf2a894a88c16e585ace6b382ffa",
+          "tree": "75e27e2873c33283f0a6db8aa3f946f9c37f74ed",
+          "owner": "e506f075f2dd2b847bc4a4a2191236fb",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "8deb49d851bf327524f87b3ee29668de1cbb938c1c0f7d07127866c7c75eaaf1"
+            },
+            {
+              "name": "native",
+              "id": "ae14b67fcd126360f7daff3802f1b3b45381777d09bad0feee261b087668b311"
+            }
+          ],
+          "started_at": "2026-10-13T15:43:26.503849+00:00",
+          "finished_at": "2026-10-13T15:45:42.883325+00:00",
+          "free_bytes_after": 52281073664,
+          "receipt_sha256": "93f452abd8857ae18fdb5d3681e2bf6c038c3be9bace55faa3bee34db0935bf4",
+          "binary_sha256": "0486979665ef11faa0a80e8241d212d8f6413aaee45d4c82fecf4e9b16d40a11",
+          "probe_sha256": "9b87ad508c9c569a26c31d7612d5c38e03679c212b366db5d4afa1ec2be0b24a",
+          "test_executables_sha256": {
+            "activated_retirement_components": "697467b762b6af8dcdf1f568906c6c700806dff5fad78554d38103daa0cf7bdb",
+            "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+            "control_schema": "11e69073b8f932b5d4a2f93e771570f2e59be535709a6a6f5e6bc9e4ccf03bc3",
+            "control_runtime_entrypoint": "ffb58c09adc274ba338329214c1e642c48a11b30d8be6b97cd7bbd296e57712d"
+          },
+          "native_tests_passed": {
+            "source-closure": 3,
+            "initial-reconstruction": 36,
+            "producer-closing": 9
+          },
+          "entrypoint_schema_migration_tests_passed": 48,
+          "checks": [
+            {
+              "name": "compile",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 91.55337578523904
+            },
+            {
+              "name": "entrypoints",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 9.334610471501946
+            },
+            {
+              "name": "source-closure",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 24.80578890349716
+            },
+            {
+              "name": "initial-reconstruction",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 2.0169871477410197
+            },
+            {
+              "name": "producer-closing",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 0.26522623654454947
+            },
+            {
+              "name": "clippy",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 6.124207803979516
+            }
+          ],
+          "source_manifest_sha256": "ca32d7fe0ce9556c07048eee6fe1ecc4d55aa30f835e715c88633304b86fdf73",
+          "archive_sha256": "842b11290a5ec65565c86a840e6c90203fb0073d0eed87071c4a83f16eb82910",
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-388a01a/root-build-audit.json",
+            "sha256": "5cd67bb767245139c3e84d4aeac98f3a344ce856af8c0efca813d0489f9c07b4",
+            "wrapper": "47257 joined0",
+            "files": 1834,
+            "retained_elfs": 76,
+            "unchanged_prior_projections": 1287,
+            "owned_additions": [
+              "8deb49d851bf327524f87b3ee29668de1cbb938c1c0f7d07127866c7c75eaaf1",
+              "ae14b67fcd126360f7daff3802f1b3b45381777d09bad0feee261b087668b311"
+            ],
+            "terminal": "Both0/PID0/noOOM"
+          }
+        },
+        "fixture": {
+          "owner": "cleanup_review",
+          "branch": "qualification/activated-retirement-fixtures",
+          "state": "Two new driver/oracle files; source pins and pure selfchecks in progress, not yet integrated. Root dispatcher prepared, no engine execution."
+        },
+        "remaining_gates": [
+          "Actual first retirement and separate-process exact retry on abandoned off/source5 and genuine AlreadyDurable/source0 copies",
+          "Activated zero completion; unbound Rejected/Event refusal; genuine zero-request acquisition/import obligations, input binding/checkpoint vetoes",
+          "Missing/conflicting original/copy and mixed terminal metadata refusal",
+          "Partial raw SQL lifecycle commits and role history immutability after early SET CONSTRAINTS, DELETE/TRUNCATE/cascade and earlier grant behavior",
+          "Final retirement COMMIT loss before forwarding/after completion with fresh-process recovery",
+          "Blocked cancellation and actual Control UTC expiry; session poisoning/custody",
+          "Independent complete state/original preservation audit and coherent private push"
+        ],
+        "engines": []
       }
     }
   }

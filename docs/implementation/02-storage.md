@@ -340,7 +340,14 @@ One owner serializes exact identity decisions for each writable directory.
   job wait:16 full snapshots/23 controls, exact refusal, poisoned owner and no
   partial writes. Failed53a observer DSM exhaustion and shutdown SIGSEGV remain
   preserved; the corrected observational query bounds parallelism locally.
-  Root replay and author custody audits pass. Epoch2 workflow retirement and repeated lifetimes remain separate obligations. Archive selection refuses until its lifetime-specific
+  Root replay and author custody audits pass.
+  [Activated producer retirement](../reference/ingest-registration.md#activated-initial-producer-retirement-under-implementation)
+  is implemented at388a01a and under qualification: existing-CLOSING/native Event
+  proof, existing-copy-only replay and additive0037 atomic twelve-row terminal
+  transition. Root and independent persistent-boundary source reviews are complete;
+  48 native and48 entrypoint/schema/migration tests plus Clippy pass on exact
+  build388a01a; source/artifact/custody audit preserves76 binaries. Connected retirement,
+  refusal, SQL immutability and interruption gates remain NOT_RUN. Repeated lifetimes remain separate. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
   refusal is its epoch preflight, not the SQL receipt veto;
