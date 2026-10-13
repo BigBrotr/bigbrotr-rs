@@ -29,14 +29,14 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: run a fresh exact fourteen-case SQL guard engine usingec6 after the narrow
-oracle context-label correction. First9e74 engine remainsFAIL: ten acceptedcases,
-case11 correctSQL23514 but wrong expected schema prefix, lastthreeNOT_RUN.
-Root57694 retrospectively verifies all11capturedcases without relabeling the run;
-corrected14artificialcases/37states/21controls PASS at66313. Failedrun custodiaudit
-ongoing; frozenDocker14:13:43Z permits the next engine. No product/migration changed.
-Claimsda839 artifact/custodyaudit now PASS:1819engine/1812build files,66ELFs,
-1274unchangednonborrowedprojections and frozenf12original intact.
+Next: execute one installedHTTPschema36 ordinary-grant journey usingec6.
+HTTP832+05eb integrateddce90b8/34ec51c; fullrootnewdriver/oracle/sharedcapture
+review and independentAST equivalence pass; five artificialsnapshots/24controls.
+New raw/wrapper verification artifacts have distinct names. SQL70d908d passed
+all14cases (7444joined0) and root36397 replay37transactionstates/28fullbefore-after
+states/21controls. Its artifactaudit is ongoing; Dockerfreeze14:18:12Z permitsHTTP.
+Prior9e74 remainsFAIL; retrospective11 and artifactcustodyaudit closed, threecases
+were NOT_RUN there. Countprobe0ec committed, rootreview/build next afterHTTP.
 
 Current agents:
 
@@ -49,7 +49,7 @@ Current agents:
   in a new branch; no engine authority.
 - `recovery_review`: `.research/activated-recovery-postgres-20261013`, branch
   `qualification/activated-acquisition-guards`; owns only new guards driver/oracle.
-  Fourteen artificial transcripts/37 states/21 controls pass; three capture mocks pass; commitcb1ed4e ready, integration pending. Genuine historical queued claim is preserved; each raw
+  Fourteen artificial transcripts/37 states/21 controls pass; three capture mocks pass; cb1 integratedc517b22 andcorrected70d908d14SQLPASS. Genuine historical queued claim is preserved; each raw
   transaction creates a new actual-backend Control and rolls back/refuses.
   HTTP runner is now authorized: two new files and a narrow extraction of the
   existing single-case capture owner; actual HTTP qualification remains NOT_RUN.

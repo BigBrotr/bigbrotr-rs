@@ -18689,7 +18689,7 @@
       },
       "activated_acquisition_abandonment_20261013": {
         "status": "PASS_FIRST_AND_COMMIT_WAVES_REMAINING_QUALIFICATION_OPEN",
-        "observed_at": "2026-10-13T14:15:39.087129+00:00",
+        "observed_at": "2026-10-13T14:20:43.686291+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
         "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
         "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -18726,7 +18726,7 @@
           "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
           "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
         },
-        "next": "Corrected newexact14SQLengine usingec6; preserve9e74FAIL. Claims auditclosed. HTTP36 andcount/fullbatchfixtures ongoing; cancellation/UTCexpiry later.",
+        "next": "Run one actualHTTPschema36ordinarygrant case usingec6, after832+05eb integrated androotreview. Nativecountprobe0ec ready needsfullreview/build afterHTTP; limitsfixtureongoing. Finaljobwaitcancel/UTCexpiry stillowed.",
         "build": {
           "source": "ec6ff3963161e956fd18226396897b559ac15afe",
           "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",
@@ -18873,7 +18873,6 @@
           "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
         },
         "remaining_gates": [
-          "14 rawSQLguards",
           "ordinaryschema36HTTP withoutrecoveryprivileges",
           "combined retained+selected<=64 and fullbatchrefusal beforewrites",
           "SIGTERM duringfinal selectedjoblockwait",
@@ -18915,7 +18914,7 @@
           "source": "cb1ed4ee75400f1917a23ba7f9ee2a38b11105c8",
           "integrated": "c517b22",
           "checks": "Root complete source/helper review and14renderedSQLpins match;14artificialcases/37states/21controls and3capturemocks PASS",
-          "status": "FIRST_ENGINE_FAIL_ORACLE_CONTEXT_LABEL_CORRECTED_NEW_RUN_OWED",
+          "status": "CORRECTED14CASE_ENGINE_ROOT_REPLAY_PASS_CUSTODY_PENDING",
           "manifest_sha256": "1ad605bb1ef51f39671bea501b2239887ea695b09281c9c67ef95304de03328c"
         },
         "sql_first_failure": {
@@ -18949,7 +18948,49 @@
             "states": 37,
             "controls": 21
           },
-          "custody": "Failedartifact read-only audit ongoing; frozenDocker14:13:43Z, originals retained andrestorationtrue"
+          "custody": "PASS read-only sources1821/1812/66ELFs/1275unchangedpriorprojections;11rawcaptures/11backendabsence+grantrestore+939original, nofinalnativedumpdueearlierassert. OriginalFAILretained.",
+          "artifact_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-guards-engine-9e74e17/audit-cleanup-review/audit.json",
+            "sha256": "d513ab3be6bc47c39165aba85c0e12f27733043e731af1c918d2d62cfcf883e7"
+          }
+        },
+        "sql_wave": {
+          "source": "70d908d918d5dfbf0cdce70a003cb0b0714155ed",
+          "status": "PASS_ACTIVATED_ACQUISITION_SQL_GUARDS",
+          "owner": "a75a7e8db817c9b5a3ffbfc019a78fd7",
+          "client": {
+            "id": "d9021e767ec06d662c61a1a52080bcb8dc4b3a5f603243c9c434d794fc676e3a",
+            "name": "bigbrotr-acquisition-binding-70d908d"
+          },
+          "started_at": "2026-10-13T14:15:57.762560+00:00",
+          "finished_at": "2026-10-13T14:16:50.238205+00:00",
+          "free_bytes_after": 58495787008,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-guards-engine-70d908d",
+          "wrapper": "7444 joined0",
+          "result_sha256": "ee0c7251d290eddf408adf5a993bc8e74a1da513e9224a790089ced3c43e9fb9",
+          "sql_attempts": 14,
+          "semantics": "One completegap/requestcancel/terminal/earlySETCONSTRAINTS thenrollback;13named23514refusals forproducer/source/reason/activator/cut/digest,partialcommit/earlyconstraint andterminaljob/gap UPDATEDELETE/TRUNCATE. EachactualnewappbackendControl/rawtransaction, all72durablerows/xmins/native70/85/input6unchanged. NoactualnativeprooforHTTPclaim.",
+          "root_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-guards-engine-70d908d/root-independent-replay.json",
+            "sha256": "578faca5542168ea46bdb8d01d9a4eb480eb7a46b5e82933d0f10368d802b041",
+            "wrapper": "36397 joined0",
+            "transaction_states": 37,
+            "full_before_after_states": 28,
+            "controls": 21
+          },
+          "custody": "Read-only audit ongoing; frozenDocker14:18:12Z,1278containers; rootcanadvanceHTTP"
+        },
+        "http_fixture": {
+          "source": "832e6d89fcd510fd875a1c95adb2fe563eea29d6",
+          "path_correction": "05ebc78",
+          "integrated": [
+            "dce90b8",
+            "34ec51c"
+          ],
+          "checks": "Rootfullnewdrivers/oracleandsharedcapture review; independentrootAST oldbody/helpers unchangedapartfromoptionalafteractivationhook+returncontext;5artificialHTTPsnapshots/24controlsPASS",
+          "status": "ENGINE_NOT_RUN",
+          "manifest_sha256": "032d36373ee347813c4fccc0d1c436d8d4c16387766bd976b03f5d94ed7d67d9",
+          "scope": "ActualServe activation36 thenrecoveryACLremoval beforeHTTPlogin/jobacceptance+queuedclaim/2requests/renewal/logout/quietSIGTERM; exactACLrestore"
         }
       }
     }
