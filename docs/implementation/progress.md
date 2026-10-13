@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:56Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:59Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,7 +14,8 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-84757a5318d1e9f2342aee6e24eb767fc0c53847. Last verified private push2dd28e9d59e2d2ffbb21b98b949bcd2adfc7545a; e2d0 and fe44 branches also verified.
+ae00c25659e3b99097b01a02a493893a404d9956. Last verified private push is this exact HEAD;
+c868 fixture and5c2 fault branches also verified.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
 integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; contractc002 integratedb6ec515, PG e2d0 integrated30f0127 and finitefe44 integrated117d648. Root CLI/docs/buildprofile committedec6ff39 and qualifiedbuild; current evidence update owned byroot. Root alone integrates/builds/executes.
@@ -92,8 +93,8 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Close first/fault artifact/custody audits, then integrate genuine extra-intent
-fixture and raw SQL guards after source review/pure controls. Use protectedec6
+Integrate genuine extra-intent fixture and raw SQL guards after final source
+review/pure controls; first/fault artifact and custody audits are complete. Use protectedec6
 artifacts; no product rebuild selected. OrdinaryHTTPoldgrant boundary follows.
 Extra-intent draft migration label collision corrected before execution; root
 requested explicit gap timestamp below actualControl deadline. Canonicalbasic
@@ -107,7 +108,9 @@ C10before-forward10/9/9/9/1 retains queuedjob/no gap; after-complete10/10/10/9/1
 stores gap+cancelled4 underControl11. Both CLI4CommitUnknown; freshControl12
 fences11 and completes beforecase or preserves aftercase issuer/time/xmin.
 Native70/85/input6/sourcecut5/copies/session unchanged. Root78804joined0:
-8rawstates/102controls PASS. Separate custody audit pending; no engine/buildactive.
+8rawstates/102controls PASS. Separate source/artifact/custodyaudit PASS:
+1817engine/1812build files,66protectedELFs,1273unchanged nonborrowed projections.
+Frozen13:56:18Z; one unique939original preserved. No engine/buildactive.
 
 First engine1d64cd7 PASS4CLI,45753joined0,13:47:39–13:48:32Z,
 owner2c7d9912914b8958ea6ffe3f9f47723d; root
@@ -117,8 +120,9 @@ Off sourcecut5/native70/85/input6; durable sourcecut0/native53/65/input5.
 Each first stores one exactactivator8 gap and queued2→cancelled4 atomically;
 retry preserves issuer/time/xmin. Sources/copies/sessions/native/input unchanged.
 Root41369joined0:8installed+2seedfullstates/104negativecontrols rawreplay PASS.
-Separate artifact/custody audit pending; PG0/client143/PID0/noOOM, originals
-preserved. No engine/build active; faultcode committed, twoagents work separately.
+Artifact/custodyaudit PASS:1815engine/1812build files,66protectedELFs,
+1272unchanged nonborrowed projections. Frozen13:52:13Z; bothoriginals intact.
+PG0/client143/PID0/noOOM. Twoagents prepare claims/SQL guards separately.
 
 Exactec6ff3963161e956fd18226396897b559ac15afe build PASScompile,47actualentry/schema/
 migrationtests andClippy Rust1.98.1/Clang14;93208joined0,13:30:42–13:32:25Z.
@@ -344,7 +348,8 @@ or this passing bounded wave does not finish the product.
 Latest prefixbuild15173/rootaudit35416 joined0, allbuildcontainers stopped0/PID0/
 noOOM.66ELFs retained outsideexclusivecache. Lockengine46534/replay14147 joined0,
 PG0/client143 stopped, custodyaudit complete. No engine/build active at checkpoint; corrected prefix47161/replay85439 joined0.
-Agents now implement separate PG abandonment and prepare its finite seed. Preserve all
+Agents now prepare extra-intent and raw SQL guard qualification; nativeagent
+reviews remaining contract gates read-only. Preserve all
 originals, failedbuilds, failedaudit scripts/logs and every ignored/external artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:

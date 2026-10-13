@@ -46549,8 +46549,8 @@
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
   },
   "implementation_activated_acquisition_abandonment_20261013": {
-    "status": "PASS_FIRST_AND_COMMIT_WAVES_CUSTODY_AUDIT_OPEN",
-    "observed_at": "2026-10-13T13:56:57.460764+00:00",
+    "status": "PASS_FIRST_AND_COMMIT_WAVES_REMAINING_QUALIFICATION_OPEN",
+    "observed_at": "2026-10-13T13:59:15.739730+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
     "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -46587,11 +46587,11 @@
       "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
       "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
     },
-    "next": "Close artifact/custody audits; finish genuine sameControl extraintentfixture and raw14SQLguards, review andexecute usingec6. Separate ordinaryHTTPoldgrants stillowed.",
+    "next": "Integrate genuine sameControl extraintentfixture and raw14SQLguards after finalsource/pure review, exactengine usingec6. OrdinaryHTTPoldgrants and review of remainingcontractgates follow.",
     "owner": "root sole integrator/build/engine executor",
-    "processes": "46969/78804/8665 joined0; no engine/build active. Read-only custody audits ongoing; genuineclaims andSQLguard agents editseparatefiles.",
-    "last_private_push": "2dd28e9d59e2d2ffbb21b98b949bcd2adfc7545a verified; e2d0/fe44 branches also verified",
-    "head": "0f8cb44f874e60422ac251f0a22ed9cee839e426",
+    "processes": "No engine/build active; allfirst/fault rootwrappersjoined0, bothauditsPASS. Twoagentsprepareclaims/SQLguards; nativeagentread-onlyremaininggateassessment.",
+    "last_private_push": "ae00c25659e3b99097b01a02a493893a404d9956 verified plusc868/5c2branches; main54ad09 unchanged",
+    "head": "ae00c25659e3b99097b01a02a493893a404d9956",
     "build": {
       "source": "ec6ff3963161e956fd18226396897b559ac15afe",
       "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",
@@ -46662,7 +46662,7 @@
         "full_states": 10,
         "negative_controls": 104
       },
-      "custody": "Run terminalPG0/client143/PID0/noOOM, originalpreservation true. Separate artifact/custody audit in progress; no further engine before projection freeze.",
+      "custody": "PASS source/artifact/raw/custodyaudit; PG0/client143/PID0/noOOM, originalsintact",
       "explicit_deadline_replay": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7/root-deadline-replay.json",
         "sha256": "733a71ea65262c0e24cd04352613ec2330c05dd3fb9813b78fb7debc27c70cb3",
@@ -46670,6 +46670,18 @@
         "cases": 4,
         "controls": 104,
         "change": "Additional at<Control lease deadline assertion; existing actual contexts PASS, no engine rerun"
+      },
+      "artifact_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7/independent-artifact-audit/audit.json",
+        "sha256": "12f6d6036f4a196b953ac93b026a03200928d4b144505f755c57e2270473f3e1",
+        "status": "PASS_INDEPENDENT_READ_ONLY_ARTIFACT_CUSTODY_AUDIT",
+        "engine_files": 1815,
+        "build_files": 1812,
+        "protected_elfs": 66,
+        "unchanged_nonborrowed": 1272,
+        "frozen_at": "2026-10-13T13:52:13.601869+00:00",
+        "scope": "Read-only artifact/source/raw/custody audit; original SQL/catalog preservation captured-run evidence, root owns independent semantics",
+        "unique_originals": 2
       }
     },
     "fault_fixture": {
@@ -46702,7 +46714,19 @@
         "installed_states": 8,
         "negative_controls": 102
       },
-      "custody": "Run terminalPG0/client143/PID0/noOOM, originalpreservationtrue. Separate read-only artifact audit pending."
+      "custody": "PASS source/artifact/raw/custodyaudit; PG0/client143/PID0/noOOM, originalsintact",
+      "artifact_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-faults-engine-0f8cb44/independent-artifact-audit/audit.json",
+        "sha256": "fd49d8724f8578d0110387d7b7e7f3e3df88ed4b67f36d978082e688eb3c6c30",
+        "status": "PASS_INDEPENDENT_READ_ONLY_ARTIFACT_CUSTODY_AUDIT",
+        "engine_files": 1817,
+        "build_files": 1812,
+        "protected_elfs": 66,
+        "unchanged_nonborrowed": 1273,
+        "frozen_at": "2026-10-13T13:56:18.699689+00:00",
+        "scope": "Read-only artifact/source/raw/custody audit; original SQL/catalog preservation captured-run evidence, root owns independent semantics",
+        "unique_originals": 1
+      }
     }
   }
 }
