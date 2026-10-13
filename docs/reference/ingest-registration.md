@@ -671,3 +671,82 @@ by separate installed recovery. Preserve full original SQL/native/input captures
 attribution and artifacts, and distinguish build-only or finite-probe evidence from
 installed qualification. Source2 closure/retirement and repeated-lifetime/Archive
 consumers remain subsequent selected work.
+
+## Activated initial source closure (under implementation)
+
+The next selected responsibility is `ingest recover --close-activated-source --file
+PATH`, mutually exclusive with every other recovery action. It owns the same
+configuration-only fresh Control/native/driver lifecycle as activated recovery,
+then proves and closes source2. It starts no acquisition, converts no observation
+to a writer and does not retire the producer or its workflow. The existing positive
+recovery command remains strictly source2=open. This separate mode accepts either
+an open source or its exact completed closure; a persisted intermediate closing
+source is not an adoptable completion.
+
+Use distinct opaque activated source-resolution proofs, borrowing the actual
+native recovery and its checked closing proof through completion. Preserve the
+initial source APIs and digest. Recheck actual root/sequence, both manifests,
+retained handoff, both producer markers and exact two-stream context. Require
+issued=reserved=N and N<=the immutable activation request limit<=64. Missing or
+unissued reserved requests refuse. Replay exact original inputs/reservations and
+positive outcomes in order1..N; no missing effect can be inferred from absence.
+NewFacts advance source2 contiguously from1. AlreadyDurable and Rejected advance
+only the request prefix. Source1 references remain positively verified within the
+retained handoff cut; source2 dependencies may not exceed the accumulated prefix.
+The final reconstructed source2 cut must equal its positively checked counter.
+Zero requests and issued-positive/source-zero are valid distinct cases. The proof
+covers every reserved request, without claiming to resolve unrelated staged
+sidecars, reclaim inputs or inspect every unreferenced predecessor fact.
+
+The new closure digest is SHA256 of this exact fixed-width concatenation:
+`bigbrotr/activated-initial-source-closure/1\0`, SHA256(exact retained handoff),
+SHA256(target manifest), producer_slot16, BE64(2), BE64(N), then for every ordered
+request BE64(sequence), input_SHA256_32, outcome_SHA256_32, followed by
+BE64(source2_cut). The domain ends in one NUL byte. This binds source1 transitively
+through the handoff. The independent PostgreSQL validator binds the immutable
+activation. The accumulator retains fixed-size state rather than receipt vectors;
+no new native format or write follows the existing durable closing barrier.
+
+A distinct PostgreSQL source-purpose classifier preserves all preparation,
+activation, policy, topology1, original registration and predecessor checks.
+All nine predecessor domains remain closed and all nine target domains active;
+the target Ingest owner may be active/draining, with an unretired matching role.
+An expired historical scheduling lease is not recovery authority. Require current
+Control and accepted policy, ordered Control UPDATE then dataset UPDATE locks,
+ordered historical/target parents, source UPDATE and producer UPDATE locks.
+Recheck authority and server UTC after waits. Preserve the established historical
+Control release/role-retirement distinction; do not require equal timestamps.
+An open source permits producer open/closing during inspection; a closed source
+requires producer closing and complete closure fields. No terminal producer,
+domain, owner or role shape is accepted by this slice.
+
+For an open source, replay may copy only missing positively verified native
+outcomes under current recorder authority. For a closed source, every exact
+PostgreSQL outcome copy must already exist; missing or mismatched copies refuse.
+The final typed close compares the full ordered SQL input/outcome digest prefix
+against the native proof. It commits source open→closing→closed atomically, with
+its cut/digest/server timestamp, or observes exactly the same closure without
+rewriting its row/xmin. Use additive migration0035 and a narrow source-event
+validator dispatch. Preserve all applied migrations, the ordinary recovery
+classifier and existing retirement/domain/owner/role vetoes, including job/frontier
+cut consistency. No broad activated-state exception is permitted.
+
+Native closing precedes SQL closing. Retain native custody until close and the
+actual transport driver/grant through joined shutdown. Unknown COMMIT poisons the
+session and yields no reusable capability; a fresh installed process replays and
+observes retained state. Preclaim resource checks cover retained128KiB metadata,
+4096-byte data/native closing grants, one bounded input/outcome pair, and final
+64KiB SQL publication overlap. The report names producer2, issued/reserved/resolved
+counts, source2 cut/digest, native closed and committed Control release, ready=false.
+It does not certify coverage, abandonment, retirement, ACK/GC, epoch3 or Archive.
+
+Acceptance includes installed off/on first closure and separate-process exact
+retry, zero-work and Rejected/source0, plus an actual AlreadyDurable/source0 case;
+independently encoded digests and complete preserved source1/handoff/activation.
+Exercise omitted/duplicate/out-of-order originals, unresolved reservation tails,
+wrong/stale native proof, forbidden dependencies/counter and extra stream/producer;
+missing/corrupt input or SQL copy; both concurrent job-versus-closure lock orders;
+final source-close COMMIT loss before forwarding and after server completion with
+fresh-process recovery. Preserve captures and ambiguity; distinguish actual CLI
+exit, supervisor join and backend absence. Epoch2 workflow abandonment/retirement
+remains subsequent work because the current gap protocol owns epoch1 only.

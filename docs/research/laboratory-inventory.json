@@ -45615,5 +45615,19 @@
       "engine_result_sha256": "35eee19558977e31963f9f0979db9388ad9e8a0b5fd0a0cc1d9a71eb4f2cddd2",
       "actual_checks": "Nine actual CLI;18 complete before/after and18 operator observations,151 root independent controls PASS. Separate raw/artifact/custody audit PASS."
     }
+  },
+  "implementation_activated_initial_source_closure_20261013": {
+    "status": "CONTRACT_SELECTED_IMPLEMENTATION_NOT_RUN",
+    "observed_at": "2026-10-13T11:25:02.750021+00:00",
+    "base": "d26c88ac6b418f2a9908460e7e6326c9cd4d32f7",
+    "owner": "root sole integrator/build/engine executor",
+    "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
+    "resources": "No new engine/build allocation; retain all qualified recovery labs and45ELFs",
+    "worktrees": {
+      "successor_restart_design": ".research/activated-recovery-native-20261013",
+      "recovery_review": ".research/activated-recovery-postgres-20261013",
+      "cleanup_review": ".research/activated-recovery-qualification-20261013"
+    },
+    "next": "Commit contract, then native and PostgreSQL implementation in separate worktrees, root installed CLI consumer and independent fixture."
   }
 }

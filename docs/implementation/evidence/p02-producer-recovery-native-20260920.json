@@ -17731,11 +17731,11 @@
           "engine_result_sha256": "08f408ddd7ff15185b3f56ccd7b6f70c589d08852bcaf848e79a36a11bcbfc6b"
         },
         "private_push": {
-          "observed_at": "2026-10-13T11:10:06.215229+00:00",
-          "root": "e167c37a036938754ba5e6b0f98cdf31274cce7f",
+          "observed_at": "2026-10-13T11:25:02.750021+00:00",
+          "root": "d26c88ac6b418f2a9908460e7e6326c9cd4d32f7",
           "main": "54ad09dc6659bfe67e3bf2871e43ce619c199a5c",
-          "source_branches": 8,
-          "verified": "git ls-remote exact root/newsource refs after ordinary non-force push; following oracle/driver commits stilllocal"
+          "source_branches": 10,
+          "verified": "Ordinary non-force push and exact remote refs for root/refusal driver/oracle; prior eight source refs already verified."
         },
         "refusal_qualification": {
           "status": "PASS_INSTALLED_ACTIVATED_RECOVERY_REFUSALS",
@@ -17765,6 +17765,15 @@
           "engine_result_sha256": "35eee19558977e31963f9f0979db9388ad9e8a0b5fd0a0cc1d9a71eb4f2cddd2",
           "actual_checks": "Nine actual CLI;18 complete before/after and18 operator observations,151 root independent controls PASS. Separate raw/artifact/custody audit PASS."
         }
+      },
+      "activated_source_closure_20261013": {
+        "status": "CONTRACT_SELECTED_IMPLEMENTATION_NOT_RUN",
+        "observed_at": "2026-10-13T11:25:02.750021+00:00",
+        "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
+        "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
+        "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
+        "postgres_design": "Distinct source-purpose classifier; missing-copy repair only while source open, exact copies required once closed; additive0035 narrow source dispatch",
+        "acceptance": "Actual off/on/zero/rejected/AlreadyDurable sourcezero, refusals, final-COMMIT loss and job/closure lock orders. All NOT_RUN for this slice."
       }
     }
   }

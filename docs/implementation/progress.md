@@ -14,16 +14,16 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-f6d6ebb (full revision in Git). Last verified private push e167c37 and eight source
-branches; main54ad09d unchanged. Root owns only pending qualification documentation,
-evidence and inventory. No merge/rebase/cherry-pick pending. Product inputs remain
+d26c88a (full revision in Git), verified privately pushed with ten source
+branches; main54ad09d unchanged. Root owns the pending source2 closure contract, task, evidence and inventory. No merge/rebase/cherry-pick pending. Product inputs remain
 unchanged from2a018ea; e167c37 builds the fixed refusal probe. Root alone integrates
 and runs engines/builds. All three separate agent worktrees are committed clean;
 read-only source2 closure designs and refusal raw custody audit are complete.
 Preserve every worktree and previous branch/artifact.
 
-Current authority: `implementation_activated_initial_recovery_20261013` lab inventory
-and `activated_recovery_20261013` in existing recovery evidence.
+Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
+and `activated_source_closure_20261013` in existing recovery evidence; qualified
+activated recovery remains in its unchanged owning records.
 
 ## Active task and completed prerequisite
 
@@ -93,12 +93,13 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit the qualified recovery record and verify its private push. Then commit the
-source2-only closure contract before implementation: distinct native/PG proof,
-exact ordered original prefix, additive SQL source classifier, no source1 changes,
-no epoch2 workflow retirement yet. Ordinary positive recovery remains source=open;
-completed closure retries require existing exact PG copies without terminal repair.
-Native and PG agents have read the affected owners and agree on this boundary.
+Commit the [source2-only closure contract](../reference/ingest-registration.md#activated-initial-source-closure-under-implementation),
+then implement distinct native/PG proofs in separate agent worktrees and the root
+installed consumer. Ordinary positive recovery remains source=open; completed
+closure retries require exact existing PG copies without terminal repair. Preserve
+source1 and all old migrations; no epoch2 workflow retirement yet. Native and PG
+agents completed read-only design of affected owners and agree on this boundary.
+All new source2 closure implementation/runtime acceptance is NOT_RUN.
 
 Enginef6d6ebb PASS_INSTALLED_ACTIVATED_RECOVERY_REFUSALS: nine fresh off-seed clones,
 nine actual CLI exits4/reaped/nonforced. Missing/corrupt input2 or old dependency1/3
