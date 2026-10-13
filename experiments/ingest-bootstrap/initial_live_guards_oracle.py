@@ -25,7 +25,9 @@ TARGET = 'activation authority and target must remain unchanged through its comm
 # Exact, independently reviewed invoker fixture template, before substitution.
 # This pins SQL meaning, guard order and deliberate subtransaction rollback;
 # changing the fixture requires review of this literal, not a generated update.
-TEMPLATE = '6d2a26a134a0922a7556acfe14e7879c718627078cc04ab5e280b9c86ecc0d74'
+# Request cases select the original unbound dictionary request3 with STRICT
+# cardinality; they must not fail first on request4's retired acquisition job.
+TEMPLATE = '96ccafd10ab55be14bfb28bf8f737506551fad8bb189a95fe8cb6f38d5f49322'
 # The five qualified2c142c6 catalogs agree on every product trigger, constraint,
 # function definition and grant. Internal trigger names contain per-clone OIDs;
 # retain and compare those exactly within this run instead of pinning their IDs.
