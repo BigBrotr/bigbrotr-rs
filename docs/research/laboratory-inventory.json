@@ -40874,7 +40874,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Commit/push auditedguard qualification, then integrate and qualify activated-zero history/gap/empty loader refusals with a prepared positivehistory control using existingee24e86 artifacts. Newisolatedharness/oracle are in progress; no next engineallocated.",
+    "next_action": "Run fresh exact --ingest-live-routes source using protected ee24e86 artifacts; four isolated cases, complete39snapshots/84controls expected. Preserve both original seeds and audit actual outcome.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -41848,14 +41848,42 @@
       }
     ],
     "activated_zero_routes": {
-      "status": "HARNESS_ORACLE_IN_PROGRESS_ENGINE_NOT_RUN",
+      "status": "INTEGRATED_REVIEWED_ENGINE_NOT_RUN",
       "base": "5fe7cc0a048ffd23715f0ae0d1ee9eb84ef9c134",
       "harness_owner": "successor_restart_design",
       "oracle_owner": "recovery_review",
       "harness_worktree": ".research/live-zero-routes-harness-20261013",
       "oracle_worktree": ".research/live-zero-routes-oracle-20261013",
       "root_owner": "bindings,docs,integration,build/engineexecution",
-      "scope": "three freshprocess activated-zero loader refusals plus prepared-unactivated positivehistory control; exact72-table/native/input capture; gap refusal is epoch1preflight, not SQLactivationveto"
+      "scope": "three freshprocess activated-zero loader refusals plus prepared-unactivated positivehistory control; exact72-table/native/input capture; gap refusal is epoch1preflight, not SQLactivationveto",
+      "worktrees_observed_at": "2026-10-13T07:47:41.341616+00:00",
+      "worktrees": [
+        {
+          "root": ".research/live-zero-routes-harness-20261013",
+          "head": "c65164fbe667b6fce9f994f687693636e902ee40",
+          "branch": "qualification/live-zero-routes-harness",
+          "status": "clean"
+        },
+        {
+          "root": ".research/live-zero-routes-oracle-20261013",
+          "head": "2b517953d7911ddfd7b185c0a8a49fdc15c1d5b4",
+          "branch": "qualification/live-zero-routes-oracle",
+          "status": "clean"
+        }
+      ],
+      "harness_source": "c65164fbe667b6fce9f994f687693636e902ee40",
+      "harness_integrated": "3ff79c4",
+      "harness_checks": "AST/diff-check and8pure transport/source checks PASS; independent source review closed module-ledger finding; no engine/SQL/native open.",
+      "review": "Root full289-line harness and320-line final oracle reviewed, plus history750/empty565probe and PGhistory535/gap180/empty393 owners. Independent reviewer closed transient-observer census restriction. Root27-line bindings dispatch independently reviewed; actual four-case qualification NOT_RUN.",
+      "observed_at": "2026-10-13T07:56:57.970701+00:00",
+      "oracle_source": "2b517953d7911ddfd7b185c0a8a49fdc15c1d5b4",
+      "oracle_integrated": "33f6d18eaf007682362c3d03b2b35656c0e38f93",
+      "oracle_checks": "Four artificial modes39snapshots/84rehashed perturbations PASS; root integratedAST/import/API/diff-check PASS; independent full source review closed two findings.",
+      "artificial_evidence": {
+        "root": ".research/live-zero-routes-oracle-20261013/.research/live-routes-oracle-selfcheck-20261013",
+        "generator_sha256": "785e1735033e47b9afb6e737b9d785ded991a7ad094cd704b2aae3260d32bb91",
+        "result_sha256": "2185fda81b043aa50586007176f0ec48c3b850841f369252d280158023b4d9cd"
+      }
     }
   }
 }
