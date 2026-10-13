@@ -546,28 +546,52 @@ CREATE TRIGGER initial_activation_checkpoint_guard BEFORE INSERT OR UPDATE ON co
 REVOKE ALL ON FUNCTION control.guard_initial_activation_checkpoint() FROM PUBLIC;
 
 -- SET CONSTRAINTS can force the receipt's deferred check early. Preserve its
--- active-zero shape for the remainder of that same transaction too. These
--- target mutations are legal again only in a later, separately authorized tx.
+-- active-zero shape and the mutable Control/policy envelope for the remainder
+-- of that same transaction too. Later transactions reauthorize independently.
+-- This is a mutation fence, not a promise about arbitrary client delays after
+-- forcing constraint checks: the typed owner also retains its local deadline
+-- across COMMIT and validates current authority again before writer delivery.
 CREATE FUNCTION control.guard_initial_activation_target() RETURNS trigger LANGUAGE plpgsql
 SET search_path=pg_catalog AS $$
 DECLARE resource bytea;
 BEGIN
-    IF TG_TABLE_NAME='role_instances' THEN
+    IF TG_TABLE_NAME='datasets' THEN
+        IF ROW(OLD.config_revision,OLD.policy_revision,OLD.topology_generation)
+            IS NOT DISTINCT FROM ROW(NEW.config_revision,NEW.policy_revision,NEW.topology_generation) THEN
+            RETURN NEW;
+        END IF;
         SELECT owner_resource_id INTO resource FROM control.initial_ingest_activations
-            WHERE target_role_instance_id=OLD.role_instance_id;
+            WHERE dataset_id=OLD.dataset_id AND activation_transaction=pg_current_xact_id();
+    ELSIF TG_TABLE_NAME='role_instances' THEN
+        SELECT a.owner_resource_id INTO resource FROM control.initial_ingest_activations a
+            WHERE a.activation_transaction=pg_current_xact_id()
+                AND (a.target_role_instance_id=OLD.role_instance_id OR EXISTS (
+                    SELECT 1 FROM control.owner_epochs c WHERE c.resource_id=a.activated_by_resource
+                        AND c.epoch=a.activated_by_epoch AND c.process_incarnation=a.activated_by_incarnation
+                        AND c.role_instance_id=OLD.role_instance_id));
     ELSIF TG_TABLE_NAME='owner_epochs' THEN
-        IF OLD.role<>'ingest' OR OLD.epoch<>2 THEN RETURN NEW; END IF;
-        resource := OLD.resource_id;
+        IF OLD.role='control' THEN
+            SELECT owner_resource_id INTO resource FROM control.initial_ingest_activations
+                WHERE activated_by_resource=OLD.resource_id AND activated_by_epoch=OLD.epoch
+                    AND activated_by_incarnation=OLD.process_incarnation
+                    AND activation_transaction=pg_current_xact_id();
+        ELSIF OLD.role='ingest' AND OLD.epoch=2 THEN
+            resource := OLD.resource_id;
+        ELSE
+            RETURN NEW;
+        END IF;
     ELSE
         IF OLD.owner_epoch<>2 THEN RETURN NEW; END IF;
         resource := OLD.owner_resource_id;
     END IF;
     IF EXISTS (SELECT 1 FROM control.initial_ingest_activations WHERE owner_resource_id=resource
         AND activation_transaction=pg_current_xact_id()) THEN
-        RAISE EXCEPTION 'activation target must remain empty and active through its commit' USING ERRCODE='23514';
+        RAISE EXCEPTION 'activation authority and target must remain unchanged through its commit' USING ERRCODE='23514';
     END IF;
     RETURN NEW;
 END $$;
+CREATE TRIGGER initial_activation_target_guard BEFORE UPDATE ON control.datasets
+    FOR EACH ROW EXECUTE FUNCTION control.guard_initial_activation_target();
 CREATE TRIGGER initial_activation_target_guard BEFORE UPDATE ON control.owner_epochs
     FOR EACH ROW EXECUTE FUNCTION control.guard_initial_activation_target();
 CREATE TRIGGER initial_activation_target_guard BEFORE UPDATE ON control.role_instances
