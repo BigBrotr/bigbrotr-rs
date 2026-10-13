@@ -15355,6 +15355,57 @@
             "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
             "result_sha256": "27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9",
             "audit": "Unchanged fixture passed3actual commands/69SQL tables/49 native rows/4 originals each, with original catalog/control/native/export preservation captured. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
+          },
+          {
+            "source": "aad70200e1cd6bf649b2450d6c22557e880e38a1",
+            "owner": "25dd68ff18f99f680a9b0fec75fb6a12",
+            "client": {
+              "id": "7be25fa3b7312bfffc10fa25e991a9ec037dff48e91a736bb740c4de18cf6bee",
+              "name": "bigbrotr-acquisition-binding-aad7020"
+            },
+            "status": "PASS_INSTALLED_SYNC_FULL_WINDOW",
+            "started_at": "2026-10-13T09:11:38.282249+00:00",
+            "finished_at": "2026-10-13T09:12:08.240796+00:00",
+            "free_bytes_after": 65922953216,
+            "databases": [
+              "bb_scope_bind_aad7020_sync_window_event",
+              "bb_scope_bind_aad7020_sync_window_source"
+            ],
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "cases": [
+              {
+                "name": "sync-window-event",
+                "status": "PASS",
+                "actual_cli": true,
+                "actual_http": true,
+                "actual_pg_rocks": true,
+                "websocket_rounds": 17,
+                "same_owner_renewed": true,
+                "signal_seconds": 0.055058343,
+                "native_rows": 49,
+                "original_requests": 4
+              },
+              {
+                "name": "sync-window-source",
+                "status": "PASS",
+                "actual_cli": true,
+                "actual_http": true,
+                "actual_pg_rocks": true,
+                "websocket_rounds": 17,
+                "same_owner_renewed": true,
+                "signal_seconds": 0.055393719,
+                "native_rows": 49,
+                "original_requests": 4
+              }
+            ],
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-sync-regression-aad7020",
+            "wrapper": 85584,
+            "exit_code": 0,
+            "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
+            "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
+            "audit": "Unchanged full-window fixture PASS: two actual initial Sync owners,17 socket rounds each,49 exact native rows/4 original requests, full-window later-event/source refusal, same-owner renewal and quiet socket SIGTERM followed by joined shutdown. Deferred second source observed0connections. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
           }
         ]
       }

@@ -16,10 +16,11 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEADddded07d36dc8e80f977fa5dbb3435d5003c3d11. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
+HEADaad70200e1cd6bf649b2450d6c22557e880e38a1. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
 Python dispatcher and build evidence/checkpoint/inventory updates; independent
 fixture remains in its separate worktree. CLI/profile/tests are committed.
-Last verified private root is92c621fa597866d1f59a30c0b81997bc547dc3b7;
+Last verified private root isaad70200e1cd6bf649b2450d6c22557e880e38a1;
+installed helpers6c134e3/1593f1f are also pushed;
 refusal helpersddbb838/aba294b/039e77e and routes helpersc65164f/2b51795 are also
 pushed. Main remains54ad09d. No merge/rebase/cherry-pick is pending. Root owns Serve
 CLI, documentation, integration and all build/engine execution.
@@ -52,8 +53,13 @@ The unchanged signed-recovery regressionddded07 passes3 actual recovery commands
 Root `/runs/ingest-signed-regression-ddded07`, wrapper35588 joined0; resultSHA
 27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9.
 Finished09:10:05Z, PG0/client143/PID0/noOOM, no unrelated changes or cleanup errors.
-Independent read-only artifact audit is pending. Initial Sync-window regression is
-next; new installed successor fixture engine is still NOT_RUN. All wrappers terminal.
+Initial Sync-window regressionaad7020 passes both actual cases,17 socket rounds each,
+49native/4inputs, renewal, quietSIGTERM and zero connections to deferred second source.
+Root `/runs/ingest-sync-regression-aad7020`, wrapper85584 joined0; resultSHA
+47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258.
+Finished09:12:08Z, PG0/client143/PID0/noOOM; cleanup/missing/unrelated arrays empty.
+Independent read-only artifact audit of both regressions is pending. New installed
+successor fixture engine is still NOT_RUN. All build/engine wrappers terminal.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
@@ -188,8 +194,11 @@ Root owns `serve --activate-initial-successor`, CLI checks/docs and integration.
 Both product owners are integrated and independently source-reviewed. Use the
 `ingest-installed-live` exact-source build787e1fe has passed compile,15 affected tests
 and Clippy. Integrate and review the separate actual off/on/refusal fixture and oracle;
-execute the reviewed affected initial Sync-window and signed-recovery regressions
-using the same retained artifacts while the independent fixture is completed.
+both affected initial Sync-window and signed-recovery regressions now PASS using
+the same retained artifacts. Finish their independent artifact audit. Root and
+independent reviewer found incomplete HTTP response bindings in the new oracle,
+and root found a quiet-socket selection could precede the asserted deadline;
+the fixture author is correcting both before its first actual engine run.
 The old initializer and recovery flags retain their contracts. No schema/native
 format change is selected. A fenced basis supplies real server time/current policy;
 use activation policy/window, not the historical registration, for new work.
@@ -236,7 +245,7 @@ tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
 volume, input, executable and `.research` artifact. Private Git pushes do not back up
 ignored laboratory data; Git cleanliness is never permission to delete it.
 
-Free space after787e1fe build:66,025,529,344 bytes (about61.5GiB).
+Free space afteraad7020 regression:65,922,953,216 bytes (about61.4GiB).
 Remeasure before allocation.
 Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
 currently unavailable; never lower that reserve. No large export is allocated.
