@@ -15001,7 +15001,7 @@
         "owner_integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
         "checks": "Scoped format/diff-check, exact Rust1.98.1/Clang14 build,15 affected tests and Clippy PASS; root source/artifact/resource audit PASS. Connected installed/SQL qualification NOT_RUN.",
         "review": "Root and independently tasked AI source review of CLI/profile and installed custody/policy/window/preclaim overlap found no semantic blocker; Rust compilation found root CLI move-before-later-borrow E0505, corrected by precomputing selected_sync. Parent imports consumed by empty.rs were restored before owner commit. Actual installed/SQL NOT_RUN.",
-        "next": "Complete and independently review exact installed off/on/refusal oracle, then run actual five-case installed journey. Meanwhile execute already-reviewed affected initial Sync window and signed recovery regressions using retained787e1fe artifacts.",
+        "next": "Integrate reviewed installed off/on/refusal fixture and oracle; five actual installed successor commands remain NOT_RUN. Existing shared signed3 and initial Sync-window2 regressions now audited PASS.",
         "builds": [
           {
             "source": "ec3e2c4f413a5e3eb33aaa52c5f572215c23a056",
@@ -15354,7 +15354,7 @@
             "exit_code": 0,
             "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
             "result_sha256": "27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9",
-            "audit": "Unchanged fixture passed3actual commands/69SQL tables/49 native rows/4 originals each, with original catalog/control/native/export preservation captured. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
+            "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed original native encoder and all three captured result/SQL reducers:49 native rows/4 inputs/69 tables each, fresh Control5/6/5; only third copies original request4 outcome. Frozen b7b60f9 export result/hash and73 census entries match current filesystem; original captured69SQL/32catalog match retained seed. SQL/catalog preservation and backend-count0 remain captured-run evidence; older harness retains no raw backend-count receipt. No SQL/restart/build/engine by auditor."
           },
           {
             "source": "aad70200e1cd6bf649b2450d6c22557e880e38a1",
@@ -15405,7 +15405,7 @@
             "exit_code": 0,
             "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
             "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
-            "audit": "Unchanged full-window fixture PASS: two actual initial Sync owners,17 socket rounds each,49 exact native rows/4 original requests, full-window later-event/source refusal, same-owner renewal and quiet socket SIGTERM followed by joined shutdown. Deferred second source observed0connections. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
+            "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
           }
         ]
       }

@@ -42849,7 +42849,7 @@
       "previous_processes": "All installed build/signed regression/Sync-window regression wrappers terminal joined0; PG0/client143/PID0/noOOM at latest09:12:08Z shutdown; no audit restart or new installed fixture engine allocated",
       "preservation": "All ignored/external artifacts and prior worktrees retained",
       "free_bytes": 65922953216,
-      "review": "Root complete changed owning sources/callers; independent AI CLI/profile and installed owner review no blocker. Root found removed parent imports consumed by unchanged recovery/empty.rs; author restored before commit. Old PG read bodies preserved bytewise after authority parameterization; fresh basis unchanged. No arbitrary repeat-review requirement.",
+      "review": "Root complete changed owning sources/callers; independent AI CLI/profile and installed owner review no blocker. Root found removed parent imports consumed by unchanged recovery/empty.rs; author restored before commit. Old PG read bodies preserved bytewise after authority parameterization; fresh basis unchanged. No arbitrary repeat-review requirement. New independent fixture review found incomplete HTTP bindings, wrong frozen predecessor-ID literal and cross-phase operational-row drift acceptance; author correcting prior to engine. Root also corrected quiet-socket selection-before-deadline mismatch.",
       "builds": [
         {
           "source": "ec3e2c4f413a5e3eb33aaa52c5f572215c23a056",
@@ -43202,7 +43202,7 @@
           "exit_code": 0,
           "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
           "result_sha256": "27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9",
-          "audit": "Unchanged fixture passed3actual commands/69SQL tables/49 native rows/4 originals each, with original catalog/control/native/export preservation captured. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
+          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed original native encoder and all three captured result/SQL reducers:49 native rows/4 inputs/69 tables each, fresh Control5/6/5; only third copies original request4 outcome. Frozen b7b60f9 export result/hash and73 census entries match current filesystem; original captured69SQL/32catalog match retained seed. SQL/catalog preservation and backend-count0 remain captured-run evidence; older harness retains no raw backend-count receipt. No SQL/restart/build/engine by auditor."
         },
         {
           "source": "aad70200e1cd6bf649b2450d6c22557e880e38a1",
@@ -43253,9 +43253,10 @@
           "exit_code": 0,
           "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
           "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
-          "audit": "Unchanged full-window fixture PASS: two actual initial Sync owners,17 socket rounds each,49 exact native rows/4 original requests, full-window later-event/source refusal, same-owner renewal and quiet socket SIGTERM followed by joined shutdown. Deferred second source observed0connections. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
+          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
         }
-      ]
+      ],
+      "next": "Integrate reviewed installed off/on/refusal fixture and oracle; five actual installed successor commands remain NOT_RUN. Existing shared signed3 and initial Sync-window2 regressions now audited PASS."
     }
   }
 }

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T09:09:21.536794+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T09:17:24.822478+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,7 +16,7 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEADaad70200e1cd6bf649b2450d6c22557e880e38a1. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
+HEAD22f1d41b593c6397e9e188ceb71f4ccbf5ff73f7. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
 Python dispatcher and build evidence/checkpoint/inventory updates; independent
 fixture remains in its separate worktree. CLI/profile/tests are committed.
 Last verified private root isaad70200e1cd6bf649b2450d6c22557e880e38a1;
@@ -58,8 +58,12 @@ Initial Sync-window regressionaad7020 passes both actual cases,17 socket rounds 
 Root `/runs/ingest-sync-regression-aad7020`, wrapper85584 joined0; resultSHA
 47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258.
 Finished09:12:08Z, PG0/client143/PID0/noOOM; cleanup/missing/unrelated arrays empty.
-Independent read-only artifact audit of both regressions is pending. New installed
-successor fixture engine is still NOT_RUN. All build/engine wrappers terminal.
+Independent AI artifact/reducer audit of both regressions PASS: exact1775 Git blobs
+per source,4 mounted ELF hashes,73 frozen source census entries, all1240 latest
+nonborrowed projections unchanged. Replayed complete native/HTTP/SQL expectations,
+including16 Sync SQL snapshots. Original SQL and backend-count0 remain captured-run
+evidence; older harness retains no raw backend-count receipt. No audit restart/SQL.
+New installed successor engine remains NOT_RUN. All build/engine wrappers terminal.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
@@ -191,14 +195,14 @@ are terminal; no PostgreSQL audit restart or untracked cleanup was performed.
 The completed refusal wave is committed and privately pushed. Qualify the selected
 [installed live initial successor](../reference/ingest-registration.md#installed-live-initial-successor-under-implementation).
 Root owns `serve --activate-initial-successor`, CLI checks/docs and integration.
-Both product owners are integrated and independently source-reviewed. Use the
+Both product owners are integrated and independently source-reviewed. The
 `ingest-installed-live` exact-source build787e1fe has passed compile,15 affected tests
 and Clippy. Integrate and review the separate actual off/on/refusal fixture and oracle;
 both affected initial Sync-window and signed-recovery regressions now PASS using
-the same retained artifacts. Finish their independent artifact audit. Root and
-independent reviewer found incomplete HTTP response bindings in the new oracle,
-and root found a quiet-socket selection could precede the asserted deadline;
-the fixture author is correcting both before its first actual engine run.
+the same retained artifacts, with independent artifact/reducer audit PASS. The new
+fixture review found incomplete HTTP bindings, wrong frozen predecessor-ID literal,
+cross-phase operational-row drift acceptance, and a quiet-socket selection before
+the asserted deadline. The author is correcting these before the first engine run.
 The old initializer and recovery flags retain their contracts. No schema/native
 format change is selected. A fenced basis supplies real server time/current policy;
 use activation policy/window, not the historical registration, for new work.
