@@ -29,13 +29,11 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: execute the integrated genuine extra-intent fixture (03f1→d7d5fe5),
-one finite probe plus two installed commands, in an exact fresh engine
-using protectedec6 artifacts. It must abandon two actual activator-owned jobs
-(including one with zero requests), preserve an accepted-unclaimed job and its
-session, close source2 once, and make the retry immutable. Then execute the fourteen
-raw SQL guard cases. Neither new wave has run yet. Root has read both complete drafts and affected helpers; claims finaldelta
-review closed, SQL pins/finaldelta remain to inspect.
+Next: execute fourteen raw SQL guard cases fromcb1→c517b22 using protectedec6
+artifacts, after root fullsource/helper review and exact14 rendered statement pins.
+The claims wave has passed one finite seed and two installed commands; root replay
+passes15seed snapshots/four installed observations/44 controls. Separate artifact
+and custody audit is ongoing; frozenDocker observation14:09:09Z permits next run.
 
 Current agents:
 
@@ -120,6 +118,14 @@ faa/0033 historical timestamp assumptions, prefixd115 Control xmin oracle,5e57
 fixture permissions and2032894 catalog/release oracle), raw artifacts and corrected
 follow-ups remain retained. Do not relabel or rerun them as successes. The evidence
 nodes and Git history retain their exact identities and boundaries.
+
+Claims engineda839b7 PASS1finite+2CLI,1887joined0; root
+`/runs/ingest-activated-acquisition-claims-engine-da839b7`. Actual Control8 owns
+existinga6request1 and newa7zero-request; a8 staysaccepted/unclaimed. First closes
+source2(native53/64→65/five inputs) and abandons bothclaims in one transaction;
+retry preserves issuer/time/xmin. Session/unclaimed/copies/native/input exact.
+Root37928 replay15seed snapshots/four installed states/44controls PASS. Separate
+artifact/custody audit pending; no engine/build active at this update.
 
 ## Processes, resources and maintenance
 

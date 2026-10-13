@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_activated_acquisition_guards = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-acquisition-guards'
 ingest_activated_acquisition_claims = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-acquisition-claims'
 ingest_activated_acquisition_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-acquisition-faults'
 ingest_activated_acquisition = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-acquisition'
@@ -106,7 +107,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_activated_acquisition_claims or ingest_activated_acquisition_faults or ingest_activated_acquisition or ingest_activated_source_prefix or ingest_activated_source_locks or ingest_activated_source_durable or ingest_activated_source_faults or ingest_activated_source or ingest_activated_refusals or ingest_activated_zero or ingest_activated_faults or ingest_activated_recovery or ingest_installed_live or ingest_live_refusals or ingest_live_routes or ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_activated_acquisition_guards or ingest_activated_acquisition_claims or ingest_activated_acquisition_faults or ingest_activated_acquisition or ingest_activated_source_prefix or ingest_activated_source_locks or ingest_activated_source_durable or ingest_activated_source_faults or ingest_activated_source or ingest_activated_refusals or ingest_activated_zero or ingest_activated_faults or ingest_activated_recovery or ingest_installed_live or ingest_live_refusals or ingest_live_routes or ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -464,6 +465,13 @@ if ingest_live_guards:
         'first-request manifest mismatch, real network provenance and installed successor consumers',
         'native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1',
         'capacity/load/aged-state and arm64/release']
+
+if ingest_activated_acquisition_guards:
+    report['wave'] = 'activated-acquisition-sql-guards'
+    report['not_run'] = ['native-proof dispatch and ordinary HTTP legacy grants',
+        'combined64 boundary and final job-wait cancellation or actual Control expiry',
+        'producer retirement, Archive restart and full M1',
+        'native syscall uncertainty/power loss, capacity/load/aged-state and arm64/release']
 
 if ingest_activated_acquisition_claims:
     report['wave'] = 'installed-activated-acquisition-claims'
@@ -968,6 +976,9 @@ if ingest_live:
 if ingest_live_guards:
     success_status = 'PASS_LIVE_INITIAL_GUARDS'
 
+if ingest_activated_acquisition_guards:
+    success_status = 'PASS_ACTIVATED_ACQUISITION_SQL_GUARDS'
+
 if ingest_activated_acquisition_claims:
     success_status = 'PASS_INSTALLED_ACTIVATED_ACQUISITION_CLAIMS'
 
@@ -1181,6 +1192,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_activated_acquisition_guards:
+        cases = ['activated-acquisition-sql-guards']
     elif ingest_activated_acquisition_claims:
         cases = ['installed-activated-acquisition-claims']
     elif ingest_activated_acquisition_faults:
@@ -1274,6 +1287,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_activated_acquisition_guards:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from activated_acquisition_guards import run_all as run_activated_acquisition_guards
+            report['cases'].append(run_activated_acquisition_guards(pg, client, output, rows, clone))
             save()
         elif ingest_activated_acquisition_claims:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1516,6 +1534,16 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_activated_acquisition_guards:
+        from activated_acquisition_guards import CASES as ACTIVATED_ACQUISITION_GUARD_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and report['cases'][0]['name'] == 'activated-acquisition-sql-guards'
+            and report['cases'][0]['sql_attempts'] == 14
+            and [r['name'] for r in report['cases'][0]['cases']] == list(ACTIVATED_ACQUISITION_GUARD_CASES)
+            and report['cases'][0]['oracle']['attempts'] == 14
+            and report['cases'][0]['oracle']['status'] == 'PASS'
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']),
+            'activated-acquisition-sql-guard-case-set')
     if ingest_activated_acquisition_claims:
         from activated_acquisition_claims import CASES as ACTIVATED_ACQUISITION_CLAIM_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'

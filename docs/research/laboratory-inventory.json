@@ -46550,7 +46550,7 @@
   },
   "implementation_activated_acquisition_abandonment_20261013": {
     "status": "PASS_FIRST_AND_COMMIT_WAVES_REMAINING_QUALIFICATION_OPEN",
-    "observed_at": "2026-10-13T14:06:44.378887+00:00",
+    "observed_at": "2026-10-13T14:10:45.015528+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
     "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -46574,7 +46574,7 @@
       "integrated": "117d648",
       "mode": "successor-live-acquisition-claims DB PASSWORD CONFIG",
       "behavior": "GenuineAlreadyDurable request1 underliveControl8; refresh; typedaccepta7/claima7zero-request; typedaccepta8unclaimed. Fullnative53/seq64/input5 prepost; typedcalls captured beforeassert. Existinga6queued2 remainsboundrequest1; olddurable mode unchanged",
-      "status": "COMPILE_CLIPPY_PASS_ENGINE_NOT_RUN"
+      "status": "PASS_GENUINE_EXTRA_INTENTS_ENGINE_DA839B7"
     },
     "review": "Root complete affected owner/contracts/callers and independent nativeauthor fullnewPG/0036/CLI review PASS withoutconcreteblocker. Actualengine, privileges, negativeSQL andCOMMITloss remain separate.",
     "build_plan": "Reuse existing ingest-activated-installed profile: exactRust1.98.1/Clang14 compile, entry/schema/migration tests andClippy. Nativeproof implementations unchanged9dbc asideequivalent PGhelper extraction; retainnative45tests, no broadrepeat.",
@@ -46587,7 +46587,7 @@
       "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
       "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
     },
-    "next": "Execute genuineclaims1finite+2CLI usingec6, then integratecb1SQL14. HTTP36 ordinarygrants and genuine64/65/fullbatch fixtures prepared separately. Finaljobwaitcancel and actualpostwaitControlUTCexpiry remain NOT_RUN.",
+    "next": "Execute14SQLguards with --ingest-activated-acquisition-guards usingec6, fullrawcapture beforeoracle. Closeclaims custodyaudit. HTTP36 and64/65/fullbatch fixtures inparallel; finaljobwaitcancel/UTCexpiry later.",
     "owner": "root sole integrator/build/engine executor",
     "processes": "No engine/build active; allfirst/fault rootwrappersjoined0, bothauditsPASS. Twoagentsprepareclaims/SQLguards; nativeagentread-onlyremaininggateassessment.",
     "last_private_push": "ae00c25659e3b99097b01a02a493893a404d9956 verified plusc868/5c2branches; main54ad09 unchanged",
@@ -46731,19 +46731,52 @@
     "claims_fixture": {
       "source": "03f1f6a4d63b096368688ef537c3879ee07250bc",
       "integrated": "d7d5fe5",
-      "status": "ENGINE_NOT_RUN",
+      "status": "ACTUAL_ENGINE_PASS_ROOT_REPLAY_PASS_CUSTODY_PENDING",
       "checks": "Fullrootreview including2preexecution fixes;15seed snapshots/4installed states/44controls/4capturemocks PASS",
       "manifest_sha256": "9d84ca00a744daa6f3e9d50a4a73d9029b8b8dbb82e2560338c766f87fb719c0",
       "flag": "--ingest-activated-acquisition-claims",
       "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
     },
     "remaining_gates": [
-      "genuine selected2/unclaimed1 installed journey",
       "14 rawSQLguards",
       "ordinaryschema36HTTP withoutrecoveryprivileges",
       "combined retained+selected<=64 and fullbatchrefusal beforewrites",
       "SIGTERM duringfinal selectedjoblockwait",
       "actualControlUTCexpiry acrossfinaljobwait (requiresfinite pre-agedlease proof; CLIlocaltimeoutisnotexpiry)"
-    ]
+    ],
+    "claims_wave": {
+      "source": "da839b70602fdd83876736ddb310ae0ae8f410f3",
+      "owner": "4a884dd9a60fbe0c09dce7e4eda52a39",
+      "status": "PASS_INSTALLED_ACTIVATED_ACQUISITION_CLAIMS",
+      "client": {
+        "id": "548313191a088104c31becd83ef4070f4d4521e374c68c1106c07fcbf94cc45d",
+        "name": "bigbrotr-acquisition-binding-da839b7"
+      },
+      "started_at": "2026-10-13T14:06:58.505925+00:00",
+      "finished_at": "2026-10-13T14:07:26.768220+00:00",
+      "free_bytes_after": 58860933120,
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-claims-engine-da839b7",
+      "wrapper": "1887 joined0",
+      "result_sha256": "47ba9f897e7bc7a8c6fcc965bfd4ca56901811f059e406580ef7a2c895a46df6",
+      "cli_invocations": 2,
+      "finite_seed_invocations": 1,
+      "semantics": "ActualControl8 typedaccept/claim a6request1AlreadyDurable, a7zero-requestqueued2 and a8accepted1unclaimed. Firstsourcecloses64\u219265 and bothclaims gap+cancelled4 samefreshtransaction; retrykeeps attribution, acceptedunclaimed/session/copies/input unchanged. Full72SQL/native53/input5.",
+      "root_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-claims-engine-da839b7/root-independent-replay.json",
+        "sha256": "19a6d36a0c0e14e345389aa85adaddba90460df2604e9f280e5350b8e1095ce2",
+        "wrapper": "37928 joined0",
+        "seed_snapshots": 15,
+        "installed_states": 4,
+        "controls": 44
+      },
+      "custody": "Separate read-only artifactaudit ongoing, Dockerfreeze14:09:09Z complete. PG0/client143 terminal/PID0/noOOM."
+    },
+    "guards_fixture": {
+      "source": "cb1ed4ee75400f1917a23ba7f9ee2a38b11105c8",
+      "integrated": "c517b22",
+      "checks": "Root complete source/helper review and14renderedSQLpins match;14artificialcases/37states/21controls and3capturemocks PASS",
+      "status": "ENGINE_NOT_RUN",
+      "manifest_sha256": "1ad605bb1ef51f39671bea501b2239887ea695b09281c9c67ef95304de03328c"
+    }
   }
 }
