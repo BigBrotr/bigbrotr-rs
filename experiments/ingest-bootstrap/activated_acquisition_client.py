@@ -1,4 +1,4 @@
-"""Own one installed activated acquisition-abandonment process; publish custody, never product receipts."""
+"""Own one installed activated workflow process; publish custody, never product receipts."""
 import json
 import os
 from pathlib import Path
@@ -8,11 +8,12 @@ import time
 
 
 def main():
-    assert len(sys.argv) == 3
-    config, prefix = map(Path, sys.argv[1:])
+    assert len(sys.argv) in (3, 4)
+    config, prefix = map(Path, sys.argv[1:3])
     assert config.is_absolute() and prefix.is_absolute()
-    command = ['/build/bigbrotr', 'ingest', 'recover', '--file', str(config),
-        '--abandon-activated-acquisition']
+    action = sys.argv[3] if len(sys.argv) == 4 else '--abandon-activated-acquisition'
+    assert action in ('--abandon-activated-acquisition', '--retire-activated-initial')
+    command = ['/build/bigbrotr', 'ingest', 'recover', '--file', str(config), action]
 
     def publish(suffix, value):
         target = Path(str(prefix) + suffix)
