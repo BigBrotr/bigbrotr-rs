@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T07:56:57.970701+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T08:08:38.306150+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,20 +16,22 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEAD33f6d18eaf007682362c3d03b2b35656c0e38f93. Harnessc65164f and oracle2b51795 are integrated. Root and old helper heads18bf166/ea625e7
-were privately pushed and verified with `git ls-remote`; main is unchanged at54ad09d.
-No merge/rebase/cherry-pick is pending. Dirty root files: bindings.py adds
-`--ingest-live-routes`; this checkpoint and laboratory inventory track that new slice.
-Root owns integration, documentation and all build/engine execution.
+HEADa80710ad3b4cb29e21e2519b45e568856ab5b0a0. Routes harnessc65164f and oracle2b51795
+are integrated. Last verified private root is904852558994dcef236edbce8bf6d0a508588644;
+main remains54ad09d. No merge/rebase/cherry-pick is pending. Dirty root files are the
+storage task, Ingest contract, recovery evidence, inventory and this checkpoint,
+recording the completed routes wave and the next bounded refusal slice. Root owns
+integration, build profiles/bindings, documentation and all build/engine execution.
 
 | Worktree | Agent | Current responsibility |
 |---|---|---|
-| `.research/live-zero-routes-harness-20261013` | successor_restart_design | New initial_live_routes.py only; branch qualification/live-zero-routes-harness, base5fe7cc0 |
-| `.research/live-zero-routes-oracle-20261013` | recovery_review | New initial_live_routes_oracle.py only; branch qualification/live-zero-routes-oracle, base5fe7cc0 |
-| `.research/live-initial-tests-20261013` | cleanup_review | ea625e7 clean retained source; independent review of new bindings/harness/oracle, read-only |
+| `.research/live-refusals-probe-20261013` | successor_restart_design | Probe and support callers only; qualification/live-refusals-probe, basea80710a |
+| `.research/live-refusals-harness-20261013` | recovery_review | New initial_live_refusals.py only; qualification/live-refusals-harness, basea80710a |
+| `.research/live-refusals-oracle-20261013` | cleanup_review | New independent initial_live_refusals_oracle.py only; qualification/live-refusals-oracle, basea80710a |
 
-Both new worktrees are clean atc65164f/2b51795; their sources are integrated. Older worktrees remain retained, including live-initial-native atd1bf847
-and live-initial-control at18bf166. Do not reset another contributor's work.
+The completed routes worktrees remain clean atc65164f/2b51795 and await private push.
+Older worktrees remain retained, including live-initial-native atd1bf847,
+live-initial-control at18bf166 and live-initial-tests atea625e7. Do not reset them.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
@@ -84,7 +86,7 @@ and Clippy only. Unchanged135 product tests were not repeated. Artifact audit ch
 1765 exact source files, two new/14 retained ELFs and1228 unchanged projections.
 BuildreceiptSHA f0612c0e08bce8670329ff5e5541215004b6acae15aea62d578912ed48c2270e.
 Use its protected `/runs/ingest-live-guards-ee24e86/out/artifacts` under the external
-laboratory base below; no Rust rebuild is needed for the current Python-only slice.
+laboratory base below; these artifacts qualified the completed Python-only routes slice.
 
 First guard engine915478c is FAIL and preserved. Its request fixture copied a
 retired acquisition job, causing an earlier authority refusal. Known probe exit101,
@@ -112,26 +114,40 @@ independent oracle check. Original SQL preservation remains captured-run evidenc
 without an audit restart. All three guard build/run wrappers are terminal; PG0 and
 client143 are stopped/PID0/noOOM, cleanup/missing/unrelated arrays empty.
 
+The four-route enginea80710ad3b4cb29e21e2519b45e568856ab5b0a0 is
+PASS_LIVE_INITIAL_ROUTES, finished2026-10-13T07:57:45.619507Z. Wrapper96721 and
+independent oracle replay76979 joined0. ResultSHA
+fd22ab48a65d13678193c300e082d67bb7e1d210e711ebc684055eaf3b2705bc.
+Fresh activated-history, activated-gap, activated-empty and prepared-history clones
+qualify39 full snapshots/84 rehashed perturbations. History/empty refuse activated
+receipts; gap refuses epoch2 before its SQL transaction. Prepared history reconstructs
+all four originals as the positive control. Default PG logs omit SQLSTATE, retained
+as null; exact error/context is captured. History poisoning is source-derived;
+empty emits actual Unavailable reuse and joined driver events.
+
+Independent AI custody audit found no issue:1769 exact Git blobs, two retained ELFs,
+both seeds'21paths and7/6 frozen artifacts, all1231 nonborrowed container projections,
+original/final SQL and inputs, four external finals, catalogs and exact backend
+absence preserved. PG0/client143/PID0/noOOM, cleanup/missing/unrelated arrays empty.
+No audit restart or additional engine run was made. All engine/build wrappers are
+terminal; the three agents currently perform source work only.
+
 ## Current next bounded action
 
-Commit the integrated loader bindings and evidence, then run `--ingest-live-routes` on fresh clones using the ee24e86 binaries.
-CASES: activated-history, activated-gap, activated-empty, prepared-history.
-Three copies use qualified2c142c6 successor-live-zero; one positive history control
-uses preparedac644 and additive31/32. Every case retains full72-table/native/input
-captures, actual fresh Control, catalog preservation and external backend absence.
-No new engine/build has been allocated for this slice.
+Commit and privately push the qualified routes result, then review and integrate
+the five-mode refusal probe/harness/oracle. Root adds a narrow compile/Clippy profile
+and bindings dispatch. Rust probe changes require an exact isolated build; unchanged
+135 product tests are not repeated. No next build/engine has been allocated.
 
-History/empty must refuse the activated receipt at their load boundary. Empty emits
-actual Unavailable reuse/driver events; history poisoning is source-derived. Gap
-rejects native epoch2 before its SQL transaction, so it is not receipt-veto evidence.
-Default PG logs omit SQLSTATE: retain null if absent, alongside exact error/context.
-Known process exit plus global backend absence precedes native reopening. Unknown
-outcomes must never reopen a possibly owned store. Independent root bindings review
-passes; harness review caught module migrations through816 in both seed ledgers.
-The corrected checks select core migration membership and preserve the entire ledger.
-Integrated AST/import/API/diff-check and independent full source review pass. Four
-artificial modes pass39snapshots/84perturbations; actual next-wave qualification
-is NOT_RUN. These pure checks remain separate evidence.
+The next fresh f12 clones exercise first-manifest mismatch after confirmed activation
+on actualControl8 with typed positive admission; renewal under different actualControl9;
+a genuine5s Ingest expiry while20s Control is live; and renewal COMMIT15 loss before
+forward/after complete. The manifest fixture uses original unbound request3 and
+rollback-only same-Control hooks, restored before admission. Expiry is selected at
+preparation, never retroactively edited. Actual wire counters, full72-table/native/
+input captures and exact backend absence must qualify outcomes; START counts stay
+source-derived. Keep failures and ambiguous custody; do not reopen possibly owned
+native state. This wave remains NOT_RUN.
 
 Subsequent acceptance still owes first-request manifest mismatch after committed
 activation, renewal refusal/actual expiry/COMMIT loss, real network provenance-off,
@@ -159,13 +175,13 @@ External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen original
 
 Borrowed PG root `relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608,
 container7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec, PG16.15.
-It was audited stopped0 after5fe7cc0. Reverify ownership/status before restart.
+It was audited stopped0 aftera80710a. Reverify ownership/status before restart.
 Six unrelated services remain protected: inspirehep-reindex db/mq/cache/es, ollama,
 tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
 volume, input, executable and `.research` artifact. Private Git pushes do not back up
 ignored laboratory data; Git cleanliness is never permission to delete it.
 
-Free space after5fe7cc0:67,037,315,072 bytes (about62.4GiB); remeasure before allocation.
+Free space aftera80710a:66,869,059,584 bytes (about62.3GiB); remeasure before allocation.
 Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
 currently unavailable; never lower that reserve. No large export is allocated.
 The one-off cleanup is RETIRED_VERIFIED:48,725 verified compiler intermediates removed

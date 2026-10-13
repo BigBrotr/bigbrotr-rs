@@ -298,8 +298,10 @@ One owner serializes exact identity decisions for each writable directory.
   identity becomes a writer. Connected5fe7cc0 adds14 actual-backend SQL cases and
   typed live renewal/admission,16full snapshots/35capture controls. The original
   failed request fixture915478c remains retained. First-request manifest mismatch,
-  refused/expired/lost renewal, activated-zero old loaders, real network provenance-off
-  and installed/general successor recovery remain open;
+  refused/expired/lost renewal, real network provenance-off and installed/general
+  successor recovery remain open. Activated-zero old-loader refusals and unactivated
+  positive history pass ata80710a (four processes/39snapshots/84controls); gap's
+  refusal is its epoch preflight, not the SQL receipt veto;
   the finite import setting does not close this step or M1.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained

@@ -521,6 +521,10 @@ and typed live scheduling renewal followed by signed admission. Its independent
 oracle checks16 complete snapshots and35 rehashed perturbations. The renewed
 Ingest deadline follows current Control; it can shorten the initial deadline.
 First-request manifest mismatch after committed activation, refused/expired/lost
-renewal, activated-zero old-loader refusals and installed/general restart remain
-unqualified. Detailed identities and exclusions are in the existing
+renewal and installed/general restart remain unqualified. Connecteda80710a
+qualifies three fresh-process activated-zero refusals plus an unactivated positive
+history control (39full snapshots/84capture perturbations). History and empty
+retirement reach the named activation veto; gap rejects native epoch2 before SQL.
+The default server log omits SQLSTATE, recorded as null. All target/original state
+remains intact; this grants no writer adoption or general activated-owner recovery. Detailed identities and exclusions are in the existing
 [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).
