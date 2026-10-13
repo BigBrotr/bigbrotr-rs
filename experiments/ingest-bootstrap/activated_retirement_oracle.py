@@ -172,6 +172,7 @@ def target_rows(rows):
 def retire_targets(wanted, observed, known, current, clock, *, released):
     """Apply only the independently expected twelve-row terminal transaction.
 
+    Observed is the complete after snapshot, including the current Control role.
     Callers first validate the actual current Control lifecycle. A lost COMMIT
     response has no release timestamp; its capture clock bounds the same effect.
     """
@@ -183,6 +184,7 @@ def retire_targets(wanted, observed, known, current, clock, *, released):
     assert type(at) is int
     fresh_xmin(xid, wanted)
     assert xid != current['xmin']
+    assert xid != only(observed['role_instances'], role_instance_id=current['role_instance_id'])['xmin']
     upper = current['released_at_us'] if released else clock['after_us']
     assert max(known['source']['closed_at_us'], current['lease_expires_at_us'] - 20_000_000) <= at <= upper
     assert at < current['lease_expires_at_us']
@@ -218,7 +220,7 @@ def verify(before, after, native_before, native_after, inputs_before, inputs_aft
     wanted = copy.deepcopy(before)
     owner, role, producer, domains = target_rows(wanted)
     if not retry:
-        at, _ = retire_targets(wanted, projected, known, current, server_window, released=True)
+        at, _ = retire_targets(wanted, after, known, current, server_window, released=True)
     else:
         assert owner['state'] == 'released' and producer['state'] == 'retired'
         at = producer['retired_at_us']
