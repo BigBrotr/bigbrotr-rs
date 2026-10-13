@@ -520,11 +520,66 @@ qualifies14 rollback-only SQL discriminators on the actual preparing backend
 and typed live scheduling renewal followed by signed admission. Its independent
 oracle checks16 complete snapshots and35 rehashed perturbations. The renewed
 Ingest deadline follows current Control; it can shorten the initial deadline.
-First-request manifest mismatch after committed activation, refused/expired/lost
-renewal and installed/general restart remain unqualified. Connecteda80710a
+Connected983342e now qualifies the first-manifest fence after committed activation,
+renewal under a different genuine Control, actual Ingest expiry with live Control,
+and renewal COMMIT15 loss before/after server completion: five processes,67 full
+snapshots and108 rehashed capture controls. Both manifest attempts reach the named
+23514 veto on actual Control8; a subsequent typed first append succeeds. Control9
+gets InvalidInput before an operation and remains usable. Expiry gets Backend and
+poisons Control; the observed SQLSTATE remains null in default server logs. Both
+COMMIT-loss cases return CommitUnknown and poison Control; only after-complete
+persists the new scheduling deadline. Immutable receipts and all original bytes
+remain unchanged. Installed/general restart remains unqualified. Connecteda80710a
 qualifies three fresh-process activated-zero refusals plus an unactivated positive
 history control (39full snapshots/84capture perturbations). History and empty
 retirement reach the named activation veto; gap rejects native epoch2 before SQL.
 The default server log omits SQLSTATE, recorded as null. All target/original state
-remains intact; this grants no writer adoption or general activated-owner recovery. Detailed identities and exclusions are in the existing
+remains intact; this grants no writer adoption or general activated-owner recovery.
+Detailed identities and exclusions are in the existing
 [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).
+
+
+### Installed live initial successor (under implementation)
+
+The selected next consumer is explicit `serve --activate-initial-successor`, with
+local `control,ingest` and optional `sync`. It is mutually exclusive with fresh
+`--initialize-ingest`. The caller must first stop and fully retire the signed
+initial predecessor. Configuration and durable state are the only startup inputs;
+no supplied target identity, in-memory historical plan or implicit retirement is
+accepted. Existing epoch2, missing original proof and competing native ownership
+refuse. Repeated lifetimes and activated-owner recovery remain subsequent work.
+
+The existing supervised blocking owner acquires exclusive native custody before
+protected connection preparation. It loads the historical registration, positively
+replays each original request, mints a local candidate and prepares/activates it
+under one actual Control. A fenced basis supplies current accepted policy, server
+UTC and the actual Control deadline without weakening fresh initialization's empty
+source requirement. The active writer, candidate or retained native recovery must
+occupy the native-first custody field across every fallible post-claim phase.
+Cancellation and failed/unknown delivery preserve state; no writer adoption follows.
+
+Share the installed command/Sync loop and validated native authority kernel.
+The live branch uses activation policy, current accepted request limit, producer2
+and request1, including actual Control/Ingest renewal. Historical registration
+identifies retained data; it is not the new policy snapshot. Opaque live visibility,
+observation and certification operations expose no mutable native store. Current
+source/job authorization, bounded decoding, receive-clock evidence and signed
+admission keep their existing semantics. Successor dictionaries use fresh domains;
+provenance-off still retains local receive evidence while suppressing new witness
+and provenance effects. Original event bytes, first receive and existing provenance
+must survive resend unchanged.
+
+Preclaim resource admission must cover retained activation metadata (128KiB data
+and8192 native bytes), native ownership, Control/driver, retained inputs, positive
+replay and future Sync overlap. Keep socket/native close before Control release
+and actual driver/grant join before terminal success. The initial Archive consumer
+still assumes epoch1, its topology and frontier0; selecting Archive with this mode
+must refuse before startup until a separate lifetime-aware consumer is qualified.
+The deployment may declare its required Archive counterpart without selecting it.
+
+Acceptance requires an actual installed process and authenticated finite-job path,
+a real controlled WebSocket carrying a predecessor resend and a distinct signed
+event, renewal beyond the original target deadline, complete SQL/native/input
+preservation and shutdown. Compare provenance-off with provenance-on; include the
+three startup refusals above and affected original-initial regressions. This finite
+Sync consumer does not claim coverage, ACK/GC, Archive restart or M1 completion.

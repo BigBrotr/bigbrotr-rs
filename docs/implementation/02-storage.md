@@ -297,9 +297,13 @@ One owner serializes exact identity decisions for each writable directory.
   retry/alternate signature and both activation COMMIT13 loss boundaries. No observed
   identity becomes a writer. Connected5fe7cc0 adds14 actual-backend SQL cases and
   typed live renewal/admission,16full snapshots/35capture controls. The original
-  failed request fixture915478c remains retained. First-request manifest mismatch,
-  refused/expired/lost renewal, real network provenance-off and installed/general
-  successor recovery remain open. Activated-zero old-loader refusals and unactivated
+  failed request fixture915478c remains retained. Connected983342e qualifies the
+  first-manifest fence and four renewal refusal/expiry/COMMIT-loss cases:
+  67full snapshots/108capture controls, with independent artifact/custody audit.
+  Real network provenance-off and installed/general successor recovery remain open.
+  Next, the explicit installed live-successor consumer shares finite Sync under
+  current activation policy and opaque native authority; Archive selection refuses
+  until its lifetime-specific assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
   refusal is its epoch preflight, not the SQL receipt veto;
   the finite import setting does not close this step or M1.

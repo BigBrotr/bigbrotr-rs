@@ -40875,7 +40875,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Commit reviewed refusal oracle/build evidence; run five fresh f12 clones with --ingest-live-refusals using protected4eef3c5 artifacts. No Rust rebuild needed; product unchanged. Preserve all failure/unknown custody and verify complete captures.",
+    "next_action": "Implement explicit installed1to2 successor Serve with shared finite Sync, opaque live read/basis adapters, preclaim resource overlap and native-first custody; first real provenance-off/on signed socket comparison. Archive not selected until its lifetime-specific recovery assumptions are replaced. No next build/engine allocated.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -42451,7 +42451,7 @@
       }
     ],
     "live_refusals": {
-      "status": "REVIEWED_BUILD_PASS_READY_FOR_FIVE_CASE_ENGINE",
+      "status": "PASS_FIVE_ACTUAL_CASES_AND_INDEPENDENT_AUDIT",
       "base": "a80710ad3b4cb29e21e2519b45e568856ab5b0a0",
       "probe_owner": "successor_restart_design",
       "harness_owner": "recovery_review",
@@ -42461,7 +42461,7 @@
       "probe_worktree": ".research/live-refusals-probe-20261013",
       "harness_worktree": ".research/live-refusals-harness-20261013",
       "product_changes": "No product/native/schema/build dependency changes;19 doc/experiment/example paths sincec640b2f. Exact probe compile/Clippy4eef3c5 PASS; unchanged135 product tests retained.",
-      "qualification": "NOT_RUN",
+      "qualification": "PASS_LIVE_INITIAL_REFUSALS",
       "oracle_worktree": ".research/live-refusals-oracle-20261013",
       "probe_commit": "ddbb838fad15cbc2dad2a830a7b6684accba3feb",
       "probe_integrated": "7f1a4e9",
@@ -42558,7 +42558,255 @@
         "perturbations": 108,
         "root_independent_replay": "PASS; wrapper24971 joined0; two old-accepted/new-rejected complete counterexamples independently replayed",
         "scope": "Artificial captures only; no product/runtime qualification"
+      },
+      "engine_source": "983342ea34c8c82fe8fba3ef58b79c85b942615a"
+    },
+    "refusal_engines": [
+      {
+        "source": "983342ea34c8c82fe8fba3ef58b79c85b942615a",
+        "status": "PASS_LIVE_INITIAL_REFUSALS",
+        "owner": "e270840b123b233cad2b53f2546ae114",
+        "label": "org.bigbrotr.acquisition-binding",
+        "started_at": "2026-10-13T08:23:58.704710+00:00",
+        "finished_at": "2026-10-13T08:24:36.308924+00:00",
+        "client": {
+          "id": "22b51d771050d5e1f0a80e86f9dd9573dfc4be7099c1b531526fb1f0e2b37a63",
+          "name": "bigbrotr-acquisition-binding-983342e"
+        },
+        "databases": [
+          "bb_scope_bind_983342e_successor_live_manifest",
+          "bb_scope_bind_983342e_successor_live_renew_control",
+          "bb_scope_bind_983342e_successor_live_renew_expired",
+          "bb_scope_bind_983342e_successor_live_renew_before",
+          "bb_scope_bind_983342e_successor_live_renew_after"
+        ],
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "free_bytes_before": 66566664192,
+        "free_bytes_after": 66425847808,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "not_run": [
+          "real network provenance and installed successor consumers",
+          "native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1",
+          "capacity/load/aged-state and arm64/release"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-refusals-engine-983342e",
+        "tree": "b7aa11f8c6a6468f2fe5178b276531ed5d7d8e08",
+        "wrapper": 89024,
+        "exit_code": 0,
+        "result_sha256": "6ae37ae32bb46bc386fdcd4a22db9a5a4d47152c1b3234c7a12f4eab64700d73",
+        "postgres_log_sha256": "78422cfebf1bc4e90260ae8998171a4f3edcdd3d56d845db506511ecc1866348",
+        "build_source": "4eef3c5a130b058fa361cae65c99ab61d42d26c2",
+        "snapshots": 67,
+        "capture_perturbations": 108,
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "inputs": true,
+          "artifacts": true
+        },
+        "cases": [
+          {
+            "mode": "successor-live-manifest",
+            "snapshots": 14,
+            "sql_cases": 2,
+            "activation_transaction": "27116",
+            "activated_at_us": 1791879843822388,
+            "final_native_rows": 69,
+            "final_native_sequence": 84,
+            "final_inputs": 7,
+            "original_requests_preserved": 4,
+            "new_requests": 3,
+            "current_ingest_deadline_us": 1791879903756882,
+            "renewal_unknown": false,
+            "renewal_committed": false,
+            "backend_absent": [
+              {
+                "backend_start": "2026-10-13T08:24:03.684764+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_983342e_successor_live_manifest",
+                "event": "successor-backend",
+                "pid": 312,
+                "present": false,
+                "stage": "initial"
+              }
+            ],
+            "status": "PASS",
+            "capture_perturbations": 28,
+            "seconds": 3.208419102244079,
+            "diagnostic": null
+          },
+          {
+            "mode": "successor-live-renew-control",
+            "snapshots": 16,
+            "sql_cases": 0,
+            "activation_transaction": "27149",
+            "activated_at_us": 1791879852162598,
+            "final_native_rows": 52,
+            "final_native_sequence": 62,
+            "final_inputs": 4,
+            "original_requests_preserved": 4,
+            "new_requests": 0,
+            "current_ingest_deadline_us": 1791879912097573,
+            "renewal_unknown": false,
+            "renewal_committed": false,
+            "backend_absent": [
+              {
+                "backend_start": "2026-10-13T08:24:12.022848+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_983342e_successor_live_renew_control",
+                "event": "successor-backend",
+                "pid": 835,
+                "present": false,
+                "stage": "initial"
+              },
+              {
+                "backend_start": "2026-10-13T08:24:12.238697+00:00",
+                "control_epoch": 9,
+                "database": "bb_scope_bind_983342e_successor_live_renew_control",
+                "event": "successor-backend",
+                "pid": 837,
+                "present": false,
+                "stage": "renewal-fresh"
+              }
+            ],
+            "status": "PASS",
+            "capture_perturbations": 20,
+            "seconds": 0.47479180339723825,
+            "diagnostic": null
+          },
+          {
+            "mode": "successor-live-renew-expired",
+            "snapshots": 13,
+            "sql_cases": 0,
+            "activation_transaction": "27174",
+            "activated_at_us": 1791879856773680,
+            "final_native_rows": 52,
+            "final_native_sequence": 62,
+            "final_inputs": 4,
+            "original_requests_preserved": 4,
+            "new_requests": 0,
+            "current_ingest_deadline_us": 1791879861706137,
+            "renewal_unknown": false,
+            "renewal_committed": false,
+            "backend_absent": [
+              {
+                "backend_start": "2026-10-13T08:24:16.631805+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_983342e_successor_live_renew_expired",
+                "event": "successor-backend",
+                "pid": 1126,
+                "present": false,
+                "stage": "initial"
+              }
+            ],
+            "status": "PASS",
+            "capture_perturbations": 20,
+            "seconds": 5.314414639025927,
+            "diagnostic": {
+              "backend": {
+                "pid": 1126,
+                "backend_start": "2026-10-13T08:24:16.631805+00:00",
+                "database": "bb_scope_bind_983342e_successor_live_renew_expired",
+                "control_epoch": 8
+              },
+              "since": "2026-10-13T08:24:16.499132+00:00",
+              "until": "2026-10-13T08:24:21.899216+00:00",
+              "returncode": 0,
+              "observed_sqlstate": null,
+              "errors": [
+                "2026-10-13T08:24:21.745190114Z 2026-10-13 08:24:21.745 UTC [1126] ERROR:  active initial writer scheduling authority expired"
+              ],
+              "contexts": [
+                "2026-10-13T08:24:21.745216193Z 2026-10-13 08:24:21.745 UTC [1126] CONTEXT:  PL/pgSQL function control.require_active_initial_writer(bytea) line 75 at RAISE"
+              ]
+            }
+          },
+          {
+            "mode": "successor-live-renew-before",
+            "snapshots": 12,
+            "sql_cases": 0,
+            "activation_transaction": "27197",
+            "activated_at_us": 1791879866397160,
+            "final_native_rows": 52,
+            "final_native_sequence": 62,
+            "final_inputs": 4,
+            "original_requests_preserved": 4,
+            "new_requests": 0,
+            "current_ingest_deadline_us": 1791879926310202,
+            "renewal_unknown": true,
+            "renewal_committed": false,
+            "backend_absent": [
+              {
+                "backend_start": "2026-10-13T08:24:26.203112+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_983342e_successor_live_renew_before",
+                "event": "successor-backend",
+                "pid": 1458,
+                "present": false,
+                "stage": "initial"
+              }
+            ],
+            "status": "PASS",
+            "capture_perturbations": 20,
+            "seconds": 0.546797001734376,
+            "diagnostic": null,
+            "wire": {
+              "commit_number": 15,
+              "mode": "before-forward",
+              "commits_seen": 15,
+              "commits_forwarded": 14,
+              "server_commit_complete": 14,
+              "client_commit_complete": 14,
+              "faults": 1
+            }
+          },
+          {
+            "mode": "successor-live-renew-after",
+            "snapshots": 12,
+            "sql_cases": 0,
+            "activation_transaction": "27220",
+            "activated_at_us": 1791879871336642,
+            "final_native_rows": 52,
+            "final_native_sequence": 62,
+            "final_inputs": 4,
+            "original_requests_preserved": 4,
+            "new_requests": 0,
+            "current_ingest_deadline_us": 1791879891362924,
+            "renewal_unknown": true,
+            "renewal_committed": true,
+            "backend_absent": [
+              {
+                "backend_start": "2026-10-13T08:24:31.1359+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_983342e_successor_live_renew_after",
+                "event": "successor-backend",
+                "pid": 1762,
+                "present": false,
+                "stage": "initial"
+              }
+            ],
+            "status": "PASS",
+            "capture_perturbations": 20,
+            "seconds": 0.5700596338137984,
+            "diagnostic": null,
+            "wire": {
+              "commit_number": 15,
+              "mode": "after-complete",
+              "commits_seen": 15,
+              "commits_forwarded": 15,
+              "server_commit_complete": 15,
+              "client_commit_complete": 14,
+              "faults": 1
+            }
+          }
+        ],
+        "audit": "Root independently replayed67 full snapshots/108 rehashed perturbations and matched raw stdout/external finals; wrapper50688 joined0. Independent AI harness/artifact/custody audit PASS:1772 exact Git files;1771 buildsource/archive/manifest and18 ELF hashes preserved; only4 doc/oracle reuse differences, compiled inputs identical. All1234 nonborrowed projections unchanged, PG0/client143/PID0/noOOM. Frozen f12 exact21paths302273regularbytes/4 frozen artifacts/4 inputs/source-client owner preserved. Five final72SQL/native/input captures and catalogs1045triggers/721constraints/14functions restored; six exact backend absences/globalzero. Audit author wrote oracle; root replay supplies independent oracle check. No auditor SQL/restart/build/engine; original SQL preservation remains captured-run evidence.",
+        "observed_boundaries": "Actual Control8 manifest trigger rejects two wrong-first-manifest rows with named23514 in outer27119; original catalog restored then typed admission reaches69rows/seq84/7inputs. Real Control9 renewal InvalidInput/commit_started=false precedes actual successful refresh; native writer retained until close. Five-second target expiry observed while refreshed20s Control lives, renewal Backend/false and poisoned session; named SQL guard, observed SQLSTATE null. Both renewal COMMIT15 losses return CommitUnknown/true/poisoned Control/failed joined driver. Only after-complete changes target deadline1791879931246517to1791879891362924 and xmin27218to27223; all immutable receipts/native52seq62/4inputs unchanged. START counts source-derived."
       }
-    }
+    ]
   }
 }
