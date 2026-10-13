@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T14:15Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T14:34Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption. The selected M1–M5 product remains INCOMPLETE. This checkpoint is
 navigation; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -13,8 +13,8 @@ is authorized. Preserve unpublished Cargo packages, read-only legacy repositorie
 unrelated workloads and all ignored/external artifacts. Latest resumption overrides
 the earlier credit-exhaustion pause; no new resume confirmation is needed.
 
-Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD and
-verified private push25ed080559ccc7ea1ea62e27f3863b4dc68b54e6. Main remains
+Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD 284cb183ed2be6853d2afa09818b585cc55f7fa4. Last verified private
+push25ed080559ccc7ea1ea62e27f3863b4dc68b54e6; later commits await push. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Fixturec868 and fault5c2 branches also
 verified pushed. No merge/rebase/cherry-pick pending. Root owns this checkpoint
 edit and alone integrates/builds/executes; agents use separate writable worktrees.
@@ -29,37 +29,37 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: execute one installedHTTPschema36 ordinary-grant journey usingec6.
-HTTP832+05eb integrateddce90b8/34ec51c; fullrootnewdriver/oracle/sharedcapture
-review and independentAST equivalence pass; five artificialsnapshots/24controls.
-New raw/wrapper verification artifacts have distinct names. SQL70d908d passed
-all14cases (7444joined0) and root36397 replay37transactionstates/28fullbefore-after
-states/21controls. Its artifactaudit is ongoing; Dockerfreeze14:18:12Z permitsHTTP.
-Prior9e74 remainsFAIL; retrospective11 and artifactcustodyaudit closed, threecases
-were NOT_RUN there. Countprobe0ec committed, rootreview/build next afterHTTP.
+Next: finish review and integrate the genuine64/65/combined-bound fixtures, wire
+the existing runner and execute with exact build5e157e8. Three finite seeds and
+six CLI calls distinguish64 success/retry,65 refusal, a true source-close fence,
+retained1+selected64 refusal, and unsupported-last full-batch rollback.
+Build50208 and audit12817 joined0: compile/Clippy,1823 source files,68 retained
+ELFs and1279 unchanged prior container projections. Product inputs remain exactec6;
+47 entrypoint/schema/migration tests and45 native tests are reused, not rerun.
 
-Current agents:
+HTTP498a9e2 passed one actual Serve journey;95341 joined0, root49288 replay
+five snapshots/72 tables/24 controls PASS. Author custody audit passes with an
+explicit receipt limit: first schema32 apply response was overwritten by the
+schema36 context. Full32 row captures/reapply and both33–36 responses remain.
+No response was reconstructed; future filename correction70d682b integrated284cb18.
+SQL70d all14 raw cases and root37 states/21 controls now have a completed custody
+audit. Earlier9e74 stays FAIL with three cases NOT_RUN in that run.
+
+Current agents (no independent build/engine authority):
 
 - `cleanup_review`: `.research/activated-recovery-qualification-20261013`, branch
-  `qualification/activated-acquisition-claims-fixtures`; owns only new
-  `activated_acquisition_claims.py` and `_oracle.py`. Draft pure15seed snapshots,
-  four installed states/44 rejected controls and four custody mocks pass. Found
-  migration receipt filename collision fixed with a distinct abandonment label;
-  explicit gap-before-Control-deadline bound added. Commit03f1f6a integratedd7d5fe5. Now designs genuine64/65/fullbatch fixtures
-  in a new branch; no engine authority.
-- `recovery_review`: `.research/activated-recovery-postgres-20261013`, branch
-  `qualification/activated-acquisition-guards`; owns only new guards driver/oracle.
-  Fourteen artificial transcripts/37 states/21 controls pass; three capture mocks pass; cb1 integratedc517b22 andcorrected70d908d14SQLPASS. Genuine historical queued claim is preserved; each raw
-  transaction creates a new actual-backend Control and rolls back/refuses.
-  HTTP runner is now authorized: two new files and a narrow extraction of the
-  existing single-case capture owner; actual HTTP qualification remains NOT_RUN.
+  `qualification/activated-acquisition-limits-fixtures`; owns only the new limits
+  driver/oracle; artificial contexts, custody mocks and independent API review.
+- `recovery_review`: `.research/activated-recovery-postgres-20261013`; HTTP branch
+  committed, both latest custody audits complete. Preparing a bounded design for
+  an installed final-job-wait SIGTERM driver/oracle.
 - `successor_restart_design`: `.research/activated-recovery-native-20261013`;
-  fault5c2 committed/preserved. Both artifact audits complete. Now authorized to implement bounded genuine64/65 typed-claim probe modes
-  in example helper files; no build/engine authority.
+  probe0ec committed and integrated999d329. Reviews limits fixture API, then designs
+  the actual post-wait UTC-expiry finite probe with continuously owned authority.
 
 Remaining qualification must distinguish internal typed calls from management
-HTTP. For the ordinary HTTP grant case, revoke recovery-only privileges only
-after legitimate activation completes and before starting the HTTP client.
+HTTP. The ordinary HTTP grant case passed with recovery-only privileges removed
+after legitimate activation and before starting the HTTP client.
 Current two-job seed and raw guards do not establish the combined64 boundary or
 full-batch refusal; genuine-count campaign is authorized. Final-job-wait SIGTERM
 and actual post-wait Control UTC expiry also remain NOT_RUN, with expiry requiring
@@ -131,9 +131,9 @@ Root37928 replay15seed snapshots/four installed states/44controls PASS. Artifact
 
 ## Processes, resources and maintenance
 
-No engine/build active at this observation. All listed root wrappers joined0;
-latest engine PG0/client143 stopped with PID0/noOOM. Two agents prepare separate
-fixture sources; native agent reviews remaining gates. Preserve every failed audit,
+No engine/build active at this observation. Latest build50208 and audit12817
+joined0; its two owned containers exited0/PID0/noOOM. Latest HTTP engine PG0/client143
+was frozen stopped with PID0/noOOM. Three agents prepare separate fixture sources. Preserve every failed audit,
 source snapshot, clone, process receipt and `.research` artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`; `/runs/` above is
@@ -149,7 +149,7 @@ tgdataset-mongo. Preserve all worktrees, containers, volumes, datasets and execu
 artifacts. Private Git does not back up ignored labs; unavailable Mac captures
 remain unavailable. Recovery details: [Tux audit](../research/tux-resumption-20261012.md).
 
-Free space at latest engine completion:59,076,907,008 bytes; remeasure before
+Free space at this observation:55,605,403,648 bytes; remeasure before
 allocation. Small engines require2GiB, native builds12GiB. Larger exports require
 64GiB+577MiB, currently unavailable; never lower that reserve. Five exports under
 256MiB and the other existing M1 release gates remain NOT_RUN.

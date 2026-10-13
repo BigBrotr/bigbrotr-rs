@@ -46549,7 +46549,7 @@
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
   },
   "implementation_activated_acquisition_abandonment_20261013": {
-    "status": "PASS_FIRST_AND_COMMIT_WAVES_REMAINING_QUALIFICATION_OPEN",
+    "status": "PARTIAL_QUALIFICATION_PASS_LIMITS_AND_FINAL_WAIT_GATES_OPEN",
     "observed_at": "2026-10-13T14:20:43.686291+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
@@ -46738,7 +46738,6 @@
       "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
     },
     "remaining_gates": [
-      "ordinaryschema36HTTP withoutrecoveryprivileges",
       "combined retained+selected<=64 and fullbatchrefusal beforewrites",
       "SIGTERM duringfinal selectedjoblockwait",
       "actualControlUTCexpiry acrossfinaljobwait (requiresfinite pre-agedlease proof; CLIlocaltimeoutisnotexpiry)"
@@ -46779,7 +46778,7 @@
       "source": "cb1ed4ee75400f1917a23ba7f9ee2a38b11105c8",
       "integrated": "c517b22",
       "checks": "Root complete source/helper review and14renderedSQLpins match;14artificialcases/37states/21controls and3capturemocks PASS",
-      "status": "CORRECTED14CASE_ENGINE_ROOT_REPLAY_PASS_CUSTODY_PENDING",
+      "status": "CORRECTED_14_CASE_ENGINE_ROOT_REPLAY_AND_CUSTODY_PASS",
       "manifest_sha256": "1ad605bb1ef51f39671bea501b2239887ea695b09281c9c67ef95304de03328c"
     },
     "sql_first_failure": {
@@ -46843,7 +46842,13 @@
         "full_before_after_states": 28,
         "controls": 21
       },
-      "custody": "Read-only audit ongoing; frozenDocker14:18:12Z,1278containers; rootcanadvanceHTTP"
+      "custody": "PASS: 1821 engine files, 1812 build files, 66 retained ELFs, 1276 unchanged nonborrowed container projections, all 14 SQL captures and 37 states, grants and original939 preserved.",
+      "artifact_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-guards-engine-70d908d/recovery-review-audit.json",
+        "sha256": "1f8f0dee0968bc64cf38f66a625e215c1042dbd47396e2227c586f696e183b1c",
+        "status": "PASS_READ_ONLY_AUTHOR_ARTIFACT_CUSTODY_AUDIT",
+        "scope": "Author custody audit; root independent semantic replay separately recorded. No live SQL or native opens."
+      }
     },
     "http_fixture": {
       "source": "832e6d89fcd510fd875a1c95adb2fe563eea29d6",
@@ -46853,9 +46858,92 @@
         "34ec51c"
       ],
       "checks": "Rootfullnewdrivers/oracleandsharedcapture review; independentrootAST oldbody/helpers unchangedapartfromoptionalafteractivationhook+returncontext;5artificialHTTPsnapshots/24controlsPASS",
-      "status": "ENGINE_NOT_RUN",
+      "status": "ACTUAL_HTTP_AND_ROOT_REPLAY_PASS_WITH_RECEIPT_LIMIT",
       "manifest_sha256": "032d36373ee347813c4fccc0d1c436d8d4c16387766bd976b03f5d94ed7d67d9",
-      "scope": "ActualServe activation36 thenrecoveryACLremoval beforeHTTPlogin/jobacceptance+queuedclaim/2requests/renewal/logout/quietSIGTERM; exactACLrestore"
+      "scope": "ActualServe activation36 thenrecoveryACLremoval beforeHTTPlogin/jobacceptance+queuedclaim/2requests/renewal/logout/quietSIGTERM; exactACLrestore",
+      "future_receipt_fix": {
+        "source": "70d682b7a799d2976d107cda6cab078b50c03846",
+        "integrated": "284cb18",
+        "scope": "Only two migration36 artifact path occurrences changed; no product or engine rerun."
+      }
+    },
+    "http_wave": {
+      "source": "498a9e2c8b5bee4c00a219f0d9c1bb3e8affecd8",
+      "status": "PASS_ACTIVATED_ACQUISITION_HTTP_LEGACY_GRANTS",
+      "owner": "25346d7e211d7e32349b5042fca2298b",
+      "client": {
+        "id": "1587c358356a9d8ea140d15b6971a9b3987c1d2ae25177e46c03e3822e6eb34c",
+        "name": "bigbrotr-acquisition-binding-498a9e2"
+      },
+      "started_at": "2026-10-13T14:20:58.595059+00:00",
+      "finished_at": "2026-10-13T14:21:19.239649+00:00",
+      "free_bytes_after": 58460684288,
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-http-engine-498a9e2",
+      "wrapper": "95341 joined0",
+      "result": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-http-engine-498a9e2/bindings/result.json",
+        "sha256": "8c58cee93bfce633ead5fdf2419a3db33bd7f8315b6e7a3d066cfa88be006932"
+      },
+      "cli_invocations": 1,
+      "root_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-http-engine-498a9e2/root-independent-replay.json",
+        "sha256": "8056089664538596d57feabc6c4e0574c686d0b9e7be02db4a49572d92447385",
+        "wrapper": "49288 joined0",
+        "snapshots": 5,
+        "tables": 72,
+        "controls": 24
+      },
+      "artifact_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-http-engine-498a9e2/recovery-review-audit.json",
+        "sha256": "9cb044157551c13d3f210e562e1da347e398f1540db2ae66a8775245fc8ada2d",
+        "status": "PASS_AUTHOR_CUSTODY_WITH_RECORDED_RECEIPT_LIMIT"
+      },
+      "semantics": "Actual Serve activation under schema36, recovery privileges removed before login, HTTP accepted and genuinely claimed job, two native requests, relay new/old/new frames, renewal beyond initial TTL, logout and quiet SIGTERM. Native49/58 to70/84; four to six input files. All SQL state and exact grant restoration checked. Job completion and per-resend certification remain unqualified.",
+      "evidence_boundary": "Original first schema32 apply response bytes unavailable: overwritten in captured run. Full32 ledger before/after and reapply response retained; both33-36 responses retained. No reconstructed response or new engine run.",
+      "custody": "Stopped PG0/client143, PID0/noOOM; 1277 nonborrowed projections unchanged at frozen observation14:28:38Z. Original f12 and previous SQL70d preserved."
+    },
+    "limits_probe": {
+      "source": "0ec97f5fdc2a482ebfb7df03525d23f51e0437af",
+      "integrated": "999d329",
+      "checks": "Root complete affected run bodies and new helpers reviewed; author static checks. Build below compiles and runs Clippy; actual 64/65 seed execution NOT_RUN.",
+      "scope": "Genuine typed acceptance and claim under actual Control8, one receipt at a time, bounded64/65 count, constant snapshot count, failure-aware native close and driver join with backend exclusion."
+    },
+    "limits_build": {
+      "source": "5e157e82d51e097eb12b363972cd7b9e5629f106",
+      "tree": "3414a126b88e5b117f58f02da8656b57d65029af",
+      "owner": "82274a6e8524d1d41babfab1c84877ff",
+      "state": "stopped-retained",
+      "started_at": "2026-10-13T14:30:40.602517+00:00",
+      "finished_at": "2026-10-13T14:32:16.204634+00:00",
+      "free_bytes_after": 55608287232,
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "5c629e159dea69edf62ec6695aea008ef545e289ba81ddd9631475ea3a01118d"
+        },
+        {
+          "name": "native",
+          "id": "6d4cf67534ca8adcbbfb7dad3fc952ec24d876a38121fa9e0e76b1e45deeb7ec"
+        }
+      ],
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-5e157e8",
+      "status": "PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY",
+      "wrapper": "50208 joined0",
+      "receipt": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-5e157e8/out/artifacts/build-result.json",
+        "sha256": "3b7c03a5170d93480a8f67f54d7421a79772a11163be510f974339370c4f8980"
+      },
+      "binary_sha256": "8488f01eda9e7ef36efbf237f795b0e013182535306f45018223dbd3a29fdea7",
+      "probe_sha256": "7ec91b0b1c0ae642182149441ca3f965c20f43536987be23a59bb775ffd02da3",
+      "audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-5e157e8/root-build-audit.json",
+        "sha256": "9ce62379aad03407307d9a6c9e0effa18050ceceabafb04eb2fd3ebd4b2427f7",
+        "wrapper": "12817 joined0",
+        "files": 1823,
+        "protected_elfs": 68,
+        "unchanged_containers": 1279
+      },
+      "checks": "Compile and Clippy PASS with Rust1.98.1/Clang14; no repeated tests. Exact product inputs unchanged from ec6; retained47 entrypoint/schema/migration and9dbc45 native tests reused. Connected count qualification NOT_RUN."
     }
   }
 }
