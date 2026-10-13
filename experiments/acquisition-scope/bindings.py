@@ -619,7 +619,11 @@ def rows(db):
     require(len(names) in (64, 66, 67, 68, 69, 70, 71, 72) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
-    return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
+    # This finite observer can otherwise launch parallel aggregate workers for
+    # its many-table UNION and exhaust the retained PG container's 64MiB /dev/shm.
+    # Scope the bound to this capture connection; product sessions are unchanged.
+    return json.loads(lab.sql(pg, db, 'SET max_parallel_workers_per_gather=0; '
+        'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
 
 
 def physical(db):
