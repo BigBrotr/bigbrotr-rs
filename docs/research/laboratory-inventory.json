@@ -43609,8 +43609,8 @@
     }
   },
   "implementation_activated_initial_recovery_20261013": {
-    "status": "INSTALLED_FAILED_ADDITIVE_CORRECTION_IMPLEMENTED",
-    "observed_at": "2026-10-13T10:35:18.170347+00:00",
+    "status": "PASS_FIRST_EIGHT_INSTALLED_RECOVERY_FAULTS_PENDING",
+    "observed_at": "2026-10-13T10:44:25.948065+00:00",
     "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
@@ -43632,28 +43632,28 @@
         "owner": "recovery_review",
         "base": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
         "scope": "Independent actual installed COMMITloss oracle plus completed additive34 correction",
-        "state": "dirty source-only work",
-        "source": "b9a245d941d6955db0655e0e19ef454a6cc76de0",
-        "integrated": null,
+        "state": "committed clean; independent first8 artifact/custody audit ongoing",
+        "source": "a1a5379b01d33e13062bb81c205348d9b3059ad1",
+        "integrated": "482553e",
         "previous_branch": "implementation/activated-recovery-postgres"
       },
       {
         "root": ".research/activated-recovery-qualification-20261013",
-        "branch": "qualification/activated-recovery-faults",
+        "branch": "qualification/activated-recovery-source-zero-harness",
         "owner": "cleanup_review",
-        "base": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
-        "scope": "Four installed COMMITloss schedules and fresh recovery driver",
-        "state": "committed clean; no builds/engines",
-        "source": "6b03f24146b5b8e4a418cc5c07685451704ab30d",
+        "base": "2a018eaf0b113835339cc547ea3858036e3aa3fd",
+        "scope": "Independent real rejected/sourcezero seed and installed first/retry fixture",
+        "state": "sourcezero harness/oracle inprogress; faultdriver6b03 retained/integrateddbf035b",
+        "source": "2a018eaf0b113835339cc547ea3858036e3aa3fd",
         "integrated": null,
-        "previous_branch": "qualification/activated-recovery"
+        "previous_branch": "qualification/activated-recovery-faults"
       }
     ],
-    "root_work": "Corrected schema34 first-wave fixture, scoped compile/profile, CLI help and currentdocs pendingcommit. Initialsource contracts/native/storage release timeline reviewed; no native product change afterfaa.",
-    "resources": "All current wrappers terminal. Failed engine PG0/client143 stopped/PID0/noOOM; preserve newfailed and priorbuilds/ELFs/seeds/captures. No engine/build active.",
-    "checks": "faa147tests+Clippy PASS; first actualinstalledFAIL with additive34 fix implemented; corrected build/SQL/installed stillNOT_RUN",
-    "next": "Commit root schema34 fixture/profile/docs; exact ingest-activated-installed build then corrected first8 engine",
-    "free_bytes_observed": 64295211008,
+    "root_work": "First8 qualified; current fault dispatcher/backend-failure diagnostics and checkpoint/evidence/docs pendingcommit. Sourcezero harness in separateworktree.",
+    "resources": "All wrappers terminal; last enginePG0/client143 stopped/PID0/noOOM.43 retainedELFs outside mutablecache. Independent read-only custody audit ongoing; no build/engine active.",
+    "checks": "Corrected first8 actualPASS; rootreplay124controlsPASS; upcomingfault/sourcezero enginesNOT_RUN",
+    "next": "Commit root --ingest-activated-faults dispatch and diagnostic capture fix; exactengine with unchanged retained2a018 CLI/probe, fourC2/C6 before/after cases and fresh config-only recovery",
+    "free_bytes_observed": 63012962304,
     "builds": [
       {
         "source": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
@@ -43852,6 +43852,41 @@
           "archive_sha256": "64cc54d14e37f964736e369c69334275322ae5092b3ff7ff3da6307da1fadd26",
           "scope": "Root read-only exact Git/export/archive/artifact/resource audit; no tests or engines"
         }
+      },
+      {
+        "source": "2a018eaf0b113835339cc547ea3858036e3aa3fd",
+        "tree": "8db4ad6391c5eab9ce2cf737997c2a43b7896b4e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-2a018ea",
+        "owner": "f3dc343ce5b8e1268f70eef5dbb47954",
+        "status": "PASS_ACTIVATED_INSTALLED_BUILD_ONLY",
+        "state": "stopped-retained",
+        "wrapper": {
+          "session": 62285,
+          "joined_exit_code": 0
+        },
+        "started_at": "2026-10-13T10:35:47.916196+00:00",
+        "finished_at": "2026-10-13T10:37:30.289293+00:00",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "a3ff46c2244c9b0c198ed739d5c0417f9b180e7e4575b2657c38056e57d8794a"
+          },
+          {
+            "name": "native",
+            "id": "4ba024cea3be15941911c2d1cdcb8f1f011743b166ca1b2a0c5820f016e04edd"
+          }
+        ],
+        "receipt_sha256": "47fbe5588d03c5d0066fb1fc4db9592e472e700641a2e1ce8ec9927ee575ce64",
+        "binary_sha256": "5679d612f45688ec21671ba0359036e6ac66f1f23148f05ad0c8dcdfe9f2fcbc",
+        "probe_sha256": "911296b77b6f1c6dd5f5a39bb80778e3c363e3dd8cd73d7b3b78755b0d016971",
+        "checks": "Compile,46 actual CLI/schema/migration tests and Clippy PASS; unchanged101 native/codec tests reused atfaa1390 after exact input diff verification",
+        "audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-2a018ea/root-build-audit.json",
+          "sha256": "d2954e4cba17cb6475ac0d2ef14d3aaf24c221d7b3c8aaea2e74b160444f7d36",
+          "source_files": 1788,
+          "retained_executables": 43,
+          "unchanged_containers": 1249
+        }
       }
     ],
     "engines": [
@@ -44017,7 +44052,351 @@
             "artifacts": true
           }
         }
+      },
+      {
+        "source": "2a018eaf0b113835339cc547ea3858036e3aa3fd",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea",
+        "owner": "f9dd5c58859957eeb5cdee61c8a8c2ff",
+        "status": "PASS_INSTALLED_ACTIVATED_RECOVERY",
+        "wrapper": {
+          "session": 44298,
+          "joined_exit_code": 0
+        },
+        "started_at": "2026-10-13T10:38:35.609840+00:00",
+        "finished_at": "2026-10-13T10:39:20.312304+00:00",
+        "result_sha256": "f47cc42496ec92663c3f194d0506a66704b0e0407d2b565311a4238332ae92fc",
+        "client": {
+          "id": "a4281964446e20e948ec0cd3a112d1b561c08f4cc6019bd31182ce800fb2c0f4",
+          "name": "bigbrotr-acquisition-binding-2a018ea"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_2a018ea_installed_activated_off",
+          "bb_scope_bind_2a018ea_installed_activated_on",
+          "bb_scope_bind_2a018ea_installed_activated_zero"
+        ],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:38:35.696124963Z",
+              "FinishedAt": "2026-10-13T10:39:19.406573709Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "a4281964446e20e948ec0cd3a112d1b561c08f4cc6019bd31182ce800fb2c0f4",
+            "Name": "/bigbrotr-acquisition-binding-2a018ea",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:38:36.606097235Z",
+              "FinishedAt": "2026-10-13T10:39:18.233907466Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-2a018ea/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "missing_owned": [],
+        "cases": [
+          {
+            "name": "installed-activated-off",
+            "attempts": [
+              {
+                "name": "installed-activated-off",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-off",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "original_inputs": 6,
+                  "resolved_requests": 2,
+                  "repaired_outcome": false,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "2fc72868c3894316cf03c71dd16c3b0c33b48b5a77ae08b7c1f367fad36dee0b",
+                "controls": 15
+              },
+              {
+                "name": "installed-activated-off-retry",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-off-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "original_inputs": 6,
+                  "resolved_requests": 2,
+                  "repaired_outcome": false,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "c355afe1aab9cf0700bb0c0dbc7e5a806780431ff4a76b481a9fe3c5ba76a0d4",
+                "controls": 15
+              },
+              {
+                "name": "installed-activated-off-repair",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-off-repair",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "original_inputs": 6,
+                  "resolved_requests": 2,
+                  "repaired_outcome": true,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "2d8c29dc9fc7f56768a95d8fa6a3e86e1e04353afdba17b8a40b79cd6ff054c2",
+                "controls": 18
+              }
+            ]
+          },
+          {
+            "name": "installed-activated-on",
+            "attempts": [
+              {
+                "name": "installed-activated-on",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-on",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 99,
+                  "original_inputs": 6,
+                  "resolved_requests": 2,
+                  "repaired_outcome": false,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "d8433b288cd0ef619bf804fbf03c9075093921ea7aab2afb19efb3237570f9f0",
+                "controls": 15
+              },
+              {
+                "name": "installed-activated-on-retry",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-on-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 99,
+                  "original_inputs": 6,
+                  "resolved_requests": 2,
+                  "repaired_outcome": false,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "55f3a82fc7ab225d177b11811111546089be1c82043c6f765bee89985200d2c1",
+                "controls": 15
+              },
+              {
+                "name": "installed-activated-on-repair",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-on-repair",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 99,
+                  "original_inputs": 6,
+                  "resolved_requests": 2,
+                  "repaired_outcome": true,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "69dcc14d44347844f9b22b3636b1b58584d2bec98ebd27591afa51d6057dd1a9",
+                "controls": 18
+              }
+            ]
+          },
+          {
+            "name": "installed-activated-zero",
+            "attempts": [
+              {
+                "name": "installed-activated-zero",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-zero",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 52,
+                  "native_sequence": 63,
+                  "original_inputs": 4,
+                  "resolved_requests": 0,
+                  "repaired_outcome": false,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "d3bfb2f38bcda0993061fa5a5a39a91a543240fdd8241f1e6991643e95f4a089",
+                "controls": 14
+              },
+              {
+                "name": "installed-activated-zero-retry",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-zero-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 52,
+                  "native_sequence": 63,
+                  "original_inputs": 4,
+                  "resolved_requests": 0,
+                  "repaired_outcome": false,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "ready": false
+                },
+                "context_sha256": "3362bab8f9331830a9a8bdc14813c6b78d56e78f7ecce937bd2463caf9898597",
+                "controls": 14
+              }
+            ]
+          }
+        ],
+        "source_preserved": {
+          "off": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          },
+          "on": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          },
+          "zero": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          }
+        },
+        "independent_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea/root-independent-replay.json",
+          "sha256": "daeeb2e91832766b68c409eed41b52639ad9a1641d8effd0f56e71575c6c0496",
+          "wrapper": {
+            "session": 11415,
+            "joined_exit_code": 0
+          },
+          "status": "PASS_ROOT_INDEPENDENT_ACTUAL_REPLAY",
+          "complete_observations": 16,
+          "controls": 124
+        },
+        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33\u219234\u219234 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit pending.",
+        "not_run": [
+          "issued-positive source-zero",
+          "corrupt/missing input and dependency/identity/handoff/foreignstream refusals",
+          "held native refusal",
+          "closing/outcome COMMITloss and fresh recovery",
+          "source2closure/retirement/repeatedlifetimes",
+          "Archive/Syncrestart and fullM1\u2013M5"
+        ]
       }
-    ]
+    ],
+    "fault_qualification": {
+      "harness_source": "6b03f24146b5b8e4a418cc5c07685451704ab30d",
+      "harness_integrated": "dbf035b",
+      "oracle_source": "a1a5379b01d33e13062bb81c205348d9b3059ad1",
+      "oracle_integrated": "482553e",
+      "status": "IMPLEMENTED_NOT_QUALIFIED",
+      "pure_checks": "Harness10transport/capture mocks; oracle8artificialcontexts/132controls PASS; no actual engine evidence",
+      "review": "Root complete286lineharness/358lineoracle and native reviewer complete driver/source dependencies read. Preserve uncertain SQL/input diagnostic captures on backend absence failure; native remains NOT_RUN on that path. Root applied correction. No installed driver-failure/poison telemetry invented.",
+      "next": "Commit root --ingest-activated-faults dispatch and diagnostic capture fix; exactengine with unchanged retained2a018 CLI/probe, fourC2/C6 before/after cases and fresh config-only recovery"
+    }
   }
 }

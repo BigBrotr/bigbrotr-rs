@@ -196,7 +196,23 @@ def run_all(pg, client, output, rows, clone):
             lab.write_json(output / (mode + '-external-unavailable.json'), dict(status='OUTCOME_UNKNOWN',
                 reason='Native custody not excluded; outer owner must join before reopening'))
             raise AssertionError('installed CLI custody unavailable')
-        absent = observe_backend_absence(pg, database, output, mode)
+        try:
+            absent = observe_backend_absence(pg, database, output, mode)
+        except Exception as error:
+            unavailable = dict(status='OUTCOME_UNKNOWN', native='NOT_RUN',
+                reason='Backend exclusion unavailable after joined CLI', error=type(error).__name__)
+            lab.write_json(output / (mode + '-external-unavailable.json'), unavailable)
+            # These are diagnostic observations, not a final state proof. Keep
+            # the normal after-state capture strictly after backend exclusion.
+            try:
+                save_sql(mode + '-uncertain', database)
+                lab.write_json(output / (mode + '-uncertain-inputs.json'),
+                    dict(inputs=inputs_at(directory / 'store'),
+                        contents=recovery.contents_at(directory / 'store')))
+            except Exception as capture_error:
+                unavailable['capture_error'] = type(capture_error).__name__
+                lab.write_json(output / (mode + '-external-unavailable.json'), unavailable)
+            raise
         after = save_sql(mode + '-after', database)
         final_native = dump(mode + '-after', directory)
         final_inputs = inputs_at(directory / 'store')
