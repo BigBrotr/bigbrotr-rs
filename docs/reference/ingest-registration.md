@@ -1009,6 +1009,18 @@ or unresolved workflows refuse without repair. Existing terminal rows remain
 immutable even after early `SET CONSTRAINTS`; ordinary earlier loaders still refuse
 retired state. The dedicated classifier alone permits this exact observation.
 
+Protect the activated target role explicitly, rather than relying only on the
+existing deferred trigger's `retired_at_us` change predicate. Bind this protection
+to the immutable activation's target role. Its only permitted update is the
+selected NULL-to-T retirement with every other column unchanged; after retirement,
+reject UPDATE and DELETE, including changes to `created_at_us` that leave
+`retired_at_us` unchanged. TRUNCATE must not erase this protected history, including
+through cascading table truncation. Preserve Control and epoch1 role behavior and
+their ordinary grants; this is not a generic role-lifecycle redesign. Qualification
+must include forcing constraints early, then attempting a non-retirement-column
+rewrite without changing `retired_at_us`, as well as terminal timestamp rewriting
+and deletion/truncation protection.
+
 Before claiming Control, preflight retained native/driver ownership,128KiB metadata,
 4096-byte data/native closing proof, one bounded input/outcome pair and a128KiB
 terminal SQL grant. Replay grants are released before the final operation; metadata
