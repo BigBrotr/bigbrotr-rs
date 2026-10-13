@@ -99,7 +99,9 @@ pub use producer_recovery::{
 
 #[path = "source_closure.rs"]
 mod source_closure;
-pub use source_closure::{ResolvedSource, SourceResolution};
+pub use source_closure::{
+    ActivatedSourceResolution, ResolvedActivatedSource, ResolvedSource, SourceResolution,
+};
 
 #[path = "initial_handoff.rs"]
 mod initial_handoff;

@@ -5,6 +5,9 @@ use crate::storage::rocks::store::{
     ActivatedInitial, ActivatedProducerClosing, InitialHandoffRecord,
 };
 
+#[path = "activated_source_tests.rs"]
+mod activated_source_tests;
+
 fn record(recovery: &IngestRecovery) -> InitialHandoffRecord {
     InitialHandoffRecord::decode(&value(&recovery.store, handoff_key())).unwrap()
 }

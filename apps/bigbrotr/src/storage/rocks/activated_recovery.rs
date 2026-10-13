@@ -17,8 +17,9 @@ pub(in crate::storage) struct ActivatedInitial {
     source_through: u64,
 }
 
-/// A synchronized barrier plus bounded replay context. Deliberately exposes no
-/// SourceResolution, handoff reconstruction, mutable store or writer conversion.
+/// A synchronized barrier plus bounded replay context. Only its distinct
+/// activated prefix proof can establish source2 closure; neither interpretation
+/// exposes handoff reconstruction, a mutable store or writer conversion.
 pub(in crate::storage) struct ActivatedProducerClosing {
     context: ActivatedInitial,
     _permit: OwnedPermit,
@@ -186,6 +187,30 @@ impl ActivatedInitial {
 }
 
 impl ActivatedProducerClosing {
+    pub(in crate::storage::rocks::store) fn handoff_sha256(&self) -> [u8; 32] {
+        use sha2::{Digest, Sha256};
+        Sha256::digest(self.context.record.encode().as_bytes()).into()
+    }
+    pub(in crate::storage::rocks::store) fn predecessor_source_through(&self) -> u64 {
+        self.context.record.source_through
+    }
+    pub(in crate::storage::rocks::store) fn require_source_cut(
+        &self,
+        recovery: &IngestRecovery,
+        through: u64,
+    ) -> Result<(), BootstrapError> {
+        self.validate(recovery)?;
+        // Recheck the complete bounded two-stream interpretation at publication,
+        // including explicit source0, both existing markers and no foreign tail.
+        let current = ActivatedInitial::inspect(recovery, self.context.record)?;
+        if !current.producer.closing
+            || current.producer != self.context.producer
+            || current.source_through != through
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        self.validate(recovery)
+    }
     pub(in crate::storage) fn manifest(&self) -> &IngestManifest {
         self.context.manifest()
     }
