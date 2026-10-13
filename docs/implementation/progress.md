@@ -1,10 +1,8 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T09:27:16.375570+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T09:46Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
-Detailed historical commands, failures and artifacts remain in the owning evidence
-and inventory; this checkpoint does not duplicate their complete chronology.
 
 ## Mandate and current source
 
@@ -15,271 +13,159 @@ deployment is authorized. Preserve unpublished Cargo packages, the read-only leg
 repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
-Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEAD94a16a0eae1466cb257757c86719ec6086b3cbf1. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns current
-evidence/checkpoint/inventory updates. Independent fixturebf93bcc is integrated
-as8511b4f and dispatcher2032894 is committed. Author corrects the first actual
-oracle failure in its separate worktree. CLI/profile/tests remain unchanged.
-Last verified private root isaad70200e1cd6bf649b2450d6c22557e880e38a1;
-installed helpers6c134e3/1593f1f are also pushed;
-refusal helpersddbb838/aba294b/039e77e and routes helpersc65164f/2b51795 are also
-pushed. Main remains54ad09d. No merge/rebase/cherry-pick is pending. Root owns Serve
-CLI, documentation, integration and all build/engine execution.
+Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
+61a3de10e458b891babbf4bd52212473ec52164a. Root owns pending updates to this checkpoint,
+02-storage, ingest-registration, ingest-store, recovery evidence and lab inventory.
+Adapter6c134e3 and installed owner1593f1f are integrated. Fixturebf93bcc is integrated
+as8511b4f; correctionf9e751f as94a16a0, dispatcher2032894 and failed-run record61a3de1.
+Last verified private root isaad70200e1cd6bf649b2450d6c22557e880e38a1; adapter/owner
+branches are pushed. Qualification branchf9e751f is clean, not yet pushed. Main is
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase/cherry-pick is pending.
 
-| Agent | Bounded responsibility |
-|---|---|
-| successor_restart_design | Installed native owner/startup/shared command/Sync committed1593f1f and integrated; build PASS, engine NOT_RUN |
-| recovery_review | PG opaque live read/basis adapters committed6c134e3, integrated; build PASS, SQL NOT_RUN |
-| cleanup_review | Independent installed journey/oracle design; previous actual refusal custody audit complete |
+All three installed worktrees are retained under `.research/installed-live-*` and
+inventoried. Agents are idle after bounded work: successor_restart_design supplied
+the activated-recovery design, recovery_review independently reviewed oracle fixes,
+and cleanup_review completed artifact/custody audit. Root alone executes builds,
+engines and integration. Create distinct inventoried writable worktrees before the
+next parallel implementation; do not repurpose prior fixture or source worktrees.
 
-New worktrees `.research/installed-live-adapters-20261013`,
-`.research/installed-live-owner-20261013` and
-`.research/installed-live-qualification-20261013` were created from92c621f and
-are inventoried under `implementation_live_initial_activation_20261013.installed_consumer`.
-Adapter and installed owner worktrees are clean; independent fixture is in progress.
-Prior refusal/routes worktrees and all artifacts are retained. Exact installed build ec3e2c4 FAILED compilation with root CLI Rust E0505;
-wrapper52962 joined1. Fetch0/native1 stopped/PID0/noOOM; inventory_changed empty,
-finished08:58:20Z. Root precomputes the Sync flag before moving config. The old
-CLI4eef and produced probe are retained at `out/failed-artifacts`, with no successful
-current-build claim. All15tests and Clippy are NOT_RUN. No installed engine allocated.
-Corrected exact build787e1fe is PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY, wrapper43909
-joined0, finished09:02:51Z, root `/runs/ingest-installed-live-787e1fe`. Compile,
-7 actual entrypoint/3 Serve/5 supervisor tests and Clippy PASS on Rust1.98.1/Clang14.
-Root read-only audit matched1775 Git/export/archive files,24 current/prior retained
-ELFs and all1238 prior container projections; exactly two owned containers exited0,
-PID0/noOOM. ReceiptSHAb8a8ab7019ee62e07889e4389d75c615d5e291df2ca9f410a80602a088165b54.
-CLI SHA0b483e9c07aeafa82227b24fc03bfd1bd4add496c9b321fb056b5f68e105ec2e.
-The unchanged signed-recovery regressionddded07 passes3 actual recovery commands
-(first/retry/missing outcome copy),49 native rows/4 original requests/69 SQL tables.
-Root `/runs/ingest-signed-regression-ddded07`, wrapper35588 joined0; resultSHA
-27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9.
-Finished09:10:05Z, PG0/client143/PID0/noOOM, no unrelated changes or cleanup errors.
-Initial Sync-window regressionaad7020 passes both actual cases,17 socket rounds each,
-49native/4inputs, renewal, quietSIGTERM and zero connections to deferred second source.
-Root `/runs/ingest-sync-regression-aad7020`, wrapper85584 joined0; resultSHA
-47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258.
-Finished09:12:08Z, PG0/client143/PID0/noOOM; cleanup/missing/unrelated arrays empty.
-Independent AI artifact/reducer audit of both regressions PASS: exact1775 Git blobs
-per source,4 mounted ELF hashes,73 frozen source census entries, all1240 latest
-nonborrowed projections unchanged. Replayed complete native/HTTP/SQL expectations,
-including16 Sync SQL snapshots. Original SQL and backend-count0 remain captured-run
-evidence; older harness retains no raw backend-count receipt. No audit restart/SQL.
-First installed engine2032894 is FAIL at the oracle catalog pin. Actual off Serve
-and client exited0/reaped with five snapshots and external70native/seq84/6inputs;
-the other four cases are NOT_RUN. Root `/runs/ingest-installed-live-engine-2032894`,
-wrapper72449 joined1, finished09:23:40Z, PG0/client143/PID0/noOOM; resultSHA
-91611d39625beb0e149168e076b7ada0f4ba24e30583ba8afd80be9f1f2c17ec.
-Root read-only failure-custody audit PASS1779Gitfiles/24ELFs/21seedpaths and1241
-nonborrowed projections; all original-preservation booleans true. Raw catalogs
-before/after equal;52 internal FK trigger numeric OID suffixes differ from prior
-qualified pin, with all other fields identical. Correct only this generated-name
-normalization; also require actual Control release storage_fenced and its exact
-self-incarnation exclusion digest, omitted by original oracle. Correctivef9e751f
-is integrated94a16a0. Independent source review and root retrospective off replay
-PASS5snapshots/31controls; original run remainsFAIL. Next fresh five-case wave.
-All build/engine wrappers terminal. Failed run/artifacts remain preserved.
-Original recovered source/bundle and reconciliation are in the
-[dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
-is not host-loss backup; unavailable Mac captures remain unavailable.
-
-## Active task and qualified prerequisites
+## Active task and completed prerequisite
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None is complete.
 Requirements belong to the [storage task](02-storage.md),
-[live activation contract](../reference/ingest-registration.md#live-initial-successor-activation-under-implementation)
+[installed successor contract](../reference/ingest-registration.md#installed-live-initial-successor-under-implementation)
 and [recovery evidence](evidence/p02-producer-recovery-native-20260920.json), especially
-`initial_successor_preparation_20261012.next_live_activation_20261013`.
-Resource identities belong to the [lab inventory](../research/laboratory-inventory.json).
+`initial_successor_preparation_20261012.next_live_activation_20261013.installed_consumer_20261013`.
+Resource identities belong to the [lab inventory](../research/laboratory-inventory.json),
+`implementation_live_initial_activation_20261013.installed_consumer`.
 
-The prior qualified chain includes initial signed retirementf12, prepared-onlyac644,
-preparation COMMIT loss64419a5, config-only historye92f3d7, gap51a6b86 and policy/gap
-loss4c283e2. Exact empty-attempt retirement83db9d8, terminal COMMIT loss5938617,
-current-Control races1d3b93c and historical preparer claim17ccb8a retain their own
-actual evidence. Installed empty retirement788f971 passes11 commands/22 observations/
-296 controls; resultSHA ff1d2e111dc42ff4026c7e42985a7814dbf058eb0bd1d7ba92c5e269e7642d34.
-No completed bounded wave implies general successor recovery or M1 completion.
+Exact build787e1fed0b537c8e3c3dd39b7e9b079f73b230b7 PASS: compile,15 affected tests
+(7 actual entrypoint,3 Serve,5 supervisor) and Clippy on Rust1.98.1/Clang14.
+Protected binaries are under `/runs/ingest-installed-live-787e1fe/out/artifacts`.
+CLI SHA0b483e9c07aeafa82227b24fc03bfd1bd4add496c9b321fb056b5f68e105ec2e;
+receiptSHAb8a8ab7019ee62e07889e4389d75c615d5e291df2ca9f410a80602a088165b54.
+Root audit checked1775 exact files/24 ELF paths/1238 unchanged container projections.
+Earlier ec3e2c4 compile FAIL E0505 and its produced/old artifacts remain retained;
+787 fixes the root CLI borrow ordering. Unchanged135 native tests were not repeated.
 
-Live candidate ownership/native writer and additive0032 are integrated. The writer
-requires an actual locally minted candidate, continuous native custody, confirmed
-activation COMMIT and current authority; retained identity bytes cannot create it.
-Applied earlier migrations remain unchanged. Unknown activation COMMIT returns no
-writer and poisons Control. New epoch2 requests start at1/source0 without bootstrap.
-Migration32 includes same-transaction request/input/checkpoint guards and freezes
-activation target/Control/policy parents. Arbitrary raw-SQL physical COMMIT-time
-wall-clock validity is not promised; typed checks govern writer delivery.
+Signed regressionddded07 passes three installed recovery commands(first/retry/missing
+PG outcome copy),49native/4inputs/69SQL each. Sync regressionaad7020 passes both
+17-round cases with full window4, renewal and quiet SIGTERM. Independent artifact/
+reducer audit confirms both, including16 SQL snapshots and1240 unchanged projections.
+Original SQL preservation/backend-count0 remain captured-run evidence; the older
+harness retains no raw backend-query receipt. No audit SQL or restart occurred.
 
-Buildc640b2f5264e3be8b050bb0f90302b852b4efbc0 is PASS_LIVE_INITIAL_BUILD_ONLY:
-14 checks/135 tests (81 affected native,13 codecs,41 schema/entrypoint), Clippy and
-independent artifact audit. Its earlier7337ac4 failure is retained: injected sidecar
-permissions caused Identity before intended Conflict; both fixtures now set0600.
-Five failed executables were protected outside the cache. Missing/unrun checks were
-never relabeled. Detailed identities and build receipts are in existing evidence.
+Fresh complete engine61a3de10e458b891babbf4bd52212473ec52164a is
+PASS_INSTALLED_LIVE_INITIAL_SUCCESSOR. Root `/runs/ingest-installed-live-engine-61a3de1`,
+owner1020f240da197ca01f1a56ee61eb17aa, started09:29:12Z and finished09:29:56Z.
+ResultSHA30b44add9f3819c136496cb656d625998368cc8e593e3e39bdfb29472097ff5e.
+Five actual Serve invocations from four fresh f12 clones qualify:
 
-Finite engine2c142c611eaab0462b6f65df852cd75c098c6c77 qualifies five actual candidate
-processes,48 full72-table/native/input snapshots and116 rehashed controls. ResultSHA
-31245bea8f3f369f1bb464552489671e63debfb8f89e76c6f926ce4661a2c9a2.
-Zero activation retains52 native rows/sequence62/four inputs. Normal/off signed
-admission/retry/alternate signature ends69/84/seven inputs. Actual COMMIT13 vectors
-are13/12/12/12/1 before-forward and13/13/13/12/1 after-complete; both return
-CommitUnknown/no writer/poisoned Control. Only after-complete retains activation.
-START counts are source-derived, not measured by this proxy. The finite import has
-no network observation; its off setting does not qualify real provenance suppression.
+- Provenance off:70 native rows/sequence84/six inputs, five intermediate snapshots.
+- Provenance on:84/98/six inputs, five intermediate snapshots.
+- Existing epoch2: subsequent invocation refuses unchanged84/98/six inputs.
+- Missing original: retained input4 moved outside clone; refuses49/58/three inputs.
+- Competing native owner: refuses before Control, holder joined0;49/58/four inputs.
 
-## Latest completed qualification
+Current accepted policy2/window2 overrides startup managed drift. Actual authenticated
+HTTP and finite signed WebSocket acquisition include new/predecessor/new resend;
+renewal remains live past the initial six-second target deadline. The selected quiet
+socket remains outstanding at same-container SIGTERM then reaches EOF; actual native,
+Control and driver shutdown is joined. Three wire frames do not prove three separate
+certifications or completed job coverage. No Archive, ACK/GC or general recovery claim.
 
-The exact guard probe buildee24e86d6ad0e800305d5aa48d8a01879aeeafc1 passes compilation
-and Clippy only. Unchanged135 product tests were not repeated. Artifact audit checked
-1765 exact source files, two new/14 retained ELFs and1228 unchanged projections.
-BuildreceiptSHA f0612c0e08bce8670329ff5e5541215004b6acae15aea62d578912ed48c2270e.
-Use its protected `/runs/ingest-live-guards-ee24e86/out/artifacts` under the external
-laboratory base below; these artifacts qualified the completed Python-only routes slice.
+Root independent replay21498 joined0 binds every context to raw SQL/native/input,
+stdout/stderr/terminal/fixture/clock/HTTP/wire observations and external finals:
+ten intermediate plus ten full before/after observations,98 adversarial controls.
+Receipt `root-independent-replay.json` is retained beside result.json. Separate AI
+custody audit confirms1779 exact source files, unchanged compiled inputs relative to
+787e1fe, all24 ELF paths,1242 unchanged nonborrowed projections and one new client.
+Five complete external SQL72/native/input/catalog/backend captures match contexts;
+three Control identities absent. Frozen f12:21paths/19regularfiles/302273bytes/four
+artifacts unchanged. Audit author wrote the oracle; root replay independently checks
+its logic. No auditor SQL, engine, build or restart occurred.
 
-First guard engine915478c is FAIL and preserved. Its request fixture copied a
-retired acquisition job, causing an earlier authority refusal. Known probe exit101,
-external72-table SQL/native52/sequence62/four inputs equal prepared state; backend
-absence and original preservation were captured. Correction18bf166 selects exactly
-one original unbound dictionary request3. Independent review/pinea625e7 preserves all
-14 intended guard checks. Two artificial backdated-renewal counterexamples were also
-found and fixed ind0f96f7. Both old and corrected synthetic artifacts are retained.
-
-Corrected engine5fe7cc0a048ffd23715f0ae0d1ee9eb84ef9c134 is PASS_LIVE_INITIAL_GUARDS,
-finished2026-10-13T07:38:26.013946Z, wrapper76058 joined0. ResultSHA
-b56e4d9d2aaf85b1c8cbd6533be2aa1da83547475f1b88895fdc8408cced518c.
-Actual preparingControl8 executes14 rollback-only SQL cases (one positive and13
-named23514 refusals) inside outer27042. The original catalog is restored before
-activation27058 at1791877101352360us. Actual Control refresh/typed Ingest renewal
-changes only scheduling fields/xmin; Ingest deadline1791877121371917. It synchronizes
-with Control and may shorten the initial60s deadline to20s. Signed admission ends
-69 native rows/sequence84/seven inputs with original detail intact.
-
-Root independently replayed16 full snapshots/35 perturbations and matched raw stdout.
-Independent AI custody audit checked1767 Gitfiles/twoELFs/21seedpaths/four frozen
-artifacts, all1230 nonborrowed projections, external final states, restored catalog
-and exact backend absence. That reviewer authored the oracle; root replay is the
-independent oracle check. Original SQL preservation remains captured-run evidence,
-without an audit restart. All three guard build/run wrappers are terminal; PG0 and
-client143 are stopped/PID0/noOOM, cleanup/missing/unrelated arrays empty.
-
-The four-route enginea80710ad3b4cb29e21e2519b45e568856ab5b0a0 is
-PASS_LIVE_INITIAL_ROUTES, finished2026-10-13T07:57:45.619507Z. Wrapper96721 and
-independent oracle replay76979 joined0. ResultSHA
-fd22ab48a65d13678193c300e082d67bb7e1d210e711ebc684055eaf3b2705bc.
-Fresh activated-history, activated-gap, activated-empty and prepared-history clones
-qualify39 full snapshots/84 rehashed perturbations. History/empty refuse activated
-receipts; gap refuses epoch2 before its SQL transaction. Prepared history reconstructs
-all four originals as the positive control. Default PG logs omit SQLSTATE, retained
-as null; exact error/context is captured. History poisoning is source-derived;
-empty emits actual Unavailable reuse and joined driver events.
-
-Independent AI custody audit found no issue:1769 exact Git blobs, two retained ELFs,
-both seeds'21paths and7/6 frozen artifacts, all1231 nonborrowed container projections,
-original/final SQL and inputs, four external finals, catalogs and exact backend
-absence preserved. PG0/client143/PID0/noOOM, cleanup/missing/unrelated arrays empty.
-No audit restart or additional engine run was made. All engine/build wrappers are
-terminal, including the new compile/Clippy wrapper below; agents perform source work only.
-
-Exact refusal build4eef3c5 under `/runs/ingest-live-refusals-4eef3c5` passes compile
-and Clippy only; unchanged135 product tests were not repeated. Wrapper74797 joined0,
-finished2026-10-13T08:15:38.028357Z; ownerc8817d2b8d420fb51236c3458e651c79. Root audit
-verified1771 exact Git/export/archive files,18 current/prior ELFs and1233 unchanged
-container projections. BuildreceiptSHA
-f9123dc9c566f0a884ac5642103fb036de902373e19d612b527e1446c6037c80.
-
-Five-case engine983342ea34c8c82fe8fba3ef58b79c85b942615a is
-PASS_LIVE_INITIAL_REFUSALS, finished2026-10-13T08:24:36.308924Z; wrapper89024 joined0.
-Root independent raw-capture/oracle replay50688 joined0:67full snapshots/108 controls.
-ResultSHA6ae37ae32bb46bc386fdcd4a22db9a5a4d47152c1b3234c7a12f4eab64700d73.
-SameControl8 rejects two wrong first-manifest envelopes with named23514, original
-catalog restored, then typed admission reaches69native/seq84/7inputs. GenuineControl9
-renewal returnsInvalidInput/false before operation and actual refresh proves usable.
-Five-second Ingest expiry is observed while20s Control lives:Backend/false, poisoned
-session and named guard, default-log SQLSTATE null. Actual renewalCOMMIT15 counters
-are15/14/14/14/1 before and15/15/15/14/1 after. Both returnCommitUnknown/true and poison
-Control; only after persists new deadline/xmin. All renewal cases retain52/62/4.
-
-Independent AI artifact/custody audit passes:1772exact Gitfiles,18ELFs, all1234
-nonborrowed projections, frozen f12 seed21paths302273regularbytes/four artifacts and
-four inputs, all external finals/catalogs/six exact backend absences. PG0/client143,
-PID0/noOOM; cleanup/missing/unrelated arrays empty. Reviewer authored the oracle;
-root replay supplies independent oracle qualification. All build/engine wrappers
-are terminal; no PostgreSQL audit restart or untracked cleanup was performed.
+First installed engine2032894 remains FAIL: only off ran, other four NOT_RUN. Its
+oracle initially pinned PostgreSQL-generated FK trigger OID suffixes and omitted
+actual release's storage_fenced/exact self-incarnation exclusion digest. Correction
+f9e751f normalizes only validated internal trigger numeric suffixes and checks the
+release fence. Independent source review and root retrospective off replay pass
+five snapshots/31 controls without relabeling the failed run. All original result,
+verification hashes, containers and artifacts are preserved. Prior qualified live
+finite/guard/routes/refusal waves and initial/empty recovery remain in owning evidence;
+no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-The completed refusal wave is committed and privately pushed. Qualify the selected
-[installed live initial successor](../reference/ingest-registration.md#installed-live-initial-successor-under-implementation).
-Root owns `serve --activate-initial-successor`, CLI checks/docs and integration.
-Both product owners are integrated and independently source-reviewed. Exact
-build787e1fe and shared signed3/initial Sync-window2 regressions PASS with independent
-artifact/reducer audit. Fixture source/AST/API reviews and two artificial full
-contexts10snapshots/48controls PASS; identified HTTP, predecessor-ID, cross-phase
-row and quiet-signal timing findings were corrected inbf93bcc. The first actual
-off run2032894 exposed a catalog pin that retained generated FK trigger numbers.
-The author and independent reviewer corrected catalog identities and final
-Control release-fence expectations inf9e751f, integrated94a16a0. Root independently
-replayed all retained off expectations and31controls successfully. Run a fresh
-exact-source five-case wave using unchanged protected787e1fe binaries; earlier
-15tests and initial/recovery regression evidence stays valid and is not repeated.
-The old initializer and recovery flags retain their contracts. No schema/native
-format change is selected. A fenced basis supplies real server time/current policy;
-use activation policy/window, not the historical registration, for new work.
+Commit and verify private pushes for completed installed consumer evidence and the
+qualification branch. Then implement explicit positive recovery of the activated
+epoch2 producer, including its necessary one-way closing barrier. Record the exact
+contract in the existing registration reference before coding and split native,
+PostgreSQL and independent fixture work in separate worktrees; root owns installed
+CLI/worker integration and all build/engine execution.
 
-Read-only installed design found epoch1/request3 assumptions in Sync and epoch1/
-frontier0/topology assumptions in Archive. The next consumer admits optional finite
-Sync after1→2 activation and refuses selected Archive. It shares real job/source/
-receive/admission logic through opaque live reads and a private native-owner enum.
-Keep candidate/live native custody before Control across failures and reserve all
-replay/activation/Sync overlap before claims. Qualify actual installed provenance-off
-versus on with a predecessor resend and new signed socket event, renewal beyond the
-initial target deadline, refusal on epoch2/missing proof/occupied native and actual
-joined shutdown. This does not close general lifetimes or M1. Details belong to the
-existing contract/task/evidence; no extra plan or handoff is created.
+Design inspection found current0031 deferred empty-attempt validation prevents an
+activated epoch2 OPEN→CLOSING transition. Add0033 with a precise activated recovery
+validator while preserving old unactivated retirement and activation guards. Native
+recovery must bind the actual retained handoff, both streams and root/sequence,
+require an existing target marker, accept valid zero work, and verify predecessor
+reference closure. Fresh Control/current policy may recover old positively proven
+outcomes despite expired historical Ingest scheduling. Keep immutable reservation,
+issuer/policy/input bytes and prior recorder rows unchanged. Never adopt a writer,
+reopen a closing barrier, infer uncommitted gaps or fabricate epoch2 InitialRegistration.
 
-Subsequent acceptance still owes real network provenance-off, installed consumers
-and general activated-owner recovery. Repeated lifetimes,
-retired-empty2→fresh3, Sync/Archive restart/resend and ACK/GC remain selected.
-Sync assumes request3/epoch1; Archive assumes cursor1/revision0/epoch1. Their detailed
-frontier/catalog recovery internals have not been fully reviewed. M1 also needs online
-indexing/outages and installed bundle journeys; five exports under256MiB are NOT_RUN.
-Follow existing cross-phase edges through all analytics/interfaces/operations/browser/
-website responsibilities. Optional enablement never finishes selected scope.
+Select a separate finite installed action before epoch1 historical lookup, reserve
+all overlapping replay/native/Control resources before claims, replay sequentially
+and retain actual driver/native ownership through joined shutdown. Acceptance owes
+positive/retry/missing-copy/zero/source-zero cases; exact identity/input/dependency
+refusals; current policy/old scheduling; held native; actual closing/outcome COMMIT
+loss followed by fresh configuration-only recovery. Source2 closure/retirement,
+epoch3/repeated lifetimes and Archive/Sync restart remain later obligations.
+Archive frontier/catalog recovery internals have not yet been fully reviewed.
 
-## Retained resources and maintenance
+M1 additionally owes archive/index/read/export/restart journeys and outages; five
+exports under256MiB remain NOT_RUN. Follow existing cross-phase dependencies through
+analytics/interfaces/operations/browser/website responsibilities. Optional enablement
+or this passing bounded wave does not finish the product.
 
+## Processes, retained resources and maintenance
+
+All build/engine/replay wrappers are terminal, including latest49363(engine) and
+21498(root replay), both joined0. Latest PG/client terminal states were rechecked
+09:46Z: PG0/client143, stopped/PID0/noOOM. No current engine or build. Preserve all
+artifacts and inspect ownership afresh before reusing the authorized borrowed PG.
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
 - Retired f12: `ingest-recovery-engine-f12dbf0/bindings/retire_signed/store`, DB
   bb_scope_bind_f12dbf0_retire_signed, owner0413e7dbcebefbf84c90b3948f4bb24b;
-  native49/sequence58, four inputs, Control7. Do not open the original as writer.
+  native49/sequence58/four inputs/Control7. Never open the original as writer.
 - Prepared ac644: `ingest-succession-ac644ef/bindings/successor-normal/store`, DB
   bb_scope_bind_ac644ef_successor_normal, ownercdfb0f1b755b29ccedc057b786efa116;
-  native52/sequence62, four inputs, Control9 released.
+  native52/sequence62/four inputs/Control9 released.
 - Activated-zero2c142c6: `ingest-live-engine-2c142c6/bindings/successor-live-zero/store`,
   DB bb_scope_bind_2c142c6_successor_live_zero, owner892de65cb9d38396125405dcb4046bf7;
-  native52/sequence62, four inputs, immutable activation and Control8 released.
+  native52/sequence62/four inputs/immutable activation/Control8 released.
+- Installed off/on completed clones and all their captures under the61a3de1 root;
+  these may seed copied activated-recovery fixtures, preserving original state.
 
 Borrowed PG root `relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608,
 container7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec, PG16.15.
-It was audited stopped0 after983342e. Reverify ownership/status before restart.
+Latest clientbc66c494fbd8d83aba033a6dcb94251236ecf1fff75738fdff7a5597c7262638.
 Six unrelated services remain protected: inspirehep-reindex db/mq/cache/es, ollama,
-tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
-volume, input, executable and `.research` artifact. Private Git pushes do not back up
-ignored laboratory data; Git cleanliness is never permission to delete it.
+tgdataset-mongo. Preserve every worktree, failure, clone, container, volume, input,
+executable and `.research` artifact. Private Git does not back up ignored laboratory
+data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
+a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space after2032894 engine:65,865,539,584 bytes (about61.3GiB).
-Remeasure before allocation.
-Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
-currently unavailable; never lower that reserve. No large export is allocated.
-The one-off cleanup is RETIRED_VERIFIED:48,725 verified compiler intermediates removed
-from18 historical targets;472,825 retained readable files preserved. Evidence remains
-in `.research/tux-maintenance-20261012/`. Never replay that executor or reuse those18
-retired caches. Current shared cache `network-1154757/out/build/{target,cargo-home}`
-uses exclusive `.compiler-cache.lock`; final executables stay outside mutable caches.
-Native qualification pins Rust1.98.1/Clang14, not the host Clang19 discovery.
-
-Keep negative variants9fa8b98/8effc76/5f1582c/a334ac8 and the historical dirty
-network-direct-no-poll-1154757 worktree unmerged/unpushed; this is not a ban on its
-original1154757 base already in history. Current changes contain no network product
-modification. GitHub run37017677570 could not start because of billing/spending;
-Q33 authorizes isolated trusted Tux CI. Native arm64, signing/registry provisioning
-and public promotion remain separate gates.
+Free space checked09:46Z:65,698,803,712bytes(about61.2GiB). Remeasure before allocation.
+Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
+currently unavailable. Never lower that reserve; no large export is allocated.
+Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18
+historical targets,472,825 retained readable files preserved. Evidence remains under
+`.research/tux-maintenance-20261012/`; never replay that executor or reuse retired caches.
+Current shared cache `network-1154757/out/build/{target,cargo-home}` uses exclusive
+`.compiler-cache.lock`; final binaries remain outside mutable caches. Pin Rust1.98.1/
+Clang14. Keep negative variants9fa8b98/8effc76/5f1582c/a334ac8 and dirty historical
+network-direct-no-poll-1154757 unmerged/unpushed. GitHub run37017677570 was blocked by
+billing; Q33 authorizes isolated trusted Tux CI. Native arm64, signing/registry and
+public promotion remain separate gates.

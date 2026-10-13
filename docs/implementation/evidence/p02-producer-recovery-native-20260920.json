@@ -14992,16 +14992,16 @@
         }
       ],
       "installed_consumer_20261013": {
-        "status": "FIRST_INSTALLED_ENGINE_FAIL_ORACLE",
-        "observed_at": "2026-10-13T09:27:16.362811+00:00",
+        "status": "PASS_INSTALLED_LIVE_INITIAL_SUCCESSOR",
+        "observed_at": "2026-10-13T09:46:51.518597+00:00",
         "contract": "docs/reference/ingest-registration.md#installed-live-initial-successor-under-implementation",
         "adapter_source": "6c134e3e65e21c05d15b4e1472ecbdf970da5b04",
         "adapter_integrated": "ff317e5",
         "owner_source": "1593f1faf2a2785dc02f64a56858b02d7c9b7df4",
         "owner_integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
-        "checks": "Scoped format/diff-check, exact Rust1.98.1/Clang14 build,15 affected tests and Clippy PASS; root source/artifact/resource audit PASS. Connected installed/SQL qualification NOT_RUN.",
-        "review": "Root and independently tasked AI source review of CLI/profile and installed custody/policy/window/preclaim overlap found no semantic blocker; Rust compilation found root CLI move-before-later-borrow E0505, corrected by precomputing selected_sync. Parent imports consumed by empty.rs were restored before owner commit. Actual installed/SQL NOT_RUN.",
-        "next": "Fresh exact-source five-case installed wave using unchanged787e1fe protected binaries; no repeat of already qualified15tests or initial/recovery regressions.",
+        "checks": "Exact Rust1.98.1/Clang14 build787e1fe,15 affected tests and Clippy PASS; signed3 and initial Sync-window2 regressions PASS. Connected61a3de1 five installed invocations PASS with independent98-control replay and separate artifact/custody audit.",
+        "review": "Complete affected owners/callers and integrated diff reviewed. Actual fixture findings in HTTP bindings, predecessor-ID, cross-phase rows and quiet-socket timing corrected before engine. First actual catalog/release oracle defects corrected in f9e751f; root independently replayed retained off capture and fresh full wave. All failures retained; no general recovery/M1 completion claim.",
+        "next": "Implement explicit activated-epoch2 positive recovery with the necessary one-way closing barrier; no writer adoption or source2 closure. Contract and task own acceptance.",
         "builds": [
           {
             "source": "ec3e2c4f413a5e3eb33aaa52c5f572215c23a056",
@@ -15519,10 +15519,241 @@
               "scope": "Root independent retrospective replay of preserved actual off capture; original2032894 FAIL retained, remaining4NOT_RUN",
               "oracle_sha256": "b25802fe1c3f7db9946a76beb2d92ccaa7a1bcc55acd68addd21e6d0f734276f"
             }
+          },
+          {
+            "source": "61a3de10e458b891babbf4bd52212473ec52164a",
+            "owner": "1020f240da197ca01f1a56ee61eb17aa",
+            "client": {
+              "id": "bc66c494fbd8d83aba033a6dcb94251236ecf1fff75738fdff7a5597c7262638",
+              "name": "bigbrotr-acquisition-binding-61a3de1"
+            },
+            "status": "PASS_INSTALLED_LIVE_INITIAL_SUCCESSOR",
+            "started_at": "2026-10-13T09:29:12.684718+00:00",
+            "finished_at": "2026-10-13T09:29:56.054234+00:00",
+            "free_bytes_after": 65690677248,
+            "databases": [
+              "bb_scope_bind_61a3de1_installed_live_off",
+              "bb_scope_bind_61a3de1_installed_live_on",
+              "bb_scope_bind_61a3de1_installed_live_missing_original",
+              "bb_scope_bind_61a3de1_installed_live_held"
+            ],
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-installed-live-engine-61a3de1",
+            "wrapper": 49363,
+            "exit_code": 0,
+            "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
+            "result_sha256": "30b44add9f3819c136496cb656d625998368cc8e593e3e39bdfb29472097ff5e",
+            "cases": [
+              {
+                "name": "installed-live-off",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-live-off",
+                  "snapshots": 5,
+                  "sql_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 84,
+                  "original_inputs": 4,
+                  "final_inputs": 6,
+                  "actual_cli": true,
+                  "certification_per_resend": "not-observed",
+                  "completion": "not-qualified"
+                },
+                "controls": 31
+              },
+              {
+                "name": "installed-live-on",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-live-on",
+                  "snapshots": 5,
+                  "sql_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 98,
+                  "original_inputs": 4,
+                  "final_inputs": 6,
+                  "actual_cli": true,
+                  "certification_per_resend": "not-observed",
+                  "completion": "not-qualified"
+                },
+                "controls": 31
+              },
+              {
+                "name": "installed-live-epoch2",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-live-epoch2",
+                  "snapshots": 0,
+                  "sql_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 98,
+                  "original_inputs": 6,
+                  "final_inputs": 6,
+                  "actual_cli": true,
+                  "certification_per_resend": "not-observed",
+                  "completion": "not-qualified"
+                },
+                "controls": 12
+              },
+              {
+                "name": "installed-live-missing-original",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-live-missing-original",
+                  "snapshots": 0,
+                  "sql_tables": 72,
+                  "native_rows": 49,
+                  "native_sequence": 58,
+                  "original_inputs": 3,
+                  "final_inputs": 3,
+                  "actual_cli": true,
+                  "certification_per_resend": "not-observed",
+                  "completion": "not-qualified"
+                },
+                "controls": 12
+              },
+              {
+                "name": "installed-live-held",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-live-held",
+                  "snapshots": 0,
+                  "sql_tables": 72,
+                  "native_rows": 49,
+                  "native_sequence": 58,
+                  "original_inputs": 4,
+                  "final_inputs": 4,
+                  "actual_cli": true,
+                  "certification_per_resend": "not-observed",
+                  "completion": "not-qualified"
+                },
+                "controls": 12
+              }
+            ],
+            "root_replay": {
+              "status": "PASS_ROOT_INDEPENDENT_ACTUAL_REPLAY",
+              "source": "61a3de10e458b891babbf4bd52212473ec52164a",
+              "cases": [
+                {
+                  "mode": "installed-live-off",
+                  "verification": {
+                    "status": "PASS",
+                    "mode": "installed-live-off",
+                    "snapshots": 5,
+                    "sql_tables": 72,
+                    "native_rows": 70,
+                    "native_sequence": 84,
+                    "original_inputs": 4,
+                    "final_inputs": 6,
+                    "actual_cli": true,
+                    "certification_per_resend": "not-observed",
+                    "completion": "not-qualified"
+                  },
+                  "controls": 31,
+                  "context_sha256": "f2b14a5416e7e39c28e2e5d0a613e41e5f4a0be94e4dc9509da38225d6870f40"
+                },
+                {
+                  "mode": "installed-live-on",
+                  "verification": {
+                    "status": "PASS",
+                    "mode": "installed-live-on",
+                    "snapshots": 5,
+                    "sql_tables": 72,
+                    "native_rows": 84,
+                    "native_sequence": 98,
+                    "original_inputs": 4,
+                    "final_inputs": 6,
+                    "actual_cli": true,
+                    "certification_per_resend": "not-observed",
+                    "completion": "not-qualified"
+                  },
+                  "controls": 31,
+                  "context_sha256": "a4a221288de0620badab2419b77972af5abc15f7dc95e405e697fe96b6513245"
+                },
+                {
+                  "mode": "installed-live-epoch2",
+                  "verification": {
+                    "status": "PASS",
+                    "mode": "installed-live-epoch2",
+                    "snapshots": 0,
+                    "sql_tables": 72,
+                    "native_rows": 84,
+                    "native_sequence": 98,
+                    "original_inputs": 6,
+                    "final_inputs": 6,
+                    "actual_cli": true,
+                    "certification_per_resend": "not-observed",
+                    "completion": "not-qualified"
+                  },
+                  "controls": 12,
+                  "context_sha256": "41305a3784c4fb11848a483ff4f91e23d98406e58b721de226d7f7b6ea8c2bc5"
+                },
+                {
+                  "mode": "installed-live-missing-original",
+                  "verification": {
+                    "status": "PASS",
+                    "mode": "installed-live-missing-original",
+                    "snapshots": 0,
+                    "sql_tables": 72,
+                    "native_rows": 49,
+                    "native_sequence": 58,
+                    "original_inputs": 3,
+                    "final_inputs": 3,
+                    "actual_cli": true,
+                    "certification_per_resend": "not-observed",
+                    "completion": "not-qualified"
+                  },
+                  "controls": 12,
+                  "context_sha256": "67f800d0c8e555ae1398794b1e384c83b26159032a46e3953e04061919d65866"
+                },
+                {
+                  "mode": "installed-live-held",
+                  "verification": {
+                    "status": "PASS",
+                    "mode": "installed-live-held",
+                    "snapshots": 0,
+                    "sql_tables": 72,
+                    "native_rows": 49,
+                    "native_sequence": 58,
+                    "original_inputs": 4,
+                    "final_inputs": 4,
+                    "actual_cli": true,
+                    "certification_per_resend": "not-observed",
+                    "completion": "not-qualified"
+                  },
+                  "controls": 12,
+                  "context_sha256": "854de49bf481ff53832bfbb2d1071e1568130516d1568f056747bdbf9f953a5a"
+                }
+              ],
+              "intermediate_snapshots": 10,
+              "complete_before_after_observations": 10,
+              "controls": 98,
+              "result_sha256": "30b44add9f3819c136496cb656d625998368cc8e593e3e39bdfb29472097ff5e",
+              "scope": "Root replay of independent expected sets and adversarial controls, bound to raw SQL/native/input/CLI/HTTP/wire captures; no engines or SQL"
+            },
+            "audit": "PASS root independent raw-capture/oracle replay21498 joined0:10 intermediate+10 full before/after observations and98 adversarial controls. PASS separate AI source/artifact/custody audit. No audit SQL/restart/build.",
+            "scope": "Actual installed1to2 activation under currentpolicy2/window2, authenticated finite network off/on with predecessor resend/new signed event, renewal past initial deadline, observed quiet socket SIGTERM/EOF and actual joined shutdown; epoch2/missing-original/heldnative refusals. No per-resend certification count or job completion/coverage claim; general activated recovery/Archive/ACKGC/M1 remain open.",
+            "artifact_custody_audit": {
+              "status": "PASS_ARTIFACT_CUSTODY_AUDIT",
+              "reviewer": "cleanup_review, read-only AI custody audit; harness/oracle author, not independent review of own logic",
+              "source": "61a3de10e458b891babbf4bd52212473ec52164a",
+              "result_sha256": "30b44add9f3819c136496cb656d625998368cc8e593e3e39bdfb29472097ff5e",
+              "exact_git_files": 1779,
+              "retained_elf_paths": 24,
+              "mounted_elf_paths": 4,
+              "unchanged_nonborrowed_projections": 1242,
+              "new_containers": 1,
+              "terminal": "Borrowed PG exit0/client exit143, both stopped/PID0/noOOM with exact owners",
+              "captures": "Five complete final SQL72/native/input/catalog/backend captures and ten intermediate snapshots match contexts/stdout/stderr/terminal; three new Control identities absent; holder joined0 without forced termination",
+              "preservation": "Frozen f12:21 paths/19 regular files/302273bytes and four frozen artifacts unchanged; missing input4 preserved outside clone. Original2032894 FAIL result/verification hashes, containers and artifacts retained",
+              "limits": "No SQL, restart, build, engine or mutation. Oracle semantics checked separately by root independent raw replay of98 controls."
+            }
           }
         ],
-        "qualification_source": "bf93bcc8e9b17304785665ab04bf35f308895b4a",
-        "qualification_integrated": "8511b4f"
+        "qualification_source": "f9e751fc0d09f92a0f1c663b40479ed85ea9609b",
+        "qualification_integrated": "94a16a0eae1466cb257757c86719ec6086b3cbf1"
       }
     }
   }

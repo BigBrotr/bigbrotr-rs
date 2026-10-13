@@ -350,7 +350,9 @@ attribution domains. Current policy and scheduling renewal govern new work;
 historical registration remains evidence of the predecessor. Provenance-off keeps
 local receive evidence while suppressing new provenance. The detailed
 [activation and acceptance contract](ingest-registration.md#installed-live-initial-successor-under-implementation)
-owns this unfinished slice. General activated-owner recovery, repeated lifetimes,
+owns this bounded consumer. Connected61a3de1 qualifies the installed off/on network
+journeys, renewal and the three startup refusals, retaining original signed data.
+General activated-owner recovery, repeated lifetimes,
 Archive restart, coverage and ACK/GC remain unimplemented here.
 
 ## Exact dependency source basis

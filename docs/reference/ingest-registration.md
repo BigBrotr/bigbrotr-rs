@@ -583,3 +583,16 @@ event, renewal beyond the original target deadline, complete SQL/native/input
 preservation and shutdown. Compare provenance-off with provenance-on; include the
 three startup refusals above and affected original-initial regressions. This finite
 Sync consumer does not claim coverage, ACK/GC, Archive restart or M1 completion.
+
+Connected61a3de1 qualifies five installed Serve invocations: provenance off/on,
+existing epoch2, missing original and competing native owner. Root independently
+replayed ten intermediate plus ten complete before/after observations and98
+adversarial controls. Off retains70 native rows/sequence84 and on84/98; both retain
+four original inputs and add two target inputs. Current policy2/window2 wins over
+startup managed drift, and renewal remains live beyond the initial target deadline.
+The selected quiet socket is observed outstanding at SIGTERM and later reaches
+EOF; actual native/driver/Control shutdown is joined. Three wire event frames do
+not establish three individual certifications or completed job coverage. Exact
+build787e1fe passes15 affected tests and Clippy; three signed-recovery and two
+initial Sync-window regressions pass with the same binaries. First2032894 failure
+and corrected retrospective off replay remain retained in the existing evidence.

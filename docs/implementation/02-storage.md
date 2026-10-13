@@ -300,10 +300,16 @@ One owner serializes exact identity decisions for each writable directory.
   failed request fixture915478c remains retained. Connected983342e qualifies the
   first-manifest fence and four renewal refusal/expiry/COMMIT-loss cases:
   67full snapshots/108capture controls, with independent artifact/custody audit.
-  Real network provenance-off and installed/general successor recovery remain open.
-  Next, the explicit installed live-successor consumer shares finite Sync under
-  current activation policy and opaque native authority; Archive selection refuses
-  until its lifetime-specific assumptions are replaced. Activated-zero old-loader refusals and unactivated
+  Installed61a3de1 now qualifies five actual live-successor Serve commands with
+  real provenance-off/on finite network acquisition, current activation policy2/
+  window2, renewal and epoch2/missing-original/held-native refusals. Root replay
+  checks10 intermediate+10 complete before/after observations and98 controls;
+  affected signed3/initial Sync-window2 regressions pass on build787e1fe. The first
+  catalog/release-oracle failure2032894 remains retained. Next is positive recovery
+  of an activated epoch2 producer under fresh Control, including its closing
+  barrier without writer adoption; source2 closure and repeated lifetimes remain
+  separate obligations. Archive selection refuses until its lifetime-specific
+  assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
   refusal is its epoch preflight, not the SQL receipt veto;
   the finite import setting does not close this step or M1.
