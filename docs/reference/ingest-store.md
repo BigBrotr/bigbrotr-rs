@@ -481,10 +481,59 @@ interrupted or unknown outcome, inspect retained state and retry the same comman
 in a fresh process. This operation leaves producer2 closing and its Ingest lifetime
 unretired; it starts no acquisition and keeps `ready=false`.
 
-First/retry on two closed sources and final abandonment COMMIT reply loss with
-fresh retry pass eight installed commands. Genuine extra claims, raw SQL guards
-and ordinary HTTP privilege regression remain pending under the
-[activated abandonment contract](ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation).
+The selected qualification covers first/retry on two closed sources, final
+abandonment COMMIT reply loss with fresh recovery, genuine extra claims and an
+untouched accepted job, raw SQL guards, ordinary HTTP with recovery-only privileges
+removed, the combined64 bound and full-batch refusal. Actual installed SIGTERM
+and a finite adapter with real Control UTC expiry both exercise the final job wait
+without partial terminal writes. The HTTP evidence retains a missing first
+schema32 migration-response limitation; later ledger and reapply captures remain.
+See the [activated abandonment contract](ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation)
+and its linked evidence for exact sources, retained failures and workload bounds.
+
+## Retiring the activated initial lifetime (under qualification)
+
+After explicit source2 closure and acquisition abandonment, preserve the native
+directory and every original input, apply migration0037, and select:
+
+```sh
+bigbrotr ingest recover --file ROOT --retire-activated-initial
+```
+
+Retain the existing recovery privileges. Using the provisioning credential, grant
+the configured recovery application role:
+
+```sql
+GRANT EXECUTE ON FUNCTION control.lock_activated_initial_retirement(bytea),
+    control.require_activated_initial_retirement(bytea),
+    control.require_activated_initial_retirement_transition(bytea,bytea,bigint)
+    TO bigbrotr_control;
+```
+
+This command observes the already closed native producer and positively verifies
+every original request against its existing PostgreSQL copy. It does not create
+missing copies or complete source closure or abandonment. It atomically retires
+producer2, closes its nine allocation domains, releases its Ingest owner with
+storage fencing and retires its role. Source2 keeps its original closure time,
+cut, digest and row version. Native state, original inputs, receipts, jobs, gaps
+and browser sessions remain intact.
+
+Missing or conflicting inputs/copies, incomplete closure, unresolved acquisition
+claims, import bindings/checkpoints or mixed terminal history refuse. Every native
+Event needs its acquisition job and completed gap, including a rejected or already
+durable Event. A historical issuer need not remain live; current recovery uses a
+fresh actual Control owner and accepted policy. An exact retry verifies the same
+proofs and preserves the original terminal timestamp and row versions.
+
+Success reports `state=activated-initial-retired`, the source cut/digest and decimal
+request counts. `ingest_retirement` contains decimal `allocation_domains` and
+`acquisition_gaps`, `owner_release=committed`, `native_acknowledged=0` and
+`native_retired=0`. Native close, current Control release and joined transport
+precede delivery; `ready=false`. Preserve all state after an interrupted or unknown
+outcome and retry this mode in a fresh process. It conflicts with every other
+recovery flag, reclaims no capacity and activates no replacement writer.
+Implementation and actual qualification remain tracked under the
+[retirement contract](ingest-registration.md#activated-initial-producer-retirement-under-implementation).
 
 ## Exact dependency source basis
 

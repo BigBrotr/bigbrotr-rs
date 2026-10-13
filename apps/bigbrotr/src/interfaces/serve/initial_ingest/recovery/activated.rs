@@ -4,6 +4,7 @@ use bigbrotr::storage::postgres::control_owner::{
     ActivatedInitialResolveRequest, InitialHistoryRequest,
 };
 
+mod retirement;
 mod source;
 
 const METADATA_BYTES: u64 = 128 * 1024;
@@ -13,6 +14,7 @@ pub(super) enum Mode {
     Resolve,
     CloseSource,
     AbandonAcquisition,
+    RetireInitial,
 }
 
 /// Field order preserves native-first teardown on errors and unwinding too.
@@ -87,12 +89,12 @@ async fn own(
     let metadata = grant(&budget, METADATA_BYTES, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
-    if mode != Mode::Resolve {
+    if matches!(mode, Mode::CloseSource | Mode::AbandonAcquisition) {
         // Publication overlaps metadata and closing, after dropping replay data.
         drop(grant(&budget, 64 * 1024, 0)?);
     }
-    if mode == Mode::AbandonAcquisition {
-        // Abandonment follows source publication with the same retained proofs.
+    if matches!(mode, Mode::AbandonAcquisition | Mode::RetireInitial) {
+        // Each terminal operation retains metadata and the native closing proof.
         drop(grant(&budget, 128 * 1024, 0)?);
     }
     phase(&progress, timeout)?;
@@ -161,6 +163,18 @@ async fn own(
                 metadata,
                 closing,
                 mode,
+            )
+            .await?
+        }
+        Mode::RetireInitial => {
+            retirement::resolve(
+                &root,
+                &budget,
+                &progress,
+                &cancellation,
+                &mut custody,
+                metadata,
+                closing,
             )
             .await?
         }

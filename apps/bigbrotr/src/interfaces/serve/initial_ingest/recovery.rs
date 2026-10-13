@@ -30,6 +30,7 @@ pub(in crate::interfaces::serve) enum Action {
     ActivatedSuccessor,
     CloseActivatedSource,
     AbandonActivatedAcquisition,
+    RetireActivatedInitial,
 }
 
 pub(super) fn limits() -> ProducerRecoveryLimits {
@@ -88,6 +89,9 @@ pub(in crate::interfaces::serve) fn run(
         }
         Action::AbandonActivatedAcquisition => {
             return activated::run(root, activated::Mode::AbandonAcquisition, output);
+        }
+        Action::RetireActivatedInitial => {
+            return activated::run(root, activated::Mode::RetireInitial, output);
         }
         _ => {}
     }
@@ -354,7 +358,8 @@ async fn connected(
             Action::RetireEmptyAttempt
             | Action::ActivatedSuccessor
             | Action::CloseActivatedSource
-            | Action::AbandonActivatedAcquisition => {
+            | Action::AbandonActivatedAcquisition
+            | Action::RetireActivatedInitial => {
                 unreachable!("separate successor recovery")
             }
         });
