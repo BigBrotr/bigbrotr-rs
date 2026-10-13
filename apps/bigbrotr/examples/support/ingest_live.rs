@@ -11,6 +11,8 @@ use bigbrotr::storage::{
 use bigbrotr_model::{DatasetLineageDescriptor, EventIntent, SignedEvent};
 use sha2::{Digest, Sha256};
 
+#[path = "ingest_live_durable.rs"]
+mod durable;
 #[path = "ingest_live_refusals.rs"]
 mod refusals;
 
@@ -19,6 +21,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
         mode,
         "successor-live-zero"
             | "successor-live-rejected"
+            | "successor-live-already-durable"
             | "successor-live-guards"
             | "successor-live-normal"
             | "successor-live-off"
@@ -146,6 +149,9 @@ pub(super) async fn run(
     if mode == "successor-live-rejected" {
         reject(&probe, &mut owner, &mut writer, &spec).await;
     }
+    if mode == "successor-live-already-durable" {
+        durable::run(&probe, &mut owner, &mut writer, &spec).await;
+    }
     if refusals::is_renewal(mode) {
         refusals::renewal(&probe, (owner, driver), writer, &spec, backend, mode).await;
         drop(probe);
@@ -174,7 +180,10 @@ pub(super) async fn run(
             "commit_started":true,"error":null}));
         probe.snapshot("live-ingest-renewed").await;
     }
-    if !matches!(mode, "successor-live-zero" | "successor-live-rejected") {
+    if !matches!(
+        mode,
+        "successor-live-zero" | "successor-live-rejected" | "successor-live-already-durable"
+    ) {
         admit(
             &probe,
             &mut owner,
