@@ -78,6 +78,10 @@ fn signed_new(fixture: &Fixture, writer: &mut ActiveInitialWriter, sequence: u64
     };
     assert_eq!(receipt.batch().unwrap().first(), fact_id(2, 2));
     assert_eq!(receipt.batch().unwrap().last(), fact_id(2, 5));
+    // Frozen bootstrap order is public scope, private scope, Observer1,
+    // lineage. This public network intent uses Observer1 for both observer
+    // and clock, so its predecessor dependencies are source1 and source3;
+    // private scope at source2 is unrelated to this event.
     assert_eq!(
         receipt
             .dependencies()
@@ -88,7 +92,7 @@ fn signed_new(fixture: &Fixture, writer: &mut ActiveInitialWriter, sequence: u64
                 r.source_record_id.sequence.get()
             ))
             .collect::<Vec<_>>(),
-        [(1, 1), (1, 2), (2, 2), (2, 3), (2, 4), (2, 5)]
+        [(1, 1), (1, 3), (2, 2), (2, 3), (2, 4), (2, 5)]
     );
 }
 
