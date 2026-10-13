@@ -110,6 +110,8 @@ def raw_cases(guards, plan, prior, current, database, window):
     assert [g['server_us'] for g in gates] == sorted(g['server_us'] for g in gates)
     assert gates[0]['server_us'] <= moments[0] <= moments[1] <= gates[1]['server_us']
     assert gates[2]['server_us'] <= moments[2] <= moments[3] <= gates[3]['server_us']
+    refresh_at = current['lease_expires_at_us'] - 20_000_000
+    assert gates[1]['server_us'] <= refresh_at, 'guard refresh predates gate release'
     assert guards['run'] == dict(singleton=True, status='complete', executions=1, xmin=current['xmin'])
     cases = guards['cases']
     assert len(cases) == 14
@@ -124,7 +126,7 @@ def raw_cases(guards, plan, prior, current, database, window):
     receipt_base = {key: intent[key] for key in fields}
     receipt_base.update(activated_by_resource=current['resource_id'], activated_by_epoch=8,
         activated_by_incarnation=current['process_incarnation'], activation_transaction=outer)
-    previous_time, subtransactions = moments[1], set()
+    previous_time, subtransactions = refresh_at, set()
     for index, (name, row) in enumerate(zip(CASES, cases, strict=True), 1):
         detail = row['detail']
         assert set(detail) == {'receipt', 'remaining_us', 'constraint_order', 'rolled_back', 'expected_function'}
@@ -243,6 +245,7 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, guard
     pg = after
     after = capture.snapshot('live-control-refreshed')
     control = refreshed(pg, after, control, server_window)
+    assert control['lease_expires_at_us'] - 20_000_000 >= receipt['activated_at_us'], 'postactivation refresh predates activation'
     pg = after
     assert capture.take('live-renewal-result') == dict(event='live-renewal-result', commit_started=True, error=None)
     after = capture.snapshot('live-ingest-renewed')
@@ -304,12 +307,14 @@ def negative_controls(events, original, native, inputs, mode, *, seed, server_wi
     verify(events, original, native, inputs, mode, seed=seed, server_window=server_window, guards=guards)
     rejected = []
 
-    def check(name, mutate):
+    def check(name, mutate, message=None):
         e, g = copy.deepcopy(events), copy.deepcopy(guards)
         mutate(e, g)
         try:
             verify(e, original, native, inputs, mode, seed=seed, server_window=server_window, guards=g)
-        except (AssertionError, KeyError, ValueError, TypeError, StopIteration):
+        except (AssertionError, KeyError, ValueError, TypeError, StopIteration) as error:
+            if message is not None:
+                assert isinstance(error, AssertionError) and str(error) == message, (name, error)
             rejected.append(name)
         else:
             raise AssertionError('oracle accepted perturbation: ' + name)
@@ -351,6 +356,30 @@ def negative_controls(events, original, native, inputs, mode, *, seed, server_wi
     check('rehashed-unreviewed-sql', different_sql)
     check('remove-script-unreviewed', lambda e, g: g.update(remove_sql='COMMIT;'))
     check('future-case-clock', lambda e, g: g['cases'][0].update(observed_at_us=server_window['after_us'] + 1))
+    def guard_backdated(e, g):
+        expiry = g['control']['acquired_at_us'] + 20_000_000
+        def change(p):
+            live.only(p['owner_epochs'], role='control', epoch=8)['lease_expires_at_us'] = expiry
+        for phase in ('after_refresh', 'clean'):
+            change(g[phase])
+        for stage in ('guards-refreshed', 'guards-clean', 'activated-zero'):
+            sql(e, stage, change)
+        plan = live.only(e, event='successor-plan')
+        for case in g['cases']:
+            detail = case['detail']
+            detail['remaining_us'] = min(expiry, plan['lease_expires_at_us']) - detail['receipt']['activated_at_us'] - 1
+    check('coherent-guard-refresh-backdated', guard_backdated, 'guard refresh predates gate release')
+    def activation_backdated(e, g):
+        expiry = live.only(e, event='live-activation-result')['activated_at_us'] - 1 + 20_000_000
+        for stage in ('live-control-refreshed', 'live-ingest-renewed', 'dictionary',
+                'new-event', 'same-request', 'same-id-alternate-signature',
+                'final-before-control-end', 'final-after-control-end', 'final'):
+            def change(p):
+                live.only(p['owner_epochs'], role='control', epoch=8)['lease_expires_at_us'] = expiry
+                if stage != 'live-control-refreshed':
+                    live.only(p['owner_epochs'], role='ingest', epoch=2)['lease_expires_at_us'] = expiry
+            sql(e, stage, change)
+    check('coherent-postactivation-refresh-backdated', activation_backdated, 'postactivation refresh predates activation')
     check('renewal-not-committed', lambda e, g: live.only(e, event='live-renewal-result').update(commit_started=False))
     check('renewal-changes-intent', lambda e, g: sql(e, 'live-ingest-renewed',
         lambda p: live.only(p['initial_ingest_successions']).update(lease_expires_at_us=1)))
