@@ -171,7 +171,7 @@ impl ControlSession {
         owner_epoch: u64,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
-        self.begin_initial_history_locked(recovery, input, owner_epoch, false, validate)
+        self.begin_initial_history_locked(recovery, input, owner_epoch, 30, validate)
             .await
     }
 
@@ -181,7 +181,17 @@ impl ControlSession {
         input: &InitialHistoryRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
-        self.begin_initial_history_locked(recovery, input, 2, true, validate)
+        self.begin_initial_history_locked(recovery, input, 2, 31, validate)
+            .await
+    }
+
+    pub(super) async fn begin_activated_initial_history<'a, E>(
+        &'a mut self,
+        recovery: &IngestRecovery,
+        input: &InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
+        self.begin_initial_history_locked(recovery, input, 2, 33, validate)
             .await
     }
 
@@ -190,7 +200,7 @@ impl ControlSession {
         recovery: &IngestRecovery,
         input: &InitialHistoryRequest<'_>,
         owner_epoch: u64,
-        exclusive_control: bool,
+        required_schema: u32,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
         let identity = recovery.manifest().identity();
@@ -216,10 +226,10 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, if exclusive_control { 31 } else { 30 })
+        let tx = application_transaction(&mut self.client, required_schema)
             .await
             .map_err(transaction_error)?;
-        if exclusive_control {
+        if required_schema >= 31 {
             // Generic zero-request import claims take SHARE on this Control.
             // Exclude them before dataset/target custody and any absence check.
             tx.query_one(

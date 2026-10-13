@@ -3,11 +3,12 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
-fn initial_preparation_retirement_and_activation_are_distinct_additive_protocols() {
+fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_protocols() {
     for (previous, target, name) in [
         (29, 30, "0030_initial_succession.sql"),
         (30, 31, "0031_initial_empty_retirement.sql"),
         (31, 32, "0032_initial_activation.sql"),
+        (32, 33, "0033_activated_initial_recovery.sql"),
     ] {
         let applied: Vec<_> = plan(&[], previous)
             .unwrap()

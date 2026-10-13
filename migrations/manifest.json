@@ -193,6 +193,10 @@
     {
       "version": 32,
       "name": "0032_initial_activation.sql"
+    },
+    {
+      "version": 33,
+      "name": "0033_activated_initial_recovery.sql"
     }
   ],
   "reserved": [
