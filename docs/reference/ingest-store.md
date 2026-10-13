@@ -355,7 +355,7 @@ journeys, renewal and the three startup refusals, retaining original signed data
 General activated-owner recovery, repeated lifetimes,
 Archive restart, coverage and ACK/GC remain unimplemented here.
 
-## Recovering the activated successor (under qualification)
+## Recovering the activated successor
 
 After stopping the epoch2 owner, the selected finite recovery command is:
 
@@ -386,11 +386,14 @@ Missing inputs, incompatible identities or unresolved reservations refuse; prese
 the state and retry this same mode after resolving the reported prerequisite.
 An interrupted or unknown outcome is never permission to reinitialize the store.
 The [recovery contract](ingest-registration.md#activated-initial-producer-recovery-under-implementation)
-owns qualification. Eight actual invocations pass for provenance off/on positive
-recovery, retry and missing PostgreSQL copy, plus zero-work recovery/retry. Current
-policy advancement and expired historical scheduling preserve original inputs and
-outcomes. COMMIT-loss, corrupt-state and issued-positive/source-zero qualification
-remain pending; source2 closure, retirement and general lifetimes remain separate.
+owns qualification. The selected boundary passes 27 actual CLI invocations:
+eight positive/retry/missing-copy cases, four COMMIT losses with four fresh
+recoveries, two recoveries of a real rejected request with zero source facts, and
+nine corrupt-input/identity/dependency or held-native refusals. One finite typed
+producer supplies the rejected-request seed; this does not qualify installed
+import. Current policy advancement and expired historical scheduling preserve
+original inputs and outcomes. Source2 closure, retirement, repeated lifetimes and
+Archive restart remain separate responsibilities.
 
 ## Exact dependency source basis
 

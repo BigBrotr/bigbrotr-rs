@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T11:10Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T11:23Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,18 +14,13 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-25344ca (full revision in Git). Private push e167c37 and eight source branches verified
-by exact remote refs; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
-Sourcezero fixtureb6345a9 integrated4da99bc, dispatch/evidenceced4c42. Fixed native
-corruptionprobec48cc66 integratedd4f1133. Probe buildprofile/sourcezero recorde167c37, oracle0cf1b37 and driver25344ca integrated.
-Root owns pending refusaldispatcher and build evidence/checkpoint updates. No product changes since2a018ea.
-
-Retain every worktree and previous branch/artifact. Root alone runs builds/engines
-and integrates. Refusal driverc461a6a and oraclea4a6c6f branches are clean; actual
-qualification remains next. Native/PG agents now prepare read-only source2closure/
-retirement designs; no contract change or implementation authorized by those notes.
-Driver author prepares the next raw artifact/custody audit, root performs independent
-semantic replay. This changes no existing task-plan authority.
+f6d6ebb (full revision in Git). Last verified private push e167c37 and eight source
+branches; main54ad09d unchanged. Root owns only pending qualification documentation,
+evidence and inventory. No merge/rebase/cherry-pick pending. Product inputs remain
+unchanged from2a018ea; e167c37 builds the fixed refusal probe. Root alone integrates
+and runs engines/builds. All three separate agent worktrees are committed clean;
+read-only source2 closure designs and refusal raw custody audit are complete.
+Preserve every worktree and previous branch/artifact.
 
 Current authority: `implementation_activated_initial_recovery_20261013` lab inventory
 and `activated_recovery_20261013` in existing recovery evidence.
@@ -98,14 +93,28 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit the reviewed `--ingest-activated-refusals` dispatcher and build record, then
-run nine fresh off-seed refusals with retained e167c37 CLI/probe: missing/corrupt
-input2, missing/corrupt private VisibilityScope fact(source1,sequence3), wrong
-activation/handoff, extra producer, foreign stream, heldnative. Preserve operator
-preimages and every final state. Replay refusals follow durableclosing; heldnative
-must refuse before Control. Driver11pure checks and oracle18artificialobservations/
-151controls pass; these remain actual NOT_RUN. Root/independent Python review closed
-one availableSQL/input preservation edge before failed nativeinspection.
+Commit the qualified recovery record and verify its private push. Then commit the
+source2-only closure contract before implementation: distinct native/PG proof,
+exact ordered original prefix, additive SQL source classifier, no source1 changes,
+no epoch2 workflow retirement yet. Ordinary positive recovery remains source=open;
+completed closure retries require existing exact PG copies without terminal repair.
+Native and PG agents have read the affected owners and agree on this boundary.
+
+Enginef6d6ebb PASS_INSTALLED_ACTIVATED_RECOVERY_REFUSALS: nine fresh off-seed clones,
+nine actual CLI exits4/reaped/nonforced. Missing/corrupt input2 or old dependency1/3
+preserve durable native/SQL closing. Activation/handoff/extra producer/foreign stream
+refuse before closing; held native refuses before Control, holder joined0. Original
+seed and all mutation preimages retained. Root18 full observations+18 operator
+observations/151 controls PASS; separate driver-author raw/custody audit binds319
+artifacts,1794engine/1792build source files,45ELFs,1255 nonborrowed projections.
+Root `/runs/ingest-activated-refusals-engine-f6d6ebb`, owner
+ebae60e261e7e1325695f91ce5081ae5, resultSHA
+35eee19558977e31963f9f0979db9388ad9e8a0b5fd0a0cc1d9a71eb4f2cddd2.
+Root first read-only audit failed on Docker ID-versus-name expectation; v2 binds
+actual recorded name to terminal ID and passes. Agent audit corrected a label
+spelling assumption. Failed audit scripts/logs preserved; no product/capture change
+or engine rerun. This completes selected activated recovery qualification across
+27 actual CLI plus one finite source0 seed; all existing milestone gates stay open.
 
 Exact builde167c37 PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY: compile and Clippy,
 Rust1.98.1/Clang14. All product inputs unchanged from2a018ea; only two example files
@@ -165,8 +174,8 @@ capture, PostgreSQL failure log, originalclone and container retained. Rootcusto
 1787files/38ELFs/70originalpaths/1247unrelated projections PASS; all originalseeds intact.
 
 Finite successor-live-rejected probe compile/Clippy PASS at2a018 and actual seed plus
-installed first/retry PASS atced4c42. Corrupt/missing dependency/input, identity/handoff/
-foreignstream and heldnative refusals remain owed. Source2closure/retirement, repeatedlifetimes and Archive/Sync restart
+installed first/retry PASS atced4c42. Nine corrupt/missing input/dependency, identity/handoff/foreignstream and heldnative
+refusals PASS atf6d6ebb. Source2closure/retirement, repeatedlifetimes and Archive/Sync restart
 remain later obligations; no writer conversion, ACK/GC or fabricatedInitialRegistration.
 
 M1 additionally owes archive/index/read/export/restart journeys and outages; five
@@ -176,13 +185,12 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-All wrappers terminal: latest sourcezeroengine9264 joined0, rootaudit44574 joined0.
-At the root audit observation recorded in `root-independent-audit.json`, PG/client
-0/143 stopped/PID0/noOOM and1252nonborrowed projections unchanged. Latest client
-088c96955cc16102e8006a50b614386268c54d16e94f1dce43e9e75e164f3394.
-Latest build43185 and buildaudit10689 joined0; both ownedbuild containers stopped0/
-PID0/noOOM;1254priorprojections unchanged.45ELFs retained outside cache.
-No engine/build active. Preserve all artifacts and failures.
+All wrappers terminal: latest refusalengine3456 and root replay71290 joined0.
+PG/client0/143 stopped/PID0/noOOM; artifact custody observation11:12:48Z confirms
+1255 nonborrowed projections unchanged and45ELFs retained outside cache. Latest
+clientc358b821bac921d8ba69262503837626395aec747a263bae150ceaed2d21f31d.
+Latest build43185/buildaudit10689 joined0. No engine/build active. Preserve all
+artifacts, operator preimages, original failures and failed audit attempts.
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
 - Retired f12: `ingest-recovery-engine-f12dbf0/bindings/retire_signed/store`, DB
@@ -206,7 +214,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space aftersourcezeroengine10:58Z:62,742,745,088bytes(about58.4GiB). Remeasure before allocation.
+Free space observed 2026-10-13T11:23Z: 62,123,298,816 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18

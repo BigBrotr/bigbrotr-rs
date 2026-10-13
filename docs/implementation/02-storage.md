@@ -314,7 +314,10 @@ One owner serializes exact identity decisions for each writable directory.
   durable and existing recorder attribution immutable. Sourcezeroced4c42 adds one
   actual Signature rejection and two installed recoveries,9seed snapshots plus
   4complete observations/34controls;53native rows/fiveinputs/source0 stay exact.
-  Corrupt/held refusal qualification remains. Recovery uses fresh Control via explicit
+  Refusalf6d6ebb passes nine actual corrupt/input/identity/held-native commands,
+  18complete before/after observations plus18operator preimages and151controls.
+  Missing/corrupt input or olddependency refusal preserves durable closing; heldnative
+  refuses before Control. Recovery uses fresh Control via explicit
   `ingest recover --activated-successor`, including its closing barrier under the
   [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
   without writer adoption; source2 closure and repeated lifetimes remain

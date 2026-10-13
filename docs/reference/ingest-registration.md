@@ -599,7 +599,7 @@ and corrected retrospective off replay remain retained in the existing evidence.
 
 ## Activated initial producer recovery (under implementation)
 
-The next responsibility is explicit `ingest recover --activated-successor --file
+The selected command is explicit `ingest recover --activated-successor --file
 PATH`, mutually exclusive with the earlier source-closure/retirement actions.
 Configuration, the existing local native store and retained database/input state
 are its only startup inputs. It uses fresh Control and current accepted policy to
