@@ -757,3 +757,134 @@ final source-close COMMIT loss before forwarding and after server completion wit
 fresh-process recovery. Preserve captures and ambiguity; distinguish actual CLI
 exit, supervisor join and backend absence. Epoch2 workflow abandonment/retirement
 remains subsequent work because the current gap protocol owns epoch1 only.
+
+## Activated initial acquisition abandonment (under implementation)
+
+This bounded responsibility continues P02-T01 Step5 / P02-T02 Step4 in the
+[storage tasks](../implementation/02-storage.md), enabling P01-T09 Step4 in the
+[first useful composition](../implementation/01-foundation.md). Qualification
+belongs in the existing
+[producer recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json);
+this selection does not complete those steps or M1.
+
+The explicit command is `ingest recover --abandon-activated-acquisition --file
+PATH`, mutually exclusive with every other recovery action. Share the installed
+activated source path: own the configured native store first, claim fresh actual
+Control, positively replay the complete target request prefix and close source2
+or observe its exact closure. Then record uncertainty for the activated owner's
+queued acquisition intents. Source closure and positive outcome copies may already
+have committed when abandonment later refuses; preserve and report those effects.
+The command starts no listener or acquisition and never adopts the old writer.
+
+The terminal adapter consumes no portable authority. It borrows the same
+`ClosedActivatedInitialSource` and `ResolvedActivatedSource` through dispatch,
+checks their exact association, counts, source cut and digest, and revalidates
+native root/sequence and the complete two-stream context before and after waits
+and before COMMIT. Reuse the ordered SQL input/outcome comparison against this
+positive witness. The final transaction requires the exact already closed source2
+and closing producer2. A decoded handoff, copied digest or fabricated epoch2
+`InitialRegistration` cannot replace either proof. No native format, additional
+native write, source digest or writer conversion is introduced.
+
+Use additive migration 0036 to extend `control.acquisition_gaps`, retaining its
+job primary key, foreign keys, producer index and immutable history. Replace the
+epoch1-only checks with this exact paired union:
+
+| Producer epoch | Source owner epoch | Reason |
+| --- | --- | --- |
+| 1 | 1 | `initial_producer_abandoned` |
+| 2 | 2 | `activated_initial_producer_abandoned` |
+
+No other combination is supported. Preserve applied migration bytes, every
+epoch1 row and its reason, the initial API and its existing application grants.
+The epoch2 INSERT guard selects the complete activated source classifier and
+binds the previous job owner to the immutable activation's Control tuple. This
+is the activating Control, not the original producer-slot registrar or target
+Ingest incarnation. Require that historical Control to be positively fenced,
+the exact closed source2 cut/digest, complete original outcome copies and the
+current actual recovery issuer. The gap time must follow source closure and job
+creation and remain within current server UTC and Control authority.
+
+Select every acquisition claim attributed to that activating Control, including
+jobs with no mutation request. Accepted unclaimed jobs and jobs of unrelated
+Control lifetimes remain unchanged. Handle only typed protocol1 queued jobs with
+sealed input and checkpoint zero. Read retained producer2 gaps and selected claims
+through indexed, sorted queries with an excess-row discriminator; their combined
+count must be at most64, independently of the producer's request count. Validate
+the complete batch and all retained gap/job relations before the first new gap
+INSERT. Refuse unsupported or advanced selected history, inconsistent retained
+gaps or excess count without partial abandonment.
+
+Each new gap retains the exact original job revision and claim, producer2,
+source2 cut/digest, current recovery issuer and server timestamp. Immutable job
+detail supplies the original actor, scope, selectors and requested duration.
+Record whole-intent uncertainty, without inventing an execution interval or
+partial traversal. Gap insertion and queued→cancel_requested→cancelled commit
+atomically, preserving the established two revision advances and using the gap's
+reason and timestamp. Only this exact gap permits transfer of the terminal write
+to current Control; it grants no execution. Deferred gap INSERT checks reject an
+incomplete cancellation, and completed jobs and gaps remain immutable, including
+after an early `SET CONSTRAINTS`. Exact retry revalidates retained gaps and returns
+the same total without rewriting their issuer, timestamp, job revision or xmin.
+
+Preserve 0028's ordinary-job privilege correction. Add no deferred jobs UPDATE
+trigger that makes acceptance, same-owner claims or ordinary mutations query
+recovery tables. The existing owner-change guard gains only the exact epoch2
+gap-backed terminal transfer; the epoch1 branch keeps its behavior. The new
+abandonment transaction requires schema36 and its narrow recovery privileges.
+Rebuilt existing consumers retain their earlier minimum prerequisites while
+validating the complete known additive ledger. Old binaries cannot treat the
+unknown migration as compatible history.
+
+Acquire actual current Control UPDATE before dataset UPDATE, followed by the
+existing ordered historical/target parents, source UPDATE, producer UPDATE and
+sorted job UPDATE locks. Recheck current accepted policy, Control identity and
+server UTC after waits and before final effects. Expired historical Ingest or job
+scheduling, revoked old actor/session/grants, withdrawn enrollment or changed
+historical execution policy do not authorize adoption and must not prevent
+recording this uncertainty under current recovery authority. Preserve original
+accepted intent and browser-session rows; this operation does not revoke or renew
+sessions. The installed local executor borrows native custody throughout its
+socket callback, so exclusive native recovery and the separate actual Control
+fence exclude that executor. No remote-worker exclusion guarantee follows.
+
+Before any claim or barrier, reserve the existing native, Control/driver,
+128KiB retained metadata, 4096-byte data/native closing proof and one bounded
+input/outcome replay pair. Preflight a 128KiB final abandonment grant alongside
+retained metadata/closing custody; release replay grants before this operation.
+The source publication's 64KiB grant and abandonment's 128KiB grant are sequential.
+Cancellation, failed delivery and unknown COMMIT leave no reusable session
+authority. Keep native custody through close, then drop or release Control as
+appropriate and join its actual transport driver while retaining its grant.
+Only a fresh configuration-only process may resolve an unknown outcome by
+replaying the same retained state.
+
+The successful report uses `state=activated-acquisition-abandoned`, producer2,
+decimal issued/reserved/resolved counts and the exact source2 closure digest/cut.
+Its `acquisition_abandonment` names the total jobs, reason
+`activated_initial_producer_abandoned` and `coverage=unknown`. Native close,
+committed Control release and joined shutdown precede publication; `ready=false`.
+Neither an observed EOSE nor positive native outcomes certify traversal coverage.
+
+Acceptance uses preserved copies of the qualified installed off source and the
+genuine AlreadyDurable/source0 closure, each with first abandonment and a separate
+process retry. Under a genuinely live activating Control, add a typed claimed
+but unexecuted zero-request job and an untouched accepted unclaimed job; do not
+forge a historical claim after that backend exits. Check all SQL rows/xmins,
+source1/handoff/activation, native rows/sequence, exact original inputs, job detail
+and sessions. Narrow raw SQL cases must discriminate paired epoch/reason identity,
+activator versus registrar, source cut/digest, incomplete cancellation and retained
+immutability. Exercise final abandonment COMMIT loss before forwarding and after
+server completion, followed by fresh-process recovery with exact backend
+exclusion. Verify ordinary HTTP acceptance/claim on schema36 with its existing
+grants, preserving the 0028 compatibility boundary. Retain failures and distinguish
+synthetic controls, finite probes and actual installed qualification.
+
+Keep the source classifier's active/draining observation, but implement no
+active→draining transition. Producer2 remains closing, target domains remain
+active and target Ingest remains unreleased with its role unretired. Producer/
+domain/owner retirement, import obligations, ACK/GC, epoch3 and Archive remain
+separate responsibilities. Event classification from the positive native input
+must be retained for eventual retirement, so unbound Event requests cannot evade
+its workflow veto through nullable SQL fields; exposing that classification is
+deferred and is not a prerequisite of this acquisition-only operation.
