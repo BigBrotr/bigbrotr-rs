@@ -108,7 +108,7 @@ pub fn corrupt(path: &Path, mutation: &str) {
     corrupt_fixture(path, mutation, false);
 }
 
-/// Five fixed mutations of the qualified installed off fixture. The laboratory
+/// Fixed mutations of the qualified installed off fixture. The laboratory
 /// must supply a fresh owned clone with no active native owner. This is not an
 /// arbitrary-key mutator or a product recovery operation.
 pub fn corrupt_activated(path: &Path, mutation: &str) {
@@ -119,6 +119,7 @@ pub fn corrupt_activated(path: &Path, mutation: &str) {
             | "wrong-handoff"
             | "extra-producer"
             | "foreign-stream"
+            | "retained-target-tail"
     ));
     corrupt_fixture(path, mutation, true);
 }
@@ -197,6 +198,17 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
         assert_eq!(&handoff[344..], manifest.encode().as_bytes());
         ProducerSlotId::try_from(<[u8; 16]>::try_from(&handoff[2..18]).unwrap()).unwrap()
     });
+    if mutation == "retained-target-tail" {
+        truncate_target_prefix(
+            db,
+            path,
+            &manifest,
+            slot.unwrap(),
+            before_rows,
+            before_sequence,
+        );
+        return;
+    }
     let key = match mutation {
         "missing-handoff" | "wrong-handoff" => handoff_key,
         "target-nonzero" => IngestKey::SourceStream {
@@ -302,6 +314,124 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
     assert_eq!(
         rows, expected,
         "only the declared native fixture row changes"
+    );
+}
+
+/// Keep the real source2 facts and originals, but truncate the producer's receipt
+/// prefix. This is an isolated operator fault, never an admission or repair API.
+fn truncate_target_prefix(
+    db: rocksdb::DB,
+    path: &Path,
+    manifest: &IngestManifest,
+    slot: bigbrotr_model::ProducerSlotId,
+    before_rows: Vec<serde_json::Value>,
+    before_sequence: u64,
+) {
+    use bigbrotr::storage::rocks::keys::IngestKey;
+    use bigbrotr_model::{Receipt, receipt_codec::ReceiptDecodeLimits};
+
+    let id = manifest.identity();
+    let epoch = ProducerEpoch::new(2).unwrap();
+    let request = |sequence| ProducerRequestId {
+        producer_slot_id: slot,
+        producer_epoch: epoch,
+        request_sequence: RequestSequence::new(sequence).unwrap(),
+    };
+    let receipts = db.cf_handle("receipts").unwrap();
+    let key = |sequence| {
+        IngestKey::Request {
+            request_id: request(sequence),
+        }
+        .encode()
+        .unwrap()
+    };
+    for (sequence, first, last) in [(1, 1, 1), (2, 2, 5)] {
+        let bytes = db
+            .get_cf(receipts, key(sequence).as_bytes())
+            .unwrap()
+            .unwrap();
+        let receipt = Receipt::decode_persistent(&bytes, ReceiptDecodeLimits::default()).unwrap();
+        assert_eq!(receipt.encode_persistent(65536).unwrap(), bytes);
+        assert_eq!(receipt.request_id(), request(sequence));
+        let batch = receipt.batch().unwrap();
+        assert_eq!(batch.records().len() as u64, last - first + 1);
+        for (reference, n) in batch.records().iter().zip(first..=last) {
+            let source = reference.source_record_id;
+            assert_eq!(source.dataset_id, id.dataset_id);
+            assert_eq!(source.shard_id, id.shard_id);
+            assert_eq!(source.owner_epoch.get(), 2);
+            assert_eq!(source.sequence.get(), n);
+        }
+    }
+    let source_key = IngestKey::SourceStream {
+        dataset_id: id.dataset_id,
+        shard_id: id.shard_id,
+        owner_epoch: id.owner_epoch,
+    }
+    .encode()
+    .unwrap();
+    assert_eq!(
+        db.get_cf(db.cf_handle("default").unwrap(), source_key.as_bytes())
+            .unwrap()
+            .unwrap(),
+        [&[1, 2][..], &5_u64.to_be_bytes()].concat()
+    );
+    let producer_key = IngestKey::ProducerState {
+        producer_slot_id: slot,
+        producer_epoch: epoch,
+    }
+    .encode()
+    .unwrap();
+    let producer_before = db
+        .get_cf(receipts, producer_key.as_bytes())
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        producer_before,
+        [&[1, 0x31][..], &2_u64.to_be_bytes(), &[0; 16]].concat()
+    );
+    let producer_after = [&[1, 0x31][..], &1_u64.to_be_bytes(), &[0; 16]].concat();
+    let receipt_key = key(2);
+    let receipt_before = db
+        .get_cf(receipts, receipt_key.as_bytes())
+        .unwrap()
+        .unwrap();
+    let changes = serde_json::json!([
+        {"cf":"receipts", "key":hex(receipt_key.as_bytes()), "before":hex(&receipt_before), "after":null},
+        {"cf":"receipts", "key":hex(producer_key.as_bytes()), "before":hex(&producer_before), "after":hex(&producer_after)}
+    ]);
+    emit(
+        serde_json::json!({"event":"activated-source-tail-corruption", "phase":"before",
+        "mutation":"retained-target-tail", "changes":changes, "rows":before_rows, "sequence":before_sequence}),
+    );
+    let mut batch = rocksdb::WriteBatch::default();
+    batch.delete_cf(receipts, receipt_key.as_bytes());
+    batch.put_cf(receipts, producer_key.as_bytes(), &producer_after);
+    let mut options = rocksdb::WriteOptions::default();
+    options.set_sync(true);
+    db.write_opt(batch, &options).unwrap();
+    drop(db);
+    let (rows, sequence) = raw_state(path);
+    emit(
+        serde_json::json!({"event":"activated-source-tail-corruption", "phase":"after",
+        "mutation":"retained-target-tail", "changes":changes, "rows":rows, "sequence":sequence}),
+    );
+    let mut expected = before_rows;
+    let position = expected
+        .iter()
+        .position(|r| r["cf"] == "receipts" && r["key"] == hex(receipt_key.as_bytes()))
+        .unwrap();
+    expected.remove(position);
+    let marker = expected
+        .iter_mut()
+        .find(|r| r["cf"] == "receipts" && r["key"] == hex(producer_key.as_bytes()))
+        .unwrap();
+    marker["value"] = hex(&producer_after).into();
+    assert_eq!(sequence, before_sequence.checked_add(2).unwrap());
+    assert_eq!(rows.len(), 69);
+    assert_eq!(
+        rows, expected,
+        "only receipt2 deletion and issued2→1 marker change"
     );
 }
 

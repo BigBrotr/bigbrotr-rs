@@ -921,6 +921,7 @@ fn main() {
                     | "successor-live-commit-after"
                     | "successor-live-renew-before"
                     | "successor-live-renew-after"
+                    | "successor-live-reservation-after"
                     | "successor-gap-loss-before"
                     | "successor-gap-loss-after"
                     | "empty-commit-before"

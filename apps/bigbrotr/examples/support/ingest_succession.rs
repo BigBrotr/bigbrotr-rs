@@ -100,6 +100,7 @@ pub async fn run(
             | "successor-live-commit-after"
             | "successor-live-renew-before"
             | "successor-live-renew-after"
+            | "successor-live-reservation-after"
     );
     assert_eq!(proxy_port.is_some(), commit_fault);
     assert_eq!(

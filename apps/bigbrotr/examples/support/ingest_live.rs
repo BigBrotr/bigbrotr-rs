@@ -3,10 +3,10 @@
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
-        InitialHistoryRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
-        LiveInitialWriter,
+        InitialEventError, InitialHistoryRequest, LiveInitialDictionaryAppendRequest,
+        LiveInitialEventRequest, LiveInitialWriter,
     },
-    rocks::store::{AdmissionOutcome, PreparedEvent, RejectionReason},
+    rocks::store::{AdmissionOutcome, PreparedEvent, RejectionReason, StoredReceipt},
 };
 use bigbrotr_model::{DatasetLineageDescriptor, EventIntent, SignedEvent};
 use sha2::{Digest, Sha256};
@@ -32,6 +32,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
             | "successor-live-renew-expired"
             | "successor-live-renew-before"
             | "successor-live-renew-after"
+            | "successor-live-reservation-after"
     )
 }
 
@@ -146,6 +147,12 @@ pub(super) async fn run(
     assert_eq!(writer.manifest().identity().owner_epoch.get(), 2);
     assert_eq!(writer.producer_slot_id(), spec.producer_slot_id);
     probe.snapshot("activated-zero").await;
+    if mode == "successor-live-reservation-after" {
+        reservation_after(&probe, owner, driver, writer, &spec, &backend).await;
+        drop(probe);
+        crate::ingest_closing::join(observer_driver, false).await;
+        return;
+    }
     if mode == "successor-live-rejected" {
         reject(&probe, &mut owner, &mut writer, &spec).await;
     }
@@ -465,13 +472,7 @@ async fn reject(
     );
 }
 
-async fn admit(
-    probe: &Probe,
-    owner: &mut ControlSession,
-    writer: &mut LiveInitialWriter,
-    previous: &InitialRegistration,
-    provenance: bool,
-) {
+fn first_dictionary(writer: &LiveInitialWriter, previous: &InitialRegistration) -> EvidenceIntent {
     let scope = public_scope(previous);
     let lineage = QualifiedRef {
         dictionary_kind: DictionaryKind::DatasetLineage,
@@ -484,14 +485,7 @@ async fn admit(
         ..scope
     };
     let corpus = include_bytes!("../../../../experiments/identity-contract/signed-fixture.json");
-    let fixture: serde_json::Value = serde_json::from_slice(corpus).unwrap();
-    let public: SignedEvent =
-        serde_json::from_value(fixture["events"]["E_public"].clone()).unwrap();
-    let alternate: SignedEvent =
-        serde_json::from_value(fixture["events"]["E_private"].clone()).unwrap();
-    assert_eq!(public.id, alternate.id);
-    assert_ne!(public.sig, alternate.sig);
-    let intent = EvidenceIntent::new(
+    EvidenceIntent::new(
         1,
         scope,
         vec![
@@ -512,18 +506,22 @@ async fn admit(
             max_validation_scratch_bytes: 4096,
         },
     )
-    .unwrap();
-    let limits = AdmissionLimits {
-        max_outstanding_requests: u64::from(previous.outstanding_request_limit),
-        max_dependencies: 256,
-        ..AdmissionLimits::default()
-    };
-    let receipt = bounded(owner.append_live_initial_dictionaries(
+    .unwrap()
+}
+
+async fn append_first_dictionary(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    writer: &mut LiveInitialWriter,
+    intent: &EvidenceIntent,
+    limits: AdmissionLimits,
+) -> Result<StoredReceipt, InitialEventError> {
+    bounded(owner.append_live_initial_dictionaries(
         writer,
         LiveInitialDictionaryAppendRequest {
             ingest_root: &probe.path,
             request_sequence: RequestSequence::new(1).unwrap(),
-            intent: &intent,
+            intent,
             recorded_at: ObservedTime::new(900_000_001),
             limits,
             policy_ttl: probe.policy_ttl(),
@@ -537,7 +535,105 @@ async fn admit(
         |doc, digest| probe.validate(doc, digest),
     ))
     .await
-    .unwrap();
+}
+
+async fn reservation_after(
+    probe: &Probe,
+    mut owner: ControlSession,
+    driver: Driver,
+    mut writer: LiveInitialWriter,
+    previous: &InitialRegistration,
+    backend: &Backend,
+) {
+    assert!(probe.initial_proxy_port.is_some());
+    // Preparation12 and activation13 are complete. The first dictionary
+    // reservation is COMMIT14; no refresh or native dispatch precedes it.
+    let before = raw_state(&probe.path);
+    assert_eq!((before.0.len(), before.1), (52, 62));
+    let intent = first_dictionary(&writer, previous);
+    let request = ProducerRequestId {
+        producer_slot_id: writer.producer_slot_id(),
+        producer_epoch: ProducerEpoch::new(2).unwrap(),
+        request_sequence: RequestSequence::new(1).unwrap(),
+    };
+    let preimage = intent.encode_request_preimage(request, 8192).unwrap();
+    let limits = AdmissionLimits {
+        max_outstanding_requests: u64::from(writer.outstanding_request_limit()),
+        max_dependencies: 256,
+        ..AdmissionLimits::default()
+    };
+    emit(
+        serde_json::json!({"event":"live-reservation-start", "request":1,
+        "preimage":hex(&preimage), "request_digest":intent.request_digest(request),
+        "commit_number":14}),
+    );
+    let result = append_first_dictionary(probe, &mut owner, &mut writer, &intent, limits).await;
+    let reservation_unknown = matches!(
+        &result,
+        Err(InitialEventError::Reservation(
+            bigbrotr::storage::postgres::producer_requests::ReservationError::CommitUnknown
+        ))
+    );
+    emit(
+        serde_json::json!({"event":"live-reservation-result", "request":1,
+        "error":result.as_ref().err().map(|error|format!("{error:?}")),
+        "native_dispatch":reservation_unknown.then_some(false)}),
+    );
+    probe.snapshot("reservation-unknown").await;
+    assert!(reservation_unknown);
+    drop(result);
+    assert_eq!(
+        raw_state(&probe.path),
+        before,
+        "no native dispatch after lost reservation reply"
+    );
+    let inputs = probe.path.join("producer-inputs-v1");
+    assert_eq!(std::fs::read_dir(&inputs).unwrap().count(), 5);
+    assert_eq!(
+        std::fs::read(inputs.join(format!(
+            "{}-0000000000000002-0000000000000001.cbor",
+            request.producer_slot_id
+        )))
+        .unwrap(),
+        preimage
+    );
+    probe.check_poisoned(&mut owner).await;
+    drop(writer);
+    probe.end_control("unknown", owner, driver, false).await;
+    probe.require_backend_absent(backend).await;
+    probe.snapshot("final").await;
+    emit(
+        serde_json::json!({"event":"live-complete", "mode":"successor-live-reservation-after",
+        "native":"closed", "control":"dropped-and-joined", "writer":false, "admission":false}),
+    );
+}
+
+async fn admit(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    writer: &mut LiveInitialWriter,
+    previous: &InitialRegistration,
+    provenance: bool,
+) {
+    let scope = public_scope(previous);
+    let intent = first_dictionary(writer, previous);
+    let lineage = intent.dictionaries()[0].reference();
+    let corpus = include_bytes!("../../../../experiments/identity-contract/signed-fixture.json");
+    let fixture: serde_json::Value = serde_json::from_slice(corpus).unwrap();
+    let public: SignedEvent =
+        serde_json::from_value(fixture["events"]["E_public"].clone()).unwrap();
+    let alternate: SignedEvent =
+        serde_json::from_value(fixture["events"]["E_private"].clone()).unwrap();
+    assert_eq!(public.id, alternate.id);
+    assert_ne!(public.sig, alternate.sig);
+    let limits = AdmissionLimits {
+        max_outstanding_requests: u64::from(previous.outstanding_request_limit),
+        max_dependencies: 256,
+        ..AdmissionLimits::default()
+    };
+    let receipt = append_first_dictionary(probe, owner, writer, &intent, limits)
+        .await
+        .unwrap();
     let batch = receipt.receipt().batch().unwrap();
     assert_eq!(batch.first().owner_epoch.get(), 2);
     assert_eq!(batch.first().sequence.get(), 1);
