@@ -888,3 +888,156 @@ separate responsibilities. Event classification from the positive native input
 must be retained for eventual retirement, so unbound Event requests cannot evade
 its workflow veto through nullable SQL fields; exposing that classification is
 deferred and is not a prerequisite of this acquisition-only operation.
+
+## Activated initial producer retirement (under implementation)
+
+This bounded responsibility continues P02-T01 Step5 / P02-T02 Step4 and enables
+P01-T09 Step4/M1 through the existing [storage tasks](../implementation/02-storage.md).
+Qualification remains in the
+[producer recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).
+It does not complete those steps or select a replacement lifetime.
+
+The explicit command is `ingest recover --retire-activated-initial --file PATH`,
+mutually exclusive with every other recovery action. Source2 closure and any
+required acquisition abandonment must already have completed through their own
+operations. The command takes configuration and retained SQL/native/input state;
+it starts no listener, acquisition or writer. Missing prerequisites refuse rather
+than being repaired or completed implicitly. Ordinary activated recovery, source
+closure, acquisition abandonment and all earlier recovery modes retain their
+existing state classifiers.
+
+Retain exclusive native custody before connection preparation or a fresh actual
+Control claim. A distinct checked retirement context binds the same exact native
+root/sequence, schema2 manifest, retained handoff, both producer markers and both
+source streams as positive activated recovery. The target native producer must
+already be CLOSING, including when issued is zero; this operation makes no native
+barrier or other native write. Observe that closing state with its retained grant.
+SQL producer closing or retired never makes native OPEN an acceptable completion.
+No decoded row, portable digest, copied proof or fabricated epoch2
+`InitialRegistration` supplies this authority.
+
+Positively replay every target request in order1..N with its exact retained input,
+reservation and already present PostgreSQL outcome copy. Require issued=reserved=N
+and N<=the immutable activation limit<=64. Missing or mismatched detail refuses;
+this path inserts no outcome copies. Reuse the activated source accumulator and
+its existing digest without changing native formats. Source1 dependencies remain
+bounded by the retained handoff cut; source2 dependencies and NewFacts must fit
+the contiguous reconstructed target prefix and exact native counter. Zero requests
+and issued-positive/source-zero remain distinct supported proofs.
+
+Preserve the native-derived Event classification already computed while replaying
+the prefix. The activated witness retains its fixed-size request mask, including
+Rejected and AlreadyDurable Event requests. Every such request must have an exact
+acquisition job and its completed epoch2 gap. A native Event with no job refuses
+even when every optional SQL source field is NULL. Unbound dictionary Evidence
+remains supported. The mask is local positive proof, not a new stored field or
+caller-supplied classification. Before final effects, compare the complete ordered
+SQL input/outcome digest prefix with the native witness and check its association
+with the exact borrowed retirement closing context. Revalidate native root,
+sequence and the complete checked source interpretation after waits and before
+COMMIT; preserve refusals for stale or equal-content foreign-root proofs.
+
+Use additive migration0037, preserving all applied migration bytes and existing
+rows. This mode requires schema37; existing consumers retain their minimum schema
+requirements while validating the complete known additive ledger. New recovery
+privileges do not become ordinary acquisition privileges. A dedicated retirement
+classifier retains the full immutable preparation,
+activation, historical configuration/policy, retired predecessor and exact18-domain
+identity checks. Sealed topology1 and both members remain unchanged, including the
+target member's NULL handoff bound. Current accepted policy may advance; neither
+expired historical Ingest scheduling nor obsolete execution policy grants authority
+or prevents this positive recovery. The original activating Control must be
+positively fenced with its exact released/storage-fenced owner and retired role.
+Its separately observed release and role-retirement timestamps need not be equal.
+
+Before retirement, validate all target outcome copies and complete retained
+epoch2 acquisition gaps. Bind previous claims to the immutable activating Control,
+not the original slot registrar, target Ingest incarnation or current recovery
+issuer. Require every such acquisition claim to have resolved, including claims
+that issued no mutation request. Each retained gap must match the exact source2
+cut/digest, original job revision and owner, reason, terminal cancellation,
+checkpoint0 and final issuer/time relation. Retained gaps remain bounded at64,
+independently of request count. Their historical issuers need not still be live;
+validate their retained identity and terminal relation under current Control,
+without replaying an old issuer's live-authority check.
+
+Any import claim attributed to the activating Control, target input binding or
+producer checkpoint refuses, including a checkpoint with complete-through zero.
+Import logical closure is a separate selected responsibility, not inferred from
+native outcomes. Unclaimed accepted jobs, unrelated Control claims and browser
+sessions remain unchanged. Use bounded producer queries and owner-indexed workflow
+checks; do not scan unrelated job histories or silently ignore zero-request work.
+
+Only these durable PostgreSQL target shapes are supported, with the native target
+already CLOSING in both cases:
+
+| Shape | Required target state |
+| --- | --- |
+| Ready to retire | Producer closing; source already closed with the proved cut/digest; all nine domains active; exact Ingest owner active/draining and its role unretired |
+| Completed | Producer retired; all nine domains closed; Ingest owner released with storage fencing; its role retired; exact common terminal timestamp and closure digest |
+
+The final transaction acquires actual current Control UPDATE before dataset UPDATE,
+then the ordered historical/target owner, role and domain parents, source UPDATE,
+producer UPDATE and required ordered job custody. Recheck accepted policy, actual
+Control identity and server UTC after lock waits and before terminal effects.
+Current expiry or cancellation is not proof that an earlier transaction rolled
+back. This operation implements no active-to-draining transition; it only accepts
+that existing observation as the source classifier does.
+
+For a ready target, sample one database timestamp T no earlier than the committed
+source closure. Atomically retire producer2, close its nine domains, release its
+Ingest owner with `storage_fenced` and retire its role: exactly12 target rows.
+Producer retirement, domain closure and owner exclusion retain the already proved
+source2 digest; their terminal times and role retirement all equal T. Preserve the
+source2 row, its earlier close time and xmin. Preserve source1, predecessor history,
+preparation/activation receipts, requests, copies, gaps, jobs and sessions. Account
+for current Control claim, renewal and release separately from these12 target rows.
+
+The producer transition guard must require the exact activated retirement staging
+and workflow obligations, even for reserved zero. A complete deferred guard on
+target lifecycle changes must re-read final rows and reject partial commits;
+transaction-internal staging is not a loader-accepted durable state. Preserve the
+epoch1 retirement and unactivated empty-attempt branches, ordinary recovery/source
+transition branches and ordinary acquisition privilege boundary. SQL alone cannot
+prove retained native inputs or exclusion; only the typed composed operation
+supplies that proof. Do not turn the new classifier into a generic state exemption.
+
+Completed retry replays the whole native/SQL proof and revalidates the complete
+terminal relation. It preserves the original T, digest, attribution and all row
+versions. Mixed terminal state, a changed cut/digest or timestamp, missing copies
+or unresolved workflows refuse without repair. Existing terminal rows remain
+immutable even after early `SET CONSTRAINTS`; ordinary earlier loaders still refuse
+retired state. The dedicated classifier alone permits this exact observation.
+
+Before claiming Control, preflight retained native/driver ownership,128KiB metadata,
+4096-byte data/native closing proof, one bounded input/outcome pair and a128KiB
+terminal SQL grant. Replay grants are released before the final operation; metadata
+and closing custody remain held. The Event mask adds fixed-size local state, not
+a receipt vector. Cancellation, failed delivery or unknown COMMIT yields no reusable
+session authority. Keep native custody through close, then release or drop current
+Control and retain its actual driver/grant through joined shutdown. A separate
+configuration-only process resolves unknown outcomes by positively fencing the
+preceding backend and distinguishing ready from exact completed state.
+
+Successful `bigbrotr-ingest-recovery/1` output uses
+`state=activated-initial-retired`, producer2 and decimal issued/reserved/resolved
+counts, the exact source2 cut/digest and `ingest_retirement` naming nine domains,
+retained acquisition-gap count and committed Ingest release. Native acknowledged
+and retired watermarks remain0. `native=closed`, current `owner_release=committed`
+and `ready=false` are published only after actual native/Control/driver shutdown.
+No capacity is reclaimed and no acquisition coverage is certified.
+
+Acceptance uses preserved copies of the qualified installed off source and genuine
+AlreadyDurable/source0 after acquisition abandonment, with first retirement and
+separate-process exact retry. Include activated-zero completion and unbound
+Rejected/Event refusal; genuine zero-request workflow claims and import
+binding/checkpoint vetoes; missing or conflicting original/copy and mixed terminal
+state. Independently check Event classification, complete SQL/native/input state,
+the exact12-row transition and retained source/predecessor/activation attribution.
+Exercise partial SQL lifecycle commits, final retirement COMMIT loss before
+forwarding and after server completion, fresh-process recovery, and actual blocked
+operation cancellation/current-authority expiry. Reuse qualified unchanged replay
+and custody evidence explicitly instead of inferring a new boundary from it.
+Preserve original failures and distinguish native components, finite probes and
+installed execution. Repeated lifetimes, import closure, ACK/GC, epoch3 activation,
+Archive restart and completion of M1 remain separate obligations.
