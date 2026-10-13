@@ -11,6 +11,9 @@ use bigbrotr::storage::{
 use bigbrotr_model::{DatasetLineageDescriptor, EventIntent, SignedEvent};
 use sha2::{Digest, Sha256};
 
+#[path = "ingest_live_refusals.rs"]
+mod refusals;
+
 pub(super) fn is_mode(mode: &str) -> bool {
     matches!(
         mode,
@@ -20,6 +23,11 @@ pub(super) fn is_mode(mode: &str) -> bool {
             | "successor-live-off"
             | "successor-live-commit-before"
             | "successor-live-commit-after"
+            | "successor-live-manifest"
+            | "successor-live-renew-control"
+            | "successor-live-renew-expired"
+            | "successor-live-renew-before"
+            | "successor-live-renew-after"
     )
 }
 
@@ -35,7 +43,17 @@ pub(super) async fn run(
     let mut candidate = InitialWriterCandidate::new(recovery).unwrap();
     let (mut owner, driver) = probe.acquire("initial", &spec, 1).await;
     let attempt = probe
-        .plan(&mut owner, candidate.recovery(), &spec, Some(&candidate))
+        .plan(
+            &mut owner,
+            candidate.recovery(),
+            &spec,
+            Some(&candidate),
+            Duration::from_secs(if mode == "successor-live-renew-expired" {
+                5
+            } else {
+                60
+            }),
+        )
         .await;
     probe.snapshot("before-prepare").await;
     let observed = bounded(owner.prepare_live_initial_successor(
@@ -62,9 +80,8 @@ pub(super) async fn run(
     );
     drop(observed);
     probe.snapshot("prepared").await;
-    if let Some(prefix) = gate_prefix {
-        assert_eq!(mode, "successor-live-guards");
-        guards(&probe, &mut owner, prefix).await;
+    if mode == "successor-live-guards" {
+        guards(&probe, &mut owner, gate_prefix.unwrap(), false).await;
     }
     // Exact backend custody is observed before the potential COMMIT ambiguity.
     // The PG observer and native snapshots bypass the deliberately faulted wire.
@@ -88,8 +105,11 @@ pub(super) async fn run(
     let mut writer = match activation {
         Ok(writer) => {
             assert!(
-                probe.initial_proxy_port.is_none(),
-                "fault must prevent writer delivery"
+                !matches!(
+                    mode,
+                    "successor-live-commit-before" | "successor-live-commit-after"
+                ),
+                "activation fault must prevent writer delivery"
             );
             emit(
                 serde_json::json!({"event":"live-activation-result","writer":true,
@@ -98,7 +118,10 @@ pub(super) async fn run(
             writer
         }
         Err(error) => {
-            assert!(probe.initial_proxy_port.is_some());
+            assert!(matches!(
+                mode,
+                "successor-live-commit-before" | "successor-live-commit-after"
+            ));
             assert_eq!(error, InitialSuccessionError::CommitUnknown);
             emit(
                 serde_json::json!({"event":"live-activation-result","writer":false,
@@ -119,6 +142,15 @@ pub(super) async fn run(
     assert_eq!(writer.manifest().identity().owner_epoch.get(), 2);
     assert_eq!(writer.producer_slot_id(), spec.producer_slot_id);
     probe.snapshot("activated-zero").await;
+    if refusals::is_renewal(mode) {
+        refusals::renewal(&probe, (owner, driver), writer, &spec, backend, mode).await;
+        drop(probe);
+        crate::ingest_closing::join(observer_driver, false).await;
+        return;
+    }
+    if mode == "successor-live-manifest" {
+        guards(&probe, &mut owner, gate_prefix.unwrap(), true).await;
+    }
     if mode == "successor-live-guards" {
         bounded(owner.refresh(|doc, digest| probe.validate(doc, digest)))
             .await
@@ -173,19 +205,42 @@ async fn guard_gate(prefix: &Path, gate: &str, extension: &str) {
     emit(serde_json::json!({"event":"live-guards-gate","gate":gate,"phase":"released"}));
 }
 
-async fn guards(probe: &Probe, owner: &mut ControlSession, prefix: &Path) {
-    guard_gate(prefix, "install", "go").await;
+async fn guards(probe: &Probe, owner: &mut ControlSession, prefix: &Path, manifest: bool) {
+    let (schema, count, install, remove, event, refreshed, clean) = if manifest {
+        (
+            "live_manifest_fixture",
+            2,
+            "manifest-install",
+            "manifest-remove",
+            "live-manifest-result",
+            "manifest-refreshed",
+            "manifest-clean",
+        )
+    } else {
+        (
+            "live_guard_fixture",
+            14,
+            "install",
+            "remove",
+            "live-guards-result",
+            "guards-refreshed",
+            "guards-clean",
+        )
+    };
+    guard_gate(prefix, install, "go").await;
     bounded(owner.refresh(|doc, digest| probe.validate(doc, digest)))
         .await
         .unwrap();
     let identity = owner.identity();
     let observed = bounded(probe.observer.query_one(
-        "SELECT count(*)::bigint, coalesce(bool_and(g.status='PASS'
+        &format!(
+            "SELECT count(*)::bigint, coalesce(bool_and(g.status='PASS'
             AND g.backend_pid=c.control_backend_pid AND g.backend_start=c.control_backend_start
             AND g.database_name=current_database() AND g.database_user='bigbrotr_control'
             AND g.replication_role='origin' AND g.control_epoch=c.epoch),false)
-         FROM live_guard_fixture.cases g CROSS JOIN control.owner_epochs c
-         WHERE c.resource_id=$1::bytea AND c.epoch=$2::text::numeric",
+         FROM {schema}.cases g CROSS JOIN control.owner_epochs c
+         WHERE c.resource_id=$1::bytea AND c.epoch=$2::text::numeric"
+        ),
         &[
             &&identity.resource_id.as_bytes()[..],
             &identity.epoch.get().to_string(),
@@ -193,30 +248,32 @@ async fn guards(probe: &Probe, owner: &mut ControlSession, prefix: &Path) {
     ))
     .await
     .unwrap();
-    assert_eq!(observed.get::<_, i64>(0), 14);
+    assert_eq!(observed.get::<_, i64>(0), count);
     assert!(observed.get::<_, bool>(1));
     let run = bounded(probe.observer.query_one(
-        "SELECT status,executions FROM live_guard_fixture.run WHERE singleton",
+        &format!("SELECT status,executions FROM {schema}.run WHERE singleton"),
         &[],
     ))
     .await
     .unwrap();
     assert_eq!(run.get::<_, &str>(0), "complete");
     assert_eq!(run.get::<_, i32>(1), 1);
-    emit(serde_json::json!({"event":"live-guards-result","cases":14,"passed":true}));
-    probe.snapshot("guards-refreshed").await;
-    guard_gate(prefix, "remove", "done").await;
+    emit(serde_json::json!({"event":event,"cases":count,"passed":true}));
+    probe.snapshot(refreshed).await;
+    guard_gate(prefix, remove, "done").await;
     let removed: bool = bounded(probe.observer.query_one(
-        "SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_trigger
-            WHERE tgname='live_guard_fixture_refresh' AND tgrelid='control.owner_epochs'::regclass)
-            AND to_regprocedure('live_guard_fixture.exercise()') IS NULL",
+        &format!(
+            "SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_trigger
+            WHERE tgname='{schema}_refresh' AND tgrelid='control.owner_epochs'::regclass)
+            AND to_regprocedure('{schema}.exercise()') IS NULL"
+        ),
         &[],
     ))
     .await
     .unwrap()
     .get(0);
     assert!(removed, "only the temporary fixture hook must be removed");
-    probe.snapshot("guards-clean").await;
+    probe.snapshot(clean).await;
 }
 
 async fn admit(

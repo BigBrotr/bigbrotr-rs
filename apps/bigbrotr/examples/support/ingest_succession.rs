@@ -47,6 +47,7 @@ struct Attempt {
 /// The actual PostgreSQL incarnation observed before disrupting the transport.
 /// A PID alone could select a later backend and cannot establish exclusion.
 struct Backend {
+    stage: &'static str,
     pid: i32,
     start: String,
     database: String,
@@ -55,7 +56,7 @@ struct Backend {
 impl Backend {
     fn emit(&self, present: bool) {
         emit(
-            serde_json::json!({"event":"successor-backend","stage":"initial",
+            serde_json::json!({"event":"successor-backend","stage":self.stage,
             "pid":self.pid,"backend_start":self.start,"database":self.database,
             "control_epoch":self.control_epoch,"present":present}),
         );
@@ -97,16 +98,21 @@ pub async fn run(
             | "successor-commit-after"
             | "successor-live-commit-before"
             | "successor-live-commit-after"
+            | "successor-live-renew-before"
+            | "successor-live-renew-after"
     );
     assert_eq!(proxy_port.is_some(), commit_fault);
     assert_eq!(
         gate_prefix.is_some(),
-        matches!(mode, "successor-preparer-claim" | "successor-live-guards")
+        matches!(
+            mode,
+            "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
+        )
     );
     if let Some(prefix) = gate_prefix {
         assert!(prefix.is_absolute());
         assert!(!prefix.with_extension("go").try_exists().unwrap());
-        if mode == "successor-live-guards" {
+        if matches!(mode, "successor-live-guards" | "successor-live-manifest") {
             assert!(!prefix.with_extension("done").try_exists().unwrap());
         }
     }
@@ -170,7 +176,9 @@ pub async fn run(
         return;
     }
     let (mut owner, mut driver) = probe.acquire("initial", &spec, 1).await;
-    let attempt = probe.plan(&mut owner, &recovery, &spec, None).await;
+    let attempt = probe
+        .plan(&mut owner, &recovery, &spec, None, Duration::from_secs(60))
+        .await;
     probe.snapshot("before-prepare").await;
     let mut preparing_backend = None;
 
@@ -494,6 +502,10 @@ impl Probe {
     }
 
     async fn observe_backend(&self, owner: &ControlSession) -> Backend {
+        self.observe_backend_at(owner, "initial").await
+    }
+
+    async fn observe_backend_at(&self, owner: &ControlSession, stage: &'static str) -> Backend {
         let identity = owner.identity();
         let row = bounded(self.observer.query_one(
             "SELECT json_build_object('pid',o.control_backend_pid,
@@ -515,6 +527,7 @@ impl Probe {
         // owner-row snapshots; the later predicate parses this exact value.
         let value: serde_json::Value = serde_json::from_str(row.get::<_, &str>(0)).unwrap();
         let backend = Backend {
+            stage,
             pid: i32::try_from(value["pid"].as_i64().unwrap()).unwrap(),
             start: value["backend_start"].as_str().unwrap().into(),
             database: value["database"].as_str().unwrap().into(),
@@ -579,7 +592,9 @@ impl Probe {
         recovery: &IngestRecovery,
         spec: &InitialRegistration,
         candidate: Option<&InitialWriterCandidate>,
+        ingest_ttl: Duration,
     ) -> Attempt {
+        assert!(matches!(ingest_ttl.as_secs(), 5 | 60));
         let closed = bounded(owner.observe_initial_retirement(
             recovery,
             ProducerCloseRequest {
@@ -678,7 +693,9 @@ impl Probe {
             handoff,
             role: candidate.map_or([201; 16], InitialWriterCandidate::role_instance_id),
             created_at_us,
-            lease_expires_at_us: created_at_us.checked_add(60_000_000).unwrap(),
+            lease_expires_at_us: created_at_us
+                .checked_add(i64::try_from(ingest_ttl.as_micros()).unwrap())
+                .unwrap(),
             window: spec.outstanding_request_limit,
         };
         emit(serde_json::json!({"event":"successor-plan",

@@ -901,7 +901,7 @@ fn main() {
     );
     let successor_gate = matches!(
         args[1].as_str(),
-        "successor-preparer-claim" | "successor-live-guards"
+        "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
     );
     assert_eq!(
         args.len(),
@@ -915,6 +915,8 @@ fn main() {
                     | "successor-commit-after"
                     | "successor-live-commit-before"
                     | "successor-live-commit-after"
+                    | "successor-live-renew-before"
+                    | "successor-live-renew-after"
                     | "successor-gap-loss-before"
                     | "successor-gap-loss-after"
                     | "empty-commit-before"
