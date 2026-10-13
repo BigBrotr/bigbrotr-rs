@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T07:10:31.545457+00:00 on Tux after the owner explicitly resumed the goal.
+Observed 2026-10-13T07:29:35.903380+00:00 on Tux after the owner explicitly resumed the goal.
 The runtime Goal is ACTIVE; the full selected product remains INCOMPLETE.
 Canonical2c142c6 and helper3553108/127a937 were privately pushed and verified by
 ls-remote. Finite connected engine2c142c6 and its read-only evidence audit pass.
@@ -17,18 +17,22 @@ Cargo packages, legacy reference repositories and unrelated workloads remain
 protected. No public release, repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Observed HEAD2c142c6 includes the finite harness, oracle and dispatch. Native/PG
-implementation and root probe remain the qualifiedc640b2f build. Root owns the new
-three-file Rust qualification hook, two focused build profiles and these evidence
-updates; helpers own the new guard harness/oracle in separate worktrees.
-Private root2c142c6 and helpers3553108/127a937 are verified. No merge/rebase/cherry-pick
+Observed HEAD338927d integrates guard harness9f45f83, oracle dc02056 and its
+phase-clock correction338927d. Native/PG product remains qualified by c640b2f;
+the extended probe was compiled at ee24e86. Root bindings and these evidence
+updates are the remaining dirty files. Independent oracle review found two coherent
+backdated refresh transcripts accepted by7abcc498; correctiond0f96f7 rejects both
+at exact phase-clock assertions, while the valid16-snapshot transcript passes35
+controls. Root reviewed the complete sources and delta; independent AI replay
+confirmed the findings closed. No native rebuild is needed.
+Private rootee24e86 and helpers3553108/127a937 are verified. No merge/rebase/cherry-pick
 is pending. Main is unchanged.
 
 | Worktree | Owner | Current responsibility |
 |---|---|---|
 | `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; independent build audit completed; harness/oracle review completed |
-| `.research/live-initial-control-20261013` | recovery_review | 3553108; new initial_live_guards.py harness/SQL fixture |
-| `.research/live-initial-tests-20261013` | cleanup_review | 127a937; new initial_live_guards_oracle.py |
+| `.research/live-initial-control-20261013` | recovery_review | fa19135; guard harness integrated; independent oracle review |
+| `.research/live-initial-tests-20261013` | cleanup_review | d0f96f7; corrected guard oracle integrated; pure evidence retained |
 
 All earlier helper worktrees, ignored data and external laboratories remain retained.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
@@ -343,8 +347,9 @@ artifacts; helpercleanup_review audited1226 nonborrowed resource projections and
 both terminal resources. Helper authored the oracle, not the harness/resources.
 Original SQL preservation remains captured-run evidence; no audit restart.
 
-Next bounded action: compile the reviewed `ingest-live-guards` probe/profile
-on an exact isolated source, then complete the harness/oracle for14 discriminators on
+Next bounded action: commit integrated bindings/checkpoint, then run exact
+`--ingest-live-guards` from a new isolated source worktree with the already
+compiled ee24e86 artifacts. The14 SQL discriminators execute on
 the actual preparing Control backend, followed by actual live renewal and admission.
 Root wrote Rust probe/profile and owns later bindings; recovery_review owns the new
 isolated harness and cleanup_review the new independent oracle.
@@ -352,7 +357,13 @@ Use a narrowly scoped invoker fixture trigger during actual Control refresh; eve
 raw case rolls back its changes and no product guard is disabled. Outside-transaction
 gates allow install/removal; verify the original catalog before typed activation.
 Scoped formatting/AST/diff-check and independent hook/caller/profile source review
-pass. Compilation/Clippy and this new engine slice are NOT_RUN. The135 unchanged
+pass. Exact buildee24e86d6ad0e800305d5aa48d8a01879aeeafc1 is
+PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY; compile and Clippy both pass.
+Wrapper55142 joined0, finished2026-10-13T07:12:37.317446Z. Root read-only audit
+verified1765 exactGit/checkout/export/archive files, two new and14 retainedELFs,
+1228 unchanged preflight projections and stopped0/PID0/noOOM build containers.
+BuildreceiptSHA f0612c0e08bce8670329ff5e5541215004b6acae15aea62d578912ed48c2270e.
+The new engine slice is NOT_RUN. The135 unchanged
 product/native/schema tests are retained atc640b2f and will not be repeated for a
 probe-only addition. Renewal synchronizes the Ingest deadline with actual Control
 and may shorten the initial60s target to20s; no lifetime extension is assumed.
@@ -391,8 +402,10 @@ The [lab inventory](../research/laboratory-inventory.json) owns resource identit
 and dated observations. Connected engine2c142c6 finished with borrowedPG stopped0
 and idle client stopped143, both PID0/noOOM; wrapper78690 joined0. Cleanup/missing/
 unrelated arrays are empty. Buildc640b2f remains stopped-retained. Resource audit
-confirms1226 unchanged nonborrowed projections. No next engine/build has been
-allocated. Root and helper
+confirms1226 unchanged nonborrowed projections. Subsequent ee24e86 build is also
+stopped-retained; audit confirms1228 unchanged preflight projections. No guard
+engine has been allocated. PostgreSQL was freshly inspected stopped0/PID0/noOOM
+at07:26Z and no build/engine process was observed. Root and helper
 source work continues; all earlier runs and six unrelated services are preserved.
 
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
@@ -404,7 +417,7 @@ Git cleanliness for permission to delete ignored data. The retained788f971 resul
 hash matched at the earlier05:55 resumption inspection; no pause-time qualification
 rerun is claimed.
 
-Free space was67,368,706,048 bytes after the finite engine (about62.7GiB); remeasure before
+Free space was67,153,551,360 bytes after the guard build (about62.5GiB); remeasure before
 allocation. Small engine fixtures require2GiB; native builds12GiB. The larger
 export wave still requires64GiB+577MiB, currently unavailable. Never lower that
 reserve to force a run. No large export is allocated by this slice.

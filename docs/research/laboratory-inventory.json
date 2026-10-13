@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_FINITE_ENGINE_QUALIFIED_GUARDS_PROBE_BUILD_PENDING",
+    "status": "ACTIVE_GUARDS_EXACT_ENGINE_READY",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40823,31 +40823,32 @@
         "owner": "successor_restart_design",
         "head": "d1bf847df2ecf077686ddf274655e59dba803469",
         "state": "clean-read-only-independent-review",
-        "scope": "Native source integrated; exact build audited, finite oracle review in progress"
+        "scope": "Independent earlier capture audit completed; next bounded live-acceptance gap inspection only"
       },
       {
         "root": ".research/live-initial-control-20261013",
         "branch": "implementation/live-initial-control",
         "owner": "recovery_review",
-        "head": "355310834d2d84dbab80aeef9b27f97a9a5ce536",
-        "state": "active-separated-source-scope",
-        "scope": "New initial_live_guards.py harness and14 rawSQL fixture cases only"
+        "head": "fa191358807e566da64f3aa8bc460bc6ef5ca946",
+        "state": "clean-read-only-independent-review",
+        "scope": "Guard harness integrated; independent temporal oracle correction review"
       },
       {
         "root": ".research/live-initial-tests-20261013",
         "branch": "qualification/live-initial-native",
         "owner": "cleanup_review",
-        "head": "127a9377a9ddaab5063428eb8897e115775a6b1c",
-        "state": "active-separated-source-scope",
-        "scope": "New initial_live_guards_oracle.py independent oracle only"
+        "head": "d0f96f73255d986043ee2614795beaee2ba5ab84",
+        "state": "clean-retained-pure-evidence",
+        "scope": "Corrected guards oracle integrated; artificial before/after artifacts retained"
       }
     ],
     "resources": [
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-7337ac4",
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-c640b2f",
-      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-engine-2c142c6"
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-engine-2c142c6",
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86"
     ],
-    "qualification": "Exact c640b2f build PASS14checks/135tests; finite connected2c142c6 PASS5cases/48snapshots/116controls and read-only evidence audit. New SQL guard/renewal probe uncompiled/NOT_RUN.",
+    "qualification": "c640b2f PASS14checks/135tests; finite2c142c6 PASS5cases/48snapshots/116controls and read-only evidence audit. Guard probeee24e86 compile/Clippy and artifact audit PASS; connected guard engine NOT_RUN.",
     "pause_observation": {
       "observed_at": "2026-10-13T06:15:07Z",
       "reason": "Explicit owner pause for exhausted credits; resume only on explicit request",
@@ -40871,7 +40872,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Exact isolated ingest-live-guards probe compile/Clippy build; new14case SQL harness and independent oracle are in separate worktrees. Then reviewed exact connected guard/renewal wave. Full contract/installed/network recovery remain incomplete.",
+    "next_action": "Run a fresh isolated exact --ingest-live-guards engine with retained ee24e86 binaries;14 rollback-only SQL cases, typed activation/renewal and signed admission. Record actual outcome and audit before qualification.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -41394,14 +41395,77 @@
       }
     ],
     "guards_fixture": {
-      "status": "SOURCE_WRITTEN_NOT_COMPILED_OR_EXECUTED",
+      "status": "INTEGRATED_REVIEWED_ENGINE_NOT_RUN",
       "probe_owner": "root",
       "harness_owner": "recovery_review",
       "oracle_owner": "cleanup_review",
       "scope": "14 rollback-only SQL discriminators on actual preparing Control backend, restored product catalog, confirmed typed activation then actual Control refresh/Ingest renewal and signed admission",
-      "checks": "Scoped Rustfmt, Python profile AST and diff-check PASS. Independent AI complete hook/caller/profile review found no concrete blocker.",
+      "checks": "AST/import/API/diff-check PASS; artificial16snapshots/14SQLcases/35rehashed controls. Exact old oracle accepts two propagated backdated transcripts; corrected oracle rejects both with exact phase-clock diagnostics.",
       "excluded": "Expired/refused renewal, activated-zero old-loader routes, first-request manifest mismatch, real network/provenance and installed/general successor recovery remain owed",
-      "observed_at": "2026-10-13T07:10:31.545457+00:00"
-    }
+      "observed_at": "2026-10-13T07:30:14.622295+00:00",
+      "harness_source": "fa191358807e566da64f3aa8bc460bc6ef5ca946",
+      "harness_integrated": "9f45f83",
+      "oracle_source": "7abcc498affec87c041daf140441a6718fdaf30f",
+      "oracle_integrated": "dc02056",
+      "review": "Root full525-line harness/370-line oracle and correction review; independent AI complete hook/caller/profile review and oracle review/replay. Two temporal findings fixed; no remaining scoped concrete blocker.",
+      "oracle_correction_source": "d0f96f73255d986043ee2614795beaee2ba5ab84",
+      "oracle_correction_integrated": "338927d06f213cd582279dc8bdb35490110fad07",
+      "artificial_evidence": {
+        "root": ".research/live-initial-tests-20261013/.research/live-guards-oracle-selfcheck-20261013",
+        "generator_sha256": "fecaddb0bd783077447c48f33e8cafeb0c735ebaf226f201f48e907d6933051f",
+        "valid_sha256": "c184f0a471aa527975456f28b1740cfdd536835292cf500a2c538c5cb95485cb",
+        "guard_backdated_sha256": "1fb62d3ef5c3cee5ab839cdb3569eb5057f35c03d58853d3a8790e238d18a4c8",
+        "postactivation_backdated_sha256": "815d87ec935b8ae4c5568102c3b32ffd6c8926434c1151442374631e327dd720"
+      }
+    },
+    "guard_builds": [
+      {
+        "source": "ee24e86d6ad0e800305d5aa48d8a01879aeeafc1",
+        "tree": "e74443e7dd2fce519856e23bfd71a1e2c867ca5e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86",
+        "status": "PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY",
+        "wrapper": 55142,
+        "exit_code": 0,
+        "started_at": "2026-10-13T07:11:08.354152+00:00",
+        "finished_at": "2026-10-13T07:12:37.317446+00:00",
+        "checks": [
+          "compile",
+          "clippy"
+        ],
+        "native_tests": "NOT_REPEATED; unchanged product/native/schema evidence atc640b2f",
+        "binary_sha256": "128a9829bd21113ed4a5ea1e7e6dd934fc741d5530ece3cdc4e2c3bda14d5db7",
+        "probe_sha256": "c5d795ad6228ab96af1923626577dddd596acd4ba7e490e3535cc02fb5e6b606",
+        "audit": {
+          "status": "PASS_READ_ONLY_ARTIFACT_AUDIT",
+          "observed_at": "2026-10-13T07:14:10.275525+00:00",
+          "source": "ee24e86d6ad0e800305d5aa48d8a01879aeeafc1",
+          "source_files": 1765,
+          "elfs": 16,
+          "unchanged_preflight": 1228,
+          "source_manifest_sha256": "e39b6389fea42b27356570d99cfe7a1348b8febd4d45e1c17417bf5196ec82d7",
+          "archive_sha256": "0c801dcc33e96704aed572cd07e7ad781782d10c983ed7c694bdecbbb3ec14cc",
+          "build_receipt_sha256": "f0612c0e08bce8670329ff5e5541215004b6acae15aea62d578912ed48c2270e",
+          "ci_receipt_sha256": "0e3c06d9073188b81bb8b44519b7fba0f60b68368e12981165350c3302775fba",
+          "resource_sha256": "23db8979171e1a3a6c89de23901d23c247550c10a6366b8e3951b24afe7f7035",
+          "binary_sha256": "128a9829bd21113ed4a5ea1e7e6dd934fc741d5530ece3cdc4e2c3bda14d5db7",
+          "probe_sha256": "c5d795ad6228ab96af1923626577dddd596acd4ba7e490e3535cc02fb5e6b606",
+          "toolchain": "Recorded actual Rust1.98.1/Clang14 tool hashes; unchanged compiler image and exclusive cache",
+          "scope": "Root artifact audit; independent hook/caller/profile source review by recovery_review. Compile/Clippy only; no new native tests or engine qualification."
+        },
+        "resources": [
+          {
+            "name": "fetch",
+            "id": "02062133d4ebbadab6bb10a372faf1f14609ce310b42cd5fbdde9e757ed2eb1b"
+          },
+          {
+            "name": "native",
+            "id": "ddd6c091ccbc03f63287dda4f18ea876ad26c3ae453a6e1df51f4bbb01dd9514"
+          }
+        ],
+        "state": "stopped-retained",
+        "inventory_changed": [],
+        "free_bytes_after": 67153551360
+      }
+    ]
   }
 }

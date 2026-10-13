@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_live_guards = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-guards'
 ingest_live = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live'
 installed_empty_retirement = len(sys.argv) == 4 and sys.argv[2] == '--installed-empty-retirement'
 ingest_empty_preparer = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-preparer'
@@ -90,7 +91,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -439,6 +440,13 @@ if ingest_live:
     report['wave'] = 'live-initial-activation'
     report['not_run'] = ['raw SQL activation transaction guards, activated-zero recovery refusal and renewal',
         'real network provenance transitions and installed successor consumers',
+        'native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1',
+        'capacity/load/aged-state and arm64/release']
+
+if ingest_live_guards:
+    report['wave'] = 'live-initial-guards'
+    report['not_run'] = ['renewal refusal/expiry/COMMIT loss and activated-zero old-loader routes',
+        'first-request manifest mismatch, real network provenance and installed successor consumers',
         'native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1',
         'capacity/load/aged-state and arm64/release']
 
@@ -843,6 +851,9 @@ if ingest_empty_retirement:
 if ingest_live:
     success_status = 'PASS_LIVE_INITIAL_ACTIVATION_FINITE'
 
+if ingest_live_guards:
+    success_status = 'PASS_LIVE_INITIAL_GUARDS'
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -1011,6 +1022,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_live_guards:
+        cases = ['live-initial-guards']
     elif ingest_live:
         cases = ['live-initial-activation']
     elif installed_empty_retirement:
@@ -1072,6 +1085,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_live_guards:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from initial_live_guards import run as run_initial_live_guards
+            report['cases'].append(run_initial_live_guards(pg, client, output, rows, clone))
             save()
         elif ingest_live:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1234,6 +1252,13 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_live_guards:
+        from initial_live_guards import CASES as LIVE_GUARD_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and report['cases'][0]['name'] == 'live-initial-guards'
+            and [r['name'] for r in report['cases'][0]['cases']] == list(LIVE_GUARD_CASES)
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']),
+            'live-initial-guards-case-set')
     if ingest_live:
         from initial_live import CASES as LIVE_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
