@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T08:08:38.306150+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T08:23:40.815812+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,20 +16,20 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEADa80710ad3b4cb29e21e2519b45e568856ab5b0a0. Routes harnessc65164f and oracle2b51795
-are integrated. Last verified private root is904852558994dcef236edbce8bf6d0a508588644;
-main remains54ad09d. No merge/rebase/cherry-pick is pending. Dirty root files are the
-storage task, Ingest contract, recovery evidence, inventory and this checkpoint,
-recording the completed routes wave and the next bounded refusal slice. Root owns
-integration, build profiles/bindings, documentation and all build/engine execution.
+HEAD63e1f807270478ec3e9da0e5b35b230e9b67f25a. Oracle039e77e is integrated as63e1f80. Probeddbb838 and harnessaba294b
+are integrated as7f1a4e9/4a466a7; root profile/bindings4eef3c5. Last verified private
+root is176cfa27820403e816a5ba3e7c056e790d29a428; routes helpersc65164f/2b51795 are
+also pushed/verified, main unchanged54ad09d. No merge/rebase/cherry-pick is pending.
+Dirty root evidence/inventory/checkpoint record the completed build/reviews and pending engine.
+Root owns integration, documentation and all build/engine execution.
 
 | Worktree | Agent | Current responsibility |
 |---|---|---|
-| `.research/live-refusals-probe-20261013` | successor_restart_design | Probe and support callers only; qualification/live-refusals-probe, basea80710a |
-| `.research/live-refusals-harness-20261013` | recovery_review | New initial_live_refusals.py only; qualification/live-refusals-harness, basea80710a |
-| `.research/live-refusals-oracle-20261013` | cleanup_review | New independent initial_live_refusals_oracle.py only; qualification/live-refusals-oracle, basea80710a |
+| `.research/live-refusals-probe-20261013` | successor_restart_design | Committedddbb838, integrated; read-only installed-consumer boundary review |
+| `.research/live-refusals-harness-20261013` | recovery_review | Committedaba294b, integrated; independent oracle review |
+| `.research/live-refusals-oracle-20261013` | cleanup_review | Committed039e77e, integrated; awaiting actual custody audit |
 
-The completed routes worktrees remain clean atc65164f/2b51795 and await private push.
+The completed routes worktrees remain clean atc65164f/2b51795 and are privately pushed.
 Older worktrees remain retained, including live-initial-native atd1bf847,
 live-initial-control at18bf166 and live-initial-tests atea625e7. Do not reset them.
 Original recovered source/bundle and reconciliation are in the
@@ -130,14 +130,29 @@ both seeds'21paths and7/6 frozen artifacts, all1231 nonborrowed container projec
 original/final SQL and inputs, four external finals, catalogs and exact backend
 absence preserved. PG0/client143/PID0/noOOM, cleanup/missing/unrelated arrays empty.
 No audit restart or additional engine run was made. All engine/build wrappers are
-terminal; the three agents currently perform source work only.
+terminal, including the new compile/Clippy wrapper below; agents perform source work only.
 
 ## Current next bounded action
 
-Commit and privately push the qualified routes result, then review and integrate
-the five-mode refusal probe/harness/oracle. Root adds a narrow compile/Clippy profile
-and bindings dispatch. Rust probe changes require an exact isolated build; unchanged
-135 product tests are not repeated. No next build/engine has been allocated.
+Run the five fresh refusal cases using `--ingest-live-refusals` and the qualified
+artifacts below after committing this evidence. Oracle039e77e/63e1f80 is integrated.
+Root and independent AI review pass; artificial67snapshots/108controls and two
+coherent old-accepted/new-rejected backend counterexamples were independently
+replayed. A positive PID reuse with new backend start remains accepted. Integrated
+AST/API/case-set checks pass. No engine has been allocated yet.
+
+Exact build4eef3c5 under `/runs/ingest-live-refusals-4eef3c5` is
+PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY. Wrapper74797 joined0,
+finished2026-10-13T08:15:38.028357Z; ownerc8817d2b8d420fb51236c3458e651c79.
+Compile and Clippy pass; unchanged135 product tests were not repeated. Root read-only
+audit verified1771 exact Git/export/archive files,18 current/prior ELFs,1233 unchanged
+container projections and two owned additions stopped0/PID0/noOOM. BuildreceiptSHA
+f9123dc9c566f0a884ac5642103fb036de902373e19d612b527e1446c6037c80;
+CLI5446d4f358a5fb0755497dd7e4badb31673b3d2f9a745e311a602360e173cdcb,
+probe3dbba08342de9c6de9263a0568b254c39c1545051d79f900ac63fdd5acffd892.
+Independent probe/profile/bindings and harness source reviews found no blocker;
+pure harness helper checks pass separately. The protected build source predates the new Python oracle; current source changes
+only documentation/experiment inputs, so these exact artifacts can be reused.
 
 The next fresh f12 clones exercise first-manifest mismatch after confirmed activation
 on actualControl8 with typed positive admission; renewal under different actualControl9;
@@ -181,7 +196,7 @@ tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
 volume, input, executable and `.research` artifact. Private Git pushes do not back up
 ignored laboratory data; Git cleanliness is never permission to delete it.
 
-Free space aftera80710a:66,869,059,584 bytes (about62.3GiB); remeasure before allocation.
+Free space after4eef3c5:66,630,692,864 bytes (about62.1GiB); remeasure before allocation.
 Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
 currently unavailable; never lower that reserve. No large export is allocated.
 The one-off cleanup is RETIRED_VERIFIED:48,725 verified compiler intermediates removed

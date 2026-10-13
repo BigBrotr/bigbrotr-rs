@@ -13021,7 +13021,7 @@
         "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
         "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
       },
-      "next_action": "Commit/push qualified routes. Review and integrate five-mode first-manifest/renewal-refusal probe and independent harness/oracle; exact compile/Clippy build then fresh finite engine. No next build/engine allocated yet.",
+      "next_action": "Commit reviewed refusal oracle/build evidence; run five fresh f12 clones with --ingest-live-refusals using protected4eef3c5 artifacts. No Rust rebuild needed; product unchanged. Preserve all failure/unknown custody and verify complete captures.",
       "resume_observation": {
         "observed_at": "2026-10-13T06:33:25Z",
         "runtime_goal": "active",
@@ -14634,7 +14634,7 @@
         }
       ],
       "live_refusals": {
-        "status": "PROBE_HARNESS_ORACLE_IN_PROGRESS",
+        "status": "REVIEWED_BUILD_PASS_READY_FOR_FIVE_CASE_ENGINE",
         "base": "a80710ad3b4cb29e21e2519b45e568856ab5b0a0",
         "probe_owner": "successor_restart_design",
         "harness_owner": "recovery_review",
@@ -14643,9 +14643,105 @@
         "scope": "first-manifest mismatch afteractivation on actualsameControl withtypedpositive; differentactualControl renewal; actual5sIngestexpiry whileControl20slive; renewalCOMMIT15before/afterloss",
         "probe_worktree": ".research/live-refusals-probe-20261013",
         "harness_worktree": ".research/live-refusals-harness-20261013",
-        "product_changes": "none selected; unchanged135-test evidence retained; probe-only compile/Clippy required onceexactsource ready",
+        "product_changes": "No product/native/schema/build dependency changes;19 doc/experiment/example paths sincec640b2f. Exact probe compile/Clippy4eef3c5 PASS; unchanged135 product tests retained.",
         "qualification": "NOT_RUN",
-        "oracle_worktree": ".research/live-refusals-oracle-20261013"
+        "oracle_worktree": ".research/live-refusals-oracle-20261013",
+        "probe_commit": "ddbb838fad15cbc2dad2a830a7b6684accba3feb",
+        "probe_integrated": "7f1a4e9",
+        "harness_commit": "aba294b73d77c7d144cbcb12fce57d898030ef30",
+        "harness_integrated": "4a466a7",
+        "root_build_bindings": "4eef3c5a130b058fa361cae65c99ab61d42d26c2",
+        "review": "Root full probe/private module/live/succession/dispatch and harness read. Independent AI probe/profile/bindings review by harness author; independent harness/custody review by probe author. No source finding. Oracle in progress; no engine run.",
+        "harness_selfcheck": {
+          "root": ".research/live-refusals-harness-20261013/.research/live-refusals-harness-selfcheck-20261013",
+          "generator_sha256": "8b47e20bba165dc82c31ffca977f11b3ec9ad80b53bf9ef7f1da385ea6f60e82",
+          "log_sha256": "99f96709246df207dfb1cc0ab6b5592e54ca80be2a2c0152b29d3f4a5ed128c3",
+          "scope": "Pure mocks/source; no engine"
+        },
+        "build": {
+          "source": "4eef3c5a130b058fa361cae65c99ab61d42d26c2",
+          "tree": "6e31ad60ea3b618eca8aeffa37e9d2a2b302c3c6",
+          "owner": "c8817d2b8d420fb51236c3458e651c79",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-refusals-4eef3c5",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "dd87afdf2fa940c4a7217543078dbdb3632d57e65c1ea43b5f65653314779b8f"
+            },
+            {
+              "name": "native",
+              "id": "d9afd31929a181d634991f79e36b56129a96fde247fc90b0d8b9f17f3f368f0c"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-13T08:14:08.376264+00:00",
+          "qualification": "PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 66630692864,
+          "finished_at": "2026-10-13T08:15:38.028357+00:00",
+          "wrapper": 74797,
+          "exit_code": 0,
+          "status": "PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY",
+          "profile": "ingest-live-refusals",
+          "checks": [
+            "compile",
+            "clippy"
+          ],
+          "unchanged_native_tests": "135 atc640b2f retained; not repeated",
+          "binary_sha256": "5446d4f358a5fb0755497dd7e4badb31673b3d2f9a745e311a602360e173cdcb",
+          "probe_sha256": "3dbba08342de9c6de9263a0568b254c39c1545051d79f900ac63fdd5acffd892",
+          "audit": {
+            "status": "PASS_READ_ONLY_BUILD_AUDIT",
+            "source": "4eef3c5a130b058fa361cae65c99ab61d42d26c2",
+            "files": 1771,
+            "executables": {
+              "ingest-live-refusals-4eef3c5/out/artifacts/bigbrotr": "5446d4f358a5fb0755497dd7e4badb31673b3d2f9a745e311a602360e173cdcb",
+              "ingest-live-refusals-4eef3c5/out/artifacts/ingest_bootstrap_probe": "3dbba08342de9c6de9263a0568b254c39c1545051d79f900ac63fdd5acffd892",
+              "ingest-live-guards-ee24e86/out/artifacts/bigbrotr": "128a9829bd21113ed4a5ea1e7e6dd934fc741d5530ece3cdc4e2c3bda14d5db7",
+              "ingest-live-guards-ee24e86/out/artifacts/ingest_bootstrap_probe": "c5d795ad6228ab96af1923626577dddd596acd4ba7e490e3535cc02fb5e6b606",
+              "ingest-live-c640b2f/out/artifacts/bigbrotr": "fe1ec816d89d2a16ebf27c38b82d8babcf4a8426bc47cca7b208379204901e97",
+              "ingest-live-c640b2f/out/artifacts/ingest_bootstrap_probe": "4208240edb8f156b7e3afbe5af75d18e8feb4b0f2bfcab7bc8b96305ae58b4a4",
+              "ingest-live-c640b2f/out/artifacts/source_closure_components": "c1f6a5ba62b52f03e9f06c18b843529813031114f0a7c46ddb6cbbdabc3d1860",
+              "ingest-live-c640b2f/out/artifacts/rocks_manifest": "9a6e6f1f434491c3cccc34b2bc1d455fee6e6422c4d6988b774c2330e0c920d0",
+              "ingest-live-c640b2f/out/artifacts/rocks_keys": "bf076abea2133c8b1b1bde7890a0d843c3254d93790d2acebfc0831816bdf2f1",
+              "ingest-live-7337ac4/out/failed-artifacts/bigbrotr": "0ddbe0cfb4cf7cd53971f4a7f4c6f6b109bb4cbb41257bbe8b77b824f3c77666",
+              "ingest-live-7337ac4/out/failed-artifacts/bigbrotr-6fa8353cd98574d6": "9c992a9fb3cbd255fa42f6f8bdb97ed01aa9425c1e2559c6e3d595614c93205a",
+              "ingest-live-7337ac4/out/failed-artifacts/control_runtime_entrypoint-23320ebc33425f68": "ea793e7004077afacf6a34fd8dd45b0dd54c7c8191c85fa1221540776bf07ff2",
+              "ingest-live-7337ac4/out/failed-artifacts/control_schema-5af2930e5a9ba4e0": "5a066f63f23b146934fe57affe11e5e0a61aac5f5e0b48d8b3d620d1fc829e8e",
+              "ingest-live-7337ac4/out/failed-artifacts/ingest_bootstrap_probe": "4208240edb8f156b7e3afbe5af75d18e8feb4b0f2bfcab7bc8b96305ae58b4a4",
+              "network-1154757/out/artifacts/network_dns": "e7a5b5a19db4d66efe9221963fd9a4f7eacd04a70bd36aacbee25029adce07f6",
+              "network-1154757/out/artifacts/network_direct": "5a727c5a0f016e4fabad097f5e5af20595acd8e44efb17b8e420b768cc8ccc7c",
+              "network-1154757/out/artifacts/network_dns_semantics": "69fabf32dc661e0d861b071f1be1455cbd0eb195f4e070b2bb86ba97f65c4716",
+              "network-1154757/out/artifacts/network_policy": "bc95cc68ba828fef5cc6f1e0318f3acac80088226b9acc27cd694c9523b6e442"
+            },
+            "unchanged_containers": 1233,
+            "owned_additions": [
+              "d9afd31929a181d634991f79e36b56129a96fde247fc90b0d8b9f17f3f368f0c",
+              "dd87afdf2fa940c4a7217543078dbdb3632d57e65c1ea43b5f65653314779b8f"
+            ],
+            "build_receipt_sha256": "f9123dc9c566f0a884ac5642103fb036de902373e19d612b527e1446c6037c80",
+            "source_manifest_sha256": "5a08c2e224e5efe8081e95a726f0b655e8788de0b9ca53962522b60135ac8cb2",
+            "archive_sha256": "31b42d460f08a66b02e4302ee4ed40c33ffb6322c28a89c44ba24c7d64915548",
+            "scope": "Root read-only exact Git/export/archive/artifact/resource audit; no tests or engines"
+          }
+        },
+        "oracle_commit": "039e77eb2934c3da4280c5ff2f4d9193079e6d6a",
+        "oracle_integrated": "63e1f807270478ec3e9da0e5b35b230e9b67f25a",
+        "oracle_review": "Full root draft+final delta review and independent AI harness-author review. Both old coherent backend tuple resurrection/backdating false positives reproduced and fixed; PID reuse with new start remains accepted. No source blocker.",
+        "oracle_selfcheck": {
+          "root": ".research/live-refusals-oracle-20261013/.research/live-refusals-oracle-selfcheck-20261013",
+          "generator_sha256": "4d49ba71274695d504370fe579fb3d69921eafadb95e106937bdfb3aec211b49",
+          "counterexample_generator_sha256": "47bc15275da149e5eb7aedaeacbf9ef39de2fd6a0f4d5437505819b13bd2e784",
+          "positive_pid_reuse_sha256": "76b61798d5d90cc7b53c168164122c005af34471cdbe8a43d22a498e0b6f45d3",
+          "snapshots": 67,
+          "perturbations": 108,
+          "root_independent_replay": "PASS; wrapper24971 joined0; two old-accepted/new-rejected complete counterexamples independently replayed",
+          "scope": "Artificial captures only; no product/runtime qualification"
+        }
       }
     }
   }
