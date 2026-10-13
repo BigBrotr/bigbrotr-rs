@@ -191,7 +191,7 @@ impl ControlSession {
         input: &InitialHistoryRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
-        self.begin_initial_history_locked(recovery, input, 2, 33, validate)
+        self.begin_initial_history_locked(recovery, input, 2, 34, validate)
             .await
     }
 

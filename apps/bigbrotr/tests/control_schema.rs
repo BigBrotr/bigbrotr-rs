@@ -9,6 +9,7 @@ fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_
         (30, 31, "0031_initial_empty_retirement.sql"),
         (31, 32, "0032_initial_activation.sql"),
         (32, 33, "0033_activated_initial_recovery.sql"),
+        (33, 34, "0034_activated_control_retirement.sql"),
     ] {
         let applied: Vec<_> = plan(&[], previous)
             .unwrap()

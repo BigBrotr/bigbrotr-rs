@@ -197,6 +197,10 @@
     {
       "version": 33,
       "name": "0033_activated_initial_recovery.sql"
+    },
+    {
+      "version": 34,
+      "name": "0034_activated_control_retirement.sql"
     }
   ],
   "reserved": [
