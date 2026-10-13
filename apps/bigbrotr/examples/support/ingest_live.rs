@@ -17,24 +17,23 @@ mod durable;
 mod refusals;
 
 pub(super) fn is_mode(mode: &str) -> bool {
-    matches!(
-        mode,
-        "successor-live-zero"
-            | "successor-live-rejected"
-            | "successor-live-already-durable"
-            | "successor-live-acquisition-claims"
-            | "successor-live-guards"
-            | "successor-live-normal"
-            | "successor-live-off"
-            | "successor-live-commit-before"
-            | "successor-live-commit-after"
-            | "successor-live-manifest"
-            | "successor-live-renew-control"
-            | "successor-live-renew-expired"
-            | "successor-live-renew-before"
-            | "successor-live-renew-after"
-            | "successor-live-reservation-after"
-    )
+    durable::Mode::parse(mode).is_some()
+        || matches!(
+            mode,
+            "successor-live-zero"
+                | "successor-live-rejected"
+                | "successor-live-guards"
+                | "successor-live-normal"
+                | "successor-live-off"
+                | "successor-live-commit-before"
+                | "successor-live-commit-after"
+                | "successor-live-manifest"
+                | "successor-live-renew-control"
+                | "successor-live-renew-expired"
+                | "successor-live-renew-before"
+                | "successor-live-renew-after"
+                | "successor-live-reservation-after"
+        )
 }
 
 pub(super) async fn run(
@@ -157,18 +156,25 @@ pub(super) async fn run(
     if mode == "successor-live-rejected" {
         reject(&probe, &mut owner, &mut writer, &spec).await;
     }
-    if matches!(
-        mode,
-        "successor-live-already-durable" | "successor-live-acquisition-claims"
-    ) {
-        durable::run(
-            &probe,
-            &mut owner,
-            &mut writer,
-            &spec,
-            mode == "successor-live-acquisition-claims",
-        )
-        .await;
+    if let Some(durable_mode) = durable::Mode::parse(mode) {
+        let passed = durable::run(&probe, &mut owner, &mut writer, &spec, durable_mode).await;
+        if durable_mode.limit().is_some() {
+            drop(writer);
+            let stopped = finish_limits(&probe, owner, driver, &backend, passed).await;
+            probe.snapshot("final").await;
+            drop(probe);
+            let observer = join_limit_driver(observer_driver, "observer").await;
+            emit(serde_json::json!({"event":"live-complete","mode":mode,
+                "native":"closed","control":if passed && stopped {
+                    "released-and-joined"
+                } else { "failed-see-custody-events" },
+                "writer":false,"admission":true,"passed":passed && stopped && observer}));
+            assert!(
+                passed && stopped && observer,
+                "preserved count fixture failure"
+            );
+            return;
+        }
     }
     if refusals::is_renewal(mode) {
         refusals::renewal(&probe, (owner, driver), writer, &spec, backend, mode).await;
@@ -223,6 +229,91 @@ pub(super) async fn run(
         "writer":false,"admission":mode != "successor-live-zero"}));
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
+}
+
+// Only the count fixture uses this failure-aware ending. Every operation error
+// has already been emitted; release/driver errors remain separate observations.
+async fn finish_limits(
+    probe: &Probe,
+    owner: ControlSession,
+    driver: Driver,
+    backend: &Backend,
+    passed: bool,
+) -> bool {
+    probe.snapshot("final-before-control-end").await;
+    let identity = owner.identity();
+    let released = if passed {
+        let result = durable::limit_call(owner.release()).await;
+        emit(
+            serde_json::json!({"event":"live-limit-release", "attempted":true,
+            "error":result.as_ref().err()}),
+        );
+        result.is_ok()
+    } else {
+        drop(owner);
+        emit(
+            serde_json::json!({"event":"live-limit-release", "attempted":false,
+            "error":null}),
+        );
+        false
+    };
+    let joined = join_limit_driver(driver, "control").await;
+    emit(
+        serde_json::json!({"event":"successor-control","stage":"final",
+        "phase":if released && joined {"released-and-joined"} else {"failed-see-custody-events"},
+        "resource":hex(identity.resource_id.as_bytes()),"epoch":identity.epoch.get()}),
+    );
+    // Driver termination is not server-side exclusion. Observe the same frozen
+    // backend tuple, and preserve observation failure without asserting first.
+    let absent = durable::limit_call(async {
+        loop {
+            let present: bool = probe
+                .observer
+                .query_one(
+                    "SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_stat_activity
+                 WHERE pid=$1::integer AND backend_start=$2::text::timestamptz
+                   AND datname=$3::text)",
+                    &[&backend.pid, &backend.start, &backend.database],
+                )
+                .await?
+                .get(0);
+            if !present {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(25)).await;
+        }
+        Ok::<(), tokio_postgres::Error>(())
+    })
+    .await;
+    emit(serde_json::json!({"event":"live-limit-backend-absence",
+        "error":absent.as_ref().err()}));
+    if absent.is_ok() {
+        backend.emit(false);
+    }
+    probe.snapshot("final-after-control-end").await;
+    released && joined && absent.is_ok()
+}
+
+async fn join_limit_driver(mut driver: Driver, stage: &str) -> bool {
+    let (result, aborted) = match tokio::time::timeout(Duration::from_secs(5), &mut driver).await {
+        Ok(result) => (result, false),
+        Err(_) => {
+            // This is our connection task only. Reap the abort; do not detach an
+            // unknown client or infer PostgreSQL rollback from task cancellation.
+            driver.abort();
+            (driver.await, true)
+        }
+    };
+    let error = match result {
+        Ok(Ok(())) => None,
+        Ok(Err(error)) => Some(format!("{error:?}")),
+        Err(error) => Some(format!("{error:?}")),
+    };
+    emit(
+        serde_json::json!({"event":"live-limit-driver","stage":stage,
+        "joined":true,"failed":error.is_some(),"aborted":aborted,"error":error}),
+    );
+    error.is_none() && !aborted
 }
 
 async fn guard_gate(prefix: &Path, gate: &str, extension: &str) {

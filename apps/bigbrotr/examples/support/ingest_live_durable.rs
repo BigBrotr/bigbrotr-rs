@@ -10,7 +10,11 @@ use bigbrotr::{
         scope::AcquisitionEventContext,
         session::{RelaySession, SessionMessage},
     },
-    management::{credentials::HASH_RESERVATION, grants::Revision, sessions::SessionLifetime},
+    management::{
+        credentials::HASH_RESERVATION,
+        grants::Revision,
+        sessions::{IssuedSession, SessionLifetime},
+    },
     network::{DirectConnector, DnsResolver, RouteSelection, TlsPolicy},
     storage::{
         postgres::control_owner::{
@@ -33,6 +37,32 @@ use tokio::{
 
 const EVENT: &str = include_str!("../../../../tests/fixtures/ingest/import-event.jsonl");
 const ENDPOINT: &str = "ws://127.0.0.1:7447/installed-fixture";
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum Mode {
+    AlreadyDurable,
+    ExtraIntents,
+    Limit64,
+    Limit65,
+}
+impl Mode {
+    pub(super) fn parse(mode: &str) -> Option<Self> {
+        match mode {
+            "successor-live-already-durable" => Some(Self::AlreadyDurable),
+            "successor-live-acquisition-claims" => Some(Self::ExtraIntents),
+            "successor-live-acquisition-limit64" => Some(Self::Limit64),
+            "successor-live-acquisition-limit65" => Some(Self::Limit65),
+            _ => None,
+        }
+    }
+    pub(super) fn limit(self) -> Option<u8> {
+        match self {
+            Self::Limit64 => Some(64),
+            Self::Limit65 => Some(65),
+            Self::AlreadyDurable | Self::ExtraIntents => None,
+        }
+    }
+}
 
 fn original(probe: &Probe, previous: &InitialRegistration, sequence: u64) -> MutationIntent {
     let expected = match sequence {
@@ -80,8 +110,8 @@ pub(super) async fn run(
     owner: &mut ControlSession,
     writer: &mut LiveInitialWriter,
     previous: &InitialRegistration,
-    extra_intents: bool,
-) {
+    mode: Mode,
+) -> bool {
     assert!(
         probe.root.local("sync"),
         "explicit finite network role selection"
@@ -420,7 +450,7 @@ pub(super) async fn run(
         preimage
     );
     assert_eq!(std::fs::read_dir(&input_directory).unwrap().count(), 5);
-    if extra_intents {
+    if mode == Mode::ExtraIntents {
         // Keep the actual activator and authenticated session alive. A queued
         // claim with no producer requests must be discoverable independently
         // of request bindings; the other accepted intent must remain unclaimed.
@@ -492,6 +522,137 @@ pub(super) async fn run(
         assert_eq!((after_rows, after_sequence), (actual, sequence));
         assert_eq!(before_inputs, after_inputs);
     }
+    if let Some(total) = mode.limit() {
+        return limit_intents(probe, owner, &browser, scope_id, total).await;
+    }
+    true
+}
+
+// Calls in the new count fixture preserve a timeout as an unknown outcome. The
+// caller closes native custody and joins the actual driver before asserting.
+pub(super) async fn limit_call<T, E: std::fmt::Debug>(
+    future: impl Future<Output = Result<T, E>>,
+) -> Result<T, String> {
+    match tokio::time::timeout(Duration::from_secs(10), future).await {
+        Ok(result) => result.map_err(|error| format!("{error:?}")),
+        Err(_) => Err("TimeoutOutcomeUnknown".into()),
+    }
+}
+
+async fn limit_intents(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    browser: &IssuedSession,
+    scope_id: AcquisitionScopeId,
+    total: u8,
+) -> bool {
+    // The original a6 job is claim one. Only one new receipt/job is retained at
+    // once; fixed-width b0 keys identify the bounded extra claims independently.
+    // Snapshot count is constant, avoiding quadratic full-table output.
+    assert!(matches!(total, 64 | 65));
+    let directory = probe.path.join("producer-inputs-v1");
+    let before_inputs = input_bytes(&directory);
+    let before_native = raw_state(&probe.path);
+    probe.snapshot("limits-before").await;
+    let mut created = 0_u8;
+    let mut passed = true;
+    for ordinal in 2..=total {
+        let refreshed = limit_call(owner.refresh(|doc, digest| probe.validate(doc, digest))).await;
+        let policy = refreshed.as_ref().ok().map(|policy| {
+            serde_json::json!({"config_revision":policy.config_revision,
+                "policy_revision":policy.policy_revision,
+                "config_digest":hex(&policy.config_digest),
+                "policy_digest":hex(&policy.policy_digest)})
+        });
+        emit(
+            serde_json::json!({"event":"live-limit-refresh","ordinal":ordinal,
+            "policy":policy,"error":refreshed.as_ref().err()}),
+        );
+        let Ok(policy) = refreshed else {
+            passed = false;
+            break;
+        };
+        if (policy.config_revision, policy.policy_revision) != (1, 1) {
+            passed = false;
+            break;
+        }
+        let mut key = [0xb0; 16];
+        key[15] = ordinal;
+        let started = Cell::new(false);
+        let accepted = limit_call(owner.accept_acquisition(
+            &browser.session,
+            &browser.csrf,
+            key.try_into().unwrap(),
+            &AcquisitionCommand {
+                scope_id,
+                deadline_us: JobDuration::new(30_000_000).unwrap(),
+                expected_config_revision: Revision::try_from("1".to_owned()).unwrap(),
+                expected_policy_revision: Revision::try_from("1".to_owned()).unwrap(),
+            },
+            &started,
+        ))
+        .await;
+        emit(
+            serde_json::json!({"event":"live-limit-acceptance","ordinal":ordinal,
+            "request_key":hex(&key),"receipt":accepted.as_ref().ok(),
+            "error":accepted.as_ref().err(),"commit_started":started.get()}),
+        );
+        let Ok(accepted) = accepted else {
+            passed = false;
+            break;
+        };
+        if !accepted.created || !started.get() {
+            passed = false;
+            break;
+        }
+        let started = Cell::new(false);
+        let claimed = limit_call(owner.claim_acquisition(accepted.job_id, &started)).await;
+        let observed = claimed.as_ref().ok().map(|job| {
+            serde_json::json!({"id":job.id,"scope":job.scope,"state":job.state,
+                "job_revision":job.revision,"checkpoint_revision":job.checkpoint_revision,
+                "accepted_at_us":job.accepted_at_us,"deadline_at_us":job.deadline_at_us,
+                "owner":job.owner.map(|identity|serde_json::json!({"resource":identity.resource,
+                    "epoch":identity.epoch.get(),"incarnation":identity.incarnation}))})
+        });
+        emit(
+            serde_json::json!({"event":"live-limit-claim","ordinal":ordinal,
+            "job":observed,"error":claimed.as_ref().err(),"commit_started":started.get()}),
+        );
+        let Ok(claimed) = claimed else {
+            passed = false;
+            break;
+        };
+        let correct_owner = claimed.owner.is_some_and(|identity| {
+            identity.resource == owner.identity().resource_id
+                && identity.epoch == owner.identity().epoch
+                && identity.incarnation == owner.identity().process_incarnation
+        });
+        if !started.get()
+            || claimed.id != accepted.job_id
+            || claimed.scope != scope_id
+            || claimed.state != bigbrotr::management::jobs::JobState::Queued
+            || (claimed.revision, claimed.checkpoint_revision) != (2, 0)
+            || !correct_owner
+        {
+            passed = false;
+            break;
+        }
+        created += 1;
+    }
+    probe.snapshot("limits-after").await;
+    let after_native = raw_state(&probe.path);
+    let after_inputs = input_bytes(&directory);
+    passed &= created == total - 1
+        && before_native == after_native
+        && (after_native.0.len(), after_native.1) == (53, 64)
+        && before_inputs == after_inputs;
+    emit(
+        serde_json::json!({"event":"live-limit-intents","total_jobs":total,
+        "created_claims":created,"extra_executions":0,
+        "native_rows":after_native.0.len(),"native_sequence":after_native.1,
+        "inputs_before":before_inputs,"inputs_after":after_inputs,"passed":passed}),
+    );
+    passed
 }
 
 fn input_bytes(directory: &Path) -> Vec<serde_json::Value> {
