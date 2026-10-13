@@ -15269,6 +15269,93 @@
             "audit": "root-build-audit.json: PASS; 1775 exact Git/export/archive files, 24 current/prior ELFs, all1238 prior container projections unchanged, exactly two new owned exited0/PID0/noOOM containers. Read-only audit, no extra tests or engines.",
             "qualification": "Compile,7 actual entrypoint,3 Serve,5 shared supervisor tests and Clippy PASS. Actual connected installed successor remains NOT_RUN; original ec3e failed build and both failed ELF snapshots preserved."
           }
+        ],
+        "regressions": [
+          {
+            "source": "ddded07d36dc8e80f977fa5dbb3435d5003c3d11",
+            "owner": "c1ddd01f327ce33416cfc92355e1906a",
+            "client": {
+              "id": "f7ea082e7f143dcb58a6141201912e1c473419fc7949220c3c6cd8ad7a03dbc4",
+              "name": "bigbrotr-acquisition-binding-ddded07"
+            },
+            "status": "PASS_INSTALLED_POSITIVE_RECOVERY",
+            "started_at": "2026-10-13T09:09:57.733206+00:00",
+            "finished_at": "2026-10-13T09:10:05.755948+00:00",
+            "free_bytes_after": 66008563712,
+            "databases": [
+              "bb_scope_bind_ddded07_signed_recovery",
+              "bb_scope_bind_ddded07_signed_copy"
+            ],
+            "cases": [
+              {
+                "name": "positive-recovery-signed",
+                "status": "PASS",
+                "cases": [
+                  {
+                    "name": "signed-recovery",
+                    "status": "PASS",
+                    "native_rows": 49,
+                    "original_requests": 4,
+                    "control_tables": 69,
+                    "seconds": 0.21405672375112772,
+                    "new_event_outcome_copy": false,
+                    "source_closed": false,
+                    "expected_refusal": null
+                  },
+                  {
+                    "name": "signed-recovery-retry",
+                    "status": "PASS",
+                    "native_rows": 49,
+                    "original_requests": 4,
+                    "control_tables": 69,
+                    "seconds": 0.13661869056522846,
+                    "new_event_outcome_copy": false,
+                    "source_closed": false,
+                    "expected_refusal": null
+                  },
+                  {
+                    "name": "signed-recovery-copy",
+                    "status": "PASS",
+                    "native_rows": 49,
+                    "original_requests": 4,
+                    "control_tables": 69,
+                    "seconds": 0.21288425102829933,
+                    "new_event_outcome_copy": true,
+                    "source_closed": false,
+                    "expected_refusal": null
+                  }
+                ],
+                "source_lab": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+                "source_revision": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+                "source_owner": "df63ed47a165a536aa0937277bfb4caa",
+                "source_result_sha256": "08ec9000df8e5cf9facfd20d67cbf379f14a4c492fe36dedebb1b35e44ca63d0",
+                "source_preserved": {
+                  "control": true,
+                  "catalog": true,
+                  "files": true,
+                  "report": true
+                },
+                "oracle": {
+                  "native_rows": 49,
+                  "original_requests": 4,
+                  "dictionary_recorded_us": 1790930661589775,
+                  "event_received_us": 1790930661641775,
+                  "event_recorded_us": 1790930661689041
+                },
+                "scope": "installed signed positive recovery",
+                "excluded": "producer/domain retirement, successor and M1 restart/resend"
+              }
+            ],
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-signed-regression-ddded07",
+            "wrapper": 35588,
+            "exit_code": 0,
+            "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
+            "result_sha256": "27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9",
+            "audit": "Unchanged fixture passed3actual commands/69SQL tables/49 native rows/4 originals each, with original catalog/control/native/export preservation captured. Independent read-only artifact/custody audit pending. PG0/client143 stopped/PID0/noOOM."
+          }
         ]
       }
     }

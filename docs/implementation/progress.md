@@ -16,7 +16,7 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEAD787e1fed0b537c8e3c3dd39b7e9b079f73b230b7. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
+HEADddded07d36dc8e80f977fa5dbb3435d5003c3d11. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
 Python dispatcher and build evidence/checkpoint/inventory updates; independent
 fixture remains in its separate worktree. CLI/profile/tests are committed.
 Last verified private root is92c621fa597866d1f59a30c0b81997bc547dc3b7;
@@ -47,7 +47,13 @@ Root read-only audit matched1775 Git/export/archive files,24 current/prior retai
 ELFs and all1238 prior container projections; exactly two owned containers exited0,
 PID0/noOOM. ReceiptSHAb8a8ab7019ee62e07889e4389d75c615d5e291df2ca9f410a80602a088165b54.
 CLI SHA0b483e9c07aeafa82227b24fc03bfd1bd4add496c9b321fb056b5f68e105ec2e.
-No installed engine is allocated; all build/engine wrappers are terminal.
+The unchanged signed-recovery regressionddded07 passes3 actual recovery commands
+(first/retry/missing outcome copy),49 native rows/4 original requests/69 SQL tables.
+Root `/runs/ingest-signed-regression-ddded07`, wrapper35588 joined0; resultSHA
+27b6d761e33f5d77df058b179b817865dc173bd2d6a97480116cc4e982bc57b9.
+Finished09:10:05Z, PG0/client143/PID0/noOOM, no unrelated changes or cleanup errors.
+Independent read-only artifact audit is pending. Initial Sync-window regression is
+next; new installed successor fixture engine is still NOT_RUN. All wrappers terminal.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
