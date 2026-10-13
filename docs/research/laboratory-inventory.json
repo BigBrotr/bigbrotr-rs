@@ -43609,48 +43609,51 @@
     }
   },
   "implementation_activated_initial_recovery_20261013": {
-    "status": "BUILD_FAILED_TEST_EXPECTATION_CORRECTED",
-    "observed_at": "2026-10-13T10:19:59.210482+00:00",
+    "status": "INSTALLED_FAILED_ADDITIVE_CORRECTION_IMPLEMENTED",
+    "observed_at": "2026-10-13T10:35:18.170347+00:00",
     "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
     "worktrees": [
       {
         "root": ".research/activated-recovery-native-20261013",
-        "branch": "implementation/activated-recovery-native",
+        "branch": "qualification/activated-recovery-source-zero",
         "owner": "successor_restart_design",
-        "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
-        "scope": "Native checked two-stream context, closing barrier and positive replay",
-        "state": "committed clean; no builds or engines by agent",
-        "source": "b0fbf834be453661b6ed2319aeef7f4cc7a22850",
-        "integrated": "a7210283cfae92c5e3c329e6ab915471a45d7180"
+        "base": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+        "scope": "Finite real issued1/source0 rejection seed probe; future installed qualification",
+        "state": "committed clean; no builds/engines",
+        "source": "2f0268a2d9eda3324c8edecb90ac8e4dc3efeeaf",
+        "integrated": "535b3e9",
+        "previous_branch": "implementation/activated-recovery-native"
       },
       {
         "root": ".research/activated-recovery-postgres-20261013",
-        "branch": "implementation/activated-recovery-postgres",
+        "branch": "qualification/activated-recovery-fault-oracle",
         "owner": "recovery_review",
-        "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
-        "scope": "Additive0033 complete activated closing validation and opaque metadata/resolve adapters",
-        "state": "committed clean; no builds or engines by agent",
-        "source": "0e21919484baae550dea4bbff79fde0ef32069ad",
-        "integrated": "97f13013ac6f4c3d04757b9f20ce0c4265fe4517"
+        "base": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+        "scope": "Independent actual installed COMMITloss oracle plus completed additive34 correction",
+        "state": "dirty source-only work",
+        "source": "b9a245d941d6955db0655e0e19ef454a6cc76de0",
+        "integrated": null,
+        "previous_branch": "implementation/activated-recovery-postgres"
       },
       {
         "root": ".research/activated-recovery-qualification-20261013",
-        "branch": "qualification/activated-recovery",
+        "branch": "qualification/activated-recovery-faults",
         "owner": "cleanup_review",
-        "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
-        "scope": "Independent installed/corruption/COMMIT-loss fixture and expected results",
-        "state": "committed clean; no builds or engines by agent",
-        "source": "d578ec8a0d37978993735d6ff068df7ec8153158",
-        "integrated": "8fd7b15"
+        "base": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+        "scope": "Four installed COMMITloss schedules and fresh recovery driver",
+        "state": "committed clean; no builds/engines",
+        "source": "6b03f24146b5b8e4a418cc5c07685451704ab30d",
+        "integrated": null,
+        "previous_branch": "qualification/activated-recovery"
       }
     ],
-    "root_work": "Installed consumer3827bc2; fixtured578ec8 integrated8fd7b15; test-only correctionb0fbf83 integrateda721028; root dispatcher and provisioning docs pending commit",
-    "resources": "Failed build stopped-retained; six current ELFs copied out of mutable cache; original retained artifacts untouched; no engine allocated",
-    "checks": "Firstbuild FAIL; source review/pure checks PASS; corrected build and installed acceptance NOT_RUN",
-    "next": "Exact corrected isolated build; then first8 installed invocations",
-    "free_bytes_observed": 65550876672,
+    "root_work": "Corrected schema34 first-wave fixture, scoped compile/profile, CLI help and currentdocs pendingcommit. Initialsource contracts/native/storage release timeline reviewed; no native product change afterfaa.",
+    "resources": "All current wrappers terminal. Failed engine PG0/client143 stopped/PID0/noOOM; preserve newfailed and priorbuilds/ELFs/seeds/captures. No engine/build active.",
+    "checks": "faa147tests+Clippy PASS; first actualinstalledFAIL with additive34 fix implemented; corrected build/SQL/installed stillNOT_RUN",
+    "next": "Commit root schema34 fixture/profile/docs; exact ingest-activated-installed build then corrected first8 engine",
+    "free_bytes_observed": 64295211008,
     "builds": [
       {
         "source": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
@@ -43753,6 +43756,267 @@
           "scope": "One literal dependency and explanatory frozen-order comment; product and fixture input bytes unchanged"
         },
         "remaining": "Corrected exact build, later NOT_RUN tests/Clippy, installed engines"
+      },
+      {
+        "source": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+        "tree": "9630c708cae77aaf0a6642293b34a06b80fbe1a6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-faa1390",
+        "owner": "5a887990a7351e4804c8f93b179c2e34",
+        "status": "PASS_ACTIVATED_INITIAL_RECOVERY_BUILD_ONLY",
+        "state": "stopped-retained",
+        "wrapper": {
+          "session": 87861,
+          "joined_exit_code": 0
+        },
+        "started_at": "2026-10-13T10:20:15.220418+00:00",
+        "finished_at": "2026-10-13T10:22:30.326251+00:00",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "047650422c9421ee3a1256d9428cf419f2c2d98f5eb1c491d4239b4438ac69c0"
+          },
+          {
+            "name": "native",
+            "id": "2dcc4dc110dbbc22a9338e021e785d62ffcc2e7675c569bcec98733e815dd8e3"
+          }
+        ],
+        "receipt_sha256": "614d06e0a0aadc894e254386e7e23801a1919548908aee30c65679db64284e68",
+        "binary_sha256": "e096d9178410f878a945594e123845b987c1c2dd4a91d246b0cfb41e3001cf86",
+        "probe_sha256": "ff4c699715e5368316b9f46f4ad8c40ee570602b43f3888397b54c45c5247b2c",
+        "native_tests": {
+          "source-closure": 3,
+          "producer-closing": 9,
+          "producer-recovery": 11,
+          "initial-handoff": 7,
+          "initial-reconstruction": 27,
+          "bootstrap": 5,
+          "dictionary-append": 13,
+          "event-replay": 7,
+          "certification": 6,
+          "rocks_manifest": 4,
+          "rocks_keys": 9
+        },
+        "entrypoint_schema_migration_tests": 46,
+        "clippy": "PASS",
+        "audit": {
+          "status": "PASS_READ_ONLY_BUILD_AUDIT",
+          "source": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+          "files": 1787,
+          "executables": {
+            "ingest-activated-recovery-faa1390/out/artifacts/bigbrotr": "e096d9178410f878a945594e123845b987c1c2dd4a91d246b0cfb41e3001cf86",
+            "ingest-activated-recovery-faa1390/out/artifacts/ingest_bootstrap_probe": "ff4c699715e5368316b9f46f4ad8c40ee570602b43f3888397b54c45c5247b2c",
+            "ingest-activated-recovery-faa1390/out/artifacts/source_closure_components": "d9e57be6b793156ad5fe287c3ead4f667c381a2aaca82f1f0c4c9ded327343ff",
+            "ingest-activated-recovery-faa1390/out/artifacts/rocks_manifest": "5a7a82cf78e0f3c075f592fc7ce6cd705d8de054f5fe5f2014cf5fdbe39f6bff",
+            "ingest-activated-recovery-faa1390/out/artifacts/rocks_keys": "034df352b7eb6eec5ba584edb008722b3abc77e7f0ee375ba8f24e82ec436039",
+            "ingest-activated-recovery-faa1390/out/artifacts/migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+            "ingest-activated-recovery-faa1390/out/artifacts/control_schema": "997c5a6d5420c258fcb0b074d33ff70bf283a7ad80e607dddff8ab176f28deb2",
+            "ingest-activated-recovery-faa1390/out/artifacts/control_runtime_entrypoint": "7944f4db1e8643956d58d7736573d03be10ac36bcb0968f557ca89dc026eba53",
+            "ingest-installed-live-787e1fe/out/artifacts/bigbrotr": "0b483e9c07aeafa82227b24fc03bfd1bd4add496c9b321fb056b5f68e105ec2e",
+            "ingest-installed-live-787e1fe/out/artifacts/ingest_bootstrap_probe": "5883fdc59de1334451387504a55091ff20fb9e0a9259a2c04530e6494ab3cd36",
+            "ingest-installed-live-787e1fe/out/artifacts/control_runtime_entrypoint": "7bcc0a66f2914f3721c6f29ad60454a6c0a031a79421c821e376d528da7eb82e",
+            "ingest-installed-live-787e1fe/out/artifacts/serve_components": "9de15c3ce6faabde899eb59858d0b96da18c431a22062367053b37b9f4f9aa57",
+            "ingest-live-refusals-4eef3c5/out/artifacts/bigbrotr": "5446d4f358a5fb0755497dd7e4badb31673b3d2f9a745e311a602360e173cdcb",
+            "ingest-live-refusals-4eef3c5/out/artifacts/ingest_bootstrap_probe": "3dbba08342de9c6de9263a0568b254c39c1545051d79f900ac63fdd5acffd892",
+            "ingest-live-guards-ee24e86/out/artifacts/bigbrotr": "128a9829bd21113ed4a5ea1e7e6dd934fc741d5530ece3cdc4e2c3bda14d5db7",
+            "ingest-live-guards-ee24e86/out/artifacts/ingest_bootstrap_probe": "c5d795ad6228ab96af1923626577dddd596acd4ba7e490e3535cc02fb5e6b606",
+            "ingest-live-c640b2f/out/artifacts/bigbrotr": "fe1ec816d89d2a16ebf27c38b82d8babcf4a8426bc47cca7b208379204901e97",
+            "ingest-live-c640b2f/out/artifacts/ingest_bootstrap_probe": "4208240edb8f156b7e3afbe5af75d18e8feb4b0f2bfcab7bc8b96305ae58b4a4",
+            "ingest-live-c640b2f/out/artifacts/source_closure_components": "c1f6a5ba62b52f03e9f06c18b843529813031114f0a7c46ddb6cbbdabc3d1860",
+            "ingest-live-c640b2f/out/artifacts/rocks_manifest": "9a6e6f1f434491c3cccc34b2bc1d455fee6e6422c4d6988b774c2330e0c920d0",
+            "ingest-live-c640b2f/out/artifacts/rocks_keys": "bf076abea2133c8b1b1bde7890a0d843c3254d93790d2acebfc0831816bdf2f1",
+            "ingest-activated-recovery-3827bc2/out/failed-artifacts/bigbrotr": "118de0b192c5a0ac715a04577de36aabfef2ca42be64d3e8352cba18647b56b3",
+            "ingest-activated-recovery-3827bc2/out/failed-artifacts/ingest_bootstrap_probe": "ff4c699715e5368316b9f46f4ad8c40ee570602b43f3888397b54c45c5247b2c",
+            "ingest-activated-recovery-3827bc2/out/failed-artifacts/source_closure_components": "23a77c0169f5776c1fbee8f3ad7db94e923de1d05297d05ca486d4975d8f9ac0",
+            "ingest-activated-recovery-3827bc2/out/failed-artifacts/migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+            "ingest-activated-recovery-3827bc2/out/failed-artifacts/control_schema": "997c5a6d5420c258fcb0b074d33ff70bf283a7ad80e607dddff8ab176f28deb2",
+            "ingest-activated-recovery-3827bc2/out/failed-artifacts/control_runtime_entrypoint": "7944f4db1e8643956d58d7736573d03be10ac36bcb0968f557ca89dc026eba53",
+            "ingest-installed-live-ec3e2c4/out/failed-artifacts/bigbrotr": "5446d4f358a5fb0755497dd7e4badb31673b3d2f9a745e311a602360e173cdcb",
+            "ingest-installed-live-ec3e2c4/out/failed-artifacts/ingest_bootstrap_probe": "5883fdc59de1334451387504a55091ff20fb9e0a9259a2c04530e6494ab3cd36",
+            "ingest-live-7337ac4/out/failed-artifacts/bigbrotr": "0ddbe0cfb4cf7cd53971f4a7f4c6f6b109bb4cbb41257bbe8b77b824f3c77666",
+            "ingest-live-7337ac4/out/failed-artifacts/bigbrotr-6fa8353cd98574d6": "9c992a9fb3cbd255fa42f6f8bdb97ed01aa9425c1e2559c6e3d595614c93205a",
+            "ingest-live-7337ac4/out/failed-artifacts/control_runtime_entrypoint-23320ebc33425f68": "ea793e7004077afacf6a34fd8dd45b0dd54c7c8191c85fa1221540776bf07ff2",
+            "ingest-live-7337ac4/out/failed-artifacts/control_schema-5af2930e5a9ba4e0": "5a066f63f23b146934fe57affe11e5e0a61aac5f5e0b48d8b3d620d1fc829e8e",
+            "ingest-live-7337ac4/out/failed-artifacts/ingest_bootstrap_probe": "4208240edb8f156b7e3afbe5af75d18e8feb4b0f2bfcab7bc8b96305ae58b4a4",
+            "network-1154757/out/artifacts/network_dns": "e7a5b5a19db4d66efe9221963fd9a4f7eacd04a70bd36aacbee25029adce07f6",
+            "network-1154757/out/artifacts/network_direct": "5a727c5a0f016e4fabad097f5e5af20595acd8e44efb17b8e420b768cc8ccc7c",
+            "network-1154757/out/artifacts/network_dns_semantics": "69fabf32dc661e0d861b071f1be1455cbd0eb195f4e070b2bb86ba97f65c4716",
+            "network-1154757/out/artifacts/network_policy": "bc95cc68ba828fef5cc6f1e0318f3acac80088226b9acc27cd694c9523b6e442"
+          },
+          "unchanged_containers": 1246,
+          "owned_additions": [
+            "047650422c9421ee3a1256d9428cf419f2c2d98f5eb1c491d4239b4438ac69c0",
+            "2dcc4dc110dbbc22a9338e021e785d62ffcc2e7675c569bcec98733e815dd8e3"
+          ],
+          "build_receipt_sha256": "614d06e0a0aadc894e254386e7e23801a1919548908aee30c65679db64284e68",
+          "source_manifest_sha256": "af8966c05ab4da45ad0582ade85b1876c61bbd85d3129e3f879d120c70f1d47b",
+          "archive_sha256": "64cc54d14e37f964736e369c69334275322ae5092b3ff7ff3da6307da1fadd26",
+          "scope": "Root read-only exact Git/export/archive/artifact/resource audit; no tests or engines"
+        }
+      }
+    ],
+    "engines": [
+      {
+        "source": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-faa1390",
+        "owner": "1d04f370aa2c23abcd85347a67271d22",
+        "status": "FAIL",
+        "wrapper": {
+          "session": 47828,
+          "joined_exit_code": 1
+        },
+        "started_at": "2026-10-13T10:24:08.673462+00:00",
+        "finished_at": "2026-10-13T10:24:20.335397+00:00",
+        "result_sha256": "e44fe109c1b683568b1f6ca9930a74fba81750239b9f1b74047b630a5fe3bade",
+        "client": {
+          "id": "6c18f1b9ef867e8fd6f4b9d4dd4a0d1e8434cd34fac10dd5c3d6bdfd145fad52",
+          "name": "bigbrotr-acquisition-binding-faa1390"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_faa1390_installed_activated_off"
+        ],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:24:08.753593444Z",
+              "FinishedAt": "2026-10-13T10:24:19.51915319Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "6c18f1b9ef867e8fd6f4b9d4dd4a0d1e8434cd34fac10dd5c3d6bdfd145fad52",
+            "Name": "/bigbrotr-acquisition-binding-faa1390",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:24:09.698540422Z",
+              "FinishedAt": "2026-10-13T10:24:19.009153607Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-faa1390/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-faa1390/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "missing_owned": [],
+        "executed": "Only first provenance-off invocation ran: exit4 Control(Backend), reaped/nonforced, native70/sequence84 unchanged, only fresh Control9/role inserted; remaining7 NOT_RUN",
+        "cause": "SQL0033 incorrectly equated retired Control role timestamp with owner release timestamp; actual ordinary release8 uses separate server clock samples499us apart. Exactidentity/fence/policy checks passed.",
+        "correction": {
+          "source": "b9a245d941d6955db0655e0e19ef454a6cc76de0",
+          "integrated": "f6f868042e3d662abb6a0e9d0238c45080363a7f",
+          "migration": "0034_activated_control_retirement.sql",
+          "sha256": "d3ccd19efd29a5c5db849c8bd21db45e4699076122d0bb6cd659fdd736d0b87a",
+          "scope": "Only historical Control retired-role predicate uses established IS NOT NULL;0033 and all other checks unchanged"
+        },
+        "audit": {
+          "status": "PASS_READ_ONLY_FAILED_RUN_CUSTODY_AUDIT",
+          "source": "faa1390b24b8a0194c5b6f5cb98753a4037b3832",
+          "result_status": "FAIL",
+          "source_files": 1787,
+          "retained_executables": 38,
+          "original_paths": 70,
+          "unchanged_nonborrowed_containers": 1247,
+          "actual_cli": {
+            "invocations": 1,
+            "exit": 4,
+            "native_writes": 0,
+            "backend_absent": true
+          },
+          "remaining_cli": "NOT_RUN",
+          "result_sha256": "e44fe109c1b683568b1f6ca9930a74fba81750239b9f1b74047b630a5fe3bade",
+          "context_sha256": "3382d7a67f35039ff5bd34abea1043b6b94257860045d14fc9ebf1c79666ffa8",
+          "scope": "Root raw capture/artifact/file/container audit; original SQL preservation is captured-run evidence, no audit SQL or engine restart"
+        },
+        "source_preservation": {
+          "off": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          },
+          "on": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          },
+          "zero": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          }
+        }
       }
     ]
   }

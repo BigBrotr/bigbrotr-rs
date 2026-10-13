@@ -646,6 +646,14 @@ closing. Unknown closing/outcome COMMIT yields no reusable operation authority;
 another configuration-only process observes retained state and retries. Never reopen
 native state or infer rollback from an undelivered response.
 
+The first installed recovery exposed an unsupported0033 equality between the
+historical Control release and role-retirement timestamps. Ordinary Control
+release samples server UTC in separate statements. Preserve applied0033 and use
+additive0034, which requires the exact released, storage-fenced Control identity
+and a retired matching role, as the established0031/0032 classifiers do. Native
+Ingest retirement's shared timestamp remains exact. Activated recovery requires
+schema34; upgrade qualification preserves the33 ledger and all prior rows.
+
 Reserve native ownership, retained metadata/closing proof, Control/driver and one
 input/outcome replay pair before a claim or barrier. Retain native custody until
 close and the actual driver/grant through joined shutdown. The finite report names

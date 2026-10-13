@@ -363,7 +363,7 @@ After stopping the epoch2 owner, the selected finite recovery command is:
 bigbrotr ingest recover --file ROOT --activated-successor
 ```
 
-Apply migration0033 explicitly first and retain the native directory and original
+Apply migrations through0034 explicitly first and retain the native directory and original
 inputs. Using the provisioning credential, grant the configured PostgreSQL
 application role `EXECUTE` on `control.require_activated_initial_recovery(bytea)`
 and retain its existing Control/Ingest grants. For the qualified application role:

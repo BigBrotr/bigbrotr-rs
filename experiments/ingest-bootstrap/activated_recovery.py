@@ -84,12 +84,14 @@ def upgrade(pg, client, output, database, config, mode, rows):
     context = dict(before=rows(database), physical_before=physical(pg, database),
         catalog_before=previous_catalog(pg, database), responses=[])
     try:
-        for suffix in ('migration', 'reapply'):
+        for suffix, target in (('migration33', '33'), ('migration', '34'), ('reapply', '34')):
             response = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
-                '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '33')
+                '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', target)
             answer = dict(returncode=response.returncode, stdout=response.stdout, stderr=response.stderr)
             context['responses'].append(answer)
-            context['after' if suffix == 'migration' else 'reapplied'] = rows(database)
+            context[{'migration33': 'intermediate', 'migration': 'after', 'reapply': 'reapplied'}[suffix]] = rows(database)
+            if suffix == 'migration33':
+                context['catalog_intermediate'] = catalog(pg, database)
             lab.write_json(output / (mode + '-' + suffix + '.json'), answer)
             assert response.returncode == 0 and not response.stderr
         context['physical_after'] = physical(pg, database)
@@ -289,7 +291,8 @@ def run_all(pg, client, output, rows, clone):
             config = configuration(pg, client, output, database, directory, seed['control'])
             migration = upgrade(pg, client, output, database, config, mode, rows)
             schema = Path(__file__).resolve().parents[2] / 'migrations/postgres/0033_activated_initial_recovery.sql'
-            setup = dict(migration=migration, migration_sha256=digest(schema),
+            correction = schema.with_name('0034_activated_control_retirement.sql')
+            setup = dict(migration=migration, migration_sha256=digest(schema), correction_sha256=digest(correction),
                 policy=None if name == 'zero' else advance_policy(pg, database, output, mode, rows), removed_copy=None)
             attempts = []
             checked, prior = execute(mode, database, config, directory, seed, setup)

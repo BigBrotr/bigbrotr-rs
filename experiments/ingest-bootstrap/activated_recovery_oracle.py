@@ -19,6 +19,7 @@ from initial_succession_oracle import only, same
 
 CASES = ('installed-activated-off', 'installed-activated-on', 'installed-activated-zero')
 MIGRATION_SHA256 = '4f22eb019e831126bf3f5c712d0ddf1e8213dfdfcdf9afaf5b38c80418cb5804'
+CORRECTION_SHA256 = 'd3ccd19efd29a5c5db849c8bd21db45e4699076122d0bb6cd659fdd736d0b87a'
 FUNCTION_DIGESTS = {
     'control.require_activated_initial_recovery(bytea)': '8d0697cedacb7d21395d4429d076337217df8214eaac6f1547159c73f1105a23',
     'control.require_complete_initial_empty_retirement()': 'e930dbd823b7fa2a0f9af1f6f3fec2fbddc6b0a76213f87b16160118dd59801b',
@@ -90,46 +91,55 @@ def migrated(seed, setup, before_clock):
     migration = setup['migration']
     assert migration['before'] == seed['control']
     wanted = copy.deepcopy(seed['control'])
-    added, = [r for r in migration['after']['schema_versions'] if r not in wanted['schema_versions']]
-    assert added['migration'] == 33 and added['name'] == '0033_activated_initial_recovery.sql'
-    assert added['checksum'] == '\\x' + setup['migration_sha256']
     assert setup['migration_sha256'] == MIGRATION_SHA256
-    assert added['engine'] == 'postgres-control' and added['applied_by'] == 'bigbrotr_migrator'
-    assert added['reader_min'] == added['reader_max'] == added['writer_floor'] == 1
-    assert type(added['applied_at_us']) is int and 0 < added['applied_at_us'] <= before_clock
-    fresh_xmin(added['xmin'], wanted)
-    assert added == dict(only(wanted['schema_versions'], migration=32), migration=33,
-        name='0033_activated_initial_recovery.sql', checksum='\\x' + MIGRATION_SHA256,
-        applied_at_us=added['applied_at_us'], xmin=added['xmin'])
-    wanted['schema_versions'].append(added)
-    same(wanted, migration['after'])
+    assert setup['correction_sha256'] == CORRECTION_SHA256
+    for version, filename, digest, state in (
+            (33, '0033_activated_initial_recovery.sql', MIGRATION_SHA256, 'intermediate'),
+            (34, '0034_activated_control_retirement.sql', CORRECTION_SHA256, 'after')):
+        added, = [r for r in migration[state]['schema_versions'] if r not in wanted['schema_versions']]
+        assert added['migration'] == version and added['name'] == filename
+        assert added['checksum'] == '\\x' + digest
+        assert added['engine'] == 'postgres-control' and added['applied_by'] == 'bigbrotr_migrator'
+        assert added['reader_min'] == added['reader_max'] == added['writer_floor'] == 1
+        assert type(added['applied_at_us']) is int and 0 < added['applied_at_us'] <= before_clock
+        fresh_xmin(added['xmin'], wanted)
+        assert added == dict(only(wanted['schema_versions'], migration=32), migration=version,
+            name=filename, checksum='\\x' + digest, applied_at_us=added['applied_at_us'], xmin=added['xmin'])
+        wanted['schema_versions'].append(added)
+        same(wanted, migration[state])
     assert migration['after'] == migration['reapplied']
     assert migration['physical_before'] == migration['physical_after']
     assert set(migration['physical_before']) == set(wanted)
     for response in migration['responses']:
         assert response['returncode'] == 0 and response['stderr'] == ''
-    assert len(migration['responses']) == 2
+    assert len(migration['responses']) == 3
     # The fully qualified old schema32 catalog is independent of this upgrade.
     catalog_identity(migration['catalog_before'])
     assert migration['grant']['statement'] == GRANT
     answer = migration['grant']['response']
     assert answer['returncode'] == 0 and answer['stdout'] == answer['stderr'] == ''
-    previous, current = migration['catalog_before'], migration['catalog_after']
-    assert set(current) == set(previous)
-    assert all(current[k] == previous[k] for k in previous if k != 'functions')
+    previous = migration['catalog_before']
     expected = {row['name']: row for row in previous['functions']}
-    observed = {row['name']: row for row in current['functions']}
     assert len(expected) == len(previous['functions']) == 14
-    assert len(observed) == len(current['functions']) == 15
-    assert observed.keys() == expected.keys() | {'control.require_activated_initial_recovery(bytea)'}
-    for name, row in observed.items():
-        assert set(row) == {'name', 'definition', 'execute'} and row['execute'] is True
-        if name in FUNCTION_DIGESTS:
-            # Pin the complete expected PG16 definition, including language,
-            # search_path, invoker semantics and exact reviewed SQL body.
-            assert sha(row['definition'].encode()) == FUNCTION_DIGESTS[name]
-        else:
-            assert row == expected[name]
+    for stage in ('catalog_intermediate', 'catalog_after'):
+        current = migration[stage]
+        assert set(current) == set(previous)
+        assert all(current[k] == previous[k] for k in previous if k != 'functions')
+        observed = {row['name']: row for row in current['functions']}
+        assert len(observed) == len(current['functions']) == 15
+        assert observed.keys() == expected.keys() | {'control.require_activated_initial_recovery(bytea)'}
+        for name, row in observed.items():
+            assert set(row) == {'name', 'definition', 'execute'}
+            new_validator = name == 'control.require_activated_initial_recovery(bytea)'
+            assert row['execute'] is (stage == 'catalog_after' or not new_validator)
+            if name in FUNCTION_DIGESTS:
+                # The captured33 definition and the independently reviewed one-line
+                # correction pin both catalogs, including permission preservation.
+                wanted_digest = ('cf513e780995f69a282a6cf7ba624bbec479366e0d1b9ca3427fde47d93e2cce'
+                    if new_validator and stage == 'catalog_after' else FUNCTION_DIGESTS[name])
+                assert sha(row['definition'].encode()) == wanted_digest
+            else:
+                assert row == expected[name]
     return wanted
 
 
@@ -183,6 +193,8 @@ def baseline(before, native_before, inputs, seed, setup, label, attempt, server_
         wanted = copy.deepcopy(predecessor['after'])
         assert native_before == predecessor['native_after']
         assert setup['migration'] == predecessor['setup']['migration']
+        assert setup['migration_sha256'] == predecessor['setup']['migration_sha256']
+        assert setup['correction_sha256'] == predecessor['setup']['correction_sha256']
         assert setup['policy'] == predecessor['setup']['policy']
         if attempt == 'repair':
             removed = only(wanted['producer_outcomes'], producer_epoch=2, request_sequence=2)
