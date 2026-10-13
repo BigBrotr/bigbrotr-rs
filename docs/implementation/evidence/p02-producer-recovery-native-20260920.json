@@ -17768,7 +17768,7 @@
       },
       "activated_source_closure_20261013": {
         "status": "PASS_SELECTED_INSTALLED_SOURCE_CLOSURE_FIRST_WAVE_REMAINING_GATES_OPEN",
-        "observed_at": "2026-10-13T12:09:16.089444+00:00",
+        "observed_at": "2026-10-13T12:14:46.106561+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
@@ -18162,7 +18162,7 @@
             "workflowretirement/repeatedlifetimes/Archive/fullM1"
           ]
         },
-        "next": "Run new two-clone/four-CLI finalsource COMMIT8 fault/recovery fixture using unchanged9dbc product artifacts; separately implement genuineAlreadyDurable source0 finite seed.",
+        "next": "Commit compileprofile/currentcheckpoint and run exact isolated genuineAlreadyDurable probe build; preserve57ELFs. IndependentPythonseed/sourceclosefixture progresses; jobclosurelockorders remainowed.",
         "final_commit_fault_fixture": {
           "source": "5b6b176e059dc865b29778bf4d76c9b4f6a0c2e3",
           "integrated": "fee9793a0cc3de09d72d0112348717fad061cd6a",
@@ -18172,6 +18172,62 @@
           "pure": "Fourartificialcontexts/eightobservations/88negativecontrolsPASS; not engine qualification",
           "manifest": ".research/activated-recovery-postgres-20261013/.research/activated-source-fault-selfcheck-20261013/manifest.json",
           "manifest_sha256": "dd8ab8e1a8295ba21dcb560659cbfd4786b3e81e8f3b6947a041010b676a8113"
+        },
+        "final_commit_loss": {
+          "status": "PASS_INSTALLED_ACTIVATED_SOURCE_CLOSURE_COMMIT_LOSS",
+          "source": "939cf1321a72e515be8c901bc0a5316828a88336",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-faults-engine-939cf13",
+          "owner": "924cf5c3a409754cf88bc7556bb3e5ea",
+          "client": {
+            "id": "0aab9bf16e0e4ed2d166a1698e5ece15d1f8b6ea7d247b27fe2f47ea473da159",
+            "name": "bigbrotr-acquisition-binding-939cf13"
+          },
+          "started_at": "2026-10-13T12:10:04.011518+00:00",
+          "finished_at": "2026-10-13T12:10:41.138533+00:00",
+          "wrapper": "19724 joined0",
+          "result_sha256": "7ff76055fb37142fadfd2f0ed1b7fbfd2d857c6751391ab72932eed6fc348011",
+          "cli_invocations": 4,
+          "wire_commits": {
+            "before": [
+              8,
+              7,
+              7,
+              7,
+              1
+            ],
+            "after": [
+              8,
+              8,
+              8,
+              7,
+              1
+            ],
+            "counter_order": [
+              "seen",
+              "forwarded",
+              "server_complete",
+              "client_complete",
+              "faults"
+            ]
+          },
+          "outcome": "Both failedCLI4CommitUnknown then freshdirectCLI0. Earliermissingcopy2 repairC6 survives with recorderControl9. Beforeforward sourceopen then freshControl10 closes;afterservercomplete sourceclosed exactretry preservesclosurexmin/time. Native70/seq85/sixinputs,sourcecut5,nonewretrywrites.",
+          "independent_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-faults-engine-939cf13/root-independent-replay.json",
+            "sha256": "17c8dfe1e942a2e98eeac702d58026e1384a97b0d9057a74350612b0b0232642",
+            "wrapper": "14178 joined0",
+            "complete_observations": 8,
+            "operator_observations": 4,
+            "controls": 88
+          },
+          "custody_audit": "Separate fixture-author raw/artifact audit in progress; Docker snapshot frozen12:11:57Z,1263projections. No activeengine/build."
+        },
+        "already_durable_probe": {
+          "source": "e1f03a6498a4997ff967a0bddf6afd9e784dd000",
+          "integrated": "7c67736a44d81c1cb8d24c32efe19d4f0ceb0204",
+          "status": "IMPLEMENTED_REVIEWED_BUILD_AND_ENGINE_NOT_RUN",
+          "scope": "Genuine finite network resend of frozen f12event8a0096; newtypedlogin/jobclaim, existingprivate scope3/observer/clock/witness, currentpolicy1 andactualRelaySession. OneAlreadyDurable source2request with literalexpected olddeps3..12; no newdictionary/lineage/nativefabrication. Jobqueued/revision2/sessionunrevokedremainunresolved.",
+          "review": "Root complete501linehelper anddispatch/callers read; independentfixtureauthorreview found queuedvsrunning wording corrected. Exacttungstenite0.29 emptyclose/masking/EOF sourcebasis and retainedparentgrant arithmetic checked. Formatting/diffPASS; actualcompile/enginepending.",
+          "profile": "ingest-activated-durable compile+Clippy only;91unchangedproducttests at9dbc reused after exact source diff check"
         }
       }
     }
