@@ -905,7 +905,10 @@ fn main() {
     );
     let successor_gate = matches!(
         args[1].as_str(),
-        "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
+        "successor-preparer-claim"
+            | "successor-live-guards"
+            | "successor-live-manifest"
+            | "successor-activated-acquisition-expiry"
     );
     assert_eq!(
         args.len(),

@@ -23,6 +23,8 @@ use std::{future::Future, path::PathBuf};
 type Driver = tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>;
 const CONTROL_TTL: Duration = Duration::from_secs(20);
 
+#[path = "ingest_activated_acquisition.rs"]
+mod activated_acquisition;
 #[path = "ingest_live.rs"]
 mod live;
 
@@ -80,6 +82,7 @@ pub async fn run(
 ) {
     assert!(
         live::is_mode(mode)
+            || mode == activated_acquisition::MODE
             || matches!(
                 mode,
                 "successor-normal"
@@ -105,10 +108,11 @@ pub async fn run(
     assert_eq!(proxy_port.is_some(), commit_fault);
     assert_eq!(
         gate_prefix.is_some(),
-        matches!(
-            mode,
-            "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
-        )
+        mode == activated_acquisition::MODE
+            || matches!(
+                mode,
+                "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
+            )
     );
     if let Some(prefix) = gate_prefix {
         assert!(prefix.is_absolute());
@@ -153,6 +157,25 @@ pub async fn run(
         IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
     let (mut observer, observer_driver) = bounded(config.connect(NoTls)).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
+    if mode == activated_acquisition::MODE {
+        activated_acquisition::run(
+            Probe {
+                config,
+                initial_proxy_port: None,
+                root,
+                path,
+                budget,
+                observer,
+                cancelled: AtomicBool::new(false),
+            },
+            recovery,
+            observer_driver,
+            gate_prefix.unwrap(),
+            instance.try_into().unwrap(),
+        )
+        .await;
+        return;
+    }
     let spec = bounded(ingest_registry::load_historical(
         &mut observer,
         instance,
@@ -435,6 +458,22 @@ impl Probe {
         spec: &InitialRegistration,
         ordinal: u8,
     ) -> (ControlSession, Driver) {
+        self.acquire_identity(
+            stage,
+            spec.dataset_id,
+            spec.instance_id.try_into().unwrap(),
+            ordinal,
+        )
+        .await
+    }
+
+    async fn acquire_identity(
+        &self,
+        stage: &str,
+        dataset: DatasetId,
+        instance: DatasetId,
+        ordinal: u8,
+    ) -> (ControlSession, Driver) {
         assert!((1..=3).contains(&ordinal));
         let role = [210 + ordinal; 16];
         let incarnation = [220 + ordinal; 16];
@@ -455,8 +494,8 @@ impl Probe {
         let (owner, _) = bounded(ControlSession::acquire(
             client,
             ClaimRequest {
-                dataset: spec.dataset_id,
-                instance: spec.instance_id.try_into().unwrap(),
+                dataset,
+                instance,
                 authority_mode: self.root.text("config.authority_mode").unwrap().into(),
                 role_instance_id: role,
                 incarnation: incarnation.try_into().unwrap(),
