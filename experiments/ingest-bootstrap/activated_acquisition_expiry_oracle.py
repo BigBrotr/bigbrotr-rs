@@ -139,6 +139,7 @@ def verify(events, original, native, inputs, response, *, seed, setup, server_wi
     assert native == native_after == seed['native']
     assert inputs == inputs_after == seed['inputs'] and input_contents == seed['contents']
     assert response['outcome'] == 'PROCESS_EXITED' and response['returncode'] == 0 and response['stderr'] == ''
+    assert 'custody_error' not in response
     assert response['readers_joined'] is True and response['overflow'] is False
     bounded_number(response['seconds'], 120)
     assert [json.loads(line) for line in response['stdout'].splitlines()] == events
@@ -265,4 +266,6 @@ def negative_controls(**context):
     check('backend-not-absent', lambda c: c['backend']['exact'].update(present=True))
     check('catalog-disabled', lambda c: c['setup']['catalog_after']['triggers'][0].update(enabled='D'))
     check('reader-not-joined', lambda c: c['response'].update(readers_joined=False))
+    check('wrapper-nonzero', lambda c: c['response'].update(returncode=1))
+    check('missing-final-custody', lambda c: c['events'].pop())
     return dict(status='PASS', count=len(rejected), rejected=rejected)

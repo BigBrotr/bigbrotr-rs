@@ -24,6 +24,38 @@ from initial_succession import census, digest
 CASES = (MODE,)
 
 
+def closed_and_joined(response):
+    """A docker-exec exit alone does not establish remote native exclusion."""
+    if not (response['returncode'] == 0 and response.get('readers_joined') is True
+            and response.get('overflow') is False and response['stderr'] == ''):
+        return False
+    try:
+        events = [json.loads(line) for line in response['stdout'].splitlines()]
+        assert all(isinstance(event, dict) for event in events)
+        claimed, = [e for e in events if e.get('event') == 'successor-control'
+            and e.get('stage') == 'expiry' and e.get('phase') == 'claimed']
+        present, absent = [e for e in events if e.get('event') == 'successor-backend']
+        assert present['stage'] == 'expiry' and present['present'] is True
+        assert absent == dict(present, present=False)
+        tail = events[-9:]
+        assert len(tail) == 9
+        for position, stage in ((0, 'expiry-final-before-control-end'),
+                (5, 'expiry-final-after-control-end'), (6, 'expiry-final')):
+            assert tail[position]['event'] == 'successor-state' and tail[position]['stage'] == stage
+        for position, stage in ((1, 'control'), (7, 'observer')):
+            assert tail[position] == dict(event='activated-expiry-driver', stage=stage,
+                joined=True, failed=False, aborted=False, error=None)
+        assert tail[2] == dict(event='successor-control', stage='expiry', phase='dropped-and-joined',
+            resource=claimed['resource'], epoch=claimed['epoch'])
+        assert tail[3] == dict(event='activated-expiry-backend-absence', error=None)
+        assert tail[4] == absent
+        assert tail[8] == dict(event='activated-expiry-complete', command=MODE, native='closed',
+            control='dropped-and-joined', admission=False, expected_refusal=True)
+        return True
+    except (AssertionError, KeyError, ValueError, TypeError, IndexError):
+        return False
+
+
 def wait_event(probe, event, *, stage=None, phase=None, timeout=10):
     deadline = time.monotonic() + timeout
     while True:
@@ -187,6 +219,9 @@ def run_all(pg, client, output, rows, clone):
                     response.update(outcome='PROCESS_EXITED', returncode=code,
                         stdout=bytes(probe.stdout).decode(errors='replace'), stderr=bytes(probe.stderr).decode(errors='replace'),
                         readers_joined=not any(t.is_alive() for t in probe.threads), overflow=probe.overflow)
+                    if not closed_and_joined(response):
+                        response.update(outcome='OUTCOME_UNKNOWN',
+                            custody_error='Native close and both driver joins were not positively observed')
             response['seconds'] = time.monotonic() - started
             lab.write_json(output / (MODE + '-response.json'), response)
             if probe is not None:
