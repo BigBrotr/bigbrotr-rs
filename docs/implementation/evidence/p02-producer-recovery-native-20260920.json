@@ -18688,7 +18688,7 @@
         }
       },
       "activated_acquisition_abandonment_20261013": {
-        "status": "QUALIFIED_THROUGH_SIGTERM_ACTUAL_UTC_EXPIRY_GATE_OPEN",
+        "status": "QUALIFIED_SELECTED_ACTIVATED_ACQUISITION_ABANDONMENT_ENVELOPE",
         "observed_at": "2026-10-13T14:20:43.686291+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
         "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
@@ -18872,9 +18872,7 @@
           "flag": "--ingest-activated-acquisition-claims",
           "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
         },
-        "remaining_gates": [
-          "actualControlUTCexpiry acrossfinaljobwait (requiresfinite pre-agedlease proof; CLIlocaltimeoutisnotexpiry)"
-        ],
+        "remaining_gates": [],
         "claims_wave": {
           "source": "da839b70602fdd83876736ddb310ae0ae8f410f3",
           "owner": "4a884dd9a60fbe0c09dce7e4eda52a39",
@@ -19197,9 +19195,9 @@
         "expiry_probe": {
           "source": "1b8b42f06039b290d98f96ed5b013fb851d947bd",
           "integrated": "bd4da0d",
-          "status": "BUILD_PASS_ENGINE_NOT_RUN",
+          "status": "BUILD_AND_ACTUAL_UTC_EXPIRY_PASS",
           "checks": "Root complete new helper, routing, acquire delegation and actual begin_initial_history_locked lease semantics reviewed; author static body-equivalence/rustfmt/diff checks. No product changes or fake InitialRegistration.",
-          "scope": "Continuously held typed epoch2 native/source proof, actual fresh Control, complete positive replay and source closure, final refresh, real UTC lease pre-age outside transaction, final job-wait expiry and refusal; driver/backend custody retained. Actual lock/UTC crossing requires separate pending harness."
+          "scope": "Continuously held typed epoch2 native/source proof, actual fresh Control, complete positive replay and source closure, final refresh, real UTC lease pre-age outside transaction, observed final job-wait expiry and refusal; actual driver/backend custody qualified in expiry_wave."
         },
         "expiry_build": {
           "source": "bd4da0d9f59ca1d8e99a6a9142c983edfd4d8dc0",
@@ -19237,7 +19235,129 @@
             "unchanged_containers": 1283
           },
           "checks": "Rust1.98.1/Clang14 compile and Clippy PASS. Unchanged product inputs retain47 schema/entrypoint/migration tests atec6 and45 native tests at9dbc. No repeated suite or actual expiry qualification."
-        }
+        },
+        "expiry_fixture": {
+          "source": "a0123bf063faf242a9adab0f81fdd3bed0a342d9",
+          "custody_correction": "95d7009616d0636defb320232742d282261b1d7b",
+          "integrated": [
+            "9183f2b",
+            "dd92353"
+          ],
+          "dispatcher": "53a126b56a8aa9c490bd2fd339d957c697c36eec",
+          "observer_bound": "aad54e8e92f6dc68bda2a69ee2d9affc67c55021",
+          "status": "ACTUAL_ENGINE_ROOT_REPLAY_AND_AUTHOR_CUSTODY_PASS",
+          "checks": "Root complete driver/oracle, native probe and Session/Process helper review; independent PG reviewer. Concrete wrapper-exit custody finding corrected before execution. Positive native close and both clean driver joins required before final native capture. Artificial16 snapshots/23 perturbations, six custody mocks and five custody-predicate controls PASS.",
+          "manifest": {
+            "path": ".research/activated-recovery-qualification-20261013/.research/activated-acquisition-expiry-selfcheck-20261013/manifest-v2.json",
+            "sha256": "312f9f8a2121863574a7e5b459e5ee0fb4819338d5bb76995785db0dab6c0a8d"
+          }
+        },
+        "expiry_first_failure": {
+          "source": "53a126b56a8aa9c490bd2fd339d957c697c36eec",
+          "status": "FAIL",
+          "owner": "5f1039958526d8400663222479ca4970",
+          "client": {
+            "id": "6ee0520c29979621cbad1aa9843610da7b6261ef17169521242398948b0af1fd",
+            "name": "bigbrotr-acquisition-binding-53a126b"
+          },
+          "started_at": "2026-10-13T15:11:24.132762+00:00",
+          "finished_at": "2026-10-13T15:11:29.446181+00:00",
+          "free_bytes_after": 54047092736,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-53a126b",
+          "wrapper": "69833 joined1",
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-53a126b/bindings/result.json",
+            "sha256": "f31ccafe2dd9a8640100e8c90f7f7eee4c5fbe3a56b9cf50e5625618586c85fb"
+          },
+          "artifact_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-53a126b/audit-cleanup-review/audit.json",
+            "sha256": "20607b5aab38c5895a335ee78bab3de287976bb9652d0e2deafa8009a27548de",
+            "status": "PASS_READ_ONLY_FAILED_RUN_CUSTODY_AUDIT",
+            "wrapper": "60081 joined0"
+          },
+          "custody": {
+            "frozen_at": "2026-10-13T15:12:47.728585+00:00",
+            "unchanged_nonborrowed": 1284,
+            "engine_files": 1830,
+            "build_files": 1828,
+            "protected_elfs": 70,
+            "containers": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-53a126b/audit-cleanup-review/containers.json",
+              "sha256": "a8a75ce0bbc8eacd7071368c5112527801cc3a49856f5f8aec72fa6438be7ba9"
+            }
+          },
+          "finite_invocations": 0,
+          "cli_invocations": 0,
+          "upgrade_invocations": 0,
+          "native_clones": 0,
+          "postgres_log": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-53a126b/postgres-failure-window.log",
+            "sha256": "bd2c25cac784096d6bcb26dda46dfd42fb768316c8c6f1f183cb69b0a0604e9f"
+          },
+          "semantics": "FAIL before finite probe or schema upgrade: database clone created, full-table observational query failed allocating 33554432-byte DSM segment inside64MiB /dev/shm. Disk retained more than54GB. Subsequent fast shutdown completed a checkpoint then the checkpointer segfaulted; PostgreSQL exit1. These are separate observations, not an established causal diagnosis. Clone final SQL capture unavailable. Original939 preservation and all nonborrowed resources audited; no product expiry or rollback qualification follows."
+        },
+        "expiry_wave": {
+          "source": "aad54e8e92f6dc68bda2a69ee2d9affc67c55021",
+          "status": "PASS_ACTIVATED_ACQUISITION_UTC_EXPIRY",
+          "owner": "65738cbcd512a50b866f29c465bb6cc4",
+          "client": {
+            "id": "9249beb1f09043e053dda0a5f331eb69787cc481f03ac7eb30373d08b825590d",
+            "name": "bigbrotr-acquisition-binding-aad54e8"
+          },
+          "started_at": "2026-10-13T15:14:24.627316+00:00",
+          "finished_at": "2026-10-13T15:15:02.210680+00:00",
+          "free_bytes_after": 53899665408,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-aad54e8",
+          "wrapper": "4291 joined0",
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-aad54e8/bindings/result.json",
+            "sha256": "ef7e8129ad97af94798b5ebc2cef1607075b616326e338dc7b5ecf078ea4d7f2"
+          },
+          "artifact_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-aad54e8/audit-cleanup-review/audit.json",
+            "sha256": "370dd4a6584823a64238cba58d08a3b21ea0d91c74779885eb9cdcedad8907b3",
+            "status": "PASS_READ_ONLY_SOURCE_ARTIFACT_CUSTODY_AUDIT",
+            "wrapper": "48844 joined0"
+          },
+          "custody": {
+            "frozen_at": "2026-10-13T15:15:37.415132+00:00",
+            "unchanged_nonborrowed": 1285,
+            "engine_files": 1830,
+            "build_files": 1828,
+            "protected_elfs": 70,
+            "containers": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-aad54e8/audit-cleanup-review/containers.json",
+              "sha256": "f2bf44137cc72b174479fc96c326d6331d6b03e50933a41381e118bc3a7e50ec"
+            }
+          },
+          "finite_invocations": 1,
+          "cli_invocations": 0,
+          "root_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-aad54e8/root-independent-replay.json",
+            "sha256": "a2c64ba568c2335595cbe84af179d544fd7089dc93e659f18ad90de2d815d446",
+            "wrapper": "97263 joined0",
+            "full_raw_states": 3,
+            "finite_snapshots": 16,
+            "controls": 23
+          },
+          "measurements": {
+            "first_block_before_expiry_us": 1897335,
+            "expired_block_after_expiry_us": 182439,
+            "release_after_expiry_us": 267814,
+            "observed_wait_envelope_us": 2352103
+          },
+          "postgres_restart": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-expiry-engine-aad54e8/postgres-recovery-window.log",
+            "sha256": "4ace2fb65a964e44f77c76e64a4218801a1a3de9487aed5e80c7aae425916675",
+            "observation": "Normal startup after prior abnormal process shutdown; startup says database was shut down",
+            "crash_recovery_qualification": false
+          },
+          "semantics": "Same continuously borrowed positive epoch2 native/source proof and actual Control11. Genuine final refresh then UTC pre-age outside transactions; real CLAIMED_JOBS blocked before and after immutable lease expiry. Holder is actual application role, origin replication, only SELECT FOR UPDATE/ROLLBACK. Final exact Control(Unavailable), poisoned refresh Unavailable, clean driver joins and exact backend exclusion. Only Control claim/four refreshes persist. All72 tables otherwise exact; native70 rows/85 sequence/six original inputs and job/gap/source/copy rows unchanged.",
+          "boundary": "One finite adapter probe; zero installed CLI. No internal Rust timer telemetry, native syscall/power-loss, general capacity or M1 qualification.",
+          "audit_note": "Author custody audit uses frozen Docker state; no SQL/native opens. Root first replay script incorrectly expected one config file, overlooking retained template.toml; original script/log preserved and exact database-config binding corrected. No engine rerun for that audit correction."
+        },
+        "scope_boundary": "Selected acquisition abandonment qualification closed, including actual final-job SIGTERM and finite actual UTC expiry. Producer/domain/owner retirement, import closure, repeated lifetimes, ACK/GC, Archive restart and complete M1-M5 remain incomplete.",
+        "operational_finding": "Failed53a PostgreSQL checkpointer SIGSEGV remains unexplained. Follow-up aad54 startup explicitly reports prior database shutdown and clean final exit0; no WAL/crash recovery evidence or server fault remediation is claimed. Observational query parallelism is now bounded locally; production/global PG settings unchanged."
       }
     }
   }

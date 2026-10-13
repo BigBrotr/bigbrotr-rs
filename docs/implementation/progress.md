@@ -1,188 +1,138 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T14:57Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T15:20Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption. The selected M1–M5 product remains INCOMPLETE. This checkpoint is
 navigation; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
-## Authority and current source
+## Authority and source
 
 Q34 makes Tux the sole editing/Git/development/test host. Q35 appoints this session
 sole integrating owner through the selected product, including private commits
 and verified pushes. No public release, repository rename or production deployment
 is authorized. Preserve unpublished Cargo packages, read-only legacy repositories,
-unrelated workloads and all ignored/external artifacts. Latest resumption overrides
-the earlier credit-exhaustion pause; no new resume confirmation is needed.
+unrelated workloads and every ignored/external artifact. The latest resumption
+revokes the earlier pause; no resume confirmation is needed.
 
-Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD and verified
-private pushbd4da0d9f59ca1d8e99a6a9142c983edfd4d8dc0 (1497 joined0). The completed
-claims/guards/HTTP/limits/SIGTERM/expiry-probe original branch heads were also
-verified pushed; current expiry fixture drafts remain local in their worktree. Main remains
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Fixturec868 and fault5c2 branches also
-verified pushed. No merge/rebase/cherry-pick pending. Root owns this checkpoint
-edit and alone integrates/builds/executes; agents use separate writable worktrees.
+Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
+`aad54e8e92f6dc68bda2a69ee2d9affc67c55021`. Root owns the current evidence/inventory,
+storage task and checkpoint edits. No merge/rebase/cherry-pick is pending.
+Last verified private push is `bd4da0d9f59ca1d8e99a6a9142c983edfd4d8dc0`
+(wrapper1497 joined0); subsequent source/evidence commits are local until verified.
+Main remains `54ad09dc6659bfe67e3bf2871e43ce619c199a5c`. Original prior qualification
+branches through the expiry probe were verified pushed. Root alone integrates,
+builds and executes; agents use separate writable worktrees.
 
-## Active task and next bounded action
+## Current task and next action
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None is complete.
-The [storage task](02-storage.md), [activated abandonment contract](../reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation),
+The [storage task](02-storage.md), [registration contract](../reference/ingest-registration.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json) remain the durable authority.
-Current evidence node:
+Acquisition evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
-Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
+Inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: finish the independent actual-UTC-expiry harness/oracle, review and integrate,
-then execute one finite probe with buildbd4da0d. No build/engine is active. Its
-compile/Clippy58411 and audit25999 joined0:1828 exact source files,70 retained ELFs,
-1283 unchanged prior container projections. Product inputs remain unchanged fromec6.
+Selected activated acquisition abandonment qualification is complete within its
+recorded finite/installed envelope. Next: integrate the reviewed activated producer
+retirement contract `3b12e26c41a6a9f288d47efbcd198a6c597c1964` after its narrow role
+immutability clarification, then implement that dependency-ready responsibility.
+The independent PG review found that changing a retired target role's created_at
+without changing retired_at can evade the existing deferred trigger;0037 must
+protect all terminal target-role fields, including after SET CONSTRAINTS.
 
-SIGTERM3dd87d8 PASS,56582 joined0; root91795 replay two installed states plusseed/
-25 controls PASS, author custody audit complete. Signal151198us after last refresh,
-CLI4 exact cancelled error; one Control backend still waited after CLI exit.
-Holder rollback/join/absence and final Control exclusion preceded native read.
-Native70/85/six inputs and all job/gap/source/copy rows remain unchanged. This is
-an observed UTC envelope, not internal timer telemetry or native syscall evidence.
+Retirement is an explicit separate command, existing-copy-only replay under an
+already CLOSING native proof. Preserve positive Event classification, including
+Rejected/AlreadyDurable; enforce activator acquisition/import obligations. Only
+producer2, nine domains, its owner and role transition together; source2 and all
+native/input state stay exact. No fake epoch2 InitialRegistration, active-to-draining
+transition, epoch3 activation, Archive restart or implicit workflow repair.
 
-Limits26fdabe PASS: three finite seeds and six CLI calls,44183 joined0. Root88876
-replay41 seed snapshots/12 CLI states/four operator states/119 controls PASS.
-64 succeeds/retries;65 and retained1+selected64 refuse without partial gaps/jobs.
-A privileged unsupported-last checkpoint mutation on a genuine two-claim seed
-refuses the full batch. Author custody audit validates1825 source files/1823 build
-files/68 ELFs/1280 unchanged nonborrowed projections and intact originalf12.
-Count seed stdout was2,791,807 and2,803,177 bytes; no capacity claim follows.
-
-Build50208 and audit12817 joined0: compile/Clippy,1823 source files,68 retained
-ELFs and1279 unchanged prior container projections. Product inputs remain exactec6;
-47 entrypoint/schema/migration tests and45 native tests are reused, not rerun.
-
-HTTP498a9e2 passed one actual Serve journey;95341 joined0, root49288 replay
-five snapshots/72 tables/24 controls PASS. Author custody audit passes with an
-explicit receipt limit: first schema32 apply response was overwritten by the
-schema36 context. Full32 row captures/reapply and both33–36 responses remain.
-No response was reconstructed; future filename correction70d682b integrated284cb18.
-SQL70d all14 raw cases and root37 states/21 controls now have a completed custody
-audit. Earlier9e74 stays FAIL with three cases NOT_RUN in that run.
-
-Current agents (no independent build/engine authority):
+Current isolated agents, with no independent engine/build authority:
 
 - `cleanup_review`: `.research/activated-recovery-qualification-20261013`, branch
-  `qualification/activated-acquisition-limits-fixtures`; owns only the new limits
-  driver/oracle committed e47 and integrated26fdabe. Limits custody audit closed.
-  Now owns two new expiry harness/oracle files, coordinating the native probe API.
-- `recovery_review`: `.research/activated-recovery-postgres-20261013`; HTTP branch
-  committed, both latest custody audits complete. New branch
-  `qualification/activated-acquisition-interruptions` owns the installed final-job-wait
-  SIGTERM driver/oracle committed0c497 and integratedc75b7d1. Actual qualification
-  and author custody audit closed; no pending writable work.
-- `successor_restart_design`: `.research/activated-recovery-native-20261013`;
-  probe0ec committed and integrated999d329; independent limits API review closed.
-  Expiry probe1b8 committed, integratedbd4da0d and compiled. Now performs read-only
-  design for the next activated producer/domain/owner retirement responsibility;
-  no contract/product implementation authorized until this slice is reconciled.
+  `qualification/activated-acquisition-expiry-fixtures` at95d7009. Driver/oracle and
+  custody correction integrated; both failed and successful expiry audits closed.
+- `recovery_review`: `.research/activated-recovery-postgres-20261013`, branch
+  `qualification/activated-acquisition-interruptions` at0c497. Expiry independent
+  review and retirement contract review complete; PG API proposal sent to root.
+- `successor_restart_design`: `.research/activated-recovery-native-20261013`, branch
+  `docs/activated-retirement-contract` at3b12e26. Owns only contract clarification;
+  product implementation has not started. Prior expiry-probe branch1b8 preserved.
 
-Remaining qualification must distinguish internal typed calls from management
-HTTP. The ordinary HTTP grant case passed with recovery-only privileges removed
-after legitimate activation and before starting the HTTP client.
-The genuine count campaign establishes the combined64 boundary and full-batch
-refusal in the documented finite envelope. Final-job-wait SIGTERM passed;
-actual post-wait Control UTC expiry remains NOT_RUN, with expiry requiring
-a continuously owned finite probe/pre-aged lease rather than a local CLI timeout. Do not silently drop those concerns or repeat broad unchanged
-suites. Later producer/domain/owner retirement, repeated lifetimes, Archive restart,
-ACK/GC and full M1 remain separate responsibilities.
+## Latest completed evidence
 
-## Current implementation and verified evidence
+Actual UTC expiry: `/runs/ingest-activated-acquisition-expiry-engine-aad54e8`,
+sourceaad54e8, wrapper4291 joined0, PASS. One finite probe, zero installed CLI;
+16 full72-table snapshots, native70/sequence85/six inputs, three external states.
+Actual final CLAIMED_JOBS wait observed1,897,335us before expiry and182,439us after;
+rollback clock267,814us after expiry. Dispatch-to-release-observation envelope
+2,352,103us; these samples do not measure exact lock duration or Rust timer internals.
+Exact Control(Unavailable), then actual refresh Unavailable; clean Control/observer
+joins and exact backend absence. No new gap or terminal job writes, lease unchanged
+through the wait, originals intact. Result SHA
+`ef7e8129ad97af94798b5ebc2cef1607075b616326e338dc7b5ecf078ea4d7f2`.
+Root replay97263 joined0 checks raw bindings and23 controls. Its first script/log
+failed only because template.toml accompanied the database config; both retained,
+then exact config binding corrected offline. Author audit48844 joined0 validates
+1830 engine files/1828 build-export-archive files/70 ELFs and1285 unchanged
+nonborrowed Docker projections, frozen15:15:37Z. PG0/client143/PID0/noOOM.
 
-Additive migration0036 SHA
-19e2390b46d9eba7e4eac765eafc30fc7b2cac03e03c0918df64ed0b87642e54
-and PG owner e2d0 integrated30f0127; finite claims fe44 integrated117d648;
-root CLI/help/docs ec6 exposes `--abandon-activated-acquisition`. Complete affected
-source review and independent PG/CLI review closed without a blocker. All51 prior
-SQL files remain byte-identical. Operation closes source2 then records whole-intent
-unknown coverage and terminal cancellation under fresh Control; it does not adopt
-a writer or retire producer2. Combined retained+selected claims are bounded64.
+Previous expiry53a126b remains FAIL,69833 joined1. Database clone created, but zero
+probe/CLI/upgrade/native-clone execution. Full-table observation failed allocating
+32MiB DSM inside64MiB /dev/shm; host disk had over54GB free. During subsequent fast
+shutdown, checkpoint completed then checkpointer SIGSEGV occurred; PG exit1.
+These are distinct observations, with no established causal explanation. Audit60081
+joined0 preserves original939, all70 ELFs and1284 nonborrowed projections. Root
+changed only the capture connection's max_parallel_workers_per_gather to0.
+Follow-up startup reports the database was shut down and ends cleanly; it does not
+qualify WAL/crash recovery or explain/remediate the prior SIGSEGV. Preserve both
+run logs and audits; retain this finding in future host qualification.
 
-Exact build ec6ff3963161e956fd18226396897b559ac15afe PASS: compile,47 actual
-entrypoint/schema/migration tests and Clippy, Rust1.98.1/Clang14. Root
-`/runs/ingest-activated-installed-ec6ff39`, owner865a2554ea1534a1781966c4425d3f73.
-Wrapper93208 and audit74029 joined0. ReceiptSHA
-68dd599f8a5093d51b25efdecec3ca049a116a03aedc23f355a64e13d1e9901c.
-CLI SHA489e7d38e6feb6116d1ad43c7515069e7cf654798d9642003814d826dc7211fc;
-probe SHA2e8863ecf6f0862ceda16a357bde764e65eb769bdd39916ee197ea982a07c966.
-Both binaries and all66 retained ELFs are outside mutable caches. Native45 tests
-remain valid at9dbc; native/model/protocol/runtime implementations did not change.
-Reusing this build requires verifying the new revision changes only docs/experiments.
+Build `/runs/ingest-activated-refusals-bd4da0d` remains exact and reusable only when
+compiled inputs match. Rust1.98.1/Clang14 compile+Clippy58411 and audit25999 joined0:
+1828 source files/70 protected ELFs/1283 unchanged prior projections. Product inputs
+are unchanged fromec6;47 entrypoint/schema/migration tests and45 native tests at9dbc
+are retained evidence, not rerun suites. Any retirement implementation requires a
+new exact source build and its affected tests.
 
-First abandonment engine1d64cd7 PASS4CLI,45753joined0,13:47:39–13:48:32Z,
-owner2c7d9912914b8958ea6ffe3f9f47723d, root
-`/runs/ingest-activated-acquisition-engine-1d64cd7`; resultSHA
-03545615b8c2e84fc1a545ccf47b33aeed8fb02e4e76e44d3f1ffd246315054c.
-Off sourcecut5/native70/sequence85/six inputs; durable sourcecut0/native53/65/five.
-Each first stores one exact activator8 gap and queued2→cancelled4 atomically;
-retry preserves issuer/time/xmin. Source/copies/session/native/input stay exact.
-Root41369 replay: eight installed plus two seed full states/104 controls PASS.
-Narrow additional deadline assertion replays the same four contexts/104 controls
-PASS at8665 without an engine rerun. Artifact audit:1815engine/1812build files,
-66ELFs,1272 unchanged nonborrowed projections, both originals intact; frozen13:52:13Z.
-
-Final abandonment COMMIT engine0f8cb44 PASS4CLI,46969joined0,13:52:47–13:53:39Z,
-owner03bee46c310340c89646059aa25920c0, root
-`/runs/ingest-activated-acquisition-faults-engine-0f8cb44`; resultSHA
-3e657a0f9ad13d1eb9f59ac2ec347942baf4483efd24f41c6186b4957efb477c.
-C10before-forward counters10/9/9/9/1 retain queuedjob/no gap; after-complete
-10/10/10/9/1 stores gap+cancelled4 underControl11. Both CLI4CommitUnknown; fresh12
-fences11 and completes beforecase or preserves aftercase attribution. Native70/85,
-six inputs/sourcecut5/copies/session unchanged. Root78804 replay eight states/
-102 controls PASS. Artifact audit:1817engine/1812build files,66ELFs,1273 unchanged
-nonborrowed projections; one unique939 original intact; frozen13:56:18Z. Original
-SQL/catalog preservation is captured-run evidence, not a fresh audit query.
-Neither wave claims same-session poison telemetry or power-loss qualification.
-
-Prior qualified installed live successor61a, activated recovery27CLI+onefinite,
-and source closure24CLI+twofinite remain in their owning evidence/inventory nodes.
-They are prerequisites, not completion of M1. All original failures (including
-faa/0033 historical timestamp assumptions, prefixd115 Control xmin oracle,5e57
-fixture permissions and2032894 catalog/release oracle), raw artifacts and corrected
-follow-ups remain retained. Do not relabel or rerun them as successes. The evidence
-nodes and Git history retain their exact identities and boundaries.
-
-Claims engineda839b7 PASS1finite+2CLI,1887joined0; root
-`/runs/ingest-activated-acquisition-claims-engine-da839b7`. Actual Control8 owns
-existinga6request1 and newa7zero-request; a8 staysaccepted/unclaimed. First closes
-source2(native53/64→65/five inputs) and abandons bothclaims in one transaction;
-retry preserves issuer/time/xmin. Session/unclaimed/copies/native/input exact.
-Root37928 replay15seed snapshots/four installed states/44controls PASS. Artifact/custody audit PASS; no engine/build active at this update.
+Earlier completed acquisition gates remain in the same evidence node: first/retry
+on off/source5 and AlreadyDurable/source0; both final C10 COMMIT reply-loss schedules
+with fresh-process recovery; genuine zero-request claim and accepted-unclaimed
+preservation;14 raw SQL guard cases; actual HTTP with recovery-only grants revoked;
+64 success/retry,65 and retained1+selected64 refusal, unsupported-last batch refusal;
+installed final-job SIGTERM with backend exclusion separately observed after unlock.
+HTTP retains its missing first schema32 apply-response limitation; no reconstructed
+receipt. Failed9e74,53a and all earlier failures remain FAIL, with NOT_RUN cases
+preserved. Completion of this bounded operation does not complete M1.
 
 ## Processes, resources and maintenance
 
-No engine/build active at this observation. Latest SIGTERM56582 and root91795
-joined0; PG0/client143/PID0/noOOM frozen14:52:09Z. Latest build58411 and audit25999
-joined0 with two new owned containers exited0/PID0/noOOM. One agent prepares expiry
-fixtures, one has finished custody audit, one researches the next responsibility. Preserve every failed audit,
-source snapshot, clone, process receipt and `.research` artifact.
+No engine/build active at this observation. Latest engine4291, root replay97263 and
+author audit48844 joined0. Agents are idle or preparing the contract clarification;
+no product edits or dependent builds are active.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`; `/runs/` above is
 relative to it. Borrowed PG root `relay-source-recheck-e06f580/pg`, owner
 5e69b0f060b1607c25230d1dbd3e5608, container
 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec, PG16.15.
 Frozen originals include retiredf12, preparedac644, activated-zero2c142, installed
-live61aoff/on and qualified closed939off/0e4917durable. Never open originals as
-writers; verify exact frozen identities before using private copies.
+live61aoff/on, closed939off/0e4917durable and acquisition-abandoned1d64 copies.
+Never open originals as writers. Verify exact captures before cloning.
 
 Six unrelated services remain protected: inspirehep-reindex db/mq/cache/es, ollama,
 tgdataset-mongo. Preserve all worktrees, containers, volumes, datasets and executable
 artifacts. Private Git does not back up ignored labs; unavailable Mac captures
 remain unavailable. Recovery details: [Tux audit](../research/tux-resumption-20261012.md).
 
-Free space at this observation:54,568,321,024 bytes; remeasure before
-allocation. Small engines require2GiB, native builds12GiB. Larger exports require
-64GiB+577MiB, currently unavailable; never lower that reserve. Five exports under
-256MiB and the other existing M1 release gates remain NOT_RUN.
+Free bytes at checkpoint update: 53,884,624,896. Remeasure before allocations.
+Small engines require2GiB, native builds12GiB; larger exports64GiB+577MiB remain
+unavailable. Never lower the reserve. Five exports under256MiB and other M1 release
+gates remain NOT_RUN. No generic cleanup or removal of retained experiments.
 
 Cleanup executor is RETIRED_VERIFIED:48,725 regenerable intermediates removed from
-18 historical targets,472,825 retained readable files preserved; never replay it
-or reuse retired caches. Current cache `network-1154757/out/build/{target,cargo-home}`
-requires exclusive `.compiler-cache.lock`. Pin Rust1.98.1/Clang14 and protect final
-binaries separately. Preserve negative variants9fa8b98/8effc76/5f1582c/a334ac8 and
-dirty historical network-direct-no-poll-1154757 unmerged/unpushed. GitHub run37017677570
-was billing-blocked; Q33 authorizes isolated trusted Tux CI. Native arm64,
-signing/registry and public promotion remain separate gates.
+18 historical targets,472,825 retained files preserved; never replay it or reuse
+retired caches. Current cache `network-1154757/out/build/{target,cargo-home}` needs
+exclusive `.compiler-cache.lock`. Keep final and failed binaries outside it.
+Historical negative variants and dirty network-direct-no-poll1154757 stay unmerged.
+GitHub run37017677570 was billing-blocked; Q33 authorizes isolated trusted Tux CI.
+Native arm64, signing/registry and public promotion remain separate gates.

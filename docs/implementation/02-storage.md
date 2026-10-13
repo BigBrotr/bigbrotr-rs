@@ -336,8 +336,11 @@ One owner serializes exact identity decisions for each writable directory.
   and unsupported-last atomic refusal. Root raw replay and artifact/custody audits
   pass. Installed3dd87d8 additionally qualifies SIGTERM during the final job row
   wait, with exact cancelled error and separate post-unlock backend exclusion;
-  actual post-wait Control UTC expiry remains open;
-  epoch2 workflow retirement and repeated lifetimes remain separate obligations. Archive selection refuses until its lifetime-specific
+  finite aad54e8 additionally qualifies actual Control UTC expiry across the final
+  job wait:16 full snapshots/23 controls, exact refusal, poisoned owner and no
+  partial writes. Failed53a observer DSM exhaustion and shutdown SIGSEGV remain
+  preserved; the corrected observational query bounds parallelism locally.
+  Root replay and author custody audits pass. Epoch2 workflow retirement and repeated lifetimes remain separate obligations. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
   refusal is its epoch preflight, not the SQL receipt veto;
