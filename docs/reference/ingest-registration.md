@@ -450,3 +450,64 @@ external native reopening; client exit alone is not a rollback receipt. These
 commands make no target or Control claim changes. This wave does not exercise
 installed CLI COMMIT loss, blocked native syscalls, power loss, writer activation
 or full restart/resend. The adapter COMMIT-loss evidence remains separately pinned.
+
+## Live initial successor activation (under implementation)
+
+The next selected responsibility continues P02-T01 Step5 / P02-T02 Step4 with
+one genuinely new native-owning process preparing and activating owner/producer
+1→2, then admitting a signed event. It preserves all original signed data and
+request history. Repeated lifetimes, replacement after a retired empty epoch2,
+installed Sync/Archive restart and M1 remain required subsequent consumers.
+
+An opaque live candidate owns the exclusive `IngestRecovery` and internally
+mints its new incarnation, role identity and fresh allocation domains. It cannot
+be cloned, deserialized or reconstructed from retained identity bytes. Positive
+original replay constructs the existing exact handoff using those identities;
+preparation reuses the existing confirmed-PG-before-native protocol. Ordinary
+historical handles, `InitialHandoff` and `ObservedHandoff` remain observations,
+with no public conversion into a writer. Continuous native custody and the
+actual locally minted candidate survive through activation.
+
+An additive immutable PostgreSQL activation receipt distinguishes an activated
+owner even before its first request. It binds dataset/resource/target owner,
+role/incarnation, producer identity, exact handoff/manifest digests, preparing and
+activating Control attribution, accepted configuration/policy and database time.
+This first live consumer requires the same actual current Control that prepared
+the candidate, unchanged accepted preparation policy and both live scheduling
+deadlines. It cannot revive an expired attempted owner. Control custody precedes
+dataset and ordered historical/target parent locks; deadlines are rechecked after
+waits. Applied migration0030's prepared-only classifier remains strict.
+
+Only confirmed activation COMMIT, final native/authority validation and private
+consumption of the live candidate return the active writer. Unknown COMMIT returns
+no writer and poisons Control reuse. A replacement process can observe retained
+activation but cannot adopt the departed incarnation. No extra native marker or
+format is selected: the exact schema2 manifest/handoff remain unchanged. The
+activation receipt must make history, gap and empty-attempt retirement refuse
+activated state, including an otherwise empty target. A separate active validator
+and renewal operation account for subsequent scheduling changes.
+
+Epoch1 keeps its existing reservation behavior. Epoch2 reservations/input bindings
+require the exact activation and still-current activating Control. Even the first
+request/input binding must match the activated target-manifest digest; absence of
+a prior request cannot supply a missing identity check. Other epochs
+remain refused by this bounded consumer. Share the existing reservation, input
+staging, native dispatch and outcome-copy protocol through a validated authority
+context. Decoded database data alone cannot construct the local live capability.
+
+A live successor starts at request1 with an explicit source counter0 and fresh
+allocation domains, while retaining old dictionary/visibility references. It does
+not rerun bootstrap. Source0 remains valid after a rejected or AlreadyDurable
+request, provided no target facts or pending batches exist. Missing/malformed
+source state and zero allocation counters remain distinct refusals. Positive
+Evidence replay treats request1 as bootstrap only for the actual initial epoch1
+profile; epoch2 request1 is an ordinary append.
+
+Acceptance must check the actual locally minted versus foreign/observed candidate,
+first dictionary append1, no-fact request1 followed by new-fact request2 starting
+at source sequence1, exact retry/conflict, original-byte preservation, resource and
+authority refusal, activated-zero rejection by earlier recovery routes, renewal
+and actual activation COMMIT loss on both sides of server completion. Connected
+signed admission and resend must preserve first-admission semantics, including
+provenance disabled. These new activation cases are NOT_RUN. Existing installed
+empty-retirement evidence does not qualify them or general restart.

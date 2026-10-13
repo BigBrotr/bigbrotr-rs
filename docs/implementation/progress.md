@@ -1,10 +1,10 @@
 # Current execution checkpoint
 
-Observed 2026-10-12T15:12:52Z on Tux at the owner-requested safe pause.
-Execution is paused for exhausted credits; resume only on an explicit owner request.
-The full selected product remains incomplete. No new implementation or test campaign
-was started after the pause instruction. Navigation, not another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
-and verify Git, evidence and resources before continuing.
+Observed 2026-10-13T05:39:37Z on Tux after the owner explicitly reactivated the
+goal. The previous turn made progress by saving and privately pushing the verified
+safe-pause checkpoint61fc6e3. The full selected product remains incomplete.
+Navigation, not another plan. Follow the
+[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Mandate and repository
 
@@ -16,14 +16,14 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last completed product/evidence commit3f7d442a816a4f91e48736004c7ba9215263cc87 was
-privately pushed and freshly fetched, ahead0/behind0 with a clean checkout
-(push wrapper29841 joined0). Main remains54ad09dc6659bfe67e3bf2871e43ce619c199a5c.
-No merge/rebase is in progress. The pause checkpoint/inventory-only successor
-commit preserves this tested product state; inspect Git for its exact identity.
-No product changes await verification. Three helper worktrees below are clean,
-committed and retained. Their agents have finished; the read-only next-slice
-analyst was interrupted at the owner's pause request. No agent work is pending.
+Current observed HEAD61fc6e3e21424f22d007b496e947986d2b70c4a0 is the saved pause
+checkpoint over qualified product/evidence3f7d442. Fresh fetch confirms ahead0/
+behind0 and the checkout was clean before this resumption update. Main remains
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase is in progress.
+Root owns the current checkpoint/inventory update. No product change awaits
+verification. Three earlier helper worktrees remain committed and retained.
+Successor_restart_design and recovery_review have resumed read-only activation
+contract/source review; neither owns implementation edits yet.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -202,7 +202,7 @@ cleanup/missing/unrelated arrays empty. Original f12 SQL/files/artifacts preserv
 by captured-run checks. Independent actual-capture audit passed16/39, all external captures,15 protected
 executables and f12/ac/gap censuses;1218 nonborrowed projections remain unchanged.
 
-## Last completed slice and next action after explicit resumption
+## Last completed slice and current next action
 
 Qualified explicit `ingest recover --retire-empty-attempt` through the
 [installed consumer contract](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation).
@@ -255,11 +255,12 @@ remains separately pinned. New build profile `ingest-empty-installed` runs compi
 five actual entrypoint tests and Clippy. Build and engine completed as above. All owned containers stopped without OOM,
 cleanup/missing/unrelated arrays empty. This qualified slice is privately pushed.
 
-The next bounded action, only after the owner resumes the goal, is to finish the
-source/contract review and specify fresh live1→2 activation in the existing
-registration/store contracts and recovery evidence before changing code. Continue
+The current bounded action implements the selected
+[live1→2 activation contract](../reference/ingest-registration.md#live-initial-successor-activation-under-implementation).
+Its locally minted candidate, immutable activation receipt, shared admission
+protocol and zero-start semantics are recorded before implementation. Continue
 P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4/M1. The read-only analysis
-has not implemented or qualified activation; its proposals remain to be reviewed:
+has not implemented or qualified activation; the selected requirements are:
 
 - A genuinely new native-owning process mints and retains its own nonportable live
   candidate. Observed prepared identity cannot authorize adoption. Keep ordinary
@@ -316,15 +317,18 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. At15:12:52Z the two current build containers, borrowed
+and dated observations. At2026-10-13T05:39:37Z the two current build containers, borrowed
 PostgreSQL and installed engine client were freshly inspected: stopped/PID0/noOOM,
 exit0/0/0/143 respectively. Build84756 and engine46588 wrappers were already joined0.
 No matching qualification/build/probe process remained; six unrelated services
-remain running unchanged. No background task requires joining at resumption.
+remain running unchanged. No build/engine background task requires joining. The retained788f971 result and
+7e820b9 CLI/probe hashes were rechecked and match their recorded identities; the
+prior qualification exclusions remain explicit. No new test campaign ran during
+this resumption inspection.
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
 external laboratories under `/home/tux/bigbrotr-implementation-20260917/`, retained
 containers/volumes and protected executables are preserved. No cleanup was run
-while pausing. Do not mistake Git cleanliness for permission to delete ignored data. Last free space67,911,995,392 bytes (about63.2GiB); remeasure
+while pausing. Do not mistake Git cleanliness for permission to delete ignored data. Last free space67,928,608,768 bytes (about63.3GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.

@@ -40800,6 +40800,15 @@
       "helper_worktrees": "Three committed worktrees retained clean; agents completed or interrupted read-only analysis",
       "preservation": "All ignored .research data, external lab roots, raw failures, seeds, executables, containers and volumes retained; no cleanup during pause",
       "free_bytes": 67911995392
+    },
+    "resume_observation": {
+      "observed_at": "2026-10-13T05:39:37Z",
+      "source": "61fc6e3e21424f22d007b496e947986d2b70c4a0",
+      "repository": "clean before checkpoint update, freshly fetched ahead0/behind0",
+      "result_sha256": "ff1d2e111dc42ff4026c7e42985a7814dbf058eb0bd1d7ba92c5e269e7642d34",
+      "artifacts": "Retained7e820b9 CLI/probe rehashed against build receipt; unchanged",
+      "resources": "Current two buildcontainers, borrowedPG and788f971client stopped/PID0/noOOM; six unrelatedservices running; no cleanup/restart",
+      "free_bytes": 67928608768
     }
   }
 }

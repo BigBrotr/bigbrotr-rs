@@ -12950,6 +12950,22 @@
           "boundary": "No edits, live SQL, engine restart or build by reviewer. SQL source preservation is captured-run evidence. No additional installed restart, activation, native syscall/power-loss or release claim."
         }
       }
+    },
+    "next_live_activation_20261013": {
+      "status": "SELECTED_NOT_IMPLEMENTED_NOT_RUN",
+      "base": "61fc6e3e21424f22d007b496e947986d2b70c4a0",
+      "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
+      "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
+      "scope": "Genuinely live locally minted1\u21922 candidate, immutable PGactivation before first request, shared connected admission/renewal and zero-start native effects; no observed-identity adoption.",
+      "source_findings": [
+        "Current native event/certification/dictionary paths rejectowner2; source0 and epoch2append1 need explicit handling",
+        "Evidence request1 bootstrap selection must be limitedto actualepoch1",
+        "0030 strictprepared state includes originallease/emptytarget and cannotvalidate active renewal",
+        "Activation mustbe durable evenbeforefirstrequest; earlierhistory/gap/empty APIs mustrefuse activatedzero",
+        "Syncrequest3/epoch1 and Archivecursor1/revision0/epoch1 assumptions require later realconsumerchanges"
+      ],
+      "independent_source_analysis": "successor_restart_design read complete native owners, PGregistration/batch/succession/renewal,migrations0030/31,runtimeidentity and installed immediateconsumers. Detailed Archivefrontierrecovery/cataloginternals notfullyreviewed. Noedits/builds/SQL.",
+      "remaining": "General laterlifetimes, retiredempty2\u2192fresh3, activated-owner recovery, installed restart/resend, ACK/GC and fullM1\u2013M5 remainrequired."
     }
   }
 }
