@@ -201,6 +201,10 @@
     {
       "version": 34,
       "name": "0034_activated_control_retirement.sql"
+    },
+    {
+      "version": 35,
+      "name": "0035_activated_source_closure.sql"
     }
   ],
   "reserved": [

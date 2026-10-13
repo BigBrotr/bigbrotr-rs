@@ -97,7 +97,7 @@ pub(super) async fn record(
     {
         return Err(OutcomeError::Conflict);
     }
-    record_native(tx, outcome, recorder).await
+    record_native(tx, outcome, Some(recorder)).await
 }
 
 pub(super) async fn record_recovered(
@@ -105,6 +105,25 @@ pub(super) async fn record_recovered(
     reservation: &super::producer_requests::ProducerReservation,
     resolved: &ResolvedProducerRequest,
     recorder: ControlOwner,
+) -> Result<(), OutcomeError> {
+    recovered(tx, reservation, resolved, Some(recorder)).await
+}
+
+/// Completed source closure is observation only: a missing copy cannot be
+/// repaired through this path, even if its native outcome is still positive.
+pub(super) async fn require_recovered(
+    tx: &Transaction<'_>,
+    reservation: &super::producer_requests::ProducerReservation,
+    resolved: &ResolvedProducerRequest,
+) -> Result<(), OutcomeError> {
+    recovered(tx, reservation, resolved, None).await
+}
+
+async fn recovered(
+    tx: &Transaction<'_>,
+    reservation: &super::producer_requests::ProducerReservation,
+    resolved: &ResolvedProducerRequest,
+    recorder: Option<ControlOwner>,
 ) -> Result<(), OutcomeError> {
     let outcome = resolved.native_outcome();
     if outcome.request() != reservation.request
@@ -120,7 +139,7 @@ pub(super) async fn record_recovered(
 async fn record_native(
     tx: &Transaction<'_>,
     outcome: &NativeOutcomeCopy,
-    recorder: ControlOwner,
+    recorder: Option<ControlOwner>,
 ) -> Result<(), OutcomeError> {
     if outcome.bytes().is_empty() || outcome.bytes().len() > MAX_OUTCOME_BYTES {
         return Err(OutcomeError::Conflict);
@@ -146,6 +165,7 @@ async fn record_native(
             Err(OutcomeError::Conflict)
         };
     }
+    let recorder = recorder.ok_or(OutcomeError::Conflict)?;
     tx.execute("INSERT INTO control.producer_outcomes(producer_slot_id, producer_epoch, request_sequence, dataset_id, request_digest, manifest_sha256, outcome_kind, policy_epoch, outcome_bytes, outcome_sha256, recorder_resource, recorder_epoch, recorder_incarnation, recorded_at_us) VALUES ($1::bytea, $2::text::numeric, $3::text::numeric, $4::bytea, $5::bytea, $6::bytea, $7::smallint, $8::text::numeric, $9::bytea, $10::bytea, $11::bytea, $12::text::numeric, $13::bytea, (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint)",
         &[&&request.producer_slot_id.as_bytes()[..], &epoch, &sequence, &&dataset.as_bytes()[..], &&digest.as_bytes()[..], &&manifest[..], &kind, &policy, &outcome.bytes(), &&sha256[..], &&recorder.resource_id.as_bytes()[..], &recorder.epoch.get().to_string(), &&recorder.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
     Ok(())

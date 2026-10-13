@@ -26,14 +26,35 @@ pub struct ActivatedInitialRecovery {
 /// The positive native barrier and its grants remain owned throughout replay.
 /// Deliberately has no source-resolution or admission conversion.
 pub struct ClosedActivatedInitialProducer {
-    native: ActivatedProducerClosing,
-    metadata: Metadata,
+    pub(super) native: ActivatedProducerClosing,
+    pub(super) metadata: Metadata,
 }
-struct Metadata {
+pub(super) struct Metadata {
     previous: ingest_registry::InitialRegistration,
     intent: initial_history::Intent,
     reserved_through: u64,
+    purpose: Purpose,
     _permit: OwnedPermit,
+}
+/// Only the distinct public factories select a protocol. No caller supplies a
+/// relaxed validator or converts an ordinary recovery result into source proof.
+#[derive(Clone, Copy)]
+pub(super) enum Purpose {
+    Positive,
+    Source,
+}
+impl Purpose {
+    fn schema(self) -> u32 {
+        match self {
+            Self::Positive => 34,
+            Self::Source => 35,
+        }
+    }
+}
+pub(super) struct TargetState {
+    pub(super) reserved_through: u64,
+    pub(super) producer_closing: bool,
+    pub(super) source_closed: bool,
 }
 impl ActivatedInitialRecovery {
     pub fn producer_slot_id(&self) -> ProducerSlotId {
@@ -75,6 +96,18 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedInitialRecovery, InitialSuccessionError> {
+        self.inspect_activated_producer(recovery, input, permit, Purpose::Positive, validate)
+            .await
+    }
+
+    pub(super) async fn inspect_activated_producer(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        purpose: Purpose,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedInitialRecovery, InitialSuccessionError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
         {
@@ -85,7 +118,7 @@ impl ControlSession {
         let current = self.identity;
         let instance = *self.request.instance.as_bytes();
         let (tx, mut lease, epoch) = self
-            .begin_activated_initial_history(recovery, &input, validate)
+            .begin_initial_history_locked(recovery, &input, 2, purpose.schema(), validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         let native = ActivatedInitial::inspect(recovery, intent.record)
@@ -95,8 +128,12 @@ impl ControlSession {
                 .await
                 .map_err(InitialSuccessionError::Registry)?;
         initial_history::require_intent_identity(&tx, &previous, &intent, current, epoch).await?;
-        let (reserved_through, sql_closing) = require_target(&tx, &previous, &intent).await?;
-        if native.issued_through() > reserved_through || (sql_closing && !native.is_closing()) {
+        let state = require_target(&tx, &previous, &intent, purpose).await?;
+        if native.issued_through() > state.reserved_through
+            || (state.producer_closing && !native.is_closing())
+            || (matches!(purpose, Purpose::Source)
+                && native.issued_through() != state.reserved_through)
+        {
             return Err(OwnerError::InvalidMetadata.into());
         }
         native
@@ -112,7 +149,8 @@ impl ControlSession {
             metadata: Metadata {
                 previous,
                 intent,
-                reserved_through,
+                reserved_through: state.reserved_through,
+                purpose,
                 _permit: permit,
             },
         })
@@ -143,7 +181,13 @@ impl ControlSession {
         require_deployment(&inspected.metadata, self)?;
         let current = self.identity;
         let (tx, mut lease, epoch) = self
-            .begin_activated_initial_history(recovery, &input, validate)
+            .begin_initial_history_locked(
+                recovery,
+                &input,
+                2,
+                inspected.metadata.purpose.schema(),
+                validate,
+            )
             .await?;
         require_metadata(&tx, &inspected.metadata, current, epoch).await?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
@@ -211,14 +255,18 @@ impl ControlSession {
             cancelled: input.cancelled,
         };
         let (tx, mut lease, epoch) = self
-            .begin_activated_initial_history(recovery, &request, validate)
+            .begin_initial_history_locked(
+                recovery,
+                &request,
+                2,
+                closed.metadata.purpose.schema(),
+                validate,
+            )
             .await?;
-        require_metadata(&tx, &closed.metadata, current, epoch)
+        let state = require_metadata(&tx, &closed.metadata, current, epoch)
             .await
             .map_err(initial_history::history_resolve_error)?;
-        let closing: bool = tx.query_one("SELECT state='closing' FROM control.producer_epochs WHERE producer_slot_id=$1::bytea AND producer_epoch=2",
-            &[&&closed.producer_slot_id().as_bytes()[..]]).await.map_err(backend)?.try_get(0).map_err(backend)?;
-        if !closing {
+        if !state.producer_closing {
             return Err(OwnerError::InvalidMetadata.into());
         }
         let reservation =
@@ -252,9 +300,15 @@ impl ControlSession {
                 },
             )
             .map_err(ProducerResolveError::Native)?;
-        producer_outcomes::record_recovered(&tx, &reservation, &resolved, current)
-            .await
-            .map_err(ProducerResolveError::Outcome)?;
+        if state.source_closed {
+            producer_outcomes::require_recovered(&tx, &reservation, &resolved)
+                .await
+                .map_err(ProducerResolveError::Outcome)?;
+        } else {
+            producer_outcomes::record_recovered(&tx, &reservation, &resolved, current)
+                .await
+                .map_err(ProducerResolveError::Outcome)?;
+        }
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         tx.commit()
             .await
@@ -268,7 +322,10 @@ impl ControlSession {
     }
 }
 
-fn require_deployment(metadata: &Metadata, owner: &ControlSession) -> Result<(), OwnerError> {
+pub(super) fn require_deployment(
+    metadata: &Metadata,
+    owner: &ControlSession,
+) -> Result<(), OwnerError> {
     if metadata.previous.dataset_id != owner.request.dataset
         || metadata.previous.instance_id != *owner.request.instance.as_bytes()
     {
@@ -276,12 +333,12 @@ fn require_deployment(metadata: &Metadata, owner: &ControlSession) -> Result<(),
     }
     Ok(())
 }
-async fn require_metadata(
+pub(super) async fn require_metadata(
     tx: &Transaction<'_>,
     metadata: &Metadata,
     current: ingest_registry::ControlOwner,
     epoch: bigbrotr_model::PolicyEpoch,
-) -> Result<(), InitialSuccessionError> {
+) -> Result<TargetState, InitialSuccessionError> {
     initial_history::require_intent_identity(
         tx,
         &metadata.previous,
@@ -290,22 +347,24 @@ async fn require_metadata(
         epoch,
     )
     .await?;
-    if require_target(tx, &metadata.previous, &metadata.intent)
-        .await?
-        .0
-        != metadata.reserved_through
-    {
+    let state = require_target(tx, &metadata.previous, &metadata.intent, metadata.purpose).await?;
+    if state.reserved_through != metadata.reserved_through {
         return Err(OwnerError::InvalidMetadata.into());
     }
-    Ok(())
+    Ok(state)
 }
+
 async fn require_target(
     tx: &Transaction<'_>,
     previous: &ingest_registry::InitialRegistration,
     intent: &initial_history::Intent,
-) -> Result<(u64, bool), InitialSuccessionError> {
+    purpose: Purpose,
+) -> Result<TargetState, InitialSuccessionError> {
     tx.query_one(
-        "SELECT control.require_activated_initial_recovery($1::bytea)",
+        match purpose {
+            Purpose::Positive => "SELECT control.require_activated_initial_recovery($1::bytea)",
+            Purpose::Source => "SELECT control.require_activated_initial_source($1::bytea)",
+        },
         &[&&previous.ingest_resource_id.as_bytes()[..]],
     )
     .await
@@ -341,8 +400,10 @@ async fn require_target(
     }
     let row = tx
         .query_one(
-            "SELECT reserved_through_request::text,state='closing' FROM control.producer_epochs
-        WHERE producer_slot_id=$1::bytea AND producer_epoch=2",
+            "SELECT p.reserved_through_request::text,p.state='closing',s.state='closed'
+        FROM control.producer_epochs p JOIN control.source_streams s
+            ON s.dataset_id=p.dataset_id AND s.owner_resource_id=p.owner_resource_id AND s.owner_epoch=p.owner_epoch
+        WHERE p.producer_slot_id=$1::bytea AND p.producer_epoch=2",
             &[&&previous.producer_slot_id.as_bytes()[..]],
         )
         .await
@@ -352,5 +413,9 @@ async fn require_target(
         .map_err(backend)?
         .parse()
         .map_err(|_| OwnerError::InvalidMetadata)?;
-    Ok((reserved, row.try_get(1).map_err(backend)?))
+    Ok(TargetState {
+        reserved_through: reserved,
+        producer_closing: row.try_get(1).map_err(backend)?,
+        source_closed: row.try_get(2).map_err(backend)?,
+    })
 }
