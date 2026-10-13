@@ -9,12 +9,13 @@ use crate::{
     storage::rocks::{
         manifest::IngestManifest,
         store::{
-            ActiveInitialWriter, BootstrapError, IngestStore, InitialHandoff,
-            InitialWriterCandidate, ObservedHandoff,
+            ActiveInitialWriter, AdmissionError, AdmissionLimits, BootstrapError,
+            DictionaryPreparation, IngestStore, InitialHandoff, InitialWriterCandidate,
+            ObservedHandoff,
         },
     },
 };
-use bigbrotr_model::{DictionaryKind, PolicyEpoch, ProducerSlotId};
+use bigbrotr_model::{DictionaryKind, PolicyEpoch, ProducerSlotId, QualifiedRef};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 /// This object cannot be reconstructed from a receipt, manifest or registration.
@@ -48,6 +49,26 @@ impl LiveInitialWriter {
     }
     pub fn activated_at_us(&self) -> i64 {
         self.binding.activated_at_us
+    }
+    /// The accepted activation policy, not the historical registrar's policy.
+    pub fn policy_snapshot(&self) -> PolicySnapshot {
+        self.binding.intent.policy
+    }
+    pub fn outstanding_request_limit(&self) -> u32 {
+        self.binding.intent.request_limit
+    }
+    /// Read-only provisional interning. Finish the borrowed view before using
+    /// its owned intent in the separately fenced reservation/dispatch protocol.
+    pub fn prepare_dictionaries<'a>(
+        &'a self,
+        visibility: QualifiedRef,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &'a AtomicBool,
+    ) -> Result<DictionaryPreparation<'a>, AdmissionError> {
+        self.native
+            .store()
+            .prepare_dictionaries(visibility, limits, permit, cancelled)
     }
 }
 impl LiveInitialBinding {

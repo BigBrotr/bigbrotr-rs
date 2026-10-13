@@ -75,7 +75,7 @@ pub use snapshot_leases::{
 mod ingest_lease;
 #[path = "initial_ingest_basis.rs"]
 mod initial_ingest_basis;
-pub use initial_ingest_basis::InitialIngestBasis;
+pub use initial_ingest_basis::{InitialIngestBasis, InitialSuccessorBasis};
 #[path = "acquisition_abandonment.rs"]
 mod acquisition_abandonment;
 #[path = "initial_activation.rs"]
@@ -106,7 +106,8 @@ pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialVisibilityRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
+    InitialVisibilityRequest, LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest,
+    LiveInitialEventRequest, LiveInitialObservationRequest, LiveInitialVisibilityRequest,
 };
 pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{

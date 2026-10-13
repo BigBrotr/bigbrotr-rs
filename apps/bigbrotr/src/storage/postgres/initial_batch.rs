@@ -197,6 +197,18 @@ pub struct InitialCertificationRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Live read payload; current authority comes from the retained writer.
+pub struct LiveInitialCertificationRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub event: PreparedCertification,
+    pub relay_source: Option<RelaySourceBinding>,
+    pub acquisition: Option<AcquisitionEventContext<'a>>,
+    pub provenance_enabled: bool,
+    pub limits: CertificationLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 /// Read one committed descriptor under current initial-owner authority. This
 /// neither grants acquisition permission nor allocates a producer request.
 pub struct InitialVisibilityRequest<'a> {
@@ -208,11 +220,29 @@ pub struct InitialVisibilityRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Committed descriptor read without allocating a producer request.
+pub struct LiveInitialVisibilityRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub reference: QualifiedRef,
+    pub limits: CertificationLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 /// Committed local observer/clock and optional no-auth witness descriptors.
 /// Missing mappings are not allocated or guessed by this read operation.
 pub struct InitialObservationRequest<'a> {
     pub ingest_root: &'a std::path::Path,
     pub registration: &'a ingest_registry::InitialRegistration,
+    pub bindings: ObservationBindings<'a>,
+    pub limits: CertificationLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
+/// Read existing attribution; missing mappings are never allocated here.
+pub struct LiveInitialObservationRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
     pub bindings: ObservationBindings<'a>,
     pub limits: CertificationLimits,
     pub policy_ttl: Duration,
@@ -280,6 +310,47 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredObservation>, InitialEventError> {
+        self.read_native_observation(
+            store,
+            NativeAuthority::Initial(input.registration),
+            LiveInitialObservationRequest {
+                ingest_root: input.ingest_root,
+                bindings: input.bindings,
+                limits: input.limits,
+                policy_ttl: input.policy_ttl,
+                cancelled: input.cancelled,
+            },
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    pub async fn read_live_initial_observation(
+        &mut self,
+        writer: &mut LiveInitialWriter,
+        input: LiveInitialObservationRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredObservation>, InitialEventError> {
+        self.read_native_observation(
+            writer.native.store_mut(),
+            NativeAuthority::Live(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    async fn read_native_observation(
+        &mut self,
+        store: &mut IngestStore,
+        authority: NativeAuthority<'_>,
+        input: LiveInitialObservationRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredObservation>, InitialEventError> {
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(InitialEventError::Native(
                 AdmissionError::AuthorityUnavailable,
@@ -291,7 +362,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    authority: NativeAuthority::Initial(input.registration),
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
@@ -331,6 +402,47 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredVisibility>, InitialEventError> {
+        self.read_native_visibility(
+            store,
+            NativeAuthority::Initial(input.registration),
+            LiveInitialVisibilityRequest {
+                ingest_root: input.ingest_root,
+                reference: input.reference,
+                limits: input.limits,
+                policy_ttl: input.policy_ttl,
+                cancelled: input.cancelled,
+            },
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    pub async fn read_live_initial_visibility(
+        &mut self,
+        writer: &mut LiveInitialWriter,
+        input: LiveInitialVisibilityRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredVisibility>, InitialEventError> {
+        self.read_native_visibility(
+            writer.native.store_mut(),
+            NativeAuthority::Live(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    async fn read_native_visibility(
+        &mut self,
+        store: &mut IngestStore,
+        authority: NativeAuthority<'_>,
+        input: LiveInitialVisibilityRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredVisibility>, InitialEventError> {
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(InitialEventError::Native(
                 AdmissionError::AuthorityUnavailable,
@@ -342,7 +454,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    authority: NativeAuthority::Initial(input.registration),
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
@@ -381,6 +493,50 @@ impl ControlSession {
         store: &mut IngestStore,
         input: InitialCertificationRequest<'_>,
         permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
+    ) -> Result<StoredCertification, InitialEventError> {
+        self.certify_native_event(
+            store,
+            NativeAuthority::Initial(input.registration),
+            LiveInitialCertificationRequest {
+                ingest_root: input.ingest_root,
+                event: input.event,
+                relay_source: input.relay_source,
+                acquisition: input.acquisition,
+                provenance_enabled: input.provenance_enabled,
+                limits: input.limits,
+                policy_ttl: input.policy_ttl,
+                cancelled: input.cancelled,
+            },
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    pub async fn certify_live_initial_event(
+        &mut self,
+        writer: &mut LiveInitialWriter,
+        input: LiveInitialCertificationRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
+    ) -> Result<StoredCertification, InitialEventError> {
+        self.certify_native_event(
+            writer.native.store_mut(),
+            NativeAuthority::Live(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    async fn certify_native_event(
+        &mut self,
+        store: &mut IngestStore,
+        authority: NativeAuthority<'_>,
+        input: LiveInitialCertificationRequest<'_>,
+        permit: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
         if input.cancelled.load(Ordering::Relaxed) {
@@ -401,7 +557,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    authority: NativeAuthority::Initial(input.registration),
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source,
