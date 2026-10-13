@@ -12952,7 +12952,7 @@
       }
     },
     "next_live_activation_20261013": {
-      "status": "PAUSED_INCOMPLETE_NATIVE_WIP_NOT_RUN",
+      "status": "PAUSED_INCOMPLETE_UNQUALIFIED_SOURCE_SAVED_NOT_RUN",
       "base": "61fc6e3e21424f22d007b496e947986d2b70c4a0",
       "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
       "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -12968,10 +12968,10 @@
       "remaining": "General laterlifetimes, retiredempty2\u2192fresh3, activated-owner recovery, installed restart/resend, ACK/GC and fullM1\u2013M5 remainrequired.",
       "implementation_base": "4253907546efb50cba1a4d62ca08020b84ea700c",
       "saved_native_wip": {
-        "source": "a54cf1b6c26119a18d928451881a945e755090de",
+        "source": "d1bf847df2ecf077686ddf274655e59dba803469",
         "branch": "implementation/live-initial-native",
         "worktree": ".research/live-initial-native-20261013",
-        "publication": "Privately pushed; local/remote head equality observed by author; not integrated",
+        "publication": "Privately pushed; three native commits integrated as017dbef/761cc6d/47e9a14; root source now fa0fa62 plus separately saved PG/tests",
         "changed_files": [
           "apps/bigbrotr/src/storage/rocks/store.rs",
           "apps/bigbrotr/src/storage/rocks/initial_writer.rs",
@@ -12982,7 +12982,7 @@
           "apps/bigbrotr/src/storage/rocks/dictionary_append.rs",
           "apps/bigbrotr/src/storage/rocks/producer_recovery.rs"
         ],
-        "scope": "Draft owning candidate/private activation capability and epoch2 zero-source handling; existing recovery remains epoch1-only",
+        "scope": "Native candidate/live writer and zero-source admission; e1b555e test module wiring and d1bf847 zero Event allocation correction. Integrated canonically as017dbef/761cc6d/47e9a14; not compiled or qualified.",
         "checks_completed": "Author reports scoped rustfmt --edition2024 --config skip_children=true and git diff --check PASS; no behavioral qualification",
         "not_run": [
           "Compilation",
@@ -12990,24 +12990,23 @@
           "Native tests",
           "Connected PostgreSQL activation and admission acceptance"
         ],
-        "review_boundary": "Root has not reviewed complete saved native diff; API agreement and implementation remain unfinished"
+        "review_boundary": "Native author reviewed complete affected native owners; root read complete native diff and candidate plus selected admission callers. Full integrated review is not complete."
       },
       "unimplemented_at_pause": [
-        "PG activation receipt/additive0032 and guarded consumer",
-        "Shared validated PG batch authority and live renewal",
-        "Independent native fixture file/module declaration",
-        "Live activation finite probe, harness/oracle and build profile",
-        "Installed consumers and all previously recorded remaining scope"
+        "Integration and final review of PG and independent native test commits with saved root probe",
+        "Connected live harness/oracle and raw SQL acceptance, including IMMEDIATE constraints/target-update/activation-zero, renewal and COMMIT loss",
+        "Actual native/build/engine qualification and independent artifact/capture audit",
+        "Installed consumers, real provenance-off acquisition and all previously recorded remaining scope"
       ],
       "pause_observation": {
-        "observed_at": "2026-10-13T05:51:29Z",
+        "observed_at": "2026-10-13T06:15:07Z",
         "reason": "Explicit owner pause for exhausted credits; resume only on explicit request",
-        "canonical_head_before_checkpoint": "4253907546efb50cba1a4d62ca08020b84ea700c",
+        "canonical_head_before_checkpoint": "fa0fa62facb0a9bf3def4380c553eaa25a811012",
         "last_qualified_product_evidence": "3f7d442a816a4f91e48736004c7ba9215263cc87",
         "active_owned_build_or_engine_processes": false,
-        "process_observation": "Read-only /proc and Docker inspection at05:50:51Z found no matching qualification/build/probe process and no running BigBrotr container; all three helpers stopped with no owned process",
-        "current_build": "Both retained7e820b9 containers freshly inspected stopped0/PID0/noOOM",
-        "current_engine": "BorrowedPG stopped0, retained788f971 idleclient143/PID0/noOOM; prior wrappers already joined",
+        "process_observation": "Fresh read-only process census found no matching cargo/rustc/clang/cmake/build/probe/qualification process; Docker has no running BigBrotr container. Helper owners stopped; no build/engine allocated in this slice.",
+        "current_build": "Retained7e820b9 fetch c030a0ef and native b46bdc39 freshly inspected stopped0/PID0/noOOM; prior wrapper84756 already joined0",
+        "current_engine": "BorrowedPG71775507 stopped0 and retained788f971 client40f8a4e5 stopped143, both PID0/noOOM; prior wrapper46588 already joined0",
         "unrelated_running_services": [
           "inspirehep-reindex-db-1",
           "inspirehep-reindex-mq-1",
@@ -13016,11 +13015,60 @@
           "ollama",
           "tgdataset-mongo"
         ],
-        "preservation": "All ignored .research worktrees/data, external lab roots, original datasets, raw failed runs, frozen seeds, executables, retained containers/volumes and older worktrees preserved; no cleanup or engine restart during pause",
-        "free_bytes": 67827175424,
-        "free_bytes_observed_at": "2026-10-13T05:50:51Z"
+        "preservation": "All ignored .research worktrees/data, external laboratory roots, original datasets, raw failed runs, frozen seeds, executables, retained containers/volumes and older worktrees preserved in place. No deletion, cleanup, build, test campaign or engine restart during this pause.",
+        "free_bytes": 67814907904,
+        "free_bytes_observed_at": "2026-10-13T06:13:49Z",
+        "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
+        "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
       },
-      "next_action": "Resume only on explicit owner request. Verify canonical/helper Git and resources, then read complete4253907..a54cf1b native diff and reconcile PG authority and independent fixture APIs before integration. PG manifest/control-schema/ownership-guard reads and root initial_batch.rs lines521 onward remain pending."
+      "next_action": "Resume only on explicit owner request. Reconcile canonical and three helper Git heads and resources, then review the unqualified 0032 activation_transaction xid8 / SET CONSTRAINTS IMMEDIATE boundary, including the final five target BEFORE UPDATE guards in 41c06a7. Reconcile the saved probe APIs, integrate the already saved PostgreSQL and test commits, and record the exact reviewed source before any isolated build. No automatic continuation while paused.",
+      "resume_observation": {
+        "observed_at": "2026-10-13T05:55:27Z",
+        "source": "55eee94b3dcc96357dbbf5e6a1ce5f0215c2adfd",
+        "root_review": "Complete a54cf1b native diff, initial_batch.rs and finite succession/empty/bootstrap probes read; affected native owners and final changed boundaries still under review",
+        "agents": "Three owners resumed in existing verified worktrees; no build/engine allocated"
+      },
+      "saved_worktrees": [
+        {
+          "root": ".research/live-initial-native-20261013",
+          "branch": "implementation/live-initial-native",
+          "owner": "successor_restart_design",
+          "head": "d1bf847df2ecf077686ddf274655e59dba803469",
+          "state": "paused-clean-committed-privately-pushed",
+          "scope": "Native candidate/live writer and zero-source admission; e1b555e test module wiring and d1bf847 zero Event allocation correction. Integrated canonically as017dbef/761cc6d/47e9a14; not compiled or qualified."
+        },
+        {
+          "root": ".research/live-initial-control-20261013",
+          "branch": "implementation/live-initial-control",
+          "owner": "recovery_review",
+          "head": "41c06a7fce1db68025511df0e25026579efffb7b",
+          "state": "paused-clean-committed-privately-pushed-not-integrated",
+          "scope": "Eight files: new activation adapter and additive0032, shared batch authority/renewal, exports/history visibility/catalog/schema test/manifest. Last target BEFORE UPDATE guards preserved before stop; final review and SQL execution pending."
+        },
+        {
+          "root": ".research/live-initial-tests-20261013",
+          "branch": "qualification/live-initial-native",
+          "owner": "cleanup_review",
+          "head": "90b56bc5014e0724ff225aaeca6a6d667ba6ea3c",
+          "state": "paused-clean-committed-privately-pushed-not-integrated",
+          "scope": "One1027-line independent native fixture file/six groups; synthetic PG authority only. Depends on native module wiring and Event counter fix. Native tests NOT_RUN."
+        }
+      ],
+      "saved_root_wip": {
+        "source": "fa0fa62facb0a9bf3def4380c553eaa25a811012",
+        "branch": "recovery/tux-20261012",
+        "scope": "Finite live activation/admission/zero/COMMIT-loss probe and ingest-live isolated build profile; actual candidate identities and exact grants",
+        "integration_state": "WIP: PG APIs and referenced native test file remain only in saved helper commits. Canonical tree is not claimed buildable; do not run before integration review.",
+        "checks_completed": "Scoped Rust formatting reported PASS before stop; root git diff --check PASS during safe-stop save. Python build-profile changes have not been AST-checked.",
+        "not_run": "No compilation, Clippy, native tests, schema/SQL execution, connected probes or profile execution"
+      },
+      "source_review_findings": [
+        "Root probe dictionary reservation was below its real required bytes; source changed to exact required grants. Uncompiled.",
+        "Native Event allocation zero could be accepted; d1bf847 corrects it. Independent B_note zero-counter refusal/positive counterfactual written in90b56bc but NOT_RUN.",
+        "Deferred activation-empty constraint alone permits SET CONSTRAINTS IMMEDIATE bypass. Draft0032 adds server-assigned activation_transaction xid8 and request/input/checkpoint guards; reviewer read main correction, raw SQL NOT_RUN.",
+        "Final five target BEFORE UPDATE guards were already written when stop arrived and preserved in41c06a7. Their final independent review is pending.",
+        "Imported signed-event finite probe has no observation and therefore does not establish real network provenance-on/off behavior."
+      ]
     }
   }
 }

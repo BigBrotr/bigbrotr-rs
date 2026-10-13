@@ -1,50 +1,47 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T05:51:29Z on Tux at the owner's explicit safe-stop request
-for exhausted credits. Execution is PAUSED; resume only on an explicit owner
-request. The full selected product remains incomplete. No new implementation or
-test campaign was started while stopping; unfinished native work is preserved
-separately, without integration.
-Navigation, not another plan. Follow the
-[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
+Observed 2026-10-13T06:15:07Z on Tux at the owner's explicit safe-stop request
+for exhausted credits. Execution is PAUSED; the full selected product remains
+INCOMPLETE. Resume only on explicit owner request. No new implementation or test
+campaign was started to finish this pause. Navigation, not another plan. Follow
+the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Mandate and repository
 
-The full selected product remains INCOMPLETE. Q34 makes Tux the sole editing,
-Git, development and test host; Q35 appoints this session sole integrating owner
-and defines the full-product goal through M1–M5. The latest explicit pause
-overrides autonomous continuation until the owner resumes it. Preserve private
-distribution, unpublished Cargo packages,
-legacy reference repositories and unrelated workloads. No public release,
-repository rename or production deployment is authorized.
+Q34 makes Tux the sole editing, Git, development and test host. Q35 appoints this
+session sole integrating owner of the selected product through M1–M5. The latest
+explicit pause suspends autonomous continuation. Private distribution, unpublished
+Cargo packages, legacy reference repositories and unrelated workloads remain
+protected. No public release, repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Current observed HEAD4253907546efb50cba1a4d62ca08020b84ea700c records the selected
-live-activation contract over pause checkpoint61fc6e3 and qualified
-product/evidence3f7d442. The checkout was clean before this pause update and one
-commit ahead of origin/recovery/tux-20261012. This checkpoint commit and push are
-the remaining safe-stop operation; verify their actual final SHA on resumption.
-Main remains
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase is in progress.
-Root owns only the current checkpoint/evidence/inventory update. Native WIP
-a54cf1b6c26119a18d928451881a945e755090de is committed and privately pushed on
-implementation/live-initial-native, outside the canonical branch; it is incomplete
-and unqualified. The three current helper worktrees are stopped and clean:
+Observed source HEAD `fa0fa62facb0a9bf3def4380c553eaa25a811012` saves the unqualified
+root probe and build profile over native commits017dbef/761cc6d/47e9a14. The previous
+pause checkpoint is55eee94 and last qualified product/evidence checkpoint3f7d442.
+Fresh fetch before saving showed ahead3/behind0. This checkpoint/evidence/inventory
+update is the final root save and private push; verify actual HEAD/remote equality
+on resumption rather than treating a pending commit as pushed. Main remains
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase/cherry-pick is pending.
+
+Root owns the saved five probe/profile files and these three checkpoint documents.
+The PostgreSQL adapter/migration and native test file remain in separate commits:
+the canonical tree is WIP, not claimed buildable or qualified. Do not start a build
+before reconciling and integrating those dependencies. All three helper worktrees
+are clean, stopped and privately pushed; exact remote heads matched at06:15:07Z.
 
 | Worktree | Owner | Saved state |
 |---|---|---|
-| `.research/live-initial-native-20261013` | successor_restart_design | a54cf1b, pushed; eight native Rust files changed |
-| `.research/live-initial-control-20261013` | recovery_review | 4253907, pushed; source review only, no edits |
-| `.research/live-initial-tests-20261013` | cleanup_review | 4253907, no edits or new commit; source review only |
+| `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; a54cf1b/e1b555e/d1bf847 integrated as017dbef/761cc6d/47e9a14 |
+| `.research/live-initial-control-20261013` | recovery_review | 41c06a7; eight PG/schema files, not integrated |
+| `.research/live-initial-tests-20261013` | cleanup_review | 90b56bc; independent fixture file/six groups, not integrated |
 
-All earlier helper worktrees remain retained. No merge/cherry-pick is pending.
+All earlier helper worktrees, ignored data and external laboratories remain retained.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
-
-Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
-M1 or the full product is complete. The [storage task](02-storage.md),
-[selected empty-retirement contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation)
+Paused P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of those steps,
+M1 or the product is complete. The [storage task](02-storage.md),
+[selected live activation contract](../reference/ingest-registration.md#live-initial-successor-activation-under-implementation)
 and [recovery evidence](evidence/p02-producer-recovery-native-20260920.json)
-own requirements, meaning and detailed qualification respectively.
+own requirements, meaning and detailed qualification.
 
 Original recovered source/bundle and earlier agent worktrees remain retained.
 The [dated recovery audit](../research/tux-resumption-20261012.md) owns recovery
@@ -269,68 +266,60 @@ remains separately pinned. New build profile `ingest-empty-installed` runs compi
 five actual entrypoint tests and Clippy. Build and engine completed as above. All owned containers stopped without OOM,
 cleanup/missing/unrelated arrays empty. This qualified slice is privately pushed.
 
-The paused bounded action concerns the selected
+The interrupted slice implements the selected
 [live1→2 activation contract](../reference/ingest-registration.md#live-initial-successor-activation-under-implementation).
-Its locally minted candidate, immutable activation receipt, shared admission
-protocol and zero-start semantics were recorded before implementation. Native WIP
-changes `store.rs`, new `initial_writer.rs`, `initial_handoff.rs`, `admission.rs`,
-`certification.rs`, `dictionary_preparation.rs`, `dictionary_append.rs` and
-`producer_recovery.rs` under `apps/bigbrotr/src/storage/rocks/`. The author reports
-scoped Rust 2024 formatting and `git diff --check` PASS before the stop. The draft
-owns a candidate/private activation capability and epoch2 zero-source handling;
-existing recovery remains epoch1-only. Root has not reviewed the complete saved
-diff. Compilation, Clippy, independent native tests and connected acceptance are
-NOT_RUN. No PG activation receipt/migration0032, PG consumer, test file/module
-registration, live probe, harness or new build profile has been written.
+Source is saved but unqualified:
 
-On explicit resume, first verify these three saved worktrees and remote heads,
-then review the complete native diff4253907..a54cf1b against the selected contract
-and settle its API with the PG authority consumer and independent test author.
-Record findings in the same evidence record before integration or allocation.
-The immediate result must be a reviewed implementation boundary, with unfinished
-PG/schema/fixture obligations explicit. Then continue P02-T01 Step5 / P02-T02
-Step4, enabling P01-T09 Step4/M1. The selected requirements remain:
+- Native candidate ownership, private live writer, source-zero/first-append behavior,
+  epoch1-only bootstrap selection and zero Event allocation refusal are integrated.
+  Existing general recovery remains epoch1-only. Module wiring references the test
+  file still saved separately in90b56bc.
+- PostgreSQL41c06a7 saves the399-line activation adapter, shared batch authority,
+  live renewal and additive581-line0032 with catalog/schema/manifest updates.
+  Applied earlier migration files are unchanged. The activation transaction is
+  server-assigned xid8; request/input/checkpoint guards address the independently
+  found `SET CONSTRAINTS ... IMMEDIATE` bypass of a deferred-only check. Five final
+  target BEFORE UPDATE guards were written before the stop and preserved; their
+  final independent review is pending. No SQL has run.
+- Native tests90b56bc contain six groups with independently encoded expected bytes,
+  real signed fixtures, exact first append/retry/conflict, no-fact request1 then
+  source1, reopened/foreign/stale candidate refusal, malformed/zero allocation and
+  budget/authority refusal. The new distinct signed B_note zero-Event-counter
+  case includes a positive counterfactual. Its PG authority is explicitly synthetic.
+- Rootfa0fa62 saves the actual-candidate finite live probe and `ingest-live` build
+  profile. The probe covers zero/normal/off and activation COMMIT-loss modes, signed
+  admission/resend and exact grants. Independent review found an undersized
+  dictionary grant; source was corrected. Its imported event has no observation,
+  so it cannot qualify real network provenance-off effects. The connected harness
+  and independent capture oracle are not yet implemented.
 
-- A genuinely new native-owning process mints and retains its own nonportable live
-  candidate. Observed prepared identity cannot authorize adoption. Keep ordinary
-  `IngestRecovery`/`ObservedHandoff` without public writer conversion.
-- A durable additive PG activation receipt must distinguish activated-zero from
-  prepared-zero before request1. Keep0030 prepared-only checks strict; active
-  validation/renewal and history/gap/empty refusal need explicit separate checks.
-  No applied migration or native format was changed for this proposal.
-- Review native first-request handling: source0 is valid for the live successor,
-  while absent/malformed source and zero allocation counters remain distinct.
-  A rejected/AlreadyDurable request may leave source0 with issued>0. In
-  `producer_recovery.rs`, Evidence request1 currently means bootstrap; that must
-  remain limited to the actual initial epoch1 path before epoch2 append replay.
-- Review a shared validated authority context around `initial_batch.rs` rather
-  than copying its reservation/native-dispatch/outcome protocol. Existing native
-  admission/certification/dictionary paths reject owner2. Sync assumes request3/
-  epoch1, Archive assumes next1/revision0/epoch1 with no retained prior inputs;
-  those consumers are not restart-capable yet.
+Completed checks are source review, reported scoped Rust formatting and
+`git diff --check`. The native author reviewed full affected native owners and the
+main PG adapter/kernel/SQL draft; root reviewed the complete native diff, candidate,
+PG draft and finite probe boundaries, but final integrated review is incomplete.
+The last target-update guards and test positive-counterfactual delta still need
+final review. Python profile AST checking is pending. Compilation, Clippy, native
+tests, migration execution, raw SQL acceptance, COMMIT-loss execution and connected
+qualification are all NOT_RUN. Earlier qualified results above do not qualify
+these new sources. No new build/engine resource was allocated.
 
-Relevant source owners include `storage/rocks/{initial_handoff,initial_empty,
-store,admission,certification,dictionary_preparation,dictionary_append,
-producer_recovery}.rs`, `storage/postgres/{initial_succession,initial_history,
-initial_gap,initial_empty,initial_batch}.rs`, additive0030/0031 and the installed
-initial_ingest commands/Sync/Archive owners. Read their complete affected callers
-before implementation. Next-slice acceptance must discriminate actual live
-candidate versus observed/foreign candidate, first append1, no-fact request1 then
-new-fact request2, immutable original rows/inputs, activated-zero recovery refusal,
-renewal and ambiguous activation COMMIT. These tests are NOT_RUN; the independent
-test worktree exists but contains no test implementation. The proposed fixture
-module belongs under `admission_tests::initial_reconstruction_tests` to reuse its
-signed fixture; its declaration has not been added. PG implementation must finish
-the manifest/control-schema and ownership-guard reads before adding0032 and a
-shared validated batch authority. Root read existing finite succession/empty
-probes and initial_batch.rs lines1–520; its remaining lines and final integration
-boundaries still need full review.
-General repeated lifetimes, retired-empty2→fresh3 and installed restart remain
-selected requirements, not completion implied by a bounded1→2 capability.
+On explicit resumption, first reconcile these exact Git heads and resources, then
+review0032's xid8/IMMEDIATE-constraints boundary including its final five target
+BEFORE UPDATE guards. Reconcile the saved probe APIs and integrate already saved
+41c06a7 and90b56bc only after that review. Record the coherent source identity in
+the same evidence before allocating the exact isolated build. Expected first
+result: a reviewed, internally complete source tree with all unrun qualification
+clearly retained. Actual connected harness/oracle, raw transaction discriminators,
+activated-zero old-loader refusal, renewal, admission and COMMIT-loss acceptance
+remain owed after that boundary. Do not execute any of this while paused.
 
-Preserve strict frozen ac644/f12 oracles and all earlier worktrees. Unknown process
-outcomes must not reopen a possibly owned native directory. Keep exact source/build
-identities and independent external final captures.
+General repeated lifetimes, retired-empty2→fresh3, activated-owner recovery,
+installed Sync/Archive restart/resend and ACK/GC remain selected requirements.
+Sync assumes request3/epoch1; Archive assumes cursor1/revision0/epoch1. Their detailed
+frontier/catalog recovery internals have not been fully reviewed. Preserve strict
+frozen ac644/f12 oracles and all earlier worktrees. Unknown process outcomes must
+not reopen a possibly owned native directory. Keep exact source/build identities
+and independent external final captures.
 
 ## Remaining product gates
 
@@ -353,25 +342,27 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. At2026-10-13T05:51:29Z the two current build containers, borrowed
-PostgreSQL and installed engine client were freshly inspected: stopped/PID0/noOOM,
-exit0/0/0/143 respectively. Build84756 and engine46588 wrappers were already joined0.
-No matching qualification/build/probe process remained in the read-only process
-inspection at05:50:51Z; no BigBrotr container was running. All three helpers
-confirmed no owned process and stopped. Six unrelated services remain running;
-none was stopped or changed. No build/engine background task requires joining.
-The retained788f971 result and
-7e820b9 CLI/probe hashes were rechecked and match their recorded identities; the
-prior qualification exclusions remain explicit. Those hashes were checked during
-the05:39:37Z resumption inspection, not rerun as a pause-time test campaign.
+and dated observations. Fresh pause-time process/Docker inspection around
+2026-10-13T06:13:49Z found no build, qualification or probe process and no running
+BigBrotr container. The retained7e820b9 fetch/native containers, borrowed PostgreSQL
+and788f971 client were freshly inspected: stopped/PID0/noOOM, exit0/0/0/143.
+Prior build84756 and engine46588 wrappers were already joined0. All helpers stopped;
+no new build/engine background task requires joining. Six unrelated services remain
+running and were not changed. Codex session/daemon processes are session infrastructure.
+
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
 external laboratories under `/home/tux/bigbrotr-implementation-20260917/`, retained
-containers/volumes and protected executables are preserved. No cleanup was run
-while pausing. Do not mistake Git cleanliness for permission to delete ignored data.
-Last free space67,827,175,424 bytes at05:50:51Z (about63.2GiB); remeasure
-before allocation. Small engine fixtures require2GiB; native builds12GiB. The
-larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
-that reserve to force a run. No large export is allocated by the current slice.
+containers/volumes and protected executables are preserved in place. No cleanup,
+engine restart or new test campaign ran while pausing. Git pushes preserve source,
+not the ignored laboratory data; those remain local and inventoried. Do not mistake
+Git cleanliness for permission to delete ignored data. The retained788f971 result
+hash matched at the earlier05:55 resumption inspection; no pause-time qualification
+rerun is claimed.
+
+Free space was67,814,907,904 bytes around06:13:49Z (about63.2GiB); remeasure before
+allocation. Small engine fixtures require2GiB; native builds12GiB. The larger
+export wave still requires64GiB+577MiB, currently unavailable. Never lower that
+reserve to force a run. No large export is allocated by this slice.
 
 Targeted cleanup is RETIRED_VERIFIED. Its one-off executor removed48,725 verified
 compiler intermediates from18 inventoried historical target directories;472,825
