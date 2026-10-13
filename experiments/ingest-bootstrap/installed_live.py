@@ -152,6 +152,203 @@ def configure(pg, client, output, database, directory, original):
     return config
 
 
+def capture_case(pg, client, output, rows, mode, database, config, directory, seed, setup,
+        previous=None, *, positive, after_activated=None):
+    """Capture one owned Serve process; qualification belongs to its caller.
+
+The optional fixture runs only between confirmed activation and starting the
+HTTP client. Existing modes pass no fixture and retain the same observations.
+    """
+    def dump(label, directory):
+        response, _ = capture(client, output, label + '-dump', 'dump-state',
+            '/lab/' + directory.name + '/store')
+        assert response.returncode == 0 and not response.stderr
+        value = json.loads(response.stdout)
+        lab.write_json(output / (label + '-native.json'), value)
+        return value
+
+    def sql(label, database):
+        result = rows(database)
+        lab.write_json(output / (label + '-sql.json'), result)
+        return result
+
+    label = mode
+    before = sql(label + '-before', database)
+    before_native = dump(label + '-before', directory)
+    before_inputs = inputs_at(directory / 'store')
+    guards = catalog(pg, database)
+    prefix, terminal = output / label, None
+    fixture = dict(holder=None, cleanup_errors=[])
+    snapshots, response = [], dict(returncode=None, outcome='OUTCOME_UNKNOWN')
+    window = {}
+    holder = None
+    journey_started = False
+
+    def snapshot(stage):
+        item = dict(stage=stage, server_us=server_clock(pg, database),
+            control=sql(label + '-' + stage, database), inputs=inputs_at(directory / 'store'))
+        item['observed_by_us'] = server_clock(pg, database)
+        snapshots.append(item)
+        lab.write_json(output / (label + '-observations.json'), snapshots)
+        return item
+
+    def continue_client(stage):
+        (directory / (stage + '.continue')).write_text('observed\n')
+
+    try:
+        if mode == 'installed-live-held':
+            ds, = before['datasets']
+            command = ['docker', 'exec', '-i', client, '/build/ingest_bootstrap_probe',
+                'history-hold', database, '/run/secrets/application',
+                '/lab/' + directory.name + '/store', ds['dataset_id'][2:], ds['instance_id'][2:]]
+            holder = Process(command, input_pipe=True)
+            fixture['holder'] = dict(command=command, ready=wait_for(
+                lambda: native_ready(holder), 'installed live native holder', 5), joined=False, forced=False)
+        window['before_us'] = server_clock(pg, database)
+        lab.docker('exec', '-d', client, 'python3', '/lab/installed_live_client.py', 'serve',
+            config, '/lab/' + label, timeout=5)
+        wait_for(lambda: Path(str(prefix) + '.pid.json').exists(), 'installed successor pid', 5)
+        if positive:
+            first = wait_for(lambda: messages(prefix) or Path(str(prefix) + '.terminal.json').exists(),
+                'installed successor publication', 15)
+            if not isinstance(first, list):
+                raise AssertionError('installed successor exited before publication')
+            initialized = snapshot('activated')
+            if after_activated is not None:
+                fixture['after_activated'] = after_activated(initialized)
+            target, = [r for r in initialized['control']['owner_epochs'] if r['role'] == 'ingest' and r['epoch'] == 2]
+            old_domain, = [r for r in before['allocation_domains'] if r['dictionary_kind'] == 4]
+            lab.write_json(directory / 'visibility.json', dict(dataset_id=old_domain['dataset_id'][2:],
+                dictionary_kind=4, allocation_domain=old_domain['allocation_domain'][2:], ordinal='3'))
+            wrapper = '''import subprocess,json,sys
+from pathlib import Path
+p=Path(sys.argv[1])
+with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err:
+ try:
+  r=subprocess.run(['python3','/lab/installed_live_client.py','journey',str(p)],stdout=out,stderr=err,timeout=45)
+  value={'exit_code':r.returncode,'reaped':True,'outcome':'PROCESS_EXITED'}
+ except subprocess.TimeoutExpired:
+  value={'exit_code':None,'reaped':False,'outcome':'UNKNOWN_TIMEOUT'}
+(p/'client-exit.json').write_text(json.dumps(value))
+'''
+            lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name)
+            journey_started = True
+            for stage in ('prepared', 'submitted'):
+                wait_for(lambda: (directory / (stage + '.json')).exists() or (directory / 'client-exit.json').exists(),
+                    'installed successor ' + stage, 15)
+                assert (directory / (stage + '.json')).exists(), (directory / 'client.stderr').read_text()
+                if stage == 'submitted':
+                    def durable():
+                        observed = rows(database)
+                        fresh = [r for r in observed['producer_outcomes'] if r['producer_epoch'] == 2]
+                        return observed if len(fresh) == 2 else None
+                    wait_for(durable, 'two durable successor requests', 10)
+                snapshot(stage)
+                continue_client(stage)
+            wait_for(lambda: (directory / 'commands-finished.json').exists() or (directory / 'client-exit.json').exists(),
+                'installed successor logout', 15)
+            assert (directory / 'commands-finished.json').exists(), (directory / 'client.stderr').read_text()
+            initial_deadline = int(first[0]['initial_lease_expires_at_us'])
+
+            def renewed():
+                now = server_clock(pg, database)
+                if now <= initial_deadline:
+                    assert not Path(str(prefix) + '.terminal.json').exists(), 'successor stopped before renewal'
+                    return None
+                return now
+
+            renewed_at = wait_for(renewed, 'live past original target deadline', 15)
+            current = snapshot('renewed')
+            fixture['renewal'] = dict(initial_deadline_us=initial_deadline, observed_at_us=renewed_at,
+                initial_target=target, current=current)
+            snapshot('before-stop')
+            identity = json.loads(Path(str(prefix) + '.pid.json').read_text())
+            fixture['signal'] = stop_quiet(client, directory, identity, initial_deadline)
+            fixture['quiet'] = fixture['signal']['opened']
+        path = Path(str(prefix) + '.terminal.json')
+        wait_for(path.exists, 'actual successor Serve join', 12)
+        terminal = json.loads(path.read_text())
+        window['after_us'] = server_clock(pg, database)
+        if holder:
+            fixture['holder']['alive_during_cli'] = holder.process.poll() is None
+    finally:
+        if holder:
+            try:
+                holder.send('release')
+                fixture['holder'].update(exit_code=holder.wait(5), stdout=bytes(holder.stdout).decode(),
+                    stderr=bytes(holder.stderr).decode(), joined=True)
+            except BaseException as error:
+                fixture['holder']['forced'] = True
+                fixture['cleanup_errors'].append(type(error).__name__)
+            finally:
+                holder.stop()
+        # Preserve all known terminal output before any semantic oracle runs.
+        path = Path(str(prefix) + '.terminal.json')
+        if terminal is None and path.exists():
+            terminal = json.loads(path.read_text())
+        if terminal is None and Path(str(prefix) + '.pid.json').exists():
+            try:
+                signal_child(client, json.loads(Path(str(prefix) + '.pid.json').read_text()))
+                wait_for(path.exists, 'failed journey Serve join', 5)
+                terminal = json.loads(path.read_text())
+            except BaseException as error:
+                fixture['cleanup_errors'].append(type(error).__name__)
+        if journey_started:
+            continue_client('commands-finished')
+            try:
+                wait_for((directory / 'client-exit.json').exists, 'HTTP and relay client join', 5)
+                fixture['client_terminal'] = json.loads((directory / 'client-exit.json').read_text())
+            except BaseException as error:
+                fixture['cleanup_errors'].append(type(error).__name__)
+        for stream in ('stdout', 'stderr'):
+            path = Path(str(prefix) + '.' + stream)
+            if path.exists():
+                raw = path.read_bytes()
+                if len(raw) > 65536:
+                    fixture['cleanup_errors'].append('OutputLimitExceeded')
+                response[stream] = raw[:65536].decode(errors='replace')
+        response['terminal'] = terminal
+        if terminal and terminal['reaped'] and not terminal['forced'] and not fixture['cleanup_errors']:
+            response.update(returncode=terminal['exit_code'], outcome='PROCESS_EXITED')
+        if terminal and 'after_us' not in window:
+            window['after_us'] = server_clock(pg, database)
+        lab.write_json(output / (label + '-response.json'), response)
+        lab.write_json(output / (label + '-clock.json'), window)
+        lab.write_json(output / (label + '-fixture.json'), fixture)
+        if response['outcome'] == 'PROCESS_EXITED':
+            after = sql(label + '-after', database)
+            after_inputs = inputs_at(directory / 'store')
+            absence = observe_backend_absence(pg, database, output, label)
+            old_keys = {(r['resource_id'], r['epoch']) for r in before['owner_epochs']}
+            tuples = [dict(pid=r['control_backend_pid'], backend_start=r['control_backend_start'],
+                database=database, control_epoch=r['epoch']) for r in after['owner_epochs']
+                if r['role'] == 'control' and (r['resource_id'], r['epoch']) not in old_keys]
+            excluded = exact_absence(pg, database, tuples)
+            after_native = dump(label + '-after', directory)
+            current_guards = catalog(pg, database)
+            lab.write_json(output / (label + '-external.json'), dict(control=after, native=after_native,
+                inputs=after_inputs, backend=dict(exact=excluded, absence=absence), catalog=current_guards))
+        else:
+            lab.write_json(output / (label + '-external-unavailable.json'), dict(status='OUTCOME_UNKNOWN',
+                reason='native ownership not excluded; outer owner must join before reopening'))
+    assert response['outcome'] == 'PROCESS_EXITED'
+    journey = None
+    if positive:
+        journey = dict(result=json.loads((directory / 'client-result.json').read_text()),
+            terminal=fixture['client_terminal'], stdout=(directory / 'client.stdout').read_text(),
+            stderr=(directory / 'client.stderr').read_text(),
+            opened=[json.loads(p.read_text()) for p in sorted(directory.glob('relay-open-*.json'))],
+            closed=[json.loads(p.read_text()) for p in sorted(directory.glob('relay-closed-*.json'))])
+    contents = {p.name: p.read_bytes().hex() for p in (directory / 'store/producer-inputs-v1').iterdir()}
+    context = dict(mode=mode, original=before, after=after, native_before=before_native,
+        native_after=after_native, inputs_before=before_inputs, inputs_after=after_inputs,
+        input_contents=contents, snapshots=snapshots, response=response, journey=journey,
+        fixture=fixture, server_window=window, backend=dict(exact=excluded, absence=absence),
+        catalog_before=guards, catalog_after=current_guards, seed=seed, setup=setup, predecessor=previous)
+    lab.write_json(output / (label + '-verification.json'), context)
+    return context
+
+
 def run_all(pg, client, output, rows, clone):
     basis = output.parent.parent / preparing.SEED / 'bindings'
     store = basis / 'retire_signed/store'
@@ -186,198 +383,15 @@ def run_all(pg, client, output, rows, clone):
     cases, contexts = [], {}
     on = None
 
-    def dump(label, directory):
-        response, _ = capture(client, output, label + '-dump', 'dump-state',
-            '/lab/' + directory.name + '/store')
-        assert response.returncode == 0 and not response.stderr
-        value = json.loads(response.stdout)
-        lab.write_json(output / (label + '-native.json'), value)
-        return value
-
-    def sql(label, database):
-        result = rows(database)
-        lab.write_json(output / (label + '-sql.json'), result)
-        return result
-
     def execute(mode, database, config, directory, setup, previous=None):
-        label = mode
-        before = sql(label + '-before', database)
-        before_native = dump(label + '-before', directory)
-        before_inputs = inputs_at(directory / 'store')
-        guards = catalog(pg, database)
-        prefix, terminal = output / label, None
-        positive = mode in CASES[:2]
-        fixture = dict(holder=None, cleanup_errors=[])
-        snapshots, response = [], dict(returncode=None, outcome='OUTCOME_UNKNOWN')
-        window = {}
-        holder = None
-        journey_started = False
-
-        def snapshot(stage):
-            item = dict(stage=stage, server_us=server_clock(pg, database),
-                control=sql(label + '-' + stage, database), inputs=inputs_at(directory / 'store'))
-            item['observed_by_us'] = server_clock(pg, database)
-            snapshots.append(item)
-            lab.write_json(output / (label + '-observations.json'), snapshots)
-            return item
-
-        def continue_client(stage):
-            (directory / (stage + '.continue')).write_text('observed\n')
-
-        try:
-            if mode == 'installed-live-held':
-                ds, = before['datasets']
-                command = ['docker', 'exec', '-i', client, '/build/ingest_bootstrap_probe',
-                    'history-hold', database, '/run/secrets/application',
-                    '/lab/' + directory.name + '/store', ds['dataset_id'][2:], ds['instance_id'][2:]]
-                holder = Process(command, input_pipe=True)
-                fixture['holder'] = dict(command=command, ready=wait_for(
-                    lambda: native_ready(holder), 'installed live native holder', 5), joined=False, forced=False)
-            window['before_us'] = server_clock(pg, database)
-            lab.docker('exec', '-d', client, 'python3', '/lab/installed_live_client.py', 'serve',
-                config, '/lab/' + label, timeout=5)
-            wait_for(lambda: Path(str(prefix) + '.pid.json').exists(), 'installed successor pid', 5)
-            if positive:
-                first = wait_for(lambda: messages(prefix) or Path(str(prefix) + '.terminal.json').exists(),
-                    'installed successor publication', 15)
-                if not isinstance(first, list):
-                    raise AssertionError('installed successor exited before publication')
-                initialized = snapshot('activated')
-                target, = [r for r in initialized['control']['owner_epochs'] if r['role'] == 'ingest' and r['epoch'] == 2]
-                old_domain, = [r for r in before['allocation_domains'] if r['dictionary_kind'] == 4]
-                lab.write_json(directory / 'visibility.json', dict(dataset_id=old_domain['dataset_id'][2:],
-                    dictionary_kind=4, allocation_domain=old_domain['allocation_domain'][2:], ordinal='3'))
-                wrapper = '''import subprocess,json,sys
-from pathlib import Path
-p=Path(sys.argv[1])
-with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err:
- try:
-  r=subprocess.run(['python3','/lab/installed_live_client.py','journey',str(p)],stdout=out,stderr=err,timeout=45)
-  value={'exit_code':r.returncode,'reaped':True,'outcome':'PROCESS_EXITED'}
- except subprocess.TimeoutExpired:
-  value={'exit_code':None,'reaped':False,'outcome':'UNKNOWN_TIMEOUT'}
-(p/'client-exit.json').write_text(json.dumps(value))
-'''
-                lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name)
-                journey_started = True
-                for stage in ('prepared', 'submitted'):
-                    wait_for(lambda: (directory / (stage + '.json')).exists() or (directory / 'client-exit.json').exists(),
-                        'installed successor ' + stage, 15)
-                    assert (directory / (stage + '.json')).exists(), (directory / 'client.stderr').read_text()
-                    if stage == 'submitted':
-                        def durable():
-                            observed = rows(database)
-                            fresh = [r for r in observed['producer_outcomes'] if r['producer_epoch'] == 2]
-                            return observed if len(fresh) == 2 else None
-                        wait_for(durable, 'two durable successor requests', 10)
-                    snapshot(stage)
-                    continue_client(stage)
-                wait_for(lambda: (directory / 'commands-finished.json').exists() or (directory / 'client-exit.json').exists(),
-                    'installed successor logout', 15)
-                assert (directory / 'commands-finished.json').exists(), (directory / 'client.stderr').read_text()
-                initial_deadline = int(first[0]['initial_lease_expires_at_us'])
-
-                def renewed():
-                    now = server_clock(pg, database)
-                    if now <= initial_deadline:
-                        assert not Path(str(prefix) + '.terminal.json').exists(), 'successor stopped before renewal'
-                        return None
-                    return now
-
-                renewed_at = wait_for(renewed, 'live past original target deadline', 15)
-                current = snapshot('renewed')
-                fixture['renewal'] = dict(initial_deadline_us=initial_deadline, observed_at_us=renewed_at,
-                    initial_target=target, current=current)
-                snapshot('before-stop')
-                identity = json.loads(Path(str(prefix) + '.pid.json').read_text())
-                fixture['signal'] = stop_quiet(client, directory, identity, initial_deadline)
-                fixture['quiet'] = fixture['signal']['opened']
-            path = Path(str(prefix) + '.terminal.json')
-            wait_for(path.exists, 'actual successor Serve join', 12)
-            terminal = json.loads(path.read_text())
-            window['after_us'] = server_clock(pg, database)
-            if holder:
-                fixture['holder']['alive_during_cli'] = holder.process.poll() is None
-        finally:
-            if holder:
-                try:
-                    holder.send('release')
-                    fixture['holder'].update(exit_code=holder.wait(5), stdout=bytes(holder.stdout).decode(),
-                        stderr=bytes(holder.stderr).decode(), joined=True)
-                except BaseException as error:
-                    fixture['holder']['forced'] = True
-                    fixture['cleanup_errors'].append(type(error).__name__)
-                finally:
-                    holder.stop()
-            # Preserve all known terminal output before any semantic oracle runs.
-            path = Path(str(prefix) + '.terminal.json')
-            if terminal is None and path.exists():
-                terminal = json.loads(path.read_text())
-            if terminal is None and Path(str(prefix) + '.pid.json').exists():
-                try:
-                    signal_child(client, json.loads(Path(str(prefix) + '.pid.json').read_text()))
-                    wait_for(path.exists, 'failed journey Serve join', 5)
-                    terminal = json.loads(path.read_text())
-                except BaseException as error:
-                    fixture['cleanup_errors'].append(type(error).__name__)
-            if journey_started:
-                continue_client('commands-finished')
-                try:
-                    wait_for((directory / 'client-exit.json').exists, 'HTTP and relay client join', 5)
-                    fixture['client_terminal'] = json.loads((directory / 'client-exit.json').read_text())
-                except BaseException as error:
-                    fixture['cleanup_errors'].append(type(error).__name__)
-            for stream in ('stdout', 'stderr'):
-                path = Path(str(prefix) + '.' + stream)
-                if path.exists():
-                    raw = path.read_bytes()
-                    if len(raw) > 65536:
-                        fixture['cleanup_errors'].append('OutputLimitExceeded')
-                    response[stream] = raw[:65536].decode(errors='replace')
-            response['terminal'] = terminal
-            if terminal and terminal['reaped'] and not terminal['forced'] and not fixture['cleanup_errors']:
-                response.update(returncode=terminal['exit_code'], outcome='PROCESS_EXITED')
-            if terminal and 'after_us' not in window:
-                window['after_us'] = server_clock(pg, database)
-            lab.write_json(output / (label + '-response.json'), response)
-            lab.write_json(output / (label + '-clock.json'), window)
-            lab.write_json(output / (label + '-fixture.json'), fixture)
-            if response['outcome'] == 'PROCESS_EXITED':
-                after = sql(label + '-after', database)
-                after_inputs = inputs_at(directory / 'store')
-                absence = observe_backend_absence(pg, database, output, label)
-                old_keys = {(r['resource_id'], r['epoch']) for r in before['owner_epochs']}
-                tuples = [dict(pid=r['control_backend_pid'], backend_start=r['control_backend_start'],
-                    database=database, control_epoch=r['epoch']) for r in after['owner_epochs']
-                    if r['role'] == 'control' and (r['resource_id'], r['epoch']) not in old_keys]
-                excluded = exact_absence(pg, database, tuples)
-                after_native = dump(label + '-after', directory)
-                current_guards = catalog(pg, database)
-                lab.write_json(output / (label + '-external.json'), dict(control=after, native=after_native,
-                    inputs=after_inputs, backend=dict(exact=excluded, absence=absence), catalog=current_guards))
-            else:
-                lab.write_json(output / (label + '-external-unavailable.json'), dict(status='OUTCOME_UNKNOWN',
-                    reason='native ownership not excluded; outer owner must join before reopening'))
-        assert response['outcome'] == 'PROCESS_EXITED'
-        journey = None
-        if positive:
-            journey = dict(result=json.loads((directory / 'client-result.json').read_text()),
-                terminal=fixture['client_terminal'], stdout=(directory / 'client.stdout').read_text(),
-                stderr=(directory / 'client.stderr').read_text(),
-                opened=[json.loads(p.read_text()) for p in sorted(directory.glob('relay-open-*.json'))],
-                closed=[json.loads(p.read_text()) for p in sorted(directory.glob('relay-closed-*.json'))])
-        contents = {p.name: p.read_bytes().hex() for p in (directory / 'store/producer-inputs-v1').iterdir()}
-        context = dict(mode=mode, original=before, after=after, native_before=before_native,
-            native_after=after_native, inputs_before=before_inputs, inputs_after=after_inputs,
-            input_contents=contents, snapshots=snapshots, response=response, journey=journey,
-            fixture=fixture, server_window=window, backend=dict(exact=excluded, absence=absence),
-            catalog_before=guards, catalog_after=current_guards, seed=seed, setup=setup, predecessor=previous)
-        lab.write_json(output / (label + '-verification.json'), context)
+        context = capture_case(pg, client, output, rows, mode, database, config,
+            directory, seed, setup, previous, positive=mode in CASES[:2])
         checked = verify(**context)
         controls = negative_controls(**context)
         contexts[mode] = context
         return dict(name=mode, status='PASS', actual_cli=True, attempts=1, oracle=checked,
-            negative_controls=controls, backend_absence=absence, terminal=terminal)
+            negative_controls=controls, backend_absence=context['backend']['absence'],
+            terminal=context['response']['terminal'])
 
     try:
         for mode in CASES:
