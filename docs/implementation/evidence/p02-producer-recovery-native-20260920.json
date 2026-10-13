@@ -17768,7 +17768,7 @@
       },
       "activated_source_closure_20261013": {
         "status": "PASS_SOURCE_CLOSURE_POSITIVES_COMMIT_LOSS_AND_JOB_LOCKS_PREFIX_GATES_OPEN",
-        "observed_at": "2026-10-13T12:46:27.865661+00:00",
+        "observed_at": "2026-10-13T12:59:58.338827+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
@@ -18162,7 +18162,7 @@
             "workflowretirement/repeatedlifetimes/Archive/fullM1"
           ]
         },
-        "next": "Finish independent three-case sourceprefix fixture/review and pure expectations; integrate then execute1finite+3installedCLI with protectedbb53 artifacts. Next workflow design read-only until prerequisite closure qualifications complete.",
+        "next": "Run exact committed sourceprefix engine1finite+3CLI using protectedbb53artifacts. Preserve failed states; root semantic/raw replay and independent artifact/custody audit after terminal outcome.",
         "final_commit_fault_fixture": {
           "source": "5b6b176e059dc865b29778bf4d76c9b4f6a0c2e3",
           "integrated": "fee9793a0cc3de09d72d0112348717fad061cd6a",
@@ -18514,6 +18514,27 @@
               "retained_elf_paths": 61,
               "unchanged_prior_containers": 1267
             }
+          }
+        },
+        "prefix_fixture": {
+          "source": "bdf6548057451791232b6a535fbfbd3b849e91e6",
+          "integrated": "1dc001a1d0b9a4155d0eb8ac3bd581b5cd193428",
+          "status": "REVIEWED_COMMITTED_ENGINE_NOT_RUN",
+          "cases": [
+            "installed-source-reservation-tail",
+            "installed-source-retained-tail",
+            "installed-source-copy-conflict"
+          ],
+          "cli_invocations": 3,
+          "finite_seed_invocations": 1,
+          "review": "Root285line driver/404line oracle complete; independent PG review complete source and3artificialcontexts43controls. Four explicit CTE row aliases, known-exit external capture before missingwire parse, orchestrationfailure refusal and exactseed/CLI database join corrected before engine.",
+          "pure": {
+            "path": ".research/activated-recovery-qualification-20261013/.research/activated-prefix-selfcheck-20261013/manifest.json",
+            "sha256": "8c5e616b952cdf0082d0e9c83e6ff22a3833d8e607b75e9f9ad5c61232d46c93",
+            "seed_snapshots": 9,
+            "installed_observations": 6,
+            "controls": 43,
+            "custody_capture_mocks": 4
           }
         }
       }

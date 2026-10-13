@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:46Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:59Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,11 +14,10 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-bb53bf52f94c4556faaa847b79eab753c22485d1, verified pushed privately with three qualification branches.
+1dc001a1d0b9a4155d0eb8ac3bd581b5cd193428. Last verified private push198e2a5; three prior qualification branches pushed.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
-integrated3748ece, buildbb53PASS. Three-case Python fixture remains in separate
-worktree; next workflow design is read-only. Root alone integrates/builds/executes.
+integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; rootdispatcher committing; next workflow design is read-only. Root alone integrates/builds/executes.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -92,14 +91,18 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Finish complete independent Python fixture for three source refusals; review and
-integrate before exact engine1finite+3CLI using protectedbb53artifacts. Selected cases:
-actual firstdictionary reservation C14 after-complete loss, issued0/reserved1 refuses
-Control(InvalidMetadata) beforeclosing; retainedtargettail69/86→69/87 refuses
-StateMismatch at prefixfinish; successful939terminalclone outcome2byteconflict
-refuses Outcome(Conflict) with no nativewrite/repair. Preserve raw operator states,
-failed Control/backend custody and every original. No invented SQL diagnostic.
-Next workflow/producer retirement design proceeds read-only within existing tasks.
+Run exact committed sourceprefix engine with protectedbb53 artifacts: one actual
+C14 reservation-loss finite seed and three installed refusals. Driver285/oracle404
+reviewed by root and independent PG reviewer, pure9seed snapshots+6installed
+observations/43controls and4capture/custody mocks PASS. CTE explicit aliases,
+external capture before missingwire parsing, orchestrationerror refusal and same
+seed/CLI database binding corrected before engine. Actual engine NOT_RUN.
+Cases: issued0/reserved1 refuses Control(InvalidMetadata) beforeclosing;
+retainedtargettail69/86→69/87 refuses StateMismatch at prefixfinish; successful939
+terminalclone outcome2byteconflict refuses Outcome(Conflict), no nativewrite/repair.
+Next bounded product after qualification is activated acquisition abandonment,
+with additive0036 exact epoch2 gap branch and activatorControl claimed jobs; design
+only, no implementation yet. No draining, producer/domain retirement or ACK/GC.
 
 Prefixbuildbb53 PASS compile+Clippy onRust1.98.1/Clang14, wrapper15173 joined0,
 12:43:04–12:44:39Z. Root `/runs/ingest-activated-refusals-bb53bf5`,
