@@ -346,8 +346,16 @@ One owner serializes exact identity decisions for each writable directory.
   proof, existing-copy-only replay and additive0037 atomic twelve-row terminal
   transition. Root and independent persistent-boundary source reviews are complete;
   48 native and48 entrypoint/schema/migration tests plus Clippy pass on exact
-  build388a01a; source/artifact/custody audit preserves76 binaries. Connected retirement,
-  refusal, SQL immutability and interruption gates remain NOT_RUN. Repeated lifetimes remain separate. Archive selection refuses until its lifetime-specific
+  build388a01a; source/artifact/custody audit preserves76 binaries. Installed9bdc86a
+  passes four first/retry commands on off/source5 and AlreadyDurable/source0 copies:
+  exact twelve-row first transitions, unchanged retry timestamps/xmin and no native
+  writes. Root raw replay covers ten full72-table states/110 controls; author
+  artifact/custody audit passes with originals retained. Final-COMMIT fault fixtures
+  are integrated but actual execution remains NOT_RUN. Raw SQL draft7730bfb is
+  committed separately, partially reviewed and not integrated; artificial18-case
+  checks do not qualify PostgreSQL. Owner-requested pause preserves every artifact.
+  Refusal, SQL immutability and interruption gates remain NOT_RUN. Repeated lifetimes
+  remain separate. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
   refusal is its epoch preflight, not the SQL receipt veto;
