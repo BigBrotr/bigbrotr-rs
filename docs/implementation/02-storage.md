@@ -334,7 +334,9 @@ One owner serializes exact identity decisions for each writable directory.
   as an evidence limitation. Count/full-batch26fdabe adds three genuine finite
   seeds and six CLI invocations:64/retry,65 refusal, retained1+selected64 refusal,
   and unsupported-last atomic refusal. Root raw replay and artifact/custody audits
-  pass. Final-job-wait SIGTERM and actual post-wait Control UTC expiry remain open;
+  pass. Installed3dd87d8 additionally qualifies SIGTERM during the final job row
+  wait, with exact cancelled error and separate post-unlock backend exclusion;
+  actual post-wait Control UTC expiry remains open;
   epoch2 workflow retirement and repeated lifetimes remain separate obligations. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

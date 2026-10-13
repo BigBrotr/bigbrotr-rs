@@ -18688,7 +18688,7 @@
         }
       },
       "activated_acquisition_abandonment_20261013": {
-        "status": "QUALIFIED_THROUGH_COUNTS_FINAL_WAIT_GATES_OPEN",
+        "status": "QUALIFIED_THROUGH_SIGTERM_ACTUAL_UTC_EXPIRY_GATE_OPEN",
         "observed_at": "2026-10-13T14:20:43.686291+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
         "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
@@ -18873,7 +18873,6 @@
           "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
         },
         "remaining_gates": [
-          "SIGTERM duringfinal selectedjoblockwait",
           "actualControlUTCexpiry acrossfinaljobwait (requiresfinite pre-agedlease proof; CLIlocaltimeoutisnotexpiry)"
         ],
         "claims_wave": {
@@ -19148,6 +19147,96 @@
             }
           ],
           "measurement_boundary": "Finite isolated fixture counts and output sizes, not product throughput or peak memory qualification."
+        },
+        "interruption_fixture": {
+          "source": "0c4971a1fe450bd5fdfcbcf396f153cf3a7d320d",
+          "integrated": "c75b7d1",
+          "dispatcher": "3dd87d8",
+          "status": "ACTUAL_ENGINE_ROOT_REPLAY_AND_AUTHOR_CUSTODY_PASS",
+          "checks": "Root full driver/oracle/actual process and Session helper review; one artificial full72 context/two states/25 perturbations and four custody mocks. Final clone-name length correction and holder custody guard reviewed.",
+          "manifest": {
+            "path": ".research/activated-recovery-postgres-20261013/.research/activated-acquisition-interruptions-selfcheck-20261013/manifest-v2.json",
+            "sha256": "f14c12079cdac4e4f87b52c303aa9e8e2e43cd1de4721f27299cee4b8607e279"
+          }
+        },
+        "interruption_wave": {
+          "source": "3dd87d8c5d9f2e08125619395df6d3037c15da12",
+          "status": "PASS_INSTALLED_ACTIVATED_ACQUISITION_INTERRUPTION",
+          "owner": "74f3a6ccfb075432f81a9029d7f4f6a8",
+          "client": {
+            "id": "3601330b0b10af97cef828662c41eccbc089542dd4333d9707cdf8c35ca4cb5d",
+            "name": "bigbrotr-acquisition-binding-3dd87d8"
+          },
+          "started_at": "2026-10-13T14:50:29.751407+00:00",
+          "finished_at": "2026-10-13T14:50:47.879237+00:00",
+          "free_bytes_after": 54795190272,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-interruptions-engine-3dd87d8",
+          "wrapper": "56582 joined0",
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-interruptions-engine-3dd87d8/bindings/result.json",
+            "sha256": "6cdac4ca5bda62ec803d59343491973c3a13795d2e010760f85ed7e675f01f44"
+          },
+          "cli_invocations": 1,
+          "root_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-interruptions-engine-3dd87d8/root-independent-replay.json",
+            "sha256": "3f564109423f33fd1225e19d2cc0920a22e3921c36f16dd262a30e857430eec2",
+            "wrapper": "91795 joined0",
+            "installed_states": 2,
+            "seed_states": 1,
+            "controls": 25
+          },
+          "artifact_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-interruptions-engine-3dd87d8/recovery-review-audit.json",
+            "sha256": "c96efaedbf47257a11c189acb9c1b40a6cbbe81451fc09738bc914607a9eaff6",
+            "status": "PASS_AUTHOR_ARTIFACT_CUSTODY_AUDIT"
+          },
+          "semantics": "SIGTERM reached the actual CLI during exact CLAIMED_JOBS row wait on the retained activator claim. Observed server UTC after signal was151198us after last committed Control refresh, within the conservative1s envelope; CLI4 exact cancellation error, reaped/nonforced. One exact Control backend still waited after CLI exit; holder rollback/join/absence preceded final exact/global Control backend exclusion and native dump. Only Control11 claim/refresh persists; all72 other relations, native70/85, six inputs, source/copies/job/gap untouched.",
+          "boundary": "Observed UTC/lock/process envelope, not internal Rust timer telemetry or blocked native syscall/power-loss qualification.",
+          "custody": "1827 engine Git files/1823 build-export-archive files/68 ELF hashes;1281 unchanged nonborrowed Docker projections at14:52:09Z. Original939 and prior limits campaign preserved. Failed first audit script/log retained; correction only concerned nested finite response seconds representation."
+        },
+        "expiry_probe": {
+          "source": "1b8b42f06039b290d98f96ed5b013fb851d947bd",
+          "integrated": "bd4da0d",
+          "status": "BUILD_PASS_ENGINE_NOT_RUN",
+          "checks": "Root complete new helper, routing, acquire delegation and actual begin_initial_history_locked lease semantics reviewed; author static body-equivalence/rustfmt/diff checks. No product changes or fake InitialRegistration.",
+          "scope": "Continuously held typed epoch2 native/source proof, actual fresh Control, complete positive replay and source closure, final refresh, real UTC lease pre-age outside transaction, final job-wait expiry and refusal; driver/backend custody retained. Actual lock/UTC crossing requires separate pending harness."
+        },
+        "expiry_build": {
+          "source": "bd4da0d9f59ca1d8e99a6a9142c983edfd4d8dc0",
+          "tree": "ffe1688d2f50004116f2a45f621c1d952ffdadd1",
+          "owner": "edf5d49016a3e34847f123f7441c0dea",
+          "state": "stopped-retained",
+          "started_at": "2026-10-13T14:53:12.572276+00:00",
+          "finished_at": "2026-10-13T14:54:48.724346+00:00",
+          "free_bytes_after": 54634311680,
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "0a14b33a641c7707fae2f53af12c2b10075e055fef244b2df1f9480d2b3b9d6f"
+            },
+            {
+              "name": "native",
+              "id": "111224bd0bccc83255863344a021cc91d98dcd419c0ef8cc01625d232ebf95d6"
+            }
+          ],
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-bd4da0d",
+          "status": "PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY",
+          "wrapper": "58411 joined0",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-bd4da0d/out/artifacts/build-result.json",
+            "sha256": "b46f850ff5fe90dda7a8ba556c50a2c229349824ccb5ec382ac760428b1018c3"
+          },
+          "binary_sha256": "fa74c4e7c35638fe9e984b41371924c1b1891a672bb3ddaca6c7a4e697554630",
+          "probe_sha256": "e01af81873c4b85d8826b219af2760f3bbafacf601063a6872db933c21d83145",
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-bd4da0d/root-build-audit.json",
+            "sha256": "9a6929404a6d6ec95c7e65c5dec5177f737c604546457e91797a819a5551083a",
+            "wrapper": "25999 joined0",
+            "files": 1828,
+            "protected_elfs": 70,
+            "unchanged_containers": 1283
+          },
+          "checks": "Rust1.98.1/Clang14 compile and Clippy PASS. Unchanged product inputs retain47 schema/entrypoint/migration tests atec6 and45 native tests at9dbc. No repeated suite or actual expiry qualification."
         }
       }
     }

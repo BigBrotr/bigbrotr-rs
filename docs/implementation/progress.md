@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T14:48Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T14:57Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption. The selected M1–M5 product remains INCOMPLETE. This checkpoint is
 navigation; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -13,8 +13,10 @@ is authorized. Preserve unpublished Cargo packages, read-only legacy repositorie
 unrelated workloads and all ignored/external artifacts. Latest resumption overrides
 the earlier credit-exhaustion pause; no new resume confirmation is needed.
 
-Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD 26fdabeb87f15d32c2523148362a47c5ec4436b3. Last verified private
-push279fda75ff9ab8e414929bbf272231b6679565d6 (39980 joined0). Main remains
+Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD and verified
+private pushbd4da0d9f59ca1d8e99a6a9142c983edfd4d8dc0 (1497 joined0). The completed
+claims/guards/HTTP/limits/SIGTERM/expiry-probe original branch heads were also
+verified pushed; current expiry fixture drafts remain local in their worktree. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Fixturec868 and fault5c2 branches also
 verified pushed. No merge/rebase/cherry-pick pending. Root owns this checkpoint
 edit and alone integrates/builds/executes; agents use separate writable worktrees.
@@ -29,12 +31,17 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: integrate and execute the installed final-job-lock SIGTERM fixture with
-build5e157e8, then build and qualify the actual post-wait UTC-expiry finite probe.
-The SIGTERM driver/oracle have full root review; author custody checks are pending.
-Root owns an uncommitted dispatcher edit in experiments/acquisition-scope/bindings.py.
-Native expiry probe and its independent harness are in separate agent worktrees.
-No product or persistent-format change is planned for these remaining two gates.
+Next: finish the independent actual-UTC-expiry harness/oracle, review and integrate,
+then execute one finite probe with buildbd4da0d. No build/engine is active. Its
+compile/Clippy58411 and audit25999 joined0:1828 exact source files,70 retained ELFs,
+1283 unchanged prior container projections. Product inputs remain unchanged fromec6.
+
+SIGTERM3dd87d8 PASS,56582 joined0; root91795 replay two installed states plusseed/
+25 controls PASS, author custody audit complete. Signal151198us after last refresh,
+CLI4 exact cancelled error; one Control backend still waited after CLI exit.
+Holder rollback/join/absence and final Control exclusion preceded native read.
+Native70/85/six inputs and all job/gap/source/copy rows remain unchanged. This is
+an observed UTC envelope, not internal timer telemetry or native syscall evidence.
 
 Limits26fdabe PASS: three finite seeds and six CLI calls,44183 joined0. Root88876
 replay41 seed snapshots/12 CLI states/four operator states/119 controls PASS.
@@ -65,18 +72,20 @@ Current agents (no independent build/engine authority):
 - `recovery_review`: `.research/activated-recovery-postgres-20261013`; HTTP branch
   committed, both latest custody audits complete. New branch
   `qualification/activated-acquisition-interruptions` owns the installed final-job-wait
-  SIGTERM driver/oracle; complete root review closed, targeted author checks pending.
+  SIGTERM driver/oracle committed0c497 and integratedc75b7d1. Actual qualification
+  and author custody audit closed; no pending writable work.
 - `successor_restart_design`: `.research/activated-recovery-native-20261013`;
   probe0ec committed and integrated999d329; independent limits API review closed.
-  New branch `qualification/activated-acquisition-expiry-probe` implements the actual
-  post-wait UTC-expiry finite probe with continuously owned authority.
+  Expiry probe1b8 committed, integratedbd4da0d and compiled. Now performs read-only
+  design for the next activated producer/domain/owner retirement responsibility;
+  no contract/product implementation authorized until this slice is reconciled.
 
 Remaining qualification must distinguish internal typed calls from management
 HTTP. The ordinary HTTP grant case passed with recovery-only privileges removed
 after legitimate activation and before starting the HTTP client.
 The genuine count campaign establishes the combined64 boundary and full-batch
-refusal in the documented finite envelope. Final-job-wait SIGTERM
-and actual post-wait Control UTC expiry also remain NOT_RUN, with expiry requiring
+refusal in the documented finite envelope. Final-job-wait SIGTERM passed;
+actual post-wait Control UTC expiry remains NOT_RUN, with expiry requiring
 a continuously owned finite probe/pre-aged lease rather than a local CLI timeout. Do not silently drop those concerns or repeat broad unchanged
 suites. Later producer/domain/owner retirement, repeated lifetimes, Archive restart,
 ACK/GC and full M1 remain separate responsibilities.
@@ -145,9 +154,10 @@ Root37928 replay15seed snapshots/four installed states/44controls PASS. Artifact
 
 ## Processes, resources and maintenance
 
-No engine/build active at this observation. Latest limits engine44183 and
-root replay88876 joined0; PG0/client143/PID0/noOOM frozen14:43:08Z. Latest build50208
-and audit12817 joined0. Three agents prepare separate interruption/expiry fixtures. Preserve every failed audit,
+No engine/build active at this observation. Latest SIGTERM56582 and root91795
+joined0; PG0/client143/PID0/noOOM frozen14:52:09Z. Latest build58411 and audit25999
+joined0 with two new owned containers exited0/PID0/noOOM. One agent prepares expiry
+fixtures, one has finished custody audit, one researches the next responsibility. Preserve every failed audit,
 source snapshot, clone, process receipt and `.research` artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`; `/runs/` above is
@@ -163,7 +173,7 @@ tgdataset-mongo. Preserve all worktrees, containers, volumes, datasets and execu
 artifacts. Private Git does not back up ignored labs; unavailable Mac captures
 remain unavailable. Recovery details: [Tux audit](../research/tux-resumption-20261012.md).
 
-Free space at this observation:55,605,403,648 bytes; remeasure before
+Free space at this observation:54,568,321,024 bytes; remeasure before
 allocation. Small engines require2GiB, native builds12GiB. Larger exports require
 64GiB+577MiB, currently unavailable; never lower that reserve. Five exports under
 256MiB and the other existing M1 release gates remain NOT_RUN.
