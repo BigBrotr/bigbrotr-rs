@@ -435,8 +435,11 @@ The on case uses an isolated privileged draining baseline; it does not qualify
 the transition into draining. Four further invocations exercise final-COMMIT loss
 before forwarding and after server completion, followed by fresh-process recovery;
 the earlier repaired outcome and any completed closure retain their original
-attribution. Concurrent job bounds and a connected AlreadyDurable-only prefix
-remain separate pending scenarios.
+attribution. A genuine authenticated network resend also qualifies an
+AlreadyDurable-only prefix, followed by installed source closure and exact retry
+without new facts or retry writes. Its job remains queued and its session remains
+unrevoked. Concurrent job bounds and remaining connected prefix/copy/tail refusals
+remain pending scenarios.
 
 ## Exact dependency source basis
 

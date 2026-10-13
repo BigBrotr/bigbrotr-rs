@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:31Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:38Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,12 +14,12 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-6ffa9cbd4808e0375aee15812df5425b16564084. Lastverifiedprivatepush939cf13 plusfirstwave/
-faultsourcebranches; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
-Root owns currentevidence/docs/checkpoint and uncommitted nextAlreadyDurabledispatcher.
-Nativeprobe e1f03a6 integrated7c67736, exactbuildf7PASS. SeparatePythonAlreadyDurable
-fixture and job/closurelockorder worktrees remain inprogress. Root alone integrates,
-builds and executes; preserve all ignored/external artifacts andoriginals.
+d96af60a3c7eab32d6d550f521701dec96eafad5. Last verified private push939cf13; main54ad09d unchanged.
+No merge/rebase/cherry-pick pending. AlreadyDurable fixture integrated6ffa9cb and
+engine source0e4917f qualified. Lock fixture17de5cd integratedd96af60; root owns
+its dispatcher and evidence update. Native prefix probe e1f74d7 remains isolated
+until the lock engine finishes. Root alone integrates/builds/executes. Preserve
+all ignored/external artifacts and originals.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -93,14 +93,27 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Run the exact committed AlreadyDurable engine with preserved f7 artifacts: one
-actual finite network resend and two installed source closure invocations. Driver212/
-oracle466 fully reviewed by root and independently by native author. Integrated
-16fdfc9 as6ffa9cb. Pure11seed snapshots+4CLI observations/44negativecontrols and
-four custody/capture mocks PASS; actual engine NOT_RUN. Job remains queued2 and
-sessionunrevoked; login replaces the frozen revoked session as specified. No
-installed scheduler/workflow completion claim. Two job/closure lock fixtures and
-three minimal connected prefix/copy/tail refusal cases continue in separate worktrees.
+Run two installed job/source lock schedules using the committed driver/oracle and
+preserved f7 artifacts. Root and independent native reviewer read complete affected
+owners. Pure2contexts/4states/46controls and3custody mocks PASS; actual lockengine
+NOT_RUN. Both cases use a privileged guarded relational job, not authenticated export
+acceptance. Then integrate e1f74d7 prefix probe, compile and qualify only the three
+remaining connected refusal cases; their independent Python fixtures are in progress.
+
+AlreadyDurable engine0e4917f PASS: one genuine finite authenticated WebSocket resend
+plus two installed source closure commands.53native/seq64/five inputs, request1,
+old dependencies3..12/source2cut0. First closes→65; retry writes nothing. Job stays
+queued2/sessionunrevoked; login replaces old revoked session. Full72SQL preserved
+except exact authorized changes. Root11seed snapshots+4installed states/44controls
+raw replay60632 joined0 PASS. First audit helper incorrectly expected unchanged
+physical table set across29→32; corrected70retained+2added, failed script/log preserved.
+Artifact/custody audit1806engine/1804build files,59ELFs,1264unchanged nonborrowed
+container projections/68rawbindings PASS. PG0/client143 stopped; originals intact.
+Root `/runs/ingest-activated-durable-engine-0e4917f`, owner1cb10d96f103a42e884fb3dac5147c38,
+wrapper79115 joined0,12:32:30–12:32:53Z. ResultSHA
+f49a5eeba3148b5ab3abe5aacd54a54eee69be84feb5cea3e05a2bb9dfc0c233.
+Wire evidence is joined probe peer, not separate packet capture. No installed
+scheduler/jobcompletion/workflowretirement claim.
 
 GenuineAlreadyDurable probe buildf7a10c3 PASS compile+Clippy onRust1.98.1/Clang14.
 Root `/runs/ingest-activated-durable-f7a10c3`, ownerc4e82f9bfd349bea1b80b13a0bbaea63,
@@ -255,6 +268,7 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
+Latest durable engine79115/rootreplay60632 joined0, PG0/client143 stopped.
 Latest build31588/rootaudit72470 joined0, allbuildcontainers stopped0/PID0/noOOM;
 59ELFs preserved outsideexclusivecache. Latestfaultengine19724/replay14178joined0;
 PG0/client143 stopped. No engine/build active at thischeckpoint. Threeagents edit

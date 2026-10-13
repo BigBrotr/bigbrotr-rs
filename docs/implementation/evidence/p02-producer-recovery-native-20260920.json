@@ -17767,8 +17767,8 @@
         }
       },
       "activated_source_closure_20261013": {
-        "status": "PASS_SOURCE_FIRST_WAVE_AND_FINAL_COMMIT_LOSS_REMAINING_GATES_OPEN",
-        "observed_at": "2026-10-13T12:31:57.587195+00:00",
+        "status": "PASS_SOURCE_FIRST_WAVE_COMMIT_LOSS_AND_ALREADY_DURABLE_REMAINING_GATES_OPEN",
+        "observed_at": "2026-10-13T12:38:24.470085+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
@@ -18162,7 +18162,7 @@
             "workflowretirement/repeatedlifetimes/Archive/fullM1"
           ]
         },
-        "next": "Run exact committed AlreadyDurable engine1finite+2CLI using protected f7a10c3 artifacts. Two job/closure lock schedules and three minimal prefix/copy/tail refusals continue independently.",
+        "next": "Run two installed job/source lock schedules with exact committed fixture and preserved f7 artifacts; then integrate source-only prefix probe and qualify three remaining refusal cases.",
         "final_commit_fault_fixture": {
           "source": "5b6b176e059dc865b29778bf4d76c9b4f6a0c2e3",
           "integrated": "fee9793a0cc3de09d72d0112348717fad061cd6a",
@@ -18286,6 +18286,122 @@
             "capture_custody_mocks": 4
           },
           "scope": "Job remains queued revision2/sessionunrevoked. Login legitimately replaces frozen revoked session. No installed scheduler or workflow completion claim; peer wire is source-reviewed joined probe, not independent packet capture."
+        },
+        "already_durable": {
+          "status": "PASS_INSTALLED_ACTIVATED_SOURCE_ALREADY_DURABLE",
+          "source": "0e4917fe01a43116f57d941a81ebbb7a108e0b19",
+          "owner": "1cb10d96f103a42e884fb3dac5147c38",
+          "client": {
+            "id": "bd5f19cef2a10c32d4f54bbb340c4e3d926f8ea4ebe0540f9e51f95b1f31aa9f",
+            "name": "bigbrotr-acquisition-binding-0e4917f"
+          },
+          "started_at": "2026-10-13T12:32:30.981945+00:00",
+          "finished_at": "2026-10-13T12:32:53.781552+00:00",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-engine-0e4917f",
+          "wrapper": "79115 joined0",
+          "result_sha256": "f49a5eeba3148b5ab3abe5aacd54a54eee69be84feb5cea3e05a2bb9dfc0c233",
+          "finite_seed_invocations": 1,
+          "cli_invocations": 2,
+          "seed": {
+            "status": "PASS",
+            "snapshots": 11,
+            "control_tables": 72,
+            "native_rows": 53,
+            "native_sequence": 64,
+            "retained_inputs": 5,
+            "issued": 1,
+            "reserved": 1,
+            "source_sequence": 0,
+            "outcome": "AlreadyDurable",
+            "source_closure_sha256": "555415667f142b9852c068ba94613773538f5f5ff8ae48dc3fbca9a860df05c5",
+            "actual_network": true,
+            "job_state": "queued",
+            "job_complete": false,
+            "session_revoked": false,
+            "installed_scheduler": false
+          },
+          "attempts": [
+            {
+              "status": "PASS",
+              "mode": "installed-source-already-durable",
+              "observed_states": 2,
+              "control_tables": 72,
+              "native_rows": 53,
+              "native_sequence": 65,
+              "retained_inputs": 5,
+              "issued": 1,
+              "reserved": 1,
+              "source_sequence": 0,
+              "source_closure_sha256": "555415667f142b9852c068ba94613773538f5f5ff8ae48dc3fbca9a860df05c5",
+              "resolved_requests": 1,
+              "new_native_writes": 1,
+              "source_closed": true,
+              "job_state": "queued",
+              "job_complete": false,
+              "session_revoked": false,
+              "ready": false
+            },
+            {
+              "status": "PASS",
+              "mode": "installed-source-already-durable-retry",
+              "observed_states": 2,
+              "control_tables": 72,
+              "native_rows": 53,
+              "native_sequence": 65,
+              "retained_inputs": 5,
+              "issued": 1,
+              "reserved": 1,
+              "source_sequence": 0,
+              "source_closure_sha256": "555415667f142b9852c068ba94613773538f5f5ff8ae48dc3fbca9a860df05c5",
+              "resolved_requests": 1,
+              "new_native_writes": 0,
+              "source_closed": true,
+              "job_state": "queued",
+              "job_complete": false,
+              "session_revoked": false,
+              "ready": false
+            }
+          ],
+          "independent_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-engine-0e4917f/root-independent-replay.json",
+            "sha256": "f3271bb27dfb03b0f63fb88ecc26ec4738d968be487a654a3792ff8a04a2f87b",
+            "wrapper": "60632 joined0",
+            "seed_snapshots": 11,
+            "installed_observations": 4,
+            "controls": 44,
+            "correction": "First root audit assumed unchanged table set across29\u219232; corrected to70 retained physical identities+two additive tables. Original failed script/log preserved; no run/product change."
+          },
+          "custody_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-engine-0e4917f/cleanup-review-artifact-custody-20261013.json",
+            "sha256": "c5f3e54d3473130da729b53e3d0680328ccea64a4a10489f43d1d96adce355fb",
+            "engine_files": 1806,
+            "build_files": 1804,
+            "retained_elf_paths": 59,
+            "unchanged_nonborrowed_containers": 1264,
+            "raw_bound_artifacts": 68,
+            "scope": "Fixture/oracle author raw-binding, physical-preservation, source/binary and custody audit. Root owns independent actual semantic replay. Wire observations are joined probe-peer records, not independent packet capture. Original SQL preservation is retained run evidence; no fresh original schema29 catalog sampled. No audit SQL/native open/build/restart."
+          },
+          "scope": "Actual finite authenticated network AlreadyDurable request1 with old dependencies3..12/source2cut0, then installed source close/retry;53native rows,seq64\u219265\u219265,five exact inputs. Job queued2/sessionunrevoked; no installed scheduler or workflow completion."
+        },
+        "lock_fixture": {
+          "source": "17de5cd02996ae35df4353c2c0a57f1b9f0605db",
+          "integrated": "d96af60a3c7eab32d6d550f521701dec96eafad5",
+          "status": "REVIEWED_COMMITTED_ENGINE_NOT_RUN",
+          "cases": [
+            "installed-source-job-first",
+            "installed-source-source-first"
+          ],
+          "cli_invocations": 2,
+          "review": "Root complete339line driver/248line oracle; independent native reviewer also read full Session/invoke/barrier/SQL guards/PG source close caller. No blocker.",
+          "pure": {
+            "path": ".research/activated-recovery-postgres-20261013/.research/activated-source-locks-selfcheck-20261013/manifest.json",
+            "sha256": "eb2d424aebcf1e8078782cbcfa96f0792b41b19f79caf0df5e1c808413844195",
+            "contexts": 2,
+            "observations": 4,
+            "negative_controls": 46,
+            "custody_mocks": 3
+          },
+          "scope": "Privileged guarded relational job cut6 versus installed source cut5, all product triggers origin. No authenticated export acceptance claim. Exact PID/start wait edges; deferred fixture barrier removed after capture."
         }
       }
     }
