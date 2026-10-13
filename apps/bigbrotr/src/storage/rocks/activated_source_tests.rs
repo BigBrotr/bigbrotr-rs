@@ -2,6 +2,9 @@
 //! synthetic activation authority only; SQL/installed qualification is separate.
 use super::*;
 
+#[path = "activated_retirement_tests.rs"]
+mod activated_retirement_tests;
+
 type Digests = Vec<(u64, [u8; 32], [u8; 32])>;
 
 /// Independent literal framing from retained preimages/outcomes, with an explicit
@@ -88,6 +91,8 @@ fn activated_source_closure_covers_the_complete_two_stream_prefix_and_exact_dige
     assert_eq!(source.resolved_requests(), 3);
     assert_eq!(source.last_complete_sequence(), 5);
     assert_eq!(source.digest(), expected);
+    // Dictionary request1 is not an Event; NewFacts2 and AlreadyDurable3 are.
+    assert_eq!(source.event_request_mask(), 0b110);
     assert_eq!(source.validate(), Ok(()));
     assert!(source.matches_closed(&closed));
     assert!(std::ptr::eq(source.recovery(), &recovery));
@@ -176,6 +181,7 @@ fn activated_source_closure_distinguishes_zero_rejected_and_old_durable_prefixes
         assert_eq!(source.last_complete_sequence(), cut);
         assert_eq!(source.resolved_requests(), count);
         assert_eq!(source.digest(), expected);
+        assert_eq!(source.event_request_mask(), u64::from(mode != "zero"));
         assert!(source.matches_recorded(records));
         if count != 0 {
             assert_ne!(
@@ -222,11 +228,14 @@ fn activated_source_closure_refuses_omissions_duplicates_order_and_reserved_tail
     assert_eq!(prefix.record(&one), Err(BootstrapError::StateMismatch));
     prefix.record(&two).unwrap();
     assert_eq!(prefix.record(&two), Err(BootstrapError::StateMismatch));
+    let source = prefix.finish().unwrap();
     assert_eq!(
-        prefix.finish().unwrap().digest(),
+        source.digest(),
         expected_closure(&fixture, &recovery, 2, 5).0
     );
+    assert_eq!(source.event_request_mask(), 0b10);
     unchanged(&fixture, &recovery.store, &before);
+    drop(source);
     drop(one);
     drop(two);
     drop(closed);

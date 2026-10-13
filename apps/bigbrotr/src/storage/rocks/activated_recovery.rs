@@ -161,6 +161,37 @@ impl ActivatedInitial {
         })
     }
 
+    /// Retirement observes an existing barrier; it must not complete OPEN state.
+    /// Retain the same bounded closing grant and recheck the whole two-stream
+    /// interpretation without acquiring a mutable native handle or writing it.
+    pub(in crate::storage) fn observe_closed_producer(
+        &self,
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ActivatedProducerClosing, BootstrapError> {
+        if permit.request().units().data_bytes() < 4096
+            || permit.request().units().native_bytes() < 4096
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        authority()?;
+        self.validate(recovery)?;
+        if !self.producer.closing {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let context = Self::inspect(recovery, self.record)?;
+        authority()?;
+        // The authority callback and the full census cannot replace the exact
+        // root/sequence originally inspected, even with identical logical bytes.
+        self.validate(recovery)?;
+        Ok(ActivatedProducerClosing {
+            context,
+            _permit: permit,
+        })
+    }
+
     pub(in crate::storage::rocks::store) fn require_receipt_bounds(
         &self,
         receipt: &Receipt,

@@ -380,6 +380,7 @@ pub struct ResolvedActivatedSource<'a> {
     closing: &'a ActivatedProducerClosing,
     source_through: u64,
     digest: [u8; 32],
+    event_requests: u64,
 }
 
 impl ActivatedProducerClosing {
@@ -434,6 +435,7 @@ impl<'a> ActivatedSourceResolution<'a> {
             closing: self.closing,
             source_through: self.prefix.source_through,
             digest: self.prefix.digest.finalize().into(),
+            event_requests: self.prefix.event_requests,
         })
     }
 }
@@ -446,6 +448,9 @@ impl ResolvedActivatedSource<'_> {
     }
     pub fn digest(&self) -> [u8; 32] {
         self.digest
+    }
+    pub(in crate::storage) fn event_request_mask(&self) -> u64 {
+        self.event_requests
     }
     pub(in crate::storage) fn recovery(&self) -> &IngestRecovery {
         self.recovery
