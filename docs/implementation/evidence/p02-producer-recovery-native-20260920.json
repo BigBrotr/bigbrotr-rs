@@ -12952,7 +12952,7 @@
       }
     },
     "next_live_activation_20261013": {
-      "status": "ACTIVE_FIRST_BUILD_FIXTURE_FAILURE_CORRECTED_REBUILD_PENDING",
+      "status": "ACTIVE_BUILD_PASS_FINITE_ENGINE_PENDING",
       "base": "61fc6e3e21424f22d007b496e947986d2b70c4a0",
       "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
       "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -13021,7 +13021,7 @@
         "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
         "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
       },
-      "next_action": "Exact isolated ingest-live build after reviewed integration; root sole build/engine owner. Connected finite harness/oracle in separate worktrees; rawSQL/renewal/installed/provenance and fullproduct remain owed.",
+      "next_action": "Run exact isolated --ingest-live finite five-case engine using reviewed committed harness/oracle/bindings and unchanged c640b2f build artifacts; preserve unknown/failed outcomes. Raw SQL, renewal, real network/installed and full product remain owed.",
       "resume_observation": {
         "observed_at": "2026-10-13T06:33:25Z",
         "runtime_goal": "active",
@@ -13037,24 +13037,24 @@
           "branch": "implementation/live-initial-native",
           "owner": "successor_restart_design",
           "head": "d1bf847df2ecf077686ddf274655e59dba803469",
-          "state": "saved-integrated-helper-resumed-in-separate-scope",
-          "scope": "Native candidate/live writer and zero-source admission; e1b555e test module wiring and d1bf847 zero Event allocation correction. Integrated canonically as017dbef/761cc6d/47e9a14; not compiled or qualified."
+          "state": "clean-read-only-independent-review",
+          "scope": "Native source integrated; exact build audited, finite oracle review in progress"
         },
         {
           "root": ".research/live-initial-control-20261013",
           "branch": "implementation/live-initial-control",
           "owner": "recovery_review",
-          "head": "4eac1544741b893645a32a74105e78276d7fdcdc",
-          "state": "saved-integrated-helper-resumed-in-separate-scope",
-          "scope": "Eight files: new activation adapter and additive0032, shared batch authority/renewal, exports/history visibility/catalog/schema test/manifest. Last target BEFORE UPDATE guards preserved before stop; final review and SQL execution pending."
+          "head": "355310834d2d84dbab80aeef9b27f97a9a5ce536",
+          "state": "clean-source-integrated",
+          "scope": "PG implementation and new finite connected harness integrated"
         },
         {
           "root": ".research/live-initial-tests-20261013",
           "branch": "qualification/live-initial-native",
           "owner": "cleanup_review",
-          "head": "90b56bc5014e0724ff225aaeca6a6d667ba6ea3c",
-          "state": "saved-integrated-helper-resumed-in-separate-scope",
-          "scope": "One1027-line independent native fixture file/six groups; synthetic PG authority only. Depends on native module wiring and Event counter fix. Native tests NOT_RUN."
+          "head": "127a9377a9ddaab5063428eb8897e115775a6b1c",
+          "state": "clean-source-integrated",
+          "scope": "Native fixture and new independent finite capture oracle integrated"
         }
       ],
       "saved_root_wip": {
@@ -13107,8 +13107,119 @@
           "state": "stopped-retained",
           "inventory_changed": [],
           "free_bytes_after": 67719553024
+        },
+        {
+          "source": "c640b2f5264e3be8b050bb0f90302b852b4efbc0",
+          "tree": "c53bf7784c3e92094fa3614aaa7e6b21daf8a645",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-c640b2f",
+          "status": "PASS_LIVE_INITIAL_BUILD_ONLY",
+          "wrapper": 49519,
+          "exit_code": 0,
+          "started_at": "2026-10-13T06:39:30.136656+00:00",
+          "finished_at": "2026-10-13T06:41:38.052870+00:00",
+          "checks": 14,
+          "tests": 135,
+          "native_tests": 81,
+          "codec_tests": 13,
+          "schema_entrypoint_tests": 41,
+          "test_counts": {
+            "source-closure": 3,
+            "producer-closing": 9,
+            "producer-recovery": 11,
+            "initial-handoff": 7,
+            "initial-reconstruction": 20,
+            "bootstrap": 5,
+            "dictionary-append": 13,
+            "event-replay": 7,
+            "certification": 6,
+            "rocks_manifest": 4,
+            "rocks_keys": 9
+          },
+          "binary_sha256": "fe1ec816d89d2a16ebf27c38b82d8babcf4a8426bc47cca7b208379204901e97",
+          "probe_sha256": "4208240edb8f156b7e3afbe5af75d18e8feb4b0f2bfcab7bc8b96305ae58b4a4",
+          "test_executables_sha256": {
+            "source_closure_components": "c1f6a5ba62b52f03e9f06c18b843529813031114f0a7c46ddb6cbbdabc3d1860",
+            "rocks_manifest": "9a6e6f1f434491c3cccc34b2bc1d455fee6e6422c4d6988b774c2330e0c920d0",
+            "rocks_keys": "bf076abea2133c8b1b1bde7890a0d843c3254d93790d2acebfc0831816bdf2f1"
+          },
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "native_toolchain": {
+            "os": "Linux",
+            "architecture": "x86_64",
+            "discovery": "llvm-config",
+            "environment": {
+              "CC": "/usr/lib/llvm-14/bin/clang",
+              "CXX": "/usr/lib/llvm-14/bin/clang++",
+              "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+              "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+              "CARGO_BUILD_JOBS": "2",
+              "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+            },
+            "tools": {
+              "CC": {
+                "path": "/usr/lib/llvm-14/bin/clang",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "CXX": {
+                "path": "/usr/lib/llvm-14/bin/clang++",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "AR": {
+                "path": "/usr/lib/llvm-14/bin/llvm-ar",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+                "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+                "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+              },
+              "LIBCLANG_PATH": {
+                "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+                "version": "Debian clang version 14.0.6"
+              },
+              "discovery": {
+                "path": "/usr/lib/llvm-14/bin/llvm-config",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+                "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+                "version": "14.0.6"
+              }
+            },
+            "sdk": null
+          },
+          "source_manifest_sha256": "73aacc97b7622536fb532f17e98762056907d1c61a682e7abf51d331e8530ef3",
+          "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+          "build_receipt_sha256": "53583d78550d1ae32d89761bb06d4afa935ce801763e4b5f3ce398df0a09f653",
+          "resources_sha256": "e7f11961ab5d03949da5048db0527ac68a07a8a957ad61dcc1ba3dbbc45a3be0",
+          "resources": [
+            {
+              "name": "fetch",
+              "id": "45efb457c1821151ec0f7c95f222718b7f53f724fc4acdecb59212474edfdc90"
+            },
+            {
+              "name": "native",
+              "id": "17efd4f7789e25eda777df18ef83b34ddf34468e92d9d58d4b6e6ab628b3343c"
+            }
+          ],
+          "state": "stopped-retained",
+          "inventory_changed": [],
+          "free_bytes_after": 67475910656,
+          "audit": "Independent AI read-only review:1763 exact Git/checkout/export/archive files; five actual ELFs;1225 unchanged preflight projections; only two owned additions stopped0/PID0/noOOM. Six unrelated services unchanged. Prior failed7337 five and original cache four executables preserved. Schema/entrypoint executed logs retained; their successful ELFs not separately retained.",
+          "scope": "Build only; no connected PostgreSQL activation evidence"
         }
-      ]
+      ],
+      "finite_fixture": {
+        "harness_source": "355310834d2d84dbab80aeef9b27f97a9a5ce536",
+        "harness_integrated": "1144308",
+        "oracle_source": "127a9377a9ddaab5063428eb8897e115775a6b1c",
+        "oracle_integrated": "facd4dc",
+        "checks": "AST/import/API/diff-check PASS; five artificial transcripts48snapshots/116 rehashed perturbations; root complete-source review",
+        "review": "Independent AI review: both harness terminal-preservation findings corrected/closed; final complete oracle/reducer/probe grammar review found no concrete blocker. Root complete-source review also completed.",
+        "engine": "NOT_RUN"
+      }
     }
   }
 }

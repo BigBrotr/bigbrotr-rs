@@ -1,10 +1,10 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T06:31:28Z on Tux after the owner explicitly resumed the goal.
+Observed 2026-10-13T06:52:00Z on Tux after the owner explicitly resumed the goal.
 The runtime Goal is ACTIVE; the full selected product remains INCOMPLETE.
-Canonical b221ee3 is clean and freshly reconciled with its private remote before
-these updates. Retained788f971 evidence rehash matches its recorded result.
-The saved source review is resumed in the existing three helper worktrees.
+Canonical c640b2f was privately pushed and verified by ls-remote. Its exact build
+passed and was independently audited; finite engine execution remains NOT_RUN.
+Retained788f971 evidence rehash matches its recorded result.
 Navigation, not another plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -17,19 +17,17 @@ Cargo packages, legacy reference repositories and unrelated workloads remain
 protected. No public release, repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Observed implementation HEAD624c0b6 includes the native candidate, PG41c06a7
-(as7ab514e), native fixtures90b56bc (asc6a4a2a) and reviewed parent-mutation fix4eac154
-(as624c0b6). Root probe/profile source remainsfa0fa62. Paused checkpointb221ee3 was
-clean and freshly fetched ahead0/behind0 before this resumption. Main is unchanged;
-no merge/rebase/cherry-pick is pending. Root's new bindings dispatch is still dirty
-and excluded from the first isolated build; its harness/oracle are being written
-in the existing separate helper worktrees. No source reset or cleanup occurred.
+Observed HEADfacd4dc integrates finite harness3553108 as1144308 and independent
+oracle127a937 asfacd4dc. Native/PG implementation, parent-mutation correction and
+root probe are compiled atc640b2f. The root-owned bindings dispatch and this evidence
+update are pending the next coherent commit. Private remote rootc640b2f and PG4eac154
+were verified; main is unchanged. No merge/rebase/cherry-pick is pending.
 
 | Worktree | Owner | Current responsibility |
 |---|---|---|
-| `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; completed independent SQL/test review, reviewing build profile |
-| `.research/live-initial-control-20261013` | recovery_review | 4eac154; PG integrated, new finite connected harness only |
-| `.research/live-initial-tests-20261013` | cleanup_review | 90b56bc; fixtures integrated, new independent connected oracle only |
+| `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; independent build audit completed; harness/oracle review completed |
+| `.research/live-initial-control-20261013` | recovery_review | 3553108; PG and finite harness integrated; clean |
+| `.research/live-initial-tests-20261013` | cleanup_review | 127a937; native fixtures and independent oracle integrated; clean |
 
 All earlier helper worktrees, ignored data and external laboratories remain retained.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
@@ -264,14 +262,14 @@ cleanup/missing/unrelated arrays empty. This qualified slice is privately pushed
 
 The resumed slice implements the selected
 [live1→2 activation contract](../reference/ingest-registration.md#live-initial-successor-activation-under-implementation).
-Source is saved but unqualified:
+Native compilation/tests are qualified below; connected activation is not yet qualified:
 
 - Native candidate ownership, private live writer, source-zero/first-append behavior,
   epoch1-only bootstrap selection and zero Event allocation refusal are integrated.
   Existing general recovery remains epoch1-only. Module wiring references the test
   file integrated from90b56bc.
 - PostgreSQL41c06a7 saves the399-line activation adapter, shared batch authority,
-  live renewal and additive581-line0032 with catalog/schema/manifest updates.
+  live renewal and additive0032 with catalog/schema/manifest updates.
   Applied earlier migration files are unchanged. The activation transaction is
   server-assigned xid8; request/input/checkpoint guards address the independently
   found `SET CONSTRAINTS ... IMMEDIATE` bypass of a deferred-only check. Five final
@@ -279,7 +277,7 @@ Source is saved but unqualified:
   final independent review is complete. Correction4eac154 also freezes the activating
   Control owner/role and relevant dataset heads in that transaction. It does not
   promise arbitrary SQL COMMIT-time wall-clock validity: typed pre/post-COMMIT
-  deadlines and final current-authority checks still govern writer delivery. No SQL has run.
+  deadlines and final current-authority checks still govern writer delivery. Migration32 has not run against PostgreSQL yet.
 - Native tests90b56bc contain six groups with independently encoded expected bytes,
   real signed fixtures, exact first append/retry/conflict, no-fact request1 then
   source1, reopened/foreign/stale candidate refusal, malformed/zero allocation and
@@ -290,17 +288,18 @@ Source is saved but unqualified:
   admission/resend and exact grants. Independent review found an undersized
   dictionary grant; source was corrected. Its imported event has no observation,
   so it cannot qualify real network provenance-off effects. The connected harness
-  and independent capture oracle are not yet implemented.
+  and independent capture oracle are now integrated as1144308/facd4dc.
 
-Completed checks are source review, reported scoped Rust formatting and
-`git diff --check`. The native author reviewed full affected native owners and the
-main PG adapter/kernel/SQL draft; root reviewed the complete native diff, candidate,
-PG draft and finite probe boundaries, but final integrated review is incomplete.
-The final target/Control/policy mutation guards and B_note counterfactual have now
-received independent source review without another concrete blocker. Python build
-profiles pass AST parsing. Compilation, Clippy, native tests, migration execution,
-raw SQL acceptance, COMMIT-loss execution and connected qualification remain
-NOT_RUN. Earlier qualified results do not qualify these new sources.
+Completed checks include integrated source review, scoped formatting, AST parsing,
+diff-check and the exact native build below. Final target/Control/policy mutation
+fences and B_note counterfactual received independent AI source review. Root read
+both complete connected helpers. Two evidence-preservation findings in the harness
+were corrected: known terminal process results capture SQL/input/native evidence
+before wire or exact-tuple classification can fail; unknown outcomes never reopen
+a possibly owned store. Five artificial oracle transcripts pass48 snapshots/116
+rehashed perturbations; those are model checks, not actual engine evidence.
+Independent final oracle review reconciled the complete transition reducers and
+actual probe grammar without another concrete blocker.
 
 First exact build7337ac4 failed in a test fixture: compilation and41 entrypoint/
 schema tests plus3sourceclosure/9closing/11recovery/7handoff passed; reconstruction
@@ -312,12 +311,23 @@ joined1; containers stopped/noOOM and no prior inventory projection changed.
 Five actual executables were copied to that run's `out/failed-artifacts/` before
 cache reuse; all raw logs/source remain. No failed outcome was relabeled.
 
-Next action: rerun the exact isolated `ingest-live` build with Rust1.98.1/Clang14 and
-the existing exclusive cache lock, retaining executables outside mutable caches.
-The complete source and input identities must be recorded by the existing runner.
-Fix concrete failures and preserve each failed run. Independent connected harness
-and oracle are being prepared in parallel for five finite modes: zero, normal,
-off and actual activation COMMIT13 loss before/after completion. Raw transaction
+Corrected exact buildc640b2f5264e3be8b050bb0f90302b852b4efbc0 is
+PASS_LIVE_INITIAL_BUILD_ONLY, finished2026-10-13T06:41:38.052870Z. All14 checks pass:
+compilation, Clippy and135 tests (81 affected native,13 codecs,41 schema/entrypoint),
+including the six new live-writer groups. Wrapper49519 joined0. Independent AI audit
+verified1763 files across Git/export/archive/manifest, five retained ELF executables,
+actual Rust1.98.1/Clang14 and1225 unchanged preflight resource projections. Both
+owned containers exited0/PID0/noOOM; six unrelated services remain unchanged.
+The five failed7337 and four original-cache executables are still exact.
+Build receipt SHA53583d78550d1ae32d89761bb06d4afa935ce801763e4b5f3ce398df0a09f653.
+Successful schema/entrypoint test executables are not separately retained; their
+actual execution is captured in logs. Current five artifacts are outside caches.
+
+Next action: commit the reviewed finite harness/oracle/bindings with these records,
+then run the isolated `--ingest-live` wave on that exact source while reusing the
+unchanged compiledc640b2f artifacts. Root remains sole engine executor. Five new
+f12 clones exercise zero/normal/off and actual activation COMMIT13 loss before/after
+completion. Preserve every failure and external final capture. Raw transaction
 IMMEDIATE discriminators, activated-zero old-loader refusal, renewal and real
 network provenance-off qualification remain explicit subsequent obligations.
 
@@ -350,13 +360,11 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Fresh pause-time process/Docker inspection around
-2026-10-13T06:13:49Z found no build, qualification or probe process and no running
-BigBrotr container. The retained7e820b9 fetch/native containers, borrowed PostgreSQL
-and788f971 client were freshly inspected: stopped/PID0/noOOM, exit0/0/0/143.
-Prior build84756 and engine46588 wrappers were already joined0. Those are pause-time observations. Helpers have resumed source work;
-no new build/engine background task was allocated before this checkpoint. Six unrelated services remain
-running and were not changed. Codex session/daemon processes are session infrastructure.
+and dated observations. Buildc640b2f terminal resources were freshly audited after
+06:41Z: both owned containers stopped0/PID0/noOOM; wrapper49519 joined0. No connected
+engine was allocated before this checkpoint. Borrowed PostgreSQL remains stopped
+since788f971. Six unrelated services remain running with unchanged lifecycle/mount
+projections. Helpers completed source work and independent review.
 
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
 external laboratories under `/home/tux/bigbrotr-implementation-20260917/`, retained
@@ -367,7 +375,7 @@ Git cleanliness for permission to delete ignored data. The retained788f971 resul
 hash matched at the earlier05:55 resumption inspection; no pause-time qualification
 rerun is claimed.
 
-Free space was67,813,384,192 bytes at this resumption (about63.2GiB); remeasure before
+Free space was67,475,910,656 bytes after the corrected build (about62.8GiB); remeasure before
 allocation. Small engine fixtures require2GiB; native builds12GiB. The larger
 export wave still requires64GiB+577MiB, currently unavailable. Never lower that
 reserve to force a run. No large export is allocated by this slice.
