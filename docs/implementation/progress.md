@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T10:44Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T10:57Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,20 +14,19 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-482553e (full revision in Git). Last private pushed checkpoint1efc7db/fixturef9e751f;
-main54ad09d unchanged. No merge/rebase/cherry-pick pending. Additive34 fix integrated
-f6f8680, source-zero probe535b3e9, first-wave34/profile/docs2a018ea. Fault driver6b03f24
-integrateddbf035b; independent oraclea1a5379 integrated482553e. Root owns pendingfault
-CLI dispatch, diagnostic backend-failure capture, docs/evidence/inventory updates.
+4da99bc (full revision in Git). Private push db6dd37 and six source branches verified
+by exact remote refs; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
+Sourcezero fixtureb6345a9 integrated4da99bc. Root owns pending sourcezero dispatch
+and fault qualification evidence/checkpoint updates; no product changes since2a018ea.
 
-Retained worktrees and all previous branches/artifacts remain preserved. Root alone
-executes builds/engines/integration. Current agent work:
-
-| Worktree under `.research/` | Owner | Branch / state |
-|---|---|---|
-| activated-recovery-native-20261013 | successor_restart_design | qualification/activated-recovery-source-zero: clean2f0268a, narrow root fault review |
-| activated-recovery-postgres-20261013 | recovery_review | qualification/activated-recovery-fault-oracle: cleana1a5379; first8 artifact/custody audit |
-| activated-recovery-qualification-20261013 | cleanup_review | qualification/activated-recovery-source-zero-harness from2a018ea; two new fixture files in progress |
+Retain every worktree and previous branch/artifact. Root alone runs builds/engines
+and integrates. Three bounded agents now prepare the activated-refusal wave in
+separate worktrees: native fixture probe, Python driver, independent Python oracle.
+Their current branches are `qualification/activated-recovery-refusal-probe`,
+`qualification/activated-recovery-refusals`, and
+`qualification/activated-recovery-refusals-oracle`; verify Git before integration.
+Sourcezero source review closed with one post-exit-clock preservation fix. Pure
+checks9seed snapshots+4installed observations/34controls pass, actualengine NOT_RUN.
 
 Current authority: `implementation_activated_initial_recovery_20261013` lab inventory
 and `activated_recovery_20261013` in existing recovery evidence.
@@ -100,14 +99,26 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit current fault dispatcher/diagnostic correction and qualified first8 evidence.
-Then run exact-source `--ingest-activated-faults` with retained2a018ea artifacts:
-four off-seed clones, C2closing/C6missing-outcome2 COMMIT before/after, each followed
-by fresh direct configuration-only process. Expect eightCLI and full raw before/
-after state/wire/backend/custody. Source-derived ordinals are not actual wire proof.
-Root/independent AI review found one diagnostic preservation gap on failed backend
-absence; root now retains uncertain SQL/inputs and explicitly leaves native NOT_RUN.
-Normal finalSQL remains after backendabsence. No driver-failure telemetry invented.
+Commit the reviewed `--ingest-activated-zero` dispatch and fault qualification
+record. Run one exact-source engine with retained2a018ea CLI/probe: fresh retiredf12
+clone, actual finite Signature rejection giving issued1/source0, then installed
+configuration-only recovery first/retry. Expect53 native rows, sequence64 afterseed,
+65 afterfirstclosing and unchanged65 onretry; five exact inputs, full72SQL, actual
+joined processes/backend absence and preserved original. No installed import claim.
+
+Fault enginedb6dd37 PASS_INSTALLED_ACTIVATED_RECOVERY_COMMIT_LOSS: four C2closing/
+C6outcome2 before-forward/after-complete faults and four fresh direct CLI recoveries.
+Actual wire counters seen/forwarded/servercomplete/clientcomplete/faults are
+2/1/1/1/1,2/2/2/1/1,6/5/5/5/1,6/6/6/5/1. Failedcommands exit4 CommitUnknown,
+reapednonforced; native70/seq85 closing. Each freshrecovery performs no nativewrite.
+SQLclosebefore remainsopen, closeafter closing. C6before missingcopy gets Control10
+recorder; C6after durableunknowncopy preserves Control9 recorder/xmin. Full72SQL and
+sixinputs preserved, source2open. Root16observation/132control rawreplay52626 joined0
+PASS. Separate AI artifact/raw/custody audit PASS:1790exactsourcefiles,43ELFs,
+1251unchanged nonborrowed projections; oracle author performed custody audit, root
+independently replayed its semantics. No installed driver-result/poison telemetry.
+Root `/runs/ingest-activated-faults-engine-db6dd37`, ownerd8a197b1d40bad9264492d1fd0fc5a0a,
+resultSHAe10ca09839569974a358888778ce431036b6f19f91f70ec2a8edf6754e4ea34b.
 
 Corrected build2a018ea PASS: compile,46CLI/schema/migration tests,Clippy; native/model/
 protocol/resource/supervisor inputs unchanged from101native tests PASS atfaa1390.
@@ -123,7 +134,7 @@ Full72SQL and exact oldissuer/policy/recorder preserved; missingcopy gets freshr
 Off/on currentpolicy3 over historical2; oldIngest lease expired.33→34→34 migrations
 preserve oldrows/xmins/physicalidentities and exact function/grant catalogs. Source2
 remainsopen. Root raw16observation/124controls replay11415 joined0 PASS. Independent
-read-only artifact/custody audit pending. ResultSHAf47cc42496ec92663c3f194d0506a66704b0e0407d2b565311a4238332ae92fc.
+read-only artifact/custody audit PASS:1788exactfiles,43ELFs,1250unchanged projections. ResultSHAf47cc42496ec92663c3f194d0506a66704b0e0407d2b565311a4238332ae92fc.
 Engine root `/runs/ingest-activated-recovery-engine-2a018ea`, ownerf9dd5c58859957eeb5cdee61c8a8c2ff.
 
 First enginefaa1390 remains FAIL: oneoff CLI4 Control(Backend), native70/84 unchanged,
@@ -134,8 +145,8 @@ capture, PostgreSQL failure log, originalclone and container retained. Rootcusto
 1787files/38ELFs/70originalpaths/1247unrelated projections PASS; all originalseeds intact.
 
 Finite successor-live-rejected probe compile/Clippy PASS at2a018, actualengineNOT_RUN.
-Separate sourcezero fixture in progress: actual rejection issued1/source0 then installed
-first/retry. Corrupt/missing dependency/input, identity/handoff/foreignstream and heldnative
+Separate sourcezero fixture implemented/reviewed: actual rejection issued1/source0 then
+installed first/retry remains to execute. Corrupt/missing dependency/input, identity/handoff/foreignstream and heldnative
 refusals remain owed. Source2closure/retirement, repeatedlifetimes and Archive/Sync restart
 remain later obligations; no writer conversion, ACK/GC or fabricatedInitialRegistration.
 
@@ -146,10 +157,10 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-All wrappers terminal: latestbuild62285 joined0, buildaudit90054 joined0,
-engine44298 joined0, rootsemanticreplay11415 joined0. Prior failures remain retained.
-LatestPG/client terminal projections:0/143, stopped/PID0/noOOM. Independent read-only
-artifact audit ongoing; no current engine/build. Preserve all artifacts.
+All wrappers terminal: latest faultengine28333 joined0, rootsemanticreplay52626
+joined0; independent faultaudit complete. At10:51:29.787850Z PG/client0/143 stopped,
+PID0/noOOM;1251nonborrowed projections unchanged. Latest clientb9aeb3285de758939a465dc4ff4b6c100428e20b75b90cc982644426605eac24.
+No engine/build active. Preserve all artifacts and failures.
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
 - Retired f12: `ingest-recovery-engine-f12dbf0/bindings/retire_signed/store`, DB
@@ -166,14 +177,14 @@ External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen original
 
 Borrowed PG root `relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608,
 container7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec, PG16.15.
-Latest clienta4281964446e20e948ec0cd3a112d1b561c08f4cc6019bd31182ce800fb2c0f4.
+
 Six unrelated services remain protected: inspirehep-reindex db/mq/cache/es, ollama,
 tgdataset-mongo. Preserve every worktree, failure, clone, container, volume, input,
 executable and `.research` artifact. Private Git does not back up ignored laboratory
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space checked10:14Z:65,550,876,672bytes(about61.0GiB). Remeasure before allocation.
+Free space afterfaultengine10:51Z:62,803,623,936bytes(about58.5GiB). Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18

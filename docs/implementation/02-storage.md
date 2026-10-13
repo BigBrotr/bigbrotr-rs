@@ -305,8 +305,14 @@ One owner serializes exact identity decisions for each writable directory.
   window2, renewal and epoch2/missing-original/held-native refusals. Root replay
   checks10 intermediate+10 complete before/after observations and98 controls;
   affected signed3/initial Sync-window2 regressions pass on build787e1fe. The first
-  catalog/release-oracle failure2032894 remains retained. Next is positive recovery
-  of an activated epoch2 producer under fresh Control via explicit
+  catalog/release-oracle failure2032894 remains retained. Activated positive recovery
+  now passes eight actual config-only invocations at2a018ea: off/on first, retry and
+  missing-PG-copy repair; zero first/retry. Root124controls and artifact audit pass.
+  Additive34 preserves applied33 and corrects historical Control retirement checks.
+  Faultdb6dd37 passes four actual C2closing/C6outcome before/after COMMIT losses and
+  four fresh recoveries,16complete observations/132controls. Native closing remains
+  durable and existing recorder attribution immutable. Sourcezero and corrupt/held
+  refusal qualification remain. Recovery uses fresh Control via explicit
   `ingest recover --activated-successor`, including its closing barrier under the
   [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
   without writer adoption; source2 closure and repeated lifetimes remain

@@ -1292,7 +1292,7 @@
     "followups": {
       "populated_upgrade": "PASS bb_owner_upgrade; preserves all25 old relations with additive NULL audit fields, four new empty tables, stable initialization receipt and downgrade refusal",
       "engine_crash": "PASS actual PostgreSQL SIGKILL/137, restart and all10 complete database dumps unchanged; not host power loss",
-      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562\u20130.0930477711s; not mixed workload or cgroup peak",
+      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562–0.0930477711s; not mixed workload or cgroup peak",
       "credential_oracle": "PASS six observed native password hashes against pinned PHC C oracle on Mac"
     },
     "native_evidence": "docs/implementation/evidence/p08-owner-enrollment-native-20260918.json",
@@ -43256,7 +43256,7 @@
           "exit_code": 0,
           "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
           "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
-          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
+          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal→Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
         }
       ],
       "next": "Completed evidence committed1efc7db and private root/fixture pushes verified. Activated recovery contract1a7fd52 and distinct native/PG/qualification worktrees selected.",
@@ -43609,8 +43609,8 @@
     }
   },
   "implementation_activated_initial_recovery_20261013": {
-    "status": "PASS_FIRST_EIGHT_INSTALLED_RECOVERY_FAULTS_PENDING",
-    "observed_at": "2026-10-13T10:44:25.948065+00:00",
+    "status": "PASS_POSITIVE_AND_COMMIT_LOSS_SOURCE_ZERO_PENDING",
+    "observed_at": "2026-10-13T10:55:11.861866+00:00",
     "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
@@ -43649,11 +43649,11 @@
         "previous_branch": "qualification/activated-recovery-faults"
       }
     ],
-    "root_work": "First8 qualified; current fault dispatcher/backend-failure diagnostics and checkpoint/evidence/docs pendingcommit. Sourcezero harness in separateworktree.",
-    "resources": "All wrappers terminal; last enginePG0/client143 stopped/PID0/noOOM.43 retainedELFs outside mutablecache. Independent read-only custody audit ongoing; no build/engine active.",
-    "checks": "Corrected first8 actualPASS; rootreplay124controlsPASS; upcomingfault/sourcezero enginesNOT_RUN",
-    "next": "Commit root --ingest-activated-faults dispatch and diagnostic capture fix; exactengine with unchanged retained2a018 CLI/probe, fourC2/C6 before/after cases and fresh config-only recovery",
-    "free_bytes_observed": 63012962304,
+    "root_work": "Sourcezero fixture4da99bc integrated; rootdispatcher/checkpoint/evidence pendingcommit, thenactualengine",
+    "resources": "All wrappers terminal, latestfault28333 joined0/replay52626 joined0. PG0/client143 stopped/PID0/noOOM at10:51:29.787850Z;1251nonborrowed projections preserved;43retainedELFs. Noengine/build active.",
+    "checks": "First8 actualPASS/root124controls/auditPASS; fault8CLI actualPASS/root132controls/auditPASS. Sourcezero actualNOT_RUN",
+    "next": "Exact committed --ingest-activated-zero run with retained2a018ea CLI/probe",
+    "free_bytes_observed": 62794448896,
     "builds": [
       {
         "source": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
@@ -44377,15 +44377,539 @@
           "complete_observations": 16,
           "controls": 124
         },
-        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33\u219234\u219234 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit pending.",
+        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33→34→34 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
         "not_run": [
           "issued-positive source-zero",
           "corrupt/missing input and dependency/identity/handoff/foreignstream refusals",
           "held native refusal",
           "closing/outcome COMMITloss and fresh recovery",
           "source2closure/retirement/repeatedlifetimes",
-          "Archive/Syncrestart and fullM1\u2013M5"
-        ]
+          "Archive/Syncrestart and fullM1–M5"
+        ],
+        "artifact_custody_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea/recovery-review-artifact-custody-20261013.json",
+          "sha256": "0d4a7b38f9bb68f38a020627908b83fd320130c5fd4fd5508d51966979f388e1",
+          "status": "PASS",
+          "source_files": 1788,
+          "retained_executables": 43,
+          "complete_observations": 16,
+          "unchanged_nonborrowed_containers": 1250,
+          "observed_at": "2026-10-13T10:49:02.821397+00:00",
+          "scope": "Independent AI artifact/raw binding/custody audit; semantic oracle controls independently replayed by root"
+        }
+      },
+      {
+        "source": "db6dd37d1dc1af5c6f5f29c5cf8006479aea5461",
+        "owner": "d8a197b1d40bad9264492d1fd0fc5a0a",
+        "status": "PASS_INSTALLED_ACTIVATED_RECOVERY_COMMIT_LOSS",
+        "started_at": "2026-10-13T10:50:14.682748+00:00",
+        "finished_at": "2026-10-13T10:51:01.701828+00:00",
+        "client": {
+          "id": "b9aeb3285de758939a465dc4ff4b6c100428e20b75b90cc982644426605eac24",
+          "name": "bigbrotr-acquisition-binding-db6dd37"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_db6dd37_installed_activated_close_before",
+          "bb_scope_bind_db6dd37_installed_activated_close_after",
+          "bb_scope_bind_db6dd37_installed_activated_outcome_before",
+          "bb_scope_bind_db6dd37_installed_activated_outcome_after"
+        ],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:50:14.765742459Z",
+              "FinishedAt": "2026-10-13T10:51:00.870698396Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "b9aeb3285de758939a465dc4ff4b6c100428e20b75b90cc982644426605eac24",
+            "Name": "/bigbrotr-acquisition-binding-db6dd37",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T10:50:15.697106022Z",
+              "FinishedAt": "2026-10-13T10:50:59.403766619Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-installed-2a018ea/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-faults-engine-db6dd37/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "missing_owned": [],
+        "not_run": [
+          "driver-result or same-session poison telemetry",
+          "issued-positive source-zero, corrupt inputs/dependencies and held-native refusal",
+          "source2 closure/retirement, repeated lifetimes, Archive restart, ACK/GC and full M1",
+          "native syscall uncertainty/power loss, capacity/load/aged-state and arm64/release"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-faults-engine-db6dd37",
+        "wrapper": {
+          "session": 28333,
+          "joined_exit_code": 0
+        },
+        "result_sha256": "e10ca09839569974a358888778ce431036b6f19f91f70ec2a8edf6754e4ea34b",
+        "build_source": "2a018eaf0b113835339cc547ea3858036e3aa3fd",
+        "cases": [
+          {
+            "name": "installed-activated-close-before",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "installed-activated-close-before",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-close-before",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "sql_closing": false,
+                  "inserted_outcome": false,
+                  "recovered": false,
+                  "commit_number": 2,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "wrong-client-error-class"
+                  ],
+                  "count": 15
+                },
+                "verification_sha256": "e2bcf7865ff77db0b0fd76e6a45c0d7b73e919602c5517702d2527826b31d5f5"
+              },
+              {
+                "name": "installed-activated-close-before-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-close-before-recover",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": false,
+                  "recovered": true,
+                  "commit_number": 2,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "prior-active-control-not-excluded",
+                    "recovery-reuses-proxy-config"
+                  ],
+                  "count": 16
+                },
+                "verification_sha256": "bc07bf92c59582a44bd1e12130c9ada8d45bcabfd48e8ec72c1a2ceb20ae4715"
+              }
+            ]
+          },
+          {
+            "name": "installed-activated-close-after",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "installed-activated-close-after",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-close-after",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": false,
+                  "recovered": false,
+                  "commit_number": 2,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "wrong-client-error-class"
+                  ],
+                  "count": 15
+                },
+                "verification_sha256": "8f36482df03d1968311dfe38c1a0e9cfc4510a303815de7b1ceccb282a8e929f"
+              },
+              {
+                "name": "installed-activated-close-after-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-close-after-recover",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": false,
+                  "recovered": true,
+                  "commit_number": 2,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "prior-active-control-not-excluded",
+                    "recovery-reuses-proxy-config"
+                  ],
+                  "count": 16
+                },
+                "verification_sha256": "811171a88d5dd78244d81862158b0e9fb44b0006e44cc9bcf6266708d52335fb"
+              }
+            ]
+          },
+          {
+            "name": "installed-activated-outcome-before",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "installed-activated-outcome-before",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-outcome-before",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": false,
+                  "recovered": false,
+                  "commit_number": 6,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "rollback-invented-outcome-copy",
+                    "wrong-client-error-class"
+                  ],
+                  "count": 16
+                },
+                "verification_sha256": "1f8d98b3db0f2ba3a3e6a2c731aae0e432b02c2f50be9b0f2d9c80266fb14172"
+              },
+              {
+                "name": "installed-activated-outcome-before-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-outcome-before-recover",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": true,
+                  "recovered": true,
+                  "commit_number": 6,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "wrong-recovered-recorder",
+                    "rewritten-original-policy",
+                    "prior-active-control-not-excluded",
+                    "recovery-reuses-proxy-config"
+                  ],
+                  "count": 18
+                },
+                "verification_sha256": "7f3db4a9239e023674467e62030375ba57224c0469d3622bfaf5592c0a2caa2a"
+              }
+            ]
+          },
+          {
+            "name": "installed-activated-outcome-after",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "installed-activated-outcome-after",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-outcome-after",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 1,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": true,
+                  "recovered": false,
+                  "commit_number": 6,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "wrong-recovered-recorder",
+                    "rewritten-original-policy",
+                    "wrong-client-error-class"
+                  ],
+                  "count": 17
+                },
+                "verification_sha256": "fa3b31822d6f17e4709ddff2aac85fe7fd80c8871c21d3c76124f9bdf1fa7796"
+              },
+              {
+                "name": "installed-activated-outcome-after-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "installed-activated-outcome-after-recover",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "new_native_writes": 0,
+                  "source_closed": false,
+                  "sql_closing": true,
+                  "inserted_outcome": false,
+                  "recovered": true,
+                  "commit_number": 6,
+                  "ready": false
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "native-extra-write",
+                    "native-barrier-absent",
+                    "native-original-fact-corrupted",
+                    "old-input-corrupted",
+                    "activation-attribution-changed",
+                    "old-request-issuer-changed",
+                    "current-policy-regressed",
+                    "source-closure-invented",
+                    "original-outcome-row-version-changed",
+                    "wrong-sql-commit-boundary",
+                    "backend-still-live",
+                    "process-not-reaped",
+                    "forced-proxy-cleanup",
+                    "coherent-client-commit-delivery",
+                    "wrong-recovered-recorder",
+                    "rewritten-original-policy",
+                    "durable-unknown-recorder-adopted-by-recovery",
+                    "prior-active-control-not-excluded",
+                    "recovery-reuses-proxy-config"
+                  ],
+                  "count": 19
+                },
+                "verification_sha256": "3602b191d9f73436e6e2274828d67affa10e9a81375783a7f9d5b2d286561b13"
+              }
+            ]
+          }
+        ],
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "inputs": true,
+          "contents": true,
+          "catalog": true,
+          "client": true,
+          "artifacts": true
+        },
+        "independent_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-faults-engine-db6dd37/root-independent-replay.json",
+          "sha256": "23c09fcf873d4f4421bf8d1a232809e9118f603b7b59ef9456dd7f075c7615a1",
+          "wrapper": {
+            "session": 52626,
+            "joined_exit_code": 0
+          },
+          "status": "PASS_ROOT_INDEPENDENT_ACTUAL_REPLAY",
+          "complete_observations": 16,
+          "controls": 132
+        },
+        "artifact_custody_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-faults-engine-db6dd37/recovery-review-fault-artifact-custody-20261013.json",
+          "sha256": "e08fba7a814df5415e511e671e6326f3ba2fe80f8f972e11b0b516ef1285c0c8",
+          "status": "PASS",
+          "source_files": 1790,
+          "retained_executables": 43,
+          "unchanged_nonborrowed_containers": 1251,
+          "observed_at": "2026-10-13T10:51:29.787850+00:00",
+          "scope": "AI oracle author audits artifact/raw binding/custody, not a second independent semantic oracle"
+        },
+        "interpretation": "Four actual installed C2 closing/C6 outcome2 COMMIT before/after loss cases and four direct fresh-process recoveries. Wire seen/forwarded/server-complete/client-complete/fault vectors2,1,1,1,1 /2,2,2,1,1 /6,5,5,5,1 /6,6,6,5,1. Firstfailed native70/85 closing, recovery no nativewrites. SQLclosebefore remainsopen; closeafter remainsclosing. Outcome2 missing beforeforward is copied by freshControl10; completedunknown copy retains failedControl9 recorder/xmin. Full72SQL/sixinputs preserved, exactbackends absent, everyactualprocess joinednonforced. No installed driverresult/poison telemetry claim."
       }
     ],
     "fault_qualification": {
@@ -44393,10 +44917,20 @@
       "harness_integrated": "dbf035b",
       "oracle_source": "a1a5379b01d33e13062bb81c205348d9b3059ad1",
       "oracle_integrated": "482553e",
-      "status": "IMPLEMENTED_NOT_QUALIFIED",
+      "status": "PASS_ACTUAL_INSTALLED_COMMIT_LOSS",
       "pure_checks": "Harness10transport/capture mocks; oracle8artificialcontexts/132controls PASS; no actual engine evidence",
       "review": "Root complete286lineharness/358lineoracle and native reviewer complete driver/source dependencies read. Preserve uncertain SQL/input diagnostic captures on backend absence failure; native remains NOT_RUN on that path. Root applied correction. No installed driver-failure/poison telemetry invented.",
-      "next": "Commit root --ingest-activated-faults dispatch and diagnostic capture fix; exactengine with unchanged retained2a018 CLI/probe, fourC2/C6 before/after cases and fresh config-only recovery"
+      "next": "Qualified selected four loss boundaries; native power-loss and driver-result telemetry remain outside this evidence",
+      "engine_source": "db6dd37d1dc1af5c6f5f29c5cf8006479aea5461",
+      "engine_result_sha256": "e10ca09839569974a358888778ce431036b6f19f91f70ec2a8edf6754e4ea34b"
+    },
+    "source_zero_fixture": {
+      "source": "b6345a9efa691e8dd72d377442905e811199cda2",
+      "integrated": "4da99bc",
+      "status": "IMPLEMENTED_NOT_QUALIFIED",
+      "scope": "One real finite Signature rejection issued1/source0 then two installed first/retry CLI; no installed import claim",
+      "checks": "Root and independent AI full source review closed; post-exit clock capture edge fixed. Pure9seed snapshots+4installed observations/34controls PASS. Actual engine NOT_RUN",
+      "next": "Exact committed --ingest-activated-zero run with retained2a018ea CLI/probe"
     }
   }
 }
