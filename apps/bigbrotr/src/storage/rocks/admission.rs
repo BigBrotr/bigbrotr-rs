@@ -912,11 +912,9 @@ impl IngestStore {
                 dictionary_kind: DictionaryKind::Event,
                 allocation_domain: domain,
             };
-            let high = match self.admission_value(allocation, 10, writer.reads)? {
-                None => 0,
-                Some(v) if v.len() == 10 && v[..2] == [1, 3] => number(&v[2..])?,
-                _ => return Err(AdmissionError::StateMismatch),
-            };
+            let high = self
+                .dictionary_counter(allocation, writer.reads)?
+                .unwrap_or(0);
             let reference = QualifiedRef {
                 dataset_id,
                 dictionary_kind: DictionaryKind::Event,
