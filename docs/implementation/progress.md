@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:14Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:23Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,12 +14,12 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-7c67736a44d81c1cb8d24c32efe19d4f0ceb0204. Lastverified privatepush939cf13 plusfirstwave380e57d/fault5b6b176
-sourcebranches; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
-Root pendingcompileprofile/evidence/checkpoint. Nativee1f03a6 integrated7c67736:
-new501linefiniteAlreadyDurable probe andminimaldispatch only, productunchanged.
-IndependentPythonseed/sourceclosefixture in separateworktree; PGagent auditsfault
-custody then ownsjob/closurelockorders. Root alone integrates/builds/executes.
+f7a10c351231656eb4f3c7fda26d4636d36de982. Lastverifiedprivatepush939cf13 plusfirstwave/
+faultsourcebranches; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
+Root owns currentevidence/docs/checkpoint and uncommitted nextAlreadyDurabledispatcher.
+Nativeprobe e1f03a6 integrated7c67736, exactbuildf7PASS. SeparatePythonAlreadyDurable
+fixture and job/closurelockorder worktrees remain inprogress. Root alone integrates,
+builds and executes; preserve all ignored/external artifacts andoriginals.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -93,13 +93,25 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit current compileprofile/evidence, then run exact-Git `ingest-activated-durable`
-compile+Clippy. Reuse unchanged91producttests from9dbc after verifyingonlytwoexample
-files+docs/experiments changed. Preserve all57ELFs. Finiteprobe reconstructs old
-attribution from exactf12inputs3/4, actualtypednewlogin+queuedjob/private7447source,
-real finite WebSocket andrequest1 AlreadyDurable witholddeps3..12/source2zero.
-It leaves jobqueued/revision2 andsessionunrevoked: no workflowcompletion claim.
-IndependentPythonfixture preparesonefreshf12clone+finite seed+twoinstalledclose/retry.
+Finish complete source review/independent expected states for oneAlreadyDurable
+finite seed plus twoinstalledsourceclosure invocations; integrate/commit newPython
+fixture and rootdispatcher, then run exactengine withf7artifacts. Author is assembling
+newdriver/oracle; no engine for thiscaseyet. Two job/closurelockorderfixtures proceed
+separately withallproducttriggers andexactPID/startwaitrelations. Minimalremaining
+newsource refusals: actualunissuedreservedtail, terminalcopybyteconflict andretained
+nativefacttail pasttruncatedprefix. Nativeomission/duplicate/order counterexamples
+and earlierunchangedhelpercorruption evidence are reused, not anotherwholecampaign.
+
+GenuineAlreadyDurable probe buildf7a10c3 PASS compile+Clippy onRust1.98.1/Clang14.
+Root `/runs/ingest-activated-durable-f7a10c3`, ownerc4e82f9bfd349bea1b80b13a0bbaea63,
+31588joined0,12:15:10–12:16:45Z. ReceiptSHA
+7954e8c8d4df4ecf5eb15423f92177e79e26a3c2572fcb8b204be759d4681a40.
+Rootaudit72470joined0:1804exactGit/export/archivefiles,59retainedELFs,1263unchanged
+priorcontainers plus2ownedterminal0. Exactcompiledproductinputsunchanged9dbc;
+onlytwoexamplefiles+docs/experiments differ, so91native/entrytests not repeated.
+Finiteprobe usesexactf12inputs3/4, actualtypednewlogin/queuedjob/private7447source,
+realWebSocket andrequest1 AlreadyDurable; expectedolddeps3..12/source2zero. Leaves
+jobqueued/revision2/sessionunrevoked; no workflowcompletionclaim.
 
 Finalsourcefaultengine939cf13 PASS4CLI on2freshclones: C8beforeforward counters
 8/7/7/7/1,afterservercomplete8/8/8/7/1. BothfailedCLI4CommitUnknown thenfreshCLI0.
@@ -110,8 +122,10 @@ and88adversarialcontrols rawwire/SQL/native/processreplayPASS, wrapper14178joine
 Root `/runs/ingest-activated-source-faults-engine-939cf13`, owner924cf5c3a409754cf88bc7556bb3e5ea,
 wrapper19724joined0,12:10:04–12:10:41Z, resultSHA
 7ff76055fb37142fadfd2f0ed1b7fbfd2d857c6751391ab72932eed6fc348011.
-Separatefixtureauthorcustodyaudit inprogress afterfrozenDockerobservation12:11:57Z;
-1263projections. No newSQL/native/build donebyauditor. Job/closurelockorders and
+SeparatefixtureauthorcustodyauditPASS:1803engine/1798buildfiles,57ELFs,1261nonborrowed
+projections unchanged; PG0/client143 stopped/PID0/noOOM. Originaloff preserved.
+Firstaudithelper rawDockerprojection assumptionfailure retained; v2corrected without
+changingrun. Frozenobservation12:11:57Z contains1263projections. No newSQL/native/build donebyauditor. Job/closurelockorders and
 remainingconnectedprefix/tailrefusals stillowed.
 
 Firstwaveenginec7b2b3c PASS:13 actualCLI onfive freshclones, no newfinite seed.
@@ -241,10 +255,10 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-Latest faultengine19724/rootreplay14178 joined0; no engine/buildactive. Audit
-snapshot12:11:57Zfrozen1263containers; remainingauditoffline. Lastbuild9dbcPASS and
-failed5e57 retained with57verifiedELFs. All originals/failures/rawcaptures preserved.
-Nextbuildusesexclusive mutablecache onlyaftercommittingexactrevision.
+Latest build31588/rootaudit72470 joined0, allbuildcontainers stopped0/PID0/noOOM;
+59ELFs preserved outsideexclusivecache. Latestfaultengine19724/replay14178joined0;
+PG0/client143 stopped. No engine/build active at thischeckpoint. Threeagents edit
+separatefixtures/reviewonly; originalseed, failedbuild5e57 andallaudits preserved.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
@@ -269,7 +283,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space observed at9dbc completion11:55Z: 61,621,145,600 bytes. Remeasure before allocation.
+Free space observed atf7 completion12:16Z: 60,961,304,576 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18

@@ -432,8 +432,11 @@ and existing recovery evidence. The first installed wave passes 13 invocations:
 off/on closure and exact retry, empty and rejected-only prefixes, legacy recovery
 with its original grants, and missing-input or inconsistent terminal refusals.
 The on case uses an isolated privileged draining baseline; it does not qualify
-the transition into draining. Final-COMMIT loss, concurrent job bounds and a
-connected AlreadyDurable-only prefix remain separate pending scenarios.
+the transition into draining. Four further invocations exercise final-COMMIT loss
+before forwarding and after server completion, followed by fresh-process recovery;
+the earlier repaired outcome and any completed closure retain their original
+attribution. Concurrent job bounds and a connected AlreadyDurable-only prefix
+remain separate pending scenarios.
 
 ## Exact dependency source basis
 

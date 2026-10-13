@@ -45617,12 +45617,12 @@
     }
   },
   "implementation_activated_initial_source_closure_20261013": {
-    "status": "PASS_SELECTED_INSTALLED_SOURCE_CLOSURE_FIRST_WAVE_REMAINING_GATES_OPEN",
-    "observed_at": "2026-10-13T12:14:46.106561+00:00",
+    "status": "PASS_SOURCE_FIRST_WAVE_AND_FINAL_COMMIT_LOSS_REMAINING_GATES_OPEN",
+    "observed_at": "2026-10-13T12:23:15.991323+00:00",
     "base": "d26c88ac6b418f2a9908460e7e6326c9cd4d32f7",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
-    "resources": "Faultengine939PG/client terminal; previousbuilds retained57ELFs. AuditDocker snapshot frozen12:11:57Z,1263containers; noengine/build active.",
+    "resources": "Allwrappers terminal; latestbuild31588/audit72470 joined0.59ELFs preserved,1263priorprojections unchanged+2buildcontainers stopped0. Latestengine939PG/clientstopped; noactiveengine/build.",
     "worktrees": [
       {
         "owner": "successor_restart_design",
@@ -45635,19 +45635,19 @@
       {
         "owner": "recovery_review",
         "root": ".research/activated-recovery-postgres-20261013",
-        "branch": "qualification/activated-source-faults",
+        "branch": "qualification/activated-source-locks",
         "source": "f76dfd9029891a2ed93a5acb6ddc16b663fdadac",
         "integrated": "ceef83a",
-        "state": "new driver/oracle implementation; root complete source review, purechecks in progress; noengines"
+        "state": "two job-vs-source closure lockorder driver/oracle implementation; noSQL/engines"
       },
       {
         "owner": "cleanup_review",
         "root": ".research/activated-recovery-qualification-20261013",
-        "branch": "qualification/activated-source-already-durable",
-        "state": "independent genuineAlreadyDurable fixture design/implementation; noengines"
+        "branch": "qualification/activated-source-already-durable-harness",
+        "state": "new finiteAlreadyDurable seed/installedclose oracle anddriver inprogress; nativeauthor independentreview"
       }
     ],
-    "next": "Commit compileprofile/currentcheckpoint and run exact isolated genuineAlreadyDurable probe build; preserve57ELFs. IndependentPythonseed/sourceclosefixture progresses; jobclosurelockorders remainowed.",
+    "next": "Integrate reviewed genuineAlreadyDurable finite/installed fixture and rootdispatcher, run exact1finite+2CLI withf7 artifacts; two job/closure lockorder fixtures progress. Minimalremainingnewsource refusals need3cases only, nativeordering/sharedcorruption evidence reused.",
     "root_work": "CLI/buildprofile integrated5e57e63; root next-engine dispatcher stilluncommitted; fixture work remains isolated.",
     "failed_build": {
       "status": "FAIL",
@@ -46079,15 +46079,57 @@
         "operator_observations": 4,
         "controls": 88
       },
-      "custody_audit": "Separate fixture-author raw/artifact audit in progress; Docker snapshot frozen12:11:57Z,1263projections. No activeengine/build."
+      "custody_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-faults-engine-939cf13/recovery-review-source-fault-custody-20261013.json",
+        "sha256": "2e42976c0491959694d447d4172c51f485e4278c580e7946a36e266e63881d0d",
+        "engine_files": 1803,
+        "build_files": 1798,
+        "retained_elf_paths": 57,
+        "unchanged_nonborrowed_containers": 1261,
+        "scope": "Fixture-author raw/artifact/custody audit; root replay independently owns semantic expected states.8fullstate+4operatorcaptures,4CLI/wire/backend/configbinding; originalofffiles6inputs4frozenartifacts preserved.",
+        "corrections": "Firsthelper incorrectlycomparedrawDocker arrays tostandardprojection; v2usesestablishedinventoryprojection. Bothscripts/logs retained; no product/run change.",
+        "terminal": "PG0/client143 stoppedPID0 noOOM"
+      }
     },
     "already_durable_probe": {
       "source": "e1f03a6498a4997ff967a0bddf6afd9e784dd000",
       "integrated": "7c67736a44d81c1cb8d24c32efe19d4f0ceb0204",
-      "status": "IMPLEMENTED_REVIEWED_BUILD_AND_ENGINE_NOT_RUN",
+      "status": "BUILD_PASS_FINITE_AND_INSTALLED_ENGINE_NOT_RUN",
       "scope": "Genuine finite network resend of frozen f12event8a0096; newtypedlogin/jobclaim, existingprivate scope3/observer/clock/witness, currentpolicy1 andactualRelaySession. OneAlreadyDurable source2request with literalexpected olddeps3..12; no newdictionary/lineage/nativefabrication. Jobqueued/revision2/sessionunrevokedremainunresolved.",
       "review": "Root complete501linehelper anddispatch/callers read; independentfixtureauthorreview found queuedvsrunning wording corrected. Exacttungstenite0.29 emptyclose/masking/EOF sourcebasis and retainedparentgrant arithmetic checked. Formatting/diffPASS; actualcompile/enginepending.",
-      "profile": "ingest-activated-durable compile+Clippy only;91unchangedproducttests at9dbc reused after exact source diff check"
+      "profile": "ingest-activated-durable compile+Clippy only;91unchangedproducttests at9dbc reused after exact source diff check",
+      "build": {
+        "status": "PASS_ACTIVATED_DURABLE_PROBE_BUILD_ONLY",
+        "source": "f7a10c351231656eb4f3c7fda26d4636d36de982",
+        "tree": "9879d125635864a25d721d0018f3a0574f377578",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-f7a10c3",
+        "owner": "c4e82f9bfd349bea1b80b13a0bbaea63",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "4e9a5e26851a9ca92c22b0c3f8ddff06e2501ca485465b9a767d543b268548f9"
+          },
+          {
+            "name": "native",
+            "id": "40937078652c3c464b5b2e7cbf755c2cddfac0a1340f292527dc70d5dcadbffd"
+          }
+        ],
+        "started_at": "2026-10-13T12:15:10.474782+00:00",
+        "finished_at": "2026-10-13T12:16:45.183393+00:00",
+        "wrapper": "31588 joined0",
+        "checks": "Compile+Clippy PASS; unchanged91producttests reusedfrom9dbc after exact product-input diff verification. No finite engine yet.",
+        "receipt_sha256": "7954e8c8d4df4ecf5eb15423f92177e79e26a3c2572fcb8b204be759d4681a40",
+        "binary_sha256": "c42e2128a12d0363d0834f7e7b1a3d1829334e09023a255dcd3ff8215ad793dc",
+        "probe_sha256": "ff299a69a54f175bc6d925ce9dd99bda544433dfd6140957bc6010ec8cc65e9d",
+        "audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-f7a10c3/root-build-audit.json",
+          "sha256": "719b5f551e58669d105f00dbadae40f8574da1fd0636df0aa9724fe4caf0af22",
+          "wrapper": "72470 joined0",
+          "files": 1804,
+          "retained_elf_paths": 59,
+          "unchanged_prior_containers": 1263
+        }
+      }
     }
   }
 }
