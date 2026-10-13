@@ -529,6 +529,9 @@ fn activated_closing_checks_grants_authority_and_preserves_postwrite_barrier() {
 
 fn copy_directory(source: &Path, target: &Path) {
     std::fs::create_dir(target).unwrap();
+    // Native input reads require private directories, including the store root.
+    // Recreating them with the process umask is not an equivalent fixture copy.
+    std::fs::set_permissions(target, std::fs::metadata(source).unwrap().permissions()).unwrap();
     for entry in std::fs::read_dir(source).unwrap() {
         let entry = entry.unwrap();
         let to = target.join(entry.file_name());

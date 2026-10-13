@@ -265,6 +265,13 @@ fn activated_source_closure_binds_root_sequence_and_the_exact_closed_owner() {
     let clone = tempfile::TempDir::new().unwrap();
     let path = clone.path().join("db");
     copy_directory(&fixture.path(), &path);
+    for directory in [path.clone(), path.join("producer-inputs-v1")] {
+        assert_eq!(
+            std::fs::metadata(directory).unwrap().permissions().mode() & 0o777,
+            0o700
+        );
+    }
+    assert_eq!(inputs(&path), inputs(&fixture.path()));
     let mut recovery = fixture.reopen();
     let foreign_budget = ResourceBudget::new(
         ProcessEnvelope::new(
