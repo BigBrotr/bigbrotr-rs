@@ -6,7 +6,7 @@ use bigbrotr::storage::{
         InitialHistoryRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
         LiveInitialWriter,
     },
-    rocks::store::{AdmissionOutcome, PreparedEvent},
+    rocks::store::{AdmissionOutcome, PreparedEvent, RejectionReason},
 };
 use bigbrotr_model::{DatasetLineageDescriptor, EventIntent, SignedEvent};
 use sha2::{Digest, Sha256};
@@ -18,6 +18,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
     matches!(
         mode,
         "successor-live-zero"
+            | "successor-live-rejected"
             | "successor-live-guards"
             | "successor-live-normal"
             | "successor-live-off"
@@ -142,6 +143,9 @@ pub(super) async fn run(
     assert_eq!(writer.manifest().identity().owner_epoch.get(), 2);
     assert_eq!(writer.producer_slot_id(), spec.producer_slot_id);
     probe.snapshot("activated-zero").await;
+    if mode == "successor-live-rejected" {
+        reject(&probe, &mut owner, &mut writer, &spec).await;
+    }
     if refusals::is_renewal(mode) {
         refusals::renewal(&probe, (owner, driver), writer, &spec, backend, mode).await;
         drop(probe);
@@ -170,7 +174,7 @@ pub(super) async fn run(
             "commit_started":true,"error":null}));
         probe.snapshot("live-ingest-renewed").await;
     }
-    if mode != "successor-live-zero" {
+    if !matches!(mode, "successor-live-zero" | "successor-live-rejected") {
         admit(
             &probe,
             &mut owner,
@@ -276,16 +280,10 @@ async fn guards(probe: &Probe, owner: &mut ControlSession, prefix: &Path, manife
     probe.snapshot(clean).await;
 }
 
-async fn admit(
-    probe: &Probe,
-    owner: &mut ControlSession,
-    writer: &mut LiveInitialWriter,
-    previous: &InitialRegistration,
-    provenance: bool,
-) {
+fn public_scope(previous: &InitialRegistration) -> QualifiedRef {
     // These coordinates come from the frozen original installed fixture. They
     // are expected inputs, not inferred from the effects of this new operation.
-    let scope = QualifiedRef {
+    QualifiedRef {
         dataset_id: previous.dataset_id,
         dictionary_kind: DictionaryKind::VisibilityScope,
         allocation_domain: previous
@@ -295,7 +293,177 @@ async fn admit(
             .unwrap()
             .1,
         ordinal: Ordinal::new(3).unwrap(),
+    }
+}
+
+async fn reject(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    writer: &mut LiveInitialWriter,
+    previous: &InitialRegistration,
+) {
+    let (mut expected, sequence) = raw_state(&probe.path);
+    assert_eq!((expected.len(), sequence), (52, 62));
+    let inputs = probe.path.join("producer-inputs-v1");
+    assert_eq!(std::fs::read_dir(&inputs).unwrap().count(), 4);
+    let scope = public_scope(previous);
+    // This typed coordinate is deliberately not allocated. A rejected import
+    // never dereferences its lineage or produces facts/progress. This is a
+    // finite exact-input grant, not an installed import or acquisition job.
+    let lineage = QualifiedRef {
+        dictionary_kind: DictionaryKind::DatasetLineage,
+        allocation_domain: writer
+            .manifest()
+            .allocation_namespaces()
+            .domain(DictionaryKind::DatasetLineage)
+            .unwrap(),
+        ordinal: Ordinal::new(1).unwrap(),
+        ..scope
     };
+    let corpus = include_bytes!("../../../../experiments/identity-contract/signed-fixture.json");
+    let fixture: serde_json::Value = serde_json::from_slice(corpus).unwrap();
+    let mut event: SignedEvent =
+        serde_json::from_value(fixture["events"]["E_public"].clone()).unwrap();
+    // Frozen E_public_invalid_signature in signed-event-admission.json changes
+    // only signature byte0, 0x94 -> 0x95. The signed body and event ID stay exact.
+    event.sig = "9544d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180"
+        .parse()
+        .unwrap();
+    let request = ProducerRequestId {
+        producer_slot_id: writer.producer_slot_id(),
+        producer_epoch: ProducerEpoch::new(2).unwrap(),
+        request_sequence: RequestSequence::new(1).unwrap(),
+    };
+    let intent = EventIntent::import(1, scope, event.clone(), lineage).unwrap();
+    let preimage = intent.encode_request_preimage(request, 8192).unwrap();
+    let digest = intent.request_digest(request);
+    emit(
+        serde_json::json!({"event":"live-rejected-input","request":1,
+        "fixture":"E_public_invalid_signature","event_id":event.id.to_string(),
+        "supplied_signature":event.sig.to_string(),"preimage":hex(&preimage),
+        "request_digest":digest.to_string(),"provenance":false}),
+    );
+    let prepared =
+        PreparedEvent::new(request, intent, 256 * 1024, grant(&probe.budget, MIB, 0)).unwrap();
+    assert!(prepared.verified_event().is_none());
+    let limits = AdmissionLimits {
+        max_outstanding_requests: u64::from(writer.outstanding_request_limit()),
+        max_dependencies: 256,
+        ..AdmissionLimits::default()
+    };
+    let mut validations = 0;
+    let result = bounded(owner.admit_live_initial_event(
+        writer,
+        LiveInitialEventRequest {
+            ingest_root: &probe.path,
+            event: prepared,
+            relay_source: None,
+            acquisition: None,
+            provenance_enabled: false,
+            recorded_at: ObservedTime::new(900_000_001),
+            limits,
+            policy_ttl: probe.policy_ttl(),
+            cancelled: &probe.cancelled,
+        },
+        grant(
+            &probe.budget,
+            limits.required_data_bytes().unwrap(),
+            limits.required_native_bytes().unwrap(),
+        ),
+        |doc, digest, candidate| {
+            probe.validate(doc, digest)?;
+            // The only PreparedEvent entering this call is the frozen local
+            // input above; rejected bodies have no verified_event accessor.
+            if candidate.request_id() != request
+                || candidate.verification_limit_bytes() != 256 * 1024
+                || candidate.visibility_scope_id() != scope
+                || candidate.origin() != bigbrotr_model::EventOrigin::Import(lineage)
+                || candidate.observation().is_some()
+                || candidate.verified_event().is_some()
+            {
+                return Err(OwnerError::InvalidPolicy);
+            }
+            validations += 1;
+            Ok(())
+        },
+    ))
+    .await;
+    // Retain the complete actual state before asserting the expected outcome.
+    probe.snapshot("rejected").await;
+    let outcome = result.unwrap();
+    assert_eq!(
+        outcome.outcome(),
+        &AdmissionOutcome::Rejected(RejectionReason::Signature)
+    );
+    assert_eq!(validations, 4);
+    drop(outcome);
+    let producer_key = hex(&[
+        &[1, 0x31][..],
+        request.producer_slot_id.as_bytes(),
+        &2_u64.to_be_bytes(),
+    ]
+    .concat());
+    let request_key = hex(&[
+        &[1, 0x30][..],
+        request.producer_slot_id.as_bytes(),
+        &2_u64.to_be_bytes(),
+        &1_u64.to_be_bytes(),
+    ]
+    .concat());
+    let marker = expected
+        .iter_mut()
+        .find(|r| r["cf"] == "receipts" && r["key"] == producer_key)
+        .unwrap();
+    assert_eq!(marker["value"], hex(&[&[1, 0x31][..], &[0; 24]].concat()));
+    marker["value"] = hex(&[&[1, 0x31][..], &1_u64.to_be_bytes(), &[0; 16]].concat()).into();
+    let rejection = [
+        &b"bigbrotr/rejection/1\0"[..],
+        request.producer_slot_id.as_bytes(),
+        &2_u64.to_be_bytes(),
+        &1_u64.to_be_bytes(),
+        digest.as_bytes(),
+        previous.dataset_id.as_bytes(),
+        &writer
+            .manifest()
+            .identity()
+            .policy_epoch
+            .get()
+            .to_be_bytes(),
+        &[4],
+    ]
+    .concat();
+    expected.push(serde_json::json!({"cf":"receipts","key":request_key,"value":hex(&rejection)}));
+    expected.sort_unstable_by(|a, b| {
+        (a["cf"].as_str().unwrap(), a["key"].as_str().unwrap())
+            .cmp(&(b["cf"].as_str().unwrap(), b["key"].as_str().unwrap()))
+    });
+    let (actual, after_sequence) = raw_state(&probe.path);
+    assert_eq!((actual.len(), after_sequence), (53, 64));
+    assert_eq!(
+        actual, expected,
+        "only rejection and producer issued marker change"
+    );
+    let input = inputs.join(format!(
+        "{}-0000000000000002-0000000000000001.cbor",
+        request.producer_slot_id
+    ));
+    assert_eq!(std::fs::read(input).unwrap(), preimage);
+    assert_eq!(std::fs::read_dir(inputs).unwrap().count(), 5);
+    emit(
+        serde_json::json!({"event":"live-rejection","request":1,"reason":"Signature",
+        "outcome":actual.iter().find(|r| r["cf"] == "receipts" && r["key"] == request_key).unwrap()["value"],
+        "validations":validations}),
+    );
+}
+
+async fn admit(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    writer: &mut LiveInitialWriter,
+    previous: &InitialRegistration,
+    provenance: bool,
+) {
+    let scope = public_scope(previous);
     let lineage = QualifiedRef {
         dictionary_kind: DictionaryKind::DatasetLineage,
         allocation_domain: writer
