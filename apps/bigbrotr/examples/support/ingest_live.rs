@@ -22,6 +22,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
         "successor-live-zero"
             | "successor-live-rejected"
             | "successor-live-already-durable"
+            | "successor-live-acquisition-claims"
             | "successor-live-guards"
             | "successor-live-normal"
             | "successor-live-off"
@@ -156,8 +157,18 @@ pub(super) async fn run(
     if mode == "successor-live-rejected" {
         reject(&probe, &mut owner, &mut writer, &spec).await;
     }
-    if mode == "successor-live-already-durable" {
-        durable::run(&probe, &mut owner, &mut writer, &spec).await;
+    if matches!(
+        mode,
+        "successor-live-already-durable" | "successor-live-acquisition-claims"
+    ) {
+        durable::run(
+            &probe,
+            &mut owner,
+            &mut writer,
+            &spec,
+            mode == "successor-live-acquisition-claims",
+        )
+        .await;
     }
     if refusals::is_renewal(mode) {
         refusals::renewal(&probe, (owner, driver), writer, &spec, backend, mode).await;
@@ -189,7 +200,10 @@ pub(super) async fn run(
     }
     if !matches!(
         mode,
-        "successor-live-zero" | "successor-live-rejected" | "successor-live-already-durable"
+        "successor-live-zero"
+            | "successor-live-rejected"
+            | "successor-live-already-durable"
+            | "successor-live-acquisition-claims"
     ) {
         admit(
             &probe,

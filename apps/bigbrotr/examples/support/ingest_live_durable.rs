@@ -80,6 +80,7 @@ pub(super) async fn run(
     owner: &mut ControlSession,
     writer: &mut LiveInitialWriter,
     previous: &InitialRegistration,
+    extra_intents: bool,
 ) {
     assert!(
         probe.root.local("sync"),
@@ -418,7 +419,101 @@ pub(super) async fn run(
         .unwrap(),
         preimage
     );
-    assert_eq!(std::fs::read_dir(input_directory).unwrap().count(), 5);
+    assert_eq!(std::fs::read_dir(&input_directory).unwrap().count(), 5);
+    if extra_intents {
+        // Keep the actual activator and authenticated session alive. A queued
+        // claim with no producer requests must be discoverable independently
+        // of request bindings; the other accepted intent must remain unclaimed.
+        let before_inputs = input_bytes(&input_directory);
+        let refreshed = bounded(owner.refresh(|doc, digest| probe.validate(doc, digest))).await;
+        probe.snapshot("claims-control-refreshed").await;
+        let policy = refreshed.unwrap();
+        assert_eq!((policy.config_revision, policy.policy_revision), (1, 1));
+        let mut jobs = Vec::with_capacity(2);
+        for (purpose, key, stage) in [
+            ("zero-request", 0xa7, "claims-zero-accepted"),
+            ("unclaimed", 0xa8, "claims-unclaimed-accepted"),
+        ] {
+            let started = Cell::new(false);
+            let accepted = bounded(owner.accept_acquisition(
+                &browser.session,
+                &browser.csrf,
+                [key; 16].try_into().unwrap(),
+                &AcquisitionCommand {
+                    scope_id,
+                    deadline_us: JobDuration::new(30_000_000).unwrap(),
+                    expected_config_revision: Revision::try_from("1".to_owned()).unwrap(),
+                    expected_policy_revision: Revision::try_from("1".to_owned()).unwrap(),
+                },
+                &started,
+            ))
+            .await;
+            emit(
+                serde_json::json!({"event":"live-extra-acceptance","purpose":purpose,
+                "receipt":accepted.as_ref().ok(),"error":accepted.as_ref().err().map(|e|format!("{e:?}")),
+                "commit_started":started.get()}),
+            );
+            probe.snapshot(stage).await;
+            let accepted = accepted.unwrap();
+            assert!(accepted.created && started.get());
+            jobs.push(accepted.job_id);
+            if purpose == "zero-request" {
+                let started = Cell::new(false);
+                let claimed = bounded(owner.claim_acquisition(accepted.job_id, &started)).await;
+                let observed = claimed.as_ref().ok().map(|job| {
+                    serde_json::json!({"id":job.id,"scope":job.scope,"state":job.state,
+                        "job_revision":job.revision,"checkpoint_revision":job.checkpoint_revision,
+                        "accepted_at_us":job.accepted_at_us,"deadline_at_us":job.deadline_at_us,
+                        "owner":job.owner.map(|identity|serde_json::json!({"resource":identity.resource,
+                            "epoch":identity.epoch.get(),"incarnation":identity.incarnation}))})
+                });
+                emit(
+                    serde_json::json!({"event":"live-extra-claim","job":observed,
+                    "error":claimed.as_ref().err().map(|e|format!("{e:?}")),
+                    "commit_started":started.get()}),
+                );
+                probe.snapshot("claims-zero-claimed").await;
+                let claimed = claimed.unwrap();
+                assert!(started.get());
+                assert_eq!(claimed.state, bigbrotr::management::jobs::JobState::Queued);
+                assert_eq!((claimed.revision, claimed.checkpoint_revision), (2, 0));
+                let identity = claimed.owner.unwrap();
+                assert_eq!(identity.resource, owner.identity().resource_id);
+                assert_eq!(identity.epoch, owner.identity().epoch);
+                assert_eq!(identity.incarnation, owner.identity().process_incarnation);
+            }
+        }
+        let (after_rows, after_sequence) = raw_state(&probe.path);
+        let after_inputs = input_bytes(&input_directory);
+        emit(serde_json::json!({"event":"live-extra-intents",
+            "claimed_job":jobs[0],"unclaimed_job":jobs[1],"extra_executions":0,
+            "native_rows":after_rows.len(),"native_sequence":after_sequence,
+            "inputs_before":before_inputs,"inputs_after":after_inputs}));
+        assert_eq!((after_rows, after_sequence), (actual, sequence));
+        assert_eq!(before_inputs, after_inputs);
+    }
+}
+
+fn input_bytes(directory: &Path) -> Vec<serde_json::Value> {
+    let mut inputs: Vec<_> = std::fs::read_dir(directory)
+        .unwrap()
+        .take(6)
+        .map(|entry| {
+            let entry = entry.unwrap();
+            assert!(entry.file_type().unwrap().is_file());
+            let mut bytes = Vec::new();
+            std::fs::File::open(entry.path())
+                .unwrap()
+                .take(8193)
+                .read_to_end(&mut bytes)
+                .unwrap();
+            assert!(bytes.len() <= 8192);
+            serde_json::json!({"name":entry.file_name().to_str().unwrap(),"bytes":hex(&bytes)})
+        })
+        .collect();
+    assert_eq!(inputs.len(), 5);
+    inputs.sort_unstable_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    inputs
 }
 
 async fn peer(listener: &TcpListener) {
