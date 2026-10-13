@@ -61,6 +61,7 @@ SECURITY INVOKER SET search_path=pg_catalog AS $fixture$
 DECLARE
     s control.initial_ingest_successions%ROWTYPE;
     c control.owner_epochs%ROWTYPE;
+    dictionary_request control.producer_requests%ROWTYPE;
     label text;
     n integer := 0;
     code text; message text; context text;
@@ -142,13 +143,18 @@ BEGIN
             IF n=1 THEN
                 RAISE EXCEPTION 'positive activation intentionally rolled back' USING ERRCODE='ZG001';
             ELSIF n IN (2,3) THEN
+                -- Retain the original dictionary-only SQL envelope. Request4
+                -- carries a retired acquisition job and is ineligible before
+                -- this activation guard. No native request is dispatched here.
+                SELECT * INTO STRICT dictionary_request FROM control.producer_requests
+                    WHERE producer_slot_id=s.producer_slot_id AND producer_epoch=1 AND request_sequence=3
+                        AND num_nonnulls(relay_endpoint_id,relay_access_scope_id,relay_enrollment_generation,
+                            relay_route_id,acquisition_scope_id,acquisition_job_id)=0;
                 INSERT INTO control.producer_requests
-                    SELECT (jsonb_populate_record(NULL::control.producer_requests,to_jsonb(r)||jsonb_build_object(
+                    SELECT (jsonb_populate_record(NULL::control.producer_requests,to_jsonb(dictionary_request)||jsonb_build_object(
                         'producer_epoch',2,'request_sequence',1,'manifest_sha256',s.target_manifest_sha256,
                         'issuer_resource',c.resource_id,'issuer_epoch',c.epoch,'issuer_incarnation',c.process_incarnation,
-                        'reserved_at_us',now_us))).*
-                    FROM control.producer_requests r WHERE producer_slot_id=s.producer_slot_id
-                        AND producer_epoch=1 AND request_sequence=4;
+                        'reserved_at_us',now_us))).*;
             ELSIF n=4 THEN
                 -- The activation guard runs before the separate import/job
                 -- bridge. This bounded envelope does not claim a running import.
