@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T11:40Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T11:53Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,14 +14,14 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-0a05341 (full revision in Git). Last verified private pushd26c88a with ten source
-branches; main54ad09d unchanged. No merge/rebase/cherry-pick pending. Contractd0d6af4
-plusfa58f37 precedes implementation. Nativeaf12324 integrated0a05341 and PGf76dfd9
-integratedceef83a. Root owns pending CLI/buildprofile/docs/evidence changes and an
-uncommitted next-engine dispatcher. Native/PG separate worktrees clean; fixture
-agent edits its separate qualification/activated-source-closure branch. All code is
-source-reviewed; compilation and actual source2 closure remain NOT_RUN. Root alone
-integrates and executes builds/engines. Preserve all worktrees and artifacts.
+1f166a053e05c65427c00735ad368a10fc406070 after integrating testfixture correctionccda685. Last verified private
+pushd26c88a with ten source branches; main54ad09d unchanged. No merge/rebase/cherry-pick
+pending. Native/PG implementation and root CLI/buildprofile integrated5e57e63.
+Root owns pending evidence/checkpoint updates and uncommitted next-engine dispatcher.
+Native/PG worktrees clean; fixture agent edits qualification/activated-source-closure
+separately. Independent source reviews complete without product blocker. First build
+FAIL due copied test directory permissions, corrected in two test files only.
+Root alone integrates and executes builds/engines. Preserve all artifacts/worktrees.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -95,14 +95,19 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit the installed source2 closure consumer and exact build profile, then run
-`ingest-activated-source` in the isolated exact-Git lab. Retain old45ELFs outside
-the locked mutable cache. Root complete affected source review and independent
-PG/CLI reviews found no blocker; independent native review continues. Newproof
-borrows exact native/closing custody, preserves old digest and adds six native
-counterexample groups. Additive0035 keeps old active/open grants, supports source
-closure and exact no-repair closed retry, and preserves other lifecycle vetoes.
-No build/SQL/engine has executed this new slice yet.
+Commit this failure/correction checkpoint, then run the isolated exact-Git
+`ingest-activated-source` build from resulting revision. First build5e57e63 compiled
+and passed46 entrypoint/schema/migration,3 legacy source and32 reconstruction tests;
+one new foreign-root test failed Input(Identity). The fixture copy helper lost0700
+directory permissions. Correctionccda685 preserves them and asserts private paths
+and identical inputs; product/API/digest unchanged. Producer-closing/Clippy NOT_RUN.
+Failed root `/runs/ingest-activated-source-5e57e63`, owner5caf0457fcce36edde8fb48d0e7795b9,
+wrapper63806 joined1, stopped11:43:08Z; six producedELFs preserved outside cache.
+Separate AI custody audit confirms1798 exactfiles/51ELFs/1257 unchanged priorcontainers,
+two stopped owned fetch0/native1, noOOM. Failed receiptSHA
+a5a1235d1588d8c6cf7e8b8eac5888163b84f5d91c14c68092ad1641e5614b43.
+All code reviews complete; first-wave fixture root read complete, independentreview
+in progress. Actual source2 closure/SQL/fault/concurrency remain NOT_RUN.
 
 Fixture agent implements five clones/13CLI: off missingcopyrepair, retry and closed
 missingcopyrefusal; on isolated privileged draining baseline, retry and mixedshape
@@ -198,12 +203,13 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-All wrappers terminal: latest refusalengine3456 and root replay71290 joined0.
-PG/client0/143 stopped/PID0/noOOM; artifact custody observation11:12:48Z confirms
-1255 nonborrowed projections unchanged and45ELFs retained outside cache. Latest
-clientc358b821bac921d8ba69262503837626395aec747a263bae150ceaed2d21f31d.
-Latest build43185/buildaudit10689 joined0. No engine/build active. Preserve all
-artifacts, operator preimages, original failures and failed audit attempts.
+Latest buildwrapper63806 joined1:5e57e63 is FAIL, both buildcontainers stopped
+withoutOOM. FailedsixELFs retained,51total verified outside cache. Read-only audit
+observed1259containers at11:48:12Z:1257prior unchanged plusfetch0/native1. No engine
+or build active at this checkpoint; corrected exactbuild is next. Previous qualified
+enginef6d6ebb/PG/client remain stopped. Preserve all raw artifacts, operatorpreimages,
+original failures and failed audit attempts.
+
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
 - Retired f12: `ingest-recovery-engine-f12dbf0/bindings/retire_signed/store`, DB
@@ -227,7 +233,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space observed 2026-10-13T11:23Z: 62,123,298,816 bytes. Remeasure before allocation.
+Free space observed at failedbuild completion11:43Z: 62,014,967,808 bytes; subsequent sixELF preservation used78,653,856 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18

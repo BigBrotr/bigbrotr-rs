@@ -1026,7 +1026,7 @@
       },
       "boundary": "Complete new consumer, original initial lifetime/supervision, native/PG close and resolution, historical loaders and changed fixtures/callers reviewed. Ordinary Serve read/export dispatch, HTTP clients and unrelated stores were not re-audited; no independent AI review.",
       "artifact_rehash": "Both qualified artifacts separately rehashed on Tux after the final engine wave; source/capture hashes compared locally with exact Git blobs.",
-      "structural_decision": "A focused finite consumer reuses existing policy/connection/native supervision rather than growing the ordinary Serve loop. Closing returns both existing ledgers’ bounds as an attributed observation, not another persistent recovery state machine."
+      "structural_decision": "A focused finite consumer reuses existing policy/connection/native supervision rather than growing the ordinary Serve loop. Closing returns both existing ledgers\u2019 bounds as an attributed observation, not another persistent recovery state machine."
     },
     "preserved_failures": [
       {
@@ -2364,7 +2364,7 @@
         "control_tables": 70,
         "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
       },
-      "scope": "Actual CLI64 queued intents+unchanged retry;65 queued and64 retained gaps+1 claim refuse InsufficientReservation with unchanged jobs/gaps. Extra intents are synthetic complete relational rows with independent command digests, not another HTTP acceptance qualification. Actual populated27→28 migration/reapply preserves70-table rows/xmin/filenodes; original gap/job remains exact after CLI recovery.",
+      "scope": "Actual CLI64 queued intents+unchanged retry;65 queued and64 retained gaps+1 claim refuse InsufficientReservation with unchanged jobs/gaps. Extra intents are synthetic complete relational rows with independent command digests, not another HTTP acceptance qualification. Actual populated27\u219228 migration/reapply preserves70-table rows/xmin/filenodes; original gap/job remains exact after CLI recovery.",
       "seed_preserved": {
         "control": true,
         "catalog": true,
@@ -5807,7 +5807,7 @@
         "advancedpolicy",
         "expiry at parent lock"
       ],
-      "review_boundary": "Independent read-only design review covered full0029/0030, PG retirement/closing/source-closure/history/gap, native closing/sourceproof/handoff and owning references; relevant0001/0002 guards and0013/0022–0024 workflow attribution. Broader migrations and Archive/Sync consumers not re-audited. No source edits or engines.",
+      "review_boundary": "Independent read-only design review covered full0029/0030, PG retirement/closing/source-closure/history/gap, native closing/sourceproof/handoff and owning references; relevant0001/0002 guards and0013/0022\u20130024 workflow attribution. Broader migrations and Archive/Sync consumers not re-audited. No source edits or engines.",
       "selected_contract": "docs/reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation",
       "native_api": "Opaque EmptyInitialAttempt borrowed context and EmptyInitialRetirement owned plan; strict existing handoff/history remain OPEN0. One native marker write,4096data+4096native+item grant; PG wrapper retains128KiB metadata permit.",
       "digest": "SHA256(ASCII bigbrotr/initial-empty-attempt-closure/1 + NUL + SHA256 exacthandoff + SHA256 exacttargetmanifest + slot16 + BE64(2) + BE64(0issued) + BE64(0cut)). Independent fixture assembles literal bytes.",
@@ -10152,7 +10152,7 @@
             "replay": "Four self-contained contexts replay86 snapshots/128 controls and exactly matchstdout,external71-table/native/input captures,clocks,result reports and verification hashes.",
             "wire": "Both receipt/fault tuples match6/5/5/5/1 and6/6/6/5/1; proxy hash matches5938617 source.",
             "outcomes": "Before createsT1791812843492372/xmin26646 only on freshcompletion; after preservesT1791812850933041/xmin26663 throughfreshdispatch/retry.",
-            "custody": "All1751 engine-source trackedfiles,2 retainedELFs,21 seedpaths/19files and6 frozenartifacts rehashed;4 originalinputs per derivative retained. c31312f→5938617 only oracle changed.",
+            "custody": "All1751 engine-source trackedfiles,2 retainedELFs,21 seedpaths/19files and6 frozenartifacts rehashed;4 originalinputs per derivative retained. c31312f\u21925938617 only oracle changed.",
             "resources": "1212 nonborrowed preflightcontainer projections unchanged; terminalprojections/ownership match. BorrowedPG0/client143,noOOM,sixunrelatedservicesstillrunning.",
             "limits": "No SQL/engine restart or writes by reviewer. OriginalSQL preservation remains captured-run evidence; concurrentclaim/expiry,nativeI/O/powerloss andactivation outside scope."
           }
@@ -12104,7 +12104,7 @@
             "installed import execution, ACK/GC, full M1, capacity/load/aged-state and arm64/release"
           ],
           "outcomes": {
-            "normal": "Control10 released; native sequence62→63;13 targetSQL rows at1791817304721319/xmin26787. Fresh Control11 terminal retry preserves targetSQL and native.",
+            "normal": "Control10 released; native sequence62\u219263;13 targetSQL rows at1791817304721319/xmin26787. Fresh Control11 terminal retry preserves targetSQL and native.",
             "native_first_sql_failure": "Actual guarded trigger P0001 hit once; Control10 unavailable/active; native63 and SQLprepared. New process Control11 fences10 and finishes13rows at1791817312804301/xmin26840 without native write.",
             "refusals": "Missing input4, outcome3 and schema30 refuse with validated fresh Control10 effects only. Default and held-native refuse without Control claim or target writes. Removed input preserved outside clone store.",
             "signal_deadline": "Observed actual relation wait against fixture holder. SIGTERM exact child completes2.267764s, deadline3.071788s; each returns explicit cancelled error. One exact app backend remains before fixture unlock; global and exact absence are positively observed after rollback before native reopen. All SQL/native/input state unchanged."
@@ -12956,7 +12956,7 @@
       "base": "61fc6e3e21424f22d007b496e947986d2b70c4a0",
       "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
       "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
-      "scope": "Genuinely live locally minted1→2 candidate, immutable PGactivation before first request, shared connected admission/renewal and zero-start native effects; no observed-identity adoption.",
+      "scope": "Genuinely live locally minted1\u21922 candidate, immutable PGactivation before first request, shared connected admission/renewal and zero-start native effects; no observed-identity adoption.",
       "source_findings": [
         "Current native event/certification/dictionary paths rejectowner2; source0 and epoch2append1 need explicit handling",
         "Evidence request1 bootstrap selection must be limitedto actualepoch1",
@@ -12965,7 +12965,7 @@
         "Syncrequest3/epoch1 and Archivecursor1/revision0/epoch1 assumptions require later realconsumerchanges"
       ],
       "independent_source_analysis": "successor_restart_design read complete native owners, PGregistration/batch/succession/renewal,migrations0030/31,runtimeidentity and installed immediateconsumers. Detailed Archivefrontierrecovery/cataloginternals notfullyreviewed. Noedits/builds/SQL.",
-      "remaining": "General laterlifetimes, retiredempty2→fresh3, activated-owner recovery, installed restart/resend, ACK/GC and fullM1–M5 remainrequired.",
+      "remaining": "General laterlifetimes, retiredempty2\u2192fresh3, activated-owner recovery, installed restart/resend, ACK/GC and fullM1\u2013M5 remainrequired.",
       "implementation_base": "4253907546efb50cba1a4d62ca08020b84ea700c",
       "saved_native_wip": {
         "source": "d1bf847df2ecf077686ddf274655e59dba803469",
@@ -15405,7 +15405,7 @@
             "exit_code": 0,
             "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
             "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
-            "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal→Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
+            "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
           }
         ],
         "engines": [
@@ -15768,7 +15768,7 @@
           "source": "0e21919484baae550dea4bbff79fde0ef32069ad",
           "integrated": "97f13013ac6f4c3d04757b9f20ce0c4265fe4517",
           "migration0033_sha256": "4f22eb019e831126bf3f5c712d0ddf1e8213dfdfcdf9afaf5b38c80418cb5804",
-          "sql_execution": "Corrected schema34 first8 installed recovery and33→34→34 migration/catalog preservation PASS",
+          "sql_execution": "Corrected schema34 first8 installed recovery and33\u219234\u219234 migration/catalog preservation PASS",
           "migration0034": {
             "source": "b9a245d941d6955db0655e0e19ef454a6cc76de0",
             "integrated": "f6f868042e3d662abb6a0e9d0238c45080363a7f",
@@ -15785,11 +15785,11 @@
           "scope": "First eight installed invocations from retained off/on/zero seeds; positive/retry/missing-copy, historical policy2/current3 for off/on, expired old scheduling and complete before/after preservation",
           "pure_checks": "Author reports eight artificial complete contexts and124 controls; not actual engine evidence",
           "engines": "PASS at2a018ea: eightactual CLI, root124controls and independent artifact/raw/custody audit",
-          "migration34": "Actual33→34→34 at2a018ea preserves priorledger/data/xmins/physicalidentities and exact function/grant catalogs",
+          "migration34": "Actual33\u219234\u219234 at2a018ea preserves priorledger/data/xmins/physicalidentities and exact function/grant catalogs",
           "review": "Independent AI full first8 fixture source review found no blocker; root changed only migration34 setup and oracle with reviewed SQLbody pin"
         },
         "remaining": [
-          "Source2 closure, then epoch2 workflow abandonment and retirement; repeated lifetimes, Archive/Sync restart and remaining selected M1–M5 journeys"
+          "Source2 closure, then epoch2 workflow abandonment and retirement; repeated lifetimes, Archive/Sync restart and remaining selected M1\u2013M5 journeys"
         ],
         "builds": [
           {
@@ -16553,14 +16553,14 @@
               "complete_observations": 16,
               "controls": 124
             },
-            "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33→34→34 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
+            "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33\u219234\u219234 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
             "not_run": [
               "issued-positive source-zero",
               "corrupt/missing input and dependency/identity/handoff/foreignstream refusals",
               "held native refusal",
               "closing/outcome COMMITloss and fresh recovery",
               "source2closure/retirement/repeatedlifetimes",
-              "Archive/Syncrestart and fullM1–M5"
+              "Archive/Syncrestart and fullM1\u2013M5"
             ],
             "artifact_custody_audit": {
               "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea/recovery-review-artifact-custody-20261013.json",
@@ -17767,8 +17767,8 @@
         }
       },
       "activated_source_closure_20261013": {
-        "status": "IMPLEMENTED_REVIEWED_BUILD_AND_ENGINE_NOT_RUN",
-        "observed_at": "2026-10-13T11:40:34.160259+00:00",
+        "status": "IMPLEMENTED_FIRST_BUILD_FAIL_TEST_FIXTURE_CORRECTED",
+        "observed_at": "2026-10-13T11:53:10.345484+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
@@ -17777,7 +17777,7 @@
         "native": {
           "source": "af12324217cda75535b535d25b61fa3e119cd78e",
           "integrated": "0a053417c8bd0b085ebb9138af371c7a39ef5292",
-          "checks": "Scoped format/diff PASS; six new native groups not executed yet"
+          "checks": "First build81 testsPASS1FAIL; five newsource groups pass, foreignroot group refuses invalid fixture permissions. Corrected testfixture awaiting exactbuild."
         },
         "postgres": {
           "source": "f76dfd9029891a2ed93a5acb6ddc16b663fdadac",
@@ -17785,14 +17785,51 @@
           "migration0035_sha256": "80b5441cbb2de1f782ce6458e1c2b26a2f3730f51e61619af49f1e8d8adc375a",
           "checks": "Scoped format/diff/catalog/applied-migration preservation PASS; SQL not executed"
         },
-        "root_consumer": "Pending explicit --close-activated-source shared custody/standalone proof consumer, resource overlap and entrypoint refusal checks",
-        "review": "Root complete native prefix/newtests, PG source classifier/copy/publication and installed owners read. Native author independently reviewed PG; PG author independently reviewed root CLI/buildprofile. Further independent native review in progress. No runtime qualification inferred.",
+        "root_consumer": "Explicit --close-activated-source integrated5e57e63; shared custody, bounded prefix replay/publication, resource overlap and entrypoint refusal checks",
+        "review": "Root complete affected native/PG/CLI/build source review; native author independently reviewed PG and PG author independently reviewed native/CLI/build profile. No unresolved source finding. First-wave fixture root review complete, independent review in progress; actual SQL/engine NOT_RUN.",
         "fixture": {
           "status": "IN_PROGRESS_ENGINE_NOT_RUN",
           "cases": "Five fresh clones,13 CLI: off repair/retry/closedcopyrefusal; onprivilegeddraining/retry/mixedshaperefusal;zero oldpositiveACL/newclose/retry/oldpositiverefusal;retainedrejected first/retry;offmissinginput",
           "remaining": "ConnectedAlreadyDurable/source0 needs genuine compatible seed; finalsourceCOMMITloss, concurrentjob/closure and remainingrefusals later"
         },
-        "build_profile": "ingest-activated-source: compile, entrypoint/schema/migrations, initial and newsource closure/reconstruction/closing tests, Clippy; retains exact executables"
+        "build_profile": "ingest-activated-source: compile, entrypoint/schema/migrations, initial and newsource closure/reconstruction/closing tests, Clippy; retains exact executables",
+        "failed_build": {
+          "status": "FAIL",
+          "source": "5e57e63b1d2effaf694cf5f6bfdece7aa3d94f47",
+          "tree": "bc9ef848130d556b1dfdbea27915c6b4a72f8ed5",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-5e57e63",
+          "owner": "5caf0457fcce36edde8fb48d0e7795b9",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "256a18a161d24adea16b988114d8e432f442680bd9be396f51621dd45f9b5e71"
+            },
+            {
+              "name": "native",
+              "id": "fdeab22d10722a4a85927ef99226328aacd67d6e00b83a469beb9732cbaeab31"
+            }
+          ],
+          "started_at": "2026-10-13T11:41:06.238911+00:00",
+          "finished_at": "2026-10-13T11:43:08.396997+00:00",
+          "checks_sha256": "1de5cf2d9f4ec896ffafe262352478c3aaa0f48de7152e0274f0ba64af74d211",
+          "executed": "compile PASS;46 entrypoint/schema/migration plus3 legacy and32 reconstruction tests PASS;1 reconstruction FAIL; producer-closing/Clippy NOT_RUN",
+          "cause": "Test clone helper recreated root and producer-input directories using umask, violating existing0700 input identity. Product rejection is correct.",
+          "preserved_artifacts": {
+            "count": 6,
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-5e57e63/out/failed-artifacts/receipt.json",
+            "receipt_sha256": "a5a1235d1588d8c6cf7e8b8eac5888163b84f5d91c14c68092ad1641e5614b43"
+          },
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-5e57e63/recovery-review-build-audit-20261013.json",
+            "sha256": "7cc8b7c5dad9ddf7430ef15de0380d3ec9110f9958bdc661683ee8d102667b3a",
+            "scope": "Separate AI read-only custody audit:1798 exact Git/export/archive files,51 preserved ELFs,1257 unchanged prior containers;2 owned terminalfetch0/native1,noOOM"
+          },
+          "correction": {
+            "source": "ccda68512ef6c6c55f4b3e5d29f0c97e9bae4c0d",
+            "integrated": "1f166a053e05c65427c00735ad368a10fc406070",
+            "scope": "Two test files only: preserve directory permissions and assert0700/exact original inputs. Product unchanged; rerun pending."
+          }
+        }
       }
     }
   }
