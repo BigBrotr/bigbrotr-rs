@@ -18689,7 +18689,7 @@
       },
       "activated_acquisition_abandonment_20261013": {
         "status": "PASS_BUILD_INSTALLED_QUALIFICATION_OPEN",
-        "observed_at": "2026-10-13T13:35:07.545940+00:00",
+        "observed_at": "2026-10-13T13:47:26.732901+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
         "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
         "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -18721,9 +18721,12 @@
           "owner": "cleanup_review",
           "worktree": ".research/activated-recovery-qualification-20261013",
           "branch": "qualification/activated-acquisition-fixtures",
-          "state": "Newindependentfixture inprogress: successful939offclosed and0e4917durableclosed, first+retry4CLI/fullSQL/native/input/session/catalog; noneexecuted"
+          "state": "Committed; root and independent PG-author full source review; 4 artificial contexts/8 full states/104 rejected controls plus4 custody mocks PASS. Actual4CLI NOT_RUN.",
+          "source": "c868c5acb9564f4a2981dc7416dc98cbc0f628fa",
+          "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
+          "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
         },
-        "next": "Complete independent first/retryfixture for successful939offclosed and0e4917durableclosed; review/pure controls then exact4CLI engine reusing protectedec6 artifacts. Subsequent genuinezero-request seed/SQLnegative/finalCOMMITloss/ordinaryHTTPoldgrants gates remain.",
+        "next": "Execute first4CLI on two copied closed seeds with --ingest-activated-acquisition, protectedec6 artifacts; retain all raw finals before semantic validation, then root replay and custody audit.",
         "build": {
           "source": "ec6ff3963161e956fd18226396897b559ac15afe",
           "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",

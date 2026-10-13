@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:35Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:47Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,7 +14,7 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-ec6ff3963161e956fd18226396897b559ac15afe. Last verified private pushda7bd07040aaf45062cb7e25e69e8d8cccda6245; prefix55dcdb2 and contractc0024b8 branches also verified.
+84757a5318d1e9f2342aee6e24eb767fc0c53847. Last verified private push2dd28e9d59e2d2ffbb21b98b949bcd2adfc7545a; e2d0 and fe44 branches also verified.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
 integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; contractc002 integratedb6ec515, PG e2d0 integrated30f0127 and finitefe44 integrated117d648. Root CLI/docs/buildprofile committedec6ff39 and qualifiedbuild; current evidence update owned byroot. Root alone integrates/builds/executes.
@@ -92,8 +92,10 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Finish independent four-CLI first/retry fixture for two qualified closed seeds939off/
-0e4917durable, review and purecontrols, then exact engine reusingec6 protectedartifacts.
+Execute exact four-CLI first/retry fixture for closed seeds939off/0e4917durable,
+reusing protectedec6 artifacts. Fixturec868 integrated84757a5; root and independent
+source reviews closed; four artificial contexts/104 rejected controls/four custody
+mocks PASS. Actual engine NOT_RUN; preserve final captures before oracle checks.
 PG e2d0 integrated30f0127, finiteclaimsfe44 integrated117d648, rootCLIec6ff39.
 Root complete source review plus independentnativeauthor PG/CLI review PASS. New
 actualabandonment SQL/CLI qualification remains NOT_RUN. Afterwards genuineextra
