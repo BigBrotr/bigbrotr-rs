@@ -4,7 +4,7 @@
 //! never the production codecs, reducers, or a second execution as an oracle.
 use super::*;
 use crate::storage::rocks::store::{ActiveInitialWriter, InitialWriterCandidate};
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, os::unix::fs::PermissionsExt};
 
 type Snapshot = (Rows, u64, Vec<(String, Vec<u8>)>);
 
@@ -660,6 +660,8 @@ fn candidate_requires_its_minted_target_local_root_current_proof_and_no_sidecars
             .join(input_name(2, 1));
         if fault == "sidecar-before" {
             std::fs::write(&sidecar, b"unrelated target input").unwrap();
+            // Reach the target-epoch conflict rather than the private-file mode guard.
+            std::fs::set_permissions(&sidecar, std::fs::Permissions::from_mode(0o600)).unwrap();
         }
         let source = positive(&fixture, candidate.recovery());
         let result = candidate.handoff(&source, PolicyEpoch::new(1));
@@ -713,6 +715,8 @@ fn candidate_requires_its_minted_target_local_root_current_proof_and_no_sidecars
             put(&candidate.recovery().store, source_key(1), &bytes);
         } else {
             std::fs::write(&sidecar, b"unrelated target input").unwrap();
+            // Reach the target-epoch conflict rather than the private-file mode guard.
+            std::fs::set_permissions(&sidecar, std::fs::Permissions::from_mode(0o600)).unwrap();
         }
         let before = capture(&fixture, &candidate.recovery().store);
         assert!(candidate.require_handoff(&plan).is_err(), "{fault}");

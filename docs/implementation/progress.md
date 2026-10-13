@@ -302,7 +302,17 @@ profiles pass AST parsing. Compilation, Clippy, native tests, migration executio
 raw SQL acceptance, COMMIT-loss execution and connected qualification remain
 NOT_RUN. Earlier qualified results do not qualify these new sources.
 
-Next action: run the exact isolated `ingest-live` build with Rust1.98.1/Clang14 and
+First exact build7337ac4 failed in a test fixture: compilation and41 entrypoint/
+schema tests plus3sourceclosure/9closing/11recovery/7handoff passed; reconstruction
+passed19 and failed1. The injected sidecar had default permissions rather than0600,
+so the private-file guard returnedIdentity before the expected epoch Conflict.
+Root corrected both injections explicitly, preserving exactConflict assertions;
+independent source review agrees. Seven later checks were NOT_RUN. Wrapper10685
+joined1; containers stopped/noOOM and no prior inventory projection changed.
+Five actual executables were copied to that run's `out/failed-artifacts/` before
+cache reuse; all raw logs/source remain. No failed outcome was relabeled.
+
+Next action: rerun the exact isolated `ingest-live` build with Rust1.98.1/Clang14 and
 the existing exclusive cache lock, retaining executables outside mutable caches.
 The complete source and input identities must be recorded by the existing runner.
 Fix concrete failures and preserve each failed run. Independent connected harness

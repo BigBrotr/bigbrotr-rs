@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_INTEGRATED_BUILD_NOT_RUN_CONNECTED_FIXTURES_IN_PROGRESS",
+    "status": "ACTIVE_FIRST_BUILD_FIXTURE_FAILURE_CORRECTED_REBUILD_PENDING",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40842,7 +40842,9 @@
         "scope": "Native fixtures integrated; new experiments/ingest-bootstrap/initial_live_oracle.py independent oracle only"
       }
     ],
-    "resources": [],
+    "resources": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-7337ac4"
+    ],
     "qualification": "Source edits and reviews only; no new build, native tests, SQL migration or connected engine campaign allocated or executed",
     "pause_observation": {
       "observed_at": "2026-10-13T06:15:07Z",
@@ -40875,6 +40877,33 @@
       "free_bytes": 67813384192,
       "resources": "No matching build or BigBrotr container before allocation; six unrelated services unchanged"
     },
-    "canonical_saved_source": "fa0fa62facb0a9bf3def4380c553eaa25a811012"
+    "canonical_saved_source": "fa0fa62facb0a9bf3def4380c553eaa25a811012",
+    "builds": [
+      {
+        "source": "7337ac43a8f905c1f082e9b06043e3e345e4ed66",
+        "tree": "b357db915201acc2811a5201379a60dc7442c5b6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-7337ac4",
+        "status": "FAIL_NATIVE_FIXTURE_PRIVATE_MODE",
+        "wrapper": 10685,
+        "exit_code": 1,
+        "completed": "Compile and41 entrypoint/schema tests,3sourceclosure,9closing,11recovery,7handoff passed; reconstruction19passed/1failed. Seven later checks NOT_RUN.",
+        "failure": "Test sidecar created with ordinary fs::write lacks exact0600 permissions; private_file check returnsIdentity before targetepochConflict. No production failure established.",
+        "correction": "Explicit0600 in both test sidecar injections; exactConflict assertions retained. Independent source review PASS; corrected execution pending.",
+        "artifacts": "out/failed-artifacts/receipt.json preserves five actual executables before mutable cache reuse; raw logs and source retained",
+        "resources": [
+          {
+            "name": "fetch",
+            "id": "09ea5a0bab65fbc6ef35bd2b47255c445831809d30c437261a01e2f15e2e6009"
+          },
+          {
+            "name": "native",
+            "id": "e945412f5f8129de2d7d7cf4bd5db7ce1ed0b99c31b44bb3c365787cf8faf16c"
+          }
+        ],
+        "state": "stopped-retained",
+        "inventory_changed": [],
+        "free_bytes_after": 67719553024
+      }
+    ]
   }
 }
