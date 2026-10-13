@@ -46549,7 +46549,7 @@
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
   },
   "implementation_activated_acquisition_abandonment_20261013": {
-    "status": "PARTIAL_QUALIFICATION_PASS_LIMITS_AND_FINAL_WAIT_GATES_OPEN",
+    "status": "QUALIFIED_THROUGH_COUNTS_FINAL_WAIT_GATES_OPEN",
     "observed_at": "2026-10-13T14:20:43.686291+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
@@ -46738,7 +46738,6 @@
       "scope": "GenuineAlreadyDurable a6claimed+a7zero-requestclaimed+a8acceptedunclaimed; firstabandon2+retry"
     },
     "remaining_gates": [
-      "combined retained+selected<=64 and fullbatchrefusal beforewrites",
       "SIGTERM duringfinal selectedjoblockwait",
       "actualControlUTCexpiry acrossfinaljobwait (requiresfinite pre-agedlease proof; CLIlocaltimeoutisnotexpiry)"
     ],
@@ -46905,7 +46904,7 @@
     "limits_probe": {
       "source": "0ec97f5fdc2a482ebfb7df03525d23f51e0437af",
       "integrated": "999d329",
-      "checks": "Root complete affected run bodies and new helpers reviewed; author static checks. Build below compiles and runs Clippy; actual 64/65 seed execution NOT_RUN.",
+      "checks": "Root complete affected run bodies and new helpers reviewed; author static checks. Build below compiles and runs Clippy; actual 64/65 seed execution NOT_RUN. Actual seeds now PASS at26fdabe,13 snapshots each for64/65; output below2.81MB per count seed.",
       "scope": "Genuine typed acceptance and claim under actual Control8, one receipt at a time, bounded64/65 count, constant snapshot count, failure-aware native close and driver join with backend exclusion."
     },
     "limits_build": {
@@ -46943,7 +46942,77 @@
         "protected_elfs": 68,
         "unchanged_containers": 1279
       },
-      "checks": "Compile and Clippy PASS with Rust1.98.1/Clang14; no repeated tests. Exact product inputs unchanged from ec6; retained47 entrypoint/schema/migration and9dbc45 native tests reused. Connected count qualification NOT_RUN."
+      "checks": "Compile and Clippy PASS with Rust1.98.1/Clang14; no repeated tests. Exact product inputs unchanged from ec6; retained47 entrypoint/schema/migration and9dbc45 native tests reused. Connected count qualification PASS at26fdabe."
+    },
+    "limits_fixture": {
+      "source": "e47adbd558ead220aa8308fa7b60eba00e1179e3",
+      "integrated": "26fdabe",
+      "dispatcher": "1e88f12",
+      "status": "ACTUAL_ENGINE_ROOT_REPLAY_AND_ARTIFACT_CUSTODY_PASS",
+      "checks": "Root complete driver/oracle and product batch-owner review; independent native-author review no blocker. Artificial41 seed snapshots,12 CLI states,4 operator states,119 controls and7 custody mocks. Formatting preserved AST and SQL.",
+      "manifest": {
+        "path": ".research/activated-recovery-qualification-20261013/.research/activated-acquisition-limits-selfcheck-20261013/manifest.json",
+        "sha256": "edfa428770337a7caed2a6e91de08feaa885c04411d4be7e0aa2dbd6551f59f1"
+      }
+    },
+    "limits_wave": {
+      "source": "26fdabeb87f15d32c2523148362a47c5ec4436b3",
+      "status": "PASS_INSTALLED_ACTIVATED_ACQUISITION_LIMITS",
+      "owner": "ad880e98c2b57dab74977653c10094f1",
+      "client": {
+        "id": "9a4e66d97a37e914d037405e275ebb0deeea7fc507dada8772aa0f7da1e6b0b3",
+        "name": "bigbrotr-acquisition-binding-26fdabe"
+      },
+      "started_at": "2026-10-13T14:40:54.188451+00:00",
+      "finished_at": "2026-10-13T14:42:38.948806+00:00",
+      "free_bytes_after": 55079923712,
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-limits-engine-26fdabe",
+      "wrapper": "44183 joined0",
+      "result": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-limits-engine-26fdabe/bindings/result.json",
+        "sha256": "e84e78db14dd9eb26de68922b82725de6f3b83b3e93a320d9673f9efdd6aac9d"
+      },
+      "finite_seed_invocations": 3,
+      "cli_invocations": 6,
+      "operator_transactions": 2,
+      "root_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-limits-engine-26fdabe/root-independent-replay.json",
+        "sha256": "3da4891d02969c3ff865a0aa888996e6852dd422e8d7b93e08f1cdbbd9195438",
+        "wrapper": "88876 joined0",
+        "seed_snapshots": 41,
+        "installed_states": 12,
+        "operator_states": 4,
+        "controls": 119
+      },
+      "artifact_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-limits-engine-26fdabe/audit-cleanup-review/audit.json",
+        "sha256": "f53749a69bcaaeddfacb93c8e6e85cea14a16bea7e86c6a6ffcabeacd84ea458",
+        "status": "PASS_READ_ONLY_SOURCE_ARTIFACT_CUSTODY_AUDIT",
+        "scope": "Fixture-author read-only custody audit; independent semantic replay is root-owned. No SQL/native opens."
+      },
+      "semantics": "Real Control8 creates64/65 sealed queued claims while preserving one genuine AlreadyDurable request.64 completes all gaps/jobs in one transaction and exact retry preserves attribution;65 refuses before terminal effects. True source-close invocation fences failed recovery Control, then one guarded current-Control gap plus64 remaining claims also refuses the combined count. Third genuine two-claim seed has only its last byte-sorted job checkpoint changed to1 by an explicitly privileged negative fixture; entire batch refuses InvalidMetadata with no new gap/job write. Earlier source closure and native closing persist in refusal cases. Accepted-unclaimed/session/source1/copies and original inputs remain exact.",
+      "custody": "1825 engine files,1823 build/export/archive files,68 protected ELFs,1280 unchanged nonborrowed container projections at14:43:08Z. PG0/client143/PID0/noOOM. Originalf12 21 paths/302273 bytes/four inputs/three frozen captures retained.",
+      "measured_seed_captures": [
+        {
+          "mode": "installed-acquisition-limit64",
+          "stdout_bytes": 2791807,
+          "events": 221,
+          "max_event_bytes": 329531
+        },
+        {
+          "mode": "installed-acquisition-limit65",
+          "stdout_bytes": 2803177,
+          "events": 224,
+          "max_event_bytes": 332129
+        },
+        {
+          "mode": "installed-acquisition-unsupported-last",
+          "stdout_bytes": 2433322,
+          "events": 33,
+          "max_event_bytes": 171050
+        }
+      ],
+      "measurement_boundary": "Finite isolated fixture counts and output sizes, not product throughput or peak memory qualification."
     }
   }
 }

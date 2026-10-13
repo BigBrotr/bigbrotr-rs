@@ -327,9 +327,14 @@ One owner serializes exact identity decisions for each writable directory.
   Native91 affected tests and independent raw/artifact/custody audits pass. First
   prefix oracle failure remains retained.
   [Activated acquisition abandonment](../reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation)
-  passes first/retry on two closed sources and final C10reply loss/freshretry,
-  eight installed commands with rootrawreplay. Genuineextra claims, SQLguards and
-  ordinaryHTTPoldgrants remain open;
+  passes first/retry on two closed sources and final C10 reply loss/fresh retry.
+  Genuine same-activator claimed/unclaimed intents pass atda839b7; all14 raw SQL
+  guard cases pass at70d908d. Actual schema36 HTTP with recovery privileges removed
+  passes at498a9e2, with the recorded missing first migration32 response retained
+  as an evidence limitation. Count/full-batch26fdabe adds three genuine finite
+  seeds and six CLI invocations:64/retry,65 refusal, retained1+selected64 refusal,
+  and unsupported-last atomic refusal. Root raw replay and artifact/custody audits
+  pass. Final-job-wait SIGTERM and actual post-wait Control UTC expiry remain open;
   epoch2 workflow retirement and repeated lifetimes remain separate obligations. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

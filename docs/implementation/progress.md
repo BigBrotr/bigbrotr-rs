@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T14:34Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T14:48Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption. The selected M1–M5 product remains INCOMPLETE. This checkpoint is
 navigation; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -13,8 +13,8 @@ is authorized. Preserve unpublished Cargo packages, read-only legacy repositorie
 unrelated workloads and all ignored/external artifacts. Latest resumption overrides
 the earlier credit-exhaustion pause; no new resume confirmation is needed.
 
-Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD 284cb183ed2be6853d2afa09818b585cc55f7fa4. Last verified private
-push25ed080559ccc7ea1ea62e27f3863b4dc68b54e6; later commits await push. Main remains
+Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD 26fdabeb87f15d32c2523148362a47c5ec4436b3. Last verified private
+push279fda75ff9ab8e414929bbf272231b6679565d6 (39980 joined0). Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Fixturec868 and fault5c2 branches also
 verified pushed. No merge/rebase/cherry-pick pending. Root owns this checkpoint
 edit and alone integrates/builds/executes; agents use separate writable worktrees.
@@ -29,10 +29,21 @@ Current evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_acquisition_abandonment_20261013`.
 Current inventory node: `implementation_activated_acquisition_abandonment_20261013`.
 
-Next: finish review and integrate the genuine64/65/combined-bound fixtures, wire
-the existing runner and execute with exact build5e157e8. Three finite seeds and
-six CLI calls distinguish64 success/retry,65 refusal, a true source-close fence,
-retained1+selected64 refusal, and unsupported-last full-batch rollback.
+Next: integrate and execute the installed final-job-lock SIGTERM fixture with
+build5e157e8, then build and qualify the actual post-wait UTC-expiry finite probe.
+The SIGTERM driver/oracle have full root review; author custody checks are pending.
+Root owns an uncommitted dispatcher edit in experiments/acquisition-scope/bindings.py.
+Native expiry probe and its independent harness are in separate agent worktrees.
+No product or persistent-format change is planned for these remaining two gates.
+
+Limits26fdabe PASS: three finite seeds and six CLI calls,44183 joined0. Root88876
+replay41 seed snapshots/12 CLI states/four operator states/119 controls PASS.
+64 succeeds/retries;65 and retained1+selected64 refuse without partial gaps/jobs.
+A privileged unsupported-last checkpoint mutation on a genuine two-claim seed
+refuses the full batch. Author custody audit validates1825 source files/1823 build
+files/68 ELFs/1280 unchanged nonborrowed projections and intact originalf12.
+Count seed stdout was2,791,807 and2,803,177 bytes; no capacity claim follows.
+
 Build50208 and audit12817 joined0: compile/Clippy,1823 source files,68 retained
 ELFs and1279 unchanged prior container projections. Product inputs remain exactec6;
 47 entrypoint/schema/migration tests and45 native tests are reused, not rerun.
@@ -49,19 +60,22 @@ Current agents (no independent build/engine authority):
 
 - `cleanup_review`: `.research/activated-recovery-qualification-20261013`, branch
   `qualification/activated-acquisition-limits-fixtures`; owns only the new limits
-  driver/oracle; artificial contexts, custody mocks and independent API review.
+  driver/oracle committed e47 and integrated26fdabe. Limits custody audit closed.
+  Now owns two new expiry harness/oracle files, coordinating the native probe API.
 - `recovery_review`: `.research/activated-recovery-postgres-20261013`; HTTP branch
-  committed, both latest custody audits complete. Preparing a bounded design for
-  an installed final-job-wait SIGTERM driver/oracle.
+  committed, both latest custody audits complete. New branch
+  `qualification/activated-acquisition-interruptions` owns the installed final-job-wait
+  SIGTERM driver/oracle; complete root review closed, targeted author checks pending.
 - `successor_restart_design`: `.research/activated-recovery-native-20261013`;
-  probe0ec committed and integrated999d329. Reviews limits fixture API, then designs
-  the actual post-wait UTC-expiry finite probe with continuously owned authority.
+  probe0ec committed and integrated999d329; independent limits API review closed.
+  New branch `qualification/activated-acquisition-expiry-probe` implements the actual
+  post-wait UTC-expiry finite probe with continuously owned authority.
 
 Remaining qualification must distinguish internal typed calls from management
 HTTP. The ordinary HTTP grant case passed with recovery-only privileges removed
 after legitimate activation and before starting the HTTP client.
-Current two-job seed and raw guards do not establish the combined64 boundary or
-full-batch refusal; genuine-count campaign is authorized. Final-job-wait SIGTERM
+The genuine count campaign establishes the combined64 boundary and full-batch
+refusal in the documented finite envelope. Final-job-wait SIGTERM
 and actual post-wait Control UTC expiry also remain NOT_RUN, with expiry requiring
 a continuously owned finite probe/pre-aged lease rather than a local CLI timeout. Do not silently drop those concerns or repeat broad unchanged
 suites. Later producer/domain/owner retirement, repeated lifetimes, Archive restart,
@@ -131,9 +145,9 @@ Root37928 replay15seed snapshots/four installed states/44controls PASS. Artifact
 
 ## Processes, resources and maintenance
 
-No engine/build active at this observation. Latest build50208 and audit12817
-joined0; its two owned containers exited0/PID0/noOOM. Latest HTTP engine PG0/client143
-was frozen stopped with PID0/noOOM. Three agents prepare separate fixture sources. Preserve every failed audit,
+No engine/build active at this observation. Latest limits engine44183 and
+root replay88876 joined0; PG0/client143/PID0/noOOM frozen14:43:08Z. Latest build50208
+and audit12817 joined0. Three agents prepare separate interruption/expiry fixtures. Preserve every failed audit,
 source snapshot, clone, process receipt and `.research` artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`; `/runs/` above is
