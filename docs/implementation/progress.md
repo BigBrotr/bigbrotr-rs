@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T07:37:56.549945+00:00 on Tux after the owner explicitly resumed the goal.
+Observed 2026-10-13T07:43:39.815738+00:00 on Tux after the owner explicitly resumed the goal.
 The runtime Goal is ACTIVE; the full selected product remains INCOMPLETE.
 Canonical44ba71c and helper3553108/127a937 were privately pushed and verified by
 ls-remote. Finite connected engine2c142c6 and its read-only evidence audit pass.
@@ -17,21 +17,21 @@ Cargo packages, legacy reference repositories and unrelated workloads remain
 protected. No public release, repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Observed HEADb48c714 integrates guard harness9f45f83, oracle dc02056 and its
-phase-clock correction338927d. Native/PG product remains qualified by c640b2f;
-the extended probe was compiled at ee24e86. Root bindings and these evidence
-updates now record the first guard engine failure; root bindings are committed. Independent oracle review found two coherent
-backdated refresh transcripts accepted by7abcc498; correctiond0f96f7 rejects both
-at exact phase-clock assertions, while the valid16-snapshot transcript passes35
-controls. Root reviewed the complete sources and delta; independent AI replay
-confirmed the findings closed. No native rebuild is needed.
+Observed HEAD5fe7cc0 contains the corrected guard fixture and independent oracle.
+Native/PG product remains qualified by c640b2f; the extended probe was compiled at
+ee24e86. Guard engine5fe7cc0 now passes; root independently replayed actual16
+snapshots/14SQLcases/35controls. Current dirty files are owning task/contract,
+checkpoint, evidence and inventory updates. The earlier915478c failure and both
+artificial oracle versions remain retained. No native rebuild is needed.
 Private root44ba71c and helpers3553108/127a937 are verified. No merge/rebase/cherry-pick
 is pending. Main is unchanged.
 
 | Worktree | Owner | Current responsibility |
 |---|---|---|
-| `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; independent build audit completed; harness/oracle review completed |
+| `.research/live-initial-native-20261013` | successor_restart_design | d1bf847; retained prior source/reviews |
+| `.research/live-zero-routes-harness-20261013` | successor_restart_design | assigned new loader fixture from5fe7cc0; verify creation/current HEAD |
 | `.research/live-initial-control-20261013` | recovery_review | 18bf166; corrected guard harness integrated |
+| `.research/live-zero-routes-oracle-20261013` | recovery_review | new oracle from5fe7cc0; source work in progress |
 | `.research/live-initial-tests-20261013` | cleanup_review | ea625e7; corrected reviewed template integrated; pure evidence retained |
 
 All earlier helper worktrees, ignored data and external laboratories remain retained.
@@ -347,14 +347,11 @@ artifacts; helpercleanup_review audited1226 nonborrowed resource projections and
 both terminal resources. Helper authored the oracle, not the harness/resources.
 Original SQL preservation remains captured-run evidence; no audit restart.
 
-Next bounded action: commit the corrected fixture evidence and run a fresh exact `--ingest-live-guards` clone with the already
-compiled ee24e86 artifacts. The14 SQL discriminators execute on
-the actual preparing Control backend, followed by actual live renewal and admission.
-Root wrote Rust probe/profile and owns later bindings; recovery_review owns the new
-isolated harness and cleanup_review the new independent oracle.
-Use a narrowly scoped invoker fixture trigger during actual Control refresh; every
-raw case rolls back its changes and no product guard is disabled. Outside-transaction
-gates allow install/removal; verify the original catalog before typed activation.
+The actual preparing-Control guard and renewal wave has completed. Its invoker
+fixture rolls back every raw case, keeps product guards active and restores the
+original catalog before typed activation. Root owns probe/profile/bindings and
+all engine execution; recovery_review authored the harness and cleanup_review the
+independent oracle.
 Scoped formatting/AST/diff-check and independent hook/caller/profile source review
 pass. Exact buildee24e86d6ad0e800305d5aa48d8a01879aeeafc1 is
 PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY; compile and Clippy both pass.
@@ -383,6 +380,30 @@ are integrated. Pure16snapshots/14cases/35controls pass; old template is refused
 Independent failed-run custody audit verified1767Gitfiles/twoELFs/21seedpaths/four
 frozenartifacts and1229 unchanged nonborrowed projections. Only the fixture changed;
 unchanged binaries are retained. All original synthetic and failed artifacts remain.
+
+Corrected engine5fe7cc0a048ffd23715f0ae0d1ee9eb84ef9c134 is
+PASS_LIVE_INITIAL_GUARDS, finished2026-10-13T07:38:26.013946Z; wrapper76058 joined0.
+ResultSHA b56e4d9d2aaf85b1c8cbd6533be2aa1da83547475f1b88895fdc8408cced518c.
+The actual preparingControl8 executes14 SQL subtransactions (one positive,
+13 exact23514 named refusals) inside outer27042. Product catalog is restored;
+typed activation commits27058 at1791877101352360us. Subsequent actual Control
+refresh and typed Ingest renewal change only their scheduling row fields/xmin;
+current Ingest deadline1791877121371917. Signed admission/retry/alternate signature
+ends69native rows/sequence84/seven inputs, preserving all original detail.
+Root independently replayed16full snapshots/35perturbations and matched raw stdout.
+Independent AI custody audit passed1767Gitfiles/twoELFs/21seedpaths/fourfrozen
+artifacts and1230 unchanged nonborrowed projections; external SQL/native/inputs and
+restored catalog match raw captures. Reviewer authored oracle; root replay is
+independent. Actual cleanup/missing/unrelated arrays
+are empty, PG stopped0/client143/PID0/noOOM. No PG restart for audit.
+
+Next bounded action: commit/push this audited qualification, then
+qualify existing history/gap/empty loader refusals on fresh activated-zero clones.
+New isolated harness/oracle worktrees are assigned to successor_restart_design and
+recovery_review. Root owns bindings and execution; existing ee24e86 artifacts suffice.
+History/empty must reach the activation receipt veto. Gap's epoch1 preflight refuses
+native epoch2 earlier; do not call that receipt-veto evidence. A prepared-unactivated
+positive history control is allowed within this bounded fixture. Preserve both seeds.
 
 General repeated lifetimes, retired-empty2→fresh3, activated-owner recovery,
 installed Sync/Archive restart/resend and ACK/GC remain selected requirements.
@@ -418,7 +439,8 @@ and idle client stopped143, both PID0/noOOM; wrapper78690 joined0. Cleanup/missi
 unrelated arrays are empty. Buildc640b2f remains stopped-retained. Resource audit
 confirms1226 unchanged nonborrowed projections. Subsequent ee24e86 build is also
 stopped-retained; audit confirms1228 unchanged preflight projections. Failed guard engine915478c is stopped-retained with borrowedPG0/client143,
-both PID0/noOOM; wrapper30812 joined1 at07:30:43Z. Root and helper
+both PID0/noOOM; wrapper30812 joined1 at07:30:43Z. Corrected5fe7cc0 also finished
+stopped0/143/PID0/noOOM; wrapper76058 joined0 at07:38:26Z. Root and helper
 source work continues; all earlier runs and six unrelated services are preserved.
 
 All ignored `.research/` worktrees, raw generated inputs/results, failure evidence,
@@ -430,7 +452,7 @@ Git cleanliness for permission to delete ignored data. The retained788f971 resul
 hash matched at the earlier05:55 resumption inspection; no pause-time qualification
 rerun is claimed.
 
-Free space was67,153,551,360 bytes after the guard build (about62.5GiB); remeasure before
+Free space was67,037,315,072 bytes after the corrected guard engine (about62.4GiB); remeasure before
 allocation. Small engine fixtures require2GiB; native builds12GiB. The larger
 export wave still requires64GiB+577MiB, currently unavailable. Never lower that
 reserve to force a run. No large export is allocated by this slice.

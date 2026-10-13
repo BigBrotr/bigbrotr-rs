@@ -514,7 +514,13 @@ live-writer groups. Finite connected2c142c6 passes five actual candidate process
 48full snapshots and116 independent capture controls: zero activation, first
 append/signed admission/retry/alternate signature and COMMIT13 loss on both sides.
 Its import event has no network observation; the provenance-off setting therefore
-does not qualify real network provenance suppression. Raw SQL transaction adversaries,
-live renewal, activated-zero old-loader refusals and installed/general restart remain
+does not qualify real network provenance suppression. Connected5fe7cc0 additionally
+qualifies14 rollback-only SQL discriminators on the actual preparing backend
+(one positive and13 named23514 refusals), catalog restoration, confirmed activation
+and typed live scheduling renewal followed by signed admission. Its independent
+oracle checks16 complete snapshots and35 rehashed perturbations. The renewed
+Ingest deadline follows current Control; it can shorten the initial deadline.
+First-request manifest mismatch after committed activation, refused/expired/lost
+renewal, activated-zero old-loader refusals and installed/general restart remain
 unqualified. Detailed identities and exclusions are in the existing
 [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).

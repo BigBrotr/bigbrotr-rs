@@ -295,8 +295,11 @@ One owner serializes exact identity decisions for each writable directory.
   Live locally minted1→2 activation now passes native buildc640b2f and five finite
   connected processes at2c142c6:48snapshots/116capture controls, exact first admission,
   retry/alternate signature and both activation COMMIT13 loss boundaries. No observed
-  identity becomes a writer. Raw SQL adversaries, renewal, activated-zero old loaders,
-  real network provenance-off and installed/general successor recovery remain open;
+  identity becomes a writer. Connected5fe7cc0 adds14 actual-backend SQL cases and
+  typed live renewal/admission,16full snapshots/35capture controls. The original
+  failed request fixture915478c remains retained. First-request manifest mismatch,
+  refused/expired/lost renewal, activated-zero old loaders, real network provenance-off
+  and installed/general successor recovery remain open;
   the finite import setting does not close this step or M1.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained

@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_GUARDS_CORRECTED_ENGINE_READY",
+    "status": "ACTIVE_GUARDS_PASS_NEXT_ZERO_LOADER_REFUSALS",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40847,9 +40847,10 @@
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-c640b2f",
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-engine-2c142c6",
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86",
-      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-915478c"
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-915478c",
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-5fe7cc0"
     ],
-    "qualification": "c640b2f PASS14checks/135tests; finite2c142c6 PASS5cases/48snapshots/116controls and read-only evidence audit. Guard probeee24e86 compile/Clippy and artifact audit PASS; connected guard engine NOT_RUN.",
+    "qualification": "c640b2f135tests,finite2c142c6fivecases,probeee24e86compile/Clippy and guards5fe7cc0actual16snapshots/14SQL/35controls PASS; failed915478c retained. Wholeproduct/M1 incomplete.",
     "pause_observation": {
       "observed_at": "2026-10-13T06:15:07Z",
       "reason": "Explicit owner pause for exhausted credits; resume only on explicit request",
@@ -40873,7 +40874,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Execute fresh exact guard engine with corrected reviewed request fixture and unchanged ee24e86 binaries, preserve failed915478c, audit actual evidence.",
+    "next_action": "Commit/push auditedguard qualification, then integrate and qualify activated-zero history/gap/empty loader refusals with a prepared positivehistory control using existingee24e86 artifacts. Newisolatedharness/oracle are in progress; no next engineallocated.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -41396,14 +41397,14 @@
       }
     ],
     "guards_fixture": {
-      "status": "CORRECTED_REVIEWED_ENGINE_NOT_RUN",
+      "status": "PASS_LIVE_INITIAL_GUARDS",
       "probe_owner": "root",
       "harness_owner": "recovery_review",
       "oracle_owner": "cleanup_review",
       "scope": "14 rollback-only SQL discriminators on actual preparing Control backend, restored product catalog, confirmed typed activation then actual Control refresh/Ingest renewal and signed admission",
       "checks": "AST/import/API/diff-check PASS; artificial16snapshots/14SQLcases/35rehashed controls. Exact old oracle accepts two propagated backdated transcripts; corrected oracle rejects both with exact phase-clock diagnostics.",
       "excluded": "Expired/refused renewal, activated-zero old-loader routes, first-request manifest mismatch, real network/provenance and installed/general successor recovery remain owed",
-      "observed_at": "2026-10-13T07:37:56.549945+00:00",
+      "observed_at": "2026-10-13T07:41:04.026621+00:00",
       "harness_source": "fa191358807e566da64f3aa8bc460bc6ef5ca946",
       "harness_integrated": "9f45f83",
       "oracle_source": "7abcc498affec87c041daf140441a6718fdaf30f",
@@ -41427,7 +41428,9 @@
         "root": ".research/live-initial-tests-20261013/.research/live-guards-oracle-fixture-v2-20261013",
         "generator_sha256": "1bb0905832a71d649ef533d3e9dfe66e1662f02b2499241205e60ee8442cb047",
         "valid_sha256": "b6aaf207c83acf3cb6e93a5c78ce7b7c6ffc32f0c38c7e4f665cb020beff1bdd"
-      }
+      },
+      "engine_source": "5fe7cc0a048ffd23715f0ae0d1ee9eb84ef9c134",
+      "actual_evidence": "Actual preparingControl8 invokes14rolledback SQL cases(1positive13named23514refusals), restoredproductcatalog, typedactivation then actualControlrefresh/Ingest renewal and signedadmission.16fullsnapshots/35negativecontrols. RootindependentreplayPASS; independentcustodyauditPASS."
     },
     "guard_builds": [
       {
@@ -41606,7 +41609,253 @@
           "artifacts": true
         },
         "audit": "Independent read-only AI custody audit:1767 exactGitfiles/two currentELFs/unchangedcompiledinputs;1229 nonborrowed projections unchanged of1230 priorcontainers,only ownedclient added;terminalPG0/client143/PID0/noOOM;21 seedpaths302273regularfilebytes/four frozenartifacts unchanged;external72SQL/native52seq62/input4 equals lastprepared,exactbackendabsence. No guard/oracle PASS."
+      },
+      {
+        "source": "5fe7cc0a048ffd23715f0ae0d1ee9eb84ef9c134",
+        "status": "PASS_LIVE_INITIAL_GUARDS",
+        "owner": "1d48a24011c56e9a6b4f948f66fc0fee",
+        "label": "org.bigbrotr.acquisition-binding",
+        "started_at": "2026-10-13T07:38:14.284255+00:00",
+        "finished_at": "2026-10-13T07:38:26.013946+00:00",
+        "client": {
+          "id": "60356ba4301efcb0f5bfebf9a75f94b9e9550f2c2d151f96d1e776f09ff5ba87",
+          "name": "bigbrotr-acquisition-binding-5fe7cc0"
+        },
+        "databases": [
+          "bb_scope_bind_5fe7cc0_successor_live_guards"
+        ],
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "free_bytes_before": 67068641280,
+        "free_bytes_after": 67037315072,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "not_run": [
+          "renewal refusal/expiry/COMMIT loss and activated-zero old-loader routes",
+          "first-request manifest mismatch, real network provenance and installed successor consumers",
+          "native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1",
+          "capacity/load/aged-state and arm64/release"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-5fe7cc0",
+        "tree": "beed05de32a4d224bc57a18d3f476832c5eacf66",
+        "wrapper": 76058,
+        "exit_code": 0,
+        "result_sha256": "b56e4d9d2aaf85b1c8cbd6533be2aa1da83547475f1b88895fdc8408cced518c",
+        "build_source": "ee24e86d6ad0e800305d5aa48d8a01879aeeafc1",
+        "cases": [
+          {
+            "name": "successor-live-guards",
+            "status": "PASS",
+            "oracle": {
+              "status": "PASS",
+              "mode": "successor-live-guards",
+              "snapshots": 16,
+              "control_tables": 72,
+              "sql_cases": 14,
+              "positive_cases": 1,
+              "named_refusals": 13,
+              "guard_transaction": "27042",
+              "activation_transaction": "27058",
+              "activated_at_us": 1791877101352360,
+              "final_native_rows": 69,
+              "final_native_sequence": 84,
+              "final_inputs": 7,
+              "original_requests_preserved": 4,
+              "new_requests": 3,
+              "current_ingest_deadline_us": 1791877121371917,
+              "backend_absent": {
+                "backend_start": "2026-10-13T07:38:19.057023+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_5fe7cc0_successor_live_guards",
+                "event": "successor-backend",
+                "pid": 309,
+                "present": false,
+                "stage": "initial"
+              },
+              "catalog_restored": true,
+              "finite_import_only": true,
+              "raw_running_import": false,
+              "product_policy_activation": false,
+              "network_provenance_off": false,
+              "installed_import": false,
+              "fresh_process_adoption": false
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "rejected": [
+                "sql-case-missing",
+                "wrong-actual-backend",
+                "wrong-actual-database",
+                "privileged-case-actor",
+                "replica-bypass",
+                "outer-transaction-substituted",
+                "receipt-subtransaction-reused",
+                "receipt-subtransaction-is-parent",
+                "caller-xid-not-overwritten",
+                "historical-preparer-substituted",
+                "positive-case-skipped",
+                "wrong-named-refusal",
+                "wrong-refusal-code",
+                "constraint-order-lost",
+                "rollback-not-observed",
+                "fixture-repeat",
+                "fixture-security-definer",
+                "catalog-product-trigger-disabled",
+                "catalog-not-restored",
+                "coherent-product-function-substitution",
+                "rehashed-unreviewed-sql",
+                "remove-script-unreviewed",
+                "future-case-clock",
+                "coherent-guard-refresh-backdated",
+                "coherent-postactivation-refresh-backdated",
+                "renewal-not-committed",
+                "renewal-changes-intent",
+                "renewal-wrong-deadline",
+                "future-control-renewal-clock",
+                "renewal-rewrites-activation",
+                "guard-refresh-persists-activation",
+                "old-original-xmin-rewritten",
+                "same-request-receipt-changed",
+                "wrong-backend-absence",
+                "native-owner-not-closed"
+              ]
+            },
+            "raw_cases": 14,
+            "backend_absence": {
+              "database": "bb_scope_bind_5fe7cc0_successor_live_guards",
+              "user": "bigbrotr_control",
+              "limit_seconds": 5,
+              "status": "OBSERVED_ABSENT",
+              "attempts": [
+                {
+                  "seconds": 0.0881040571257472,
+                  "count": 0,
+                  "backends": []
+                }
+              ],
+              "seconds": 0.08810701221227646
+            },
+            "exact_backend": {
+              "expected": {
+                "pid": 309,
+                "backend_start": "2026-10-13T07:38:19.057023+00:00",
+                "database": "bb_scope_bind_5fe7cc0_successor_live_guards",
+                "control_epoch": 8
+              },
+              "returncode": 0,
+              "stdout": "f\n",
+              "stderr": "",
+              "present": false
+            },
+            "catalog_unchanged": true,
+            "external_final_matches": true,
+            "verification_sha256": "9a1ef9d18071e99b1429c07a92524bf611e3652c56d220312f7476281bab1b96"
+          }
+        ],
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "inputs": true,
+          "artifacts": true
+        },
+        "resources": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T07:38:14.367161883Z",
+              "FinishedAt": "2026-10-13T07:38:25.20046282Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "60356ba4301efcb0f5bfebf9a75f94b9e9550f2c2d151f96d1e776f09ff5ba87",
+            "Name": "/bigbrotr-acquisition-binding-5fe7cc0",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T07:38:15.148561556Z",
+              "FinishedAt": "2026-10-13T07:38:24.677959875Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-ee24e86/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-guards-engine-5fe7cc0/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "audit": "PASS read-only audit: root independently replayed actual16snapshots/14SQL/35controls and rawstdout/context. Helpercleanup_review independently verified1767 exactGitfiles/twoee24ELFs/unchangedRustinputs,1230 unchangednonborrowed projections,terminalPG0/client143/PID0/noOOM,21seedpaths302273regularbytes/fourfrozenartifacts,external72SQL/native69seq84/7inputs and preserved4originals,restored1045triggers/721constraints/14functions/5grants,exactbackendabsence. Helperauthoredoracle; rootreplayindependent. OriginalSQLpreservation capturedrun only; no auditrestart.",
+        "postgres_log_sha256": "12246196f5000c22813a44c7ee23565be4ee7fa672646f65bc544d9ca84e10df",
+        "verification_sha256": "9a1ef9d18071e99b1429c07a92524bf611e3652c56d220312f7476281bab1b96"
       }
-    ]
+    ],
+    "activated_zero_routes": {
+      "status": "HARNESS_ORACLE_IN_PROGRESS_ENGINE_NOT_RUN",
+      "base": "5fe7cc0a048ffd23715f0ae0d1ee9eb84ef9c134",
+      "harness_owner": "successor_restart_design",
+      "oracle_owner": "recovery_review",
+      "harness_worktree": ".research/live-zero-routes-harness-20261013",
+      "oracle_worktree": ".research/live-zero-routes-oracle-20261013",
+      "root_owner": "bindings,docs,integration,build/engineexecution",
+      "scope": "three freshprocess activated-zero loader refusals plus prepared-unactivated positivehistory control; exact72-table/native/input capture; gap refusal is epoch1preflight, not SQLactivationveto"
+    }
   }
 }
