@@ -428,7 +428,12 @@ in a fresh process. This command leaves workflow and producer retirement for the
 separate operation; it starts no acquisition, acknowledges no receipts, reclaims
 no inputs and keeps `ready=false`. Qualification is tracked in the
 [source closure contract](ingest-registration.md#activated-initial-source-closure-under-implementation)
-and existing recovery evidence; actual source closure execution remains pending.
+and existing recovery evidence. The first installed wave passes 13 invocations:
+off/on closure and exact retry, empty and rejected-only prefixes, legacy recovery
+with its original grants, and missing-input or inconsistent terminal refusals.
+The on case uses an isolated privileged draining baseline; it does not qualify
+the transition into draining. Final-COMMIT loss, concurrent job bounds and a
+connected AlreadyDurable-only prefix remain separate pending scenarios.
 
 ## Exact dependency source basis
 

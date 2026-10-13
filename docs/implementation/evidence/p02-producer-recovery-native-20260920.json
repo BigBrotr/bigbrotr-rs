@@ -17767,13 +17767,13 @@
         }
       },
       "activated_source_closure_20261013": {
-        "status": "BUILD_PASS_INSTALLED_ENGINE_NOT_RUN",
-        "observed_at": "2026-10-13T11:58:17.624513+00:00",
+        "status": "PASS_SELECTED_INSTALLED_SOURCE_CLOSURE_FIRST_WAVE_REMAINING_GATES_OPEN",
+        "observed_at": "2026-10-13T12:09:16.089444+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
         "postgres_design": "Distinct source-purpose classifier; missing-copy repair only while source open, exact copies required once closed; additive0035 narrow source dispatch",
-        "acceptance": "Actual off/on/zero/rejected/AlreadyDurable sourcezero, refusals, final-COMMIT loss and job/closure lock orders remain NOT_RUN. Native tests PASS at9dbc.",
+        "acceptance": "First installed13CLI and91native/entry tests PASS; remaining gates enumerated by first_installed_wave.remaining",
         "native": {
           "source": "af12324217cda75535b535d25b61fa3e119cd78e",
           "integrated": "0a053417c8bd0b085ebb9138af371c7a39ef5292",
@@ -17783,14 +17783,14 @@
           "source": "f76dfd9029891a2ed93a5acb6ddc16b663fdadac",
           "integrated": "ceef83a",
           "migration0035_sha256": "80b5441cbb2de1f782ce6458e1c2b26a2f3730f51e61619af49f1e8d8adc375a",
-          "checks": "Scoped format/diff/catalog/applied-migration preservation PASS; SQL not executed"
+          "checks": "Additive34\u219235\u219235 actualmigration/schema/catalog/row/xmin/physicalidentity preservation and oldroleACL continuation PASS in firstinstalledwave; firstoff/on/zero/rejected sourceclose/retry/refusals PASS. FinalCOMMITloss/concurrency remainNOT_RUN."
         },
         "root_consumer": "Explicit --close-activated-source integrated5e57e63; shared custody, bounded prefix replay/publication, resource overlap and entrypoint refusal checks",
-        "review": "Root complete affected native/PG/CLI/build source review; native author independently reviewed PG and PG author independently reviewed native/CLI/build profile. No unresolved source finding. First-wave fixture root review complete, independent review in progress; actual SQL/engine NOT_RUN.",
+        "review": "Root complete source/fixture review and actual211control semantic replay PASS. Separate native/PG/CLI source reviews close withoutfinding. Fixture-author raw/artifact custody audit PASS, not independentsemantic review.",
         "fixture": {
           "source": "380e57d51aa77a401137ce02779119ab1b5a60d8",
           "integrated": "bbe7ae0803f27855362ee4b3e1ca52c54aa32dd7",
-          "status": "COMMITTED_ENGINE_NOT_RUN",
+          "status": "PASS_FIRST_INSTALLED_WAVE",
           "cases": "Five clonedseeds/13installedCLI/0finiteseeds; exactreports and72-table/ native/input ownership checks",
           "pure_checks": "13artificialcontexts26observations211negativecontrols plus4mock custodyfailures PASS; not engine evidence",
           "pure_manifest": ".research/activated-recovery-qualification-20261013/.research/activated-source-closure-selfcheck-20261013/manifest.json",
@@ -17866,6 +17866,312 @@
             "unchanged_prior_containers": 1259
           },
           "scope": "Build and actual affected native/CLI tests only. PostgreSQL/installed source closure remains NOT_RUN."
+        },
+        "first_installed_wave": {
+          "status": "PASS_INSTALLED_ACTIVATED_SOURCE_CLOSURE_FIRST_WAVE",
+          "source": "c7b2b3cccbbc356609c2bb9cdffd59ec681b13ba",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-engine-c7b2b3c",
+          "owner": "893c3ddbddd3c7ca698c6bbc2cc7b8e1",
+          "client": {
+            "id": "475ab340ed0b8618bfe51c314f90f7168f446924ee5594413d955bf2dd3c91f0",
+            "name": "bigbrotr-acquisition-binding-c7b2b3c"
+          },
+          "started_at": "2026-10-13T11:59:39.680032+00:00",
+          "finished_at": "2026-10-13T12:01:13.207656+00:00",
+          "wrapper": "79524 joined0",
+          "build_source": "9dbc5b2cd05362b9900055afac65b1b672e5b016",
+          "result_sha256": "01ebda022458719700afa4d0da2b1867551be4e9db2c7d290825a76c1a4d9ca9",
+          "cli_invocations": 13,
+          "finite_seed_invocations": 0,
+          "cases": [
+            {
+              "name": "installed-source-off",
+              "attempts": [
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-off",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "native_writes": 1,
+                  "retained_inputs": 6,
+                  "issued": 2,
+                  "source_cut": 5,
+                  "source_digest": "05d4cca350996266cfbdfd651a1e4bc5194c5b95a27650447d542ac66c87d5bb",
+                  "source_closed": true,
+                  "outcome_copy_repaired": true,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-off-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "native_writes": 0,
+                  "retained_inputs": 6,
+                  "issued": 2,
+                  "source_cut": 5,
+                  "source_digest": "05d4cca350996266cfbdfd651a1e4bc5194c5b95a27650447d542ac66c87d5bb",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-off-closed-missing-copy",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "native_writes": 0,
+                  "retained_inputs": 6,
+                  "issued": 2,
+                  "source_cut": 5,
+                  "source_digest": "05d4cca350996266cfbdfd651a1e4bc5194c5b95a27650447d542ac66c87d5bb",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": true,
+                  "workflow_retired": false
+                }
+              ]
+            },
+            {
+              "name": "installed-source-on",
+              "attempts": [
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-on",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 99,
+                  "native_writes": 1,
+                  "retained_inputs": 6,
+                  "issued": 2,
+                  "source_cut": 9,
+                  "source_digest": "288581081c75d9f7de6d7c846c4cf24bb2d2bec19a21d84ac22c0759274f3036",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-on-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 99,
+                  "native_writes": 0,
+                  "retained_inputs": 6,
+                  "issued": 2,
+                  "source_cut": 9,
+                  "source_digest": "288581081c75d9f7de6d7c846c4cf24bb2d2bec19a21d84ac22c0759274f3036",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-on-mixed",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 84,
+                  "native_sequence": 99,
+                  "native_writes": 0,
+                  "retained_inputs": 6,
+                  "issued": 2,
+                  "source_cut": 9,
+                  "source_digest": "288581081c75d9f7de6d7c846c4cf24bb2d2bec19a21d84ac22c0759274f3036",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": true,
+                  "workflow_retired": false
+                }
+              ]
+            },
+            {
+              "name": "installed-source-zero",
+              "attempts": [
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-zero-legacy-open",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 52,
+                  "native_sequence": 63,
+                  "native_writes": 1,
+                  "retained_inputs": 4,
+                  "issued": 0,
+                  "source_cut": 0,
+                  "source_digest": "105633323cbc98e9203ed4724d1e2dbe36dc4048ec30cc814f0bea2b07005260",
+                  "source_closed": false,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-zero",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 52,
+                  "native_sequence": 63,
+                  "native_writes": 0,
+                  "retained_inputs": 4,
+                  "issued": 0,
+                  "source_cut": 0,
+                  "source_digest": "105633323cbc98e9203ed4724d1e2dbe36dc4048ec30cc814f0bea2b07005260",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-zero-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 52,
+                  "native_sequence": 63,
+                  "native_writes": 0,
+                  "retained_inputs": 4,
+                  "issued": 0,
+                  "source_cut": 0,
+                  "source_digest": "105633323cbc98e9203ed4724d1e2dbe36dc4048ec30cc814f0bea2b07005260",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-zero-legacy-closed",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 52,
+                  "native_sequence": 63,
+                  "native_writes": 0,
+                  "retained_inputs": 4,
+                  "issued": 0,
+                  "source_cut": 0,
+                  "source_digest": "105633323cbc98e9203ed4724d1e2dbe36dc4048ec30cc814f0bea2b07005260",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": true,
+                  "workflow_retired": false
+                }
+              ]
+            },
+            {
+              "name": "installed-source-rejected",
+              "attempts": [
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-rejected",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 53,
+                  "native_sequence": 65,
+                  "native_writes": 0,
+                  "retained_inputs": 5,
+                  "issued": 1,
+                  "source_cut": 0,
+                  "source_digest": "7cfb1eeaacff29f935201d2a7229b931b125a5cef3aed3b30727b898d87e89ea",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                },
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-rejected-retry",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 53,
+                  "native_sequence": 65,
+                  "native_writes": 0,
+                  "retained_inputs": 5,
+                  "issued": 1,
+                  "source_cut": 0,
+                  "source_digest": "7cfb1eeaacff29f935201d2a7229b931b125a5cef3aed3b30727b898d87e89ea",
+                  "source_closed": true,
+                  "outcome_copy_repaired": false,
+                  "refused": false,
+                  "workflow_retired": false
+                }
+              ]
+            },
+            {
+              "name": "installed-source-missing-input",
+              "attempts": [
+                {
+                  "status": "PASS",
+                  "mode": "installed-source-missing-input",
+                  "observed_states": 2,
+                  "control_tables": 72,
+                  "native_rows": 70,
+                  "native_sequence": 85,
+                  "native_writes": 1,
+                  "retained_inputs": 5,
+                  "issued": 2,
+                  "source_cut": 5,
+                  "source_digest": "05d4cca350996266cfbdfd651a1e4bc5194c5b95a27650447d542ac66c87d5bb",
+                  "source_closed": false,
+                  "outcome_copy_repaired": false,
+                  "refused": true,
+                  "workflow_retired": false
+                }
+              ]
+            }
+          ],
+          "independent_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-engine-c7b2b3c/root-independent-replay.json",
+            "sha256": "b5a8d58f849e8425bf6546f655cd939144e55a0f81a78230becd1fc5d2e6b425",
+            "wrapper": "39602 joined0",
+            "complete_observations": 26,
+            "operator_observations": 10,
+            "controls": 211,
+            "scope": "Root source-reviewed independent expectations replayed against all raw SQL/native/input/config/process/backend/clock/catalog/operator artifacts. No SQL, engine or native-opening action."
+          },
+          "artifact_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-engine-c7b2b3c/cleanup-review-artifact-custody-20261013.json",
+            "sha256": "e9a58e02085b06b36d7c3dbae5d48a95f75399a3c842ddb50068549fd71af716",
+            "engine_files": 1801,
+            "build_files": 1798,
+            "retained_elf_paths": 57,
+            "unchanged_nonborrowed_containers": 1260,
+            "raw_artifact_bindings": 352,
+            "full_states": 41,
+            "originals": "Four originals92paths84regularfiles1237482bytes and16frozenartifactbindings preserved",
+            "independence": "Fixture/oracle author performed custody audit; root independently reviewed and replayed semantic expectations",
+            "retained_audit_corrections": "First audit helper assumptions about mount order/health logs and zero SQL filename corrected to established projection/exact frozenpath; failed attempts retained; no product or run artifact changed"
+          },
+          "boundaries": "Source2 closure only. Draining and inconsistent target producer setup are privileged isolated mutations, not supported live transitions. Existing job/workflow/producer retirement remain incomplete.",
+          "remaining": [
+            "connected AlreadyDurable/source0",
+            "finalsourceCOMMIT loss beforeforward/afterservercomplete",
+            "both job/closure lock orders",
+            "remaining connectedprefix/tail refusals",
+            "workflowretirement/repeatedlifetimes/Archive/fullM1"
+          ]
+        },
+        "next": "Run new two-clone/four-CLI finalsource COMMIT8 fault/recovery fixture using unchanged9dbc product artifacts; separately implement genuineAlreadyDurable source0 finite seed.",
+        "final_commit_fault_fixture": {
+          "source": "5b6b176e059dc865b29778bf4d76c9b4f6a0c2e3",
+          "integrated": "fee9793a0cc3de09d72d0112348717fad061cd6a",
+          "status": "REVIEWED_COMMITTED_ENGINE_NOT_RUN",
+          "cases": "Two fresh offclones, missingcopy2 repairC6, finalsourceC8 beforeforward/aftercomplete and freshdirectretry:4CLI",
+          "review": "Root complete newdriver/oracle and reusedinvocation/custody/config/currentControl owners; nofinding",
+          "pure": "Fourartificialcontexts/eightobservations/88negativecontrolsPASS; not engine qualification",
+          "manifest": ".research/activated-recovery-postgres-20261013/.research/activated-source-fault-selfcheck-20261013/manifest.json",
+          "manifest_sha256": "dd8ab8e1a8295ba21dcb560659cbfd4786b3e81e8f3b6947a041010b676a8113"
         }
       }
     }

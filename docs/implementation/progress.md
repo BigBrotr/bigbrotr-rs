@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T11:59Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:09Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,12 +14,13 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-bbe7ae0803f27855362ee4b3e1ca52c54aa32dd7. Last verified privatepush9dbc5b2 and nativeccda685/PGf76dfd9 sourcebranches;
-main54ad09d unchanged. No merge/rebase/cherry-pick pending. Root owns pending exact
-engine dispatcher/evidence/checkpoint. Firstwave fixture380e57d integratedbbe7ae0.
-Native agent now implements genuine AlreadyDurable finite seed in a separate worktree;
-PG/fixture agents finish read-only reviews. Root alone integrates/builds/executes.
-All ignored/external artifacts and worktrees remain preserved.
+fee9793a0cc3de09d72d0112348717fad061cd6a. Last verified privatepush9dbc5b2 and
+nativeccda685/PGf76dfd9 sourcebranches; main54ad09d unchanged. No merge/rebase/cherry-pick
+pending. Root owns firstwave evidence/docs/checkpoint and nextfault dispatcher.
+Firstwave fixture380e57d integratedbbe7ae0. PG agent owns newtwofile sourceCOMMITfault
+fixture on qualification/activated-source-faults. Native and fixture agents develop
+genuineAlreadyDurable finite seed/independent oracle in separateworktrees.
+Root alone integrates/builds/executes; all ignored/external artifacts preserved.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -93,10 +94,30 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit firstwave dispatcher and current evidence, then run fivefreshclones/13CLI
-with exact9dbc5b2 build artifacts via `--ingest-activated-source`. Root complete
-source review and four custody mocks pass; independent fixture review closes the
-same finite responsibility. No actual source2 closure/SQL qualification yet.
+Integrate and commit new finalsource COMMIT8 faultfixture plus rootdispatcher, then
+run two off-seed clones/four CLI using unchanged9dbc product artifacts. Root complete
+faultdriver/oracle/reusedowners source review found no blocker; author pure4context
+checksPASS4contexts/8observations/88controls. Fixture5b6b176 integratedfee9793. Assert actualwire8/7/7/7/1 beforeforward and8/8/8/7/1 afterserver
+completion; earlier outcome2 copyC6 must surviveboth, freshdirectControl10 preserves
+recorder9, afterCOMMIT8 closedretry preserves sourcexmin/timestamp. No engineyet.
+
+Firstwaveenginec7b2b3c PASS:13 actualCLI onfive freshclones, no newfinite seed.
+Root `/runs/ingest-activated-source-engine-c7b2b3c`, owner893c3ddbddd3c7ca698c6bbc2cc7b8e1,
+wrapper79524 joined0,11:59:39–12:01:13Z. ResultSHA
+01ebda022458719700afa4d0da2b1867551be4e9db2c7d290825a76c1a4d9ca9.
+Offsourcecut5/native70/seq85;onsourcecut9/native84/seq99;zero52/63;rejected53/65/cut0.
+Firstoff repairs missingcopy2 beforeclosure, freshretryexact, missingcopyafterclosed
+refuses. Onprivilegeddrainingfirst/retry then mixedclosedproduceropen refuses.
+Zero oldpositive executes underoldgrants after35, newclosure/retrypass andoldpositive
+onclosedrefuses. RetainedactualRejectedfirst/retrypass; missinginput2refuses after
+native+SQL closing while sourceopen. Initial ownerdraining operator mutation is not
+qualification of a product transition into draining. Four nativeclosing writes only;
+allretries retain source/outcome timestamp/xmin. No workflowretirementclaim.
+Rootindependentactualreplay39602 joined0:26fullstates+10operatorstates,211adversarial
+controls boundrawSQL/native/input/config/process/backend/clock/catalog. Separate
+fixture-author custodyaudit:1801engine/1798buildfiles,57ELFs,1260nonborrowed projections,
+352rawbindings,41complete72-table states, fouroriginal92paths/84files preserved.
+Audithelper assumption failures retained and corrected without changingrun/product.
 
 Corrected build9dbc5b2 PASS: compile,46entry/schema/migration,45native(3legacy,
 33reconstruction,9closing),Clippy. Allsixnewsource groups execute. Root
@@ -207,11 +228,11 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-Latest buildwrapper72267/rootaudit14257 joined0;9dbc is PASS and allbuildcontainers
-stopped/PID0/noOOM. Rootaudit57ELFs and1259 unchangedpriorprojections PASS. No build
-or engine active at this checkpoint. Firstbuild5e57FAIL and sixproducedELFs retained.
-Previous qualifiedenginef6d/PG/client remain stopped. Keep all raw artifacts,
-operatorpreimages, original failures and failed audit attempts.
+Latest enginewrapper79524 and rootreplay39602 joined0. PG/client stopped0/143,
+PID0/noOOM; custodyaudit1260nonborrowedprojections unchanged,57ELFs preserved.
+Latest build72267/audit14257 joined0; firstbuild63806 remainsFAIL with sixELFs retained.
+No build/engine active at this checkpoint. Nativeprobe and Pythonfixture agents edit
+separateworktrees only. Keep all rawartifacts, preimages, failedruns/audits and seeds.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
