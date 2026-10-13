@@ -62,11 +62,11 @@ pub(super) struct Intent {
     pub(super) role: [u8; 16],
     created_at_us: i64,
     lease_expires_at_us: i64,
-    request_limit: u32,
-    prepared_resource: [u8; 16],
-    prepared_epoch: u64,
-    prepared_incarnation: [u8; 16],
-    policy: PolicySnapshot,
+    pub(super) request_limit: u32,
+    pub(super) prepared_resource: [u8; 16],
+    pub(super) prepared_epoch: u64,
+    pub(super) prepared_incarnation: [u8; 16],
+    pub(super) policy: PolicySnapshot,
 }
 
 impl ControlSession {

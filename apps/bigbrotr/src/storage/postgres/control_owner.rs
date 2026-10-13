@@ -78,6 +78,9 @@ mod initial_ingest_basis;
 pub use initial_ingest_basis::InitialIngestBasis;
 #[path = "acquisition_abandonment.rs"]
 mod acquisition_abandonment;
+#[path = "initial_activation.rs"]
+mod initial_activation;
+pub use initial_activation::LiveInitialWriter;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "initial_empty.rs"]
@@ -103,7 +106,7 @@ pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialVisibilityRequest,
+    InitialVisibilityRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
 };
 pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{

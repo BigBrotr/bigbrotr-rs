@@ -96,7 +96,7 @@ fn event_source<'a>(
 /// Static factory coordinates, not request-supplied authority.
 struct InitialIngestContext<'a> {
     ingest_root: &'a std::path::Path,
-    registration: &'a ingest_registry::InitialRegistration,
+    authority: NativeAuthority<'a>,
     policy_ttl: Duration,
     request: Option<(ProducerRequestId, RequestPhase)>,
     source: Option<CurrentSourceCheck<'a>>,
@@ -104,9 +104,70 @@ struct InitialIngestContext<'a> {
     job: Option<ImportJobBinding>,
 }
 
+#[derive(Clone, Copy)]
+enum NativeAuthority<'a> {
+    Initial(&'a ingest_registry::InitialRegistration),
+    Live(&'a initial_activation::LiveInitialBinding),
+}
+impl<'a> NativeAuthority<'a> {
+    fn previous(self) -> &'a ingest_registry::InitialRegistration {
+        match self {
+            Self::Initial(s) => s,
+            Self::Live(b) => &b.previous,
+        }
+    }
+    fn control(self) -> ingest_registry::ControlOwner {
+        match self {
+            Self::Initial(s) => s.control,
+            Self::Live(b) => b.control,
+        }
+    }
+    fn epoch(self) -> u64 {
+        match self {
+            Self::Initial(_) => 1,
+            Self::Live(_) => 2,
+        }
+    }
+    fn limit(self) -> u32 {
+        match self {
+            Self::Initial(s) => s.outstanding_request_limit,
+            Self::Live(b) => b.intent.request_limit,
+        }
+    }
+    fn policy(self) -> PolicySnapshot {
+        match self {
+            Self::Initial(s) => PolicySnapshot {
+                config_revision: s.config_revision,
+                policy_revision: s.policy_revision,
+                config_digest: *s.config_digest.as_bytes(),
+                policy_digest: *s.policy_digest.as_bytes(),
+            },
+            Self::Live(b) => b.intent.policy,
+        }
+    }
+}
+
 pub struct InitialEventRequest<'a> {
     pub ingest_root: &'a std::path::Path,
     pub registration: &'a ingest_registry::InitialRegistration,
+    pub event: PreparedEvent,
+    /// Original operational source, supplied by the trusted acquisition owner.
+    /// None is reserved for imports and legacy unbound fixtures, not an escape
+    /// from current source permission. This data alone is never a socket grant.
+    pub relay_source: Option<RelaySourceBinding>,
+    /// The actual subscription owner retains this immutable collection/request
+    /// predicate through both phases. None is only for prior unbound consumers.
+    pub acquisition: Option<AcquisitionEventContext<'a>>,
+    pub provenance_enabled: bool,
+    pub recorded_at: ObservedTime,
+    pub limits: AdmissionLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
+/// Live-writer payload; authority belongs exclusively to the retained writer.
+pub struct LiveInitialEventRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
     pub event: PreparedEvent,
     /// Original operational source, supplied by the trusted acquisition owner.
     /// None is reserved for imports and legacy unbound fixtures, not an escape
@@ -198,6 +259,17 @@ pub struct InitialDictionaryAppendRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Live-writer payload; authority belongs exclusively to the retained writer.
+pub struct LiveInitialDictionaryAppendRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub request_sequence: RequestSequence,
+    pub intent: &'a EvidenceIntent,
+    pub recorded_at: ObservedTime,
+    pub limits: AdmissionLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 impl ControlSession {
     /// Run on the same retained native owner as admission. This read establishes
     /// immutable attribution only; job/source authority is checked separately.
@@ -219,7 +291,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: input.registration,
+                    authority: NativeAuthority::Initial(input.registration),
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
@@ -270,7 +342,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: input.registration,
+                    authority: NativeAuthority::Initial(input.registration),
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
@@ -329,7 +401,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: input.registration,
+                    authority: NativeAuthority::Initial(input.registration),
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source,
@@ -396,7 +468,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority: NativeAuthority::Initial(spec),
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Reservation)),
                     source: None,
@@ -435,7 +507,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority: NativeAuthority::Initial(spec),
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Dispatch)),
                     source: None,
@@ -513,17 +585,61 @@ impl ControlSession {
         store: &mut IngestStore,
         input: InitialDictionaryAppendRequest<'_>,
         permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<StoredReceipt, InitialEventError> {
+        self.append_native_dictionaries(
+            store,
+            NativeAuthority::Initial(input.registration),
+            LiveInitialDictionaryAppendRequest {
+                ingest_root: input.ingest_root,
+                request_sequence: input.request_sequence,
+                intent: input.intent,
+                recorded_at: input.recorded_at,
+                limits: input.limits,
+                policy_ttl: input.policy_ttl,
+                cancelled: input.cancelled,
+            },
+            permit,
+            validate,
+        )
+        .await
+    }
+    pub async fn append_live_initial_dictionaries(
+        &mut self,
+        writer: &mut LiveInitialWriter,
+        input: LiveInitialDictionaryAppendRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<StoredReceipt, InitialEventError> {
+        self.append_native_dictionaries(
+            writer.native.store_mut(),
+            NativeAuthority::Live(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    async fn append_native_dictionaries(
+        &mut self,
+        store: &mut IngestStore,
+        authority: NativeAuthority<'_>,
+        input: LiveInitialDictionaryAppendRequest<'_>,
+        permit: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
-        let spec = input.registration;
+        let spec = authority.previous();
+        let control = authority.control();
         let identity = *store.manifest().identity();
         let request = ProducerRequestId {
             producer_slot_id: spec.producer_slot_id,
-            producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
+            producer_epoch: ProducerEpoch::new(authority.epoch())
+                .map_err(|_| OwnerError::InvalidInput)?,
             request_sequence: input.request_sequence,
         };
-        if input.request_sequence.get() <= 1
-            || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
+        if (authority.epoch() == 1 && input.request_sequence.get() <= 1)
+            || input.limits.max_outstanding_requests > u64::from(authority.limit())
         {
             return Err(OwnerError::InvalidInput.into());
         }
@@ -532,7 +648,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Reservation)),
                     source: None,
@@ -551,7 +667,7 @@ impl ControlSession {
                 &permit,
             )
             .map_err(InitialEventError::Native)?;
-        producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None, None)
+        producer_requests::reserve(&reservation_tx, &staged, control, None, None, None)
             .await
             .map_err(InitialEventError::Reservation)?;
         if input.cancelled.load(Ordering::Relaxed) {
@@ -577,7 +693,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Dispatch)),
                     source: None,
@@ -622,7 +738,7 @@ impl ControlSession {
             receipt
                 .native_outcome()
                 .ok_or(InitialEventError::Outcome(OutcomeError::InvalidMetadata))?,
-            spec.control,
+            control,
         )
         .await
         .map_err(InitialEventError::Outcome)?;
@@ -652,12 +768,57 @@ impl ControlSession {
         store: &mut IngestStore,
         input: InitialEventRequest<'_>,
         permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
+    ) -> Result<StoredOutcome, InitialEventError> {
+        self.admit_native_event(
+            store,
+            NativeAuthority::Initial(input.registration),
+            LiveInitialEventRequest {
+                ingest_root: input.ingest_root,
+                event: input.event,
+                relay_source: input.relay_source,
+                acquisition: input.acquisition,
+                provenance_enabled: input.provenance_enabled,
+                recorded_at: input.recorded_at,
+                limits: input.limits,
+                policy_ttl: input.policy_ttl,
+                cancelled: input.cancelled,
+            },
+            permit,
+            validate,
+        )
+        .await
+    }
+    pub async fn admit_live_initial_event(
+        &mut self,
+        writer: &mut LiveInitialWriter,
+        input: LiveInitialEventRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
+    ) -> Result<StoredOutcome, InitialEventError> {
+        self.admit_native_event(
+            writer.native.store_mut(),
+            NativeAuthority::Live(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+
+    async fn admit_native_event(
+        &mut self,
+        store: &mut IngestStore,
+        authority: NativeAuthority<'_>,
+        input: LiveInitialEventRequest<'_>,
+        permit: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
-        let spec = input.registration;
+        let spec = authority.previous();
+        let control = authority.control();
         if input.event.request_id().producer_slot_id != spec.producer_slot_id
-            || input.event.request_id().producer_epoch.get() != 1
-            || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
+            || input.event.request_id().producer_epoch.get() != authority.epoch()
+            || input.limits.max_outstanding_requests > u64::from(authority.limit())
         {
             return Err(OwnerError::InvalidInput.into());
         }
@@ -674,7 +835,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: Some((input.event.request_id(), RequestPhase::Reservation)),
                     source,
@@ -694,7 +855,7 @@ impl ControlSession {
         producer_requests::reserve(
             &reservation_tx,
             &staged,
-            spec.control,
+            control,
             input.relay_source,
             input.acquisition.map(|context| context.scope().identity()),
             input
@@ -725,7 +886,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority,
                     policy_ttl: input.policy_ttl,
                     request: Some((input.event.request_id(), RequestPhase::Dispatch)),
                     source,
@@ -767,10 +928,10 @@ impl ControlSession {
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
-        producer_outcomes::record(&tx, &staged, outcome.native_outcome(), spec.control)
+        producer_outcomes::record(&tx, &staged, outcome.native_outcome(), control)
             .await
             .map_err(InitialEventError::Outcome)?;
-        import_checkpoints::close_record(&tx, outcome.native_outcome(), spec.control)
+        import_checkpoints::close_record(&tx, outcome.native_outcome(), control)
             .await
             .map_err(InitialEventError::ImportCheckpoint)?;
         // SQL awaits can consume the lease or observe cancellation after native
@@ -840,7 +1001,7 @@ impl ControlSession {
                 store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
-                    registration: spec,
+                    authority: NativeAuthority::Initial(spec),
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
@@ -899,47 +1060,57 @@ impl ControlSession {
         input: InitialIngestContext<'_>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
-        let spec = input.registration;
+        let authority = input.authority;
+        let spec = authority.previous();
+        let control = authority.control();
+        let expected_policy = authority.policy();
         let identity = *store.manifest().identity();
-        let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
-            .map_err(|_| OwnerError::InvalidInput)?;
         if !store.matches_configured_root(input.ingest_root)
             || spec.dataset_id != self.request.dataset
             || spec.instance_id != *self.request.instance.as_bytes()
-            || spec.control != self.identity
-            || identity.dataset_id != spec.dataset_id
-            || identity.owner_resource_id != spec.ingest_resource_id
-            || identity.shard_id != spec.shard_id
-            || identity.owner_epoch.get() != 1
-            || identity.process_incarnation != spec.process_incarnation
-            || identity.topology_generation
-                != spec
-                    .target_topology()
-                    .map_err(InitialOperationError::Registry)?
-            || identity.policy_epoch.get() != spec.policy_revision
-            || store.manifest().allocation_namespaces() != &domains
+            || control != self.identity
         {
             return Err(OwnerError::InvalidInput.into());
         }
+        match authority {
+            NativeAuthority::Initial(_) => {
+                let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
+                    .map_err(|_| OwnerError::InvalidInput)?;
+                if identity.dataset_id != spec.dataset_id
+                    || identity.owner_resource_id != spec.ingest_resource_id
+                    || identity.shard_id != spec.shard_id
+                    || identity.owner_epoch.get() != 1
+                    || identity.process_incarnation != spec.process_incarnation
+                    || identity.topology_generation
+                        != spec
+                            .target_topology()
+                            .map_err(InitialOperationError::Registry)?
+                    || identity.policy_epoch.get() != spec.policy_revision
+                    || store.manifest().allocation_namespaces() != &domains
+                {
+                    return Err(OwnerError::InvalidInput.into());
+                }
+            }
+            NativeAuthority::Live(binding) => binding.require_store(store, self.identity)?,
+        }
         let mut lease = PolicyLeaseTracker::new(
             spec.dataset_id,
-            spec.process_incarnation,
+            identity.process_incarnation,
             identity.policy_epoch,
             PolicyLeaseTtl::new(input.policy_ttl).map_err(|_| OwnerError::InvalidInput)?,
         )
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 14)
-            .await
-            .map_err(transaction_error)?;
+        let tx = application_transaction(
+            &mut self.client,
+            if authority.epoch() == 1 { 14 } else { 32 },
+        )
+        .await
+        .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
-        if policy.config_revision != spec.config_revision
-            || policy.policy_revision != spec.policy_revision
-            || policy.config_digest != *spec.config_digest.as_bytes()
-            || policy.policy_digest != *spec.policy_digest.as_bytes()
-        {
+        if policy != expected_policy {
             return Err(OwnerError::InvalidPolicy.into());
         }
         if let Some((request, phase)) = input.request {
@@ -973,12 +1144,12 @@ impl ControlSession {
             None
         };
         if let Some(job) = input.job {
-            if job.config_revision != spec.config_revision
-                || job.policy_revision != spec.policy_revision
+            if job.config_revision != expected_policy.config_revision
+                || job.policy_revision != expected_policy.policy_revision
             {
                 return Err(OwnerError::InvalidPolicy.into());
             }
-            input_bindings::lock_job(&tx, spec.dataset_id, spec.control, job)
+            input_bindings::lock_job(&tx, spec.dataset_id, control, job)
                 .await
                 .map_err(InitialOperationError::InputBinding)?;
         }
@@ -986,31 +1157,34 @@ impl ControlSession {
             input_bindings::lock_request_job(
                 &tx,
                 spec.dataset_id,
-                spec.control,
+                control,
                 request,
-                spec.config_revision,
-                spec.policy_revision,
+                expected_policy.config_revision,
+                expected_policy.policy_revision,
             )
             .await
             .map_err(InitialOperationError::InputBinding)?;
         }
-        ingest_registry::require_initial_registration(&tx, spec)
-            .await
-            .map_err(InitialOperationError::Registry)?;
-        // observe() already holds row locks through native completion, including
-        // the producer closing barrier. A scheduling TTL alone is no exclusion.
-        let remaining:i64 = tx.query_one("SELECT LEAST(c.lease_expires_at_us, i.lease_expires_at_us) - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs c CROSS JOIN control.owner_epochs i WHERE c.resource_id = $1::bytea AND c.epoch = $2::text::numeric AND i.resource_id = $3::bytea AND i.epoch = 1", &[&&spec.control.resource_id.as_bytes()[..],&spec.control.epoch.get().to_string(),&&spec.ingest_resource_id.as_bytes()[..]])
-            .await.map_err(backend)?.try_get(0).map_err(backend)?;
-        let remaining = u64::try_from(remaining)
-            .ok()
-            .filter(|v| *v > 0)
-            .ok_or(OwnerError::Unavailable)?;
+        let remaining = match authority {
+            NativeAuthority::Initial(_) => {
+                ingest_registry::require_initial_registration(&tx, spec)
+                    .await
+                    .map_err(InitialOperationError::Registry)?;
+                let remaining:i64 = tx.query_one("SELECT LEAST(c.lease_expires_at_us, i.lease_expires_at_us) - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs c CROSS JOIN control.owner_epochs i WHERE c.resource_id = $1::bytea AND c.epoch = $2::text::numeric AND i.resource_id = $3::bytea AND i.epoch = 1", &[&&control.resource_id.as_bytes()[..],&control.epoch.get().to_string(),&&spec.ingest_resource_id.as_bytes()[..]])
+                    .await.map_err(backend)?.try_get(0).map_err(backend)?;
+                u64::try_from(remaining)
+                    .ok()
+                    .filter(|v| *v > 0)
+                    .ok_or(OwnerError::Unavailable)?
+            }
+            NativeAuthority::Live(binding) => binding.require(&tx).await?,
+        };
         lease
             .complete_refresh(
                 &ticket,
                 LeaseResponse {
                     dataset: spec.dataset_id,
-                    process_incarnation: spec.process_incarnation,
+                    process_incarnation: identity.process_incarnation,
                     policy_epoch: PolicyEpoch::new(policy.policy_revision),
                     ttl: input
                         .policy_ttl

@@ -189,6 +189,10 @@
     {
       "version": 31,
       "name": "0031_initial_empty_retirement.sql"
+    },
+    {
+      "version": 32,
+      "name": "0032_initial_activation.sql"
     }
   ],
   "reserved": [
