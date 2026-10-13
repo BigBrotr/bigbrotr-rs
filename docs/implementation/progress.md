@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T12:23Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T12:31Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,7 +14,7 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-f7a10c351231656eb4f3c7fda26d4636d36de982. Lastverifiedprivatepush939cf13 plusfirstwave/
+6ffa9cbd4808e0375aee15812df5425b16564084. Lastverifiedprivatepush939cf13 plusfirstwave/
 faultsourcebranches; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
 Root owns currentevidence/docs/checkpoint and uncommitted nextAlreadyDurabledispatcher.
 Nativeprobe e1f03a6 integrated7c67736, exactbuildf7PASS. SeparatePythonAlreadyDurable
@@ -93,14 +93,14 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Finish complete source review/independent expected states for oneAlreadyDurable
-finite seed plus twoinstalledsourceclosure invocations; integrate/commit newPython
-fixture and rootdispatcher, then run exactengine withf7artifacts. Author is assembling
-newdriver/oracle; no engine for thiscaseyet. Two job/closurelockorderfixtures proceed
-separately withallproducttriggers andexactPID/startwaitrelations. Minimalremaining
-newsource refusals: actualunissuedreservedtail, terminalcopybyteconflict andretained
-nativefacttail pasttruncatedprefix. Nativeomission/duplicate/order counterexamples
-and earlierunchangedhelpercorruption evidence are reused, not anotherwholecampaign.
+Run the exact committed AlreadyDurable engine with preserved f7 artifacts: one
+actual finite network resend and two installed source closure invocations. Driver212/
+oracle466 fully reviewed by root and independently by native author. Integrated
+16fdfc9 as6ffa9cb. Pure11seed snapshots+4CLI observations/44negativecontrols and
+four custody/capture mocks PASS; actual engine NOT_RUN. Job remains queued2 and
+sessionunrevoked; login replaces the frozen revoked session as specified. No
+installed scheduler/workflow completion claim. Two job/closure lock fixtures and
+three minimal connected prefix/copy/tail refusal cases continue in separate worktrees.
 
 GenuineAlreadyDurable probe buildf7a10c3 PASS compile+Clippy onRust1.98.1/Clang14.
 Root `/runs/ingest-activated-durable-f7a10c3`, ownerc4e82f9bfd349bea1b80b13a0bbaea63,

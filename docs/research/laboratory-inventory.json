@@ -45618,7 +45618,7 @@
   },
   "implementation_activated_initial_source_closure_20261013": {
     "status": "PASS_SOURCE_FIRST_WAVE_AND_FINAL_COMMIT_LOSS_REMAINING_GATES_OPEN",
-    "observed_at": "2026-10-13T12:23:15.991323+00:00",
+    "observed_at": "2026-10-13T12:31:57.587195+00:00",
     "base": "d26c88ac6b418f2a9908460e7e6326c9cd4d32f7",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
@@ -45647,8 +45647,8 @@
         "state": "new finiteAlreadyDurable seed/installedclose oracle anddriver inprogress; nativeauthor independentreview"
       }
     ],
-    "next": "Integrate reviewed genuineAlreadyDurable finite/installed fixture and rootdispatcher, run exact1finite+2CLI withf7 artifacts; two job/closure lockorder fixtures progress. Minimalremainingnewsource refusals need3cases only, nativeordering/sharedcorruption evidence reused.",
-    "root_work": "CLI/buildprofile integrated5e57e63; root next-engine dispatcher stilluncommitted; fixture work remains isolated.",
+    "next": "Run exact committed AlreadyDurable engine1finite+2CLI using protected f7a10c3 artifacts. Two job/closure lock schedules and three minimal prefix/copy/tail refusals continue independently.",
+    "root_work": "Integrated16fdfc9 as6ffa9cbd4808e0375aee15812df5425b16564084; committing root dispatcher and evidence before exact engine.",
     "failed_build": {
       "status": "FAIL",
       "source": "5e57e63b1d2effaf694cf5f6bfdece7aa3d94f47",
@@ -46130,6 +46130,22 @@
           "unchanged_prior_containers": 1263
         }
       }
+    },
+    "already_durable_fixture": {
+      "source": "16fdfc9559ad6da2a47ea72a0bc0152c6e7499e9",
+      "integrated": "6ffa9cbd4808e0375aee15812df5425b16564084",
+      "status": "REVIEWED_COMMITTED_ENGINE_NOT_RUN",
+      "cases": "One genuine authenticated finite network resend; two installed source closure commands, first/retry.",
+      "review": "Root complete driver212/oracle466 and native helper/callers reviewed; native author independent Python review. No blocker. Independent literal input/receipt/dependency/digest expectations.",
+      "pure": {
+        "path": ".research/activated-recovery-qualification-20261013/.research/activated-durable-selfcheck-20261013/manifest.json",
+        "sha256": "829f8a391cbe2064fb2ad56ee4c361a0bb3b6b566cfb94c606534664e172c03a",
+        "seed_snapshots": 11,
+        "installed_observations": 4,
+        "negative_controls": 44,
+        "capture_custody_mocks": 4
+      },
+      "scope": "Job remains queued revision2/sessionunrevoked. Login legitimately replaces frozen revoked session. No installed scheduler or workflow completion claim; peer wire is source-reviewed joined probe, not independent packet capture."
     }
   }
 }
