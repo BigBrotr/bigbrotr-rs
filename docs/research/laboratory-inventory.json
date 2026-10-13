@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "PAUSED_INCOMPLETE_UNQUALIFIED_SOURCE_SAVED_NOT_RUN",
+    "status": "ACTIVE_INTEGRATED_BUILD_NOT_RUN_CONNECTED_FIXTURES_IN_PROGRESS",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40822,24 +40822,24 @@
         "branch": "implementation/live-initial-native",
         "owner": "successor_restart_design",
         "head": "d1bf847df2ecf077686ddf274655e59dba803469",
-        "state": "paused-clean-committed-privately-pushed",
+        "state": "active-separated-source-scope-integrated-implementation",
         "scope": "Native candidate/live writer and zero-source admission; e1b555e test module wiring and d1bf847 zero Event allocation correction. Integrated canonically as017dbef/761cc6d/47e9a14; not compiled or qualified."
       },
       {
         "root": ".research/live-initial-control-20261013",
         "branch": "implementation/live-initial-control",
         "owner": "recovery_review",
-        "head": "41c06a7fce1db68025511df0e25026579efffb7b",
-        "state": "paused-clean-committed-privately-pushed-not-integrated",
-        "scope": "Eight files: new activation adapter and additive0032, shared batch authority/renewal, exports/history visibility/catalog/schema test/manifest. Last target BEFORE UPDATE guards preserved before stop; final review and SQL execution pending."
+        "head": "4eac1544741b893645a32a74105e78276d7fdcdc",
+        "state": "active-separated-source-scope-integrated-implementation",
+        "scope": "PG implementation integrated; new experiments/ingest-bootstrap/initial_live.py harness only"
       },
       {
         "root": ".research/live-initial-tests-20261013",
         "branch": "qualification/live-initial-native",
         "owner": "cleanup_review",
         "head": "90b56bc5014e0724ff225aaeca6a6d667ba6ea3c",
-        "state": "paused-clean-committed-privately-pushed-not-integrated",
-        "scope": "One1027-line independent native fixture file/six groups; synthetic PG authority only. Depends on native module wiring and Event counter fix. Native tests NOT_RUN."
+        "state": "active-separated-source-scope-integrated-implementation",
+        "scope": "Native fixtures integrated; new experiments/ingest-bootstrap/initial_live_oracle.py independent oracle only"
       }
     ],
     "resources": [],
@@ -40867,14 +40867,13 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Resume only on explicit owner request. Reconcile canonical and three helper Git heads and resources, then review the unqualified 0032 activation_transaction xid8 / SET CONSTRAINTS IMMEDIATE boundary, including the final five target BEFORE UPDATE guards in 41c06a7. Reconcile the saved probe APIs, integrate the already saved PostgreSQL and test commits, and record the exact reviewed source before any isolated build. No automatic continuation while paused.",
+    "next_action": "Exact isolated ingest-live build after reviewed integration; root sole build/engine owner. Connected finite harness/oracle in separate worktrees; rawSQL/renewal/installed/provenance and fullproduct remain owed.",
     "resume_observation": {
-      "observed_at": "2026-10-13T05:55:27Z",
-      "source": "55eee94b3dcc96357dbbf5e6a1ce5f0215c2adfd",
-      "repository": "clean before update; fresh fetch ahead0/behind0; three helper heads match checkpoint",
-      "resources": "No matching build/qualification process or running BigBrotr container; six unrelated services remain running; no cleanup/restart",
-      "free_bytes": 67824185344,
-      "retained_result_sha256": "ff1d2e111dc42ff4026c7e42985a7814dbf058eb0bd1d7ba92c5e269e7642d34"
+      "observed_at": "2026-10-13T06:33:25Z",
+      "runtime_goal": "active",
+      "source": "b221ee375867929bcfc21c75079743bfc3200266",
+      "free_bytes": 67813384192,
+      "resources": "No matching build or BigBrotr container before allocation; six unrelated services unchanged"
     },
     "canonical_saved_source": "fa0fa62facb0a9bf3def4380c553eaa25a811012"
   }

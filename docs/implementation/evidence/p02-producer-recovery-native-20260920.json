@@ -12952,7 +12952,7 @@
       }
     },
     "next_live_activation_20261013": {
-      "status": "PAUSED_INCOMPLETE_UNQUALIFIED_SOURCE_SAVED_NOT_RUN",
+      "status": "IMPLEMENTED_INTEGRATED_BUILD_AND_CONNECTED_QUALIFICATION_NOT_RUN",
       "base": "61fc6e3e21424f22d007b496e947986d2b70c4a0",
       "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
       "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -13021,12 +13021,15 @@
         "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
         "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
       },
-      "next_action": "Resume only on explicit owner request. Reconcile canonical and three helper Git heads and resources, then review the unqualified 0032 activation_transaction xid8 / SET CONSTRAINTS IMMEDIATE boundary, including the final five target BEFORE UPDATE guards in 41c06a7. Reconcile the saved probe APIs, integrate the already saved PostgreSQL and test commits, and record the exact reviewed source before any isolated build. No automatic continuation while paused.",
+      "next_action": "Exact isolated ingest-live build after reviewed integration; root sole build/engine owner. Connected finite harness/oracle in separate worktrees; rawSQL/renewal/installed/provenance and fullproduct remain owed.",
       "resume_observation": {
-        "observed_at": "2026-10-13T05:55:27Z",
-        "source": "55eee94b3dcc96357dbbf5e6a1ce5f0215c2adfd",
-        "root_review": "Complete a54cf1b native diff, initial_batch.rs and finite succession/empty/bootstrap probes read; affected native owners and final changed boundaries still under review",
-        "agents": "Three owners resumed in existing verified worktrees; no build/engine allocated"
+        "observed_at": "2026-10-13T06:33:25Z",
+        "runtime_goal": "active",
+        "source": "b221ee375867929bcfc21c75079743bfc3200266",
+        "repository": "clean and fresh fetch ahead0/behind0 before resumption",
+        "retained_result_sha256": "ff1d2e111dc42ff4026c7e42985a7814dbf058eb0bd1d7ba92c5e269e7642d34",
+        "resources": "No matching build process or running BigBrotr container; six unrelated services unchanged",
+        "free_bytes": 67813384192
       },
       "saved_worktrees": [
         {
@@ -13034,15 +13037,15 @@
           "branch": "implementation/live-initial-native",
           "owner": "successor_restart_design",
           "head": "d1bf847df2ecf077686ddf274655e59dba803469",
-          "state": "paused-clean-committed-privately-pushed",
+          "state": "saved-integrated-helper-resumed-in-separate-scope",
           "scope": "Native candidate/live writer and zero-source admission; e1b555e test module wiring and d1bf847 zero Event allocation correction. Integrated canonically as017dbef/761cc6d/47e9a14; not compiled or qualified."
         },
         {
           "root": ".research/live-initial-control-20261013",
           "branch": "implementation/live-initial-control",
           "owner": "recovery_review",
-          "head": "41c06a7fce1db68025511df0e25026579efffb7b",
-          "state": "paused-clean-committed-privately-pushed-not-integrated",
+          "head": "4eac1544741b893645a32a74105e78276d7fdcdc",
+          "state": "saved-integrated-helper-resumed-in-separate-scope",
           "scope": "Eight files: new activation adapter and additive0032, shared batch authority/renewal, exports/history visibility/catalog/schema test/manifest. Last target BEFORE UPDATE guards preserved before stop; final review and SQL execution pending."
         },
         {
@@ -13050,7 +13053,7 @@
           "branch": "qualification/live-initial-native",
           "owner": "cleanup_review",
           "head": "90b56bc5014e0724ff225aaeca6a6d667ba6ea3c",
-          "state": "paused-clean-committed-privately-pushed-not-integrated",
+          "state": "saved-integrated-helper-resumed-in-separate-scope",
           "scope": "One1027-line independent native fixture file/six groups; synthetic PG authority only. Depends on native module wiring and Event counter fix. Native tests NOT_RUN."
         }
       ],
@@ -13058,8 +13061,8 @@
         "source": "fa0fa62facb0a9bf3def4380c553eaa25a811012",
         "branch": "recovery/tux-20261012",
         "scope": "Finite live activation/admission/zero/COMMIT-loss probe and ingest-live isolated build profile; actual candidate identities and exact grants",
-        "integration_state": "WIP: PG APIs and referenced native test file remain only in saved helper commits. Canonical tree is not claimed buildable; do not run before integration review.",
-        "checks_completed": "Scoped Rust formatting reported PASS before stop; root git diff --check PASS during safe-stop save. Python build-profile changes have not been AST-checked.",
+        "integration_state": "PG and native test dependencies integrated; final PG correction reviewed; awaiting exact isolated build",
+        "checks_completed": "Scoped Rust formatting, diff-check and Python profile AST parsing PASS; no behavioral qualification",
         "not_run": "No compilation, Clippy, native tests, schema/SQL execution, connected probes or profile execution"
       },
       "source_review_findings": [
@@ -13067,8 +13070,18 @@
         "Native Event allocation zero could be accepted; d1bf847 corrects it. Independent B_note zero-counter refusal/positive counterfactual written in90b56bc but NOT_RUN.",
         "Deferred activation-empty constraint alone permits SET CONSTRAINTS IMMEDIATE bypass. Draft0032 adds server-assigned activation_transaction xid8 and request/input/checkpoint guards; reviewer read main correction, raw SQL NOT_RUN.",
         "Final five target BEFORE UPDATE guards were already written when stop arrived and preserved in41c06a7. Their final independent review is pending.",
-        "Imported signed-event finite probe has no observation and therefore does not establish real network provenance-on/off behavior."
-      ]
+        "Imported signed-event finite probe has no observation and therefore does not establish real network provenance-on/off behavior.",
+        "Resumption review found same-transaction activating Control/policy parent mutation after forced deferred check.4eac154/624c0b6 freeze these exact mutations; independently reviewed. Arbitrary raw-SQL COMMIT-time UTC is not claimed; typed local deadline survives COMMIT and final authority revalidation."
+      ],
+      "integrated_source": {
+        "head": "624c0b6",
+        "postgres": "7ab514e",
+        "native_tests": "c6a4a2a",
+        "parent_mutation_fix": "624c0b6",
+        "probe_and_build_profile": "fa0fa62",
+        "review": "Independent final PG mutation-fence and B_note counterfactual review complete; no further concrete blocker in scope",
+        "checks": "Scoped formatting/diff checks and Python build-profile AST parsing PASS; no compilation/SQL/behavioral qualification yet"
+      }
     }
   }
 }
