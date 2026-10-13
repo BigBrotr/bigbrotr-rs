@@ -320,9 +320,13 @@ One owner serializes exact identity decisions for each writable directory.
   refuses before Control. Recovery uses fresh Control via explicit
   `ingest recover --activated-successor`, including its closing barrier under the
   [selected contract](../reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation)
-  without writer adoption. The next bounded responsibility is explicit
+  without writer adoption. Explicit
   [source2 closure](../reference/ingest-registration.md#activated-initial-source-closure-under-implementation),
-  with a distinct native proof, additive classifier and exact closed retry;
+  now passes24 installed invocations plus2finite seeds, including exact retries,
+  final COMMIT loss, both job/source lock orders and three connected prefix refusals.
+  Native91 affected tests and independent raw/artifact/custody audits pass. First
+  prefix oracle failure remains retained. Next is
+  [activated acquisition abandonment](../reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation);
   epoch2 workflow retirement and repeated lifetimes remain separate obligations. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

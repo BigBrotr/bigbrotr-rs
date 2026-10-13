@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:14Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:21Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,7 +14,7 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-4d99fa22bab4f6cac9f44391370ddfbfeb462291. Last verified private push198e2a5; three prior qualification branches pushed.
+b6ec515e802bee7574be478c7e9a50899b892090. Last verified private push198e2a5; three prior qualification branches pushed.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
 integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; next contract c0024b8 remains separate. Root alone integrates/builds/executes.
@@ -91,24 +91,33 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Run corrected committed sourceprefix engine on fresh copies with protectedbb53
-artifacts: one actual C14 finite seed and three installed refusals. First engine
-`ingest-activated-source-prefix-engine-d115647` remains FAIL, wrapper26090 joined1,
-13:00:24–13:00:38Z, owner75b60bf66d82759f308cf3914ad821c3. ResultSHA
-84f5ab0b46d1473cb862464926368decb864576c27ea7c27bb33446133b681d4.
-Finite9snapshots PASS; first installed CLI4 Control(InvalidMetadata) preserved all
-scientific data. Oracle wrongly assumed separate transactions for old Control
-fencing and new claim; all four rows actually share fresh xmin28750. Narrow oracle
-55dcdb2 integrated4d99fa2 checks exact atomic delta from original baseline. Root and
-independent PG review PASS;3purecontexts/45controls and retrospective firstcapture
-9seed+2states/18controls PASS. Original wave stays FAIL; retained-tail/copy-conflict
-NOT_RUN. No product change. Custody audit1810engine/1808build files,61ELFs,
-1268unchanged nonborrowed projections of1270 observed;48rawbindings/5externalstates,
-originalf12 intact. Off/closed seeds not visited and no new physical census claimed.
-PG0/client143 stopped/PID0/noOOM; no engine/build active.
-Next bounded product after qualification is activated acquisition abandonment;
-contract c0024b8 defines additive0036 paired epoch2 gaps and activatorControl jobs,
-awaiting independent PG review/integration. No implementation/draining/retirement.
+Implement activated acquisition abandonment from the reviewed owning contract
+c0024b8 integratedb6ec515. PG agent owns additive0036/backend/ledger in isolated
+worktree; root owns installed action/help/report/resource preflight; native agent
+prepares real activator-owned zero-request job seed. New implementation/tests NOT_RUN.
+Reuse complete borrowed source proof; never forge epoch2 InitialRegistration or
+historical claims. No draining, producer/domain retirement, ACK/GC or Archive.
+
+Corrected prefixengineb23a597 PASS3CLI+1finite, wrapper47161 joined0,
+13:14:56–13:15:35Z, owner988b58c4b3e0982d799019dcd70d901a. Root
+`/runs/ingest-activated-source-prefix-engine-b23a597`; resultSHA
+11ca90b1830f1d2f201e7600527176ccf6b5721239878d08bcb6ce3cc9793aa3.
+C14after-complete vector14/14/14/13/1 leaves52native/62/fiveinputs/issued0reserved1;
+CLI refuses beforeclosing Control(InvalidMetadata). Retainedtargettail refuses
+StateMismatch with only durableclosing69/87; terminalcopyconflict refuses
+Outcome(Conflict),70/85 unchanged/no repair. All72SQL exact. Root raw replay85439
+joined0:9seed snapshots/6installed states/5operator states/45controls PASS.
+Custody audit1810engine/1808build files,61ELFs,1269unchanged nonborrowed projections
+of1271observed;132rawbindings/16externalstates and3originals68paths/62files preserved.
+PG0/client143 stopped/PID0/noOOM. Selected sourceclosure24CLI+2finite qualified;
+not whole task/M1. No engine/build active.
+
+First prefixengined115647 remains FAIL26090joined1: oracle wrongly assumed separate
+transactions for old Control fencing and new claim. All four rows use one fresh
+xmin; narrow55dcdb2 integrated4d99fa2 corrects direct expected delta.3purecontexts/
+45controls and retrospective actualfirst18controls PASS without relabeling failed
+wave or its2NOT_RUN cases. Failed result84f5ab0b46d1473cb862464926368decb864576c27ea7c27bb33446133b681d4
+and rawartifacts remain intact; no product correction was required.
 
 Prefixbuildbb53 PASS compile+Clippy onRust1.98.1/Clang14, wrapper15173 joined0,
 12:43:04–12:44:39Z. Root `/runs/ingest-activated-refusals-bb53bf5`,
@@ -116,7 +125,7 @@ owner291d7509db26a7a3adc3dc54b1c29ac6. ReceiptSHA
 afe90bd53c6226f8c220979f34a047809a8af221eeabdc5c4f26fc7c3a172dbb.
 Rootaudit35416 joined0:1808exactGit/export/archivefiles,61retainedELFs,1267unchanged
 priorcontainerprojections+2ownedterminal0. Productinputs unchanged from91tests at9dbc;
-only five examplefiles since9dbc differ, with docs/experiments. First prefixengine failed in its oracle; corrected engine pending.
+only five examplefiles since9dbc differ, with docs/experiments. Corrected prefixengineb23a597 subsequently PASS.
 
 Lockengine14b7bd4 PASS2CLI: job-first commits cut6 and prevents sourcecut5 closure
 (guard_source_closure_bounds/23514); source-first commits cut5, then job COMMIT
@@ -301,8 +310,8 @@ or this passing bounded wave does not finish the product.
 
 Latest prefixbuild15173/rootaudit35416 joined0, allbuildcontainers stopped0/PID0/
 noOOM.61ELFs retained outsideexclusivecache. Lockengine46534/replay14147 joined0,
-PG0/client143 stopped, custodyaudit complete. No engine/build active at checkpoint.
-Agents completed narrow prefixcorrection and read nextworkflowcontract only. Preserve all
+PG0/client143 stopped, custodyaudit complete. No engine/build active at checkpoint; corrected prefix47161/replay85439 joined0.
+Agents now implement separate PG abandonment and prepare its finite seed. Preserve all
 originals, failedbuilds, failedaudit scripts/logs and every ignored/external artifact.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:

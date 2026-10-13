@@ -440,8 +440,12 @@ AlreadyDurable-only prefix, followed by installed source closure and exact retry
 without new facts or retry writes. Its job remains queued and its session remains
 unrevoked. Both concurrent job/source orders also pass: the second incompatible
 commit refuses. These use a privileged relational job with all product guards
-enabled; authenticated job acceptance is a separate journey. Remaining connected
-prefix/copy/tail refusals are pending.
+enabled; authenticated job acceptance is a separate journey. Three further installed
+refusals cover a real reserved/unissued request after lost COMMIT completion, a
+retained native source tail and a conflicting terminal outcome copy. They preserve
+all retained data and perform no speculative repair. The selected source boundary
+now has24 installed invocations and two finite seeds; workflow abandonment and
+retirement remain separate.
 
 ## Exact dependency source basis
 
