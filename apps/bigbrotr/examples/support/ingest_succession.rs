@@ -99,10 +99,16 @@ pub async fn run(
             | "successor-live-commit-after"
     );
     assert_eq!(proxy_port.is_some(), commit_fault);
-    assert_eq!(gate_prefix.is_some(), mode == "successor-preparer-claim");
+    assert_eq!(
+        gate_prefix.is_some(),
+        matches!(mode, "successor-preparer-claim" | "successor-live-guards")
+    );
     if let Some(prefix) = gate_prefix {
         assert!(prefix.is_absolute());
         assert!(!prefix.with_extension("go").try_exists().unwrap());
+        if mode == "successor-live-guards" {
+            assert!(!prefix.with_extension("done").try_exists().unwrap());
+        }
     }
     if let Some(port) = proxy_port {
         assert_ne!(port, 0);
@@ -160,7 +166,7 @@ pub async fn run(
     // before the first claim. Resolve one original at a time, never a vector.
     drop(probe.replay_grants());
     if live::is_mode(mode) {
-        live::run(probe, recovery, spec, observer_driver, mode).await;
+        live::run(probe, recovery, spec, observer_driver, mode, gate_prefix).await;
         return;
     }
     let (mut owner, mut driver) = probe.acquire("initial", &spec, 1).await;

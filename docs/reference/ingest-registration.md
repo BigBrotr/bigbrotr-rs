@@ -509,5 +509,12 @@ at source sequence1, exact retry/conflict, original-byte preservation, resource 
 authority refusal, activated-zero rejection by earlier recovery routes, renewal
 and actual activation COMMIT loss on both sides of server completion. Connected
 signed admission and resend must preserve first-admission semantics, including
-provenance disabled. These new activation cases are NOT_RUN. Existing installed
-empty-retirement evidence does not qualify them or general restart.
+provenance disabled. Exact native buildc640b2f passes135 tests including six new
+live-writer groups. Finite connected2c142c6 passes five actual candidate processes,
+48full snapshots and116 independent capture controls: zero activation, first
+append/signed admission/retry/alternate signature and COMMIT13 loss on both sides.
+Its import event has no network observation; the provenance-off setting therefore
+does not qualify real network provenance suppression. Raw SQL transaction adversaries,
+live renewal, activated-zero old-loader refusals and installed/general restart remain
+unqualified. Detailed identities and exclusions are in the existing
+[recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).

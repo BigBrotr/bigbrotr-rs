@@ -15,6 +15,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
     matches!(
         mode,
         "successor-live-zero"
+            | "successor-live-guards"
             | "successor-live-normal"
             | "successor-live-off"
             | "successor-live-commit-before"
@@ -28,6 +29,7 @@ pub(super) async fn run(
     spec: InitialRegistration,
     observer_driver: Driver,
     mode: &str,
+    gate_prefix: Option<&Path>,
 ) {
     assert!(is_mode(mode));
     let mut candidate = InitialWriterCandidate::new(recovery).unwrap();
@@ -60,6 +62,10 @@ pub(super) async fn run(
     );
     drop(observed);
     probe.snapshot("prepared").await;
+    if let Some(prefix) = gate_prefix {
+        assert_eq!(mode, "successor-live-guards");
+        guards(&probe, &mut owner, prefix).await;
+    }
     // Exact backend custody is observed before the potential COMMIT ambiguity.
     // The PG observer and native snapshots bypass the deliberately faulted wire.
     let backend = probe.observe_backend(&owner).await;
@@ -113,6 +119,25 @@ pub(super) async fn run(
     assert_eq!(writer.manifest().identity().owner_epoch.get(), 2);
     assert_eq!(writer.producer_slot_id(), spec.producer_slot_id);
     probe.snapshot("activated-zero").await;
+    if mode == "successor-live-guards" {
+        bounded(owner.refresh(|doc, digest| probe.validate(doc, digest)))
+            .await
+            .unwrap();
+        probe.snapshot("live-control-refreshed").await;
+        let commit_started = Cell::new(false);
+        bounded(owner.renew_live_initial_ingest(
+            &writer,
+            probe.policy_ttl(),
+            |doc, digest| probe.validate(doc, digest),
+            &commit_started,
+        ))
+        .await
+        .unwrap();
+        assert!(commit_started.get());
+        emit(serde_json::json!({"event":"live-renewal-result",
+            "commit_started":true,"error":null}));
+        probe.snapshot("live-ingest-renewed").await;
+    }
     if mode != "successor-live-zero" {
         admit(
             &probe,
@@ -132,6 +157,66 @@ pub(super) async fn run(
         "writer":false,"admission":mode != "successor-live-zero"}));
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
+}
+
+async fn guard_gate(prefix: &Path, gate: &str, extension: &str) {
+    // Laboratory coordination only, with no SQL transaction held while waiting.
+    let path = prefix.with_extension(extension);
+    emit(serde_json::json!({"event":"live-guards-gate","gate":gate,"phase":"waiting"}));
+    bounded(async {
+        while !path.try_exists().unwrap() {
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+        assert!(path.is_file());
+    })
+    .await;
+    emit(serde_json::json!({"event":"live-guards-gate","gate":gate,"phase":"released"}));
+}
+
+async fn guards(probe: &Probe, owner: &mut ControlSession, prefix: &Path) {
+    guard_gate(prefix, "install", "go").await;
+    bounded(owner.refresh(|doc, digest| probe.validate(doc, digest)))
+        .await
+        .unwrap();
+    let identity = owner.identity();
+    let observed = bounded(probe.observer.query_one(
+        "SELECT count(*)::bigint, coalesce(bool_and(g.status='PASS'
+            AND g.backend_pid=c.control_backend_pid AND g.backend_start=c.control_backend_start
+            AND g.database_name=current_database() AND g.database_user='bigbrotr_control'
+            AND g.replication_role='origin' AND g.control_epoch=c.epoch),false)
+         FROM live_guard_fixture.cases g CROSS JOIN control.owner_epochs c
+         WHERE c.resource_id=$1::bytea AND c.epoch=$2::text::numeric",
+        &[
+            &&identity.resource_id.as_bytes()[..],
+            &identity.epoch.get().to_string(),
+        ],
+    ))
+    .await
+    .unwrap();
+    assert_eq!(observed.get::<_, i64>(0), 14);
+    assert!(observed.get::<_, bool>(1));
+    let run = bounded(probe.observer.query_one(
+        "SELECT status,executions FROM live_guard_fixture.run WHERE singleton",
+        &[],
+    ))
+    .await
+    .unwrap();
+    assert_eq!(run.get::<_, &str>(0), "complete");
+    assert_eq!(run.get::<_, i32>(1), 1);
+    emit(serde_json::json!({"event":"live-guards-result","cases":14,"passed":true}));
+    probe.snapshot("guards-refreshed").await;
+    guard_gate(prefix, "remove", "done").await;
+    let removed: bool = bounded(probe.observer.query_one(
+        "SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_trigger
+            WHERE tgname='live_guard_fixture_refresh' AND tgrelid='control.owner_epochs'::regclass)
+            AND to_regprocedure('live_guard_fixture.exercise()') IS NULL",
+        &[],
+    ))
+    .await
+    .unwrap()
+    .get(0);
+    assert!(removed, "only the temporary fixture hook must be removed");
+    probe.snapshot("guards-clean").await;
 }
 
 async fn admit(

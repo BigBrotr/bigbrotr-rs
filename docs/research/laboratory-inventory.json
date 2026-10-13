@@ -40812,7 +40812,7 @@
     }
   },
   "implementation_live_initial_activation_20261013": {
-    "status": "ACTIVE_BUILD_PASS_FINITE_ENGINE_PENDING",
+    "status": "ACTIVE_FINITE_ENGINE_QUALIFIED_GUARDS_PROBE_BUILD_PENDING",
     "base": "4253907546efb50cba1a4d62ca08020b84ea700c",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#live-initial-successor-activation-under-implementation",
@@ -40830,23 +40830,24 @@
         "branch": "implementation/live-initial-control",
         "owner": "recovery_review",
         "head": "355310834d2d84dbab80aeef9b27f97a9a5ce536",
-        "state": "clean-source-integrated",
-        "scope": "PG implementation and new finite connected harness integrated"
+        "state": "active-separated-source-scope",
+        "scope": "New initial_live_guards.py harness and14 rawSQL fixture cases only"
       },
       {
         "root": ".research/live-initial-tests-20261013",
         "branch": "qualification/live-initial-native",
         "owner": "cleanup_review",
         "head": "127a9377a9ddaab5063428eb8897e115775a6b1c",
-        "state": "clean-source-integrated",
-        "scope": "Native fixture and new independent finite capture oracle integrated"
+        "state": "active-separated-source-scope",
+        "scope": "New initial_live_guards_oracle.py independent oracle only"
       }
     ],
     "resources": [
       "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-7337ac4",
-      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-c640b2f"
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-c640b2f",
+      "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-engine-2c142c6"
     ],
-    "qualification": "Exact c640b2f build PASS14checks/135tests; independent artifact audit complete. Finite connected engine NOT_RUN.",
+    "qualification": "Exact c640b2f build PASS14checks/135tests; finite connected2c142c6 PASS5cases/48snapshots/116controls and read-only evidence audit. New SQL guard/renewal probe uncompiled/NOT_RUN.",
     "pause_observation": {
       "observed_at": "2026-10-13T06:15:07Z",
       "reason": "Explicit owner pause for exhausted credits; resume only on explicit request",
@@ -40870,7 +40871,7 @@
       "helper_publication": "All three helper heads privately pushed and independently matched by git ls-remote at06:15:07Z",
       "canonical_publication": "Root code saved as fa0fa62; pause checkpoint commit/push is the final stop operation. Verify current branch/remote equality on resume."
     },
-    "next_action": "Run exact isolated --ingest-live finite five-case engine using reviewed committed harness/oracle/bindings and unchanged c640b2f build artifacts; preserve unknown/failed outcomes. Raw SQL, renewal, real network/installed and full product remain owed.",
+    "next_action": "Exact isolated ingest-live-guards probe compile/Clippy build; new14case SQL harness and independent oracle are in separate worktrees. Then reviewed exact connected guard/renewal wave. Full contract/installed/network recovery remain incomplete.",
     "resume_observation": {
       "observed_at": "2026-10-13T06:33:25Z",
       "runtime_goal": "active",
@@ -41015,7 +41016,392 @@
       "oracle_integrated": "facd4dc",
       "checks": "AST/import/API/diff-check PASS; five artificial transcripts48snapshots/116 rehashed perturbations; root complete-source review",
       "review": "Independent AI review: both harness terminal-preservation findings corrected/closed; final complete oracle/reducer/probe grammar review found no concrete blocker. Root complete-source review also completed.",
-      "engine": "NOT_RUN"
+      "engine": "PASS at2c142c6: five actual processes,48 full snapshots/116 rejected perturbations; root independent replay passed"
+    },
+    "engines": [
+      {
+        "source": "2c142c611eaab0462b6f65df852cd75c098c6c77",
+        "status": "PASS_LIVE_INITIAL_ACTIVATION_FINITE",
+        "owner": "892de65cb9d38396125405dcb4046bf7",
+        "label": "org.bigbrotr.acquisition-binding",
+        "started_at": "2026-10-13T06:55:32.095079+00:00",
+        "finished_at": "2026-10-13T06:55:59.551934+00:00",
+        "client": {
+          "id": "f672e83188e81e3fd2ec22852bd596669e779905223f0a505c36f7b02531fb39",
+          "name": "bigbrotr-acquisition-binding-2c142c6"
+        },
+        "databases": [
+          "bb_scope_bind_2c142c6_successor_live_zero",
+          "bb_scope_bind_2c142c6_successor_live_normal",
+          "bb_scope_bind_2c142c6_successor_live_off",
+          "bb_scope_bind_2c142c6_successor_live_commit_before",
+          "bb_scope_bind_2c142c6_successor_live_commit_after"
+        ],
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "free_bytes_before": 67441377280,
+        "free_bytes_after": 67368706048,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "not_run": [
+          "raw SQL activation transaction guards, activated-zero recovery refusal and renewal",
+          "real network provenance transitions and installed successor consumers",
+          "native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1",
+          "capacity/load/aged-state and arm64/release"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-live-engine-2c142c6",
+        "tree": "ed75aa5ca3f4aee916a34301c0c94d862e781b42",
+        "wrapper": 78690,
+        "exit_code": 0,
+        "result_sha256": "31245bea8f3f369f1bb464552489671e63debfb8f89e76c6f926ce4661a2c9a2",
+        "build_source": "c640b2f5264e3be8b050bb0f90302b852b4efbc0",
+        "snapshots": 48,
+        "negative_controls": 116,
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "inputs": true,
+          "artifacts": true
+        },
+        "audit": "Read-only actual evidence audit PASS: root independently replayed48snapshots/116perturbations, verified1765 exactGitfiles, five currentELFs, five raw/external final states, exactbackendabsence/catalogs,21seedpaths310465bytes/three frozen artifacts and both COMMIT13 counters. Helpercleanup_review independently audited1226 nonborrowed projections and two terminal resources stopped0/143/PID0/noOOM; authored oracle but not harness/resources. Original SQL is captured-run evidence; no PG audit restart. START counts remain source-derived.",
+        "cases": [
+          {
+            "name": "successor-live-zero",
+            "status": "PASS",
+            "seconds": 0.2951360195875168,
+            "oracle": {
+              "status": "PASS",
+              "mode": "successor-live-zero",
+              "snapshots": 8,
+              "control_tables": 72,
+              "original_native_rows": 49,
+              "final_native_rows": 52,
+              "native_sequence_delta": 4,
+              "original_inputs": 4,
+              "final_inputs": 4,
+              "activated": true,
+              "activation_delivered": true,
+              "activated_at_us": 1791874536878587,
+              "activation_transaction": "26894",
+              "commit_unknown": false,
+              "original_requests_preserved": 4,
+              "new_requests": 0,
+              "target_manifest_sha256": "e44b59e193c5a5e752c9336d9798f6650cd80c6c59155c6d03a9d19a42f0185e",
+              "handoff_sha256": "5126af50db6cf787bc2f85ab98e2e434d4dd03b9d7f414b6d534b8bc32110cae",
+              "backend_absent": {
+                "backend_start": "2026-10-13T06:55:36.737894+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_2c142c6_successor_live_zero",
+                "event": "successor-backend",
+                "pid": 309,
+                "present": false,
+                "stage": "initial"
+              },
+              "finite_import_only": true,
+              "network_provenance_off": false,
+              "installed_import": false,
+              "fresh_process_adoption": false,
+              "post_activation_retirement": false
+            },
+            "negative_controls": 18,
+            "commit_counters": {},
+            "external_final_matches": true,
+            "catalog_unchanged": true,
+            "exact_backend": {
+              "expected": {
+                "pid": 309,
+                "backend_start": "2026-10-13T06:55:36.737894+00:00",
+                "database": "bb_scope_bind_2c142c6_successor_live_zero",
+                "control_epoch": 8
+              },
+              "returncode": 0,
+              "stdout": "f\n",
+              "stderr": "",
+              "present": false
+            }
+          },
+          {
+            "name": "successor-live-normal",
+            "status": "PASS",
+            "seconds": 0.483260209672153,
+            "oracle": {
+              "status": "PASS",
+              "mode": "successor-live-normal",
+              "snapshots": 12,
+              "control_tables": 72,
+              "original_native_rows": 49,
+              "final_native_rows": 69,
+              "native_sequence_delta": 26,
+              "original_inputs": 4,
+              "final_inputs": 7,
+              "activated": true,
+              "activation_delivered": true,
+              "activated_at_us": 1791874541016640,
+              "activation_transaction": "26916",
+              "commit_unknown": false,
+              "original_requests_preserved": 4,
+              "new_requests": 3,
+              "target_manifest_sha256": "95f41820e581416323273014d7a0ced0f43855804331c1590c6163b260bc3680",
+              "handoff_sha256": "0b120a0a254074d76e25143f7f9159b19eb6fe358ba59e9f645c0663f4daaafa",
+              "backend_absent": {
+                "backend_start": "2026-10-13T06:55:40.872834+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_2c142c6_successor_live_normal",
+                "event": "successor-backend",
+                "pid": 591,
+                "present": false,
+                "stage": "initial"
+              },
+              "finite_import_only": true,
+              "network_provenance_off": false,
+              "installed_import": false,
+              "fresh_process_adoption": false,
+              "post_activation_retirement": false
+            },
+            "negative_controls": 28,
+            "commit_counters": {},
+            "external_final_matches": true,
+            "catalog_unchanged": true,
+            "exact_backend": {
+              "expected": {
+                "pid": 591,
+                "backend_start": "2026-10-13T06:55:40.872834+00:00",
+                "database": "bb_scope_bind_2c142c6_successor_live_normal",
+                "control_epoch": 8
+              },
+              "returncode": 0,
+              "stdout": "f\n",
+              "stderr": "",
+              "present": false
+            }
+          },
+          {
+            "name": "successor-live-off",
+            "status": "PASS",
+            "seconds": 0.5254120361059904,
+            "oracle": {
+              "status": "PASS",
+              "mode": "successor-live-off",
+              "snapshots": 12,
+              "control_tables": 72,
+              "original_native_rows": 49,
+              "final_native_rows": 69,
+              "native_sequence_delta": 26,
+              "original_inputs": 4,
+              "final_inputs": 7,
+              "activated": true,
+              "activation_delivered": true,
+              "activated_at_us": 1791874545754717,
+              "activation_transaction": "26946",
+              "commit_unknown": false,
+              "original_requests_preserved": 4,
+              "new_requests": 3,
+              "target_manifest_sha256": "0ef6110aa95e269b05a4daaa5a252eee2da5efee938d3a31571f80529be45c47",
+              "handoff_sha256": "45c0737d814ccb03afe2ed7151045e186611b67db4afaafb1a3109607026516d",
+              "backend_absent": {
+                "backend_start": "2026-10-13T06:55:45.614432+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_2c142c6_successor_live_off",
+                "event": "successor-backend",
+                "pid": 876,
+                "present": false,
+                "stage": "initial"
+              },
+              "finite_import_only": true,
+              "network_provenance_off": false,
+              "installed_import": false,
+              "fresh_process_adoption": false,
+              "post_activation_retirement": false
+            },
+            "negative_controls": 28,
+            "commit_counters": {},
+            "external_final_matches": true,
+            "catalog_unchanged": true,
+            "exact_backend": {
+              "expected": {
+                "pid": 876,
+                "backend_start": "2026-10-13T06:55:45.614432+00:00",
+                "database": "bb_scope_bind_2c142c6_successor_live_off",
+                "control_epoch": 8
+              },
+              "returncode": 0,
+              "stdout": "f\n",
+              "stderr": "",
+              "present": false
+            }
+          },
+          {
+            "name": "successor-live-commit-before",
+            "status": "PASS",
+            "seconds": 0.4431382464244962,
+            "oracle": {
+              "status": "PASS",
+              "mode": "successor-live-commit-before",
+              "snapshots": 8,
+              "control_tables": 72,
+              "original_native_rows": 49,
+              "final_native_rows": 52,
+              "native_sequence_delta": 4,
+              "original_inputs": 4,
+              "final_inputs": 4,
+              "activated": false,
+              "activation_delivered": false,
+              "activated_at_us": null,
+              "activation_transaction": null,
+              "commit_unknown": true,
+              "original_requests_preserved": 4,
+              "new_requests": 0,
+              "target_manifest_sha256": "a44ad332d6fc80dd9da080015672b4cbf1e1dad8fa915c1aedf9697c7f6b44c2",
+              "handoff_sha256": "51b25defb266e3894ef49e78c2b10eaf335908dc54eae922f8aa6a3b78ca34a2",
+              "backend_absent": {
+                "backend_start": "2026-10-13T06:55:50.608938+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_2c142c6_successor_live_commit_before",
+                "event": "successor-backend",
+                "pid": 1161,
+                "present": false,
+                "stage": "initial"
+              },
+              "finite_import_only": true,
+              "network_provenance_off": false,
+              "installed_import": false,
+              "fresh_process_adoption": false,
+              "post_activation_retirement": false
+            },
+            "negative_controls": 19,
+            "commit_counters": {
+              "commits_seen": 13,
+              "commits_forwarded": 12,
+              "server_commit_complete": 12,
+              "client_commit_complete": 12,
+              "faults": 1
+            },
+            "external_final_matches": true,
+            "catalog_unchanged": true,
+            "exact_backend": {
+              "expected": {
+                "pid": 1161,
+                "backend_start": "2026-10-13T06:55:50.608938+00:00",
+                "database": "bb_scope_bind_2c142c6_successor_live_commit_before",
+                "control_epoch": 8
+              },
+              "returncode": 0,
+              "stdout": "f\n",
+              "stderr": "",
+              "present": false
+            }
+          },
+          {
+            "name": "successor-live-commit-after",
+            "status": "PASS",
+            "seconds": 0.4949632538482547,
+            "oracle": {
+              "status": "PASS",
+              "mode": "successor-live-commit-after",
+              "snapshots": 8,
+              "control_tables": 72,
+              "original_native_rows": 49,
+              "final_native_rows": 52,
+              "native_sequence_delta": 4,
+              "original_inputs": 4,
+              "final_inputs": 4,
+              "activated": true,
+              "activation_delivered": false,
+              "activated_at_us": 1791874554934647,
+              "activation_transaction": "26997",
+              "commit_unknown": true,
+              "original_requests_preserved": 4,
+              "new_requests": 0,
+              "target_manifest_sha256": "404b64e2f74f6da6865feba0807574d0cd7eb304e9fe886448109d303e031310",
+              "handoff_sha256": "2d1b8bc52f77bc50a5afbe2a3fc5c22ef417a867f18aa178cbb9d41948493fa2",
+              "backend_absent": {
+                "backend_start": "2026-10-13T06:55:54.731623+00:00",
+                "control_epoch": 8,
+                "database": "bb_scope_bind_2c142c6_successor_live_commit_after",
+                "event": "successor-backend",
+                "pid": 1447,
+                "present": false,
+                "stage": "initial"
+              },
+              "finite_import_only": true,
+              "network_provenance_off": false,
+              "installed_import": false,
+              "fresh_process_adoption": false,
+              "post_activation_retirement": false
+            },
+            "negative_controls": 23,
+            "commit_counters": {
+              "commits_seen": 13,
+              "commits_forwarded": 13,
+              "server_commit_complete": 13,
+              "client_commit_complete": 12,
+              "faults": 1
+            },
+            "external_final_matches": true,
+            "catalog_unchanged": true,
+            "exact_backend": {
+              "expected": {
+                "pid": 1447,
+                "backend_start": "2026-10-13T06:55:54.731623+00:00",
+                "database": "bb_scope_bind_2c142c6_successor_live_commit_after",
+                "control_epoch": 8
+              },
+              "returncode": 0,
+              "stdout": "f\n",
+              "stderr": "",
+              "present": false
+            }
+          }
+        ],
+        "resources": [
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-13T06:55:32.174181546Z",
+              "FinishedAt": "2026-10-13T06:55:58.725040694Z"
+            }
+          },
+          {
+            "id": "f672e83188e81e3fd2ec22852bd596669e779905223f0a505c36f7b02531fb39",
+            "name": "/bigbrotr-acquisition-binding-2c142c6",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-13T06:55:33.039098544Z",
+              "FinishedAt": "2026-10-13T06:55:56.938819772Z"
+            }
+          }
+        ]
+      }
+    ],
+    "guards_fixture": {
+      "status": "SOURCE_WRITTEN_NOT_COMPILED_OR_EXECUTED",
+      "probe_owner": "root",
+      "harness_owner": "recovery_review",
+      "oracle_owner": "cleanup_review",
+      "scope": "14 rollback-only SQL discriminators on actual preparing Control backend, restored product catalog, confirmed typed activation then actual Control refresh/Ingest renewal and signed admission",
+      "checks": "Scoped Rustfmt, Python profile AST and diff-check PASS. Independent AI complete hook/caller/profile review found no concrete blocker.",
+      "excluded": "Expired/refused renewal, activated-zero old-loader routes, first-request manifest mismatch, real network/provenance and installed/general successor recovery remain owed",
+      "observed_at": "2026-10-13T07:10:31.545457+00:00"
     }
   }
 }

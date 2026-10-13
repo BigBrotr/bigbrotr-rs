@@ -292,6 +292,12 @@ One owner serializes exact identity decisions for each writable directory.
   same storage protocol under supervised native/Control custody. Its focused
   build and five entrypoint tests pass. Connected788f971 passes eleven actual commands,
   22 external observations and296 capture controls; independent actual audit passed.
+  Live locally minted1→2 activation now passes native buildc640b2f and five finite
+  connected processes at2c142c6:48snapshots/116capture controls, exact first admission,
+  retry/alternate signature and both activation COMMIT13 loss boundaries. No observed
+  identity becomes a writer. Raw SQL adversaries, renewal, activated-zero old loaders,
+  real network provenance-off and installed/general successor recovery remain open;
+  the finite import setting does not close this step or M1.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
