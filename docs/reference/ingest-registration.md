@@ -727,9 +727,12 @@ The final typed close compares the full ordered SQL input/outcome digest prefix
 against the native proof. It commits source open→closing→closed atomically, with
 its cut/digest/server timestamp, or observes exactly the same closure without
 rewriting its row/xmin. Use additive migration0035 with two narrow deferred
-transition branches: producer OPEN→CLOSING uses the complete source-purpose
-classifier so a draining target can reach the barrier; source open→closing→closed
-requires that classifier plus the final source=closed shape. Preserve all applied
+transition branches: producer OPEN→CLOSING keeps the existing complete validator
+for owner active/source open, using the complete source-purpose classifier for
+its additional supported draining/closed shapes; source open→closing→closed
+requires the source-purpose classifier plus the final source=closed shape. This
+preserves the ordinary recovery command's existing application grants. Every
+source-purpose typed operation explicitly requires the new classifier. Preserve all applied
 migrations, the ordinary typed recovery classifier and existing retirement/domain/
 owner/role vetoes, including job/frontier cut consistency. Ordinary positive
 recovery still requires owner active and source open. No broad activated-state

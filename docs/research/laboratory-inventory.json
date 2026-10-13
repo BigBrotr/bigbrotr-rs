@@ -45617,17 +45617,37 @@
     }
   },
   "implementation_activated_initial_source_closure_20261013": {
-    "status": "CONTRACT_SELECTED_IMPLEMENTATION_NOT_RUN",
-    "observed_at": "2026-10-13T11:25:02.750021+00:00",
+    "status": "IMPLEMENTED_REVIEWED_BUILD_AND_ENGINE_NOT_RUN",
+    "observed_at": "2026-10-13T11:40:34.160259+00:00",
     "base": "d26c88ac6b418f2a9908460e7e6326c9cd4d32f7",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
     "resources": "No new engine/build allocation; retain all qualified recovery labs and45ELFs",
-    "worktrees": {
-      "successor_restart_design": ".research/activated-recovery-native-20261013",
-      "recovery_review": ".research/activated-recovery-postgres-20261013",
-      "cleanup_review": ".research/activated-recovery-qualification-20261013"
-    },
-    "next": "Commit contract, then native and PostgreSQL implementation in separate worktrees, root installed CLI consumer and independent fixture."
+    "worktrees": [
+      {
+        "owner": "successor_restart_design",
+        "root": ".research/activated-recovery-native-20261013",
+        "branch": "implementation/activated-source-native",
+        "source": "af12324217cda75535b535d25b61fa3e119cd78e",
+        "integrated": "0a053417c8bd0b085ebb9138af371c7a39ef5292",
+        "state": "committed clean; native code source-reviewed, runtime NOT_RUN"
+      },
+      {
+        "owner": "recovery_review",
+        "root": ".research/activated-recovery-postgres-20261013",
+        "branch": "implementation/activated-source-postgres",
+        "source": "f76dfd9029891a2ed93a5acb6ddc16b663fdadac",
+        "integrated": "ceef83a",
+        "state": "committed clean; read-only independent native review in progress"
+      },
+      {
+        "owner": "cleanup_review",
+        "root": ".research/activated-recovery-qualification-20261013",
+        "branch": "qualification/activated-source-closure",
+        "state": "fixture implementation in progress; no engines/builds"
+      }
+    ],
+    "next": "Commit root CLI/buildprofile, run exact-Git isolated source-closure build; meanwhile finish independent first-wave fixture. Preserve all prior45ELFs and labs.",
+    "root_work": "Pending explicit --close-activated-source shared custody/standalone proof consumer, resource overlap and entrypoint refusal checks"
   }
 }

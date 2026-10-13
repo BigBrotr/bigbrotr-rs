@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T11:23Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T11:40Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,12 +14,14 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-d26c88a (full revision in Git), verified privately pushed with ten source
-branches; main54ad09d unchanged. Root owns the pending source2 closure contract, task, evidence and inventory. No merge/rebase/cherry-pick pending. Product inputs remain
-unchanged from2a018ea; e167c37 builds the fixed refusal probe. Root alone integrates
-and runs engines/builds. All three separate agent worktrees are committed clean;
-read-only source2 closure designs and refusal raw custody audit are complete.
-Preserve every worktree and previous branch/artifact.
+0a05341 (full revision in Git). Last verified private pushd26c88a with ten source
+branches; main54ad09d unchanged. No merge/rebase/cherry-pick pending. Contractd0d6af4
+plusfa58f37 precedes implementation. Nativeaf12324 integrated0a05341 and PGf76dfd9
+integratedceef83a. Root owns pending CLI/buildprofile/docs/evidence changes and an
+uncommitted next-engine dispatcher. Native/PG separate worktrees clean; fixture
+agent edits its separate qualification/activated-source-closure branch. All code is
+source-reviewed; compilation and actual source2 closure remain NOT_RUN. Root alone
+integrates and executes builds/engines. Preserve all worktrees and artifacts.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -93,13 +95,23 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit the [source2-only closure contract](../reference/ingest-registration.md#activated-initial-source-closure-under-implementation),
-then implement distinct native/PG proofs in separate agent worktrees and the root
-installed consumer. Ordinary positive recovery remains source=open; completed
-closure retries require exact existing PG copies without terminal repair. Preserve
-source1 and all old migrations; no epoch2 workflow retirement yet. Native and PG
-agents completed read-only design of affected owners and agree on this boundary.
-All new source2 closure implementation/runtime acceptance is NOT_RUN.
+Commit the installed source2 closure consumer and exact build profile, then run
+`ingest-activated-source` in the isolated exact-Git lab. Retain old45ELFs outside
+the locked mutable cache. Root complete affected source review and independent
+PG/CLI reviews found no blocker; independent native review continues. Newproof
+borrows exact native/closing custody, preserves old digest and adds six native
+counterexample groups. Additive0035 keeps old active/open grants, supports source
+closure and exact no-repair closed retry, and preserves other lifecycle vetoes.
+No build/SQL/engine has executed this new slice yet.
+
+Fixture agent implements five clones/13CLI: off missingcopyrepair, retry and closed
+missingcopyrefusal; on isolated privileged draining baseline, retry and mixedshape
+refusal; zero legacypositive underoldgrants then newfirst/retry and legacyclosed
+refusal; retained realRejected/source0 first/retry; missinginput2 refusal. No new
+finite seed in this wave. Frozenf12 has no DatasetLineage and its event differs from
+the native unit fixture: connected AlreadyDurable/source0 remains owed, without
+fabricated metadata. Final sourceCOMMITloss and job/closure lock orders follow.
+No epoch2 abandonment/retirement, epoch3, ACK/GC or Archive claim.
 
 Enginef6d6ebb PASS_INSTALLED_ACTIVATED_RECOVERY_REFUSALS: nine fresh off-seed clones,
 nine actual CLI exits4/reaped/nonforced. Missing/corrupt input2 or old dependency1/3

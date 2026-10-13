@@ -28,6 +28,7 @@ pub(in crate::interfaces::serve) enum Action {
     RetireInitial,
     RetireEmptyAttempt,
     ActivatedSuccessor,
+    CloseActivatedSource,
 }
 
 pub(super) fn limits() -> ProducerRecoveryLimits {
@@ -77,8 +78,14 @@ pub(in crate::interfaces::serve) fn run(
             "Ingest recovery requires local Control and Ingest".into(),
         ));
     }
-    if action == Action::ActivatedSuccessor {
-        return activated::run(root, output);
+    match action {
+        Action::ActivatedSuccessor => {
+            return activated::run(root, activated::Mode::Resolve, output);
+        }
+        Action::CloseActivatedSource => {
+            return activated::run(root, activated::Mode::CloseSource, output);
+        }
+        _ => {}
     }
     let budget = budget(&root, false, false)?;
     supervision::run_owned(
@@ -340,7 +347,9 @@ async fn connected(
             Action::RetireInitial => "initial-retired",
             Action::AbandonAcquisition => "acquisition-abandoned",
             Action::CloseSource | Action::Resolve => "source-closed",
-            Action::RetireEmptyAttempt | Action::ActivatedSuccessor => {
+            Action::RetireEmptyAttempt
+            | Action::ActivatedSuccessor
+            | Action::CloseActivatedSource => {
                 unreachable!("separate successor recovery")
             }
         });

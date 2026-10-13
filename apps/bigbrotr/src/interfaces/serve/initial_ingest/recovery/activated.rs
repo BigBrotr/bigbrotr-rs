@@ -1,10 +1,18 @@
-//! Finite positive epoch2 recovery; observations never become a live writer.
+//! Finite epoch2 recovery and source closure under one native/Control lifecycle.
 use super::*;
 use bigbrotr::storage::postgres::control_owner::{
     ActivatedInitialResolveRequest, InitialHistoryRequest,
 };
 
+mod source;
+
 const METADATA_BYTES: u64 = 128 * 1024;
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum Mode {
+    Resolve,
+    CloseSource,
+}
 
 /// Field order preserves native-first teardown on errors and unwinding too.
 /// The parent independently retains the actual transport driver and its grant.
@@ -14,7 +22,7 @@ struct Custody {
     client: Option<tokio_postgres::Client>,
 }
 
-pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
+pub(super) fn run(root: Resolved, mode: Mode, output: &mut LifecycleOutput) -> Result<()> {
     let budget = owner_budget(&root, false, false, 2)?;
     supervision::run_owned(
         root,
@@ -23,7 +31,9 @@ pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
         "activated Ingest recovery",
         false,
         1,
-        own,
+        move |root, budget, progress, cancellation, driver| {
+            own(root, budget, progress, cancellation, driver, mode)
+        },
     )
 }
 
@@ -33,6 +43,7 @@ async fn own(
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
     driver_custody: supervision::DriverCustody,
+    mode: Mode,
 ) -> Result<Value> {
     let path = Path::new(required(&root, "storage.ingest_root")?);
     let dataset: DatasetId = required(&root, "topology.dataset_id")?
@@ -75,6 +86,10 @@ async fn own(
     let metadata = grant(&budget, METADATA_BYTES, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
+    if mode == Mode::CloseSource {
+        // Publication overlaps metadata and closing, after dropping replay data.
+        drop(grant(&budget, 64 * 1024, 0)?);
+    }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared)
@@ -118,16 +133,32 @@ async fn own(
     })
     .await?;
     custody.owner = Some(owner);
-    let report = resolve(
-        &root,
-        &budget,
-        &progress,
-        &cancellation,
-        &mut custody,
-        metadata,
-        closing,
-    )
-    .await?;
+    let report = match mode {
+        Mode::Resolve => {
+            resolve(
+                &root,
+                &budget,
+                &progress,
+                &cancellation,
+                &mut custody,
+                metadata,
+                closing,
+            )
+            .await?
+        }
+        Mode::CloseSource => {
+            source::resolve(
+                &root,
+                &budget,
+                &progress,
+                &cancellation,
+                &mut custody,
+                metadata,
+                closing,
+            )
+            .await?
+        }
+    };
     phase(&progress, duration(&root, "graceful_shutdown_timeout"))?;
     drop(custody.native.take());
     bounded(

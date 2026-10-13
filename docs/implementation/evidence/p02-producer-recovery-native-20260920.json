@@ -17767,13 +17767,32 @@
         }
       },
       "activated_source_closure_20261013": {
-        "status": "CONTRACT_SELECTED_IMPLEMENTATION_NOT_RUN",
-        "observed_at": "2026-10-13T11:25:02.750021+00:00",
+        "status": "IMPLEMENTED_REVIEWED_BUILD_AND_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-13T11:40:34.160259+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
         "postgres_design": "Distinct source-purpose classifier; missing-copy repair only while source open, exact copies required once closed; additive0035 narrow source dispatch",
-        "acceptance": "Actual off/on/zero/rejected/AlreadyDurable sourcezero, refusals, final-COMMIT loss and job/closure lock orders. All NOT_RUN for this slice."
+        "acceptance": "Actual off/on/zero/rejected/AlreadyDurable sourcezero, refusals, final-COMMIT loss and job/closure lock orders. All NOT_RUN for this slice.",
+        "native": {
+          "source": "af12324217cda75535b535d25b61fa3e119cd78e",
+          "integrated": "0a053417c8bd0b085ebb9138af371c7a39ef5292",
+          "checks": "Scoped format/diff PASS; six new native groups not executed yet"
+        },
+        "postgres": {
+          "source": "f76dfd9029891a2ed93a5acb6ddc16b663fdadac",
+          "integrated": "ceef83a",
+          "migration0035_sha256": "80b5441cbb2de1f782ce6458e1c2b26a2f3730f51e61619af49f1e8d8adc375a",
+          "checks": "Scoped format/diff/catalog/applied-migration preservation PASS; SQL not executed"
+        },
+        "root_consumer": "Pending explicit --close-activated-source shared custody/standalone proof consumer, resource overlap and entrypoint refusal checks",
+        "review": "Root complete native prefix/newtests, PG source classifier/copy/publication and installed owners read. Native author independently reviewed PG; PG author independently reviewed root CLI/buildprofile. Further independent native review in progress. No runtime qualification inferred.",
+        "fixture": {
+          "status": "IN_PROGRESS_ENGINE_NOT_RUN",
+          "cases": "Five fresh clones,13 CLI: off repair/retry/closedcopyrefusal; onprivilegeddraining/retry/mixedshaperefusal;zero oldpositiveACL/newclose/retry/oldpositiverefusal;retainedrejected first/retry;offmissinginput",
+          "remaining": "ConnectedAlreadyDurable/source0 needs genuine compatible seed; finalsourceCOMMITloss, concurrentjob/closure and remainingrefusals later"
+        },
+        "build_profile": "ingest-activated-source: compile, entrypoint/schema/migrations, initial and newsource closure/reconstruction/closing tests, Clippy; retains exact executables"
       }
     }
   }

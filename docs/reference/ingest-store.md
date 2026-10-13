@@ -395,6 +395,41 @@ import. Current policy advancement and expired historical scheduling preserve
 original inputs and outcomes. Source2 closure, retirement, repeated lifetimes and
 Archive restart remain separate responsibilities.
 
+## Closing the activated source (under qualification)
+
+After stopping the epoch2 owner, select the finite source closure explicitly:
+
+```sh
+bigbrotr ingest recover --file ROOT --close-activated-source
+```
+
+Apply migration0035 and, using the provisioning credential, grant the configured
+application role its additional validator permission:
+
+```sql
+GRANT EXECUTE ON FUNCTION control.require_activated_initial_source(bytea) TO bigbrotr_control;
+```
+
+Retain existing Control/Ingest privileges, the native directory and every original
+input. This mode conflicts with all other recovery flags. It resolves every
+reserved request in order and verifies the complete source2 prefix before recording
+its cut and digest. It can operate after the historical Ingest lease expires, using
+fresh Control and current accepted policy. An open source may receive missing
+PostgreSQL outcome copies after positive native verification. Once closed, the
+source requires all exact copies to remain present; a retry preserves its original
+closure row and timestamp. Missing or corrupt input, unresolved reservations,
+inconsistent source counters or incomplete terminal state refuse.
+
+The successful report has `state=activated-source-closed`, decimal request counts,
+and `source_closure` with `last_complete_sequence` and `sha256`. Native close,
+committed Control release and joined transport precede delivery. Preserve all
+retained state after an interrupted or unknown outcome and retry the same mode
+in a fresh process. This command leaves workflow and producer retirement for their
+separate operation; it starts no acquisition, acknowledges no receipts, reclaims
+no inputs and keeps `ready=false`. Qualification is tracked in the
+[source closure contract](ingest-registration.md#activated-initial-source-closure-under-implementation)
+and existing recovery evidence; actual source closure execution remains pending.
+
 ## Exact dependency source basis
 
 The pinned Rust [open implementation](https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db.rs#L630)
