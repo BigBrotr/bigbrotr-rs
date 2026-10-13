@@ -596,3 +596,70 @@ not establish three individual certifications or completed job coverage. Exact
 build787e1fe passes15 affected tests and Clippy; three signed-recovery and two
 initial Sync-window regressions pass with the same binaries. First2032894 failure
 and corrected retrospective off replay remain retained in the existing evidence.
+
+## Activated initial producer recovery (under implementation)
+
+The next responsibility is explicit `ingest recover --activated-successor --file
+PATH`, mutually exclusive with the earlier source-closure/retirement actions.
+Configuration, the existing local native store and retained database/input state
+are its only startup inputs. It uses fresh Control and current accepted policy to
+close and positively resolve the already activated epoch2 producer. It starts no
+listener or acquisition and returns no writer. The existing initial and empty
+recovery modes retain their stricter historical classifiers.
+
+A separate checked recovery context binds the actual schema2 manifest, retained
+1→2 handoff, both exact source streams, retired predecessor and activated target.
+Require both existing producer markers, exact dataset/shard/owner/producer/domain
+identities and sealed topology generation1 with two streams. Missing target state
+cannot mean zero work. Source sequence0 and issued0 are valid when positively
+consistent with the target state. The native OPEN→CLOSING barrier is durable and
+one-way; retries may observe the same closing state. Bind the proof to actual native
+root identity and sequence, rechecking before replay. This observation cannot
+become a writer or a source-closure witness.
+
+Positive replay admits references to the predecessor stream only through its exact
+retained closed handoff cut, and target references only through the checked current
+target counter. New target batches belong to epoch2. Preserve full fact decoding,
+digest/reference closure and forward/reverse dictionary checks. Target request1 is
+ordinary evidence append, never initial bootstrap. One positive request establishes
+neither a contiguous source2 closure nor proof of every unreferenced old request.
+Each retained original input and reservation must match byte-for-byte; absence or
+corruption is unresolved, never inferred noncommit. Stream requests sequentially
+through reserved_through, preserving issued/reserved distinction and unresolved tails.
+
+A separate bounded PostgreSQL recovery owner validates immutable preparation and
+activation, both manifests, all18 allocation domains, exact retired predecessor,
+target lifetime and topology. Never fabricate an epoch2 initial registration or
+reuse a live writer capability. Acquire current Control before dataset, then ordered
+historical/target parents and producer. Recheck authority after waits. An expired
+historical Ingest scheduling lease does not prevent positive recovery under current
+Control; current policy may advance beyond the retained activation policy. Historical
+issuer, policy, input, outcomes and existing recorder attribution remain immutable.
+Only a missing PostgreSQL copy of a positively verified native outcome is inserted,
+with the current recovery recorder. Identical retries preserve existing rows/xmins.
+
+Add migration0033 without changing applied migrations. Dispatch only the exact
+activated producer OPEN→CLOSING path to its own complete validator; retain0031's
+unactivated retirement checks and0032's activation, source/domain/owner/role retirement
+vetoes. No broad activated-state exemption is allowed. Native closing precedes SQL
+closing. Unknown closing/outcome COMMIT yields no reusable operation authority;
+another configuration-only process observes retained state and retries. Never reopen
+native state or infer rollback from an undelivered response.
+
+Reserve native ownership, retained metadata/closing proof, Control/driver and one
+input/outcome replay pair before a claim or barrier. Retain native custody until
+close and the actual driver/grant through joined shutdown. The finite report names
+producer2, issued/reserved/resolved counts, native closed and committed Control
+release; source2 remains open and readiness false. It does not retire the target,
+complete acquisition coverage, acknowledge/reclaim data, activate epoch3 or publish
+Archive data.
+
+Acceptance uses copied installed off/on states and actual zero/source-zero states:
+fresh recovery, identical retry and missing-PG-copy repair; corrupt/missing old
+dependencies and new inputs, wrong activation/handoff/extra producers/foreign streams;
+held native before Control; advanced current policy and expired historical scheduling;
+actual closing and outcome COMMIT loss on both sides of server completion followed
+by separate installed recovery. Preserve full original SQL/native/input captures,
+attribution and artifacts, and distinguish build-only or finite-probe evidence from
+installed qualification. Source2 closure/retirement and repeated-lifetime/Archive
+consumers remain subsequent selected work.
