@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T11:53Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T11:59Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,14 +14,12 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-1f166a053e05c65427c00735ad368a10fc406070 after integrating testfixture correctionccda685. Last verified private
-pushd26c88a with ten source branches; main54ad09d unchanged. No merge/rebase/cherry-pick
-pending. Native/PG implementation and root CLI/buildprofile integrated5e57e63.
-Root owns pending evidence/checkpoint updates and uncommitted next-engine dispatcher.
-Native/PG worktrees clean; fixture agent edits qualification/activated-source-closure
-separately. Independent source reviews complete without product blocker. First build
-FAIL due copied test directory permissions, corrected in two test files only.
-Root alone integrates and executes builds/engines. Preserve all artifacts/worktrees.
+bbe7ae0803f27855362ee4b3e1ca52c54aa32dd7. Last verified privatepush9dbc5b2 and nativeccda685/PGf76dfd9 sourcebranches;
+main54ad09d unchanged. No merge/rebase/cherry-pick pending. Root owns pending exact
+engine dispatcher/evidence/checkpoint. Firstwave fixture380e57d integratedbbe7ae0.
+Native agent now implements genuine AlreadyDurable finite seed in a separate worktree;
+PG/fixture agents finish read-only reviews. Root alone integrates/builds/executes.
+All ignored/external artifacts and worktrees remain preserved.
 
 Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
 and `activated_source_closure_20261013` in existing recovery evidence; qualified
@@ -95,21 +93,27 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit this failure/correction checkpoint, then run the isolated exact-Git
-`ingest-activated-source` build from resulting revision. First build5e57e63 compiled
-and passed46 entrypoint/schema/migration,3 legacy source and32 reconstruction tests;
-one new foreign-root test failed Input(Identity). The fixture copy helper lost0700
-directory permissions. Correctionccda685 preserves them and asserts private paths
-and identical inputs; product/API/digest unchanged. Producer-closing/Clippy NOT_RUN.
-Failed root `/runs/ingest-activated-source-5e57e63`, owner5caf0457fcce36edde8fb48d0e7795b9,
-wrapper63806 joined1, stopped11:43:08Z; six producedELFs preserved outside cache.
-Separate AI custody audit confirms1798 exactfiles/51ELFs/1257 unchanged priorcontainers,
-two stopped owned fetch0/native1, noOOM. Failed receiptSHA
-a5a1235d1588d8c6cf7e8b8eac5888163b84f5d91c14c68092ad1641e5614b43.
-All code reviews complete; first-wave fixture root read complete, independentreview
-in progress. Actual source2 closure/SQL/fault/concurrency remain NOT_RUN.
+Commit firstwave dispatcher and current evidence, then run fivefreshclones/13CLI
+with exact9dbc5b2 build artifacts via `--ingest-activated-source`. Root complete
+source review and four custody mocks pass; independent fixture review closes the
+same finite responsibility. No actual source2 closure/SQL qualification yet.
 
-Fixture agent implements five clones/13CLI: off missingcopyrepair, retry and closed
+Corrected build9dbc5b2 PASS: compile,46entry/schema/migration,45native(3legacy,
+33reconstruction,9closing),Clippy. Allsixnewsource groups execute. Root
+`/runs/ingest-activated-source-9dbc5b2`, ownere77fe5ff2001f3100f2b53e6bb887436,
+wrapper72267 joined0,11:53:25–11:55:34Z. ReceiptSHA
+5e081d2a25d849ed33ee1810dca3b087ae34cda6f7cc5f55b0f4ccafb2f7ccbe.
+Root audit14257 joined0:1798 exactGit/export/archive files,57preservedELFs,
+1259 unchangedpriorcontainer projections plus2owned terminal0/noOOM.
+
+First build5e57 remainsFAIL:81testsPASS/oneforeign-root fixture failure; later
+producerclosing/Clippy NOT_RUN. Testcopy helper lost0700 directory permissions;
+correctionccda685 integrated1f166a0 changes two test files only, not product/API/digest.
+SixfailedELFs retained; separateAI audit1798files/51ELFs/1257priorcontainers PASS.
+Failedroot `/runs/ingest-activated-source-5e57e63`, owner5caf0457fcce36edde8fb48d0e7795b9,
+wrapper63806 joined1, stopped11:43:08Z. Originalfail never relabeled.
+
+Committed fixture380e57d selects five clones/13CLI: off missingcopyrepair, retry and closed
 missingcopyrefusal; on isolated privileged draining baseline, retry and mixedshape
 refusal; zero legacypositive underoldgrants then newfirst/retry and legacyclosed
 refusal; retained realRejected/source0 first/retry; missinginput2 refusal. No new
@@ -203,12 +207,11 @@ or this passing bounded wave does not finish the product.
 
 ## Processes, retained resources and maintenance
 
-Latest buildwrapper63806 joined1:5e57e63 is FAIL, both buildcontainers stopped
-withoutOOM. FailedsixELFs retained,51total verified outside cache. Read-only audit
-observed1259containers at11:48:12Z:1257prior unchanged plusfetch0/native1. No engine
-or build active at this checkpoint; corrected exactbuild is next. Previous qualified
-enginef6d6ebb/PG/client remain stopped. Preserve all raw artifacts, operatorpreimages,
-original failures and failed audit attempts.
+Latest buildwrapper72267/rootaudit14257 joined0;9dbc is PASS and allbuildcontainers
+stopped/PID0/noOOM. Rootaudit57ELFs and1259 unchangedpriorprojections PASS. No build
+or engine active at this checkpoint. Firstbuild5e57FAIL and sixproducedELFs retained.
+Previous qualifiedenginef6d/PG/client remain stopped. Keep all raw artifacts,
+operatorpreimages, original failures and failed audit attempts.
 
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 
@@ -233,7 +236,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space observed at failedbuild completion11:43Z: 62,014,967,808 bytes; subsequent sixELF preservation used78,653,856 bytes. Remeasure before allocation.
+Free space observed at9dbc completion11:55Z: 61,621,145,600 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18

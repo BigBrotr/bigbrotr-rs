@@ -45617,12 +45617,12 @@
     }
   },
   "implementation_activated_initial_source_closure_20261013": {
-    "status": "IMPLEMENTED_FIRST_BUILD_FAIL_TEST_FIXTURE_CORRECTED",
-    "observed_at": "2026-10-13T11:53:10.345484+00:00",
+    "status": "BUILD_PASS_INSTALLED_ENGINE_NOT_RUN",
+    "observed_at": "2026-10-13T11:58:17.624513+00:00",
     "base": "d26c88ac6b418f2a9908460e7e6326c9cd4d32f7",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
-    "resources": "Failedbuild5e57 stopped-retained; six producedELFs preserved outside cache,51totalverified. No engine active. Keep all originals and failures.",
+    "resources": "Both builds stopped-retained. Six new9dbc ELFs plus sixfailed5e57 and45prior retained outside cache;57verified. No engine/build active.",
     "worktrees": [
       {
         "owner": "successor_restart_design",
@@ -45630,7 +45630,7 @@
         "branch": "implementation/activated-source-native",
         "source": "ccda68512ef6c6c55f4b3e5d29f0c97e9bae4c0d",
         "integrated": "1f166a053e05c65427c00735ad368a10fc406070",
-        "state": "committed clean; testfixture permission fix awaiting rootbuild"
+        "state": "clean testfixture correction committed;91 affectedtests/Clippy PASS9dbc; new genuineAlreadyDurable finite seed design in assigned worktree"
       },
       {
         "owner": "recovery_review",
@@ -45647,7 +45647,7 @@
         "state": "fixture implementation in progress; no engines/builds"
       }
     ],
-    "next": "Commit this honest failure/correction checkpoint, then run exact isolated ingest-activated-source build from resulting revision. Continue firstwave fixture qualification after PASS.",
+    "next": "Integrate reviewed firstwavefixture and dispatcher, commit exactsource, then run five copied seeds/13 installedCLI using9dbc artifacts; record actual outcomes and independent capture audit.",
     "root_work": "CLI/buildprofile integrated5e57e63; root next-engine dispatcher stilluncommitted; fixture work remains isolated.",
     "failed_build": {
       "status": "FAIL",
@@ -45685,6 +45685,48 @@
         "integrated": "1f166a053e05c65427c00735ad368a10fc406070",
         "scope": "Two test files only: preserve directory permissions and assert0700/exact original inputs. Product unchanged; rerun pending."
       }
+    },
+    "build": {
+      "status": "PASS_ACTIVATED_SOURCE_CLOSURE_BUILD_ONLY",
+      "source": "9dbc5b2cd05362b9900055afac65b1b672e5b016",
+      "tree": "fa26518c7b3605953d749433051e28c5860597ba",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-9dbc5b2",
+      "owner": "e77fe5ff2001f3100f2b53e6bb887436",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "13ced66d3a51a92b6ad8cab3b5da2f8b150574814289c5aa57084e850d68249e"
+        },
+        {
+          "name": "native",
+          "id": "16e4023541e6ef7553c4713017e4ee6d121698dc78792b8274b50574598a0b07"
+        }
+      ],
+      "started_at": "2026-10-13T11:53:25.096502+00:00",
+      "finished_at": "2026-10-13T11:55:34.752438+00:00",
+      "wrapper": "72267 joined0",
+      "checks": "compile;46entrypoint/schema/migration;3legacy source+33reconstruction+9closing=45native;Clippy PASS. All six new activated source groups executed.",
+      "receipt_sha256": "5e081d2a25d849ed33ee1810dca3b087ae34cda6f7cc5f55b0f4ccafb2f7ccbe",
+      "binary_sha256": "8ec8cf2ad4d48b271d790b5f004aedcb201bdb6d44de91befdd2dd0f6991eece",
+      "probe_sha256": "113f4920143fa225ea619f1392e833633b061db690f2c3caaf87633012bb11de",
+      "audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-9dbc5b2/root-build-audit.json",
+        "sha256": "b6899eccc915eec6be08089d23a677f0dbd95285ba9d04fd9207c1b92c5fc1de",
+        "files": 1798,
+        "retained_elf_paths": 57,
+        "unchanged_prior_containers": 1259
+      },
+      "scope": "Build and actual affected native/CLI tests only. PostgreSQL/installed source closure remains NOT_RUN."
+    },
+    "fixture": {
+      "source": "380e57d51aa77a401137ce02779119ab1b5a60d8",
+      "integrated": "bbe7ae0803f27855362ee4b3e1ca52c54aa32dd7",
+      "status": "COMMITTED_ENGINE_NOT_RUN",
+      "cases": "Five clonedseeds/13installedCLI/0finiteseeds; exactreports and72-table/ native/input ownership checks",
+      "pure_checks": "13artificialcontexts26observations211negativecontrols plus4mock custodyfailures PASS; not engine evidence",
+      "pure_manifest": ".research/activated-recovery-qualification-20261013/.research/activated-source-closure-selfcheck-20261013/manifest.json",
+      "pure_manifest_sha256": "9250b854f1bc08320e5121ddc933538f3067fb0596fa8831c4dc360199afb7d9",
+      "remaining": "ConnectedAlreadyDurable/source0; finalsourceCOMMITloss; jobclosurelockorders; remainingprefix/tailrefusals; workflowretirement/fullM1"
     }
   }
 }

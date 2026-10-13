@@ -17767,17 +17767,17 @@
         }
       },
       "activated_source_closure_20261013": {
-        "status": "IMPLEMENTED_FIRST_BUILD_FAIL_TEST_FIXTURE_CORRECTED",
-        "observed_at": "2026-10-13T11:53:10.345484+00:00",
+        "status": "BUILD_PASS_INSTALLED_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-13T11:58:17.624513+00:00",
         "contract": "docs/reference/ingest-registration.md#activated-initial-source-closure-under-implementation",
         "scope": "Only source2 closure and exact completed retry under current Control; no retirement or writer adoption",
         "native_design": "Distinct borrowed opaque proof and fixed-size ordered prefix; handoff-bound new digest, no new native write after closing",
         "postgres_design": "Distinct source-purpose classifier; missing-copy repair only while source open, exact copies required once closed; additive0035 narrow source dispatch",
-        "acceptance": "Actual off/on/zero/rejected/AlreadyDurable sourcezero, refusals, final-COMMIT loss and job/closure lock orders. All NOT_RUN for this slice.",
+        "acceptance": "Actual off/on/zero/rejected/AlreadyDurable sourcezero, refusals, final-COMMIT loss and job/closure lock orders remain NOT_RUN. Native tests PASS at9dbc.",
         "native": {
           "source": "af12324217cda75535b535d25b61fa3e119cd78e",
           "integrated": "0a053417c8bd0b085ebb9138af371c7a39ef5292",
-          "checks": "First build81 testsPASS1FAIL; five newsource groups pass, foreignroot group refuses invalid fixture permissions. Corrected testfixture awaiting exactbuild."
+          "checks": "Corrected exact9dbc buildPASS45native+46entry/schema/migration andClippy; allsix newsource groups pass. First5e57 testfixtureFAIL retained."
         },
         "postgres": {
           "source": "f76dfd9029891a2ed93a5acb6ddc16b663fdadac",
@@ -17788,9 +17788,14 @@
         "root_consumer": "Explicit --close-activated-source integrated5e57e63; shared custody, bounded prefix replay/publication, resource overlap and entrypoint refusal checks",
         "review": "Root complete affected native/PG/CLI/build source review; native author independently reviewed PG and PG author independently reviewed native/CLI/build profile. No unresolved source finding. First-wave fixture root review complete, independent review in progress; actual SQL/engine NOT_RUN.",
         "fixture": {
-          "status": "IN_PROGRESS_ENGINE_NOT_RUN",
-          "cases": "Five fresh clones,13 CLI: off repair/retry/closedcopyrefusal; onprivilegeddraining/retry/mixedshaperefusal;zero oldpositiveACL/newclose/retry/oldpositiverefusal;retainedrejected first/retry;offmissinginput",
-          "remaining": "ConnectedAlreadyDurable/source0 needs genuine compatible seed; finalsourceCOMMITloss, concurrentjob/closure and remainingrefusals later"
+          "source": "380e57d51aa77a401137ce02779119ab1b5a60d8",
+          "integrated": "bbe7ae0803f27855362ee4b3e1ca52c54aa32dd7",
+          "status": "COMMITTED_ENGINE_NOT_RUN",
+          "cases": "Five clonedseeds/13installedCLI/0finiteseeds; exactreports and72-table/ native/input ownership checks",
+          "pure_checks": "13artificialcontexts26observations211negativecontrols plus4mock custodyfailures PASS; not engine evidence",
+          "pure_manifest": ".research/activated-recovery-qualification-20261013/.research/activated-source-closure-selfcheck-20261013/manifest.json",
+          "pure_manifest_sha256": "9250b854f1bc08320e5121ddc933538f3067fb0596fa8831c4dc360199afb7d9",
+          "remaining": "ConnectedAlreadyDurable/source0; finalsourceCOMMITloss; jobclosurelockorders; remainingprefix/tailrefusals; workflowretirement/fullM1"
         },
         "build_profile": "ingest-activated-source: compile, entrypoint/schema/migrations, initial and newsource closure/reconstruction/closing tests, Clippy; retains exact executables",
         "failed_build": {
@@ -17829,6 +17834,38 @@
             "integrated": "1f166a053e05c65427c00735ad368a10fc406070",
             "scope": "Two test files only: preserve directory permissions and assert0700/exact original inputs. Product unchanged; rerun pending."
           }
+        },
+        "build": {
+          "status": "PASS_ACTIVATED_SOURCE_CLOSURE_BUILD_ONLY",
+          "source": "9dbc5b2cd05362b9900055afac65b1b672e5b016",
+          "tree": "fa26518c7b3605953d749433051e28c5860597ba",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-9dbc5b2",
+          "owner": "e77fe5ff2001f3100f2b53e6bb887436",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "13ced66d3a51a92b6ad8cab3b5da2f8b150574814289c5aa57084e850d68249e"
+            },
+            {
+              "name": "native",
+              "id": "16e4023541e6ef7553c4713017e4ee6d121698dc78792b8274b50574598a0b07"
+            }
+          ],
+          "started_at": "2026-10-13T11:53:25.096502+00:00",
+          "finished_at": "2026-10-13T11:55:34.752438+00:00",
+          "wrapper": "72267 joined0",
+          "checks": "compile;46entrypoint/schema/migration;3legacy source+33reconstruction+9closing=45native;Clippy PASS. All six new activated source groups executed.",
+          "receipt_sha256": "5e081d2a25d849ed33ee1810dca3b087ae34cda6f7cc5f55b0f4ccafb2f7ccbe",
+          "binary_sha256": "8ec8cf2ad4d48b271d790b5f004aedcb201bdb6d44de91befdd2dd0f6991eece",
+          "probe_sha256": "113f4920143fa225ea619f1392e833633b061db690f2c3caaf87633012bb11de",
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-9dbc5b2/root-build-audit.json",
+            "sha256": "b6899eccc915eec6be08089d23a677f0dbd95285ba9d04fd9207c1b92c5fc1de",
+            "files": 1798,
+            "retained_elf_paths": 57,
+            "unchanged_prior_containers": 1259
+          },
+          "scope": "Build and actual affected native/CLI tests only. PostgreSQL/installed source closure remains NOT_RUN."
         }
       }
     }
