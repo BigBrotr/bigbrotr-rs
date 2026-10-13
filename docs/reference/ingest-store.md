@@ -447,6 +447,43 @@ all retained data and perform no speculative repair. The selected source boundar
 now has24 installed invocations and two finite seeds; workflow abandonment and
 retirement remain separate.
 
+## Abandoning activated acquisition (under qualification)
+
+After stopping the epoch2 owner, retain its native directory and every original
+input, apply migration0036, and select:
+
+```sh
+bigbrotr ingest recover --file ROOT --abandon-activated-acquisition
+```
+
+Keep the source-closure privileges above and the existing job update privileges.
+Using the provisioning credential, grant the recovery application role:
+
+```sql
+GRANT SELECT, INSERT ON control.acquisition_gaps TO bigbrotr_control;
+GRANT EXECUTE ON FUNCTION control.guard_acquisition_gap(),
+    control.require_acquisition_gap_complete() TO bigbrotr_control;
+```
+
+The command first verifies and closes source2, then cancels the queued acquisition
+jobs owned by the Control that activated epoch2. It records whole-intent coverage
+as unknown, including claimed jobs with no mutation requests. Accepted jobs that
+were never claimed remain unchanged. The combined number of retained gaps and
+remaining claims must be at most64; advanced jobs or inconsistent history refuse.
+Sessions and original job details remain intact. The source may already be closed
+when a later abandonment step refuses; preserve that state.
+
+A successful report has `state=activated-acquisition-abandoned`, the source cut
+and digest, and `acquisition_abandonment` containing decimal `jobs`, reason
+`activated_initial_producer_abandoned` and `coverage=unknown`. An identical retry
+returns the retained total without rewriting its original attribution. After an
+interrupted or unknown outcome, inspect retained state and retry the same command
+in a fresh process. This operation leaves producer2 closing and its Ingest lifetime
+unretired; it starts no acquisition and keeps `ready=false`.
+
+Installed qualification is pending under the
+[activated abandonment contract](ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation).
+
 ## Exact dependency source basis
 
 The pinned Rust [open implementation](https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db.rs#L630)

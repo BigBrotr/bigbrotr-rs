@@ -284,6 +284,7 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
         Some("--retire-empty-attempt"),
         Some("--activated-successor"),
         Some("--close-activated-source"),
+        Some("--abandon-activated-acquisition"),
     ] {
         let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
         command
@@ -335,6 +336,17 @@ fn explicit_recovery_modes_conflict_before_configuration_io() {
                 "--retire-initial",
                 "--retire-empty-attempt",
                 "--activated-successor",
+            ][..],
+        ),
+        (
+            "--abandon-activated-acquisition",
+            &[
+                "--close-source",
+                "--abandon-acquisition",
+                "--retire-initial",
+                "--retire-empty-attempt",
+                "--activated-successor",
+                "--close-activated-source",
             ][..],
         ),
     ] {

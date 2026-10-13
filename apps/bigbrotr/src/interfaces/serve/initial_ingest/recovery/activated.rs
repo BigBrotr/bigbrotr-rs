@@ -12,6 +12,7 @@ const METADATA_BYTES: u64 = 128 * 1024;
 pub(super) enum Mode {
     Resolve,
     CloseSource,
+    AbandonAcquisition,
 }
 
 /// Field order preserves native-first teardown on errors and unwinding too.
@@ -86,9 +87,13 @@ async fn own(
     let metadata = grant(&budget, METADATA_BYTES, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
-    if mode == Mode::CloseSource {
+    if mode != Mode::Resolve {
         // Publication overlaps metadata and closing, after dropping replay data.
         drop(grant(&budget, 64 * 1024, 0)?);
+    }
+    if mode == Mode::AbandonAcquisition {
+        // Abandonment follows source publication with the same retained proofs.
+        drop(grant(&budget, 128 * 1024, 0)?);
     }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
@@ -146,7 +151,7 @@ async fn own(
             )
             .await?
         }
-        Mode::CloseSource => {
+        Mode::CloseSource | Mode::AbandonAcquisition => {
             source::resolve(
                 &root,
                 &budget,
@@ -155,6 +160,7 @@ async fn own(
                 &mut custody,
                 metadata,
                 closing,
+                mode,
             )
             .await?
         }

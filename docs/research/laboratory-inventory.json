@@ -46547,5 +46547,46 @@
       "scope": "Actual C14after-complete first reservation, retained native tail versus shortened positive prefix, terminal SQLcopy conflict. Complete72SQL/native/input preservation with exact atomic Control fencing. No final-publication interposition, workflow retirement, Archive orM1 claim."
     },
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
+  },
+  "implementation_activated_acquisition_abandonment_20261013": {
+    "status": "IMPLEMENTED_BUILD_AND_ENGINE_NOT_RUN",
+    "observed_at": "2026-10-13T13:30:12.266186+00:00",
+    "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
+    "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
+    "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
+    "postgres": {
+      "source": "e2d0e50394f5623588d042569bcd50a10878a6e2",
+      "integrated": "30f0127",
+      "api": "abandon_activated_initial_acquisition(&ClosedActivatedInitialSource,&ResolvedActivatedSource,InitialHistoryRequest,OwnedPermit,validate)->Result<u64,SourceCloseError>",
+      "migration": "0036_activated_acquisition_abandonment.sql",
+      "migration_sha256": "19e2390b46d9eba7e4eac765eafc30fc7b2cac03e03c0918df64ed0b87642e54",
+      "behavior": "Exact paired1/1/initialreason or2/2/activatedreason; complete35classifier plusclosed/closing/cutdigest/nativeprefix. ActivatorControl claims includingzero-request, prior+selected<=64 withindexedLIMIT65, entirebatch beforewrites; gap+twojob revisionsatomic/exactretry preservesissuer/xmin. No extraordinaryjobtablegrants ortrigger; old0028boundary preserved."
+    },
+    "root_consumer": {
+      "state": "implemented uncommitted at checkpoint; complete commit follows",
+      "flag": "--abandon-activated-acquisition",
+      "resource": "Native/Control+128KiBmetadata+4096closing and1replaypair preclaim; sequential64KiBsource and128KiBabandon grant. Freshrefresh beforefinal; sourceproof borrowed untilreturn; parentnativeclose/Controlrelease/driverjoinbefore report",
+      "tests": "Existing actualentrypointmissingstore andmutualexclusion cases extended; NOT_RUN"
+    },
+    "finite_probe": {
+      "source": "fe44e19042d8c2874b12910c62014d8652da0378",
+      "integrated": "117d648",
+      "mode": "successor-live-acquisition-claims DB PASSWORD CONFIG",
+      "behavior": "GenuineAlreadyDurable request1 underliveControl8; refresh; typedaccepta7/claima7zero-request; typedaccepta8unclaimed. Fullnative53/seq64/input5 prepost; typedcalls captured beforeassert. Existinga6queued2 remainsboundrequest1; olddurable mode unchanged",
+      "status": "SOURCE_REVIEWED_NOT_RUN"
+    },
+    "review": "Root complete newPGadapter/0036, affected closed-source/nativeprefix/Controlacquire+beginhistory andold0027/28/23/0035 owners andcurrentCLI/probe paths reviewed. No concreteblocker; additional independentnativeauthor review pending. Scopedrustfmt/diffchecksPASS only.",
+    "build_plan": "Reuse existing ingest-activated-installed profile: exactRust1.98.1/Clang14 compile, entry/schema/migration tests andClippy. Nativeproof implementations unchanged9dbc asideequivalent PGhelper extraction; retainnative45tests, no broadrepeat.",
+    "fixture": {
+      "owner": "cleanup_review",
+      "worktree": ".research/activated-recovery-qualification-20261013",
+      "branch": "qualification/activated-acquisition-fixtures",
+      "state": "Newindependentfixture inprogress: successful939offclosed and0e4917durableclosed, first+retry4CLI/fullSQL/native/input/session/catalog; noneexecuted"
+    },
+    "next": "Finish independentreview/integration, commitclean exactsource then isolatedbuild. Complete firstfixture pure expectations/review then4actualCLI. Later genuinezero-request seed, SQLnegative/immutability, finalCOMMITloss+freshrecovery andordinaryHTTPexistinggrant regression.",
+    "owner": "root sole integrator/build/engine executor",
+    "processes": "No engine/build active; all priorbuildandprefixengine wrappersjoined. Threeagents separateworktrees; preserve61ELFs, failures, allignored/externallabs.",
+    "last_private_push": "da7bd07040aaf45062cb7e25e69e8d8cccda6245 verified plusprefix55dc andcontractc002branches",
+    "head": "117d64842668496c026659f0057459f784e45d20"
   }
 }

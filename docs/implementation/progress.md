@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:21Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:30Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,13 +14,14 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-b6ec515e802bee7574be478c7e9a50899b892090. Last verified private push198e2a5; three prior qualification branches pushed.
+117d64842668496c026659f0057459f784e45d20. Last verified private pushda7bd07040aaf45062cb7e25e69e8d8cccda6245; prefix55dcdb2 and contractc0024b8 branches also verified.
 Main54ad09d unchanged. No merge/rebase/cherry-pick pending; root owns this evidence
 update. Durable0e4917f and lock14b7bd4 engines/audits PASS. Prefix probe e1f74d7
-integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; next contract c0024b8 remains separate. Root alone integrates/builds/executes.
+integrated3748ece, buildbb53PASS. Three-case Python fixturebdf6548 integrated1dc001a; dispatcher d115647 executed FAIL. Oracle55dcdb2 integrated4d99fa2; contractc002 integratedb6ec515, PG e2d0 integrated30f0127 and finitefe44 integrated117d648. Root CLI/docs/buildprofile changes owned and beingcommitted. Root alone integrates/builds/executes.
 
-Current authority: `implementation_activated_initial_source_closure_20261013` lab inventory
-and `activated_source_closure_20261013` in existing recovery evidence; qualified
+Current authority: `implementation_activated_acquisition_abandonment_20261013` lab inventory
+and `activated_acquisition_abandonment_20261013` in existing recovery evidence; sourceclosure
+remains qualified in its prior owning records, and qualified
 activated recovery remains in its unchanged owning records.
 
 ## Active task and completed prerequisite
@@ -91,11 +92,16 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Implement activated acquisition abandonment from the reviewed owning contract
-c0024b8 integratedb6ec515. PG agent owns additive0036/backend/ledger in isolated
-worktree; root owns installed action/help/report/resource preflight; native agent
-prepares real activator-owned zero-request job seed. New implementation/tests NOT_RUN.
-Reuse complete borrowed source proof; never forge epoch2 InitialRegistration or
+Commit complete activated acquisition implementation then run isolated exact build
+using existing ingest-activated-installed profile (entry/schema/migration+Clippy).
+PG e2d0 integrated30f0127, finiteclaims fe44 integrated117d648; root owns seven
+uncommitted CLI/help/test/buildprofile files plus current evidence/docs update.
+New source/tests/engine NOT_RUN. Root complete affected contract/owners/callers
+review finds no blocker; additional independent native-author review pending.
+Fixtureauthor prepares four actual first/retry invocations on two qualifiedclosed
+seeds939off/0e4917durable. Then genuinezero-request claim/unclaimed acceptance,
+SQLnegative/immutability, finalCOMMITloss/freshretry andordinaryHTTPoldgrant gate.
+Reuse complete borrowed source proof; no fabricated epoch2 InitialRegistration or
 historical claims. No draining, producer/domain retirement, ACK/GC or Archive.
 
 Corrected prefixengineb23a597 PASS3CLI+1finite, wrapper47161 joined0,

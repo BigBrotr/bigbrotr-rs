@@ -1,6 +1,10 @@
 //! Prove the complete activated request prefix before publishing source2 closure.
 use super::*;
 
+#[allow(
+    clippy::too_many_arguments,
+    reason = "shared source lifecycle with distinct retained grants and terminal action"
+)]
 pub(super) async fn resolve(
     root: &Resolved,
     budget: &ResourceBudget,
@@ -9,6 +13,7 @@ pub(super) async fn resolve(
     custody: &mut Custody,
     metadata: OwnedPermit,
     closing: OwnedPermit,
+    mode: Mode,
 ) -> Result<Value> {
     let native = custody.native.as_mut().expect("exclusive native owner");
     let owner = custody.owner.as_mut().expect("claimed Control");
@@ -100,7 +105,7 @@ pub(super) async fn resolve(
     .await?;
     // The enclosing worker closes native and releases Control; the parent joins
     // its actual driver before publishing this successful terminal report.
-    Ok(json!({"format":"bigbrotr-ingest-recovery/1",
+    let mut report = json!({"format":"bigbrotr-ingest-recovery/1",
         "state":"activated-source-closed", "dataset_id":identity.dataset_id,
         "owner_resource_id":identity.owner_resource_id,
         "producer_slot_id":closed.producer_slot_id(), "producer_epoch":"2",
@@ -109,5 +114,31 @@ pub(super) async fn resolve(
         "resolved_requests":source.resolved_requests().to_string(),
         "source_closure":{"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":Digest256::from_bytes(source.digest())},
-        "native":"closed", "owner_release":"committed", "ready":false}))
+        "native":"closed", "owner_release":"committed", "ready":false});
+    if mode == Mode::AbandonAcquisition {
+        phase(progress, timeout)?;
+        bounded(timeout, cancellation, async {
+            owner.refresh(validate).await.map_err(owner_error)
+        })
+        .await?;
+        phase(progress, timeout)?;
+        let abandoned = bounded(timeout, cancellation, async {
+            owner
+                .abandon_activated_initial_acquisition(
+                    &closed,
+                    &source,
+                    request(),
+                    grant(budget, 128 * 1024, 0)?,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?;
+        report["state"] = json!("activated-acquisition-abandoned");
+        report["acquisition_abandonment"] = json!({
+            "jobs":abandoned.to_string(), "reason":"activated_initial_producer_abandoned",
+            "coverage":"unknown"});
+    }
+    Ok(report)
 }
