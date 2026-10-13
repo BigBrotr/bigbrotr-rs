@@ -31,8 +31,8 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'registry', 'faults', 'enrollment', 'enrollment-faults', 'registration-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims')
-probe = {'ingest-empty-installed':'ingest_bootstrap_probe', 'ingest-empty-preparer':'ingest_bootstrap_probe', 'ingest-empty-locks':'ingest_bootstrap_probe', 'ingest-empty-faults':'ingest_bootstrap_probe', 'ingest-gap-faults':'ingest_bootstrap_probe', 'ingest-history':'ingest_bootstrap_probe', 'ingest-recovery':'ingest_bootstrap_probe', 'dictionary-append':'ingest_bootstrap_probe', 'relay-arrival':'ingest_bootstrap_probe', 'relay-transfer':'ingest_bootstrap_probe', 'observation':'ingest_bootstrap_probe', 'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
+assert len(sys.argv) in (1, 2) and mode in ('ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'registry', 'faults', 'enrollment', 'enrollment-faults', 'registration-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims')
+probe = {'ingest-live':'ingest_bootstrap_probe', 'ingest-empty-installed':'ingest_bootstrap_probe', 'ingest-empty-preparer':'ingest_bootstrap_probe', 'ingest-empty-locks':'ingest_bootstrap_probe', 'ingest-empty-faults':'ingest_bootstrap_probe', 'ingest-gap-faults':'ingest_bootstrap_probe', 'ingest-history':'ingest_bootstrap_probe', 'ingest-recovery':'ingest_bootstrap_probe', 'dictionary-append':'ingest_bootstrap_probe', 'relay-arrival':'ingest_bootstrap_probe', 'relay-transfer':'ingest_bootstrap_probe', 'observation':'ingest_bootstrap_probe', 'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe', 'registration-faults':'relay_registration_fault_probe',
          'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe', 'acquisition-scope':'acquisition_scope_probe', 'acquisition-scope-faults':'acquisition_scope_probe', 'acquisition-scope-read':'acquisition_scope_probe', 'acquisition-binding':'ingest_bootstrap_probe', 'acquisition-binding-refusals':'ingest_bootstrap_probe', 'acquisition-binding-recovery':'ingest_bootstrap_probe', 'sync-arrival-policy':'ingest_bootstrap_probe', 'ingest-lease':'ingest_bootstrap_probe', 'initial-ingest':'ingest_bootstrap_probe', 'acquisition-jobs':'acquisition_job_probe', 'acquisition-jobs-faults':'acquisition_job_probe', 'acquisition-claims':'acquisition_job_probe'}[mode]
 if mode == 'relay-source-faults':
@@ -65,7 +65,7 @@ if mode == 'ingest-empty-faults':
     identity['scope'] = 'Finite empty-retirement COMMIT-loss probe build and Clippy only; unchanged native tests retained at30a88ae; actual engine schedules remain separate'
 if mode == 'ingest-gap-faults':
     identity['scope'] = 'Finite initial-gap policy/delivery-loss probe build and Clippy only; unchanged native tests retained at162caeb; actual engine schedules remain separate'
-if mode == 'ingest-history':
+if mode in ('ingest-history', 'ingest-live'):
     identity['scope'] = 'Prepared-successor history, positive initial-gap completion and exact empty-attempt native retirement, affected replay, closed codecs and CLI refusals; connected PostgreSQL, separate-process qualification and activation remain separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                    '--test','control_runtime_entrypoint','--test','control_schema']))
@@ -96,6 +96,11 @@ if mode == 'ingest-history':
     steps[-1:-1] = [(name, ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                            '--test',name,'--message-format=json','--','--test-threads=1'])
                     for name in ['rocks_manifest', 'rocks_keys']]
+if mode == 'ingest-live':
+    identity['scope'] = 'Live initial native candidate and PostgreSQL activation consumer compile, affected native admission/replay/certification, codecs and schema/entrypoint tests; connected activation qualification remains separate'
+    steps[-1:-1] = [('certification', ['cargo','test','--locked','--offline','--release',
+                                      '-p','bigbrotr','--lib','certification_tests',
+                                      '--message-format=json','--','--test-threads=1'])]
 if mode == 'ingest-recovery':
     identity['scope'] = 'Exclusive historical native inspection; registry loader, installed recovery and successor remain separate'
     steps.insert(0, ('rocks-store', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -255,22 +260,34 @@ if mode in ('observation', 'relay-transfer'):
             executables[filename] = digest
     assert set(executables) == ({'observation_components', 'acquisition_session'} if mode == 'observation' else {'protocol_event', 'acquisition_session'})
     receipt['test_executables_sha256'] = executables
-if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
+if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history', 'ingest-live'):
     import re
     counts, executables = {}, set()
     selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure','producer-closing','producer-recovery','initial-handoff',
-                                                                               'initial-reconstruction','bootstrap','dictionary-append','event-replay'] if mode == 'ingest-history'
+                                                                               'initial-reconstruction','bootstrap','dictionary-append','event-replay'] if mode in ('ingest-history', 'ingest-live')
                   else ['dictionary-append', 'bootstrap', 'recovery'])
+    if mode == 'ingest-live':
+        selections = [*selections, 'certification']
     target_kind = ['test'] if mode == 'ingest-recovery' else ['lib']
-    retained_name = ('rocks_store' if mode == 'ingest-recovery' else 'source_closure_components' if mode == 'ingest-history'
+    retained_name = ('rocks_store' if mode == 'ingest-recovery' else 'source_closure_components' if mode in ('ingest-history', 'ingest-live')
                      else 'dictionary_components')
     for name in selections:
         content = (checks / (name + '.log')).read_text()
         summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
         assert summary, 'missing executed native test result: ' + name
         counts[name] = int(summary.group(1))
-        if mode == 'ingest-history' and name in ('initial-reconstruction', 'event-replay'):
-            assert counts[name] == (14 if name == 'initial-reconstruction' else 7), 'incomplete focused native selection: ' + name
+        if mode in ('ingest-history', 'ingest-live') and name == 'event-replay':
+            assert counts[name] == 7, 'incomplete focused native selection: ' + name
+        if mode == 'ingest-live' and name == 'initial-reconstruction':
+            for expected in [
+                'local_writer_first_dictionary_request_is_an_append_and_not_bootstrap',
+                'rejected_or_already_durable_request_one_keeps_zero_source_then_append_two_starts_one',
+                'observed_successor_cannot_recreate_live_writer_custody',
+                'candidate_requires_its_minted_target_local_root_current_proof_and_no_sidecars',
+                'active_zero_source_is_explicit_and_rejects_stray_facts_pending_or_allocation_zero',
+                'dictionary_grants_and_authority_refuse_before_write_without_losing_exact_retry',
+            ]:
+                assert '::initial_writer_tests::' + expected + ' ... ok' in content, expected
         for line in content.splitlines():
             if not line.startswith('{'): continue
             message = json.loads(line)
@@ -285,7 +302,7 @@ if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
     assert digest == file_hash(source)
     receipt['test_executables_sha256'] = {retained_name: digest}
     receipt['native_tests_passed'] = counts
-    if mode == 'ingest-history':
+    if mode in ('ingest-history', 'ingest-live'):
         for name in ['rocks_manifest', 'rocks_keys']:
             content = (checks / (name + '.log')).read_text()
             summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
@@ -329,7 +346,7 @@ if mode == 'ingest-empty-installed':
     receipt['entrypoint_tests_passed'] = 5
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
-status = {'ingest-empty-installed':'PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY', 'ingest-empty-preparer':'PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY', 'ingest-empty-locks':'PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY', 'ingest-empty-faults':'PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY', 'ingest-gap-faults':'PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY', 'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery':'PASS_INGEST_RECOVERY_INSPECTION', 'dictionary-append':'PASS_DICTIONARY_APPEND_COMPONENTS', 'relay-arrival':'PASS_RELAY_ARRIVAL_BUILD_ONLY', 'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
+status = {'ingest-live':'PASS_LIVE_INITIAL_BUILD_ONLY', 'ingest-empty-installed':'PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY', 'ingest-empty-preparer':'PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY', 'ingest-empty-locks':'PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY', 'ingest-empty-faults':'PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY', 'ingest-gap-faults':'PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY', 'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery':'PASS_INGEST_RECOVERY_INSPECTION', 'dictionary-append':'PASS_DICTIONARY_APPEND_COMPONENTS', 'relay-arrival':'PASS_RELAY_ARRIVAL_BUILD_ONLY', 'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
           'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
           'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
           'registration-faults':'PASS_RELAY_REGISTRATION_FAULT_BUILD_ONLY',

@@ -10,8 +10,8 @@ use bigbrotr::storage::{
         ingest_registry,
     },
     rocks::store::{
-        AdmissionLimits, IngestRecovery, InitialHandoff, ProducerRecoveryLimits,
-        RetainedRequestInput,
+        AdmissionLimits, IngestRecovery, InitialHandoff, InitialWriterCandidate,
+        ProducerRecoveryLimits, RetainedRequestInput,
     },
 };
 use bigbrotr_model::{
@@ -22,6 +22,9 @@ use std::{future::Future, path::PathBuf};
 
 type Driver = tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>;
 const CONTROL_TTL: Duration = Duration::from_secs(20);
+
+#[path = "ingest_live.rs"]
+mod live;
 
 struct Probe {
     config: Config,
@@ -74,18 +77,27 @@ pub async fn run(
     proxy_port: Option<u16>,
     gate_prefix: Option<&Path>,
 ) {
-    assert!(matches!(
+    assert!(
+        live::is_mode(mode)
+            || matches!(
+                mode,
+                "successor-normal"
+                    | "successor-preparer-claim"
+                    | "successor-gap"
+                    | "successor-gap-only"
+                    | "successor-old-schema"
+                    | "successor-rollback"
+                    | "successor-commit-before"
+                    | "successor-commit-after"
+            )
+    );
+    let commit_fault = matches!(
         mode,
-        "successor-normal"
-            | "successor-preparer-claim"
-            | "successor-gap"
-            | "successor-gap-only"
-            | "successor-old-schema"
-            | "successor-rollback"
-            | "successor-commit-before"
+        "successor-commit-before"
             | "successor-commit-after"
-    ));
-    let commit_fault = matches!(mode, "successor-commit-before" | "successor-commit-after");
+            | "successor-live-commit-before"
+            | "successor-live-commit-after"
+    );
     assert_eq!(proxy_port.is_some(), commit_fault);
     assert_eq!(gate_prefix.is_some(), mode == "successor-preparer-claim");
     if let Some(prefix) = gate_prefix {
@@ -147,8 +159,12 @@ pub async fn run(
     // Reserve the same worst-case decode/replay envelope as installed recovery
     // before the first claim. Resolve one original at a time, never a vector.
     drop(probe.replay_grants());
+    if live::is_mode(mode) {
+        live::run(probe, recovery, spec, observer_driver, mode).await;
+        return;
+    }
     let (mut owner, mut driver) = probe.acquire("initial", &spec, 1).await;
-    let attempt = probe.plan(&mut owner, &recovery, &spec).await;
+    let attempt = probe.plan(&mut owner, &recovery, &spec, None).await;
     probe.snapshot("before-prepare").await;
     let mut preparing_backend = None;
 
@@ -556,6 +572,7 @@ impl Probe {
         owner: &mut ControlSession,
         recovery: &IngestRecovery,
         spec: &InitialRegistration,
+        candidate: Option<&InitialWriterCandidate>,
     ) -> Attempt {
         let closed = bounded(owner.observe_initial_retirement(
             recovery,
@@ -606,31 +623,44 @@ impl Probe {
         let policy = bounded(owner.refresh(|doc, digest| self.validate(doc, digest)))
             .await
             .unwrap();
+        let previous = recovery.manifest();
+        let handoff = if let Some(candidate) = candidate {
+            assert!(std::ptr::eq(candidate.recovery(), recovery));
+            candidate
+                .handoff(&source, PolicyEpoch::new(policy.policy_revision))
+                .unwrap()
+        } else {
+            let domains: Vec<_> = spec
+                .allocation_domains
+                .iter()
+                .map(|(kind, _)| (*kind, [160 + *kind as u8; 16].try_into().unwrap()))
+                .collect();
+            let next = IngestManifest::for_successor(
+                ManifestIdentity {
+                    owner_epoch: OwnerEpoch::new(2).unwrap(),
+                    topology_generation: TopologyGeneration::new(
+                        previous
+                            .identity()
+                            .topology_generation
+                            .get()
+                            .checked_add(1)
+                            .unwrap(),
+                    ),
+                    process_incarnation: [202; 16].try_into().unwrap(),
+                    policy_epoch: PolicyEpoch::new(policy.policy_revision),
+                    ..*previous.identity()
+                },
+                AllocationNamespaces::from_entries(&domains).unwrap(),
+            );
+            InitialHandoff::from_source(&source, next).unwrap()
+        };
+        drop(source);
+        let next = *handoff.next_manifest();
         let domains: Vec<_> = spec
             .allocation_domains
             .iter()
-            .map(|(kind, _)| (*kind, [160 + *kind as u8; 16].try_into().unwrap()))
+            .map(|(kind, _)| (*kind, next.allocation_namespaces().domain(*kind).unwrap()))
             .collect();
-        let previous = recovery.manifest();
-        let next = IngestManifest::for_successor(
-            ManifestIdentity {
-                owner_epoch: OwnerEpoch::new(2).unwrap(),
-                topology_generation: TopologyGeneration::new(
-                    previous
-                        .identity()
-                        .topology_generation
-                        .get()
-                        .checked_add(1)
-                        .unwrap(),
-                ),
-                process_incarnation: [202; 16].try_into().unwrap(),
-                policy_epoch: PolicyEpoch::new(policy.policy_revision),
-                ..*previous.identity()
-            },
-            AllocationNamespaces::from_entries(&domains).unwrap(),
-        );
-        let handoff = InitialHandoff::from_source(&source, next).unwrap();
-        drop(source);
         let created_at_us: i64 = bounded(self.observer.query_one(
             "SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint",
             &[],
@@ -640,7 +670,7 @@ impl Probe {
         .get(0);
         let attempt = Attempt {
             handoff,
-            role: [201; 16],
+            role: candidate.map_or([201; 16], InitialWriterCandidate::role_instance_id),
             created_at_us,
             lease_expires_at_us: created_at_us.checked_add(60_000_000).unwrap(),
             window: spec.outstanding_request_limit,

@@ -910,6 +910,8 @@ fn main() {
                 args[1].as_str(),
                 "successor-commit-before"
                     | "successor-commit-after"
+                    | "successor-live-commit-before"
+                    | "successor-live-commit-after"
                     | "successor-gap-loss-before"
                     | "successor-gap-loss-after"
                     | "empty-commit-before"
