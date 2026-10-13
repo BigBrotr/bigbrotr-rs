@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T11:04Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T11:10Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -14,20 +14,18 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed HEAD
-d4f1133 (full revision in Git). Private push db6dd37 and six source branches verified
+25344ca (full revision in Git). Private push e167c37 and eight source branches verified
 by exact remote refs; main54ad09d unchanged. No merge/rebase/cherry-pick pending.
 Sourcezero fixtureb6345a9 integrated4da99bc, dispatch/evidenceced4c42. Fixed native
-corruptionprobec48cc66 integratedd4f1133. Root owns pending compile-only refusalprofile
-and sourcezero qualification evidence/checkpoint updates. No product changes since2a018ea.
+corruptionprobec48cc66 integratedd4f1133. Probe buildprofile/sourcezero recorde167c37, oracle0cf1b37 and driver25344ca integrated.
+Root owns pending refusaldispatcher and build evidence/checkpoint updates. No product changes since2a018ea.
 
 Retain every worktree and previous branch/artifact. Root alone runs builds/engines
-and integrates. Three bounded agents now prepare the activated-refusal wave in
-separate worktrees: native fixture probe, Python driver, independent Python oracle.
-Their current branches are `qualification/activated-recovery-refusal-probe`,
-`qualification/activated-recovery-refusals`, and
-`qualification/activated-recovery-refusals-oracle`; verify Git before integration.
-Sourcezero source review closed with one post-exit-clock preservation fix. Pure
-checks9seed snapshots+4installed observations/34controls now pass on actualengineced4c42.
+and integrates. Refusal driverc461a6a and oraclea4a6c6f branches are clean; actual
+qualification remains next. Native/PG agents now prepare read-only source2closure/
+retirement designs; no contract change or implementation authorized by those notes.
+Driver author prepares the next raw artifact/custody audit, root performs independent
+semantic replay. This changes no existing task-plan authority.
 
 Current authority: `implementation_activated_initial_recovery_20261013` lab inventory
 and `activated_recovery_20261013` in existing recovery evidence.
@@ -100,15 +98,21 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Commit the scoped `ingest-activated-refusals` compile/Clippy profile and this
-sourcezero record. Build exact committed CLI/probe on Rust1.98.1/Clang14, retaining
-new binaries outside the cache; unchanged product tests stay qualified at2a018ea/
-faa1390 after exact-input comparison. Complete/review driver and independent oracle,
-then run nine fresh off-seed refusals: missing/corrupt input2, missing/corrupt retained
-private VisibilityScope fact(source1,sequence3), wrongactivation/handoff, extraproducer,
-foreignstream, heldnative. Preserve operator preimages and all post-refusal state.
-Do not infer no writes from refusal: replay failures follow durable closing, while
-heldnative fails before Control. Those outcomes remain NOT_RUN until observed.
+Commit the reviewed `--ingest-activated-refusals` dispatcher and build record, then
+run nine fresh off-seed refusals with retained e167c37 CLI/probe: missing/corrupt
+input2, missing/corrupt private VisibilityScope fact(source1,sequence3), wrong
+activation/handoff, extra producer, foreign stream, heldnative. Preserve operator
+preimages and every final state. Replay refusals follow durableclosing; heldnative
+must refuse before Control. Driver11pure checks and oracle18artificialobservations/
+151controls pass; these remain actual NOT_RUN. Root/independent Python review closed
+one availableSQL/input preservation edge before failed nativeinspection.
+
+Exact builde167c37 PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY: compile and Clippy,
+Rust1.98.1/Clang14. All product inputs unchanged from2a018ea; only two example files
+changed. Rootaudit10689 joined0:1792Git/export/archive files,45ELFs,1254unchanged
+container projections PASS. Root `/runs/ingest-activated-refusals-e167c37`, owner
+056140cf94af20706cee9d00e3cdbf0d, receiptSHAdecde4d9cc98eb171bd2e1a0355868813ee6c2880abb472b6efa57f284681a83.
+Unchanged101native/46entry/schema/migration evidence remains atfaa1390/2a018ea.
 
 Sourcezero engineced4c42 PASS_INSTALLED_ACTIVATED_RECOVERY_SOURCE_ZERO: one real finite
 activation/Signature rejection and two installed config-only recoveries. Seed has
@@ -176,6 +180,8 @@ All wrappers terminal: latest sourcezeroengine9264 joined0, rootaudit44574 joine
 At the root audit observation recorded in `root-independent-audit.json`, PG/client
 0/143 stopped/PID0/noOOM and1252nonborrowed projections unchanged. Latest client
 088c96955cc16102e8006a50b614386268c54d16e94f1dce43e9e75e164f3394.
+Latest build43185 and buildaudit10689 joined0; both ownedbuild containers stopped0/
+PID0/noOOM;1254priorprojections unchanged.45ELFs retained outside cache.
 No engine/build active. Preserve all artifacts and failures.
 External base `/home/tux/bigbrotr-implementation-20260917/runs`. Frozen originals:
 

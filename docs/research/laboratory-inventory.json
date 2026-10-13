@@ -43610,7 +43610,7 @@
   },
   "implementation_activated_initial_recovery_20261013": {
     "status": "PASS_POSITIVE_COMMIT_LOSS_AND_SOURCE_ZERO_REFUSALS_PENDING",
-    "observed_at": "2026-10-13T11:02:35.311795+00:00",
+    "observed_at": "2026-10-13T11:10:06.227686+00:00",
     "base": "1a7fd528fe7442d4009bbe86b6332c6537cb2977",
     "owner": "root sole integrator/build/engine executor",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-recovery-under-implementation",
@@ -43649,11 +43649,11 @@
         "previous_branch": "qualification/activated-recovery-faults"
       }
     ],
-    "root_work": "Record qualifiedsourcezero; compile-only refusalprofile pending and nativeprobe draftindependentreview, then build/review9caseharness",
-    "resources": "All wrappers terminal: zeroengine9264 joined0/rootaudit44574 joined0; latestPG0/client143/PID0/noOOM,1252nonborrowed projections unchanged.43 retainedELFs. No engine/buildactive.",
+    "root_work": "Revieweddriver/oracle integrated; rootdispatch/buildrecord pendingcommit then9caseengine",
+    "resources": "All wrappers terminal: build43185 joined0/rootaudit10689 joined0; fetch/native stopped0/PID0/noOOM,1254priorprojections unchanged.45retainedELFs. Noengine/build active.",
     "checks": "First8/root124controls, fault8/root132controls and sourcezero1finite+2CLI/root34controls allPASS. Nine refusals NOT_RUN",
-    "next": "Complete/review fixedfive native fixture mutations, compileprobe only+Clippy, then exact9caseengine with independent expected states",
-    "free_bytes_observed": 62738038784,
+    "next": "Commit root --ingest-activated-refusals dispatch and currentbuild record; run nine actual CLI with retained e167c37 artifacts on fresh off-seed clones",
+    "free_bytes_observed": 62494035968,
     "builds": [
       {
         "source": "3827bc274fc0b4dd2ee1469aea61b0b3460fc887",
@@ -43886,6 +43886,45 @@
           "source_files": 1788,
           "retained_executables": 43,
           "unchanged_containers": 1249
+        }
+      },
+      {
+        "source": "e167c37a036938754ba5e6b0f98cdf31274cce7f",
+        "tree": "52e4d1687d7e10e0c05d77fb3511f66d8064dfc0",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-e167c37",
+        "owner": "056140cf94af20706cee9d00e3cdbf0d",
+        "state": "stopped-retained",
+        "started_at": "2026-10-13T11:04:31.523281+00:00",
+        "finished_at": "2026-10-13T11:06:06.749287+00:00",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "7cd51152445837733a6ab524883cd26c7f883046ae663b6813882761558520ed"
+          },
+          {
+            "name": "native",
+            "id": "a2dd11aa309060012c349713b4a386f0bc1ebc4c22d4d218739c91bf67c8721d"
+          }
+        ],
+        "status": "PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY",
+        "wrapper": {
+          "session": 43185,
+          "joined_exit_code": 0
+        },
+        "receipt_sha256": "decde4d9cc98eb171bd2e1a0355868813ee6c2880abb472b6efa57f284681a83",
+        "binary_sha256": "ecc8a93b4c9af9935406ecc62c9e9dac76ca1e007215cdba3923ef74124aa686",
+        "probe_sha256": "b36edccb18cce6b7e4e89c703cdd99fdbecab1a3e18f8a261c33f35440ac9c29",
+        "checks": "Compile and Clippy PASS. Exact product inputs unchanged from2a018ea; only two example source files changed. Unchanged101native and46entry/schema/migration tests retained, not repeated.",
+        "audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-e167c37/root-build-audit.json",
+          "sha256": "3a7eeb7da4eeb799d955185fa5774117c2cdfa3643b29e04b47b31831319fe9c",
+          "wrapper": {
+            "session": 10689,
+            "joined_exit_code": 0
+          },
+          "source_files": 1792,
+          "retained_executables": 45,
+          "unchanged_containers": 1254
         }
       }
     ],
@@ -45192,7 +45231,7 @@
       "engine_result_sha256": "08f408ddd7ff15185b3f56ccd7b6f70c589d08852bcaf848e79a36a11bcbfc6b"
     },
     "refusal_qualification": {
-      "status": "IMPLEMENTING_NOT_QUALIFIED",
+      "status": "IMPLEMENTED_AND_BUILT_ENGINE_NOT_RUN",
       "cases": [
         "missing-input2",
         "corrupt-input2",
@@ -45205,10 +45244,16 @@
         "held-native"
       ],
       "scope": "Nine fresh off-seed clones, one actual installed CLI each; complete operator preimage and intended corruption, no writes to original",
-      "next": "Exact compile-only ingest-activated-refusals build then ninecaseengine after driver/oracle source review",
+      "next": "Commit root --ingest-activated-refusals dispatch and currentbuild record; run nine actual CLI with retained e167c37 artifacts on fresh off-seed clones",
       "probe_source": "c48cc66a4f510367233e4d75dc8f5b8e8d1f4fa2",
       "probe_integrated": "d4f1133",
-      "probe_checks": "Root full helper/main diff and author complete caller/codec/native/PG review; pure frozenbytes/5literalmutations, rustfmt/diff PASS. Build NOT_RUN"
+      "probe_checks": "Exact build e167c37 compile/Clippy PASS with45ELFs retained,1792source files and1254unchanged container projections audited",
+      "driver_source": "c461a6a802ba2898e724756b64def55dbb245b30",
+      "driver_integrated": "25344ca",
+      "oracle_source": "a4a6c6f3eef046d855b85aa28988b85831d064d6",
+      "oracle_integrated": "0cf1b37",
+      "pure_checks": "Driver11bounded helper checks; oracle9artificialcontexts/18observations/151controls PASS. No actual engine evidence.",
+      "review": "Root full newdriver329lines/oracle354lines and invoked owned boundaries reviewed; nativeauthor independent Python/build source review closed. Fixed availableSQL/input capture preservation before native dump; unknown mutation/process custody prohibits finalnative inspection. Exact privateVisibilityScope source1/3 bytes pinned."
     }
   }
 }
