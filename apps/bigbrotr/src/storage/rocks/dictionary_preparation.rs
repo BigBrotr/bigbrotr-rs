@@ -70,9 +70,7 @@ impl IngestStore {
         if self.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
         }
-        if self.manifest.identity().owner_epoch.get() != 1 {
-            return Err(AdmissionError::InvalidInput);
-        }
+        self.require_admission_owner(None)?;
         visibility
             .require(
                 self.manifest.identity().dataset_id,

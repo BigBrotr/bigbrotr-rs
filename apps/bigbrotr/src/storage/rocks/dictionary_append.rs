@@ -100,6 +100,7 @@ impl IngestStore {
         recorded_at: ObservedTime,
         limits: AdmissionLimits,
     ) -> Result<(Option<Prepared>, Receipt), AdmissionError> {
+        self.require_admission_owner(Some(request))?;
         self.validate_dictionary_append(request, intent, limits, &self.manifest)?;
         let state = self
             .producer_state(request.producer_slot_id, request.producer_epoch)?
@@ -135,30 +136,7 @@ impl IngestStore {
         let mut records = fact_refs(limits)?;
         let mut through = [None; 9];
         let source_key = dictionary_source_key(&self.manifest);
-        let mut last = self
-            .dictionary_counter(source_key, &mut reads)?
-            .ok_or(AdmissionError::StateMismatch)?;
-        // A counter alone cannot establish a populated, intact source boundary.
-        let last_key = IngestKey::Fact {
-            source_record_id: self.dictionary_source(last)?,
-        };
-        let value = self
-            .admission_value(last_key, limits.max_batch_bytes, &mut reads)?
-            .ok_or(AdmissionError::StateMismatch)?;
-        if value.len() < 34 || value[..2] != [1, 0x20] {
-            return Err(AdmissionError::StateMismatch);
-        }
-        self.admission_fact(
-            FactRef {
-                source_record_id: self.dictionary_source(last)?,
-                payload_digest: Digest256::from_bytes(
-                    value[2..34].try_into().expect("checked length"),
-                ),
-            },
-            limits,
-            &mut reads,
-        )?;
-        drop(value);
+        let mut last = self.admission_source_boundary(limits, &mut reads)?;
         for (index, entry) in intent.dictionaries().iter().enumerate() {
             let reference = entry.reference();
             if let Some(fact) =
@@ -451,9 +429,12 @@ impl IngestStore {
             return Err(AdmissionError::CommitUnknown);
         }
         let identity = manifest.identity();
-        if request.producer_epoch.get() != 1
-            || request.request_sequence.get() <= 1
-            || identity.owner_epoch.get() != 1
+        let supported = match identity.owner_epoch.get() {
+            1 => request.producer_epoch.get() == 1 && request.request_sequence.get() > 1,
+            2 => manifest.key_schema() == 2 && request.producer_epoch.get() == 2,
+            _ => false,
+        };
+        if !supported
             || intent.admission_policy_version() != 1
             || intent.visibility_scope_id().dataset_id != identity.dataset_id
         {

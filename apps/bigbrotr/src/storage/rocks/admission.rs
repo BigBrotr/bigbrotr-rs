@@ -129,6 +129,7 @@ impl PreparedEvent {
         if self.scope.dataset_id != store.manifest.identity().dataset_id {
             return Err(AdmissionError::InvalidInput);
         }
+        store.require_admission_owner(Some(self.request))?;
         store.require_open_producer(self.request)?;
         store
             .stage_producer_request(self.request, self.digest, &self.request_preimage)
@@ -369,9 +370,8 @@ impl IngestStore {
             return Err(AdmissionError::CommitUnknown);
         }
         let identity = *self.manifest.identity();
+        self.require_admission_owner(Some(input.request))?;
         if input.scope.dataset_id != identity.dataset_id
-            || input.request.producer_epoch.get() != 1
-            || identity.owner_epoch.get() != 1
             || input
                 .observation
                 .is_some_and(|o| o.witness.is_some() != provenance)
@@ -387,8 +387,11 @@ impl IngestStore {
         let producer = producer
             .as_deref()
             .map(super::producer_closing::ProducerState::decode)
-            .transpose()?
-            .unwrap_or_default();
+            .transpose()?;
+        if identity.owner_epoch.get() == 2 && producer.is_none() {
+            return Err(AdmissionError::StateMismatch);
+        }
+        let producer = producer.unwrap_or_default();
         if producer.closing {
             return Err(AdmissionError::ProducerClosing);
         }
@@ -449,7 +452,12 @@ impl IngestStore {
             max_batch_bytes: limits.max_batch_bytes,
         })?;
         let outcome = match input.event.take().ok_or(AdmissionError::InvalidInput)? {
-            Err(reason) => AdmissionOutcome::Rejected(reason),
+            Err(reason) => {
+                if identity.owner_epoch.get() == 2 {
+                    self.admission_source_boundary(limits, &mut reads)?;
+                }
+                AdmissionOutcome::Rejected(reason)
+            }
             Ok(event) => self.prepare_event_effects(
                 &input,
                 event,
@@ -852,53 +860,14 @@ impl IngestStore {
                 }
             }
         }
-        // Bootstrap is mandatory. An absent counter in a populated directory is
-        // never a fresh stream; there is no guessed sequence after damaged state.
+        // Initial bootstrap or an explicitly activated empty successor supplies
+        // the source boundary. Missing state never invents a new stream.
         let source_key = IngestKey::SourceStream {
             dataset_id,
             shard_id: identity.shard_id,
             owner_epoch: identity.owner_epoch,
         };
-        let value = self
-            .admission_value(source_key, 10, reads)?
-            .ok_or(AdmissionError::StateMismatch)?;
-        if value.len() != 10 || value[..2] != [1, 2] {
-            return Err(AdmissionError::StateMismatch);
-        }
-        let last = number(&value[2..])?;
-        if last == 0 {
-            return Err(AdmissionError::StateMismatch);
-        }
-        let last_id = SourceRecordId {
-            dataset_id,
-            shard_id: identity.shard_id,
-            owner_epoch: identity.owner_epoch,
-            sequence: Sequence::new(last).map_err(|_| AdmissionError::StateMismatch)?,
-        };
-        let last_value = self
-            .admission_value(
-                IngestKey::Fact {
-                    source_record_id: last_id,
-                },
-                limits.facts().max_encoded_bytes + 34,
-                reads,
-            )?
-            .ok_or(AdmissionError::StateMismatch)?;
-        if last_value.len() < 34 || last_value[..2] != [1, 0x20] {
-            return Err(AdmissionError::StateMismatch);
-        }
-        let last_digest = Digest256::from_bytes(
-            last_value[2..34]
-                .try_into()
-                .map_err(|_| AdmissionError::StateMismatch)?,
-        );
-        let last_fact = Fact::decode_preimage(&last_value[34..], last_digest, limits.facts())
-            .map_err(BootstrapError::from)?;
-        if last_fact.source_record_id() != last_id {
-            return Err(AdmissionError::StateMismatch);
-        }
-        drop(last_fact);
-        drop(last_value);
+        let last = self.admission_source_boundary(limits, reads)?;
         let mut writer = EventWrites {
             store: self,
             writes,
@@ -1152,6 +1121,71 @@ impl IngestStore {
         }
         .map_err(|_| AdmissionError::StateMismatch)?;
         Ok(AdmissionOutcome::Durable(receipt))
+    }
+
+    /// Source counters have a different zero rule from allocation counters.
+    /// Only this actual live successor can retain an explicit empty source, even
+    /// after no-fact requests advanced its producer. Facts/pending must be absent.
+    pub(super) fn admission_source_boundary(
+        &self,
+        limits: AdmissionLimits,
+        reads: &mut ReadBudget,
+    ) -> Result<u64, AdmissionError> {
+        let identity = self.manifest.identity();
+        let value = self
+            .admission_value(
+                IngestKey::SourceStream {
+                    dataset_id: identity.dataset_id,
+                    shard_id: identity.shard_id,
+                    owner_epoch: identity.owner_epoch,
+                },
+                10,
+                reads,
+            )?
+            .ok_or(AdmissionError::StateMismatch)?;
+        if value.len() != 10 || value[..2] != [1, 2] {
+            return Err(AdmissionError::StateMismatch);
+        }
+        let last = number(&value[2..])?;
+        let source_record_id = SourceRecordId {
+            dataset_id: identity.dataset_id,
+            shard_id: identity.shard_id,
+            owner_epoch: identity.owner_epoch,
+            sequence: Sequence::new(last.max(1)).map_err(|_| AdmissionError::StateMismatch)?,
+        };
+        if last == 0 {
+            if identity.owner_epoch.get() != 2 {
+                return Err(AdmissionError::StateMismatch);
+            }
+            self.require_admission_owner(None)?;
+            for key in [
+                IngestKey::Fact { source_record_id },
+                IngestKey::PendingBatch {
+                    first: source_record_id,
+                },
+            ] {
+                reads.charge(0)?;
+                self.handoff_empty_prefix(key, 8)?;
+            }
+            return Ok(0);
+        }
+        let value = self
+            .admission_value(
+                IngestKey::Fact { source_record_id },
+                limits.facts().max_encoded_bytes + 34,
+                reads,
+            )?
+            .ok_or(AdmissionError::StateMismatch)?;
+        if value.len() < 34 || value[..2] != [1, 0x20] {
+            return Err(AdmissionError::StateMismatch);
+        }
+        let digest = Digest256::from_bytes(value[2..34].try_into().expect("checked length"));
+        let fact = Fact::decode_preimage(&value[34..], digest, limits.facts())
+            .map_err(BootstrapError::from)?;
+        if fact.source_record_id() != source_record_id {
+            return Err(AdmissionError::StateMismatch);
+        }
+        Ok(last)
     }
 }
 struct EventWrites<'a> {

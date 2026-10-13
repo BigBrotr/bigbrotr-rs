@@ -141,8 +141,8 @@ impl IngestStore {
             return Err(AdmissionError::CommitUnknown);
         }
         let identity = self.manifest.identity();
+        self.require_admission_owner(None)?;
         if input.scope.dataset_id != identity.dataset_id
-            || identity.owner_epoch.get() != 1
             || input
                 .observation
                 .is_some_and(|o| o.witness.is_some() != provenance)

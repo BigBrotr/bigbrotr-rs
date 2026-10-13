@@ -111,6 +111,10 @@ pub use initial_handoff::{
     ObservedHandoff,
 };
 
+#[path = "initial_writer.rs"]
+mod initial_writer;
+pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;
@@ -184,6 +188,9 @@ pub struct IngestStore {
     _reservation: StoreReservation,
     manifest: IngestManifest,
     write_uncertain: bool,
+    // Only consuming a locally minted candidate after connected activation can
+    // populate this field. Opening a schema2 manifest never reconstructs it.
+    live_initial: Option<initial_writer::LiveInitialBinding>,
 }
 
 /// Exclusive historical-state recovery. There is no conversion or mutable
@@ -375,6 +382,7 @@ impl IngestStore {
             _reservation: reservation,
             manifest,
             write_uncertain: false,
+            live_initial: None,
         })
     }
 

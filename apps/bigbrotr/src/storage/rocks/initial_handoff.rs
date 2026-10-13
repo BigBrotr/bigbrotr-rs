@@ -605,7 +605,11 @@ impl IngestStore {
         }
         Ok(())
     }
-    fn handoff_empty_prefix(&self, key: IngestKey, suffix: usize) -> Result<(), BootstrapError> {
+    pub(super) fn handoff_empty_prefix(
+        &self,
+        key: IngestKey,
+        suffix: usize,
+    ) -> Result<(), BootstrapError> {
         let key = key.encode().map_err(|_| BootstrapError::InvalidIntent)?;
         let prefix = &key.as_bytes()[..key.as_bytes().len() - suffix];
         let cf = self

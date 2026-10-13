@@ -182,7 +182,10 @@ impl IngestRecovery {
         authority()?;
         let (outcome, copy) = match intent {
             MutationIntent::Evidence(ref intent) => {
-                let receipt = if request.request_sequence.get() == 1 {
+                let receipt = if request.producer_epoch.get() == 1
+                    && context.manifest.identity().owner_epoch.get() == 1
+                    && request.request_sequence.get() == 1
+                {
                     self.store
                         .replay_bootstrap_in(request, intent, limits.bootstrap, context)
                         .map_err(AdmissionError::from)?
