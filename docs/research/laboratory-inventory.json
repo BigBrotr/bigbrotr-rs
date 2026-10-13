@@ -42809,8 +42809,8 @@
       }
     ],
     "installed_consumer": {
-      "status": "BUILD_QUALIFIED_INSTALLED_NOT_RUN",
-      "observed_at": "2026-10-13T09:09:21.536794+00:00",
+      "status": "FIRST_INSTALLED_ENGINE_FAIL_ORACLE",
+      "observed_at": "2026-10-13T09:27:16.370474+00:00",
       "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
       "root_integrated_head": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
       "owner": "root sole integration/build/engine executor",
@@ -42841,14 +42841,17 @@
           "branch": "qualification/installed-live-consumer",
           "owner": "cleanup_review",
           "base": "92c621fa597866d1f59a30c0b81997bc547dc3b7",
-          "state": "fixture-design-in-progress",
-          "scope": "Independent actual installed off/on/renewal/refusal journey and full preservation oracle"
+          "state": "clean-committed-not-pushed",
+          "scope": "Independent actual installed off/on/renewal/refusal journey and full preservation oracle",
+          "head": "f9e751fc0d09f92a0f1c663b40479ed85ea9609b",
+          "integrated": "94a16a0",
+          "checks": "Root/independentAI exact-source fixes reviewed; captured actualoff replay5snapshots/31controls PASS; original engineFAIL remains"
         }
       ],
-      "root_work": "CLI/profile/owner integrated and exact build PASS:7 entrypoint,3 Serve,5 supervisor tests + Clippy. Four new ELFs retained and audited alongside20 prior ELF paths. Pending installed dispatcher/independent fixture; no new engine allocated.",
+      "root_work": "CLI/profile compiled and qualified; dispatcher2032894 integrated. First actual five-case wave stopped after off oracle catalog failure; wrapper72449 joined1, PG0/client143/PID0/noOOM. Root failurecustodyaudit PASS1779Gitfiles/24ELFs/21seedpaths/1241nonborrowedprojections.",
       "previous_processes": "All installed build/signed regression/Sync-window regression wrappers terminal joined0; PG0/client143/PID0/noOOM at latest09:12:08Z shutdown; no audit restart or new installed fixture engine allocated",
       "preservation": "All ignored/external artifacts and prior worktrees retained",
-      "free_bytes": 65922953216,
+      "free_bytes": 65865539584,
       "review": "Root complete changed owning sources/callers; independent AI CLI/profile and installed owner review no blocker. Root found removed parent imports consumed by unchanged recovery/empty.rs; author restored before commit. Old PG read bodies preserved bytewise after authority parameterization; fresh basis unchanged. No arbitrary repeat-review requirement. New independent fixture review found incomplete HTTP bindings, wrong frozen predecessor-ID literal and cross-phase operational-row drift acceptance; author correcting prior to engine. Root also corrected quiet-socket selection-before-deadline mismatch.",
       "builds": [
         {
@@ -43256,7 +43259,122 @@
           "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
         }
       ],
-      "next": "Integrate reviewed installed off/on/refusal fixture and oracle; five actual installed successor commands remain NOT_RUN. Existing shared signed3 and initial Sync-window2 regressions now audited PASS."
+      "next": "Fresh exact-source five-case installed wave using unchanged787e1fe protected binaries; no repeat of already qualified15tests or initial/recovery regressions.",
+      "engines": [
+        {
+          "source": "20328945680bbd9a91e08d901af58e6ae5e7e101",
+          "owner": "cb804fbd11533e2bf2053d3718f588ed",
+          "client": {
+            "id": "98303dc177590d2c9f225ce3d65d783f422dea0209f134829053e146edb4c901",
+            "name": "bigbrotr-acquisition-binding-2032894"
+          },
+          "status": "FAIL",
+          "started_at": "2026-10-13T09:23:24.619384+00:00",
+          "finished_at": "2026-10-13T09:23:40.128544+00:00",
+          "free_bytes_after": 65865539584,
+          "databases": [
+            "bb_scope_bind_2032894_installed_live_off"
+          ],
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-installed-live-engine-2032894",
+          "wrapper": 72449,
+          "exit_code": 1,
+          "tree": "cecbd98a7fe0bbd0518ddf2b859d211f7c212d23",
+          "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
+          "result_sha256": "91611d39625beb0e149168e076b7ada0f4ba24e30583ba8afd80be9f1f2c17ec",
+          "failure": "Oracle hardcoded complete catalog digest differs in52 internal PostgreSQL RI_ConstraintTrigger numeric OID suffixes introduced by fresh migrations. Other1045 trigger fields/721constraints/14functions/5table grants and origin match prior qualified catalog; raw per-run before==after. Author and independent reviewer confirmed exact difference; normalize validated internal-only numeric suffixes against prior qualified pin, not observed actual hash.",
+          "observations": "Only off invocation ran: installed Serve exit0/reaped/unforced, actual HTTP client exit0, five72-table snapshots, external70native/seq84/sixinputs, activation/currentpolicy2/window2, joined shutdown and backend absence captured. Full semantic qualification failed at catalog gate; on/epoch2/missing-original/held NOT_RUN.",
+          "audit": {
+            "status": "PASS_READ_ONLY_FAILURE_CUSTODY_AUDIT",
+            "run_status": "FAIL",
+            "source": "20328945680bbd9a91e08d901af58e6ae5e7e101",
+            "exact_git_files": 1779,
+            "reused_compiled_inputs_unchanged": true,
+            "reviewed_reuse_paths": [
+              "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+              "docs/implementation/progress.md",
+              "docs/research/laboratory-inventory.json",
+              "experiments/acquisition-scope/bindings.py",
+              "experiments/ingest-bootstrap/installed_live.py",
+              "experiments/ingest-bootstrap/installed_live_client.py",
+              "experiments/ingest-bootstrap/installed_live_http_oracle.py",
+              "experiments/ingest-bootstrap/installed_live_oracle.py"
+            ],
+            "retained_elf_paths": 24,
+            "frozen_seed_paths": 21,
+            "frozen_artifacts": 3,
+            "nonborrowed_projections_unchanged": 1241,
+            "result_sha256": "91611d39625beb0e149168e076b7ada0f4ba24e30583ba8afd80be9f1f2c17ec",
+            "verified_context_sha256": "0c41df772a6562e97ab88bc34188f7b768a5cc0dfb9527eb6bb4a080f8733208",
+            "scope": "Custody and captured observations only; semantic oracle catalog assertion failed, remaining four invocations NOT_RUN. No engine, SQL, or audit restart."
+          },
+          "original_preserved": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "artifacts": true
+          },
+          "correction": "f9e751fc0d09f92a0f1c663b40479ed85ea9609b, integrated94a16a0: normalize only internally marked PostgreSQL FK trigger numeric suffixes; prior qualified normalized pin27758551dcec655548798ecacec07bdb21ffda5ac50080926c059d09a3a3247a. Also require actual Control release storage_fenced and exact self-incarnation exclusion digest; original oracle incorrectly expected null fields. Both corrections independently source-reviewed. Root retrospective replay(root-corrected-off-replay.json) PASS5snapshots/31controls; immutable original result staysFAIL, remaining4NOT_RUN.",
+          "retrospective_off_replay": {
+            "verification": {
+              "status": "PASS",
+              "mode": "installed-live-off",
+              "snapshots": 5,
+              "sql_tables": 72,
+              "native_rows": 70,
+              "native_sequence": 84,
+              "original_inputs": 4,
+              "final_inputs": 6,
+              "actual_cli": true,
+              "certification_per_resend": "not-observed",
+              "completion": "not-qualified"
+            },
+            "controls": {
+              "status": "PASS",
+              "rejected": 31,
+              "cases": [
+                "unreaped-process",
+                "unclosed-server-backend",
+                "native-sequence",
+                "historical-source-cut",
+                "missing-historical-row",
+                "changed-original-input",
+                "catalog-drift",
+                "coherent-internal-trigger-disabled",
+                "coherent-internal-trigger-missing",
+                "coherent-internal-trigger-duplicated",
+                "coherent-invalid-internal-trigger-name",
+                "coherent-internal-trigger-wrong-function",
+                "wire-missing-predecessor",
+                "historical-window-adoption",
+                "current-policy-drift",
+                "wrong-network-job",
+                "forged-outcome",
+                "unreleased-control",
+                "released-control-missing-fence",
+                "released-control-wrong-fence-digest",
+                "old-owner-retirement",
+                "premature-renewal-proof",
+                "job-false-completion",
+                "session-grant-drift",
+                "management-digest",
+                "http-authority-overclaim",
+                "http-wrong-request-body",
+                "job-status-false-completion",
+                "quiet-receive-already-closed",
+                "coherent-revocation-rewrite-after-client-finished",
+                "coherent-startup-renewal-before-activation"
+              ]
+            },
+            "scope": "Root independent retrospective replay of preserved actual off capture; original2032894 FAIL retained, remaining4NOT_RUN",
+            "oracle_sha256": "b25802fe1c3f7db9946a76beb2d92ccaa7a1bcc55acd68addd21e6d0f734276f"
+          }
+        }
+      ],
+      "qualification_source": "bf93bcc8e9b17304785665ab04bf35f308895b4a",
+      "qualification_integrated": "8511b4f"
     }
   }
 }

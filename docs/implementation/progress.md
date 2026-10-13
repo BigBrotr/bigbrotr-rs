@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T09:17:24.822478+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T09:27:16.375570+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,9 +16,10 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEAD22f1d41b593c6397e9e188ceb71f4ccbf5ff73f7. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns pending
-Python dispatcher and build evidence/checkpoint/inventory updates; independent
-fixture remains in its separate worktree. CLI/profile/tests are committed.
+HEAD94a16a0eae1466cb257757c86719ec6086b3cbf1. Adapter6c134e3 and installed owner1593f1f are integrated. Root owns current
+evidence/checkpoint/inventory updates. Independent fixturebf93bcc is integrated
+as8511b4f and dispatcher2032894 is committed. Author corrects the first actual
+oracle failure in its separate worktree. CLI/profile/tests remain unchanged.
 Last verified private root isaad70200e1cd6bf649b2450d6c22557e880e38a1;
 installed helpers6c134e3/1593f1f are also pushed;
 refusal helpersddbb838/aba294b/039e77e and routes helpersc65164f/2b51795 are also
@@ -63,7 +64,20 @@ per source,4 mounted ELF hashes,73 frozen source census entries, all1240 latest
 nonborrowed projections unchanged. Replayed complete native/HTTP/SQL expectations,
 including16 Sync SQL snapshots. Original SQL and backend-count0 remain captured-run
 evidence; older harness retains no raw backend-count receipt. No audit restart/SQL.
-New installed successor engine remains NOT_RUN. All build/engine wrappers terminal.
+First installed engine2032894 is FAIL at the oracle catalog pin. Actual off Serve
+and client exited0/reaped with five snapshots and external70native/seq84/6inputs;
+the other four cases are NOT_RUN. Root `/runs/ingest-installed-live-engine-2032894`,
+wrapper72449 joined1, finished09:23:40Z, PG0/client143/PID0/noOOM; resultSHA
+91611d39625beb0e149168e076b7ada0f4ba24e30583ba8afd80be9f1f2c17ec.
+Root read-only failure-custody audit PASS1779Gitfiles/24ELFs/21seedpaths and1241
+nonborrowed projections; all original-preservation booleans true. Raw catalogs
+before/after equal;52 internal FK trigger numeric OID suffixes differ from prior
+qualified pin, with all other fields identical. Correct only this generated-name
+normalization; also require actual Control release storage_fenced and its exact
+self-incarnation exclusion digest, omitted by original oracle. Correctivef9e751f
+is integrated94a16a0. Independent source review and root retrospective off replay
+PASS5snapshots/31controls; original run remainsFAIL. Next fresh five-case wave.
+All build/engine wrappers terminal. Failed run/artifacts remain preserved.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.
@@ -195,14 +209,17 @@ are terminal; no PostgreSQL audit restart or untracked cleanup was performed.
 The completed refusal wave is committed and privately pushed. Qualify the selected
 [installed live initial successor](../reference/ingest-registration.md#installed-live-initial-successor-under-implementation).
 Root owns `serve --activate-initial-successor`, CLI checks/docs and integration.
-Both product owners are integrated and independently source-reviewed. The
-`ingest-installed-live` exact-source build787e1fe has passed compile,15 affected tests
-and Clippy. Integrate and review the separate actual off/on/refusal fixture and oracle;
-both affected initial Sync-window and signed-recovery regressions now PASS using
-the same retained artifacts, with independent artifact/reducer audit PASS. The new
-fixture review found incomplete HTTP bindings, wrong frozen predecessor-ID literal,
-cross-phase operational-row drift acceptance, and a quiet-socket selection before
-the asserted deadline. The author is correcting these before the first engine run.
+Both product owners are integrated and independently source-reviewed. Exact
+build787e1fe and shared signed3/initial Sync-window2 regressions PASS with independent
+artifact/reducer audit. Fixture source/AST/API reviews and two artificial full
+contexts10snapshots/48controls PASS; identified HTTP, predecessor-ID, cross-phase
+row and quiet-signal timing findings were corrected inbf93bcc. The first actual
+off run2032894 exposed a catalog pin that retained generated FK trigger numbers.
+The author and independent reviewer corrected catalog identities and final
+Control release-fence expectations inf9e751f, integrated94a16a0. Root independently
+replayed all retained off expectations and31controls successfully. Run a fresh
+exact-source five-case wave using unchanged protected787e1fe binaries; earlier
+15tests and initial/recovery regression evidence stays valid and is not repeated.
 The old initializer and recovery flags retain their contracts. No schema/native
 format change is selected. A fenced basis supplies real server time/current policy;
 use activation policy/window, not the historical registration, for new work.
@@ -249,7 +266,7 @@ tgdataset-mongo. Preserve every earlier worktree, raw failure, clone, container,
 volume, input, executable and `.research` artifact. Private Git pushes do not back up
 ignored laboratory data; Git cleanliness is never permission to delete it.
 
-Free space afteraad7020 regression:65,922,953,216 bytes (about61.4GiB).
+Free space after2032894 engine:65,865,539,584 bytes (about61.3GiB).
 Remeasure before allocation.
 Small engines require2GiB, native builds12GiB. Larger exports require64GiB+577MiB,
 currently unavailable; never lower that reserve. No large export is allocated.
