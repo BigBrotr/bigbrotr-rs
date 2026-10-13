@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T08:57:06.561429+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T09:00:37.475798+00:00 on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Detailed historical commands, failures and artifacts remain in the owning evidence
@@ -16,7 +16,7 @@ repositories, unrelated workloads and all ignored/external laboratory artifacts.
 The latest explicit resumption overrides the earlier credit-exhaustion pause.
 
 Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`, observed
-HEAD6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba. Adapter6c134e3 and installed owner1593f1f are integrated. Root Serve CLI,
+HEADec3e2c4f413a5e3eb33aaa52c5f572215c23a056. Adapter6c134e3 and installed owner1593f1f are integrated. Root Serve CLI,
 entrypoint tests, exact build profile, docs/checkpoint/inventory and pending Python
 dispatcher are dirty and owned by root; independent fixture remains separate.
 Last verified private root is92c621fa597866d1f59a30c0b81997bc547dc3b7;
@@ -35,8 +35,12 @@ New worktrees `.research/installed-live-adapters-20261013`,
 `.research/installed-live-qualification-20261013` were created from92c621f and
 are inventoried under `implementation_live_initial_activation_20261013.installed_consumer`.
 Adapter and installed owner worktrees are clean; independent fixture is in progress.
-Prior refusal/routes worktrees and all artifacts are retained. No installed
-build or engine is allocated; previous build/engine/replay/push wrappers joined0.
+Prior refusal/routes worktrees and all artifacts are retained. Exact installed build ec3e2c4 FAILED compilation with root CLI Rust E0505;
+wrapper52962 joined1. Fetch0/native1 stopped/PID0/noOOM; inventory_changed empty,
+finished08:58:20Z. Root precomputes the Sync flag before moving config. The old
+CLI4eef and produced probe are retained at `out/failed-artifacts`, with no successful
+current-build claim. All15tests and Clippy are NOT_RUN. No installed engine allocated.
+The next exact corrected build has not started; prior wrappers are terminal.
 Original recovered source/bundle and reconciliation are in the
 [dated recovery audit](../research/tux-resumption-20261012.md). A same-disk bundle
 is not host-loss backup; unavailable Mac captures remain unavailable.

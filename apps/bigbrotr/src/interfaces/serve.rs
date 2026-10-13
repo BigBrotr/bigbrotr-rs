@@ -169,7 +169,8 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                         .into(),
                 ));
             }
-            return initial_ingest::successor::run(root, distinct.contains("sync"), &mut output);
+            let sync = distinct.contains("sync");
+            return initial_ingest::successor::run(root, sync, &mut output);
         }
         if args.get_flag("initialize-ingest") {
             let sync = distinct.contains("sync");

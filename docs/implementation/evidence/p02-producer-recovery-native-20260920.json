@@ -14992,7 +14992,7 @@
         }
       ],
       "installed_consumer_20261013": {
-        "status": "IMPLEMENTED_NOT_QUALIFIED",
+        "status": "IMPLEMENTED_FIRST_BUILD_FAILED",
         "observed_at": "2026-10-13T08:57:06.561429+00:00",
         "contract": "docs/reference/ingest-registration.md#installed-live-initial-successor-under-implementation",
         "adapter_source": "6c134e3e65e21c05d15b4e1472ecbdf970da5b04",
@@ -15000,8 +15000,131 @@
         "owner_source": "1593f1faf2a2785dc02f64a56858b02d7c9b7df4",
         "owner_integrated": "6c9c4aed08021768dca2f2a0cdcd7f1534abe6ba",
         "checks": "Scoped rustfmt/diff-check PASS; build/test/SQL/installed NOT_RUN",
-        "review": "Root and independently tasked AI source review of CLI/profile, native-first custody, current policy/window and preclaim overlap found no blocker. Parent imports consumed by empty.rs were restored before owner commit.",
-        "next": "Exact build profile15affected tests/Clippy then real installed off/on network/renewal/refusal journeys and affected initial/recovery regressions."
+        "review": "Root and independently tasked AI source review of CLI/profile and installed custody/policy/window/preclaim overlap found no semantic blocker; Rust compilation found root CLI move-before-later-borrow E0505, corrected by precomputing selected_sync. Parent imports consumed by empty.rs were restored before owner commit. Actual installed/SQL NOT_RUN.",
+        "next": "Exact build profile15affected tests/Clippy then real installed off/on network/renewal/refusal journeys and affected initial/recovery regressions.",
+        "builds": [
+          {
+            "source": "ec3e2c4f413a5e3eb33aaa52c5f572215c23a056",
+            "tree": "543b1398f962be5f8a13c77083900c888962e017",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-installed-live-ec3e2c4",
+            "owner": "0cf0417cfc1ad8bf526e0759bd7a1964",
+            "status": "FAIL_COMPILE_E0505",
+            "wrapper": 52962,
+            "exit_code": 1,
+            "started_at": "2026-10-13T08:57:37.018510+00:00",
+            "finished_at": "2026-10-13T08:58:20.432370+00:00",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "3b795accb80ad095364d25181dd5c2bb7bbbc5978f76962e0496cef2dda29743"
+              },
+              {
+                "name": "native",
+                "id": "4f4fa57249e9cc6820a3b5893fd5d2d858386f4fff6048681c8fe04465abe165"
+              }
+            ],
+            "checks": [
+              {
+                "name": "compile",
+                "command": [
+                  "cargo",
+                  "build",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--bin",
+                  "bigbrotr",
+                  "--example",
+                  "ingest_bootstrap_probe"
+                ],
+                "status": "FAIL",
+                "executed": true,
+                "exit_code": 101,
+                "seconds": 41.292311791330576
+              },
+              {
+                "name": "entrypoints",
+                "command": [
+                  "cargo",
+                  "test",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--test",
+                  "control_runtime_entrypoint",
+                  "--message-format=json"
+                ],
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "serve",
+                "command": [
+                  "cargo",
+                  "test",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--bin",
+                  "bigbrotr",
+                  "interfaces::serve::tests::",
+                  "--message-format=json"
+                ],
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "supervision",
+                "command": [
+                  "cargo",
+                  "test",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--bin",
+                  "bigbrotr",
+                  "interfaces::serve::initial_ingest::supervision::tests::",
+                  "--message-format=json"
+                ],
+                "status": "NOT_RUN"
+              },
+              {
+                "name": "clippy",
+                "command": [
+                  "cargo",
+                  "clippy",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--lib",
+                  "--bin",
+                  "bigbrotr",
+                  "--example",
+                  "ingest_bootstrap_probe",
+                  "--test",
+                  "control_runtime_entrypoint",
+                  "--",
+                  "-D",
+                  "warnings"
+                ],
+                "status": "NOT_RUN"
+              }
+            ],
+            "inventory_changed": [],
+            "free_bytes_after": 66232889344,
+            "failed_artifacts": "out/failed-artifacts/receipt.json",
+            "diagnosis": "Root CLI evaluated distinct.contains(sync) after moving root; Rust E0505. Save bool before moving root. No runtime behavior change or test weakening.",
+            "qualification": "entrypoints/Serve/supervision/Clippy NOT_RUN; old CLI4eef and produced probe snapshot retained without claiming current successful build."
+          }
+        ]
       }
     }
   }
