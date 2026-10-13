@@ -892,6 +892,10 @@ fn main() {
         ingest_initial_history::corrupt(Path::new(&args[2]), &args[3]);
         return;
     }
+    if args.len() == 4 && args[1] == "activated-corrupt" {
+        ingest_initial_history::corrupt_activated(Path::new(&args[2]), &args[3]);
+        return;
+    }
     let empty_lock = matches!(
         args[1].as_str(),
         "empty-claim-commit"

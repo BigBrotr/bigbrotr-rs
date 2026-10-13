@@ -104,9 +104,34 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
 /// Deliberate corruption of an isolated prepared fixture before the reader
 /// starts. This raw engine path is never reachable from a product operation.
 pub fn corrupt(path: &Path, mutation: &str) {
-    use bigbrotr::storage::rocks::keys::IngestKey;
     assert!(matches!(mutation, "missing-handoff" | "target-nonzero"));
+    corrupt_fixture(path, mutation, false);
+}
+
+/// Five fixed mutations of the qualified installed off fixture. The laboratory
+/// must supply a fresh owned clone with no active native owner. This is not an
+/// arbitrary-key mutator or a product recovery operation.
+pub fn corrupt_activated(path: &Path, mutation: &str) {
+    assert!(matches!(
+        mutation,
+        "missing-old-dependency"
+            | "corrupt-old-dependency"
+            | "wrong-handoff"
+            | "extra-producer"
+            | "foreign-stream"
+    ));
+    corrupt_fixture(path, mutation, true);
+}
+
+fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
+    use bigbrotr::storage::rocks::keys::IngestKey;
+    use bigbrotr_model::{ProducerSlotId, Sequence, SourceRecordId};
+    use sha2::{Digest, Sha256};
+
     let (before_rows, before_sequence) = raw_state(path);
+    if activated {
+        assert_eq!((before_rows.len(), before_sequence), (70, 84));
+    }
     let db = rocksdb::DB::open_cf(
         &rocksdb::Options::default(),
         path,
@@ -118,35 +143,133 @@ pub fn corrupt(path: &Path, mutation: &str) {
     assert_eq!(manifest.key_schema(), 2);
     let id = manifest.identity();
     assert_eq!(id.owner_epoch.get(), 2);
-    let key = match mutation {
-        "missing-handoff" => IngestKey::OwnerHandoff {
+    let handoff_key = IngestKey::OwnerHandoff {
+        dataset_id: id.dataset_id,
+        owner_resource_id: id.owner_resource_id,
+        predecessor_epoch: OwnerEpoch::new(1).unwrap(),
+    };
+    let old_fact_key = IngestKey::Fact {
+        source_record_id: SourceRecordId {
             dataset_id: id.dataset_id,
-            owner_resource_id: id.owner_resource_id,
-            predecessor_epoch: OwnerEpoch::new(1).unwrap(),
+            shard_id: id.shard_id,
+            owner_epoch: OwnerEpoch::new(1).unwrap(),
+            sequence: Sequence::new(3).unwrap(),
         },
+    };
+    let slot = activated.then(|| {
+        // Frozen f12 source1/3 is VisibilityScope ordinal3, class private.
+        // Both installed off requests depend on it. Validate its complete value
+        // before selecting any corruption; the driver checks the entire seed.
+        let old = db
+            .get_cf(
+                db.cf_handle("facts").unwrap(),
+                old_fact_key.encode().unwrap().as_bytes(),
+            )
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            hex(&Sha256::digest(&old)),
+            "48f14a320986410db233082bad2b65e7815086a210221781516fe09e6ed5ce38"
+        );
+        let handoff = db
+            .get_cf(cf, handoff_key.encode().unwrap().as_bytes())
+            .unwrap()
+            .unwrap();
+        // InitialHandoffRecord layout: tag2, slot16, epoch8, issued8,
+        // source cut8, digest32, then two length-prefixed manifests.
+        assert_eq!(handoff.len(), 610);
+        assert_eq!(&handoff[..2], &[1, 10]);
+        assert_eq!(&handoff[18..26], &1_u64.to_be_bytes());
+        assert_eq!(&handoff[26..34], &4_u64.to_be_bytes());
+        assert_eq!(&handoff[34..42], &12_u64.to_be_bytes());
+        assert_eq!(
+            hex(&handoff[42..74]),
+            "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
+        );
+        assert_eq!(&handoff[74..76], &266_u16.to_be_bytes());
+        assert_eq!(&handoff[342..344], &266_u16.to_be_bytes());
+        let previous = IngestManifest::decode(&handoff[76..342]).unwrap();
+        assert_eq!(previous.key_schema(), 1);
+        assert_eq!(previous.identity().dataset_id, id.dataset_id);
+        assert_eq!(previous.identity().owner_resource_id, id.owner_resource_id);
+        assert_eq!(previous.identity().shard_id, id.shard_id);
+        assert_eq!(previous.identity().owner_epoch.get(), 1);
+        assert_eq!(&handoff[344..], manifest.encode().as_bytes());
+        ProducerSlotId::try_from(<[u8; 16]>::try_from(&handoff[2..18]).unwrap()).unwrap()
+    });
+    let key = match mutation {
+        "missing-handoff" | "wrong-handoff" => handoff_key,
         "target-nonzero" => IngestKey::SourceStream {
             dataset_id: id.dataset_id,
             shard_id: id.shard_id,
             owner_epoch: id.owner_epoch,
         },
+        "missing-old-dependency" | "corrupt-old-dependency" => old_fact_key,
+        "extra-producer" => IngestKey::ProducerState {
+            producer_slot_id: slot.unwrap(),
+            producer_epoch: ProducerEpoch::new(3).unwrap(),
+        },
+        "foreign-stream" => IngestKey::SourceStream {
+            dataset_id: id.dataset_id,
+            shard_id: id.shard_id,
+            owner_epoch: OwnerEpoch::new(3).unwrap(),
+        },
         _ => unreachable!(),
     }
     .encode()
     .unwrap();
-    let before = db.get_cf(cf, key.as_bytes()).unwrap().unwrap();
-    let after = if mutation == "target-nonzero" {
-        assert_eq!(before, [1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
-        Some(vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 1])
-    } else {
-        assert!((286..=610).contains(&before.len()));
-        assert_eq!(before[..2], [1, 10]);
-        None
+    let family = key.column_family().name();
+    let cf = db.cf_handle(family).unwrap();
+    let before = db.get_cf(cf, key.as_bytes()).unwrap();
+    let after = match mutation {
+        "target-nonzero" => {
+            assert_eq!(before.as_deref(), Some(&[1, 2, 0, 0, 0, 0, 0, 0, 0, 0][..]));
+            Some(vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 1])
+        }
+        "missing-handoff" => {
+            let before = before.as_ref().unwrap();
+            assert!((286..=610).contains(&before.len()));
+            assert_eq!(before[..2], [1, 10]);
+            None
+        }
+        "missing-old-dependency" => {
+            assert!(before.is_some());
+            None
+        }
+        "corrupt-old-dependency" => {
+            let mut after = before.clone().unwrap();
+            // Keep the embedded payload digest, but change its scientific bytes.
+            *after.last_mut().unwrap() ^= 1;
+            Some(after)
+        }
+        "wrong-handoff" => {
+            let mut after = before.clone().unwrap();
+            // Offset45 is closure_digest[3], not an identity/length field. The
+            // record remains decodable but disagrees with immutable PG intent.
+            after[42 + 3] ^= 1;
+            Some(after)
+        }
+        "extra-producer" | "foreign-stream" => {
+            assert!(before.is_none());
+            let (tag, length) = if mutation == "extra-producer" {
+                (0x31, 26)
+            } else {
+                (2, 10)
+            };
+            let mut after = vec![0; length];
+            after[..2].copy_from_slice(&[1, tag]);
+            Some(after)
+        }
+        _ => unreachable!(),
     };
-    emit(
-        serde_json::json!({"event":"successor-history-corruption","phase":"before",
-        "mutation":mutation,"cf":"default","key":hex(key.as_bytes()),"value":hex(&before),
-        "sequence":before_sequence,"rows":before_rows}),
-    );
+    let event = if activated {
+        "activated-recovery-corruption"
+    } else {
+        "successor-history-corruption"
+    };
+    emit(serde_json::json!({"event":event,"phase":"before",
+        "mutation":mutation,"cf":family,"key":hex(key.as_bytes()),"value":before.as_deref().map(hex),
+        "sequence":before_sequence,"rows":before_rows}));
     let mut options = rocksdb::WriteOptions::default();
     options.set_sync(true);
     if let Some(after) = &after {
@@ -156,11 +279,29 @@ pub fn corrupt(path: &Path, mutation: &str) {
     }
     drop(db);
     let (rows, sequence) = raw_state(path);
+    emit(serde_json::json!({"event":event,"phase":"after",
+        "mutation":mutation,"cf":family,"key":hex(key.as_bytes()),
+        "value":after.as_deref().map(hex),"sequence":sequence,"rows":rows}));
+    let mut expected = before_rows;
+    let position = expected
+        .iter()
+        .position(|r| r["cf"] == family && r["key"] == hex(key.as_bytes()));
+    assert_eq!(position.is_some(), before.is_some());
+    if let Some(position) = position {
+        expected.remove(position);
+    }
+    if let Some(after) = after {
+        expected
+            .push(serde_json::json!({"cf":family,"key":hex(key.as_bytes()),"value":hex(&after)}));
+    }
+    expected.sort_unstable_by(|a, b| {
+        (a["cf"].as_str().unwrap(), a["key"].as_str().unwrap())
+            .cmp(&(b["cf"].as_str().unwrap(), b["key"].as_str().unwrap()))
+    });
     assert_eq!(sequence, before_sequence.checked_add(1).unwrap());
-    emit(
-        serde_json::json!({"event":"successor-history-corruption","phase":"after",
-        "mutation":mutation,"cf":"default","key":hex(key.as_bytes()),
-        "value":after.as_deref().map(hex),"sequence":sequence,"rows":rows}),
+    assert_eq!(
+        rows, expected,
+        "only the declared native fixture row changes"
     );
 }
 
