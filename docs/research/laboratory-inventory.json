@@ -46549,8 +46549,8 @@
     "acceptance": "Selected source-closure boundary PASS24actualCLI plus2finite seeds across first/fault/durable/locks/prefix waves;91affected native/entry/schema tests at9dbc and example compile/Clippy f7/bb53. Narrow fault and workload envelope only; no workflow retirement/Archive/fullM1."
   },
   "implementation_activated_acquisition_abandonment_20261013": {
-    "status": "PASS_FIRST_WAVE_REPLAY_CUSTODY_AUDIT_OPEN",
-    "observed_at": "2026-10-13T13:51:31.214800+00:00",
+    "status": "PASS_FIRST_AND_COMMIT_WAVES_CUSTODY_AUDIT_OPEN",
+    "observed_at": "2026-10-13T13:56:57.460764+00:00",
     "contract": "docs/reference/ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation",
     "task": "P02-T01 Step5 / P02-T02 Step4 enablesP01-T09 Step4/M1; none complete",
     "scope": "Explicit closed-source2 whole-intent uncertainty and terminal queued acquisition cancellation under current actualControl and borrowed native proof. No writeradoption/draining/producer/domain/owner retirement/ACKGC/Archive.",
@@ -46563,7 +46563,7 @@
       "behavior": "Exact paired1/1/initialreason or2/2/activatedreason; complete35classifier plusclosed/closing/cutdigest/nativeprefix. ActivatorControl claims includingzero-request, prior+selected<=64 withindexedLIMIT65, entirebatch beforewrites; gap+twojob revisionsatomic/exactretry preservesissuer/xmin. No extraordinaryjobtablegrants ortrigger; old0028boundary preserved."
     },
     "root_consumer": {
-      "state": "Compiled and first4 actualCLI PASS withrootrawreplay; selectedqualification incomplete",
+      "state": "Compiled and8 actualCLI PASS withrootrawreplay; extraintents/SQLguards/ordinaryHTTP oldgrants qualification open",
       "flag": "--abandon-activated-acquisition",
       "resource": "Native/Control+128KiBmetadata+4096closing and1replaypair preclaim; sequential64KiBsource and128KiBabandon grant. Freshrefresh beforefinal; sourceproof borrowed untilreturn; parentnativeclose/Controlrelease/driverjoinbefore report",
       "tests": "47actualentrypoint/schema/migration tests PASS",
@@ -46587,11 +46587,11 @@
       "integrated": "84757a5318d1e9f2342aee6e24eb767fc0c53847",
       "manifest_sha256": "30a201b064211f3f759f433ae237f13576592ea00745b2b8efc524d800de5051"
     },
-    "next": "Close first-wave artifact/custody audit; execute C10before/after andfreshretry4CLI, sameec6build. Genuineextraintents, SQLguards, ordinaryHTTPoldgrants remain.",
+    "next": "Close artifact/custody audits; finish genuine sameControl extraintentfixture and raw14SQLguards, review andexecute usingec6. Separate ordinaryHTTPoldgrants stillowed.",
     "owner": "root sole integrator/build/engine executor",
-    "processes": "45753/41369 joined0; no engine/build active. Separate read-only custody audit pending; genuineclaims and SQLguard agents edit separate files.",
+    "processes": "46969/78804/8665 joined0; no engine/build active. Read-only custody audits ongoing; genuineclaims andSQLguard agents editseparatefiles.",
     "last_private_push": "2dd28e9d59e2d2ffbb21b98b949bcd2adfc7545a verified; e2d0/fe44 branches also verified",
-    "head": "d03fb21f812e380454b0e2306357d3b983cb2ded",
+    "head": "0f8cb44f874e60422ac251f0a22ed9cee839e426",
     "build": {
       "source": "ec6ff3963161e956fd18226396897b559ac15afe",
       "tree": "f853df1a45581e8c7ff29b351a0020d6c19712c2",
@@ -46662,14 +46662,47 @@
         "full_states": 10,
         "negative_controls": 104
       },
-      "custody": "Run terminalPG0/client143/PID0/noOOM, originalpreservation true. Separate artifact/custody audit in progress; no further engine before projection freeze."
+      "custody": "Run terminalPG0/client143/PID0/noOOM, originalpreservation true. Separate artifact/custody audit in progress; no further engine before projection freeze.",
+      "explicit_deadline_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7/root-deadline-replay.json",
+        "sha256": "733a71ea65262c0e24cd04352613ec2330c05dd3fb9813b78fb7debc27c70cb3",
+        "wrapper": "8665 joined0",
+        "cases": 4,
+        "controls": 104,
+        "change": "Additional at<Control lease deadline assertion; existing actual contexts PASS, no engine rerun"
+      }
     },
     "fault_fixture": {
       "source": "5c2e33be0cb72859623868fe2e00d8411979af18",
       "integrated": "d03fb21",
       "checks": "Root and independentPG complete source review no blocker;4artificialcontexts/102controls/4custodymocks PASS",
-      "status": "ENGINE_NOT_RUN",
+      "status": "Actual4CLI PASS plusroot8states/102controls; custodyauditpending",
       "scope": "C10before-forward/after-complete,freshdirectretry; unchangedclosed939seed/proxy"
+    },
+    "commit_wave": {
+      "source": "0f8cb44f874e60422ac251f0a22ed9cee839e426",
+      "owner": "03bee46c310340c89646059aa25920c0",
+      "status": "PASS_INSTALLED_ACTIVATED_ACQUISITION_ABANDONMENT_COMMIT_LOSS",
+      "client": {
+        "id": "45edce8f725da1c6697c8d948a4292ccf9c92778609839589d3151bea9bdb650",
+        "name": "bigbrotr-acquisition-binding-0f8cb44"
+      },
+      "started_at": "2026-10-13T13:52:47.529783+00:00",
+      "finished_at": "2026-10-13T13:53:39.168698+00:00",
+      "free_bytes_after": 59076907008,
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-faults-engine-0f8cb44",
+      "wrapper": "46969 joined0",
+      "result_sha256": "3e657a0f9ad13d1eb9f59ac2ec347942baf4483efd24f41c6186b4957efb477c",
+      "cli_invocations": 4,
+      "semantics": "Closed939off; C10before-forward counters10/9/9/9/1 retains queuedjob/no gap, C10after-complete10/10/10/9/1 retains gap+cancelled4 issuedby11. Both CLI4CommitUnknown; fresh12fences11 and returns1, creating onlybeforecase and preservingafterissuer/time/xmin. Native70/85/input6/sourcecut5/copies/session exact.",
+      "root_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-faults-engine-0f8cb44/root-independent-replay.json",
+        "sha256": "c93ed718f74170e81ad09581973fe23962b7d6d171c33712c1a00bbbe4e3496f",
+        "wrapper": "78804 joined0",
+        "installed_states": 8,
+        "negative_controls": 102
+      },
+      "custody": "Run terminalPG0/client143/PID0/noOOM, originalpreservationtrue. Separate read-only artifact audit pending."
     }
   }
 }

@@ -481,7 +481,9 @@ interrupted or unknown outcome, inspect retained state and retry the same comman
 in a fresh process. This operation leaves producer2 closing and its Ingest lifetime
 unretired; it starts no acquisition and keeps `ready=false`.
 
-Installed qualification is pending under the
+First/retry on two closed sources and final abandonment COMMIT reply loss with
+fresh retry pass eight installed commands. Genuine extra claims, raw SQL guards
+and ordinary HTTP privilege regression remain pending under the
 [activated abandonment contract](ingest-registration.md#activated-initial-acquisition-abandonment-under-implementation).
 
 ## Exact dependency source basis

@@ -251,6 +251,7 @@ def verify(before, after, native_before, native_after, inputs_before, inputs_aft
         at = gap['abandoned_at_us']
         assert type(at) is int and max(known['source']['closed_at_us'], job['created_at_us'],
             current['lease_expires_at_us'] - 20_000_000) <= at <= current['released_at_us']
+        assert at < current['lease_expires_at_us']
         assert gap == dict(job_id=job['job_id'], dataset_id=job['dataset_id'],
             producer_slot_id=activation['producer_slot_id'], producer_epoch=2, shard_id=0, source_owner_epoch=2,
             last_complete_sequence=known['cut'], source_closure_digest='\\x' + known['digest'],

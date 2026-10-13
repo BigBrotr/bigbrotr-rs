@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-13T13:51Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
+Observed 2026-10-13T13:56Z on Tux. Runtime Goal is ACTIVE under the owner's explicit
 resumption; the complete selected M1–M5 product remains INCOMPLETE. This is navigation,
 not another task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -92,11 +92,22 @@ no broad unchanged reruns are selected.
 
 ## Current next bounded action
 
-Close first-wave artifact/custody audit, then execute C10 abandonment reply loss
-before-forward/after-complete and fresh direct retry: two copied closed939 seeds,
-four CLI using unchanged protectedec6 build. Fault5c2e33b integratedd03fb21;
-root/independent source reviews and4artificialcontexts/102controls/4custodymocks PASS.
-Genuineextraintent, SQLguard and ordinaryHTTPoldgrant gates remain open.
+Close first/fault artifact/custody audits, then integrate genuine extra-intent
+fixture and raw SQL guards after source review/pure controls. Use protectedec6
+artifacts; no product rebuild selected. OrdinaryHTTPoldgrant boundary follows.
+Extra-intent draft migration label collision corrected before execution; root
+requested explicit gap timestamp below actualControl deadline. Canonicalbasic
+oracle adds that bound;8665joined0 replays existing4contexts/104controls PASS.
+
+Fault engine0f8cb44 PASS4CLI,46969joined0,13:52:47–13:53:39Z,
+owner03bee46c310340c89646059aa25920c0, root
+`/runs/ingest-activated-acquisition-faults-engine-0f8cb44`; resultSHA
+3e657a0f9ad13d1eb9f59ac2ec347942baf4483efd24f41c6186b4957efb477c.
+C10before-forward10/9/9/9/1 retains queuedjob/no gap; after-complete10/10/10/9/1
+stores gap+cancelled4 underControl11. Both CLI4CommitUnknown; freshControl12
+fences11 and completes beforecase or preserves aftercase issuer/time/xmin.
+Native70/85/input6/sourcecut5/copies/session unchanged. Root78804joined0:
+8rawstates/102controls PASS. Separate custody audit pending; no engine/buildactive.
 
 First engine1d64cd7 PASS4CLI,45753joined0,13:47:39–13:48:32Z,
 owner2c7d9912914b8958ea6ffe3f9f47723d; root
@@ -359,7 +370,7 @@ executable and `.research` artifact. Private Git does not back up ignored labora
 data. Recovered source/bundle details remain in the [recovery audit](../research/tux-resumption-20261012.md);
 a same-disk bundle is not host-loss backup and unavailable Mac captures stay unavailable.
 
-Free space observed atec6 completion13:32Z: 59,970,093,056 bytes. Remeasure before allocation.
+Free space observed at fault completion13:53Z: 59,076,907,008 bytes. Remeasure before allocation.
 Small engines require2GiB, native builds12GiB; larger exports require64GiB+577MiB,
 currently unavailable. Never lower that reserve; no large export is allocated.
 Cleanup executor is RETIRED_VERIFIED:48,725 verified intermediates removed from18
