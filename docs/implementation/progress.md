@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T17:51:25.424677+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T18:08:32.212492+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,16 +12,14 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD 4ad8369493d9df21bf10489be82ad2e2d28759d7.
-Last verified remote3b0ab51: push45844joined0, independente3e374 exact.
-No merge/rebase. Retirement native4a3a8bf→e14dd47, PG0cbf649→ec0c0f1,
-harness023eb0f→c20c630, rootprobebef7aad, capture0f7aec8→4ad8369 integrated.
-Root retirement reader/shared helper deltas and this checkpoint/evidence uncommitted.
-Three assigned worktrees `.research/successor-native-retirement-20261015`,
-`successor-pg-retirement-20261015`, `successor-retirement-engine-20261015` retain
-original commits and all ignored artifacts; refs await qualification/census/bundle.
-Root alone owns integration/build/cache/engines. Native agent is finishing ignored
-protocol manifest; PG/harness agents have completed source/review assignments.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD bf2c33d24faf00689b959456216146ee8b779930.
+Remote exactbf2c33d: push47435joined0, independent9199ff exact.
+No merge/rebase. Native4a3a8bf→e14dd47, PG0cbf649→ec0c0f1,
+harness023eb0f→c20c630/capture0f7aec8→4ad8369, rootprobebef7aad and
+readerbf2c33d integrated and pushed. This qualification record and README pending commit.
+All three original retirement refs are archived/bundled and retired; worktrees and
+ignored artifacts retained byte/stat unchanged. All agents completed their source
+and independent AI review assignments. Root alone owns integration/build/cache/engines.
 
 ## Active task and next action
 
@@ -34,24 +32,55 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: exact-source ingest-succession-recovery component build,
-expected122 tests (7new native +3PG), CLI/probe and Clippy. Then two separate
-engine roots, four clones/nine processes: genuine gap retire3/retry/live4;
-dictionary-only retire3/live4; import-Event refusal at request3/2; genuine queued
-zero-request claim plus source closure then retirement inspect refusal.
-Native retirement observes existing CLOSING; PG requires exact CLOSED source,
-positive existing copies and workflow relation. Source row/xmin and native/input
-bytes unchanged. Twelve terminal row updates+receipt atomically, retry unchanged.
-Finite consumer retains native/driver custody on refusals and completes only after
-joins/backend absence. Preserve unresolved claim clone, never abandon for cleanup.
-Independent reader root572c6a82 checks full75table states; AIreview1ef60034 and
-probe9499bfca no concrete blocker in declared source boundaries. Existing raw
-regressionfa4a8217:5prior processes/213snapshots PASS, no new engine execution.
-Artificial protocol run-v2/session73505 PASS9contexts/292snapshots/215controls;
-shared Model, not scientific qualification; generator-v1 SyntaxError preserved.
-Harness83479a99:31mockpaths/4malformed/2suite/9chain; capturec98ba531:2roots/9mock
-processes/13filecontrols/10logchecks. Capture check-1 generator serialization FAIL
-preserved, check-2 PASS, unchanged reader. Build/connected qualification NOT_RUN.
+Next bounded action: retirement fault qualification from four fresh genuine-gap
+copies, six finite processes: COMMIT10 before-forward/after-complete, each with
+fresh retry; final target-job wait with typed cancellation and real UTC expiry.
+Implement only narrow finite probe routing/gates, harness and independent reader.
+Design dfdfcad6 is source-only, all six NOT_RUN. Fresh Control must fence the old
+active-but-excluded owner, preserving original terminal receipt on after-loss retry.
+The unresolved-claim clone is not a positive seed and remains untouched.
+
+## Latest qualified retirement outcome
+
+Exactbf2c33d/treef40f1c20 component build: prepare13798/build26884/custody89560
+joined0;122tests, CLI/probe compilation and Clippy PASS. Auditfba88a00 binds
+1928sourcefiles,134prior+3new=137ELFs,1361unchanged prior containers. The existing
+Copy-drop warning appears in eight test commands; no new Clippy diagnostic.
+Build `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bf2c33d`.
+
+Explicit engine root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-retirement-engine-bf2c33d`:
+prepare4717/engine18756/replay80107/custody20336 joined0;17:55:40Z–17:56:30Z.
+PASS_SUCCESSOR_RETIREMENT_FIRST_WAVE, six processes. Genuine gap retire3/retry/live4
+and dictionary-only retire3/live4 pass. Unbound import Event is refused exactly at
+request3/2, Outcome(Conflict). Replay eddea856 verifies220snapshots×75tables,
+155negative controls,208boundfiles; custody8e6cd541 protects137ELFs/1362nonborrowed
+containers. Original full SQL/catalog/native physical/input censuses preserved.
+Retirement changes exactly twelve target rows plus receipt in one transaction;
+source row/xmin, native and inputs remain unchanged. Retry preserves original
+terminal timestamp/xmin/receipt. Genuine native55/68/4inputs→live4 75/94/7;
+dictionary79/98/7→99/124/10. Import90/112/9 unchanged. Control16/17/18,21/22,20.
+
+Claim-veto root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-retirement-claim-engine-bf2c33d`:
+prepare49296/engine73417/replay62222/custody95475 joined0;17:58:38Z–17:58:56Z.
+PASS_SUCCESSOR_RETIREMENT_CLAIM_VETO: genuine queued zero-request claim plus
+accepted-unclaimed intent; source close; refusal at inspect, Control(Backend).
+Replay64ec460b verifies72snapshots×75tables,60controls,102boundfiles; custody2978cc60
+protects137ELFs/1363nonborrowed containers. Backend292/start17:58:52.561990Z,
+Control14, exact PG ERROR `lineage acquisition claims remain unresolved` at
+17:58:52.616Z and workflow classifier context. Millisecond log precision; no
+observed SQLSTATE invented. Controls12/13/14; native55/67→55/68→55/68, four inputs.
+Claim revision2, accepted-unclaimed revision1 and issued session are preserved.
+Every process native closed, both drivers joined/backend absent before native open;
+both clients143/PG0 stopped/PID0/noOOM. All cleanup/unrelated/missing/unexpected
+lists empty. Preserve unresolved workflow, originals and all failed artifacts.
+
+Root source review plus AI probe9499bfca/reader1ef60034/PG14f483a0 found no
+concrete blocker in declared boundaries. Existing offline regressionfa4a8217
+checks5prior processes/213snapshots. Shared-Model protocol run-v2/73505 covers
+9contexts/292snapshots/215controls; generator-v1 SyntaxError retained. Harness
+83479a99 and capturec98ba531 mocks remain pure, not engine proof. Capture generator
+check-1 serialization FAIL retained; check-2 PASS with unchanged reader.
+Retirement COMMIT loss/cancellation/expiry, tails/capacity/installed/RSS NOT_RUN.
 
 Retirement needs a distinct ready-or-terminal purpose: Source intentionally rejects
 retired producer heads. Existing live3/live4 import Events close their source but lack
@@ -147,26 +176,27 @@ Archive asset FAIL and followup85eca49 PASS remain separate. No run/prep replay.
 
 ## Branches and resources
 
-114local/51remote redundant refs retired;70worktrees detached and preserved.
+117local/51remote redundant refs retired;73worktrees detached and preserved.
 All126registered worktrees retained. Source components7290joined0 bundle9ec3b72b
 preserves c336f45/86dc47c; source qualification37031joined0 preserves07c36bb/c725ec3.
 Every original full history is archived and bundled under
 `.research/branch-retirement-20261015`; file/ignored/link censuses unchanged.
 Acquisition retirement7822joined0 archives originals750e735/620404ff/938dbb2;
 bundle13b39647 is14,808,813bytes, complete histories, allfilecensusesunchanged.
-Main and three integrated retirement refs remain local; remote main.
+Retirement71934joined0 archives4a3a8bf/0cbf649/0f7aec8 and full histories;
+bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Main only local/remote.
 No artifact/worktree/dataset/container deleted.
 
-Fresh read-only observation 2026-10-15T17:51:25.424677+00:00:1361containers,
-all BigBrotr stopped, six unrelated services active; free28633694208bytes.
-Previous acquisition clientb5e6f664 and borrowed PG7177550705c49 retained.
+Fresh read-only observation 2026-10-15T18:08:32.212492+00:00:1365containers,
+all BigBrotr stopped, six unrelated services active; free28084805632bytes.
+Retirement clientsff43c6ee/702cc20f and borrowed PG7177550705c49 retained.
 PG `/runs/relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608,
 PG16.15/1.5GiB2CPU64MiBshm. All build/engine/replay/audit handles terminal.
-Agent ignored protocol work only; no compiler/engine started or delegated.
+All agents completed; next fault implementation not yet assigned.
 
 Root-only compiler cache `/runs/network-1154757/out/build/{target,cargo-home}`,
 owner8b21a13162699a6038154874c2ac89da, exclusive `.compiler-cache.lock`.
-134protectedELFs outside cache. Reserve12GiBbuild/2GiBsmallengine;64GiB+577MiB
+137protectedELFs outside cache. Reserve12GiBbuild/2GiBsmallengine;64GiB+577MiB
 export reserve unavailable. Never lower reserves/delete evidence. Remeasure current
 ownership/state/headroom before reuse. Preserve unrelated services/host activity.
 
@@ -176,7 +206,8 @@ One family handles both legacy2→3 shapes and later3→4;255epochs/32,768member
 256KiBmetadata=128KiBscratch+512bytes/entry;64files/32MiBspool, no GC. Preserve42-byte
 01_0a keys,02_0a values319..643/schema3, receipts/manifests/inputs/cuts. Positive
 original replay confers no writer adoption; hashes alone confer no authority.
-Still open: successor workflow/retirement, installed repeated lifetimes, unknown
+First retirement wave is qualified, including workflow refusal. Still open: installed
+repeated lifetimes, unknown
 COMMIT/cancellation/expiry/capacity, import logical closure, ACK/GC, Archive restart/
 backup/export and remaining M1–M5 journeys. Acquisition expiry53a126b FAIL observer
 DSM and later unexplained PG checkpointer SIGSEGV separate; HTTPschema32 apply

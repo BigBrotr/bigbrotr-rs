@@ -195,3 +195,32 @@ uses six actual recovered endpoints for first source publication and fresh retry
 requiring zero native writes throughout. Its output is `RUN_ROOT/source-close`;
 `RUN_ROOT/source` remains the exact Git checkout. This first wave excludes missing
 copy repair, corrupt closed-source states, source COMMIT loss and retirement.
+
+`acquisition.py RUN_ROOT BUILD_ARTIFACTS` creates a genuine activated-zero successor
+with a claimed acquisition job and a separate accepted but unclaimed intent. Four
+processes establish that state, close its source, abandon the whole claimed intent,
+and observe an exact retry. `acquisition_replay.py RUN_ROOT` checks the complete
+SQL/native/input chain and original job/session attribution. This finite API
+scenario does not execute network acquisition or invent historical authority.
+
+`retirement.py RUN_ROOT BUILD_ARTIFACTS` copies three pinned, source-closed endpoints.
+It retires the genuine abandoned-claim and dictionary-only heads, checks an exact
+retirement retry, and prepares/activates a fresh live epoch4 from each. The third
+origin must refuse its unbound Event during existing-copy replay. Retirement
+preserves native bytes, input files and the original source row; its terminal
+transaction changes twelve target rows and records the actual transaction/Control.
+
+`retirement_claim_veto.py RUN_ROOT BUILD_ARTIFACTS` uses a separate exact run root.
+It creates a genuine queued zero-request claim from the original empty predecessor,
+closes its source, and requires retirement inspection to refuse. The unresolved
+clone remains preserved. Neither suite abandons work implicitly for cleanup.
+
+`retirement_capture_replay.py RUN_ROOT [SECOND_ROOT]` binds all nine raw process
+transcripts, sidecar bytes, original file censuses and successive full states to
+the independent `retirement_replay.py` reducer. The queued-claim diagnostic binds
+the exact PostgreSQL ERROR/context to the observed backend and clock window; the
+default server log does not supply SQLSTATE. Successful retirement and expected
+business refusal both require actual closed/joined custody before native reopen.
+The recovery build profile covers the new native/PG retirement groups. These
+finite suites exclude retirement COMMIT loss, expiry/cancellation, installed
+lifetimes, import logical closure, ACK/GC and capacity/RSS qualification.
