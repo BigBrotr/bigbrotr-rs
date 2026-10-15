@@ -26784,6 +26784,46 @@
         "audit_sha256": "d0ae6c9bc8e52f6e6346820c4a1fc676a16a7387323d78bb87a0683ef9fcb6eb",
         "scope": "Two integrated component refs only; all worktrees, ignored/external evidence and datasets preserved. Connected authority remains NOT_RUN.",
         "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
+      },
+      "continuous_live_reader": {
+        "status": "INTEGRATED_SOURCE_PURE_CHECKS_PASS_ENGINE_NOT_RUN",
+        "original": "c005406f950e0108f3336082f2521c1bcdf84f27",
+        "integrated": "9ce81339de228268841849caf71fbe4836a857f5",
+        "source_sha256": "7616bf4d191f013779f37edab39c4e0857118ac3c126e919404436005efa1f89",
+        "root": ".research/successor-live-oracle-20261015/.research/live-reader-selfcheck-20261015",
+        "manifest_sha256": "08a4242025de3c9f6fa3e877a56d16b8cad2133b7332d94956bd10de04c69bea",
+        "positive": {
+          "contexts": 5,
+          "snapshots": 201,
+          "negative_controls": 87,
+          "bound_files": 118
+        },
+        "custody_scenarios": 7,
+        "file_counterexamples": 4,
+        "literal_checks": 4,
+        "retained_files": 184,
+        "retained_bytes": 114516584,
+        "origin_symlinks": 6,
+        "root_artifact_verification": "PASS d72b50 all184files+6sources+6symlinks",
+        "review": "Root complete694-line reader, complete live harness and shared custody seam; exact expected portable bytes independent of Rust. Pure generator shares model and provides protocol/file coverage only, not independent product evidence.",
+        "failure_artifacts": [
+          "run-v1.log: artificial emit kind keyword collision",
+          "run-v2.log: negative-control helper kind keyword collision"
+        ],
+        "processes": "57101/42018/20774 joined0; no agent engine/build process"
+      },
+      "continuous_live_harness": {
+        "status": "SOURCE_READY_ENGINE_NOT_RUN",
+        "source_sha256": "84ad5f7d4dd6987b30c9fce3ef91e4ee29976b962ea84cfafc552e7cf345d54f",
+        "transition_sha256": "adf7e381804184c6e046abeeb4dc85992f363560f10b60ddfb37d44f7f44a523",
+        "cases": [
+          "activated-live3",
+          "empty-live3",
+          "activated-later-prepare3",
+          "activated-later-empty3",
+          "activated-later-live4"
+        ],
+        "scope": "Three fresh copies; same-process live activation and new writer. Explicit default-preserving completion event allows native reopen only after positive closure/join and backend absence. Unknown custody preserves provisional SQL/input; malformed response bytes retained."
       }
     }
   }

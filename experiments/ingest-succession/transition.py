@@ -61,9 +61,11 @@ def case_description(clone, name, database, config, predecessor):
         metadata_bytes=132607 if clone == 'activated-short' else 262144, status='RUNNING')
 
 
-def closed_and_joined(response, database, *, control_failed=False):
+def closed_and_joined(response, database, *, control_failed=False,
+                      completion_event='lineage-transition-complete'):
     """Positive native/process telemetry, separate from scientific acceptance."""
     assert type(control_failed) is bool
+    assert completion_event in ('lineage-transition-complete', 'lineage-live-complete')
     assert response['returncode'] == 0
     events = [json.loads(line) for line in response['stdout'].splitlines()]
     assert not any(e.get('event') == 'lineage-history-timeout' for e in events)
@@ -79,13 +81,14 @@ def closed_and_joined(response, database, *, control_failed=False):
     assert isinstance(present['backend_start'], str) and present['backend_start']
     absent_index = events.index(absent)
     complete = events[-1]
-    assert complete['event'] == 'lineage-transition-complete' and complete['native'] == 'closed'
+    assert complete['event'] == completion_event and complete['native'] == 'closed'
     assert complete['observer'] == 'joined' and complete['control'] in ('released-and-joined', 'dropped-and-joined')
     assert native < control < absent_index < observer < len(events) - 1
     return events
 
 
-def external(pg, client, output, case, directory, response, *, control_failed=False, proxy_closed=True):
+def external(pg, client, output, case, directory, response, *, control_failed=False,
+             proxy_closed=True, completion_event='lineage-transition-complete'):
     """Persist each observation before rejecting missing custody or semantics."""
     name, database = case['name'], case['database']
     errors = []
@@ -93,7 +96,8 @@ def external(pg, client, output, case, directory, response, *, control_failed=Fa
     events = None
     try:
         assert proxy_closed is True, 'proxy custody not established'
-        events = closed_and_joined(response, database, control_failed=control_failed)
+        events = closed_and_joined(response, database, control_failed=control_failed,
+                                   completion_event=completion_event)
         custody = 'OBSERVED_CLOSED_AND_JOINED'
     except BaseException as error:
         errors.append(dict(stage='probe-custody', error=repr(error)))

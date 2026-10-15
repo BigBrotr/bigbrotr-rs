@@ -14,13 +14,14 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `34be776` includes
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `9ce8133` includes
 native92b4cb9→0b8b9fe and PG9420a05→0bae4a6 continuous activation/writer source.
-Last independently verified remote main is d0661961f5efb892148e93fd0e8a88e0a951e755
-(push40404 joined0, remote d3e9ac). Followup85eca49 passed28previously unexecuted tests and Clippy;116native per-test
+Last independently verified remote main is3dad140fb9089da9aea26608da397f2dee6d499b
+(push34112 joined0, remote c577d7). Followup85eca49 passed28previously unexecuted tests and Clippy;116native per-test
 passes are reused against identical product sources and the same test ELF. The
 first aggregate remains FAIL. Probece6e154→34be776 is integrated, build NOT_RUN.
-Root owns uncommitted live.py and the narrow completion-event custody seam.
+Root is committing live.py, the narrow completion-event custody seam and reader
+evidence; readerc005406→9ce8133 integrated. No product changes since components.
 No merge/rebase pending. Original source branches/worktrees remain preserved until
 qualification and reconciliation; the new finite consumer has its own worktree.
 
@@ -33,8 +34,8 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: finish independent reader and live harness integration,
-then build the exact-source finite live probe (transition-probe profile). Qualify
+Root's next bounded action: build the exact-source finite live probe
+(transition-probe profile), then audit retained binaries and run/replay/audit
 five actual invocations on three new terminal2 copies: live3 from both origins,
 and prepare3 → fresh empty3 → new same-process live4. Preserve all originals.
 
@@ -110,7 +111,11 @@ Actual independent raw replay above is separate. All143artificial artifacts rema
 Root alone runs builds/engines/shared cache. Both native/PG source worktrees are
 clean and detached at92b4cb9 and9420a05; exact blobs are integrated. cleanup_review completed source review and now owns source-only
 `.research/successor-live-oracle-20261015`, branchqualification/successor-live-oracle,
-basea57540c. recovery_review owns
+cleanc005406→9ce8133 integrated. Pure5contexts/201snapshots/87controls,7custody
+scenarios/4filecontrols pass;184artifacts114,516,584bytes+6origin symlinks retained
+and root-hash-verified. Full694-line reader and shared custody seam root-reviewed.
+Manifest08a42420; artificial generator shares Model, not product proof.
+recovery_review owns
 source-only `.research/successor-live-probe-20261015`, branch
 `qualification/successor-live-probe`, clean atce6e154, integrated→34be776. Its
 617-line finite live command and full shared deltas are root-reviewed; scoped

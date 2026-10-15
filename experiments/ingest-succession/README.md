@@ -131,3 +131,17 @@ runs only the dictionary/input/PG groups plus compilation and Clippy. It does no
 repeat native admission/writer tests; reuse their separately recorded per-test
 results only when the product inputs match exactly. An earlier aggregate failure
 remains a failure even when its other individual tests passed.
+
+`live.py RUN_ROOT BUILD_ARTIFACTS` uses three fresh copies for five finite
+processes: live epoch3 from each original, and prepare3/empty3 followed by a new
+same-process live4 candidate. Each live process activates its own prepared
+candidate, refreshes Control, renews the Ingest lease and exercises a dictionary,
+an historical AlreadyDurable event, a new signed event, exact retries, visibility
+read and two certifications. A successful process must close native custody and
+join both drivers; its captured completion event is selected explicitly.
+
+`live_replay.py RUN_ROOT` independently checks full SQL/native/input state and
+literal portable bytes. The finite import API does not claim a real source job,
+installed acquisition, activated retirement, COMMIT-loss recovery or scale/RSS
+qualification. Raw results and failure artifacts stay separate from artificial
+reader protocol checks, which may reuse their model to construct transcripts.
