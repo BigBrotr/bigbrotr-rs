@@ -7,7 +7,8 @@ use bigbrotr_model::{QualifiedRef, Sequence, SourceRecordId};
 const EPOCHS: usize = MAX_LINEAGE_EPOCHS as usize;
 // Counters cover every key without retaining keys, facts or outcome vectors.
 // Two namespace counters plus facts/pending/requests fit the scratch reservation.
-const _: () = assert!((2 * 9 + 3) * EPOCHS * size_of::<u64>() < 64 * 1024);
+pub(super) const COUNTER_BYTES: usize = (2 * 9 + 3) * EPOCHS * size_of::<u64>();
+const _: () = assert!(COUNTER_BYTES < 64 * 1024);
 
 impl RetainedLineage {
     pub(super) fn inspect_census(

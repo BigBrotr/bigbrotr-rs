@@ -1,6 +1,6 @@
 //! Ordered positive history under one retained lineage grant. The result is a
 //! native frontier, never proof of SQL activation, retirement or writer custody.
-use super::lineage::{RetainedLineage, RetainedTerminalKind};
+use super::lineage::{NativeSuccessorRecovery, RetainedLineage, RetainedTerminalKind};
 use super::producer_recovery::{RecoveryContext, ResolvedProducerRequest};
 use super::source_closure::Prefix;
 use super::{
@@ -30,6 +30,7 @@ pub struct LineageResolution<'a> {
     epoch: u64,
     prefix: Prefix,
     completed: Option<LineageEpochSummary>,
+    recovery_owner: Option<&'a NativeSuccessorRecovery>,
 }
 
 pub struct ResolvedLineage<'a> {
@@ -49,7 +50,22 @@ impl RetainedLineage {
         head_kind: Option<PredecessorTerminalKind>,
         cancelled: &'a AtomicBool,
     ) -> Result<LineageResolution<'a>, BootstrapError> {
-        self.validate(recovery, cancelled)?;
+        self.resolution_in(recovery, through_epoch, head_kind, cancelled, None)
+    }
+
+    fn resolution_in<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        through_epoch: u64,
+        head_kind: Option<PredecessorTerminalKind>,
+        cancelled: &'a AtomicBool,
+        recovery_owner: Option<&'a NativeSuccessorRecovery>,
+    ) -> Result<LineageResolution<'a>, BootstrapError> {
+        if let Some(owner) = recovery_owner {
+            owner.validate(recovery, cancelled)?;
+        } else {
+            self.validate(recovery, cancelled)?;
+        }
         let head = self.native_head();
         let epoch = head.manifest().identity().owner_epoch.get();
         if through_epoch == 0
@@ -83,11 +99,38 @@ impl RetainedLineage {
                 digest_start(self, 1, RetainedTerminalKind::Initial)?,
             ),
             completed: None,
+            recovery_owner,
         })
     }
 }
 
 impl<'a> LineageResolution<'a> {
+    pub(super) fn for_recovery(
+        owner: &'a NativeSuccessorRecovery,
+        recovery: &'a IngestRecovery,
+        cancelled: &'a AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        let lineage = owner.lineage();
+        lineage.resolution_in(
+            recovery,
+            lineage
+                .native_head()
+                .manifest()
+                .identity()
+                .owner_epoch
+                .get(),
+            Some(PredecessorTerminalKind::Activated),
+            cancelled,
+            Some(owner),
+        )
+    }
+    pub(super) fn validate(&self) -> Result<(), BootstrapError> {
+        match self.recovery_owner {
+            Some(owner) => owner.validate(self.recovery, self.cancelled),
+            None => self.lineage.validate(self.recovery, self.cancelled),
+        }
+    }
+
     pub fn current_epoch(&self) -> Option<u64> {
         (self.epoch <= self.through).then_some(self.epoch)
     }
@@ -124,33 +167,55 @@ impl<'a> LineageResolution<'a> {
             input_permit,
             outcome_permit,
             authority,
-            RecoveryContext::Lineage {
-                lineage: self.lineage,
-                epoch: self.epoch,
-                cancelled: self.cancelled,
+            match self.recovery_owner {
+                Some(owner) => RecoveryContext::Successor {
+                    owner,
+                    epoch: self.epoch,
+                    cancelled: self.cancelled,
+                },
+                None => RecoveryContext::Lineage {
+                    lineage: self.lineage,
+                    epoch: self.epoch,
+                    cancelled: self.cancelled,
+                },
             },
         )
     }
 
     pub fn record(&mut self, resolved: &ResolvedProducerRequest) -> Result<(), BootstrapError> {
-        self.lineage.validate(self.recovery, self.cancelled)?;
+        let prefix = self.preview(resolved)?;
+        self.prefix = prefix;
+        Ok(())
+    }
+
+    pub(super) fn preview(
+        &self,
+        resolved: &ResolvedProducerRequest,
+    ) -> Result<Prefix, BootstrapError> {
+        self.validate()?;
         resolved.require_native_context(self.recovery)?;
         resolved.require_lineage(self.lineage)?;
         if self.current_epoch().is_none() {
             return Err(BootstrapError::StateMismatch);
         }
         let epoch = self.epoch;
-        self.prefix.record_with_frontier(resolved, |source| {
+        let mut prefix = self.prefix.clone();
+        prefix.record_with_frontier(resolved, |source| {
             source.owner_epoch.get() < epoch
                 && self
                     .lineage
                     .entry(source.owner_epoch.get())
                     .is_some_and(|entry| source.sequence.get() <= entry.source_through())
-        })
+        })?;
+        Ok(prefix)
+    }
+
+    pub(super) fn accept_preview(&mut self, prefix: Prefix) {
+        self.prefix = prefix;
     }
 
     pub fn finish_epoch(&mut self) -> Result<LineageEpochSummary, BootstrapError> {
-        self.lineage.validate(self.recovery, self.cancelled)?;
+        self.validate()?;
         let epoch = self.current_epoch().ok_or(BootstrapError::StateMismatch)?;
         let entry = self
             .lineage
@@ -211,10 +276,30 @@ impl<'a> LineageResolution<'a> {
         limits: super::AdmissionLimits,
         permit: OwnedPermit,
     ) -> Result<ResolvedLineage<'a>, AdmissionError> {
+        // Recovery has a separate result even when every current request was
+        // positively resolved. It cannot construct a predecessor/handoff proof.
+        if self.recovery_owner.is_some() {
+            return Err(AdmissionError::InvalidInput);
+        }
+        let lineage = self.lineage;
+        let recovery = self.recovery;
+        let last = self.finish_checked(limits, permit)?;
+        Ok(ResolvedLineage {
+            lineage,
+            recovery,
+            last,
+        })
+    }
+
+    pub(super) fn finish_checked(
+        self,
+        limits: super::AdmissionLimits,
+        permit: OwnedPermit,
+    ) -> Result<LineageEpochSummary, AdmissionError> {
         if self.current_epoch().is_some() {
             return Err(AdmissionError::StateMismatch);
         }
-        self.lineage.validate(self.recovery, self.cancelled)?;
+        self.validate()?;
         self.lineage.verify_effect_census(
             self.recovery,
             self.through,
@@ -222,12 +307,8 @@ impl<'a> LineageResolution<'a> {
             permit,
             self.cancelled,
         )?;
-        self.lineage.validate(self.recovery, self.cancelled)?;
-        Ok(ResolvedLineage {
-            lineage: self.lineage,
-            recovery: self.recovery,
-            last: self.completed.ok_or(AdmissionError::StateMismatch)?,
-        })
+        self.validate()?;
+        self.completed.ok_or(AdmissionError::StateMismatch)
     }
 }
 
@@ -256,36 +337,45 @@ impl ResolvedLineage<'_> {
         epoch: u64,
         records: impl IntoIterator<Item = (u64, [u8; 32], [u8; 32])>,
     ) -> bool {
-        if epoch == 0 || epoch > self.last.epoch {
-            return false;
-        }
-        let Some(entry) = self.lineage.entry(epoch) else {
-            return false;
-        };
-        let (kind, expected) = if epoch == self.last.epoch {
-            (self.last.terminal_kind, self.last.digest)
-        } else {
-            let Some(pair) = entry.terminal_claim() else {
-                return false;
-            };
-            pair
-        };
-        let Ok(mut digest) = digest_start(self.lineage, epoch, kind) else {
-            return false;
-        };
-        let mut count = 0_u64;
-        for (sequence, input, outcome) in records {
-            if count.checked_add(1) != Some(sequence) || sequence > entry.issued_through() {
-                return false;
-            }
-            digest.update(sequence.to_be_bytes());
-            digest.update(input);
-            digest.update(outcome);
-            count = sequence;
-        }
-        digest.update(entry.source_through().to_be_bytes());
-        count == entry.issued_through() && <[u8; 32]>::from(digest.finalize()) == expected
+        matches_recorded(self.lineage, self.last, epoch, records)
     }
+}
+
+pub(super) fn matches_recorded(
+    lineage: &RetainedLineage,
+    last: LineageEpochSummary,
+    epoch: u64,
+    records: impl IntoIterator<Item = (u64, [u8; 32], [u8; 32])>,
+) -> bool {
+    if epoch == 0 || epoch > last.epoch {
+        return false;
+    }
+    let Some(entry) = lineage.entry(epoch) else {
+        return false;
+    };
+    let (kind, expected) = if epoch == last.epoch {
+        (last.terminal_kind, last.digest)
+    } else {
+        let Some(pair) = entry.terminal_claim() else {
+            return false;
+        };
+        pair
+    };
+    let Ok(mut digest) = digest_start(lineage, epoch, kind) else {
+        return false;
+    };
+    let mut count = 0_u64;
+    for (sequence, input, outcome) in records {
+        if count.checked_add(1) != Some(sequence) || sequence > entry.issued_through() {
+            return false;
+        }
+        digest.update(sequence.to_be_bytes());
+        digest.update(input);
+        digest.update(outcome);
+        count = sequence;
+    }
+    digest.update(entry.source_through().to_be_bytes());
+    count == entry.issued_through() && <[u8; 32]>::from(digest.finalize()) == expected
 }
 
 fn digest_start(

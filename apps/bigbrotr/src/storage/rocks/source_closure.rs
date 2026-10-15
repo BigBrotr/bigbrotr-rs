@@ -256,6 +256,7 @@ impl<'a> SourceResolution<'a> {
 
 /// Shared fixed-size ordered-prefix reducer. The enclosing initial/activated
 /// owners provide different native authority and final-census checks.
+#[derive(Clone)]
 struct PrefixIdentity {
     manifest: IngestManifest,
     slot: ProducerSlotId,
@@ -263,6 +264,7 @@ struct PrefixIdentity {
     issued: u64,
     predecessor_cut: Option<u64>,
 }
+#[derive(Clone)]
 pub(super) struct Prefix {
     identity: PrefixIdentity,
     manifest_digest: [u8; 32],

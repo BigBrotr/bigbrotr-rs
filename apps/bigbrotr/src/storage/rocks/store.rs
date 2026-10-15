@@ -34,8 +34,8 @@ pub(in crate::storage) use outcome_copy::{MAX_OUTCOME_BYTES, NativeOutcomeCopy};
 
 #[path = "request_inputs.rs"]
 mod request_inputs;
-pub(in crate::storage) use request_inputs::StagedProducerRequest;
 pub use request_inputs::{RequestInputError, RetainedRequestInput};
+pub(in crate::storage) use request_inputs::{StagedProducerRequest, SuccessorStagedInput};
 
 #[path = "bootstrap.rs"]
 mod bootstrap;
@@ -120,6 +120,11 @@ pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 
 #[path = "lineage.rs"]
 mod lineage;
+#[cfg(test)]
+use lineage::PendingSuccessorRequest;
+pub(in crate::storage) use lineage::{
+    NativeSuccessorRecovery, ResolvedSuccessorRecovery, SuccessorRecoveryResolution,
+};
 pub use lineage::{RetainedLineage, RetainedLineageEntry, RetainedTerminalKind};
 
 #[path = "lineage_replay.rs"]

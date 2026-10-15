@@ -52,6 +52,14 @@ pub(in crate::storage) struct StagedProducerRequest {
     _synchronized: (),
 }
 
+/// Exact retained bytes beyond issued, not a reservation, outcome or authority.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(in crate::storage) struct SuccessorStagedInput {
+    pub request: ProducerRequestId,
+    pub digest: Digest256,
+    pub input_bytes: u32,
+}
+
 /// Decoded original input plus its retained grant. Recovery still needs the
 /// producer ledger, original outcome resolution and current dispatch authority.
 pub struct RetainedRequestInput {

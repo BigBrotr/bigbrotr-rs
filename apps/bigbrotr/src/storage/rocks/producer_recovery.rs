@@ -76,6 +76,11 @@ pub(super) enum RecoveryContext<'a> {
         epoch: u64,
         cancelled: &'a std::sync::atomic::AtomicBool,
     },
+    Successor {
+        owner: &'a super::NativeSuccessorRecovery,
+        epoch: u64,
+        cancelled: &'a std::sync::atomic::AtomicBool,
+    },
 }
 impl ResolvedProducerRequest {
     pub fn outcome(&self) -> &AdmissionOutcome {
@@ -215,6 +220,25 @@ impl IngestRecovery {
                     current_manifest: lineage.native_head().manifest(),
                 }
             }
+            RecoveryContext::Successor {
+                owner,
+                epoch,
+                cancelled,
+            } => {
+                owner
+                    .validate(self, cancelled)
+                    .map_err(AdmissionError::from)?;
+                let entry = owner.entry(*epoch).ok_or(AdmissionError::InvalidInput)?;
+                if request.producer_epoch.get() != *epoch
+                    || request.producer_slot_id != owner.producer_slot_id()
+                {
+                    return Err(AdmissionError::InvalidInput.into());
+                }
+                ReplayContext {
+                    manifest: entry.manifest(),
+                    current_manifest: owner.head().manifest(),
+                }
+            }
         };
         if self.manifest() != context.current_manifest {
             return Err(AdmissionError::InvalidInput.into());
@@ -258,6 +282,7 @@ impl IngestRecovery {
                         context,
                         match &profile {
                             RecoveryContext::Lineage { lineage, .. } => Some(*lineage),
+                            RecoveryContext::Successor { owner, .. } => Some(owner.lineage()),
                             _ => None,
                         },
                     )?
@@ -295,8 +320,10 @@ impl IngestRecovery {
                         context,
                     )?
                     .ok_or(ProducerRecoveryError::Unresolved)?;
-                if let (RecoveryContext::Lineage { .. }, AdmissionOutcome::Durable(receipt)) =
-                    (&profile, &observed.0)
+                if let (
+                    RecoveryContext::Lineage { .. } | RecoveryContext::Successor { .. },
+                    AdmissionOutcome::Durable(receipt),
+                ) = (&profile, &observed.0)
                 {
                     let event = verified
                         .as_ref()
@@ -338,6 +365,7 @@ impl IngestRecovery {
             native_sequence,
             lineage_inputs: match &profile {
                 RecoveryContext::Lineage { lineage, .. } => Some(lineage.input_stamp()),
+                RecoveryContext::Successor { owner, .. } => Some(owner.lineage().input_stamp()),
                 _ => None,
             },
         };

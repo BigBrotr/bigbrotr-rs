@@ -27,6 +27,14 @@ pub(super) use frontier::AdmittedFrontier;
 #[path = "lineage_census.rs"]
 mod census;
 
+#[path = "successor_recovery.rs"]
+mod recovery;
+#[cfg(test)]
+pub(super) use recovery::PendingSuccessorRequest;
+pub(in crate::storage) use recovery::{
+    NativeSuccessorRecovery, ResolvedSuccessorRecovery, SuccessorRecoveryResolution,
+};
+
 /// A retained claim from an outgoing handoff, not a verified terminal result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RetainedTerminalKind {
@@ -96,6 +104,20 @@ impl RetainedLineage {
     /// A pending PG target counts for resource admission only. Its existence,
     /// absence of activation and exact recorded identity remain PG obligations.
     pub fn inspect(
+        recovery: &IngestRecovery,
+        pending_target: Option<u64>,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        let mut lineage = Self::inspect_structure(recovery, pending_target, permit, cancelled)?;
+        lineage.inputs = lineage.input_census(recovery, cancelled)?;
+        lineage.validate(recovery, cancelled)?;
+        Ok(lineage)
+    }
+
+    // Private construction stage shared with recovery. It has not yet accepted
+    // any sidecar census and is never returned through the public reader API.
+    fn inspect_structure(
         recovery: &IngestRecovery,
         pending_target: Option<u64>,
         permit: OwnedPermit,
@@ -193,7 +215,7 @@ impl RetainedLineage {
         }
         require_fresh(&entries, head)?;
         entries.push(entry(recovery, *head, incoming, None, slot)?);
-        let mut lineage = Self {
+        let lineage = Self {
             entries,
             slot,
             root,
@@ -203,8 +225,6 @@ impl RetainedLineage {
             _permit: permit,
         };
         lineage.inspect_census(recovery, cancelled)?;
-        lineage.inputs = lineage.input_census(recovery, cancelled)?;
-        lineage.validate(recovery, cancelled)?;
         Ok(lineage)
     }
 

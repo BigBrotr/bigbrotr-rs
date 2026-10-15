@@ -25,10 +25,35 @@ impl IngestStore {
     pub(in crate::storage::rocks::store) fn lineage_input_delta(
         &self,
         expected_count: u64,
-        mut accepts: impl FnMut(ProducerRequestId) -> bool,
+        accepts: impl FnMut(ProducerRequestId) -> bool,
         addition: Option<(ProducerRequestId, [u8; 32], u64)>,
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], [u8; 32]), BootstrapError> {
+        self.lineage_input_scan(expected_count, accepts, addition, None, cancelled)
+            .map(|(all, prior, _)| (all, prior))
+    }
+
+    /// Recovery alone may retain one current issued+1 input. All issued files
+    /// remain required; the optional file is stamped, never treated as issued.
+    pub(in crate::storage::rocks::store) fn successor_recovery_inputs(
+        &self,
+        issued_count: u64,
+        accepts: impl FnMut(ProducerRequestId) -> bool,
+        tail: ProducerRequestId,
+        cancelled: &AtomicBool,
+    ) -> Result<([u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
+        self.lineage_input_scan(issued_count, accepts, None, Some(tail), cancelled)
+            .map(|(all, _, tail)| (all, tail))
+    }
+
+    fn lineage_input_scan(
+        &self,
+        expected_count: u64,
+        mut accepts: impl FnMut(ProducerRequestId) -> bool,
+        addition: Option<(ProducerRequestId, [u8; 32], u64)>,
+        tail: Option<ProducerRequestId>,
+        cancelled: &AtomicBool,
+    ) -> Result<([u8; 32], [u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
         let check = || {
             if cancelled.load(Ordering::Relaxed) {
                 Err(BootstrapError::AuthorityUnavailable)
@@ -43,6 +68,7 @@ impl IngestStore {
         let mut stamps: [Stamp; MAX_FILES] = [([0; 71], [0; 32]); MAX_FILES];
         let mut count = 0;
         let mut total = 0_u64;
+        let mut observed_tail = None;
         let mut buffer = [0; SCRATCH];
         let directory = match self.input_directory(false) {
             Ok(directory) => Some(directory),
@@ -64,7 +90,7 @@ impl IngestStore {
                     return Err(BootstrapError::Limit);
                 }
                 let id = parse_name(name).map_err(BootstrapError::RequestInput)?;
-                if !accepts(id) {
+                if !accepts(id) && Some(id) != tail {
                     return Err(BootstrapError::RequestInput(RequestInputError::Identity));
                 }
                 let mut file = open_input(
@@ -109,6 +135,13 @@ impl IngestStore {
                     return Err(BootstrapError::RequestInput(RequestInputError::Conflict));
                 }
                 let content: [u8; 32] = content.finalize().into();
+                if Some(id) == tail {
+                    observed_tail = Some(SuccessorStagedInput {
+                        request: id,
+                        digest: Digest256::from_bytes(content),
+                        input_bytes: before.len() as u32, // bounded by MAX_INPUT
+                    });
+                }
                 if let Some((added, expected, length)) = addition
                     && id == added
                     && (content != expected || before.len() != length)
@@ -127,7 +160,7 @@ impl IngestStore {
                 count += 1;
             }
         }
-        if count as u64 != expected_count {
+        if count as u64 != expected_count + u64::from(observed_tail.is_some()) {
             return Err(BootstrapError::RequestInput(RequestInputError::Missing));
         }
         stamps[..count].sort_unstable_by_key(|(name, _)| *name);
@@ -177,7 +210,7 @@ impl IngestStore {
             all
         };
         check()?;
-        Ok((all, previous))
+        Ok((all, previous, observed_tail))
     }
 }
 

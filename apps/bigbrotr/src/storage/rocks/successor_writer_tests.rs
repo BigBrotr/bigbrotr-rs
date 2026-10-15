@@ -5,6 +5,9 @@ use super::*;
 use crate::storage::rocks::store::{ActiveSuccessorWriter, NativeSuccessorActivation};
 use std::collections::BTreeMap;
 
+#[path = "successor_recovery_tests.rs"]
+mod successor_recovery_tests;
+
 type Snapshot = (Rows, u64, Vec<(String, Vec<u8>)>);
 fn snapshot(f: &Fixture, store: &IngestStore) -> Snapshot {
     (
