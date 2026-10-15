@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'ingest-succession-codec',
+    'ingest-succession-codec', 'ingest-succession-lineage',
     'ingest-activated-retirement', 'ingest-activated-durable', 'ingest-activated-source', 'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
@@ -158,6 +158,7 @@ try:
     write(root / 'resources.json', state)
     native_path = 'network-transport' if profile in ('network', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport') else 'relay-registry'
     native_args = {
+        'ingest-succession-lineage': ['lineage'],
         'acquisition-transport': ['acquisition-transport'],
         'dictionary-append': ['dictionary-append'],
         'websocket': ['websocket'],
@@ -208,7 +209,7 @@ try:
         'acquisition-jobs-faults': ['acquisition-jobs-faults'],
         'acquisition-claims': ['acquisition-claims'],
     }.get(profile, [])
-    native_script = ('ingest-succession/native.py' if profile == 'ingest-succession-codec'
+    native_script = ('ingest-succession/native.py' if profile in ('ingest-succession-codec', 'ingest-succession-lineage')
                      else 'archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
                      else native_path + '/native.py')
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
@@ -220,6 +221,7 @@ try:
                 'request-session': 'PASS_SCOPED_REQUEST_SESSION_COMPONENTS',
                 'relay-registry': 'PASS_REGISTRY_BUILD_ONLY',
                 'ingest-succession-codec': 'PASS_SUCCESSION_CODEC_COMPONENTS',
+                'ingest-succession-lineage': 'PASS_SUCCESSION_LINEAGE_INSPECTION',
                 'relay-registry-faults': 'PASS_REGISTRY_FAULT_BUILD_ONLY',
                 'relay-enrollment': 'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
                 'relay-enrollment-faults': 'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',

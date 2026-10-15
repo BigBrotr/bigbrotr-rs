@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exact-source portable codec checks; no connected succession qualification."""
+"""Exact-source codec or structural-lineage checks; no connected succession claim."""
 import json
 from pathlib import Path
 import re
@@ -15,6 +15,8 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
+assert sys.argv[1:] in ([], ['lineage'])
+lineage = sys.argv[1:] == ['lineage']
 
 
 def sources():
@@ -35,6 +37,9 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
                 source_manifest_sha256=file_hash(build / 'source-manifest.json'),
                 scope='Portable version2/schema3 codec, profile arithmetic and legacy handoff compatibility only; positive lineage, PostgreSQL and installed repeatable succession NOT_RUN')
 identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'], env=env, text=True).strip()
+if lineage:
+    identity['scope'] = ('Read-only structural lineage, complete input census and selected legacy compatibility; '
+                         'positive whole-lineage replay, PostgreSQL and installed repeatable succession NOT_RUN')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -46,6 +51,10 @@ tests = [('rocks_succession', ['--test', 'rocks_succession']),
          ('legacy_bootstrap', ['--lib', 'bootstrap_tests']),
          ('legacy_closing', ['--lib', 'producer_closing_tests']),
          ('legacy_recovery', ['--lib', 'producer_recovery_tests'])]
+if lineage:
+    tests = [('lineage', ['--lib', 'lineage_tests']),
+             ('request_inputs', ['--lib', 'request_input_tests']),
+             ('legacy_handoff', ['--lib', 'initial_handoff_tests'])]
 steps = [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])]
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1'])
@@ -102,6 +111,7 @@ assert result['status'] == 'PASS'
 assert set(counts) == {name for name, _ in tests}
 assert set(executables) == {name if selection[0] == '--test' else 'native_components'
                             for name, selection in tests}
-qualification = dict(identity, status='PASS_SUCCESSION_CODEC_COMPONENTS', test_counts=counts)
+qualification = dict(identity, status='PASS_SUCCESSION_LINEAGE_INSPECTION' if lineage
+                     else 'PASS_SUCCESSION_CODEC_COMPONENTS', test_counts=counts)
 (Path('/out') / 'qualification.json').write_text(json.dumps(qualification, indent=2) + '\n')
 print(json.dumps(qualification))

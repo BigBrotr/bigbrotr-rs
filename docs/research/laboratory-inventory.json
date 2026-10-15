@@ -51127,8 +51127,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "PORTABLE_COMPONENTS_PASS_CONNECTED_FAMILY_INCOMPLETE",
-    "observed_at": "2026-10-15T10:47:49.999023+00:00",
+    "status": "PORTABLE_COMPONENTS_PASS_LINEAGE_INSPECTOR_BUILD_NOT_RUN_SQL_DRAFT",
+    "observed_at": "2026-10-15T11:09:40.916849+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51139,7 +51139,7 @@
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-native-20261015",
         "branch": "implementation/repeatable-succession-native",
         "owner": "successor_restart_design",
-        "scope": "Active bounded read-only retained-lineage inspector; codec/schema hardening integrated and qualified",
+        "scope": "Inspector integrated awaiting root build; ordered positive historical replay source in progress",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
         "preserve_ignored_artifacts": true
       },
@@ -51147,7 +51147,7 @@
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-codec-20261015",
         "branch": null,
         "owner": "cleanup_review",
-        "scope": "Fixture integrated/qualified; original files retained, redundant branch retired; owner idle after audit",
+        "scope": "Detached original fixture retained; owner independently reviews SQL0038 in author worktree read-only",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
         "preserve_ignored_artifacts": true,
         "detached_at": "8ca4b2726ccc0deef50456be15e7ac68b5272af1"
@@ -51193,6 +51193,12 @@
         "main": "d8173a0",
         "postgres_companion": "15f4244",
         "review": "Independent AI source finding closed; native preservation/refusal tests PASS; connected PostgreSQL refusal execution NOT_RUN"
+      },
+      "lineage_inspector": {
+        "original": "47e3289c7c14b5ca8789463c7c5ac0908d95afc6",
+        "main": "8c8eedb",
+        "status": "SOURCE_REVIEWED_BUILD_NOT_RUN",
+        "scope": "Read-only compact metadata/native/sidecar census; no positive lineage or connected authority"
       }
     },
     "completed_build": {
@@ -51303,6 +51309,14 @@
       "remote_refs_retired": 51,
       "worktrees_detached": 41,
       "all_registered_worktrees_preserved": 96
+    },
+    "next_build": {
+      "profile": "ingest-succession-lineage",
+      "status": "NOT_RUN",
+      "preparation_script": ".research/repeatable-succession-lineage-build-prepare-20261015.py",
+      "protected_elfs": 83,
+      "required_free_bytes": 12884901888,
+      "scope": "Seven lineage case groups, existing request-input/handoff groups, literal fixture and Clippy; connected/installed NOT_RUN"
     }
   }
 }
