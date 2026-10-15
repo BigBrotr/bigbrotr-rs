@@ -297,9 +297,10 @@ impl RetainedLineage {
             return Err(BootstrapError::StateMismatch);
         }
         let source = SourceRecordId {
-            dataset_id: bytes[2..18]
-                .try_into()
-                .map_err(|_| BootstrapError::StateMismatch)?,
+            dataset_id: bigbrotr_model::DatasetId::try_from(
+                <[u8; 16]>::try_from(&bytes[2..18]).expect("fixed pointer"),
+            )
+            .map_err(|_| BootstrapError::StateMismatch)?,
             shard_id: u32::from_be_bytes(bytes[18..22].try_into().expect("fixed pointer")),
             owner_epoch: OwnerEpoch::new(u64::from_be_bytes(
                 bytes[22..30].try_into().expect("fixed pointer"),
