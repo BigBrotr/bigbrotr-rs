@@ -15,11 +15,12 @@ external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
 Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEADe7890f6b6934810156d11d1fc311dd6ba897f6d3.
-Last independently verified remote main9ea5d475de59ddd9aea91aac6ae56f5100e25639
-(push60526joined0, remote663e99). Native8b9c1ab→93d7e4c, PG310d549→a594f5d and
+Last independently verified remote main3f41881a766914b53691b1fccb659930e9f09b1f
+(push86444joined0, remote19806f). Native8b9c1ab→93d7e4c, PG310d549→a594f5d and
 finite probe8de328a→e7890f6 are integrated and source-reviewed; runtime NOT_RUN.
 The first exact recovery build below failed only Clippy; root has a minimal
-lineage_inputs.rs correction pending verification and no merge/rebase. Two original component worktrees remain clean
+private InputScan correctiond0e5c97 plus reviewed engineeb8a134→15c5782 integrated;
+followup verification pending, no merge/rebase. Two original component worktrees remain clean
 pending qualification; probe worktree is clean. Engine and independent reader
 use isolated qualification branches. All completed worktrees and evidence remain.
 
@@ -35,8 +36,8 @@ Owners: [storage task](02-storage.md),
 Root's next bounded action: qualify the minimal private InputScan field-naming
 correction to the sole Clippy finding in3f41881. Its103tests and CLI/probe compile
 passed; the aggregate remains FAIL. A new exact-source run must preserve its
-3ELFs/logs and all122prior binaries. Then integrate the reviewed six-origin engine
-and independent reader and execute recovery/retry. No completed root is replayed.
+3ELFs/logs and all122prior binaries. Then integrate the independent reader and execute the reviewed six-origin
+engine recovery/retry. No completed root is replayed.
 
 Recovery3f41881 preparation82804/build47532/custody36448 joined(0/1/0),
 15:58:03Z–16:00:17Z. Native37lineage/8input/13dictionary/11producer recovery/
@@ -47,6 +48,16 @@ Root's named InputScan fields preserve values/callers/authority; followup NOT_RU
 Auditbfe62c56 binds1906source files,122old+3new=125ELFs and1350unchanged prior
 container projections. Fetch0/native1 stopped/PID0/noOOM;31,289,307,136bytes free.
 Positive connected recovery remains NOT_RUN. All original failure evidence stays.
+
+Harness eb8a134→15c5782 source and shared origin/custody seam are fully reviewed by
+root and independent AI reviewer with no blocker. Six actual final origins,
+12recover/retry processes; default historic origin mapping unchanged. Pure20checks
+pass with subprocess/network blocked, including8malformed specs and10execute/
+external-custody paths. Scientific oracle is stubbed in these checks. Manifest
+694a358e binds240preserved artifacts and2source hashes, all root-verified. Both
+check-1 andcheck-2 pass; second replaces an extra vacuous ordering assertion with
+explicit SQL/input-before-native ordering and preserves the first capture. No
+connected evidence is inferred. Independent semantic reader remains in progress.
 
 Live-faultse3806a9 PASS: four activated-terminal2 clones/eight processes, before and
 after activationCOMMIT12 and first dictionary outcomeCOMMIT16 response loss.

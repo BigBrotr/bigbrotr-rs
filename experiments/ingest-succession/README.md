@@ -169,3 +169,13 @@ and PostgreSQL recovery owners and affected lineage, input, prefix and legacy
 components. Nested test groups run once. It preserves exact CLI, probe and native
 test executables and runs Clippy; it does not execute a connected recovery or
 qualify source closure, retirement, installed succession or unresolved tails.
+
+`recovery.py RUN_ROOT BUILD_ARTIFACTS` uses six pinned actual final states from
+prior live and COMMIT-loss runs. Each fresh database/native copy runs activated
+recovery and then a separate retry process. The interrupted origins include the
+already recorded fresh history refusal; they are never rolled back to an earlier
+capture. Only positively closed native custody, joined drivers and backend absence
+permit reopening a copy. Original stores remain unopened and their physical files,
+inputs, full SQL and catalogs must remain identical. The finite scenario does not
+qualify source/workflow closure, retirement, installed supervision or recovery
+COMMIT-loss schedules. Execution status belongs to the existing checkpoint.

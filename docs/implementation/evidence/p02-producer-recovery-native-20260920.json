@@ -27897,6 +27897,56 @@
         },
         "failure": "Only Clippy type_complexity at rocks/lineage_inputs.rs private triple return; compile and all103 component tests pass. Preserve aggregate FAIL. Root replaces private tuple with named InputScan fields; behavior and public signatures unchanged; followup NOT_RUN.",
         "scope": "Seven new native recovery groups and four new PG pure tests included; no connected recovery."
+      },
+      "activated_recovery_harness": {
+        "status": "SOURCE_INTEGRATED_REVIEWED_PURE_CHECKS_PASS_ENGINE_NOT_RUN",
+        "original": "eb8a134ed27dd3e52d0923ccf6c60d384e0d9ee5",
+        "integrated": "15c5782494487d78f1969308209ba3003544a1ae",
+        "worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-engine-20261015",
+        "manifest": "/home/tux/bigbrotr-rs/.research/successor-recovery-engine-20261015/.research/successor-recovery-harness-selfcheck-20261015/manifest.json",
+        "manifest_sha256": "694a358e8ad4ed0d454df02b19c64a50117137ea7f3a49567777d94f02fe16a6",
+        "retained_artifacts": 240,
+        "checks": [
+          {
+            "name": "check-1",
+            "status": "PASS_SOURCE_ONLY",
+            "checks": 20,
+            "source": "check-1-source.py",
+            "results": "check-1/results.json",
+            "log": "check-1.log",
+            "qualification_limit": "One additional ordering assertion was vacuous; the substantive checks and original output are retained. This is not a failed engine run."
+          },
+          {
+            "name": "check-2",
+            "status": "PASS_SOURCE_ONLY",
+            "checks": 20,
+            "source": "check.py",
+            "results": "check-2/results.json",
+            "log": "check-2.log",
+            "reason": "Replaces the vacuous extra assertion with explicit SQL/input capture ordering before native-after; output redirected to a new preserved directory. Harness sources unchanged."
+          }
+        ],
+        "source_files": {
+          "experiments/ingest-succession/recovery.py": {
+            "bytes": 13219,
+            "sha256": "e4f039be178918f06c6eb6ec5f0b6d75a2f53b5e524d278bb14b38c250d1829f"
+          },
+          "experiments/ingest-succession/transition.py": {
+            "bytes": 30202,
+            "sha256": "7e5f25ff756a5137cc9dabc39de0f984d851f801aed7f9887194a2c86affeebc"
+          }
+        },
+        "review": "Root full241-line harness/511-line shared runner and exact pure check.py read; independent recovery_review AI review no blocker at same source hashes.",
+        "scope": [
+          "AST and import with subprocess and network calls blocked before importing harness modules",
+          "Six independent literal origin artifact and file/content pins; no native engine opening",
+          "Legacy and explicit origin preflight composition; eight malformed specifications refused before commands",
+          "Ten actual execute/external custody compositions with stubbed observations and scientific oracle",
+          "Twelve unique ordered cases"
+        ],
+        "runtime": "NOT_RUN",
+        "scientific_oracle": "STUB_NOT_PRODUCT_EVIDENCE",
+        "root_verified_pins": true
       }
     }
   }
