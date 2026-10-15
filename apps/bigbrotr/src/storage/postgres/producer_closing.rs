@@ -177,7 +177,8 @@ impl ControlSession {
         let identity = *recovery.manifest().identity();
         let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
             .map_err(|_| OwnerError::InvalidInput)?;
-        if !recovery.matches_configured_root(ingest_root)
+        if recovery.manifest().key_schema() != 1
+            || !recovery.matches_configured_root(ingest_root)
             || spec.dataset_id != self.request.dataset
             || spec.instance_id != *self.request.instance.as_bytes()
             || identity.dataset_id != spec.dataset_id

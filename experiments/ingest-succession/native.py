@@ -42,7 +42,10 @@ tests = [('rocks_succession', ['--test', 'rocks_succession']),
          ('rocks_keys', ['--test', 'rocks_keys']),
          ('rocks_store', ['--test', 'rocks_store',
                           'schema_three_is_inspectable_but_cannot_initialize_or_recreate_initial_candidate']),
-         ('legacy_handoff', ['--lib', 'initial_handoff_tests'])]
+         ('legacy_handoff', ['--lib', 'initial_handoff_tests']),
+         ('legacy_bootstrap', ['--lib', 'bootstrap_tests']),
+         ('legacy_closing', ['--lib', 'producer_closing_tests']),
+         ('legacy_recovery', ['--lib', 'producer_recovery_tests'])]
 steps = [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])]
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1'])
@@ -82,10 +85,12 @@ for name, selection in tests:
     assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
     with executable.open('rb') as stream:
         assert stream.read(4) == b'\x7fELF'
-    retained = artifacts / name
-    shutil.copy2(executable, retained)
-    executables[name] = file_hash(retained)
-    assert executables[name] == file_hash(executable)
+    retained_name = 'native_components' if kind == ['lib'] else name
+    retained = artifacts / retained_name
+    if not retained.exists():
+        shutil.copy2(executable, retained)
+    executables[retained_name] = file_hash(retained)
+    assert executables[retained_name] == file_hash(executable)
 for tool in native['tools'].values():
     assert file_hash(Path(tool['path'])) == tool['sha256']
 assert sources() == manifest['files_sha256']
@@ -94,7 +99,9 @@ receipt = dict(identity, status=result['status'], test_counts=counts,
                independent_fixture_sha256=file_hash(SOURCE / 'experiments/ingest-succession/portable-handoff-v2.json'))
 (artifacts / 'component-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
 assert result['status'] == 'PASS'
-assert set(executables) == set(counts) == {name for name, _ in tests}
+assert set(counts) == {name for name, _ in tests}
+assert set(executables) == {name if selection[0] == '--test' else 'native_components'
+                            for name, selection in tests}
 qualification = dict(identity, status='PASS_SUCCESSION_CODEC_COMPONENTS', test_counts=counts)
 (Path('/out') / 'qualification.json').write_text(json.dumps(qualification, indent=2) + '\n')
 print(json.dumps(qualification))

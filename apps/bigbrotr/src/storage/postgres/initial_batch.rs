@@ -1232,7 +1232,8 @@ impl ControlSession {
             NativeAuthority::Initial(_) => {
                 let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
                     .map_err(|_| OwnerError::InvalidInput)?;
-                if identity.dataset_id != spec.dataset_id
+                if store.manifest().key_schema() != 1
+                    || identity.dataset_id != spec.dataset_id
                     || identity.owner_resource_id != spec.ingest_resource_id
                     || identity.shard_id != spec.shard_id
                     || identity.owner_epoch.get() != 1
