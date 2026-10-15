@@ -24,6 +24,43 @@ from activated_retirement_unresolved_oracle import CASES, PROBE, verify, verify_
 
 FROZEN = dict(preparing.FROZEN)
 
+
+def closed_and_joined(response):
+    """A docker-exec result is not remote native custody evidence by itself."""
+    if response.returncode != 0 or response.stderr != '':
+        return False
+    try:
+        def unique(pairs):
+            assert len(pairs) == len(dict(pairs))
+            return dict(pairs)
+        events = [json.loads(line, object_pairs_hook=unique) for line in response.stdout.splitlines()]
+        assert all(isinstance(event, dict) for event in events)
+        claimed, = [e for e in events if e.get('event') == 'successor-control'
+            and e.get('stage') == 'initial' and e.get('phase') == 'claimed']
+        present, absent = [e for e in events if e.get('event') == 'successor-backend']
+        assert present['stage'] == 'initial' and present['present'] is True
+        assert absent == dict(present, present=False)
+        assert present['control_epoch'] == claimed['epoch'] == 8
+        tail = events[-10:]
+        assert len(tail) == 10
+        for position, stage in ((0, 'final-before-control-end'),
+                (6, 'final-after-control-end'), (7, 'final')):
+            assert tail[position]['event'] == 'successor-state' and tail[position]['stage'] == stage
+        assert tail[1] == dict(event='live-zero-claim-release', attempted=True, error=None)
+        for position, stage in ((2, 'control'), (8, 'observer')):
+            assert tail[position] == dict(event='live-zero-claim-driver', stage=stage,
+                joined=True, failed=False, aborted=False, error=None)
+        assert tail[3] == dict(event='successor-control', stage='final', phase='released-and-joined',
+            resource=claimed['resource'], epoch=8)
+        assert tail[4] == dict(event='live-zero-claim-backend-absence', error=None)
+        assert tail[5] == absent
+        assert tail[9] == dict(event='live-complete', mode=PROBE, native='closed',
+            control='released-and-joined', writer=False, admission=False, passed=True)
+        return True
+    except (AssertionError, KeyError, ValueError, TypeError, IndexError):
+        return False
+
+
 def state(client, output, label, database, directory, rows):
     value = dict(control=rows(database))
     lab.write_json(output / (label + '-sql.json'), value['control'])
@@ -131,6 +168,14 @@ def run_all(pg, client, output, rows, clone):
         except BaseException as error:
             clock['after_error'] = type(error).__name__
         lab.write_json(output / (name + '-seed-clock.json'), clock)
+        closed = closed_and_joined(answer)
+        lab.write_json(output / (name + '-seed-custody.json'), dict(
+            status='OBSERVED_CLOSED_AND_JOINED' if closed else 'OUTCOME_UNKNOWN',
+            native='closed' if closed else 'NOT_RUN'))
+        if not closed:
+            uncertain(output, name + '-seed', database, directory, rows,
+                'Finite native close and both joined drivers were not positively observed')
+            raise AssertionError('finite seed native custody unavailable')
         absence = exclude(pg, output, rows, database, directory, name + '-seed')
         after = state(client, output, name + '-seed-after', database, directory, rows)
         catalog_after = live.catalog(pg, database)
