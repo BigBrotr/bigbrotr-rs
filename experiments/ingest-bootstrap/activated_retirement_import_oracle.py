@@ -39,7 +39,13 @@ def claim_checked(preparation):
     assert end < current['lease_expires_at_us']
     expected = dict(pid=current['control_backend_pid'], backend_start=current['control_backend_start'],
         database=preparation['backend']['absence']['database'], user='bigbrotr_control')
-    assert value['live_before'] == value['live_after'] == expected
+    observed = value['live_before']
+    assert observed == value['live_after'] and set(observed) == set(expected)
+    assert type(observed['pid']) is int
+    assert all(observed[k] == expected[k] for k in ('pid', 'database', 'user'))
+    # pg_stat_activity ::text and the retained JSON timestamp use different
+    # spellings. Compare their exact UTC instant without changing either capture.
+    assert live.instant(observed['backend_start']) == live.instant(expected['backend_start'])
     assert live.instant(expected['backend_start']) <= current['acquired_at_us'] <= start
     actor = value['backend']
     assert actor['database'] == expected['database'] and actor['user'] == 'bigbrotr_control'
@@ -124,7 +130,7 @@ def preparation_checked(preparation):
 
 
 def ledger(before, migration, version, filename, sha, upper):
-    assert migration['before'] == before
+    same(migration['before'], before)
     assert not any(k in migration for k in ('outcome', 'incomplete_response'))
     assert len(migration['responses']) == 2 and all(r['returncode'] == 0 and not r['stderr'] for r in migration['responses'])
     row = only(migration['after']['schema_versions'], migration=version)
@@ -362,6 +368,12 @@ def negative_controls(**context):
             return
         raise AssertionError('import retirement oracle accepted: ' + name)
     reject('historical-claim', lambda c: c['preparation']['fixture']['after_activated']['live_after'].update(pid=1))
+    def backend_times(c, timestamp):
+        for key in ('live_before', 'live_after'):
+            c['preparation']['fixture']['after_activated'][key]['backend_start'] = timestamp
+    reject('wrong-live-backend-instant', lambda c: backend_times(c, '1970-01-01T00:00:00+00:00'))
+    reject('unzoned-live-backend-time', lambda c: backend_times(c, '2026-10-15T08:55:52.090636'))
+    reject('extra-live-backend-field', lambda c: c['preparation']['fixture']['after_activated']['live_before'].update(unobserved=True))
     reject('replica-claim', lambda c: c['preparation']['fixture']['after_activated']['identity'].update(session_replication_role='replica'))
     reject('wrong-sql', lambda c: c['preparation']['fixture']['after_activated']['statements'].__setitem__(0, 'BEGIN; SET LOCAL session_replication_role=replica;'))
     reject('unjoined-claimant', lambda c: c['preparation']['fixture']['after_activated'].update(actor_absence='1'))
