@@ -66,6 +66,9 @@ explicit metadata byte capacity on disposable database/native copies.
 and PostgreSQL transition component tests, followed by Clippy. The latter check
 state and reservation rules without a database. Real preparation, gap recovery,
 empty retirement and installed writer journeys require separate connected runs.
+`transition-probe` builds and lints the finite transition probe/CLI without
+repeating component tests. Earlier tests apply only to their recorded inputs;
+any reuse across later edits requires an explicit review of the affected boundary.
 
 `replay.py RUN_ROOT` independently reduces the captured SQL experiment below,
 binding both origins, complete rows, raw output and portable hashes. It requires

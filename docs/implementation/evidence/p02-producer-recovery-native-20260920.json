@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Native6475ff4 integrated8df8d06 and PostgreSQLefe6337 integratede33075e after root and independent source review. Focused lineage/native transition and PG transition component qualification next; connected mutations and installed writer journeys NOT_RUN.",
+      "ongoing": "Integrate reviewed finite transition probe and compile/lint exactsource with transition-probe; reuse25tests only across equivalent let-chain and example-only changes. No connected mutation qualification yet.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -25127,6 +25127,88 @@
         "postgres_original": "efe6337977a7e1eb0fd2ee71a027a64d49336d31",
         "postgres_main": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
         "review": "Root complete native7/PG5files and independent AI review: no concrete blocker; no runtime inference from review. Native6 plus PG4new component test groups NOT_RUN."
+      },
+      "transition_build_failure": {
+        "status": "FAIL_CLIPPY_COMPONENT_TESTS_PASS",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-f0cd563",
+        "source": "f0cd563bc5cef1e857eb28a94d4aaae5926bb6bc",
+        "tree": "040b341b741502e9b22f19b8a407cdfd91e93302",
+        "preparation_session": 49360,
+        "build_session": 52025,
+        "build_exit_code": 1,
+        "started_at": "2026-10-15T13:25:53.025382+00:00",
+        "finished_at": "2026-10-15T13:27:57.306096+00:00",
+        "owner": "80612da3064139e6e59224a09cd15daf",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "04ae50728104338c96fc4b71e3b14bd92361c056416a7816939ad14f672af94f"
+          },
+          {
+            "name": "native",
+            "id": "af70955b25a5d8466dd7d3b8a7312e951cebdd67ec6bdae8a89a1862286f1279"
+          }
+        ],
+        "test_counts": {
+          "lineage": 21,
+          "successor_transition": 4
+        },
+        "checks": [
+          {
+            "name": "probe_build",
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0
+          },
+          {
+            "name": "lineage",
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0
+          },
+          {
+            "name": "successor_transition",
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0
+          },
+          {
+            "name": "clippy",
+            "status": "FAIL",
+            "executed": true,
+            "exit_code": 101
+          }
+        ],
+        "artifacts": {
+          "native_components": "66d8834281880b28270b9c519535c162ec1294ff09d7d38560a685d482fffb86",
+          "ingest_bootstrap_probe": "4ebc85b40d89857c484f4e902824d82f7fedadda32addf1302fad1c0c63fad96",
+          "bigbrotr": "301404b96e15a8082726e437827fbba835059a7bbe5f7e895d6a02d007e38cad"
+        },
+        "failure": "Clippy collapsible_if at successor_transition_rows.rs211; root correction is equivalent short-circuit let-chain, no scheduling semantics change. First run remains FAIL.",
+        "known_test_warning": "dropping_copy_types at unchanged lineage_replay_tests.rs495; exact warning retained, not clean warning-free test compilation",
+        "custody": {
+          "session": 14924,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-f0cd563/audit-root/audit-v2.json",
+          "sha256": "6b789172c87f4ddb87ccfc6cabfdecee21164e4ddab956565a22cc1e0bd6ee24",
+          "source_files": 1884,
+          "protected_elfs": 104,
+          "new_elfs": 3,
+          "unchanged_containers": 1330
+        },
+        "custody_v1_failure": {
+          "session": 93071,
+          "exit_code": 1,
+          "reason": "Assumed warning-free test compilation; frozen capture retained, v2 checks exact existing dropping_copy_types diagnostic."
+        },
+        "preparation_failure": {
+          "chunk": "48322f",
+          "exit_code": 1,
+          "path": ".research/repeatable-succession-transition-prepare-20261015-preflight-failed.json",
+          "scope": "KeyError new_elfs before resource creation; corrected adapter preserves104 priorELFs"
+        },
+        "next": "Integrate reviewed finite transition probe and compile/lint exactsource with transition-probe; reuse25tests only across equivalent let-chain and example-only changes. No connected mutation qualification yet.",
+        "free_bytes_after": 34589794304
       }
     }
   }

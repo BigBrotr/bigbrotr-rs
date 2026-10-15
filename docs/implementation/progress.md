@@ -14,7 +14,7 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `e33075e` includes
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `f0cd563` includes
 native handoff8df8d06 and PostgreSQL transitione33075e. Last verified remote
 `0f5f66f218dd45f817168591d6ac0e17d73f0a91` (push61500 joined0). Only main is remote.
 No merge/rebase pending. Root is recording qualification and adding its focused
@@ -29,10 +29,19 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: qualify integrated native/PG transition components
-with the exact-source `ingest-succession-transition` profile: compile CLI/probe,
-21lineage/native tests and4PG transition tests, Clippy. Preserve source/executables
-and resource custody. Connected mutation/installed writer qualification remains open.
+Root's next bounded action: integrate source-reviewed probef008996, then exact-source
+`ingest-succession-transition-probe` CLI/probe compilation and Clippy. Reuse25
+component tests across the equivalent let-chain correction and example-only edits.
+Connected nine-case mutation harness/reader source work continues separately.
+
+Transitionf0cd563 preparation49360/build52025 joined0/1: CLI/probe compilation and
+21lineage/native +4PG tests PASS; Clippy FAIL on collapsible_if at PG rows211.
+Root simplifies the short-circuit condition without changing deadline checks.
+Custody14924 PASS (auditv2 SHA6b789172) binds1884sourcefiles,104old+3new=107ELFs,
+1330unchanged prior projections; fetch0/native1 stopped/PID0/noOOM. Auditv1 failed
+its warning-free assumption: both test logs contain the existing Copy-drop warning
+in lineage_replay_tests.rs495. Exact warning and frozen capture preserved in v2.
+Initial preparation KeyError happened before any resource creation, separately saved.
 
 Corrected history6f2d9d2 preparation61577/engine31439 joined0: all three cases PASS,
 13:11:44Z–13:12:00Z. Root independent replay67068 PASS (SHA1e558b5a) verifies
@@ -67,7 +76,7 @@ Replay raw files independently and record all failures, exclusions and custody.
 Root alone runs builds, engines and the shared compiler cache. Native6475ff4 and
 PGefe6337 are integrated as8df8d06/e33075e after complete root/independent source
 review. They retain native/history on error or unknown COMMIT; candidate creation
-precedes Control acquisition. Build/tests still NOT_RUN for these new changes.
+precedes Control acquisition. The25 component tests pass in f0cd563; Clippy correction awaits its new exact-source build.
 
 Agents now prepare isolated source-only transition probe (recovery_review),
 harness (successor_restart_design) and independent raw reader (cleanup_review)
@@ -155,11 +164,11 @@ Recheck ownership/state before starting. Root build/preparation/audit/push handl
 above are joined; agents' source work continues. A historical PID/receipt is not
 fresh ownership proof. Preserve unrelated services and external host activity.
 
-Free space after6f2d9d2 engine:34,928,783,360bytes; remeasure before allocation.
+Free space afterf0cd563 build:34589794304bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.104protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.107protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.

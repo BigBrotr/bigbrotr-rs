@@ -15,10 +15,11 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'])
 replay = sys.argv[1:] == ['replay']
 history = sys.argv[1:] == ['history']
-probe = sys.argv[1:] == ['history-probe']
+transition_probe = sys.argv[1:] == ['transition-probe']
+probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
 build_probe = probe or transition
 lineage = sys.argv[1:] == ['lineage']
@@ -61,6 +62,9 @@ if probe:
 if transition:
     identity['scope'] = ('Native successor handoff/empty and PostgreSQL transition components, '
                          'CLI/probe compilation and Clippy; connected mutations and installed journeys NOT_RUN')
+if transition_probe:
+    identity['scope'] = ('Exact finite successor transition probe and CLI compilation/Clippy only; '
+                         'no Rust test or connected engine executed by this profile')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -175,6 +179,7 @@ if schema:
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
 qualification = dict(identity, status='PASS_SUCCESSION_TRANSITION_COMPONENTS' if transition
+                     else 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD' if transition_probe
                      else 'PASS_SUCCESSION_HISTORY_PROBE_BUILD' if probe
                      else 'PASS_SUCCESSION_HISTORY_COMPONENTS' if history
                      else 'PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS' if replay

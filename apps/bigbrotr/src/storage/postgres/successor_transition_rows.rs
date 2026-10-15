@@ -208,10 +208,10 @@ pub(super) async fn require_live(
     if !row.try_get::<_, bool>(1).map_err(backend)? {
         return Err(OwnerError::Unavailable.into());
     }
-    if let Some(intent) = target {
-        if intent.deadline <= clock(tx).await? {
-            return Err(OwnerError::Unavailable.into());
-        }
+    if let Some(intent) = target
+        && intent.deadline <= clock(tx).await?
+    {
+        return Err(OwnerError::Unavailable.into());
     }
     Ok(())
 }
