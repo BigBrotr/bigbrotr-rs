@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Fresh SQL copies after0032 grant-order correction; independent raw reducer and typed PG history in isolated worktrees. Native candidate/activation/writer and installed repeated lifetimes incomplete.",
+      "ongoing": "Exact typed-history component build next. Native positive handoff/empty source and connected read-only history probe in isolated worktrees. Writer/activation and installed repeated lifetimes remain incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -24173,6 +24173,271 @@
             }
           }
         }
+      },
+      "sql_two_origins": {
+        "status": "PASS_SQL_SHAPES_ONLY",
+        "source": "2c8fd81ad14466de4e9e2eb105df6dded59d67f1",
+        "started_at": "2026-10-15T12:20:31.099494+00:00",
+        "finished_at": "2026-10-15T12:20:42.214194+00:00",
+        "free_bytes_after": 35945476096,
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-2c8fd81",
+        "preparation_session": 63284,
+        "engine_session": 36712,
+        "wrapper_exit": 0,
+        "result_sha256": "35a38ac39b6956ecaf4ae3177f4bb15940d3ded3c71071c554a2c2c1d44c7b40",
+        "source_tree": "95e3a16cfc137393a80f05d72a7b19d896ce9187",
+        "compiled_cli_source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
+        "compiled_cli_sha256": "a1010ea074caa28ea60febaac51659020d8bdda4980a34af88e258e32c217742",
+        "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+        "origins": {
+          "activated": {
+            "status": "PASS_SQL_SHAPE",
+            "cases": 31,
+            "fixture_exit": 0,
+            "migrations": [
+              0,
+              0,
+              0
+            ],
+            "legacy_probe": 0
+          },
+          "empty": {
+            "status": "PASS_SQL_SHAPE",
+            "cases": 31,
+            "fixture_exit": 0,
+            "migrations": [
+              0,
+              0,
+              0
+            ],
+            "legacy_probe": 0
+          }
+        },
+        "raw_replay": {
+          "status": "PASS_BOTH_ORIGINS_SQL_REPLAY",
+          "reader_original": "dc5cfea6ed27a7a8fee9b310a0bebf2df4702144",
+          "reader_integrated": "089392999bd3b584c909887382d6f9d2e419612d",
+          "root_execution_chunk": "4b29da",
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-2c8fd81/root-independent-replay.json",
+          "sha256": "29b1cdb1001430e0d2ec74901516c2eb3c533953092705d1b62a6b7f19eaf269",
+          "bound_files": 29,
+          "origins": {
+            "activated": {
+              "counterexamples": {
+                "count": 18,
+                "rejected": [
+                  "old-source-cut",
+                  "old-row-xmin",
+                  "empty-lease",
+                  "activated-source-rewritten-at-retirement",
+                  "missing-terminal-domain",
+                  "terminal-control-attribution",
+                  "preparation-subxid-as-top",
+                  "activation-subxid-as-top",
+                  "terminal-subxid-as-top",
+                  "activation-xid8-epoch",
+                  "topology-cut",
+                  "job-revision",
+                  "missing-case",
+                  "wrong-named-function",
+                  "extra-table",
+                  "duplicate-row",
+                  "coherently-rehashed-parent",
+                  "coherent-terminal-uses-Control-claim-xmin"
+                ]
+              },
+              "handoff_sha256": [
+                "d7b751d46b878b87099927c54978a0dcbff470f871a48169ca0f4ba9e2bee93e",
+                "9c0703f4b72907b3d25e3d8ca0cc9d68959d6186613fe6ab4dffb26b6ea2262e",
+                "50c7931b8bb382a81ef0d453a1ba98299c79c8c2c473f30e946c55792a5eaf35"
+              ],
+              "named_cases": 31,
+              "snapshots": 10,
+              "tables_per_snapshot": 75,
+              "terminal_receipts": 2,
+              "terminal_target_rows": [
+                12,
+                13
+              ]
+            },
+            "empty": {
+              "counterexamples": {
+                "count": 18,
+                "rejected": [
+                  "old-source-cut",
+                  "old-row-xmin",
+                  "empty-lease",
+                  "activated-source-rewritten-at-retirement",
+                  "missing-terminal-domain",
+                  "terminal-control-attribution",
+                  "preparation-subxid-as-top",
+                  "activation-subxid-as-top",
+                  "terminal-subxid-as-top",
+                  "activation-xid8-epoch",
+                  "topology-cut",
+                  "job-revision",
+                  "missing-case",
+                  "wrong-named-function",
+                  "extra-table",
+                  "duplicate-row",
+                  "coherently-rehashed-parent",
+                  "coherent-terminal-uses-Control-claim-xmin"
+                ]
+              },
+              "handoff_sha256": [
+                "d181f73eac88a7e643fc8192071b308d127b29ce30f26f6606553da5b9362528",
+                "681c06201e2c46a8dc7a1c5068862f055525e8bd9d768ebfa44ce7cc03989820",
+                "58ed8631786129c7c2a3bb836ab379c09812b6fb26d665ce46e2b5c4251c9d18"
+              ],
+              "named_cases": 31,
+              "snapshots": 10,
+              "tables_per_snapshot": 75,
+              "terminal_receipts": 2,
+              "terminal_target_rows": [
+                12,
+                13
+              ]
+            }
+          },
+          "limits": [
+            "Execution/ACL/top-level-xid assertions bind the pinned SQL fixture and its raw stdout.",
+            "Original preservation and backend absence are retained observations, not new queries.",
+            "No PostgreSQL 255-epoch capacity/performance or loss/expiry schedule is inferred."
+          ],
+          "reviewer_relation": "Independent reader authored by cleanup_review; root read complete reader and executed it separately against raw captures. Root authored SQL harness; no native/installed proof."
+        },
+        "audit": {
+          "session": 19490,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-2c8fd81/audit-root/audit-v1.json",
+          "sha256": "67406f4c912543a4dd7c90a947d2ef8b99c91e609e18fd139c8bf0ff6b7afccc",
+          "source_files": 1870,
+          "protected_elfs": 97,
+          "unchanged_nonborrowed_containers": 1320,
+          "capture": {
+            "observed_at": "2026-10-15T12:21:21.297153+00:00",
+            "containers": 1322,
+            "sha256": "79ed8609e319a39a03f7626a9f07234946236b53ef654df26e18d7d0fc9b21b3"
+          }
+        },
+        "owned_terminal": {
+          "postgres": {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:20:31.162228094Z",
+              "FinishedAt": "2026-10-15T12:20:41.335839348Z"
+            }
+          },
+          "client": {
+            "id": "5ea6dce35cc79e18236002091efd50585185b76b845f54831b56436e66cad946",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:20:33.628319123Z",
+              "FinishedAt": "2026-10-15T12:20:40.31702409Z"
+            }
+          }
+        }
+      },
+      "qualified_sql_branch_retirements": [
+        {
+          "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+          "observed_at": "2026-10-15T12:27:34.321578+00:00",
+          "original": "c4daa50c0c275955c792662ce8e243bbd2163692",
+          "integrated": "1c7b49d065b644181ae383e5856e185fd9dd1bd7",
+          "archive_ref": "refs/archive/qualified-succession-sql-20261015/implementation/repeatable-succession-postgres",
+          "retired_branch": "implementation/repeatable-succession-postgres",
+          "worktree": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
+          "exact_blobs": {
+            "experiments/control-migrations/repeatable_succession_cases.sql": {
+              "original_and_integrated": "5eb135313ae317599685295ce11bad82bd9632bd",
+              "qualified_main": "e8a10ad032dd2b39db75d6239c5e5cf5810f2da6"
+            },
+            "migrations/postgres/0038_repeatable_ingest_succession.sql": {
+              "original_and_integrated": "babc5efea8522efe40678376419947e5e8c04c8e",
+              "qualified_main": "cfa69ebc7e2e1d693a1d8310aa06180a87f1f3b8"
+            }
+          },
+          "reconciled_pairs": [
+            [
+              "c4daa50c0c275955c792662ce8e243bbd2163692",
+              "1c7b49d"
+            ]
+          ],
+          "qualified_replay": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-2c8fd81/root-independent-replay.json",
+          "qualified_replay_sha256": "29b1cdb1001430e0d2ec74901516c2eb3c533953092705d1b62a6b7f19eaf269",
+          "root_correction_commits": [
+            "b8054b3",
+            "6350901",
+            "aa6cb5b",
+            "4dd78e1",
+            "6b15dee"
+          ],
+          "census_paths": 2043,
+          "census_sha256": "dc4c307c41ce6f6ce33a1b0651f179b0ef80922112e9f01b6cb582f33ecba1a3",
+          "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-sql.bundle",
+          "bundle_bytes": 13943324,
+          "bundle_sha256": "dafa9d50ac17145ad1be57ad693f5757d2a57562dde29e83de60cd0d9b4c35c1",
+          "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+          "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+          "session": 19303,
+          "exit_code": 0,
+          "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-sql.json",
+          "report_sha256": "85a0f7d092c67b4ec6139df3d4a335bbc4e10579ae8425834a8dee79cee6bcdf"
+        },
+        {
+          "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+          "observed_at": "2026-10-15T12:27:46.149572+00:00",
+          "original": "dc5cfea6ed27a7a8fee9b310a0bebf2df4702144",
+          "integrated": "089392999bd3b584c909887382d6f9d2e419612d",
+          "archive_ref": "refs/archive/qualified-succession-reader-20261015/qualification/succession-sql-replay",
+          "retired_branch": "qualification/succession-sql-replay",
+          "worktree": "/home/tux/bigbrotr-rs/.research/succession-sql-replay-20261015",
+          "exact_blobs": {
+            "experiments/ingest-succession/replay.py": "68e0e5a3b3f0b7e156bf27a8699358370cd3fb26"
+          },
+          "reconciled_pairs": [
+            [
+              "dc5cfea6ed27a7a8fee9b310a0bebf2df4702144",
+              "0893929"
+            ]
+          ],
+          "census_paths": 2084,
+          "census_sha256": "f0fd7c29bc9f53ebc3bab18e07d8be345a07d3ae1500591cb905c2747e3d06a4",
+          "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-reader.bundle",
+          "bundle_bytes": 14166867,
+          "bundle_sha256": "c0d56c454bff28ce4404b2e8adac42e3f39ffaa49e79151844fa7d5dc3512119",
+          "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+          "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+          "session": 46620,
+          "exit_code": 0,
+          "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-reader.json",
+          "report_sha256": "a5a01509d4053c8160ddb2539cdeec1b876771679406d17a8ff8dd4797e96453"
+        }
+      ],
+      "typed_history": {
+        "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+        "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
+        "main": "0ad6752",
+        "review": "Root read complete six files and affected authority/copy/replay owners; independent AI review ongoing.",
+        "tests": "Four pure state-discriminator groups written, not run. Shared authority extraction statically equivalent; actual connected history remains unqualified."
       }
     }
   }

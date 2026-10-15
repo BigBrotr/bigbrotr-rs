@@ -15,10 +15,11 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'])
 replay = sys.argv[1:] == ['replay']
+history = sys.argv[1:] == ['history']
 lineage = sys.argv[1:] == ['lineage']
-schema = sys.argv[1:] == ['schema'] or replay
+schema = sys.argv[1:] == ['schema'] or replay or history
 
 
 def sources():
@@ -48,6 +49,9 @@ if schema:
 if replay:
     identity['scope'] = ('Ordered native lineage replay, affected legacy compatibility and schema/CLI build; '
                          'SQL, connected succession and installed journeys NOT_RUN')
+if history:
+    identity['scope'] = ('Typed PostgreSQL history state discriminators, native lineage/legacy handoff '
+                         'components and schema/CLI build; connected history and succession NOT_RUN')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -69,6 +73,10 @@ if replay:
     tests += [(name, ['--lib', name + '_tests']) for name in [
         'lineage', 'request_input', 'initial_handoff', 'dictionary_append',
         'producer_recovery', 'source_closure', 'activated_recovery', 'activated_source']]
+if history:
+    tests += [('successor_history', ['--lib', 'successor_history::tests'])]
+    tests += [(name, ['--lib', name + '_tests']) for name in [
+        'lineage', 'initial_handoff', 'initial_empty']]
 steps = [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])]
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1'])
@@ -145,7 +153,8 @@ if schema:
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS' if replay
+qualification = dict(identity, status='PASS_SUCCESSION_HISTORY_COMPONENTS' if history
+                     else 'PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS' if replay
                      else 'PASS_SUCCESSION_SCHEMA_COMPONENTS' if schema
                      else 'PASS_SUCCESSION_LINEAGE_INSPECTION' if lineage
                      else 'PASS_SUCCESSION_CODEC_COMPONENTS', test_counts=counts)

@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-15T12:19:42.874543+00:00",
+  "updated_at": "2026-10-15T12:29:56.814736+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -51128,7 +51128,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "BACKEND_CONTEXT_FIX_SOURCE_REVIEWED_REBUILD_PENDING",
-    "observed_at": "2026-10-15T12:19:42.874543+00:00",
+    "observed_at": "2026-10-15T12:29:56.814736+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51155,35 +51155,45 @@
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
-        "branch": "implementation/repeatable-succession-postgres",
+        "branch": null,
         "owner": "recovery_review",
-        "scope": "Original c4daa50 integrated1c7b49d; frozen clean and idle pending runtime and branch reconciliation",
+        "scope": "Integrated and qualified; ref archived/retired, full files and ignored evidence preserved.",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
-        "preserve_ignored_artifacts": true
+        "preserve_ignored_artifacts": true,
+        "detached_at": "c4daa50c0c275955c792662ce8e243bbd2163692"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/successor-history-20261015",
         "branch": "implementation/successor-history",
         "owner": "recovery_review",
-        "scope": "Typed read-only PG history; no engine/build/cache permission.",
+        "scope": "Typed history source integrated0ad6752; active follow-up connected probe consumer. Root owns build/engine.",
         "created_from": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
         "preserve_ignored_artifacts": true
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/succession-sql-replay-20261015",
-        "branch": "qualification/succession-sql-replay",
+        "branch": null,
         "owner": "cleanup_review",
-        "scope": "Independent pure SQL semantic replay; no engine/build/cache permission.",
+        "scope": "Integrated and qualified; ref archived/retired, full files and ignored evidence preserved.",
+        "created_from": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
+        "preserve_ignored_artifacts": true,
+        "detached_at": "dc5cfea6ed27a7a8fee9b310a0bebf2df4702144"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-handoff-20261015",
+        "branch": "implementation/successor-handoff",
+        "owner": "successor_restart_design",
+        "scope": "Positive native plan/candidate, exact four-put/gap and empty retirement; no live writer dispatch or engine/build/cache permission.",
         "created_from": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
         "preserve_ignored_artifacts": true
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "BorrowedPG0/client143/PID0/noOOM at captured terminal; both originals preserved, both SQL copies retained.97protectedELFs. Four unrelated external Inspire containers created after run; accounted without mutation.",
+      "new_engine_build_or_runtime_resources": "SQL both origins retained; all97protectedELFs intact. No BigBrotr running at audit capture; unrelated resources preserved.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080,
-      "current_operation": "Schema6b build PASS; SQL6b mixed FAIL, owned resources stopped. Corrected SQL-only retry preparation next; no new build needed."
+      "current_operation": "SQL2c8 engine/replay/custody complete PASS; borrowedPG/client stopped. Typed-history build next; no live engine/build."
     },
     "selected_bounds": {
       "total_epochs_max": 255,
@@ -51225,7 +51235,7 @@
         "migration_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
         "fixture_sha256": "9b3fcbdc6dc8a29c3d9627647d091d971a7db70e9111514bd156a82f844fd70e",
         "source_review": "Author and independent cleanup_review source review; root complete integrated migration/fixture read. No runtime proof.",
-        "status": "ACTIVATED_31_SHAPES_PASS_EMPTY_LEGACY_PROBE_FAIL_FULL_RETRY_PENDING",
+        "status": "PASS_TWO_ORIGIN_SQL_SHAPES_AND_INDEPENDENT_RAW_REPLAY",
         "corrected_migration_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26",
         "corrected_fixture_sha256": "a0843249eebce2992df364f6c2ea856b012ada518f4bcb00888198b806f5eb4a",
         "fixture_correction": "Qualify context.resource in PL/pgSQL local initializer; source-review correction, not observed runtime failure.",
@@ -51236,6 +51246,13 @@
         "original": "18c6fc404d705d37500ee34992ad23ba9b6447bd",
         "main": "b4a6926",
         "status": "PASS_COMPONENTS_IN_RECORDED_FIXTURE_ENVELOPE"
+      },
+      "typed_history": {
+        "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+        "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
+        "main": "0ad6752",
+        "review": "Root read complete six files and affected authority/copy/replay owners; independent AI review ongoing.",
+        "tests": "Four pure state-discriminator groups written, not run. Shared authority extraction statically equivalent; actual connected history remains unqualified."
       }
     },
     "completed_build": {
@@ -51342,10 +51359,10 @@
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
     "branch_totals": {
-      "local_refs_retired": 86,
+      "local_refs_retired": 88,
       "remote_refs_retired": 51,
-      "worktrees_detached": 42,
-      "all_registered_worktrees_preserved": 98
+      "worktrees_detached": 44,
+      "all_registered_worktrees_preserved": 99
     },
     "failed_lineage_build": {
       "status": "FAIL_COMPILE_E0277",
@@ -52091,7 +52108,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "NOT_NEEDED: qualified6b CLI compiled inputs unchanged by grant-order correction.",
+    "next_build": "ingest-succession-history exact clean main; 97protectedELFs and12GiB reserve; connected probe pending.",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -52282,6 +52299,90 @@
           }
         }
       }
-    }
+    },
+    "sql_two_origins": {
+      "status": "PASS_SQL_SHAPES_ONLY",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-2c8fd81",
+      "source": "2c8fd81ad14466de4e9e2eb105df6dded59d67f1",
+      "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#initial_successor_preparation_20261012.repeatable_succession_20261015.sql_two_origins",
+      "audit_sha256": "67406f4c912543a4dd7c90a947d2ef8b99c91e609e18fd139c8bf0ff6b7afccc",
+      "raw_replay_sha256": "29b1cdb1001430e0d2ec74901516c2eb3c533953092705d1b62a6b7f19eaf269"
+    },
+    "qualified_sql_branch_retirements": [
+      {
+        "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T12:27:34.321578+00:00",
+        "original": "c4daa50c0c275955c792662ce8e243bbd2163692",
+        "integrated": "1c7b49d065b644181ae383e5856e185fd9dd1bd7",
+        "archive_ref": "refs/archive/qualified-succession-sql-20261015/implementation/repeatable-succession-postgres",
+        "retired_branch": "implementation/repeatable-succession-postgres",
+        "worktree": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
+        "exact_blobs": {
+          "experiments/control-migrations/repeatable_succession_cases.sql": {
+            "original_and_integrated": "5eb135313ae317599685295ce11bad82bd9632bd",
+            "qualified_main": "e8a10ad032dd2b39db75d6239c5e5cf5810f2da6"
+          },
+          "migrations/postgres/0038_repeatable_ingest_succession.sql": {
+            "original_and_integrated": "babc5efea8522efe40678376419947e5e8c04c8e",
+            "qualified_main": "cfa69ebc7e2e1d693a1d8310aa06180a87f1f3b8"
+          }
+        },
+        "reconciled_pairs": [
+          [
+            "c4daa50c0c275955c792662ce8e243bbd2163692",
+            "1c7b49d"
+          ]
+        ],
+        "qualified_replay": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-2c8fd81/root-independent-replay.json",
+        "qualified_replay_sha256": "29b1cdb1001430e0d2ec74901516c2eb3c533953092705d1b62a6b7f19eaf269",
+        "root_correction_commits": [
+          "b8054b3",
+          "6350901",
+          "aa6cb5b",
+          "4dd78e1",
+          "6b15dee"
+        ],
+        "census_paths": 2043,
+        "census_sha256": "dc4c307c41ce6f6ce33a1b0651f179b0ef80922112e9f01b6cb582f33ecba1a3",
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-sql.bundle",
+        "bundle_bytes": 13943324,
+        "bundle_sha256": "dafa9d50ac17145ad1be57ad693f5757d2a57562dde29e83de60cd0d9b4c35c1",
+        "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "session": 19303,
+        "exit_code": 0,
+        "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-sql.json",
+        "report_sha256": "85a0f7d092c67b4ec6139df3d4a335bbc4e10579ae8425834a8dee79cee6bcdf"
+      },
+      {
+        "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T12:27:46.149572+00:00",
+        "original": "dc5cfea6ed27a7a8fee9b310a0bebf2df4702144",
+        "integrated": "089392999bd3b584c909887382d6f9d2e419612d",
+        "archive_ref": "refs/archive/qualified-succession-reader-20261015/qualification/succession-sql-replay",
+        "retired_branch": "qualification/succession-sql-replay",
+        "worktree": "/home/tux/bigbrotr-rs/.research/succession-sql-replay-20261015",
+        "exact_blobs": {
+          "experiments/ingest-succession/replay.py": "68e0e5a3b3f0b7e156bf27a8699358370cd3fb26"
+        },
+        "reconciled_pairs": [
+          [
+            "dc5cfea6ed27a7a8fee9b310a0bebf2df4702144",
+            "0893929"
+          ]
+        ],
+        "census_paths": 2084,
+        "census_sha256": "f0fd7c29bc9f53ebc3bab18e07d8be345a07d3ae1500591cb905c2747e3d06a4",
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-reader.bundle",
+        "bundle_bytes": 14166867,
+        "bundle_sha256": "c0d56c454bff28ce4404b2e8adac42e3f39ffaa49e79151844fa7d5dc3512119",
+        "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "session": 46620,
+        "exit_code": 0,
+        "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-reader.json",
+        "report_sha256": "a5a01509d4053c8160ddb2539cdeec1b876771679406d17a8ff8dd4797e96453"
+      }
+    ]
   }
 }

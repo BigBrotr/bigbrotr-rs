@@ -54,6 +54,16 @@ completed run identities and failures.
 dictionary and source-closure checks with the schema/CLI build. Its native fixtures
 install epoch3 bytes directly: they do not qualify a connected successor writer.
 
+`history` checks the typed PostgreSQL history state selection, native lineage and
+legacy handoff/empty components, plus schema/CLI compilation. Its state tests do
+not connect to PostgreSQL; real copy, lock and cancellation checks remain separate.
+
+`replay.py RUN_ROOT` independently reduces the captured SQL experiment below,
+binding both origins, complete rows, raw output and portable hashes. It requires
+the completed two-origin run by default. Explicit `--origin activated
+--allow-failed-run` permits retrospective inspection of a completed origin while
+retaining the original failed-run status. It never runs an engine or mutates captures.
+
 `../control-migrations/repeatable_succession_cases.sql` is a separate SQL-only
 fixture. It requires disposable copies of both genuinely retired epoch2 origins,
 explicit migration0038 and the additional privileges in `schema_grants.sql`.
