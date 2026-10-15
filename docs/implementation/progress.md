@@ -14,7 +14,7 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `c987b17` includes
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `7eb0274` includes
 native handoff8df8d06 and PostgreSQL transitione33075e. Last verified remote
 `c987b179d22ba62ddffb07c392863168e73e7ae4` (push75302 joined0, independent ls-remote). Only main is remote.
 No merge/rebase pending. Root is recording qualification and adding its focused
@@ -29,7 +29,7 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: compile corrected probef008996→c987b17 on a fresh exact-source root using
+Root's next bounded action: compile corrected probef008996→c987b17→7eb0274 on a fresh exact-source root using
 `ingest-succession-transition-probe` CLI/probe compilation and Clippy. Reuse25
 component tests across the equivalent let-chain correction and example-only edits.
 Connected nine-case mutation harness/reader source work continues separately.
@@ -48,6 +48,12 @@ E0277: DictionaryKind::try_from expectedu16, example suppliedu8 at431. Root rang
 correction preserves1..9 integer JSON. Clippy NOT_RUN,0tests; no connected engine.
 Custody17487 PASS SHA7660f28d binds1885sourcefiles,107old+1CLI=108protectedELFs,
 1332unchangedcontainers; fetch0/native1 stopped/PID0/noOOM. Failedroot retained.
+
+Second transition probe7eb0274 preparation6771/build88956 joined0/1: compilePASS,
+ClippyFAIL on3explicit drops of non-Drop witnesses. Root removes those calls;
+Rust ends these borrows at last use, actual native custody unchanged. Custody17202
+PASS SHA1ab5267a binds1885files,108old+2new=110ELFs and1334unchanged prior containers;
+fetch0/native1 stopped/PID0/noOOM. No engine executed; fresh compile/lint remains.
 
 Corrected history6f2d9d2 preparation61577/engine31439 joined0: all three cases PASS,
 13:11:44Z–13:12:00Z. Root independent replay67068 PASS (SHA1e558b5a) verifies
@@ -174,7 +180,7 @@ Free space afterf0cd563 build:34589794304bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.108protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.110protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.

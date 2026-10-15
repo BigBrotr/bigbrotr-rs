@@ -52593,7 +52593,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Compile/lint corrected transition probe on a fresh exact-source root, retain108 priorELFs; then integrate independentreader/harness for9finite invocations. Connectedmutations NOT_RUN.",
+    "ongoing": "Compile/lint corrected finite transition probe at fresh exactsource;110protectedELFs. Independent reader/harness work continues; no connectedmutation claim.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -53181,6 +53181,50 @@
       "original": "f0089963be1947919d1621591004f5ac7236127e",
       "main": "c987b179d22ba62ddffb07c392863168e73e7ae4",
       "review": "Root full443-line helper and full shared-load/replay/dispatch delta; native author independent full cross-boundary review. Source review missed u8/u16 conversion; compilefailure retained and corrected onmain. No authority/writer hook."
+    },
+    "transition_probe_lint_failure": {
+      "source": "7eb0274625f7c53e1085f7ec02d1f0f7587331b9",
+      "tree": "c5d234a30f2ab3888efca6298b0d1e67a8ece438",
+      "owner": "802d16f3455e35237e46eac20813fb6a",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "a46e02482eb12f76ebd4e8369e7f90a288f3305a199cb3bdff3bace7b7cec2a8"
+        },
+        {
+          "name": "native",
+          "id": "b9a99687348876625d9d01fb4baec98cb7e66ac24bc6de5c90d0443d7deaf138"
+        }
+      ],
+      "started_at": "2026-10-15T13:36:34.277085+00:00",
+      "finished_at": "2026-10-15T13:38:14.923106+00:00",
+      "free_bytes_after": 34246148096,
+      "status": "FAIL_CLIPPY_PROBE_COMPILE_PASS",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-7eb0274",
+      "preparation": {
+        "session": 6771,
+        "exit_code": 0
+      },
+      "build": {
+        "session": 88956,
+        "exit_code": 1
+      },
+      "error": "Three drop_non_drop diagnostics at example271/319/369. Remove needless explicit drop of non-Drop proof; borrow ends at last use, actual native/candidate/preparation custody remains unchanged.",
+      "tests": 0,
+      "custody": {
+        "session": 17202,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-7eb0274/audit-root/audit-v1.json",
+        "sha256": "1ab5267ae77825544618305eb7d64f36e549702a82e56035d28f62d5ea028b02",
+        "source_files": 1885,
+        "protected_elfs": 108,
+        "new_elfs": {
+          "ingest_bootstrap_probe": "10a757222056904a1a844ba075694df3853b7b179d3e8dc57dfef321a1050d5e",
+          "bigbrotr": "e7914967fd37b8ee82ad6db9bd948669fef66d8461f03f921b9992826abd1800"
+        },
+        "unchanged_containers": 1334
+      },
+      "scope": "CLI/probe compilation PASS; Clippy FAIL; no connectedengine. Product guard correction compiles/lints; firstprobeE0277 and all artifacts remain retained."
     }
   }
 }

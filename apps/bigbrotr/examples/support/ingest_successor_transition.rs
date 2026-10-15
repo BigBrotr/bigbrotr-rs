@@ -268,7 +268,6 @@ impl Probe {
                         "config_digest":hex(&policy.config_digest),"policy_digest":hex(&policy.policy_digest)}}),
                 );
                 self.snapshot("planned").await;
-                drop(proof);
                 let candidate = native.candidate.take().unwrap();
                 native.preparation = Some(SuccessorPreparation::new(candidate, history, plan));
                 let preparation = native.preparation.as_mut().unwrap();
@@ -316,7 +315,6 @@ impl Probe {
                     "record":record_value(plan.record()),"candidate":false}),
                 );
                 self.snapshot("planned").await;
-                drop(proof);
                 let result = self
                     .bounded(
                         "gap",
@@ -366,7 +364,6 @@ impl Probe {
                     "record":record_value(plan.record()),"closure_digest":hex(&plan.closure_digest())}),
                 );
                 self.snapshot("planned").await;
-                drop(proof);
                 let result = self
                     .bounded(
                         "empty",
