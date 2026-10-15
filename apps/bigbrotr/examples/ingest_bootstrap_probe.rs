@@ -939,6 +939,7 @@ fn main() {
                     | "successor-gap"
                     | "successor-lineage-live"
                     | "successor-lineage-live-new"
+                    | "successor-lineage-recover"
             )
             || matches!(
                 args[1].as_str(),
@@ -1022,6 +1023,7 @@ fn main() {
                     | "successor-gap"
                     | "successor-lineage-live"
                     | "successor-lineage-live-new"
+                    | "successor-lineage-recover"
             ) {
                 ingest_successor_history::transition::run(
                     config,

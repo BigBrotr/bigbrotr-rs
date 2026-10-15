@@ -9,6 +9,8 @@ use bigbrotr::storage::{
 
 #[path = "ingest_successor_live.rs"]
 mod live;
+#[path = "ingest_successor_recovery.rs"]
+mod recovery;
 
 // Keep every possible native owner before Control in the custody drop order.
 // In particular, failed/unknown prepare leaves the spent Preparation here.
@@ -21,6 +23,7 @@ struct Native {
     candidate: Option<SuccessorCandidate>,
     preparation: Option<SuccessorPreparation>,
     live: live::LiveCustody,
+    activated_recovery: Option<recovery::ActivatedSuccessorRecovery>,
 }
 impl Native {
     fn recovery(&self) -> &IngestRecovery {
@@ -49,13 +52,14 @@ pub async fn run(
         "successor-gap" => "gap",
         "successor-lineage-live" => "live",
         "successor-lineage-live-new" => "live-new",
+        "successor-lineage-recover" => "recover",
         _ => panic!("unknown finite successor operation"),
     };
     assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty" | "live" | "live-new"));
     assert!(proxy_port.is_none_or(|port| port != 0));
     let mutation_bytes = match operation {
         "prepare" | "gap" | "live" | "live-new" => 8192,
-        "empty" => 4096,
+        "empty" | "recover" => 4096,
         _ => 0,
     };
     let root =
@@ -100,6 +104,7 @@ pub async fn run(
             candidate: Some(candidate),
             preparation: None,
             live: live::LiveCustody::default(),
+            activated_recovery: None,
         }
     } else {
         Native {
@@ -107,6 +112,7 @@ pub async fn run(
             candidate: None,
             preparation: None,
             live: live::LiveCustody::default(),
+            activated_recovery: None,
         }
     };
     let mut custody = TransitionCustody {
@@ -216,6 +222,15 @@ pub async fn run(
                 operation == "live-new",
             )
             .await
+    } else if operation == "recover" {
+        probe
+            .recover_successor(
+                custody.owner.as_mut().unwrap(),
+                custody.native.as_mut().unwrap(),
+                metadata,
+                mutation_permit.unwrap(),
+            )
+            .await
     } else {
         probe
             .transition(
@@ -228,12 +243,18 @@ pub async fn run(
             .await
     };
     emit(
-        serde_json::json!({"event":if live {"lineage-live-result"}else{"lineage-transition-result"},"operation":operation,
+        serde_json::json!({"event":if live {"lineage-live-result"}else if operation=="recover" {"lineage-recovery-result"}else{"lineage-transition-result"},"operation":operation,
         "stage":result.as_ref().err().map_or("complete",|e|e.stage),
         "epoch":result.as_ref().err().and_then(|e|e.epoch),"sequence":result.as_ref().err().and_then(|e|e.sequence),
         "error":result.as_ref().err().map(|e|&e.error),"observation":result.as_ref().ok()}),
     );
-    probe.snapshot("after-transition").await;
+    probe
+        .snapshot(if operation == "recover" {
+            "after-recovery"
+        } else {
+            "after-transition"
+        })
+        .await;
     // Every history witness has ended. Native closes before the actual owner
     // release/drop and joined driver; failed calls never manufacture release.
     let activated = custody.native.as_ref().unwrap().live.activated();
@@ -276,6 +297,13 @@ pub async fn run(
             "control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
             "observer":"joined","success":result.is_ok(),"writer":false,"activation":activated,
             "admission":result.as_ref().ok().map(|_|true)}),
+        );
+    } else if operation == "recover" {
+        emit(
+            serde_json::json!({"event":"lineage-recovery-complete","operation":operation,"native":"closed",
+            "control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
+            "observer":"joined","success":result.is_ok(),"admission":false,"activation":false,
+            "source_closure":false,"workflow":false,"retirement":false}),
         );
     } else {
         emit(
