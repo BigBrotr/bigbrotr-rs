@@ -50808,8 +50808,8 @@
     "status": "COMPLETE_INACTIVE_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
     "authority": "Q36; owner requested current integrated main and removal of useless branch refs",
     "canonical_branch": "main",
-    "main_source": "cc4f8acbc5ae6aff59f313700259ee55ce5bb0b6",
-    "main_verified_push": "29457 joined0; independent5d9540 confirms cc4f8acbc5ae6aff59f313700259ee55ce5bb0b6",
+    "main_source": "f169ad73c0b2349032afc183b6b5b82182661eae",
+    "main_verified_push": "22691 joined0; independentd80a2f confirms f169ad73c0b2349032afc183b6b5b82182661eae",
     "root": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015",
     "inventory": ".research/branch-inventory-cleanup-review-20261015/inventory.json",
     "original_refs": 133,
@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main plus three integrated acquisition component/probe/harness refs pending qualification; remote main only. All123 registered worktrees and ignored/external artifacts preserved.",
+    "remaining": "main, three qualified acquisition refs pending final review, two active retirement refs.125 registered worktrees; remote main only. All ignored/external evidence preserved.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -51516,7 +51516,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "CONNECTED_ACTIVATED_RECOVERY_PASS_SOURCE_CLOSURE_IN_PROGRESS",
-    "observed_at": "2026-10-15T17:13:34.005200+00:00",
+    "observed_at": "2026-10-15T17:23:18.415832+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -52584,7 +52584,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines.",
+    "next_build": "Retirement components in source-only progress; no new build scheduled until review/consumer ready.",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -52985,7 +52985,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines. Separate retirement, installed, failure/expiry and capacity remain open.",
+    "ongoing": "Reconcile qualified acquisition refs preserving worktrees/artifacts, then implement/qualify distinct ready-or-terminal successor retirement; first genuine queued-claim veto before abandonment, import-Event refusal and complete3-to4. Installed/failure/expiry/capacity and M1-M5 remain incomplete.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -57433,7 +57433,7 @@
       "wrapper": "37031 joined0"
     },
     "successor_acquisition_work": {
-      "status": "INTEGRATED_RUNTIME_NOT_RUN",
+      "status": "FIRST_WAVE_PASS_REFS_PENDING_RECONCILIATION",
       "observed_at": "2026-10-15T17:13:34.005200+00:00",
       "components": [
         {
@@ -57443,7 +57443,7 @@
           "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015/.research/successor-acquisition-static-20261015/manifest.json",
           "manifest_sha256": "57983f545000055f06a71bc70b89a8e465ed91a49ccfa26fcc3585717f901a3d",
           "source_files": 3,
-          "status": "INTEGRATED_SOURCE_ONLY_RUNTIME_NOT_RUN"
+          "status": "INTEGRATED_FIRST_WAVE_QUALIFIED"
         },
         {
           "original": "620404ff2a5e359762c380c0c6c1f89304987a02",
@@ -57452,7 +57452,7 @@
           "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-probe-20261015/.research/acquisition-probe-static-20261015/report.json",
           "manifest_sha256": "616d2b773241d22ded826defe93bbe11825b0c7fce477fcfdc9ca758b0169b60",
           "source_files": 5,
-          "status": "INTEGRATED_SOURCE_ONLY_RUNTIME_NOT_RUN"
+          "status": "INTEGRATED_FIRST_WAVE_QUALIFIED"
         },
         {
           "original": "938dbb2ecfb6d9175cec5d589947fae1bb3cc6de",
@@ -57461,7 +57461,7 @@
           "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-engine-20261015/.research/successor-acquisition-harness-selfcheck-20261015/manifest.json",
           "manifest_sha256": "72a4021c4535d24797b5e7bc4058285818ddb5c337b9c7b9896c61183858e954",
           "source_files": 2,
-          "status": "INTEGRATED_SOURCE_ONLY_RUNTIME_NOT_RUN"
+          "status": "INTEGRATED_FIRST_WAVE_QUALIFIED"
         }
       ],
       "adapter": "Fresh consumed already-CLOSED source proof; bounded combined jobs and retained gaps <=64; exact immutable activating Control tuple, complete prefix copies, current custody/lease/cancellation checks after waits; no native mutation or retirement.",
@@ -57526,6 +57526,318 @@
         "worktrees": 123
       },
       "next": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines."
+    },
+    "successor_acquisition_component_build": {
+      "status": "PASS",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-f169ad7",
+      "source": "f169ad73c0b2349032afc183b6b5b82182661eae",
+      "tree": "3c84fa4df30463375185e73940ebb9d7f7a88329",
+      "wrappers": "prepare74724/build81145/custody92175 joined0",
+      "audit_sha256": "cdb19ac82343c09920b6627dc9bcdf35982899047d9ea15aa4a61d081059dc00",
+      "source_files": 1918,
+      "test_counts": {
+        "lineage_tests": 40,
+        "request_input_tests": 8,
+        "dictionary_append_tests": 13,
+        "producer_recovery_tests": 11,
+        "source_closure_tests": 3,
+        "activated_recovery_tests": 16,
+        "successor_history::tests": 4,
+        "successor_transition": 17
+      },
+      "tests_passed": 112,
+      "checks": {
+        "collected": 10,
+        "executed": 10,
+        "failed": 0,
+        "not_run": 0
+      },
+      "new_elfs": {
+        "native_components": "6fdd3a3439fda91876b8d06c79ab7a8798bcaf0f2615c574dfbb410e474edb13",
+        "ingest_bootstrap_probe": "a8afa32ae8a02ca814e8460290d0991c87f76e70467891b6052a791276056d77",
+        "bigbrotr": "b6cedbd8f1d66675ddcac460e235e480dc73ce84b4dfc5b84d648174f46d3294"
+      },
+      "protected_prior_elfs": 131,
+      "protected_total_elfs": 134,
+      "unchanged_prior_containers": 1358,
+      "resources": {
+        "source": "f169ad73c0b2349032afc183b6b5b82182661eae",
+        "tree": "3c84fa4df30463375185e73940ebb9d7f7a88329",
+        "owner": "4bbe5165f6519e338bf25b345f367626",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-f169ad7",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "3c72b006adc78089341a2e919b47897d080313ea9b4cb77e880d638febc0c590"
+          },
+          {
+            "name": "native",
+            "id": "acc308b0772b362900e33567633f37cadc857549b2be2e4d8a8844e4674a8d71"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-15T17:15:35.688818+00:00",
+        "qualification": "PASS_SUCCESSION_RECOVERY_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 28983578624,
+        "finished_at": "2026-10-15T17:17:53.146384+00:00"
+      },
+      "scope": "Two new acquisition shape/bound unit groups and affected shared groups, CLI/probe compilation and Clippy. No connected authority from unit premises.",
+      "compiler_diagnostics": "Eight invocations replay same unchanged Copy-drop warning at lineage_replay_tests.rs:495; no Clippy diagnostic."
+    },
+    "successor_acquisition_reader": {
+      "status": "ARTIFICIAL_PROTOCOL_AND_ACTUAL_REPLAY_PASS",
+      "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-engine-20261015/.research/successor-acquisition-reader-selfcheck-20261015/manifest.json",
+      "manifest_sha256": "83f625d041ce73dbab5cbc093a718a4bcb74d81984fb22622576a76f1e42e0bb",
+      "source_sha256": "2f734099ccb3c363e360b7c73b717d6ba573f6229dc4e21eafce6eec3897ebea",
+      "contexts": 4,
+      "snapshots": 120,
+      "negative_controls": 85,
+      "artifacts": 9,
+      "artifact_bytes": 21563132,
+      "source_files": 7,
+      "input_files": 7,
+      "root_verification": "69a823",
+      "limit": "Generator shares Model; artificial contexts are protocol-only. Actual raw independent replay separately bound below.",
+      "failure": "Inventory-only nonexistent live_faults_replay.py corrected to transition_fault_replay.py, original manifest-attempt-1.json retained; no failed core context or product execution.",
+      "static_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-acquisition-probe-20261015/.research/acquisition-reader-review-20261015/review.json",
+        "sha256": "1f66eeed9224f1056fdb142dfdbbec4b3d2f86b330ebafbecfa06c9948c2c8b9",
+        "reviewer": "cleanup_review (probe author; independently reviews root reader)",
+        "status": "CLOSED_NO_CONCRETE_SOURCE_BLOCKER"
+      }
+    },
+    "successor_acquisition_connected": {
+      "status": "PASS_SUCCESSOR_ACQUISITION_FIRST_WAVE",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-acquisition-engine-f169ad7",
+      "source": "f169ad73c0b2349032afc183b6b5b82182661eae",
+      "tree": "3c84fa4df30463375185e73940ebb9d7f7a88329",
+      "wrappers": "prepare85243/engine28801/raw replay7522/custody92265 joined0",
+      "started_at": "2026-10-15T17:19:02.158108+00:00",
+      "finished_at": "2026-10-15T17:19:30.691266+00:00",
+      "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-f169ad7",
+      "build_source": "f169ad73c0b2349032afc183b6b5b82182661eae",
+      "binary_sha256": {
+        "native_components": "6fdd3a3439fda91876b8d06c79ab7a8798bcaf0f2615c574dfbb410e474edb13",
+        "ingest_bootstrap_probe": "a8afa32ae8a02ca814e8460290d0991c87f76e70467891b6052a791276056d77",
+        "bigbrotr": "b6cedbd8f1d66675ddcac460e235e480dc73ce84b4dfc5b84d648174f46d3294"
+      },
+      "owner": "1c1f76d5bb56a7b669db61e634040a92",
+      "label": "org.bigbrotr.succession-acquisition",
+      "client": "b5e6f664d585b9bc19a0e0a9f0e659cc4aa9bcf7cc8979ac59c0402592dbf1ff",
+      "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "result_sha256": "2eee461317257f1b105a1b498043cd885c109c6dfcb9153038d2c4a29f3ba146",
+      "replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-acquisition-engine-f169ad7/root-independent-replay.json",
+        "sha256": "0ce0d578d03e2dc9d4cd7faf846b80ccd1bb0c5a401685cc844e46ae038769d5",
+        "snapshots": 120,
+        "tables": 75,
+        "negative_controls": 85,
+        "bound_files": 76
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-acquisition-engine-f169ad7/audit-root/audit-v1.json",
+        "sha256": "cfa893bdcbaf48e5cbe0a6b14c6fa2b933c22f1c142a49711296f0d7d2cf22d9",
+        "source_files": 1918,
+        "protected_elfs": 134,
+        "unchanged_nonborrowed_containers": 1359,
+        "capture": {
+          "observed_at": "2026-10-15T17:20:00.581852+00:00",
+          "containers": 1361,
+          "sha256": "e7ca5e6a809360d18befa6cabe01fe4fd5bf4b91c27bd7828fdd8399e366efec"
+        },
+        "owned_terminal": {
+          "postgres": {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T17:19:02.219513121Z",
+              "FinishedAt": "2026-10-15T17:19:29.78974336Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          "client": {
+            "Id": "b5e6f664d585b9bc19a0e0a9f0e659cc4aa9bcf7cc8979ac59c0402592dbf1ff",
+            "Name": "/bigbrotr-successor-acquisition-f169ad7",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T17:19:03.849860853Z",
+              "FinishedAt": "2026-10-15T17:19:29.30475694Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-f169ad7/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-acquisition-engine-f169ad7/acquisition",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        }
+      },
+      "scope": "One genuine empty-terminal2 clone, four distinct Control processes. Genuine preparation/activation3, authenticated session, one accepted and actually queued acquisition plus one accepted-unclaimed intent; fresh source closure, whole-intent cancellation with one current-epoch gap, exact fresh retry. Native55 rows/sequence67 after activation then68 after source close; abandonment/retry unchanged. Four input bytes and both original full SQL/catalog/native physical censuses preserved. Old gap, accepted-unclaimed job and issued session unchanged; no invented authority.",
+      "not_run": [
+        "Installed acquisition/retirement, socket execution and coverage completion",
+        "64/65 claim bounds, unsupported batches, COMMIT loss and cancellation/expiry schedules",
+        "Import closure, retirement, ACK/GC and PostgreSQL 255-epoch capacity"
+      ],
+      "free_bytes_after": 28864491520,
+      "cases": [
+        {
+          "name": "empty-claims3",
+          "status": "PASS",
+          "database": "bb_successor_acquisition_f169ad7_empty",
+          "custody": "OBSERVED_CLOSED_AND_JOINED",
+          "oracle": {
+            "status": "PASS",
+            "case": "empty-claims3",
+            "database": "bb_successor_acquisition_f169ad7_empty",
+            "snapshots": 36,
+            "tables": 75,
+            "native_rows": 55,
+            "sequence": 67,
+            "inputs": 4,
+            "control_epoch": 12,
+            "refreshes": 9,
+            "scope": "Genuine activated3 zero-request claim plus accepted-unclaimed intent; no acquisition execution or terminal authority"
+          }
+        },
+        {
+          "name": "empty-source3",
+          "status": "PASS",
+          "database": "bb_successor_acquisition_f169ad7_empty",
+          "custody": "OBSERVED_CLOSED_AND_JOINED",
+          "oracle": {
+            "status": "PASS",
+            "case": "empty-source3",
+            "database": "bb_successor_acquisition_f169ad7_empty",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 55,
+            "sequence": 68,
+            "inputs": 4,
+            "control_epoch": 13,
+            "refreshes": 8,
+            "scope": "Fresh source closure or whole-intent abandonment/retry on genuine activated-zero claim; no retirement/execution/installed authority"
+          }
+        },
+        {
+          "name": "empty-abandon3",
+          "status": "PASS",
+          "database": "bb_successor_acquisition_f169ad7_empty",
+          "custody": "OBSERVED_CLOSED_AND_JOINED",
+          "oracle": {
+            "status": "PASS",
+            "case": "empty-abandon3",
+            "database": "bb_successor_acquisition_f169ad7_empty",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 55,
+            "sequence": 68,
+            "inputs": 4,
+            "control_epoch": 14,
+            "refreshes": 8,
+            "scope": "Fresh source closure or whole-intent abandonment/retry on genuine activated-zero claim; no retirement/execution/installed authority"
+          }
+        },
+        {
+          "name": "empty-abandon-retry3",
+          "status": "PASS",
+          "database": "bb_successor_acquisition_f169ad7_empty",
+          "custody": "OBSERVED_CLOSED_AND_JOINED",
+          "oracle": {
+            "status": "PASS",
+            "case": "empty-abandon-retry3",
+            "database": "bb_successor_acquisition_f169ad7_empty",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 55,
+            "sequence": 68,
+            "inputs": 4,
+            "control_epoch": 15,
+            "refreshes": 8,
+            "scope": "Fresh source closure or whole-intent abandonment/retry on genuine activated-zero claim; no retirement/execution/installed authority"
+          }
+        }
+      ]
+    },
+    "successor_retirement_work": {
+      "status": "IN_PROGRESS_SOURCE_ONLY",
+      "base": "f169ad73c0b2349032afc183b6b5b82182661eae",
+      "native": {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-native-retirement-20261015",
+        "branch": "implementation/successor-native-retirement",
+        "owner": "cleanup_review",
+        "scope": "Distinct observe-existing-CLOSING retirement-purpose owner/cursor/proof retaining original allocation and Event discriminator; no source/positive weakening."
+      },
+      "postgres": {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-pg-retirement-20261015",
+        "branch": "implementation/successor-pg-retirement",
+        "owner": "recovery_review",
+        "scope": "Assigned after bounded acquisition probe AI review: separate ready-or-terminal classifier, existing-only positive copies, workflow/zero-claim veto, atomic12-row retirement and exact retry."
+      },
+      "qualification": "successor_restart_design performs read-only genuine fixture/3-to4 design. Root alone integrates/builds/runs engines.",
+      "runtime": "NOT_RUN",
+      "registered_worktrees": 125
     }
   }
 }
