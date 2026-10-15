@@ -15,9 +15,10 @@ promotion retain separate authority.
 Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD f169ad73c0b2349032afc183b6b5b82182661eae.
 Push22691joined0 and independentd80a2f confirm exact remote; no merge/rebase.
 Acquisition PG750e735→8608cf7, probe620404ff→04c5923, harness938dbb2→cc4f8ac,
-readerf169ad7 are integrated and first-wave qualified below. Three clean original
-acquisition worktrees/refs remain pending review closure and evidence-preserving
-ref retirement; recovery_review performs final independent AI probe inspection.
+readerf169ad7 are integrated and first-wave qualified below. Three original
+acquisition worktrees detached/clean/preserved, refs retired after exact blob and
+full-file census verification. Independent probe AI review9b8829d2 closed without
+concrete blocker; reviewer authored PG, independently reviewed the finite probe.
 Current root edits record qualification. Two separate retirement worktrees at
 basef169ad7: `.research/successor-native-retirement-20261015` cleanup_review owns
 Rocks source only; `.research/successor-pg-retirement-20261015` recovery_review
@@ -35,9 +36,8 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: close acquisition probe review and retire its three qualified
-refs with original-history archives/bundle and unchanged complete worktree censuses.
-Then integrate/review distinct successor retirement owner and PG adapter. Require
+Next bounded action: integrate/review distinct successor retirement owner and PG
+adapter, with a finite consumer and independent retirement reader. Require
 existing CLOSING native, already-CLOSED exact source, positive existing-copy replay,
 actual job/gap relation and zero-request claim veto; no implicit repair/abandonment.
 Qualify genuine queued-zero claim refusal before abandonment, import-Event refusal,
@@ -138,12 +138,14 @@ Archive asset FAIL and followup85eca49 PASS remain separate. No run/prep replay.
 
 ## Branches and resources
 
-111local/51remote redundant refs retired;67worktrees detached and preserved.
+114local/51remote redundant refs retired;70worktrees detached and preserved.
 All125registered worktrees retained. Source components7290joined0 bundle9ec3b72b
 preserves c336f45/86dc47c; source qualification37031joined0 preserves07c36bb/c725ec3.
 Every original full history is archived and bundled under
 `.research/branch-retirement-20261015`; file/ignored/link censuses unchanged.
-Main, three qualified acquisition refs and two active retirement refs remain local; remote main.
+Acquisition retirement7822joined0 archives originals750e735/620404ff/938dbb2;
+bundle13b39647 is14,808,813bytes, complete histories, allfilecensusesunchanged.
+Main and two active retirement refs remain local; remote main.
 No artifact/worktree/dataset/container deleted.
 
 Latest acquisition custody capture 2026-10-15T17:20:00.581852+00:00:

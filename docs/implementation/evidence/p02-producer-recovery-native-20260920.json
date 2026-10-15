@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Reconcile qualified acquisition refs preserving worktrees/artifacts, then implement/qualify distinct ready-or-terminal successor retirement; first genuine queued-claim veto before abandonment, import-Event refusal and complete3-to4. Installed/failure/expiry/capacity and M1-M5 remain incomplete.",
+      "ongoing": "Implement/review distinct successor retirement native and PG components, then finite consumer and genuine refusal/terminal/3-to4 qualification. Acquisition first wave complete within explicit scope. Installed/failure/expiry/capacity and M1-M5 remain incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -29118,7 +29118,7 @@
         "wrapper": "37031 joined0"
       },
       "successor_acquisition_work": {
-        "status": "FIRST_WAVE_PASS_REFS_PENDING_RECONCILIATION",
+        "status": "FIRST_WAVE_PASS_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
         "observed_at": "2026-10-15T17:13:34.005200+00:00",
         "components": [
           {
@@ -29210,7 +29210,12 @@
           ],
           "worktrees": 123
         },
-        "next": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines."
+        "next": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines.",
+        "probe_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015/.research/successor-acquisition-probe-review-20261015/manifest.json",
+          "sha256": "9b8829d2cea18a3852bbd08c7d6a5de1cf52874d08b4d0c3d9337a5ec3ad0004",
+          "scope": "Independent AI review of five complete finite probe owners and affected auth/claim/custody callers; no concrete blocker. Reviewer authored PG adapter, not a new independent review of own PG code. Source-only."
+        }
       },
       "successor_acquisition_component_build": {
         "status": "PASS",
@@ -29523,6 +29528,70 @@
         "qualification": "successor_restart_design performs read-only genuine fixture/3-to4 design. Root alone integrates/builds/runs engines.",
         "runtime": "NOT_RUN",
         "registered_worktrees": 125
+      },
+      "qualified_acquisition_ref_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T17:25:35.003714+00:00",
+        "records": [
+          {
+            "branch": "implementation/successor-acquisition",
+            "original": "750e735b32da2c4b8d4c4b34f6b48f9403221016",
+            "integrated": "8608cf755fac6a6a7f1c1b82b10921bcdb39b617",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015",
+            "archive_ref": "refs/archive/qualified-successor-acquisition-20261015/implementation/successor-acquisition",
+            "blobs": {
+              "apps/bigbrotr/src/storage/postgres/successor_acquisition.rs": "71facd2f6be6d7a0052e2a3af5666788f2ee9d2b",
+              "apps/bigbrotr/src/storage/postgres/successor_acquisition_tests.rs": "1a24f712f192b57101654fe069d83c4b905ede72",
+              "apps/bigbrotr/src/storage/postgres/successor_source.rs": "5cadb587ecebcf7d3b7764a1d3a06a59153b4c6a"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2113,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-acquisition-pg-before-census.json",
+            "census_sha256": "077e121598cc9f6466f42728a37d578bee439c3a838f0e1a4aec925f933852d3"
+          },
+          {
+            "branch": "qualification/successor-acquisition-probe",
+            "original": "620404ff2a5e359762c380c0c6c1f89304987a02",
+            "integrated": "04c59237939347f2985dbb6449c83a7c86431c9e",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-acquisition-probe-20261015",
+            "archive_ref": "refs/archive/qualified-successor-acquisition-20261015/qualification/successor-acquisition-probe",
+            "blobs": {
+              "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "7a95bd23322a754e5858864de0f6689c962444db",
+              "apps/bigbrotr/examples/support/ingest_successor_acquisition.rs": "9f1a18364ff5d124966dab8fb2328b3605ce17f4",
+              "apps/bigbrotr/examples/support/ingest_successor_live.rs": "32bbf636ebd6df948e8b289f4364a55b4449efd9",
+              "apps/bigbrotr/examples/support/ingest_successor_source.rs": "887e4fde3e4d30b14ff2df1b1c55d71407594437",
+              "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "605a35faec91bfa5aeb2a41e059e9fecf060bd21"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2112,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-acquisition-probe-before-census.json",
+            "census_sha256": "4460990d1fcc961293cc8306fa611c1a889d329e7812f2ed61638c37b3fe3597"
+          },
+          {
+            "branch": "qualification/successor-acquisition-engine",
+            "original": "938dbb2ecfb6d9175cec5d589947fae1bb3cc6de",
+            "integrated": "cc4f8acbc5ae6aff59f313700259ee55ce5bb0b6",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-acquisition-engine-20261015",
+            "archive_ref": "refs/archive/qualified-successor-acquisition-20261015/qualification/successor-acquisition-engine",
+            "blobs": {
+              "experiments/ingest-succession/acquisition.py": "69934e12a84c6cd20d231454939c0362aaabd493",
+              "experiments/ingest-succession/transition.py": "e4970f1e389a5eae4c67db647f97020f8baba5c1"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2145,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-acquisition-harness-before-census.json",
+            "census_sha256": "5e7f35c8ac9e56996a49c3f1aeb84ca630e23a6e63a4b00683b21aab2be900a8"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-acquisition.bundle",
+        "bundle_bytes": 14808813,
+        "bundle_sha256": "13b3964784e2b57d04695f8ed5090d267dbeabf741498e9f1b78ae179b20c01f",
+        "audit_sha256": "cfa893bdcbaf48e5cbe0a6b14c6fa2b933c22f1c142a49711296f0d7d2cf22d9",
+        "scope": "Three qualified local acquisition refs only; two separate retirement source branches remain active. All worktrees, ignored/external evidence and datasets preserved",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-acquisition.json",
+        "sha256": "a436ab5942a26e6b60c5ce0c7e4387fd044b3b72d632e97ba6771af08b022d9c",
+        "wrapper": "7822 joined0"
       }
     }
   }
