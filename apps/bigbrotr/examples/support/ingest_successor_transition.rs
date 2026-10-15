@@ -13,6 +13,8 @@ mod acquisition;
 mod live;
 #[path = "ingest_successor_recovery.rs"]
 mod recovery;
+#[path = "ingest_successor_retirement.rs"]
+mod retirement;
 #[path = "ingest_successor_source.rs"]
 mod source;
 
@@ -29,6 +31,7 @@ struct Native {
     live: live::LiveCustody,
     activated_recovery: Option<recovery::ActivatedSuccessorRecovery>,
     source_recovery: Option<source::ActivatedSuccessorSourceRecovery>,
+    retirement: Option<retirement::ActivatedSuccessorRetirement>,
 }
 impl Native {
     fn recovery(&self) -> &IngestRecovery {
@@ -61,13 +64,14 @@ pub async fn run(
         "successor-lineage-source" => "source",
         "successor-lineage-abandon" => "abandon",
         "successor-lineage-acquisition-claims" => "acquisition-claims",
+        "successor-lineage-retire" => "retire",
         _ => panic!("unknown finite successor operation"),
     };
     assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty" | "live" | "live-new"));
     assert!(proxy_port.is_none_or(|port| port != 0));
     let mutation_bytes = match operation {
         "prepare" | "gap" | "live" | "live-new" | "acquisition-claims" => 8192,
-        "empty" | "recover" | "source" | "abandon" => 4096,
+        "empty" | "recover" | "source" | "abandon" | "retire" => 4096,
         _ => 0,
     };
     let root =
@@ -116,6 +120,7 @@ pub async fn run(
             live: live::LiveCustody::default(),
             activated_recovery: None,
             source_recovery: None,
+            retirement: None,
         }
     } else {
         Native {
@@ -125,6 +130,7 @@ pub async fn run(
             live: live::LiveCustody::default(),
             activated_recovery: None,
             source_recovery: None,
+            retirement: None,
         }
     };
     let mut custody = TransitionCustody {
@@ -142,6 +148,9 @@ pub async fn run(
     }
     if acquisition {
         acquisition::preflight(&budget, claims);
+    }
+    if operation == "retire" {
+        retirement::preflight(&budget);
     }
     emit(
         serde_json::json!({"event":"lineage-history-resources","metadata_bytes":metadata_bytes,
@@ -227,7 +236,16 @@ pub async fn run(
     probe.policy(owner, "acquired", None, None, policy);
     let backend = probe.backend(owner).await;
     probe.snapshot("after-claim").await;
-    let result = if claims {
+    let result = if operation == "retire" {
+        probe
+            .retire_successor(
+                custody.owner.as_mut().unwrap(),
+                custody.native.as_mut().unwrap(),
+                metadata,
+                mutation_permit.unwrap(),
+            )
+            .await
+    } else if claims {
         probe
             .acquisition_claims(
                 custody.owner.as_mut().unwrap(),
@@ -285,13 +303,15 @@ pub async fn run(
             .await
     };
     emit(
-        serde_json::json!({"event":if acquisition {"lineage-acquisition-result"}else if live {"lineage-live-result"}else if operation=="recover" {"lineage-recovery-result"}else if operation=="source" {"lineage-source-result"}else{"lineage-transition-result"},"operation":operation,
+        serde_json::json!({"event":if operation=="retire" {"lineage-retirement-result"}else if acquisition {"lineage-acquisition-result"}else if live {"lineage-live-result"}else if operation=="recover" {"lineage-recovery-result"}else if operation=="source" {"lineage-source-result"}else{"lineage-transition-result"},"operation":operation,
         "stage":result.as_ref().err().map_or("complete",|e|e.stage),
         "epoch":result.as_ref().err().and_then(|e|e.epoch),"sequence":result.as_ref().err().and_then(|e|e.sequence),
         "error":result.as_ref().err().map(|e|&e.error),"observation":result.as_ref().ok()}),
     );
     probe
-        .snapshot(if acquisition {
+        .snapshot(if operation == "retire" {
+            "after-retirement"
+        } else if acquisition {
             "after-acquisition"
         } else if operation == "recover" {
             "after-recovery"
@@ -337,7 +357,14 @@ pub async fn run(
     emit(
         serde_json::json!({"event":"lineage-history-driver","driver":"observer","failed":false,"joined":true}),
     );
-    if acquisition {
+    if operation == "retire" {
+        emit(
+            serde_json::json!({"event":"lineage-retirement-complete","operation":operation,
+            "native":"closed","control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
+            "observer":"joined","success":result.is_ok(),"source_closure":false,"workflow":false,
+            "retirement":result.is_ok(),"admission":false,"activation":false}),
+        );
+    } else if acquisition {
         emit(
             serde_json::json!({"event":"lineage-acquisition-complete","operation":operation,
             "native":"closed","control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},

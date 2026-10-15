@@ -943,6 +943,7 @@ fn main() {
                     | "successor-lineage-source"
                     | "successor-lineage-abandon"
                     | "successor-lineage-acquisition-claims"
+                    | "successor-lineage-retire"
             )
             || matches!(
                 args[1].as_str(),
@@ -1030,6 +1031,7 @@ fn main() {
                     | "successor-lineage-source"
                     | "successor-lineage-abandon"
                     | "successor-lineage-acquisition-claims"
+                    | "successor-lineage-retire"
             ) {
                 ingest_successor_history::transition::run(
                     config,
