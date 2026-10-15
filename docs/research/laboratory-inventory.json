@@ -51202,11 +51202,130 @@
         "worktrees_detached": 46,
         "all_registered_worktrees_preserved": 104
       }
+    },
+    "qualified_transition_followup": {
+      "record": {
+        "status": "PASS_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T13:43:20.794821+00:00",
+        "records": [
+          {
+            "branch": "implementation/successor-handoff",
+            "original": "6475ff4b0fef91c56bd042ec4e09bb472b9eddf3",
+            "integrated": "8df8d06546c9921d783b9845f914ea904b39a3f3",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-handoff-20261015",
+            "archive_ref": "refs/archive/qualified-successor-transitions-20261015/implementation/successor-handoff",
+            "reconciliation": [
+              {
+                "original": "6475ff4b0fef91c56bd042ec4e09bb472b9eddf3",
+                "integrated": "8df8d06546c9921d783b9845f914ea904b39a3f3",
+                "blobs": {
+                  "apps/bigbrotr/src/storage/rocks/lineage.rs": "9e5f4f4b7b3daa93a67d019d0dd8e4a91311ecd0",
+                  "apps/bigbrotr/src/storage/rocks/lineage_replay.rs": "2b2bd78ab14820d4890b8605a3b00fe28612c026",
+                  "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs": "0407cd800bda17a98c5cc63ffe1d527a64709265",
+                  "apps/bigbrotr/src/storage/rocks/store.rs": "0f6343a010bd1f8a96afca0b43d980ea2552894e",
+                  "apps/bigbrotr/src/storage/rocks/successor_empty.rs": "35f4741feefb46c78325caea004f9b130fccb847",
+                  "apps/bigbrotr/src/storage/rocks/successor_handoff.rs": "28c158f634f011e1fcb28aec0297979da787f5e8",
+                  "apps/bigbrotr/src/storage/rocks/successor_handoff_tests.rs": "0e5fc70c21291bb00efd5e7801713bfe0aad688b"
+                }
+              }
+            ],
+            "qualified_followup_blobs": {},
+            "census_paths": 2062,
+            "census_sha256": "34f3a8fc4a809f95aec214a44a6d98103f9cf0999611cd6f133408b6db5d4d2a",
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-handoff-20261015-before-census.json"
+          },
+          {
+            "branch": "implementation/successor-history",
+            "original": "efe6337977a7e1eb0fd2ee71a027a64d49336d31",
+            "integrated": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-history-20261015",
+            "archive_ref": "refs/archive/qualified-successor-transitions-20261015/implementation/successor-history",
+            "reconciliation": [
+              {
+                "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
+                "integrated": "0ad675252effeaee0cc448a608332bddd1e84c8e",
+                "blobs": {
+                  "apps/bigbrotr/src/storage/postgres/control_owner.rs": "0a485a09f38c9a4cf7ed1eac4adce08b76ad2af7",
+                  "apps/bigbrotr/src/storage/postgres/history_authority.rs": "5043315db861ddcce94e908f605f9c75d5f7c8dd",
+                  "apps/bigbrotr/src/storage/postgres/initial_history.rs": "5de43cbcb9fabab1b848a8573b8689e51da37899",
+                  "apps/bigbrotr/src/storage/postgres/successor_history.rs": "d18bf7a542abd5340b34df0ba2a22a57a9510345",
+                  "apps/bigbrotr/src/storage/postgres/successor_history_rows.rs": "32091668aad6307eeffa0eb50eb78dabc9eaf7df",
+                  "apps/bigbrotr/src/storage/postgres/successor_history_tests.rs": "bf5e0d68c21ccc1536547094dbf520b96c1d2a33"
+                }
+              },
+              {
+                "original": "f3e1511cd25cae2cb528e11b8215bdd207cb2696",
+                "integrated": "b96bcf867d0b1bc9d170cc36edca5ebf66cdcc36",
+                "blobs": {
+                  "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "260461e6204b8655912ae26f2aa7c5eb7b54f9c4",
+                  "apps/bigbrotr/examples/support/ingest_successor_history.rs": "5e81966d2952dbd08fc0d05bfe1ea5372d25cd82"
+                }
+              },
+              {
+                "original": "2183a9202c4401479d475ef514a48c185a25247f",
+                "integrated": "6714e574fedf3729db86808a05ae2bffb9af7cfc",
+                "blobs": {
+                  "apps/bigbrotr/examples/support/ingest_successor_history.rs": "4438cfb6622bd1bffe23a1c9db3ef28a6b61187e"
+                }
+              },
+              {
+                "original": "8bad81c3edca854d5790c3cedba45ef762a59993",
+                "integrated": "8df8d06546c9921d783b9845f914ea904b39a3f3",
+                "blobs": {
+                  "apps/bigbrotr/src/storage/rocks/lineage.rs": "9e5f4f4b7b3daa93a67d019d0dd8e4a91311ecd0",
+                  "apps/bigbrotr/src/storage/rocks/lineage_replay.rs": "2b2bd78ab14820d4890b8605a3b00fe28612c026",
+                  "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs": "0407cd800bda17a98c5cc63ffe1d527a64709265",
+                  "apps/bigbrotr/src/storage/rocks/store.rs": "0f6343a010bd1f8a96afca0b43d980ea2552894e",
+                  "apps/bigbrotr/src/storage/rocks/successor_empty.rs": "35f4741feefb46c78325caea004f9b130fccb847",
+                  "apps/bigbrotr/src/storage/rocks/successor_handoff.rs": "28c158f634f011e1fcb28aec0297979da787f5e8",
+                  "apps/bigbrotr/src/storage/rocks/successor_handoff_tests.rs": "0e5fc70c21291bb00efd5e7801713bfe0aad688b"
+                }
+              },
+              {
+                "original": "efe6337977a7e1eb0fd2ee71a027a64d49336d31",
+                "integrated": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
+                "blobs": {
+                  "apps/bigbrotr/src/storage/postgres/control_owner.rs": "c3983e62dcb476fa878c253812bcc9aebac13e4b",
+                  "apps/bigbrotr/src/storage/postgres/successor_history.rs": "802487196c7cc9c3bea43100f75d593d83081270",
+                  "apps/bigbrotr/src/storage/postgres/successor_transition.rs": "e7c7e5896b91ec3cc4abf4f85a5b5ac8ccbc5061",
+                  "apps/bigbrotr/src/storage/postgres/successor_transition_rows.rs": "9131b074b14cbc7accfadc6a7885445b31526e2e",
+                  "apps/bigbrotr/src/storage/postgres/successor_transition_tests.rs": "c19b7c1be62dd448192984cded51780f3f9bc2a0"
+                }
+              }
+            ],
+            "qualified_followup_blobs": {
+              "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "70a94a6c51175ac7f691e8d98e4a4c38d40f516e",
+              "apps/bigbrotr/examples/support/ingest_successor_history.rs": "76e4962e3ed2b38082007b84965debc5ea009cbf",
+              "apps/bigbrotr/src/storage/postgres/successor_transition_rows.rs": "edc4ce72e85b0a3d5b390cee08e105f2ac6fffac"
+            },
+            "census_paths": 2070,
+            "census_sha256": "987d9c3130ee014970bf0289cbff6eb6e7c238630614ae64e3c002a8d811f054",
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-history-20261015-before-census.json"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transitions.bundle",
+        "bundle_bytes": 14209547,
+        "bundle_sha256": "0df705cbe3e4270ed455a08085120fdc587616bb234e3a0b050b838201844b05",
+        "component_audit_sha256": "6b789172c87f4ddb87ccfc6cabfdecee21164e4ddab956565a22cc1e0bd6ee24",
+        "qualified_probe_audit_sha256": "0672986fe1365eaefe0e0e49fc4409cb4a19bf3822585581d60ddc92d895127f",
+        "scope": "Two local refs only; no worktree, ignored/external artifacts, container or dataset deleted",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "session": 90216,
+        "exit_code": 0,
+        "report": ".research/branch-retirement-20261015/successor-transitions.json",
+        "report_sha256": "5bfe705cffcbe26159b8a86d9ca6fa8ca20d3acb2dc3b763e07e0fd1b6c1cad0"
+      },
+      "cumulative_totals": {
+        "local_refs_retired": 92,
+        "remote_refs_retired": 51,
+        "worktrees_detached": 48,
+        "all_registered_worktrees_preserved": 104
+      }
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "CONNECTED_HISTORY_PASS_TRANSITION_COMPONENTS_PENDING",
-    "observed_at": "2026-10-15T12:33:28.165387+00:00",
+    "status": "CONNECTED_HISTORY_PASS_TRANSITION_COMPONENT_TESTS_AND_PROBE_BUILD_PASS_CONNECTED_MUTATIONS_PENDING",
+    "observed_at": "2026-10-15T13:44:47.920034+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51242,11 +51361,12 @@
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/successor-history-20261015",
-        "branch": "implementation/successor-history",
+        "branch": null,
         "owner": "recovery_review",
-        "scope": "Typed history source integrated0ad6752; active follow-up connected probe consumer. Root owns build/engine.",
+        "scope": "Qualified component/ref reconciliation complete; original detached with complete census unchanged. New work isolated separately.",
         "created_from": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
-        "preserve_ignored_artifacts": true
+        "preserve_ignored_artifacts": true,
+        "detached_at": "efe6337977a7e1eb0fd2ee71a027a64d49336d31"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/succession-sql-replay-20261015",
@@ -51259,10 +51379,35 @@
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/successor-handoff-20261015",
-        "branch": "implementation/successor-handoff",
+        "branch": null,
         "owner": "successor_restart_design",
-        "scope": "Positive native plan/candidate, exact four-put/gap and empty retirement; no live writer dispatch or engine/build/cache permission.",
+        "scope": "Qualified component/ref reconciliation complete; original detached with complete census unchanged. New work isolated separately.",
         "created_from": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
+        "preserve_ignored_artifacts": true,
+        "detached_at": "6475ff4b0fef91c56bd042ec4e09bb472b9eddf3"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-probe-20261015",
+        "branch": "qualification/successor-transition-probe",
+        "owner": "recovery_review",
+        "scope": "Finiteprobe f008996 integratedc987b17 with rootu16/drop corrections; qualified4e204f9",
+        "created_from": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
+        "preserve_ignored_artifacts": true
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-engine-20261015",
+        "branch": "qualification/successor-transition-engine",
+        "owner": "successor_restart_design",
+        "scope": "Frozen74e3a6b source-only nine-caseharness; next read-only activation design",
+        "created_from": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
+        "preserve_ignored_artifacts": true
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-oracle-20261015",
+        "branch": "qualification/successor-transition-oracle",
+        "owner": "cleanup_review",
+        "scope": "Independentliteral/full-state reader under pure artificial file-replay checks; noengine",
+        "created_from": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
         "preserve_ignored_artifacts": true
       }
     ],
@@ -51443,9 +51588,9 @@
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
     "branch_totals": {
-      "local_refs_retired": 90,
+      "local_refs_retired": 92,
       "remote_refs_retired": 51,
-      "worktrees_detached": 46,
+      "worktrees_detached": 48,
       "all_registered_worktrees_preserved": 104
     },
     "failed_lineage_build": {
@@ -52593,7 +52738,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Compile/lint corrected finite transition probe at fresh exactsource;110protectedELFs. Independent reader/harness work continues; no connectedmutation claim.",
+    "ongoing": "Integrate frozen independenttransition reader +harness74e3a6b; then9connected invocations on3freshcopies with qualified4e204f9CLI/probe. First prepare/empty/retry/laterprepare wave, no gap/adoption/activation/writer claim.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -53225,6 +53370,164 @@
         "unchanged_containers": 1334
       },
       "scope": "CLI/probe compilation PASS; Clippy FAIL; no connectedengine. Product guard correction compiles/lints; firstprobeE0277 and all artifacts remain retained."
+    },
+    "transition_probe_build": {
+      "source": "4e204f928c022a59b489ed9b5308342261f7880e",
+      "tree": "d8721b326c8c598f8f8a0bc5bed439d81d5d6d3b",
+      "owner": "1554c142d079f179d674f1f9211d3f07",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "949ef548a2b1b68e56569981f579d46329f03e6f11890f38bc39cf15a25bb7b8"
+        },
+        {
+          "name": "native",
+          "id": "eb5961a345ddf3cd96838d26b194d61e59154d511e625bcf9e5a54e99217720e"
+        }
+      ],
+      "started_at": "2026-10-15T13:40:56.079697+00:00",
+      "finished_at": "2026-10-15T13:42:37.168657+00:00",
+      "free_bytes_after": 33948172288,
+      "qualification": "PASS_SUCCESSION_TRANSITION_PROBE_BUILD",
+      "inventory_changed": [],
+      "status": "PASS_SUCCESSION_TRANSITION_PROBE_BUILD",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-4e204f9",
+      "preparation": {
+        "session": 26572,
+        "exit_code": 0
+      },
+      "build": {
+        "session": 75838,
+        "exit_code": 0
+      },
+      "custody": {
+        "session": 44325,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-4e204f9/audit-root/audit-v1.json",
+        "sha256": "0672986fe1365eaefe0e0e49fc4409cb4a19bf3822585581d60ddc92d895127f",
+        "source_files": 1885,
+        "protected_elfs": 110,
+        "new_elfs": 2,
+        "unchanged_containers": 1336
+      },
+      "executables": {
+        "ingest_bootstrap_probe": "9827b3cbf8a4d1f04b22f9387eda5d9b109ee6a6e55e36fd64d7139ad2400a37",
+        "bigbrotr": "daa69b4b99649be679c5adafcd96397e1520197016dbf1516484468320fc9119"
+      },
+      "rust_tests": 0,
+      "component_reuse": "f0cd563:21lineage/native +4PG tests PASS. Only product change is equivalent PG deadline let-chain; subsequent changes examples/docs/runner. Test-only Copy-drop warning preserved; no claim warning-free full tests.",
+      "scope": "ExactCLI/probe compile and Clippy PASS; connectedtransition/gap/activation/writer/installed NOT_RUN."
+    },
+    "qualified_transition_branch_retirement": {
+      "status": "PASS_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T13:43:20.794821+00:00",
+      "records": [
+        {
+          "branch": "implementation/successor-handoff",
+          "original": "6475ff4b0fef91c56bd042ec4e09bb472b9eddf3",
+          "integrated": "8df8d06546c9921d783b9845f914ea904b39a3f3",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-handoff-20261015",
+          "archive_ref": "refs/archive/qualified-successor-transitions-20261015/implementation/successor-handoff",
+          "reconciliation": [
+            {
+              "original": "6475ff4b0fef91c56bd042ec4e09bb472b9eddf3",
+              "integrated": "8df8d06546c9921d783b9845f914ea904b39a3f3",
+              "blobs": {
+                "apps/bigbrotr/src/storage/rocks/lineage.rs": "9e5f4f4b7b3daa93a67d019d0dd8e4a91311ecd0",
+                "apps/bigbrotr/src/storage/rocks/lineage_replay.rs": "2b2bd78ab14820d4890b8605a3b00fe28612c026",
+                "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs": "0407cd800bda17a98c5cc63ffe1d527a64709265",
+                "apps/bigbrotr/src/storage/rocks/store.rs": "0f6343a010bd1f8a96afca0b43d980ea2552894e",
+                "apps/bigbrotr/src/storage/rocks/successor_empty.rs": "35f4741feefb46c78325caea004f9b130fccb847",
+                "apps/bigbrotr/src/storage/rocks/successor_handoff.rs": "28c158f634f011e1fcb28aec0297979da787f5e8",
+                "apps/bigbrotr/src/storage/rocks/successor_handoff_tests.rs": "0e5fc70c21291bb00efd5e7801713bfe0aad688b"
+              }
+            }
+          ],
+          "qualified_followup_blobs": {},
+          "census_paths": 2062,
+          "census_sha256": "34f3a8fc4a809f95aec214a44a6d98103f9cf0999611cd6f133408b6db5d4d2a",
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-handoff-20261015-before-census.json"
+        },
+        {
+          "branch": "implementation/successor-history",
+          "original": "efe6337977a7e1eb0fd2ee71a027a64d49336d31",
+          "integrated": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-history-20261015",
+          "archive_ref": "refs/archive/qualified-successor-transitions-20261015/implementation/successor-history",
+          "reconciliation": [
+            {
+              "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
+              "integrated": "0ad675252effeaee0cc448a608332bddd1e84c8e",
+              "blobs": {
+                "apps/bigbrotr/src/storage/postgres/control_owner.rs": "0a485a09f38c9a4cf7ed1eac4adce08b76ad2af7",
+                "apps/bigbrotr/src/storage/postgres/history_authority.rs": "5043315db861ddcce94e908f605f9c75d5f7c8dd",
+                "apps/bigbrotr/src/storage/postgres/initial_history.rs": "5de43cbcb9fabab1b848a8573b8689e51da37899",
+                "apps/bigbrotr/src/storage/postgres/successor_history.rs": "d18bf7a542abd5340b34df0ba2a22a57a9510345",
+                "apps/bigbrotr/src/storage/postgres/successor_history_rows.rs": "32091668aad6307eeffa0eb50eb78dabc9eaf7df",
+                "apps/bigbrotr/src/storage/postgres/successor_history_tests.rs": "bf5e0d68c21ccc1536547094dbf520b96c1d2a33"
+              }
+            },
+            {
+              "original": "f3e1511cd25cae2cb528e11b8215bdd207cb2696",
+              "integrated": "b96bcf867d0b1bc9d170cc36edca5ebf66cdcc36",
+              "blobs": {
+                "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "260461e6204b8655912ae26f2aa7c5eb7b54f9c4",
+                "apps/bigbrotr/examples/support/ingest_successor_history.rs": "5e81966d2952dbd08fc0d05bfe1ea5372d25cd82"
+              }
+            },
+            {
+              "original": "2183a9202c4401479d475ef514a48c185a25247f",
+              "integrated": "6714e574fedf3729db86808a05ae2bffb9af7cfc",
+              "blobs": {
+                "apps/bigbrotr/examples/support/ingest_successor_history.rs": "4438cfb6622bd1bffe23a1c9db3ef28a6b61187e"
+              }
+            },
+            {
+              "original": "8bad81c3edca854d5790c3cedba45ef762a59993",
+              "integrated": "8df8d06546c9921d783b9845f914ea904b39a3f3",
+              "blobs": {
+                "apps/bigbrotr/src/storage/rocks/lineage.rs": "9e5f4f4b7b3daa93a67d019d0dd8e4a91311ecd0",
+                "apps/bigbrotr/src/storage/rocks/lineage_replay.rs": "2b2bd78ab14820d4890b8605a3b00fe28612c026",
+                "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs": "0407cd800bda17a98c5cc63ffe1d527a64709265",
+                "apps/bigbrotr/src/storage/rocks/store.rs": "0f6343a010bd1f8a96afca0b43d980ea2552894e",
+                "apps/bigbrotr/src/storage/rocks/successor_empty.rs": "35f4741feefb46c78325caea004f9b130fccb847",
+                "apps/bigbrotr/src/storage/rocks/successor_handoff.rs": "28c158f634f011e1fcb28aec0297979da787f5e8",
+                "apps/bigbrotr/src/storage/rocks/successor_handoff_tests.rs": "0e5fc70c21291bb00efd5e7801713bfe0aad688b"
+              }
+            },
+            {
+              "original": "efe6337977a7e1eb0fd2ee71a027a64d49336d31",
+              "integrated": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
+              "blobs": {
+                "apps/bigbrotr/src/storage/postgres/control_owner.rs": "c3983e62dcb476fa878c253812bcc9aebac13e4b",
+                "apps/bigbrotr/src/storage/postgres/successor_history.rs": "802487196c7cc9c3bea43100f75d593d83081270",
+                "apps/bigbrotr/src/storage/postgres/successor_transition.rs": "e7c7e5896b91ec3cc4abf4f85a5b5ac8ccbc5061",
+                "apps/bigbrotr/src/storage/postgres/successor_transition_rows.rs": "9131b074b14cbc7accfadc6a7885445b31526e2e",
+                "apps/bigbrotr/src/storage/postgres/successor_transition_tests.rs": "c19b7c1be62dd448192984cded51780f3f9bc2a0"
+              }
+            }
+          ],
+          "qualified_followup_blobs": {
+            "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "70a94a6c51175ac7f691e8d98e4a4c38d40f516e",
+            "apps/bigbrotr/examples/support/ingest_successor_history.rs": "76e4962e3ed2b38082007b84965debc5ea009cbf",
+            "apps/bigbrotr/src/storage/postgres/successor_transition_rows.rs": "edc4ce72e85b0a3d5b390cee08e105f2ac6fffac"
+          },
+          "census_paths": 2070,
+          "census_sha256": "987d9c3130ee014970bf0289cbff6eb6e7c238630614ae64e3c002a8d811f054",
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-history-20261015-before-census.json"
+        }
+      ],
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transitions.bundle",
+      "bundle_bytes": 14209547,
+      "bundle_sha256": "0df705cbe3e4270ed455a08085120fdc587616bb234e3a0b050b838201844b05",
+      "component_audit_sha256": "6b789172c87f4ddb87ccfc6cabfdecee21164e4ddab956565a22cc1e0bd6ee24",
+      "qualified_probe_audit_sha256": "0672986fe1365eaefe0e0e49fc4409cb4a19bf3822585581d60ddc92d895127f",
+      "scope": "Two local refs only; no worktree, ignored/external artifacts, container or dataset deleted",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "session": 90216,
+      "exit_code": 0,
+      "report": ".research/branch-retirement-20261015/successor-transitions.json",
+      "report_sha256": "5bfe705cffcbe26159b8a86d9ca6fa8ca20d3acb2dc3b763e07e0fd1b6c1cad0"
     }
   }
 }

@@ -14,7 +14,7 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `7eb0274` includes
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `4e204f9` includes
 native handoff8df8d06 and PostgreSQL transitione33075e. Last verified remote
 `c987b179d22ba62ddffb07c392863168e73e7ae4` (push75302 joined0, independent ls-remote). Only main is remote.
 No merge/rebase pending. Root is recording qualification and adding its focused
@@ -29,10 +29,17 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: compile corrected probef008996→c987b17→7eb0274 on a fresh exact-source root using
-`ingest-succession-transition-probe` CLI/probe compilation and Clippy. Reuse25
-component tests across the equivalent let-chain correction and example-only edits.
-Connected nine-case mutation harness/reader source work continues separately.
+Root's next bounded action: integrate independent transition reader after its pure
+file-replay controls, then frozen harness74e3a6b. Prepare a fresh exact-source engine
+root and run9finite invocations on3freshcopies using qualified4e204f9 binaries.
+
+Probe4e204f9 preparation26572/build75838/custody44325 all joined0. CLI/probe and
+Clippy PASS; no tests repeated. Audit0672986f binds1885sourcefiles,110old+2new=
+112protectedELFs and1336unchanged prior projections. Both owned containers stopped0/
+PID0/noOOM. Probe9827b3cb/CLIdaa69b4b retained; engine still NOT_RUN.
+Source-only review covers complete443-line helper and sharedload/replay/dispatch
+changes.25component checks in f0cd563 reused across equivalent productlet-chain;
+three subsequent example corrections change no event/budget/native authority.
 
 Transitionf0cd563 preparation49360/build52025 joined0/1: CLI/probe compilation and
 21lineage/native +4PG tests PASS; Clippy FAIL on collapsible_if at PG rows211.
@@ -160,10 +167,11 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 
 ## Branches, resources and preservation
 
-90local/51remote redundant refs retired;46worktrees detached with their original
-commits and full censuses unchanged. All previously101registered worktrees remain; agents add purposeful isolated worktrees
-for the current transition probe/harness/oracle. Qualified history reader/engine refs
-are archived and retired; native/PG refs remain until component qualification. Original closures
+92local/51remote redundant refs retired;48worktrees detached with their original
+commits and full censuses unchanged. All104registered worktrees remain. Only main plus three purposeful transition
+probe/engine/oracle refs exist locally. Native/PG refs retired90216 after full
+original/integrated pair reconciliation and unchanged worktree censuses; bundle
+0df705cb preserved. Original closures
 remain under `refs/archive/*` and verified bundles in
 `.research/branch-retirement-20261015`; see `tux_branch_retirement_20261015` and
 active evidence `qualified_sql_branch_retirements`. No artifact/dataset/container
@@ -180,7 +188,7 @@ Free space afterf0cd563 build:34589794304bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.110protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.112protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.
