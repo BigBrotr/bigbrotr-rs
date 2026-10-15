@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T18:08:32.212492+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T18:32:05.568477+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,14 +12,15 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD bf2c33d24faf00689b959456216146ee8b779930.
-Remote exactbf2c33d: push47435joined0, independent9199ff exact.
-No merge/rebase. Native4a3a8bf→e14dd47, PG0cbf649→ec0c0f1,
-harness023eb0f→c20c630/capture0f7aec8→4ad8369, rootprobebef7aad and
-readerbf2c33d integrated and pushed. This qualification record and README pending commit.
-All three original retirement refs are archived/bundled and retired; worktrees and
-ignored artifacts retained byte/stat unchanged. All agents completed their source
-and independent AI review assignments. Root alone owns integration/build/cache/engines.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD 357e435180a694aa878f5c440c5a9f5a7715791e.
+Last verified remote3d372c7: push97912joined0, independent0614cd exact;
+fresh ls-remote29513f still3d372c7 before new fault source push.
+No merge/rebase. Probeccb9d44→ae45676, harness4008dac→ec1aee3,
+semanticreadereb683aa→357e435 integrated byte-exact. Root raw/shared-reader and
+README/evidence/checkpoint pending commit. Three fault worktrees below retain
+original source and ignored evidence; refs remain until qualification and archive.
+Root alone owns integration/build/cache/engines. Agents completed finite source;
+independent AI reviews and pure raw binding checks are linked in evidence.
 
 ## Active task and next action
 
@@ -32,13 +33,24 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: retirement fault qualification from four fresh genuine-gap
-copies, six finite processes: COMMIT10 before-forward/after-complete, each with
-fresh retry; final target-job wait with typed cancellation and real UTC expiry.
-Implement only narrow finite probe routing/gates, harness and independent reader.
-Design dfdfcad6 is source-only, all six NOT_RUN. Fresh Control must fence the old
-active-but-excluded owner, preserving original terminal receipt on after-loss retry.
-The unresolved-claim clone is not a positive seed and remains untouched.
+Next bounded action: clean exact-source `ingest-succession-transition-probe`
+compilation of CLI/probe and Clippy. Zero new Rust tests; explicitly bind unchanged
+product bytes to bf2c33d122tests. Audit137protected+2newELFs, then on the exact same
+revision run four fresh genuine-gap copies/six processes: COMMIT10 before-forward/
+after-complete plus separate fresh retries; genuine final-job wait with typed
+cancellation and real UTC expiry. All runtime work NOT_RUN at this checkpoint.
+Fresh Control17 fences active-but-excluded16; after-loss retry preserves original
+terminal receipt/time/xmin. Native55rows/68sequence/fourinputs remain unchanged.
+No job/lease mutation manufactures waits. Preserve unresolved-claim original.
+
+Source checks: scoped rustfmt/static PASS; harness27pure; reader6artificialcontexts/
+168snapshots/171controls plus4positive checks, shared Model protocol only. Root
+491artifact/source bindings PASS. Helper extraction7aa7bff2 retained actual9process/
+292snapshot/215control replay exact, session79019joined0. Raw binding and independent
+AI review manifests linked under successor_retirement_fault_work. Fixed unknown
+process-outcome/absence-receipt raw checks and oldmanifest build-audit binding.
+Ignored harness check1 SyntaxError, reader generator identity collision and
+manifest SyntaxError and raw-generator omitted absence receipt retained. Raw pure6envelopes/159boundfiles/28mutations PASS. No engine/compiler/product execution by agents.
 
 ## Latest qualified retirement outcome
 
@@ -177,22 +189,24 @@ Archive asset FAIL and followup85eca49 PASS remain separate. No run/prep replay.
 ## Branches and resources
 
 117local/51remote redundant refs retired;73worktrees detached and preserved.
-All126registered worktrees retained. Source components7290joined0 bundle9ec3b72b
+All129registered worktrees retained. Source components7290joined0 bundle9ec3b72b
 preserves c336f45/86dc47c; source qualification37031joined0 preserves07c36bb/c725ec3.
 Every original full history is archived and bundled under
 `.research/branch-retirement-20261015`; file/ignored/link censuses unchanged.
 Acquisition retirement7822joined0 archives originals750e735/620404ff/938dbb2;
 bundle13b39647 is14,808,813bytes, complete histories, allfilecensusesunchanged.
 Retirement71934joined0 archives4a3a8bf/0cbf649/0f7aec8 and full histories;
-bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Main only local/remote.
+bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Main plus3 integrated fault refs local; remote main.
 No artifact/worktree/dataset/container deleted.
 
-Fresh read-only observation 2026-10-15T18:08:32.212492+00:00:1365containers,
-all BigBrotr stopped, six unrelated services active; free28084805632bytes.
-Retirement clientsff43c6ee/702cc20f and borrowed PG7177550705c49 retained.
-PG `/runs/relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608,
-PG16.15/1.5GiB2CPU64MiBshm. All build/engine/replay/audit handles terminal.
-All agents completed; next fault implementation not yet assigned.
+Fresh read-only observation 2026-10-15T18:32:05.568477+00:00: 1365containers,
+all BigBrotr stopped, six unrelated services active; free27850522624bytes.
+Three new WTs: `.research/successor-retirement-fault-probe-20261015`,
+`successor-retirement-fault-engine-20261015`, `successor-retirement-fault-oracle-20261015`.
+All prior build/engine/replay/audit handles terminal. New prepare/audit scripts
+under root .research are unexecuted. No new lab allocation or compiler/cache use.
+Borrowed PG7177550705c49, owner5e69b0f060b1607c25230d1dbd3e5608,
+`/runs/relay-source-recheck-e06f580/pg`, PG16.15/1.5GiB2CPU64MiBshm.
 
 Root-only compiler cache `/runs/network-1154757/out/build/{target,cargo-home}`,
 owner8b21a13162699a6038154874c2ac89da, exclusive `.compiler-cache.lock`.

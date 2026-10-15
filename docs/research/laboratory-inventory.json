@@ -50808,8 +50808,8 @@
     "status": "COMPLETE_INACTIVE_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
     "authority": "Q36; owner requested current integrated main and removal of useless branch refs",
     "canonical_branch": "main",
-    "main_source": "bf2c33d24faf00689b959456216146ee8b779930",
-    "main_verified_push": "bf2c33d push47435 joined0; independent9199ff exact on2026-10-15. Current qualification documentation commit pending.",
+    "main_source": "357e435180a694aa878f5c440c5a9f5a7715791e",
+    "main_verified_push": "3d372c7 push97912joined0; independent0614cd exact. Current fault source integration awaiting next verified push.",
     "root": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015",
     "inventory": ".research/branch-inventory-cleanup-review-20261015/inventory.json",
     "original_refs": 133,
@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main only local and remote;117local/51remote refs retired,73worktrees detached. All126worktrees retained with ignored/external evidence.",
+    "remaining": "main plus3 integrated fault refs pending runtime qualification/census/bundle;129worktrees retained; remote main.117local/51remote retired,73detached; no artifacts deleted.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -51653,7 +51653,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "SUCCESSOR_RETIREMENT_FIRST_WAVE_PASS_FAULTS_NOT_RUN",
-    "observed_at": "2026-10-15T18:08:32.212492+00:00",
+    "observed_at": "2026-10-15T18:32:05.568477+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -53122,7 +53122,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Implement bounded retirement COMMIT10 loss before-forward/after-complete and fresh retries, then final-job typed cancellation and real UTC expiry. Four fresh genuine-gap clones/six finite processes; narrow probe routing/gates and independent raw readers. Design is source-only NOT_RUN. Root alone owns compilation and engines; preserve unresolved claim clone.",
+    "ongoing": "Commit clean exact source, run ingest-succession-transition-probe CLI/probe compilation and Clippy with zero new Rust tests; bind unchanged bf2 product122tests. Audit137old+2newELFs, then exact same source four-clone/six-process engine, independent raw replay and custody. Root alone owns compiler/cache/engine.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -58962,6 +58962,123 @@
         "bytes": 4531
       },
       "wrapper": "71934 joined0"
+    },
+    "successor_retirement_fault_work": {
+      "status": "INTEGRATED_SOURCE_RUNTIME_NOT_RUN",
+      "observed_at": "2026-10-15T18:32:05.568477+00:00",
+      "observed_head": "357e435180a694aa878f5c440c5a9f5a7715791e",
+      "components": [
+        {
+          "original": "ccb9d44508401c956db1b1323fd4f74d6d6c2bec",
+          "integrated": "ae4567651fed93dbf8205fa604b0bdf566ca3f9e",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-probe-20261015"
+        },
+        {
+          "original": "4008dac3afef9da87b32e9edbdf6aa9ee0122b14",
+          "integrated": "ec1aee36853a5b43d75a19ccca094faa403b59d1",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-engine-20261015"
+        },
+        {
+          "original": "eb683aa39ec28b0c0df38889982530ff9f85cb18",
+          "integrated": "357e435180a694aa878f5c440c5a9f5a7715791e",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-oracle-20261015"
+        }
+      ],
+      "artifacts": {
+        "probe_static": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-probe-20261015/.research/retirement-fault-probe-static-20261015/manifest.json",
+          "sha256": "f68b29bad7de4a1b4533174aaace97d82cfbb551637af035b24a253f917b7872",
+          "bytes": 1981
+        },
+        "harness_pure": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-engine-20261015/.research/retirement-fault-harness-selfcheck-20261015/manifest.json",
+          "sha256": "7c8e7471a1be938040f0b6e3a7ded61c8d4756cd2042b30c5a5303e6e8989328",
+          "bytes": 73945
+        },
+        "reader_protocol": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-oracle-20261015/.research/retirement-fault-reader-selfcheck-20261015/manifest.json",
+          "sha256": "073ab9e5f140032c7663e138e30957f8a4c2266c19727143a9d866dbe80d507f",
+          "bytes": 10517
+        },
+        "retained_capture_regression": {
+          "path": "/home/tux/bigbrotr-rs/.research/retirement-capture-helper-regression-v2-20261015/result.json",
+          "sha256": "43d161e57e840690b50cb24503ca0b4cd41cbf0c6baeaca3277a1af74d25aea2",
+          "bytes": 822
+        },
+        "root_binding_check": {
+          "path": "/home/tux/bigbrotr-rs/.research/retirement-fault-source-root-check-20261015/result.json",
+          "sha256": "e54ae6416187d4dc8dc1b1f705c2dd7015f0288e7026e19e081077b62f8e2bbb",
+          "bytes": 176
+        },
+        "raw_capture_pure": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-engine-20261015/.research/retirement-fault-capture-selfcheck-20261015/manifest.json",
+          "sha256": "6252ec24a13eefde27658c55ef060f0d08e1f279fb3719900bc88a0ce0520327",
+          "bytes": 5253
+        },
+        "raw_ai_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-oracle-20261015/.research/retirement-fault-capture-review-20261015/review-v2.json",
+          "sha256": "e8f4499a26ad88ebc874b2e32ea35625313b0a693782c8890ce6855e6d712887",
+          "bytes": 4253
+        },
+        "build_engine_custody_ai_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-fault-probe-20261015/.research/retirement-fault-lab-review-20261015/review.json",
+          "sha256": "95a81dd75e87ab4259d81e2749664d3f0e32830c21204c89c1183359567951fb",
+          "bytes": 6242
+        }
+      },
+      "resources": {
+        "observed_at": "2026-10-15T18:32:05.568477+00:00",
+        "containers": 1365,
+        "running": [
+          {
+            "name": "/inspirehep-reindex-db-1",
+            "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088"
+          },
+          {
+            "name": "/inspirehep-reindex-mq-1",
+            "id": "c1eb6dd5ff8f735fd76cdcb2b4250c62e488135c169752df0f9c26b818216f12"
+          },
+          {
+            "name": "/inspirehep-reindex-cache-1",
+            "id": "1f2889273c7c4de374ae091b15bcec7b3eff8213fcd58906fa4efcfdb26fd55c"
+          },
+          {
+            "name": "/inspirehep-reindex-es-1",
+            "id": "9c1053ce0d699c013403567db284bb38eb2dc72deeecc408b5f2991eaacdfd9f"
+          },
+          {
+            "name": "/ollama",
+            "id": "5fcfeab23981bae1267a982c37687b567b9b913bf104c25e956cf68b0c91027b"
+          },
+          {
+            "name": "/tgdataset-mongo",
+            "id": "4e93d9d21e55982b2a828d792a1ddcd02d29df5dda0d2a116b9286c433679c85"
+          }
+        ],
+        "free_bytes": 27850522624,
+        "protected_elfs": 137,
+        "worktrees": 129,
+        "branches": [
+          "main",
+          "qualification/successor-retirement-fault-engine",
+          "qualification/successor-retirement-fault-oracle",
+          "qualification/successor-retirement-fault-probe"
+        ],
+        "compiler_engine_status": "NOT_RUNNING",
+        "reserve_build_bytes": 12884901888,
+        "reserve_engine_bytes": 2147483648
+      },
+      "source_sha256": {
+        "experiments/ingest-succession/retirement_fault_capture_replay.py": "aaae5ad83428ad1c855fb06486c80f95852e7138406f677a7ca27e84cc1e28fd",
+        "experiments/ingest-succession/retirement_capture_replay.py": "7aa7bff2da2849801f7919847f56e534f8709e81abf4f71a8a242ee87eac1aea"
+      },
+      "scope": "Four fresh genuine-gap copies and six processes: C10 before-forward/after-complete plus fresh retry; final genuine-job wait, typed cancellation and actual UTC expiry. Native55rows/68sequence/fourinputs preserved; no invented lease/job mutation.",
+      "root_review": "Complete changed finite owner/helper/host diff, semantic reader, raw reader, harness/wait and caller/source/custody boundaries; shared origin/clone/diagnostic extraction reviewed and retained9actualprocess292snapshot215control regression unchanged. Frozen agent commits exactly integrated.",
+      "source_findings": "Raw unknown process outcome and absence receipt binding corrected; build audit prior manifest hash bound; engine prepare restricted to exact same build revision. Independent AI reviews are source-only.",
+      "checks": "Probe scoped rustfmt/static PASS; harness27pure PASS; reader6artificial contexts168snapshots171controls plus4positive checks PASS. Shared Model generator is protocol only. Root491file/source bindings PASS. Raw file-binding pure report separately bound.",
+      "preserved_failures": "Harness ignored check1 SyntaxError; reader artificial identity collision and manifest SyntaxError retained. Raw capture generator initially omitted new absence receipt; failed generator/log retained. No product/runtime failure implied or relabeled.",
+      "next": "Commit clean exact source, run ingest-succession-transition-probe CLI/probe compilation and Clippy with zero new Rust tests; bind unchanged bf2 product122tests. Audit137old+2newELFs, then exact same source four-clone/six-process engine, independent raw replay and custody. Root alone owns compiler/cache/engine.",
+      "remaining": "All actual new build/engine checks NOT_RUN at this checkpoint. Installed repeated lifetimes, other faults/tails/capacity/RSS, import closure, ACK/GC, Archive and M1-M5 remain incomplete."
     }
   }
 }

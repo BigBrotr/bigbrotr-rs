@@ -153,6 +153,12 @@ def custody(events, database, operation, expected_status):
 
 
 def claim_diagnostic(log, events, database, window):
+    return server_diagnostic(log, events, database, window,
+        'lineage acquisition claims remain unresolved',
+        r'PL/pgSQL function control\.require_ingest_lineage_workflows\(bytea,numeric,numeric\) line \d+ at RAISE')
+
+
+def server_diagnostic(log, events, database, window, message, context_pattern):
     """Default PG log has millisecond UTC/PID, not database/start or SQLSTATE.
 
     Bind the database/start through the actual claim row and observed tuple.
@@ -176,7 +182,6 @@ def claim_diagnostic(log, events, database, window):
         elif records:
             records[-1]['lines'].append(line)
     records = [r for r in records if r['pid'] == backend['pid']]
-    message = 'lineage acquisition claims remain unresolved'
     selected = []
     for index, record in enumerate(records):
         state = None
@@ -191,11 +196,103 @@ def claim_diagnostic(log, events, database, window):
         context = records[index + 1]
         assert context['level'] == 'CONTEXT'
         assert record['time'] <= context['time'] <= window['after_us']
-        assert re.search(r'PL/pgSQL function control\.require_ingest_lineage_workflows\(bytea,numeric,numeric\) line \d+ at RAISE', '\n'.join(context['lines']))
+        assert re.search(context_pattern, '\n'.join(context['lines']))
         selected.append(dict(backend=backend, error_lines=record['lines'], context_lines=context['lines'],
             observed_sqlstate=state, log_precision_us=1000))
     result, = selected
     return result
+
+
+def origin_checked(root, folder, name, pin, declaration, raw, read, *, explicit=True):
+    """Bind one pinned origin, its captured SQL and actual retained files."""
+    locator = pin if explicit else dict(name=name, kind=1 if name == 'activated' else 2,
+        **{k: pin[k] for k in ('run','database','snapshot','snapshot_sha256','result_sha256','status')})
+    assert set(declaration) == set(locator) | {'pins','store','files','inputs','native','previous_client','rows','catalog','preserved'}
+    assert declaration['pins'] == pin
+    for key, value in locator.items():
+        if key != 'store':
+            assert declaration[key] == value
+    basis = root.parent / pin['run'] / (pin['subdirectory'] if explicit else 'bindings')
+    assert Path(declaration['store']) == basis / pin['store']
+    previous_bytes = raw(basis / 'result.json')
+    assert sha(previous_bytes) == pin['result_sha256']
+    previous = loads(previous_bytes)
+    assert previous['status'] == pin['status']
+    assert declaration['previous_client'] == previous['client']
+    for key in ('cleanup_errors','missing_owned','unrelated_changed'):
+        assert previous[key] == []
+    if explicit:
+        assert previous['unexpected_containers'] == []
+        for key in ('source','owner','label'):
+            assert previous[key] == pin[key]
+        assert previous['client'] == pin['client_id']
+        old = only(previous['clones'], name=pin['source_clone'])
+        assert old['final_case'] == pin['final_case'] and old['database'] == pin['database']
+        assert old['directory'] + '/store' == pin['store'] and old['status'] == 'PASS'
+        last = only(previous['cases'], name=pin['final_case'])
+        assert last['status'] == 'PASS' and last['returncode'] == 0 and last['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
+        assert sha(old['final_catalog'].encode()) == pin['catalog_sha256']
+    captures = {key: raw(basis / pin[key]) for key in ('snapshot','native_file','inputs_file')}
+    rows, native, original_inputs = [loads(captures[key]) for key in ('snapshot','native_file','inputs_file')]
+    for key, digest in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
+        assert sha(captures[key]) == pin[digest]
+    inputs = original_inputs.get('inputs', original_inputs)
+    same(rows, declaration['rows'])
+    same(rows, read(folder / (name+'-original.json')))
+    assert declaration['native'] == native and declaration['inputs'] == inputs
+    assert sha(declaration['catalog'].encode()) == (pin['catalog_sha256'] if explicit else LEGACY_CATALOGS[name])
+    store = basis / pin['store']
+    assert physical(store, raw) == declaration['files'], 'original physical census changed'
+    spool_checked(store / 'producer-inputs-v1', inputs, raw, complete=True)
+    if 'contents' in original_inputs:
+        assert all(raw(store/'producer-inputs-v1'/n).hex() == b for n,b in original_inputs['contents'].items())
+    assert declaration['preserved'] == PRESERVED == read(folder / (name+'-preserved.json'))
+    assert all(v is True for v in declaration['preserved'].values())
+    return rows, native, inputs
+
+
+def clone_checked(folder, clone, origin, raw, read, *, explicit=True):
+    """Check configuration, migrations/grants and unchanged clone schema."""
+    name, origin_name = clone["name"], clone["origin"]
+    config = tomllib.loads(raw(folder / Path(clone['config']).name).decode())
+    ds = only(origin[0]['datasets'])
+    assert {k:config['postgres']['control'][k] for k in ('database','endpoint','user','password_ref')} == dict(
+        database=clone['database'], endpoint='127.0.0.1:5432', user='bigbrotr_control', password_ref='file:/run/secrets/application')
+    assert config['storage']['ingest_root'] == '/lab/' + name + '/store'
+    assert config['topology']['dataset_id'] == ds['dataset_id'][2:] and config['topology']['instance_id'] == ds['instance_id'][2:]
+    assert config['topology']['local_roles'] == ['control','ingest','archive']
+    assert config['postgres']['control']['tls'] == dict(local_boundary='loopback', mode='local-plaintext')
+    assert config['runtime']['lease_ttl'] == '20s'
+    assert config['runtime']['processes']['application'] == dict(memory_max_bytes='1536MiB', baseline_bytes='128MiB',
+        payload_bytes='1GiB', native_bytes='256MiB', completion_reserve_bytes='32MiB')
+    validation = read(folder / (name+'-config-validation.json'))
+    assert validation['returncode'] == 0 and validation['stderr'] == ''
+    floor = 38 if explicit else history.PINS[origin_name]['floor']
+    steps = [dict(name=f'{v:04d}_{history.MIGRATIONS[v][0]}.sql', sha256=history.MIGRATIONS[v][1],version=str(v)) for v in range(floor+1,39)]
+    assert [m['action'] for m in clone['migrations']] == ['plan','apply','apply']
+    for index, answer in enumerate(clone['migrations']):
+        assert set(answer) == {'action','exit_code','stdout','stderr'}
+        assert type(answer['exit_code']) is int and answer['exit_code'] == 0 and answer['stderr'] == ''
+        assert loads(answer['stdout']) == dict(format='bigbrotr-control-migration/1', scope='postgres-control',target_version='38',
+            source_version=str(floor) if index < 2 else '38', current_version=str(floor) if index == 0 else '38',
+            status='planned' if index == 0 else ('applied' if index == 1 and steps else 'current'),
+            applied_count=str(len(steps)) if index == 1 else '0', steps=steps if index < 2 else [],
+            dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
+    grants = clone['grants']
+    assert len(grants) == 4 and all(set(g) == {'statement','stdout'} and not g['stdout'].strip() for g in grants)
+    assert sha(grants[0]['statement'].encode()) == '36a16062c994adfe1ba7ace4c5e56d2ed942277b0e227ddd048e320939f0e588'
+    assert [g['statement'] for g in grants[1:]] == ['GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;',
+        'GRANT UPDATE ON control.producer_epochs TO bigbrotr_control;','GRANT INSERT ON control.producer_outcomes TO bigbrotr_control;']
+    assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
+    assert sha(clone['catalog_before'].encode()) == (PINS[origin_name]['catalog_sha256'] if explicit else PINS['genuine-gap']['catalog_sha256'])
+    assert clone['final_backends'] == []
+    same(origin[0], read(folder/(name+'-copy-before.json')))
+    migrated = read(folder/(name+'-migrated.json'))
+    if explicit:
+        same(origin[0], migrated)
+    else:
+        history.baseline(migrated,origin[1],origin[2],origin_name,read(folder/'empty-claims3-clock.json'))
+    return migrated, origin[1], origin[2]
 
 
 def replay(root):
@@ -239,48 +336,7 @@ def replay(root):
     origins = {}
     for name, pin in pins.items():
         declaration = report['origins'][name]
-        locator = pin if explicit else dict(name=name, kind=1 if name == 'activated' else 2,
-            **{k: pin[k] for k in ('run','database','snapshot','snapshot_sha256','result_sha256','status')})
-        assert set(declaration) == set(locator) | {'pins','store','files','inputs','native','previous_client','rows','catalog','preserved'}
-        assert declaration['pins'] == pin
-        for key, value in locator.items():
-            if key != 'store':
-                assert declaration[key] == value
-        basis = root.parent / pin['run'] / (pin['subdirectory'] if explicit else 'bindings')
-        assert Path(declaration['store']) == basis / pin['store']
-        previous = read(basis / 'result.json')
-        assert bound[str(basis / 'result.json')] == pin['result_sha256']
-        assert previous['status'] == pin['status']
-        assert declaration['previous_client'] == previous['client']
-        for key in ('cleanup_errors','missing_owned','unrelated_changed'):
-            assert previous[key] == []
-        if explicit:
-            assert previous['unexpected_containers'] == []
-            for key in ('source','owner','label'):
-                assert previous[key] == pin[key]
-            assert previous['client'] == pin['client_id']
-            old = only(previous['clones'], name=pin['source_clone'])
-            assert old['final_case'] == pin['final_case'] and old['database'] == pin['database']
-            assert old['directory'] + '/store' == pin['store'] and old['status'] == 'PASS'
-            last = only(previous['cases'], name=pin['final_case'])
-            assert last['status'] == 'PASS' and last['returncode'] == 0 and last['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
-            assert sha(old['final_catalog'].encode()) == pin['catalog_sha256']
-        rows, native, original_inputs = [read(basis / pin[k]) for k in ('snapshot','native_file','inputs_file')]
-        for key, digest in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
-            assert bound[str(basis / pin[key])] == pin[digest]
-        inputs = original_inputs.get('inputs', original_inputs)
-        same(rows, declaration['rows'])
-        same(rows, read(folder / (name+'-original.json')))
-        assert declaration['native'] == native and declaration['inputs'] == inputs
-        assert sha(declaration['catalog'].encode()) == (pin['catalog_sha256'] if explicit else LEGACY_CATALOGS[name])
-        store = basis / pin['store']
-        assert physical(store, raw) == declaration['files'], 'original physical census changed'
-        spool_checked(store / 'producer-inputs-v1', inputs, raw, complete=True)
-        if 'contents' in original_inputs:
-            assert all(raw(store/'producer-inputs-v1'/n).hex() == b for n,b in original_inputs['contents'].items())
-        assert declaration['preserved'] == PRESERVED == read(folder / (name+'-preserved.json'))
-        assert all(v is True for v in declaration['preserved'].values())
-        origins[name] = rows, native, inputs
+        origins[name] = origin_checked(root, folder, name, pin, declaration, raw, read, explicit=explicit)
 
     chains, windows, clones = {}, {}, {}
     for clone in report['clones']:
@@ -288,45 +344,7 @@ def replay(root):
         assert clone['origin'] == name and clone['status'] == 'PASS' and clone['directory'] == name
         assert clone['database'] == prefix + report['source'][:7] + '_' + name.replace('-','_')
         assert clone['config'] == '/lab/' + clone['database'] + '.toml'
-        config = tomllib.loads(raw(folder / Path(clone['config']).name).decode())
-        ds = only(origins[name][0]['datasets'])
-        assert {k:config['postgres']['control'][k] for k in ('database','endpoint','user','password_ref')} == dict(
-            database=clone['database'], endpoint='127.0.0.1:5432', user='bigbrotr_control', password_ref='file:/run/secrets/application')
-        assert config['storage']['ingest_root'] == '/lab/' + name + '/store'
-        assert config['topology']['dataset_id'] == ds['dataset_id'][2:] and config['topology']['instance_id'] == ds['instance_id'][2:]
-        assert config['topology']['local_roles'] == ['control','ingest','archive']
-        assert config['postgres']['control']['tls'] == dict(local_boundary='loopback', mode='local-plaintext')
-        assert config['runtime']['lease_ttl'] == '20s'
-        assert config['runtime']['processes']['application'] == dict(memory_max_bytes='1536MiB', baseline_bytes='128MiB',
-            payload_bytes='1GiB', native_bytes='256MiB', completion_reserve_bytes='32MiB')
-        validation = read(folder / (name+'-config-validation.json'))
-        assert validation['returncode'] == 0 and validation['stderr'] == ''
-        floor = 38 if explicit else history.PINS[name]['floor']
-        steps = [dict(name=f'{v:04d}_{history.MIGRATIONS[v][0]}.sql', sha256=history.MIGRATIONS[v][1],version=str(v)) for v in range(floor+1,39)]
-        assert [m['action'] for m in clone['migrations']] == ['plan','apply','apply']
-        for index, answer in enumerate(clone['migrations']):
-            assert set(answer) == {'action','exit_code','stdout','stderr'}
-            assert type(answer['exit_code']) is int and answer['exit_code'] == 0 and answer['stderr'] == ''
-            assert loads(answer['stdout']) == dict(format='bigbrotr-control-migration/1', scope='postgres-control',target_version='38',
-                source_version=str(floor) if index < 2 else '38', current_version=str(floor) if index == 0 else '38',
-                status='planned' if index == 0 else ('applied' if index == 1 and steps else 'current'),
-                applied_count=str(len(steps)) if index == 1 else '0', steps=steps if index < 2 else [],
-                dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
-        grants = clone['grants']
-        assert len(grants) == 4 and all(set(g) == {'statement','stdout'} and not g['stdout'].strip() for g in grants)
-        assert sha(grants[0]['statement'].encode()) == '36a16062c994adfe1ba7ace4c5e56d2ed942277b0e227ddd048e320939f0e588'
-        assert [g['statement'] for g in grants[1:]] == ['GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;',
-            'GRANT UPDATE ON control.producer_epochs TO bigbrotr_control;','GRANT INSERT ON control.producer_outcomes TO bigbrotr_control;']
-        assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
-        assert sha(clone['catalog_before'].encode()) == (pins[name]['catalog_sha256'] if explicit else PINS['genuine-gap']['catalog_sha256'])
-        assert clone['final_backends'] == []
-        same(origins[name][0], read(folder/(name+'-copy-before.json')))
-        migrated = read(folder/(name+'-migrated.json'))
-        if explicit:
-            same(origins[name][0], migrated)
-        else:
-            history.baseline(migrated,origins[name][1],origins[name][2],name,read(folder/'empty-claims3-clock.json'))
-        chains[name] = migrated, origins[name][1], origins[name][2]
+        chains[name] = clone_checked(folder, clone, origins[name], raw, read, explicit=explicit)
         clones[name] = clone
 
     checked, diagnostic = [], None

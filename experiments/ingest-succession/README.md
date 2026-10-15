@@ -224,3 +224,21 @@ business refusal both require actual closed/joined custody before native reopen.
 The recovery build profile covers the new native/PG retirement groups. These
 finite suites exclude retirement COMMIT loss, expiry/cancellation, installed
 lifetimes, import logical closure, ACK/GC and capacity/RSS qualification.
+
+`retirement_faults.py RUN_ROOT BUILD_ARTIFACTS` uses four fresh genuine-gap copies
+for six processes. The unchanged wire proxy interrupts final COMMIT10 before
+forwarding or after server completion; each loss is followed by a fresh retry.
+Two other processes wait on the genuine final job row while the same pending
+typed operation observes cancellation or real PostgreSQL UTC expiry. The fixture
+never changes the job or lease to manufacture the outcome. Unknown process,
+proxy or holder custody prevents external native inspection.
+
+`retirement_fault_capture_replay.py RUN_ROOT` binds those captures, original
+physical files, complete state chains, backend absence receipts and server logs
+to `retirement_fault_replay.py`. A caller's `CommitUnknown` is separate from the
+observed persistent result; retry after completion must preserve the original
+terminal receipt and timestamp. This finite qualification uses the existing
+`transition-probe` build profile, which runs compilation and Clippy without new
+Rust tests. Reuse of prior component tests requires unchanged product sources.
+Actual run status belongs to the checkpoint; installed lifetimes, additional
+failure boundaries, capacity and RSS remain separate obligations.
