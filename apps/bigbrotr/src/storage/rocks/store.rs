@@ -120,11 +120,12 @@ pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 
 #[path = "lineage.rs"]
 mod lineage;
-#[cfg(test)]
-use lineage::PendingSuccessorRequest;
 pub(in crate::storage) use lineage::{
-    NativeSuccessorRecovery, ResolvedSuccessorRecovery, SuccessorRecoveryResolution,
+    NativeSuccessorRecovery, NativeSuccessorRetirement, ResolvedSuccessorRecovery,
+    ResolvedSuccessorRetirement, SuccessorRecoveryResolution, SuccessorRetirementResolution,
 };
+#[cfg(test)]
+use lineage::{PendingSuccessorRequest, PendingSuccessorRetirementRequest};
 pub use lineage::{RetainedLineage, RetainedLineageEntry, RetainedTerminalKind};
 
 #[path = "lineage_replay.rs"]

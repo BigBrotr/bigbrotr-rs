@@ -6,6 +6,9 @@ use crate::storage::rocks::store::{
     SuccessorRecoveryResolution,
 };
 
+#[path = "successor_retirement_tests.rs"]
+mod successor_retirement_tests;
+
 fn owner(f: &Fixture, r: &IngestRecovery) -> NativeSuccessorRecovery {
     NativeSuccessorRecovery::inspect(r, grant(&f.budget, 256 * 1024, 0), &NOT_CANCELLED).unwrap()
 }

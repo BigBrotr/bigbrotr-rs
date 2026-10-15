@@ -35,6 +35,14 @@ pub(in crate::storage) use recovery::{
     NativeSuccessorRecovery, ResolvedSuccessorRecovery, SuccessorRecoveryResolution,
 };
 
+#[path = "successor_retirement.rs"]
+mod retirement;
+#[cfg(test)]
+pub(super) use retirement::PendingSuccessorRetirementRequest;
+pub(in crate::storage) use retirement::{
+    NativeSuccessorRetirement, ResolvedSuccessorRetirement, SuccessorRetirementResolution,
+};
+
 /// A retained claim from an outgoing handoff, not a verified terminal result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RetainedTerminalKind {
