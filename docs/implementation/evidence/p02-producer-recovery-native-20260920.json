@@ -31114,6 +31114,17 @@
           "Installed PostgreSQL/HTTP/Sync lifetimes and system journeys remain NOT_RUN by this build profile.",
           "No compiler, retained executable, native/SQL engine, or mutable cache is opened by this auditor."
         ]
+      },
+      "qualified_installed_lifecycle_ref_retirement": {
+        "report": ".research/branch-retirement-20261015/installed-successor-lifecycle.json",
+        "sha256": "87e40effa2580ce95bd5fb0cb63ad7f43dee9977b8025734bf3bb89087cdbf1c",
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T19:02:36.559591+00:00",
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/installed-successor-lifecycle.bundle",
+        "bundle_bytes": 15385419,
+        "bundle_sha256": "e51c99c076f5b4eb4fb510819346abda5275a8fb97cebfe33d03ca5abfb1888c",
+        "executor": "5022 joined0",
+        "scope": "One source-reviewed and compiled installed lifecycle ref only. Actual installed engine remains NOT_RUN. Main plus active dispatch/capture and harness refs remain; all worktrees, ignored/external evidence and datasets preserved"
       }
     }
   }

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T19:00:18.176414+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T19:10:28.705296+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,17 +12,20 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD4cfac916ba81b2b73d5e117f1ad73f2240102e7c.
-Last verified remote1514d6d: push56803joined0/c7046f, independentd79c4a.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD03a35c0af60f684e876cdf7ab6f56cda0b4c7c9b.
+Verified remote03a35c0: push80216joined0/34e6af, independentc81d4b exact.
 Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
 Root CLI/module/Archive getters/entrypoint tests/docs/build profile committed
-as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; main ahead of remote, no merge/rebase.
+as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; qualified build/evidence03a35c0 pushed,
+no merge/rebase.
 Exact installed build28171/prepare59862/audit71762 joined0. Build PASS20tests;
-result/evidence checkpoint pending commit/push.
-Three active installed refs/132worktrees; all former refs already archived and
+Lifecycle ref retirement5022 joined0: original7288dbcd preserved detached,
+full-history bundlee51c99c0 and file census87e40eff intact;121local/51remote refs
+retired cumulatively,77detached/132preserved worktrees.
+Two active installed refs/132worktrees; all former refs already archived and
 retired. Root alone owns integration/build/cache/engines. Harness/reader agent
-works in installed-successor-engine-20261015; lifecycle agent's ignored build auditor complete; dispatch agent now implements
-independent raw capture binder in its assigned WT.
+works in installed-successor-engine-20261015; lifecycle agent prepares a read-only engine custody auditor in ignored files;
+dispatch agent implements independent raw capture binding in its assigned WT.
 
 ## Active task and next action
 
@@ -70,7 +73,8 @@ Metadata moves into the single live frontier. Persistent64-file/32MiB spool
 remains separate: activation reclaims nothing and a full spool can refuse new
 missing-effect admission. No capacity/RSS qualification claimed.
 
-Harness in progress: actual terminal2 activated/off, terminal2 empty/on and final
+Harness/scientific reader/raw binder source review in progress; engine NOT_RUN.
+Expected cases: actual terminal2 activated/off, terminal2 empty/on and final
 fault58b79a4 terminal3/on -> epochs3/3/4 with one command; genuine login/jobs,
 new/historical/retried signed network events, >6s renewal and joinedSIGTERM.
 Do not clone intermediate bf2 terminal3: its final store has already advanced4.
@@ -248,7 +252,7 @@ Archive asset FAIL and followup85eca49 PASS remain separate. No run/prep replay.
 
 ## Branches and resources
 
-120local/51remote redundant refs retired;76worktrees detached and preserved.
+121local/51remote redundant refs retired;77worktrees detached and preserved.
 All132registered worktrees retained (three new installed assignments). Source components7290joined0 bundle9ec3b72b
 preserves c336f45/86dc47c; source qualification37031joined0 preserves07c36bb/c725ec3.
 Every original full history is archived and bundled under
@@ -256,8 +260,11 @@ Every original full history is archived and bundled under
 Acquisition retirement7822joined0 archives originals750e735/620404ff/938dbb2;
 bundle13b39647 is14,808,813bytes, complete histories, allfilecensusesunchanged.
 Retirement71934joined0 archives4a3a8bf/0cbf649/0f7aec8 and full histories;
-bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Remote main only; three current installed local branches serve active work.
+bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Remote main only; two current installed local branches serve active work.
 No artifact/worktree/dataset/container deleted.
+Installed lifecycle ref retirement5022joined0 archives7288dbcd after integrated
+4e26b9e/qualified4cfac91: bundlee51c99c0,15,385,419bytes, completehistory; every
+tracked/ignored/link/stat census unchanged. Actual installed engine remains NOT_RUN.
 
 Fault ref retirement37601joined0: bundleafa3457b,16,042,489bytes, completeoriginal
 histories; all tracked/ignored/link/stat censuses unchanged, three WTs detached.
