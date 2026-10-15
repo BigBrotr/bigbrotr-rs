@@ -4,6 +4,7 @@ mod commands;
 mod dictionaries;
 mod owner;
 pub(super) mod successor;
+pub(super) mod successor_family;
 use owner::{NativeOwner, Profile};
 pub(super) mod recovery;
 mod supervision;

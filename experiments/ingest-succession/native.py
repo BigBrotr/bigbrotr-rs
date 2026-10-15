@@ -15,7 +15,8 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'])
+installed = sys.argv[1:] == ['installed']
 recovery = sys.argv[1:] == ['recovery']
 writer_followup = sys.argv[1:] == ['writer-followup']
 writer = sys.argv[1:] == ['writer'] or writer_followup
@@ -24,7 +25,7 @@ history = sys.argv[1:] == ['history']
 transition_probe = sys.argv[1:] == ['transition-probe']
 probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
-build_probe = probe or transition or writer or recovery
+build_probe = probe or transition or writer or recovery or installed
 lineage = sys.argv[1:] == ['lineage']
 schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
@@ -80,6 +81,10 @@ if recovery:
     identity['scope'] = ('Activated successor native/PG recovery and affected lineage/input/prefix/legacy '
                          'components, CLI/probe compilation and Clippy. Native fixtures use explicit '
                          'SQL activation/copy premises; connected recovery and installed journeys NOT_RUN.')
+if installed:
+    identity['scope'] = ('Installed successor CLI/owner supervision and entrypoint checks, CLI/probe '
+                         'compilation and Clippy. Actual PostgreSQL/HTTP/Sync lifetimes NOT_RUN; '
+                         'unchanged native/PG component evidence remains separately bound.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -125,6 +130,9 @@ if recovery:
         'lineage_tests', 'request_input_tests', 'dictionary_append_tests',
         'producer_recovery_tests', 'source_closure_tests', 'activated_recovery_tests',
         'successor_history::tests', 'successor_transition']]
+if installed:
+    tests = [('serve_owner', ['--bin', 'bigbrotr', 'interfaces::serve::']),
+             ('control_runtime_entrypoint', ['--test', 'control_runtime_entrypoint'])]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
@@ -138,6 +146,8 @@ clippy_targets = (['--lib', '--bin', 'bigbrotr', '--test', 'control_schema', '--
                                   '--test', 'rocks_keys', '--test', 'rocks_store'])
 if build_probe:
     clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
+if installed:
+    clippy_targets += ['--test', 'control_runtime_entrypoint']
 steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                      *clippy_targets, '--', '-D', 'warnings'])]
 result = execute(steps, checks, SOURCE, env, identity, 1800)
@@ -156,8 +166,9 @@ for name, selection in (tests + [('probe_build', None)] if build_probe else test
         assert len(summaries) == 1
         counts[name] = int(summaries[0])
     paths = set()
-    kind = ['example'] if selection is None else ['lib'] if selection[0] == '--lib' else ['test']
-    target_name = 'ingest_bootstrap_probe' if selection is None else name
+    kind = ['example'] if selection is None else [selection[0][2:]]
+    target_name = 'ingest_bootstrap_probe' if selection is None else (
+        selection[1] if selection[0] == '--bin' else name)
     for line in content.splitlines():
         if not line.startswith('{'):
             continue
@@ -178,7 +189,8 @@ for name, selection in (tests + [('probe_build', None)] if build_probe else test
     assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
     with executable.open('rb') as stream:
         assert stream.read(4) == b'\x7fELF'
-    retained_name = 'native_components' if kind == ['lib'] else target_name
+    retained_name = 'native_components' if kind == ['lib'] else (
+        name if kind == ['bin'] else target_name)
     retained = artifacts / retained_name
     if not retained.exists():
         shutil.copy2(executable, retained)
@@ -201,7 +213,7 @@ receipt = dict(identity, status=result['status'], test_counts=counts,
 (artifacts / 'component-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
 assert result['status'] == 'PASS'
 assert set(counts) == {name for name, _ in tests}
-assert set(executables) == {name if selection[0] == '--test' else 'native_components'
+assert set(executables) == {'native_components' if selection[0] == '--lib' else name
                             for name, selection in tests} | ({'bigbrotr'} if schema else set()) | (
                                 {'ingest_bootstrap_probe'} if build_probe else set())
 if schema:
@@ -210,7 +222,8 @@ if schema:
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery
+qualification = dict(identity, status='PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed
+                     else 'PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery
                      else 'PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS' if writer_followup
                      else 'PASS_SUCCESSION_WRITER_COMPONENTS' if writer
                      else 'PASS_SUCCESSION_TRANSITION_COMPONENTS' if transition

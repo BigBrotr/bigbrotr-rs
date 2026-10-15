@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T18:39:58.825518+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T18:55:17.969649+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,14 +12,15 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD 58b79a49e59be77be554fff0be826dbe8ee20903.
-Remote exact58b79a4: push47353joined0/1175a9, independent7e263f and retirement
-executor fresh comparison exact. No merge/rebase. Probeccb9d44→ae45676,
-harness4008dac→ec1aee3, semanticreadereb683aa→357e435, rootcapture/checkpoint58b79a4
-integrated/pushed and qualified. This result/evidence checkpoint pending commit.
-All three fault refs archived/bundled/retired;129worktrees and ignored data retained.
-Root alone owns integration/build/cache/engines. Source/review assignments complete;
-read-only installed next-slice design complete, no new implementation yet.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD4e26b9e063355f795e83b373469aa440bff494e8.
+Last verified remote1514d6d: push56803joined0/c7046f, independentd79c4a.
+Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
+Root CLI/module/Archive getters/entrypoint tests/docs/build profile and this
+source checkpoint pending coherent commit. No merge/rebase. Actual build NOT_RUN.
+Three active installed refs/132worktrees; all former refs already archived and
+retired. Root alone owns integration/build/cache/engines. Harness/reader agent
+works in installed-successor-engine-20261015; lifecycle agent drafts ignored
+build auditor, dispatch agent's independent lifecycle source review complete.
 
 ## Active task and next action
 
@@ -32,14 +33,42 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: read complete installed lifecycle/dispatch owners and linked
-contracts, then implement `serve --activate-successor` from a genuinely terminal2/n
-predecessor: full existing lineage proof, fresh prepare/activation, continuous
-LiveSuccessorWriter custody through HTTP/Sync and SIGTERM/joined shutdown. Exercise
-both actual terminal2 and terminal3 endpoints with the same consumer. This first
-consumer does not yet claim a complete installed close/abandon/retire cycle.
-Unresolved tails remain explicit refusals: counter/absence alone cannot prove that
-an original committed tail was not lost. No fabricated workflow cleanup/adoption.
+Next bounded action: commit the complete installed source, prepare exact isolated
+`ingest-succession-installed` build and run focused Serve/entrypoint tests plus
+CLI/probe/Clippy. Audit actual artifacts and terminal resource custody. Then
+integrate/qualify the three-case HTTP/Sync harness on real terminal2/n copies.
+No installed process/engine has run yet.
+
+## Current installed successor source
+
+`serve --activate-successor` now selects control,ingest[,sync] from a fully
+terminal2-or-later head. Fresh native candidate precedes protected credentials;
+complete ordered historical replay precedes preparation and activation. The actual
+LiveSuccessorWriter remains in the native worker through HTTP/Sync/renewal and
+joined SIGTERM. Registration-free dispatch uses its own slot/epoch/policy/window;
+legacy entrypoints and six initial-only Archive consumers preserve their boundary.
+No Archive, adoption, tail resolution, ACK/GC or retirement on shutdown.
+
+Root complete changed-owner review plus AI lifecycle/CLI/build review5ede09f8
+found no concrete blocker. Reviewer-authored dispatch is explicitly not an
+independent review. Root sourcebinding41537c61 verifies original/integrated blobs,
+10lifecycle artifacts, dispatchmanifesteecebf10 and exact review hashes.
+Lifecycle43f17711/staticresultd0a73ad0, manifest305aa2a0; original static reader's
+no-index exit-code assumption FAIL preserved. Scoped rustfmt/diff checks PASS;
+11older build-profile command plans identical, new focused plan checked without
+executing Cargo. No new Rust tests, compilation or runtime claimed yet.
+
+Resource overlap: native128MiB, input allowance24MiB, lineage256KiB and
+preparation8KiBdata/native plus real Control/replay/selectedSync preflight.
+Metadata moves into the single live frontier. Persistent64-file/32MiB spool
+remains separate: activation reclaims nothing and a full spool can refuse new
+missing-effect admission. No capacity/RSS qualification claimed.
+
+Harness in progress: actual terminal2 activated/off, terminal2 empty/on and final
+fault58b79a4 terminal3/on -> epochs3/3/4 with one command; genuine login/jobs,
+new/historical/retried signed network events, >6s renewal and joinedSIGTERM.
+Do not clone intermediate bf2 terminal3: its final store has already advanced4.
+Originals, accepted expired-unclaimed jobs and every input remain protected.
 
 ## Latest qualified retirement faults
 
@@ -214,22 +243,22 @@ Archive asset FAIL and followup85eca49 PASS remain separate. No run/prep replay.
 ## Branches and resources
 
 120local/51remote redundant refs retired;76worktrees detached and preserved.
-All129registered worktrees retained. Source components7290joined0 bundle9ec3b72b
+All132registered worktrees retained (three new installed assignments). Source components7290joined0 bundle9ec3b72b
 preserves c336f45/86dc47c; source qualification37031joined0 preserves07c36bb/c725ec3.
 Every original full history is archived and bundled under
 `.research/branch-retirement-20261015`; file/ignored/link censuses unchanged.
 Acquisition retirement7822joined0 archives originals750e735/620404ff/938dbb2;
 bundle13b39647 is14,808,813bytes, complete histories, allfilecensusesunchanged.
 Retirement71934joined0 archives4a3a8bf/0cbf649/0f7aec8 and full histories;
-bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Main only local/remote.
+bundle602f8305 is14,882,230bytes, allfilecensuses unchanged. Remote main only; three current installed local branches serve active work.
 No artifact/worktree/dataset/container deleted.
 
 Fault ref retirement37601joined0: bundleafa3457b,16,042,489bytes, completeoriginal
 histories; all tracked/ignored/link/stat censuses unchanged, three WTs detached.
-Fresh read-only observation 2026-10-15T18:39:58.825518+00:00: 1368containers,
-all BigBrotr stopped, six unrelated services active; free27436388352bytes.
-All build/engine/replay/audit/ref-retirement handles terminal. New installed code
-NOT_STARTED. Borrowed PG7177550705c49, owner5e69b0f060b1607c25230d1dbd3e5608,
+Fresh read-only observation 2026-10-15T18:55:17.969649+00:00: 1368containers,
+all BigBrotr stopped, six unrelated services active; free27316985856bytes.
+All prior build/engine/replay/audit/ref-retirement handles terminal. Installed source
+integrated locally; new build/engine NOT_RUN. Borrowed PG7177550705c49, owner5e69b0f060b1607c25230d1dbd3e5608,
 `/runs/relay-source-recheck-e06f580/pg`, PG16.15/1.5GiB2CPU64MiBshm.
 
 Root-only compiler cache `/runs/network-1154757/out/build/{target,cargo-home}`,

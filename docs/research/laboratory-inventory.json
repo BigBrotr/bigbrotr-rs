@@ -51717,8 +51717,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "SUCCESSOR_RETIREMENT_FAULTS_PASS_INSTALLED_NOT_RUN",
-    "observed_at": "2026-10-15T18:39:58.825518+00:00",
+    "status": "INSTALLED_SUCCESSOR_SOURCE_BUILD_NOT_RUN",
+    "observed_at": "2026-10-15T18:55:17.969649+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -52786,7 +52786,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "No new build active. Previous finite58b79a4 build and six actual fault processes qualified; next installed source work not started.",
+    "next_build": "ingest-succession-installed exact committed source; not prepared or started",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -53187,7 +53187,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Implement the first installed repeatable successor consumer: serve --activate-successor from genuinely terminal2/n, full existing history proof, fresh preparation/activation and LiveSuccessorWriter ownership through HTTP/Sync and joined SIGTERM shutdown. Read complete installed owner/dispatch/contracts before adapting them; retain explicit refusal of unresolved tails and do not adopt an old writer. No new format or implicit workflow cleanup.",
+    "ongoing": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -59518,6 +59518,113 @@
       "reserve_build_bytes": 12884901888,
       "reserve_engine_bytes": 2147483648,
       "compiler_engine_status": "NOT_RUNNING"
-    }
+    },
+    "installed_successor_work": {
+      "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+      "observed_at": "2026-10-15T18:55:17.969649+00:00",
+      "base": "1514d6d07c13f20b0be9edcd8b71ee723e9ff06a",
+      "observed_head": "4e26b9e063355f795e83b373469aa440bff494e8",
+      "dispatch_original": "a055d423fce17bfad906f6eef0c7a72a073cb4de",
+      "dispatch_integrated": "b445c9b",
+      "lifecycle_original": "7288dbcdab34e2953a3f6b95d3c42ffdfc581f15",
+      "lifecycle_integrated": "4e26b9e",
+      "root_companion": "CLI --activate-successor, exclusive flags, role/native refusal tests, six initial-only Archive getters, docs and installed build profile; pending source commit",
+      "source_checks": {
+        "status": "PASS_SOURCE_BINDINGS_ONLY",
+        "observed_at": "2026-10-15T18:55:17.969649+00:00",
+        "dispatch_manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015/.research/installed-successor-dispatch-selfcheck-20261015/manifest.json",
+          "sha256": "eecebf1047291f3500972c52ac36a6f71ed52d5f9b85b913b785da091e077c91"
+        },
+        "lifecycle_manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-successor-lifecycle-20261015/.research/installed-successor-lifecycle-static-20261015/manifest-v2.json",
+          "sha256": "305aa2a017f510d2853169be75020fe0c2dfe1aab681330d1c4bcaac66471d17"
+        },
+        "independent_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015/.research/installed-successor-lifecycle-review-20261015/review.json",
+          "sha256": "5ede09f8f9e0a20c6e7c3b6d82d07eeb1d5a4638a56d6f1befdb76d8d9d6cabc"
+        },
+        "profile_check": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-successor-root-selfcheck-20261015/build-profile-check.json",
+          "sha256": "ff7a6b97a6183900de103564ac1359ac70386fe006fcf9698462c17bd468a310"
+        },
+        "compile": "NOT_RUN",
+        "tests": "NOT_RUN",
+        "engine": "NOT_RUN",
+        "scope": "Exact source/artifact bindings, complete changed owners and consumed contracts reviewed; unchanged deep PG/native kernels retain prior qualified scope, not a new full-engine review."
+      },
+      "resource_observation": "/home/tux/bigbrotr-rs/.research/installed-successor-root-selfcheck-20261015/source-observation.json",
+      "qualification": {
+        "build": "NOT_RUN",
+        "Rust_tests": "NOT_RUN",
+        "actual_installed": "NOT_RUN"
+      },
+      "scope": "First continuous installed LiveSuccessorWriter from actual terminal2/n, current policy and complete retained lineage; no adoption, Archive or implicit retirement.",
+      "harness": "recovery_review implements three real origin clones: terminal2 activated off, terminal2 empty on, final fault58b79a4 terminal3 on. Genuine HTTP jobs/network, renewal and joined SIGTERM. Source only in its separate WT.",
+      "limitations": [
+        "No complete installed close/abandon/retire cycle; M1\u2013M5 incomplete.",
+        "No input capacity reclamation: full historical spool can still activate but subsequent missing-effect staging refuses.",
+        "Lifecycle static reader first no-index exit-code assumption failure preserved separately; no product failure."
+      ],
+      "next_action": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave."
+    },
+    "installed_successor_resources": {
+      "observed_at": "2026-10-15T18:55:17.969649+00:00",
+      "container_count": 1368,
+      "active": [
+        {
+          "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088",
+          "name": "/inspirehep-reindex-db-1"
+        },
+        {
+          "id": "c1eb6dd5ff8f735fd76cdcb2b4250c62e488135c169752df0f9c26b818216f12",
+          "name": "/inspirehep-reindex-mq-1"
+        },
+        {
+          "id": "1f2889273c7c4de374ae091b15bcec7b3eff8213fcd58906fa4efcfdb26fd55c",
+          "name": "/inspirehep-reindex-cache-1"
+        },
+        {
+          "id": "9c1053ce0d699c013403567db284bb38eb2dc72deeecc408b5f2991eaacdfd9f",
+          "name": "/inspirehep-reindex-es-1"
+        },
+        {
+          "id": "5fcfeab23981bae1267a982c37687b567b9b913bf104c25e956cf68b0c91027b",
+          "name": "/ollama"
+        },
+        {
+          "id": "4e93d9d21e55982b2a828d792a1ddcd02d29df5dda0d2a116b9286c433679c85",
+          "name": "/tgdataset-mongo"
+        }
+      ],
+      "free_bytes": 27316985856,
+      "registered_worktrees": 132,
+      "local_branches": [
+        "implementation/installed-successor-dispatch",
+        "implementation/installed-successor-lifecycle",
+        "main",
+        "qualification/installed-successor-engine"
+      ]
+    },
+    "installed_successor_worktrees": [
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015",
+        "branch": "implementation/installed-successor-dispatch",
+        "owner": "successor_restart_design",
+        "status": "source integrated; clean; ignored independent review retained"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-successor-lifecycle-20261015",
+        "branch": "implementation/installed-successor-lifecycle",
+        "owner": "cleanup_review",
+        "status": "source integrated; clean; ignored build auditor draft in progress"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-successor-engine-20261015",
+        "branch": "qualification/installed-successor-engine",
+        "owner": "recovery_review",
+        "status": "harness/reader implementation in progress; no engine/build"
+      }
+    ]
   }
 }

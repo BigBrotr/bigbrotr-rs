@@ -2,28 +2,33 @@
 use std::{fs, process::Command};
 
 #[test]
-fn initial_successor_conflicts_with_initialization_before_configuration_io() {
-    let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
-        .env_clear()
-        .args([
-            "serve",
-            "--file",
-            "/nonexistent/successor-root.toml",
-            "--initialize-ingest",
-            "--activate-initial-successor",
-        ])
-        .output()
-        .unwrap();
-    assert_eq!(result.status.code(), Some(2));
-    assert!(result.stdout.is_empty());
-    let error = String::from_utf8_lossy(&result.stderr);
-    assert!(error.contains("cannot be used with"), "{error}");
-    assert!(error.contains("--initialize-ingest"));
-    assert!(error.contains("--activate-initial-successor"));
+fn ingest_lifetime_flags_conflict_before_configuration_io() {
+    for (selected, other) in [
+        ("--initialize-ingest", "--activate-initial-successor"),
+        ("--initialize-ingest", "--activate-successor"),
+        ("--activate-initial-successor", "--activate-successor"),
+    ] {
+        let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+            .env_clear()
+            .args([
+                "serve",
+                "--file",
+                "/nonexistent/successor-root.toml",
+                selected,
+                other,
+            ])
+            .output()
+            .unwrap();
+        assert_eq!(result.status.code(), Some(2));
+        assert!(result.stdout.is_empty());
+        let error = String::from_utf8_lossy(&result.stderr);
+        assert!(error.contains("cannot be used with"), "{error}");
+        assert!(error.contains(selected) && error.contains(other));
+    }
 }
 
 #[test]
-fn initial_successor_checks_selected_roles_and_native_state_before_credentials() {
+fn successor_checks_selected_roles_and_native_state_before_credentials() {
     let directory = tempfile::tempdir().unwrap();
     let root = directory.path().canonicalize().unwrap();
     let file = root.join("root.toml");
@@ -35,54 +40,59 @@ fn initial_successor_checks_selected_roles_and_native_state_before_credentials()
     config["postgres"]["control"]["password_ref"] = "file:/nonexistent/successor-password".into();
     let original = toml::to_string(&config).unwrap();
     fs::write(&file, &original).unwrap();
-    let invoke = |roles: Option<&str>| {
-        let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
-        command
-            .env_clear()
-            .args(["serve", "--activate-initial-successor", "--file"])
-            .arg(&file);
-        if let Some(roles) = roles {
-            command.args(["--roles", roles]);
-        }
-        command.output().unwrap()
-    };
-    // The deployment may assign Archive; this lifetime cannot select it.
-    for roles in [
-        None,
-        Some("control"),
-        Some("ingest"),
-        Some("control,ingest,archive"),
+    for (flag, required_roles) in [
+        (
+            "--activate-initial-successor",
+            "initial successor requires control,ingest",
+        ),
+        ("--activate-successor", "successor requires control,ingest"),
     ] {
-        let result = invoke(roles);
-        assert_eq!(result.status.code(), Some(3));
+        let invoke = |roles: Option<&str>| {
+            let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
+            command
+                .env_clear()
+                .args(["serve", flag, "--file"])
+                .arg(&file);
+            if let Some(roles) = roles {
+                command.args(["--roles", roles]);
+            }
+            command.output().unwrap()
+        };
+        // The deployment may assign Archive; this lifetime cannot select it.
+        for roles in [
+            None,
+            Some("control"),
+            Some("ingest"),
+            Some("control,ingest,archive"),
+        ] {
+            let result = invoke(roles);
+            assert_eq!(result.status.code(), Some(3));
+            assert!(result.stdout.is_empty());
+            let error = String::from_utf8_lossy(&result.stderr);
+            assert!(error.contains(required_roles), "{error}");
+            assert!(!error.contains("protected PostgreSQL password"));
+            assert!(!store.exists());
+        }
+        for roles in ["control,control", "control,ingest,read"] {
+            let result = invoke(Some(roles));
+            assert_eq!(result.status.code(), Some(3));
+            assert!(result.stdout.is_empty());
+            assert!(String::from_utf8_lossy(&result.stderr).contains("invalid role selection"));
+            assert!(!store.exists());
+        }
+        let result = invoke(Some("control,ingest"));
+        assert_eq!(result.status.code(), Some(4));
         assert!(result.stdout.is_empty());
         let error = String::from_utf8_lossy(&result.stderr);
         assert!(
-            error.contains("initial successor requires control,ingest"),
+            error.contains("initialized store or CURRENT is absent"),
             "{error}"
         );
         assert!(!error.contains("protected PostgreSQL password"));
         assert!(!store.exists());
+        assert_eq!(fs::read_to_string(&file).unwrap(), original);
+        assert_eq!(fs::read_dir(&root).unwrap().count(), 1);
     }
-    for roles in ["control,control", "control,ingest,read"] {
-        let result = invoke(Some(roles));
-        assert_eq!(result.status.code(), Some(3));
-        assert!(result.stdout.is_empty());
-        assert!(String::from_utf8_lossy(&result.stderr).contains("invalid role selection"));
-        assert!(!store.exists());
-    }
-    let result = invoke(Some("control,ingest"));
-    assert_eq!(result.status.code(), Some(4));
-    assert!(result.stdout.is_empty());
-    let error = String::from_utf8_lossy(&result.stderr);
-    assert!(
-        error.contains("initialized store or CURRENT is absent"),
-        "{error}"
-    );
-    assert!(!error.contains("protected PostgreSQL password"));
-    assert!(!store.exists());
-    assert_eq!(fs::read_to_string(&file).unwrap(), original);
-    assert_eq!(fs::read_dir(&root).unwrap().count(), 1);
 }
 
 #[test]

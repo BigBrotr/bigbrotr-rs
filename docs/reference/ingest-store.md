@@ -355,6 +355,52 @@ journeys, renewal and the three startup refusals, retaining original signed data
 General activated-owner recovery, repeated lifetimes,
 Archive restart, coverage and ACK/GC remain unimplemented here.
 
+## Explicit later successor (under implementation)
+
+After epoch2 or a later generation is fully retired, select the repeatable
+owning lifetime explicitly:
+
+```sh
+bigbrotr serve --file ROOT --roles control,ingest,sync --activate-successor
+```
+
+Omit `sync` for ownership and private administration without acquisition. Select
+local Control/Ingest and retain the deployment's Archive counterpart; this
+command cannot select Archive. It conflicts with both `--initialize-ingest` and
+`--activate-initial-successor`. Apply migration0038 explicitly and retain the
+application's existing Control/Ingest and recovery privileges plus the lineage
+privileges listed in the [qualification grant set](../../experiments/ingest-succession/schema_grants.sql).
+Run with the application credential, not the provisioning credential.
+
+Retain the entire native directory and every original producer input. Startup
+opens the existing native store before reading protected PostgreSQL credentials,
+positively verifies the complete bounded history, and prepares a fresh candidate
+under current Control and accepted policy. Both genuinely retired epoch2 entry
+shapes and later retired generations use this same path. Pending preparations,
+activated but unretired heads, unresolved sidecars or missing history refuse.
+It does not resume a recorded writer or choose caller-supplied identities.
+
+The delivered writer remains in its original native worker through private HTTP,
+optional finite Sync, renewal and joined shutdown. Its own generation and accepted
+policy govern new requests; historical registrations are used only for replay.
+Sync requires two outstanding slots and retains the existing finite network
+limits. Old facts can be referenced only through the checked historical frontier.
+Provenance-off suppresses new provenance while preserving local receive evidence.
+Existing input-spool and lineage limits apply across lifetimes; activation frees
+no space.
+
+Activation reports `bigbrotr-ingest-successor/1` with the actual generation,
+preparation and predecessor coordinates, `acquisition=finite-successor` when Sync
+is selected, and `ready=false`. Graceful SIGTERM stops admission and joins HTTP,
+native ownership and the PostgreSQL driver before the stopped report. Shutdown
+does not close the source, abandon jobs, retire this generation or acknowledge
+inputs. Preserve all state after an interruption or unknown outcome. Installed
+recovery of this new lifetime remains a separate responsibility; do not retry
+activation against an unretired head. The [repeatable succession contract](ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
+and existing recovery evidence track implementation and qualification separately.
+This installed path has not yet been built or exercised; component and finite
+probe results do not qualify it.
+
 ## Recovering the activated successor
 
 After stopping the epoch2 owner, the selected finite recovery command is:

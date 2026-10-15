@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "SUCCESSOR_RETIREMENT_FAULTS_PASS_INSTALLED_NOT_RUN",
+      "status": "INSTALLED_SUCCESSOR_SOURCE_BUILD_NOT_RUN",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Implement the first installed repeatable successor consumer: serve --activate-successor from genuinely terminal2/n, full existing history proof, fresh preparation/activation and LiveSuccessorWriter ownership through HTTP/Sync and joined SIGTERM shutdown. Read complete installed owner/dispatch/contracts before adapting them; retain explicit refusal of unresolved tails and do not adopt an old writer. No new format or implicit workflow cleanup.",
+      "ongoing": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -31001,6 +31001,55 @@
         "reserve_build_bytes": 12884901888,
         "reserve_engine_bytes": 2147483648,
         "compiler_engine_status": "NOT_RUNNING"
+      },
+      "installed_successor_work": {
+        "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+        "observed_at": "2026-10-15T18:55:17.969649+00:00",
+        "base": "1514d6d07c13f20b0be9edcd8b71ee723e9ff06a",
+        "observed_head": "4e26b9e063355f795e83b373469aa440bff494e8",
+        "dispatch_original": "a055d423fce17bfad906f6eef0c7a72a073cb4de",
+        "dispatch_integrated": "b445c9b",
+        "lifecycle_original": "7288dbcdab34e2953a3f6b95d3c42ffdfc581f15",
+        "lifecycle_integrated": "4e26b9e",
+        "root_companion": "CLI --activate-successor, exclusive flags, role/native refusal tests, six initial-only Archive getters, docs and installed build profile; pending source commit",
+        "source_checks": {
+          "status": "PASS_SOURCE_BINDINGS_ONLY",
+          "observed_at": "2026-10-15T18:55:17.969649+00:00",
+          "dispatch_manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015/.research/installed-successor-dispatch-selfcheck-20261015/manifest.json",
+            "sha256": "eecebf1047291f3500972c52ac36a6f71ed52d5f9b85b913b785da091e077c91"
+          },
+          "lifecycle_manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/installed-successor-lifecycle-20261015/.research/installed-successor-lifecycle-static-20261015/manifest-v2.json",
+            "sha256": "305aa2a017f510d2853169be75020fe0c2dfe1aab681330d1c4bcaac66471d17"
+          },
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015/.research/installed-successor-lifecycle-review-20261015/review.json",
+            "sha256": "5ede09f8f9e0a20c6e7c3b6d82d07eeb1d5a4638a56d6f1befdb76d8d9d6cabc"
+          },
+          "profile_check": {
+            "path": "/home/tux/bigbrotr-rs/.research/installed-successor-root-selfcheck-20261015/build-profile-check.json",
+            "sha256": "ff7a6b97a6183900de103564ac1359ac70386fe006fcf9698462c17bd468a310"
+          },
+          "compile": "NOT_RUN",
+          "tests": "NOT_RUN",
+          "engine": "NOT_RUN",
+          "scope": "Exact source/artifact bindings, complete changed owners and consumed contracts reviewed; unchanged deep PG/native kernels retain prior qualified scope, not a new full-engine review."
+        },
+        "resource_observation": "/home/tux/bigbrotr-rs/.research/installed-successor-root-selfcheck-20261015/source-observation.json",
+        "qualification": {
+          "build": "NOT_RUN",
+          "Rust_tests": "NOT_RUN",
+          "actual_installed": "NOT_RUN"
+        },
+        "scope": "First continuous installed LiveSuccessorWriter from actual terminal2/n, current policy and complete retained lineage; no adoption, Archive or implicit retirement.",
+        "harness": "recovery_review implements three real origin clones: terminal2 activated off, terminal2 empty on, final fault58b79a4 terminal3 on. Genuine HTTP jobs/network, renewal and joined SIGTERM. Source only in its separate WT.",
+        "limitations": [
+          "No complete installed close/abandon/retire cycle; M1\u2013M5 incomplete.",
+          "No input capacity reclamation: full historical spool can still activate but subsequent missing-effect staging refuses.",
+          "Lifecycle static reader first no-index exit-code assumption failure preserved separately; no product failure."
+        ],
+        "next_action": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave."
       }
     }
   }

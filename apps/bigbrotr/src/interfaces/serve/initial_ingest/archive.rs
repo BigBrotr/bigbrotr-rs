@@ -182,8 +182,8 @@ impl Archive {
             fact: FactDecodeLimits::default(),
         };
         let first = SourceRecordId {
-            dataset_id: state.spec.dataset_id,
-            shard_id: state.spec.shard_id,
+            dataset_id: state.initial_registration()?.dataset_id,
+            shard_id: state.initial_registration()?.shard_id,
             owner_epoch: OwnerEpoch::new(1).unwrap(),
             sequence: Sequence::new(self.next).map_err(error)?,
         };
@@ -202,7 +202,7 @@ impl Archive {
         let last = end
             .checked_add(1)
             .ok_or_else(|| error("source sequence exhausted"))?;
-        if self.inputs.len() >= state.spec.outstanding_request_limit as usize {
+        if self.inputs.len() >= state.initial_registration()?.outstanding_request_limit as usize {
             return Err(error("initial complete-batch window exhausted"));
         }
         self.inputs.try_reserve(1).map_err(error)?;
@@ -217,7 +217,10 @@ impl Archive {
             .await?;
         let archive = ArchiveBatch::new(
             1,
-            state.spec.target_topology().map_err(error)?,
+            state
+                .initial_registration()?
+                .target_topology()
+                .map_err(error)?,
             std::slice::from_ref(pending.batch()),
         )
         .map_err(error)?;
@@ -245,7 +248,7 @@ impl Archive {
         // the largest legal snapshot solely as a conservative wire-size bound.
         {
             let _cut_input = grant(budget, MIB, 0)?;
-            let mut read = self.cut_read(state.spec, end, i64::MAX as u64)?;
+            let mut read = self.cut_read(state.initial_registration()?, end, i64::MAX as u64)?;
             read.receipts.push(retained.expectation().clone());
             let mut limits = preflight::limits(&self.runtime_root(state.root))?;
             limits.max_records = read.receipts.len();
@@ -344,7 +347,8 @@ impl Archive {
                         .map_err(error)
                     })
                     .await?;
-                let read = self.cut_read(state.spec, end, capture.snapshot_id())?;
+                let read =
+                    self.cut_read(state.initial_registration()?, end, capture.snapshot_id())?;
                 let reader = self.reader.clone();
                 let custody = self.coordinator.reader_custody().map_err(error)?;
                 let root = self.runtime_root(state.root);

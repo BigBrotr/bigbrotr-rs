@@ -1255,3 +1255,31 @@ and same-transaction activation obligations. Distinguish component codecs, nativ
 engine checks and actual installed journeys in the existing evidence register.
 ACK/GC, Archive restart, backup/restore closure and M1–M5 remain open until their
 own complete selected journeys are demonstrated.
+
+### First installed repeatable lifetime (under implementation)
+
+`serve --activate-successor` consumes a genuinely terminal epoch2-or-later head,
+using the same bounded history, preparation and activation adapters as the finite
+consumer. It owns the exclusive native handle before protected connection setup,
+verifies original inputs and exact retained outcomes for every earlier stream,
+and transfers only a freshly delivered `LiveSuccessorWriter` into the installed
+HTTP/Sync worker. A historical `InitialRegistration` never stands in for the
+current writer. Existing initial and epoch2 consumers retain their original
+dispatch and refusal boundaries.
+
+The new lifetime uses the current writer's manifest, policy, request window and
+checked frontier for dictionaries, new admission, duplicate certification and
+scheduling renewal. Its native, retained-input, transport, history and preparation
+reservations must coexist with the selected session and Sync work. Preparation
+reserves the future lineage envelope before durable mutation; shutdown preserves
+all receipts and inputs and does not retire the live generation. The command is
+selected separately from both initial flags and excludes Archive.
+
+The first installed qualification must exercise both legacy terminal2 shapes and
+an actually terminal later generation through the same command, with genuine
+authenticated acquisition, historical/new/retried signed events, provenance on
+and off, renewal beyond the original deadline and joined SIGTERM. Original SQL,
+native data and input attribution remain independently checked. This is the first
+continuous installed writer consumer, not completion of installed recovery,
+source/workflow closure, retirement, tails, capacity or Archive restart. Its build
+and actual installed qualification are still NOT_RUN.
