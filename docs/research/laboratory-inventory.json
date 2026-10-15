@@ -51419,7 +51419,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "CONNECTED_ACTIVATED_RECOVERY_PASS_SOURCE_CLOSURE_IN_PROGRESS",
-    "observed_at": "2026-10-15T16:25:15.695220+00:00",
+    "observed_at": "2026-10-15T16:41:06.648454+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -52487,7 +52487,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "No compiler needed for next engine; reuse protected qualifiedbb2d4b8 artifacts",
+    "next_build": "Exact main source component/probe build with existing recovery profile; expected110tests and Clippy,128protectedELFs/12GiB reserve. Integrate independent source reader, then actual six-origin source/retry plus raw replay/custody.",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -52888,7 +52888,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Review/integrate distinct successor source closure and qualify actual first/retry against six real recovered states. All recovery refs retired with artifacts/worktrees preserved; source/workflow/retirement/installed gates remain open.",
+    "ongoing": "Exact main source component/probe build with existing recovery profile; expected110tests and Clippy,128protectedELFs/12GiB reserve. Integrate independent source reader, then actual six-origin source/retry plus raw replay/custody.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -56721,7 +56721,7 @@
       "change": "Set sys.dont_write_bytecode before helper imports for future standalone readers; all existing function/class ASTs unchanged. Actual raw evidence remains bound to exacte2eb140; no engine/replay campaign repeated."
     },
     "successor_source_work": {
-      "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_RUNTIME_NOT_RUN",
+      "status": "COMPONENTS_PROBE_HARNESS_INTEGRATED_RUNTIME_NOT_RUN_READER_IN_PROGRESS",
       "base": "e2eb14064900ec2ba97fa3b551a686c1195244b6",
       "scope": "Distinct later-epoch source owner/proof; existing native science kernel, open repair and closed existing-only replay, atomic source publication/exact retry. No acquisition/retirement implementation in this slice.",
       "worktrees": [
@@ -56739,7 +56739,19 @@
       "design": "SQL0038 already has Source classifier and guards. Public positive recovery remains source-open. Add native observe_closed without writes; one lineage allocation/grant; distinct PG source wrappers. Import Event prefixes qualify source closure but still veto retirement absent genuine workflow bindings.",
       "review": "Read-only independent design mapped complete legacy/native/PG owners and relevant SQL0038; no new runtime claim.",
       "root_only_builds": true,
-      "registered_worktrees": 118
+      "registered_worktrees": 120,
+      "qualification_worktrees": [
+        {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-source-engine-20261015",
+          "branch": "qualification/successor-source-engine",
+          "owner": "successor_restart_design"
+        },
+        {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-source-oracle-20261015",
+          "branch": "qualification/successor-source-oracle",
+          "owner": "cleanup_review"
+        }
+      ]
     },
     "qualified_recovery_retirement": {
       "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
@@ -56808,6 +56820,72 @@
       "exit_code": 0,
       "report_path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-qualification.json",
       "report_sha256": "aa5808faf32f9ae9122a568d371df42dcadce44862785bd667b6d3372b034cd2"
+    },
+    "successor_source_components": {
+      "status": "SOURCE_INTEGRATED_REVIEWED_RUNTIME_NOT_RUN",
+      "native": {
+        "original": "c336f45e8fee85f5a8fa3ca7150e6019c9f38a15",
+        "integrated": "08251bbeec971463194c564959cd550974e3cab0",
+        "worktree": "/home/tux/bigbrotr-rs/.research/successor-native-source-20261015",
+        "branch": "implementation/successor-native-source",
+        "new_test_groups": 3
+      },
+      "postgres": {
+        "original": "86dc47c856d21d0dafebca2eee08ff2a31df53c1",
+        "integrated": "2cb721cc8b50f592072aa14768215f88cf1514f4",
+        "worktree": "/home/tux/bigbrotr-rs/.research/successor-pg-source-20261015",
+        "branch": "implementation/successor-pg-source",
+        "new_test_groups": 4,
+        "static_manifest": "/home/tux/bigbrotr-rs/.research/successor-pg-source-20261015/.research/successor-source-static-20261015/manifest.json",
+        "static_manifest_sha256": "b4aa221808efa7b41e7eabf460db309acc7e1487f902fce114b8ed48a4cd0f5b"
+      },
+      "scope": "Distinct PG Source owner/proof around one retained native science allocation. Ordinary positive factory remains source-open. Closed source requires observed native CLOSING and existing copies, no normalization or Event workflow veto. Source publication spends its owner before fallible work and consumes proof, retains custody, checks complete prefix and current Control before/after known COMMIT. No migration or legacy protocol change.",
+      "review": {
+        "root": "Complete native owner/new test groups, PG source/tests and entire affected recovery/projection diff, existing recovery/projection/copy owner and relevant SQL0038 classifier/obligation/deferred guards read; no concrete blocker.",
+        "independent_native": "recovery_review AI review of frozen c336, full owner and all new tests; no blocker",
+        "independent_postgres": "successor_restart_design AI review of full frozen86dc source/tests, complete current recovery/projection and affected authority/copy/SQL38 Source boundaries; no concrete blocker; source-only.",
+        "checks": "Scoped rustfmt1.98.1 and diff-check PASS; runtime NOT_RUN"
+      },
+      "budget": "Single retained lineage; fixed source wrappers/post-publication projection bounded to1024 bytes explicitly included in PG64KiB scratch assertion. Assertions runtime/build NOT_RUN.",
+      "qualification": "Existing ingest-succession-recovery profile selects affected lineage/input/dictionary/legacy/PG groups once, expected110tests including3native+4PGnew source groups; CLI/probe and Clippy. Connected source/retry separate, NOT_RUN."
+    },
+    "successor_source_probe": {
+      "status": "SOURCE_INTEGRATED_REVIEWED_RUNTIME_NOT_RUN",
+      "integrated": "1072a1a8a04502de290bd490921f8153fd80c24c",
+      "owner": "root",
+      "source_sha256": {
+        "apps/bigbrotr/examples/support/ingest_successor_source.rs": "bdbda8e1c16922ab372c402709ea47f30e3a23b0179cd51184c1e946802cccfe",
+        "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "18c6060258d4e4942df57772133ad689be9b7b2227b3d836d63b6646dabf2276",
+        "apps/bigbrotr/examples/support/ingest_successor_recovery.rs": "9711462e3f568e59ded36b03cfbc1015c6b652c89bc9f64b10a12e228e7fb8ae",
+        "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "12ceaf04421fabce397ebadcbfed4a17e42ba1f69b9866c3dd65de401f025215"
+      },
+      "command": "successor-lineage-source; arity6; operation source; direct-only",
+      "scope": "Finite full ordered original replay followed by separately observed source publication. Store native owner before snapshots; snapshot every Result before classification; borrowed proof consumed while native owner remains reachable through error and teardown. source_closure=true only after actual publication success; exact native-close/Control+observer joins/backend absence before completion.",
+      "review": "Root full253line consumer plus full host528/changed dispatcher/copy/request helpers read; independent recovery_review AI review at exact hashes no blocker. No runtime or COMMIT-loss evidence."
+    },
+    "successor_source_harness": {
+      "status": "SOURCE_INTEGRATED_PURE_CHECKS_PASS_ENGINE_NOT_RUN",
+      "original": "07c36bba60311342ca5cac9658260274eade2580",
+      "integrated": "9761799e66f3e7c7d9997de64831b8d1c2794641",
+      "worktree": "/home/tux/bigbrotr-rs/.research/successor-source-engine-20261015",
+      "branch": "qualification/successor-source-engine",
+      "manifest": "/home/tux/bigbrotr-rs/.research/successor-source-engine-20261015/.research/successor-source-harness-selfcheck-20261015/manifest.json",
+      "manifest_sha256": "675b38ea3230261335c7ea4b369a2132147131cade598fd043f453a20c4ed79c",
+      "retained_artifacts": 140,
+      "checks": 22,
+      "custody_mocks": 11,
+      "source_sha256": {
+        "experiments/ingest-succession/source.py": "a59945583106aa48621ac4c3ada8c9fc8b9189aa1af3aba11ad6051587ecd30e",
+        "experiments/ingest-succession/transition.py": "3987a08339b65a0e80ed8f80dfb17ddbd1c9b1d309db11a442ea8bd3dd5c3211"
+      },
+      "root_verification": "a56bd0: all140artifacts/2sources/19rawfiles/2probe hashes exact; root read full243line harness/shared whitelist delta and entire check.py",
+      "scope": "Six genuine final recovery endpoints from e2eb140, first source publication and fresh exact retry. Zero native puts required. Explicit source-close output avoids collision with exact Git checkout root/source.",
+      "scientific_oracle": "STUB_NOT_PRODUCT_EVIDENCE in pure harness checks",
+      "not_run": [
+        "Actual source engine/replay",
+        "Source-open missing-copy repair, closed corruption, source COMMIT loss, cancellation/expiry/tails",
+        "Acquisition/retirement/installed and capacity/RSS"
+      ]
     }
   }
 }

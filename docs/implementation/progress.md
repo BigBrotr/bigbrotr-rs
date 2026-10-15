@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T16:25:15.695220+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T16:41:06.648454+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing task files own the plan and evidence owns
@@ -14,13 +14,13 @@ are retired after reconciliation. Preserve every worktree, ignored/external
 artifact, dataset, original/failure fixture and unrelated workload. Public
 publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses main. Observed and independently verified
-remote HEAD c196acd16d41f178a1e1ae58e12f3e0843df55c7;
-push80081joined0, remotec39184. Engine source remains exact e2eb140.
-No merge/rebase. Current root edits only record completed branch retirement. Reader bytecode
-suppression is committed; all existing function/class ASTs remain unchanged.
-Native/PG/probe/engine/reader recovery components are integrated and qualified
-within the scopes below. Two new source implementation worktrees branch frome2eb140.
+Canonical `/home/tux/bigbrotr-rs` uses main. Observed HEAD 9761799e66f3e7c7d9997de64831b8d1c2794641.
+Last independently verified remote12699ab0a4bd15eaaae7ede0e5ae69dfc1f921b3,
+push23780joined0/remote c38937. Native sourcec336f45→08251bb,
+PG86dc47c→2cb721c, finite consumer1072a1a and harness07c36bb→9761799 are now
+integrated; compilation/runtime NOT_RUN. No merge/rebase. Current root edits only
+record these sources and the README. Original worktrees remain clean on original
+commits; independent source reader is in progress in its isolated worktree.
 
 ## Active task and next action
 
@@ -34,24 +34,45 @@ Active evidence node:
 `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node: `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: review/integrate the successor source closure seam being
-authored in the two isolated worktrees, then add its finite first/retry consumer
-and independently checked actual SQL/native captures:
+Next bounded action: exact-source build of integrated source closure/probe with
+existing ingest-succession-recovery profile, expected110affected tests (3new native,
+4new PG), CLI/probe and Clippy. Recheck128protectedELFs/cache ownership and12GiB
+reserve; run only in a fresh revision root. Then integrate the independently
+reviewed source reader and execute six-source first/retry with raw replay/custody.
+All source runtime remains NOT_RUN. Root alone builds/runs engines/shared cache.
 
-- `.research/successor-native-source-20261015`, branch
-  `implementation/successor-native-source`, owner successor_restart_design:
-  native observe_closed and focused refusal/custody tests only.
-- `.research/successor-pg-source-20261015`, branch
-  `implementation/successor-pg-source`, owner recovery_review:
-  distinct source owner/proof, private kernel reuse and focused tests.
+Native c336f45 adds existing-CLOSING observation without writes and3focused
+root/sequence/input/grant/cancellation tests. PG86dc47c adds distinct source wrappers
+and one-shot publication around the private recovery kernel;4pure discriminators.
+Root full affected owners/callers/deltas read, scoped rustfmt/diff PASS. Independent
+recovery_review AI native/probe review closed without blocker; independent successor_restart_design AI PG source review also closed without
+blocker at frozen86dc. Fixed1024byte wrapper/projection allowance is included
+in the existing PG64KiB scratch, with no second lineage Vec; compile assertions owed.
 
-Native private science is reused with one allocation/grant. Public positive
-recovery remains source-open; sourceclosed replay requires existing copies and
-no native normalization. Source publication is distinct from retirement and
-workflow abandonment. SQL0038 already supplies its Source classifier/guards;
-no new migration identified. Live3/live4 unbound import Events may close their
-source but must still refuse retirement; no retrospective workflow fabrication.
-Both implementations are IN_PROGRESS/NOT_RUN; root alone builds/runs engines.
+Finite consumer1072a1a captures every returned operation before classification;
+source proof precedes separate SQL publication, source_closure true only on known
+success. Actual owner remains held through errors/native teardown. Direct-only;
+COMMIT-loss transport is NOT_RUN. Probe/source SHA bdbda8e1, host18c60602.
+Harness07c36bb→9761799 uses six recovered e2eb140 endpoints, source-close output
+separate from root/source checkout,12processes and zero native writes. Pure22checks/
+11custody mocks PASS with scientific oracle stub; manifest675b38ea binds140artifacts/
+2sources/19rawfiles/2probe files, all root-verifieda56bd0. Reader remains in progress.
+
+Four active worktrees under `.research/`, all registered and preserved:
+- successor-native-source-20261015 / implementation/successor-native-source,
+  originalc336f45, successor_restart_design.
+- successor-pg-source-20261015 / implementation/successor-pg-source,
+  original86dc47c, recovery_review.
+- successor-source-engine-20261015 / qualification/successor-source-engine,
+  original07c36bb, successor_restart_design.
+- successor-source-oracle-20261015 / qualification/successor-source-oracle,
+  base08251bb, cleanup_review; only reader/science source edits and pure artifacts.
+
+Public positive recovery remains source-open; sourceclosed replay requires existing
+copies and no native normalization. Source publication is distinct from retirement
+and workflow abandonment. SQL0038 already supplies Source classifier/guards; no
+migration changed. Live3/live4 unbound import Events may close their source but
+must still refuse retirement; never fabricate retrospective workflow bindings.
 
 ## Latest qualified outcome
 
@@ -113,9 +134,9 @@ other failures remain preserved. No completed run/preparation may be replayed.
 ## Branches and resources
 
 107local/51remote refs retired,63worktrees detached with original commits and full
-censuses unchanged. All118registered worktrees preserved. Recovery probe/engine/oracle
+censuses unchanged. All120registered worktrees preserved. Recovery probe/engine/oracle
 retirement65818joined0 preserved all three originals, full worktrees and ignored
-artifacts in bundle9aff4b49. Two new source implementation refs are active; remote main
+artifacts in bundle9aff4b49. Two source implementation and two qualification refs are active; remote main
 only at last verification. Native/PG recovery retirement67406joined0 archived
 original8b9c1ab/310d549 in bundle6b8af983 with qualified InputScan correction.
 All original closures remain in refs/archive/* and verified bundles under

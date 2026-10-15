@@ -187,3 +187,11 @@ historical xmin/recorder/time, checks one native closing mutation and no repeate
 mutation on retry, and requires closed/joined custody before the next process.
 Its artificial protocol/file checks reuse their model to generate transcripts;
 those checks are separate from actual product qualification.
+
+The existing recovery build profile also covers the successor source wrappers and
+native existing-barrier observation through its lineage and transition test groups.
+It still does not run a connected engine. `source.py RUN_ROOT BUILD_ARTIFACTS`
+uses six actual recovered endpoints for first source publication and fresh retry,
+requiring zero native writes throughout. Its output is `RUN_ROOT/source-close`;
+`RUN_ROOT/source` remains the exact Git checkout. This first wave excludes missing
+copy repair, corrupt closed-source states, source COMMIT loss and retirement.
