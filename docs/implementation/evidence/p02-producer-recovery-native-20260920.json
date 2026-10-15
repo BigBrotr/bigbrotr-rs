@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "CONNECTED_HISTORY_PASS_TRANSITION_COMPONENT_TESTS_AND_PROBE_BUILD_PASS_CONNECTED_MUTATIONS_PENDING",
+      "status": "CONNECTED_PREPARATION_EMPTY_RETRY_AND_LATER_PREPARATION_PASS_INTERRUPTED_ACTIVATION_WRITER_PENDING",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Integrate frozen independenttransition reader +harness74e3a6b; then9connected invocations on3freshcopies with qualified4e204f9CLI/probe. First prepare/empty/retry/laterprepare wave, no gap/adoption/activation/writer claim.",
+      "ongoing": "Next genuineinterruption5wave: prepare COMMITaftercomplete\u2192gap\u2192empty COMMITbeforeforward\u2192emptycompletion\u2192retry. Sourceprobe+harness recovery_review, independentoracle cleanup_review. Native activation/writer/frontier source-only separately; no adoption of firstwave closed candidates.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -25460,6 +25460,618 @@
         "exit_code": 0,
         "report": ".research/branch-retirement-20261015/successor-transitions.json",
         "report_sha256": "5bfe705cffcbe26159b8a86d9ca6fa8ca20d3acb2dc3b763e07e0fd1b6c1cad0"
+      },
+      "transition_connected": {
+        "status": "PASS_SUCCESSOR_TRANSITION_FIRST_WAVE",
+        "source": "9f06d150eeec7613dd2d46c5bdc33ea574bf47d2",
+        "tree": "bdec1765af0b0ac77475d40aebb59855ae4c8bcb",
+        "owner": "d332d7af276ab128cfd962a48dacd52f",
+        "label": "org.bigbrotr.succession-transition",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "client": "898bc8d3f87b3c4e406ced9239b605c12067d67d4424a6a4de9739f4c891ee6b",
+        "started_at": "2026-10-15T13:46:30.916971+00:00",
+        "finished_at": "2026-10-15T13:47:09.677748+00:00",
+        "free_bytes_after": 33706110976,
+        "scope": "Finite prepare3, fresh empty retirement/retry3, prepare4 from both terminal2 origins and future-capacity refusal",
+        "not_run": [
+          "Gap completion requires a genuinely interrupted prepared seed",
+          "Activation, writer delivery, installed succession and admitted new requests",
+          "COMMIT loss, cancellation/expiry; PostgreSQL 255-epoch capacity; RSS qualification"
+        ],
+        "unrelated_changed": [],
+        "unexpected_containers": [],
+        "missing_owned": [],
+        "cleanup_errors": [],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-engine-9f06d15",
+        "preparation": {
+          "session": 43652,
+          "exit_code": 0
+        },
+        "engine": {
+          "session": 18586,
+          "exit_code": 0
+        },
+        "replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-engine-9f06d15/root-independent-replay.json",
+          "sha256": "24cc776707a21222e8c2933c12be78c4fed51ee64301e10a765f1658279d361e",
+          "session": 9307,
+          "exit_code": 0,
+          "status": "PASS_CONNECTED_TRANSITION_CAPTURE_REPLAY",
+          "snapshots": 242,
+          "semantic_controls": 121,
+          "bound_files": 128
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-engine-9f06d15/audit-root/audit-v1.json",
+          "sha256": "1b068140661b4f7c518d8e49de447fe4b0d8c006809b2de110822fa952fcf31f",
+          "session": 29203,
+          "exit_code": 0,
+          "status": "PASS_READ_ONLY_TRANSITION_CUSTODY",
+          "source_files": 1887,
+          "protected_elfs": 112,
+          "unchanged_nonborrowed_containers": 1337
+        },
+        "cases": [
+          {
+            "name": "activated-prepare3",
+            "database": "bb_transition_9f06d15_activated",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "activated-prepare3",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 89,
+              "inputs": 6,
+              "control_epoch": 15,
+              "refreshes": 9,
+              "database": "bb_transition_9f06d15_activated",
+              "observation": {
+                "prepared": true,
+                "target_epoch": 3,
+                "retired_at_us": null
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 14,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "rehashed-parent-hash-in-both-observations",
+                "prepared-without-candidate-binding",
+                "wrong-request-window"
+              ]
+            }
+          },
+          {
+            "name": "activated-empty3",
+            "database": "bb_transition_9f06d15_activated",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "activated-empty3",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 90,
+              "inputs": 6,
+              "control_epoch": 16,
+              "refreshes": 9,
+              "database": "bb_transition_9f06d15_activated",
+              "observation": {
+                "prepared": false,
+                "target_epoch": 3,
+                "retired_at_us": "1792071998299659"
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 13,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "coherent-retirement-time-change",
+                "coherent-empty-closure-change"
+              ]
+            }
+          },
+          {
+            "name": "activated-empty-retry3",
+            "database": "bb_transition_9f06d15_activated",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "activated-empty-retry3",
+              "snapshots": 30,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 90,
+              "inputs": 6,
+              "control_epoch": 17,
+              "refreshes": 10,
+              "database": "bb_transition_9f06d15_activated",
+              "observation": {
+                "prepared": false,
+                "target_epoch": 3,
+                "retired_at_us": "1792071998299659"
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 13,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "coherent-retirement-time-change",
+                "coherent-empty-closure-change"
+              ]
+            }
+          },
+          {
+            "name": "activated-prepare4",
+            "database": "bb_transition_9f06d15_activated",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "activated-prepare4",
+              "snapshots": 30,
+              "tables": 75,
+              "native_rows": 76,
+              "sequence": 94,
+              "inputs": 6,
+              "control_epoch": 18,
+              "refreshes": 10,
+              "database": "bb_transition_9f06d15_activated",
+              "observation": {
+                "prepared": true,
+                "target_epoch": 4,
+                "retired_at_us": null
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 14,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "rehashed-parent-hash-in-both-observations",
+                "prepared-without-candidate-binding",
+                "wrong-request-window"
+              ]
+            }
+          },
+          {
+            "name": "empty-prepare3",
+            "database": "bb_transition_9f06d15_empty",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "empty-prepare3",
+              "snapshots": 24,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 67,
+              "inputs": 4,
+              "control_epoch": 12,
+              "refreshes": 7,
+              "database": "bb_transition_9f06d15_empty",
+              "observation": {
+                "prepared": true,
+                "target_epoch": 3,
+                "retired_at_us": null
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 14,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "rehashed-parent-hash-in-both-observations",
+                "prepared-without-candidate-binding",
+                "wrong-request-window"
+              ]
+            }
+          },
+          {
+            "name": "empty-empty3",
+            "database": "bb_transition_9f06d15_empty",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "empty-empty3",
+              "snapshots": 24,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 13,
+              "refreshes": 7,
+              "database": "bb_transition_9f06d15_empty",
+              "observation": {
+                "prepared": false,
+                "target_epoch": 3,
+                "retired_at_us": "1792072013346228"
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 13,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "coherent-retirement-time-change",
+                "coherent-empty-closure-change"
+              ]
+            }
+          },
+          {
+            "name": "empty-empty-retry3",
+            "database": "bb_transition_9f06d15_empty",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "empty-empty-retry3",
+              "snapshots": 26,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 14,
+              "refreshes": 8,
+              "database": "bb_transition_9f06d15_empty",
+              "observation": {
+                "prepared": false,
+                "target_epoch": 3,
+                "retired_at_us": "1792072013346228"
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 13,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "coherent-retirement-time-change",
+                "coherent-empty-closure-change"
+              ]
+            }
+          },
+          {
+            "name": "empty-prepare4",
+            "database": "bb_transition_9f06d15_empty",
+            "metadata_bytes": 262144,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "empty-prepare4",
+              "snapshots": 26,
+              "tables": 75,
+              "native_rows": 58,
+              "sequence": 72,
+              "inputs": 4,
+              "control_epoch": 15,
+              "refreshes": 8,
+              "database": "bb_transition_9f06d15_empty",
+              "observation": {
+                "prepared": true,
+                "target_epoch": 4,
+                "retired_at_us": null
+              },
+              "refusal": false,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 14,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "rehashed-parent-hash-in-both-observations",
+                "prepared-without-candidate-binding",
+                "wrong-request-window"
+              ]
+            }
+          },
+          {
+            "name": "activated-metadata-short",
+            "database": "bb_transition_9f06d15_activated_short",
+            "metadata_bytes": 132607,
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "oracle": {
+              "status": "PASS",
+              "case": "activated-metadata-short",
+              "snapshots": 26,
+              "tables": 75,
+              "native_rows": 70,
+              "sequence": 85,
+              "inputs": 6,
+              "control_epoch": 15,
+              "refreshes": 9,
+              "database": "bb_transition_9f06d15_activated_short",
+              "observation": null,
+              "refusal": true,
+              "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+            },
+            "controls": {
+              "status": "PASS",
+              "count": 13,
+              "rejected": [
+                "retained-original-xmin-rehashed",
+                "all-native-sequences-shifted",
+                "both-backend-events-foreign-pid",
+                "coherent-old-closure-claim",
+                "input-digest-changed",
+                "metadata-grant-changed",
+                "control-driver-not-joined",
+                "observer-driver-failed",
+                "claimed-writer-activation",
+                "boolean-as-integer",
+                "missing-request-observation",
+                "capacity-failure-in-wrong-stage",
+                "unrelated-failure-taxonomy"
+              ]
+            }
+          }
+        ],
+        "raw_result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-engine-9f06d15/transition/result.json",
+          "sha256": "c940d1a2a67746655ceefeade3e323802ac39960fb2e3d38325f204617ffcde3"
+        },
+        "originals": {
+          "activated": {
+            "rows_unchanged": true,
+            "catalog_unchanged": true,
+            "native_unchanged": true,
+            "inputs_unchanged": true,
+            "physical_unchanged": true
+          },
+          "empty": {
+            "rows_unchanged": true,
+            "catalog_unchanged": true,
+            "native_unchanged": true,
+            "inputs_unchanged": true,
+            "physical_unchanged": true
+          }
+        },
+        "owned_terminal": {
+          "postgres": {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T13:46:30.979816956Z",
+              "FinishedAt": "2026-10-15T13:47:08.791281876Z"
+            }
+          },
+          "client": {
+            "id": "898bc8d3f87b3c4e406ced9239b605c12067d67d4424a6a4de9739f4c891ee6b",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T13:46:32.599800175Z",
+              "FinishedAt": "2026-10-15T13:47:07.620804637Z"
+            }
+          }
+        }
+      },
+      "transition_reader": {
+        "original": "ffa5a0bbc6f55b5da12966c564ce6d7987c85e74",
+        "main": "f55e3ec05f9c7e9dad1257e5d15f2288d1f1cbca",
+        "source_sha256": "c8f6fb3b7f1c0a98426bb03d68532180becbc21fffb71b96f0f7c46e37525d8f",
+        "manifest": {
+          "path": ".research/successor-transition-oracle-20261015/.research/transition-reader-selfcheck-20261015/manifest-v1.json",
+          "sha256": "5336dcdfd615beb9c75f36f0e86f456a2384e38cad3edefb4037324e64d56676"
+        },
+        "pure": {
+          "status": "PASS_PURE_READER_ONLY",
+          "cases": 9,
+          "snapshots": 242,
+          "transcript_controls": 121,
+          "file_controls": 15,
+          "bound_files": 128,
+          "processes": {
+            "generate_2769": 0,
+            "file_controls_77721": 0,
+            "cli_replay_9139": 0
+          },
+          "runtime": "NOT_RUN",
+          "limits": "Synthetic protocol and file-binding checks; generator reuses Model for new SQL/native assembly, therefore no independent positive semantic or product execution claim. Original pinned sources read-only; no engine/build/SQL/native opens."
+        },
+        "review": "Root full780lines; actual128rawfiles replay checked separately. Root verified143frozen artificial artifact hashes/128648403bytes without rerunning their generator."
+      },
+      "transition_harness": {
+        "original": "74e3a6b875e36e38f65038c68e8dafa034dc26ff",
+        "main": "9f06d150eeec7613dd2d46c5bdc33ea574bf47d2",
+        "source": {
+          "path": "experiments/ingest-succession/transition.py",
+          "sha256": "2ce483f8beec09a6cef807df454fc12267cfecf5f408897e12e4007814b5c3db"
+        },
+        "review": "Root full410lines, source import subprocessblocked PASS; author6pure custodymocks+9casebindings. Root owns actualengine; original/failure artifacts retained."
+      },
+      "qualified_transition_qualification_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T13:49:29.708465+00:00",
+        "records": [
+          {
+            "branch": "qualification/successor-transition-probe",
+            "original": "f0089963be1947919d1621591004f5ac7236127e",
+            "integrated": "c987b179d22ba62ddffb07c392863168e73e7ae4",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-transition-probe-20261015",
+            "archive_ref": "refs/archive/qualified-successor-transition-20261015/qualification/successor-transition-probe",
+            "blobs": {
+              "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "70a94a6c51175ac7f691e8d98e4a4c38d40f516e",
+              "apps/bigbrotr/examples/support/ingest_successor_history.rs": "76e4962e3ed2b38082007b84965debc5ea009cbf",
+              "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "329b25e0ad16cdd41f27cc854353e15428b326d8"
+            },
+            "qualified_corrections": {
+              "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "a3c089f918b58d22cc9a79e99be8321242d14be5"
+            },
+            "census_paths": 2074,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-probe-before-census.json",
+            "census_sha256": "3b915101f764dc4db75934c7355c3a24371e45db7e9c8d32c20da1f466186e93"
+          },
+          {
+            "branch": "qualification/successor-transition-oracle",
+            "original": "ffa5a0bbc6f55b5da12966c564ce6d7987c85e74",
+            "integrated": "f55e3ec05f9c7e9dad1257e5d15f2288d1f1cbca",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-transition-oracle-20261015",
+            "archive_ref": "refs/archive/qualified-successor-transition-20261015/qualification/successor-transition-oracle",
+            "blobs": {
+              "experiments/ingest-succession/transition_replay.py": "4d46b570320edc4fe264f7a494c21dbb851c393d"
+            },
+            "qualified_corrections": {},
+            "census_paths": 3889,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-oracle-before-census.json",
+            "census_sha256": "3b889c1408758c0245a630cb54259f49726014d1b931b660e4a3e44a17386b30"
+          },
+          {
+            "branch": "qualification/successor-transition-engine",
+            "original": "74e3a6b875e36e38f65038c68e8dafa034dc26ff",
+            "integrated": "9f06d150eeec7613dd2d46c5bdc33ea574bf47d2",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-transition-engine-20261015",
+            "archive_ref": "refs/archive/qualified-successor-transition-20261015/qualification/successor-transition-engine",
+            "blobs": {
+              "experiments/ingest-succession/transition.py": "57db7d14408006314df777b169fe111fa0da5aca"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2080,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-engine-before-census.json",
+            "census_sha256": "3da24bc94b97ce1ad9c9c66c9fa2ade8c2dc937a4058c09654a994d1f8a6035b"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-qualification.bundle",
+        "bundle_bytes": 14340892,
+        "bundle_sha256": "01e2d5ede9ad09f1607432689ab388aaacc953908eb905fa49c90e2ac48f7c32",
+        "replay_sha256": "24cc776707a21222e8c2933c12be78c4fed51ee64301e10a765f1658279d361e",
+        "audit_sha256": "1b068140661b4f7c518d8e49de447fe4b0d8c006809b2de110822fa952fcf31f",
+        "scope": "Three local refs only; all worktrees, ignored/external evidence and datasets preserved",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "session": 80920,
+        "exit_code": 0,
+        "report": {
+          "path": ".research/branch-retirement-20261015/successor-transition-qualification.json",
+          "sha256": "7fb03cb8590645c1491e6d9844dfcaf7fff9608ad91b9b79a84917309702f549"
+        }
       }
     }
   }

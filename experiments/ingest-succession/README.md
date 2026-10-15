@@ -90,3 +90,14 @@ Literal receipt/closure construction is separate from the Rust implementation.
 The reader only reads retained artifacts; it never starts an engine or repairs a
 capture. Artificial reader controls are separately labeled and do not qualify a
 connected product run. See the current checkpoint for actual execution status.
+
+`transition.py RUN_ROOT BUILD_ARTIFACTS` exercises nine finite invocations on
+three fresh copies: preparation3, fresh empty retirement3, exact retirement retry,
+and preparation4 from each genuine terminal2 origin, plus a future-metadata
+refusal. It requires observed native closure, joined drivers and backend absence
+before inspecting or reopening each copied store. Original stores remain unopened.
+`transition_replay.py RUN_ROOT` independently reconstructs the portable bytes and
+full SQL/native deltas from retained raw captures, including each process boundary.
+These processes close their candidates; the resulting receipts cannot be used to
+adopt a writer. Interrupted gap/CLOSING recovery, activation and installed journeys
+remain separate qualifications.

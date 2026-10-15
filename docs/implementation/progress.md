@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T13:24:08.319967+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T13:54:45.875261+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,11 +14,11 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `4e204f9` includes
-native handoff8df8d06 and PostgreSQL transitione33075e. Last verified remote
-`c987b179d22ba62ddffb07c392863168e73e7ae4` (push75302 joined0, independent ls-remote). Only main is remote.
-No merge/rebase pending. Root is recording qualification and adding its focused
-transition profile; concurrent probe/oracle/harness work is isolated below.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `9f06d15` includes
+native8df8d06, PG e33075e, corrected probe4e204f9, readerf55e3ec and harness9f06d15.
+Last independently verified remote main is c987b179d22ba62ddffb07c392863168e73e7ae4
+(push75302 joined0). Root is recording the completed9wave before its next push.
+No merge/rebase pending; source follow-ups use separate worktrees.
 
 ## Active task and exact next action
 
@@ -29,80 +29,47 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: integrate independent transition reader after its pure
-file-replay controls, then frozen harness74e3a6b. Prepare a fresh exact-source engine
-root and run9finite invocations on3freshcopies using qualified4e204f9 binaries.
+Root's next bounded action: review and integrate the source for five genuine
+interruption/recovery invocations: prepare via after-complete COMMIT loss → direct
+gap completion → empty retirement via before-forward COMMIT loss → direct empty
+completion → immutable retry. Use a fresh activated-terminal2 copy, public typed
+APIs and actual wire faults; never fabricate a prepared SQL/native seed.
 
-Probe4e204f9 preparation26572/build75838/custody44325 all joined0. CLI/probe and
-Clippy PASS; no tests repeated. Audit0672986f binds1885sourcefiles,110old+2new=
-112protectedELFs and1336unchanged prior projections. Both owned containers stopped0/
-PID0/noOOM. Probe9827b3cb/CLIdaa69b4b retained; engine still NOT_RUN.
-Source-only review covers complete443-line helper and sharedload/replay/dispatch
-changes.25component checks in f0cd563 reused across equivalent productlet-chain;
-three subsequent example corrections change no event/budget/native authority.
+Latest connected run9f06d15 is PASS: both genuine terminal2 origins complete
+prepare3 → fresh empty retirement3 → exact retry3 → prepare4, plus132607 metadata
+refusal before successor writes. Preparation43652/engine18586/replay9307/custody29203
+all joined0. Engine13:46:30Z–13:47:09Z; raw replay SHA24cc7767 checks242snapshots ×
+75tables,121semantic controls and128boundfiles. Custody SHA1b068140 binds1887source
+files,112protectedELFs and1337unchanged prior nonborrowed projections. Both originals'
+SQL/catalog/input/native physical censuses remain intact. Every process closes
+native and joins Control/observer, with exact backend absence before reopening.
+Owned client143/PG0 stopped/PID0/noOOM; cleanup/unrelated/missing/unexpected lists empty.
 
-Transitionf0cd563 preparation49360/build52025 joined0/1: CLI/probe compilation and
-21lineage/native +4PG tests PASS; Clippy FAIL on collapsible_if at PG rows211.
-Root simplifies the short-circuit condition without changing deadline checks.
-Custody14924 PASS (auditv2 SHA6b789172) binds1884sourcefiles,104old+3new=107ELFs,
-1330unchanged prior projections; fetch0/native1 stopped/PID0/noOOM. Auditv1 failed
-its warning-free assumption: both test logs contain the existing Copy-drop warning
-in lineage_replay_tests.rs495. Exact warning and frozen capture preserved in v2.
-Initial preparation KeyError happened before any resource creation, separately saved.
+Activated chain retains6inputs and native70/seq85 →73/89 →73/90 →73/90 →76/94.
+Empty chain retains4inputs and native52/seq63 →55/67 →55/68 →55/68 →58/72.
+Retry preserves exact retirement time/digest/xmin; preparation4 has a distinct
+fresh candidate and receipt. Short grant132607 admits epoch2history but refuses
+future epoch3 capacity132608; only actual Control lifecycle changes. These finite
+processes close their candidates: none can later be adopted for activation/writing.
 
-First transition probe buildc987b17 (preparation50083/build54282 joined0/1) FAIL
-E0277: DictionaryKind::try_from expectedu16, example suppliedu8 at431. Root range
-correction preserves1..9 integer JSON. Clippy NOT_RUN,0tests; no connected engine.
-Custody17487 PASS SHA7660f28d binds1885sourcefiles,107old+1CLI=108protectedELFs,
-1332unchangedcontainers; fetch0/native1 stopped/PID0/noOOM. Failedroot retained.
+Probe4e204f9 build75838/custody44325 PASS (audit0672986f); binaries9827b3cb/daa69b4b.
+Component21lineage/native +4PG tests pass in f0cd563. Its Clippy failure and the
+c987b17 type/7eb0274 probe lint failures remain FAIL at their retained roots; final
+build qualifies the minimal fixes. Existing test Copy-drop warning remains recorded.
+Earlier history6f2d9d2 passes3cases/55snapshots; its d81 import/d40 catalog failures
+remain preserved. No completed root may be replayed or overwritten.
 
-Second transition probe7eb0274 preparation6771/build88956 joined0/1: compilePASS,
-ClippyFAIL on3explicit drops of non-Drop witnesses. Root removes those calls;
-Rust ends these borrows at last use, actual native custody unchanged. Custody17202
-PASS SHA1ab5267a binds1885files,108old+2new=110ELFs and1334unchanged prior containers;
-fetch0/native1 stopped/PID0/noOOM. No engine executed; fresh compile/lint remains.
+Root reviewed all native/PG owners, new443-line probe and sharedcaller changes,
+reader780lines and harness410lines. Reader pure9contexts/242snapshots/121controls/
+15filecontrols are protocol-only evidence: their generator reuses its reducer.
+Actual independent raw replay above is separate. All143artificial artifacts remain.
 
-Corrected history6f2d9d2 preparation61577/engine31439 joined0: all three cases PASS,
-13:11:44Z–13:12:00Z. Root independent replay67068 PASS (SHA1e558b5a) verifies
-55snapshots×75tables,39semantic controls and54boundfiles. Custody6045 PASS
-(SHA75f061d6) binds1878sourcefiles/104ELFs/1328prior nonborrowed projections.
-Original SQL/catalog/input/native physical censuses intact; native handles closed,
-Control/observer joined, backends absent, client143/PG0 stopped/PID0/noOOM.
-The memory-short case correctly refuses132095 against132096 before a positive
-witness. Earlier failures remain FAIL at their separate retained roots.
-
-Run d40ef0c preparation78006/engine40697 joined0/1,13:08:02Z–13:08:11Z,
-remains FAIL: activated-terminal2 passes, then the catalog comparison wrongly
-included intended new Control15 rows. Empty/short NOT_RUN. Root partial replay
-be06fb PASS binds26full75-table snapshots/14controls (SHA1e98a80a), retaining global
-FAIL. Custody70195 PASS audit4b2bd386 binds1878files/104ELFs/1327unchanged prior
-nonborrowed projections; originals' complete physical censuses intact. PG0/client143
-stopped/PID0/noOOM. Raw catalog differences are only COPY data; fix excludes data
-from the catalog comparison while full independent row validation remains.
-
-Earlier harness675201b→d81ade4 failed during import before `run()` or resource
-creation. Correctione289c4e→d40ef0c registers the shared bootstrap oracle alias;
-source import smoke with subprocesses blocked PASS. Original wrapper e9e5c5 FAIL,
-preparation77459/custody7110 joined0; audit7b0d159e verifies1878files/104ELFs and
-1328unchanged containers. Both failed roots are retained and must not be replayed.
-
-Cases: `activated-terminal2`, `empty-terminal2`, `activated-metadata-short`.
-Positive metadata132608; refusal132095 against required132096. Require actual
-response, complete75-table/xmin snapshots, native rows/sequence, input hashes,
-actual backend absence and joined/native-closed custody before native reopening.
-Replay raw files independently and record all failures, exclusions and custody.
-
-Root alone runs builds, engines and the shared compiler cache. Native6475ff4 and
-PGefe6337 are integrated as8df8d06/e33075e after complete root/independent source
-review. They retain native/history on error or unknown COMMIT; candidate creation
-precedes Control acquisition. The25 component tests pass in f0cd563; Clippy correction awaits its new exact-source build.
-
-Agents now prepare isolated source-only transition probe (recovery_review),
-harness (successor_restart_design) and independent raw reader (cleanup_review)
-frome33075e. First wave: both genuine terminal2 origins→prepare3→fresh recovery→
-empty retire3/retry→prepare4, plus132607 metadata refusal before successor writes.
-Gap stays NOT_RUN until a genuine interrupted seed exists. No writer/activation
-or installed repeated-succession claim. Old worktrees/ignored evidence preserved.
+Root alone runs builds/engines/shared cache. recovery_review now owns isolated
+source-only faultprobe/harness; cleanup_review owns its independent faultreader.
+successor_restart_design owns isolated native activation/writer/frontier source,
+with no integration until a concrete PG consumer exists. Preserve old detached
+worktrees. Next activation must retain one candidate continuously through
+prepare→activate→writer; receipt/gap recovery cannot confer that authority.
 
 ## Current reusable evidence
 
@@ -167,11 +134,11 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 
 ## Branches, resources and preservation
 
-92local/51remote redundant refs retired;48worktrees detached with their original
-commits and full censuses unchanged. All104registered worktrees remain. Only main plus three purposeful transition
-probe/engine/oracle refs exist locally. Native/PG refs retired90216 after full
-original/integrated pair reconciliation and unchanged worktree censuses; bundle
-0df705cb preserved. Original closures
+95local/51remote redundant refs retired;51worktrees detached with their original
+commits and full censuses unchanged. All104worktrees registered at qualification remain; purposeful new fault/native
+worktrees are added separately. After retirement80920 only main remained locally;
+new branches serve those bounded follow-ups. Component bundle0df705cb and finite
+qualification bundle01e2d5ed retain exact originals; full censuses unchanged. Original closures
 remain under `refs/archive/*` and verified bundles in
 `.research/branch-retirement-20261015`; see `tux_branch_retirement_20261015` and
 active evidence `qualified_sql_branch_retirements`. No artifact/dataset/container
@@ -184,7 +151,7 @@ Recheck ownership/state before starting. Root build/preparation/audit/push handl
 above are joined; agents' source work continues. A historical PID/receipt is not
 fresh ownership proof. Preserve unrelated services and external host activity.
 
-Free space afterf0cd563 build:34589794304bytes; remeasure before allocation.
+Free space after9f06d15 engine:33,706,110,976bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
