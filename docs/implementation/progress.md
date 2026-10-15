@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T12:39:12.850956+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T12:49:06.894522+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `b96bcf8`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `6714e57`.
 Verified private push97734 is `e7006d9b8cb7c30d5aa077e61afe3bb06dc9bf1d`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
@@ -33,16 +33,24 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: build the exact finite connected-history probe/CLI
-with `ingest-succession-history-probe`. Probe f3e1511 integratedb96bcf8; root read
-complete506-line helper,1034-line dispatch owner and raw/snapshot helpers.72-test
-component evidence7202 is reused only for unchanged product/test/migration inputs;
-this build profile executes no tests. Then qualify both real terminal2 origins
-and insufficient metadata capacity132095 (required132096), positive132608.
-Root owns engine/harness; cleanup_review maps independent original pins/expectations.
-Native handoff/empty source continues separately in `.research/successor-handoff-20261015`.
-No agent can run engines/builds or mutate caches/labs;101protectedELFs/12GiB build
-reserve and2GiB small-engine reserve. Full writer/activation remains incomplete.
+Root's next bounded action: build the corrected finite connected-history probe/CLI
+with `ingest-succession-history-probe`. First build f269120 FAIL E0624: two private
+capacity calls in the experiment. Public replay capacity fix2183a92→6714e57 is
+integrated; no product visibility changed. Preparation20247/build87739 joined0/1;
+custody5908 joined0 PASS binds1876source files,101old+1new=102protectedELFs,
+1324unchanged prior containers. Audit588b0734 under
+`/runs/ingest-succession-history-probe-f269120/audit-root/audit-v1.json`.
+Fetch stopped0/native1, bothPID0/noOOM. BuildFAIL remains; Clippy NOT_RUN and
+no tests/connected engine ran. Retained CLI1e9e6653 is not a qualified probe.
+This root/preparation are complete and must never be replayed.
+
+Then qualify both real terminal2 origins and insufficient metadata capacity132095
+(required132096), positive132608. Root owns engine/harness; cleanup_review owns
+independent reader in `.research/successor-history-oracle-20261015`.
+Native handoff/empty6475ff4 is frozen in `.research/successor-handoff-20261015`,
+not integrated until its concrete PG consumer; recovery_review maps that consumer.
+No agent can run engines/builds or mutate caches/labs;12GiB build/2GiB small-engine
+reserve. Full writer/activation remains incomplete.
 
 Typed history89528b5→0ad6752 component qualification7202cfa PASS:
 preparation45888/build2428/audit44616 joined0,12:30:38Z–12:32:13Z.

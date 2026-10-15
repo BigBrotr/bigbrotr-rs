@@ -24556,12 +24556,67 @@
         }
       },
       "history_probe": {
-        "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+        "status": "FIRST_BUILD_FAIL_CORRECTION_INTEGRATED_NOT_RUN",
         "original": "f3e1511cd25cae2cb528e11b8215bdd207cb2696",
         "main": "b96bcf8",
         "helper_sha256": "ca5004911e4358574c146154d597b465622161ffc0861e66a8a8aca0351c54d5",
         "review": "Root read complete new helper, dispatch owner and actual raw/snapshot helpers; author rustfmt/diff and inverse old-dispatch comparison pass. Engine NOT_RUN.",
-        "scope": "Read-only positive lineage under actual Control; explicit metadata capacity; full snapshots, native-before-Control cleanup and joined drivers. No writer adoption or repair."
+        "scope": "Read-only positive lineage under actual Control; explicit metadata capacity; full snapshots, native-before-Control cleanup and joined drivers. No writer adoption or repair.",
+        "corrected_helper_sha256": "211ae402a41dc1708a59b46e150b387d19b31bbebcd47bbb831df90af9ff7935"
+      },
+      "history_probe_build_failure": {
+        "status": "FAIL",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-probe-f269120",
+        "source": "f269120fe1802fabc492c18b70ac6778885c7aec",
+        "tree": "7086c93a3cdb5f274266cd488521560758671d7d",
+        "build_session": 87739,
+        "build_exit_code": 1,
+        "preparation_session": 20247,
+        "custody_session": 5908,
+        "custody_exit_code": 0,
+        "audit_sha256": "588b0734da8de59be4ab0ae6b4dbb53da45409182f2359f66ea68cb52935b416",
+        "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-probe-f269120/audit-root/audit-v1.json",
+        "failure": {
+          "code": "E0624",
+          "private_method": "required_dictionary_replay_data_bytes",
+          "lines": [
+            121,
+            481
+          ]
+        },
+        "checks": {
+          "collected": 2,
+          "executed": 1,
+          "failed": 1,
+          "not_run": 1
+        },
+        "started_at": "2026-10-15T12:39:44.746009+00:00",
+        "finished_at": "2026-10-15T12:40:42.027351+00:00",
+        "protected_elfs": 101,
+        "new_elfs": {
+          "bigbrotr": "1e9e66530f688101578baf1300e5fab0103c8ea2ea9fe198171b8b196735fa78"
+        },
+        "total_protected_elfs": 102,
+        "files": 1876,
+        "unchanged_containers": 1324,
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "1b4df456f0521aabeaf7642736c7d9e42a6cc01d9eb7662cf841d935c4cbeb7d"
+          },
+          {
+            "name": "native",
+            "id": "021480d518d0ae7149b03ea9d2de8bdfa10e9a333284a39d534368c09e45483a"
+          }
+        ],
+        "owner": "256a29597714d7c567bb80b892a02c68",
+        "free_bytes_after": 35534544896,
+        "correction": {
+          "original": "2183a9202c4401479d475ef514a48c185a25247f",
+          "integrated": "6714e57",
+          "description": "Use existing public replay capacity, the maximum of bootstrap and dictionary replay, for effect grant and emitted capacity; no product visibility change",
+          "corrected_build": "NOT_RUN"
+        }
       }
     }
   }
