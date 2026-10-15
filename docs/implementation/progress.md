@@ -1,6 +1,8 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T19:18:46.948253+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T19:21:49.335301+00:00 on Tux. Work STOPPED at the owner's explicit
+pause request for exhausted credits. Do not resume until explicitly requested.
+The goal controller is set to paused after saving/pushing this checkpoint.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,7 +14,7 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD4fcad7e5e340e4733abdbe48dcacc220a8aa24a2.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD5f0879213f0287a91cb0fd7a3749c37366e49a4d.
 Verified remote4fcad7e: push42136joined0/98f597, independentb131e7 exact.
 Fixture9e584b3→583ea14 and rawbindered38515→c41eb54 integrated;
 source evidence9359721 and actual engine evidence4fcad7e pushed.
@@ -26,9 +28,22 @@ full-history bundlee51c99c0 and file census87e40eff intact;121local/51remote ref
 retired cumulatively,77detached/132preserved worktrees.
 Both qualified fixture/capture refs retired: executor66931 joined0, reportcf3a8c23,
 full-history bundleeb6887a1; every worktree file/link/stat including ignored artifacts
-unchanged. Only main remains local/remote; cumulative123local/51remote retired,
-79detached/132preserved worktrees. All agent writes stopped. Root retains sole
-integration, build/cache and engine ownership.
+unchanged. Cumulative123local/51remote retired and79detached worktrees preserved.
+Immediately before pause, two clean worktrees were created at5f08792:
+`.research/installed-successor-recovery-20261015` on
+`implementation/installed-successor-recovery`, and
+`.research/installed-successor-cycle-20261015` on
+`qualification/installed-successor-cycle`. Neither has an assigned task or code
+changes. Total134 worktrees remain preserved. Main and both new worktrees were
+clean at the pause observation; only this checkpoint/evidence/inventory update is
+pending commit/push. Retirement5f08792 is included in that push.
+
+All three agents are completed and have been told to pause. No owned compiler,
+product process, build or experiment remains active. All execution handles are
+joined and laboratory containers stopped/retained. Six unrelated services remain
+active and untouched. Fresh observation:
+`.research/installed-family-root-selfcheck-20261015/pause-observation.json`.
+Preserve all ignored/external data, logs, original/fault states and bundles.
 
 ## Active task and next action
 
@@ -41,9 +56,17 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: implement explicit installed repeatable
-recovery/source/abandon/retirement consumers using existing qualified adapters,
-then qualify a complete cycle on fresh copies of9359721 endpoints.
+Next bounded action, ONLY AFTER EXPLICIT RESUME: reconcile this checkpoint and
+read the preserved technical note
+`.research/installed-successor-engine-20261015/.research/installed-recovery-next-slice-20261015/notes-final.json`
+(SHAc49fddb2). Assign the two prepared worktrees, then expose four mutually
+exclusive modes under `ingest recover`: `--successor`, `--close-successor-source`,
+`--abandon-successor-acquisition`, `--retire-successor`, using the existing adapters.
+Root owns CLI/tests/docs; the recovery owner can use a new module plus existing
+dispatch. Source publication and fresh closed-source abandonment are distinct.
+No implementation, build or engine for this next slice has started (NOT_RUN).
+Later qualification must use fresh copies of9359721 endpoints and a new Serve
+lifetime without reusing existing e1..e4 commands; import closure stays separate.
 Build root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`,
 exact4cfac91/tree602f9281;143ELFs protected after build. Installed9359721 has passed
 with these unchanged CLI/probe artifacts; no new compiler run.
