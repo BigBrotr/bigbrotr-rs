@@ -64,7 +64,8 @@ def invoke(pg, client, output, case, proxy_source, fault, *, commit_number=11):
             extra = [str(ready['listen_port'])]
         window['before_us'] = history.server_clock(pg, database)
         lab.write_json(output / (name + '-clock.json'), window)
-        history.capture(client, output, name, 'successor-' + case['operation'], database,
+        command = 'successor-lineage-retire' if case['operation'] == 'retire' else 'successor-' + case['operation']
+        history.capture(client, output, name, command, database,
             '/run/secrets/application', case['config'], str(case['metadata_bytes']), *extra)
     except BaseException as error:
         response['orchestration_error'] = repr(error)
