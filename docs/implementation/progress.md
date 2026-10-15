@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T16:02:50.430476+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T16:16:30.410294+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,15 +14,14 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEADe7890f6b6934810156d11d1fc311dd6ba897f6d3.
-Last independently verified remote main3f41881a766914b53691b1fccb659930e9f09b1f
-(push86444joined0, remote19806f). Native8b9c1ab→93d7e4c, PG310d549→a594f5d and
-finite probe8de328a→e7890f6 are integrated and source-reviewed; runtime NOT_RUN.
-The first exact recovery build below failed only Clippy; root has a minimal
-private InputScan correctiond0e5c97 plus reviewed engineeb8a134→15c5782 integrated;
-followup verification pending, no merge/rebase. Two original component worktrees remain clean
-pending qualification; probe worktree is clean. Engine and independent reader
-use isolated qualification branches. All completed worktrees and evidence remain.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD4e8f852f6623029c9b2c6e9419368cc49ac6c257.
+Last independently verified remote mainbb2d4b89d36fe347b20a8f8385d4895f1b86d557
+(push25597joined0, remote8a7270). Native/PG/finite probe and six-origin engine are
+integrated; independent reader7a43f38→4e8f852 is now integrated and reviewed.
+Component followupbb2d4b8 passes compilation,103tests and Clippy. Original native
+and PG branches are archived/retired; original worktrees remain detached and intact.
+Three qualification worktrees remain clean on their original commits. No merge or
+rebase is in progress. This checkpoint/evidence/README update is the only root edit.
 
 ## Active task and exact next action
 
@@ -33,18 +32,25 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: qualify the minimal private InputScan field-naming
-correction to the sole Clippy finding in3f41881. Its103tests and CLI/probe compile
-passed; the aggregate remains FAIL. A new exact-source run must preserve its
-3ELFs/logs and all122prior binaries. Then integrate the independent reader and execute the reviewed six-origin
-engine recovery/retry. No completed root is replayed.
+Root's next bounded action: execute the integrated six-origin recovery/retry
+engine using unchanged protectedbb2d4b8 binaries, then independent raw replay and
+root custody. Prepare a new exact-source root with128protectedELFs and2GiB reserve;
+verify stopped borrowed PG before startup. No completed root is replayed.
+
+Followupbb2d4b8 preparation45173/build4447/custody36610 joined0,
+16:05:02Z–16:07:19Z: CLI/probe compile,103affected component tests and Clippy PASS.
+Audit e1018eb9 binds1907source files,125old+3new=128ELFs and1352unchanged prior
+container projections. Fetch/native0 stopped/PID0/noOOM;30,975,311,872bytes free.
+The private InputScan naming correction is qualified; original3f41881 remains FAIL.
+Connected recovery remains NOT_RUN; SQL activation/copy premises in native fixtures
+are explicit and do not qualify actual authority.
 
 Recovery3f41881 preparation82804/build47532/custody36448 joined(0/1/0),
 15:58:03Z–16:00:17Z. Native37lineage/8input/13dictionary/11producer recovery/
 3source closure/16activated recovery and PG4history/11transition tests all PASS;
 103total includes7new native recovery and4new PG discriminators. CLI/probe compile
 PASS; Clippy FAIL type_complexity in the private lineage_input_scan triple return.
-Root's named InputScan fields preserve values/callers/authority; followup NOT_RUN.
+Root's named InputScan fields preserve values/callers/authority; followup passes above.
 Auditbfe62c56 binds1906source files,122old+3new=125ELFs and1350unchanged prior
 container projections. Fetch0/native1 stopped/PID0/noOOM;31,289,307,136bytes free.
 Positive connected recovery remains NOT_RUN. All original failure evidence stays.
@@ -57,7 +63,12 @@ external-custody paths. Scientific oracle is stubbed in these checks. Manifest
 694a358e binds240preserved artifacts and2source hashes, all root-verified. Both
 check-1 andcheck-2 pass; second replaces an extra vacuous ordering assertion with
 explicit SQL/input-before-native ordering and preserves the first capture. No
-connected evidence is inferred. Independent semantic reader remains in progress.
+connected evidence is inferred. Independent semantic reader7a43f38→4e8f852 is fully read by root and independently
+reviewed by successor_restart_design AI without blocker at SHA cedb11a5. Pure
+66380/38700 joined0:12contexts/400snapshots/239controls and285bound files with4file
+perturbations PASS. Manifest820f366d binds245artifacts/291,770,638bytes/5sources/
+2links; root58269f/35973c verifies every hash/link and both generator bodies are
+read. Generator shares Model; this is protocol/file coverage, not product proof.
 
 Live-faultse3806a9 PASS: four activated-terminal2 clones/eight processes, before and
 after activationCOMMIT12 and first dictionary outcomeCOMMIT16 response loss.
@@ -88,20 +99,20 @@ driver, shared invoke/custody owners and exact pure helper bodies.
 
 Native8b9c1ab→93d7e4c and PG310d549→a594f5d are integrated. Root read all new
 owners/tests and shared deltas; independent AI review closed without blocker.
-Scoped rustfmt/diff checks PASS; components/connected recovery NOT_RUN. Distinct
+Scoped rustfmt/diff and component checks PASS; connected recovery NOT_RUN. Distinct
 native/PG owner retains one lineage allocation and closing permit; native prefix
 preview precedes missing-copy INSERT and cursor publication follows known COMMIT
 and final authority. Pending abandonment poisons the cursor. Scratch counts the
 native bitmap and both SQL copy buffers inside64KiB+64KiB; runtime assertions
-remain unexecuted. SQL0038 positive is unchanged and legacy readers remain strict.
+pass in bb2d4b8. SQL0038 positive is unchanged and legacy readers remain strict.
 At most one physical head issued+1 input may be retained inside the existing spool
 bounds. It proves no prior manifest/protection authority. Every reserved>issued
 suffix and staged tail remains unresolved and forbids a complete proof. Source,
 workflow, retirement and writer authority remain separate. The264-line finite consumer is integrated and fully reviewed, including full
 host/history caller and dispatch; scoped rustfmt/diff checks PASS. The six-seed
-engine and independent reader remain in progress in isolated worktrees. Root
+engine and independent reader are integrated and reviewed; isolated worktrees remain. Root
 independently checked all six actual result/SQL/native/input/catalog pins in ab6eab
-without opening native/SQL. Root alone builds; compile and runtime remain NOT_RUN.
+without opening native/SQL. Root alone builds; component compile/runtime PASS, connected recovery NOT_RUN.
 
 Live006fe3d five-case engine PASS: live3 from both original terminal2 shapes;
 on a third activated copy, prepare3 → fresh empty3 → new local candidate live4.
@@ -195,9 +206,9 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
 Root alone runs builds/engines/shared cache. Prior qualified native/PG/probe/oracle
-worktrees remain detached and unchanged. Five active worktrees retain native/PG
-components plus finite consumer, engine and independent reader source; the completed fault reader
-worktree is detached.116registered worktrees remain. Prior build/engine/replay/
+worktrees remain detached and unchanged. Three active qualification worktrees retain the finite consumer, engine and
+independent reader; native/PG component and completed fault-reader worktrees are
+detached.116registered worktrees remain. Prior build/engine/replay/
 audit handles are joined; component source review is closed.
 
 Source review: root complete new native writer363/frontier281/tests974, PG
@@ -272,10 +283,12 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 
 ## Branches, resources and preservation
 
-102local/51remote redundant refs retired;58worktrees detached with original
+104local/51remote redundant refs retired;60worktrees detached with original
 commits and full censuses unchanged. All116registered worktrees remain, including
-five current source/qualification branches. Only main remains remotely at the latest verification;
+three current qualification branches. Only main remains remotely at the latest verification;
 prior retirement totals refer to completed branches and exclude current work.
+Recovery component retirement67406 joined0; bundle6b8af983 preserves original
+8b9c1ab/310d549, qualified InputScan correction and full unchanged worktree censuses.
 Fault-reader retirement1396 joined0, bundleb3da1001 preserves original688d647,
 full worktree census and all378ignored artifacts+2links. Writer retirement68974
 and live qualification retirement49863 joined0; bundlesfedb979e/cfde0201 preserve
@@ -294,13 +307,13 @@ Latest engine, replay and custody handles are joined, owned containers stopped.
 A historical PID/receipt is not fresh ownership proof. Preserve unrelated services
 and external host activity.
 
-Free space aftere3806a9 engine:31,638,708,224bytes;1350containers at custody
-audit. Borrowed PG and new client exited/PID0/noOOM; prior1348nonborrowed
-projections unchanged. Remeasure before allocation.
+Free space afterbb2d4b8 build:30,975,311,872bytes;1354containers at custody
+audit. Fetch/native exited0/PID0/noOOM; prior1352projections unchanged.
+Borrowed PG remains stopped at that capture. Remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.122protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.128protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.

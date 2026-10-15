@@ -179,3 +179,11 @@ permit reopening a copy. Original stores remain unopened and their physical file
 inputs, full SQL and catalogs must remain identical. The finite scenario does not
 qualify source/workflow closure, retirement, installed supervision or recovery
 COMMIT-loss schedules. Execution status belongs to the existing checkpoint.
+
+`recovery_replay.py RUN_ROOT` independently replays all twelve raw process
+transcripts against literal receipts, closure bytes and full SQL/native/input
+state. It distinguishes original copies from a missing current copy, preserves
+historical xmin/recorder/time, checks one native closing mutation and no repeated
+mutation on retry, and requires closed/joined custody before the next process.
+Its artificial protocol/file checks reuse their model to generate transcripts;
+those checks are separate from actual product qualification.

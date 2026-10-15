@@ -50808,8 +50808,8 @@
     "status": "COMPLETE_INACTIVE_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
     "authority": "Q36; owner requested current integrated main and removal of useless branch refs",
     "canonical_branch": "main",
-    "main_source": "e3806a9f48cdeb4b5c7350f4e4f44ae18bb25819",
-    "main_verified_push": "53428 joined0; independent ls-remote e56bc0 confirms e3806a9",
+    "main_source": "bb2d4b89d36fe347b20a8f8385d4895f1b86d557",
+    "main_verified_push": "25597joined0; independent ls-remote8a7270 confirms bb2d4b8",
     "root": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015",
     "inventory": ".research/branch-inventory-cleanup-review-20261015/inventory.json",
     "original_refs": 133,
@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main plus two necessary native/PG recovery work branches locally; remote main only verified e3806a9. All113registered worktrees and ignored/external evidence preserved.",
+    "remaining": "main plus three necessary recovery probe/engine/oracle qualification refs locally; remote main only at last verifiedbb2d4b8. All116registered worktrees and ignored/external evidence preserved.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -50843,9 +50843,9 @@
       "root_recheck": "15 original commits,42 complete changed-file blob/mode comparisons exactly match main-ancestor integrations; all original commit objects remain archived."
     },
     "totals": {
-      "local_refs_removed": 102,
+      "local_refs_removed": 104,
       "remote_refs_removed": 51,
-      "worktrees_detached_preserved": 58
+      "worktrees_detached_preserved": 60
     },
     "old_writer": {
       "source": "f899896b1207f5e71c4e39d9ab7814b293814735",
@@ -51400,11 +51400,13 @@
       "records": [
         "qualified_transition_fault_branch_retirement",
         "qualified_writer_component_retirement",
-        "qualified_live_retirement"
+        "qualified_live_retirement",
+        "qualified_live_fault_retirement",
+        "qualified_recovery_component_retirement"
       ],
       "latest_report": {
-        "path": ".research/branch-retirement-20261015/successor-live-qualification.json",
-        "sha256": "2e42df75ab44825eb91c1d0aec692a501e366d392bb10d99f152d3e3d15a55b5"
+        "path": ".research/branch-retirement-20261015/successor-recovery-components.json",
+        "sha256": "3d645e5d1305eafc04b43a4865fa9b62ef047f7628a9b809b72817369ffd6f15"
       },
       "successor_live_fault": {
         "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-fault-qualification.json",
@@ -51416,7 +51418,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "CONNECTED_LIVE_AND_COMMIT_LOSS_PASS_ACTIVATED_RECOVERY_IN_PROGRESS",
-    "observed_at": "2026-10-15T15:32:40.447634+00:00",
+    "observed_at": "2026-10-15T16:16:30.410294+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -52484,7 +52486,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "ingest-succession-history-probe exact main; finite probe/CLI compile+Clippy only,101protectedELFs/12GiB.",
+    "next_build": "No compiler needed for next engine; reuse protected qualifiedbb2d4b8 artifacts",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -52885,7 +52887,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Qualify minimal private InputScan naming correction after103 component passes and one Clippy failure; preserve original run. Integrate six-origin harness/independent reader, then actual recovery/retry.",
+    "ongoing": "Run exact six-origin recovery/retry with unchanged qualifiedbb2d4b8 binaries, independent raw replay and root custody; all source/workflow/retirement and installed gates remain open.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -55416,7 +55418,7 @@
       "exit_code": 0
     },
     "activated_recovery_source": {
-      "status": "INTEGRATED_SOURCE_REVIEWED_COMPONENTS_AND_ENGINE_NOT_RUN",
+      "status": "COMPONENTS_QUALIFIED_CONNECTED_NOT_RUN",
       "base": "ad9ea95fbc6f950b83fc9956934bbc34480985ff",
       "observed_at": "2026-10-15T15:47:36.373059+00:00",
       "native": {
@@ -55425,7 +55427,7 @@
         "branch": "implementation/successor-native-recovery",
         "original_commit": "8b9c1ab03f5e10c671580b9ce57d45c0aa71a70d",
         "integrated_commit": "93d7e4c2492ab9920131987169226839173d895a",
-        "worktree_status": "clean; preserved pending component qualification"
+        "worktree_status": "clean, detached at original commit; branch archived and retired after component qualification"
       },
       "postgres": {
         "owner": "recovery_review",
@@ -55433,26 +55435,26 @@
         "branch": "implementation/successor-pg-recovery",
         "original_commit": "310d549c56788b97bb9dd7598d610d999c6675d7",
         "integrated_commit": "a594f5d6403734b448d5daec033fcc2ea1b915d3",
-        "worktree_status": "clean; preserved pending component qualification"
+        "worktree_status": "clean, detached at original commit; branch archived and retired after component qualification"
       },
       "scope": "Distinct activated-successor recovery under fresh Control using SQL0038 positive. One retained native lineage allocation, exact OPEN-to-CLOSING barrier, full ordered original replay and exact outcome repair. Prefix preview must precede any missing-copy INSERT; accept advancement only after known COMMIT and final authority checks.",
       "tails": "At most one physical head issued+1 input may be observed within unchanged global spool bounds. Unreserved bytes prove no prior manifest or protection authority. All reserved>issued requests and staged extras remain unresolved; issued prefix may be repaired but no complete witness can escape.",
       "exclusions": [
         "No writer adoption or conversion to predecessor/preparation authority",
         "No source/workflow/retirement or installed completion",
-        "No runtime evidence yet; root alone builds and runs engines"
+        "Component runtime PASS; connected recovery NOT_RUN; root alone builds and runs engines"
       ],
       "review": {
         "root": "Complete new owners/tests and shared changes read; no unresolved blocker",
         "independent": "cleanup_review AI source review of both frozen commits; no blocker",
         "source_checks": "Scoped rustfmt and diff-check PASS; no runtime inference",
-        "budget": "One retained allocation; native64KiB plus PG64KiB scratch, counter bitmap and both PG copy arrays included; compile assertions NOT_RUN"
+        "budget": "One retained allocation; native64KiB plus PG64KiB scratch including counter bitmap and both PG copy arrays; compile assertions PASS in bb2d4b8"
       },
       "qualification_work": {
         "probe_worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-probe-20261015",
         "engine_worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-engine-20261015",
         "base": "a594f5d6403734b448d5daec033fcc2ea1b915d3",
-        "profile": "ingest-succession-recovery; exact build and affected component tests planned, NOT_RUN",
+        "profile": "ingest-succession-recovery; exactbb2d4b8 build compile+103tests+Clippy PASS; connected NOT_RUN",
         "root_only_builds": true,
         "registered_worktrees": 116,
         "oracle_worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-oracle-20261015"
@@ -56110,7 +56112,7 @@
         "free_bytes_after": 31289307136,
         "finished_at": "2026-10-15T16:00:17.516328+00:00"
       },
-      "failure": "Only Clippy type_complexity at rocks/lineage_inputs.rs private triple return; compile and all103 component tests pass. Preserve aggregate FAIL. Root replaces private tuple with named InputScan fields; behavior and public signatures unchanged; followup NOT_RUN.",
+      "failure": "Only Clippy type_complexity at rocks/lineage_inputs.rs private triple return; compile and all103 component tests pass. Aggregate remains FAIL. Private InputScan fields preserve behavior/public signatures; separately qualified in bb2d4b8.",
       "scope": "Seven new native recovery groups and four new PG pure tests included; no connected recovery."
     },
     "activated_recovery_harness": {
@@ -56162,6 +56164,167 @@
       "runtime": "NOT_RUN",
       "scientific_oracle": "STUB_NOT_PRODUCT_EVIDENCE",
       "root_verified_pins": true
+    },
+    "activated_recovery_component": {
+      "status": "PASS_SUCCESSION_RECOVERY_COMPONENTS",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bb2d4b8",
+      "source": "bb2d4b89d36fe347b20a8f8385d4895f1b86d557",
+      "tree": "bcd322dfceed60aa8ed47c4af6125079f51800ae",
+      "preparation_session": "45173joined0",
+      "build_session": "4447joined0",
+      "custody_session": "36610joined0",
+      "audit_sha256": "e1018eb9ffa7c70926f02a8df2905f4502c4de939e12975fe0429edb5a5e5843",
+      "tests_passed": 103,
+      "test_counts": {
+        "lineage_tests": 37,
+        "request_input_tests": 8,
+        "dictionary_append_tests": 13,
+        "producer_recovery_tests": 11,
+        "source_closure_tests": 3,
+        "activated_recovery_tests": 16,
+        "successor_history::tests": 4,
+        "successor_transition": 11
+      },
+      "executables_sha256": {
+        "native_components": "688e626567ba6baa3157ea05ac37597e50ffcaa71b9c724388846dae9a0e574b",
+        "ingest_bootstrap_probe": "fc81f84e30a08243c63cc20b9a15d53be0f5dc7c29e8f108fa3688ab6c8fa974",
+        "bigbrotr": "6510a92884605272289bcfd769ced0a0837826a6712691b14b1313df54d495f2"
+      },
+      "protected_prior_elfs": 125,
+      "total_retained_elfs": 128,
+      "source_files": 1907,
+      "unchanged_prior_containers": 1352,
+      "resources": {
+        "source": "bb2d4b89d36fe347b20a8f8385d4895f1b86d557",
+        "tree": "bcd322dfceed60aa8ed47c4af6125079f51800ae",
+        "owner": "56a1e3f3c896d5927333bc2e6bd15348",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bb2d4b8",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "ea781c8584bcdbd056b2c09ee7c79f57c2764ac4cc70ed1614a62841871dc965"
+          },
+          {
+            "name": "native",
+            "id": "d777c5d7e18732e83fbbf59a6ed108c7aa4662fa4c954d1347bfb1b76db1ad3c"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-15T16:05:02.550604+00:00",
+        "qualification": "PASS_SUCCESSION_RECOVERY_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 30975311872,
+        "finished_at": "2026-10-15T16:07:19.230798+00:00"
+      },
+      "scope": "CLI/probe compile,103 affected component tests and Clippy PASS. Native activation/copy premises are explicit; connected recovery NOT_RUN. Private InputScan correction qualifies separately; original3f41881 aggregate remains FAIL."
+    },
+    "qualified_recovery_component_retirement": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T16:08:13.941966+00:00",
+      "records": [
+        {
+          "branch": "implementation/successor-native-recovery",
+          "original": "8b9c1ab03f5e10c671580b9ce57d45c0aa71a70d",
+          "integrated": "93d7e4c2492ab9920131987169226839173d895a",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-native-recovery-20261015",
+          "archive_ref": "refs/archive/qualified-successor-recovery-components-20261015/implementation/successor-native-recovery",
+          "blobs": {
+            "apps/bigbrotr/src/storage/rocks/lineage.rs": "8190e378d2df77ccfb9a3400c311f1194ae91bf5",
+            "apps/bigbrotr/src/storage/rocks/lineage_census.rs": "87af3ad98b4cec3ade62e50a16efccc297c73325",
+            "apps/bigbrotr/src/storage/rocks/lineage_inputs.rs": "4e29d14f712041ad5a9acbcc580ca81ddf32b093",
+            "apps/bigbrotr/src/storage/rocks/lineage_replay.rs": "5080fc413442457b71ae5bc8e72f9d90b82cab54",
+            "apps/bigbrotr/src/storage/rocks/producer_recovery.rs": "d676ba1f9fe3283cd002a5ae314aff3e521215f9",
+            "apps/bigbrotr/src/storage/rocks/request_inputs.rs": "466193d51f499cbf27d2017cc4c718a4ee5ea805",
+            "apps/bigbrotr/src/storage/rocks/source_closure.rs": "f9f24af5bdfdf33b22b228891406082cb75dd12e",
+            "apps/bigbrotr/src/storage/rocks/store.rs": "b800cc84270797dc8f7352ad6081ede9effc7686",
+            "apps/bigbrotr/src/storage/rocks/successor_recovery.rs": "2091339ae96ebfb03b548cd9ae8dfb466ac9acf0",
+            "apps/bigbrotr/src/storage/rocks/successor_recovery_tests.rs": "d89b3acd08af24e3b3b96a11534ef20bdff61e38",
+            "apps/bigbrotr/src/storage/rocks/successor_writer_tests.rs": "2295bed0ff4f5195d22cd0d25258c26988d86250"
+          },
+          "qualified_corrections": {
+            "apps/bigbrotr/src/storage/rocks/lineage_inputs.rs": {
+              "commit": "d0e5c976be70457ab18c23266d8775af3eeacb2e",
+              "blob": "5a01359473f778dba22ba2c27b970e9c0619acef",
+              "reason": "Named private InputScan fields; all103 affected component tests and Clippy pass in qualified followup"
+            }
+          },
+          "census_paths": 2089,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-native-before-census.json",
+          "census_sha256": "df291a1ade7b7d03826f5a9c10823d792fae43441d783f5fba71d087d9f07f5d"
+        },
+        {
+          "branch": "implementation/successor-pg-recovery",
+          "original": "310d549c56788b97bb9dd7598d610d999c6675d7",
+          "integrated": "a594f5d6403734b448d5daec033fcc2ea1b915d3",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-pg-recovery-20261015",
+          "archive_ref": "refs/archive/qualified-successor-recovery-components-20261015/implementation/successor-pg-recovery",
+          "blobs": {
+            "apps/bigbrotr/src/storage/postgres/control_owner.rs": "d06d7f6656e7572719487a1b1535bd97e5fa8e46",
+            "apps/bigbrotr/src/storage/postgres/successor_history.rs": "3bb37001c5769f81939be2039b0e8fd67064f618",
+            "apps/bigbrotr/src/storage/postgres/successor_history_rows.rs": "ebfae91e2c31be826a7be80faf74688b56e51c4b",
+            "apps/bigbrotr/src/storage/postgres/successor_recovery.rs": "a802b2ba125f23e5fdf0a0dc3260567e3e0341f4",
+            "apps/bigbrotr/src/storage/postgres/successor_recovery_rows.rs": "93ee0f6ec3ebdb4d2793d9cca21b705fada8b670",
+            "apps/bigbrotr/src/storage/postgres/successor_recovery_tests.rs": "87fd46011880edbd25aa13914ffcf0331d1de00e",
+            "apps/bigbrotr/src/storage/postgres/successor_transition.rs": "b650d31d311ecaef0b30fb00f88c9a0040ee1cb8"
+          },
+          "qualified_corrections": {},
+          "census_paths": 2090,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-pg-before-census.json",
+          "census_sha256": "0c6ac4d4e9258f781774c24b16d3f9130567475fcf612138dfdbd01ae7c00324"
+        }
+      ],
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-components.bundle",
+      "bundle_bytes": 14574284,
+      "bundle_sha256": "6b8af983c0229de047e5c071b829bd25e981026f2075a25903be724a74842a22",
+      "audit_sha256": "e1018eb9ffa7c70926f02a8df2905f4502c4de939e12975fe0429edb5a5e5843",
+      "scope": "Two local component refs only; finite probe/engine/oracle remain active. All worktrees, ignored/external evidence and datasets preserved",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "session": 67406,
+      "exit_code": 0,
+      "report_path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-components.json",
+      "report_sha256": "3d645e5d1305eafc04b43a4865fa9b62ef047f7628a9b809b72817369ffd6f15"
+    },
+    "activated_recovery_reader": {
+      "status": "SOURCE_INTEGRATED_REVIEWED_PURE_CHECKS_PASS_ENGINE_NOT_RUN",
+      "original": "7a43f38476a0c6a92b28910fcf53c228d8c498dc",
+      "integrated": "4e8f852f6623029c9b2c6e9419368cc49ac6c257",
+      "worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-oracle-20261015",
+      "source_sha256": "cedb11a52b0a09cfb15b418e135517d3b1ea49fc1726a67c6a84f54d8f7106f1",
+      "manifest": "/home/tux/bigbrotr-rs/.research/successor-recovery-oracle-20261015/.research/recovery-reader-selfcheck-20261015/manifest.json",
+      "manifest_sha256": "820f366d76049bb48d82d64d6e1bb0265262493a020f1d9ff8de65540ea3e494",
+      "retained_artifacts": 245,
+      "retained_bytes": 291770638,
+      "links": 2,
+      "checks": {
+        "status": "PASS_PURE_READER_CHECKS_ONLY",
+        "source_sha256": "cedb11a52b0a09cfb15b418e135517d3b1ea49fc1726a67c6a84f54d8f7106f1",
+        "original_pin_files": 24,
+        "protocol": {
+          "process_contexts": 12,
+          "snapshots": 400,
+          "negative_controls": 239,
+          "session": 66380,
+          "exit_code": 0
+        },
+        "file_replay": {
+          "snapshots": 400,
+          "negative_controls": 239,
+          "bound_files": 285,
+          "file_controls": 4,
+          "session": 38700,
+          "exit_code": 0
+        },
+        "scope": "Independent literal science checked against frozen prior captures; artificial protocol uses shared Model and is not product or engine evidence",
+        "processes_and_network": "blocked in both artifact-writing generators",
+        "review": "Root and successor_restart_design read full source; final3line catalog fence reviewed separately",
+        "engine_build_sql_native_actions": 0
+      },
+      "review": "Root complete initial743lines plus final3-line catalog SHA fence, both pure generators and all245artifact/5source/2link hashes verified; independent successor_restart_design AI source review closed without blocker at frozen hash. Reused reader imports identical to main.",
+      "runtime": "NOT_RUN"
     }
   }
 }
