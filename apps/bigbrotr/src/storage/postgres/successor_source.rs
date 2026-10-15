@@ -3,6 +3,10 @@
 //! Publication is terminal for this owner: retain native/Control custody on all
 //! outcomes, then tear down and inspect again for a retry.
 use super::*;
+
+#[path = "successor_acquisition.rs"]
+mod acquisition;
+
 // Atomic only to preserve the owner's Send/Sync custody across async workers;
 // operations are still serialized by the borrowed Control session.
 #[derive(Debug, Default)]
