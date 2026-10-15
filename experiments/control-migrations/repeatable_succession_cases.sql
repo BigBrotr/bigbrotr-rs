@@ -62,7 +62,8 @@ BEGIN
         GET STACKED DIAGNOSTICS state=RETURNED_SQLSTATE,message=MESSAGE_TEXT,context=PG_EXCEPTION_CONTEXT;
     END;
     IF state IS DISTINCT FROM expected OR message IS DISTINCT FROM expected_message THEN
-        RAISE EXCEPTION 'case % expected %/%, received %/%',label,expected,expected_message,state,message;
+        RAISE EXCEPTION 'case % expected %/%, received %/%',label,expected,expected_message,state,message
+            USING DETAIL=context;
     END IF;
     IF pg_temp.snapshot() IS DISTINCT FROM before_rows THEN RAISE EXCEPTION 'case % changed retained rows',label; END IF;
     INSERT INTO fixture_results VALUES(label,state,message,context);

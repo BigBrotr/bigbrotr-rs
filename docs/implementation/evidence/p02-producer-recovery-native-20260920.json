@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "NATIVE_REPLAY_SCHEMA_PASS_SQL_NUMERIC_RETRY_PENDING",
+      "status": "NUMERIC_PASS_SQL_BACKEND_REFUSAL_DIAGNOSIS",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "123 Rust tests, independent fixture and Clippy PASS. Next corrected CLI SQL numeric/shapes on fresh copies; independent native AI review and read-only typed PG mapping underway. Connected/installed succession incomplete.",
+      "ongoing": "Numeric defect observed/fixed; new engine fails unexpected Control backend refusal. Fixture now preserves exception context. Next diagnostic copy with unchanged CLI; independent PG source design ongoing.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -23778,6 +23778,76 @@
           "Native epoch3 bytes directly installed by fixture; no connected writer/preparation/activation.",
           "Corrected numeric SQL engine NOT_RUN; full product remains incomplete."
         ]
+      },
+      "sql_backend_failure": {
+        "status": "FAIL_UNEXPECTED_BACKEND_OWNER_REFUSAL",
+        "source": "c4f7bd5a50fe7779323e165c4df9eee15553ff55",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-c4f7bd5",
+        "preparation_session": 53093,
+        "engine_session": 91165,
+        "wrapper_exit": 1,
+        "started_at": "2026-10-15T11:53:18.926654+00:00",
+        "finished_at": "2026-10-15T11:53:25.978301+00:00",
+        "result_sha256": "5ff2ac1991eb71b3be0a7a3aa7425ac4f5f286f977e7b62d5899b215e0706d92",
+        "actual": "Migration plan/apply/reapply exit0; numeric cases pass; genesis_creation_before_anchor receives backend owner refusal instead of expected timestamp refusal. Empty copy/later shapes NOT_RUN.",
+        "prior_unsigned_failure": {
+          "encoded": "00000000000000ff",
+          "rounded_quotient": "72057594037927936",
+          "integer_quotient": "72057594037927935",
+          "decoded": "9223372036854775808"
+        },
+        "audit": {
+          "session": 61180,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-c4f7bd5/audit-root/audit-v1.json",
+          "sha256": "6ec88233bd648a12c028dbca155c4b913121d03b8333cbbcaff7872ec66498f8",
+          "source_files": 1870,
+          "protected_elfs": 94,
+          "unchanged_nonborrowed_containers": 1315,
+          "capture": {
+            "observed_at": "2026-10-15T11:55:48.674941+00:00",
+            "containers": 1317,
+            "sha256": "6d5a6b5e767782ebc2de7489f224191468c05c94346bddda33290f203eee762b"
+          }
+        },
+        "owned_terminal": {
+          "postgres": {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:53:18.980612982Z",
+              "FinishedAt": "2026-10-15T11:53:25.098796014Z"
+            }
+          },
+          "client": {
+            "id": "b5f0fa8cae759eb8f4c21eee47678c77eb96788151d0fe80097cea673f2d0f42",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:53:21.617773272Z",
+              "FinishedAt": "2026-10-15T11:53:24.433253458Z"
+            }
+          }
+        },
+        "free_bytes_after": 39667924992,
+        "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+        "hypothesis": "New SECURITY DEFINER trigger calls INVOKER0007 require_control_owner; PG16.15 stats uses current user and hides session backend_start from migrator. Diagnostic full context next; no authority change yet.",
+        "dependency_reference": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/pgstatfuncs.c"
       }
     }
   }

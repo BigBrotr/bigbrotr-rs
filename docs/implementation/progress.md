@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:53:08.263533+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:57:29.652959+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `aa6cb5b`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `c4f7bd5`.
 Verified private push64046 is `277f305b2e63d2e1e9f30ee15238e24e945d4b89`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
@@ -33,10 +33,21 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: fresh SQL-only numeric retry using qualified aa6cb5b CLI,
-prepared by `.research/repeatable-succession-sql-numeric-prepare-20261015.py`
-(NOT_RUN),94protectedELFs,2GiB reserve. Verify retained failures, then migrate and
-execute both legacy-origin SQL shapes. Keep all failed databases and captures.
+Root's next bounded action: diagnostic SQL copy using unchanged qualified aa6cb5b
+CLI, `.research/repeatable-succession-sql-context-prepare-20261015.py` (NOT_RUN),
+94protectedELFs/2GiB. Fixture now includes PG_EXCEPTION_CONTEXT on mismatched
+negative outcomes. Do not weaken backend authority or expected result.
+
+SQLc4f7bd5 preparation53093/engine91165 joined1 FAIL,11:53:18Z–11:53:25Z.
+CLI migration/redo pass; high-u64 checks pass. Retained old codec read confirms
+00000000000000ff, rounded quotient72057594037927936 vs exact72057594037927935.
+Next negative genesis_creation_before_anchor unexpectedly sees backend-owner
+refusal. Suspect SD trigger→INVOKER0007 stats filtering; PG16.15 source and agent
+analysis support mechanism, exact exception context still pending. Both originals
+and failures retained, PG0/client143 stopped/PID0/noOOM; no custody changes.
+Audit61180 joined0 PASS binds1870source files/94ELFs/1315nonborrowed projections;
+see `/runs/ingest-succession-sql-c4f7bd5/audit-root/audit-v1.json`. Empty copy and
+later SQL shapes NOT_RUN. Preparation/engine/audit complete, never replay roots.
 
 Combined aa6cb5b preparation33172/build25657 joined0 PASS,11:50:19Z–11:51:56Z.
 123Rust tests:38schema/3entrypoint/15lineage/8input/7handoff/13dictionary/
@@ -440,7 +451,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after combined build11:51:56Z:39,755,030,528; remeasure before allocating. Small engines
+Free bytes after SQL11:53:25Z:39,667,924,992; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive
