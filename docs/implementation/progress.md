@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T14:33:31.119529+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T14:41:03.147920+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,11 +14,11 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `0bae4a6` integrates
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `a57540c` includes
 native92b4cb9→0b8b9fe and PG9420a05→0bae4a6 continuous activation/writer source.
 Last independently verified remote main is d0661961f5efb892148e93fd0e8a88e0a951e755
-(push40404 joined0, remote d3e9ac). Root is saving the focused component profile
-and source checkpoint; compiler/engine qualification of these owners is NOT_RUN.
+(push40404 joined0, remote d3e9ac). Root is recording first component build FAIL and the followup profile. Product
+compiled and116native tests passed; four later checks remain NOT_RUN.
 No merge/rebase pending. Original source branches/worktrees remain preserved until
 qualification and reconciliation; the new finite consumer has its own worktree.
 
@@ -31,12 +31,18 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: finish independent boundary review, then run the
-exact-source `ingest-succession-writer` component/build profile with protected
-artifacts and exclusive owned cache. Native9 and PG3 new test groups are authored,
-not executed. Then qualify a real live fixture retaining the same candidate through
-preparation, activation and admission. Closed earlier candidates cannot be adopted.
-No connected or installed writer qualification is claimed.
+Root's next bounded action: run exact-source `ingest-succession-writer-followup`
+for the three unexecuted component groups and Clippy. Native/source remains unchanged;
+reuse the116individual native passes, including all9new writer groups, without
+relabeling the first aggregate failure. Then build/qualify the finite live consumer.
+
+Builda57540c preparation86605/build67477/custody80843 joined (0/1/0).
+Probe/CLI compile PASS; native116PASS/1FAIL because the selected module also included
+an installed Archive-worker test without its packaged asset/environment. Dictionary,
+input, PGactivation and Clippy NOT_RUN. Preserve original failure/logs/3ELFs.
+Audit21b8fc0a binds1895source files,114old+3new=117ELFs and1342unchanged prior
+container projections. Fetch0/native1 stopped/PID0/noOOM; free32,821,301,248bytes.
+Independent source review closed without blocker; this is not connected authority.
 
 Fault run2a9b3ab PASS: prepare after-complete COMMIT11 loss → fresh gap completion →
 empty before-forward COMMIT11 loss → fresh empty completion → immutable retry.
@@ -92,8 +98,9 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
 Root alone runs builds/engines/shared cache. Both native/PG source worktrees are
-clean at92b4cb9 and9420a05; exact blobs are integrated. cleanup_review is completing
-independent source review; no blocker reported so far. recovery_review now owns
+clean at92b4cb9 and9420a05; exact blobs are integrated. cleanup_review completed source review and now owns source-only
+`.research/successor-live-oracle-20261015`, branchqualification/successor-live-oracle,
+basea57540c. recovery_review owns
 source-only `.research/successor-live-probe-20261015`, branch
 `qualification/successor-live-probe`, base0bae4a6, for the real finite consumer.
 Activation retains native custody on all errors/awaits; only confirmed activation
@@ -162,9 +169,9 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 ## Branches, resources and preservation
 
 97local/51remote redundant refs retired;53worktrees detached with their original
-commits and full censuses unchanged. All109registered worktrees remain after adding the live-probe worktree. Four local
-branches remain: main, writer/activation originals awaiting qualification, and the
-active live-probe branch. Remote still contains only main.
+commits and full censuses unchanged. All110registered worktrees remain after adding the live-probe/oracle worktrees. Five
+local branches remain: main, writer/activation originals awaiting qualification,
+and the active live-probe/oracle branches. Remote still contains only main.
 Component bundle0df705cb, finite bundle01e2d5ed and fault bundlee0e57314 retain exact
 originals; full censuses unchanged, including all94artificial reader artifacts.
 Original closures
@@ -184,7 +191,7 @@ Free space after2a9b3ab engine:33,126,715,392bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.114protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.117protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.

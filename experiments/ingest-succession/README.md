@@ -124,3 +124,10 @@ dictionary and input components. Its native fixtures use an explicitly synthetic
 confirmed-activation premise. The profile preserves test executables and builds
 the CLI/probe; actual SQL authority and connected writer delivery require a
 separate live process fixture.
+
+This profile excludes the packaged Archive-worker integration test, whose asset
+and environment belong to its own installed lab. The `writer-followup` variant
+runs only the dictionary/input/PG groups plus compilation and Clippy. It does not
+repeat native admission/writer tests; reuse their separately recorded per-test
+results only when the product inputs match exactly. An earlier aggregate failure
+remains a failure even when its other individual tests passed.

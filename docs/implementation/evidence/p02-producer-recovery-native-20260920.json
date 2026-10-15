@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Run exact-source writer components after final independent boundary review, then qualify new finite same-process live consumer and independent raw-state oracle. No closed prior candidate is adoptable.",
+      "ongoing": "Run exact-source writer-followup to complete previously unexecuted checks; preserve first build FAIL and reuse only116 unchanged per-test passes. Finite live probe and independent reader are source-only in separate worktrees.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -26563,7 +26563,7 @@
             ]
           }
         ],
-        "source_review": "Root complete new native writer363/frontier281/tests974, PG activation400/dispatch173/tests199 and full shared diffs. Complete affected native admission1446/dictionary724/preparation368/input428+census223/bootstrap679/lineage516/candidate481/store535/initial writer229; existing PG owners/callers previously read. Independent AI review in progress, no blocker reported; final disposition pending.",
+        "source_review": "Root complete new native writer363/frontier281/tests974, PG activation400/dispatch173/tests199 and full shared diffs. Complete affected native admission1446/dictionary724/preparation368/input428+census223/bootstrap679/lineage516/candidate481/store535/initial writer229; existing PG owners/callers previously read. Independent AI review in progress, no blocker reported; final disposition pending. Independent AI review now closed without blocker on exact original commits, including reserve/outcome/source consumers; source-only.",
         "checks": {
           "scoped_rustfmt": "PASS by authors",
           "diff_check": "PASS",
@@ -26574,6 +26574,72 @@
         },
         "scope": "Same candidate/native ownership through confirmed activation and final lease/driver delivery; moved original lineage allocation/permit; dynamic writer dispatch with exact input census and prior fact frontier. Shared legacy branches retained.",
         "next": "Run exact-source writer components after final independent boundary review, then qualify new finite same-process live consumer and independent raw-state oracle. No closed prior candidate is adoptable."
+      },
+      "continuous_writer_first_build": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-a57540c",
+        "status": "FAIL_MISSING_PACKAGED_ARCHIVE_WORKER",
+        "source": "a57540c0a333a305fe6c248b0afdebf5889a081e",
+        "tree": "7171fe98af663c326b078de46c4ac4b03ead4620",
+        "owner": "5b672e512ac2d03b620b6c4cdb5401eb",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "1f10caa0f925a27a650ac22eea2eb26fa89f9e4c954a7c568fbe91beac2de32e"
+          },
+          {
+            "name": "native",
+            "id": "07d771b8e1a66e39e197d851dc05ff42cc76eb97346f6c22637dcda1dda2b426"
+          }
+        ],
+        "started_at": "2026-10-15T14:34:48.273001+00:00",
+        "finished_at": "2026-10-15T14:36:54.480717+00:00",
+        "free_bytes_after": 32821301248,
+        "preparation": {
+          "session": 86605,
+          "exit_code": 0
+        },
+        "build": {
+          "session": 67477,
+          "exit_code": 1
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-a57540c/audit-root/audit-v1.json",
+          "sha256": "21b8fc0a9782e348974b38a3cb1f801d960085207f7ca1818fbfe62dbb8ad872",
+          "session": 80843,
+          "exit_code": 0,
+          "status": "PASS_READ_ONLY_FAILED_WRITER_BUILD_CUSTODY",
+          "source_files": 1895,
+          "old_elfs": 114,
+          "new_elfs": 3,
+          "unchanged_containers": 1342
+        },
+        "raw_checks": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-a57540c/out/build-checks/result.json",
+          "sha256": "d9665bea7014a0ce3eaa542947729282a57cd1df544ca093e81ecb3155229fb3"
+        },
+        "raw_components": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-a57540c/out/artifacts/component-result.json",
+          "sha256": "46e8f8d1d2fea3a0d9aaa834257a469dabdf9a515167be5e2fd4168f9a03cc55"
+        },
+        "executables": {
+          "native_components": "315ff29513f0febb7f5473f0ea6e4bdbfdb79e5969637d5d46a9fda640dfab83",
+          "ingest_bootstrap_probe": "4490a0dd828360d88774b4c850e7cde83dd1b8857648c9c167f15013cef3e71f",
+          "bigbrotr": "e8c00c46592d858c6e445d4b14752e5b6c17ca80eb115c8ea26d204e2fc3e6f6"
+        },
+        "per_test_passes": 116,
+        "new_writer_groups_passed": 9,
+        "failed_test": [
+          "storage::rocks::store::admission_tests::signed_pending_reopens_and_reaches_the_supervised_native_worker_without_acknowledgement"
+        ],
+        "cause": "Root selected the whole admission module; one existing installed Archive-worker test requires BIGBROTR_ARCHIVE_TEST_INSTALLATION and packaged worker identity unavailable in this component lab. Probe/CLI compiled;116 other tests passed. Aggregate remains FAIL.",
+        "not_run": [
+          "dictionary_append_tests",
+          "request_input_tests",
+          "successor_transition",
+          "clippy"
+        ],
+        "reuse": "All product/migration/dependency sources remain unchanged; next followup executes only previously unexecuted checks. Original failure and all three ELFs retained.",
+        "review": "Independent AI source review cleanup_review closed at native92b4cb9/PG9420a05 without blocker; complete new owners/frontier/dispatch plus actual reserve/outcomes/sources callers. No runtime qualification inferred."
       }
     }
   }
