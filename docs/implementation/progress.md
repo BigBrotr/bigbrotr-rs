@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T15:03:45.876893+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T15:27:49.376643+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,13 +14,14 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063
-is also the independently verified remote main (push56336joined0, remote eae361).
-Writer92b4cb9→0b8b9fe, PG9420a05→0bae4a6, live probece6e154→34be776 and
-readerc005406→9ce8133 are integrated and qualified within the scopes below.
-Root is committing the completed connected live result and branch reconciliation.
-No merge/rebase or product edit pending. All original worktrees remain detached
-at their original commits with full file censuses unchanged.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD8cd739449b80cc9f4a400ab75457b1fa450a5008
+integrates reader688d647. Previousad9ea95 remains the independently verified remote
+main (a12d6d); root is committing the harness/docs before the next verified push.
+Root changes: live_faults.py, default-preserving commit_number in transition_faults.py,
+README and this evidence/checkpoint update. No merge/rebase. Native/PG recovery
+sources remain in separate worktrees, both based on ad9ea95. Their branches have
+an active purpose; retire the fault-reader ref after connected qualification.
+All earlier original worktrees/artifacts remain preserved.
 
 ## Active task and exact next action
 
@@ -31,14 +32,31 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: inspect and implement the bounded activated-family
-recovery owner, preserving positive whole-lineage replay and separate source,
-workflow and retirement prerequisites. Current history refuses an activated
-nonterminal head>=3; legacy recovery hardcodes2. No observed activation may adopt
-a writer. recovery_review is doing read-only fault/recovery boundary design;
-source-derived Control COMMIT ordinals12activation/16first dictionary outcome
-are not wire measurements. Qualify explicit before/after loss and fresh recovery
-only against the actual implemented authority and exact retained captures.
+Root's next bounded action: prepare the fresh activation/outcome COMMIT-loss root
+and run four clones/eight processes with the committed harness and unchanged
+qualified006fe3d binaries, then independent raw replay and read-only custody audit. Source-
+derived ordinals12activation/16dictionary outcome are NOT wire measurements yet.
+Reader688d647→8cd7394 and root driver are source-reviewed. Pure8contexts/
+173snapshots/144controls/170boundfiles PASS;16invoke+14custody+3routing+
+4file+3malformed composition checks PASS with process/network blocked.
+Manifestc861b140 binds378files118,482,123bytes+2original links, root03e4b6
+hash-verified. Generator shares Model: protocol-only, not product qualification.
+The initial root hash-check used a wrong replay subdirectory; corrected locator
+passes without changing artifacts. All original captures/failures remain retained.
+Fresh empty completion is expected only before activation; the other three fresh
+history processes must refuse their nonterminal activated heads. This separately
+preserves real failure seeds for the upcoming positive recovery owner.
+
+Native and PG agents now implement the reviewed distinct activated-family recovery
+component in `.research/successor-native-recovery-20261015` and
+`.research/successor-pg-recovery-20261015`. Root reviews/integrates before building.
+SQL0038 positive already supplies the classifier; legacy readers remain strict.
+Native prefix preview must succeed before any missing outcome INSERT; publish
+cursor advancement only after known COMMIT/final authority checks. A retained
+staged head input proves no unrecorded manifest/protection authority. Such tails
+and reserved-but-unissued suffixes remain unresolved, forbid complete proof and
+must never be discarded. Positive issued-prefix repair is separate from source,
+workflow, retirement and writer authority. Runtime qualification NOT_RUN.
 
 Live006fe3d five-case engine PASS: live3 from both original terminal2 shapes;
 on a third activated copy, prepare3 → fresh empty3 → new local candidate live4.
@@ -131,11 +149,10 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 15filecontrols are protocol-only evidence: their generator reuses its reducer.
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
-Root alone runs builds/engines/shared cache. Native/PG worktrees are clean and
-detached at92b4cb9/9420a05. Probe/oracle worktrees are clean and detached at
-ce6e154/c005406; actual connected qualification above closed their first wave.
-All110registered worktrees remain. recovery_review's next task is read-only;
-cleanup_review and successor_restart_design have no active mutation assignment.
+Root alone runs builds/engines/shared cache. Prior qualified native/PG/probe/oracle
+worktrees remain detached and unchanged. Three new active worktrees retain the
+completed fault reader and native/PG recovery source;113registered worktrees total. No
+build/engine is active at the fresh97aa7c read-only observation.
 
 Source review: root complete new native writer363/frontier281/tests974, PG
 activation400/dispatch173/tests199, all affected shared native/PG owners/callers,
@@ -210,8 +227,10 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 ## Branches, resources and preservation
 
 101local/51remote redundant refs retired;57worktrees detached with original
-commits and full censuses unchanged. All110registered worktrees remain. Only main
-remains locally and remotely at verification. Writer component retirement68974
+commits and full censuses unchanged. All113registered worktrees remain, including
+three current source branches. Only main remains remotely at the latest verification;
+prior retirement totals refer to completed branches and exclude current work.
+Writer component retirement68974
 and live qualification retirement49863 joined0; bundlesfedb979e/cfde0201 preserve
 the four original commits, complete worktrees and all ignored reader artifacts.
 Original closures remain under `refs/archive/*` and verified bundles in
@@ -222,11 +241,13 @@ deleted. Completed retirement/preparation/engine executors must never be replaye
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec:
 `/runs/relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608;
 latest relevant observation stopped0/PID0/noOOM, PG16.15/1.5GiB/2CPU/64MiBshm.
-Recheck ownership/state before starting. Root build/preparation/audit/push handles
-above are joined; only read-only agent design continues. A historical PID/receipt is not
-fresh ownership proof. Preserve unrelated services and external host activity.
+Recheck ownership/state before starting. Root prior build/preparation/audit/push handles
+above are joined. Native/PG source work and read-only independent review continue; no engine is
+active at that observation. A historical PID/receipt is not fresh ownership proof. Preserve unrelated services and external host activity.
 
-Free space after006fe3d live engine:32,101,761,024bytes; remeasure before allocation.
+Free space at fresh97aa7c observation:31,958,519,808bytes;1349containers,
+borrowed PG and prior client exited/PID0/noOOM; six unrelated running services
+preserved. Remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive

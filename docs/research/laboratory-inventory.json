@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main only locally and remotely at this verification; all110registered worktrees and ignored/external evidence preserved",
+    "remaining": "main plus three necessary current work branches locally; remote main only verified ad9ea95. All113registered worktrees and ignored/external evidence preserved. Prior101local/51remote refs remain retired.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -51410,7 +51410,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "CONNECTED_CONTINUOUS_WRITER_FIRST_WAVE_PASS_ACTIVATED_RECOVERY_PENDING",
-    "observed_at": "2026-10-15T14:18:13.189082+00:00",
+    "observed_at": "2026-10-15T15:19:59.684105+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -52879,7 +52879,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Fresh activated nonterminal>=3 recovery is refused by current history classifier; legacy recovery hardcodes2. Implement bounded activated-family recovery without adoption, then source/workflow/retirement and installed/fault qualification.",
+    "ongoing": "Root finishes independent live COMMIT-loss reader/source qualification and exact engine using unchanged006fe3d binaries. Native/PG agents implement separate bounded activated-family recovery components in isolated worktrees; root reviews and integrates before exact component qualification. Source/workflow/retirement and installed qualification remain later requirements.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -55408,6 +55408,86 @@
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
       "session": 49863,
       "exit_code": 0
+    },
+    "activated_recovery_source": {
+      "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_RUNTIME_NOT_RUN",
+      "base": "ad9ea95fbc6f950b83fc9956934bbc34480985ff",
+      "observed_at": "2026-10-15T15:19:59.684105+00:00",
+      "native": {
+        "owner": "successor_restart_design",
+        "worktree": "/home/tux/bigbrotr-rs/.research/successor-native-recovery-20261015",
+        "branch": "implementation/successor-native-recovery"
+      },
+      "postgres": {
+        "owner": "recovery_review",
+        "worktree": "/home/tux/bigbrotr-rs/.research/successor-pg-recovery-20261015",
+        "branch": "implementation/successor-pg-recovery"
+      },
+      "scope": "Distinct activated-successor recovery under fresh Control using SQL0038 positive. One retained native lineage allocation, exact OPEN-to-CLOSING barrier, full ordered original replay and exact outcome repair. Prefix preview must precede any missing-copy INSERT; accept advancement only after known COMMIT and final authority checks.",
+      "tails": "At most one physical head issued+1 input may be observed within unchanged global spool bounds. Unreserved bytes prove no prior manifest or protection authority. All reserved>issued requests and staged extras remain unresolved; issued prefix may be repaired but no complete witness can escape.",
+      "exclusions": [
+        "No writer adoption or conversion to predecessor/preparation authority",
+        "No source/workflow/retirement or installed completion",
+        "No runtime evidence yet; root alone builds and runs engines"
+      ]
+    },
+    "continuous_live_fault_source": {
+      "status": "SOURCE_REVIEWED_PURE_CHECKS_PASS_ENGINE_NOT_RUN",
+      "base": "ad9ea95fbc6f950b83fc9956934bbc34480985ff",
+      "driver": "experiments/ingest-succession/live_faults.py",
+      "driver_sha256": "00db90007aedb9592ae0735728fd3b9cb9146535f23e1328c01b34056ba333de",
+      "reader_owner": "cleanup_review",
+      "reader_worktree": "/home/tux/bigbrotr-rs/.research/successor-live-fault-oracle-20261015",
+      "reader_branch": "qualification/successor-live-fault-oracle",
+      "scope": "Four fresh activated-terminal2 clones, before/after activationC12 and first dictionary outcomeC16 COMMIT response loss, then fresh empty retirement or explicit activated-history refusal. Ordinals remain source-derived until wire qualification.",
+      "binary_source": "006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063",
+      "preparation_script": ".research/repeatable-succession-live-faults-engine-prepare-20261015.py",
+      "preparation_status": "NOT_RUN",
+      "reader_original": "688d647e466ff83e82d45644dce8059f2527d891",
+      "reader_integrated": "8cd739449b80cc9f4a400ab75457b1fa450a5008",
+      "reader_sha256": "a9c9f967dbf37e4014a0224f5aab4a0cae51ae54074968c9de4d4c7d3479bc03",
+      "transition_faults_sha256": "6e063e74110139087ef03d87fc84c0d06e789a1098109587724fcdc44348cc5d",
+      "pure": {
+        "status": "PASS",
+        "scope": "Pure protocol/file reader and mocked owning custody functions only; no actual engine/build/SQL/native/process/network execution",
+        "shared_generator_limit": "Artificial positives reuse retained synthetic live transcripts and reader Model; not independent product proof",
+        "source_sha256": "a9c9f967dbf37e4014a0224f5aab4a0cae51ae54074968c9de4d4c7d3479bc03",
+        "contexts": 8,
+        "snapshots": 173,
+        "negative_controls": 144,
+        "bound_files": 170,
+        "invoke_checks": 16,
+        "external_checks": 14,
+        "routing_checks": 3,
+        "file_mutations": 4,
+        "execute_malformed_checks": 3,
+        "sources": {
+          "experiments/ingest-succession/live_fault_replay.py": "a9c9f967dbf37e4014a0224f5aab4a0cae51ae54074968c9de4d4c7d3479bc03",
+          "experiments/ingest-succession/live_replay.py": "7616bf4d191f013779f37edab39c4e0857118ac3c126e919404436005efa1f89",
+          "experiments/ingest-succession/transition_replay.py": "c8f6fb3b7f1c0a98426bb03d68532180becbc21fffb71b96f0f7c46e37525d8f",
+          "experiments/ingest-succession/history_replay.py": "0a1c8b850f10206b4750e43a476a7808a69393a68e95d5b12305962974111b30",
+          "experiments/ingest-succession/transition_fault_replay.py": "23a47b0d9b2a7e597377bddd03e8261079c39a0154b827e94d6df43d5144f514",
+          "experiments/control-migrations/fault_proxy.py": "6e737de8223818d0b05b47cb25f16038233d43181b12aec97bd13e3b44e3f829"
+        },
+        "final_file_replay_sha256": "4fc477574ce5e0a12da3a04b7e81aef68aeec5ece752680fb939a3d414845c13",
+        "seams_sha256": "2db71da3ef3faee0602cf5dd33d800856c79d5049027dc753c3f07bfdf1f7054",
+        "execute_malformed_sha256": "7f8955e37de2b4b148795011419d16a22c32256d75ec28308a8d4e223b85fd9f",
+        "wrapper_sessions": {
+          "generator": 17610,
+          "generator_exit": 0,
+          "seams": 39880,
+          "seams_exit": 0,
+          "final_composition_and_replay": 62994,
+          "final_exit": 0
+        },
+        "root": "/home/tux/bigbrotr-rs/.research/successor-live-fault-oracle-20261015/.research/live-fault-reader-selfcheck-20261015",
+        "manifest_sha256": "c861b1400b034c01e6e137e5c0c07656443d36ca58fb56a084c03b123ce6cf60",
+        "files": 378,
+        "bytes": 118482123,
+        "links": 2,
+        "root_verification": "03e4b6 joined0; initial061596 locator typo retained in tool record, no fixture mutation"
+      },
+      "root_review": "Complete586-line reader,137-line driver, default-preserving invoke argument, exact custody/composition helper source; no blocker. Runtime still NOT_RUN."
     }
   }
 }

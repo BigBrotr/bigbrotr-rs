@@ -145,3 +145,21 @@ literal portable bytes. The finite import API does not claim a real source job,
 installed acquisition, activated retirement, COMMIT-loss recovery or scale/RSS
 qualification. Raw results and failure artifacts stay separate from artificial
 reader protocol checks, which may reuse their model to construct transcripts.
+
+`live_faults.py RUN_ROOT BUILD_ARTIFACTS` uses four fresh activated-terminal2
+copies and eight finite processes. It removes the activation COMMIT12 response
+or the first dictionary outcome COMMIT16 response, before forwarding and after
+server completion. The shared proxy invocation retains COMMIT11 as its default
+for the earlier transition fixture. The actual wire counters must independently
+confirm the selected boundary; a caller's `CommitUnknown` does not decide which
+state persisted.
+
+`live_fault_replay.py RUN_ROOT` checks the complete SQL/native/input chain and
+the fresh process's disposition. Only the copy without committed activation may
+complete empty retirement. The other three fresh history processes must explicitly
+refuse their activated nonterminal head, preserving native originals and any
+committed SQL copy. This fixture establishes interrupted states and the current
+refusal boundary; positive activated recovery and missing-copy repair require
+their own implementation and qualification. Missing proxy/native/driver custody
+forbids native reopen; malformed response bytes and provisional SQL/input
+observations remain retained. See the existing checkpoint for execution status.

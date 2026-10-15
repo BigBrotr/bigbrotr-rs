@@ -40,7 +40,8 @@ def proxy_closed(fault):
         and wire.get('stderr_nonempty') is False and wire.get('output_overflow') is False)
 
 
-def invoke(pg, client, output, case, proxy_source, fault):
+def invoke(pg, client, output, case, proxy_source, fault, *, commit_number=11):
+    assert type(commit_number) is int and 1 <= commit_number <= 64
     name, database = case['name'], case['database']
     response = dict(returncode=None, stdout='', stderr='', outcome='UNKNOWN')
     proxy = None
@@ -52,14 +53,14 @@ def invoke(pg, client, output, case, proxy_source, fault):
             wire = fault['wire']
             proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
                 '/lab/' + proxy_source.name, '--upstream-port', '5432', '--mode', fault['mode'],
-                '--commit-number', '11', '--deadline-seconds', '30'], input_pipe=True)
+                '--commit-number', str(commit_number), '--deadline-seconds', '30'], input_pipe=True)
             ready = proxy.event('ready', 5)
             wire.update(status='RUNNING', ready=ready, proxy_sha256=digest(proxy_source))
             fault['proxy_port'] = case['proxy_port'] = ready['listen_port']
             lab.write_json(output / (name + '-fault.json'), fault)
             assert ready['proxy_sha256'] == digest(proxy_source)
             assert ready['listen_host'] == '127.0.0.1' and ready['upstream_port'] == 5432
-            assert ready['mode'] == fault['mode'] and ready['commit_number'] == 11
+            assert ready['mode'] == fault['mode'] and ready['commit_number'] == commit_number
             extra = [str(ready['listen_port'])]
         window['before_us'] = history.server_clock(pg, database)
         lab.write_json(output / (name + '-clock.json'), window)
