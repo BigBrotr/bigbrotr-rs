@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Exact main source component/probe build with existing recovery profile; expected110tests and Clippy,128protectedELFs/12GiB reserve. Integrate independent source reader, then actual six-origin source/retry plus raw replay/custody.",
+      "ongoing": "Review/qualify minimal successor acquisition abandonment; separately implement ready-or-terminal retirement with positive existing-copy replay and Event/workflow vetoes. Genuine activating Control claim fixture required; do not fabricate historical bindings. Source failure/installed/capacity schedules remain open.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -28503,7 +28503,7 @@
         "change": "Set sys.dont_write_bytecode before helper imports for future standalone readers; all existing function/class ASTs unchanged. Actual raw evidence remains bound to exacte2eb140; no engine/replay campaign repeated."
       },
       "successor_source_work": {
-        "status": "COMPONENTS_PROBE_HARNESS_INTEGRATED_RUNTIME_NOT_RUN_READER_IN_PROGRESS",
+        "status": "FIRST_WAVE_PASS_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
         "base": "e2eb14064900ec2ba97fa3b551a686c1195244b6",
         "scope": "Distinct later-epoch source owner/proof; existing native science kernel, open repair and closed existing-only replay, atomic source publication/exact retry. No acquisition/retirement implementation in this slice.",
         "worktrees": [
@@ -28521,7 +28521,7 @@
         "design": "SQL0038 already has Source classifier and guards. Public positive recovery remains source-open. Add native observe_closed without writes; one lineage allocation/grant; distinct PG source wrappers. Import Event prefixes qualify source closure but still veto retirement absent genuine workflow bindings.",
         "review": "Read-only independent design mapped complete legacy/native/PG owners and relevant SQL0038; no new runtime claim.",
         "root_only_builds": true,
-        "registered_worktrees": 120,
+        "registered_worktrees": 121,
         "qualification_worktrees": [
           {
             "path": "/home/tux/bigbrotr-rs/.research/successor-source-engine-20261015",
@@ -28604,7 +28604,7 @@
         "report_sha256": "aa5808faf32f9ae9122a568d371df42dcadce44862785bd667b6d3372b034cd2"
       },
       "successor_source_components": {
-        "status": "SOURCE_INTEGRATED_REVIEWED_RUNTIME_NOT_RUN",
+        "status": "INTEGRATED_COMPONENTS_PASS_CONNECTED_FIRST_WAVE_PASS",
         "native": {
           "original": "c336f45e8fee85f5a8fa3ca7150e6019c9f38a15",
           "integrated": "08251bbeec971463194c564959cd550974e3cab0",
@@ -28632,7 +28632,7 @@
         "qualification": "Existing ingest-succession-recovery profile selects affected lineage/input/dictionary/legacy/PG groups once, expected110tests including3native+4PGnew source groups; CLI/probe and Clippy. Connected source/retry separate, NOT_RUN."
       },
       "successor_source_probe": {
-        "status": "SOURCE_INTEGRATED_REVIEWED_RUNTIME_NOT_RUN",
+        "status": "INTEGRATED_COMPONENTS_PASS_CONNECTED_FIRST_WAVE_PASS",
         "integrated": "1072a1a8a04502de290bd490921f8153fd80c24c",
         "owner": "root",
         "source_sha256": {
@@ -28646,7 +28646,7 @@
         "review": "Root full253line consumer plus full host528/changed dispatcher/copy/request helpers read; independent recovery_review AI review at exact hashes no blocker. No runtime or COMMIT-loss evidence."
       },
       "successor_source_harness": {
-        "status": "SOURCE_INTEGRATED_PURE_CHECKS_PASS_ENGINE_NOT_RUN",
+        "status": "INTEGRATED_PURE_AND_CONNECTED_FIRST_WAVE_PASS",
         "original": "07c36bba60311342ca5cac9658260274eade2580",
         "integrated": "9761799e66f3e7c7d9997de64831b8d1c2794641",
         "worktree": "/home/tux/bigbrotr-rs/.research/successor-source-engine-20261015",
@@ -28668,6 +28668,463 @@
           "Source-open missing-copy repair, closed corruption, source COMMIT loss, cancellation/expiry/tails",
           "Acquisition/retirement/installed and capacity/RSS"
         ]
+      },
+      "successor_source_component_build": {
+        "status": "PASS",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-3bb22fe",
+        "source": "3bb22feddd777102b5baa9bb53f16de4a70bfa08",
+        "tree": "c12341c0e3ee56786482d3c49c0443028d68ef61",
+        "wrappers": "prepare83934/build6110/custody43480 joined0",
+        "audit_sha256": "224102f7304239893a2c0dbfd07d67b14e1e59fcc2c885614848d66b226d9ef6",
+        "source_files": 1912,
+        "test_counts": {
+          "lineage_tests": 40,
+          "request_input_tests": 8,
+          "dictionary_append_tests": 13,
+          "producer_recovery_tests": 11,
+          "source_closure_tests": 3,
+          "activated_recovery_tests": 16,
+          "successor_history::tests": 4,
+          "successor_transition": 15
+        },
+        "tests_passed": 110,
+        "checks": {
+          "collected": 10,
+          "executed": 10,
+          "failed": 0,
+          "not_run": 0
+        },
+        "new_elfs": {
+          "native_components": "de14887fd7dceea4800d831167dca5733a97e70174e96e998f674d176488e55d",
+          "ingest_bootstrap_probe": "eb6a0b6b201bcdfbc8bef65234d578fe62ab3ee2ed65fe2652875d14778addd0",
+          "bigbrotr": "7862434788c349c7dcc0aaea609210504e63cf151b6940d10210bdce8692661f"
+        },
+        "protected_prior_elfs": 128,
+        "protected_total_elfs": 131,
+        "unchanged_prior_containers": 1355,
+        "resources": {
+          "source": "3bb22feddd777102b5baa9bb53f16de4a70bfa08",
+          "tree": "c12341c0e3ee56786482d3c49c0443028d68ef61",
+          "owner": "a2f4d078e326c0e9280164aa27ad7092",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-3bb22fe",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "9a30375effdc773869ef3258be3e615a450d93bee96fb958b9bc9670ddd5aa83"
+            },
+            {
+              "name": "native",
+              "id": "5bfee641a876fd48ff6b644f35838d7efe37345e971fbeb2e3c77e6db8a52e71"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-15T16:45:38.978920+00:00",
+          "qualification": "PASS_SUCCESSION_RECOVERY_COMPONENTS",
+          "inventory_changed": [],
+          "free_bytes_after": 29748383744,
+          "finished_at": "2026-10-15T16:47:56.412382+00:00"
+        },
+        "scope": "Native source observe-existing barrier, PG distinct source proof/publication and shared affected groups; CLI/probe compilation and Clippy. No connected evidence from this build alone.",
+        "compiler_diagnostics": "Eight test invocations replay the same pre-existing dropping_copy_types warning at lineage_replay_tests.rs:495, unchanged by this source slice. No Clippy diagnostic; build/test/Clippy PASS."
+      },
+      "successor_source_reader": {
+        "status": "INTEGRATED_PURE_AND_ACTUAL_REPLAY_PASS",
+        "original": "c725ec30a0d1dfda758e5377b084eca2df7323e2",
+        "integrated": "e6adc1902edd62b0490895c668c92f2eb21c3c35",
+        "worktree": "/home/tux/bigbrotr-rs/.research/successor-source-oracle-20261015",
+        "manifest": "/home/tux/bigbrotr-rs/.research/successor-source-oracle-20261015/.research/source-reader-selfcheck-20261015/manifest.json",
+        "manifest_sha256": "65228734cb37413c56496f5c2cc5aacc7af85fd76da8fe7d7ff216ba26518985",
+        "pure": {
+          "wrappers": "5189/53563 joined0",
+          "contexts": 12,
+          "snapshots": 424,
+          "perturbations": 323,
+          "file_perturbations": 4,
+          "purpose_checks": 38,
+          "artifacts": 249,
+          "bytes": 306864775,
+          "links": 1,
+          "sources": 10,
+          "root_binding_verification": "65c979"
+        },
+        "review": "Root read all596lines source_replay, full affected scientific kernel and exact option delta plus shared transcript/model boundaries. Default recovery remains source-open; source closed requires exact existing copies/cut/digest. All other existing definitions AST unchanged in retained pure controls.",
+        "limits": "Artificial generator shares Model and is protocol coverage only. Actual independent raw replay is recorded separately below."
+      },
+      "successor_source_connected": {
+        "status": "PASS_SUCCESSOR_SOURCE_FIRST_WAVE",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-source-engine-e6adc19",
+        "source": "e6adc1902edd62b0490895c668c92f2eb21c3c35",
+        "tree": "3eeaaf290edc8db6d035244a05f35092edb9ef87",
+        "wrappers": "prepare9007/engine43458/raw replay86126/custodyv2 11533 joined0",
+        "started_at": "2026-10-15T16:49:00.004970+00:00",
+        "finished_at": "2026-10-15T16:50:55.260129+00:00",
+        "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-3bb22fe",
+        "build_source": "3bb22feddd777102b5baa9bb53f16de4a70bfa08",
+        "binary_sha256": {
+          "native_components": "de14887fd7dceea4800d831167dca5733a97e70174e96e998f674d176488e55d",
+          "ingest_bootstrap_probe": "eb6a0b6b201bcdfbc8bef65234d578fe62ab3ee2ed65fe2652875d14778addd0",
+          "bigbrotr": "7862434788c349c7dcc0aaea609210504e63cf151b6940d10210bdce8692661f"
+        },
+        "compiler": "Not invoked; product/probe/migration sources match qualified build exactly",
+        "owner": "35bfc18e53fb981d70cd6b9a7ae5c7c4",
+        "label": "org.bigbrotr.succession-source",
+        "client": "0f19cd029e76b27ce278303854c4b6132e7493c035b8df41059d5d9336a44d4d",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "result_sha256": "79ea3633475146c908edd058ff20ef1a1b2895aae81601eb525df67c9c2189ac",
+        "replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-source-engine-e6adc19/root-independent-replay.json",
+          "sha256": "8d8565eaab4e29ba5b1f0158db935ff2a90ec8bcff9309cefd8077f0c6172fa5",
+          "snapshots": 424,
+          "tables": 75,
+          "negative_controls": 323,
+          "bound_files": 284
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-source-engine-e6adc19/audit-root/audit-v2.json",
+          "sha256": "b42aa0a9e115776bae4e749cf6929bc8603241395c2bef9271ea178f9bc6eb41",
+          "source_files": 1913,
+          "protected_elfs": 131,
+          "unchanged_nonborrowed_containers": 1356,
+          "capture": {
+            "observed_at": "2026-10-15T16:52:42.701494+00:00",
+            "containers": 1358,
+            "sha256": "56e06fc798492ca6c03297fab19fc10394eb067e04af68df302d51e554528c15"
+          },
+          "owned_terminal": {
+            "postgres": {
+              "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-15T16:49:00.422077462Z",
+                "FinishedAt": "2026-10-15T16:50:54.351434265Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                  "Destination": "/var/lib/postgresql/data",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ]
+            },
+            "client": {
+              "Id": "0f19cd029e76b27ce278303854c4b6132e7493c035b8df41059d5d9336a44d4d",
+              "Name": "/bigbrotr-successor-source-e6adc19",
+              "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-15T16:49:03.445396406Z",
+                "FinishedAt": "2026-10-15T16:50:52.211954271Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-3bb22fe/out/artifacts",
+                  "Destination": "/build",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-source-engine-e6adc19/source-close",
+                  "Destination": "/lab",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                }
+              ]
+            }
+          }
+        },
+        "scope": "Six genuine recovered final endpoints, first source publication and fresh-process exact retry: activated zero after activation loss, both dictionary outcomes, live3 both legacy entries and later live4. All native rows/sequence and original input bytes unchanged in both processes. First publication changes current source only plus Control lifecycle; retry preserves the exact closed source including timestamp/xmin. Original full SQL/catalog/native physical/input censuses preserved; originals never engine-opened.",
+        "not_run": [
+          "Installed source closure, workflow abandonment and retirement",
+          "Source-open missing-copy repair, corrupt closed-source copies, source COMMIT loss, cancellation/expiry and unresolved tails",
+          "PostgreSQL 255-epoch capacity, performance and RSS qualification"
+        ],
+        "free_bytes_after": 29403463680,
+        "cases": [
+          {
+            "name": "activation-after-loss-source",
+            "database": "bb_successor_source_e6adc19_activation_after_loss",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 19,
+            "native_rows": 73,
+            "sequence": 90,
+            "inputs": 6
+          },
+          {
+            "name": "activation-after-loss-retry",
+            "database": "bb_successor_source_e6adc19_activation_after_loss",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 20,
+            "native_rows": 73,
+            "sequence": 90,
+            "inputs": 6
+          },
+          {
+            "name": "outcome-before-loss-source",
+            "database": "bb_successor_source_e6adc19_outcome_before_loss",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 19,
+            "native_rows": 79,
+            "sequence": 98,
+            "inputs": 7
+          },
+          {
+            "name": "outcome-before-loss-retry",
+            "database": "bb_successor_source_e6adc19_outcome_before_loss",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 20,
+            "native_rows": 79,
+            "sequence": 98,
+            "inputs": 7
+          },
+          {
+            "name": "outcome-after-loss-source",
+            "database": "bb_successor_source_e6adc19_outcome_after_loss",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 19,
+            "native_rows": 79,
+            "sequence": 98,
+            "inputs": 7
+          },
+          {
+            "name": "outcome-after-loss-retry",
+            "database": "bb_successor_source_e6adc19_outcome_after_loss",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 20,
+            "native_rows": 79,
+            "sequence": 98,
+            "inputs": 7
+          },
+          {
+            "name": "activated-live3-source",
+            "database": "bb_successor_source_e6adc19_activated_live3",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 18,
+            "native_rows": 90,
+            "sequence": 112,
+            "inputs": 9
+          },
+          {
+            "name": "activated-live3-retry",
+            "database": "bb_successor_source_e6adc19_activated_live3",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 19,
+            "native_rows": 90,
+            "sequence": 112,
+            "inputs": 9
+          },
+          {
+            "name": "empty-live3-source",
+            "database": "bb_successor_source_e6adc19_empty_live3",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 15,
+            "native_rows": 72,
+            "sequence": 90,
+            "inputs": 7
+          },
+          {
+            "name": "empty-live3-retry",
+            "database": "bb_successor_source_e6adc19_empty_live3",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 16,
+            "native_rows": 72,
+            "sequence": 90,
+            "inputs": 7
+          },
+          {
+            "name": "activated-later-live4-source",
+            "database": "bb_successor_source_e6adc19_activated_later_live4",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 20,
+            "native_rows": 93,
+            "sequence": 117,
+            "inputs": 9
+          },
+          {
+            "name": "activated-later-live4-retry",
+            "database": "bb_successor_source_e6adc19_activated_later_live4",
+            "status": "PASS",
+            "custody": "OBSERVED_CLOSED_AND_JOINED",
+            "control_epoch": 21,
+            "native_rows": 93,
+            "sequence": 117,
+            "inputs": 9
+          }
+        ]
+      },
+      "successor_source_audit_dependency_failure": {
+        "status": "FAIL_AUDIT_DEPENDENCY_NOT_READY",
+        "observed_at": "2026-10-15T16:51:59.285812+00:00",
+        "session": "66119 joined1",
+        "script_sha256": "025a8a1969eaca696e9a19cbaa1d0622272fef4b1f0a76b0f8f6c59c8b1e0ff4",
+        "container_capture_sha256": "36393a08cb4b69c942347fb65789ad112fc1c6ad0a0e41c5fda839fccad52ba0",
+        "error": "FileNotFoundError at audit-v1.py:66 reading root-independent-replay.json",
+        "cause": "Root started custody auditor while raw replay session86126 was still running; the required immutable replay result did not yet exist.",
+        "product_status": "PASS_SUCCESSOR_SOURCE_FIRST_WAVE remains separate; no product/native/SQL execution by auditor",
+        "action": "Join raw replay first; retain failed auditor and capture; run separate v2 custody audit without replaying engine.",
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-source-engine-e6adc19/audit-root/audit-v1-failure.json",
+        "sha256": "a779493a5f2416b84f59f3ee6a8b7db6ba044038af85e55d3753563ca60911cc",
+        "disposition": "Original v1 FAIL and first capture retained; raw replay86126 later joined0, separate v2 custody11533 joined0. No engine or product replay."
+      },
+      "qualified_source_component_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T16:48:41.374194+00:00",
+        "records": [
+          {
+            "branch": "implementation/successor-native-source",
+            "original": "c336f45e8fee85f5a8fa3ca7150e6019c9f38a15",
+            "integrated": "08251bbeec971463194c564959cd550974e3cab0",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-native-source-20261015",
+            "archive_ref": "refs/archive/qualified-successor-source-components-20261015/implementation/successor-native-source",
+            "blobs": {
+              "apps/bigbrotr/src/storage/rocks/successor_recovery.rs": "80feea92b921f7ac81b542854363de862654737f",
+              "apps/bigbrotr/src/storage/rocks/successor_recovery_tests.rs": "ef4cf795b365b632f10bb122125dbe53219504c2"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2097,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-native-before-census.json",
+            "census_sha256": "75b0b3a966d02c156d7f2a10d526788e2c1bb79e0ee72689a471cf86b1720be1"
+          },
+          {
+            "branch": "implementation/successor-pg-source",
+            "original": "86dc47c856d21d0dafebca2eee08ff2a31df53c1",
+            "integrated": "2cb721cc8b50f592072aa14768215f88cf1514f4",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-pg-source-20261015",
+            "archive_ref": "refs/archive/qualified-successor-source-components-20261015/implementation/successor-pg-source",
+            "blobs": {
+              "apps/bigbrotr/src/storage/postgres/control_owner.rs": "e99027f23639e9a34196e433f2dc755e119528e8",
+              "apps/bigbrotr/src/storage/postgres/successor_recovery.rs": "ada94697c28b3b33651acadfa1e70eae4bd5c238",
+              "apps/bigbrotr/src/storage/postgres/successor_recovery_rows.rs": "59e89fb61f5a7b646eaf491fe34d3a3544bdea68",
+              "apps/bigbrotr/src/storage/postgres/successor_source.rs": "9733eeca47895c7c60bf0aa21f58ba3c52ae1fbc",
+              "apps/bigbrotr/src/storage/postgres/successor_source_tests.rs": "4335d05243558024000c216c0e908608c9836a4e",
+              "apps/bigbrotr/src/storage/postgres/successor_transition.rs": "03c6685ea335d86af64a4c7c2ec95aad860f8f59"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2106,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-pg-before-census.json",
+            "census_sha256": "63211c7160c868d7684af589bd7e0781c571b1abcc927fec0f60cbef82bcfb5a"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-components.bundle",
+        "bundle_bytes": 14748220,
+        "bundle_sha256": "9ec3b72baefe42defbdc30ebfaf0e93fa270485090671ee53562b769711227b8",
+        "audit_sha256": "224102f7304239893a2c0dbfd07d67b14e1e59fcc2c885614848d66b226d9ef6",
+        "scope": "Two local component refs only; source engine/oracle remain active. All worktrees, ignored/external evidence and datasets preserved",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-components.json",
+        "sha256": "2856ecec1e55a36f4f49cbae75b825dd4fb4c74bd6d1eda894e3a88479bd0576",
+        "wrapper": "7290 joined0"
+      },
+      "qualified_source_qualification_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T16:53:04.413752+00:00",
+        "records": [
+          {
+            "branch": "qualification/successor-source-engine",
+            "original": "07c36bba60311342ca5cac9658260274eade2580",
+            "integrated": "9761799e66f3e7c7d9997de64831b8d1c2794641",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-source-engine-20261015",
+            "archive_ref": "refs/archive/qualified-successor-source-qualification-20261015/qualification/successor-source-engine",
+            "blobs": {
+              "experiments/ingest-succession/source.py": "4432ffbcdbb9d6adac2826b3738a5fc60aab8cb7",
+              "experiments/ingest-succession/transition.py": "223b3f7df46cde78714e3cf36e3472c01b14c3bb"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2264,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-qualified-engine-before-census.json",
+            "census_sha256": "76656b49e2dc358c5d3a5cf63ae4f303b71cc853ba3342ab732965ea8c89be1c"
+          },
+          {
+            "branch": "qualification/successor-source-oracle",
+            "original": "c725ec30a0d1dfda758e5377b084eca2df7323e2",
+            "integrated": "e6adc1902edd62b0490895c668c92f2eb21c3c35",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-source-oracle-20261015",
+            "archive_ref": "refs/archive/qualified-successor-source-qualification-20261015/qualification/successor-source-oracle",
+            "blobs": {
+              "experiments/ingest-succession/recovery_replay.py": "087f7b6a2b29717a8d7f87ddceb4df621eff08d1",
+              "experiments/ingest-succession/source_replay.py": "1cf77f2fca7a88a4f78c867fec30e0c9fe2e9c32"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2374,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-qualified-oracle-before-census.json",
+            "census_sha256": "b711922b2442cca44031808ed12546115c1013e2f8f4eb293a14be76637ec6ce"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-qualification.bundle",
+        "bundle_bytes": 15237051,
+        "bundle_sha256": "03f9217950099ce278a3bd4b73c452f84057ba3503fc6a341dcb53d19780ae48",
+        "audit_sha256": "b42aa0a9e115776bae4e749cf6929bc8603241395c2bef9271ea178f9bc6eb41",
+        "replay_sha256": "8d8565eaab4e29ba5b1f0158db935ff2a90ec8bcff9309cefd8077f0c6172fa5",
+        "scope": "Two local qualified refs only; main remains current. Only the new successor acquisition implementation branch remains active. All worktrees, ignored/external evidence and datasets preserved",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-source-qualification.json",
+        "sha256": "b970ed346ec78f0a4731b18e00c74a73154d29657586613f2043846a5e65f261",
+        "wrapper": "37031 joined0"
+      },
+      "successor_acquisition_work": {
+        "status": "IN_PROGRESS_SOURCE_ONLY",
+        "path": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015",
+        "branch": "implementation/successor-acquisition",
+        "base": "e6adc1902edd62b0490895c668c92f2eb21c3c35",
+        "owner": "recovery_review",
+        "scope": "Bounded later activated acquisition abandonment from fresh already-closed positive Source proof, actual immutable activating Control tuple, <=64 jobs+gaps, consume one-shot owner, preserve existing gap history. No retirement/native change/migration/finite consumer yet.",
+        "runtime": "NOT_RUN"
       }
     }
   }
