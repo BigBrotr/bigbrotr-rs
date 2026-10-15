@@ -1292,7 +1292,7 @@
     "followups": {
       "populated_upgrade": "PASS bb_owner_upgrade; preserves all25 old relations with additive NULL audit fields, four new empty tables, stable initialization receipt and downgrade refusal",
       "engine_crash": "PASS actual PostgreSQL SIGKILL/137, restart and all10 complete database dumps unchanged; not host power loss",
-      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562–0.0930477711s; not mixed workload or cgroup peak",
+      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562\u20130.0930477711s; not mixed workload or cgroup peak",
       "credential_oracle": "PASS six observed native password hashes against pinned PHC C oracle on Mac"
     },
     "native_evidence": "docs/implementation/evidence/p08-owner-enrollment-native-20260918.json",
@@ -43256,7 +43256,7 @@
           "exit_code": 0,
           "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
           "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
-          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal→Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
+          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
         }
       ],
       "next": "Completed evidence committed1efc7db and private root/fixture pushes verified. Activated recovery contract1a7fd52 and distinct native/PG/qualification worktrees selected.",
@@ -44416,14 +44416,14 @@
           "complete_observations": 16,
           "controls": 124
         },
-        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33→34→34 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
+        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33\u219234\u219234 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
         "not_run": [
           "issued-positive source-zero",
           "corrupt/missing input and dependency/identity/handoff/foreignstream refusals",
           "held native refusal",
           "closing/outcome COMMITloss and fresh recovery",
           "source2closure/retirement/repeatedlifetimes",
-          "Archive/Syncrestart and fullM1–M5"
+          "Archive/Syncrestart and fullM1\u2013M5"
         ],
         "artifact_custody_audit": {
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea/recovery-review-artifact-custody-20261013.json",
@@ -46229,7 +46229,7 @@
         "seed_snapshots": 11,
         "installed_observations": 4,
         "controls": 44,
-        "correction": "First root audit assumed unchanged table set across29→32; corrected to70 retained physical identities+two additive tables. Original failed script/log preserved; no run/product change."
+        "correction": "First root audit assumed unchanged table set across29\u219232; corrected to70 retained physical identities+two additive tables. Original failed script/log preserved; no run/product change."
       },
       "custody_audit": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-engine-0e4917f/cleanup-review-artifact-custody-20261013.json",
@@ -46241,7 +46241,7 @@
         "raw_bound_artifacts": 68,
         "scope": "Fixture/oracle author raw-binding, physical-preservation, source/binary and custody audit. Root owns independent actual semantic replay. Wire observations are joined probe-peer records, not independent packet capture. Original SQL preservation is retained run evidence; no fresh original schema29 catalog sampled. No audit SQL/native open/build/restart."
       },
-      "scope": "Actual finite authenticated network AlreadyDurable request1 with old dependencies3..12/source2cut0, then installed source close/retry;53native rows,seq64→65→65,five exact inputs. Job queued2/sessionunrevoked; no installed scheduler or workflow completion."
+      "scope": "Actual finite authenticated network AlreadyDurable request1 with old dependencies3..12/source2cut0, then installed source close/retry;53native rows,seq64\u219265\u219265,five exact inputs. Job queued2/sessionunrevoked; no installed scheduler or workflow completion."
     },
     "lock_fixture": {
       "source": "17de5cd02996ae35df4353c2c0a57f1b9f0605db",
@@ -46334,13 +46334,13 @@
         "frozen_observation": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-locks-engine-14b7bd4/recovery-review-custody-projections-20261013.json",
         "observation_sha256": "5921419118609bd91fb20dc0e2528814797a10be9ae1402a135807d558a2337e"
       },
-      "scope": "Privileged guarded relational job source1cut12/source2cut6 versus actual CLI source2cut5. Job-first commit survives; CLI refuses guard_source_closure_bounds, sourceopen. Source-first deferred CLI COMMITbarrier→jobwait→sourceclosed; job COMMIT refuses require_complete_job_input and rolls back. Both SQLSTATE23514; exact PID/start locks, full72SQL/native70seq85/6inputs. No authenticated export acceptance/workflow retirement."
+      "scope": "Privileged guarded relational job source1cut12/source2cut6 versus actual CLI source2cut5. Job-first commit survives; CLI refuses guard_source_closure_bounds, sourceopen. Source-first deferred CLI COMMITbarrier\u2192jobwait\u2192sourceclosed; job COMMIT refuses require_complete_job_input and rolls back. Both SQLSTATE23514; exact PID/start locks, full72SQL/native70seq85/6inputs. No authenticated export acceptance/workflow retirement."
     },
     "prefix_probe": {
       "source": "e1f74d7bd370c07d28c3d309ff35819ccbdfd271",
       "integrated": "3748eceaf93784cb67fb5b1fae7d0f259903d42c",
       "status": "BUILD_PASS_CONNECTED_ENGINE_NOT_RUN",
-      "scope": "Four existing example files only. Actual firstdictionary reservation COMMIT14 aftercomplete loss leaves native52/62 unchanged, retainedinput5, issued0/reserved1. Fixed isolated native receipt2 deletion and issued2→1 synced batch leaves69/86/sourcecut5/facts retained. Third terminalSQLcopyconflict needs no new native seam.",
+      "scope": "Four existing example files only. Actual firstdictionary reservation COMMIT14 aftercomplete loss leaves native52/62 unchanged, retainedinput5, issued0/reserved1. Fixed isolated native receipt2 deletion and issued2\u21921 synced batch leaves69/86/sourcecut5/facts retained. Third terminalSQLcopyconflict needs no new native seam.",
       "review": "Root complete changed helper/mode/call path and corruption owner; earlier unchanged lifecycle owners reused. Formatting/diffPASS. Independent Python fixture inprogress; no new productAPI.",
       "build_profile": "ingest-activated-refusals compile+Clippy only; unchanged product91tests at9dbc reused after exactdiff audit",
       "build": {
@@ -46650,7 +46650,7 @@
       "result_sha256": "03545615b8c2e84fc1a545ccf47b33aeed8fb02e4e76e44d3f1ffd246315054c",
       "cli_invocations": 4,
       "finite_seed_invocations": 0,
-      "semantics": "Two closed seeds: off NewFacts sourcecut5/native70/85/input6 and genuineAlreadyDurable sourcecut0/native53/65/input5. Each first command creates one activator8 gap and cancels job2→4 atomically; fresh retry preserves originalissuer/time/xmin. Full72SQL/copies/source/session/input/native unchanged except currentControl and exactgap/job delta.",
+      "semantics": "Two closed seeds: off NewFacts sourcecut5/native70/85/input6 and genuineAlreadyDurable sourcecut0/native53/65/input5. Each first command creates one activator8 gap and cancels job2\u21924 atomically; fresh retry preserves originalissuer/time/xmin. Full72SQL/copies/source/session/input/native unchanged except currentControl and exactgap/job delta.",
       "root_replay": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7/root-independent-replay.json",
         "sha256": "94cb13f81c41e55fedac0b628d50adf7ed3d34b1801dda4dd65433c931c23865",
@@ -46750,7 +46750,7 @@
       "result_sha256": "47ba9f897e7bc7a8c6fcc965bfd4ca56901811f059e406580ef7a2c895a46df6",
       "cli_invocations": 2,
       "finite_seed_invocations": 1,
-      "semantics": "ActualControl8 typedaccept/claim a6request1AlreadyDurable, a7zero-requestqueued2 and a8accepted1unclaimed. Firstsourcecloses64→65 and bothclaims gap+cancelled4 samefreshtransaction; retrykeeps attribution, acceptedunclaimed/session/copies/input unchanged. Full72SQL/native53/input5.",
+      "semantics": "ActualControl8 typedaccept/claim a6request1AlreadyDurable, a7zero-requestqueued2 and a8accepted1unclaimed. Firstsourcecloses64\u219265 and bothclaims gap+cancelled4 samefreshtransaction; retrykeeps attribution, acceptedunclaimed/session/copies/input unchanged. Full72SQL/native53/input5.",
       "root_replay": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-claims-engine-da839b7/root-independent-replay.json",
         "sha256": "19a6d36a0c0e14e345389aa85adaddba90460df2604e9f280e5350b8e1095ce2",
@@ -47222,7 +47222,7 @@
   },
   "implementation_activated_initial_retirement_20261013": {
     "status": "IMPLEMENTED_UNDER_QUALIFICATION",
-    "observed_at": "2026-10-15T09:18:29.122876+00:00",
+    "observed_at": "2026-10-15T09:40:13.852922+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-retirement-under-implementation",
     "scope": "Explicit existing-CLOSING, existing-copy-only retirement of activated producer2, nine domains, Ingest owner and role. Exact source2, native/input state, outcome recorder and workflow history retained; no replacement writer, import closure or ACK/GC.",
@@ -47352,9 +47352,9 @@
       ]
     },
     "remaining_gates": [
-      "Actual Control UTC expiry across final job wait and same-session poisoned reuse: source/pure reviewed add6df, build/engine NOT_RUN",
-      "Genuine unresolved zero-request acquisition claim refusal: approved typed sole-job finite probe implementation in progress",
-      "Review/integrate/qualify pending probes and push coherent main; repeated lifetimes/import logical closure/ACK-GC/epoch3/Archive and M1–M5 remain incomplete"
+      "Actual Control UTC expiry across final job wait and same-session poisoned reuse: reviewed and integrated; build/engine NOT_RUN",
+      "Genuine unresolved zero-request acquisition claim refusal: reviewed and integrated with positive native custody correction; build/engine NOT_RUN",
+      "Combined exact probe compile/Clippy then distinct real engines; repeated lifetimes/import logical closure/ACK-GC/epoch3/Archive and M1\u2013M5 remain incomplete"
     ],
     "engines": [
       {
@@ -49598,7 +49598,14 @@
         "root_replay_session": 57560,
         "audit_session": 56003,
         "all_joined_exit_zero": true,
-        "next": "Integrate reviewed finite UTC probe add6df; root review genuine zero-claim helper/pair, then one exact combined build and distinct bounded engines."
+        "next": "Prepare clean combined exact-revision build via ingest-activated-refusals, compile/Clippy once for both probes, then distinct real expiry and unresolved engines with independent raw replay/custody."
+      },
+      "last_verified_private_main_push": {
+        "source": "9db076622175d8306a4900819c25158b16a55082",
+        "session": 62847,
+        "joined": true,
+        "exit_code": 0,
+        "ls_remote_exact": true
       }
     },
     "interruption_fixture_20261015": {
@@ -49760,15 +49767,60 @@
       "artifacts": 118,
       "checks": "14 snapshots/32 independent controls;8 failure custody mocks and1 success; AST/import/API, scoped rustfmt, inverse old-wiring identity passed. No actual compile/engine.",
       "root_review": "Complete new365-line Rust and376/297 driver/oracle; shared succession, bootstrap dispatch and unchanged acquisition probe fully read. Relevant product/SQL owners reviewed in retirement implementation. No concrete finding. Entire unrelated Archive pipeline not reviewed for this probe-only slice.",
-      "scope": "Real20s lease aged outside transactions, final job-row wait straddles actual server UTC, named23514 guard refusal, same-session refreshUnavailable, native/source/copies unchanged, joined/excluded custody. Finite10s probe operation differs from installed supervision; no installed timer or load qualification."
+      "scope": "Real20s lease aged outside transactions, final job-row wait straddles actual server UTC, named23514 guard refusal, same-session refreshUnavailable, native/source/copies unchanged, joined/excluded custody. Finite10s probe operation differs from installed supervision; no installed timer or load qualification.",
+      "integrated_commit": "d0aa51e",
+      "dispatcher": "2ba1696",
+      "dispatcher_checks": ".research/activated-retirement-expiry-dispatch-20261015.json"
     },
     "unresolved_zero_claim_fixture_20261015": {
-      "status": "DESIGN_APPROVED_IMPLEMENTATION_IN_PROGRESS",
+      "status": "SOURCE_REVIEWED_PURE_CHECKS_PASS_BUILD_ENGINE_NOT_RUN",
       "owner": "successor_restart_design",
       "worktree": "/home/tux/bigbrotr-rs/.research/activated-recovery-native-20261013",
       "branch": "qualification/activated-retirement-unresolved",
       "base": "6e40fc5bca955fb9571c37f4c9e8264b0775d021",
-      "scope": "Two helper Rust files and new Python pair only. ActualControl8 activation/login/policy refresh/typed accept+claim of sole job, zero target requests; source9 closes0, retirement10 must name unresolved-workflow refusal. No historical owner or gap synthesis. One combined probe build after review."
+      "scope": "Two helper Rust files and new Python pair only. ActualControl8 activation/login/policy refresh/typed accept+claim of sole job, zero target requests; source9 closes0, retirement10 must name unresolved-workflow refusal. No historical owner or gap synthesis. One combined probe build after review.",
+      "original_commit": "530be40b8e7fac00804cd9ff7bc7cdfea75a0a37",
+      "integrated_commit": "056a118",
+      "custody_followup": {
+        "original_commit": "c9d3dd0dca4784666a12598301f2174e03fe65ca",
+        "integrated_commit": "ae236bc",
+        "finding": "A returned docker-exec wrapper result did not prove the remote native writer was gone; PG absence alone was insufficient.",
+        "resolution": "Require emitted native closure and exact clean Control/observer joins before native reopen; otherwise retain provisional SQL/inputs and native NOT_RUN.",
+        "checks": "16 custody mocks, including returned wrapper failure, incomplete or malformed telemetry, timeout, observer abort, capture failure."
+      },
+      "dispatcher": "0342378",
+      "dispatcher_checks": ".research/activated-retirement-unresolved-dispatch-20261015.json",
+      "source_sha256": {
+        "apps/bigbrotr/examples/support/ingest_live.rs": "3a4636a01bc4703f71abc28cf46a9fee326a5e9888f69c625852a7c37b4595d0",
+        "apps/bigbrotr/examples/support/ingest_live_durable.rs": "f91ca7e0b264dc90749894c19b2cfd20c707d04aab61df6afed1aba3bc666f1c",
+        "experiments/ingest-bootstrap/activated_retirement_unresolved.py": "f2ad6330eccfe6ed81b7e6da195269d0c1fcfd6fed7055011fe6b6da62a99c0e",
+        "experiments/ingest-bootstrap/activated_retirement_unresolved_oracle.py": "93605904b18130c2ca3f7ce893da68a1dc94e2dba86a97e49278dfbd36e1d6df"
+      },
+      "selfchecks_root": "/home/tux/bigbrotr-rs/.research/activated-recovery-native-20261013/.research/activated-retirement-unresolved-selfcheck-20261015",
+      "selfchecks_sha256": {
+        "capture-1.log": "accfc7953506bdc4765a7c6ed002bc68dc2aebbbe019189a1c26da119f570c01",
+        "capture-2.log": "2a2abe7c7b51f670beefb0ff10ebfa5605a801953cb0720935409cef38611df2",
+        "capture-results-v2.json": "b4591fc99f0c077eca25e0ed1c37a51c784fab4b4a504621968499e638af8543",
+        "capture-results.json": "2f094f7b1f733b5ac0111d0412915503db0deec72d1c83e95bfdfff6903e93e2",
+        "capture_checks.py": "cc2e51041f6e3d51c139ce6fe6596d84a3f7d4ab4dce5b52c73d5d7443735705",
+        "capture_checks_v2.py": "6e6d7330b0e3c8b9cfff5ec11beca05ca6f728a7851d919a91693c3ea5f7ac6e",
+        "check-1.log": "ae46e52f231d2cbe79d3e5884f9b2502e6a0e885ad22b6e2e01e2a290e512ac1",
+        "check-2.log": "5f67a6f412aa82e5359f4ec1e275f5406c7538dfa76280b97b48bcd974aec274",
+        "context-artificial.json": "8602fa609a899612f36400e9977f96e1d0bfddafbbda43ca61aa74d1d6dab53b",
+        "custody-followup-source-checks.json": "a9ac37a64120605fbb501019e6a21cdaefe51dbb43568ca369eb8625046eaa32",
+        "generate.py": "9ac991f8484e4f025d0e3a13f43b3170d5628929c83ccaab7507dd50921bb260",
+        "results.json": "8ad6fc837db60da3d95a1783a176831be9fdcdf80d14322eaa47a8a8ed29cf01",
+        "seed-artificial.json": "fd0562c62ace7a8e7f75b9df78d1b3a2c1147368ba7c48d4ba661eda6b74dbaa",
+        "source-checks.json": "e429b16e3498b7ea5d2adb4e242353a9c1cec345fdf4d071ae9a5705184d9ee2"
+      },
+      "root_review": "Complete affected live/durable helpers and typed login/accept/claim consumers, driver/oracle and raw capture reviewed. Root custody finding corrected; old body retained modulo explicit input count. Pure12seed snapshots/4states/36 oracle controls PASS; real engine NOT_RUN."
+    },
+    "combined_probe_build_20261015": {
+      "status": "NOT_RUN",
+      "profile": "ingest-activated-refusals",
+      "prepare_script": ".research/activated-retirement-probes-build-prepare-20261015.py",
+      "audit_script": ".research/activated-retirement-probes-build-audit-20261015.py",
+      "scope": "Only five Rust example files differ from388a; product/test/migration/toolchain unchanged. Compile/Clippy both new finite probes once, preserving76 historical protected ELFs. Old48native/48entrypoint evidence not rerun or reported as new tests."
     },
     "resource_policy": "Goal ACTIVE after explicit owner resume. Canonical integrating branch main under new owner instruction. Root alone executes engines/builds; retain all ignored/external artifacts and unrelated workloads."
   },
