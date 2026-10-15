@@ -161,7 +161,8 @@ impl IngestRecovery {
         let native_sequence = self.store.db.latest_sequence_number();
         let context = match &profile {
             RecoveryContext::Initial(context) => {
-                if request.producer_epoch.get() != 1
+                if context.manifest.key_schema() != 1
+                    || request.producer_epoch.get() != 1
                     || context.manifest.identity().owner_epoch.get() != 1
                 {
                     return Err(AdmissionError::InvalidInput.into());

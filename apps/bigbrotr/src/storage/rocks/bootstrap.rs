@@ -389,7 +389,8 @@ impl IngestStore {
         manifest: &IngestManifest,
     ) -> Result<(), BootstrapError> {
         let identity = manifest.identity();
-        if request.producer_epoch.get() != 1
+        if manifest.key_schema() != 1
+            || request.producer_epoch.get() != 1
             || request.request_sequence.get() != 1
             || identity.owner_epoch.get() != 1
             || intent.admission_policy_version() != 1

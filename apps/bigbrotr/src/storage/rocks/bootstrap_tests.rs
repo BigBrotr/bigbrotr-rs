@@ -99,6 +99,98 @@ pub(super) fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
 }
 
 #[test]
+fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
+    for schema in [2, 3] {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("db");
+        let b = budget();
+        let original = manifest();
+        let store =
+            IngestStore::initialize(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
+        // Model privileged singleton corruption, then use an actual reopened
+        // handle. Identity and namespaces remain exactly the valid epoch1 set.
+        let altered = if schema == 2 {
+            IngestManifest::for_successor(*original.identity(), *original.allocation_namespaces())
+        } else {
+            IngestManifest::for_repeatable_successor(
+                *original.identity(),
+                *original.allocation_namespaces(),
+            )
+        };
+        store.db.put([1, 1], altered.encode().as_bytes()).unwrap();
+        drop(store);
+        let mut store =
+            IngestStore::reopen(&path, altered, native(), grant(&b, 0, 128 * MIB)).unwrap();
+        let sequence = store.db.latest_sequence_number();
+        let limits = BootstrapLimits {
+            max_mappings: 8,
+            max_batch_bytes: MIB as usize,
+        };
+        let input = intent("public");
+        assert!(matches!(
+            store.stage_initial_dictionaries(
+                request(),
+                &input,
+                limits,
+                &grant(&b, 8 * MIB, 4 * MIB)
+            ),
+            Err(BootstrapError::InvalidIntent)
+        ));
+        assert!(matches!(
+            store.bootstrap_dictionaries(
+                request(),
+                &input,
+                ObservedTime::new(123),
+                limits,
+                grant(&b, 8 * MIB, 4 * MIB),
+                || Ok(())
+            ),
+            Err(BootstrapError::InvalidIntent)
+        ));
+        for id in [None, Some(request())] {
+            assert_eq!(
+                store.require_admission_owner(id),
+                Err(AdmissionError::InvalidInput)
+            );
+        }
+        assert!(!path.join("producer-inputs-v1").exists());
+        assert_eq!(store.db.latest_sequence_number(), sequence);
+        for cf in ["default", "facts", "receipts"] {
+            let rows = store
+                .db
+                .iterator_cf(
+                    store.db.cf_handle(cf).unwrap(),
+                    rocksdb::IteratorMode::Start,
+                )
+                .collect::<Result<Vec<_>, _>>()
+                .unwrap();
+            assert_eq!(rows.len(), usize::from(cf == "default"));
+            if cf == "default" {
+                assert_eq!(rows[0].0.as_ref(), &[1, 1]);
+                assert_eq!(rows[0].1.as_ref(), altered.encode().as_bytes());
+            }
+        }
+        // Changing only the corrupted schema back permits the same request.
+        store.db.put([1, 1], original.encode().as_bytes()).unwrap();
+        drop(store);
+        let mut store =
+            IngestStore::reopen(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
+        drop(
+            store
+                .bootstrap_dictionaries(
+                    request(),
+                    &input,
+                    ObservedTime::new(123),
+                    limits,
+                    grant(&b, 8 * MIB, 4 * MIB),
+                    || Ok(()),
+                )
+                .unwrap(),
+        );
+    }
+}
+
+#[test]
 fn synchronized_bootstrap_reopens_as_one_complete_pending_batch_and_exact_receipt() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");

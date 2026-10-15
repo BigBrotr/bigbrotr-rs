@@ -205,7 +205,10 @@ impl IngestStore {
         request: Option<ProducerRequestId>,
     ) -> Result<(), AdmissionError> {
         let epoch = self.manifest.identity().owner_epoch.get();
-        if epoch == 1 && request.is_none_or(|request| request.producer_epoch.get() == 1) {
+        if self.manifest.key_schema() == 1
+            && epoch == 1
+            && request.is_none_or(|request| request.producer_epoch.get() == 1)
+        {
             return Ok(());
         }
         if epoch == 2

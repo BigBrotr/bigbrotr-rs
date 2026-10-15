@@ -3,6 +3,165 @@ use super::*;
 use crate::storage::rocks::keys::IngestKey;
 
 #[test]
+fn later_schema_with_initial_identity_cannot_close_observe_or_recover() {
+    for schema in [2, 3] {
+        for initially_closing in [false, true] {
+            let (root, mut store, budget, manifest, native) = setup(false);
+            drop(admit(&mut store, &budget, 1).unwrap());
+            drop(store);
+            let path = root.path().join("db");
+            let mut recovery =
+                IngestRecovery::open(&path, manifest, native, grant(&budget, 0, 128 * MIB))
+                    .unwrap();
+            let id = request(5, 1);
+            if initially_closing {
+                drop(
+                    recovery
+                        .close_producer(
+                            id.producer_slot_id,
+                            id.producer_epoch,
+                            grant(&budget, 4096, 4096),
+                            || Ok(()),
+                        )
+                        .unwrap(),
+                );
+            }
+            let altered = if schema == 2 {
+                IngestManifest::for_successor(
+                    *manifest.identity(),
+                    *manifest.allocation_namespaces(),
+                )
+            } else {
+                IngestManifest::for_repeatable_successor(
+                    *manifest.identity(),
+                    *manifest.allocation_namespaces(),
+                )
+            };
+            recovery
+                .store
+                .db
+                .put([1, 1], altered.encode().as_bytes())
+                .unwrap();
+            drop(recovery);
+            let mut recovery = IngestRecovery::inspect(
+                &path,
+                manifest.identity().dataset_id,
+                native,
+                grant(&budget, 0, 128 * MIB),
+            )
+            .unwrap();
+            assert_eq!(recovery.manifest(), &altered);
+            let before = kv(&recovery.store);
+            let sequence = recovery.store.db.latest_sequence_number();
+            let inputs = || {
+                let mut entries: Vec<_> = std::fs::read_dir(path.join("producer-inputs-v1"))
+                    .unwrap()
+                    .map(|entry| {
+                        let entry = entry.unwrap();
+                        (entry.file_name(), std::fs::read(entry.path()).unwrap())
+                    })
+                    .collect();
+                entries.sort();
+                entries
+            };
+            let original_inputs = inputs();
+            assert_eq!(original_inputs.len(), 2);
+            assert!(matches!(
+                recovery.close_producer(
+                    id.producer_slot_id,
+                    id.producer_epoch,
+                    grant(&budget, 4096, 4096),
+                    || Ok(())
+                ),
+                Err(BootstrapError::InvalidIntent)
+            ));
+            assert!(matches!(
+                recovery.observe_closed_producer(
+                    id.producer_slot_id,
+                    id.producer_epoch,
+                    grant(&budget, 4096, 4096)
+                ),
+                Err(BootstrapError::InvalidIntent)
+            ));
+            assert!(matches!(
+                recovery.resolve_original_request(
+                    id,
+                    intent("E_private", 2, 10_000_000).request_digest(id),
+                    super::producer_recovery_tests::recovery_limits(),
+                    grant(&budget, 3 * MIB, 0),
+                    grant(&budget, 40 * MIB, 0),
+                    || Ok(())
+                ),
+                Err(ProducerRecoveryError::Native(AdmissionError::InvalidInput))
+            ));
+            let pending = PreparedEvent::new(
+                request(5, 2),
+                intent("E_private", 2, 10_000_000),
+                256 * 1024,
+                grant(&budget, MIB, 0),
+            )
+            .unwrap();
+            assert!(matches!(
+                pending.stage(
+                    &mut recovery.store,
+                    AdmissionLimits::default(),
+                    &grant(&budget, 40 * MIB, 10 * MIB)
+                ),
+                Err(AdmissionError::InvalidInput)
+            ));
+            assert!(matches!(
+                recovery.store.admit_event(
+                    pending,
+                    ObservedTime::new(100),
+                    false,
+                    AdmissionLimits::default(),
+                    grant(&budget, 40 * MIB, 10 * MIB),
+                    || Ok(())
+                ),
+                Err(AdmissionError::InvalidInput)
+            ));
+            assert_eq!(kv(&recovery.store), before);
+            assert_eq!(recovery.store.db.latest_sequence_number(), sequence);
+            assert_eq!(inputs(), original_inputs);
+            // The same retained positive outcome becomes observable after
+            // restoring only the manifest's schema; the OPEN case may close.
+            recovery
+                .store
+                .db
+                .put([1, 1], manifest.encode().as_bytes())
+                .unwrap();
+            drop(recovery);
+            let mut recovery =
+                IngestRecovery::open(&path, manifest, native, grant(&budget, 0, 128 * MIB))
+                    .unwrap();
+            drop(
+                recovery
+                    .close_producer(
+                        id.producer_slot_id,
+                        id.producer_epoch,
+                        grant(&budget, 4096, 4096),
+                        || Ok(()),
+                    )
+                    .unwrap(),
+            );
+            drop(
+                recovery
+                    .resolve_original_request(
+                        id,
+                        intent("E_private", 2, 10_000_000).request_digest(id),
+                        super::producer_recovery_tests::recovery_limits(),
+                        grant(&budget, 3 * MIB, 0),
+                        grant(&budget, 40 * MIB, 0),
+                        || Ok(()),
+                    )
+                    .unwrap(),
+            );
+            assert_eq!(inputs(), original_inputs);
+        }
+    }
+}
+
+#[test]
 fn retirement_observation_requires_an_existing_barrier_without_native_writes() {
     let (root, mut store, budget, manifest, native) = setup(false);
     drop(admit(&mut store, &budget, 1).unwrap());

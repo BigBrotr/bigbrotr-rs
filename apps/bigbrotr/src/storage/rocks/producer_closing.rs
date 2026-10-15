@@ -97,7 +97,10 @@ impl IngestRecovery {
         if self.store.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
-        if epoch.get() != 1 || manifest.identity().owner_epoch.get() != 1 {
+        if manifest.key_schema() != 1
+            || epoch.get() != 1
+            || manifest.identity().owner_epoch.get() != 1
+        {
             return Err(BootstrapError::InvalidIntent);
         }
         let state = self
@@ -134,7 +137,10 @@ impl IngestRecovery {
         if self.store.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
-        if epoch.get() != 1 || self.store.manifest.identity().owner_epoch.get() != 1 {
+        if self.store.manifest.key_schema() != 1
+            || epoch.get() != 1
+            || self.store.manifest.identity().owner_epoch.get() != 1
+        {
             return Err(BootstrapError::InvalidIntent);
         }
         let state = self.store.producer_state(slot, epoch)?.unwrap_or_default();
