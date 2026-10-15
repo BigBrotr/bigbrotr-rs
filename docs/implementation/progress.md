@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T14:51:52.469521+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T15:03:45.876893+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,16 +14,13 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `9ce8133` includes
-native92b4cb9→0b8b9fe and PG9420a05→0bae4a6 continuous activation/writer source.
-Last independently verified remote main is3dad140fb9089da9aea26608da397f2dee6d499b
-(push34112 joined0, remote c577d7). Followup85eca49 passed28previously unexecuted tests and Clippy;116native per-test
-passes are reused against identical product sources and the same test ELF. The
-first aggregate remains FAIL. Probece6e154→34be776 is integrated, build NOT_RUN.
-Root is committing live.py, the narrow completion-event custody seam and reader
-evidence; readerc005406→9ce8133 integrated. No product changes since components.
-No merge/rebase pending. Original source branches/worktrees remain preserved until
-qualification and reconciliation; the new finite consumer has its own worktree.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063
+is also the independently verified remote main (push56336joined0, remote eae361).
+Writer92b4cb9→0b8b9fe, PG9420a05→0bae4a6, live probece6e154→34be776 and
+readerc005406→9ce8133 are integrated and qualified within the scopes below.
+Root is committing the completed connected live result and branch reconciliation.
+No merge/rebase or product edit pending. All original worktrees remain detached
+at their original commits with full file censuses unchanged.
 
 ## Active task and exact next action
 
@@ -34,10 +31,36 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: build the exact-source finite live probe
-(transition-probe profile), then audit retained binaries and run/replay/audit
-five actual invocations on three new terminal2 copies: live3 from both origins,
-and prepare3 → fresh empty3 → new same-process live4. Preserve all originals.
+Root's next bounded action: inspect and implement the bounded activated-family
+recovery owner, preserving positive whole-lineage replay and separate source,
+workflow and retirement prerequisites. Current history refuses an activated
+nonterminal head>=3; legacy recovery hardcodes2. No observed activation may adopt
+a writer. recovery_review is doing read-only fault/recovery boundary design;
+source-derived Control COMMIT ordinals12activation/16first dictionary outcome
+are not wire measurements. Qualify explicit before/after loss and fresh recovery
+only against the actual implemented authority and exact retained captures.
+
+Live006fe3d five-case engine PASS: live3 from both original terminal2 shapes;
+on a third activated copy, prepare3 → fresh empty3 → new local candidate live4.
+Preparation88235/engine63542/replay16856/custody92583 joined0; engine14:59:22Z–15:00:03Z.
+Actual local candidate survives preparation/activation, Control refresh and target
+renewal, then dictionary1, oldEvent AlreadyDurable2 and newEvent NewFacts3, each
+with exact retry. Visibility and historical/current certifications are nonmutating.
+Independent raw replay86698770 checks201snapshots×75tables,87controls,118boundfiles.
+Activated native70/seq85/input6→90/111/9; empty52/63/4→72/89/7.
+Later chain70/85/6→73/89/6→73/90/6→93/116/9. Old epoch1 dependencies survive
+beyond the immediate predecessor; retry preserves exact outcomes/xmin and bytes.
+Custodyd21cc1bb binds1898source files,122protectedELFs and1347unchanged prior
+nonborrowed projections. Both original SQL/catalog/native physical/input censuses
+are preserved. Each process closes native and joins Control/observer before fresh
+reopen. Client143/PG0 stopped/PID0/noOOM; all cleanup/unrelated/missing/unexpected
+lists empty. Finite import API is not an installed acquisition/source workflow.
+
+Probe006fe3d preparation39117/build18742/custody32180 joined0:
+CLI/probe compile+Clippy PASS; no product tests repeated. Auditb4c932b0 binds
+1898source files,120old+2new=122ELFs and1346unchanged prior projections.
+Probe1fb19586/CLI340d128c are retained outside the cache. Product inputs remain
+identical to the qualified writer components; only example consumers changed.
 
 Followup85eca49 preparation83304/build92538/custody44846 joined0.
 Probe/CLI compile, dictionary13/input8/PG7 tests and Clippy PASS. Root custody
@@ -79,7 +102,7 @@ proves collection attempt, not real reaping. First mock assertion failure is ret
 only its nonobject error expectation needed correction. Normal paths are equivalent
 to the unchanged real2a9b3ab run. Preserve that exact run.
 
-Latest connected run9f06d15 is PASS: both genuine terminal2 origins complete
+Earlier connected run9f06d15 is PASS: both genuine terminal2 origins complete
 prepare3 → fresh empty retirement3 → exact retry3 → prepare4, plus132607 metadata
 refusal before successor writes. Preparation43652/engine18586/replay9307/custody29203
 all joined0. Engine13:46:30Z–13:47:09Z; raw replay SHA24cc7767 checks242snapshots ×
@@ -108,20 +131,21 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 15filecontrols are protocol-only evidence: their generator reuses its reducer.
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
-Root alone runs builds/engines/shared cache. Both native/PG source worktrees are
-clean and detached at92b4cb9 and9420a05; exact blobs are integrated. cleanup_review completed source review and now owns source-only
-`.research/successor-live-oracle-20261015`, branchqualification/successor-live-oracle,
-cleanc005406→9ce8133 integrated. Pure5contexts/201snapshots/87controls,7custody
-scenarios/4filecontrols pass;184artifacts114,516,584bytes+6origin symlinks retained
-and root-hash-verified. Full694-line reader and shared custody seam root-reviewed.
-Manifest08a42420; artificial generator shares Model, not product proof.
-recovery_review owns
-source-only `.research/successor-live-probe-20261015`, branch
-`qualification/successor-live-probe`, clean atce6e154, integrated→34be776. Its
-617-line finite live command and full shared deltas are root-reviewed; scoped
-rustfmt/diff PASS, compilation/connected run NOT_RUN.
-Activation retains native custody on all errors/awaits; only confirmed activation
-and final lease/driver delivery may yield a writer. Old lab candidates are closed.
+Root alone runs builds/engines/shared cache. Native/PG worktrees are clean and
+detached at92b4cb9/9420a05. Probe/oracle worktrees are clean and detached at
+ce6e154/c005406; actual connected qualification above closed their first wave.
+All110registered worktrees remain. recovery_review's next task is read-only;
+cleanup_review and successor_restart_design have no active mutation assignment.
+
+Source review: root complete new native writer363/frontier281/tests974, PG
+activation400/dispatch173/tests199, all affected shared native/PG owners/callers,
+617-line live probe,694-line reader and full harness/custody changes. Independent
+AI native/PG source review closed without blocker before component qualification.
+Reader pure5contexts/201snapshots/87controls plus7custody scenarios/4filecontrols
+pass. Manifest08a42420 binds184artifacts114,516,584bytes+6read-only origin symlinks,
+all root-verified. Artificial generator shares Model, so it supplies protocol/file
+coverage; the actual independent raw engine replay is separate. Two pure naming
+errors and all other historical failures remain preserved.
 
 ## Current reusable evidence
 
@@ -177,39 +201,36 @@ counts for recovery. Future preparation reserves its own recovery capacity;
 retiring255 requires no capacity for256. Spool64files/32MiB is independent and
 succession reclaims nothing. Actual RSS/pages/WAL remain separate measurements.
 
-Outstanding: connected activation/writer delivery (component source now qualified), full later-epoch
-recovery/source/workflow/retirement, both installed repeated-lifetime journeys,
+Outstanding: full later-epoch activated recovery/source/workflow/retirement,
+both installed repeated-lifetime journeys,
 unknown COMMIT/cancellation/expiry schedules and capacity refusal. Import logical
 closure, ACK/GC, Archive restart/backup/export and all remaining M1–M5 journeys
 stay open. Follow existing task dependencies, not a new parallel plan.
 
 ## Branches, resources and preservation
 
-99local/51remote redundant refs retired;55worktrees detached with their original
-commits and full censuses unchanged. All110registered worktrees remain after adding the live-probe/oracle worktrees. Three
-local branches remain: main and the active live-probe/oracle branches.
-Writer/activation refs retired68974joined0 after exact21blob reconciliation;
-bundlefedb979e retains both originals and full worktree censuses are unchanged. Remote still contains only main.
-Component bundle0df705cb, finite bundle01e2d5ed and fault bundlee0e57314 retain exact
-originals; full censuses unchanged, including all94artificial reader artifacts.
-Original closures
-remain under `refs/archive/*` and verified bundles in
-`.research/branch-retirement-20261015`; see `tux_branch_retirement_20261015` and
-active evidence `qualified_sql_branch_retirements`. No artifact/dataset/container
-or worktree was deleted. Retirement executors must never be replayed.
+101local/51remote redundant refs retired;57worktrees detached with original
+commits and full censuses unchanged. All110registered worktrees remain. Only main
+remains locally and remotely at verification. Writer component retirement68974
+and live qualification retirement49863 joined0; bundlesfedb979e/cfde0201 preserve
+the four original commits, complete worktrees and all ignored reader artifacts.
+Original closures remain under `refs/archive/*` and verified bundles in
+`.research/branch-retirement-20261015`; see `tux_branch_retirement_20261015` and the
+active evidence retirement records. No artifact/dataset/container/worktree was
+deleted. Completed retirement/preparation/engine executors must never be replayed.
 
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec:
 `/runs/relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608;
 latest relevant observation stopped0/PID0/noOOM, PG16.15/1.5GiB/2CPU/64MiBshm.
 Recheck ownership/state before starting. Root build/preparation/audit/push handles
-above are joined; agents' source work continues. A historical PID/receipt is not
+above are joined; only read-only agent design continues. A historical PID/receipt is not
 fresh ownership proof. Preserve unrelated services and external host activity.
 
-Free space after85eca49 build:32,613,449,728bytes; remeasure before allocation.
+Free space after006fe3d live engine:32,101,761,024bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.120protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.122protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.

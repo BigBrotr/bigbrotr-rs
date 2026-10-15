@@ -50808,8 +50808,8 @@
     "status": "COMPLETE_INACTIVE_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
     "authority": "Q36; owner requested current integrated main and removal of useless branch refs",
     "canonical_branch": "main",
-    "main_source": "ed291195a8effb08aeccb9997af5f00988351e44",
-    "main_verified_push": "22664 joined0",
+    "main_source": "006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063",
+    "main_verified_push": "56336joined0; independent remote eae361",
     "root": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015",
     "inventory": ".research/branch-inventory-cleanup-review-20261015/inventory.json",
     "original_refs": 133,
@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main and two intentional active local repeatable-succession implementation branches; remote main only at last verified push",
+    "remaining": "main only locally and remotely at this verification; all110registered worktrees and ignored/external evidence preserved",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -50843,9 +50843,9 @@
       "root_recheck": "15 original commits,42 complete changed-file blob/mode comparisons exactly match main-ancestor integrations; all original commit objects remain archived."
     },
     "totals": {
-      "local_refs_removed": 79,
+      "local_refs_removed": 101,
       "remote_refs_removed": 51,
-      "worktrees_detached_preserved": 37
+      "worktrees_detached_preserved": 57
     },
     "old_writer": {
       "source": "f899896b1207f5e71c4e39d9ab7814b293814735",
@@ -51394,10 +51394,22 @@
         "worktrees_detached": 51,
         "all_registered_worktrees_preserved": 107
       }
+    },
+    "latest_qualified_followups": {
+      "evidence_node": "implementation_repeatable_ingest_succession_20261015",
+      "records": [
+        "qualified_transition_fault_branch_retirement",
+        "qualified_writer_component_retirement",
+        "qualified_live_retirement"
+      ],
+      "latest_report": {
+        "path": ".research/branch-retirement-20261015/successor-live-qualification.json",
+        "sha256": "2e42df75ab44825eb91c1d0aec692a501e366d392bb10d99f152d3e3d15a55b5"
+      }
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "WRITER_COMPONENTS_QUALIFIED_CONNECTED_LIVE_PENDING",
+    "status": "CONNECTED_CONTINUOUS_WRITER_FIRST_WAVE_PASS_ACTIVATED_RECOVERY_PENDING",
     "observed_at": "2026-10-15T14:18:13.189082+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -51714,14 +51726,12 @@
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
     "branch_totals": {
-      "local_retired": 99,
+      "local_retired": 101,
       "remote_retired": 51,
-      "detached_worktrees": 55,
+      "detached_worktrees": 57,
       "registered_worktrees": 110,
       "remaining_local": [
-        "main",
-        "qualification/successor-live-probe",
-        "qualification/successor-live-oracle"
+        "main"
       ]
     },
     "failed_lineage_build": {
@@ -52869,7 +52879,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Review and compile integrated finite live consumer, then qualify actual live writer against independent full raw-state reader; preserve original aggregate failure and all120ELFs.",
+    "ongoing": "Fresh activated nonterminal>=3 recovery is refused by current history classifier; legacy recovery hardcodes2. Implement bounded activated-family recovery without adoption, then source/workflow/retirement and installed/fault qualification.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -55023,6 +55033,381 @@
         "activated-later-live4"
       ],
       "scope": "Three fresh copies; same-process live activation and new writer. Explicit default-preserving completion event allows native reopen only after positive closure/join and backend absence. Unknown custody preserves provisional SQL/input; malformed response bytes retained."
+    },
+    "continuous_live_build": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-006fe3d",
+      "source": "006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063",
+      "tree": "303240356c67b6327ae5aec9e1d2134dcce98b4b",
+      "owner": "70da2fe957d234ccb88eaa7481eddfa0",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "08d223e69c6a82edd3d93eb84261752b6820cb3e59c5510d22438884885452d2"
+        },
+        {
+          "name": "native",
+          "id": "e27e72922c2f1346208a6ff91d7a94bfa6cd5f91d87b13c7363e8ae243926f75"
+        }
+      ],
+      "started_at": "2026-10-15T14:56:28.894203+00:00",
+      "finished_at": "2026-10-15T14:58:11.966364+00:00",
+      "free_bytes_after": 32292876288,
+      "status": "PASS_SUCCESSION_TRANSITION_PROBE_BUILD",
+      "preparation": {
+        "session": 39117,
+        "exit_code": 0
+      },
+      "build": {
+        "session": 18742,
+        "exit_code": 0
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-006fe3d/audit-root/audit-v1.json",
+        "sha256": "b4c932b079e2b45efc3b084c943f09e69c74845653379b875f89359aec8fdec8",
+        "session": 32180,
+        "exit_code": 0,
+        "source_files": 1898,
+        "old_elfs": 120,
+        "new_elfs": 2,
+        "unchanged_containers": 1346
+      },
+      "executables": {
+        "ingest_bootstrap_probe": "1fb1958667ac3d05d4bbf230cfe3edb86273a6c335fe210d3a4bed419be331ef",
+        "bigbrotr": "340d128c09805f5d7df111e9e1c0c40e3680977159bd6c1cf22dc7507a21cd4c"
+      },
+      "checks": "CLI/probe compilation and Clippy PASS; no component tests repeated. Product/migrations/dependencies unchanged from qualified writer inputs."
+    },
+    "continuous_live_connected": {
+      "status": "PASS_SUCCESSOR_LIVE_FIRST_WAVE",
+      "source": "006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063",
+      "tree": "303240356c67b6327ae5aec9e1d2134dcce98b4b",
+      "owner": "63d2ef283499bd9354aa47ad668ab38a",
+      "label": "org.bigbrotr.succession-live",
+      "client": "733815b607de6afd630ddfc3a9a582e9befded51e4a124da4adec6f592e57ba0",
+      "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "started_at": "2026-10-15T14:59:22.536126+00:00",
+      "finished_at": "2026-10-15T15:00:03.272032+00:00",
+      "free_bytes_after": 32101761024,
+      "not_run": [
+        "Activated successor retirement and installed repeated lifetimes",
+        "Activation/admission COMMIT loss, cancellation/expiry and process kill",
+        "Real source workflow/import closure, 255-epoch capacity and RSS qualification"
+      ],
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-engine-006fe3d",
+      "preparation": {
+        "session": 88235,
+        "exit_code": 0
+      },
+      "engine": {
+        "session": 63542,
+        "exit_code": 0
+      },
+      "result": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-engine-006fe3d/live/result.json",
+        "sha256": "1c921c35572e651ac0df45ead7a1e510181326dea99a6b6ab99fbf820c76b5ed"
+      },
+      "replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-engine-006fe3d/root-independent-replay.json",
+        "sha256": "866987702f00e7e4eb49a4db0555656de2f9381e48a695c8fd46ce6e098fd7e0",
+        "status": "PASS_CONNECTED_LIVE_CAPTURE_REPLAY",
+        "session": 16856,
+        "exit_code": 0,
+        "snapshots": 201,
+        "tables": 75,
+        "controls": 87,
+        "bound_files": 118
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-engine-006fe3d/audit-root/audit-v1.json",
+        "sha256": "d21cc1bba735841094b277f60697568bba8532f59a7260e8746a449b5d99dc4c",
+        "status": "PASS_READ_ONLY_LIVE_CUSTODY",
+        "session": 92583,
+        "exit_code": 0,
+        "source_files": 1898,
+        "protected_elfs": 122,
+        "unchanged_nonborrowed_containers": 1347
+      },
+      "cases": [
+        {
+          "name": "activated-live3",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-live3",
+            "database": "bb_successor_live_006fe3d_activated",
+            "snapshots": 49,
+            "tables": 75,
+            "native_rows": 90,
+            "sequence": 111,
+            "inputs": 9,
+            "control_epoch": 15,
+            "refreshes": 10,
+            "target_epoch": 3,
+            "requests": 3,
+            "scope": "Finite same-process activation/import admission and reads; no network/installed acquisition or retirement claim"
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 20,
+            "rejected": [
+              "retained-original-xmin-rehashed",
+              "activation-without-writer",
+              "activation-role-foreign",
+              "renewal-commit-not-started",
+              "same-id-other-signature-in-input",
+              "provenance-enabled",
+              "claimed-installed-import",
+              "historic-copy-receipt-rehashed",
+              "newfacts-retry-receipt-rehashed",
+              "historical-certification-parent-epoch",
+              "current-certification-context-relabeled",
+              "visibility-scope-class-rewritten",
+              "input-digest-changed",
+              "control-driver-not-joined",
+              "observer-driver-failed",
+              "writer-retained-at-process-end",
+              "boolean-as-integer",
+              "first-reservation-same-activation-transaction",
+              "retry-outcome-version-rewritten-in-entire-tail",
+              "no-fact-request-stray-native-put-through-final"
+            ]
+          }
+        },
+        {
+          "name": "empty-live3",
+          "oracle": {
+            "status": "PASS",
+            "case": "empty-live3",
+            "database": "bb_successor_live_006fe3d_empty",
+            "snapshots": 45,
+            "tables": 75,
+            "native_rows": 72,
+            "sequence": 89,
+            "inputs": 7,
+            "control_epoch": 12,
+            "refreshes": 8,
+            "target_epoch": 3,
+            "requests": 3,
+            "scope": "Finite same-process activation/import admission and reads; no network/installed acquisition or retirement claim"
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 20,
+            "rejected": [
+              "retained-original-xmin-rehashed",
+              "activation-without-writer",
+              "activation-role-foreign",
+              "renewal-commit-not-started",
+              "same-id-other-signature-in-input",
+              "provenance-enabled",
+              "claimed-installed-import",
+              "historic-copy-receipt-rehashed",
+              "newfacts-retry-receipt-rehashed",
+              "historical-certification-parent-epoch",
+              "current-certification-context-relabeled",
+              "visibility-scope-class-rewritten",
+              "input-digest-changed",
+              "control-driver-not-joined",
+              "observer-driver-failed",
+              "writer-retained-at-process-end",
+              "boolean-as-integer",
+              "first-reservation-same-activation-transaction",
+              "retry-outcome-version-rewritten-in-entire-tail",
+              "no-fact-request-stray-native-put-through-final"
+            ]
+          }
+        },
+        {
+          "name": "activated-later-prepare3",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-later-prepare3",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 73,
+            "sequence": 89,
+            "inputs": 6,
+            "control_epoch": 15,
+            "refreshes": 9,
+            "database": "bb_successor_live_006fe3d_activated_later",
+            "observation": {
+              "prepared": true,
+              "target_epoch": 3,
+              "retired_at_us": null
+            },
+            "refusal": false,
+            "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 14,
+            "rejected": [
+              "retained-original-xmin-rehashed",
+              "all-native-sequences-shifted",
+              "both-backend-events-foreign-pid",
+              "coherent-old-closure-claim",
+              "input-digest-changed",
+              "metadata-grant-changed",
+              "control-driver-not-joined",
+              "observer-driver-failed",
+              "claimed-writer-activation",
+              "boolean-as-integer",
+              "missing-request-observation",
+              "rehashed-parent-hash-in-both-observations",
+              "prepared-without-candidate-binding",
+              "wrong-request-window"
+            ]
+          }
+        },
+        {
+          "name": "activated-later-empty3",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-later-empty3",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 73,
+            "sequence": 90,
+            "inputs": 6,
+            "control_epoch": 16,
+            "refreshes": 9,
+            "database": "bb_successor_live_006fe3d_activated_later",
+            "observation": {
+              "prepared": false,
+              "target_epoch": 3,
+              "retired_at_us": "1792076387309954"
+            },
+            "refusal": false,
+            "scope": "Finite preparation/empty retirement; no activation, adoption, admission, installed or gap claim"
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 13,
+            "rejected": [
+              "retained-original-xmin-rehashed",
+              "all-native-sequences-shifted",
+              "both-backend-events-foreign-pid",
+              "coherent-old-closure-claim",
+              "input-digest-changed",
+              "metadata-grant-changed",
+              "control-driver-not-joined",
+              "observer-driver-failed",
+              "claimed-writer-activation",
+              "boolean-as-integer",
+              "missing-request-observation",
+              "coherent-retirement-time-change",
+              "coherent-empty-closure-change"
+            ]
+          }
+        },
+        {
+          "name": "activated-later-live4",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-later-live4",
+            "database": "bb_successor_live_006fe3d_activated_later",
+            "snapshots": 51,
+            "tables": 75,
+            "native_rows": 93,
+            "sequence": 116,
+            "inputs": 9,
+            "control_epoch": 17,
+            "refreshes": 11,
+            "target_epoch": 4,
+            "requests": 3,
+            "scope": "Finite same-process activation/import admission and reads; no network/installed acquisition or retirement claim"
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 20,
+            "rejected": [
+              "retained-original-xmin-rehashed",
+              "activation-without-writer",
+              "activation-role-foreign",
+              "renewal-commit-not-started",
+              "same-id-other-signature-in-input",
+              "provenance-enabled",
+              "claimed-installed-import",
+              "historic-copy-receipt-rehashed",
+              "newfacts-retry-receipt-rehashed",
+              "historical-certification-parent-epoch",
+              "current-certification-context-relabeled",
+              "visibility-scope-class-rewritten",
+              "input-digest-changed",
+              "control-driver-not-joined",
+              "observer-driver-failed",
+              "writer-retained-at-process-end",
+              "boolean-as-integer",
+              "first-reservation-same-activation-transaction",
+              "retry-outcome-version-rewritten-in-entire-tail",
+              "no-fact-request-stray-native-put-through-final"
+            ]
+          }
+        }
+      ],
+      "original_preservation": {
+        "activated": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        },
+        "empty": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        }
+      },
+      "scope": "Three continuous local writers: activated terminal2\u2192live3, unactivated terminal2\u2192live3, and activated terminal2\u2192prepare3\u2192fresh empty3\u2192new candidate live4. Actual confirmed activation, Control refresh, Ingest renewal, dictionary/oldEvent AlreadyDurable/newEvent NewFacts with exact retries and read/certification. Independent literal receipts bind older-than-parent epoch1 dependencies; all full SQL/xmin/native/input states checked.",
+      "terminal": "Client143/PostgreSQL0 stopped/PID0/noOOM; every native closed and Control/observer joined before copied-store reopen; cleanup/unrelated/missing/unexpected empty.",
+      "remaining": "Fresh activated nonterminal>=3 recovery is refused by current history classifier; legacy recovery hardcodes2. Implement bounded activated-family recovery without adoption, then source/workflow/retirement and installed/fault qualification."
+    },
+    "qualified_live_retirement": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T15:01:17.307269+00:00",
+      "records": [
+        {
+          "branch": "qualification/successor-live-probe",
+          "original": "ce6e154848a31daa1fe1a4487dfc14c00449e7c4",
+          "integrated": "34be7760bab224cc72d430423660a9904b1e118f",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-live-probe-20261015",
+          "archive_ref": "refs/archive/qualified-successor-live-20261015/qualification/successor-live-probe",
+          "blobs": {
+            "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "2ad09622f15e291df0b068bec6f35ac1bb8d4abd",
+            "apps/bigbrotr/examples/support/ingest_successor_live.rs": "aa5017c8552f1c7041a269f4369be832cbb7a70a",
+            "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "c71847bcea75779b45e74fa77e4d5e1382fb7ecc"
+          },
+          "qualified_corrections": {},
+          "census_paths": 2088,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-probe-before-census.json",
+          "census_sha256": "348bbb30705bdab120a2140752bdf9e46caf9c8aadaca6af30b435c70707df30"
+        },
+        {
+          "branch": "qualification/successor-live-oracle",
+          "original": "c005406f950e0108f3336082f2521c1bcdf84f27",
+          "integrated": "9ce81339de228268841849caf71fbe4836a857f5",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-live-oracle-20261015",
+          "archive_ref": "refs/archive/qualified-successor-live-20261015/qualification/successor-live-oracle",
+          "blobs": {
+            "experiments/ingest-succession/live_replay.py": "949ba44d283fcea6fe61dfd946a51bd4303914a6"
+          },
+          "qualified_corrections": {},
+          "census_paths": 2314,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-oracle-before-census.json",
+          "census_sha256": "ac4990245db6fcae51624b06c648f27b22ec26f748ef2b595848c7ab2a703245"
+        }
+      ],
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-qualification.bundle",
+      "bundle_bytes": 14491714,
+      "bundle_sha256": "cfde0201ccb5694333561fff57a669b6523656fce9312f75f00c6f927e73ee5d",
+      "replay_sha256": "866987702f00e7e4eb49a4db0555656de2f9381e48a695c8fd46ce6e098fd7e0",
+      "audit_sha256": "d21cc1bba735841094b277f60697568bba8532f59a7260e8746a449b5d99dc4c",
+      "scope": "Two local refs only; all worktrees, ignored/external evidence and datasets preserved",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "session": 49863,
+      "exit_code": 0
     }
   }
 }
