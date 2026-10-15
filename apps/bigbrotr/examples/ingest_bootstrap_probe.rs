@@ -909,6 +909,7 @@ fn main() {
             | "successor-live-guards"
             | "successor-live-manifest"
             | "successor-activated-acquisition-expiry"
+            | "successor-activated-retirement-expiry"
     );
     assert_eq!(
         args.len(),

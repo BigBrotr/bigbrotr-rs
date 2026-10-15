@@ -25,6 +25,8 @@ const CONTROL_TTL: Duration = Duration::from_secs(20);
 
 #[path = "ingest_activated_acquisition.rs"]
 mod activated_acquisition;
+#[path = "ingest_activated_retirement.rs"]
+mod activated_retirement;
 #[path = "ingest_live.rs"]
 mod live;
 
@@ -83,6 +85,7 @@ pub async fn run(
     assert!(
         live::is_mode(mode)
             || mode == activated_acquisition::MODE
+            || mode == activated_retirement::MODE
             || matches!(
                 mode,
                 "successor-normal"
@@ -109,6 +112,7 @@ pub async fn run(
     assert_eq!(
         gate_prefix.is_some(),
         mode == activated_acquisition::MODE
+            || mode == activated_retirement::MODE
             || matches!(
                 mode,
                 "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
@@ -159,6 +163,25 @@ pub async fn run(
     let observer_driver = tokio::spawn(observer_driver);
     if mode == activated_acquisition::MODE {
         activated_acquisition::run(
+            Probe {
+                config,
+                initial_proxy_port: None,
+                root,
+                path,
+                budget,
+                observer,
+                cancelled: AtomicBool::new(false),
+            },
+            recovery,
+            observer_driver,
+            gate_prefix.unwrap(),
+            instance.try_into().unwrap(),
+        )
+        .await;
+        return;
+    }
+    if mode == activated_retirement::MODE {
+        activated_retirement::run(
             Probe {
                 config,
                 initial_proxy_port: None,
