@@ -15,13 +15,14 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'])
+writer = sys.argv[1:] == ['writer']
 replay = sys.argv[1:] == ['replay']
 history = sys.argv[1:] == ['history']
 transition_probe = sys.argv[1:] == ['transition-probe']
 probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
-build_probe = probe or transition
+build_probe = probe or transition or writer
 lineage = sys.argv[1:] == ['lineage']
 schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
@@ -65,6 +66,10 @@ if transition:
 if transition_probe:
     identity['scope'] = ('Exact finite successor transition probe and CLI compilation/Clippy only; '
                          'no Rust test or connected engine executed by this profile')
+if writer:
+    identity['scope'] = ('Continuous native successor writer/frontier, shared admission/dictionary/input '
+                         'and PostgreSQL activation/binding components; CLI/probe compilation and Clippy. '
+                         'Connected activation, actual SQL authority and installed journeys NOT_RUN')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -95,6 +100,12 @@ if probe:
 if transition:
     tests = [('lineage', ['--lib', 'lineage_tests']),
              ('successor_transition', ['--lib', 'successor_transition::tests'])]
+if writer:
+    # Admission owns nested replay/lineage/handoff/writer fixtures too; select it
+    # once instead of repeating overlapping nested filters.
+    tests = [(name, ['--lib', name]) for name in [
+        'admission_tests', 'dictionary_append_tests', 'request_input_tests',
+        'successor_transition']]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
@@ -178,7 +189,8 @@ if schema:
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_TRANSITION_COMPONENTS' if transition
+qualification = dict(identity, status='PASS_SUCCESSION_WRITER_COMPONENTS' if writer
+                     else 'PASS_SUCCESSION_TRANSITION_COMPONENTS' if transition
                      else 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD' if transition_probe
                      else 'PASS_SUCCESSION_HISTORY_PROBE_BUILD' if probe
                      else 'PASS_SUCCESSION_HISTORY_COMPONENTS' if history

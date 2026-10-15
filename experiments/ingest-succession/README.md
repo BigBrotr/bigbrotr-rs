@@ -117,3 +117,10 @@ including the exact wire boundary, full75-table/native state chain and replaceme
 Control's exclusion of an unreleased predecessor. Caller CommitUnknown is kept
 distinct from the observed durable outcome. These five processes qualify neither
 activation nor admission, installed supervision, cancellation/expiry or RSS.
+
+The `ingest-succession-writer` build profile checks the continuous native writer
+and PostgreSQL activation bindings, plus the affected shared admission,
+dictionary and input components. Its native fixtures use an explicitly synthetic
+confirmed-activation premise. The profile preserves test executables and builds
+the CLI/probe; actual SQL authority and connected writer delivery require a
+separate live process fixture.

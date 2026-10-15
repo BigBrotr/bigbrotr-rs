@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T14:25:50.946098+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T14:33:31.119529+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,12 +14,13 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `2a9b3ab` includes
-the qualified native/PG transitions, finite9wave and the fault probe869ee86/reader2a9b3ab.
-Last independently verified remote main is fee2e5c0e64b5196f46188fa19ecf526744bd64e
-(push51430 joined0). Root is recording the completed fault5wave and a narrow
-proxy-finally correction before its next push; only its runner/docs are dirty.
-No merge/rebase pending; source follow-ups use separate worktrees.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `0bae4a6` integrates
+native92b4cb9→0b8b9fe and PG9420a05→0bae4a6 continuous activation/writer source.
+Last independently verified remote main is d0661961f5efb892148e93fd0e8a88e0a951e755
+(push40404 joined0, remote d3e9ac). Root is saving the focused component profile
+and source checkpoint; compiler/engine qualification of these owners is NOT_RUN.
+No merge/rebase pending. Original source branches/worktrees remain preserved until
+qualification and reconciliation; the new finite consumer has its own worktree.
 
 ## Active task and exact next action
 
@@ -30,12 +31,12 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: save/push the qualified fault result and verified
-proxy-finally correction, then review the native writer and paired PostgreSQL
-activation/shared-batch source together. Only after that review, run exact-source
-components/build and a real live fixture retaining the same candidate continuously
-through preparation, activation and admission. Closed earlier candidates cannot
-be adopted. No new installed or writer qualification is claimed yet.
+Root's next bounded action: finish independent boundary review, then run the
+exact-source `ingest-succession-writer` component/build profile with protected
+artifacts and exclusive owned cache. Native9 and PG3 new test groups are authored,
+not executed. Then qualify a real live fixture retaining the same candidate through
+preparation, activation and admission. Closed earlier candidates cannot be adopted.
+No connected or installed writer qualification is claimed.
 
 Fault run2a9b3ab PASS: prepare after-complete COMMIT11 loss → fresh gap completion →
 empty before-forward COMMIT11 loss → fresh empty completion → immutable retry.
@@ -90,14 +91,13 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 15filecontrols are protocol-only evidence: their generator reuses its reducer.
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
-Root alone runs builds/engines/shared cache. recovery_review owns source-only
-`.research/successor-activation-20261015` (branchimplementation/successor-activation,
-basefee2e5c); successor_restart_design owns `.research/successor-writer-20261015`
-(branchimplementation/successor-writer, base9f06d15). Both have draft source still
-unverified by compiler/engine. cleanup_review independently reviews consequential
-boundaries. Old fault/probe/reader worktrees are detached and preserved. Activation
-must retain native ownership through every error/await; receipt/gap recovery cannot
-confer authority, and only confirmed activation plus final delivery can yield writer.
+Root alone runs builds/engines/shared cache. Both native/PG source worktrees are
+clean at92b4cb9 and9420a05; exact blobs are integrated. cleanup_review is completing
+independent source review; no blocker reported so far. recovery_review now owns
+source-only `.research/successor-live-probe-20261015`, branch
+`qualification/successor-live-probe`, base0bae4a6, for the real finite consumer.
+Activation retains native custody on all errors/awaits; only confirmed activation
+and final lease/driver delivery may yield a writer. Old lab candidates are closed.
 
 ## Current reusable evidence
 
@@ -162,8 +162,9 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 ## Branches, resources and preservation
 
 97local/51remote redundant refs retired;53worktrees detached with their original
-commits and full censuses unchanged. All108registered worktrees remain. After
-retirement91769 only main and the two active writer/activation branches remain.
+commits and full censuses unchanged. All109registered worktrees remain after adding the live-probe worktree. Four local
+branches remain: main, writer/activation originals awaiting qualification, and the
+active live-probe branch. Remote still contains only main.
 Component bundle0df705cb, finite bundle01e2d5ed and fault bundlee0e57314 retain exact
 originals; full censuses unchanged, including all94artificial reader artifacts.
 Original closures

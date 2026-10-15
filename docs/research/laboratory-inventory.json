@@ -51519,6 +51519,14 @@
         "branch": "implementation/successor-activation",
         "scope": "Source-only PG activation, fixed writer binding and shared batch dispatch; no native/examples/runtime/build/cache edits.",
         "preserve_ignored_artifacts": true
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-live-probe-20261015",
+        "owner": "recovery_review",
+        "created_from": "0bae4a6111894ae814fb3e4977e1785730b7f372",
+        "branch": "qualification/successor-live-probe",
+        "scope": "Finite live example/dispatcher source only; root owns engine/compiler/cache.",
+        "preserve_ignored_artifacts": true
       }
     ],
     "resource_policy": {
@@ -52848,7 +52856,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Native continuous-custody activation/writer/frontier and paired PG activation/shared-batch dispatch are source-only in separate active worktrees. Root next reviews integrated owners before exact build/components and real live fixture. Preserve qualified fault roots and every failed/historical artifact; no adoption of closed candidates.",
+    "ongoing": "Run exact-source writer components after final independent boundary review, then qualify new finite same-process live consumer and independent raw-state oracle. No closed prior candidate is adoptable.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -54702,6 +54710,56 @@
       },
       "review": "Independent AI review found response decode/write could bypass finish_proxy. Root nested finally guarantees collection attempt; frozen pure checks confirm four errors and three normal paths, 14 invocations. Root read complete mock and verified all96 artifact hashes.",
       "limits": "Pure checks prove finish_proxy call count, not real process reaping. Existing real2a9b3ab run remains exact and unmodified; its qualified normal path is equivalent. No additional engine campaign."
+    },
+    "continuous_writer_source": {
+      "status": "INTEGRATED_SOURCE_COMPONENTS_NOT_RUN",
+      "observed_at": "2026-10-15T14:33:31.119529+00:00",
+      "commits": [
+        {
+          "original": "92b4cb927531162424ccf777d874e604d4372380",
+          "integrated": "0b8b9fed16fbca329d57dd89fbf0bb2e1c750185",
+          "files": [
+            "apps/bigbrotr/src/storage/rocks/admission.rs",
+            "apps/bigbrotr/src/storage/rocks/bootstrap.rs",
+            "apps/bigbrotr/src/storage/rocks/dictionary_append.rs",
+            "apps/bigbrotr/src/storage/rocks/dictionary_preparation.rs",
+            "apps/bigbrotr/src/storage/rocks/initial_writer.rs",
+            "apps/bigbrotr/src/storage/rocks/lineage.rs",
+            "apps/bigbrotr/src/storage/rocks/lineage_inputs.rs",
+            "apps/bigbrotr/src/storage/rocks/request_inputs.rs",
+            "apps/bigbrotr/src/storage/rocks/store.rs",
+            "apps/bigbrotr/src/storage/rocks/successor_frontier.rs",
+            "apps/bigbrotr/src/storage/rocks/successor_handoff.rs",
+            "apps/bigbrotr/src/storage/rocks/successor_handoff_tests.rs",
+            "apps/bigbrotr/src/storage/rocks/successor_writer.rs",
+            "apps/bigbrotr/src/storage/rocks/successor_writer_tests.rs"
+          ]
+        },
+        {
+          "original": "9420a05336c57518daa0eb54ed5ecd79c88aab52",
+          "integrated": "0bae4a6111894ae814fb3e4977e1785730b7f372",
+          "files": [
+            "apps/bigbrotr/src/storage/postgres/control_owner.rs",
+            "apps/bigbrotr/src/storage/postgres/initial_batch.rs",
+            "apps/bigbrotr/src/storage/postgres/initial_dispatch.rs",
+            "apps/bigbrotr/src/storage/postgres/successor_activation.rs",
+            "apps/bigbrotr/src/storage/postgres/successor_activation_tests.rs",
+            "apps/bigbrotr/src/storage/postgres/successor_history.rs",
+            "apps/bigbrotr/src/storage/postgres/successor_transition.rs"
+          ]
+        }
+      ],
+      "source_review": "Root complete new native writer363/frontier281/tests974, PG activation400/dispatch173/tests199 and full shared diffs. Complete affected native admission1446/dictionary724/preparation368/input428+census223/bootstrap679/lineage516/candidate481/store535/initial writer229; existing PG owners/callers previously read. Independent AI review in progress, no blocker reported; final disposition pending.",
+      "checks": {
+        "scoped_rustfmt": "PASS by authors",
+        "diff_check": "PASS",
+        "python_ast": "PASS",
+        "native_tests": "NOT_RUN",
+        "postgres_tests": "NOT_RUN",
+        "connected_engine": "NOT_RUN"
+      },
+      "scope": "Same candidate/native ownership through confirmed activation and final lease/driver delivery; moved original lineage allocation/permit; dynamic writer dispatch with exact input census and prior fact frontier. Shared legacy branches retained.",
+      "next": "Run exact-source writer components after final independent boundary review, then qualify new finite same-process live consumer and independent raw-state oracle. No closed prior candidate is adoptable."
     }
   }
 }
