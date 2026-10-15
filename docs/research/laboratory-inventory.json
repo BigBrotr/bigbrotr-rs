@@ -55454,7 +55454,8 @@
         "base": "a594f5d6403734b448d5daec033fcc2ea1b915d3",
         "profile": "ingest-succession-recovery; exact build and affected component tests planned, NOT_RUN",
         "root_only_builds": true,
-        "registered_worktrees": 115
+        "registered_worktrees": 116,
+        "oracle_worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-oracle-20261015"
       }
     },
     "continuous_live_fault_source": {
@@ -56038,6 +56039,22 @@
       "exit_code": 0,
       "report_path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-fault-qualification.json",
       "report_sha256": "c6b7b60b6f7bd8c80c20c336377280b6f24d0dda53b97e98dc8437822b71b515"
+    },
+    "activated_recovery_probe": {
+      "status": "SOURCE_INTEGRATED_REVIEWED_RUNTIME_NOT_RUN",
+      "original": "8de328a3ac8ea57bcb7838cfc9fed68414a14dfe",
+      "integrated": "e7890f6b6934810156d11d1fc311dd6ba897f6d3",
+      "observed_at": "2026-10-15T15:57:47.263411+00:00",
+      "worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-probe-20261015",
+      "files_sha256": {
+        "apps/bigbrotr/examples/support/ingest_successor_recovery.rs": "a3f035a027c12e1d076a0676bb467322faab0fd3efa26ddb264b9286ca177f23",
+        "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "20fa1e44190090fe559dc1c67adfd4feeed6c3a008a51470fd19d859d4e6754f",
+        "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "026b22e6a327d9baf723acd3d693d5a90389eef765ff057451748cae3778ccd5"
+      },
+      "command": "successor-lineage-recover",
+      "operation": "recover",
+      "review": "Root read entire264-line consumer, full host/history caller and relevant dispatcher branch; no unresolved finding. Scoped rustfmt/diff checks PASS. Product APIs unchanged.",
+      "scope": "Retain activated recovery owner in native custody; inspect, close, ordered originals/copies, epoch/final proof and snapshots including failed operations. Native close and both drivers joined before completion. No source/workflow/retirement/writer authority."
     }
   }
 }

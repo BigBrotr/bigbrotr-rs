@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T15:47:36.373059+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T15:57:47.263411+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,14 +14,14 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEADa594f5d6403734b448d5daec033fcc2ea1b915d3.
-Last independently verified remote main7605e027f1317e287972a7d35f4333c286afd8e7
-(push70264joined0, remote719cd8). Native8b9c1ab→93d7e4c and PG310d549→a594f5d
-are integrated, source-reviewed and not runtime-qualified. Root adds the exact
-component build profile and this checkpoint before building. No merge/rebase.
-Two original component worktrees remain clean pending qualification; new finite
-consumer and engine use isolated branches/worktrees based on a594f5d. Earlier
-completed worktrees and all ignored/external evidence remain preserved.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEADe7890f6b6934810156d11d1fc311dd6ba897f6d3.
+Last independently verified remote main9ea5d475de59ddd9aea91aac6ae56f5100e25639
+(push60526joined0, remote663e99). Native8b9c1ab→93d7e4c, PG310d549→a594f5d and
+finite probe8de328a→e7890f6 are integrated and source-reviewed; runtime NOT_RUN.
+Root records this checkpoint before the exact recovery component/probe build.
+No merge/rebase or product dirt. Two original component worktrees remain clean
+pending qualification; probe worktree is clean. Engine and independent reader
+use isolated qualification branches. All completed worktrees and evidence remain.
 
 ## Active task and exact next action
 
@@ -77,8 +77,11 @@ remain unexecuted. SQL0038 positive is unchanged and legacy readers remain stric
 At most one physical head issued+1 input may be retained inside the existing spool
 bounds. It proves no prior manifest/protection authority. Every reserved>issued
 suffix and staged tail remains unresolved and forbids a complete proof. Source,
-workflow, retirement and writer authority remain separate. The finite consumer
-and six-seed engine are being implemented in isolated worktrees; root alone builds.
+workflow, retirement and writer authority remain separate. The264-line finite consumer is integrated and fully reviewed, including full
+host/history caller and dispatch; scoped rustfmt/diff checks PASS. The six-seed
+engine and independent reader remain in progress in isolated worktrees. Root
+independently checked all six actual result/SQL/native/input/catalog pins in ab6eab
+without opening native/SQL. Root alone builds; compile and runtime remain NOT_RUN.
 
 Live006fe3d five-case engine PASS: live3 from both original terminal2 shapes;
 on a third activated copy, prepare3 → fresh empty3 → new local candidate live4.
@@ -172,9 +175,9 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
 Root alone runs builds/engines/shared cache. Prior qualified native/PG/probe/oracle
-worktrees remain detached and unchanged. Four active worktrees retain native/PG
-components plus finite consumer and engine source; the completed fault reader
-worktree is detached.115registered worktrees remain. Prior build/engine/replay/
+worktrees remain detached and unchanged. Five active worktrees retain native/PG
+components plus finite consumer, engine and independent reader source; the completed fault reader
+worktree is detached.116registered worktrees remain. Prior build/engine/replay/
 audit handles are joined; component source review is closed.
 
 Source review: root complete new native writer363/frontier281/tests974, PG
@@ -250,8 +253,8 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 ## Branches, resources and preservation
 
 102local/51remote redundant refs retired;58worktrees detached with original
-commits and full censuses unchanged. All115registered worktrees remain, including
-four current source/qualification branches. Only main remains remotely at the latest verification;
+commits and full censuses unchanged. All116registered worktrees remain, including
+five current source/qualification branches. Only main remains remotely at the latest verification;
 prior retirement totals refer to completed branches and exclude current work.
 Fault-reader retirement1396 joined0, bundleb3da1001 preserves original688d647,
 full worktree census and all378ignored artifacts+2links. Writer retirement68974
