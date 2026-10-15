@@ -350,10 +350,13 @@ One owner serializes exact identity decisions for each writable directory.
   passes four first/retry commands on off/source5 and AlreadyDurable/source0 copies:
   exact twelve-row first transitions, unchanged retry timestamps/xmin and no native
   writes. Root raw replay covers ten full72-table states/110 controls; author
-  artifact/custody audit passes with originals retained. Final-COMMIT fault fixtures
-  are integrated but actual execution remains NOT_RUN. Raw SQL draft7730bfb is
-  committed separately, partially reviewed and not integrated; artificial18-case
-  checks do not qualify PostgreSQL. Owner-requested pause preserves every artifact.
+  artifact/custody audit passes with originals retained. Installed724b2ff qualifies
+  both final COMMIT7 reply-loss boundaries and fresh-process recovery: four commands,
+  eight before/after observations and106 independent controls; no native writes or
+  repeated terminal-row updates. Source/artifact custody audit also passes, preserving
+  76 binaries and the original1d64off seed.
+  Raw SQL draft7730bfb remains separately committed and not integrated; artificial
+  checks do not qualify PostgreSQL. Owner resumed the active goal on2026-10-15.
   Refusal, SQL immutability and interruption gates remain NOT_RUN. Repeated lifetimes
   remain separate. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
