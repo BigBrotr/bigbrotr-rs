@@ -94,6 +94,8 @@ pub use activated_recovery::{
 #[path = "initial_activation.rs"]
 mod initial_activation;
 pub use initial_activation::LiveInitialWriter;
+#[path = "history_authority.rs"]
+mod history_authority;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "initial_empty.rs"]
@@ -102,6 +104,12 @@ mod initial_empty;
 mod initial_gap;
 #[path = "initial_history.rs"]
 mod initial_history;
+#[path = "successor_history.rs"]
+mod successor_history;
+pub use successor_history::{
+    SuccessorHistory, SuccessorHistoryResolution, SuccessorHistoryState, SuccessorReplayRequest,
+    VerifiedSuccessorHistory,
+};
 #[path = "initial_succession.rs"]
 mod initial_succession;
 pub use initial_empty::{InitialEmptyRetirementPlan, PreparedEmptyInitialAttempt};
