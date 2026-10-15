@@ -10,7 +10,7 @@ use bigbrotr_model::*;
 use bigbrotr_model::{codec::FactDecodeLimits, receipt_codec::ReceiptDecodeLimits};
 use bigbrotr_protocol::{EventError, VerifiedEvent, verify_owned};
 use sha2::{Digest, Sha256};
-use std::{fmt, mem::size_of};
+use std::{fmt, mem::size_of, sync::atomic::AtomicBool};
 
 const MAX_INPUT: usize = 16 * 1024 * 1024;
 const REJECTION_PREFIX: &[u8] = b"bigbrotr/rejection/1\0";
@@ -117,6 +117,25 @@ impl PreparedEvent {
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        self.stage_in(store, limits, permit, None)
+    }
+    pub(super) fn stage_successor(
+        &self,
+        store: &mut IngestStore,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        self.stage_in(store, limits, permit, Some(cancelled))
+    }
+    fn stage_in(
+        &self,
+        store: &mut IngestStore,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: Option<&AtomicBool>,
+    ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        store.require_successor_operation(cancelled)?;
         if permit.request().units().data_bytes() < limits.required_data_bytes()?
             || permit.request().units().native_bytes() < limits.required_native_bytes()?
             || permit.request().units().items() == 0
@@ -131,9 +150,7 @@ impl PreparedEvent {
         }
         store.require_admission_owner(Some(self.request))?;
         store.require_open_producer(self.request)?;
-        store
-            .stage_producer_request(self.request, self.digest, &self.request_preimage)
-            .map_err(AdmissionError::RequestInput)
+        store.stage_admission_input(self.request, self.digest, &self.request_preimage, cancelled)
     }
 
     pub fn new(
@@ -349,13 +366,62 @@ impl IngestStore {
     )]
     pub(in crate::storage) fn admit_event(
         &mut self,
+        input: PreparedEvent,
+        recorded_at: ObservedTime,
+        provenance: bool,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredOutcome, AdmissionError> {
+        self.admit_event_in(
+            input,
+            recorded_at,
+            provenance,
+            limits,
+            permit,
+            None,
+            authority,
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "same serialized kernel with explicit successor cancellation"
+    )]
+    pub(super) fn admit_successor_event(
+        &mut self,
+        input: PreparedEvent,
+        recorded_at: ObservedTime,
+        provenance: bool,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredOutcome, AdmissionError> {
+        self.admit_event_in(
+            input,
+            recorded_at,
+            provenance,
+            limits,
+            permit,
+            Some(cancelled),
+            authority,
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared legacy/successor operation with distinct owned grants"
+    )]
+    fn admit_event_in(
+        &mut self,
         mut input: PreparedEvent,
         recorded_at: ObservedTime,
         provenance: bool,
         limits: AdmissionLimits,
         permit: OwnedPermit,
+        cancelled: Option<&AtomicBool>,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredOutcome, AdmissionError> {
+        self.require_successor_operation(cancelled)?;
         if permit.request().units().data_bytes() < limits.required_data_bytes()?
             || permit.request().units().native_bytes() < limits.required_native_bytes()?
             || permit.request().units().items() == 0
@@ -388,7 +454,8 @@ impl IngestStore {
             .as_deref()
             .map(super::producer_closing::ProducerState::decode)
             .transpose()?;
-        if identity.owner_epoch.get() == 2 && producer.is_none() {
+        if (identity.owner_epoch.get() == 2 || self.live_successor.is_some()) && producer.is_none()
+        {
             return Err(AdmissionError::StateMismatch);
         }
         let producer = producer.unwrap_or_default();
@@ -453,7 +520,7 @@ impl IngestStore {
         })?;
         let outcome = match input.event.take().ok_or(AdmissionError::InvalidInput)? {
             Err(reason) => {
-                if identity.owner_epoch.get() == 2 {
+                if identity.owner_epoch.get() == 2 || self.live_successor.is_some() {
                     self.admission_source_boundary(limits, &mut reads)?;
                 }
                 AdmissionOutcome::Rejected(reason)
@@ -502,9 +569,14 @@ impl IngestStore {
         // The shared native commit marks the handle uncertain before FFI, uses
         // sync+WAL, and retains all buffers/permits until native completion.
         authority()?;
-        self.retain_request_input(input.request, &input.request_preimage)
-            .map_err(AdmissionError::RequestInput)?;
-        self.commit_prepared(writes, || {
+        self.retain_admission_input(input.request, &input.request_preimage, cancelled)?;
+        let source = match &outcome {
+            AdmissionOutcome::Durable(receipt) => {
+                receipt.batch().map(|batch| batch.last().sequence.get())
+            }
+            AdmissionOutcome::Rejected(_) => None,
+        };
+        self.commit_admission(writes, input.request, source, cancelled, || {
             authority().map_err(|_| BootstrapError::AuthorityUnavailable)
         })?;
         Ok(StoredOutcome {
@@ -696,6 +768,9 @@ impl IngestStore {
         limits: AdmissionLimits,
         reads: &mut ReadBudget,
     ) -> Result<Fact, AdmissionError> {
+        if let Some(frontier) = &self.live_successor {
+            frontier.require_fact(self, r.source_record_id)?;
+        }
         let value = self
             .admission_value(
                 IngestKey::Fact {
@@ -1152,7 +1227,7 @@ impl IngestStore {
             sequence: Sequence::new(last.max(1)).map_err(|_| AdmissionError::StateMismatch)?,
         };
         if last == 0 {
-            if identity.owner_epoch.get() != 2 {
+            if identity.owner_epoch.get() != 2 && self.live_successor.is_none() {
                 return Err(AdmissionError::StateMismatch);
             }
             self.require_admission_owner(None)?;

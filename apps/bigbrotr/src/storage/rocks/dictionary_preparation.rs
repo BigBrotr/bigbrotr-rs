@@ -70,6 +70,9 @@ impl IngestStore {
         if self.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
         }
+        if self.live_successor.is_some() {
+            self.require_successor_operation(Some(cancelled))?;
+        }
         self.require_admission_owner(None)?;
         visibility
             .require(
@@ -227,6 +230,10 @@ impl DictionaryPreparation<'_> {
     /// an ambiguous retry must keep this intent rather than repeat interning.
     pub fn finish(self) -> Result<PreparedDictionaries, AdmissionError> {
         check_cancelled(self.cancelled)?;
+        if self.store.live_successor.is_some() {
+            self.store
+                .require_successor_operation(Some(self.cancelled))?;
+        }
         let intent = EvidenceIntent::new(
             1,
             self.visibility,

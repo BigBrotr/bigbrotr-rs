@@ -133,6 +133,11 @@ mod lineage_effects;
 mod successor_handoff;
 pub use successor_handoff::{ObservedSuccessorHandoff, SuccessorCandidate, SuccessorHandoff};
 
+#[path = "successor_writer.rs"]
+mod successor_writer;
+pub use successor_writer::ActiveSuccessorWriter;
+pub(in crate::storage) use successor_writer::NativeSuccessorActivation;
+
 #[path = "successor_empty.rs"]
 mod successor_empty;
 pub use successor_empty::{EmptySuccessorRetirement, ObservedEmptySuccessorRetirement};
@@ -213,6 +218,7 @@ pub struct IngestStore {
     // Only consuming a locally minted candidate after connected activation can
     // populate this field. Opening a schema2 manifest never reconstructs it.
     live_initial: Option<initial_writer::LiveInitialBinding>,
+    live_successor: Option<lineage::AdmittedFrontier>,
 }
 
 /// Exclusive historical-state recovery. There is no direct conversion or mutable
@@ -406,6 +412,7 @@ impl IngestStore {
             manifest,
             write_uncertain: false,
             live_initial: None,
+            live_successor: None,
         })
     }
 

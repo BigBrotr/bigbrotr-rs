@@ -10,7 +10,7 @@ use crate::storage::rocks::manifest::IngestManifest;
 use crate::{runtime::OwnedPermit, storage::rocks::keys::IngestKey};
 use bigbrotr_model::*;
 use sha2::{Digest, Sha256};
-use std::mem::size_of;
+use std::{mem::size_of, sync::atomic::AtomicBool};
 
 impl AdmissionLimits {
     /// Appends share event bounds, but may emit more than five facts. In addition
@@ -49,6 +49,44 @@ impl IngestStore {
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        self.stage_dictionary_append_in(request, intent, recorded_at, limits, permit, None)
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared staging with explicit successor cancellation"
+    )]
+    pub(super) fn stage_successor_dictionaries(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        self.stage_dictionary_append_in(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            Some(cancelled),
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "one staging kernel retains both authority profiles"
+    )]
+    fn stage_dictionary_append_in(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: Option<&AtomicBool>,
+    ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        self.require_successor_operation(cancelled)?;
         require_permit(permit, limits)?;
         // Validate all allocation and closure choices before the immutable PG
         // reservation, including the actual timestamp's variable-width encoding.
@@ -56,8 +94,7 @@ impl IngestStore {
         // owner and the same recorded_at through both PG phases.
         drop(self.prepare_dictionary_operation(request, intent, recorded_at, limits)?);
         let bytes = encode_input(request, intent, limits)?;
-        self.stage_producer_request(request, intent.request_digest(request), &bytes)
-            .map_err(AdmissionError::RequestInput)
+        self.stage_admission_input(request, intent.request_digest(request), &bytes, cancelled)
     }
 
     /// The connected owner fixes all references before reserving this request.
@@ -73,8 +110,57 @@ impl IngestStore {
         recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredReceipt, AdmissionError> {
+        self.append_dictionaries_in(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            None,
+            authority,
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared mutation with explicit successor cancellation"
+    )]
+    pub(super) fn append_successor_dictionaries(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredReceipt, AdmissionError> {
+        self.append_dictionaries_in(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            Some(cancelled),
+            authority,
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "one mutation kernel retains both authority profiles"
+    )]
+    fn append_dictionaries_in(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: Option<&AtomicBool>,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredReceipt, AdmissionError> {
+        self.require_successor_operation(cancelled)?;
         require_permit(&permit, limits)?;
         authority()?;
         let (writes, receipt) =
@@ -83,12 +169,15 @@ impl IngestStore {
         authority()?;
         if let Some(writes) = writes {
             let input = encode_input(request, intent, limits)?;
-            self.retain_request_input(request, &input)
-                .map_err(AdmissionError::RequestInput)?;
+            self.retain_admission_input(request, &input, cancelled)?;
             drop(input);
-            self.commit_prepared(writes, || {
-                authority().map_err(|_| BootstrapError::AuthorityUnavailable)
-            })?;
+            self.commit_admission(
+                writes,
+                request,
+                receipt.batch().map(|batch| batch.last().sequence.get()),
+                cancelled,
+                || authority().map_err(|_| BootstrapError::AuthorityUnavailable),
+            )?;
         }
         Ok(StoredReceipt::new(receipt, copy, permit))
     }
@@ -454,12 +543,16 @@ impl IngestStore {
             epoch => {
                 manifest.key_schema() == 3
                     && request.producer_epoch.get() == epoch
-                    && lineage.is_some_and(|lineage| {
+                    && (lineage.is_some_and(|lineage| {
                         lineage.native_head().manifest() == &self.manifest
                             && lineage
                                 .entry(epoch)
                                 .is_some_and(|entry| entry.manifest() == manifest)
-                    })
+                    }) || (manifest == &self.manifest
+                        && self
+                            .live_successor
+                            .as_ref()
+                            .is_some_and(|frontier| frontier.manifest() == manifest)))
             }
         };
         if !supported

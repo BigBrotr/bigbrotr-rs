@@ -37,7 +37,7 @@ pub(super) const CLOSING_PRODUCER: [u8; 27] = {
 };
 
 /// Fresh local identity and continuous exclusive custody. No identity arguments,
-/// historical conversion, Clone, Deserialize or active-writer method exists.
+/// historical conversion, Clone, Deserialize or public writer conversion exists.
 pub struct SuccessorCandidate {
     recovery: IngestRecovery,
     previous: IngestManifest,
@@ -173,6 +173,25 @@ impl SuccessorCandidate {
         }
         self.recovery
             .validate_successor_handoff(lineage, handoff, cancelled)
+    }
+
+    pub(in crate::storage) fn require_prepared_handoff(
+        &self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.require_handoff(lineage, handoff, cancelled)?;
+        if self.recovery.manifest() != &handoff.record.fields().next_manifest {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
+    // Infallible field transfer, called only after the envelope's final checked
+    // prepared gate. No decoder or recovery path can call a public conversion.
+    pub(super) fn into_writer_parts(self) -> (super::IngestStore, [u8; 16]) {
+        (self.recovery.store, self.role)
     }
 
     pub(in crate::storage) fn apply_handoff(

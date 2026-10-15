@@ -145,6 +145,24 @@ impl IngestStore {
             _synchronized: (),
         })
     }
+    pub(super) fn stage_admission_input(
+        &mut self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        bytes: &[u8],
+        cancelled: Option<&std::sync::atomic::AtomicBool>,
+    ) -> Result<StagedProducerRequest, super::AdmissionError> {
+        self.retain_admission_input(request, bytes, cancelled)?;
+        Ok(StagedProducerRequest {
+            request,
+            dataset: self.manifest.identity().dataset_id,
+            digest,
+            input_bytes: bytes.len() as u32,
+            manifest_sha256: Sha256::digest(self.manifest.encode().as_bytes()).into(),
+            _synchronized: (),
+        })
+    }
+
     /// Bounded synchronous read through the existing exclusive owner. Missing,
     /// malformed or mismatched bytes remain unresolved, never an absent effect.
     /// This does not recreate a producer incarnation or authorize a new commit.

@@ -1,4 +1,4 @@
-//! Complete finite input census for the new lineage reader, never staging.
+//! Complete finite input census and exact staged-file deltas; this scanner never writes.
 use super::*;
 use crate::storage::rocks::store::BootstrapError;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -12,9 +12,23 @@ impl IngestStore {
     pub(in crate::storage::rocks::store) fn lineage_input_census(
         &self,
         expected_count: u64,
-        mut accepts: impl FnMut(ProducerRequestId) -> bool,
+        accepts: impl FnMut(ProducerRequestId) -> bool,
         cancelled: &AtomicBool,
     ) -> Result<[u8; 32], BootstrapError> {
+        self.lineage_input_delta(expected_count, accepts, None, cancelled)
+            .map(|(all, _)| all)
+    }
+
+    /// Same complete bounded scan, optionally proving one exact new staged file.
+    /// The second digest excludes only that file and must match the prior census.
+    /// Unknown files are still refused, never filtered out of the directory.
+    pub(in crate::storage::rocks::store) fn lineage_input_delta(
+        &self,
+        expected_count: u64,
+        mut accepts: impl FnMut(ProducerRequestId) -> bool,
+        addition: Option<(ProducerRequestId, [u8; 32], u64)>,
+        cancelled: &AtomicBool,
+    ) -> Result<([u8; 32], [u8; 32]), BootstrapError> {
         let check = || {
             if cancelled.load(Ordering::Relaxed) {
                 Err(BootstrapError::AuthorityUnavailable)
@@ -94,8 +108,15 @@ impl IngestStore {
                 {
                     return Err(BootstrapError::RequestInput(RequestInputError::Conflict));
                 }
+                let content: [u8; 32] = content.finalize().into();
+                if let Some((added, expected, length)) = addition
+                    && id == added
+                    && (content != expected || before.len() != length)
+                {
+                    return Err(BootstrapError::RequestInput(RequestInputError::Conflict));
+                }
                 let mut stamp = Sha256::new();
-                stamp.update(content.finalize());
+                stamp.update(content);
                 for word in identity(&before) {
                     stamp.update(word.to_be_bytes());
                 }
@@ -116,16 +137,47 @@ impl IngestStore {
         {
             return Err(BootstrapError::RequestInput(RequestInputError::Conflict));
         }
-        let mut digest = Sha256::new();
-        digest.update(b"bigbrotr/local-lineage-input-census/1\0");
-        digest.update((count as u64).to_be_bytes());
-        digest.update(total.to_be_bytes());
-        for (name, stamp) in &stamps[..count] {
-            digest.update(name);
-            digest.update(stamp);
+        let excluded = addition.map(|(id, _, _)| name(id));
+        if let Some(excluded) = &excluded
+            && !stamps[..count]
+                .iter()
+                .any(|(name, _)| name.as_slice() == excluded.as_bytes())
+        {
+            return Err(BootstrapError::RequestInput(RequestInputError::Missing));
         }
+        let digest = |omit: bool| {
+            let mut hash = Sha256::new();
+            hash.update(b"bigbrotr/local-lineage-input-census/1\0");
+            hash.update((count as u64 - u64::from(omit)).to_be_bytes());
+            hash.update(
+                (total
+                    - if omit {
+                        addition.expect("one checked addition").2
+                    } else {
+                        0
+                    })
+                .to_be_bytes(),
+            );
+            for (name, stamp) in &stamps[..count] {
+                if !(omit
+                    && excluded
+                        .as_ref()
+                        .is_some_and(|excluded| name.as_slice() == excluded.as_bytes()))
+                {
+                    hash.update(name);
+                    hash.update(stamp);
+                }
+            }
+            hash.finalize().into()
+        };
+        let all = digest(false);
+        let previous = if addition.is_some() {
+            digest(true)
+        } else {
+            all
+        };
         check()?;
-        Ok(digest.finalize().into())
+        Ok((all, previous))
     }
 }
 

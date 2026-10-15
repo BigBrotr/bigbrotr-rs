@@ -20,6 +20,10 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
+#[path = "successor_frontier.rs"]
+mod frontier;
+pub(super) use frontier::AdmittedFrontier;
+
 #[path = "lineage_census.rs"]
 mod census;
 

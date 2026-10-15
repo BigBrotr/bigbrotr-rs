@@ -161,6 +161,10 @@ impl Prepared {
         self.entries.push(Entry { key, cf, value });
         Ok(())
     }
+    pub(super) fn put_count(&self) -> usize {
+        self.entries.len()
+    }
+
     fn sort(&mut self) {
         self.entries.sort_unstable_by(|a, b| {
             (a.cf.name(), a.key.as_bytes()).cmp(&(b.cf.name(), b.key.as_bytes()))

@@ -221,6 +221,9 @@ impl IngestStore {
         {
             return Ok(());
         }
+        if let Some(frontier) = &self.live_successor {
+            return frontier.require_identity(self, request);
+        }
         Err(AdmissionError::InvalidInput)
     }
 }

@@ -565,3 +565,6 @@ fn successor_empty_refuses_stale_marker_or_input_and_preserves_full_spool() {
     assert_eq!(inputs(&f.path()), injected);
     assert_eq!(kv(&r.store), closed);
 }
+
+#[path = "successor_writer_tests.rs"]
+mod successor_writer_tests;
