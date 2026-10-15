@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Review and integrate the isolated native/PG activated-successor recovery components, qualify affected components and a concrete finite recovery consumer against preserved actual live/fault states. No adoption, no missing-copy write before native ordered prefix acceptance; unresolved staged/reserved tails prevent completion. Source/workflow/retirement and installed obligations remain open.",
+      "ongoing": "Root qualifies activated-family recovery components; isolated finite consumer, connected six-seed engine and independent reader in progress. No positive runtime claim yet.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -27201,18 +27201,24 @@
         "exit_code": 0
       },
       "activated_recovery_source": {
-        "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_RUNTIME_NOT_RUN",
+        "status": "INTEGRATED_SOURCE_REVIEWED_COMPONENTS_AND_ENGINE_NOT_RUN",
         "base": "ad9ea95fbc6f950b83fc9956934bbc34480985ff",
-        "observed_at": "2026-10-15T15:19:59.684105+00:00",
+        "observed_at": "2026-10-15T15:47:36.373059+00:00",
         "native": {
           "owner": "successor_restart_design",
           "worktree": "/home/tux/bigbrotr-rs/.research/successor-native-recovery-20261015",
-          "branch": "implementation/successor-native-recovery"
+          "branch": "implementation/successor-native-recovery",
+          "original_commit": "8b9c1ab03f5e10c671580b9ce57d45c0aa71a70d",
+          "integrated_commit": "93d7e4c2492ab9920131987169226839173d895a",
+          "worktree_status": "clean; preserved pending component qualification"
         },
         "postgres": {
           "owner": "recovery_review",
           "worktree": "/home/tux/bigbrotr-rs/.research/successor-pg-recovery-20261015",
-          "branch": "implementation/successor-pg-recovery"
+          "branch": "implementation/successor-pg-recovery",
+          "original_commit": "310d549c56788b97bb9dd7598d610d999c6675d7",
+          "integrated_commit": "a594f5d6403734b448d5daec033fcc2ea1b915d3",
+          "worktree_status": "clean; preserved pending component qualification"
         },
         "scope": "Distinct activated-successor recovery under fresh Control using SQL0038 positive. One retained native lineage allocation, exact OPEN-to-CLOSING barrier, full ordered original replay and exact outcome repair. Prefix preview must precede any missing-copy INSERT; accept advancement only after known COMMIT and final authority checks.",
         "tails": "At most one physical head issued+1 input may be observed within unchanged global spool bounds. Unreserved bytes prove no prior manifest or protection authority. All reserved>issued requests and staged extras remain unresolved; issued prefix may be repaired but no complete witness can escape.",
@@ -27220,7 +27226,21 @@
           "No writer adoption or conversion to predecessor/preparation authority",
           "No source/workflow/retirement or installed completion",
           "No runtime evidence yet; root alone builds and runs engines"
-        ]
+        ],
+        "review": {
+          "root": "Complete new owners/tests and shared changes read; no unresolved blocker",
+          "independent": "cleanup_review AI source review of both frozen commits; no blocker",
+          "source_checks": "Scoped rustfmt and diff-check PASS; no runtime inference",
+          "budget": "One retained allocation; native64KiB plus PG64KiB scratch, counter bitmap and both PG copy arrays included; compile assertions NOT_RUN"
+        },
+        "qualification_work": {
+          "probe_worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-probe-20261015",
+          "engine_worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-engine-20261015",
+          "base": "a594f5d6403734b448d5daec033fcc2ea1b915d3",
+          "profile": "ingest-succession-recovery; exact build and affected component tests planned, NOT_RUN",
+          "root_only_builds": true,
+          "registered_worktrees": 115
+        }
       },
       "continuous_live_fault_source": {
         "status": "SOURCE_REVIEWED_PURE_CHECKS_PASS_ENGINE_NOT_RUN",

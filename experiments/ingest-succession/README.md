@@ -163,3 +163,9 @@ refusal boundary; positive activated recovery and missing-copy repair require
 their own implementation and qualification. Missing proxy/native/driver custody
 forbids native reopen; malformed response bytes and provisional SQL/input
 observations remain retained. See the existing checkpoint for execution status.
+
+The `ingest-succession-recovery` build profile checks the activated-family native
+and PostgreSQL recovery owners and affected lineage, input, prefix and legacy
+components. Nested test groups run once. It preserves exact CLI, probe and native
+test executables and runs Clippy; it does not execute a connected recovery or
+qualify source closure, retirement, installed succession or unresolved tails.

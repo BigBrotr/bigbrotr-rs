@@ -15,7 +15,8 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'])
+recovery = sys.argv[1:] == ['recovery']
 writer_followup = sys.argv[1:] == ['writer-followup']
 writer = sys.argv[1:] == ['writer'] or writer_followup
 replay = sys.argv[1:] == ['replay']
@@ -23,7 +24,7 @@ history = sys.argv[1:] == ['history']
 transition_probe = sys.argv[1:] == ['transition-probe']
 probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
-build_probe = probe or transition or writer
+build_probe = probe or transition or writer or recovery
 lineage = sys.argv[1:] == ['lineage']
 schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
@@ -75,6 +76,10 @@ if writer_followup:
     identity['scope'] = ('Only previously unexecuted dictionary/input and PostgreSQL activation components, '
                          'CLI/probe compilation and Clippy. Native admission/writer checks are not repeated; '
                          'reuse requires separately bound unchanged product inputs and raw per-test results.')
+if recovery:
+    identity['scope'] = ('Activated successor native/PG recovery and affected lineage/input/prefix/legacy '
+                         'components, CLI/probe compilation and Clippy. Native fixtures use explicit '
+                         'SQL activation/copy premises; connected recovery and installed journeys NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -113,6 +118,13 @@ if writer:
         'successor_transition']]
     if writer_followup:
         tests = tests[1:]
+if recovery:
+    # Lineage includes the successor writer/recovery groups. Activated recovery
+    # includes its nested source/retirement groups; do not execute them twice.
+    tests = [(name, ['--lib', name]) for name in [
+        'lineage_tests', 'request_input_tests', 'dictionary_append_tests',
+        'producer_recovery_tests', 'source_closure_tests', 'activated_recovery_tests',
+        'successor_history::tests', 'successor_transition']]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
@@ -198,7 +210,8 @@ if schema:
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS' if writer_followup
+qualification = dict(identity, status='PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery
+                     else 'PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS' if writer_followup
                      else 'PASS_SUCCESSION_WRITER_COMPONENTS' if writer
                      else 'PASS_SUCCESSION_TRANSITION_COMPONENTS' if transition
                      else 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD' if transition_probe
