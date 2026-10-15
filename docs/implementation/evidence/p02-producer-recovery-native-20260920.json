@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Integrate reviewed finite transition probe and compile/lint exactsource with transition-probe; reuse25tests only across equivalent let-chain and example-only changes. No connected mutation qualification yet.",
+      "ongoing": "Compile/lint corrected transition probe on a fresh exact-source root, retain108 priorELFs; then integrate independentreader/harness for9finite invocations. Connectedmutations NOT_RUN.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -25209,6 +25209,55 @@
         },
         "next": "Integrate reviewed finite transition probe and compile/lint exactsource with transition-probe; reuse25tests only across equivalent let-chain and example-only changes. No connected mutation qualification yet.",
         "free_bytes_after": 34589794304
+      },
+      "transition_probe_compile_failure": {
+        "source": "c987b179d22ba62ddffb07c392863168e73e7ae4",
+        "tree": "c600586db131f9ddce15ab630fabc937a8636f8c",
+        "owner": "e2e5a01d697dec4b5ac2b3222a65883f",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "fbe1722a88f26bc4d694a2661e42c3c64319f8977daeaf9e6dcfef703b74aaf6"
+          },
+          {
+            "name": "native",
+            "id": "7a028a2c2b5ceb8484f3f8b8c106035d96d27a4c9e1939cae149beb285731bd7"
+          }
+        ],
+        "started_at": "2026-10-15T13:33:25.441887+00:00",
+        "finished_at": "2026-10-15T13:34:22.996827+00:00",
+        "free_bytes_after": 34431029248,
+        "status": "FAIL_PROBE_COMPILE_E0277",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-c987b17",
+        "preparation": {
+          "session": 50083,
+          "exit_code": 0
+        },
+        "build": {
+          "session": 54282,
+          "exit_code": 1
+        },
+        "error": "Example DictionaryKind::try_from receivedu8 at line431; model exposes TryFrom<u16>. Correct range width, same1..9 serialized integer values. Product unchanged.",
+        "clippy": "NOT_RUN",
+        "tests": 0,
+        "custody": {
+          "session": 17487,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-c987b17/audit-root/audit-v1.json",
+          "sha256": "7660f28def55f6febcd88be74b0dbab00066fccd1eb574041a1e26e91defd0e8",
+          "source_files": 1885,
+          "protected_elfs": 107,
+          "new_elfs": {
+            "bigbrotr": "d3885f4054dc830dfb3cdd9b5d2e9d5b05527252736aaed4483cc3e25eab57c6"
+          },
+          "unchanged_containers": 1332
+        },
+        "scope": "NoSQL/nativeengine run; retainedCLI is unqualified compileroutput. Failedsource/root/logs retained."
+      },
+      "transition_probe": {
+        "original": "f0089963be1947919d1621591004f5ac7236127e",
+        "main": "c987b179d22ba62ddffb07c392863168e73e7ae4",
+        "review": "Root full443-line helper and full shared-load/replay/dispatch delta; native author independent full cross-boundary review. Source review missed u8/u16 conversion; compilefailure retained and corrected onmain. No authority/writer hook."
       }
     }
   }

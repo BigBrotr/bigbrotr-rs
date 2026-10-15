@@ -14,9 +14,9 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `f0cd563` includes
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD `c987b17` includes
 native handoff8df8d06 and PostgreSQL transitione33075e. Last verified remote
-`0f5f66f218dd45f817168591d6ac0e17d73f0a91` (push61500 joined0). Only main is remote.
+`c987b179d22ba62ddffb07c392863168e73e7ae4` (push75302 joined0, independent ls-remote). Only main is remote.
 No merge/rebase pending. Root is recording qualification and adding its focused
 transition profile; concurrent probe/oracle/harness work is isolated below.
 
@@ -29,7 +29,7 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: integrate source-reviewed probef008996, then exact-source
+Root's next bounded action: compile corrected probef008996→c987b17 on a fresh exact-source root using
 `ingest-succession-transition-probe` CLI/probe compilation and Clippy. Reuse25
 component tests across the equivalent let-chain correction and example-only edits.
 Connected nine-case mutation harness/reader source work continues separately.
@@ -42,6 +42,12 @@ Custody14924 PASS (auditv2 SHA6b789172) binds1884sourcefiles,104old+3new=107ELFs
 its warning-free assumption: both test logs contain the existing Copy-drop warning
 in lineage_replay_tests.rs495. Exact warning and frozen capture preserved in v2.
 Initial preparation KeyError happened before any resource creation, separately saved.
+
+First transition probe buildc987b17 (preparation50083/build54282 joined0/1) FAIL
+E0277: DictionaryKind::try_from expectedu16, example suppliedu8 at431. Root range
+correction preserves1..9 integer JSON. Clippy NOT_RUN,0tests; no connected engine.
+Custody17487 PASS SHA7660f28d binds1885sourcefiles,107old+1CLI=108protectedELFs,
+1332unchangedcontainers; fetch0/native1 stopped/PID0/noOOM. Failedroot retained.
 
 Corrected history6f2d9d2 preparation61577/engine31439 joined0: all three cases PASS,
 13:11:44Z–13:12:00Z. Root independent replay67068 PASS (SHA1e558b5a) verifies
@@ -168,7 +174,7 @@ Free space afterf0cd563 build:34589794304bytes; remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive
-`.compiler-cache.lock`.107protectedELFs remain outside that cache, including
+`.compiler-cache.lock`.108protectedELFs remain outside that cache, including
 failed-build output. Do not delete evidence to regain space or reuse retired labs.
 Private Git protects tracked source; ignored labs remain on Tux, and unavailable
 Mac captures remain unavailable.

@@ -427,7 +427,7 @@ impl Probe {
 fn emit_candidate(candidate: &SuccessorCandidate) {
     emit(serde_json::json!({"event":"lineage-transition-candidate",
         "incarnation":hex(candidate.process_incarnation().as_bytes()),"role":hex(&candidate.role_instance_id()),
-        "namespaces":(1..=9u8).filter_map(|number| {
+        "namespaces":(1..=9u16).filter_map(|number| {
             let kind=DictionaryKind::try_from(number).unwrap();
             candidate.allocation_namespaces().domain(kind)
                 .map(|domain|serde_json::json!({"kind":number,"id":hex(domain.as_bytes())}))
