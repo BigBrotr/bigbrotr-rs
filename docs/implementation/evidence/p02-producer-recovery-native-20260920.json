@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "BACKEND_CONTEXT_FIX_SOURCE_REVIEWED_REBUILD_PENDING",
+      "status": "SQL_AND_NATIVE_HISTORY_COMPONENTS_PASS_CONNECTED_HISTORY_PENDING",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Review connected read-only history probe, then build/qualify real terminal2 copies and capacity refusal. Native positive handoff/empty remains source work; writer/activation/installed repeated lifetimes incomplete.",
+      "ongoing": "Finish/review connected harness and run3real terminal2 fresh copies with qualified59ce0fd probe and independent146f7ce reader. PG preparation/gap/empty consumer source work continues; activation/writer/installed incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -24436,7 +24436,7 @@
         "status": "PASS_COMPONENTS_CONNECTED_HISTORY_NOT_RUN",
         "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
         "main": "0ad6752",
-        "review": "Root read complete six files and affected authority/copy/replay owners; independent AI review ongoing.",
+        "review": "Root and independent cleanup_review completed affected source/authority/copy/replay/census/SQL-classifier boundary review; no concrete blocker. Connected history pending.",
         "tests": "Four state discriminators,15lineage,7legacyhandoff,5legacyempty,38schema,3entrypoint tests PASS; literal fixture/Clippy PASS. Connected SQL/native history remains NOT_RUN.",
         "independent_review": {
           "reviewer": "cleanup_review",
@@ -24670,6 +24670,32 @@
         "status": "SOURCE_REVIEWED_NOT_INTEGRATED",
         "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
         "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
+      },
+      "history_reader": {
+        "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
+        "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
+        "main": "146f7ce",
+        "sha256": "0a1c8b850f10206b4750e43a476a7808a69393a68e95d5b12305962974111b30",
+        "review": "Root read complete625-line independent reader, including literal receipts/closures,75-table/xmin transitions, migration/source pins and raw transport binding. No product codec/engine imported.",
+        "pure": {
+          "sessions": [
+            20866,
+            52183
+          ],
+          "exit_codes": [
+            0,
+            0
+          ],
+          "contexts": 3,
+          "snapshots": 55,
+          "semantic_counterexamples": 39,
+          "file_counterexamples": 10,
+          "bound_files": 54,
+          "manifest": "/home/tux/bigbrotr-rs/.research/successor-history-oracle-20261015/.research/history-reader-selfcheck-20261015/manifest-v1.json",
+          "manifest_sha256": "930cf9f2ead53e2967dc377d6fb2a6278279c126ad3ec728201d7a0786662a69",
+          "root_verification": "All manifest file hashes and actual result controls checked; root did not rerun artificial generator"
+        },
+        "scope": "Pure reader controls only, with artificial Control observations; actual connected history NOT_RUN."
       }
     }
   }
