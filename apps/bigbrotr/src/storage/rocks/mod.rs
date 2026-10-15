@@ -2,6 +2,7 @@
 
 pub mod keys;
 pub mod manifest;
+pub mod succession;
 
 mod options;
 pub mod store;

@@ -4,8 +4,8 @@ use bigbrotr::{
     },
     storage::rocks::{
         NATIVE_OPTION_PROFILE_VERSION, RocksNativeLimits, RocksNativeSettings,
-        manifest::{AllocationNamespaces, IngestManifest, ManifestIdentity},
-        store::{IngestRecovery, IngestStore, StoreError},
+        manifest::{AllocationNamespaces, IngestManifest, ManifestError, ManifestIdentity},
+        store::{BootstrapError, IngestRecovery, IngestStore, InitialWriterCandidate, StoreError},
     },
 };
 use bigbrotr_model::{
@@ -181,6 +181,58 @@ fn recovery_inspection_retains_historical_identity_and_exclusive_custody() {
         if cf == "default" {
             assert_eq!(rows[0].0.as_ref(), &[1, 1]);
             assert_eq!(rows[0].1.as_ref(), original.encode().as_bytes());
+        }
+    }
+}
+
+#[test]
+fn schema_three_is_inspectable_but_cannot_initialize_or_recreate_initial_candidate() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("schema-three");
+    let budget = budget();
+    let original = manifest();
+    let mut identity = *original.identity();
+    identity.owner_epoch = OwnerEpoch::new(3).unwrap();
+    identity.topology_generation = TopologyGeneration::new(2);
+    let successor =
+        IngestManifest::for_repeatable_successor(identity, *original.allocation_namespaces());
+    assert_error(
+        IngestStore::initialize(&path, successor, limits(), permit(&budget)),
+        StoreError::InvalidManifest(ManifestError::UnsupportedFormat),
+    );
+    assert!(!path.exists());
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    drop(IngestStore::initialize(&path, original, limits(), permit(&budget)).unwrap());
+    // Privileged fixture metadata is deliberately not a valid prepared lineage.
+    // The format can be inspected; that alone cannot supply a writer candidate.
+    replace_manifest(&path, Some(successor.encode().as_bytes()));
+    let sequence = raw(&path, &["default", "facts", "receipts"], false).latest_sequence_number();
+    let store = IngestStore::reopen(&path, successor, limits(), permit(&budget)).unwrap();
+    assert_eq!(store.manifest(), &successor);
+    drop(store);
+    let recovery =
+        IngestRecovery::inspect(&path, identity.dataset_id, limits(), permit(&budget)).unwrap();
+    assert_eq!(recovery.manifest(), &successor);
+    assert_error(
+        IngestStore::reopen(&path, successor, limits(), permit(&budget)),
+        StoreError::AlreadyOpen,
+    );
+    assert!(matches!(
+        InitialWriterCandidate::new(recovery),
+        Err(BootstrapError::InvalidIntent)
+    ));
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    let db = raw(&path, &["default", "facts", "receipts"], false);
+    assert_eq!(db.latest_sequence_number(), sequence);
+    for cf in ["default", "facts", "receipts"] {
+        let rows: Vec<_> = db
+            .iterator_cf(db.cf_handle(cf).unwrap(), rocksdb::IteratorMode::Start)
+            .collect::<Result<_, _>>()
+            .unwrap();
+        assert_eq!(rows.len(), usize::from(cf == "default"));
+        if cf == "default" {
+            assert_eq!(rows[0].0.as_ref(), &[1, 1]);
+            assert_eq!(rows[0].1.as_ref(), successor.encode().as_bytes());
         }
     }
 }

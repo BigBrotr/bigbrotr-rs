@@ -115,6 +115,19 @@ impl IngestManifest {
         }
     }
 
+    /// Portable metadata for the repeatable handoff family. Epoch, lineage and
+    /// authority validation belong to its consumers, not this constructor.
+    pub const fn for_repeatable_successor(
+        identity: ManifestIdentity,
+        namespaces: AllocationNamespaces,
+    ) -> Self {
+        Self {
+            key_schema: 3,
+            identity,
+            namespaces,
+        }
+    }
+
     pub const fn key_schema(&self) -> u16 {
         self.key_schema
     }
@@ -168,7 +181,7 @@ impl IngestManifest {
         let key_schema = u16::from_be_bytes(fixed(bytes, 2)?);
         if bytes[..2] != HEADER[..2]
             || bytes[4..10] != HEADER[4..10]
-            || !matches!(key_schema, 1 | 2)
+            || !matches!(key_schema, 1..=3)
         {
             return Err(ManifestError::UnsupportedFormat);
         }
