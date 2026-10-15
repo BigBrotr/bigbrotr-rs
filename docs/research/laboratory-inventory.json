@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-15T12:29:56.814736+00:00",
+  "updated_at": "2026-10-15T12:33:28.165387+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -51128,7 +51128,7 @@
   },
   "implementation_repeatable_ingest_succession_20261015": {
     "status": "BACKEND_CONTEXT_FIX_SOURCE_REVIEWED_REBUILD_PENDING",
-    "observed_at": "2026-10-15T12:29:56.814736+00:00",
+    "observed_at": "2026-10-15T12:33:28.165387+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51189,11 +51189,11 @@
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "SQL both origins retained; all97protectedELFs intact. No BigBrotr running at audit capture; unrelated resources preserved.",
+      "new_engine_build_or_runtime_resources": "All SQL/native originals, failed copies and101executables retained. History build had1322unchanged prior container projections.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080,
-      "current_operation": "SQL2c8 engine/replay/custody complete PASS; borrowedPG/client stopped. Typed-history build next; no live engine/build."
+      "current_operation": "History7202 component build/audit PASS, fetch/native stopped0/PID0/noOOM;101protectedELFs. Next review/build connected history probe; no live root engine/build."
     },
     "selected_bounds": {
       "total_epochs_max": 255,
@@ -51248,11 +51248,17 @@
         "status": "PASS_COMPONENTS_IN_RECORDED_FIXTURE_ENVELOPE"
       },
       "typed_history": {
-        "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+        "status": "PASS_COMPONENTS_CONNECTED_HISTORY_NOT_RUN",
         "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
         "main": "0ad6752",
         "review": "Root read complete six files and affected authority/copy/replay owners; independent AI review ongoing.",
-        "tests": "Four pure state-discriminator groups written, not run. Shared authority extraction statically equivalent; actual connected history remains unqualified."
+        "tests": "Four state discriminators,15lineage,7legacyhandoff,5legacyempty,38schema,3entrypoint tests PASS; literal fixture/Clippy PASS. Connected SQL/native history remains NOT_RUN.",
+        "independent_review": {
+          "reviewer": "cleanup_review",
+          "source": "89528b5b7e1235ff0c2844396db269ec79827c5d",
+          "result": "No concrete blocker after complete changed owners and actual Control/policy/copy/replay/census/SQL classifier boundary review.",
+          "limits": "AI source review only; no test/build/SQL run by reviewer; no installed/connected caller qualified."
+        }
       }
     },
     "completed_build": {
@@ -52108,7 +52114,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "ingest-succession-history exact clean main; 97protectedELFs and12GiB reserve; connected probe pending.",
+    "next_build": "Connected read-only history probe after frozen source review;101protectedELFs/12GiB reserve.",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -52383,6 +52389,15 @@
         "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-reader.json",
         "report_sha256": "a5a01509d4053c8160ddb2539cdeec1b876771679406d17a8ff8dd4797e96453"
       }
-    ]
+    ],
+    "history_component": {
+      "status": "PASS_SUCCESSION_HISTORY_COMPONENTS",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-7202cfa",
+      "source": "7202cfa3da5efe90c4c1031dd1a50a63c958987d",
+      "tests": 72,
+      "protected_elfs": 101,
+      "audit_sha256": "56d8689fb940021c00e0acb43119e733f5256eb5f5ed513a9744a2f167e256ee",
+      "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#initial_successor_preparation_20261012.repeatable_succession_20261015.history_component"
+    }
   }
 }

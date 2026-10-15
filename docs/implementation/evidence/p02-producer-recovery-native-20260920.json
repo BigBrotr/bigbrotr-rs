@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Exact typed-history component build next. Native positive handoff/empty source and connected read-only history probe in isolated worktrees. Writer/activation and installed repeated lifetimes remain incomplete.",
+      "ongoing": "Review connected read-only history probe, then build/qualify real terminal2 copies and capacity refusal. Native positive handoff/empty remains source work; writer/activation/installed repeated lifetimes incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -24433,11 +24433,127 @@
         }
       ],
       "typed_history": {
-        "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+        "status": "PASS_COMPONENTS_CONNECTED_HISTORY_NOT_RUN",
         "original": "89528b5b7e1235ff0c2844396db269ec79827c5d",
         "main": "0ad6752",
         "review": "Root read complete six files and affected authority/copy/replay owners; independent AI review ongoing.",
-        "tests": "Four pure state-discriminator groups written, not run. Shared authority extraction statically equivalent; actual connected history remains unqualified."
+        "tests": "Four state discriminators,15lineage,7legacyhandoff,5legacyempty,38schema,3entrypoint tests PASS; literal fixture/Clippy PASS. Connected SQL/native history remains NOT_RUN.",
+        "independent_review": {
+          "reviewer": "cleanup_review",
+          "source": "89528b5b7e1235ff0c2844396db269ec79827c5d",
+          "result": "No concrete blocker after complete changed owners and actual Control/policy/copy/replay/census/SQL classifier boundary review.",
+          "limits": "AI source review only; no test/build/SQL run by reviewer; no installed/connected caller qualified."
+        }
+      },
+      "history_component": {
+        "source": "7202cfa3da5efe90c4c1031dd1a50a63c958987d",
+        "tree": "d593562bdf39dcc4d562ca8a9f66acfa4d4a9364",
+        "test_counts": {
+          "control_schema": 38,
+          "migrate_entrypoint": 3,
+          "successor_history": 4,
+          "lineage": 15,
+          "initial_handoff": 7,
+          "initial_empty": 5
+        },
+        "tests": 72,
+        "checks": 8,
+        "new_elfs": {
+          "control_schema": "dbc21dc2632490964dadd498152fa0889eeb3d828f765ae6091500025cf00a46",
+          "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+          "native_components": "9b2ce92331748f95de6cb8094ee278d41dbb5a4923a816acc1d1d43a947b5985",
+          "bigbrotr": "cb39bc673f415681386fba94555db8993ade774d6bcf327ddf10ac188c45c5c7"
+        },
+        "log_sha256": {
+          "independent-fixture": "35228f3856d4b548923e3c308d67f9157f58dccd4b22184e9fd32b3d1c138f1a",
+          "control_schema": "d3b1f356a99b94d8ccc3e8b4ebd9ca2ddc89983fcbf62acfbf77a212ba49bab4",
+          "migrate_entrypoint": "cba0a6122e48674f06bbed267678d31d5122d7013e285459a917f3e3d8f5a9f7",
+          "successor_history": "69d64c97b760eb53220d7b7608c3848929b0e7e3ec6728ba62d0b149e83586d6",
+          "lineage": "450bc4705cba7348f31239bd5fbfc174e1c68c44ecf38c1ff30f30920303b7fa",
+          "initial_handoff": "1774dbdb557bb72a18cc7323040fdf05fd24456573e9a031dbbcad815ee0e811",
+          "initial_empty": "c2d4fb14b6a3f2907cb86dae0e590a2f654c120d73f4328f5eead0df67a6eaad",
+          "clippy": "8597a96d1213659d89e5d32f04c15f9e10f35cf6255da35f668a8d157d887066"
+        },
+        "retained_sha256": {
+          "resources.json": "8e57c0c49076507560675f4a652fa30fcb0f07ce374696ecb3849976364c5b50",
+          "preflight.json": "188b60942b7358b968c2b53700dabe80b357e636fe7aece55485c462d7ef161f",
+          "root-preparation.json": "178e5fb1af4c524fb4c0a7c6da5c20611a129b6600f1556846afc20173fabee6",
+          "root-preparation-containers.json": "a7a09977b2efbd6431c0528d88b96750d1d856c97cd28b60d5722f4fb4459d0a",
+          "fetch-terminal.json": "00e6e0435aaaf9bcbdd3ff28dd8cfdf9e592b05745bd33dff264cd3b9793bffc",
+          "native-terminal.json": "d48fb032dc748af484c57c655c67c7bb3d1d64e6cf17bf74a007779cb9765075",
+          "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "native.log": "1cc0a78f7fa6e2f6f9b8e8b3a3974ee428a6144b55a77a670b90b05d20e75a91",
+          "out/build/source-manifest.json": "30deca66f1fd566adbbc578b2f3397ad09d23d3ccd7a2a5706f22aa9fad9f1f9",
+          "out/build/source.tar": "5fcdeb48b3998c7a1d7aef7c4775687ff1c1b057c951d539d5855b44025d5df4",
+          "out/build-checks/result.json": "98315fb0e3a4d336ae10a6564d5ec63b2604fbd2c7a12c1cd9c86ef8b33bb651",
+          "out/artifacts/component-result.json": "1417eb286daad12227ebbb334df2f0cc09752cb144f303b8bfeb39462891dff0",
+          "out/artifacts/build-result.json": "a48b8d8a4a0bb81585dc29df9f9aa62b19c6d45ac4609c6928ead2d869a38ec0",
+          "out/qualification.json": "110ff1e8c9fcb5227c1b2e4374bf806e69b027af4e6dbeba30dde89bb8c8a1b1"
+        },
+        "limitations": [
+          "No test executable, compiler, SQL or native engine run by auditor.",
+          "Container comparison excludes only rolling Health.Log, retaining status and failing streak.",
+          "Mutable compiler caches not re-opened or treated as retained evidence.",
+          "No connected lineage, PostgreSQL or installed repeatable succession qualification."
+        ],
+        "status": "PASS_SUCCESSION_HISTORY_COMPONENTS",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-7202cfa",
+        "preparation_session": 45888,
+        "build_session": 2428,
+        "wrapper_exit": 0,
+        "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+        "started_at": "2026-10-15T12:30:38.040825+00:00",
+        "finished_at": "2026-10-15T12:32:13.391592+00:00",
+        "free_bytes_after": 35696562176,
+        "audit": {
+          "session": 44616,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-7202cfa/audit-root/audit-v1.json",
+          "sha256": "56d8689fb940021c00e0acb43119e733f5256eb5f5ed513a9744a2f167e256ee",
+          "source_files": 1875,
+          "old_protected_elfs": 97,
+          "total_protected_elfs": 101,
+          "unchanged_containers": 1322,
+          "capture": {
+            "observed_at": "2026-10-15T12:32:30.231653+00:00",
+            "containers": 1324,
+            "sha256": "0d33a089b3843db7064284b395a250cc3ad5faaeab426f1909eee4abf6905c45"
+          }
+        },
+        "owned_terminal": {
+          "fetch": {
+            "id": "da600ea624e6c99238fb745568f1b3e4e6e02a58f8e8a839db350b6963d4b699",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:30:38.590449667Z",
+              "FinishedAt": "2026-10-15T12:30:38.851638258Z"
+            }
+          },
+          "native": {
+            "id": "a80173bc5243eee9b2ce7d10655bb1709a5d93ce852b28f881c0adfa34b2ef86",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:30:39.19908228Z",
+              "FinishedAt": "2026-10-15T12:32:12.66197166Z"
+            }
+          }
+        }
       }
     }
   }

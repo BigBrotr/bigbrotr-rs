@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T12:29:56.814736+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T12:33:28.165387+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `0ad6752`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `7202cfa`.
 Verified private push20269 is `4dd78e193c4c3759555486ceff7f9f047dd4b491`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
@@ -33,14 +33,24 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: exact-source typed-history component build using
-`ingest-succession-history`,97protectedELFs and12GiB reserve. Four new PG state
-checks, native lineage/legacy handoff/empty and schema/CLI; no connected-history
-claim. Source89528b5 integrated0ad6752; root read all six files, shared authority
-extraction and actual copy/replay boundaries. Independent AI review ongoing.
-Connected read-only history probe is in the active history worktree. New native
-handoff/empty source has its own `.research/successor-handoff-20261015` from6b15dee.
-Agents cannot run engines/builds or mutate caches/labs.
+Root's next bounded action: review the connected read-only history probe in
+`.research/successor-history-20261015`, then build it from exact clean main and
+qualify both real terminal2 origins plus insufficient metadata capacity. Root
+owns engine/harness; cleanup_review maps independent original pins/expectations.
+Native handoff/empty source continues separately in `.research/successor-handoff-20261015`.
+No agent can run engines/builds or mutate caches/labs;101protectedELFs and12GiB
+reserve for a build,2GiB for a small engine. No new-family writer claim yet.
+
+Typed history89528b5→0ad6752 component qualification7202cfa PASS:
+preparation45888/build2428/audit44616 joined0,12:30:38Z–12:32:13Z.
+72Rust tests:38schema/3entrypoint/4PGstate/15lineage/7legacyhandoff/5legacyempty;
+literal fixture and Clippy PASS. Native9b2ce923/CLIcb39bc67 retained. Audit56d8689f
+binds1875source files,97old+4new=101ELFs,1322unchanged prior projections;
+`/runs/ingest-succession-history-7202cfa/audit-root/audit-v1.json`. Both owned
+containers stopped0/PID0/noOOM. Preparation complete; never replay that root.
+Root and independent cleanup_review read complete affected authority/copy/replay
+boundaries; no source blocker found. This is component evidence, not real connected
+SQL/native history, cancellation or installed restart qualification.
 
 SQL2c8fd81 preparation63284/engine36712 joined0 PASS,12:20:31Z–12:20:42Z.
 Both origins pass plan/apply/reapply38, legacy ACL rollback and31 shapes each.
@@ -510,7 +520,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after SQL12:20:42Z:35,945,476,096; remeasure before allocating. Small engines
+Free bytes after build12:32:13Z:35,696,562,176; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive
