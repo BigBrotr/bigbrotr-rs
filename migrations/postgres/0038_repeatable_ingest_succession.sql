@@ -896,7 +896,7 @@ CREATE TRIGGER ingest_obligation_guard BEFORE INSERT ON control.producer_outcome
     FOR EACH ROW EXECUTE FUNCTION control.guard_ingest_obligation();
 
 CREATE FUNCTION control.record_ingest_terminal_transaction() RETURNS trigger
-LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$
+LANGUAGE plpgsql SET search_path=pg_catalog AS $$
 DECLARE c control.owner_epochs%ROWTYPE;
 BEGIN
     SELECT * INTO STRICT c FROM control.owner_epochs WHERE dataset_id=NEW.dataset_id AND role='control' AND state='active';
@@ -953,12 +953,19 @@ CREATE TRIGGER ingest_terminal_claim_guard BEFORE INSERT OR UPDATE ON control.jo
     FOR EACH ROW EXECUTE FUNCTION control.guard_ingest_terminal_claim();
 
 CREATE FUNCTION control.require_complete_ingest_lineage() RETURNS trigger
-LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$
+LANGUAGE plpgsql SET search_path=pg_catalog AS $$
 DECLARE data jsonb:=to_jsonb(NEW); dataset bytea; resource bytea; head numeric;
         s control.ingest_successions%ROWTYPE; p control.producer_epochs%ROWTYPE;
         stream control.source_streams%ROWTYPE; activated boolean; completed bigint;
 BEGIN
     dataset:=NEW.dataset_id;
+    -- Keep actual-backend checks in the caller's privilege context: a definer
+    -- cannot see another login's backend_start in pg_stat_activity. The legacy
+    -- Control/Ingest grant set already reads owner_epochs. Do not touch any new
+    -- relation until a new-family owner exists. Its own deferred trigger and
+    -- immutable identity prevent a missing intent from bypassing this gate.
+    IF NOT EXISTS(SELECT 1 FROM control.owner_epochs
+        WHERE dataset_id=dataset AND role='ingest' AND epoch>=3) THEN RETURN NULL; END IF;
     IF TG_TABLE_NAME='role_instances' THEN
         SELECT o.resource_id INTO resource FROM control.owner_epochs o WHERE o.role_instance_id=NEW.role_instance_id AND o.role='ingest' AND o.epoch>=3;
         IF NOT FOUND THEN RETURN NULL; END IF;

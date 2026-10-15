@@ -4,7 +4,11 @@
 -- privileges belong to the disposable fixture clone, not this application set.
 GRANT SELECT ON control.ingest_successions,control.ingest_activations,
     control.ingest_terminal_transactions TO bigbrotr_control;
-GRANT INSERT ON control.ingest_successions,control.ingest_activations TO bigbrotr_control;
+-- Terminal insertion stays in the actual backend's privilege context. Its
+-- BEFORE guard derives Control/xid and requires the already-retired producer;
+-- immutable history and the primary key prevent substitution or rewriting.
+GRANT INSERT ON control.ingest_successions,control.ingest_activations,
+    control.ingest_terminal_transactions TO bigbrotr_control;
 GRANT EXECUTE ON FUNCTION
     control.ingest_lineage_uint(bytea,integer,integer),
     control.ingest_lineage_u64(numeric),

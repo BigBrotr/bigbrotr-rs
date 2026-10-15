@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:57:29.652959+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T12:04:27.249441+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,8 +14,8 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `c4f7bd5`.
-Verified private push64046 is `277f305b2e63d2e1e9f30ee15238e24e945d4b89`;
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `4dd78e1`.
+Verified private push20269 is `4dd78e193c4c3759555486ceff7f9f047dd4b491`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
 Root's SQL harness/checkpoint remain local before engine qualification.
@@ -33,10 +33,28 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: diagnostic SQL copy using unchanged qualified aa6cb5b
-CLI, `.research/repeatable-succession-sql-context-prepare-20261015.py` (NOT_RUN),
-94protectedELFs/2GiB. Fixture now includes PG_EXCEPTION_CONTEXT on mismatched
-negative outcomes. Do not weaken backend authority or expected result.
+Root's next bounded action: corrected schema/CLI build from clean main, using
+`.research/repeatable-succession-schema-backend-prepare-20261015.py` (NOT_RUN),
+94protectedELFs/12GiB. Native123-test evidence is reused unchanged. Then fresh SQL
+copies test INVOKER backend custody, pre-grant legacy role observer rollback and
+31 shapes including direct terminal-receipt refusal before retirement.
+
+Diagnostic SQL4dd78e1 preparation51542/engine69767 joined1 FAIL confirms the stack:
+require_complete_ingest_lineage→require_ingest_successor→lock_ingest_lineage→0007.
+Audit89182 joined0 PASS binds1870files/94ELFs/1316unchanged nonborrowed projections;
+auditca820972 under `/runs/ingest-succession-sql-4dd78e1/audit-root/audit-v1.json`.
+All original/failure copies retained, PG0/client143 stopped/PID0/noOOM. No emptycopy.
+Correction keeps checker/terminal recorder INVOKER. Early classifier reads only
+old owner_epochs and skips new tables before ingest3; new owners' deferred trigger
+prevents missing-intent bypass. Explicit terminal INSERT38 is guarded by actual
+Control/retired producer/server-derived xid; no broad stats or PUBLIC grant.
+Root and both AI reviewers checked this boundary; corrected runtime pending.
+Native independent AI review completed with no concrete blocker; no runtime/FFI/
+RSS or future PG adapter review claimed. Native branch retired12970 joined0 after
+five commit-pair and24fullblob reconciliations,2050path census unchanged. Archive
+refs/archive/qualified-succession-native-20261015 and verified14,357,581byte bundle
+SHAe831ae88 preserve original18c6fc4. Totals86local/51remote retired,42detached;
+all96worktrees retained. PostgreSQL branch remains for unresolved SQL qualification.
 
 SQLc4f7bd5 preparation53093/engine91165 joined1 FAIL,11:53:18Z–11:53:25Z.
 CLI migration/redo pass; high-u64 checks pass. Retained old codec read confirms
@@ -210,7 +228,7 @@ detached worktrees stay preserved. New worktrees at12c3534:
 `.research/repeatable-succession-codec-20261015` (independent literal fixtures),
 `.research/repeatable-succession-postgres-20261015` (additive SQL family/fixture).
 The fixture branch is retired at its original commit with all files preserved;
-the native and PostgreSQL branches remain active and intentional. Only main is remote.
+the native ref is retired and PostgreSQL branch remains intentional. Only main is remote.
 successor_restart_design froze ordered positive lineage replay18c6fc4;
 recovery_review froze migration0038 and fixture; cleanup_review completed its
 independent SQL source review. Root owns build/integration and the
@@ -355,7 +373,7 @@ integrated8acfaea and main by all three complete blobs. Archive namespace
 13,901,465bytes/SHAfd4826523b3fb53e00b5c8a169b3fdc887a1942a34055a7b130e7c60d74ea829.
 Its2045-path census is identical after detaching at8ca4b27. Cumulative85local/
 51remote refs retired,41worktrees detached; all96registered worktrees preserved.
-Only main and two current implementation branches remain locally. Executor
+Only main and the current PostgreSQL implementation branch remain locally. Executor
 RETIRED_COMPLETE_DO_NOT_REPLAY; no worktree, ignored artifact or lab removed.
 
 ## Completed retirement evidence

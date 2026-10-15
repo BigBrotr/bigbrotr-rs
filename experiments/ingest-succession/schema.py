@@ -213,11 +213,26 @@ def run(root, build):
             lab.write_json(output / (name + '-migrated.json'), migrated)
             # New relations are ungranted by migration; the explicit set is separate.
             assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_successions','SELECT');") == 'f'
+            assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_terminal_transactions','INSERT');") == 'f'
+            # Exercise the legacy epoch1 deferred role observer before adding
+            # any0038 grants, with a complete rollback and external row check.
+            legacy = lab.docker('exec', '-i', pg['postgres'], 'psql', '-X', '-A', '-t', '-q', '--no-password',
+                '-U', 'bigbrotr_control', '-d', database, '-v', 'ON_ERROR_STOP=1', data="""
+                BEGIN;
+                UPDATE control.role_instances SET created_at_us=created_at_us WHERE role_instance_id IN
+                    (SELECT role_instance_id FROM control.owner_epochs WHERE role='ingest' AND epoch=1);
+                SET CONSTRAINTS ALL IMMEDIATE;
+                ROLLBACK;
+                SELECT 'LEGACY_ACL_ROLLBACK';
+                """, timeout=15, check=False)
+            case['legacy_grants'] = dict(exit_code=legacy.returncode, stdout=legacy.stdout, stderr=legacy.stderr)
+            assert legacy.returncode == 0 and legacy.stdout.strip() == 'LEGACY_ACL_ROLLBACK' and not legacy.stderr
+            assert normalized(rows(pg, database)) == normalized(migrated)
             lab.sql(pg, database, (SOURCE / 'experiments/ingest-succession/schema_grants.sql').read_text())
             # Empty legacy31 did not have the activation relation yet. Only SELECT
             # is needed to inspect its absence after the additive upgrade.
             lab.sql(pg, database, 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;')
-            assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_terminal_transactions','INSERT');") == 'f'
+            assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_terminal_transactions','INSERT');") == 't'
             # Deliberately broader negative-case grants only on this disposable DB.
             negative_grants = ('GRANT DELETE ON control.role_instances TO bigbrotr_control; '
                 'GRANT TRUNCATE ON control.allocation_domains,control.ingest_successions,'
@@ -241,7 +256,7 @@ def run(root, build):
             summary, = summaries
             assert summary['kind'] == 'SQL_ONLY_NO_NATIVE_PROOF'
             assert normalized(summary['snapshots']['released']) == normalized(captured)
-            assert len(summary['cases']) == 30 and len({c['name'] for c in summary['cases']}) == 30
+            assert len(summary['cases']) == 31 and len({c['name'] for c in summary['cases']}) == 31
             case.update(status='PASS_SQL_SHAPE', declared_cases=len(summary['cases']))
             lab.write_json(output / (name + '-summary.json'), summary)
         report['status'] = 'PASS_SQL_SHAPES_ONLY'

@@ -51127,7 +51127,7 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "NUMERIC_PASS_SQL_BACKEND_REFUSAL_DIAGNOSIS",
+    "status": "BACKEND_CONTEXT_FIX_SOURCE_REVIEWED_REBUILD_PENDING",
     "observed_at": "2026-10-15T11:36:09.773394+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -51165,7 +51165,8 @@
       "new_engine_build_or_runtime_resources": "Failed SQL engine terminal: borrowedPG0/client143/PID0/noOOM; two original DBs captured preserved; failed activatedcopy retained, emptycopy NOT_RUN; no live engine/build.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
-      "free_bytes_at_creation": 40890286080
+      "free_bytes_at_creation": 40890286080,
+      "current_operation": "Diagnostic SQL4dd78e1 completed; PG0/client143 stopped/PID0/noOOM, originals preserved, no live engine/build. Next corrected schema build."
     },
     "selected_bounds": {
       "total_epochs_max": 255,
@@ -51207,11 +51208,12 @@
         "migration_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
         "fixture_sha256": "9b3fcbdc6dc8a29c3d9627647d091d971a7db70e9111514bd156a82f844fd70e",
         "source_review": "Author and independent cleanup_review source review; root complete integrated migration/fixture read. No runtime proof.",
-        "status": "APPLY_PASS_FIXTURE_FAIL_UNSIGNED_CORRECTED_RETRY_PENDING",
+        "status": "BACKEND_CONTEXT_FIX_SOURCE_REVIEWED_REBUILD_PENDING",
         "corrected_migration_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26",
         "corrected_fixture_sha256": "a0843249eebce2992df364f6c2ea856b012ada518f4bcb00888198b806f5eb4a",
         "fixture_correction": "Qualify context.resource in PL/pgSQL local initializer; source-review correction, not observed runtime failure.",
-        "numeric_corrected_sha256": "5be6fac96e0e671553eebf7f8c0231a19e95b0e61e2b26b86bcdbb724661b99e"
+        "numeric_corrected_sha256": "5be6fac96e0e671553eebf7f8c0231a19e95b0e61e2b26b86bcdbb724661b99e",
+        "backend_corrected_sha256": "bc5c90d25e5ae533e67dd328fbe1da32af3c19e8c03615241fa2359572aac087"
       },
       "positive_replay": {
         "original": "18c6fc404d705d37500ee34992ad23ba9b6447bd",
@@ -51323,9 +51325,9 @@
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
     "branch_totals": {
-      "local_refs_retired": 85,
+      "local_refs_retired": 86,
       "remote_refs_retired": 51,
-      "worktrees_detached": 41,
+      "worktrees_detached": 42,
       "all_registered_worktrees_preserved": 96
     },
     "failed_lineage_build": {
@@ -51868,12 +51870,6 @@
       "preparation_script": ".research/repeatable-succession-replay-prepare-20261015.py",
       "preparation_state": "COMPLETE_DO_NOT_REPLAY"
     },
-    "next_engine": {
-      "status": "NOT_RUN",
-      "preparation_script": ".research/repeatable-succession-sql-context-prepare-20261015.py",
-      "protected_elfs": 94,
-      "required_free_bytes": 2147483648
-    },
     "sql_backend_failure": {
       "status": "FAIL_UNEXPECTED_BACKEND_OWNER_REFUSAL",
       "source": "c4f7bd5a50fe7779323e165c4df9eee15553ff55",
@@ -51943,6 +51939,147 @@
       "preparation_state": "COMPLETE_DO_NOT_REPLAY",
       "hypothesis": "New SECURITY DEFINER trigger calls INVOKER0007 require_control_owner; PG16.15 stats uses current user and hides session backend_start from migrator. Diagnostic full context next; no authority change yet.",
       "dependency_reference": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/pgstatfuncs.c"
+    },
+    "sql_backend_diagnostic": {
+      "status": "FAIL_DEFINER_BACKEND_VISIBILITY_CONFIRMED",
+      "source": "4dd78e193c4c3759555486ceff7f9f047dd4b491",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-4dd78e1",
+      "preparation_session": 51542,
+      "engine_session": 69767,
+      "wrapper_exit": 1,
+      "started_at": "2026-10-15T11:57:47.448209+00:00",
+      "finished_at": "2026-10-15T11:57:54.049216+00:00",
+      "result_sha256": "0242f7e66b677e5ab71bd4018c4d2abf60f57b7c05887d1db8598287e5538a99",
+      "diagnostic_sha256": "3f785ca5c0ac6468c929e5bd9126b83dd007d11b91a27a434dbf42fad2fe40c6",
+      "actual": "PG_EXCEPTION_CONTEXT identifies require_complete_ingest_lineage \u2192 require_ingest_successor \u2192 lock_ingest_lineage \u2192 require_control_owner under SET CONSTRAINTS ALL IMMEDIATE.",
+      "correction": "Run complete checker and terminal recorder as INVOKER. First classifier uses only existing owner_epochs; new family needs explicit terminal INSERT guarded by server-derived actualControl/xid/retired producer. No PUBLIC or broad stats grant.",
+      "audit": {
+        "session": 89182,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-4dd78e1/audit-root/audit-v1.json",
+        "sha256": "ca8209726d56bf7c7d1005cd72d87e3ce6bed4363a9b38e9e08aa416ee4fcb6d",
+        "source_files": 1870,
+        "protected_elfs": 94,
+        "unchanged_nonborrowed_containers": 1316,
+        "capture": {
+          "observed_at": "2026-10-15T12:01:10.725170+00:00",
+          "containers": 1318,
+          "sha256": "cbc659e0bb4e4b28c08190e845acafe9f5d0ff7719a054bc3f2c94ac4b9c97b0"
+        }
+      },
+      "owned_terminal": {
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:57:47.502018993Z",
+            "FinishedAt": "2026-10-15T11:57:53.187560933Z"
+          }
+        },
+        "client": {
+          "id": "4d3b9e2dd2af370c391690ce2078dbf71cbf9d6235d1f9192027771f2504fa8d",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:57:49.900493861Z",
+            "FinishedAt": "2026-10-15T11:57:52.525514116Z"
+          }
+        }
+      },
+      "free_bytes_after": 39580205056,
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+    },
+    "native_independent_review": {
+      "status": "NO_CONCRETE_BLOCKER_STATIC_AI_REVIEW",
+      "reviewer": "cleanup_review",
+      "source": "b4a6926557e50aa5d1bc951d6128d6008327b8fa",
+      "scope": "Complete native replay/effects/tests and shared owners/contracts; no runtime/FFI/RSS or future PG/installed adapters reviewed."
+    },
+    "native_branch_retirement": {
+      "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T11:58:15.896981+00:00",
+      "original": "18c6fc404d705d37500ee34992ad23ba9b6447bd",
+      "integrated": "b4a6926557e50aa5d1bc951d6128d6008327b8fa",
+      "archive_ref": "refs/archive/qualified-succession-native-20261015/implementation/repeatable-succession-native",
+      "retired_branch": "implementation/repeatable-succession-native",
+      "worktree": "/home/tux/bigbrotr-rs/.research/repeatable-succession-native-20261015",
+      "exact_blobs": {
+        "apps/bigbrotr/src/storage/rocks/bootstrap.rs": "3038c3b5e0e4ffd6131b0d44e5a5cbae4b12f472",
+        "apps/bigbrotr/src/storage/rocks/bootstrap_tests.rs": "27836b8684941c88ab4c4413b831a5955753b17c",
+        "apps/bigbrotr/src/storage/rocks/dictionary_append.rs": "176ebd336a34846d08509ad21b0cd38191bd410d",
+        "apps/bigbrotr/src/storage/rocks/initial_reconstruction_tests.rs": "6449df1fee5cee0a05b47b6a1972cbb7e209c822",
+        "apps/bigbrotr/src/storage/rocks/initial_writer.rs": "6a752b50b2043f303245526660defa2111036210",
+        "apps/bigbrotr/src/storage/rocks/lineage.rs": "05a5e1c9e8e55b26ea518c61e6930c25ff523765",
+        "apps/bigbrotr/src/storage/rocks/lineage_census.rs": "ef325ca366792d38aee1531c7b19cde1d05c000e",
+        "apps/bigbrotr/src/storage/rocks/lineage_effects.rs": "ec66673713c57fe66bc8ee2861e0330d8f718e08",
+        "apps/bigbrotr/src/storage/rocks/lineage_inputs.rs": "ba4c2d684acdcfddb60ed5165204b70f09fbe488",
+        "apps/bigbrotr/src/storage/rocks/lineage_replay.rs": "6ae3068d1646dcf2bc2bf77e8e5482505fbf2279",
+        "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs": "6c7a4b7a236a83f78fe34d4074017a37441679a1",
+        "apps/bigbrotr/src/storage/rocks/lineage_tests.rs": "8921b720f5d5eacab8c91d59dc49a9d4e1030821",
+        "apps/bigbrotr/src/storage/rocks/manifest.rs": "e2ef42f9977eaeaf60812dd130d6b10835d7d288",
+        "apps/bigbrotr/src/storage/rocks/mod.rs": "60314e504cdd71012e1c7ae20b45e6067bbb8621",
+        "apps/bigbrotr/src/storage/rocks/producer_closing.rs": "8230b432c75059ebcfba741a8515d4df4e1e0087",
+        "apps/bigbrotr/src/storage/rocks/producer_closing_tests.rs": "902e0138c711bc6dd61427d00f143ba94dd0fc86",
+        "apps/bigbrotr/src/storage/rocks/producer_recovery.rs": "fc27a5da161259bf548f905c8cfd76cdae8b499e",
+        "apps/bigbrotr/src/storage/rocks/request_inputs.rs": "acf728a355d0603d70d9f37385d80835a08dfb86",
+        "apps/bigbrotr/src/storage/rocks/source_closure.rs": "209a8cca8cf161d74bdb38582038ec65108e3fe2",
+        "apps/bigbrotr/src/storage/rocks/store.rs": "45c31b131f5291f4e3a9327ffd601c190911a567",
+        "apps/bigbrotr/src/storage/rocks/succession.rs": "318d820d6e1977f70f4cace3d44c088eb061da45",
+        "apps/bigbrotr/tests/rocks_manifest.rs": "9aa255836feba19b9398ab2ec13e15146fa41218",
+        "apps/bigbrotr/tests/rocks_store.rs": "70623b71ea2e40182c4f67394d70a1f9fe88e805",
+        "apps/bigbrotr/tests/rocks_succession.rs": "0298d01bc3c31ee7d18128713e3694f2e702c30e"
+      },
+      "reconciled_pairs": [
+        [
+          "1f529a7",
+          "c8fa882"
+        ],
+        [
+          "8817697",
+          "d8173a0"
+        ],
+        [
+          "47e3289",
+          "8c8eedb"
+        ],
+        [
+          "8de897c",
+          "ad08e5a"
+        ],
+        [
+          "18c6fc4",
+          "b4a6926"
+        ]
+      ],
+      "census_paths": 2050,
+      "census_sha256": "e44553ff49d11eebfa5a506ea858e08ea094d88a89bc291a49e5130919752ca1",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-native.bundle",
+      "bundle_bytes": 14357581,
+      "bundle_sha256": "e831ae883f6e9f7d1aea092b8c5b4b70ea59ee43fae6e57c185e337c667f87e5",
+      "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
+    },
+    "next_build": {
+      "status": "NOT_RUN",
+      "profile": "ingest-succession-schema",
+      "preparation_script": ".research/repeatable-succession-schema-backend-prepare-20261015.py",
+      "protected_elfs": 94,
+      "required_free_bytes": 12884901888
     }
   }
 }

@@ -325,6 +325,8 @@ SELECT pg_temp.expect_error('prepare_activation_distinct_commit','23514','lineag
 SET CONSTRAINTS ALL IMMEDIATE;
 COMMIT;
 INSERT INTO fixture_snapshots VALUES('prepared3',pg_temp.snapshot());
+SELECT pg_temp.expect_error('terminal_receipt_requires_retirement','23514','lineage terminal transaction requires its retired producer',
+    'INSERT INTO control.ingest_terminal_transactions SELECT owner_resource_id,target_epoch,pg_current_xact_id(),prepared_by_resource,prepared_by_epoch,prepared_by_incarnation FROM control.ingest_successions WHERE target_epoch=3');
 SELECT pg_temp.expect_error('claim_before_activation','23514','lineage workflow claims require previously committed activation',
     'SELECT pg_temp.queue_import(''before-activation'')');
 BEGIN;
