@@ -51127,8 +51127,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "LINEAGE_COMPONENT_PASS_SQL_INTEGRATED_SCHEMA_BUILD_NOT_RUN",
-    "observed_at": "2026-10-15T11:25:35.678571+00:00",
+    "status": "SCHEMA_COMPONENT_PASS_SQL_ENGINE_NOT_RUN",
+    "observed_at": "2026-10-15T11:31:38.409476+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51162,7 +51162,7 @@
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "Root-only completed lineage build fetch/native both exited0/PID0/noOOM. All84ELFs retained; no active build/cache writer.",
+      "new_engine_build_or_runtime_resources": "Completed schema build fetch/native exited0/PID0/noOOM, all87ELFs protected; SQL engine NOT_RUN.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080
@@ -51456,12 +51456,88 @@
       "preparation_script": ".research/repeatable-succession-lineage-retry-prepare-20261015.py",
       "preparation_state": "COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": {
-      "profile": "ingest-succession-schema",
+    "schema_build": {
+      "status": "PASS_SUCCESSION_SCHEMA_COMPONENTS",
+      "source": "6699e1cc036e9fb2d1d0aeb73b8d71894754be4e",
+      "tree": "df8eecb5d993afceba395368ba8aa3b5ea752303",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-6699e1c",
+      "preparation_session": 71693,
+      "build_session": 17070,
+      "wrapper_exit": 0,
+      "started_at": "2026-10-15T11:25:57.521818+00:00",
+      "finished_at": "2026-10-15T11:27:05.451387+00:00",
+      "test_counts": {
+        "control_schema": 38,
+        "migrate_entrypoint": 3
+      },
+      "tests": 41,
+      "checks": 4,
+      "new_elfs_sha256": {
+        "control_schema": "5b94fc5d150feeb9fa4cb795893d1dd76fe6ce71465aad23608e0239aa651fa3",
+        "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+        "bigbrotr": "85d215cd62e696fad1f643b9a94535e1590175c04459e01b23d59254cdda81b4"
+      },
+      "audit": {
+        "session": 92455,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-6699e1c/audit-root/audit-v1.json",
+        "sha256": "f2693117b005873400137739f97cd5adfa3e1cc9791ac76d06f212342ce4b7e4",
+        "source_files": 1866,
+        "old_protected_elfs": 84,
+        "total_protected_elfs": 87,
+        "unchanged_containers": 1308,
+        "capture": {
+          "observed_at": "2026-10-15T11:28:12.859308+00:00",
+          "containers": 1310,
+          "sha256": "142fb861d87eb39eb706c7ddea09108a63729f4dd49b3c817d3dafb82058bf2d"
+        },
+        "reviewer_relation": "Root integrated the migration catalog and authored schema build runner; this is custody/source/raw-log validation, not an independent runtime SQL review."
+      },
+      "owned_terminal": {
+        "fetch": {
+          "id": "de8b6927e297961530fba40182b15a274cc3ab251da0ef28bd506172f2d39512",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:25:58.081948377Z",
+            "FinishedAt": "2026-10-15T11:25:58.331515441Z"
+          }
+        },
+        "native": {
+          "id": "a757e768d1ef610d37d5da0f6cd4f09b9fd000bcd91053f020e7bcf0db7a3fbc",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:25:58.630886555Z",
+            "FinishedAt": "2026-10-15T11:27:04.688889213Z"
+          }
+        }
+      },
+      "free_bytes_after": 40268746752,
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+      "preparation_script": ".research/repeatable-succession-schema-prepare-20261015.py"
+    },
+    "next_engine": {
+      "profile": "ingest-succession-sql",
       "status": "NOT_RUN",
-      "preparation_script": ".research/repeatable-succession-schema-prepare-20261015.py",
-      "protected_elfs": 84,
-      "required_free_bytes": 12884901888
+      "preparation_script": ".research/repeatable-succession-sql-prepare-20261015.py",
+      "protected_elfs": 87,
+      "required_free_bytes": 2147483648,
+      "scope": "Actual CLI migration38 and SQL-only fixture on separate retired activated/empty2 copies; original DB/native untouched"
     }
   }
 }

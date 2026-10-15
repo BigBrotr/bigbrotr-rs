@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:25:35.678571+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:31:38.409476+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,10 +14,11 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `1c7b49d`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `6699e1c`.
 Verified private push64046 is `277f305b2e63d2e1e9f30ee15238e24e945d4b89`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
-is integrated1c7b49d locally; root's catalog/runner/grant changes await this commit.
+is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
+Root's SQL harness/checkpoint remain local before engine qualification.
 Only main is remote. No merge/rebase pending. The completed codec qualification
 and fixture ref retirement are committed and privately pushed.
 
@@ -32,15 +33,26 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: exact-source `ingest-succession-schema` build,
-covering control_schema/migrate_entrypoint, literal fixture and Clippy, retaining
-its actual CLI for subsequent isolated SQL-only copies of both retired epoch2
-origins. New preparation `.research/repeatable-succession-schema-prepare-20261015.py`
-is NOT_RUN;84 protected executables and12GiB reserve. No SQL engine is active.
-Root read complete final0038/414-line fixture, existing migration catalog/schema
-and early CLI tests, build runners and PG lab utility. New grants explicitly list
-three SELECT/two INSERT relations and13 helpers; destructive fixture grants are
-separate. Registry migration is integrated; typed consumers remain unimplemented.
+Root's next bounded action: commit the SQL-only harness and run exact-source
+`experiments/ingest-succession/schema.py` on fresh copies of retained activated
+retirement9bdc86a/off and installed empty788f971/normal origins. The original
+snapshots and original database rows/catalog must match before/after. No native
+store is opened. CLI/build6699e1c is reused with unchanged compiled inputs.
+New preparation `.research/repeatable-succession-sql-prepare-20261015.py` is NOT_RUN;
+87 protectedELFs,2GiB reserve, borrowed PG remains stopped. SQL engine NOT_RUN.
+
+Schema6699e1c preparation71693/build17070 joined0 PASS,11:25:57Z–11:27:05Z:
+38control_schema+3migrate_entrypoint tests, literal fixture and Clippy. CLI85d215cd,
+schema5b94fc5d and entrypoint82ccd47d retained; audit92455 joined0 PASS binds1866
+source files,84old+3newELFs and1308 unchanged container projections. Both owned
+containers stopped0/PID0/noOOM. Auditf2693117 under
+`/runs/ingest-succession-schema-6699e1c/audit-root/audit-v1.json`. All87 retained.
+Preparation/build/audit complete, never replay their source roots.
+Root read complete final0038/414-line fixture, migration catalog/schema/early CLI
+tests, build runners and PG lab utility. New SQL harness is root-authored; no
+independent runtime review claimed. Grants list three SELECT/two INSERT relations
+and13 helpers; destructive fixture grants remain separate on disposable copies.
+Typed lifecycle consumers and native positive whole-lineage replay remain incomplete.
 
 Corrected exact30beaf3 lineage build26704 joined0 PASS,11:18:44Z–11:19:18Z:
 7lineage+8request-input+7legacy-handoff=22 Rust tests, literal fixture and Clippy.
@@ -72,8 +84,8 @@ no structural observation grants a writer.
 SQL0038 and fixture frozen originalc4daa50→integrated1c7b49d, author WT clean/idle. Independent
 AI source review closed migrationSHA5d72e598 after claim-before-activation/order,
 prelock race, unactivated lease, recovery0 and legacy1 timestamp fixes. Same flat
-checker supports terminal head2. Catalog/schema-test/scoped-grant integration is source-reviewed; compiled checks,
-actual SQL/ACL/fixture execution and typed Rust lifecycle remain NOT_RUN. Topology count derives
+checker supports terminal head2. Catalog/schema-test/scoped-grant integration is source-reviewed; compiled checks PASS above. Actual SQL/ACL/fixture execution and typed Rust
+lifecycle remain NOT_RUN. Topology count derives
 from E/E+1 shape; legacy0001 still requires initial0, so no arbitrary-offset
 engine support is claimed. No SQL branch is retired before reconciliation.
 
@@ -386,7 +398,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after corrected lineage build11:19:18Z:40,430,948,352; remeasure before allocating. Small engines
+Free bytes after schema build11:27:05Z:40,268,746,752; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive
