@@ -51127,7 +51127,7 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "SQL_MIGRATION_FAIL_SYNTAX_CORRECTED_REBUILD_NOT_RUN",
+    "status": "COMPONENTS_PASS_SQL_CORRECTED_ENGINE_PENDING",
     "observed_at": "2026-10-15T11:36:09.773394+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -51176,7 +51176,7 @@
       "retained_input_files_max": 64,
       "retained_input_bytes_max": 33554432
     },
-    "qualification": "Codec54 and lineage22 Rust tests, literal fixture and Clippy PASS; connected family and SQL0038 NOT_RUN",
+    "qualification": "Codec54/structural22/corrected schema41 Rust tests PASS; first SQL syntax FAIL retained, corrected SQL engine NOT_RUN",
     "integrated_components": {
       "fixture": {
         "original": "8ca4b2726ccc0deef50456be15e7ac68b5272af1",
@@ -51208,7 +51208,9 @@
         "fixture_sha256": "9b3fcbdc6dc8a29c3d9627647d091d971a7db70e9111514bd156a82f844fd70e",
         "source_review": "Author and independent cleanup_review source review; root complete integrated migration/fixture read. No runtime proof.",
         "status": "FIRST_ENGINE_APPLY_FAIL_SYNTAX_CORRECTED_RETRY_NOT_RUN",
-        "corrected_migration_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26"
+        "corrected_migration_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26",
+        "corrected_fixture_sha256": "a0843249eebce2992df364f6c2ea856b012ada518f4bcb00888198b806f5eb4a",
+        "fixture_correction": "Qualify context.resource in PL/pgSQL local initializer; source-review correction, not observed runtime failure."
       }
     },
     "completed_build": {
@@ -51596,12 +51598,87 @@
       "free_bytes_after": 40184954880,
       "preparation_state": "COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": {
-      "profile": "ingest-succession-schema",
-      "status": "NOT_RUN",
+    "schema_corrected_build": {
+      "status": "PASS_SUCCESSION_SCHEMA_COMPONENTS",
+      "source": "b8054b368e7f501a09f000890ca658705673d94b",
+      "tree": "057735f8e54b9eccbbd9e5a2f2998a220202a40c",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-b8054b3",
+      "preparation_session": 66676,
+      "build_session": 82773,
+      "wrapper_exit": 0,
+      "started_at": "2026-10-15T11:36:25.626077+00:00",
+      "finished_at": "2026-10-15T11:37:33.240040+00:00",
+      "test_counts": {
+        "control_schema": 38,
+        "migrate_entrypoint": 3
+      },
+      "tests": 41,
+      "checks": 4,
+      "new_elfs_sha256": {
+        "control_schema": "f24625a4681c33a3121cdfc298365b9c0df2d8a139ea6f851801d67542c4dd6b",
+        "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+        "bigbrotr": "2337c82a9036fc662b32596e4f4dbc1f676ab8ed1898eefe75412df69e004c1f"
+      },
+      "audit": {
+        "session": 70777,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-b8054b3/audit-root/audit-v1.json",
+        "sha256": "c34d2cf726271ece243f8f16b9cf29903c5a6cd0dbcc2c96adc9eda3d562774a",
+        "source_files": 1867,
+        "old_protected_elfs": 87,
+        "total_protected_elfs": 90,
+        "unchanged_containers": 1311,
+        "capture": {
+          "observed_at": "2026-10-15T11:38:06.396046+00:00",
+          "containers": 1313,
+          "sha256": "bf8fa87322a7f48b556aa0c3b8b8e023f7019edb6f9ed42909685d0df70611db"
+        },
+        "reviewer_relation": "Root integrated the migration catalog and authored schema build runner; this is custody/source/raw-log validation, not an independent runtime SQL review."
+      },
+      "owned_terminal": {
+        "fetch": {
+          "id": "dbb23ce9decdbc62a35024b8c7940179ec6ef100ecf96134f93c9655e1d36c87",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:36:26.176960083Z",
+            "FinishedAt": "2026-10-15T11:36:26.430939406Z"
+          }
+        },
+        "native": {
+          "id": "c09b5e1a561f79556032d6f4585425490c30d62b5624714785304209859f3885",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:36:26.779433416Z",
+            "FinishedAt": "2026-10-15T11:37:32.488009811Z"
+          }
+        }
+      },
+      "free_bytes_after": 40025485312,
       "preparation_script": ".research/repeatable-succession-schema-retry-prepare-20261015.py",
-      "protected_elfs": 87,
-      "required_free_bytes": 12884901888
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+    },
+    "next_engine": {
+      "profile": "ingest-succession-sql",
+      "status": "NOT_RUN",
+      "preparation_script": ".research/repeatable-succession-sql-retry-prepare-20261015.py",
+      "protected_elfs": 90,
+      "required_free_bytes": 2147483648
     }
   }
 }

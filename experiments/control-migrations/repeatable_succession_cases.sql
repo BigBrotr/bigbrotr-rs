@@ -108,7 +108,7 @@ END $$;
 -- not production codec/closure helpers. The expected recipe is cross-checked
 -- against the retained source digest by the production boundary, not copied from it.
 CREATE FUNCTION pg_temp.prepare_next() RETURNS void LANGUAGE plpgsql AS $$
-DECLARE resource bytea:=(SELECT resource FROM fixture_context); previous bytea; target bytea; parent bytea; receipt bytea;
+DECLARE resource bytea:=(SELECT context.resource FROM fixture_context context); previous bytea; target bytea; parent bytea; receipt bytea;
         legacy control.initial_ingest_successions%ROWTYPE; old control.producer_epochs%ROWTYPE;
         source control.source_streams%ROWTYPE; c control.owner_epochs%ROWTYPE; d control.datasets%ROWTYPE;
         incarnation bytea:=uuid_send(gen_random_uuid()); role_id bytea:=uuid_send(gen_random_uuid()); domain_id bytea;

@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "PORTABLE_COMPONENTS_PASS_CONNECTED_FAMILY_INCOMPLETE",
+      "status": "COMPONENTS_PASS_SQL_CORRECTED_ENGINE_PENDING",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Original SQL migration failed before fixture; grouped IF CASE expressions locally. Corrected CLI rebuild then fresh SQL retry; old failed clone full rows/catalog to be independently observed. Native positive replay WIP.",
+      "ongoing": "Corrected CLI/schema b8054b3 build/audit PASS. Next fresh SQL-only retry verifies old failed clone rollback then both origin shapes. Native positive source18c6fc4 frozen; root test review/build pending. Typed lifecycle/writer/installed journeys incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -23493,6 +23493,105 @@
           "Failed clone post-migration full state was not captured; rollback remains unverified until read-only followup.",
           "Only CLI plan and failed apply ran; SQL fixture/empty clone NOT_RUN.",
           "No native store was opened; SQL source failure at IF CASE expression retained."
+        ]
+      },
+      "schema_corrected_component": {
+        "status": "PASS_SUCCESSION_SCHEMA_COMPONENTS",
+        "source": "b8054b368e7f501a09f000890ca658705673d94b",
+        "tree": "057735f8e54b9eccbbd9e5a2f2998a220202a40c",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-b8054b3",
+        "preparation_session": 66676,
+        "build_session": 82773,
+        "wrapper_exit": 0,
+        "started_at": "2026-10-15T11:36:25.626077+00:00",
+        "finished_at": "2026-10-15T11:37:33.240040+00:00",
+        "test_counts": {
+          "control_schema": 38,
+          "migrate_entrypoint": 3
+        },
+        "tests": 41,
+        "checks": 4,
+        "new_elfs_sha256": {
+          "control_schema": "f24625a4681c33a3121cdfc298365b9c0df2d8a139ea6f851801d67542c4dd6b",
+          "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+          "bigbrotr": "2337c82a9036fc662b32596e4f4dbc1f676ab8ed1898eefe75412df69e004c1f"
+        },
+        "retained_sha256": {
+          "resources.json": "d35992a00454a14ef6b22521db542f0185f4613f3ac1b7b689f6b5f34209105d",
+          "preflight.json": "8f9fe3cded4626d9d3c1db148645b801f271a3840130bd023f2c858478ae895e",
+          "root-preparation.json": "599e48ee61c41d568964bf510054cb3ee9e69798b96c2a1b057eb2f923ed35dd",
+          "root-preparation-containers.json": "d78ffecd56418daee01b8992b6a717470ec2208ddb3dce39e6f32f3e3058e393",
+          "fetch-terminal.json": "4825719323cbf4a93c21b65a4503b70f05509381cb8e8a848cfc83a888aacf3f",
+          "native-terminal.json": "f1629082fb6b59834af90d7e8070bbef8662ab499654fd7163f7803337c265e4",
+          "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "native.log": "c128c6c61b24361ed620d6c8917da8a5b4cf585d6034a823b88e7c6c7f4b5a2e",
+          "out/build/source-manifest.json": "6766f150971a1237ee467afca536335f34bd65704f1e8cdf530804cb5306ae84",
+          "out/build/source.tar": "797ab4772b818b8df307e9a5efcf6c8e0d0a3f85ce9bb5d1d5c57d508804b7cb",
+          "out/build-checks/result.json": "b2f59132451179b6a8dc12de199eee2ad61a523d42d8c05542f71f4cc9577d65",
+          "out/artifacts/component-result.json": "dbe2ae8ab68b78e07fa70ed91841c05afcfd62a0af3b4b208f854c91e3ba4953",
+          "out/artifacts/build-result.json": "f2f9dac3f7de78769cecf813c936bea89ee921459334fe6798c92c45980b5f77",
+          "out/qualification.json": "c7fab2a36e489e5034f16c72962fe970ce119f4c3bb2b055679593782ee76512"
+        },
+        "raw_logs_sha256": {
+          "independent-fixture": "35228f3856d4b548923e3c308d67f9157f58dccd4b22184e9fd32b3d1c138f1a",
+          "control_schema": "858ebb52a967e4b357b58709d30079ac13900e4896ec9c8e05e139b21eec484a",
+          "migrate_entrypoint": "043dc910dc20366bec3d2d09443bacd833aba65ac7a01d754d70b120377b596c",
+          "clippy": "5a51839e956f8bcb47ac9081ef25076a8c6f5642e4ca8b933948f03f8dff431b"
+        },
+        "audit": {
+          "session": 70777,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-b8054b3/audit-root/audit-v1.json",
+          "sha256": "c34d2cf726271ece243f8f16b9cf29903c5a6cd0dbcc2c96adc9eda3d562774a",
+          "source_files": 1867,
+          "old_protected_elfs": 87,
+          "total_protected_elfs": 90,
+          "unchanged_containers": 1311,
+          "capture": {
+            "observed_at": "2026-10-15T11:38:06.396046+00:00",
+            "containers": 1313,
+            "sha256": "bf8fa87322a7f48b556aa0c3b8b8e023f7019edb6f9ed42909685d0df70611db"
+          },
+          "reviewer_relation": "Root integrated the migration catalog and authored schema build runner; this is custody/source/raw-log validation, not an independent runtime SQL review."
+        },
+        "owned_terminal": {
+          "fetch": {
+            "id": "dbb23ce9decdbc62a35024b8c7940179ec6ef100ecf96134f93c9655e1d36c87",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:36:26.176960083Z",
+              "FinishedAt": "2026-10-15T11:36:26.430939406Z"
+            }
+          },
+          "native": {
+            "id": "c09b5e1a561f79556032d6f4585425490c30d62b5624714785304209859f3885",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:36:26.779433416Z",
+              "FinishedAt": "2026-10-15T11:37:32.488009811Z"
+            }
+          }
+        },
+        "free_bytes_after": 40025485312,
+        "limits": [
+          "Corrected unpublished SQL0038 compiled into actual CLI; corrected SQL engine NOT_RUN.",
+          "Positive native and connected/installed succession remain unqualified."
         ]
       }
     }
