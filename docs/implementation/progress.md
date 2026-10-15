@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T15:27:49.376643+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T15:32:40.447634+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates current work. Detailed outcomes and prior failures belong
@@ -14,14 +14,13 @@ of redundant branch refs after reconciliation. Preserve all worktrees, ignored a
 external evidence, datasets, original/failure fixtures and unrelated workloads.
 Public publication/deployment and Cargo promotion remain separately authorized.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD8cd739449b80cc9f4a400ab75457b1fa450a5008
-integrates reader688d647. Previousad9ea95 remains the independently verified remote
-main (a12d6d); root is committing the harness/docs before the next verified push.
-Root changes: live_faults.py, default-preserving commit_number in transition_faults.py,
-README and this evidence/checkpoint update. No merge/rebase. Native/PG recovery
-sources remain in separate worktrees, both based on ad9ea95. Their branches have
-an active purpose; retire the fault-reader ref after connected qualification.
-All earlier original worktrees/artifacts remain preserved.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEADe3806a9f48cdeb4b5c7350f4e4f44ae18bb25819
+is independently verified remote main (push53428joined0, remote e56bc0).
+Reader688d647→8cd7394 and harness are integrated/qualified below. Root is committing
+the connected result and reader-ref retirement. No merge/rebase or product edit
+in canonical. Native/PG recovery source remains in two isolated worktrees based
+on ad9ea95; their branches retain a concrete active purpose. Earlier original
+worktrees and the completed fault-reader worktree are detached and preserved.
 
 ## Active task and exact next action
 
@@ -32,20 +31,37 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: prepare the fresh activation/outcome COMMIT-loss root
-and run four clones/eight processes with the committed harness and unchanged
-qualified006fe3d binaries, then independent raw replay and read-only custody audit. Source-
-derived ordinals12activation/16dictionary outcome are NOT wire measurements yet.
-Reader688d647→8cd7394 and root driver are source-reviewed. Pure8contexts/
-173snapshots/144controls/170boundfiles PASS;16invoke+14custody+3routing+
-4file+3malformed composition checks PASS with process/network blocked.
-Manifestc861b140 binds378files118,482,123bytes+2original links, root03e4b6
-hash-verified. Generator shares Model: protocol-only, not product qualification.
-The initial root hash-check used a wrong replay subdirectory; corrected locator
-passes without changing artifacts. All original captures/failures remain retained.
-Fresh empty completion is expected only before activation; the other three fresh
-history processes must refuse their nonterminal activated heads. This separately
-preserves real failure seeds for the upcoming positive recovery owner.
+Root's next bounded action: review/integrate the isolated native/PG activated-family
+recovery owner and qualify its affected components plus concrete finite consumer.
+Use the preserved actual live and COMMIT-loss states below; no completed root may
+be replayed. Current predecessor history still refuses activated nonterminal>=3.
+
+Live-faultse3806a9 PASS: four activated-terminal2 clones/eight processes, before and
+after activationCOMMIT12 and first dictionary outcomeCOMMIT16 response loss.
+Preparation28915/engine47774/replay17910/custody11203 joined0;15:28:35Z–15:29:20Z.
+Wire vectors(seen,forwarded,server-complete,client-complete,faults):12/11/11/11/1,
+12/12/12/11/1,16/15/15/15/1,16/16/16/15/1. These ordinals are now measured.
+Before-activation loss leaves prepared3 native73/seq89/input6; fresh empty3 retires
+at1792078124628531 and sequence90. After-activation leaves SQL activation but no
+locally delivered writer. Both outcome losses retain dictionary original79/97/7;
+only after-complete retains the SQL outcome copy. All three activated fresh
+history readers explicitly refuse Control(InvalidMetadata), with exact originals
+unchanged and no repair/adoption. Replacement Control16 excludes failed15.
+Independent rawe3e44118 checks173snapshots×75tables,144controls,170boundfiles.
+Custody817e47b1 binds1900sourcefiles/122protectedELFs/1348unchanged prior projections.
+Both original full SQL/catalog/native physical/input censuses preserved. Every
+native owner closes and drivers join before fresh reopen. Client143/PG0 stopped/
+PID0/noOOM; cleanup/unrelated/missing/unexpected lists empty. Unchanged006fe3d
+binaries reused; no new compilation/test campaign. Positive recovery remains owed.
+
+Reader pure8contexts/173snapshots/144controls/170boundfiles PASS;16invoke+
+14custody+3routing+4file+3malformed composition checks PASS with process/network
+blocked. Manifestc861b140 binds378files118,482,123bytes+2original links, root03e4b6
+hash-verified. Generator shares Model: protocol-only; actual raw replay above is
+separate. Initial root summary/hash inspections used two wrong field/locator names;
+corrected read-only inspections passed without modifying captures. Original
+failures elsewhere remain preserved. Root read complete586-line reader/126-line
+driver, shared invoke/custody owners and exact pure helper bodies.
 
 Native and PG agents now implement the reviewed distinct activated-family recovery
 component in `.research/successor-native-recovery-20261015` and
@@ -150,9 +166,10 @@ reader780lines and harness410lines. Reader pure9contexts/242snapshots/121control
 Actual independent raw replay above is separate. All143artificial artifacts remain.
 
 Root alone runs builds/engines/shared cache. Prior qualified native/PG/probe/oracle
-worktrees remain detached and unchanged. Three new active worktrees retain the
-completed fault reader and native/PG recovery source;113registered worktrees total. No
-build/engine is active at the fresh97aa7c read-only observation.
+worktrees remain detached and unchanged. Two active worktrees retain native/PG
+recovery source; the completed fault reader worktree is detached.113registered
+worktrees remain. Build/engine/replay/audit
+handles above are joined; independent AI source review continues.
 
 Source review: root complete new native writer363/frontier281/tests974, PG
 activation400/dispatch173/tests199, all affected shared native/PG owners/callers,
@@ -226,11 +243,12 @@ stay open. Follow existing task dependencies, not a new parallel plan.
 
 ## Branches, resources and preservation
 
-101local/51remote redundant refs retired;57worktrees detached with original
+102local/51remote redundant refs retired;58worktrees detached with original
 commits and full censuses unchanged. All113registered worktrees remain, including
-three current source branches. Only main remains remotely at the latest verification;
+two current source branches. Only main remains remotely at the latest verification;
 prior retirement totals refer to completed branches and exclude current work.
-Writer component retirement68974
+Fault-reader retirement1396 joined0, bundleb3da1001 preserves original688d647,
+full worktree census and all378ignored artifacts+2links. Writer retirement68974
 and live qualification retirement49863 joined0; bundlesfedb979e/cfde0201 preserve
 the four original commits, complete worktrees and all ignored reader artifacts.
 Original closures remain under `refs/archive/*` and verified bundles in
@@ -242,12 +260,14 @@ Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec:
 `/runs/relay-source-recheck-e06f580/pg`, owner5e69b0f060b1607c25230d1dbd3e5608;
 latest relevant observation stopped0/PID0/noOOM, PG16.15/1.5GiB/2CPU/64MiBshm.
 Recheck ownership/state before starting. Root prior build/preparation/audit/push handles
-above are joined. Native/PG source work and read-only independent review continue; no engine is
-active at that observation. A historical PID/receipt is not fresh ownership proof. Preserve unrelated services and external host activity.
+above are joined. Native/PG source work and read-only independent review continue.
+Latest engine, replay and custody handles are joined, owned containers stopped.
+A historical PID/receipt is not fresh ownership proof. Preserve unrelated services
+and external host activity.
 
-Free space at fresh97aa7c observation:31,958,519,808bytes;1349containers,
-borrowed PG and prior client exited/PID0/noOOM; six unrelated running services
-preserved. Remeasure before allocation.
+Free space aftere3806a9 engine:31,638,708,224bytes;1350containers at custody
+audit. Borrowed PG and new client exited/PID0/noOOM; prior1348nonborrowed
+projections unchanged. Remeasure before allocation.
 Reserve12GiB for builds and2GiB for small engines.64GiB+577MiB exports remain
 unavailable; never lower reserves. Owned mutable cache
 `network-1154757/out/build/{target,cargo-home}` requires exclusive

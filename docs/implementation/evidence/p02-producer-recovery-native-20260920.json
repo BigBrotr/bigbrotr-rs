@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "CONNECTED_CONTINUOUS_WRITER_FIRST_WAVE_PASS_ACTIVATED_RECOVERY_PENDING",
+      "status": "CONNECTED_LIVE_AND_COMMIT_LOSS_PASS_ACTIVATED_RECOVERY_IN_PROGRESS",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Root finishes independent live COMMIT-loss reader/source qualification and exact engine using unchanged006fe3d binaries. Native/PG agents implement separate bounded activated-family recovery components in isolated worktrees; root reviews and integrates before exact component qualification. Source/workflow/retirement and installed qualification remain later requirements.",
+      "ongoing": "Review and integrate the isolated native/PG activated-successor recovery components, qualify affected components and a concrete finite recovery consumer against preserved actual live/fault states. No adoption, no missing-copy write before native ordered prefix acceptance; unresolved staged/reserved tails prevent completion. Source/workflow/retirement and installed obligations remain open.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -27233,7 +27233,7 @@
         "scope": "Four fresh activated-terminal2 clones, before/after activationC12 and first dictionary outcomeC16 COMMIT response loss, then fresh empty retirement or explicit activated-history refusal. Ordinals remain source-derived until wire qualification.",
         "binary_source": "006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063",
         "preparation_script": ".research/repeatable-succession-live-faults-engine-prepare-20261015.py",
-        "preparation_status": "NOT_RUN",
+        "preparation_status": "COMPLETE_DO_NOT_REPLAY; see continuous_live_fault_connected for actual run",
         "reader_original": "688d647e466ff83e82d45644dce8059f2527d891",
         "reader_integrated": "8cd739449b80cc9f4a400ab75457b1fa450a5008",
         "reader_sha256": "a9c9f967dbf37e4014a0224f5aab4a0cae51ae54074968c9de4d4c7d3479bc03",
@@ -27278,7 +27278,531 @@
           "links": 2,
           "root_verification": "03e4b6 joined0; initial061596 locator typo retained in tool record, no fixture mutation"
         },
-        "root_review": "Complete586-line reader,137-line driver, default-preserving invoke argument, exact custody/composition helper source; no blocker. Runtime still NOT_RUN."
+        "root_review": "Complete586-line reader,126-line driver, default-preserving invoke argument, exact custody/composition helper source; no blocker. Runtime still NOT_RUN."
+      },
+      "continuous_live_fault_connected": {
+        "status": "PASS_SUCCESSOR_LIVE_COMMIT_LOSS",
+        "source": "e3806a9f48cdeb4b5c7350f4e4f44ae18bb25819",
+        "tree": "52f387610c4c4f1fd62952d524f737626b998bfc",
+        "owner": "1d25e8dbff2141300432875866555117",
+        "label": "org.bigbrotr.succession-live-fault",
+        "client": "05c859a84ae1ea4d2317b4c84f39e057b88a166275f5f15e9e26a099714aa0d3",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "started_at": "2026-10-15T15:28:35.899486+00:00",
+        "finished_at": "2026-10-15T15:29:20.226815+00:00",
+        "free_bytes_after": 31638708224,
+        "not_run": [
+          "Positive activated-family recovery and outcome repair",
+          "Same-session reuse after failure, cancellation/expiry and process kill",
+          "Activated retirement, installed repeated lifetimes, capacity/RSS qualification"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-faults-engine-e3806a9",
+        "preparation": {
+          "session": 28915,
+          "exit_code": 0,
+          "observed_at": "2026-10-15T15:28:20.591500+00:00",
+          "containers": 1349,
+          "containers_sha256": "941331eb5363a713dfcda7e04c7bc6e13535bb74e2dca0e48d0bd1793cb3951c",
+          "free_bytes": 31833509888
+        },
+        "engine": {
+          "session": 47774,
+          "exit_code": 0
+        },
+        "binary_source": "006fe3d9e6f5cd4cef3eca7b4ea2fb08ca4d8063",
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-faults-engine-e3806a9/live-faults/result.json",
+          "sha256": "424255457b839d34bfa2db42a70ca81cfcb081050bc6f4de457f648fda17ffd1"
+        },
+        "replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-faults-engine-e3806a9/root-independent-replay.json",
+          "sha256": "e3e441189562e0e5b1d9bca3af3e844382078a236786ef579ec4d3063de371dd",
+          "status": "PASS_SUCCESSOR_LIVE_COMMIT_LOSS_REPLAY",
+          "session": 17910,
+          "exit_code": 0,
+          "snapshots": 173,
+          "tables": 75,
+          "controls": 144,
+          "bound_files": 170
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-live-faults-engine-e3806a9/audit-root/audit-v1.json",
+          "sha256": "817e47b11dd5307bf6d6c21d7c282253a3490c32307d887e6de0dcb961134b97",
+          "status": "PASS_READ_ONLY_LIVE_COMMIT_LOSS_CUSTODY",
+          "session": 11203,
+          "exit_code": 0,
+          "source_files": 1900,
+          "protected_elfs": 122,
+          "unchanged_nonborrowed_containers": 1348
+        },
+        "cases": [
+          {
+            "name": "activation-before-loss",
+            "database": "bb_live_fault_e3806a9_activation_before",
+            "oracle": {
+              "status": "PASS",
+              "case": "activation-before-loss",
+              "database": "bb_live_fault_e3806a9_activation_before",
+              "snapshots": 29,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 89,
+              "inputs": 6,
+              "control_epoch": 15,
+              "refreshes": 9,
+              "caller_unknown": true,
+              "sql_activation": false,
+              "local_writer_delivered": false,
+              "sql_outcome": false,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 19,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "caller-unknown-relabelled",
+                "local-delivery-confused-with-durability",
+                "writer-not-closed",
+                "boolean-as-integer",
+                "proxy-port-unbound",
+                "proxy-forced-stop",
+                "proxy-stdout-unbound",
+                "coherent-wrong-COMMIT-vector",
+                "rehashed-parent-receipt",
+                "activation-invented-before-forward"
+              ]
+            },
+            "wire": {
+              "mode": "before-forward",
+              "commit_number": 12,
+              "commits_seen": 12,
+              "commits_forwarded": 11,
+              "server_commit_complete": 11,
+              "client_commit_complete": 11,
+              "faults": 1
+            }
+          },
+          {
+            "name": "activation-before-fresh",
+            "database": "bb_live_fault_e3806a9_activation_before",
+            "oracle": {
+              "status": "PASS",
+              "case": "activation-before-fresh",
+              "database": "bb_live_fault_e3806a9_activation_before",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 90,
+              "inputs": 6,
+              "control_epoch": 16,
+              "refreshes": 9,
+              "caller_unknown": false,
+              "sql_activation": false,
+              "local_writer_delivered": false,
+              "sql_outcome": false,
+              "repair": false,
+              "empty_retired": true,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 13,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "fence-and-new-claim-split-transaction",
+                "coherent-reuse-of-excluded-physical-backend",
+                "empty-retirement-native-put-omitted",
+                "empty-retirement-activation-claim"
+              ]
+            },
+            "wire": null
+          },
+          {
+            "name": "activation-after-loss",
+            "database": "bb_live_fault_e3806a9_activation_after",
+            "oracle": {
+              "status": "PASS",
+              "case": "activation-after-loss",
+              "database": "bb_live_fault_e3806a9_activation_after",
+              "snapshots": 29,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 89,
+              "inputs": 6,
+              "control_epoch": 15,
+              "refreshes": 9,
+              "caller_unknown": true,
+              "sql_activation": true,
+              "local_writer_delivered": false,
+              "sql_outcome": false,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 20,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "caller-unknown-relabelled",
+                "local-delivery-confused-with-durability",
+                "writer-not-closed",
+                "boolean-as-integer",
+                "proxy-port-unbound",
+                "proxy-forced-stop",
+                "proxy-stdout-unbound",
+                "coherent-wrong-COMMIT-vector",
+                "rehashed-parent-receipt",
+                "activation-missing-in-complete-tail",
+                "activation-reuses-preparation-transaction"
+              ]
+            },
+            "wire": {
+              "mode": "after-complete",
+              "commit_number": 12,
+              "commits_seen": 12,
+              "commits_forwarded": 12,
+              "server_commit_complete": 12,
+              "client_commit_complete": 11,
+              "faults": 1
+            }
+          },
+          {
+            "name": "activation-after-fresh",
+            "database": "bb_live_fault_e3806a9_activation_after",
+            "oracle": {
+              "status": "PASS",
+              "case": "activation-after-fresh",
+              "database": "bb_live_fault_e3806a9_activation_after",
+              "snapshots": 7,
+              "tables": 75,
+              "native_rows": 73,
+              "sequence": 89,
+              "inputs": 6,
+              "control_epoch": 16,
+              "refreshes": 0,
+              "caller_unknown": false,
+              "sql_activation": true,
+              "local_writer_delivered": false,
+              "sql_outcome": false,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 15,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "fence-and-new-claim-split-transaction",
+                "coherent-reuse-of-excluded-physical-backend",
+                "inspect-refusal-relabelled-success",
+                "unsupported-repair-claim",
+                "false-clean-release-after-refusal",
+                "false-native-closing-after-inspect-refusal"
+              ]
+            },
+            "wire": null
+          },
+          {
+            "name": "outcome-before-loss",
+            "database": "bb_live_fault_e3806a9_outcome_before",
+            "oracle": {
+              "status": "PASS",
+              "case": "outcome-before-loss",
+              "database": "bb_live_fault_e3806a9_outcome_before",
+              "snapshots": 33,
+              "tables": 75,
+              "native_rows": 79,
+              "sequence": 97,
+              "inputs": 7,
+              "control_epoch": 15,
+              "refreshes": 10,
+              "caller_unknown": true,
+              "sql_activation": true,
+              "local_writer_delivered": true,
+              "sql_outcome": false,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 23,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "caller-unknown-relabelled",
+                "local-delivery-confused-with-durability",
+                "writer-not-closed",
+                "boolean-as-integer",
+                "proxy-port-unbound",
+                "proxy-forced-stop",
+                "proxy-stdout-unbound",
+                "coherent-wrong-COMMIT-vector",
+                "rehashed-parent-receipt",
+                "activation-missing-in-complete-tail",
+                "activation-reuses-preparation-transaction",
+                "dictionary-input-changed",
+                "reservation-reuses-activation-xid",
+                "reservation-lost-after-native-dispatch"
+              ]
+            },
+            "wire": {
+              "mode": "before-forward",
+              "commit_number": 16,
+              "commits_seen": 16,
+              "commits_forwarded": 15,
+              "server_commit_complete": 15,
+              "client_commit_complete": 15,
+              "faults": 1
+            }
+          },
+          {
+            "name": "outcome-before-fresh",
+            "database": "bb_live_fault_e3806a9_outcome_before",
+            "oracle": {
+              "status": "PASS",
+              "case": "outcome-before-fresh",
+              "database": "bb_live_fault_e3806a9_outcome_before",
+              "snapshots": 7,
+              "tables": 75,
+              "native_rows": 79,
+              "sequence": 97,
+              "inputs": 7,
+              "control_epoch": 16,
+              "refreshes": 0,
+              "caller_unknown": false,
+              "sql_activation": true,
+              "local_writer_delivered": false,
+              "sql_outcome": false,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 15,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "fence-and-new-claim-split-transaction",
+                "coherent-reuse-of-excluded-physical-backend",
+                "inspect-refusal-relabelled-success",
+                "unsupported-repair-claim",
+                "false-clean-release-after-refusal",
+                "false-native-closing-after-inspect-refusal"
+              ]
+            },
+            "wire": null
+          },
+          {
+            "name": "outcome-after-loss",
+            "database": "bb_live_fault_e3806a9_outcome_after",
+            "oracle": {
+              "status": "PASS",
+              "case": "outcome-after-loss",
+              "database": "bb_live_fault_e3806a9_outcome_after",
+              "snapshots": 33,
+              "tables": 75,
+              "native_rows": 79,
+              "sequence": 97,
+              "inputs": 7,
+              "control_epoch": 15,
+              "refreshes": 10,
+              "caller_unknown": true,
+              "sql_activation": true,
+              "local_writer_delivered": true,
+              "sql_outcome": true,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 24,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "caller-unknown-relabelled",
+                "local-delivery-confused-with-durability",
+                "writer-not-closed",
+                "boolean-as-integer",
+                "proxy-port-unbound",
+                "proxy-forced-stop",
+                "proxy-stdout-unbound",
+                "coherent-wrong-COMMIT-vector",
+                "rehashed-parent-receipt",
+                "activation-missing-in-complete-tail",
+                "activation-reuses-preparation-transaction",
+                "dictionary-input-changed",
+                "reservation-reuses-activation-xid",
+                "reservation-lost-after-native-dispatch",
+                "coherent-outcome-copy-byte-conflict"
+              ]
+            },
+            "wire": {
+              "mode": "after-complete",
+              "commit_number": 16,
+              "commits_seen": 16,
+              "commits_forwarded": 16,
+              "server_commit_complete": 16,
+              "client_commit_complete": 15,
+              "faults": 1
+            }
+          },
+          {
+            "name": "outcome-after-fresh",
+            "database": "bb_live_fault_e3806a9_outcome_after",
+            "oracle": {
+              "status": "PASS",
+              "case": "outcome-after-fresh",
+              "database": "bb_live_fault_e3806a9_outcome_after",
+              "snapshots": 7,
+              "tables": 75,
+              "native_rows": 79,
+              "sequence": 97,
+              "inputs": 7,
+              "control_epoch": 16,
+              "refreshes": 0,
+              "caller_unknown": false,
+              "sql_activation": true,
+              "local_writer_delivered": false,
+              "sql_outcome": true,
+              "repair": false,
+              "empty_retired": false,
+              "scope": "Finite COMMIT loss and fresh empty retirement or explicit activated-history refusal; no positive activated recovery, installed or RSS claim"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 15,
+              "rejected": [
+                "historical-row-xmin-rehashed",
+                "missing-control-driver-join",
+                "observer-driver-failure",
+                "wrong-control-driver-result",
+                "backend-still-present",
+                "physical-database-relabel",
+                "input-digest-rewritten",
+                "coherent-native-sequence-extra-put",
+                "unexpected-event",
+                "fence-and-new-claim-split-transaction",
+                "coherent-reuse-of-excluded-physical-backend",
+                "inspect-refusal-relabelled-success",
+                "unsupported-repair-claim",
+                "false-clean-release-after-refusal",
+                "false-native-closing-after-inspect-refusal"
+              ]
+            },
+            "wire": null
+          }
+        ],
+        "original_preservation": {
+          "activated": {
+            "rows_unchanged": true,
+            "catalog_unchanged": true,
+            "native_unchanged": true,
+            "inputs_unchanged": true,
+            "physical_unchanged": true
+          },
+          "empty": {
+            "rows_unchanged": true,
+            "catalog_unchanged": true,
+            "native_unchanged": true,
+            "inputs_unchanged": true,
+            "physical_unchanged": true
+          }
+        },
+        "terminal": "All eight native owners closed and Control/observer joined; exact backend absence before fresh process. Client143/PG0 stopped/PID0/noOOM. Cleanup/unrelated/missing/unexpected lists empty.",
+        "scope": "Actual before/after activationC12 and first dictionary outcomeC16 response loss. Four fresh activated-terminal2 copies/eight processes. Positive new Control excludes failed predecessors. Before activation permits fresh empty retirement; three activated heads preserve state and explicitly refuse predecessor-only history. Native originals remain even without SQL outcome copy. This is not positive activated recovery or repair.",
+        "executor_state": "COMPLETE_DO_NOT_REPLAY"
+      },
+      "qualified_live_fault_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T15:30:56.540486+00:00",
+        "records": [
+          {
+            "branch": "qualification/successor-live-fault-oracle",
+            "original": "688d647e466ff83e82d45644dce8059f2527d891",
+            "integrated": "8cd739449b80cc9f4a400ab75457b1fa450a5008",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-live-fault-oracle-20261015",
+            "archive_ref": "refs/archive/qualified-successor-live-fault-20261015/qualification/successor-live-fault-oracle",
+            "blobs": {
+              "experiments/ingest-succession/live_fault_replay.py": "c883bb2bfce9f707947571a796ada882b11eaf3a"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2524,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-fault-oracle-before-census.json",
+            "census_sha256": "6172f01b966c98679c249d8fff1de368289b879e23d2d1fd0422387e212ba9df"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-fault-qualification.bundle",
+        "bundle_bytes": 15445052,
+        "bundle_sha256": "b3da100160d3a7dfbb320e047bb860d1d69737aa1c23cdcdc093a51ec51c2046",
+        "replay_sha256": "e3e441189562e0e5b1d9bca3af3e844382078a236786ef579ec4d3063de371dd",
+        "audit_sha256": "817e47b11dd5307bf6d6c21d7c282253a3490c32307d887e6de0dcb961134b97",
+        "scope": "One local ref only; all worktrees, ignored/external evidence and datasets preserved",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "session": 1396,
+        "exit_code": 0,
+        "report_path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-fault-qualification.json",
+        "report_sha256": "c6b7b60b6f7bd8c80c20c336377280b6f24d0dda53b97e98dc8437822b71b515"
       }
     }
   }
