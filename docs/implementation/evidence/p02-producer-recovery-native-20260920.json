@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "SUCCESSOR_RETIREMENT_FIRST_WAVE_PASS_FAULTS_NOT_RUN",
+      "status": "SUCCESSOR_RETIREMENT_FAULTS_PASS_INSTALLED_NOT_RUN",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Commit clean exact source, run ingest-succession-transition-probe CLI/probe compilation and Clippy with zero new Rust tests; bind unchanged bf2 product122tests. Audit137old+2newELFs, then exact same source four-clone/six-process engine, independent raw replay and custody. Root alone owns compiler/cache/engine.",
+      "ongoing": "Implement the first installed repeatable successor consumer: serve --activate-successor from genuinely terminal2/n, full existing history proof, fresh preparation/activation and LiveSuccessorWriter ownership through HTTP/Sync and joined SIGTERM shutdown. Read complete installed owner/dispatch/contracts before adapting them; retain explicit refusal of unresolved tails and do not adopt an old writer. No new format or implicit workflow cleanup.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -30512,7 +30512,7 @@
         "wrapper": "71934 joined0"
       },
       "successor_retirement_fault_work": {
-        "status": "INTEGRATED_SOURCE_RUNTIME_NOT_RUN",
+        "status": "QUALIFIED_FINITE_FAULTS",
         "observed_at": "2026-10-15T18:32:05.568477+00:00",
         "observed_head": "357e435180a694aa878f5c440c5a9f5a7715791e",
         "components": [
@@ -30625,8 +30625,382 @@
         "source_findings": "Raw unknown process outcome and absence receipt binding corrected; build audit prior manifest hash bound; engine prepare restricted to exact same build revision. Independent AI reviews are source-only.",
         "checks": "Probe scoped rustfmt/static PASS; harness27pure PASS; reader6artificial contexts168snapshots171controls plus4positive checks PASS. Shared Model generator is protocol only. Root491file/source bindings PASS. Raw file-binding pure report separately bound.",
         "preserved_failures": "Harness ignored check1 SyntaxError; reader artificial identity collision and manifest SyntaxError retained. Raw capture generator initially omitted new absence receipt; failed generator/log retained. No product/runtime failure implied or relabeled.",
-        "next": "Commit clean exact source, run ingest-succession-transition-probe CLI/probe compilation and Clippy with zero new Rust tests; bind unchanged bf2 product122tests. Audit137old+2newELFs, then exact same source four-clone/six-process engine, independent raw replay and custody. Root alone owns compiler/cache/engine.",
-        "remaining": "All actual new build/engine checks NOT_RUN at this checkpoint. Installed repeated lifetimes, other faults/tails/capacity/RSS, import closure, ACK/GC, Archive and M1-M5 remain incomplete."
+        "next": "Implement the first installed repeatable successor consumer: serve --activate-successor from genuinely terminal2/n, full existing history proof, fresh preparation/activation and LiveSuccessorWriter ownership through HTTP/Sync and joined SIGTERM shutdown. Read complete installed owner/dispatch/contracts before adapting them; retain explicit refusal of unresolved tails and do not adopt an old writer. No new format or implicit workflow cleanup.",
+        "remaining": "Installed repeated lifetimes, native tails/corruption/capacity/RSS, other faults, import logical closure, ACK/GC, Archive restart/backup/export and selected M1-M5 remain incomplete.",
+        "qualified_source": "58b79a49e59be77be554fff0be826dbe8ee20903"
+      },
+      "successor_retirement_fault_build": {
+        "status": "PASS",
+        "source": "58b79a49e59be77be554fff0be826dbe8ee20903",
+        "tree": "dc42024d543ca236a561e21876080508d2a34d04",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-58b79a4",
+        "audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-58b79a4/audit-root/audit-v1.json",
+          "sha256": "401d2681ef681a962f2e620d1437b2fbcb02b8949f201b4ed89c55bc9eafc133",
+          "bytes": 26178
+        },
+        "started_at": "2026-10-15T18:32:34.612138+00:00",
+        "finished_at": "2026-10-15T18:34:22.112953+00:00",
+        "owner": "4acd980016d38cc0186c774fd9c40688",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "eef4bb4d49bbc4be36f73be87caae9e3a5bbc01cfe32d4a8a98022d7f454fad0"
+          },
+          {
+            "name": "native",
+            "id": "180d51bd04c4a11768f923cd35d2cdfb44a2e0c13a460313bc01fe00ff454b7d"
+          }
+        ],
+        "checks": {
+          "collected": 2,
+          "executed": 2,
+          "failed": 0,
+          "not_run": 0
+        },
+        "new_test_counts": {},
+        "compiler_diagnostics": [],
+        "protected_elfs": 137,
+        "new_elfs": {
+          "ingest_bootstrap_probe": "bf467b625995c811930ec242466cb1c2456b116f96d0fc9c0c0b4c3bf0a9555a",
+          "bigbrotr": "d327ef6cd08a997f510b6336e6fbb2109c9579319b68ecba7da1caf561115fbf"
+        },
+        "files": 1933,
+        "unchanged_containers": 1365,
+        "reused_component_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bf2c33d/audit-root/audit-v1.json",
+          "sha256": "fba88a00ef3c295afb39fad80d1180e22925b37af37ad92233809940d0ed68c8",
+          "source": "bf2c33d24faf00689b959456216146ee8b779930",
+          "tests": 122
+        },
+        "wrappers": "prepare51644/build14419/custody35448 joined0"
+      },
+      "successor_retirement_fault_connected": {
+        "status": "PASS_SUCCESSOR_RETIREMENT_FAULTS",
+        "source": "58b79a49e59be77be554fff0be826dbe8ee20903",
+        "tree": "dc42024d543ca236a561e21876080508d2a34d04",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-retirement-fault-engine-58b79a4",
+        "owner": "3c545f54303dc8aafd23e00253f613e7",
+        "client": "e87ef2ecbe2387731f97add4dbd74998318c084d8fcb0916c98b530822ffd80c",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "started_at": "2026-10-15T18:34:57.263486+00:00",
+        "finished_at": "2026-10-15T18:36:01.866578+00:00",
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-retirement-fault-engine-58b79a4/retirement-faults/result.json",
+          "sha256": "4690448e2ac9b565dea2fd1c5f3207831a3d0a77ef3dca5d7896d1928abfc03f",
+          "bytes": 15915085
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-retirement-fault-engine-58b79a4/root-independent-replay.json",
+          "sha256": "69d9b767014292562b1816eb7f8fcffc215e9bdecd99753104c4cf0ac0329b2b",
+          "bytes": 47369
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-retirement-fault-engine-58b79a4/audit-root/audit-v1.json",
+          "sha256": "88052e68325a4845055e348ed5b3e0904bce4d6f0d01ed755c3982855dd5c57e",
+          "bytes": 297444
+        },
+        "cases": [
+          {
+            "name": "before-forward",
+            "result": {
+              "status": "PASS",
+              "case": "before-forward",
+              "database": "bb_successor_retirement_fault_58b79a4_before",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 16,
+              "refreshes": 8,
+              "failure": "CommitUnknown",
+              "persistent_outcome": "ready",
+              "delivered_retirement": false,
+              "scope": "Finite C10 loss or bounded final-job cancellation/UTC wait; no source/workflow/native mutation"
+            },
+            "negative_controls": 26,
+            "server_window": {
+              "before_us": 1792089300303886,
+              "after_us": 1792089301131073
+            },
+            "wire": {
+              "mode": "before-forward",
+              "commit": 10,
+              "counters": {
+                "commits_seen": 10,
+                "commits_forwarded": 9,
+                "server_commit_complete": 9,
+                "client_commit_complete": 9,
+                "faults": 1
+              }
+            }
+          },
+          {
+            "name": "before-forward-fresh",
+            "result": {
+              "status": "PASS",
+              "case": "before-forward-fresh",
+              "database": "bb_successor_retirement_fault_58b79a4_before",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 17,
+              "refreshes": 8,
+              "failure": null,
+              "persistent_outcome": "terminal",
+              "delivered_retirement": true,
+              "scope": "Finite C10 loss or bounded final-job cancellation/UTC wait; no source/workflow/native mutation"
+            },
+            "negative_controls": 25,
+            "server_window": {
+              "before_us": 1792089304832084,
+              "after_us": 1792089305642991
+            }
+          },
+          {
+            "name": "after-complete",
+            "result": {
+              "status": "PASS",
+              "case": "after-complete",
+              "database": "bb_successor_retirement_fault_58b79a4_after",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 16,
+              "refreshes": 8,
+              "failure": "CommitUnknown",
+              "persistent_outcome": "terminal",
+              "delivered_retirement": false,
+              "scope": "Finite C10 loss or bounded final-job cancellation/UTC wait; no source/workflow/native mutation"
+            },
+            "negative_controls": 27,
+            "server_window": {
+              "before_us": 1792089311230636,
+              "after_us": 1792089312035521
+            },
+            "wire": {
+              "mode": "after-complete",
+              "commit": 10,
+              "counters": {
+                "commits_seen": 10,
+                "commits_forwarded": 10,
+                "server_commit_complete": 10,
+                "client_commit_complete": 9,
+                "faults": 1
+              }
+            }
+          },
+          {
+            "name": "after-complete-fresh",
+            "result": {
+              "status": "PASS",
+              "case": "after-complete-fresh",
+              "database": "bb_successor_retirement_fault_58b79a4_after",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 17,
+              "refreshes": 8,
+              "failure": null,
+              "persistent_outcome": "terminal",
+              "delivered_retirement": true,
+              "scope": "Finite C10 loss or bounded final-job cancellation/UTC wait; no source/workflow/native mutation"
+            },
+            "negative_controls": 27,
+            "server_window": {
+              "before_us": 1792089315936473,
+              "after_us": 1792089316663560
+            }
+          },
+          {
+            "name": "final-job-cancel",
+            "result": {
+              "status": "PASS",
+              "case": "final-job-cancel",
+              "database": "bb_successor_retirement_fault_58b79a4_cancel",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 16,
+              "refreshes": 8,
+              "failure": "Control(Unavailable)",
+              "persistent_outcome": "ready",
+              "delivered_retirement": false,
+              "scope": "Finite C10 loss or bounded final-job cancellation/UTC wait; no source/workflow/native mutation"
+            },
+            "negative_controls": 32,
+            "server_window": {
+              "before_us": 1792089322418149,
+              "after_us": 1792089324314815
+            },
+            "wait": {
+              "dispatch": {
+                "control_deadline_us": 1792089342934520,
+                "error": null,
+                "event": "lineage-retirement-wait-clock",
+                "mode": "cancel",
+                "remaining_us": 19557525,
+                "server_us": 1792089323376995,
+                "stage": "dispatch"
+              },
+              "returned": {
+                "control_deadline_us": 1792089342934520,
+                "error": null,
+                "event": "lineage-retirement-wait-clock",
+                "mode": "cancel",
+                "remaining_us": 19039841,
+                "server_us": 1792089323894679,
+                "stage": "returned"
+              },
+              "release_before_us": 1792089323873480,
+              "release_after_us": 1792089323961711,
+              "duration_us": 517684,
+              "expiry_observations": 0,
+              "holder_excluded": true
+            }
+          },
+          {
+            "name": "final-job-expiry",
+            "result": {
+              "status": "PASS",
+              "case": "final-job-expiry",
+              "database": "bb_successor_retirement_fault_58b79a4_expiry",
+              "snapshots": 28,
+              "tables": 75,
+              "native_rows": 55,
+              "sequence": 68,
+              "inputs": 4,
+              "control_epoch": 16,
+              "refreshes": 8,
+              "failure": "Control(Backend)",
+              "persistent_outcome": "ready",
+              "delivered_retirement": false,
+              "scope": "Finite C10 loss or bounded final-job cancellation/UTC wait; no source/workflow/native mutation"
+            },
+            "negative_controls": 34,
+            "server_window": {
+              "before_us": 1792089331027145,
+              "after_us": 1792089352290909
+            },
+            "wait": {
+              "dispatch": {
+                "control_deadline_us": 1792089351549454,
+                "error": null,
+                "event": "lineage-retirement-wait-clock",
+                "mode": "expiry",
+                "remaining_us": 1997545,
+                "server_us": 1792089349551909,
+                "stage": "dispatch"
+              },
+              "returned": {
+                "control_deadline_us": 1792089351549454,
+                "error": null,
+                "event": "lineage-retirement-wait-clock",
+                "mode": "expiry",
+                "remaining_us": -258377,
+                "server_us": 1792089351807831,
+                "stage": "returned"
+              },
+              "release_before_us": 1792089351786787,
+              "release_after_us": 1792089351875109,
+              "duration_us": 2255922,
+              "expiry_observations": 18,
+              "holder_excluded": true
+            }
+          }
+        ],
+        "snapshots": 168,
+        "tables": 75,
+        "negative_controls": 171,
+        "bound_files": 159,
+        "protected_elfs": 139,
+        "unchanged_nonborrowed_containers": 1366,
+        "diagnostics": {
+          "final-job-expiry": {
+            "backend": {
+              "backend_start": "2026-10-15T18:35:31.155886+00:00",
+              "control_epoch": 16,
+              "database": "bb_successor_retirement_fault_58b79a4_expiry",
+              "event": "lineage-history-backend",
+              "pid": 772,
+              "present": true
+            },
+            "error_lines": [
+              "2026-10-15 18:35:51.791 UTC [772] ERROR:  lineage retirement Control authority expired"
+            ],
+            "context_lines": [
+              "2026-10-15 18:35:51.791 UTC [772] CONTEXT:  PL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 97 at RAISE"
+            ],
+            "observed_sqlstate": null,
+            "log_precision_us": 1000
+          }
+        },
+        "preservation": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        },
+        "cleanup": {
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "unexpected_containers": []
+        },
+        "wrappers": "prepare68255/engine79283/raw89020/custody97835 joined0",
+        "meaning": "Before-forward remains ready under excluded Control16; fresh17 fences then retires. After-complete already terminal under16; fresh17 preserves exact receipt/time/xmin. Cancellation and real UTC expiry leave full target ready. All55native rows/68sequence/fourinputs unchanged. Actual final-job query/transaction blocker observed before and after cancel/expiry; same pending typed future returns.",
+        "limits": "Finite actual final C10 proxy loss and two bounded wait schedules, not installed supervision/process kill/remote cancellation or scale/RSS. Full original SQL/catalog preservation is captured runner evidence; actual physical files rechecked without engine opening."
+      },
+      "successor_retirement_fault_resources": {
+        "observed_at": "2026-10-15T18:39:58.825518+00:00",
+        "containers": 1368,
+        "running": [
+          {
+            "name": "/inspirehep-reindex-db-1",
+            "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088"
+          },
+          {
+            "name": "/inspirehep-reindex-mq-1",
+            "id": "c1eb6dd5ff8f735fd76cdcb2b4250c62e488135c169752df0f9c26b818216f12"
+          },
+          {
+            "name": "/inspirehep-reindex-cache-1",
+            "id": "1f2889273c7c4de374ae091b15bcec7b3eff8213fcd58906fa4efcfdb26fd55c"
+          },
+          {
+            "name": "/inspirehep-reindex-es-1",
+            "id": "9c1053ce0d699c013403567db284bb38eb2dc72deeecc408b5f2991eaacdfd9f"
+          },
+          {
+            "name": "/ollama",
+            "id": "5fcfeab23981bae1267a982c37687b567b9b913bf104c25e956cf68b0c91027b"
+          },
+          {
+            "name": "/tgdataset-mongo",
+            "id": "4e93d9d21e55982b2a828d792a1ddcd02d29df5dda0d2a116b9286c433679c85"
+          }
+        ],
+        "free_bytes": 27436388352,
+        "protected_elfs": 139,
+        "worktrees": 129,
+        "branches": [
+          "main"
+        ],
+        "processes": "prepare51644/build14419/buildcustody35448/engineprepare68255/engine79283/raw89020/enginecustody97835/refretirement37601 all joined0",
+        "reserve_build_bytes": 12884901888,
+        "reserve_engine_bytes": 2147483648,
+        "compiler_engine_status": "NOT_RUNNING"
       }
     }
   }
