@@ -57,6 +57,10 @@ install epoch3 bytes directly: they do not qualify a connected successor writer.
 `history` checks the typed PostgreSQL history state selection, native lineage and
 legacy handoff/empty components, plus schema/CLI compilation. Its state tests do
 not connect to PostgreSQL; real copy, lock and cancellation checks remain separate.
+`history-probe` only builds and lints the finite probe and CLI for those engine
+checks. It runs no tests; reuse of earlier component evidence requires unchanged
+compiled product inputs. The engine invokes `successor-lineage-history` with an
+explicit metadata byte capacity on disposable database/native copies.
 
 `replay.py RUN_ROOT` independently reduces the captured SQL experiment below,
 binding both origins, complete rows, raw output and portable hashes. It requires

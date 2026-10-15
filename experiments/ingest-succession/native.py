@@ -15,11 +15,12 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'])
 replay = sys.argv[1:] == ['replay']
 history = sys.argv[1:] == ['history']
+probe = sys.argv[1:] == ['history-probe']
 lineage = sys.argv[1:] == ['lineage']
-schema = sys.argv[1:] == ['schema'] or replay or history
+schema = sys.argv[1:] == ['schema'] or replay or history or probe
 
 
 def sources():
@@ -52,6 +53,9 @@ if replay:
 if history:
     identity['scope'] = ('Typed PostgreSQL history state discriminators, native lineage/legacy handoff '
                          'components and schema/CLI build; connected history and succession NOT_RUN')
+if probe:
+    identity['scope'] = ('Exact finite connected-history probe and CLI compilation/Clippy only; '
+                         'no Rust test or connected engine executed by this profile')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -77,13 +81,19 @@ if history:
     tests += [('successor_history', ['--lib', 'successor_history::tests'])]
     tests += [(name, ['--lib', name + '_tests']) for name in [
         'lineage', 'initial_handoff', 'initial_empty']]
-steps = [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])]
+if probe:
+    tests = []
+steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                          '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
+         if probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1'])
           for name, selection in tests]
 clippy_targets = (['--lib', '--bin', 'bigbrotr', '--test', 'control_schema', '--test', 'migrate_entrypoint']
                   if schema else ['--lib', '--test', 'rocks_succession', '--test', 'rocks_manifest',
                                   '--test', 'rocks_keys', '--test', 'rocks_store'])
+if probe:
+    clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
 steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                      *clippy_targets, '--', '-D', 'warnings'])]
 result = execute(steps, checks, SOURCE, env, identity, 1800)
@@ -92,7 +102,7 @@ result = execute(steps, checks, SOURCE, env, identity, 1800)
 artifacts = Path('/out/artifacts')
 artifacts.mkdir()
 executables, counts, cli_paths = {}, {}, set()
-for name, selection in tests:
+for name, selection in (tests + [('probe_build', None)] if probe else tests):
     log = checks / (name + '.log')
     if not log.exists():
         continue
@@ -102,7 +112,8 @@ for name, selection in tests:
         assert len(summaries) == 1
         counts[name] = int(summaries[0])
     paths = set()
-    kind = ['lib'] if selection[0] == '--lib' else ['test']
+    kind = ['example'] if selection is None else ['lib'] if selection[0] == '--lib' else ['test']
+    target_name = 'ingest_bootstrap_probe' if selection is None else name
     for line in content.splitlines():
         if not line.startswith('{'):
             continue
@@ -112,8 +123,9 @@ for name, selection in tests:
                 and not message['profile']['test']):
             cli_paths.add(message['executable'])
         if (message.get('reason') == 'compiler-artifact' and message.get('executable')
-                and message['profile']['test'] and message['target']['kind'] == kind
-                and (kind == ['lib'] or message['target']['name'] == name)):
+                and message['profile']['test'] == (selection is not None)
+                and message['target']['kind'] == kind
+                and (kind == ['lib'] or message['target']['name'] == target_name)):
             paths.add(message['executable'])
     if not paths:
         continue
@@ -122,7 +134,7 @@ for name, selection in tests:
     assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
     with executable.open('rb') as stream:
         assert stream.read(4) == b'\x7fELF'
-    retained_name = 'native_components' if kind == ['lib'] else name
+    retained_name = 'native_components' if kind == ['lib'] else target_name
     retained = artifacts / retained_name
     if not retained.exists():
         shutil.copy2(executable, retained)
@@ -146,14 +158,16 @@ receipt = dict(identity, status=result['status'], test_counts=counts,
 assert result['status'] == 'PASS'
 assert set(counts) == {name for name, _ in tests}
 assert set(executables) == {name if selection[0] == '--test' else 'native_components'
-                            for name, selection in tests} | ({'bigbrotr'} if schema else set())
+                            for name, selection in tests} | ({'bigbrotr'} if schema else set()) | (
+                                {'ingest_bootstrap_probe'} if probe else set())
 if schema:
     info = json.loads(subprocess.check_output([str(artifacts / 'bigbrotr'), 'build-info'], env=env))
     assert info['source'] == dict(state='builder-supplied', revision=manifest['revision'],
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_HISTORY_COMPONENTS' if history
+qualification = dict(identity, status='PASS_SUCCESSION_HISTORY_PROBE_BUILD' if probe
+                     else 'PASS_SUCCESSION_HISTORY_COMPONENTS' if history
                      else 'PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS' if replay
                      else 'PASS_SUCCESSION_SCHEMA_COMPONENTS' if schema
                      else 'PASS_SUCCESSION_LINEAGE_INSPECTION' if lineage

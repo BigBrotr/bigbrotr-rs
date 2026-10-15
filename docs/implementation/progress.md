@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T12:33:28.165387+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T12:39:12.850956+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,8 +14,8 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `7202cfa`.
-Verified private push20269 is `4dd78e193c4c3759555486ceff7f9f047dd4b491`;
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `b96bcf8`.
+Verified private push97734 is `e7006d9b8cb7c30d5aa077e61afe3bb06dc9bf1d`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
 Root's SQL harness/checkpoint remain local before engine qualification.
@@ -33,13 +33,16 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: review the connected read-only history probe in
-`.research/successor-history-20261015`, then build it from exact clean main and
-qualify both real terminal2 origins plus insufficient metadata capacity. Root
-owns engine/harness; cleanup_review maps independent original pins/expectations.
+Root's next bounded action: build the exact finite connected-history probe/CLI
+with `ingest-succession-history-probe`. Probe f3e1511 integratedb96bcf8; root read
+complete506-line helper,1034-line dispatch owner and raw/snapshot helpers.72-test
+component evidence7202 is reused only for unchanged product/test/migration inputs;
+this build profile executes no tests. Then qualify both real terminal2 origins
+and insufficient metadata capacity132095 (required132096), positive132608.
+Root owns engine/harness; cleanup_review maps independent original pins/expectations.
 Native handoff/empty source continues separately in `.research/successor-handoff-20261015`.
-No agent can run engines/builds or mutate caches/labs;101protectedELFs and12GiB
-reserve for a build,2GiB for a small engine. No new-family writer claim yet.
+No agent can run engines/builds or mutate caches/labs;101protectedELFs/12GiB build
+reserve and2GiB small-engine reserve. Full writer/activation remains incomplete.
 
 Typed history89528b5→0ad6752 component qualification7202cfa PASS:
 preparation45888/build2428/audit44616 joined0,12:30:38Z–12:32:13Z.

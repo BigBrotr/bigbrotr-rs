@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-15T12:33:28.165387+00:00",
+  "updated_at": "2026-10-15T12:39:12.850956+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -51193,7 +51193,7 @@
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080,
-      "current_operation": "History7202 component build/audit PASS, fetch/native stopped0/PID0/noOOM;101protectedELFs. Next review/build connected history probe; no live root engine/build."
+      "current_operation": "No live root build/engine. Connected history probe integratedb96bcf8; exact build preparation next."
     },
     "selected_bounds": {
       "total_epochs_max": 255,
@@ -52114,7 +52114,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "Connected read-only history probe after frozen source review;101protectedELFs/12GiB reserve.",
+    "next_build": "ingest-succession-history-probe exact main; finite probe/CLI compile+Clippy only,101protectedELFs/12GiB.",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -52398,6 +52398,14 @@
       "protected_elfs": 101,
       "audit_sha256": "56d8689fb940021c00e0acb43119e733f5256eb5f5ed513a9744a2f167e256ee",
       "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#initial_successor_preparation_20261012.repeatable_succession_20261015.history_component"
+    },
+    "history_probe": {
+      "status": "SOURCE_INTEGRATED_BUILD_NOT_RUN",
+      "original": "f3e1511cd25cae2cb528e11b8215bdd207cb2696",
+      "main": "b96bcf8",
+      "helper_sha256": "ca5004911e4358574c146154d597b465622161ffc0861e66a8a8aca0351c54d5",
+      "review": "Root read complete new helper, dispatch owner and actual raw/snapshot helpers; author rustfmt/diff and inverse old-dispatch comparison pass. Engine NOT_RUN.",
+      "scope": "Read-only positive lineage under actual Control; explicit metadata capacity; full snapshots, native-before-Control cleanup and joined drivers. No writer adoption or repair."
     }
   }
 }
