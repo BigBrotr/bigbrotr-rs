@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Review/qualify minimal successor acquisition abandonment; separately implement ready-or-terminal retirement with positive existing-copy replay and Event/workflow vetoes. Genuine activating Control claim fixture required; do not fabricate historical bindings. Source failure/installed/capacity schedules remain open.",
+      "ongoing": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines. Separate retirement, installed, failure/expiry and capacity remain open.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -29118,13 +29118,99 @@
         "wrapper": "37031 joined0"
       },
       "successor_acquisition_work": {
-        "status": "IN_PROGRESS_SOURCE_ONLY",
-        "path": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015",
-        "branch": "implementation/successor-acquisition",
-        "base": "e6adc1902edd62b0490895c668c92f2eb21c3c35",
-        "owner": "recovery_review",
-        "scope": "Bounded later activated acquisition abandonment from fresh already-closed positive Source proof, actual immutable activating Control tuple, <=64 jobs+gaps, consume one-shot owner, preserve existing gap history. No retirement/native change/migration/finite consumer yet.",
-        "runtime": "NOT_RUN"
+        "status": "INTEGRATED_RUNTIME_NOT_RUN",
+        "observed_at": "2026-10-15T17:13:34.005200+00:00",
+        "components": [
+          {
+            "original": "750e735b32da2c4b8d4c4b34f6b48f9403221016",
+            "integrated": "8608cf755fac6a6a7f1c1b82b10921bcdb39b617",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015",
+            "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-20261015/.research/successor-acquisition-static-20261015/manifest.json",
+            "manifest_sha256": "57983f545000055f06a71bc70b89a8e465ed91a49ccfa26fcc3585717f901a3d",
+            "source_files": 3,
+            "status": "INTEGRATED_SOURCE_ONLY_RUNTIME_NOT_RUN"
+          },
+          {
+            "original": "620404ff2a5e359762c380c0c6c1f89304987a02",
+            "integrated": "04c59237939347f2985dbb6449c83a7c86431c9e",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-acquisition-probe-20261015",
+            "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-probe-20261015/.research/acquisition-probe-static-20261015/report.json",
+            "manifest_sha256": "616d2b773241d22ded826defe93bbe11825b0c7fce477fcfdc9ca758b0169b60",
+            "source_files": 5,
+            "status": "INTEGRATED_SOURCE_ONLY_RUNTIME_NOT_RUN"
+          },
+          {
+            "original": "938dbb2ecfb6d9175cec5d589947fae1bb3cc6de",
+            "integrated": "cc4f8acbc5ae6aff59f313700259ee55ce5bb0b6",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-acquisition-engine-20261015",
+            "manifest": "/home/tux/bigbrotr-rs/.research/successor-acquisition-engine-20261015/.research/successor-acquisition-harness-selfcheck-20261015/manifest.json",
+            "manifest_sha256": "72a4021c4535d24797b5e7bc4058285818ddb5c337b9c7b9896c61183858e954",
+            "source_files": 2,
+            "status": "INTEGRATED_SOURCE_ONLY_RUNTIME_NOT_RUN"
+          }
+        ],
+        "adapter": "Fresh consumed already-CLOSED source proof; bounded combined jobs and retained gaps <=64; exact immutable activating Control tuple, complete prefix copies, current custody/lease/cancellation checks after waits; no native mutation or retirement.",
+        "consumer": "Four genuine processes: activated3 login/accept/claim plus accepted-unclaimed intent; source closure; whole-intent abandonment; fresh exact retry. No SQL fixture authority fabricated.",
+        "reader": "Root experiments/ingest-succession/acquisition_replay.py independent full SQL/native/input reconstruction and raw-file replay. Static AI review found no grammar/model blocker; artificial protocol checks still in progress and actual engine NOT_RUN.",
+        "pure_harness": "21 scenarios, 6 malformed descriptors, composition and 4-step chaining PASS; blocked external I/O, scientific oracle explicitly stubbed. 27 bound artifacts verified by root.",
+        "branches": [
+          "implementation/successor-acquisition 750e735b32da2c4b8d4c4b34f6b48f9403221016",
+          "main cc4f8acbc5ae6aff59f313700259ee55ce5bb0b6",
+          "qualification/successor-acquisition-engine 938dbb2ecfb6d9175cec5d589947fae1bb3cc6de",
+          "qualification/successor-acquisition-probe 620404ff2a5e359762c380c0c6c1f89304987a02"
+        ],
+        "registered_worktrees": 123,
+        "resources": {
+          "observed_at": "2026-10-15T17:13:34.005200+00:00",
+          "container_count": 1358,
+          "running": [
+            {
+              "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088",
+              "name": "/inspirehep-reindex-db-1",
+              "pid": 3079832,
+              "status": "running"
+            },
+            {
+              "id": "c1eb6dd5ff8f735fd76cdcb2b4250c62e488135c169752df0f9c26b818216f12",
+              "name": "/inspirehep-reindex-mq-1",
+              "pid": 3079825,
+              "status": "running"
+            },
+            {
+              "id": "1f2889273c7c4de374ae091b15bcec7b3eff8213fcd58906fa4efcfdb26fd55c",
+              "name": "/inspirehep-reindex-cache-1",
+              "pid": 3079839,
+              "status": "running"
+            },
+            {
+              "id": "9c1053ce0d699c013403567db284bb38eb2dc72deeecc408b5f2991eaacdfd9f",
+              "name": "/inspirehep-reindex-es-1",
+              "pid": 3079842,
+              "status": "running"
+            },
+            {
+              "id": "5fcfeab23981bae1267a982c37687b567b9b913bf104c25e956cf68b0c91027b",
+              "name": "/ollama",
+              "pid": 848039,
+              "status": "running"
+            },
+            {
+              "id": "4e93d9d21e55982b2a828d792a1ddcd02d29df5dda0d2a116b9286c433679c85",
+              "name": "/tgdataset-mongo",
+              "pid": 1822,
+              "status": "running"
+            }
+          ],
+          "free_bytes": 29238616064,
+          "branches": [
+            "implementation/successor-acquisition 750e735b32da2c4b8d4c4b34f6b48f9403221016",
+            "main cc4f8acbc5ae6aff59f313700259ee55ce5bb0b6",
+            "qualification/successor-acquisition-engine 938dbb2ecfb6d9175cec5d589947fae1bb3cc6de",
+            "qualification/successor-acquisition-probe 620404ff2a5e359762c380c0c6c1f89304987a02"
+          ],
+          "worktrees": 123
+        },
+        "next": "Exact-source ingest-succession-recovery profile build (expected112 tests, CLI/probe and Clippy); finish reader artificial protocol controls before one real four-process empty-origin engine. Root alone owns build/cache/engines."
       }
     }
   }
