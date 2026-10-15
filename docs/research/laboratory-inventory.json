@@ -51127,8 +51127,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "SCHEMA_COMPONENT_PASS_SQL_ENGINE_NOT_RUN",
-    "observed_at": "2026-10-15T11:31:38.409476+00:00",
+    "status": "SQL_MIGRATION_FAIL_SYNTAX_CORRECTED_REBUILD_NOT_RUN",
+    "observed_at": "2026-10-15T11:36:09.773394+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51162,7 +51162,7 @@
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "Completed schema build fetch/native exited0/PID0/noOOM, all87ELFs protected; SQL engine NOT_RUN.",
+      "new_engine_build_or_runtime_resources": "Failed SQL engine terminal: borrowedPG0/client143/PID0/noOOM; two original DBs captured preserved; failed activatedcopy retained, emptycopy NOT_RUN; no live engine/build.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080
@@ -51207,7 +51207,8 @@
         "migration_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
         "fixture_sha256": "9b3fcbdc6dc8a29c3d9627647d091d971a7db70e9111514bd156a82f844fd70e",
         "source_review": "Author and independent cleanup_review source review; root complete integrated migration/fixture read. No runtime proof.",
-        "status": "SQL_NOT_RUN"
+        "status": "FIRST_ENGINE_APPLY_FAIL_SYNTAX_CORRECTED_RETRY_NOT_RUN",
+        "corrected_migration_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26"
       }
     },
     "completed_build": {
@@ -51531,13 +51532,76 @@
       "preparation_state": "COMPLETE_DO_NOT_REPLAY",
       "preparation_script": ".research/repeatable-succession-schema-prepare-20261015.py"
     },
-    "next_engine": {
-      "profile": "ingest-succession-sql",
+    "failed_sql_engine": {
+      "status": "FAIL_MIGRATION_SYNTAX",
+      "source": "45b8462b76b5b2eeb48e3c6d6172f51b196e19a8",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-45b8462",
+      "preparation_session": 87882,
+      "engine_session": 41324,
+      "wrapper_exit": 1,
+      "started_at": "2026-10-15T11:31:55.236438+00:00",
+      "finished_at": "2026-10-15T11:31:59.861428+00:00",
+      "actual": "CLI plan exit0 names38, first apply exit1 generic backend refusal; PG logs syntax error at end of input character2755, IF key_schema<>CASE first THEN. SQL fixture and empty copy NOT_RUN.",
+      "correction": "Parenthesize all three top-level IF CASE expressions in unpublished0038; engine harness now captures failed copies and server log.",
+      "original_sql_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
+      "corrected_sql_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26",
+      "audit": {
+        "session": 17901,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-45b8462/audit-root/audit-v1.json",
+        "sha256": "cd80f2dbaa1473ee189cba4539b6e58b8b0cdc1b0f70f3cd5f60e884d6a57c8b",
+        "source_files": 1867,
+        "protected_elfs": 87,
+        "unchanged_nonborrowed_containers": 1309,
+        "capture": {
+          "observed_at": "2026-10-15T11:34:29.621575+00:00",
+          "containers": 1311,
+          "sha256": "4e90ad22be6d9ba1484c4973d9426bf2b1cee5f000264b5afe540f0f1d257f7c"
+        }
+      },
+      "owned_terminal": {
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:31:55.289475462Z",
+            "FinishedAt": "2026-10-15T11:31:59.008953609Z"
+          }
+        },
+        "client": {
+          "id": "34e94699d9f2354decddd5215c6c915bb9acd91db51a0326505d638dd4b1f8df",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:31:56.95029776Z",
+            "FinishedAt": "2026-10-15T11:31:58.343096443Z"
+          }
+        }
+      },
+      "free_bytes_after": 40184954880,
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+    },
+    "next_build": {
+      "profile": "ingest-succession-schema",
       "status": "NOT_RUN",
-      "preparation_script": ".research/repeatable-succession-sql-prepare-20261015.py",
+      "preparation_script": ".research/repeatable-succession-schema-retry-prepare-20261015.py",
       "protected_elfs": 87,
-      "required_free_bytes": 2147483648,
-      "scope": "Actual CLI migration38 and SQL-only fixture on separate retired activated/empty2 copies; original DB/native untouched"
+      "required_free_bytes": 12884901888
     }
   }
 }

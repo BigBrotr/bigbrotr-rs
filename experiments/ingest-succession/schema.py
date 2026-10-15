@@ -141,6 +141,18 @@ def run(root, build):
             assert normalized(saved) == normalized(read(basis / origin['snapshot']))
             originals[origin['name']] = dict(rows=saved, catalog=lab.schema_digest(pg, origin['database']))
             report['origins'][origin['name']] = dict(origin, **originals[origin['name']])
+        previous_failure = root.parent / 'ingest-succession-sql-45b8462/sql/result.json'
+        assert digest(previous_failure) == '37e54317fbb663930f0d244299a865cbc548c7c66f95ffee7d03ab23c52189d9'
+        failed = read(previous_failure)
+        assert failed['status'] == 'FAIL' and len(failed['databases']) == 1
+        failed_database, = failed['databases']
+        assert absence(pg, failed_database) == []
+        failed_rows = rows(pg, failed_database)
+        assert normalized(failed_rows) == normalized(originals['activated']['rows'])
+        assert lab.schema_digest(pg, failed_database) == originals['activated']['catalog']
+        lab.write_json(output / 'prior-failed-migration-state.json', failed_rows)
+        report['prior_failed_migration'] = dict(database=failed_database,
+            status='ROLLBACK_OBSERVED_BY_FULL_ROWS_AND_CATALOG', original_result_sha256=digest(previous_failure))
         ident = lab.docker('create', '--init', '--name', client, '--label', label + '=' + owner,
             '--cpus', '2', '--memory', '1536m', '--memory-swap', '1536m', '--pids-limit', '128',
             '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
@@ -161,6 +173,7 @@ def run(root, build):
             lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {origin["database"]};')
             report['databases'].append(database)
             assert normalized(rows(pg, database)) == normalized(originals[name]['rows'])
+            lab.write_json(output / (name + '-copy-before.json'), originals[name]['rows'])
             config = lab.config(output, state, database)
             case = dict(name=name, database=database, migrations=[], status='RUNNING')
             report['cases'].append(case)
@@ -219,6 +232,15 @@ def run(root, build):
         raise
     finally:
         errors = []
+        # Preserve clone state even if migration or the fixture refused early.
+        # A failed CLI response alone does not establish transaction rollback.
+        for case in report['cases']:
+            try:
+                lab.write_json(output / (case['name'] + '-final.json'), rows(pg, case['database']))
+                case['final_backend_absence'] = absence(pg, case['database'])
+                assert case['final_backend_absence'] == []
+            except BaseException as error:
+                errors.append(dict(copy=case['database'], error=repr(error)))
         for origin in ORIGINS:
             if origin['name'] not in originals:
                 continue
@@ -251,6 +273,8 @@ def run(root, build):
             except BaseException as error:
                 errors.append(dict(container=ident, error=repr(error)))
         after = {c['Id']: projection(c) for c in containers()}
+        logs = lab.docker('logs', '--since', report['started_at'], borrowed['Id'])
+        (output / 'postgres.log').write_text(logs.stdout + logs.stderr)
         report['unrelated_changed'] = [c['Id'] for c in before if c['Id'] != borrowed['Id'] and after.get(c['Id']) != projection(c)]
         report['unexpected_containers'] = sorted(set(after) - {c['Id'] for c in before} - {report['client']})
         report.update(cleanup_errors=errors, finished_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),

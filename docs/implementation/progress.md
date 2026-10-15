@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:31:38.409476+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:36:09.773394+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `6699e1c`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `45b8462`.
 Verified private push64046 is `277f305b2e63d2e1e9f30ee15238e24e945d4b89`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
@@ -33,13 +33,24 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: commit the SQL-only harness and run exact-source
-`experiments/ingest-succession/schema.py` on fresh copies of retained activated
-retirement9bdc86a/off and installed empty788f971/normal origins. The original
-snapshots and original database rows/catalog must match before/after. No native
-store is opened. CLI/build6699e1c is reused with unchanged compiled inputs.
-New preparation `.research/repeatable-succession-sql-prepare-20261015.py` is NOT_RUN;
-87 protectedELFs,2GiB reserve, borrowed PG remains stopped. SQL engine NOT_RUN.
+Root's next bounded action: rebuild exact CLI/schema after the unpublished0038
+syntax correction, using new preparation
+`.research/repeatable-succession-schema-retry-prepare-20261015.py` (NOT_RUN),
+87 protectedELFs and12GiB reserve. Then use a fresh SQL-only run/copy. Its reader
+will first verify the prior failed clone's full rows/catalog against the retained
+activated original; actual rollback remains unverified until that observation.
+
+SQL engine45b8462 preparation87882/engine41324 joined1 FAIL,11:31:55Z–11:31:59Z.
+Actual plan names38; first apply exit1. PG log: syntax error at character2755,
+the top-level IF CASE expression. No SQL fixture ran and no empty copy was made.
+Root groups all three such CASE expressions; no SQL38 ledger was reported applied.
+Harness now captures failed copies and PG logs. Original two DB rows/catalog
+captured unchanged, all artifacts retained. Root custody17901 joined0 PASS binds
+1867source files/87ELFs/1309unchanged nonborrowed projections; auditcd80f2db.
+BorrowedPG stopped0 and newclient stopped143, PID0/noOOM. Report37e54317 under
+`/runs/ingest-succession-sql-45b8462/sql/result.json`; never replay this run.
+The first SQL preparation's cache message was inherited from build preparation;
+it observed/released the cache lock, but the SQL runner does not use that cache.
 
 Schema6699e1c preparation71693/build17070 joined0 PASS,11:25:57Z–11:27:05Z:
 38control_schema+3migrate_entrypoint tests, literal fixture and Clippy. CLI85d215cd,
@@ -398,7 +409,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after schema build11:27:05Z:40,268,746,752; remeasure before allocating. Small engines
+Free bytes after failed SQL engine11:31:59Z:40,184,954,880; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive

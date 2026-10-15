@@ -46,7 +46,7 @@ BEGIN
     epoch:=control.ingest_lineage_uint(value,54,8); incarnation:=substring(value FROM 63 FOR 16);
     recovery:=substring(value FROM 79 FOR 16); policy:=control.ingest_lineage_uint(value,94,8);
     IF epoch NOT BETWEEN 1 AND 255 OR policy=0
-        OR key_schema<>CASE WHEN epoch=1 THEN 1 WHEN epoch=2 THEN 2 ELSE 3 END
+        OR key_schema<>(CASE WHEN epoch=1 THEN 1 WHEN epoch=2 THEN 2 ELSE 3 END)
         OR dataset_id=decode(repeat('00',16),'hex') OR resource=decode(repeat('00',16),'hex')
         OR incarnation=decode(repeat('00',16),'hex') THEN
         RAISE EXCEPTION 'invalid lineage manifest identity' USING ERRCODE='23514';
@@ -446,7 +446,7 @@ BEGIN
                     OR s.parent_handoff_sha256<>sha256(control.ingest_lineage_handoff_at(wanted_resource,e-1))
                     OR s.issued_through<>old_p.reserved_through_request OR s.last_complete_sequence<>old_stream.last_complete_sequence
                     OR s.closure_digest<>old_stream.closure_digest
-                    OR s.terminal_kind<>CASE WHEN EXISTS(SELECT 1 FROM control.ingest_lineage_activation(wanted_resource,e-1)) THEN 1 ELSE 2 END THEN
+                    OR s.terminal_kind<>(CASE WHEN EXISTS(SELECT 1 FROM control.ingest_lineage_activation(wanted_resource,e-1)) THEN 1 ELSE 2 END) THEN
                     RAISE EXCEPTION 'lineage successor receipt or parent hash differs' USING ERRCODE='23514';
                 END IF;
             END IF;
@@ -484,7 +484,7 @@ BEGIN
         SELECT * INTO original FROM control.ingest_lineage_activation(wanted_resource,e);
         activated:=FOUND;
         IF NOT activated AND o.lease_expires_at_us IS DISTINCT FROM
-            CASE WHEN e=2 THEN legacy.lease_expires_at_us ELSE s.lease_expires_at_us END THEN
+            (CASE WHEN e=2 THEN legacy.lease_expires_at_us ELSE s.lease_expires_at_us END) THEN
             RAISE EXCEPTION 'empty lineage scheduling metadata differs from preparation' USING ERRCODE='23514';
         END IF;
         IF e=2 AND activated THEN

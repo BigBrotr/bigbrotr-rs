@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "SQL0038 integrated1c7b49d, catalog/CLI6699e1c compiled and retained; new SQL-only copy harness source-reviewed but engine NOT_RUN. Native positive replay WIP includes per-NewFacts membership proof.",
+      "ongoing": "Original SQL migration failed before fixture; grouped IF CASE expressions locally. Corrected CLI rebuild then fresh SQL retry; old failed clone full rows/catalog to be independently observed. Native positive replay WIP.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -23415,6 +23415,84 @@
         "limits": [
           "Catalog and early CLI checks only; actual migration SQL/ACL/fixture engine NOT_RUN.",
           "Native positive lineage and connected/installed new family NOT_RUN."
+        ]
+      },
+      "sql_syntax_failure": {
+        "status": "FAIL_MIGRATION_SYNTAX",
+        "source": "45b8462b76b5b2eeb48e3c6d6172f51b196e19a8",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-45b8462",
+        "preparation_session": 87882,
+        "engine_session": 41324,
+        "wrapper_exit": 1,
+        "started_at": "2026-10-15T11:31:55.236438+00:00",
+        "finished_at": "2026-10-15T11:31:59.861428+00:00",
+        "actual": "CLI plan exit0 names38, first apply exit1 generic backend refusal; PG logs syntax error at end of input character2755, IF key_schema<>CASE first THEN. SQL fixture and empty copy NOT_RUN.",
+        "correction": "Parenthesize all three top-level IF CASE expressions in unpublished0038; engine harness now captures failed copies and server log.",
+        "original_sql_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
+        "corrected_sql_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26",
+        "audit": {
+          "session": 17901,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-45b8462/audit-root/audit-v1.json",
+          "sha256": "cd80f2dbaa1473ee189cba4539b6e58b8b0cdc1b0f70f3cd5f60e884d6a57c8b",
+          "source_files": 1867,
+          "protected_elfs": 87,
+          "unchanged_nonborrowed_containers": 1309,
+          "capture": {
+            "observed_at": "2026-10-15T11:34:29.621575+00:00",
+            "containers": 1311,
+            "sha256": "4e90ad22be6d9ba1484c4973d9426bf2b1cee5f000264b5afe540f0f1d257f7c"
+          }
+        },
+        "retained_sha256": {
+          "sql/postgres.log": "9bc9b0293a4686e3674b2de5b9070368447d942efd2ad7976861eaab956035d0",
+          "sql/client-terminal.json": "f28b815742db0b70fba90e2b46a899682618e9c363ca8d3016de53fe51c98c13",
+          "sql/postgres-terminal.json": "ca15761c8f972865e3e79c0a202d6e250dca3ef8c0a83fa7eb3e23b75765a640",
+          "sql/result.json": "37e54317fbb663930f0d244299a865cbc548c7c66f95ffee7d03ab23c52189d9",
+          "sql/template.toml": "bd374f6380167e0183f9ee04f07ef471d05c9631f9b475606457b9bbb7eb7d22",
+          "sql/preflight-containers.json": "6831f0e9a7839faffdf31083ec4e2ce8ca257fc861a420c4be3d6b14eb13b45d",
+          "sql/bb_succession_45b8462_activated.toml": "fcb392ca9cf01efb89d681018085705cf2b1bca079006f1878fd3c0764333aa9"
+        },
+        "owned_terminal": {
+          "postgres": {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:31:55.289475462Z",
+              "FinishedAt": "2026-10-15T11:31:59.008953609Z"
+            }
+          },
+          "client": {
+            "id": "34e94699d9f2354decddd5215c6c915bb9acd91db51a0326505d638dd4b1f8df",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:31:56.95029776Z",
+              "FinishedAt": "2026-10-15T11:31:58.343096443Z"
+            }
+          }
+        },
+        "free_bytes_after": 40184954880,
+        "limits": [
+          "Original DB preservation is captured runner evidence, not reexecuted by this audit.",
+          "Failed clone post-migration full state was not captured; rollback remains unverified until read-only followup.",
+          "Only CLI plan and failed apply ran; SQL fixture/empty clone NOT_RUN.",
+          "No native store was opened; SQL source failure at IF CASE expression retained."
         ]
       }
     }
