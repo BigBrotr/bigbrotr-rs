@@ -922,6 +922,10 @@ fn main() {
             || args[1] == "successor-lineage-history"
             || matches!(
                 args[1].as_str(),
+                "successor-prepare" | "successor-empty" | "successor-empty-retry" | "successor-gap"
+            )
+            || matches!(
+                args[1].as_str(),
                 "successor-commit-before"
                     | "successor-commit-after"
                     | "successor-live-commit-before"
@@ -994,6 +998,17 @@ fn main() {
                 .await;
             } else if args[1] == "successor-history" {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
+            } else if matches!(
+                args[1].as_str(),
+                "successor-prepare" | "successor-empty" | "successor-empty-retry" | "successor-gap"
+            ) {
+                ingest_successor_history::transition::run(
+                    config,
+                    Path::new(&args[4]),
+                    args[5].parse().expect("explicit metadata byte capacity"),
+                    &args[1],
+                )
+                .await;
             } else if args[1] == "successor-lineage-history" {
                 ingest_successor_history::run(
                     config,

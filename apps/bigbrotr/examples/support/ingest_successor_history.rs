@@ -2,7 +2,10 @@
 //! This isolated blocking owner is not installed supervision or writer adoption.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::{InitialHistoryRequest, PolicySnapshot, SuccessorReplayRequest},
+    postgres::control_owner::{
+        InitialHistoryRequest, PolicySnapshot, SuccessorHistory, SuccessorReplayRequest,
+        VerifiedSuccessorHistory,
+    },
     rocks::{
         store::{
             AdmissionLimits, IngestRecovery, LineageEpochSummary, ProducerRecoveryLimits,
@@ -16,6 +19,9 @@ use bigbrotr_model::{
     codec::{FactDecodeLimits, request::RequestDecodeLimits},
 };
 use std::{fmt::Debug, future::Future, path::PathBuf, sync::atomic::Ordering};
+
+#[path = "ingest_successor_transition.rs"]
+pub(super) mod transition;
 
 const CONTROL_TTL: Duration = Duration::from_secs(20);
 const FRAME_BYTES: usize = 16 * MIB as usize;
@@ -343,6 +349,16 @@ impl Probe {
         recovery: &IngestRecovery,
         metadata: OwnedPermit,
     ) -> Result<(), Failure> {
+        let history = self.load(owner, recovery, metadata).await?;
+        self.replay(owner, recovery, &history).await?;
+        Ok(())
+    }
+    async fn load(
+        &self,
+        owner: &mut ControlSession,
+        recovery: &IngestRecovery,
+        metadata: OwnedPermit,
+    ) -> Result<SuccessorHistory, Failure> {
         self.snapshot("before-read").await;
         let history = self
             .bounded(
@@ -368,6 +384,14 @@ impl Probe {
                     "terminal_digest":entry.terminal_claim().map(|(_,digest)|hex(&digest))})).collect::<Vec<_>>()}),
         );
         self.snapshot("loaded").await;
+        Ok(history)
+    }
+    async fn replay<'a>(
+        &'a self,
+        owner: &mut ControlSession,
+        recovery: &'a IngestRecovery,
+        history: &'a SuccessorHistory,
+    ) -> Result<VerifiedSuccessorHistory<'a>, Failure> {
         let mut resolution = history
             .resolution(recovery, &self.cancelled)
             .map_err(|e| Failure::at("resolution", None, None, e))?;
@@ -431,7 +455,7 @@ impl Probe {
             )
             .await
             .map_err(|e| Failure::at("finish", None, None, e))?;
-        assert!(proof.matches_history(&history));
+        assert!(proof.matches_history(history));
         proof
             .validate(&self.cancelled)
             .map_err(|e| Failure::at("final-validation", None, None, e))?;
@@ -440,7 +464,7 @@ impl Probe {
             "last_epoch":summary_value(proof.last_epoch()),"matches_history":true,"admission":false}),
         );
         self.snapshot("proof").await;
-        Ok(())
+        Ok(proof)
     }
 }
 
