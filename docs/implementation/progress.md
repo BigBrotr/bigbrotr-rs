@@ -14,11 +14,11 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `2d9233a`.
-Verified private push80812 is `2d9233ac0acf616fda6d504c292e4276cdc172f2`;
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `12c3534`.
+Verified private push64456 is `12c3534c6c970839a4371fc00b4ac3eac6730cb0`;
 remote has main only. Main contains both reviewed finite probes, dispatcher,
 custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
-current repeatable-succession contract/task/checkpoint update. The retirement
+current new-worktree inventory/checkpoint update. The retirement
 evidence and final branch cleanup are committed and privately pushed.
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none is complete.
@@ -35,7 +35,8 @@ Dated pause records and old branch names are historical.
 Root's next bounded action: implement the selected version2 handoff codec and
 lineage resource profile in an isolated worktree, with independent literal byte
 fixtures; then extend positive native lineage replay and its SQL/installed consumers.
-No schema3 product code, migration, engine or build has begun. The owning
+Source implementation has started in the three new isolated worktrees below; no
+new component is integrated or built, and all runtime qualification remains NOT_RUN. The owning
 [repeatable contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
 and [portable format](../reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 select one family for2-to3/3-to4, both retired activated2 and retired unactivated
@@ -55,16 +56,26 @@ request_inputs, initial_writer, initial_handoff, initial_empty, producer_recover
 activated_recovery and source_closure native owners; PG initial_succession,
 initial_ingest_basis, initial_history, initial_empty, initial_activation,
 activated_recovery/retirement; migrations0030/31/32/37; installed successor owner.
-Remaining shared admission/dictionary kernels and new affected PG/installed consumers
-need complete root review before their edits; Archive/ACK/GC are not reviewed here.
+Root also read complete admission, dictionary_preparation, dictionary_append,
+certification, receipt_effects and PG initial_batch kernels. New affected
+PG/installed consumers need complete review before their edits;
+Archive/ACK/GC are not reviewed here.
 
 Independent AI reviews by native/PG agents mapped whole-history freshness,
 sidecar census, quadratic topology growth, pending native-old preparation and
 legacy role-immutability gaps. cleanup_review read all three added contract sections
 and found two material wording issues: legitimate pending SQL tail vs downgrade,
 and dependencies created in the current NewFacts batch. Both are corrected.
-This is source/contract review only, not executable or runtime evidence. All three
-agents are read-only or idle; their original detached worktrees stay preserved.
+This is source/contract review only, not executable or runtime evidence. Original
+detached worktrees stay preserved. New worktrees at12c3534:
+`.research/repeatable-succession-native-20261015` (native codec/profile),
+`.research/repeatable-succession-codec-20261015` (independent literal fixtures),
+`.research/repeatable-succession-postgres-20261015` (additive SQL family/fixture).
+Their three local branches are intentional active work; only main is remote.
+Native agent owns codec paths, cleanup_review owns experiments/ingest-succession,
+recovery_review owns migration0038 and its SQL fixture. Root owns integration.
+No subagent may run an engine/build or mutate shared cache/retained labs. See
+`implementation_repeatable_ingest_succession_20261015` in laboratory inventory.
 
 Corrected zero engine `/runs/ingest-activated-retirement-unresolved-engine-08bded4`:
 engine78863/root replay73034 joined0 PASS,09:55:11Z–09:55:38Z. Genuine typed
@@ -126,11 +137,10 @@ Root also found wrapper return did not establish native exclusion;
 positive closure and both driver joins now gate reopening. Unknown custody retains
 SQL/input and native NOT_RUN. Complete affected source and typed consumers read.
 
-successor_restart_design is idle after the completed copy fix. recovery_review
-finished the independent zero raw replay and read-only repeated-lifetime SQL/budget
-review. cleanup_review finished both zero custody audits and independent contract
-review; successor_restart_design completed read-only native format/replay design. No agent has engine/SQL/native mutation authority. Both qualification
-branches are retired; original refs/bundle and detached worktrees preserve all
+The three agents completed the earlier copy fix, zero replay/custody and contract
+reviews. Their current source assignments are recorded above; none has permission
+to run engines or change native/SQL laboratory state. Both earlier qualification
+branches are retired; original refs/bundle and detached worktrees preserve their
 commits and ignored evidence.
 
 Corrected genuine import6e40fc5, workflow3811f36 and installed SIGTERMfd40012
@@ -144,7 +154,8 @@ Repeated lifetimes, import logical closure, ACK/GC, epoch3, Archive restart and
 M1–M5 remain separate. Retirement reclaims no native capacity. Read-only succession
 mapping is now selected in the owning contracts: versioned append-only chain
 anchored1-to-2, shared2-to-3/3-to-4 rules, bounded frontier and epoch-indexed SQL
-receipts. No implementation or new runtime qualification yet. Prepared-but-unactivated recovery and the complete
+receipts. Source implementation is in progress; runtime qualification is NOT_RUN.
+Prepared-but-unactivated recovery and the complete
 closure/workflow/retirement family must be included, not writer3 alone.
 
 ## Main integration and branch retirement

@@ -51104,5 +51104,56 @@
       },
       "remaining": "main only locally/remotely at verification; all93 registered worktrees and ignored/external artifacts preserved"
     }
+  },
+  "implementation_repeatable_ingest_succession_20261015": {
+    "status": "SOURCE_IMPLEMENTATION_STARTED_RUNTIME_NOT_RUN",
+    "observed_at": "2026-10-15T10:26:06+00:00",
+    "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
+    "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
+    "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
+    "integrating_owner": "root",
+    "host": "Tux",
+    "worktrees": [
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-native-20261015",
+        "branch": "implementation/repeatable-succession-native",
+        "owner": "successor_restart_design",
+        "scope": "Closed portable value2/schema3 codec and profile arithmetic; no writer enablement",
+        "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
+        "preserve_ignored_artifacts": true
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-codec-20261015",
+        "branch": "qualification/repeatable-succession-codec",
+        "owner": "cleanup_review",
+        "scope": "Independent literal byte/hash fixture; no native/SQL qualification",
+        "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
+        "preserve_ignored_artifacts": true
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
+        "branch": "implementation/repeatable-succession-postgres",
+        "owner": "recovery_review",
+        "scope": "Additive epoch-indexed SQL lifecycle family and bounded SQL fixture; engine not authorized",
+        "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
+        "preserve_ignored_artifacts": true
+      }
+    ],
+    "resource_policy": {
+      "new_engine_build_or_runtime_resources": "NONE; no subagent engine/build/cache mutation authorized",
+      "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
+      "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
+      "free_bytes_at_creation": 40890286080
+    },
+    "selected_bounds": {
+      "total_epochs_max": 255,
+      "retained_topology_memberships_max": 32768,
+      "lineage_metadata_ceiling_bytes": 262144,
+      "scratch_bytes": 131072,
+      "compact_entry_reserved_bytes": 512,
+      "retained_input_files_max": 64,
+      "retained_input_bytes_max": 33554432
+    },
+    "qualification": "NOT_RUN; selected contracts and independent AI source/design review are not runtime evidence"
   }
 }
