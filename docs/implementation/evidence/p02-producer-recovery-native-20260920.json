@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "CONNECTED_PREPARATION_EMPTY_GAP_AND_COMMIT_LOSS_PASS_ACTIVATION_WRITER_PENDING",
+      "status": "WRITER_COMPONENTS_QUALIFIED_CONNECTED_LIVE_PENDING",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Run exact-source writer-followup to complete previously unexecuted checks; preserve first build FAIL and reuse only116 unchanged per-test passes. Finite live probe and independent reader are source-only in separate worktrees.",
+      "ongoing": "Review and compile integrated finite live consumer, then qualify actual live writer against independent full raw-state reader; preserve original aggregate failure and all120ELFs.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -26640,6 +26640,150 @@
         ],
         "reuse": "All product/migration/dependency sources remain unchanged; next followup executes only previously unexecuted checks. Original failure and all three ELFs retained.",
         "review": "Independent AI source review cleanup_review closed at native92b4cb9/PG9420a05 without blocker; complete new owners/frontier/dispatch plus actual reserve/outcomes/sources callers. No runtime qualification inferred."
+      },
+      "continuous_writer_followup_build": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-followup-85eca49",
+        "source": "85eca49f42addb7f9edba07e61799f389dfa3af7",
+        "tree": "2d5e94748ece5a7c7ee36c14eb62cebb25d1f9b7",
+        "owner": "cc87a48ec18077b43c710dd90ebcd0f5",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "95a207362b1e8876169974b337d262de40261e73dde975487e10842995b978f7"
+          },
+          {
+            "name": "native",
+            "id": "787c58516f8d1b6b6f3ede07c30b93bbcea52fe6a4385abd457167f9bf773190"
+          }
+        ],
+        "started_at": "2026-10-15T14:41:51.900608+00:00",
+        "finished_at": "2026-10-15T14:44:00.439355+00:00",
+        "free_bytes_after": 32613449728,
+        "status": "PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS",
+        "preparation": {
+          "session": 83304,
+          "exit_code": 0
+        },
+        "build": {
+          "session": 92538,
+          "exit_code": 0
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-followup-85eca49/audit-root/audit-v1.json",
+          "sha256": "d0ae6c9bc8e52f6e6346820c4a1fc676a16a7387323d78bb87a0683ef9fcb6eb",
+          "session": 44846,
+          "exit_code": 0,
+          "status": "PASS_READ_ONLY_WRITER_FOLLOWUP_BUILD_CUSTODY",
+          "source_files": 1895,
+          "old_elfs": 117,
+          "new_elfs": 3,
+          "unchanged_containers": 1344
+        },
+        "raw_checks": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-followup-85eca49/out/build-checks/result.json",
+          "sha256": "7a521d1a7f2661ac2b377338c0fdfff9438a4798c455a1dad6b294a6e7143ead"
+        },
+        "raw_components": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-writer-followup-85eca49/out/artifacts/component-result.json",
+          "sha256": "c9881156119186451f099d4ee0b0a392d5b525b26258a52871678e0794f6d701"
+        },
+        "executables": {
+          "native_components": "315ff29513f0febb7f5473f0ea6e4bdbfdb79e5969637d5d46a9fda640dfab83",
+          "ingest_bootstrap_probe": "4490a0dd828360d88774b4c850e7cde83dd1b8857648c9c167f15013cef3e71f",
+          "bigbrotr": "77df7bb5ec59f82bebde68158d6bf0d6f9156ad61bec7f9450c0189571b20bba"
+        },
+        "test_counts": {
+          "dictionary_append_tests": 13,
+          "request_input_tests": 8,
+          "successor_transition": 7
+        },
+        "reused_native_results": {
+          "audit_sha256": "21b8fc0a9782e348974b38a3cb1f801d960085207f7ca1818fbfe62dbb8ad872",
+          "passed": 116,
+          "original_build_status": "FAIL",
+          "product_files_unchanged": 723,
+          "archive_worker_test": "FAIL missing packaged asset; not run here"
+        },
+        "limits": [
+          "Original build remains FAIL;116 per-test passes are reused only against identical product inputs and the same component ELF.",
+          "28 previously unexecuted component tests and Clippy pass here. No connected PostgreSQL authority or installed successor executed.",
+          "Audit does not execute engines or reopen mutable cache."
+        ]
+      },
+      "continuous_live_probe": {
+        "status": "INTEGRATED_SOURCE_BUILD_NOT_RUN",
+        "original": "ce6e154848a31daa1fe1a4487dfc14c00449e7c4",
+        "integrated": "34be7760bab224cc72d430423660a9904b1e118f",
+        "static_manifest": {
+          "path": ".research/successor-live-probe-20261015/.research/successor-live-probe-sourcecheck-20261015/manifest.json",
+          "sha256": "f0b0a963c674082f6b922b1c459cc899efaf96a07956577c529298bc04b47f6c"
+        },
+        "scope": "One local candidate through prepare, activate, Control refresh and target renewal; dictionary and old/new Event admission with exact retries, visibility read and historical/current certification. Three fresh terminal2 copies; epoch3 from both origins and epoch4 after empty3.",
+        "review": "Root full617-line live probe and full70/24-line shared/dispatcher deltas; no product source changes. Build and connected proof pending. Independent Python oracle separate.",
+        "not_run": [
+          "Connected activation and live first wave",
+          "Admission/activation faults and installed repeated lifetimes"
+        ]
+      },
+      "qualified_writer_component_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T14:53:00.939448+00:00",
+        "records": [
+          {
+            "branch": "implementation/successor-writer",
+            "original": "92b4cb927531162424ccf777d874e604d4372380",
+            "integrated": "0b8b9fed16fbca329d57dd89fbf0bb2e1c750185",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-writer-20261015",
+            "archive_ref": "refs/archive/qualified-successor-writer-components-20261015/implementation/successor-writer",
+            "blobs": {
+              "apps/bigbrotr/src/storage/rocks/admission.rs": "c79f4f5fd9de1b3a719d519d74bf84c84c289f33",
+              "apps/bigbrotr/src/storage/rocks/bootstrap.rs": "5363e413074b4b26b94fc1673ef42ec715859677",
+              "apps/bigbrotr/src/storage/rocks/dictionary_append.rs": "7f7fc72fe91fc632a6faf5ec012cd50e3178f4ff",
+              "apps/bigbrotr/src/storage/rocks/dictionary_preparation.rs": "de2bcf6ee400cfee9052b486e145bd9148003c95",
+              "apps/bigbrotr/src/storage/rocks/initial_writer.rs": "b0592b9a2cd09c37215d2ac1b9d2fae17e4e8e04",
+              "apps/bigbrotr/src/storage/rocks/lineage.rs": "e335d1908cc0ee142f75c9b9354bdb61b2756e70",
+              "apps/bigbrotr/src/storage/rocks/lineage_inputs.rs": "f42bee4687c6e6d4996ea139951019dbcf4a405a",
+              "apps/bigbrotr/src/storage/rocks/request_inputs.rs": "edd4a2180d06758536cd02e31bb104282736b1cd",
+              "apps/bigbrotr/src/storage/rocks/store.rs": "01fa9211e5df1782f90830bd9d08e8b50a38d36e",
+              "apps/bigbrotr/src/storage/rocks/successor_frontier.rs": "12f695c0dd401f833ca896b790196556e0e09bb7",
+              "apps/bigbrotr/src/storage/rocks/successor_handoff.rs": "0fd741ec50d189e638c171ec5fb228313a32c4bf",
+              "apps/bigbrotr/src/storage/rocks/successor_handoff_tests.rs": "5a6f3570b03395508bea05fc95df125a2213eaae",
+              "apps/bigbrotr/src/storage/rocks/successor_writer.rs": "54940033d6966f0e24b80019e30e31223f2dc8ad",
+              "apps/bigbrotr/src/storage/rocks/successor_writer_tests.rs": "da15c38ba3864f78f0ccd80a4d4607018691dd79"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2079,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-component-writer-before-census.json",
+            "census_sha256": "ba0130ffe356b094d8738256383f56ce3d301a6121d35572eb8deaef8739b180"
+          },
+          {
+            "branch": "implementation/successor-activation",
+            "original": "9420a05336c57518daa0eb54ed5ecd79c88aab52",
+            "integrated": "0bae4a6111894ae814fb3e4977e1785730b7f372",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-activation-20261015",
+            "archive_ref": "refs/archive/qualified-successor-writer-components-20261015/implementation/successor-activation",
+            "blobs": {
+              "apps/bigbrotr/src/storage/postgres/control_owner.rs": "333a9faf7cac3aa420f7195ce1eca5d545a9937a",
+              "apps/bigbrotr/src/storage/postgres/initial_batch.rs": "07d5d613cda552117cf6ae73ccc552c529282f6e",
+              "apps/bigbrotr/src/storage/postgres/initial_dispatch.rs": "488d07addcbb068a7862e21a478ffc61fee24495",
+              "apps/bigbrotr/src/storage/postgres/successor_activation.rs": "9abd7c017e0d87a90aad91323090976dcac62501",
+              "apps/bigbrotr/src/storage/postgres/successor_activation_tests.rs": "db24fc2efdd44496ea26832074683f728a9adfb0",
+              "apps/bigbrotr/src/storage/postgres/successor_history.rs": "015836e4c2f56873d492335bcb65f837d531cc75",
+              "apps/bigbrotr/src/storage/postgres/successor_transition.rs": "d5a85fc43aaedb0530a8956901ed9e64ff2d19ca"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2083,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-component-activation-before-census.json",
+            "census_sha256": "6f06ef0719b9fff3f4bef0a01789a88b7eb8bb903346cfb144f815ff1e41b4f8"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-writer-components.bundle",
+        "bundle_bytes": 14466924,
+        "bundle_sha256": "fedb979e55a4c93fb66721b9a073650028c30df9300c739a7bc3c9e6e0cd25ef",
+        "replay_sha256": "c9881156119186451f099d4ee0b0a392d5b525b26258a52871678e0794f6d701",
+        "audit_sha256": "d0ae6c9bc8e52f6e6346820c4a1fc676a16a7387323d78bb87a0683ef9fcb6eb",
+        "scope": "Two integrated component refs only; all worktrees, ignored/external evidence and datasets preserved. Connected authority remains NOT_RUN.",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
       }
     }
   }
