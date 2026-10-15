@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import stat
 
 import lab
 import activated_acquisition as acquisition
@@ -23,6 +24,20 @@ from initial_live import exact_absence
 from activated_retirement_unresolved_oracle import CASES, PROBE, verify, verify_seed, negative_controls
 
 FROZEN = dict(preparing.FROZEN)
+
+
+def copy_manifest(files):
+    """Compare copied contents; retain physical identity for original custody."""
+    result = {}
+    for name, value in files.items():
+        mode = value['mode']
+        assert stat.S_ISDIR(mode) or stat.S_ISREG(mode)
+        result[name] = dict(mode=mode)
+        if stat.S_ISREG(mode):
+            result[name].update(bytes=value['bytes'], sha256=value['sha256'])
+        else:
+            assert value['sha256'] is None
+    return result
 
 
 def closed_and_joined(response):
@@ -148,7 +163,9 @@ def run_all(pg, client, output, rows, clone):
         directory = output / name
         directory.mkdir(mode=0o700)
         shutil.copytree(store, directory / 'store')
-        assert preparing.census(directory / 'store') == files
+        copied = preparing.census(directory / 'store')
+        lab.write_json(output / (name + '-copied-files.json'), copied)
+        assert copy_manifest(copied) == copy_manifest(files)
         config = configure(pg, client, output, database, directory, original)
         config_path = output / Path(config).name
         catalog_before = live.upgrade(pg, client, output, database, config, name + '-32', rows)
