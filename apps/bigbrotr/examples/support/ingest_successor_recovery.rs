@@ -164,7 +164,7 @@ impl Probe {
         )
     }
 
-    fn recovery_request(&self) -> SuccessorReplayRequest<'_> {
+    pub(super) fn recovery_request(&self) -> SuccessorReplayRequest<'_> {
         SuccessorReplayRequest {
             ingest_root: &self.path,
             limits: recovery_limits(),
@@ -218,7 +218,7 @@ impl Probe {
         (row.get(0), row.get(1))
     }
 
-    async fn recovery_copy(
+    pub(super) async fn recovery_copy(
         &self,
         request: ProducerRequestId,
     ) -> (serde_json::Value, serde_json::Value) {
@@ -257,7 +257,7 @@ impl Probe {
     }
 }
 
-fn staged_value(input: Option<SuccessorRecoveryInput>) -> serde_json::Value {
+pub(super) fn staged_value(input: Option<SuccessorRecoveryInput>) -> serde_json::Value {
     input.map_or(serde_json::Value::Null,|input|serde_json::json!({
         "request":input.request,"digest":input.digest,"input_bytes":input.input_bytes,"reserved":input.reserved,
     }))

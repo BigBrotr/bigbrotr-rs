@@ -11,6 +11,8 @@ use bigbrotr::storage::{
 mod live;
 #[path = "ingest_successor_recovery.rs"]
 mod recovery;
+#[path = "ingest_successor_source.rs"]
+mod source;
 
 // Keep every possible native owner before Control in the custody drop order.
 // In particular, failed/unknown prepare leaves the spent Preparation here.
@@ -24,6 +26,7 @@ struct Native {
     preparation: Option<SuccessorPreparation>,
     live: live::LiveCustody,
     activated_recovery: Option<recovery::ActivatedSuccessorRecovery>,
+    source_recovery: Option<source::ActivatedSuccessorSourceRecovery>,
 }
 impl Native {
     fn recovery(&self) -> &IngestRecovery {
@@ -53,13 +56,14 @@ pub async fn run(
         "successor-lineage-live" => "live",
         "successor-lineage-live-new" => "live-new",
         "successor-lineage-recover" => "recover",
+        "successor-lineage-source" => "source",
         _ => panic!("unknown finite successor operation"),
     };
     assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty" | "live" | "live-new"));
     assert!(proxy_port.is_none_or(|port| port != 0));
     let mutation_bytes = match operation {
         "prepare" | "gap" | "live" | "live-new" => 8192,
-        "empty" | "recover" => 4096,
+        "empty" | "recover" | "source" => 4096,
         _ => 0,
     };
     let root =
@@ -105,6 +109,7 @@ pub async fn run(
             preparation: None,
             live: live::LiveCustody::default(),
             activated_recovery: None,
+            source_recovery: None,
         }
     } else {
         Native {
@@ -113,6 +118,7 @@ pub async fn run(
             preparation: None,
             live: live::LiveCustody::default(),
             activated_recovery: None,
+            source_recovery: None,
         }
     };
     let mut custody = TransitionCustody {
@@ -231,6 +237,15 @@ pub async fn run(
                 mutation_permit.unwrap(),
             )
             .await
+    } else if operation == "source" {
+        probe
+            .close_successor_source(
+                custody.owner.as_mut().unwrap(),
+                custody.native.as_mut().unwrap(),
+                metadata,
+                mutation_permit.unwrap(),
+            )
+            .await
     } else {
         probe
             .transition(
@@ -243,7 +258,7 @@ pub async fn run(
             .await
     };
     emit(
-        serde_json::json!({"event":if live {"lineage-live-result"}else if operation=="recover" {"lineage-recovery-result"}else{"lineage-transition-result"},"operation":operation,
+        serde_json::json!({"event":if live {"lineage-live-result"}else if operation=="recover" {"lineage-recovery-result"}else if operation=="source" {"lineage-source-result"}else{"lineage-transition-result"},"operation":operation,
         "stage":result.as_ref().err().map_or("complete",|e|e.stage),
         "epoch":result.as_ref().err().and_then(|e|e.epoch),"sequence":result.as_ref().err().and_then(|e|e.sequence),
         "error":result.as_ref().err().map(|e|&e.error),"observation":result.as_ref().ok()}),
@@ -251,6 +266,8 @@ pub async fn run(
     probe
         .snapshot(if operation == "recover" {
             "after-recovery"
+        } else if operation == "source" {
+            "after-source"
         } else {
             "after-transition"
         })
@@ -304,6 +321,13 @@ pub async fn run(
             "control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
             "observer":"joined","success":result.is_ok(),"admission":false,"activation":false,
             "source_closure":false,"workflow":false,"retirement":false}),
+        );
+    } else if operation == "source" {
+        emit(
+            serde_json::json!({"event":"lineage-source-complete","operation":operation,"native":"closed",
+            "control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
+            "observer":"joined","success":result.is_ok(),"admission":false,"activation":false,
+            "source_closure":result.is_ok(),"workflow":false,"retirement":false}),
         );
     } else {
         emit(
