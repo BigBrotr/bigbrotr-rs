@@ -19491,7 +19491,7 @@
           ]
         },
         "remaining_gates": [
-          "Actual Control UTC expiry across final job wait and same-session poisoned reuse: reviewed and integrated; build/engine NOT_RUN",
+          "UTC expiry and same-session poison actual engine/root replay PASS; custody reader correction pending",
           "Genuine unresolved zero-request acquisition claim refusal: reviewed and integrated with positive native custody correction; build/engine NOT_RUN",
           "Combined exact probe compile/Clippy then distinct real engines; repeated lifetimes/import logical closure/ACK-GC/epoch3/Archive and M1\u2013M5 remain incomplete"
         ],
@@ -21523,6 +21523,283 @@
               ],
               "preserved_audit_failure": "audit-v1.py/log expected captured_at instead of actual observed_at; reader corrected only, no engine finding"
             }
+          },
+          {
+            "status": "PASS_ACTIVATED_RETIREMENT_UTC_EXPIRY",
+            "source": "0446653a95c9beb835c910a0e646611b02b3e458",
+            "owner": "18c7668351c043eba74a9b601f974c3d",
+            "client": {
+              "id": "bf88efff98375994e04715e31356d02c5b5006f3aae9e71646e7b7610a7c20b7",
+              "name": "bigbrotr-acquisition-binding-0446653"
+            },
+            "databases": [
+              "bb_scope_bind_0446653_retirement_expiry"
+            ],
+            "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "started_at": "2026-10-15T09:43:00.056846+00:00",
+            "finished_at": "2026-10-15T09:43:51.332750+00:00",
+            "free_bytes_after": 41206956032,
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "not_run": [
+              "installed supervision and remote cancellation",
+              "unresolved zero-request acquisition claim, import closure, repeated lifetimes, ACK/GC, epoch3, Archive restart and full M1",
+              "native syscall uncertainty/power loss, capacity/load/aged-state and arm64/release"
+            ],
+            "cases": [
+              {
+                "name": "activated-retirement-utc-expiry",
+                "status": "PASS",
+                "cases": [
+                  {
+                    "name": "successor-activated-retirement-expiry",
+                    "status": "PASS",
+                    "oracle": {
+                      "status": "PASS",
+                      "snapshots": 14,
+                      "control_tables": 72,
+                      "native_rows": 70,
+                      "native_sequence": 85,
+                      "original_inputs": 6,
+                      "resolved_requests": 2,
+                      "source_cut": 5,
+                      "jobs_cancelled": 0,
+                      "gaps_added": 0,
+                      "expired_control_epoch": 13,
+                      "actual_blocked_query": "SELECT control.require_activated_initial_retirement($1::bytea)",
+                      "refusal": "Control(Backend)"
+                    },
+                    "negative_controls": {
+                      "status": "PASS",
+                      "count": 32,
+                      "rejected": [
+                        "partial-retirement",
+                        "completed-job-rewritten",
+                        "prior-gap-rewritten",
+                        "outcome-copy-reissued",
+                        "native-write",
+                        "lost-input",
+                        "holder-transaction-switched",
+                        "wrong-proof-digest",
+                        "source-receipt-mismatch",
+                        "no-real-wait",
+                        "wrong-waited-query",
+                        "wrong-holder-incarnation",
+                        "wait-ended-before-expiry",
+                        "released-before-expiry",
+                        "lock-timeout-envelope",
+                        "holder-bypassed-guards",
+                        "holder-has-dml",
+                        "unobserved-holder-exit",
+                        "unjoined-driver",
+                        "reusable-expired-session",
+                        "wrong-error-taxonomy",
+                        "unknown-operation-timeout",
+                        "backend-not-absent",
+                        "catalog-disabled",
+                        "reader-not-joined",
+                        "wrapper-nonzero",
+                        "missing-final-custody",
+                        "wrong-diagnostic-function",
+                        "generic-backend-error",
+                        "wrong-database-config",
+                        "source-rewritten",
+                        "terminal-gap-rewritten"
+                      ]
+                    },
+                    "verification_sha256": "4d364a6cf6793044672bde7ff40011681a453542511a13d0948495b32e9c059a"
+                  }
+                ],
+                "finite_invocations": 1,
+                "cli_invocations": 0,
+                "source_preserved": {
+                  "control": true,
+                  "files": true,
+                  "inputs": true,
+                  "contents": true,
+                  "catalog": true,
+                  "client": true,
+                  "artifacts": true
+                },
+                "scope": "Finite 10s operation observes actual Control UTC expiry across final retirement job lock; no target retirement writes",
+                "not_run": [
+                  "installed 1s supervision",
+                  "remote execution cancellation",
+                  "full M1"
+                ]
+              }
+            ],
+            "terminal": [
+              {
+                "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+                "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+                "State": {
+                  "Status": "exited",
+                  "Running": false,
+                  "Paused": false,
+                  "Restarting": false,
+                  "OOMKilled": false,
+                  "Dead": false,
+                  "Pid": 0,
+                  "ExitCode": 0,
+                  "Error": "",
+                  "StartedAt": "2026-10-15T09:43:00.142568311Z",
+                  "FinishedAt": "2026-10-15T09:43:50.488315166Z"
+                },
+                "Mounts": [
+                  {
+                    "Type": "bind",
+                    "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                    "Destination": "/run/secrets",
+                    "Mode": "",
+                    "RW": false,
+                    "Propagation": "rprivate"
+                  },
+                  {
+                    "Type": "bind",
+                    "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                    "Destination": "/var/lib/postgresql/data",
+                    "Mode": "",
+                    "RW": true,
+                    "Propagation": "rprivate"
+                  }
+                ]
+              },
+              {
+                "Id": "bf88efff98375994e04715e31356d02c5b5006f3aae9e71646e7b7610a7c20b7",
+                "Name": "/bigbrotr-acquisition-binding-0446653",
+                "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+                "State": {
+                  "Status": "exited",
+                  "Running": false,
+                  "Paused": false,
+                  "Restarting": false,
+                  "OOMKilled": false,
+                  "Dead": false,
+                  "Pid": 0,
+                  "ExitCode": 143,
+                  "Error": "",
+                  "StartedAt": "2026-10-15T09:43:01.109978321Z",
+                  "FinishedAt": "2026-10-15T09:43:50.013696138Z"
+                },
+                "Mounts": [
+                  {
+                    "Type": "bind",
+                    "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-0446653/out/artifacts",
+                    "Destination": "/build",
+                    "Mode": "",
+                    "RW": false,
+                    "Propagation": "rprivate"
+                  },
+                  {
+                    "Type": "bind",
+                    "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-expiry-engine-0446653/bindings",
+                    "Destination": "/lab",
+                    "Mode": "",
+                    "RW": true,
+                    "Propagation": "rprivate"
+                  },
+                  {
+                    "Type": "bind",
+                    "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                    "Destination": "/run/secrets",
+                    "Mode": "",
+                    "RW": false,
+                    "Propagation": "rprivate"
+                  }
+                ]
+              }
+            ],
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-expiry-engine-0446653",
+            "wrapper": {
+              "session": 28434,
+              "joined": true,
+              "exit_code": 0
+            },
+            "result_sha256": "32d3102d980566451c1508321447a08d887433234bc6804895b54c587dd57387",
+            "build_source": "0446653a95c9beb835c910a0e646611b02b3e458",
+            "compiled_inputs_identical": true,
+            "root_replay": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-expiry-engine-0446653/root-independent-replay.json",
+              "sha256": "9cf1415b33b3cc683a75bfa03a2e9e22b8fdfce1e79850bf216408437291896f",
+              "session": 15464,
+              "joined": true,
+              "exit_code": 0,
+              "status": "PASS_ROOT_INDEPENDENT_ACTIVATED_RETIREMENT_UTC_EXPIRY_REPLAY",
+              "source": "0446653a95c9beb835c910a0e646611b02b3e458",
+              "result_sha256": "32d3102d980566451c1508321447a08d887433234bc6804895b54c587dd57387",
+              "context_sha256": "4d364a6cf6793044672bde7ff40011681a453542511a13d0948495b32e9c059a",
+              "finite_invocations": 1,
+              "cli_invocations": 0,
+              "total_raw_full_states": 3,
+              "controls": {
+                "status": "PASS",
+                "count": 32,
+                "rejected": [
+                  "partial-retirement",
+                  "completed-job-rewritten",
+                  "prior-gap-rewritten",
+                  "outcome-copy-reissued",
+                  "native-write",
+                  "lost-input",
+                  "holder-transaction-switched",
+                  "wrong-proof-digest",
+                  "source-receipt-mismatch",
+                  "no-real-wait",
+                  "wrong-waited-query",
+                  "wrong-holder-incarnation",
+                  "wait-ended-before-expiry",
+                  "released-before-expiry",
+                  "lock-timeout-envelope",
+                  "holder-bypassed-guards",
+                  "holder-has-dml",
+                  "unobserved-holder-exit",
+                  "unjoined-driver",
+                  "reusable-expired-session",
+                  "wrong-error-taxonomy",
+                  "unknown-operation-timeout",
+                  "backend-not-absent",
+                  "catalog-disabled",
+                  "reader-not-joined",
+                  "wrapper-nonzero",
+                  "missing-final-custody",
+                  "wrong-diagnostic-function",
+                  "generic-backend-error",
+                  "wrong-database-config",
+                  "source-rewritten",
+                  "terminal-gap-rewritten"
+                ]
+              },
+              "oracle": {
+                "status": "PASS",
+                "snapshots": 14,
+                "control_tables": 72,
+                "native_rows": 70,
+                "native_sequence": 85,
+                "original_inputs": 6,
+                "resolved_requests": 2,
+                "source_cut": 5,
+                "jobs_cancelled": 0,
+                "gaps_added": 0,
+                "expired_control_epoch": 13,
+                "actual_blocked_query": "SELECT control.require_activated_initial_retirement($1::bytea)",
+                "refusal": "Control(Backend)"
+              },
+              "finite_internal_snapshots": 14,
+              "first_block_before_expiry_us": 1917594,
+              "expired_block_after_expiry_us": 157535,
+              "release_after_expiry_us": 247860,
+              "observed_wait_envelope_us": 2323485,
+              "scope": "Root source-reviewed offline independent full72/native/input/custody/real-clock/final-retirement-job-lock/named-SQL-diagnostic replay; same continuous positive native proof, no lease fixture mutation. No SQL, engines, native opens or Rust internal timer telemetry."
+            },
+            "custody_audit": {
+              "status": "RUNNING_READER_CORRECTION",
+              "session": 27721,
+              "original_reader_failure": "audit-v1 expected import negative-controls shape; expiry owns count plus rejected list. Original script/log preserved."
+            }
           }
         ],
         "fault_fixture": {
@@ -21740,8 +22017,8 @@
             "next": "Prepare clean combined exact-revision build via ingest-activated-refusals, compile/Clippy once for both probes, then distinct real expiry and unresolved engines with independent raw replay/custody."
           },
           "last_verified_private_main_push": {
-            "source": "9db076622175d8306a4900819c25158b16a55082",
-            "session": 62847,
+            "source": "0446653a95c9beb835c910a0e646611b02b3e458",
+            "session": 21618,
             "joined": true,
             "exit_code": 0,
             "ls_remote_exact": true
@@ -21889,7 +22166,7 @@
           "ordinary_open_source_coverage": "Authentic Serve producer/source OPEN through installed source closure under schema37, followed by acquisition recovery and named import veto. Retirement grants are present; no absent-retirement-ACL claim. No separate ordinary OPEN-source implementation change required by this result."
         },
         "expiry_fixture_20261015": {
-          "status": "SOURCE_REVIEWED_PURE_CHECKS_PASS_BUILD_ENGINE_NOT_RUN",
+          "status": "ACTUAL_ENGINE_ROOT_REPLAY_PASS_CUSTODY_AUDIT_PENDING",
           "owner": "recovery_review",
           "commit": "add6df3519fa24aec95f1fdc091b896694c15ebf",
           "worktree": "/home/tux/bigbrotr-rs/.research/activated-recovery-postgres-20261013",
@@ -21909,10 +22186,11 @@
           "scope": "Real20s lease aged outside transactions, final job-row wait straddles actual server UTC, named23514 guard refusal, same-session refreshUnavailable, native/source/copies unchanged, joined/excluded custody. Finite10s probe operation differs from installed supervision; no installed timer or load qualification.",
           "integrated_commit": "d0aa51e",
           "dispatcher": "2ba1696",
-          "dispatcher_checks": ".research/activated-retirement-expiry-dispatch-20261015.json"
+          "dispatcher_checks": ".research/activated-retirement-expiry-dispatch-20261015.json",
+          "engine_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-expiry-engine-0446653"
         },
         "unresolved_zero_claim_fixture_20261015": {
-          "status": "SOURCE_REVIEWED_PURE_CHECKS_PASS_BUILD_ENGINE_NOT_RUN",
+          "status": "SOURCE_PURE_BUILD_PASS_ENGINE_NOT_RUN",
           "owner": "successor_restart_design",
           "worktree": "/home/tux/bigbrotr-rs/.research/activated-recovery-native-20261013",
           "branch": "qualification/activated-retirement-unresolved",
@@ -21955,11 +22233,96 @@
           "root_review": "Complete affected live/durable helpers and typed login/accept/claim consumers, driver/oracle and raw capture reviewed. Root custody finding corrected; old body retained modulo explicit input count. Pure12seed snapshots/4states/36 oracle controls PASS; real engine NOT_RUN."
         },
         "combined_probe_build_20261015": {
-          "status": "NOT_RUN",
+          "status": "PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY",
           "profile": "ingest-activated-refusals",
           "prepare_script": ".research/activated-retirement-probes-build-prepare-20261015.py",
           "audit_script": ".research/activated-retirement-probes-build-audit-20261015.py",
-          "scope": "Only five Rust example files differ from388a; product/test/migration/toolchain unchanged. Compile/Clippy both new finite probes once, preserving76 historical protected ELFs. Old48native/48entrypoint evidence not rerun or reported as new tests."
+          "scope": "Only five Rust example files differ from388a; product/test/migration/toolchain unchanged. Compile/Clippy both new finite probes once, preserving76 historical protected ELFs. Old48native/48entrypoint evidence not rerun or reported as new tests.",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-0446653",
+          "source": "0446653a95c9beb835c910a0e646611b02b3e458",
+          "tree": "fbe12d5752a1c60cd3f004c679cebd8b718324ef",
+          "owner": "3824d888de802ee6de7ef496f5e25645",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "5ca739f867e5e81f5334bd495abfba1930c891d2071c319be62fb8bc5cba659b"
+            },
+            {
+              "name": "native",
+              "id": "999d33d9e19bc1655fac6ad4ab9df56535e810001de06666ce394b948b05106e"
+            }
+          ],
+          "wrapper": "59436 joined0",
+          "preparation": "98074 joined0",
+          "checks": [
+            {
+              "name": "compile",
+              "command": [
+                "cargo",
+                "build",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 88.7274237209931
+            },
+            {
+              "name": "clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 6.022917767055333
+            }
+          ],
+          "source_manifest_sha256": "f62283392ec8a199f76112aae8fec57e68f1d7c90472509eabc169e10e3f6da1",
+          "archive_sha256": "487ca49b579530297a45661ebb29d0417de17975281ccc83a05b7ead8fffd19c",
+          "receipt_sha256": "f483f185f19a94422463ca85fbe6dcb0f7f9fe2ec1c771239fbf0cfd08ab5909",
+          "binary_sha256": "8cb22af71ea616fceb14fce8702a410e710ef6c4911d5505a944226d86e96729",
+          "probe_sha256": "6e7c26c4841c385f169b6139dd315177a7eeafd011cae4b3884d37aaaeea0f3f",
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-refusals-0446653/root-build-audit.json",
+            "sha256": "71bffa26aa0a4e447094e0633963d729ffd809dcf9b9fea6baebce4de5422f21",
+            "wrapper": "1125 joined0",
+            "files": 1853,
+            "protected_elfs": 78,
+            "unchanged_containers": 1297
+          },
+          "reused_test_source": "388a01abd6dadf2a894a88c16e585ace6b382ffa",
+          "reused_native_tests": {
+            "source-closure": 3,
+            "initial-reconstruction": 36,
+            "producer-closing": 9
+          },
+          "reused_entrypoint_schema_migration_tests": 48,
+          "started_at": "2026-10-15T09:40:48.261396+00:00",
+          "finished_at": "2026-10-15T09:42:25.248737+00:00",
+          "free_bytes_after": 41350713344
         }
       }
     }

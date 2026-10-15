@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T09:40Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T09:46Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, installed SIGTERMfd40012 and corrected genuine import6e40fc5
 qualification, root replay and custody audit PASS. Main is the integrated state;
 selected M1–M5 remain INCOMPLETE. Follow the
@@ -13,14 +13,11 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `ae236bc`.
-Verified private push62847 is `9db076622175d8306a4900819c25158b16a55082`;
-import qualification and original failures are pushed. Subsequent coherent main
-commits integrate expiry d0aa51e/dispatcher2ba1696, builder wording b39eeca,
-zero-claim056a118/dispatcher0342378 and custody correction ae236bc. Actual combined
-compile/Clippy and both engines remain NOT_RUN. No merge/rebase pending. Root
-owns this checkpoint/evidence/inventory update; only five example Rust paths
-change compiled inputs relative to388a, requiring one new probe build.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `0446653`.
+Verified private push21618 is `0446653a95c9beb835c910a0e646611b02b3e458`;
+remote has main only. Main contains both reviewed finite probes, dispatcher,
+custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
+current evidence/inventory/checkpoint update recording successful build and expiry.
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none is complete.
 [Storage task](02-storage.md), [registration contract](../reference/ingest-registration.md),
@@ -33,77 +30,62 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: execute the prepared clean combined exact-revision
-build with existing `ingest-activated-refusals` profile. Source review is complete;
-compile/Clippy both new finite paths once, then run distinct expiry and zero-claim
-engines. Preserve all outcomes, root raw replay and independent custody audit.
-Preparation/audit scripts are authored, not executed, under
-`.research/activated-retirement-probes-build-prepare-20261015.py` and
-`.research/activated-retirement-probes-build-audit-20261015.py`.
+Root's next bounded action: finish the expiry custody audit, commit its exact
+result and prepare a new docs-only revision for the unresolved zero-claim engine.
+Use combined build0446653 without recompiling. Distinct source revisions avoid
+colliding with the retained client name; never remove an earlier client to rerun.
+Then run the new finite seed plus two installed CLI, independent raw replay and
+custody review, recording every outcome in the retirement evidence/inventory.
 
-Corrected import `/runs/ingest-activated-retirement-import-engine-6e40fc5`:
-engine32859/root replay57560/audit56003 joined0 PASS;09:06:49Z–09:07:26Z.
-One real Serve8, source9, acquisition10 and retirement11: genuine guarded import
-claim remains exact, source closes at5, network acquisition alone is abandoned,
-retirement names unresolved import veto. Full13 states/27 controls and11 closed
-relay rounds. Resultd463f7b4/replayd04fd852/audit36f2ef6b. Audit1848engine/1834build
-files/76ELFs/64raw bindings/1295 nonborrowed projections preserves f12's21paths,
-302273bytes/four inputs/four frozen artifacts. Freeze09:14:07.601224Z1297containers
-SHA94177b5e8452efbc4ab224c211980c78bc2a095995225f6052ea4d1912cf1751.
-First audit reader expected captured_at rather than observed_at; its original
-script/log remain, corrected reader only. Genuine OPEN-to-closed source behavior
-under schema37 is exercised with retirement grants present, not reduced ACLs.
+Combined build `/runs/ingest-activated-refusals-0446653`: source
+`0446653a95c9beb835c910a0e646611b02b3e458`, preparation98074/build59436/audit1125
+joined0 PASS. Compile88.727s/Clippy6.023s are the only newly executed checks.
+Root audit1853source files/78protectedELFs/1297unchanged container projections
+passes, SHA71bffa26aa0a4e447094e0633963d729ffd809dcf9b9fea6baebce4de5422f21.
+Product/test/migration/toolchain inputs equal388a; its48native/48entrypoint checks
+are reused, not reported as newly run. Newprobe6e7c26c4/CLI8cb22af7 receipts in
+evidence. The one-off preparation has completed; do not replay it.
 
-Original import2750aa4/engine75478 remains FAIL. All actual process captures and
-156 artifacts survive unchanged; failure custody audit72435 PASS. Oracle9bb33f,
-integrated6e40fc5, fixes equivalent zoned backend timestamp spelling and an
-unpromised schema-version row order while preserving exact rows/xmin. Root16915
-corrected offline replay passes27 controls; no reclassification of originalFAIL.
+Expiry `/runs/ingest-activated-retirement-expiry-engine-0446653`:
+engine28434/root replay15464 joined0 PASS,09:43:00Z–09:43:51Z. Actual20sControl13
+lease expires across the final retirement job lock: observed blocked1,917,594us
+before expiry,157,535us after; rollback247,860us after;2,323,485us wait envelope.
+Named23514 Control(Backend), same-session refreshUnavailable, no target/source/
+workflow/native/input writes. Fourteen finite full72 snapshots and three external
+states/32 controls. Native70/sequence85/six inputs unchanged. Result32d3102d,
+context4d364a6c. Root replay checks raw files, not just assembled expectations.
+Custody audit pending reader correction: audit-v1/session27721 joined1 expected
+import negative-control keys rather than expiry count/rejected-list. Preserve
+original script/log; engine result is unchanged. Freeze09:44:24.500777Z1300containers
+SHA1280424d676b1c43ebcc022d43e2813c360c842f4af3d75e86ce5d458e80c191.
 
-Workflow3811f36 engine73300/root78881/audit19911 joined0 PASS:8CLI/7clones,
-37states/132controls, first12/retry0 target writes and six discriminating refusals.
-Three original histories preserved. Synthetic binding is not import execution.
-SIGTERMfd40012 engine65876/root36259/author audit32894 joined0 PASS:1CLI/3states/
-32controls, no C7 or target/native/input writes; signal266762us after refresh,
-exact blocked Control backend excluded after holder rollback. No expiry claim.
+Zero-claim original530be40/custodyc9d3dd0 is integrated056a118/ae236bc with
+dispatch0342378. ActualControl8 activation/login/typed sole-job claim is expected
+with zero issued; source9 closes0, retirement10 names unresolved workflow. Pure
+12snapshots/fourCLIstates/36controls and16custody mocks PASS; combined build PASS;
+real engine NOT_RUN. Root found wrapper return did not establish native exclusion;
+positive closure and both driver joins now gate reopening. Unknown custody retains
+SQL/input and native NOT_RUN. Complete affected source and typed consumers read.
 
-recovery_review owns completed expiryadd6df in the retained postgres worktree,
-branch `qualification/activated-retirement-expiry`. One new Rust support module,
-two existing example wiring edits, two Python driver/oracle files. Root read all
-new files plus complete shared succession/bootstrap/unchanged acquisition probe;
-no concrete finding.118 pinned pure artifacts verified:14states/32controls,
-8 failure custody mocks/1 success, source/API/format checks. Real20s lease aged
-outside transactions, final row wait across server UTC, named23514 Backend and
-same-session refreshUnavailable are expected, not yet observed. No lease rewrite.
-Finite operation10s is distinct from installed supervision. Existing builder
-recipe is verified: `experiments/network-transport/lab.py REV TREE
-ingest-activated-refusals` from clean exact `RUN/source`. Root read full runner/
-native profile and corrected stale scope wording only. Compile/Clippy only;
-48native/48entrypoint-schema-migration checks at388a need exact input equivalence.
-Root preparation/audit scripts above remain NOT_EXECUTED. The read-only mapping
-of repeated succession is complete: a versioned append-only chain anchored in
-1-to-2, shared rules for2-to-3 and3-to-4, bounded frontier and new epoch-indexed SQL
-receipts are needed; no implementation or semantic selection yet. Prepared but
-unactivated recovery and full closure/workflow/retirement must be included, not
-silently treated as writer3 alone.
+successor_restart_design retains its completed clean native worktree/branch.
+recovery_review prepares independent zero raw replay in postgres worktree;
+cleanup_review performs expiry custody audit in qualification worktree. No agent
+has engine/SQL/native mutation authority. Both qualification branches stay until
+reviewed outcomes are integrated and original commits archived.
 
-successor_restart_design completed zero-claim original530be40/custodyc9d3dd0,
-integrated056a118/ae236bc. Two existing Rust helpers plus two Python files only.
-ActualControl8 activation/login/typed sole-job claim is expected with zero issued;
-source9 closes0, retirement10 names unresolved workflow. Pure12snapshots/four
-CLIstates/36controls and16 custody mocks PASS. Root found docker-exec return did
-not establish native exclusion; corrected positive closure and both driver joins
-now gate reopening, unknown retains SQL/input/native NOT_RUN. Complete affected
-owners/typed consumers/driver/oracle read; source hashes and checks in evidence.
-No real build/engine yet. Agent retains its original clean worktree/branch.
-recovery_review prepares independent zero raw replay; cleanup_review prepares
-expiry custody audit, both read-only scripts, no engine mutation authority.
+Corrected genuine import6e40fc5, workflow3811f36 and installed SIGTERMfd40012
+engine/root replay/custody PASS remain retained. Original import2750aa4 FAIL is
+preserved with all156artifacts; timestamp spelling/ledger ordering were corrected
+in the reader only. Ordinary OPEN-to-closed source under schema37 was exercised
+with retirement grants present. Detailed identities and limits are in evidence.
 
-Remaining retirement gates: actual Control UTC expiry/same-session poison and
-genuine unresolved zero-request claim refusal. Repeated lifetimes, import logical
-closure, ACK/GC, epoch3, Archive restart and M1–M5 remain separate. Retirement
-reclaims no native capacity. Only finite-expiry and unresolved-claim branches are
-active locally; completed workflow/SIGTERM/import refs archived and retired.
+Remaining retirement gate: genuine unresolved zero-request claim refusal.
+Repeated lifetimes, import logical closure, ACK/GC, epoch3, Archive restart and
+M1–M5 remain separate. Retirement reclaims no native capacity. Read-only succession
+mapping identifies a versioned append-only chain anchored1-to-2 and shared rules
+for2-to-3/3-to-4, bounded frontier and epoch-indexed SQL receipts; no implementation
+or semantic selection yet. Prepared-but-unactivated recovery and the complete
+closure/workflow/retirement family must be included, not writer3 alone.
 
 ## Main integration and branch retirement
 
@@ -235,7 +217,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after corrected import09:07:26Z:41,607,385,088; remeasure before allocating. Small engines
+Free bytes after expiry09:43:51Z:41,206,956,032; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive
