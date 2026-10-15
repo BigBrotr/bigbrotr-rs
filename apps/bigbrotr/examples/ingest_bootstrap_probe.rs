@@ -66,6 +66,8 @@ mod ingest_source_races;
 mod ingest_source_transport;
 #[path = "support/ingest_succession.rs"]
 mod ingest_succession;
+#[path = "support/ingest_successor_history.rs"]
+mod ingest_successor_history;
 #[path = "support/ingest_visibility.rs"]
 mod ingest_visibility;
 #[path = "support/installed_relay_setup.rs"]
@@ -917,6 +919,7 @@ fn main() {
             7
         } else if empty_lock
             || successor_gate
+            || args[1] == "successor-lineage-history"
             || matches!(
                 args[1].as_str(),
                 "successor-commit-before"
@@ -991,6 +994,13 @@ fn main() {
                 .await;
             } else if args[1] == "successor-history" {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
+            } else if args[1] == "successor-lineage-history" {
+                ingest_successor_history::run(
+                    config,
+                    Path::new(&args[4]),
+                    args[5].parse().expect("explicit metadata byte capacity"),
+                )
+                .await;
             } else if matches!(
                 args[1].as_str(),
                 "successor-gap-recover" | "successor-gap-cancelled"
