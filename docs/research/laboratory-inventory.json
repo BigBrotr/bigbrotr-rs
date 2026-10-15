@@ -52400,7 +52400,7 @@
       "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#initial_successor_preparation_20261012.repeatable_succession_20261015.history_component"
     },
     "history_probe": {
-      "status": "FIRST_BUILD_FAIL_CORRECTION_INTEGRATED_NOT_RUN",
+      "status": "BUILD_PASS_CONNECTED_ENGINE_NOT_RUN",
       "original": "f3e1511cd25cae2cb528e11b8215bdd207cb2696",
       "main": "b96bcf8",
       "helper_sha256": "ca5004911e4358574c146154d597b465622161ffc0861e66a8a8aca0351c54d5",
@@ -52459,8 +52459,61 @@
         "original": "2183a9202c4401479d475ef514a48c185a25247f",
         "integrated": "6714e57",
         "description": "Use existing public replay capacity, the maximum of bootstrap and dictionary replay, for effect grant and emitted capacity; no product visibility change",
-        "corrected_build": "NOT_RUN"
+        "corrected_build": "59ce0fd_PASS_SEPARATE_RUN"
       }
+    },
+    "history_probe_build": {
+      "status": "PASS_SUCCESSION_HISTORY_PROBE_BUILD",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-probe-59ce0fd",
+      "source": "59ce0fdf7fbe11fd90470384d72118929c5c86fe",
+      "tree": "3efc41d2f00192a5f5a1d5e582f6822666e57dec",
+      "preparation_session": 45244,
+      "build_session": 1490,
+      "custody_session": 36494,
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "started_at": "2026-10-15T12:50:05.611048+00:00",
+      "finished_at": "2026-10-15T12:51:44.632411+00:00",
+      "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-probe-59ce0fd/audit-root/audit-v1.json",
+      "audit_sha256": "10f7e0f210d2629ba1b8a884160a6bc3343d37677ebbab163de3194c85fff9b7",
+      "checks": {
+        "collected": 2,
+        "executed": 2,
+        "failed": 0,
+        "not_run": 0
+      },
+      "tests": 0,
+      "files": 1876,
+      "new_elfs": {
+        "ingest_bootstrap_probe": "023bb8d0f084cef0c2c4e96e4dd9852f8283b844a610b39b3cbdb846c2202520",
+        "bigbrotr": "2de1d5d653e660c61edee9e6667f175380d0eae2fce4885ac0d548aa11cb4d6b"
+      },
+      "protected_elfs": 102,
+      "total_protected_elfs": 104,
+      "unchanged_containers": 1326,
+      "owner": "6376e699d97f07d73e0407cd300bc5cb",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "2392abe53c84f1916a55836a4920d7d19ef230e13374199d6e1c8ebc7c375e46"
+        },
+        {
+          "name": "native",
+          "id": "d9b6d24135169317549f2dd059ba8c0e13b8fe7426b69df81c2c8cb493c51ff2"
+        }
+      ],
+      "free_bytes_after": 35270197248,
+      "scope": "Probe and CLI compilation/Clippy only. Previous72 unchanged components reused; connected engine NOT_RUN; first failed build retained."
+    },
+    "native_transition_draft": {
+      "original": "6475ff4b0fef91c56bd042ec4e09bb472b9eddf3",
+      "worktree": "/home/tux/bigbrotr-rs/.research/successor-handoff-20261015",
+      "status": "SOURCE_REVIEWED_NOT_INTEGRATED",
+      "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
+      "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     }
   }
 }
