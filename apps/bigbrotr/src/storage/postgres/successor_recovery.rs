@@ -14,8 +14,14 @@ use successor_history::rows::{self as history_rows, Epoch, ProducerState, Source
 
 #[path = "successor_recovery_rows.rs"]
 mod projection;
+#[path = "successor_retirement.rs"]
+mod retirement;
 #[path = "successor_source.rs"]
 mod source;
+pub use retirement::{
+    ActivatedSuccessorRetirement, ActivatedSuccessorRetirementResolution,
+    ResolvedActivatedSuccessorRetirement,
+};
 pub use source::{
     ActivatedSuccessorSourceRecovery, ActivatedSuccessorSourceResolution,
     ResolvedActivatedSuccessorSource,
