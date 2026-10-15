@@ -240,6 +240,9 @@ WAL-enabled synchronized batch. Existing-plan retry requires the exact empty
 target state and makes no write. Root device/inode, native sequence and separately
 checked retained input census remain local proof guards, never portable receipt
 fields. A fresh process reconstructs the recorded attempt from positive history
-and resolves it; it cannot activate the lost candidate. Formats and profile limits
-are selected here, while implementation, native/SQL boundaries and installed
-qualification remain NOT_RUN.
+and resolves it; it cannot activate the lost candidate. The portable component
+atfc6f9a0 implements this value codec, manifest schema3 and profile arithmetic.
+Independent golden values, malformed values, proper prefixes and legacy schema
+refusals pass in54 targeted Rust tests with Clippy. These checks do not qualify
+positive lineage, actual compact allocation, connected native/SQL succession or
+installed journeys; those remain NOT_RUN.

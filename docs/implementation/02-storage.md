@@ -396,8 +396,16 @@ One owner serializes exact identity decisions for each writable directory.
   whole-lineage positive replay and prepared-empty recovery without adoption.
   Its explicit metadata/topology limits admit at most255 total epochs, independent
   of the64-input spool. Independent AI contract review corrected the legitimate
-  PG/native gap exception and current-batch dependency wording; no implementation
-  or new runtime qualification exists yet. Archive selection
+  PG/native gap exception and current-batch dependency wording. The first portable
+  component atfc6f9a0 implements schema3/value2 and independent resource arithmetic;
+  54 targeted codec/native compatibility/refusal tests and Clippy pass. Independent
+  vectors cover11 valid records,38 malformed values and6533 proper prefixes.
+  Source review found and corrected missing schema1 checks on legacy initial
+  bootstrap/admission/closing/recovery paths; schema2/3-owner1 controls preserve
+  exact rows, native sequence and input sidecars. This does not implement positive
+  whole-lineage replay, real compact allocation, SQL succession or installed restart.
+  The legacy epoch1 cut0/absent source-marker representation remains explicitly
+  supported without repair; all later source markers are required. Archive selection
   refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

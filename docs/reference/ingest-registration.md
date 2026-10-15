@@ -1094,6 +1094,15 @@ owns the actual exclusive native handle continuously through writer delivery.
 The checked lineage is contiguous from epoch1 through the current native head,
 with one stable dataset/resource/shard/recovery identity and producer slot. Every
 retired stream, including a zero-length stream, has an explicit terminal cut.
+The legacy epoch1 zero-source representation may have no physical SourceStream
+counter: accept that exact absence only with its retained handoff cut0, a genuine
+CLOSING producer whose issued count matches that handoff, and no epoch1 facts
+or pending batches. A positive issued count is valid when its retained requests
+and input sidecars pass the complete census and positive ordered replay; zero
+facts does not imply zero requests.
+It still contributes terminal cut0 to the checked frontier. Epochs2 and later
+require their explicit source marker, including zero; never repair or infer a
+missing nonzero or later-epoch marker.
 Reconstruct and verify its ordered frontier from exact retained receipts and
 registry identities. Check the entire bounded producer/source/receipt/domain
 census and reject extra, missing or foreign state, including empty extra streams.

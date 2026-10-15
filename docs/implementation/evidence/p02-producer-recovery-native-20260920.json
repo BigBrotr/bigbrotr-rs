@@ -22942,6 +22942,198 @@
           "free_bytes_after": 41350713344
         }
       }
+    },
+    "repeatable_succession_20261015": {
+      "status": "PORTABLE_COMPONENTS_PASS_CONNECTED_FAMILY_INCOMPLETE",
+      "portable_component": {
+        "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
+        "source": "fc6f9a0467cd36de6fe477b23ed6f3e5377e50f3",
+        "tree": "7f5a6cda0f8267773998fc76d283751b2eea0b4b",
+        "preparation": {
+          "session": 74781,
+          "exit_code": 0,
+          "script": ".research/repeatable-succession-build-prepare-20261015.py",
+          "state": "COMPLETE_DO_NOT_REPLAY"
+        },
+        "execution": {
+          "session": 30635,
+          "exit_code": 0,
+          "started_at": "2026-10-15T10:44:04.878699+00:00",
+          "finished_at": "2026-10-15T10:45:45.817064+00:00",
+          "owner": "5417f281844b32651910d4c99c8f7039"
+        },
+        "checks": [
+          {
+            "name": "independent-fixture",
+            "status": "PASS",
+            "seconds": 0.031720918603241444
+          },
+          {
+            "name": "rocks_succession",
+            "status": "PASS",
+            "seconds": 57.41441263537854
+          },
+          {
+            "name": "rocks_manifest",
+            "status": "PASS",
+            "seconds": 3.3191944658756256
+          },
+          {
+            "name": "rocks_keys",
+            "status": "PASS",
+            "seconds": 3.2746781008318067
+          },
+          {
+            "name": "rocks_store",
+            "status": "PASS",
+            "seconds": 4.420609589666128
+          },
+          {
+            "name": "legacy_handoff",
+            "status": "PASS",
+            "seconds": 24.952243057079613
+          },
+          {
+            "name": "legacy_bootstrap",
+            "status": "PASS",
+            "seconds": 0.2157089952379465
+          },
+          {
+            "name": "legacy_closing",
+            "status": "PASS",
+            "seconds": 0.31559626664966345
+          },
+          {
+            "name": "legacy_recovery",
+            "status": "PASS",
+            "seconds": 0.31543256249278784
+          },
+          {
+            "name": "clippy",
+            "status": "PASS",
+            "seconds": 4.371751482598484
+          }
+        ],
+        "test_counts": {
+          "rocks_succession": 5,
+          "rocks_manifest": 5,
+          "rocks_keys": 9,
+          "rocks_store": 1,
+          "legacy_handoff": 7,
+          "legacy_bootstrap": 6,
+          "legacy_closing": 10,
+          "legacy_recovery": 11
+        },
+        "rust_tests": 54,
+        "fixture": {
+          "valid_records": 11,
+          "malformed_declarations": 38,
+          "proper_prefixes_refused": 6533,
+          "future_chain_vectors": 5,
+          "future_closure_vectors": 3,
+          "future_consumer_status": "NOT_RUN"
+        },
+        "native_toolchain": {
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "clang": "14.0.6",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+        },
+        "retained_sha256": {
+          "resources.json": "17d0a402733e97825d5883749ac50f888dd824571a6ce59789b4103e7746d67e",
+          "preflight.json": "e46b2d1d7f6636ce70e76b090bef40cf5083d3c9906af5d5701d072416db3ace",
+          "root-preparation.json": "ebc02623ad1daf2b244681957b080c64d650aabc92b6b4cd1fed6522b9e0bac1",
+          "root-preparation-containers.json": "5f07844bf4a88a83bea82e857413e1cf86781bbb8ea474febcc2f1dc1d074e16",
+          "fetch-terminal.json": "d0b873737fe2ab2a1d4205c443ef26624c7cb53b35297eb971d861ccc0aef399",
+          "native-terminal.json": "e084b553becebd32551ca7cec264c27cf9879e6527f8da18cd84215d7f757c24",
+          "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "native.log": "8deb545b10a43971364aba4a2520c99c805f506001d63398b2818cf438e856e6",
+          "out/build/source-manifest.json": "8b03513ec4ac44316173245658071ab60589ee5cb82d43eac90f59f3ca273f8a",
+          "out/build/source.tar": "4c73cba6add6a8f2d814164ac2f64a2af5ae55ff4e11a1a13eeff55b0ccd7b3e",
+          "out/build-checks/result.json": "4dd08f71a20f3d12729a07063ce45010913f3e1cfab5adea9530f7fc75ccfdbb",
+          "out/artifacts/component-result.json": "1eee51cfcd75df80dd0f25b5077d127ad2ad40e198252f7d8ce9bb85f66b6606",
+          "out/qualification.json": "b15f7d4280c8384414ecf14cc4e3396554000d210772efac76da1c3947a60d45"
+        },
+        "new_elfs_sha256": {
+          "rocks_succession": "850548d2db2297e9cd0e5f17c8b3865f4d3c47fb35893f229485d3685e1379da",
+          "rocks_manifest": "a006504fd46b45f1fea019148f5f38d7412597430f5f374cee96d8e88985f0e0",
+          "rocks_keys": "b8c882947a0e17087b2dada5ec151c95feca6cafb7ba12397426850e4c02bb7c",
+          "rocks_store": "3b6c24ebe724a294866d5f7ee94dfdeafe692d876cbaac64cde76cac7155bc92",
+          "native_components": "01933a9785f1f67d15523f401487bf7002ae8d8dfd6a85295f70c94496d42907"
+        },
+        "preservation": {
+          "prior_protected_elfs": 78,
+          "source_files": 1859,
+          "unchanged_containers": 1302,
+          "owned_terminal": {
+            "fetch": {
+              "id": "c08b3c8264089142b30cfd7a9f42884aab8e32e11a56e13d734364d9ba0917cc",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-15T10:44:05.428746734Z",
+                "FinishedAt": "2026-10-15T10:44:05.673335107Z"
+              }
+            },
+            "native": {
+              "id": "6db66efa3b71e7364bffb68df162eb7155c9e4266bf6924d3d2fe4a9684510d4",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-15T10:44:06.034872521Z",
+                "FinishedAt": "2026-10-15T10:45:45.109598002Z"
+              }
+            }
+          },
+          "free_bytes_after": 40726720512
+        },
+        "audit": {
+          "status": "PASS_READ_ONLY_COMPONENT_BUILD_AUDIT",
+          "report": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0/audit-cleanup-review/audit-v1.json",
+          "sha256": "b1d368ab4e007995e184c7a8a99329cf9266f45df49db21b83f49578f8a4bbf6",
+          "execution": "cdc4f4 joined exit0; no live session",
+          "reviewer_relation": "Authored the Python literal fixture; independently reviewed Rust source. This audit binds custody/source/raw logs, not an independent replay of that authored fixture.",
+          "capture": {
+            "captured_at": "2026-10-15T10:47:49.999023+00:00",
+            "containers": 1304,
+            "sha256": "9d9d9cd131c8dd04e2921115473044a9899e65a2caeed08d26f4f1cba6f297fe",
+            "operation": "docker ps -aq --no-trunc; docker inspect exact IDs; read-only"
+          },
+          "limitations": [
+            "No test executable, compiler, SQL or native engine run by auditor.",
+            "Container comparison excludes only rolling Health.Log, retaining status and failing streak.",
+            "Mutable compiler caches not re-opened or treated as retained evidence.",
+            "No connected lineage, PostgreSQL or installed repeatable succession qualification."
+          ],
+          "root_recheck": "Read result and raw targeted logs; mechanically rehashed retained reports and all 83 executable artifacts; no rerun"
+        },
+        "findings": [
+          "Legacy bootstrap/admission/closing/recovery accepted schema2/3 with initial-owner coordinates on some paths; schema1 guards now precede staging, reservation and barriers. Native refusal/preservation tests PASS; connected PG path execution NOT_RUN.",
+          "Legacy epoch1 missing physical source marker is legal at positively resolved cut0 even with issued>0. It requires exact handoff/CLOSING count, no facts/pending and positive replay of every retained request/input; later markers remain mandatory."
+        ],
+        "limitations": [
+          "Portable codec/profile arithmetic and selected legacy native checks only.",
+          "No implemented or qualified whole-lineage positive replay, compact allocation, SQL0038, repeated native succession, writer activation or installed restart.",
+          "PostgreSQL companion schema guards compile; no connected PostgreSQL refusal tested here.",
+          "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
+        ]
+      },
+      "ongoing": "Native read-only lineage inspector and additive SQL0038 in separate owned worktrees; no authority or installed journey claimed"
     }
   }
 }

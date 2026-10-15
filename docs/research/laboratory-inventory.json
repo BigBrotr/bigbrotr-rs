@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "At verification: remote only main; local main and active qualification/activated-retirement-workflows. New temporary import work is authorized separately; no inactive branch remains. All93 registered worktree directories and heads preserved.",
+    "remaining": "main and two intentional active local repeatable-succession implementation branches; remote main only at last verified push",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -51103,11 +51103,32 @@
         "detached_worktrees": 40
       },
       "remaining": "main only locally/remotely at verification; all93 registered worktrees and ignored/external artifacts preserved"
+    },
+    "qualified_succession_fixture_followup": {
+      "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T10:47:16.962662+00:00",
+      "original": "8ca4b2726ccc0deef50456be15e7ac68b5272af1",
+      "integrated": "8acfaea0ce0909effbed181d4095fdcb92a4b354",
+      "archive_ref": "refs/archive/qualified-succession-fixture-20261015/qualification/repeatable-succession-codec",
+      "retired_branch": "qualification/repeatable-succession-codec",
+      "worktree": "/home/tux/bigbrotr-rs/.research/repeatable-succession-codec-20261015",
+      "exact_blobs": {
+        "experiments/ingest-succession/README.md": "39e91ddb2ee4a96697b6e36c10bcc5b11dd033a1",
+        "experiments/ingest-succession/generate.py": "f39f4ced5f970aab742263e263922f4af502f21f",
+        "experiments/ingest-succession/portable-handoff-v2.json": "2b014b677adfc1723b80cd625c7338b3b7348b67"
+      },
+      "census_paths": 2045,
+      "census_sha256": "bc44dfd5f887f6804a687a55f113b42d6ebcea1c6dd335f865e6ff88e712783b",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-fixture.bundle",
+      "bundle_bytes": 13901465,
+      "bundle_sha256": "fd4826523b3fb53e00b5c8a169b3fdc887a1942a34055a7b130e7c60d74ea829",
+      "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "PORTABLE_COMPONENTS_INTEGRATED_BUILD_NOT_RUN",
-    "observed_at": "2026-10-15T10:43:09.429482+00:00",
+    "status": "PORTABLE_COMPONENTS_PASS_CONNECTED_FAMILY_INCOMPLETE",
+    "observed_at": "2026-10-15T10:47:49.999023+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51118,17 +51139,18 @@
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-native-20261015",
         "branch": "implementation/repeatable-succession-native",
         "owner": "successor_restart_design",
-        "scope": "Closed portable value2/schema3 codec and profile arithmetic; no writer enablement",
+        "scope": "Active bounded read-only retained-lineage inspector; codec/schema hardening integrated and qualified",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
         "preserve_ignored_artifacts": true
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-codec-20261015",
-        "branch": "qualification/repeatable-succession-codec",
+        "branch": null,
         "owner": "cleanup_review",
-        "scope": "Independent literal byte/hash fixture; no native/SQL qualification",
+        "scope": "Fixture integrated/qualified; original files retained, redundant branch retired; owner idle after audit",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
-        "preserve_ignored_artifacts": true
+        "preserve_ignored_artifacts": true,
+        "detached_at": "8ca4b2726ccc0deef50456be15e7ac68b5272af1"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
@@ -51140,7 +51162,7 @@
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "NONE; no subagent engine/build/cache mutation authorized",
+      "new_engine_build_or_runtime_resources": "Root-only exact-source component build completed; both owned containers exited0. No subagent engine/build/cache mutation authorized.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080
@@ -51154,13 +51176,13 @@
       "retained_input_files_max": 64,
       "retained_input_bytes_max": 33554432
     },
-    "qualification": "NOT_RUN; selected contracts and independent AI source/design review are not runtime evidence",
+    "qualification": "Portable component: 54 Rust tests, literal fixture and Clippy PASS; connected repeatable succession NOT_RUN",
     "integrated_components": {
       "fixture": {
         "original": "8ca4b2726ccc0deef50456be15e7ac68b5272af1",
         "main": "8acfaea",
         "golden_sha256": "59d1f717d248aa0c4d0e2b49873495a6a825db59f641f730fb288408c7c4a49a",
-        "selfcheck": "PASS; product consumer NOT_RUN"
+        "selfcheck": "PASS; codec malformed/proper-prefix consumers PASS; future chain/closure consumers NOT_RUN"
       },
       "codec": {
         "original": "1f529a7645a7769f43b43ab567d55527119beecb",
@@ -51170,16 +51192,117 @@
         "original": "88176972cd9b7bc26da79edfbf253f38a3bacb22",
         "main": "d8173a0",
         "postgres_companion": "15f4244",
-        "review": "Independent AI source review found and closed schema2/3 owner1 bootstrap/closing gap; actual tests NOT_RUN"
+        "review": "Independent AI source finding closed; native preservation/refusal tests PASS; connected PostgreSQL refusal execution NOT_RUN"
       }
     },
-    "next_build": {
+    "completed_build": {
       "profile": "ingest-succession-codec",
-      "status": "NOT_RUN",
+      "status": "PASS",
       "preparation_script": ".research/repeatable-succession-build-prepare-20261015.py",
       "protected_elfs": 78,
       "required_free_bytes": 12884901888,
-      "scope": "Codec, manifest/key, schema3 inspection refusal, legacy bootstrap/closing/recovery/handoff checks and Clippy; connected repeatable succession NOT_RUN"
+      "scope": "Codec, manifest/key, schema3 inspection refusal, legacy bootstrap/closing/recovery/handoff checks and Clippy; connected repeatable succession NOT_RUN",
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
+      "session": 30635,
+      "exit_code": 0,
+      "protected_elfs_after": 83
+    },
+    "build_evidence": {
+      "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
+      "source": "fc6f9a0467cd36de6fe477b23ed6f3e5377e50f3",
+      "tree": "7f5a6cda0f8267773998fc76d283751b2eea0b4b",
+      "execution": {
+        "session": 30635,
+        "exit_code": 0,
+        "started_at": "2026-10-15T10:44:04.878699+00:00",
+        "finished_at": "2026-10-15T10:45:45.817064+00:00",
+        "owner": "5417f281844b32651910d4c99c8f7039"
+      },
+      "new_elfs_sha256": {
+        "rocks_succession": "850548d2db2297e9cd0e5f17c8b3865f4d3c47fb35893f229485d3685e1379da",
+        "rocks_manifest": "a006504fd46b45f1fea019148f5f38d7412597430f5f374cee96d8e88985f0e0",
+        "rocks_keys": "b8c882947a0e17087b2dada5ec151c95feca6cafb7ba12397426850e4c02bb7c",
+        "rocks_store": "3b6c24ebe724a294866d5f7ee94dfdeafe692d876cbaac64cde76cac7155bc92",
+        "native_components": "01933a9785f1f67d15523f401487bf7002ae8d8dfd6a85295f70c94496d42907"
+      },
+      "preservation": {
+        "prior_protected_elfs": 78,
+        "source_files": 1859,
+        "unchanged_containers": 1302,
+        "owned_terminal": {
+          "fetch": {
+            "id": "c08b3c8264089142b30cfd7a9f42884aab8e32e11a56e13d734364d9ba0917cc",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T10:44:05.428746734Z",
+              "FinishedAt": "2026-10-15T10:44:05.673335107Z"
+            }
+          },
+          "native": {
+            "id": "6db66efa3b71e7364bffb68df162eb7155c9e4266bf6924d3d2fe4a9684510d4",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T10:44:06.034872521Z",
+              "FinishedAt": "2026-10-15T10:45:45.109598002Z"
+            }
+          }
+        },
+        "free_bytes_after": 40726720512
+      },
+      "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#initial_successor_preparation_20261012.repeatable_succession_20261015.portable_component",
+      "audit_report": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0/audit-cleanup-review/audit-v1.json",
+      "audit_sha256": "b1d368ab4e007995e184c7a8a99329cf9266f45df49db21b83f49578f8a4bbf6",
+      "capture": {
+        "captured_at": "2026-10-15T10:47:49.999023+00:00",
+        "containers": 1304,
+        "sha256": "9d9d9cd131c8dd04e2921115473044a9899e65a2caeed08d26f4f1cba6f297fe",
+        "operation": "docker ps -aq --no-trunc; docker inspect exact IDs; read-only"
+      }
+    },
+    "fixture_branch_retirement": {
+      "status": "PASS_REF_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T10:47:16.962662+00:00",
+      "original": "8ca4b2726ccc0deef50456be15e7ac68b5272af1",
+      "integrated": "8acfaea0ce0909effbed181d4095fdcb92a4b354",
+      "archive_ref": "refs/archive/qualified-succession-fixture-20261015/qualification/repeatable-succession-codec",
+      "retired_branch": "qualification/repeatable-succession-codec",
+      "worktree": "/home/tux/bigbrotr-rs/.research/repeatable-succession-codec-20261015",
+      "exact_blobs": {
+        "experiments/ingest-succession/README.md": "39e91ddb2ee4a96697b6e36c10bcc5b11dd033a1",
+        "experiments/ingest-succession/generate.py": "f39f4ced5f970aab742263e263922f4af502f21f",
+        "experiments/ingest-succession/portable-handoff-v2.json": "2b014b677adfc1723b80cd625c7338b3b7348b67"
+      },
+      "census_paths": 2045,
+      "census_sha256": "bc44dfd5f887f6804a687a55f113b42d6ebcea1c6dd335f865e6ff88e712783b",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/succession-fixture.bundle",
+      "bundle_bytes": 13901465,
+      "bundle_sha256": "fd4826523b3fb53e00b5c8a169b3fdc887a1942a34055a7b130e7c60d74ea829",
+      "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
+    },
+    "branch_totals": {
+      "local_refs_retired": 85,
+      "remote_refs_retired": 51,
+      "worktrees_detached": 41,
+      "all_registered_worktrees_preserved": 96
     }
   }
 }
