@@ -377,8 +377,14 @@ One owner serializes exact identity decisions for each writable directory.
   and independent custody audit pass. It also exercises ordinary OPEN source
   closure under schema37 with retirement grants present. Earlier2750aa4 remains
   FAIL due to oracle timestamp/row-order assumptions; its captures and corrected
-  offline replay are retained separately. Actual UTC expiry and unresolved
-  zero-request claim refusal are reviewed/in-progress probe work, NOT_RUN.
+  offline replay are retained separately. Finite0446653 qualifies actual20s UTC
+  expiry across the final job lock: named authority refusal and same-session
+  refreshUnavailable, with native70/sequence85/six inputs unchanged. Root14full
+  snapshots/3external states/32controls and independent custody audit pass. The
+  finite10s operation does not qualify installed1s supervision. Combined0446653
+  compiles both new probes with Clippy;48native/48entrypoint tests at388a are reused
+  by exact compiled-input equivalence, not rerun. Genuine unresolved zero-request
+  claim refusal has reviewed source/pure/build PASS; actual engine remains NOT_RUN.
   Goal remains ACTIVE; repeated lifetimes remain separate. Archive selection
   refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated

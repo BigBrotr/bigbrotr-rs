@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T09:46Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T09:48Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, installed SIGTERMfd40012 and corrected genuine import6e40fc5
 qualification, root replay and custody audit PASS. Main is the integrated state;
 selected M1–M5 remain INCOMPLETE. Follow the
@@ -13,7 +13,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `0446653`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `775ee4b`.
 Verified private push21618 is `0446653a95c9beb835c910a0e646611b02b3e458`;
 remote has main only. Main contains both reviewed finite probes, dispatcher,
 custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
@@ -30,8 +30,8 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: finish the expiry custody audit, commit its exact
-result and prepare a new docs-only revision for the unresolved zero-claim engine.
+Root's next bounded action: commit the qualified expiry result and prepare a
+new docs-only revision for the unresolved zero-claim engine.
 Use combined build0446653 without recompiling. Distinct source revisions avoid
 colliding with the retained client name; never remove an earlier client to rerun.
 Then run the new finite seed plus two installed CLI, independent raw replay and
@@ -50,13 +50,17 @@ Expiry `/runs/ingest-activated-retirement-expiry-engine-0446653`:
 engine28434/root replay15464 joined0 PASS,09:43:00Z–09:43:51Z. Actual20sControl13
 lease expires across the final retirement job lock: observed blocked1,917,594us
 before expiry,157,535us after; rollback247,860us after;2,323,485us wait envelope.
-Named23514 Control(Backend), same-session refreshUnavailable, no target/source/
+Named expiry veto Control(Backend), same-session refreshUnavailable, no target/source/
 workflow/native/input writes. Fourteen finite full72 snapshots and three external
 states/32 controls. Native70/sequence85/six inputs unchanged. Result32d3102d,
 context4d364a6c. Root replay checks raw files, not just assembled expectations.
-Custody audit pending reader correction: audit-v1/session27721 joined1 expected
-import negative-control keys rather than expiry count/rejected-list. Preserve
-original script/log; engine result is unchanged. Freeze09:44:24.500777Z1300containers
+Custody audit31677 joined0 PASS:1853engine/build files,78ELFs,17rawbindings,
+1298nonborrowed projections unchanged. Original1d64off24paths/314449bytes/six
+inputs/fourfrozenfiles preserved;33artifactmanifesteb0c8cfe. Audit46dc3ec7.
+Retain audit-v1/27721 andv2/84826 joined1 reader failures (negative-control key
+shape, clientname-vsID); corrected only reader, no engine finding. SQLSTATE was
+not printed by PG logs; named message/context and source guard bind23514.
+Freeze09:44:24.500777Z1300containers
 SHA1280424d676b1c43ebcc022d43e2813c360c842f4af3d75e86ce5d458e80c191.
 
 Zero-claim original530be40/custodyc9d3dd0 is integrated056a118/ae236bc with
@@ -69,7 +73,7 @@ SQL/input and native NOT_RUN. Complete affected source and typed consumers read.
 
 successor_restart_design retains its completed clean native worktree/branch.
 recovery_review prepares independent zero raw replay in postgres worktree;
-cleanup_review performs expiry custody audit in qualification worktree. No agent
+cleanup_review completed expiry custody audit in qualification worktree. No agent
 has engine/SQL/native mutation authority. Both qualification branches stay until
 reviewed outcomes are integrated and original commits archived.
 

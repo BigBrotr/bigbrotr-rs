@@ -19361,7 +19361,7 @@
       },
       "activated_initial_retirement_20261013": {
         "status": "IMPLEMENTED_UNDER_QUALIFICATION",
-        "observed_at": "2026-10-15T09:40:13.852922+00:00",
+        "observed_at": "2026-10-15T09:48:55.070854+00:00",
         "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
         "contract": "docs/reference/ingest-registration.md#activated-initial-producer-retirement-under-implementation",
         "scope": "Explicit existing-CLOSING, existing-copy-only retirement of activated producer2, nine domains, Ingest owner and role. Exact source2, native/input state, outcome recorder and workflow history retained; no replacement writer, import closure or ACK/GC.",
@@ -19491,9 +19491,8 @@
           ]
         },
         "remaining_gates": [
-          "UTC expiry and same-session poison actual engine/root replay PASS; custody reader correction pending",
-          "Genuine unresolved zero-request acquisition claim refusal: reviewed and integrated with positive native custody correction; build/engine NOT_RUN",
-          "Combined exact probe compile/Clippy then distinct real engines; repeated lifetimes/import logical closure/ACK-GC/epoch3/Archive and M1\u2013M5 remain incomplete"
+          "Genuine unresolved zero-request acquisition claim refusal: source/pure/build PASS, actual engine next",
+          "Repeated lifetimes/import logical closure/ACK-GC/epoch3/Archive and M1\u2013M5 remain incomplete"
         ],
         "engines": [
           {
@@ -21796,9 +21795,52 @@
               "scope": "Root source-reviewed offline independent full72/native/input/custody/real-clock/final-retirement-job-lock/named-SQL-diagnostic replay; same continuous positive native proof, no lease fixture mutation. No SQL, engines, native opens or Rust internal timer telemetry."
             },
             "custody_audit": {
-              "status": "RUNNING_READER_CORRECTION",
-              "session": 27721,
-              "original_reader_failure": "audit-v1 expected import negative-controls shape; expiry owns count plus rejected list. Original script/log preserved."
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-expiry-engine-0446653/audit-cleanup-review/audit.json",
+              "sha256": "46dc3ec79482f684f2902527f4fcb1ca87744bbde8a92fdfc9ff6ca7591db6de",
+              "session": 31677,
+              "joined": true,
+              "exit_code": 0,
+              "log_sha256": "35df8f305d53f08bdfe1fe9a89db58063b82b1f2024d425befcc7fcb8a4f02d3",
+              "status": "PASS_READ_ONLY_SOURCE_ARTIFACT_CUSTODY_AUDIT",
+              "scope": "Read-only UTC fixture artifact/custody audit; authored reused helpers, not this expiry pair/probe; root independently replays semantics",
+              "engine_files": 1853,
+              "build_files": 1853,
+              "protected_elfs": 78,
+              "raw_bindings": 17,
+              "finite_snapshots": 14,
+              "external_full72_states": 3,
+              "unchanged_nonborrowed": 1298,
+              "original": {
+                "paths": 24,
+                "regular_bytes": 314449,
+                "inputs": 6,
+                "frozen": {
+                  "result.json": "03545615b8c2e84fc1a545ccf47b33aeed8fb02e4e76e44d3f1ffd246315054c",
+                  "installed-activated-acquisition-off-retry-after-sql.json": "8e74f67a8dfff4b634bcdf3481733d3a72ec9007c13faaaba1c14b05fb86126b",
+                  "installed-activated-acquisition-off-retry-after-native.json": "cd49f8bfc44c5c08ae307f845f1aaf1da7f66079bf14f8ee54f9c4c1a3819238",
+                  "installed-activated-acquisition-off-retry-verification.json": "87209a110e38dbeac5588e069c5fe3f2d17ce2cc7c7f39093226c900b21b52eb"
+                }
+              },
+              "binding_manifest": {
+                "files": 33,
+                "sha256": "eb0c8cfe1007e1e6e65f393860bb27a7cc0d5d9549e39e7e869958c0265954a0"
+              },
+              "freeze": {
+                "observed_at": "2026-10-15T09:44:24.500777+00:00",
+                "containers": 1300,
+                "sha256": "1280424d676b1c43ebcc022d43e2813c360c842f4af3d75e86ce5d458e80c191"
+              },
+              "limitations": [
+                "Read-only artifact/custody audit; authored reused helpers, not expiry pair/probe; independent semantic replay belongs to root.",
+                "Root frozen projection used; no Docker recapture, SQL/native open, build/engine or restart.",
+                "Original SQL/catalog preservation bound to retained captures, not a fresh auditor query.",
+                "New build compile and Clippy only; historical tests are retained evidence, not rerun.",
+                "This finite10s experiment does not qualify installed1s supervision or the future zero-refusal wave."
+              ],
+              "preserved_audit_failures": [
+                "v1/session27721 joined1: import negative-control key shape assumed for expiry",
+                "v2/session84826 joined1: retained client name was treated as Docker ID; reader corrected only"
+              ]
             }
           }
         ],
@@ -22002,7 +22044,7 @@
           }
         },
         "resumption_after_pause_20261015": {
-          "status": "ACTIVE_IMPORT_QUALIFIED_EXPIRY_AND_ZERO_CLAIM_NEXT",
+          "status": "ACTIVE_EXPIRY_QUALIFIED_ZERO_CLAIM_NEXT",
           "source": "6e40fc5bca955fb9571c37f4c9e8264b0775d021",
           "branch": "main",
           "previous_goal_turn": "PROGRESS: saved and pushed safe pause checkpoint1d98250, then runtime paused; owner explicitly resumed.",
@@ -22014,7 +22056,7 @@
             "root_replay_session": 57560,
             "audit_session": 56003,
             "all_joined_exit_zero": true,
-            "next": "Prepare clean combined exact-revision build via ingest-activated-refusals, compile/Clippy once for both probes, then distinct real expiry and unresolved engines with independent raw replay/custody."
+            "next": "Run genuine zero-request unresolved engine on docs-only successor of0446653 using combinedbuild0446653, then raw replay and custody audit."
           },
           "last_verified_private_main_push": {
             "source": "0446653a95c9beb835c910a0e646611b02b3e458",
@@ -22166,7 +22208,7 @@
           "ordinary_open_source_coverage": "Authentic Serve producer/source OPEN through installed source closure under schema37, followed by acquisition recovery and named import veto. Retirement grants are present; no absent-retirement-ACL claim. No separate ordinary OPEN-source implementation change required by this result."
         },
         "expiry_fixture_20261015": {
-          "status": "ACTUAL_ENGINE_ROOT_REPLAY_PASS_CUSTODY_AUDIT_PENDING",
+          "status": "QUALIFIED_ACTUAL_ENGINE_ROOT_REPLAY_CUSTODY_PASS",
           "owner": "recovery_review",
           "commit": "add6df3519fa24aec95f1fdc091b896694c15ebf",
           "worktree": "/home/tux/bigbrotr-rs/.research/activated-recovery-postgres-20261013",
