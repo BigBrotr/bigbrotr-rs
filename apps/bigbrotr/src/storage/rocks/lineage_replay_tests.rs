@@ -6,6 +6,9 @@ use crate::storage::rocks::store::{LineageResolution, ResolvedLineage};
 use std::os::unix::fs::PermissionsExt;
 static NOT_CANCELLED: AtomicBool = AtomicBool::new(false);
 
+#[path = "successor_handoff_tests.rs"]
+mod successor_handoff_tests;
+
 fn stored_input(f: &Fixture, epoch: u64, sequence: u64, bytes: &[u8]) {
     let path = f
         .path()

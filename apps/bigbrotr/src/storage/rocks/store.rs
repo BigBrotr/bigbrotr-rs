@@ -129,6 +129,14 @@ pub use lineage_replay::{LineageEpochSummary, LineageResolution, ResolvedLineage
 #[path = "lineage_effects.rs"]
 mod lineage_effects;
 
+#[path = "successor_handoff.rs"]
+mod successor_handoff;
+pub use successor_handoff::{ObservedSuccessorHandoff, SuccessorCandidate, SuccessorHandoff};
+
+#[path = "successor_empty.rs"]
+mod successor_empty;
+pub use successor_empty::{EmptySuccessorRetirement, ObservedEmptySuccessorRetirement};
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;

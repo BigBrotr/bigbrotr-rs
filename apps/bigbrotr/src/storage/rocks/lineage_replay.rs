@@ -232,6 +232,9 @@ impl<'a> LineageResolution<'a> {
 }
 
 impl ResolvedLineage<'_> {
+    pub(super) fn recovery(&self) -> &IngestRecovery {
+        self.recovery
+    }
     pub fn verified_through(&self) -> u64 {
         self.last.epoch
     }

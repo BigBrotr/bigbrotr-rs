@@ -80,6 +80,14 @@ pub struct RetainedLineage {
     _permit: OwnedPermit,
 }
 
+/// Private snapshot identity. This is not a positive frontier by itself.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct LineageStamp {
+    root: (u64, u64),
+    pub(super) sequence: u64,
+    inputs: [u8; 32],
+}
+
 impl RetainedLineage {
     /// A pending PG target counts for resource admission only. Its existence,
     /// absence of activation and exact recorded identity remain PG obligations.
@@ -220,6 +228,62 @@ impl RetainedLineage {
 
     pub(super) fn input_stamp(&self) -> [u8; 32] {
         self.inputs
+    }
+
+    pub(super) fn transition_stamp(&self) -> LineageStamp {
+        LineageStamp {
+            root: self.root,
+            sequence: self.sequence,
+            inputs: self.inputs,
+        }
+    }
+
+    /// The retained grant must already cover recovery of the proposed attempt.
+    /// This does not invent an observed pending PostgreSQL preparation.
+    pub(super) fn require_preparation_capacity(&self) -> Result<(), BootstrapError> {
+        let future = SuccessionProfile::for_preparation(
+            self.native_head().manifest().identity().owner_epoch.get(),
+        )
+        .map_err(|_| BootstrapError::InsufficientReservation)?;
+        if self._permit.request().units().data_bytes() < future.required_metadata_bytes() {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        Ok(())
+    }
+
+    pub(super) fn require_fresh_successor(
+        &self,
+        next: &IngestManifest,
+    ) -> Result<(), BootstrapError> {
+        require_fresh(&self.entries, next)
+    }
+
+    /// A sealed transition supplies its one exact permitted manifest/sequence.
+    /// Ordinary validate remains strict: this cannot refresh a stale lineage or
+    /// publish another positive frontier after a native write.
+    pub(super) fn validate_transition_snapshot(
+        &self,
+        recovery: &IngestRecovery,
+        stamp: LineageStamp,
+        manifest: &IngestManifest,
+        sequence: u64,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        check_cancelled(cancelled)?;
+        if recovery.store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if self.transition_stamp() != stamp
+            || recovery.manifest() != manifest
+            || recovery.store.handoff_root_identity()? != stamp.root
+            || recovery.store.db.latest_sequence_number() != sequence
+            || self.input_census(recovery, cancelled)? != stamp.inputs
+            || recovery.store.handoff_root_identity()? != stamp.root
+            || recovery.store.db.latest_sequence_number() != sequence
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        check_cancelled(cancelled)
     }
 
     /// Sequence equality cannot witness sidecar stability. Re-read the entire
