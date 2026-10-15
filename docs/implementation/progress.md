@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:09:40.916849+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:18:30.519969+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `8c8eedb`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `ad08e5a`.
 Verified private push95774 is `03bdcbef3834636b4c5f10329e4611ac5cc0521a`;
 remote main was independently read at that exact revision. Inspector after that
 push is local pending its build; runner/checkpoint changes belong to root.
@@ -32,32 +32,37 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: run the exact-source `ingest-succession-lineage`
-profile after committing this checkpoint and the runner. One-shot preparation
-`.research/repeatable-succession-lineage-build-prepare-20261015.py` is NOT_RUN;
-it checks83 protected executables, current owned containers/cache exclusion and
-12GiB free before creating the new source clone. Never replay after creation.
+Root's next bounded action: rerun the corrected exact-source
+`ingest-succession-lineage` profile after committing this checkpoint. New one-shot
+preparation `.research/repeatable-succession-lineage-retry-prepare-20261015.py`
+is NOT_RUN; it checks83 protected executables, current containers/cache exclusion
+and12GiB reserve before a fresh source clone. Preserve the failed run.
 
-Inspector47e3289 integrated8c8eedb adds a bounded compact structural lineage,
-full native census and streamed sidecar content/identity census. Seven new native
-case groups include source1 absent-marker rejected0/1/64 histories, structural255,
-metadata floors including pending3, malformed ancestry, foreign keys/files and
-sidecar mutation without native sequence change. Root read the complete new
-owners/tests and affected request-input/legacy fixture owners; source review only.
-The structural255 fixture deliberately has nonpositive terminal digests: it is
-not positive lineage or PostgreSQL capacity evidence. All new compiled checks
-are NOT_RUN. The profile executes new lineage, request-input and legacy handoff
-selections plus the literal fixture and Clippy; unchanged codec evidence is reused.
+Inspector47e3289 integrated8c8eedb adds bounded compact structural lineage,
+complete native/sidecar census. Exact-source e47b698 build20256 joined1 FAIL at
+compile E0277: DatasetId requires [u8;16], not &[u8]. Independent fixture PASS;
+zero Rust tests, zero new ELF; other checks NOT_RUN. Correctionad08e5a explicitly
+converts fixed-width bytes; it is not yet compiled. Both owned containers stopped
+(fetch0/native1), PID0/noOOM. Root read-only custody65973 joined0 PASS binds1863
+source files,83 protectedELFs and1304 unchanged prior container projections;
+audit0f9e6ff8 in `/runs/ingest-succession-lineage-e47b698/audit-root/audit-v1.json`.
+Original preparation49225 and runner20256 are complete; never replay them.
 
-Native agent now implements ordered positive replay under the same retained
-metadata grant. PostgreSQL agent and independent cleanup reviewer are closing
-SQL0038 findings: inverse claim-before-activation ordering/race, unactivated
-terminal lease preservation, recovery-generation zero, and legacy1 timestamps.
-The topology count is derived from exact E/E+1 shape, not numerical generation;
-legacy0001 still requires initial generation0, so no arbitrary-offset engine
-support is claimed. The same flat SQL checker is being extended to terminal head2
-before its first new preparation. None of this draft SQL has run or been integrated.
-Root owns subsequent typed PG wiring; no structural observation grants a writer.
+Seven new native groups cover source1 absent-marker rejected0/1/64 histories,
+structural255, metadata floors/pending3, malformed ancestry, foreign keys/files,
+and sidecar mutation without native sequence change. Structural255 has deliberately
+nonpositive terminal digests; no positive lineage or PostgreSQL capacity claim.
+Root read complete new owners/tests and affected request-input/legacy fixture
+owners. Native agent implements ordered positive replay under the same grant;
+no structural observation grants a writer.
+
+SQL0038 and fixture frozen in originalc4daa50, author WT clean/idle. Independent
+AI source review closed migrationSHA5d72e598 after claim-before-activation/order,
+prelock race, unactivated lease, recovery0 and legacy1 timestamp fixes. Same flat
+checker supports terminal head2. Actual SQL/catalog/grants/Rust integration and
+fixture execution remain NOT_RUN; root owns these next. Topology count derives
+from E/E+1 shape; legacy0001 still requires initial0, so no arbitrary-offset
+engine support is claimed. No SQL branch is retired before reconciliation.
 
 Exact-source `/runs/ingest-succession-codec-fc6f9a0` PASS: preparation74781 and
 build30635 joined0,10:44:04Z–10:45:45Z. Ten checks execute54 Rust tests, the
@@ -128,9 +133,9 @@ detached worktrees stay preserved. New worktrees at12c3534:
 `.research/repeatable-succession-postgres-20261015` (additive SQL family/fixture).
 The fixture branch is retired at its original commit with all files preserved;
 the native and PostgreSQL branches remain active and intentional. Only main is remote.
-successor_restart_design is implementing the bounded read-only lineage inspector;
-recovery_review is implementing migration0038 and its SQL fixture. cleanup_review
-completed the component audit and now independently reviews the additive SQL. Root owns build/integration and the
+successor_restart_design is implementing ordered positive lineage replay;
+recovery_review froze migration0038 and fixture; cleanup_review completed its
+independent SQL source review. Root owns build/integration and the
 dedicated experiments/ingest-succession/native.py runner. Legacy source1 can lack
 its physical marker only at checked cut0, even with positive issued requests;
 those requests still require positive replay. Later epochs require explicit markers.
@@ -368,7 +373,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after codec build10:45:45Z:40,726,720,512; remeasure before allocating. Small engines
+Free bytes after failed lineage build11:10:11Z:40,576,086,016; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive

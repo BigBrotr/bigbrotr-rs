@@ -51127,8 +51127,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "PORTABLE_COMPONENTS_PASS_LINEAGE_INSPECTOR_BUILD_NOT_RUN_SQL_DRAFT",
-    "observed_at": "2026-10-15T11:09:40.916849+00:00",
+    "status": "PORTABLE_COMPONENTS_PASS_LINEAGE_COMPILE_FAIL_CORRECTED_RERUN_PENDING_SQL_FROZEN",
+    "observed_at": "2026-10-15T11:18:30.519969+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51147,7 +51147,7 @@
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-codec-20261015",
         "branch": null,
         "owner": "cleanup_review",
-        "scope": "Detached original fixture retained; owner independently reviews SQL0038 in author worktree read-only",
+        "scope": "Detached original fixture retained; independent SQL0038 source review complete on hash5d72e598; no runtime execution",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
         "preserve_ignored_artifacts": true,
         "detached_at": "8ca4b2726ccc0deef50456be15e7ac68b5272af1"
@@ -51156,13 +51156,13 @@
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
         "branch": "implementation/repeatable-succession-postgres",
         "owner": "recovery_review",
-        "scope": "Additive epoch-indexed SQL lifecycle family and bounded SQL fixture; engine not authorized",
+        "scope": "Frozen c4daa50 SQL0038/fixture, clean and idle; root integration/runtime pending",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
         "preserve_ignored_artifacts": true
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "Root-only exact-source component build completed; both owned containers exited0. No subagent engine/build/cache mutation authorized.",
+      "new_engine_build_or_runtime_resources": "Root-only build; failed lineage fetch0/native1 exited/PID0/noOOM. No active build; no subagent engine/build/cache mutation.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080
@@ -51197,8 +51197,9 @@
       "lineage_inspector": {
         "original": "47e3289c7c14b5ca8789463c7c5ac0908d95afc6",
         "main": "8c8eedb",
-        "status": "SOURCE_REVIEWED_BUILD_NOT_RUN",
-        "scope": "Read-only compact metadata/native/sidecar census; no positive lineage or connected authority"
+        "status": "COMPILE_FAIL_E0277_FIX_COMMITTED_RERUN_NOT_RUN",
+        "scope": "Read-only compact metadata/native/sidecar census; no positive lineage or connected authority",
+        "correction": "ad08e5a89ba9ccb448df69976564a6beebbeb111"
       }
     },
     "completed_build": {
@@ -51313,10 +51314,73 @@
     "next_build": {
       "profile": "ingest-succession-lineage",
       "status": "NOT_RUN",
-      "preparation_script": ".research/repeatable-succession-lineage-build-prepare-20261015.py",
+      "preparation_script": ".research/repeatable-succession-lineage-retry-prepare-20261015.py",
       "protected_elfs": 83,
       "required_free_bytes": 12884901888,
       "scope": "Seven lineage case groups, existing request-input/handoff groups, literal fixture and Clippy; connected/installed NOT_RUN"
+    },
+    "failed_lineage_build": {
+      "status": "FAIL_COMPILE_E0277",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
+      "source": "e47b69847cc57ba08ea2609d92b3824d5ad13e98",
+      "tree": "4ec54707a35363ddac706c837dff02a35997427e",
+      "preparation_session": 49225,
+      "build_session": 20256,
+      "wrapper_exit": 1,
+      "started_at": "2026-10-15T11:10:03.228958+00:00",
+      "finished_at": "2026-10-15T11:10:11.153451+00:00",
+      "correction": "ad08e5a89ba9ccb448df69976564a6beebbeb111",
+      "audit": {
+        "session": 65973,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698/audit-root/audit-v1.json",
+        "sha256": "0f9e6ff8f195b311ed26da3e6c0221f8c4713c31c81dce2523123d9a5599a753",
+        "files": 1863,
+        "protected_elfs": 83,
+        "new_elfs": 0,
+        "unchanged_containers": 1304,
+        "capture": {
+          "observed_at": "2026-10-15T11:17:14.114365+00:00",
+          "containers": 1306,
+          "sha256": "15cbdd9bb69149535d26496f1c86470a3ae484a008c1c9953abbead4d8ea69dc"
+        }
+      },
+      "owned_terminal": {
+        "fetch": {
+          "id": "f7edba47d97278053d149a495e15c1b98f28e564746331cc9e1b315665826ea2",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:10:03.769837254Z",
+            "FinishedAt": "2026-10-15T11:10:04.008217348Z"
+          }
+        },
+        "native": {
+          "id": "d199a9d184de316ce466c9baeb16f42fdd9489a33c2967ebaaafdc53a9211ba3",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:10:04.309067448Z",
+            "FinishedAt": "2026-10-15T11:10:10.428815018Z"
+          }
+        }
+      },
+      "free_bytes_after": 40576086016,
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY"
     }
   }
 }

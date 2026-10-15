@@ -23133,7 +23133,91 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Native read-only lineage inspector and additive SQL0038 in separate owned worktrees; no authority or installed journey claimed"
+      "ongoing": "Inspector compile fix committed; corrected exact-source run next. Positive lineage source in progress. SQL0038 source/review frozen c4daa50, not integrated or executed.",
+      "lineage_compile_failure": {
+        "status": "FAIL_COMPILE_E0277",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
+        "source": "e47b69847cc57ba08ea2609d92b3824d5ad13e98",
+        "tree": "4ec54707a35363ddac706c837dff02a35997427e",
+        "preparation_session": 49225,
+        "build_session": 20256,
+        "wrapper_exit": 1,
+        "started_at": "2026-10-15T11:10:03.228958+00:00",
+        "finished_at": "2026-10-15T11:10:11.153451+00:00",
+        "finding": "DatasetId implements TryFrom<[u8;16]>, not TryFrom<&[u8]>. No Rust test executed; no new ELF.",
+        "correction": "ad08e5a89ba9ccb448df69976564a6beebbeb111",
+        "checks": {
+          "independent_fixture": "PASS",
+          "lineage_compile": "FAIL exit101",
+          "request_inputs": "NOT_RUN",
+          "legacy_handoff": "NOT_RUN",
+          "clippy": "NOT_RUN"
+        },
+        "audit": {
+          "session": 65973,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698/audit-root/audit-v1.json",
+          "sha256": "0f9e6ff8f195b311ed26da3e6c0221f8c4713c31c81dce2523123d9a5599a753",
+          "files": 1863,
+          "protected_elfs": 83,
+          "new_elfs": 0,
+          "unchanged_containers": 1304,
+          "capture": {
+            "observed_at": "2026-10-15T11:17:14.114365+00:00",
+            "containers": 1306,
+            "sha256": "15cbdd9bb69149535d26496f1c86470a3ae484a008c1c9953abbead4d8ea69dc"
+          }
+        },
+        "retained_sha256": {
+          "resources.json": "bf06d20fc59a2bc32cc5b3e2ab2ab0e7b392b226ab01e867d69c50a98a06bc66",
+          "preflight.json": "ffc9e6f789f31c6dcf1b04b76e0597d3a8d7ffa315d235157ef0cb1a099d34dc",
+          "root-preparation.json": "71ded22c79e2fc17e0559ad5bed174ad1489996fd0fc741115669fcca7370365",
+          "root-preparation-containers.json": "08c66545869d560804590aad9a7b085ab5b39b0b83d3c41f1d919b692bd2bd8e",
+          "fetch-terminal.json": "ef0f2785bb41faf556da72d794c0edead69304927283acbdb58a9de7d4f73035",
+          "native-terminal.json": "8733c5dac1aec563e4678b550b2d6bbe058b59b6560cc6f66a821f021963f97c",
+          "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "native.log": "b37e715c57c26759cb2a4cb2a667cfb20e29eab3315891c47cd3a0e45db113ff",
+          "out/build/source-manifest.json": "4073865ca74acc98cc7e03ec6598d17827db46a31d629d4601f8acc2222d57ce",
+          "out/build/source.tar": "699baee199757297ed4c9f32ab58b94b4fd44c9ad29cb89d29fbbdfc038f0516",
+          "out/build-checks/result.json": "5459b387ef5a3a91e3f0fca8328497cce498b07e42014a442896391a149fddde",
+          "out/artifacts/component-result.json": "4db84e3f7e66f3a75cf957920bb641811d2a98ff9aafd0d5a490beb4cbac9168"
+        },
+        "owned_terminal": {
+          "fetch": {
+            "id": "f7edba47d97278053d149a495e15c1b98f28e564746331cc9e1b315665826ea2",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:10:03.769837254Z",
+              "FinishedAt": "2026-10-15T11:10:04.008217348Z"
+            }
+          },
+          "native": {
+            "id": "d199a9d184de316ce466c9baeb16f42fdd9489a33c2967ebaaafdc53a9211ba3",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 1,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:10:04.309067448Z",
+              "FinishedAt": "2026-10-15T11:10:10.428815018Z"
+            }
+          }
+        },
+        "free_bytes_after": 40576086016
+      }
     }
   }
 }
