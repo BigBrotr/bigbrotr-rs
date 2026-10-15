@@ -7,6 +7,9 @@ use crate::storage::rocks::succession::{
 };
 use std::sync::atomic::AtomicBool;
 
+#[path = "lineage_replay_tests.rs"]
+mod lineage_replay_tests;
+
 fn inspect(
     f: &Fixture,
     r: &IngestRecovery,

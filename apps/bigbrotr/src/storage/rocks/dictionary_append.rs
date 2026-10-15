@@ -310,6 +310,7 @@ impl IngestStore {
                 manifest: &self.manifest,
                 current_manifest: &self.manifest,
             },
+            None,
         )
     }
 
@@ -319,11 +320,18 @@ impl IngestStore {
         intent: &EvidenceIntent,
         limits: AdmissionLimits,
         context: ReplayContext<'_>,
+        lineage: Option<&super::RetainedLineage>,
     ) -> Result<Option<Receipt>, AdmissionError> {
         if &self.manifest != context.current_manifest {
             return Err(AdmissionError::StateMismatch);
         }
-        self.validate_dictionary_append(request, intent, limits, context.manifest)?;
+        self.validate_dictionary_append_context(
+            request,
+            intent,
+            limits,
+            context.manifest,
+            lineage,
+        )?;
         let mut reads = ReadBudget::dictionaries(limits);
         let Some(value) = self.admission_value(
             IngestKey::Request {
@@ -424,6 +432,17 @@ impl IngestStore {
         limits: AdmissionLimits,
         manifest: &IngestManifest,
     ) -> Result<(), AdmissionError> {
+        self.validate_dictionary_append_context(request, intent, limits, manifest, None)
+    }
+
+    fn validate_dictionary_append_context(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        limits: AdmissionLimits,
+        manifest: &IngestManifest,
+        lineage: Option<&super::RetainedLineage>,
+    ) -> Result<(), AdmissionError> {
         limits.required_dictionary_data_bytes()?;
         if self.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
@@ -432,7 +451,16 @@ impl IngestStore {
         let supported = match identity.owner_epoch.get() {
             1 => request.producer_epoch.get() == 1 && request.request_sequence.get() > 1,
             2 => manifest.key_schema() == 2 && request.producer_epoch.get() == 2,
-            _ => false,
+            epoch => {
+                manifest.key_schema() == 3
+                    && request.producer_epoch.get() == epoch
+                    && lineage.is_some_and(|lineage| {
+                        lineage.native_head().manifest() == &self.manifest
+                            && lineage
+                                .entry(epoch)
+                                .is_some_and(|entry| entry.manifest() == manifest)
+                    })
+            }
         };
         if !supported
             || intent.admission_policy_version() != 1

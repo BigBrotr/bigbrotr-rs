@@ -55,6 +55,7 @@ pub struct ResolvedProducerRequest {
     event: bool,
     native_root: (u64, u64),
     native_sequence: u64,
+    lineage_inputs: Option<[u8; 32]>,
 }
 
 /// Read interpretation is explicit and cannot replace the owner's singleton or
@@ -70,6 +71,11 @@ pub(super) struct ReplayContext<'a> {
 pub(super) enum RecoveryContext<'a> {
     Initial(ReplayContext<'a>),
     Activated(&'a ActivatedInitial),
+    Lineage {
+        lineage: &'a super::RetainedLineage,
+        epoch: u64,
+        cancelled: &'a std::sync::atomic::AtomicBool,
+    },
 }
 impl ResolvedProducerRequest {
     pub fn outcome(&self) -> &AdmissionOutcome {
@@ -83,6 +89,15 @@ impl ResolvedProducerRequest {
     }
     pub(in crate::storage) fn is_event(&self) -> bool {
         self.event
+    }
+    pub(super) fn require_lineage(
+        &self,
+        lineage: &super::RetainedLineage,
+    ) -> Result<(), BootstrapError> {
+        if self.lineage_inputs != Some(lineage.input_stamp()) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
     }
     pub(super) fn require_native_context(
         &self,
@@ -181,6 +196,25 @@ impl IngestRecovery {
                     current_manifest: view.manifest(),
                 }
             }
+            RecoveryContext::Lineage {
+                lineage,
+                epoch,
+                cancelled,
+            } => {
+                lineage
+                    .validate(self, cancelled)
+                    .map_err(AdmissionError::from)?;
+                let entry = lineage.entry(*epoch).ok_or(AdmissionError::InvalidInput)?;
+                if request.producer_epoch.get() != *epoch
+                    || request.producer_slot_id != lineage.producer_slot_id()
+                {
+                    return Err(AdmissionError::InvalidInput.into());
+                }
+                ReplayContext {
+                    manifest: entry.manifest(),
+                    current_manifest: lineage.native_head().manifest(),
+                }
+            }
         };
         if self.manifest() != context.current_manifest {
             return Err(AdmissionError::InvalidInput.into());
@@ -222,6 +256,10 @@ impl IngestRecovery {
                         intent,
                         limits.event,
                         context,
+                        match &profile {
+                            RecoveryContext::Lineage { lineage, .. } => Some(*lineage),
+                            _ => None,
+                        },
                     )?
                 }
                 .ok_or(ProducerRecoveryError::Unresolved)?;
@@ -238,7 +276,8 @@ impl IngestRecovery {
                 // remain their original rejection, including their policy epoch.
                 let verified =
                     super::admission::verify_event(intent.into_event(), 4 * 1024 * 1024)?;
-                self.store
+                let observed = self
+                    .store
                     .replay_event_in(
                         request,
                         digest,
@@ -255,7 +294,25 @@ impl IngestRecovery {
                         &mut super::admission::ReadBudget::new(limits.event),
                         context,
                     )?
-                    .ok_or(ProducerRecoveryError::Unresolved)?
+                    .ok_or(ProducerRecoveryError::Unresolved)?;
+                if let (RecoveryContext::Lineage { .. }, AdmissionOutcome::Durable(receipt)) =
+                    (&profile, &observed.0)
+                {
+                    let event = verified
+                        .as_ref()
+                        .map_err(|_| AdmissionError::StateMismatch)?;
+                    self.store.require_lineage_event_batch(
+                        receipt,
+                        super::receipt_effects::ReplayEventIntent {
+                            event: event.event(),
+                            scope,
+                            origin,
+                            observation,
+                        },
+                        limits.event,
+                    )?;
+                }
+                observed
             }
         };
         if let AdmissionOutcome::Durable(receipt) = &outcome {
@@ -279,6 +336,10 @@ impl IngestRecovery {
             event,
             native_root,
             native_sequence,
+            lineage_inputs: match &profile {
+                RecoveryContext::Lineage { lineage, .. } => Some(lineage.input_stamp()),
+                _ => None,
+            },
         };
         resolved
             .require_native_context(self)

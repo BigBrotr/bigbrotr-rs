@@ -122,6 +122,13 @@ pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 mod lineage;
 pub use lineage::{RetainedLineage, RetainedLineageEntry, RetainedTerminalKind};
 
+#[path = "lineage_replay.rs"]
+mod lineage_replay;
+pub use lineage_replay::{LineageEpochSummary, LineageResolution, ResolvedLineage};
+
+#[path = "lineage_effects.rs"]
+mod lineage_effects;
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;

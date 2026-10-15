@@ -218,6 +218,10 @@ impl RetainedLineage {
         self.profile
     }
 
+    pub(super) fn input_stamp(&self) -> [u8; 32] {
+        self.inputs
+    }
+
     /// Sequence equality cannot witness sidecar stability. Re-read the entire
     /// finite spool, including contents, before publishing this observation.
     pub fn validate(

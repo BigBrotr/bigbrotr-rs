@@ -263,7 +263,7 @@ struct PrefixIdentity {
     issued: u64,
     predecessor_cut: Option<u64>,
 }
-struct Prefix {
+pub(super) struct Prefix {
     identity: PrefixIdentity,
     manifest_digest: [u8; 32],
     requests: u64,
@@ -272,6 +272,40 @@ struct Prefix {
     event_requests: u64,
 }
 impl Prefix {
+    pub(super) fn lineage(
+        manifest: IngestManifest,
+        slot: ProducerSlotId,
+        issued: u64,
+        digest: Sha256,
+    ) -> Self {
+        Self::new(
+            PrefixIdentity {
+                epoch: ProducerEpoch::new(manifest.identity().owner_epoch.get())
+                    .expect("manifest epoch"),
+                manifest,
+                slot,
+                issued,
+                predecessor_cut: None,
+            },
+            digest,
+        )
+    }
+
+    pub(super) fn requests(&self) -> u64 {
+        self.requests
+    }
+    pub(super) fn source_through(&self) -> u64 {
+        self.source_through
+    }
+    pub(super) fn event_requests(&self) -> u64 {
+        self.event_requests
+    }
+    pub(super) fn completed_digest(&self) -> [u8; 32] {
+        let mut digest = self.digest.clone();
+        digest.update(self.source_through.to_be_bytes());
+        digest.finalize().into()
+    }
+
     fn new(identity: PrefixIdentity, digest: Sha256) -> Self {
         let manifest_digest = Sha256::digest(identity.manifest.encode().as_bytes()).into();
         Self {
@@ -284,6 +318,18 @@ impl Prefix {
         }
     }
     fn record(&mut self, resolved: &ResolvedProducerRequest) -> Result<(), BootstrapError> {
+        let predecessor_cut = self.identity.predecessor_cut;
+        self.record_with_frontier(resolved, |source| {
+            predecessor_cut
+                .is_some_and(|cut| source.owner_epoch.get() == 1 && source.sequence.get() <= cut)
+        })
+    }
+
+    pub(super) fn record_with_frontier(
+        &mut self,
+        resolved: &ResolvedProducerRequest,
+        earlier: impl Fn(SourceRecordId) -> bool,
+    ) -> Result<(), BootstrapError> {
         let copy = resolved.native_outcome();
         let request = copy.request();
         if copy.manifest_sha256() != self.manifest_digest
@@ -315,9 +361,7 @@ impl Prefix {
                     || if source.owner_epoch == identity.owner_epoch {
                         source.sequence.get() > next_source
                     } else {
-                        !self.identity.predecessor_cut.is_some_and(|cut| {
-                            source.owner_epoch.get() == 1 && source.sequence.get() <= cut
-                        })
+                        !earlier(source)
                     }
             }) {
                 return Err(BootstrapError::StateMismatch);
