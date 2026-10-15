@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T09:48Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T09:55Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, installed SIGTERMfd40012 and corrected genuine import6e40fc5
 qualification, root replay and custody audit PASS. Main is the integrated state;
 selected M1–M5 remain INCOMPLETE. Follow the
@@ -13,7 +13,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `775ee4b`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `82d0f71`.
 Verified private push21618 is `0446653a95c9beb835c910a0e646611b02b3e458`;
 remote has main only. Main contains both reviewed finite probes, dispatcher,
 custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
@@ -30,12 +30,23 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: commit the qualified expiry result and prepare a
-new docs-only revision for the unresolved zero-claim engine.
-Use combined build0446653 without recompiling. Distinct source revisions avoid
-colliding with the retained client name; never remove an earlier client to rerun.
-Then run the new finite seed plus two installed CLI, independent raw replay and
-custody review, recording every outcome in the retirement evidence/inventory.
+Root's next bounded action: commit the reviewed copy correction and original
+failure audit, then run a fresh exact revision using combined build0446653. No Rust change or rebuild
+is needed for the Python-only fixture fix. Distinct revisions avoid retained
+client collisions; never remove an earlier client or overwrite a failed result.
+
+Zero engine `/runs/ingest-activated-retirement-unresolved-engine-41255aa`:
+85068 joined1 FAIL,09:49:39Z–09:49:43Z, result a82718fbf255641221a39890bb757bfff5936e539d171393cf81c54eebfd42b1.
+Driver compared copied-store physical inode/device/link census with original,
+which cannot match an ordinary copy. It stopped before config/migration/finite
+seed, with zero tested finite/CLI processes. Original full physical census,
+SQL/catalog/input hashes and client remain preserved. All captures retained.
+Author correction8491379 integrated82d0f71 compares copied bytes/modes/path sets
+while retaining strict original physical preservation. Eight real copytree
+controls and16custody mocks PASS. Failure custody7477 joined0 PASS verifies
+1853source files/78ELFs/1299nonborrowed projections/26rawartifacts; original f12
+21paths/302273bytes/fourinputs preserved. Audit9808cf89; frozenmanifest2e665219.
+Freeze09:50:57.972455Z1301containers/SHA21bef115975112d89abda415d9b169ffb2942e0a21967ded33558829b47fe3c5.
 
 Combined build `/runs/ingest-activated-refusals-0446653`: source
 `0446653a95c9beb835c910a0e646611b02b3e458`, preparation98074/build59436/audit1125
@@ -67,13 +78,13 @@ Zero-claim original530be40/custodyc9d3dd0 is integrated056a118/ae236bc with
 dispatch0342378. ActualControl8 activation/login/typed sole-job claim is expected
 with zero issued; source9 closes0, retirement10 names unresolved workflow. Pure
 12snapshots/fourCLIstates/36controls and16custody mocks PASS; combined build PASS;
-real engine NOT_RUN. Root found wrapper return did not establish native exclusion;
+first real attempt failed before seed as above. Root also found wrapper return did not establish native exclusion;
 positive closure and both driver joins now gate reopening. Unknown custody retains
 SQL/input and native NOT_RUN. Complete affected source and typed consumers read.
 
-successor_restart_design retains its completed clean native worktree/branch.
+successor_restart_design completed the Python copy fix in its clean native worktree.
 recovery_review prepares independent zero raw replay in postgres worktree;
-cleanup_review completed expiry custody audit in qualification worktree. No agent
+cleanup_review completed expiry audit and now checks failed zero custody in its qualification worktree. No agent
 has engine/SQL/native mutation authority. Both qualification branches stay until
 reviewed outcomes are integrated and original commits archived.
 
