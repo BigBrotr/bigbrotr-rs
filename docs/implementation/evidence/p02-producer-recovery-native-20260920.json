@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Backend context fix reviewed by root/recovery_review/cleanup_review; corrected CLI rebuild next. Native replay component PASS, independent static review no blocker, original native ref retired with all files preserved. Typed PG mapping ongoing.",
+      "ongoing": "Fresh SQL copies after0032 grant-order correction; independent raw reducer and typed PG history in isolated worktrees. Native candidate/activation/writer and installed repeated lifetimes incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -23982,6 +23982,197 @@
         "bundle_sha256": "e831ae883f6e9f7d1aea092b8c5b4b70ea59ee43fae6e57c185e337c667f87e5",
         "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
         "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
+      },
+      "schema_backend_component": {
+        "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
+        "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
+        "test_counts": {
+          "control_schema": 38,
+          "migrate_entrypoint": 3
+        },
+        "tests": 41,
+        "checks": 4,
+        "new_elfs": {
+          "control_schema": "7e4314b8802007b8ec415cc14a7a00a62ea97e43a49ca0185c56a08d1f68fdbc",
+          "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+          "bigbrotr": "a1010ea074caa28ea60febaac51659020d8bdda4980a34af88e258e32c217742"
+        },
+        "retained_sha256": {
+          "resources.json": "12300403c52c0434ca1a538b35fc5b12febb25d1bce4206e0069baa3bf9904cf",
+          "preflight.json": "4e01963f8be24809d352146d17e6ac0fddefeee6ab37aa0132a09df73a819090",
+          "root-preparation.json": "32b4ea2a80841b2e9ad885578bf7f71cb71408c9aaecd05b17cafa6cb3fc6345",
+          "root-preparation-containers.json": "40a0c4086a8e3c11d0327440249eaab49f72d4f6034c996840ab9731332ddc7c",
+          "fetch-terminal.json": "7197e4ca9b6003ed1020a048af4d46ce9741dc4964eb6c131761941537e21f8a",
+          "native-terminal.json": "dec41f62334c27d68c850898b551b72aaed957eaec7c3cca6ea121961127882d",
+          "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "native.log": "c228adbe106d31b1d07fc9614ae3423e0ac331156dac33907d4ef6be5d47152b",
+          "out/build/source-manifest.json": "fee0681bd67b3833873ba7fc9a70d82a87e23b3372c95fc99115897720d96c38",
+          "out/build/source.tar": "49dd709e8d65473edb43c8b7c75bbe512ccc4ed706b8de6a576fd5e47846d00a",
+          "out/build-checks/result.json": "7cf34498929cca18cb0ebdbbd5175f7853f54d50ec422bc8b6c5f617084d7723",
+          "out/artifacts/component-result.json": "f59501ae6c5b6c63199f28286bcce8fb1c0ad4d3669e1d2ae2a968ab6fee3bef",
+          "out/artifacts/build-result.json": "cc82c37a907ccb6e720a2e1ac0570c4b4451fb24a5ad62e6eff6141fc751de06",
+          "out/qualification.json": "5b650bab58035d345ecc1b228bf40a6afb088684fa2faffe7c1c595b58e5e124"
+        },
+        "log_sha256": {
+          "independent-fixture": "35228f3856d4b548923e3c308d67f9157f58dccd4b22184e9fd32b3d1c138f1a",
+          "control_schema": "fd6f4de7385cb3df17911ef9f5b57425fd93215bf9d0cb2b3eee642fc349140d",
+          "migrate_entrypoint": "39c56d34aad796a62071a115432759abf3279c8bddf6841da4eb8118d062ce25",
+          "clippy": "edfa43bb089c7713959a281f9f34391cd2bf8e9f8b32a1652686e9070f6d6a01"
+        },
+        "limitations": [
+          "No test executable, compiler, SQL or native engine run by auditor.",
+          "Container comparison excludes only rolling Health.Log, retaining status and failing streak.",
+          "Mutable compiler caches not re-opened or treated as retained evidence.",
+          "No connected lineage, PostgreSQL or installed repeatable succession qualification."
+        ],
+        "status": "PASS_SUCCESSION_SCHEMA_COMPONENTS",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-6b15dee",
+        "preparation_session": 5163,
+        "build_session": 8707,
+        "wrapper_exit": 0,
+        "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+        "started_at": "2026-10-15T12:05:30.282095+00:00",
+        "finished_at": "2026-10-15T12:06:38.147051+00:00",
+        "free_bytes_after": 39367835648,
+        "audit": {
+          "session": 22500,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-schema-6b15dee/audit-root/audit-v1.json",
+          "sha256": "9a5b5c10480f3c8e35adcd81d9f6bc5994b9cb1ed768fe6036f5f40ab8475e80",
+          "source_files": 1870,
+          "old_protected_elfs": 94,
+          "total_protected_elfs": 97,
+          "unchanged_containers": 1318,
+          "capture": {
+            "observed_at": "2026-10-15T12:07:24.615604+00:00",
+            "containers": 1320,
+            "sha256": "780a67892305a7c71601941ba88fe23c4731d9116990531de49b6018f4a24cd0"
+          }
+        },
+        "owned_terminal": {
+          "fetch": {
+            "id": "d1c87df4df0d11c6e2ec54b34fe8312f695d2bb0b229affab0e917387f887b26",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:05:30.825329236Z",
+              "FinishedAt": "2026-10-15T12:05:31.070696944Z"
+            }
+          },
+          "native": {
+            "id": "d0e8094279b0a4f0f2c2ff04e1be2baf766e83bdeb34b8d1444f6d7c427568b7",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:05:31.373004433Z",
+              "FinishedAt": "2026-10-15T12:06:37.429188997Z"
+            }
+          }
+        }
+      },
+      "sql_legacy_grant_failure": {
+        "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
+        "started_at": "2026-10-15T12:08:28.660221+00:00",
+        "finished_at": "2026-10-15T12:08:38.105764+00:00",
+        "free_bytes_after": 38938238976,
+        "status": "FAIL_EMPTY_LEGACY_GRANT_ORDER",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-6b15dee",
+        "preparation_session": 64458,
+        "engine_session": 1948,
+        "wrapper_exit": 1,
+        "result_sha256": "731c27c3d69601e8382966211d362eccfca06700ffa8ed878752089f2857d13f",
+        "preparation_state": "COMPLETE_DO_NOT_REPLAY",
+        "actual": "Both CLI plan/apply/reapply38 pass. Activated origin passes31 SQL shapes and old-role observer rollback; empty probe fails on missing legacy0032 SELECT before fixture. Empty migrated/final full rows identical.",
+        "correction": "Move existing SELECT initial_ingest_activations grant before legacy probe. No migration or compiled input changes.",
+        "limits": [
+          "Mixed FAIL, not two-origin qualification.",
+          "No native store opened; original databases preserved.",
+          "Custody uses retained post-run capture, not fresh whole-host state."
+        ],
+        "audit": {
+          "first_reader_session": 71351,
+          "first_reader_exit": 1,
+          "first_reader_failure": "Four external Inspire containers created after engine completion caused v1 global count assertion. Frozen capture and reader preserved.",
+          "corrected_reader_chunk": "7ec51c",
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-6b15dee/audit-root/audit-v2.json",
+          "sha256": "b3aea4f8c7966f1b0995ab7a822e7e9ea5c5b8f458c73a9a75bb75e64caba27d",
+          "source_files": 1870,
+          "protected_elfs": 97,
+          "unchanged_nonborrowed_containers": 1319,
+          "capture": {
+            "observed_at": "2026-10-15T12:16:56.335250+00:00",
+            "containers": 1325,
+            "sha256": "94caf52734cadb23694c4e5bbe11e8e134e7c63f16c553aee05c684abe3a156c",
+            "scope": "Frozen v1 post-run containers.json; no fresh host observation or whole-host unchanged claim."
+          },
+          "external_post_run_additions": {
+            "1e949cb225ae81e647c8435a0c3befb18651e25e54aaa04b710a03edc4854a88": {
+              "name": "/inspire-issue1791-rabbitmq",
+              "created_at": "2026-10-15T12:09:55.742544363Z"
+            },
+            "708ad00f6cfe4804457c79c48aaaea4cbffc971d71beacfc4bcea99d3d57c19d": {
+              "name": "/inspire-issue1791-opensearch",
+              "created_at": "2026-10-15T12:09:55.233423454Z"
+            },
+            "8fd70b0163a4bdb4c68685203575a6a7ed256ced4af903f7876dcd4f63df413a": {
+              "name": "/inspire-issue1791-postgres",
+              "created_at": "2026-10-15T12:09:54.999266585Z"
+            },
+            "fc5143dfb6996b3fa7efd0f87c4d87d2983a8795fe9723ef439deeeb13f31a0c": {
+              "name": "/inspire-issue1791-redis",
+              "created_at": "2026-10-15T12:09:55.476064114Z"
+            }
+          }
+        },
+        "owned_terminal": {
+          "postgres": {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:08:28.713380946Z",
+              "FinishedAt": "2026-10-15T12:08:37.206578256Z"
+            }
+          },
+          "client": {
+            "id": "0dcf147a9babd18f4192baceccfef596cdedc953bd276b432cfb1556972f3625",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T12:08:31.167658732Z",
+              "FinishedAt": "2026-10-15T12:08:36.211844096Z"
+            }
+          }
+        }
       }
     }
   }

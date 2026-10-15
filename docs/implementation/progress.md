@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T12:04:27.249441+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T12:19:42.874543+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `4dd78e1`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `6b15dee`.
 Verified private push20269 is `4dd78e193c4c3759555486ceff7f9f047dd4b491`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
@@ -33,11 +33,32 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: corrected schema/CLI build from clean main, using
-`.research/repeatable-succession-schema-backend-prepare-20261015.py` (NOT_RUN),
-94protectedELFs/12GiB. Native123-test evidence is reused unchanged. Then fresh SQL
-copies test INVOKER backend custody, pre-grant legacy role observer rollback and
-31 shapes including direct terminal-receipt refusal before retirement.
+Root's next bounded action: fresh SQL-only copies using qualified6b CLI after
+moving the existing0032 observation grant before the legacy probe.97protectedELFs,
+2GiB reserve; native123-test evidence reused unchanged. Both origins must pass
+31 shapes, then independently replay captures before retiring the SQL ref.
+Typed PG history and pure SQL replay have separate new worktrees from6b15dee:
+`.research/successor-history-20261015` and `.research/succession-sql-replay-20261015`.
+Native agent performs read-only next-capability design. Agents cannot run engines/builds.
+
+Schema6b preparation5163/build8707/audit22500 joined0 PASS,12:05:30Z–12:06:38Z:
+38schema+3entrypoint tests, literal fixture and Clippy. Schema7e4314b8,
+entrypoint82ccd47d, CLIa1010ea0 retained;94old+3new=97protectedELFs. Audit9a5b5c10
+binds1870source files/1318unchanged prior projections. Both owned containers
+stopped0/PID0/noOOM. See `/runs/ingest-succession-schema-6b15dee/audit-root/audit-v1.json`.
+
+SQL6b preparation64458/engine1948 joined1 mixed FAIL,12:08:28Z–12:08:38Z.
+Both migrations/redo pass; activated31 shapes and legacy-role rollback PASS.
+Empty legacy probe fails before fixture on missing initial_ingest_activations
+SELECT; empty migrated/final rows identical. Existing grant now moved earlier;
+no migration/compiled input change. Both originals and failed copies preserved,
+PG0/client143/PID0/noOOM. Custody v1/71351 failed global container count because
+four unrelated Inspire containers were created at12:09:55Z after engine completion.
+Frozen capture and failed reader retained. Read-only v2/7ec51c joined0 PASS binds
+1870source files/97ELFs/1319unchanged prior nonborrowed projections, owned terminals
+and exact external additions separately; no whole-host unchanged claim. Auditb3aea4f8
+at `/runs/ingest-succession-sql-6b15dee/audit-root/audit-v2.json`. Original preparation
+scripts complete; never replay retained roots. Two-origin qualification remains pending.
 
 Diagnostic SQL4dd78e1 preparation51542/engine69767 joined1 FAIL confirms the stack:
 require_complete_ingest_lineage→require_ingest_successor→lock_ingest_lineage→0007.
@@ -48,13 +69,13 @@ Correction keeps checker/terminal recorder INVOKER. Early classifier reads only
 old owner_epochs and skips new tables before ingest3; new owners' deferred trigger
 prevents missing-intent bypass. Explicit terminal INSERT38 is guarded by actual
 Control/retired producer/server-derived xid; no broad stats or PUBLIC grant.
-Root and both AI reviewers checked this boundary; corrected runtime pending.
+Root and both AI reviewers checked this boundary; activated runtime passes; empty retry pending above.
 Native independent AI review completed with no concrete blocker; no runtime/FFI/
 RSS or future PG adapter review claimed. Native branch retired12970 joined0 after
 five commit-pair and24fullblob reconciliations,2050path census unchanged. Archive
 refs/archive/qualified-succession-native-20261015 and verified14,357,581byte bundle
 SHAe831ae88 preserve original18c6fc4. Totals86local/51remote retired,42detached;
-all96worktrees retained. PostgreSQL branch remains for unresolved SQL qualification.
+all96 original worktrees retained; two new worktrees bring total98. PostgreSQL branch remains for unresolved SQL qualification.
 
 SQLc4f7bd5 preparation53093/engine91165 joined1 FAIL,11:53:18Z–11:53:25Z.
 CLI migration/redo pass; high-u64 checks pass. Retained old codec read confirms
@@ -76,7 +97,7 @@ independent literal fixture and Clippy also PASS. Audit18419 joined0 PASS binds
 containers stopped0/PID0/noOOM. Native component a80e01e4, CLI5b885604 retained.
 Preparation/build/audit complete, never replay. New native fixtures install epoch3
 bytes directly; connected writer/candidate/activation and installed journeys are
-NOT_RUN. Independent AI native review and PG typed read-only mapping are underway.
+NOT_RUN. Independent AI native review completed; PG typed read-only mapping is underway.
 
 SQL6350901 preparation86173/engine91755 joined1 FAIL at unsigned_full_width;
 actual CLI plan/apply/reapply38 all exit0. Genuine new Control claim committed
@@ -121,7 +142,7 @@ containers stopped0/PID0/noOOM. Auditf2693117 under
 Preparation/build/audit complete, never replay their source roots.
 Root read complete final0038/414-line fixture, migration catalog/schema/early CLI
 tests, build runners and PG lab utility. New SQL harness is root-authored; no
-independent runtime review claimed. Grants list three SELECT/two INSERT relations
+independent runtime review claimed. Current grants list three SELECT/three INSERT relations
 and13 helpers; destructive fixture grants remain separate on disposable copies.
 Typed lifecycle consumers and native positive whole-lineage replay remain incomplete.
 
@@ -459,8 +480,9 @@ root `/runs/relay-source-recheck-e06f580/pg`, owner
 5e69b0f060b1607c25230d1dbd3e5608: exited0/PID0/noOOM.
 Latest import/workflow/SIGTERM clients and earlier retained clients:
 exited143/PID0/noOOM. PG16.15 limits remain1.5GiB/2CPU/64MiB shared memory.
-Six unrelated services remain running and untouched: inspirehep-reindex
-db/mq/cache/es, ollama, tgdataset-mongo.
+Six previous unrelated services were preserved: inspirehep-reindex
+db/mq/cache/es, ollama, tgdataset-mongo. Four additional external Inspire issue1791
+containers were observed after the SQL run; preserve them too. Recheck current state.
 
 Preserve every ignored `.research` artifact, external lab, source export, dataset,
 worktree, stopped container, protected executable and original/failure fixture.
@@ -469,7 +491,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after SQL11:53:25Z:39,667,924,992; remeasure before allocating. Small engines
+Free bytes after SQL12:08:38Z:38,938,238,976; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive

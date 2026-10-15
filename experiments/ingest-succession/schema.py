@@ -214,6 +214,9 @@ def run(root, build):
             # New relations are ungranted by migration; the explicit set is separate.
             assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_successions','SELECT');") == 'f'
             assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_terminal_transactions','INSERT');") == 'f'
+            # Upgrade the seed31 role's existing0032 observation prerequisite
+            # before exercising a legacy observer; these are not0038 grants.
+            lab.sql(pg, database, 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;')
             # Exercise the legacy epoch1 deferred role observer before adding
             # any0038 grants, with a complete rollback and external row check.
             legacy = lab.docker('exec', '-i', pg['postgres'], 'psql', '-X', '-A', '-t', '-q', '--no-password',
@@ -229,9 +232,6 @@ def run(root, build):
             assert legacy.returncode == 0 and legacy.stdout.strip() == 'LEGACY_ACL_ROLLBACK' and not legacy.stderr
             assert normalized(rows(pg, database)) == normalized(migrated)
             lab.sql(pg, database, (SOURCE / 'experiments/ingest-succession/schema_grants.sql').read_text())
-            # Empty legacy31 did not have the activation relation yet. Only SELECT
-            # is needed to inspect its absence after the additive upgrade.
-            lab.sql(pg, database, 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;')
             assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.ingest_terminal_transactions','INSERT');") == 't'
             # Deliberately broader negative-case grants only on this disposable DB.
             negative_grants = ('GRANT DELETE ON control.role_instances TO bigbrotr_control; '
