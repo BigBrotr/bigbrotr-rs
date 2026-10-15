@@ -313,9 +313,21 @@ def verify(events, before, native, inputs, case, server_window):
     assert len(native['rows']) == base_count + (3 if target == 4 else 0)
     assert native['sequence'] == base_sequence + (5 if target == 4 else 0)
     assert len(inputs) == input_count and sha(encoded(inputs)) == PINS[origin]['inputs']
-    m = Model(before, native, inputs, server_window)
     known = transition.lineage(before, native, origin)
     assert known['head'] == target - 1 and known['state'] == 'Terminal'
+    return verify_live(events, before, native, inputs, case, server_window, known)
+
+
+def verify_live(events, before, native, inputs, case, server_window, known):
+    """Unchanged finite live protocol after an independently checked terminal head.
+
+    Callers own the original pins and literal complete-history reconstruction.
+    This shared body permits an activated predecessor without inventing another
+    preparation/admission oracle or weakening the original case specification.
+    """
+    target, operation = known['head'] + 1, 'live-new'
+    assert known['state'] == 'Terminal' and known['through'] == target - 1
+    m = Model(before, native, inputs, server_window)
     t = Transcript(events, m)
     candidate = t.take('candidate', True)
     assert set(candidate) == {'event', 'role', 'incarnation', 'namespaces'}
@@ -442,7 +454,7 @@ def verify(events, before, native, inputs, case, server_window):
     exact(t.live('complete'), dict(event='lineage-live-complete', operation=operation, native='closed',
         control='released-and-joined', observer='joined', success=True, writer=False, activation=True, admission=True))
     assert t.position == len(events), 'unclassified trailing events'
-    assert t.snapshots == (49 if origin == 'activated' else 45) + (2 if target == 4 else 0)
+    assert t.snapshots == 33 + 2 * (sum(known['counts']) + len(known['counts']))
     assert m.refreshes == sum(known['counts']) + len(known['counts']) + 2
     assert len(m.native['rows']) == len(native['rows']) + 20
     assert m.native['sequence'] == native['sequence'] + 26 and len(m.inputs) == len(inputs) + 3

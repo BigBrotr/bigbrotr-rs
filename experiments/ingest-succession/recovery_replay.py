@@ -188,15 +188,17 @@ def specification(case):
     return origin, retry, SHAPES[index // 2]
 
 
-def science(pg, native, inputs, origin, *, source_purpose=False):
+def science(pg, native, inputs, origin, *, source_purpose=False, retired_head=False):
     """Reconstruct every receipt/closure, including old-than-parent dependencies.
 
     Source purpose additionally checks a closed head against its retained exact
     digest/cut and existing copies. Ordinary recovery remains source-open only.
     """
-    assert type(source_purpose) is bool
+    assert type(source_purpose) is bool and type(retired_head) is bool
+    assert not retired_head or source_purpose
     head, issued, cut, *_ = SHAPES[CLONES.index(origin)]
     source_closed = source_purpose and only(pg['source_streams'], owner_epoch=head)['state'] == 'closed'
+    assert not retired_head or source_closed
     values = native_map(native)
     legacy = only(pg['initial_ingest_successions'])
     ds, resource, slot = (binary(legacy[k]) for k in ('dataset_id', 'owner_resource_id', 'producer_slot_id'))
@@ -329,7 +331,7 @@ def science(pg, native, inputs, origin, *, source_purpose=False):
             if source_closed:
                 assert source['last_complete_sequence'] == source_cut and source['closure_digest'] == '\\x' + digest
                 assert type(source['closed_at_us']) is int and source['closed_at_us'] > 0
-                assert producer['state'] == 'closing'
+                assert producer['state'] == ('retired' if retired_head else 'closing')
             else:
                 assert source['state'] == 'open' and source['closure_digest'] is None and source['last_complete_sequence'] is None
                 assert producer['state'] in ('open', 'closing')

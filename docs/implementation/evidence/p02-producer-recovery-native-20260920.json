@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Implement/review distinct successor retirement native and PG components, then finite consumer and genuine refusal/terminal/3-to4 qualification. Acquisition first wave complete within explicit scope. Installed/failure/expiry/capacity and M1-M5 remain incomplete.",
+      "ongoing": "Exact-source ingest-succession-recovery build:122 expected affected tests, CLI/probe and Clippy. Then two sequential engine suites and independent raw/custody audits; root alone owns cache/build/engines.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -29511,23 +29511,125 @@
         ]
       },
       "successor_retirement_work": {
-        "status": "IN_PROGRESS_SOURCE_ONLY",
-        "base": "f169ad73c0b2349032afc183b6b5b82182661eae",
-        "native": {
-          "path": "/home/tux/bigbrotr-rs/.research/successor-native-retirement-20261015",
-          "branch": "implementation/successor-native-retirement",
-          "owner": "cleanup_review",
-          "scope": "Distinct observe-existing-CLOSING retirement-purpose owner/cursor/proof retaining original allocation and Event discriminator; no source/positive weakening."
+        "status": "INTEGRATED_SOURCE_RUNTIME_NOT_RUN",
+        "observed_at": "2026-10-15T17:51:25.424677+00:00",
+        "observed_head": "4ad8369493d9df21bf10489be82ad2e2d28759d7",
+        "components": [
+          {
+            "original": "4a3a8bf7b129825bd3ca55128995ab977a736ec1",
+            "integrated": "e14dd47da19260059912bcf4add1a33b728b9843",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-native-retirement-20261015",
+            "report": {
+              "path": "/home/tux/bigbrotr-rs/.research/successor-native-retirement-20261015/.research/native-retirement-static-20261015/report.json",
+              "sha256": "16e8130558d661ccff0173c5d43c8b7d7a8f3725e68680eb63b42b901442a95f",
+              "bytes": 5087
+            }
+          },
+          {
+            "original": "0cbf6494cba5536ddf8f1184163eb92bc24a043f",
+            "integrated": "ec0c0f1fbc36b3b8df7fab0e4105218f69afd97a",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-pg-retirement-20261015",
+            "report": {
+              "path": "/home/tux/bigbrotr-rs/.research/successor-pg-retirement-20261015/.research/successor-retirement-static-20261015/manifest.json",
+              "sha256": "cd9ef7e96f01d1b697ace9f11a0404f9933c72c42392e1ef4e31c38997b4501c",
+              "bytes": 4659
+            }
+          },
+          {
+            "original": "023eb0ffb70d160bb9866bddd874415cad0a1822",
+            "integrated": "c20c63014217ce36a9d09cdb57f43a0a89f9b7c9",
+            "worktree": "/home/tux/bigbrotr-rs/.research/successor-retirement-engine-20261015",
+            "report": {
+              "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-engine-20261015/.research/successor-retirement-harness-selfcheck-20261015/manifest.json",
+              "sha256": "83479a99da5bc3fe3974c342737b64efaee0e67a37e535e442379110c5eb0dc4",
+              "bytes": 6359
+            }
+          }
+        ],
+        "probe_commit": "bef7aada2e17f1b0581d7cebca27f85daec39b06",
+        "capture_commit": "4ad8369493d9df21bf10489be82ad2e2d28759d7",
+        "probe_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-native-retirement-20261015/.research/retirement-probe-review-20261015/review.json",
+          "sha256": "9499bfca417730bd3a212b8efb25cfcb84a6d1499b0ff849e02102b89639163f",
+          "bytes": 5188
         },
-        "postgres": {
-          "path": "/home/tux/bigbrotr-rs/.research/successor-pg-retirement-20261015",
-          "branch": "implementation/successor-pg-retirement",
-          "owner": "recovery_review",
-          "scope": "Assigned after bounded acquisition probe AI review: separate ready-or-terminal classifier, existing-only positive copies, workflow/zero-claim veto, atomic12-row retirement and exact retry."
+        "reader_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-pg-retirement-20261015/.research/retirement-reader-review-20261015/manifest.json",
+          "sha256": "1ef6003462da4f380d5756c0bb98b6f98d40386c9d0897f7b5bbdf0a81c87cdb",
+          "bytes": 5334
         },
-        "qualification": "successor_restart_design performs read-only genuine fixture/3-to4 design. Root alone integrates/builds/runs engines.",
-        "runtime": "NOT_RUN",
-        "registered_worktrees": 125
+        "capture_pure_manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/successor-retirement-engine-20261015/.research/successor-retirement-capture-selfcheck-20261015/manifest.json",
+          "sha256": "c98ba531419837031e616a2d73a79fe639460fef161aca1ca812daa624e3e8be",
+          "bytes": 2647
+        },
+        "existing_reader_regression": {
+          "path": "/home/tux/bigbrotr-rs/.research/retirement-shared-reader-regression-20261015/result.json",
+          "sha256": "fa4a8217b46161a9d322b7b8bdf5277f7bd8335232c86fe352de00c3ebe0aa75",
+          "bytes": 9595
+        },
+        "reader_protocol": {
+          "manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/successor-native-retirement-20261015/.research/successor-retirement-reader-selfcheck-20261015/manifest.json",
+            "sha256": "7a80f2b76d48986640dcc48e290635f0475d863283f67868d9d8f7af6444ea42",
+            "bytes": 7710
+          },
+          "status": "PASS_ARTIFICIAL_PROTOCOL_ONLY",
+          "cases": 9,
+          "snapshots": 292,
+          "controls": 215,
+          "artifacts": 45,
+          "bytes": 74208899,
+          "root_verified": true,
+          "scope": "Shared Model only; run-v2/session73505 joined0. Run-v1 assembler SyntaxError retained. No reader changes."
+        },
+        "responsibility": "Distinct one-shot native/PG retirement requires existing CLOSING and CLOSED source, exact existing input/copy replay, Event/job/gap binding and current authority. Twelve target UPDATEs plus actual terminal transaction receipt; no native/source/workflow mutation. Exact retry preserves old time/xmin/receipt.",
+        "fixture": "Two exact roots,4clones9processes: genuine gap retirement/retry/live4; dictionary retirement/live4; unbound Event refusal3/2; fresh genuine claimed-zero source closure then inspect refusal. Preserve deliberately unresolved claim clone.",
+        "root_review": "Complete new native owner/tests and PG owner/projection/tests, finite consumer and shared kernels/callers; affected0038 classifier/workflow/transaction guards. No new migration/format or weakened positive/source purpose. AI review is source evidence only.",
+        "remaining": "Actual component/compiler/engine and raw-capture qualification NOT_RUN. COMMIT loss/cancellation/expiry/tails/capacity, installed/import closure/ACK/GC/Archive and remaining M1-M5 still open.",
+        "resources": {
+          "observed_at": "2026-10-15T17:51:25.424677+00:00",
+          "container_count": 1361,
+          "running": [
+            {
+              "name": "/inspirehep-reindex-db-1",
+              "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088"
+            },
+            {
+              "name": "/inspirehep-reindex-mq-1",
+              "id": "c1eb6dd5ff8f735fd76cdcb2b4250c62e488135c169752df0f9c26b818216f12"
+            },
+            {
+              "name": "/inspirehep-reindex-cache-1",
+              "id": "1f2889273c7c4de374ae091b15bcec7b3eff8213fcd58906fa4efcfdb26fd55c"
+            },
+            {
+              "name": "/inspirehep-reindex-es-1",
+              "id": "9c1053ce0d699c013403567db284bb38eb2dc72deeecc408b5f2991eaacdfd9f"
+            },
+            {
+              "name": "/ollama",
+              "id": "5fcfeab23981bae1267a982c37687b567b9b913bf104c25e956cf68b0c91027b"
+            },
+            {
+              "name": "/tgdataset-mongo",
+              "id": "4e93d9d21e55982b2a828d792a1ddcd02d29df5dda0d2a116b9286c433679c85"
+            }
+          ],
+          "free_bytes": 28633694208,
+          "protected_elfs": 134,
+          "build_reserve_bytes": 12884901888,
+          "engine_reserve_bytes": 2147483648,
+          "compiler_engine_status": "NOT_RUNNING",
+          "worktrees": 126,
+          "branches": [
+            "implementation/successor-native-retirement",
+            "implementation/successor-pg-retirement",
+            "main",
+            "qualification/successor-retirement-engine"
+          ]
+        },
+        "next": "Exact-source ingest-succession-recovery build:122 expected affected tests, CLI/probe and Clippy. Then two sequential engine suites and independent raw/custody audits; root alone owns cache/build/engines."
       },
       "qualified_acquisition_ref_retirement": {
         "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
