@@ -104,8 +104,9 @@ unchanged; do not multiply build trees or broad reruns without a concrete reason
 
 ## Commit and collaboration policy
 
-A single implementer may work linearly on `main`, with coherent commits and no
-mandatory PR or merge ceremony. Commit one understandable outcome with its
+Under the owner's Q36 instruction, `main` holds the current integrated project
+state. The sole integrating owner works linearly there with coherent commits and
+no mandatory PR or merge ceremony. Commit one understandable outcome with its
 contracts, documentation and relevant evidence. Avoid both a commit per small
 edit and a phase-sized dump that cannot be reviewed. The future contribution
 guide follows the same discipline. Candidate commits used for testing may be
@@ -119,6 +120,14 @@ keep separate writable worktrees and choose one integrating owner. Do not let
 agents race on a shared Git index, lockfile, migration allocator or checkpoint.
 Re-read and test the integrated result. Independent review can be useful without
 parallel implementation. No fixed agent/reviewer count is required.
+
+Retire inactive local and remote branch refs after proving their changes are
+integrated or explicitly retained as historical qualification input. Preserve
+original commit objects with a verified bundle and protected archive refs; a
+cherry-picked patch alone does not preserve its original commit identity. Detach
+inactive clean worktrees at the same commit when removing their branch refs,
+preserving all tracked/ignored contents and external laboratories. Keep active
+implementation branches until their work is reconciled.
 
 Before pushing, fetch and inspect remote changes. Use ordinary fast-forward
 updates; reconcile unexpected work without resetting another contributor or

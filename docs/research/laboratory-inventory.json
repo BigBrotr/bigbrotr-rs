@@ -47222,7 +47222,7 @@
   },
   "implementation_activated_initial_retirement_20261013": {
     "status": "IMPLEMENTED_UNDER_QUALIFICATION",
-    "observed_at": "2026-10-15T07:46:17.194087+00:00",
+    "observed_at": "2026-10-15T08:15:44.455893+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#activated-initial-producer-retirement-under-implementation",
     "scope": "Explicit existing-CLOSING, existing-copy-only retirement of activated producer2, nine domains, Ingest owner and role. Exact source2, native/input state, outcome recorder and workflow history retained; no replacement writer, import closure or ACK/GC.",
@@ -47352,7 +47352,7 @@
       ]
     },
     "remaining_gates": [
-      "Activated zero completion; unbound Rejected/Event refusal; genuine zero-request acquisition/import obligations, input binding/checkpoint vetoes",
+      "Genuine zero-request acquisition/import obligations, input binding/checkpoint vetoes; zero completion and existing-copy unbound Rejected/Event refusal now qualified",
       "Missing/conflicting original/copy and mixed terminal metadata refusal",
       "Blocked cancellation and actual Control UTC expiry; session poisoning/custody",
       "Independent complete state/original preservation audit and private source/evidence push for each remaining actual campaign; M1\u2013M5 remain incomplete"
@@ -48176,6 +48176,259 @@
             }
           }
         ]
+      },
+      {
+        "status": "PASS_INSTALLED_ACTIVATED_RETIREMENT_ZERO",
+        "source": "ed291195a8effb08aeccb9997af5f00988351e44",
+        "owner": "a8183addb57fb07a9572632a3d1d79d7",
+        "client": {
+          "id": "7307adffedeba7e481130aaae44b741be5b6a6e940e7dcbf51942641fbd16ced",
+          "name": "bigbrotr-acquisition-binding-ed29119"
+        },
+        "databases": [
+          "bb_scope_bind_ed29119_installed_activated_retirement_zero",
+          "bb_scope_bind_ed29119_installed_activated_retirement_rejected"
+        ],
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "started_at": "2026-10-15T08:04:39.759626+00:00",
+        "finished_at": "2026-10-15T08:05:29.794422+00:00",
+        "free_bytes_after": 44204679168,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "not_run": [
+          "final Event-mask dispatch for refused request (existing-copy check refuses first)",
+          "workflow/import and missing/conflicting original/copy or mixed terminal metadata refusals",
+          "blocked cancellation/UTC expiry and ordinary OPEN source compatibility",
+          "repeated lifetimes, import closure, ACK/GC, epoch3, Archive restart and full M1",
+          "capacity/load/aged-state and arm64/release"
+        ],
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-zero-engine-ed29119",
+        "wrapper": "71757 joined0",
+        "build_source": "388a01abd6dadf2a894a88c16e585ace6b382ffa",
+        "compiled_inputs_identical": true,
+        "result_sha256": "e5c7338ed01ad1ec7494003f91cccdf0ccae1956a41cfef8f103f9f17f02c8a9",
+        "cli_invocations": 3,
+        "finite_seed_invocations": 0,
+        "operator_mutations": 0,
+        "source_preserved": {
+          "zero": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          },
+          "rejected": {
+            "control": true,
+            "files": true,
+            "inputs": true,
+            "contents": true,
+            "catalog": true,
+            "client": true,
+            "artifacts": true
+          }
+        },
+        "cases": [
+          {
+            "mode": "installed-activated-retirement-zero",
+            "context_sha256": "e4dc888346bc147fdabd313405a26402a5d2906ccae39c14937c4a6240fec08f",
+            "oracle": {
+              "status": "PASS",
+              "mode": "installed-activated-retirement-zero",
+              "observed_states": 2,
+              "control_tables": 72,
+              "issued": 0,
+              "source_cut": 0,
+              "native_rows": 52,
+              "native_sequence": 63,
+              "original_inputs": 4,
+              "target_rows_changed": 12,
+              "native_writes": 0,
+              "source_unchanged": true,
+              "jobs_unchanged": true,
+              "retained_acquisition_gaps": 0,
+              "producer_retired": true,
+              "retired_at_us": 1792051489308846,
+              "event_without_job_refused": false,
+              "ready": false
+            },
+            "controls": 26
+          },
+          {
+            "mode": "installed-activated-retirement-zero-retry",
+            "context_sha256": "03455eb1898d4b2fd96044a91a70542036a571dfebbd881b8ba4872405b19db3",
+            "oracle": {
+              "status": "PASS",
+              "mode": "installed-activated-retirement-zero-retry",
+              "observed_states": 2,
+              "control_tables": 72,
+              "issued": 0,
+              "source_cut": 0,
+              "native_rows": 52,
+              "native_sequence": 63,
+              "original_inputs": 4,
+              "target_rows_changed": 0,
+              "native_writes": 0,
+              "source_unchanged": true,
+              "jobs_unchanged": true,
+              "retained_acquisition_gaps": 0,
+              "producer_retired": true,
+              "retired_at_us": 1792051489308846,
+              "event_without_job_refused": false,
+              "ready": false
+            },
+            "controls": 24
+          },
+          {
+            "mode": "installed-activated-retirement-rejected",
+            "context_sha256": "deab64492ac304853218a03c226ff0b9bb777f8650be416e99bc22d896b4aa49",
+            "oracle": {
+              "status": "PASS",
+              "mode": "installed-activated-retirement-rejected",
+              "observed_states": 2,
+              "control_tables": 72,
+              "issued": 1,
+              "source_cut": 0,
+              "native_rows": 53,
+              "native_sequence": 65,
+              "original_inputs": 5,
+              "target_rows_changed": 0,
+              "native_writes": 0,
+              "source_unchanged": true,
+              "jobs_unchanged": true,
+              "retained_acquisition_gaps": 0,
+              "producer_retired": false,
+              "retired_at_us": null,
+              "event_without_job_refused": true,
+              "ready": false
+            },
+            "controls": 24
+          }
+        ],
+        "semantics": "Genuine activated zero: Control13 fences departed12, exact12 target rows at T1792051489308846/xmin29921; fresh14 retry preserves terminal versions. Genuine rejected Event with issued1/source0 and no job: failed13, exit4 Outcome(Conflict), zero target writes. Both native/input/source/job/session/copy baselines exact. No final SQL Event-mask dispatch claim.",
+        "root_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-zero-engine-ed29119/root-independent-replay.json",
+          "sha256": "93ae2106ab9b7e2ce70208e942384c9d7b134238deb467d43ca17c5a762229c4",
+          "wrapper": "98308 joined0",
+          "status": "PASS_ROOT_INDEPENDENT_ACTIVATED_RETIREMENT_ZERO_REPLAY",
+          "seed_states": 2,
+          "external_states": 6,
+          "controls": 74,
+          "scope": "Root source-reviewed independent expectations against raw SQL/native/input/config/process/backend/clock/catalog/migration captures; zero first/retry and existing-copy Event refusal. No SQL, engine or native-open audit action; final SQL Event-mask refusal not exercised."
+        },
+        "author_custody_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-zero-engine-ed29119/audit-cleanup-review/audit.json",
+          "sha256": "9e73aeff4d1c36a9112342408d88f8bb16b11090b443492719cdfc4e9d40f16f",
+          "log_sha256": "12e6a9a4a7fc55fd918ff6dfd92756ddc05183148d83d532453fbad8938a0b19",
+          "wrapper": "54176 joined0",
+          "status": "PASS_READ_ONLY_SOURCE_ARTIFACT_CUSTODY_AUDIT",
+          "frozen_at": "2026-10-15T08:07:08.000311Z",
+          "container_capture_sha256": "0cc6be1ea54181198447c9c61350595fc0c2b567b89c4dc3048ed910e270bbfa",
+          "engine_files": 1842,
+          "build_files": 1834,
+          "protected_elfs": 76,
+          "raw_bindings": 44,
+          "unchanged_nonborrowed_containers": 1291,
+          "originals": [
+            {
+              "name": "zero",
+              "paths": 23,
+              "regular_bytes": 313446,
+              "tables": 72,
+              "native_rows": 52,
+              "native_sequence": 63,
+              "inputs": 4,
+              "frozen": {
+                "result.json": "01ebda022458719700afa4d0da2b1867551be4e9db2c7d290825a76c1a4d9ca9",
+                "installed-source-zero-legacy-closed-after-sql.json": "3fb138e9ff960933b9ce33b51e0789d5727ce5d312f67d2e4a5524bb4d9585d9",
+                "installed-source-zero-legacy-closed-after-native.json": "553302fb342847140d388677c0bb1504af53e5bf25ec30150d65746b17f1ced7",
+                "installed-source-zero-legacy-closed-verification.json": "3b32a2d8e6788ef18db9bfd5602f05c8b013fc4853ade505b617f5dbe0b24ff5"
+              },
+              "preservation": {
+                "control": true,
+                "files": true,
+                "inputs": true,
+                "contents": true,
+                "catalog": true,
+                "client": true,
+                "artifacts": true
+              }
+            },
+            {
+              "name": "rejected",
+              "paths": 22,
+              "regular_bytes": 311488,
+              "tables": 72,
+              "native_rows": 53,
+              "native_sequence": 65,
+              "inputs": 5,
+              "frozen": {
+                "result.json": "01ebda022458719700afa4d0da2b1867551be4e9db2c7d290825a76c1a4d9ca9",
+                "installed-source-rejected-retry-after-sql.json": "05c123810e00dc8b6af860a7e79856ac29c334ec5a02496af8209f37ed37a52a",
+                "installed-source-rejected-retry-after-native.json": "ab3dc3498a8c4c056c75a621fc0b2bb0db253ba4132212919d1fdecc7c17aae2",
+                "installed-source-rejected-retry-verification.json": "3f1cf5108ad1186836be99e530f6a6d01434ab9afe558f29a0bb21900e57908e"
+              },
+              "preservation": {
+                "control": true,
+                "files": true,
+                "inputs": true,
+                "contents": true,
+                "catalog": true,
+                "client": true,
+                "artifacts": true
+              }
+            }
+          ],
+          "limitations": [
+            "Independent of zero/rejected harness/oracle authorship; auditor authored reused retirement reducer and older source fixture helpers; root independently replays semantics.",
+            "No SQL/native open/CLI/build/restart executed by auditor.",
+            "Original SQL/catalog preservation bound to retained engine observations, not a new auditor query.",
+            "Rejected Event refuses existing-copy validation with Outcome(Conflict); no final Event-mask dispatch claim.",
+            "No new native authority, source/workflow retirement, ACK/GC or next lifetime is qualified by these cases."
+          ],
+          "preserved_audit_failures": [
+            "audit-v0-syntax.py/log: local whitespace typo before any audit execution",
+            "audit-v1.py/log: local auxiliary assertion conflated final released Control13 xmin with historical claim/fence12; corrected reader compares each own transaction, preserving target separation"
+          ]
+        },
+        "terminal": [
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T08:04:39.843941487Z",
+              "FinishedAt": "2026-10-15T08:05:28.943042988Z"
+            }
+          },
+          {
+            "id": "7307adffedeba7e481130aaae44b741be5b6a6e940e7dcbf51942641fbd16ced",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-15T08:04:40.73981739Z",
+              "FinishedAt": "2026-10-15T08:05:28.135491251Z"
+            }
+          }
+        ]
       }
     ],
     "fault_fixture": {
@@ -48267,31 +48520,39 @@
       "next": "No work while paused; resume only on explicit owner request, following progress.md."
     },
     "zero_fixture_20261015": {
-      "status": "COMMITTED_PUSHED_SYNTHETIC_PASS_FINAL_ROOT_REVIEW_PENDING_ACTUAL_NOT_RUN",
+      "status": "QUALIFIED_ACTUAL_ENGINE_ROOT_REPLAY_AND_CUSTODY_PASS",
       "owner": "successor_restart_design",
       "branch": "qualification/activated-retirement-zero",
       "worktree": "/home/tux/bigbrotr-rs/.research/activated-recovery-native-20261013",
       "base": "724b2fff1b1433fafce286ba191d44b3f4f93721",
       "scope": "Two genuine final source-closure c7b2b3c seeds:zero first/fresh retry and unbound Rejected/Event refusal,2clones/3CLI. No Rust/shared helper or source semantics change.",
-      "review": "Root reviewed complete original178-line driver/267-line oracle and shared36/37 helpers. Final one-line native-capture failure preservation correction and22 oracle lines remain for root review after resume. Not integrated; dispatcher and independent actual replay not implemented.",
+      "review": "Root reviewed both complete final driver178/oracle289, final capture-failure fix and74 controls; complete capture mocks read. No source finding. Seven dispatcher additions reviewed; removing them restores original bytes.",
       "limitation": "Rejected must refuse at existing-copy Outcome(Conflict); this does not exercise final SQL Event-mask dispatch.",
       "commit": "c794d63e02633ee6d60b9ee1f16b97d19a692b5a",
       "verified_private_push": "65165 joined0; exact ls-remote branch head c794d63e02633ee6d60b9ee1f16b97d19a692b5a",
       "selfchecks": "/home/tux/bigbrotr-rs/.research/activated-recovery-native-20261013/.research/activated-retirement-zero-selfcheck-20261015",
       "manifest_sha256": "bb7d176abd4ee097c5cb8f0935f05910a205ad905027aba8b36adc062f6b4885",
       "author_reported_checks": "3 artificial contexts/6 states/74 negative controls and5 custody mocks PASS; AST and diff check PASS. No actual SQL/native/CLI/build run.",
-      "processes": "Author completed; worktree clean; no active own process."
+      "processes": "Author completed; worktree clean; no active own process.",
+      "integrated_commit": "8dce60f",
+      "dispatcher": "ed291195a8effb08aeccb9997af5f00988351e44",
+      "engine_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-zero-engine-ed29119"
     },
     "workflow_design_20261015": {
       "owner": "recovery_review",
-      "status": "READ_ONLY_DESIGN_COMPLETE_NOT_IMPLEMENTED_NOT_RUN",
+      "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS",
       "scope": "Genuine zero-request acquisition/import claims, zero binding/checkpoint vetoes and missing/conflicting copy/mixed terminal metadata. No edits or engine authority.",
       "proposal": [
         "Seven clones/eight CLI: genuine da839b7 zero-request acquisition retirement/retry, zero checkpoint veto, input binding veto, missing/conflicting outcome2, missing input2, mixed terminal role metadata. All still NOT_RUN; operator mutation cases need full preimage and baseline preservation.",
         "Authentic import: installed_live.capture_case(after_activated=...) creates/seals/queues job under real live Control8 with normal guards, no topology/input bound. Stop/release8; explicit close-activated-source9; abandon-activated-acquisition10; retire11 should reach named import-claim veto. Source35 classifier inspected by design author; no independent root review or actual qualification yet.",
         "An isolated unclosed zero-request a7 negative requires guarded cancellation of a6 under actual new Control; do not fabricate historical owner8 or rewrite terminal jobs."
       ],
-      "processes": "Design author completed; no file changes, implementation or engines."
+      "processes": "Design author completed; no file changes, implementation or engines.",
+      "branch": "qualification/activated-retirement-workflows",
+      "files": [
+        "experiments/ingest-bootstrap/activated_retirement_workflows.py",
+        "experiments/ingest-bootstrap/activated_retirement_workflows_oracle.py"
+      ]
     },
     "pause_20261013": {
       "instruction": "Owner explicitly requested credit-exhaustion safe stop; no new implementation or test campaign. Finish only already-running audit/pure process, checkpoint, commit and private push, then set runtime goal paused. Resume only after explicit request.",
@@ -48317,6 +48578,89 @@
         "checkpoint_commit": "Containing commit; verify actual hash and remote on resume. Final checkpoint push and runtime pause occur after authoring this record."
       }
     },
-    "resource_policy": "Owner-requested safe pause2026-10-15. No new engines/builds/implementation. All agents and owned work stopped; preserve every ignored/external artifact and unrelated workload. Resume only on explicit request; retired cleanup executor remains retired."
+    "resumption_after_pause_20261015": {
+      "status": "ACTIVE_ZERO_QUALIFIED_WORKFLOW_FIXTURE_IN_PROGRESS",
+      "source": "ed291195a8effb08aeccb9997af5f00988351e44",
+      "branch": "main",
+      "previous_goal_turn": "PROGRESS: saved and pushed safe pause checkpoint1d98250, then runtime paused; owner explicitly resumed.",
+      "observation": {
+        "status": "PREPARED_NOT_RUN",
+        "observed_at": "2026-10-15T08:03:39.722337+00:00",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-retirement-zero-engine-ed29119",
+        "source": "ed291195a8effb08aeccb9997af5f00988351e44",
+        "build_source": "388a01abd6dadf2a894a88c16e585ace6b382ffa",
+        "compiled_input_diff": [
+          "docs/implementation/02-storage.md",
+          "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+          "docs/implementation/progress.md",
+          "docs/research/laboratory-inventory.json",
+          "experiments/acquisition-scope/bindings.py",
+          "experiments/ingest-bootstrap/activated_recovery_faults.py",
+          "experiments/ingest-bootstrap/activated_retirement.py",
+          "experiments/ingest-bootstrap/activated_retirement_faults.py",
+          "experiments/ingest-bootstrap/activated_retirement_faults_oracle.py",
+          "experiments/ingest-bootstrap/activated_retirement_guards.py",
+          "experiments/ingest-bootstrap/activated_retirement_guards_oracle.py",
+          "experiments/ingest-bootstrap/activated_retirement_oracle.py",
+          "experiments/ingest-bootstrap/activated_retirement_zero.py",
+          "experiments/ingest-bootstrap/activated_retirement_zero_oracle.py"
+        ],
+        "binary_sha256": "0486979665ef11faa0a80e8241d212d8f6413aaee45d4c82fecf4e9b16d40a11",
+        "probe_sha256": "9b87ad508c9c569a26c31d7612d5c38e03679c212b366db5d4afa1ec2be0b24a"
+      }
+    },
+    "resource_policy": "Goal ACTIVE after explicit owner resume. Canonical integrating branch main under new owner instruction. Root alone executes engines/builds; retain all ignored/external artifacts and unrelated workloads."
+  },
+  "tux_branch_retirement_20261015": {
+    "status": "COMPLETE_INACTIVE_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
+    "authority": "Q36; owner requested current integrated main and removal of useless branch refs",
+    "canonical_branch": "main",
+    "main_source": "ed291195a8effb08aeccb9997af5f00988351e44",
+    "main_verified_push": "22664 joined0",
+    "root": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015",
+    "inventory": ".research/branch-inventory-cleanup-review-20261015/inventory.json",
+    "original_refs": 133,
+    "preservation": {
+      "status": "PASS_ARCHIVE_AND_BUNDLE",
+      "heads": 133,
+      "bundle_bytes": 13725540,
+      "bundle_sha256": "8baed0b25bbe84fefdd0cd416edd525605454b366df77eb75641f9ce9d55d325",
+      "manifest_sha256": "2b51453bc82068c528232297f32efee8bdc8ed7423a339d6c2d46d63e3df9ef1"
+    },
+    "archive_namespace": "refs/archive/branch-retirement-20261015",
+    "round_one": {
+      "wrapper": "10181 joined0",
+      "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement.json",
+      "sha256": "c3bbbcd77df54d989c9f9e3103e0e5f10735db3bfec261a0858c4cc34e187e14",
+      "local_refs_removed": 66,
+      "remote_refs_removed": 49,
+      "inactive_worktrees_detached": 28,
+      "all_worktree_paths_and_commit_ids_preserved": true
+    },
+    "remaining": "At verification: remote only main; local main and active qualification/activated-retirement-workflows. New temporary import work is authorized separately; no inactive branch remains. All93 registered worktree directories and heads preserved.",
+    "round_two": {
+      "wrapper": "8203 joined0",
+      "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
+      "sha256": "534f4a66bd554728a03929759864d541472a707d3ac87b5c11547155e8fc1ff1",
+      "local_refs_removed": 13,
+      "remote_refs_removed": 2,
+      "inactive_worktrees_detached": 9,
+      "content_disposition": ".research/branch-inventory-cleanup-review-20261015/content-reconciliation/disposition.json",
+      "content_disposition_sha256": "8dd294a7391639e98ed9e6b502439c09750f8c0c6902737ea217fa6ea8050e2e",
+      "root_recheck": "15 original commits,42 complete changed-file blob/mode comparisons exactly match main-ancestor integrations; all original commit objects remain archived."
+    },
+    "totals": {
+      "local_refs_removed": 79,
+      "remote_refs_removed": 51,
+      "worktrees_detached_preserved": 37
+    },
+    "old_writer": {
+      "source": "f899896b1207f5e71c4e39d9ab7814b293814735",
+      "archive_ref": "refs/archive/branch-retirement-20261015/remotes/origin/research/producer-closing-old-writer",
+      "disposition": "Useful exact historical compatibility source retained, never merged into current writer. Only remote branch name removed; README now locates protected ref/bundle and external lab.",
+      "actual_capture": "/home/tux/bigbrotr-implementation-20260917/runs/producer-closing-0f6e366/old-closing.json"
+    },
+    "preserved_executor_failure": "retire-reconciled-v1-preflight-failure.py/log used False instead of actual empty-list disposition field; preflight failed before any ref/worktree mutation or operation record. Corrected reader and original retained.",
+    "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY; new work needs a fresh reconciled inventory"
   }
 }

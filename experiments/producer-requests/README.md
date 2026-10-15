@@ -150,8 +150,14 @@ fixture files. `old_closing.py` copies the two actually closed stores, verifies 
 copy identities, invokes that explicitly selected old native test and compares
 complete expected scientific bytes and original-input side effects. It does not
 claim that an unmodified shipped binary was used or that native test callbacks
-supply PostgreSQL authority. The old fixture remains on its recorded compatibility
-branch; it must not be merged as a current-writer test.
+supply PostgreSQL authority. The old fixture is preserved at commit
+`f899896b1207f5e71c4e39d9ab7814b293814735`; it must not be merged as a current-writer
+test. Under Q36, its former compatibility branch is retired after preserving the
+commit closure in Tux ref
+`refs/archive/branch-retirement-20261015/remotes/origin/research/producer-closing-old-writer`
+and verified `.research/branch-retirement-20261015/branches-before.bundle`.
+The external `producer-closing-0f6e366` lab retains its source export/archive and
+actual `old-closing.json`; see the laboratory inventory's branch-retirement record.
 
 `closing_observer.py` validates captured native/PG/original snapshots without
 contacting engines. It checks the entire allowed current-Control recovery

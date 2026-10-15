@@ -1,88 +1,92 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T07:46:17Z on Tux. Execution is STOPPED at the owner's explicit
-credit-exhaustion pause request. Only safe-stop documentation, commit/private push
-and the final runtime Goal pause remain in this turn; no new implementation or
-test campaign is authorized while paused. Resume only on explicit owner request.
-The selected M1–M5 product remains INCOMPLETE. Follow the
+Observed 2026-10-15T08:24Z on Tux. Runtime Goal is ACTIVE under the owner's
+explicit resumption. The prior pause is revoked. This turn qualifies actual
+zero-request retirement/Rejected Event refusal and consolidates the integrated
+project onto main. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
-## Authority and source
+## Authority, source and current task
 
-Q34 makes Tux the sole editing/Git/development/test host; Q35 appoints this session
-sole integrating owner. Preserve legacy repositories, unrelated workloads and all
-ignored/external artifacts. Public publication/deployment, repository rename and
-unpublished Cargo promotion remain separately gated.
+Q34/Q35 retain Tux as sole editing/Git/development/test host and this session as
+sole integrating owner. Q36 directs verified integrated work onto main and
+removal of redundant branches. Preserve worktrees, ignored/external evidence and
+unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`; observed HEAD and
-verified private remote before this checkpoint:
-`46bfcb72dc5e98ded3f39a680679c5daf06a3dae`. Main remains
-`54ad09dc6659bfe67e3bf2871e43ce619c199a5c`. This checkpoint's containing commit saves
-only four existing documents: progress, storage task, recovery evidence and lab
-inventory. No product source change or merge/rebase pending. The final checkpoint
-commit/push happens after authoring this record; obtain its exact hash from Git
-and reconcile the remote at resume rather than guessing a future hash here.
+Canonical `/home/tux/bigbrotr-rs` uses `main`; latest source and verified private
+push22664: `ed291195a8effb08aeccb9997af5f00988351e44`. Zero fixturec794d63 is integrated
+as8dce60f plus dispatcher ed29119; actual engine/replay/custody audit all PASS.
+This checkpoint's containing commit records qualification and Q36 maintenance;
+its push follows authoring. No merge/rebase pending. Root owns eight changed
+documentation/evidence files; no product source or compiled input changed since388a01a.
 
-Root integrated SQL fixtures at2b71490/27384e6 and dispatcher46bfcb7. Original
-qualification branch `qualification/activated-retirement-guards` is clean and
-verified pushed at4858c807c4fb9f502101f43f3a076501d880104b. Its actual engine,
-independent raw replay and custody audit are now complete PASS.
-
-Zero/rejected fixture is separately committed and verified pushed at
-`c794d63e02633ee6d60b9ee1f16b97d19a692b5a`, clean branch
-`qualification/activated-retirement-zero`, worktree
-`.research/activated-recovery-native-20261013`. It is NOT integrated into root.
-Only two new Python files; no Rust or shared-helper change. Original fault branch
-18e4203 and first-wave fixture branch1f38222 remain preserved/pushed.
-
-## Current task and precise next action
-
-P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None is complete.
-The [storage task](02-storage.md), [registration contract](../reference/ingest-registration.md),
+P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none is complete.
+[Storage task](02-storage.md), [registration contract](../reference/ingest-registration.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
-[lab inventory](../research/laboratory-inventory.json) remain the durable authority.
+[lab inventory](../research/laboratory-inventory.json) own scope and evidence.
 Retirement evidence node:
 `initial_successor_preparation_20261012.next_live_activation_20261013.activated_initial_retirement_20261013`;
 inventory node `implementation_activated_initial_retirement_20261013`.
-The current `pause` record supersedes dated `pause_20261013` history.
+Dated pause records and old branch names are historical.
 
-Only after explicit resume and reconciliation: review the final c794d63 delta and
-its retained synthetic/capture evidence, then integrate its two files and add the
-missing root dispatcher plus independent raw replay. Root previously read the
-complete178-line driver/267-line oracle and shared36/37 migration/catalog/Control
-helpers. The final one-line capture-failure preservation correction and22 added
-oracle lines remain for root review. Dispatcher and independent actual replay
-are NOT implemented; no zero/rejected engine is prepared or started.
+## Current work and precise next action
 
-The later bounded qualification should run two genuine c7b2b3c source-closed
-clones/three installed CLI: zero first/fresh retry and unbound Rejected/Event
-refusal, using exact388a01a binaries after unchanged compiled-input verification.
-Expect12 then0 target writes for zero and exact Outcome(Conflict) for Rejected;
-the latter exercises the existing-copy Event check, not final SQL Event-mask
-dispatch. Record actual full-state/native/input/process evidence, independent
-replay and custody audit in the existing nodes. Synthetic checks alone do not
-qualify actual SQL/native/CLI behavior.
+Root's next bounded action: finish review of the workflow fixture's final source
+and synthetic/custody manifest, integrate its two files and add the dispatcher,
+then execute its7-clone/8-CLI qualification from a clean exact commit using388a01a
+artifacts after compiled-input comparison. Root read the complete280-line driver/
+337-line oracle and actual retirement CLI/PG owners; no concrete finding so far.
+Final author commit/checks are pending; no workflow engine has been started.
+Record actual results, root raw replay and separate source/artifact/custody audit
+in the existing evidence/inventory. Do not infer PASS from synthetic checks.
 
-Zero author reports PASS:3 artificial contexts/6 states/74 perturbations and5
-capture-custody mocks, AST/diff check. Manifest:
-`.research/activated-recovery-native-20261013/.research/activated-retirement-zero-selfcheck-20261015/source-checks.json`,
-SHA `bb7d176abd4ee097c5cb8f0935f05910a205ad905027aba8b36adc062f6b4885`.
-Actual SQL/native/CLI/build execution is NOT_RUN.
+recovery_review owns only `activated_retirement_workflows.py` and `_oracle.py` in
+`.research/activated-recovery-postgres-20261013`, active branch
+`qualification/activated-retirement-workflows` from1d98250. Cases: genuine da839b7
+zero-request acquisition first/retry, zero checkpoint, input binding, missing/
+conflicting copy, missing input and mixed terminal metadata. Synthetic binding
+is explicitly a privileged retained-history negative, not import execution.
+No shared/Rust/dispatcher changes or agent engine authority.
 
-Read-only workflow design is complete but not independently qualified or
-implemented. The evidence records proposed genuine da839b7 zero-request
-acquisition retirement, checkpoint/binding vetoes, missing/conflicting copy or
-input and mixed terminal metadata. Authentic import proposal: real live Control8
-callback creates/seals/queues import, stop/release8, explicit source close9,
-acquisition abandonment10, retirement11 reaches the named import-claim veto.
-Do not fabricate historical authority. Review the actual classifier/callers before
-implementing; no follow-on work was started during pause.
+successor_restart_design completed the content reconciliation of old branches.
+It is now assigned a separate authentic-import fixture in its retained native
+worktree on a new `qualification/activated-retirement-import` branch fromed29119:
+real live Control8 callback creates/seals/queues import, stop/release8, explicit
+source close9, acquisition abandonment10, retirement11 named import-claim veto.
+Only two new import driver/oracle files; no fabricated historical authority.
+This is source work, NOT_RUN; root must review and execute later.
 
-Remaining gates include those zero/workflow/copy cases, blocked cancellation,
-actual Control UTC expiry and session custody/poisoning. Ordinary OPEN source
-compatibility, repeated lifetimes, import logical closure, ACK/GC, epoch3,
+cleanup_review completed the zero artifact/custody audit and is finishing a
+read-only design for final-lock SIGTERM and actual Control UTC expiry. A lock
+installed before inspect would exercise the wrong boundary; stage after final
+refresh. No new API/product implementation or engine has been authorized to it.
+No root engine/build/replay/audit remains active:71757/98308/54176 all joined0.
+
+Remaining retirement gates: genuine workflow/import/copy/input/mixed cases,
+blocked cancellation and actual Control UTC expiry/session custody. Ordinary OPEN
+source compatibility, repeated lifetimes, import logical closure, ACK/GC, epoch3,
 Archive restart and full M1–M5 remain separate. Retirement is existing-copy-only
-under already CLOSING native proof:12 target rows, no source rewrite/native reclaim.
+under already CLOSING native proof; it reclaims no native capacity.
+
+## Main integration and branch retirement
+
+Main was fast-forwarded from54ad09d to1d98250, then advanced/pushed toed29119.
+Q36 cleanup removed79 local/51 remote inactive branch refs in two verified rounds
+(10181/8203 joined0). All93 registered worktrees remain at their original commits;
+37 inactive research worktrees are now detached with unchanged full path/stat/link
+census. No worktree, ignored artifact, container, dataset or laboratory was removed.
+At verification only main remained remote, and main plus the active workflow
+branch locally; newly assigned temporary implementation branches are intentional.
+
+Original133 refs/commit closures remain reachable under
+`refs/archive/branch-retirement-20261015`; separate verified bundle:
+`.research/branch-retirement-20261015/branches-before.bundle`,13,725,540 bytes,
+SHA8baed0b25bbe84fefdd0cd416edd525605454b366df77eb75641f9ce9d55d325.
+The12 initially unmatched branches were reconciled by15 original-to-integrated
+commit pairs and42 exact complete-file comparisons; no missing work found.
+Historical writerf899896 remains archived, not merged into the current writer.
+See `tux_branch_retirement_20261015` inventory node and the retained README locator.
+Both ref-retirement executors are complete and must not be replayed.
 
 ## Completed retirement evidence
 
@@ -133,21 +137,40 @@ Under each run, retain `bindings/result.json`, `root-independent-replay.json` an
 syntax failure and custody `audit-v1.py/log` (wrong ledger field name, corrected
 reader only). Neither failure was reclassified as a product PASS.
 
+Zero/refusal `/runs/ingest-activated-retirement-zero-engine-ed29119`:
+engine71757/root replay98308/audit54176 joined0. Three installed CLI on two genuine
+c7b2b3c closed-source copies. Zero first changes12 rows at T1792051489308846/xmin29921;
+fresh retry preserves all terminal versions. Departed active Control12 is positively
+fenced by13, retry14. Genuine issued1/source0 Rejected Event with no job refuses
+exact Outcome(Conflict); no target writes. This is existing-copy Event validation,
+not final SQL Event-mask dispatch. Native52/sequence63/four inputs and53/65/five
+inputs remain exact. Two seeds/six full72-table before/after states/74 controls.
+No new probe, native mutation, source closure or workflow synthesis.
+Result e5c7338ed01ad1ec7494003f91cccdf0ccae1956a41cfef8f103f9f17f02c8a9;
+root replay93ae2106ab9b7e2ce70208e942384c9d7b134238deb467d43ca17c5a762229c4;
+audit9e73aeff4d1c36a9112342408d88f8bb16b11090b443492719cdfc4e9d40f16f.
+Audit verifies1842 engine/1834 build files,76 ELFs,44 raw bindings and1291 unchanged
+nonborrowed projections. Originals45 paths/624934 bytes/nine inputs/seven unique
+frozen artifacts preserved. Both audit draft failures remain retained as reader
+errors; no product evidence was changed. Independent reviewer did not author the
+zero pair but authored reused retirement reducer/old source helpers; root semantic
+raw replay is separate. Freeze08:07:08Z; no later engine has started.
+
 ## Processes, resources and preservation
 
-Fresh pause observation:
+Historical safe-stop observation (reconcile current engine above):
 `.research/activated-retirement-pause-20261015.json`,07:46:17Z. No matching
 non-shell BigBrotr/build process and no running BigBrotr container observed.
-All three child agents completed: cleanup_review, recovery_review and
-successor_restart_design. No engine/build/replay/audit/pure process remains active.
+At that pause all three agents and engine/build/replay/audit work had completed.
+Current agent work and prepared engine are recorded above; this is historical.
 Do not treat historical handles as live ownership proof on resume.
 
 Borrowed PG container
 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
 root `/runs/relay-source-recheck-e06f580/pg`, owner
 5e69b0f060b1607c25230d1dbd3e5608: exited0/PID0/noOOM.
-Latest SQL client724ea8491f159601e840395f6da9a4b2dc892fb14d9d7e80e653cb62148404f8
-and fault client248a2f7719c14ae96617f5c16fe400c728c283071328b14473a8dc30159c20f7:
+Latest zero client7307adffedeba7e481130aaae44b741be5b6a6e940e7dcbf51942641fbd16ced
+and earlier SQL/fault clients:
 exited143/PID0/noOOM. PG16.15 limits remain1.5GiB/2CPU/64MiB shared memory.
 Six unrelated services remain running and untouched: inspirehep-reindex
 db/mq/cache/es, ollama, tgdataset-mongo.
@@ -158,7 +181,7 @@ No cleanup performed during this pause. Never open frozen originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes at pause:44,450,078,720; remeasure before allocating. Small engines
+Free bytes after zero engine:44,204,679,168; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive

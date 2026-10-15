@@ -360,10 +360,13 @@ One owner serializes exact identity decisions for each writable directory.
   internal full snapshots,36 before/after states and23 controls; all temporary
   grants restored. Custody audit41257 also passes:1840 engine files,1834 build
   files,76 protected ELFs,239 raw bindings and1290 unrelated projections preserved.
-  Zero/rejected fixturec794d63 is separately committed/pushed, synthetic checks
-  PASS (3 contexts/6 states/74 controls/5 custody mocks), final root delta review
-  and actual execution NOT_RUN. Typed workflow/copy refusals and cancellation/expiry
-  remain NOT_RUN. Owner requested a safe pause2026-10-15; no new campaign. Repeated lifetimes
+  Installed zero/rejected ed29119 passes3 CLI on2 genuine closed-source clones:
+  zero first/retry changes12/0 target rows, preserving T/xmin; issued1/source0
+  Rejected Event without a job refuses Outcome(Conflict) without target writes.
+  Root raw replay verifies2 seeds/6 complete observations/74 controls; independent
+  source/artifact/custody audit passes, preserving45 original paths/9 inputs/76 ELFs.
+  This refusal precedes final SQL Event-mask dispatch. Typed workflow/copy refusals
+  and cancellation/expiry remain NOT_RUN. Goal resumed2026-10-15. Repeated lifetimes
   remain separate. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

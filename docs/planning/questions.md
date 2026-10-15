@@ -250,3 +250,13 @@ subagents where useful under that guide, with one integrating source owner.
 Ask only for missing information or authority that blocks a correct required
 outcome. Preserve retained datasets, negative fixtures and unrelated applications;
 the instruction does not authorize public release or production deployment.
+
+Q36 (2026-10-15): The owner explicitly directs integrating current project work
+into `main` and deleting unnecessary branches while continuing the full goal.
+Keep main as the current integrated project state; use fast-forward integration
+where ancestry permits and preserve all qualified evidence and explicit remaining
+gates. Retire redundant local/remote branch refs only after checking exclusive
+commits, active worktrees and integration; preserve worktree contents, ignored
+`.research` artifacts and external labs. Temporary active implementation branches
+remain available until their useful work is reconciled. This does not authorize
+removing evidence, rewriting published history or expanding public release scope.

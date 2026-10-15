@@ -58,8 +58,10 @@ Tux as the sole editing/Git, development and test host under the owner's
 for available isolated CI and Docker Hub for images. The former Mac authoring
 rule is historical. Keep ordinary installation
 on Docker Compose with explicit initialization/migrations. All initial Cargo
-packages remain unpublished. Linear coherent commits are acceptable; branches
-and parallel agents are tools for concrete needs, not mandatory ceremony. Keep
+packages remain unpublished. Under Q36, `main` is the current integrated project
+state; update it with verified coherent work and retire redundant branch refs
+after reconciling their original commits. Preserve worktrees and ignored/external
+evidence when retiring refs. Branches and parallel agents serve concrete needs. Keep
 one integrating owner and separate writable worktrees when implementation is
 parallel. Never run untrusted PR code on the shared Tux host or with release keys.
 The same contract documents the existing planning checks and their prerequisites;
