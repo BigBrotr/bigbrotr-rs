@@ -24696,6 +24696,30 @@
           "root_verification": "All manifest file hashes and actual result controls checked; root did not rerun artificial generator"
         },
         "scope": "Pure reader controls only, with artificial Control observations; actual connected history NOT_RUN."
+      },
+      "history_engine_import_failure": {
+        "status": "FAIL_BEFORE_ENGINE",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-engine-d81ade4",
+        "source": "d81ade4725bba2760cfed16fd269f4bf27858d0c",
+        "tree": "9b91bba97f21668fd8d0a1975366dd2680382fb9",
+        "preparation_session": 77459,
+        "wrapper_chunk": "e9e5c5",
+        "wrapper_exit_code": 1,
+        "custody_session": 7110,
+        "custody_exit_code": 0,
+        "audit_sha256": "7b0d159e06731a9823802eb63ac31bddd4b7b56808284f90f9f19e9a35c50995",
+        "files": 1878,
+        "protected_elfs": 104,
+        "unchanged_containers": 1328,
+        "error": "ModuleNotFoundError: No module named 'bootstrap_oracle'",
+        "scope": "Import fails before run() or history output creation. No database/container/native engine started; exact failure receipt and source retained. Correct helper alias initialization before fresh run."
+      },
+      "history_engine_harness": {
+        "original": "675201be44f9fd994feb4e6a35a8cf14b3121fef",
+        "main": "d81ade4",
+        "sha256": "5dfc247939e9edd77ad5d393f693cd0c5a5a3c82d38bb4117708b06112981d9e",
+        "review": "Root read complete436-line harness including identity/custody/timeout deltas; shared helper bootstrap alias missing at runtime. AST/diff checks alone did not qualify Python imports.",
+        "status": "FIRST_ENTRYPOINT_IMPORT_FAIL"
       }
     }
   }

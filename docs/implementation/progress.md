@@ -16,8 +16,9 @@ Public publication/deployment and Cargo promotion remain separately authorized.
 
 Canonical `/home/tux/bigbrotr-rs` uses `main`; observed HEAD and independently
 verified remote main are `5f6bbb4ebce6f96d992ab9face1f0bb5297c5e0f`.
-Private push50236 joined0. Only main is remote. No merge/rebase pending.
-Root is editing this checkpoint; other work is isolated below.
+Private push61500 joined0 advanced remote to `0f5f66f218dd45f817168591d6ac0e17d73f0a91`,
+independently verified; current local HEAD is `d81ade4`. Only main is remote. No merge/rebase pending.
+Root is updating this checkpoint after the first harness import failure; other work is isolated below.
 
 ## Active task and exact next action
 
@@ -28,16 +29,22 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: finish/review and integrate the finite connected
-history harness and independent reader, then run three new database/native copies:
-`activated-terminal2`, `empty-terminal2`, `activated-metadata-short`.
-Reuse the qualified59ce0fd CLI/probe only after exact compiled-input comparison.
-Positive metadata grant132608; refusal132095 against required132096.
-Record actual response, complete75-table/xmin snapshots, native rows/sequence,
-input hashes, actual backend absence and joined/native-closed custody. Preserve
-partial/unknown results without reopening native clones before custody is proved.
-Run the independent offline reader over raw files, then record exact source,
-artifacts, exclusions and resource custody in the existing evidence nodes.
+Root's next bounded action: integrate the minimal shared-helper import correction,
+then prepare a fresh exact-source history-engine root and execute all three cases
+with the qualified59ce0fd CLI/probe and independent146f7ce reader. First harness
+675201b→d81ade4 failed during import: `initial_history`→`installed.py` requires
+`bootstrap_oracle` initialization. Entrypoint chunk e9e5c5 exited1 before `run()`;
+no history directory, database or owned container was created/started.
+Preparation77459 and read-only custody7110 joined0; audit7b0d159e verifies1878source
+files,104protectedELFs and1328unchanged container projections. Full failure receipt
+at `/runs/ingest-succession-history-engine-d81ade4/root-entrypoint-failure.json`.
+Preserve that root; never retry it. Native/SQL history engine remains NOT_RUN.
+
+Cases: `activated-terminal2`, `empty-terminal2`, `activated-metadata-short`.
+Positive metadata132608; refusal132095 against required132096. Require actual
+response, complete75-table/xmin snapshots, native rows/sequence, input hashes,
+actual backend absence and joined/native-closed custody before native reopening.
+Replay raw files independently and record all failures, exclusions and custody.
 
 | Agent / branch | Worktree under canonical `.research` | Current responsibility |
 | --- | --- | --- |
