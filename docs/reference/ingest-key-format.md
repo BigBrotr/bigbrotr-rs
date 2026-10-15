@@ -113,6 +113,14 @@ retain all existing key bytes and change the manifest compatibility coordinate
 before any successor writer can be enabled. An old schema-1-only implementation
 must refuse that manifest; it cannot silently ignore the new domain and write.
 
+The selected [repeatable handoff](ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
+keeps this same42-byte key and its predecessor identity/order. It introduces a
+closed version2 value at predecessor epochs2 and later, fenced by manifest key
+schema3; it adds no key domain and changes no existing key bytes. The predecessor1
+record stays byte-exact version1. A complete lineage scan checks the entire`0x0a`
+domain, including extra or incompatible values; filtering by value version cannot
+establish an exact history. This selection is not implemented or qualified yet.
+
 The singleton manifest key does not prove that its future value is correct, that
 the directory is exclusively owned, or that a batch was synchronized. The Rocks
 adapter must separately require the exact column-family set and compatible

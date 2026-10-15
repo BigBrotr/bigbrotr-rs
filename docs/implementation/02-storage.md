@@ -390,7 +390,14 @@ One owner serializes exact identity decisions for each writable directory.
   fourCLIstates/twoexternalanchors/36controls and custody audit pass. Original
   pre-probe41255aa FAIL (copied inode comparison) and all26artifacts remain intact;
   corrected copied-byte/type/mode verification preserves full original custody.
-  Goal remains ACTIVE; repeated lifetimes remain separate. Archive selection
+  Goal remains ACTIVE; repeated lifetimes remain separate. The selected
+  [repeatable succession contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
+  now defines both retired epoch2 origins, one version2 handoff/schema3 family,
+  whole-lineage positive replay and prepared-empty recovery without adoption.
+  Its explicit metadata/topology limits admit at most255 total epochs, independent
+  of the64-input spool. Independent AI contract review corrected the legitimate
+  PG/native gap exception and current-batch dependency wording; no implementation
+  or new runtime qualification exists yet. Archive selection
   refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's

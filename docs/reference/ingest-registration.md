@@ -1053,3 +1053,196 @@ and custody evidence explicitly instead of inferring a new boundary from it.
 Preserve original failures and distinguish native components, finite probes and
 installed execution. Repeated lifetimes, import closure, ACK/GC, epoch3 activation,
 Archive restart and completion of M1 remain separate obligations.
+
+## Repeatable ingest succession (selected, not yet implemented)
+
+P02-T01 Step5 / P02-T02 Step4 next implements one versioned protocol for
+successions n to n+1, starting at2 to3 and exercised again at3 to4. A separate
+classifier or migration for every numerical epoch is not the selected design.
+The responsibility includes preparation, continuous local activation, positive
+recovery, source closure, acquisition abandonment and terminal retirement,
+including prepared attempts that never activated. Codec support or activation3
+alone does not complete this responsibility or installed restart.
+
+The existing initial1-to2 protocol, singleton preparation/activation records,
+native handoff bytes and historical manifests remain unchanged. The new family
+uses manifest key schema3, version2 values under the existing epoch-indexed
+owner-handoff keys and epoch-indexed PostgreSQL preparation/activation records.
+A receipt retains a bounded pair of exact manifests, the predecessor's terminal
+kind/count/cut/digest and the parent receipt hash. Contiguous epochs determine the
+frontier count; the exact chain binds every cut without a redundant stored frontier
+digest or growing history vector. Portable records remain observations;
+neither decoding nor finding a PostgreSQL activation recreates a writer.
+
+There are exactly two legacy entry shapes:
+
+| Predecessor | Required positive evidence |
+| --- | --- |
+| Activated epoch2, fully retired | Original0032 activation, complete0037 terminal relation, existing native CLOSING marker, closed source2, original inputs/effects and exact retained SQL copies |
+| Unactivated empty epoch2, fully retired | Absence of0032 activation, complete0031 terminal relation, CLOSING0/source0, absent target requests/inputs/detail and recomputed empty closure after positive epoch1 replay |
+
+Both entry shapes retain the immutable1-to2 handoff as their parent anchor.
+An activated producer with zero requests is the first shape, never the second.
+Later predecessors use the same activated-versus-unactivated distinction and the
+immediately preceding new-family receipt. No recovery adopts an earlier attempted
+incarnation, role or allocation namespace. A new candidate generates all of them
+internally, checks freshness against the complete retained lineage/registry, and
+owns the actual exclusive native handle continuously through writer delivery.
+
+### Complete historical interpretation
+
+The checked lineage is contiguous from epoch1 through the current native head,
+with one stable dataset/resource/shard/recovery identity and producer slot. Every
+retired stream, including a zero-length stream, has an explicit terminal cut.
+Reconstruct and verify its ordered frontier from exact retained receipts and
+registry identities. Check the entire bounded producer/source/receipt/domain
+census and reject extra, missing or foreign state, including empty extra streams.
+Hash agreement does not replace positive original-input/effect validation.
+Bind every retained sidecar filename to the actual slot/epoch/request lineage;
+syntactic filename validity alone is insufficient. Extra staged or reserved tails
+remain unresolved and prevent terminal proof, including files that change without
+a Rocks sequence increment. Do not silently filter foreign or future input files.
+For this new-family bridge, reject unresolved historical staged extras before
+preparation and preserve them for explicit resolution. This is a conservative
+additional prerequisite: legacy retirement did not claim to resolve every staged
+sidecar. Do not rewrite that historical result as failure or delete its extras.
+
+Historical request replay uses that request's immutable manifest, policy decision
+and protection coordinates while separately binding the actual current manifest,
+native root and sequence. Dependencies must name a verified earlier stream within
+its terminal cut, the already resolved contiguous prefix of the request's own
+stream, or that request's exact current NewFacts batch after positive validation.
+Advance the accumulated cut only after validating the complete contiguous batch
+and outcome; no dependency can borrow a later request's facts. Resolve the
+referenced native fact and its meaning, not just its ordinal
+or a receipt hash. Preserve the original source-closure digest profiles for epochs1
+and2; new epochs use one explicitly versioned profile independent of epoch number.
+Replay streams one input/outcome pair at a time, retaining no receipt vector.
+An earlier request may not depend on a later stream merely because that stream is
+retired by the time of replay. The live writer also retains a checked bounded
+frontier for old-fact admission/certification; a schema or epoch-number test alone
+does not authorize those references.
+
+Legacy loaders deliberately require their original topology head and exact one-
+or two-stream native shape. They continue to refuse later states. The new family
+needs its own historical terminal checks, which verify the sealed ancestor
+topology without requiring it to remain the dataset's current head. Do not weaken
+legacy classifiers or fabricate an `InitialRegistration` for a later epoch.
+Each succession creates and seals a new topology containing all earlier terminal
+cuts and its one new open stream. Old sealed memberships, including their original
+NULL handoff coordinates, are immutable.
+
+### Authority and interrupted attempts
+
+Preparation first locks actual current Control, then dataset and ordered lineage
+parents. It verifies current policy, positive predecessor retirement and resource
+admission before atomically registering the next role/owner/domains/source/producer,
+sealed topology and immutable preparation. Only confirmed preparation COMMIT can
+dispatch the synchronized four-write native handoff. The batch appends its receipt,
+changes the singleton manifest and creates explicit source0 and OPEN/zero producer
+markers; it changes no historical key or retained input.
+
+Activation consumes the private local candidate only after its own confirmed
+COMMIT and a final check of actual current Control, accepted policy, deadline and
+native identity. Preserve the transaction fence between activation and the first
+request or obligation, including after early `SET CONSTRAINTS`. Unknown commit,
+failed delivery or cancellation returns no writer or reusable session authority.
+Retain and join native/driver custody before a replacement process proceeds.
+
+A replacement process classifies the exact preparation and presence or absence of
+the committed activation before selecting recovery. The unactivated path must
+support all four states below with the same protocol at every later epoch:
+
+| Retained state | Permitted recovery |
+| --- | --- |
+| PostgreSQL prepared, native still at predecessor | Positively reconstruct the exact recorded handoff and complete the native gap |
+| Prepared native target OPEN0 | Validate absence of target detail/input and close that exact empty attempt |
+| Prepared native target CLOSING0, SQL not terminal | Finish the complete empty retirement transaction |
+| Exact native/SQL terminal result | Verify it and preserve all existing bytes, timestamps, attribution and row versions |
+
+After empty retirement the next candidate advances the epoch again. A recorded
+activation, even with no requests, selects activated recovery instead. Activated
+source closure, acquisition abandonment and retirement retain their separate
+prerequisites; retirement repairs no missing outcome copy and implicitly closes
+no source or workflow. Preserve Event-derived workflow checks, genuine zero-request
+claim vetoes and refusals for unresolved import bindings/checkpoints. Import logical
+closure remains a separate required product responsibility.
+
+New SQL dispatch must retain the old epoch1/2 branches exactly. New lifecycle
+guards must enforce complete terminal state and immutable history through UPDATE,
+DELETE, TRUNCATE and cascading truncation, including after early constraint checks.
+This includes both anchored legacy Ingest roles, especially epoch1 and unactivated
+epoch2: their old deferred guards alone do not protect changes to every column.
+The new anchor must protect those retained identities once succession starts,
+without broadening old live consumers. Do not claim general Control-role history
+immutability from the Ingest-specific guard; validate the required historical
+Control identity/fence separately.
+Ordinary Control/epoch1 consumers must not acquire invoker SELECT requirements on
+new relations merely because a trigger runs. Current authority is rechecked after
+lock waits; historical scheduling expiry is not exclusion or recovery authority.
+An earlier Control release time need not equal its separately recorded role
+retirement time.
+
+### Resource admission and qualification
+
+The64-file/32MiB retained input spool and per-producer64-request bound remain
+independent limits; a succession reclaims none of that capacity. Empty attempts
+consume lineage metadata even when they consume no input. The128KiB grants used
+by the old two-stream adapters are reservation floors, not a lifetime bound.
+The new profile bounds both the retained compact frontier and transient SQL
+projections, with checked arithmetic and one-element overflow sentinels. Admission
+of the next preparation must reserve its future recovery/retirement envelope,
+alongside the actual concurrently retained native, transport and replay grants.
+Recovery of an existing attempt must not require capacity for another epoch or
+another input. Metadata exhaustion refuses before new durable preparation.
+An exact PostgreSQL-prepared/native-old attempt counts as the next epoch for this
+reservation even while the native census still has only its predecessor's streams
+and receipts. Its new-family historical checker must accept that precise gap
+without calling legacy loaders that require the old dataset topology head.
+
+Retaining every immutable topology creates E(E+1)/2 membership rows through E
+epochs in this one-stream-per-epoch profile. A linear frontier-memory reservation
+does not bound that persistent growth. Select a ceiling of32,768 logical retained
+memberships per supported lineage, enforced by raw SQL under dataset custody and
+by the typed caller. Require the complete expected dataset topology shape; the
+formula does not excuse extra memberships or unrelated generations. Support at
+most one registered sealed empty topology before genesis, with no earlier
+generation, and refuse a longer or foreign prefix with a bounded query. It
+contributes no membership; its generation offset does not change the epoch count.
+Thus at most E+1 generations are inspected, without unbounded traversal of empty
+ancestors. E is the contiguous owner/producer epoch,
+not `topology_generation + 1`.
+
+This ceiling admits at most255 total epochs, including1 and2:32,640 memberships
+fit, while epoch256 would require32,896. Select a separate256KiB lineage metadata
+reservation ceiling:128KiB bounded scratch plus512 bytes per compact entry.
+At255 entries the reservation is261,632 bytes. An entry retains only one manifest
+and bounded terminal coordinates/digests; assert its complete allocation fits512
+bytes. Retain each raw receipt and SQL projection only while processing it, inside
+the scratch/transport budgets, with no additional uncharged history vector. Include
+vector headers, decoding temporaries and allocation capacity in the accounting.
+If an implementation cannot fit those bounds it must revise the accounting before
+admitting work, not silently exceed the reservation. All concurrent metadata
+objects need their own admitted share; these numbers do not replace native,
+transport, input, outcome or process headroom.
+
+Epoch255 remains recoverable and retirable without creating a new topology.
+New preparation256 refuses before any target intent or native write. These are
+explicit initial profile limits, independent of64 retained inputs and not a claim
+of255 useful acquisition lifetimes. Physical PostgreSQL pages/indexes/WAL, native
+maintenance and RSS are measured separately: a logical row or reservation count
+is not a physical byte bound. The fixed portable bytes are specified in the
+[manifest format](ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented).
+
+Qualification includes both legacy2-to3 entry shapes; activated admission and
+complete retirement3-to4; and interrupted unactivated preparation3, fresh-process
+gap/empty recovery and activation4. Verify a dependency older than the immediate
+predecessor, exact historic manifests and all sealed memberships. Include missing,
+extra and conflicting chain/frontier records, equal-content foreign-root and stale
+sequence proofs, old-loader refusal, full-spool empty recovery, metadata-limit
+refusal before preparation, ambiguous prepare/activation/retirement COMMIT and
+current-authority expiry/cancellation. Raw SQL must refuse partial terminal writes
+and same-transaction activation obligations. Distinguish component codecs, native
+engine checks and actual installed journeys in the existing evidence register.
+ACK/GC, Archive restart, backup/restore closure and M1–M5 remain open until their
+own complete selected journeys are demonstrated.

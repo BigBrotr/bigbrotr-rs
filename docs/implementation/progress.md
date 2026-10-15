@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T10:05:24+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T10:23:15+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,11 +14,12 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `08bded4`.
-Verified private push98542 is `08bded4f96b4ab3940d260631a21723b5fdb83f6`;
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `2d9233a`.
+Verified private push80812 is `2d9233ac0acf616fda6d504c292e4276cdc172f2`;
 remote has main only. Main contains both reviewed finite probes, dispatcher,
 custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
-current evidence/inventory/checkpoint update recording corrected zero qualification.
+current repeatable-succession contract/task/checkpoint update. The retirement
+evidence and final branch cleanup are committed and privately pushed.
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none is complete.
 [Storage task](02-storage.md), [registration contract](../reference/ingest-registration.md),
@@ -31,20 +32,39 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: finish the repeatable-succession contract decision
-and affected-owner review, then update the existing owning contracts before
-implementation. Support both fully retired activated2 and retired unactivated
-empty2 as explicit genesis cases. Later prepared-but-unactivated attempts require
-recovery/retirement without adoption. Bound chain/frontier memory and work separately
-from the global64-input/32MiB spool, reserving room for recovery before creating
-another attempt. No schema3/epoch3 implementation or new format has begun.
+Root's next bounded action: implement the selected version2 handoff codec and
+lineage resource profile in an isolated worktree, with independent literal byte
+fixtures; then extend positive native lineage replay and its SQL/installed consumers.
+No schema3 product code, migration, engine or build has begun. The owning
+[repeatable contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
+and [portable format](../reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
+select one family for2-to3/3-to4, both retired activated2 and retired unactivated
+empty2 origins, and later prepared-empty recovery/retirement without adoption.
 
-Root read complete ingest-registration, manifest/key format, native manifest,
-initial_writer and initial_handoff owners for this next boundary. recovery_review
-is read-only on chain budget and singleton/trigger hazards; remaining affected
-PG/native/installed consumers still need root review before edits. One versioned
-protocol should serve2-to-3 and3-to-4; no per-epoch classifier duplication or
-implicit unbounded-lifetime claim. Keep the existing plan and evidence authority.
+Selection: unchanged42-byte key01_0a, new value02_0a length319..643, manifest
+schema3, exact incoming-value hash and positive whole-lineage replay; no redundant
+stored frontier digest. Separate32,768 topology-membership cap gives255 total
+epochs;256KiB metadata ceiling covers128KiB scratch plus512 bytes per compact
+entry. Pending PG/native gaps count the prepared target. Spool64files/32MiB
+remains independent; no ACK/GC/capacity reclamation is implied. Exact dataset
+shape allows at most one sealed empty pre-genesis generation. Unresolved staged
+historical extras conservatively refuse this new bridge, preserving old retirement.
+
+Root read complete manifest/key/native-profile contracts; manifest, keys, store,
+request_inputs, initial_writer, initial_handoff, initial_empty, producer_recovery,
+activated_recovery and source_closure native owners; PG initial_succession,
+initial_ingest_basis, initial_history, initial_empty, initial_activation,
+activated_recovery/retirement; migrations0030/31/32/37; installed successor owner.
+Remaining shared admission/dictionary kernels and new affected PG/installed consumers
+need complete root review before their edits; Archive/ACK/GC are not reviewed here.
+
+Independent AI reviews by native/PG agents mapped whole-history freshness,
+sidecar census, quadratic topology growth, pending native-old preparation and
+legacy role-immutability gaps. cleanup_review read all three added contract sections
+and found two material wording issues: legitimate pending SQL tail vs downgrade,
+and dependencies created in the current NewFacts batch. Both are corrected.
+This is source/contract review only, not executable or runtime evidence. All three
+agents are read-only or idle; their original detached worktrees stay preserved.
 
 Corrected zero engine `/runs/ingest-activated-retirement-unresolved-engine-08bded4`:
 engine78863/root replay73034 joined0 PASS,09:55:11Z–09:55:38Z. Genuine typed
@@ -107,9 +127,9 @@ positive closure and both driver joins now gate reopening. Unknown custody retai
 SQL/input and native NOT_RUN. Complete affected source and typed consumers read.
 
 successor_restart_design is idle after the completed copy fix. recovery_review
-finished the independent zero raw replay and now reviews repeated-lifetime budgets
-and SQL compatibility read-only. cleanup_review is idle after both zero custody
-audits. No agent has engine/SQL/native mutation authority. Both qualification
+finished the independent zero raw replay and read-only repeated-lifetime SQL/budget
+review. cleanup_review finished both zero custody audits and independent contract
+review; successor_restart_design completed read-only native format/replay design. No agent has engine/SQL/native mutation authority. Both qualification
 branches are retired; original refs/bundle and detached worktrees preserve all
 commits and ignored evidence.
 
@@ -122,9 +142,9 @@ with retirement grants present. Detailed identities and limits are in evidence.
 Retirement actual refusal/expiry gates and custody audits pass within the recorded bounds.
 Repeated lifetimes, import logical closure, ACK/GC, epoch3, Archive restart and
 M1–M5 remain separate. Retirement reclaims no native capacity. Read-only succession
-mapping identifies a versioned append-only chain anchored1-to-2 and shared rules
-for2-to-3/3-to-4, bounded frontier and epoch-indexed SQL receipts; no implementation
-or semantic selection yet. Prepared-but-unactivated recovery and the complete
+mapping is now selected in the owning contracts: versioned append-only chain
+anchored1-to-2, shared2-to-3/3-to-4 rules, bounded frontier and epoch-indexed SQL
+receipts. No implementation or new runtime qualification yet. Prepared-but-unactivated recovery and the complete
 closure/workflow/retirement family must be included, not writer3 alone.
 
 ## Main integration and branch retirement

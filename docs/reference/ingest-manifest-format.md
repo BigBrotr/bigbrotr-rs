@@ -144,3 +144,102 @@ namespace sets, every truncation, extra bytes and changed-field refusal cases.
 These codec checks do not establish the store's open, exclusion, commit or
 recovery guarantees. Those require the actual private engine owner and practical
 acceptance in [P02-T02](../implementation/02-storage.md#p02-t02--atomic-rocksdb-admission-and-exact-identity-inventory).
+
+## Repeatable owner handoff (selected, not yet implemented)
+
+The [repeatable succession protocol](ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
+selects manifest key schema3 for owner epochs3 and later. Its manifest has the
+same exact field widths and maximum266 bytes; all other version/profile coordinates
+stay1. Fresh initialization stays schema1. The initial1-to2 receipt and schema2
+manifest retain their exact bytes and decoders. Earlier schema1/2-only binaries
+refuse schema3; opening a supported manifest still grants no admission authority.
+
+Use the existing42-byte owner-handoff key `01 0a || dataset_id[16] ||
+owner_resource_id[16] || predecessor_owner_epoch:BE64`. Its identity and ordering
+do not change. The key with predecessor1 retains value version1. Keys with
+predecessor n>=2 use the following closed version2 value, never reinterpretation
+of an existing value:
+
+| Order | Width | Meaning |
+| --- | --- | --- |
+| 1 | 2 | Value version/type `02 0a` |
+| 2 | 1 | Predecessor terminal kind:1 activated and retired;2 prepared, unactivated and retired empty |
+| 3 | 16 | Stable nonzero producer slot ID |
+| 4 | 8 | Predecessor producer epoch n, matching the key's owner epoch |
+| 5 | 8 | Predecessor issued-through request count |
+| 6 | 8 | Predecessor closed source last-complete sequence |
+| 7 | 32 | Predecessor's positive terminal closure digest |
+| 8 | 32 | SHA-256 of the exact incoming handoff value that introduced predecessor n |
+| 9 | 2 + length | Previous manifest length BE16 and exact bytes |
+| 10 | 2 + length | Next manifest length BE16 and exact bytes |
+
+The fixed portion is111 bytes; the total is `111 + previous_len + next_len`,
+between319 and643 bytes. Reject unknown kinds, truncation, extensions and lengths
+outside the closed manifest bounds before allocation. Both codecs use fixed
+maximum storage. A decoded record is data only, with no conversion to a native
+proof, preparation authority or writer.
+
+Require n>=2, matching predecessor owner/producer epochs and exact checked n+1
+for the target. Previous key schema is2 exactly when n=2, otherwise3; next schema
+is3. Topology advances exactly one without overflow. Dataset/resource/shard/recovery
+identity and producer slot remain unchanged. The target incarnation differs from
+the predecessor; allocation kind sets match and target domains are distinct from
+one another and every predecessor domain. The connected lineage validator also
+checks incarnation/role/domain freshness against all earlier retained identities.
+The format can encode the existing namespace subsets; the installed profile
+independently requires its complete nine-kind registry shape.
+
+Issued count is at most64 in this profile. Terminal kind2 requires issued0 and
+source0, absent activation and absent target input/detail; kind1 permits both zero
+and nonzero counts, but issued0 requires source0. The scalar bytes do not prove
+those absences or the terminal digest. Validate them against the real native state,
+exact registry and positive input/effect replay. Legacy epoch2 uses its existing
+activated or empty digest unchanged.
+
+For2-to3, the incoming hash names the exact retained `01 0a` value at predecessor1.
+For n-to(n+1) with n>=3, it names the exact `02 0a` value at predecessor n-1.
+Adjacent manifests must match byte-for-byte: a parent's next is the child's
+previous. Verify the whole contiguous chain and complete key census; a matching
+hash at the head is not sufficient. The compact frontier is reconstructed from
+all retained terminal cuts, including zeros. It is not duplicated in every
+receipt. The [profile limits](ingest-registration.md#resource-admission-and-qualification)
+bound lineage memory and retained topology growth independently of the scalar
+integer encoding.
+Require the complete key-epoch/value-version matrix, not a scan filtered to one
+value version: predecessor1 is exactly the legacy version1 record; every later
+predecessor is version2. A schema1/2 singleton with a later native receipt is an
+incompatible downgrade, never a shorter valid history. A new SQL lineage tail
+also refuses except for the explicit prepared/native-old gap: exactly one
+immediately following preparation, no activation, no target native marker/receipt/
+input, and native state exactly at the positively verified predecessor. This
+exception belongs only to the new-family gap loader, including native2 with
+prepared3; legacy loaders still refuse that new SQL shape. The same exact pending
+gap rule applies at later schema3 heads. Longer, activated or mixed tails refuse.
+Parent hashes cover the complete retained value bytes; permissive decode/re-encode
+is not an alternative representation for hashing.
+
+For activated sources at epochs>=3, the new closure digest is SHA-256 over:
+`bigbrotr/ingest-successor-source-closure/1` followed by NUL, the SHA-256 of the
+exact incoming handoff value, the SHA-256 of the exact current manifest, slot16,
+epoch BE64, issued count BE64, then each ordered original request's sequence BE64,
+input digest32 and SHA-256 of its exact native outcome-copy bytes, finally the
+closed source cut BE64. The reducer positively validates each original effect and
+all dependencies before incorporating it; issued and resolved counts must match.
+
+For an unactivated empty attempt at epochs>=3, use SHA-256 over
+`bigbrotr/ingest-successor-empty-closure/1` followed by NUL, the SHA-256 of the exact
+incoming handoff value, the SHA-256 of the exact target manifest, slot16, epoch
+BE64, issued0 BE64 and source0 BE64. Recompute only after positive predecessor
+lineage proof and exact empty target inspection. Empty and activated-zero digests
+have distinct domains. This definition adds no ACK/GC or permission to reuse an
+incarnation.
+
+After confirmed PostgreSQL preparation, the native operation writes exactly the
+new receipt, schema3 singleton and explicit zero source/producer markers in one
+WAL-enabled synchronized batch. Existing-plan retry requires the exact empty
+target state and makes no write. Root device/inode, native sequence and separately
+checked retained input census remain local proof guards, never portable receipt
+fields. A fresh process reconstructs the recorded attempt from positive history
+and resolves it; it cannot activate the lost candidate. Formats and profile limits
+are selected here, while implementation, native/SQL boundaries and installed
+qualification remain NOT_RUN.
