@@ -355,9 +355,15 @@ One owner serializes exact identity decisions for each writable directory.
   eight before/after observations and106 independent controls; no native writes or
   repeated terminal-row updates. Source/artifact custody audit also passes, preserving
   76 binaries and the original1d64off seed.
-  Raw SQL draft7730bfb remains separately committed and not integrated; artificial
-  checks do not qualify PostgreSQL. Owner resumed the active goal on2026-10-15.
-  Refusal, SQL immutability and interruption gates remain NOT_RUN. Repeated lifetimes
+  Actual raw SQL46bfcb7 passes18 cases on three clones: three rollback positives,
+  fourteen guard refusals and a separate FK TRUNCATE refusal. Root replay binds36
+  internal full snapshots,36 before/after states and23 controls; all temporary
+  grants restored. Custody audit41257 also passes:1840 engine files,1834 build
+  files,76 protected ELFs,239 raw bindings and1290 unrelated projections preserved.
+  Zero/rejected fixturec794d63 is separately committed/pushed, synthetic checks
+  PASS (3 contexts/6 states/74 controls/5 custody mocks), final root delta review
+  and actual execution NOT_RUN. Typed workflow/copy refusals and cancellation/expiry
+  remain NOT_RUN. Owner requested a safe pause2026-10-15; no new campaign. Repeated lifetimes
   remain separate. Archive selection refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
