@@ -1283,4 +1283,8 @@ native data and input attribution remain independently checked. This is the firs
 continuous installed writer consumer, not completion of installed recovery,
 source/workflow closure, retirement, tails, capacity or Archive restart. Its
 exact4cfac91 build passes20 focused Serve/entrypoint tests and CLI/probe/Clippy;
-actual installed qualification remains NOT_RUN.
+actual installed9359721 then passes three terminal2/3 lifetimes with HTTP jobs,
+new/historical/retried signed events, provenance off/on, renewal and joined SIGTERM.
+The independent capture reader binds all75SQL tables, complete native/input bytes
+and original preservation. Current sources remain open and jobs queued revision2;
+recovery/source/workflow/retirement cycles and Archive remain separate gates.

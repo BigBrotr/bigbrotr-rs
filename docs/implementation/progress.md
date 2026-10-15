@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T19:15:23.256007+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T19:18:46.948253+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,9 +12,10 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEADc41eb54ec9b13db488a796eafe8701c668fbe1bb.
-Verified remote2844007: push27805joined0/ead10d, independentf02a11 exact.
-Fixture9e584b3→583ea14 and rawbindered38515→c41eb54 integrated; source docs pending commit/push.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD93597217aa9f23a99090a280837c0bc12ae90d34.
+Verified remote9359721: push12563joined0/77a66a, independent613aa0 exact.
+Fixture9e584b3→583ea14 and rawbindered38515→c41eb54 integrated;
+source evidence9359721 pushed; actual engine evidence pending this coherent commit.
 Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
 Root CLI/module/Archive getters/entrypoint tests/docs/build profile committed
 as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; qualified build/evidence03a35c0 pushed,
@@ -23,10 +24,10 @@ Exact installed build28171/prepare59862/audit71762 joined0. Build PASS20tests;
 Lifecycle ref retirement5022 joined0: original7288dbcd preserved detached,
 full-history bundlee51c99c0 and file census87e40eff intact;121local/51remote refs
 retired cumulatively,77detached/132preserved worktrees.
-Two active installed refs/132worktrees; all former refs already archived and
-retired. Root alone owns integration/build/cache/engines. Harness/reader agent
-works in installed-successor-engine-20261015; lifecycle agent prepares a read-only engine custody auditor in ignored files;
-dispatch agent implements independent raw capture binding in its assigned WT.
+Two qualified installed refs await retirement; 132 worktrees remain preserved.
+Root alone owns integration, builds, cache and engines. Both fixture authors have
+finished their implementation; the harness author is completing a read-only map
+of the next CLI consumers. The custody auditor is complete and its run joined.
 
 ## Active task and next action
 
@@ -39,12 +40,13 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: commit source evidence/docs, prepare exact clean main engine
-checkout and run installed_family once with unchanged4cfac91 CLI/probe. Join engine,
-run independent raw/scientific replay, then read-only custody audit with its exact
-SHA. No new compiler unless product source changes.
+Next bounded action: preserve qualified installed artifacts and retire redundant
+fixture/capture refs after file census; implement explicit installed repeatable
+recovery/source/abandon/retirement consumers using existing qualified adapters,
+then qualify a complete cycle on fresh copies of9359721 endpoints.
 Build root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`,
-exact4cfac91/tree602f9281;139priorELFs protected. No installed process/engine has run yet.
+exact4cfac91/tree602f9281;143ELFs protected after build. Installed9359721 has passed
+with these unchanged CLI/probe artifacts; no new compiler run.
 
 ## Current installed successor source
 
@@ -67,7 +69,7 @@ no-index exit-code assumption FAIL preserved. Scoped rustfmt/diff checks PASS;
 zero diagnostics. Audit6e14c82e binds1934source files,139prior+4new=143ELFpaths and
 1368unchanged prior containers. Both fetch/native exit0/PID0/noOOM; all handles
 joined. Build18:56:19Z–18:58:31Z. Authenticated bf2c122 storage component results
-remain bound only to unchanged kernel/fixture/dependency inputs. EngineNOT_RUN.
+remain bound only to unchanged kernel/fixture/dependency inputs. Installed evidence below.
 
 Resource overlap: native128MiB, input allowance24MiB, lineage256KiB and
 preparation8KiBdata/native plus real Control/replay/selectedSync preflight.
@@ -75,19 +77,30 @@ Metadata moves into the single live frontier. Persistent64-file/32MiB spool
 remains separate: activation reclaims nothing and a full spool can refuse new
 missing-effect admission. No capacity/RSS qualification claimed.
 
-Harness/scientific reader/raw binder source integrated and reviewed; engine NOT_RUN.
-Sourcebindings0eca461b verify7sourcefiles/32artifacts. Author3artificial contexts
-cover21states/60controls plus20focusedchecks; raw3fileenvelopes236files/17mutations
-and4helperpositives/23mutations. All are source/protocol checks, externalattempts0.
-Root full new-owner review plus AI semantic review found no concrete blocker.
-Auditor templatea5eed161/static3cc9db2e is read-only and NOT_RUN. Session pruning
-expectation corrected from actual login owner; expired unclaimed job preserved.
-Earlier artificial v1 and manifest-writer syntax failure retained unchanged.
-Expected cases: actual terminal2 activated/off, terminal2 empty/on and final
-fault58b79a4 terminal3/on -> epochs3/3/4 with one command; genuine login/jobs,
-new/historical/retried signed network events, >6s renewal and joinedSIGTERM.
-Do not clone intermediate bf2 terminal3: its final store has already advanced4.
-Originals, accepted expired-unclaimed jobs and every input remain protected.
+Installed engine exact9359721/tree8ff00c37, root
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-family-engine-9359721`.
+Prepare95387/engine61155/raw85222/custody11182 joined0, 19:15:44Z–19:16:22Z.
+PASS_INSTALLED_SUCCESSOR_FAMILY: actual terminal2 activated/off, empty2/on and
+retired3/on produce epochs3/3/4 via one command. Actual CLI login/HTTP source/job,
+new/historical/retried signed events, accepted policy over divergent local values,
+renewal >1.08s beyond the initial deadline and SIGTERM during quiet receive PASS.
+Full native results: 91 rows/111 sequence/8 inputs, 91/109/7 and 94/114/7;
+requests2/3/3, cuts5/10/10, Controls15/12/18. All 75 tables and exact scientific
+bytes checked. Session pruning at login is expected; expired unclaimed job a7
+remains unchanged. All three sources remain open and new jobs queued at revision2;
+per-frame certification is not observed.
+
+Raw eed8d278 binds 963 files/21 states×75 tables/60 controls. Custody ca106936 binds
+1940 source files/143 ELFs and 1369 unchanged nonborrowed containers. Original full
+SQL, catalog and native/input physical censuses are unchanged. All cleanup,
+unrelated, missing and unexpected arrays are empty. All three Serve processes
+exit0 with native closed, drivers joined and backends absent; container client143/
+PG0, exited/PID0/noOOM. Only six unrelated services remain active; all artifacts
+are retained. Sourcebindings0eca461b verify seven files/32 artifacts; protocols and
+AI semantic review remain separate from this engine result. Original v1 session
+expectation and manifest-writer syntax failure preserved; no installed engine FAIL.
+Installed recovery/source/workflow/retirement cycle, tails/capacity/RSS, Archive
+restart/backup/export and M1–M5 remain INCOMPLETE.
 
 ## Latest qualified retirement faults
 

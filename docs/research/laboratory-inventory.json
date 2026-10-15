@@ -51728,7 +51728,7 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "INSTALLED_SUCCESSOR_BUILD_PASS_ENGINE_NOT_RUN",
+    "status": "INSTALLED_SUCCESSOR_FAMILY_PASS_FULL_CYCLE_OPEN",
     "observed_at": "2026-10-15T18:55:17.969649+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -59582,8 +59582,8 @@
       "next_action": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave."
     },
     "installed_successor_resources": {
-      "observed_at": "2026-10-15T19:00:18.176414+00:00",
-      "container_count": 1370,
+      "observed_at": "2026-10-15T19:17:02.107056+00:00",
+      "container_count": 1371,
       "active": [
         {
           "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088",
@@ -59610,7 +59610,7 @@
           "name": "/tgdataset-mongo"
         }
       ],
-      "free_bytes": 27110563840,
+      "free_bytes": 26600398848,
       "registered_worktrees": 132,
       "local_branches": [
         "implementation/installed-successor-dispatch",
@@ -59619,7 +59619,8 @@
       ],
       "protected_elfs": 143,
       "build_state": "stopped-retained; all handles joined",
-      "engine": "NOT_RUN"
+      "engine": "stopped-retained; prepare/engine/raw/custody joined0",
+      "engine_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-family-engine-9359721"
     },
     "installed_successor_worktrees": [
       {
@@ -59757,6 +59758,130 @@
         "No per-frame certification telemetry, source/workflow/retirement cycle, adoption, Archive or capacity/RSS qualification."
       ],
       "next_action": "Prepare exact clean main engine checkout using authenticated unchanged4cfac91 build and143protectedELFs; run installed_family once, join, independently bind captures, then custody audit with exact replay hash."
+    },
+    "installed_family_engine": {
+      "status": "PASS_INSTALLED_SUCCESSOR_FAMILY",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-family-engine-9359721",
+      "source": "93597217aa9f23a99090a280837c0bc12ae90d34",
+      "tree": "8ff00c37640a1d393584f64f9d2eb8be5b91ffb4",
+      "build_source": "4cfac916ba81b2b73d5e117f1ad73f2240102e7c",
+      "preparation_session": "95387 joined0",
+      "engine_session": "61155 joined0",
+      "raw_session": "85222 joined0",
+      "custody_session": "11182 joined0",
+      "started_at": "2026-10-15T19:15:44.328353+00:00",
+      "finished_at": "2026-10-15T19:16:22.839801+00:00",
+      "raw": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-family-engine-9359721/root-independent-replay.json",
+        "sha256": "eed8d2784cf5a279d21266f2cc433185a403bb4e546b6b033d68349e1e1e0fbb",
+        "bound_files": 963,
+        "states": 21,
+        "tables_per_state": 75,
+        "negative_controls": 60
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-family-engine-9359721/audit-root/audit-v1.json",
+        "sha256": "ca106936835de797d0a6fd4770c48d48023d6433f7919d06ab5c1b5ad9a1beb3",
+        "source_files": 1940,
+        "protected_elfs": 143,
+        "unchanged_nonborrowed_containers": 1369
+      },
+      "owner": "afd74d59318d8316fea633aa1f238058",
+      "client": "680de19d6254cda4ce7eb856b0a9c49f9f8f6c1fe65c26a2b40d81dbbc7064ac",
+      "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "terminal": "Serve0 all3/native closed/drivers joined/backend absent; client143/PG0/exited/PID0/noOOM",
+      "cases": [
+        {
+          "name": "activated-live3",
+          "oracle": {
+            "status": "PASS",
+            "name": "activated-live3",
+            "snapshots": 5,
+            "observed_states": 7,
+            "sql_tables": 75,
+            "target_epoch": 3,
+            "requests": 2,
+            "source_cut": 5,
+            "native_rows": 91,
+            "native_sequence": 111,
+            "original_inputs": 6,
+            "final_inputs": 8,
+            "actual_cli": true,
+            "certification_per_frame": "not-observed",
+            "source_closure": "not-performed",
+            "workflow_completion": "not-qualified"
+          },
+          "control_epoch": 15,
+          "elapsed_seconds": 7.026431871578097,
+          "after_initial_deadline_us": 1083111,
+          "quiet_close_after_signal_us": 47,
+          "relay_connections": 12,
+          "backend_absence_seconds": 0.09728534147143364
+        },
+        {
+          "name": "empty-live3",
+          "oracle": {
+            "status": "PASS",
+            "name": "empty-live3",
+            "snapshots": 5,
+            "observed_states": 7,
+            "sql_tables": 75,
+            "target_epoch": 3,
+            "requests": 3,
+            "source_cut": 10,
+            "native_rows": 91,
+            "native_sequence": 109,
+            "original_inputs": 4,
+            "final_inputs": 7,
+            "actual_cli": true,
+            "certification_per_frame": "not-observed",
+            "source_closure": "not-performed",
+            "workflow_completion": "not-qualified"
+          },
+          "control_epoch": 12,
+          "elapsed_seconds": 7.227152262814343,
+          "after_initial_deadline_us": 1108988,
+          "quiet_close_after_signal_us": 52,
+          "relay_connections": 13,
+          "backend_absence_seconds": 0.09391243103891611
+        },
+        {
+          "name": "later-live4",
+          "oracle": {
+            "status": "PASS",
+            "name": "later-live4",
+            "snapshots": 5,
+            "observed_states": 7,
+            "sql_tables": 75,
+            "target_epoch": 4,
+            "requests": 3,
+            "source_cut": 10,
+            "native_rows": 94,
+            "native_sequence": 114,
+            "original_inputs": 4,
+            "final_inputs": 7,
+            "actual_cli": true,
+            "certification_per_frame": "not-observed",
+            "source_closure": "not-performed",
+            "workflow_completion": "not-qualified"
+          },
+          "control_epoch": 18,
+          "elapsed_seconds": 7.279312846250832,
+          "after_initial_deadline_us": 1091215,
+          "quiet_close_after_signal_us": 44,
+          "relay_connections": 7,
+          "backend_absence_seconds": 0.08957743365317583
+        }
+      ],
+      "preservation": "All3 original full SQL/catalog/native/input/physical censuses unchanged. Allcleanup/unrelated/missing/unexpected lists empty. No repair/cleanup mutation to old expired unclaimed job.",
+      "limits": [
+        "Three finite installed lifetimes only; no sustainable throughput or RSS/capacity measurement.",
+        "Distinct/new and retained/historical signed events plus retransmission; per-frame certification is not observed.",
+        "Accepted policy is authoritative over deliberately divergent file values; off uses2requests/on3requests.",
+        "Current source remains open and acquired job queued revision2; no workflow completion, source closure, retirement, writer adoption or Archive claim.",
+        "Original current files reread by custody; SQL/catalog preservation is captured-run evidence."
+      ],
+      "next_action": "Expose and qualify explicit repeatable recovery/source/abandon/retirement CLI consumers using existing successor adapters, then fresh successor activation on copied installed endpoints. Keep M1\u2013M5 incomplete."
     }
   }
 }
