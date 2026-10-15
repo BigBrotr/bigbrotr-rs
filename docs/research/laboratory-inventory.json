@@ -51127,8 +51127,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "PORTABLE_COMPONENTS_PASS_LINEAGE_COMPILE_FAIL_CORRECTED_RERUN_PENDING_SQL_FROZEN",
-    "observed_at": "2026-10-15T11:18:30.519969+00:00",
+    "status": "PORTABLE_AND_LINEAGE_COMPONENTS_PASS_SQL_FROZEN_CONNECTED_INCOMPLETE",
+    "observed_at": "2026-10-15T11:21:09.508684+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51162,7 +51162,7 @@
       }
     ],
     "resource_policy": {
-      "new_engine_build_or_runtime_resources": "Root-only build; failed lineage fetch0/native1 exited/PID0/noOOM. No active build; no subagent engine/build/cache mutation.",
+      "new_engine_build_or_runtime_resources": "Root-only completed lineage build fetch/native both exited0/PID0/noOOM. All84ELFs retained; no active build/cache writer.",
       "preserve": "All prior worktrees, ignored/external labs, failures, containers, executables and original datasets remain retained",
       "branch_policy": "Temporary local implementation/fixture branches only; integrate verified work on main then archive and retire redundant refs",
       "free_bytes_at_creation": 40890286080
@@ -51176,7 +51176,7 @@
       "retained_input_files_max": 64,
       "retained_input_bytes_max": 33554432
     },
-    "qualification": "Portable component: 54 Rust tests, literal fixture and Clippy PASS; connected repeatable succession NOT_RUN",
+    "qualification": "Codec54 and lineage22 Rust tests, literal fixture and Clippy PASS; connected family and SQL0038 NOT_RUN",
     "integrated_components": {
       "fixture": {
         "original": "8ca4b2726ccc0deef50456be15e7ac68b5272af1",
@@ -51197,7 +51197,7 @@
       "lineage_inspector": {
         "original": "47e3289c7c14b5ca8789463c7c5ac0908d95afc6",
         "main": "8c8eedb",
-        "status": "COMPILE_FAIL_E0277_FIX_COMMITTED_RERUN_NOT_RUN",
+        "status": "PASS_STRUCTURAL_NATIVE_AND_SIDECAR_CENSUS",
         "scope": "Read-only compact metadata/native/sidecar census; no positive lineage or connected authority",
         "correction": "ad08e5a89ba9ccb448df69976564a6beebbeb111"
       }
@@ -51311,14 +51311,6 @@
       "worktrees_detached": 41,
       "all_registered_worktrees_preserved": 96
     },
-    "next_build": {
-      "profile": "ingest-succession-lineage",
-      "status": "NOT_RUN",
-      "preparation_script": ".research/repeatable-succession-lineage-retry-prepare-20261015.py",
-      "protected_elfs": 83,
-      "required_free_bytes": 12884901888,
-      "scope": "Seven lineage case groups, existing request-input/handoff groups, literal fixture and Clippy; connected/installed NOT_RUN"
-    },
     "failed_lineage_build": {
       "status": "FAIL_COMPILE_E0277",
       "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -51380,6 +51372,80 @@
         }
       },
       "free_bytes_after": 40576086016,
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+    },
+    "lineage_build": {
+      "status": "PASS_SUCCESSION_LINEAGE_INSPECTION",
+      "source": "30beaf35091c72cc16e6c15958dcca3ebaad3e40",
+      "tree": "d5351c6e0a78fe50435a031e6a3f276d3398efff",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-30beaf3",
+      "preparation_session": 59462,
+      "build_session": 26704,
+      "wrapper_exit": 0,
+      "started_at": "2026-10-15T11:18:44.249211+00:00",
+      "finished_at": "2026-10-15T11:19:18.853759+00:00",
+      "test_counts": {
+        "lineage": 7,
+        "request_inputs": 8,
+        "legacy_handoff": 7
+      },
+      "tests": 22,
+      "checks": 5,
+      "new_elfs_sha256": {
+        "native_components": "66d72e9c6b5aed55c7487e6ad4f2fdc58cc42188db33c05e35fc3f746bff6a88"
+      },
+      "audit": {
+        "session": 93177,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-30beaf3/audit-root/audit-v1.json",
+        "sha256": "981de8760b661c115b3ceeb430a598f1453b177ecb4665240207a1b4dd05bb2f",
+        "source_files": 1863,
+        "old_protected_elfs": 83,
+        "total_protected_elfs": 84,
+        "unchanged_containers": 1306,
+        "capture": {
+          "observed_at": "2026-10-15T11:20:07.331997+00:00",
+          "containers": 1308,
+          "sha256": "3d0435508bcf1a2aba4d19fcf418c7ffb054ea423907a88562f1fb24b7999f6a"
+        },
+        "reviewer_relation": "Root independently reviewed agent inspector source and corrected its compile error; custody/source/raw-log audit, not an independent rerun of test semantics."
+      },
+      "owned_terminal": {
+        "fetch": {
+          "id": "7e81c56f6ea7249ed59d7f07cb06e48a53af9ee1905e20979789f79f3f721128",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:18:44.821094634Z",
+            "FinishedAt": "2026-10-15T11:18:45.05806226Z"
+          }
+        },
+        "native": {
+          "id": "f3e813171c96fc5f233d583a0a74f777f74bc9d8b744b1a48350f9e6e49bbf9f",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:18:45.416909827Z",
+            "FinishedAt": "2026-10-15T11:19:18.103061228Z"
+          }
+        }
+      },
+      "free_bytes_after": 40430948352,
+      "preparation_script": ".research/repeatable-succession-lineage-retry-prepare-20261015.py",
       "preparation_state": "COMPLETE_DO_NOT_REPLAY"
     }
   }

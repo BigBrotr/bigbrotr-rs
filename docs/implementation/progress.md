@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:18:30.519969+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:21:09.508684+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,10 +14,10 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `ad08e5a`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `30beaf3`.
 Verified private push95774 is `03bdcbef3834636b4c5f10329e4611ac5cc0521a`;
 remote main was independently read at that exact revision. Inspector after that
-push is local pending its build; runner/checkpoint changes belong to root.
+push is locally qualified; root records its result before the next private push.
 Only main is remote. No merge/rebase pending. The completed codec qualification
 and fixture ref retirement are committed and privately pushed.
 
@@ -32,17 +32,25 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: rerun the corrected exact-source
-`ingest-succession-lineage` profile after committing this checkpoint. New one-shot
-preparation `.research/repeatable-succession-lineage-retry-prepare-20261015.py`
-is NOT_RUN; it checks83 protected executables, current containers/cache exclusion
-and12GiB reserve before a fresh source clone. Preserve the failed run.
+Root's next bounded action: integrate frozen SQL0038/fixture c4daa50 with the
+migration catalog/manifest and explicit scoped grants, then qualify its SQL-only
+journey on isolated copies of both retired epoch2 origins. Read affected registry,
+CLI/schema tests and execution owners before edits; no native authority is claimed.
+
+Corrected exact30beaf3 lineage build26704 joined0 PASS,11:18:44Z–11:19:18Z:
+7lineage+8request-input+7legacy-handoff=22 Rust tests, literal fixture and Clippy.
+Root custody93177 joined0 PASS:1863 exact source files,83 oldELFs+1 newELF,
+1306 unchanged prior container projections. Both owned containers stopped0/PID0/
+noOOM. New ELF66d72e9c retained; audit981de876 under
+`/runs/ingest-succession-lineage-30beaf3/audit-root/audit-v1.json`; total84 protected.
+Retry preparation59462 and runner26704 complete; never replay their roots.
+The original failure remains FAIL, with source/reports/raw logs rehashed by retry audit.
 
 Inspector47e3289 integrated8c8eedb adds bounded compact structural lineage,
 complete native/sidecar census. Exact-source e47b698 build20256 joined1 FAIL at
 compile E0277: DatasetId requires [u8;16], not &[u8]. Independent fixture PASS;
 zero Rust tests, zero new ELF; other checks NOT_RUN. Correctionad08e5a explicitly
-converts fixed-width bytes; it is not yet compiled. Both owned containers stopped
+converts fixed-width bytes and passes the exact30beaf3 retry above. Both owned containers stopped
 (fetch0/native1), PID0/noOOM. Root read-only custody65973 joined0 PASS binds1863
 source files,83 protectedELFs and1304 unchanged prior container projections;
 audit0f9e6ff8 in `/runs/ingest-succession-lineage-e47b698/audit-root/audit-v1.json`.
@@ -97,8 +105,8 @@ The owning
 [repeatable contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
 and [portable format](../reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 select one family for2-to3/3-to4, both retired activated2 and retired unactivated
-empty2 origins. Only codec/profile arithmetic and legacy refusal hardening exist;
-positive lineage, actual compact allocation, SQL family, candidate/activation,
+empty2 origins. Codec/profile arithmetic, legacy refusal hardening and actual bounded compact
+structural inspection pass; positive lineage, SQL family, candidate/activation,
 new recovery and installed journeys remain incomplete.
 
 Selection: unchanged42-byte key01_0a, new value02_0a length319..643, manifest
@@ -373,7 +381,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after failed lineage build11:10:11Z:40,576,086,016; remeasure before allocating. Small engines
+Free bytes after corrected lineage build11:19:18Z:40,430,948,352; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive
