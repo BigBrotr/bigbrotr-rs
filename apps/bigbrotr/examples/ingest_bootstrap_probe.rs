@@ -913,8 +913,14 @@ fn main() {
             | "successor-activated-acquisition-expiry"
             | "successor-activated-retirement-expiry"
     );
-    let transition_proxy =
-        args.len() == 7 && matches!(args[1].as_str(), "successor-prepare" | "successor-empty");
+    let transition_proxy = args.len() == 7
+        && matches!(
+            args[1].as_str(),
+            "successor-prepare"
+                | "successor-empty"
+                | "successor-lineage-live"
+                | "successor-lineage-live-new"
+        );
     assert_eq!(
         args.len(),
         if args[1].starts_with("history-")
@@ -927,7 +933,12 @@ fn main() {
             || args[1] == "successor-lineage-history"
             || matches!(
                 args[1].as_str(),
-                "successor-prepare" | "successor-empty" | "successor-empty-retry" | "successor-gap"
+                "successor-prepare"
+                    | "successor-empty"
+                    | "successor-empty-retry"
+                    | "successor-gap"
+                    | "successor-lineage-live"
+                    | "successor-lineage-live-new"
             )
             || matches!(
                 args[1].as_str(),
@@ -1005,7 +1016,12 @@ fn main() {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
             } else if matches!(
                 args[1].as_str(),
-                "successor-prepare" | "successor-empty" | "successor-empty-retry" | "successor-gap"
+                "successor-prepare"
+                    | "successor-empty"
+                    | "successor-empty-retry"
+                    | "successor-gap"
+                    | "successor-lineage-live"
+                    | "successor-lineage-live-new"
             ) {
                 ingest_successor_history::transition::run(
                     config,

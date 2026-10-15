@@ -1,11 +1,14 @@
 //! Finite actual-Control successor preparation and unactivated recovery.
-//! Each invocation owns one native lifetime. There is no writer delivery,
-//! activation, raw registry mutation, product fault hook or in-process reopening.
+//! Each invocation owns one native lifetime. The explicit live child retains
+//! its candidate through activation; recovery commands never adopt one.
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{SuccessorPreparation, SuccessorPreparationRequest},
     rocks::{store::SuccessorCandidate, succession::SuccessionRecord},
 };
+
+#[path = "ingest_successor_live.rs"]
+mod live;
 
 // Keep every possible native owner before Control in the custody drop order.
 // In particular, failed/unknown prepare leaves the spent Preparation here.
@@ -17,6 +20,7 @@ struct Native {
     recovery: Option<IngestRecovery>,
     candidate: Option<SuccessorCandidate>,
     preparation: Option<SuccessorPreparation>,
+    live: live::LiveCustody,
 }
 impl Native {
     fn recovery(&self) -> &IngestRecovery {
@@ -43,12 +47,14 @@ pub async fn run(
         "successor-empty" => "empty",
         "successor-empty-retry" => "empty-retry",
         "successor-gap" => "gap",
+        "successor-lineage-live" => "live",
+        "successor-lineage-live-new" => "live-new",
         _ => panic!("unknown finite successor operation"),
     };
-    assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty"));
+    assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty" | "live" | "live-new"));
     assert!(proxy_port.is_none_or(|port| port != 0));
     let mutation_bytes = match operation {
-        "prepare" | "gap" => 8192,
+        "prepare" | "gap" | "live" | "live-new" => 8192,
         "empty" => 4096,
         _ => 0,
     };
@@ -85,19 +91,22 @@ pub async fn run(
         IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
     // Candidate construction can fail and consume recovery. It therefore runs
     // before any actual Control acquisition. No observed identity is adopted.
-    let native = if operation == "prepare" {
+    let live = matches!(operation, "live" | "live-new");
+    let native = if operation == "prepare" || live {
         let candidate = SuccessorCandidate::new(recovery).unwrap();
         emit_candidate(&candidate);
         Native {
             recovery: None,
             candidate: Some(candidate),
             preparation: None,
+            live: live::LiveCustody::default(),
         }
     } else {
         Native {
             recovery: Some(recovery),
             candidate: None,
             preparation: None,
+            live: live::LiveCustody::default(),
         }
     };
     let mut custody = TransitionCustody {
@@ -110,6 +119,9 @@ pub async fn run(
     // inspection decides that. Preflight the largest live overlap before claim.
     drop(replay_grants(&budget));
     drop(effect_grant(&budget));
+    if live {
+        live::preflight(&budget);
+    }
     emit(
         serde_json::json!({"event":"lineage-history-resources","metadata_bytes":metadata_bytes,
         "metadata_scratch_bytes":LINEAGE_SCRATCH_BYTES,"metadata_entry_bytes":LINEAGE_ENTRY_BYTES,
@@ -194,17 +206,29 @@ pub async fn run(
     probe.policy(owner, "acquired", None, None, policy);
     let backend = probe.backend(owner).await;
     probe.snapshot("after-claim").await;
-    let result = probe
-        .transition(
-            custody.owner.as_mut().unwrap(),
-            custody.native.as_mut().unwrap(),
-            metadata,
-            mutation_permit,
-            operation,
-        )
-        .await;
+    let result = if live {
+        probe
+            .live(
+                custody.owner.as_mut().unwrap(),
+                custody.native.as_mut().unwrap(),
+                metadata,
+                mutation_permit.unwrap(),
+                operation == "live-new",
+            )
+            .await
+    } else {
+        probe
+            .transition(
+                custody.owner.as_mut().unwrap(),
+                custody.native.as_mut().unwrap(),
+                metadata,
+                mutation_permit,
+                operation,
+            )
+            .await
+    };
     emit(
-        serde_json::json!({"event":"lineage-transition-result","operation":operation,
+        serde_json::json!({"event":if live {"lineage-live-result"}else{"lineage-transition-result"},"operation":operation,
         "stage":result.as_ref().err().map_or("complete",|e|e.stage),
         "epoch":result.as_ref().err().and_then(|e|e.epoch),"sequence":result.as_ref().err().and_then(|e|e.sequence),
         "error":result.as_ref().err().map(|e|&e.error),"observation":result.as_ref().ok()}),
@@ -212,6 +236,7 @@ pub async fn run(
     probe.snapshot("after-transition").await;
     // Every history witness has ended. Native closes before the actual owner
     // release/drop and joined driver; failed calls never manufacture release.
+    let activated = custody.native.as_ref().unwrap().live.activated();
     drop(custody.native.take());
     emit(serde_json::json!({"event":"lineage-history-native","state":"closed"}));
     probe.snapshot("before-control-end").await;
@@ -245,11 +270,20 @@ pub async fn run(
     emit(
         serde_json::json!({"event":"lineage-history-driver","driver":"observer","failed":false,"joined":true}),
     );
-    emit(
-        serde_json::json!({"event":"lineage-transition-complete","operation":operation,"native":"closed",
+    if live {
+        emit(
+            serde_json::json!({"event":"lineage-live-complete","operation":operation,"native":"closed",
+            "control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
+            "observer":"joined","success":result.is_ok(),"writer":false,"activation":activated,
+            "admission":result.as_ref().ok().map(|_|true)}),
+        );
+    } else {
+        emit(
+            serde_json::json!({"event":"lineage-transition-complete","operation":operation,"native":"closed",
         "control":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
         "observer":"joined","success":result.is_ok(),"admission":false,"activation":false}),
-    );
+        );
+    }
 }
 impl Probe {
     async fn transition(
