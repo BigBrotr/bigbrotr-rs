@@ -92,6 +92,9 @@ const _: () = assert!(
 );
 
 impl SuccessorHistory {
+    pub(super) fn control(&self) -> ingest_registry::ControlOwner {
+        self.control
+    }
     pub fn state(&self) -> SuccessorHistoryState {
         self.selection.state
     }
@@ -377,7 +380,7 @@ impl ControlSession {
         })
     }
 
-    async fn begin_successor_history<'a>(
+    pub(super) async fn begin_successor_history<'a>(
         &'a mut self,
         recovery: &IngestRecovery,
         input: &InitialHistoryRequest<'_>,
@@ -401,7 +404,7 @@ impl ControlSession {
             .await
     }
 
-    async fn begin_checked_successor_history<'a>(
+    pub(super) async fn begin_checked_successor_history<'a>(
         &'a mut self,
         history: &SuccessorHistory,
         recovery: &IngestRecovery,
@@ -436,7 +439,7 @@ fn self_dataset(history: &SuccessorHistory) -> bigbrotr_model::DatasetId {
     history.head.manifest.identity().dataset_id
 }
 
-async fn finish_read(
+pub(super) async fn finish_read(
     tx: Transaction<'_>,
     lease: &mut PolicyLeaseTracker,
     policy: PolicyEpoch,

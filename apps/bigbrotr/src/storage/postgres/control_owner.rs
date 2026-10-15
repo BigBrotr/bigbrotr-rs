@@ -110,6 +110,12 @@ pub use successor_history::{
     SuccessorHistory, SuccessorHistoryResolution, SuccessorHistoryState, SuccessorReplayRequest,
     VerifiedSuccessorHistory,
 };
+#[path = "successor_transition.rs"]
+mod successor_transition;
+pub use successor_transition::{
+    SuccessorEmptyPlan, SuccessorGapPlan, SuccessorPreparation, SuccessorPreparationPlan,
+    SuccessorPreparationRequest,
+};
 #[path = "initial_succession.rs"]
 mod initial_succession;
 pub use initial_empty::{InitialEmptyRetirementPlan, PreparedEmptyInitialAttempt};
