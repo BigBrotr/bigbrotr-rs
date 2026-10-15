@@ -62,6 +62,11 @@ checks. It runs no tests; reuse of earlier component evidence requires unchanged
 compiled product inputs. The engine invokes `successor-lineage-history` with an
 explicit metadata byte capacity on disposable database/native copies.
 
+`transition` builds the CLI/probe and runs the native lineage/handoff/empty tests
+and PostgreSQL transition component tests, followed by Clippy. The latter check
+state and reservation rules without a database. Real preparation, gap recovery,
+empty retirement and installed writer journeys require separate connected runs.
+
 `replay.py RUN_ROOT` independently reduces the captured SQL experiment below,
 binding both origins, complete rows, raw output and portable hashes. It requires
 the completed two-origin run by default. Explicit `--origin activated

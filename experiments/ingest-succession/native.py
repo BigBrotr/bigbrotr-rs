@@ -15,12 +15,14 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'])
 replay = sys.argv[1:] == ['replay']
 history = sys.argv[1:] == ['history']
 probe = sys.argv[1:] == ['history-probe']
+transition = sys.argv[1:] == ['transition']
+build_probe = probe or transition
 lineage = sys.argv[1:] == ['lineage']
-schema = sys.argv[1:] == ['schema'] or replay or history or probe
+schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
 
 def sources():
@@ -56,6 +58,9 @@ if history:
 if probe:
     identity['scope'] = ('Exact finite connected-history probe and CLI compilation/Clippy only; '
                          'no Rust test or connected engine executed by this profile')
+if transition:
+    identity['scope'] = ('Native successor handoff/empty and PostgreSQL transition components, '
+                         'CLI/probe compilation and Clippy; connected mutations and installed journeys NOT_RUN')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -83,16 +88,19 @@ if history:
         'lineage', 'initial_handoff', 'initial_empty']]
 if probe:
     tests = []
+if transition:
+    tests = [('lineage', ['--lib', 'lineage_tests']),
+             ('successor_transition', ['--lib', 'successor_transition::tests'])]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
-         if probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
+         if build_probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1'])
           for name, selection in tests]
 clippy_targets = (['--lib', '--bin', 'bigbrotr', '--test', 'control_schema', '--test', 'migrate_entrypoint']
                   if schema else ['--lib', '--test', 'rocks_succession', '--test', 'rocks_manifest',
                                   '--test', 'rocks_keys', '--test', 'rocks_store'])
-if probe:
+if build_probe:
     clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
 steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                      *clippy_targets, '--', '-D', 'warnings'])]
@@ -102,7 +110,7 @@ result = execute(steps, checks, SOURCE, env, identity, 1800)
 artifacts = Path('/out/artifacts')
 artifacts.mkdir()
 executables, counts, cli_paths = {}, {}, set()
-for name, selection in (tests + [('probe_build', None)] if probe else tests):
+for name, selection in (tests + [('probe_build', None)] if build_probe else tests):
     log = checks / (name + '.log')
     if not log.exists():
         continue
@@ -159,14 +167,15 @@ assert result['status'] == 'PASS'
 assert set(counts) == {name for name, _ in tests}
 assert set(executables) == {name if selection[0] == '--test' else 'native_components'
                             for name, selection in tests} | ({'bigbrotr'} if schema else set()) | (
-                                {'ingest_bootstrap_probe'} if probe else set())
+                                {'ingest_bootstrap_probe'} if build_probe else set())
 if schema:
     info = json.loads(subprocess.check_output([str(artifacts / 'bigbrotr'), 'build-info'], env=env))
     assert info['source'] == dict(state='builder-supplied', revision=manifest['revision'],
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_HISTORY_PROBE_BUILD' if probe
+qualification = dict(identity, status='PASS_SUCCESSION_TRANSITION_COMPONENTS' if transition
+                     else 'PASS_SUCCESSION_HISTORY_PROBE_BUILD' if probe
                      else 'PASS_SUCCESSION_HISTORY_COMPONENTS' if history
                      else 'PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS' if replay
                      else 'PASS_SUCCESSION_SCHEMA_COMPONENTS' if schema
