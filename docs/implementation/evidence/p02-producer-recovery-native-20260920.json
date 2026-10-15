@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "SQL_UNSIGNED_FIX_AND_NATIVE_REPLAY_INTEGRATED_BUILD_NOT_RUN",
+      "status": "NATIVE_REPLAY_SCHEMA_PASS_SQL_NUMERIC_RETRY_PENDING",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Native positive18c6fc4 integratedb4a6926; root read all new owners/tests/shared diff. Corrected numeric codec and replay/schema combined build next; connected lifecycle incomplete.",
+      "ongoing": "123 Rust tests, independent fixture and Clippy PASS. Next corrected CLI SQL numeric/shapes on fresh copies; independent native AI review and read-only typed PG mapping underway. Connected/installed succession incomplete.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -23662,6 +23662,122 @@
         },
         "free_bytes_after": 39937503232,
         "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+      },
+      "replay_component": {
+        "status": "PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS",
+        "source": "aa6cb5b282e823adf126232b480ae82cc264701b",
+        "tree": "e6a710e1af00ae1297cdb5660c76810c217453bf",
+        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-replay-aa6cb5b",
+        "preparation_session": 33172,
+        "build_session": 25657,
+        "wrapper_exit": 0,
+        "started_at": "2026-10-15T11:50:19.961505+00:00",
+        "finished_at": "2026-10-15T11:51:56.674158+00:00",
+        "test_counts": {
+          "control_schema": 38,
+          "migrate_entrypoint": 3,
+          "lineage": 15,
+          "request_input": 8,
+          "initial_handoff": 7,
+          "dictionary_append": 13,
+          "producer_recovery": 11,
+          "source_closure": 3,
+          "activated_recovery": 16,
+          "activated_source": 9
+        },
+        "tests": 123,
+        "checks": 12,
+        "new_elfs_sha256": {
+          "control_schema": "21cc8d246787feca1f1ca19a50f5a4010cd504d711db865d93deb410fbf3f761",
+          "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+          "native_components": "a80e01e467ec5710399f08d73a60eacd3d2a91a70ecdc7e98752eceb1218e9d3",
+          "bigbrotr": "5b885604e1c7e24df909501e88634dbdf1f5b384f75d5eae02d648586d4c8345"
+        },
+        "retained_sha256": {
+          "resources.json": "b37616296e458a6410574d80a4cb78a07f2e99c4a71fe5c0c8a7c7b524a898df",
+          "preflight.json": "ce9c010cb6f4a2844db6d7bd2f5ce1a3e397d4987d8767566fda1d5a1015d762",
+          "root-preparation.json": "084118199a3cb0d3b783466124b188d547accb0ff8614e0f8bcb01c5a09bece2",
+          "root-preparation-containers.json": "47997bd348bee15ae11107aee47f5d6d2ce3d02fb5fc3b1600fbc340b4c2b192",
+          "fetch-terminal.json": "a7e8bdc8a5773c6b59974cd51da0a43a0dd95b4c6d3234f513bc6debdfa55b24",
+          "native-terminal.json": "472214f8b191caa5c4c85e1d42155cb860c84bb151986494bbd184e6913d8265",
+          "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "native.log": "bfd9a882f6f7f6e2cb98f25d37a922372e0461a7435fd0bf81d5b7c90f267a4d",
+          "out/build/source-manifest.json": "0cce2c9d0783cf7c8ee00eaa6f31f2cb57399ef1612dc56e4d979a5fffd03dd0",
+          "out/build/source.tar": "ba6d67254eabdf6664c25d348932fde99886fdcdb218b3ebd6c82011d635c108",
+          "out/build-checks/result.json": "bf30fd5a55df8adb2fda1be72c1aabce2f8c10d2c4ad6d350f1eff5bfef5a94f",
+          "out/artifacts/component-result.json": "b8948421d4689ea7d784680e9a7f32c183f57d19bd3e86cd973870f10dafb482",
+          "out/artifacts/build-result.json": "539d1d840344ebfb0de40ed09f7231e4d9fa56bb9edbceee3a2ccf1ba864e403",
+          "out/qualification.json": "07b09317d6c5f9f87d05ed5c8fecb232582f57d93b16bfc3c75d42fc466abbb6"
+        },
+        "raw_logs_sha256": {
+          "independent-fixture": "35228f3856d4b548923e3c308d67f9157f58dccd4b22184e9fd32b3d1c138f1a",
+          "control_schema": "df92c2c79b5dd475255464389c8c9ac6531b4c5562c38deb20bafa06533b312d",
+          "migrate_entrypoint": "b67d2af5580cb4d7a5494dbca8845739756664c599f4ca87fb6205d28412a694",
+          "lineage": "0daa1fd3e8381cfff51d3be0b025118a0899110715a9c3f4f96e5ad677139fbf",
+          "request_input": "b3a8a22c1f790316fc98f655fd87ac76ce859b3df7d4bf99c9facc8e17fe9f1e",
+          "initial_handoff": "0fb398b68991c7c58fc6a1b35b159ec2782ca8021565dac1dd2f3c2b43592c0a",
+          "dictionary_append": "b9dcd9d915560452cb02bea69dff27fe838f48522fc32045dee5b2202b1b4683",
+          "producer_recovery": "9460097bcfaf069a152af2d1e2312aef6fc5fb316f3f989b2c55a994f299c4f6",
+          "source_closure": "ef44e725b8433343bdabfa09c3f962373564cfa53a79d30d1748b5ade8bc8827",
+          "activated_recovery": "e65cb54721125998744aec0e9b6568f8e7fc77a8c2cc60b2ab2e560dd710d4fa",
+          "activated_source": "679de4563195c6ccf871aca71ee23709108b3a00516b310456ee4bf40db1069a",
+          "clippy": "17baa7a623a0693f63ce5e314f73d03c1c134926bb755955ca784340695a2d3d"
+        },
+        "audit": {
+          "session": 18419,
+          "exit_code": 0,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-replay-aa6cb5b/audit-root/audit-v1.json",
+          "sha256": "b0ffb2e6c604d27d6e70f27f9f2af870e7a162f53fb5db75562cb1fdbe0dc978",
+          "source_files": 1870,
+          "old_protected_elfs": 90,
+          "total_protected_elfs": 94,
+          "unchanged_containers": 1314,
+          "capture": {
+            "observed_at": "2026-10-15T11:52:08.337067+00:00",
+            "containers": 1316,
+            "sha256": "d9365fce7af2bcecffee41190d9bc4228e3510438dd98bd90eb538fa28d11a47"
+          },
+          "reviewer_relation": "Root reviewed and integrated agent replay and authored build runner; this is custody/source/raw-log validation, not an independent replay of test semantics."
+        },
+        "owned_terminal": {
+          "fetch": {
+            "id": "64dbea9438ba8aea4f2f5f86e4d2c3121e7de8c1fddb1a489d2640c7492aae07",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:50:20.508618387Z",
+              "FinishedAt": "2026-10-15T11:50:20.762263845Z"
+            }
+          },
+          "native": {
+            "id": "555dcfc45b06b1cbcb3906563ae9b8c74902fedab5dc6ff6564bd47e09d91bfe",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-15T11:50:21.112702149Z",
+              "FinishedAt": "2026-10-15T11:51:55.949949345Z"
+            }
+          }
+        },
+        "free_bytes_after": 39755030528,
+        "limits": [
+          "Native epoch3 bytes directly installed by fixture; no connected writer/preparation/activation.",
+          "Corrected numeric SQL engine NOT_RUN; full product remains incomplete."
+        ]
       }
     }
   }
