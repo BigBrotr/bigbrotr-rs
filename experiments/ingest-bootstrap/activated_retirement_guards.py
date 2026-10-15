@@ -54,7 +54,9 @@ def statement_set(before):
 """
         def classify(stage):
             return f"SELECT json_build_object('event','classified','stage','{stage}','terminal_at',control.require_activated_initial_retirement({resource}));\n"
-        sql = prefix + state('baseline')
+        # The 72-table observation must not allocate parallel-query DSM in the
+        # laboratory's bounded /dev/shm. This is local to the raw fixture only.
+        sql = prefix + 'SET LOCAL max_parallel_workers_per_gather=0;\n' + state('baseline')
         if mode == 'legacy-grants':
             current_resource = _literal(intent['prepared_by_resource'])
             current_role = "decode('" + identity['role_instance'] + "','hex')"
@@ -262,11 +264,14 @@ def run_all(pg, client, output, rows, clone):
     finally:
         for item,revoke in owned:
             restored=dict(statement=revoke,response=None,catalog=None,privileges=None,errors=[])
-            try:
-                if item['legacy_restore'] is not None:
-                    restore=item['legacy_restore']
+            if item['legacy_restore'] is not None:
+                restore=item['legacy_restore']
+                try:
                     restore['response']=recovery.statement(pg,item['database'],output,MODE+'-legacy-restore',restore['statement'])
                     restore['catalog']=retirement.catalog(pg,item['database'])
+                except Exception as error:
+                    restored['errors'].append('legacy:'+type(error).__name__)
+            try:
                 restored['response']=recovery.statement(pg,item['database'],output,item['database']+'-restore',revoke)
                 restored.update(catalog=retirement.catalog(pg,item['database']),privileges=privileges(pg,item['database']))
             except Exception as error:

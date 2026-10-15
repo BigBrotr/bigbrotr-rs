@@ -36,24 +36,24 @@ ERRORS={
 # Exact reviewed scripts include all 72 read-only table captures and the fixed
 # retained identities. Runtime clocks/backend identities remain actual SQL.
 SQL_SHA256={
-    'ready-rollback': '33fe5a23c10209dd7e11a81da4cdf2fb5f3d89d043a596022b6044d641e4f3ae',
-    'complete-rollback': '6f310d702856eb797069bc19a3b1c2689ee2fbdc8efad0220ea764792ab5575e',
-    'producer-only': 'a6aab9fb0e55ca17be3edd72e04b1516ab5c37b96c7abef5884a769845439b4f',
-    'domain-only': '2b0dd4163c36ca7fbd55cc370cdff81a44e43e81a393a5020959806b818a6f8f',
-    'role-only': '4fb505aaebfe56c859ad85030a9beb4ffa36f0bcf2adbbf98b47a2848639c6db',
-    'owner-only': '7cf766bbb4dd568c200647146d68e4dff69447b996aeba76edd5dacb194e34d0',
-    'wrong-producer-digest': '5c56b89f77b626f4328879404c80bd203d5c40ae1c5b30a3f38d73f794c47839',
-    'wrong-common-time': '3a1cb2d85ac6ca3f4805b4eaceff1dc8bc9e4a43901d87d52c5a39e2df5aa809',
-    'wrong-domain-digest': '6faba93dc07b52dea96d2e09ab0a53724fa3ee352261f4c21443fa7a8b15b5c9',
-    'immediate-before': '9b9fd0d0b15d4656033547adcffd49d04595f6dc7d4a6674110b178c30cad8d4',
-    'role-created-after-immediate': '07404b5f15f7dce3811227dda8f390cde54d0f82760e2060d64451e549edae96',
-    'role-time-after-immediate': '33321d2551ff266d1d8151d8e8accd826b8f59508353b2dfcfb962ed2a504461',
-    'role-delete': '90e82a9e636af9c8f88ea7c8bee7500d52cf69691b103ffc8080081aa35e3a56',
-    'role-truncate': 'e0b6c2304c9f5e9f5b0c249f0ba3142c37f3763f118bf65afb915f5aa44e5a8e',
-    'role-truncate-cascade': 'c5a0c5d293b6dd75c4e5fd7797916b1946c9ddd0e688f401dc8b4a51398727a4',
-    'legacy-grants': '2d6584bf7161efb9fccd61aa2bd69122a8111c55c7537814a96583b025dc23fb',
-    'missing-copy': '2610989e36e0199a6263de5b27a7504af7e9c2cb45166675d9c0078d1f9f7782',
-    'missing-gap': 'bab5f32ecce6f91c8ebd83f3b2043e0da98650945b89104ddb3d564c6fe1b8d1',
+    'ready-rollback': 'cf47621aeda5c48b6775d175c222c4d4f2043f34e58c103afa7d9d195cc499ea',
+    'complete-rollback': '7553bc464be3750d5b5cf908f7176ec3063c191f0082fbe09dccbf7f38c7b3b6',
+    'producer-only': '8d9104ae02684e36948fcb162dd6698523bf710a73d7f9f6a181121823fa8073',
+    'domain-only': 'df931f28e62b3dbadbe812939a1b336fa87344dd102f70bae1e2903706bf8090',
+    'role-only': '0e67392d34a3195362b77fd49a47ec7cb328915fa673ebe21c6f643da595d15c',
+    'owner-only': '46b5d991f85b9de71ed35f2b10fea156d3f1ed6e00ebb872710f156c681dfaf9',
+    'wrong-producer-digest': '42232f4dbb671271a5de7d12c0cd274fe5026c9292e38df1a3bac3c8a3e87bfe',
+    'wrong-common-time': '3c8caaf09b9c34fe0433073ff7d39fcb3fa3d61d583efdb967ef3dbcf41b8f74',
+    'wrong-domain-digest': '751af918ab5234e3272f199330bd6bbd7322b084d18cd8c932786960a5e93ef8',
+    'immediate-before': 'b364fe4c6c5bc419a249d8593a03e737843af99d2b930633e28ce5f211102c1d',
+    'role-created-after-immediate': 'ff17b3a4dfb2dd66d5869f0c3457fffa71731cefdbb5a374dcc8797de9a172c3',
+    'role-time-after-immediate': '78f8148b1c3d945c6fbc7e36f8e58f7ef5ee5f60a928525e6cf9437b7c1d28b2',
+    'role-delete': '69933880c791555a3f3f9185761a7ab74409e10c655f98b01fdb7a4845139635',
+    'role-truncate': '9ae96348ea555d0592b07d47b8294812782c5e5b834fda1b7358148a1cc808f3',
+    'role-truncate-cascade': '99fc08530ec7c8f4095e9a77d3a3cfd7510ead4142c68ec1d730777b004de21c',
+    'legacy-grants': '1e842d8fa5baa9af67e5f8fca2d98116ca6684eb640794e801e2d76cf7b58800',
+    'missing-copy': 'a8a450ec893171fde0ca74a9e8c563818d0089b079f906d5058d6464d5184a2b',
+    'missing-gap': '20e9442d250d2cc598e18b3745e71124c2b5ae677a0460b90eab20a736973e18',
 }
 GRANT='GRANT DELETE ON control.role_instances TO bigbrotr_control;\nGRANT TRUNCATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control;\n'
 
@@ -251,6 +251,9 @@ def verify_case(case,*,seed,clone):
 def verify(*,seed,clones,cases):
     assert [c['mode'] for c in cases]==list(CASES)
     assert len(clones)==3 and len({c['database'] for c in clones})==3
+    normal={c['database'] for c in cases if not c['mode'].startswith('missing-')}
+    assert len(normal)==1
+    assert normal|{only(cases,mode='missing-copy')['database'],only(cases,mode='missing-gap')['database']}=={c['database'] for c in clones}
     checked=[]
     for case in cases:
         clone=only(clones,database=case['database'])
@@ -300,6 +303,19 @@ def negative_controls(**context):
     reject('wrong-db-command',lambda c:case(c)['command'].__setitem__(-1,'wrong_database'))
     reject('backend-present',lambda c:case(c)['backend_absence']['samples'][-1]['present'].append(dict(pid=1,
         backend_start=case(c)['events'][0]['backend_start'],database=case(c)['database'],user='bigbrotr_control')))
+    def shared_operator_clone(c):
+        target=case(c,'missing-copy')['database']
+        row=case(c,'missing-gap');row['database']=target;row['command'][-1]=target
+        row['events'][0]['database']=target
+        row['backend_absence']['database']=target
+        row['backend_absence']['exact_backend']['database']=target
+        ledger=only(c['clones'],database=target)['baseline']['schema_versions']
+        for rows in [row['before'],row['after'],row['operator']['before'],row['operator']['after']]+[
+                e['rows'] for e in row['events'] if e['event']=='state']:
+            rows['schema_versions']=copy.deepcopy(ledger)
+        import json
+        row['response']['stdout']=''.join(json.dumps(e)+'\n' for e in row['events'])
+    reject('operator-clones-not-isolated',shared_operator_clone)
     reject('replica-case',lambda c:change_events(c,lambda e:e[0].update(replication_role='replica')))
     reject('superuser-case',lambda c:change_events(c,lambda e:e[0].update(superuser=True)))
     reject('split-target-xmin',lambda c:change_events(c,lambda e:only(e[-2]['rows']['role_instances'],
@@ -315,4 +331,8 @@ def negative_controls(**context):
     def rehash(c):
         row=case(c);row['statement']+='-- altered\n';row['statement_sha256']=sha(row['statement'].encode())
     reject('rehashed-unreviewed-script',rehash)
+    def parallel(c):
+        row=case(c);row['statement']=row['statement'].replace('SET LOCAL max_parallel_workers_per_gather=0;\n','')
+        row['statement_sha256']=sha(row['statement'].encode())
+    reject('unbounded-parallel-observer',parallel)
     return dict(status='PASS',rejected=len(checks),controls=checks)
