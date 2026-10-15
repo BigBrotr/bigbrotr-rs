@@ -251,3 +251,22 @@ and all four commands; the existing evidence register binds its source and
 artifacts. Unchanged native/PG component results retain their earlier exact
 scope. This build does not execute the three installed HTTP/Sync lifetimes or
 qualify their renewal, provenance or shutdown against actual engines.
+
+`installed_family.py RUN_ROOT BUILD_ARTIFACTS` uses three fresh copies of the
+actual terminal activated2/off, empty2/on and retired3/on endpoints. The installed
+`serve --activate-successor` command activates epochs3/3/4 and owns native state
+continuously through genuine CLI login, HTTP source/job commands, finite network
+acquisition, renewal beyond the original lease and SIGTERM during quiet receive.
+The relay sends a distinct signed event, the historical event and a retry of the
+distinct event. Final SQL, native bytes and input files must preserve history and
+contain exactly the independently encoded new effects. Login may prune the same
+account's expired sessions; it does not remove expired unclaimed jobs.
+
+`installed_family_capture.py RUN_ROOT --output RESULT` binds raw captures and
+original file censuses to the scientific reader in `installed_family_replay.py`,
+with HTTP and fact encoders in its two companion modules. It requires observed
+process joins and backend absence before accepting external native inspection.
+Artificial context checks reuse the reader model and establish capture protocol
+only. Actual run status belongs to the checkpoint. The job remains queued; neither
+EOSE nor shutdown proves workflow completion, source closure, retirement, Archive
+publication, restart recovery or capacity. Per-frame certification is not observed.

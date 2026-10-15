@@ -59626,7 +59626,7 @@
         "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015",
         "branch": "implementation/installed-successor-dispatch",
         "owner": "successor_restart_design",
-        "status": "dispatch source integrated; new independent raw binder and ignored checks in progress; no runtime"
+        "status": "source committed and integrated; clean; ignored source-only checks retained; engine NOT_RUN"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/installed-successor-lifecycle-20261015",
@@ -59638,7 +59638,7 @@
         "path": "/home/tux/bigbrotr-rs/.research/installed-successor-engine-20261015",
         "branch": "qualification/installed-successor-engine",
         "owner": "recovery_review",
-        "status": "harness/reader implementation in progress; no engine/build"
+        "status": "source committed and integrated; clean; ignored source-only checks retained; engine NOT_RUN"
       }
     ],
     "installed_successor_build": {
@@ -59715,6 +59715,48 @@
       "bundle_sha256": "e51c99c076f5b4eb4fb510819346abda5275a8fb97cebfe33d03ca5abfb1888c",
       "executor": "5022 joined0",
       "scope": "One source-reviewed and compiled installed lifecycle ref only. Actual installed engine remains NOT_RUN. Main plus active dispatch/capture and harness refs remain; all worktrees, ignored/external evidence and datasets preserved"
+    },
+    "installed_family_source": {
+      "status": "SOURCE_INTEGRATED_ENGINE_NOT_RUN",
+      "observed_at": "2026-10-15T19:15:23.256007+00:00",
+      "head": "c41eb54ec9b13db488a796eafe8701c668fbe1bb",
+      "original_commits": [
+        "9e584b3638bdf5388b343fd6bd040bbbf334b433",
+        "ed38515b4d4942fd17b3d6711cbeeb3117bbe0df"
+      ],
+      "integrated_commits": [
+        "583ea14",
+        "c41eb54"
+      ],
+      "source_bindings": {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-family-root-selfcheck-20261015/result.json",
+        "sha256": "0eca461b5826101e774db482870bce626c03fc31f694819f9955c758d244561e"
+      },
+      "author_manifest_sha256": "7b055196416560356b22af1f37cec58e43ce956a78ccb1361b5ab0d3a6e61dc1",
+      "capture_manifest_sha256": "c111f60ac37030f076a5d0c7f408dc96c1d057393d7f7247b3a292f000cb2261",
+      "custody_template": {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-successor-lifecycle-20261015/.research/installed-successor-engine-audit-template-20261015.py",
+        "sha256": "a5eed1615c891bd5a9e1663f968061bc90f75699a50083808c204e14d0dbdb62",
+        "status": "NOT_RUN"
+      },
+      "checks": {
+        "author_contexts": 3,
+        "complete_states": 21,
+        "scientific_controls": 60,
+        "harness_checks": 20,
+        "raw_bound_files": 236,
+        "raw_mutations": 17,
+        "helper_positives": 4,
+        "helper_mutations": 23,
+        "external_attempts": 0
+      },
+      "scope": "Three installed HTTP/Sync lifetimes from real final terminal2/3 originals, expected epochs3/3/4. New/historical/retried signed events, off/on provenance, accepted policy, renewal and joined SIGTERM.",
+      "limits": [
+        "Artificial protocol/file checks share the semantic Model; no actual installed evidence yet.",
+        "Original source/session pruning correction and manifest writer syntax failure retained in ignored artifacts.",
+        "No per-frame certification telemetry, source/workflow/retirement cycle, adoption, Archive or capacity/RSS qualification."
+      ],
+      "next_action": "Prepare exact clean main engine checkout using authenticated unchanged4cfac91 build and143protectedELFs; run installed_family once, join, independently bind captures, then custody audit with exact replay hash."
     }
   }
 }

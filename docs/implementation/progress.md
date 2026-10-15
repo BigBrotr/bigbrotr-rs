@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T19:10:28.705296+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T19:15:23.256007+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,8 +12,9 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD03a35c0af60f684e876cdf7ab6f56cda0b4c7c9b.
-Verified remote03a35c0: push80216joined0/34e6af, independentc81d4b exact.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEADc41eb54ec9b13db488a796eafe8701c668fbe1bb.
+Verified remote2844007: push27805joined0/ead10d, independentf02a11 exact.
+Fixture9e584b3→583ea14 and rawbindered38515→c41eb54 integrated; source docs pending commit/push.
 Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
 Root CLI/module/Archive getters/entrypoint tests/docs/build profile committed
 as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; qualified build/evidence03a35c0 pushed,
@@ -38,9 +39,10 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: integrate/review three-case HTTP/Sync harness, semantic
-reader and raw binder; qualify real terminal2/n copies with the exact unchanged
-4cfac91 CLI/probe. No new compiler unless product source changes.
+Next bounded action: commit source evidence/docs, prepare exact clean main engine
+checkout and run installed_family once with unchanged4cfac91 CLI/probe. Join engine,
+run independent raw/scientific replay, then read-only custody audit with its exact
+SHA. No new compiler unless product source changes.
 Build root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`,
 exact4cfac91/tree602f9281;139priorELFs protected. No installed process/engine has run yet.
 
@@ -73,7 +75,14 @@ Metadata moves into the single live frontier. Persistent64-file/32MiB spool
 remains separate: activation reclaims nothing and a full spool can refuse new
 missing-effect admission. No capacity/RSS qualification claimed.
 
-Harness/scientific reader/raw binder source review in progress; engine NOT_RUN.
+Harness/scientific reader/raw binder source integrated and reviewed; engine NOT_RUN.
+Sourcebindings0eca461b verify7sourcefiles/32artifacts. Author3artificial contexts
+cover21states/60controls plus20focusedchecks; raw3fileenvelopes236files/17mutations
+and4helperpositives/23mutations. All are source/protocol checks, externalattempts0.
+Root full new-owner review plus AI semantic review found no concrete blocker.
+Auditor templatea5eed161/static3cc9db2e is read-only and NOT_RUN. Session pruning
+expectation corrected from actual login owner; expired unclaimed job preserved.
+Earlier artificial v1 and manifest-writer syntax failure retained unchanged.
 Expected cases: actual terminal2 activated/off, terminal2 empty/on and final
 fault58b79a4 terminal3/on -> epochs3/3/4 with one command; genuine login/jobs,
 new/historical/retried signed network events, >6s renewal and joinedSIGTERM.
