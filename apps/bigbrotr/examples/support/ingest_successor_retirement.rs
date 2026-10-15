@@ -20,6 +20,7 @@ impl Probe {
         native: &mut Native,
         metadata: OwnedPermit,
         observation: OwnedPermit,
+        wait: Option<&retirement_wait::Wait>,
     ) -> Result<serde_json::Value, Failure> {
         self.snapshot("before-retirement").await;
         let result = self
@@ -76,6 +77,7 @@ impl Probe {
             owner,
             native.recovery.as_ref().unwrap(),
             native.retirement.as_mut().unwrap(),
+            wait,
         )
         .await
     }
@@ -85,6 +87,7 @@ impl Probe {
         owner: &mut ControlSession,
         recovery: &IngestRecovery,
         retirement: &mut ActivatedSuccessorRetirement,
+        wait: Option<&retirement_wait::Wait>,
     ) -> Result<serde_json::Value, Failure> {
         // The cursor exclusively borrows this one-shot owner. Capture only
         // fixed observations before borrowing; never reconstruct its capability.
@@ -168,17 +171,29 @@ impl Probe {
             "last_epoch":last,"source_closure":false,"workflow":false,"retirement":false,
             "admission":false,"activation":false}),
         );
+        let wait_deadline = if let Some(wait) = wait {
+            Some(wait.gate(self, owner).await?)
+        } else {
+            None
+        };
         self.snapshot("before-retirement-commit").await;
+        if let Some(wait) = wait {
+            wait.dispatch(self, owner, wait_deadline.unwrap()).await?;
+        }
+        let future = owner.retire_activated_successor_producer(
+            proof,
+            self.request(),
+            grant(&self.budget, RETIREMENT_BYTES, 0),
+            |d, h| self.validate(d, h),
+        );
         let result = self
-            .bounded(
-                "retirement-commit",
-                owner.retire_activated_successor_producer(
-                    proof,
-                    self.request(),
-                    grant(&self.budget, RETIREMENT_BYTES, 0),
-                    |d, h| self.validate(d, h),
-                ),
-            )
+            .bounded("retirement-commit", async {
+                if let Some(wait) = wait {
+                    wait.pending(self, future).await
+                } else {
+                    future.await
+                }
+            })
             .await;
         self.snapshot("retirement-commit-returned").await;
         emit(
@@ -186,6 +201,11 @@ impl Probe {
             "gaps":result.as_ref().ok(),"previous_retired_at_us":retired,
             "error":result.as_ref().err().map(|e|format!("{e:?}"))}),
         );
+        if let Some(wait) = wait {
+            // Preserve the real typed Result and full state before a later
+            // observer-clock error can be classified as a fixture failure.
+            wait.returned(self, owner, wait_deadline.unwrap()).await?;
+        }
         let gaps = result.map_err(|error| Failure::at("retire", Some(target), None, error))?;
         Ok(
             serde_json::json!({"target_epoch":target,"issued_through":issued,"reserved_through":reserved,

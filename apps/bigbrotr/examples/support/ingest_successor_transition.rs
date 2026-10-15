@@ -15,6 +15,8 @@ mod live;
 mod recovery;
 #[path = "ingest_successor_retirement.rs"]
 mod retirement;
+#[path = "ingest_successor_retirement_wait.rs"]
+mod retirement_wait;
 #[path = "ingest_successor_source.rs"]
 mod source;
 
@@ -52,6 +54,44 @@ pub async fn run(
     command: &str,
     proxy_port: Option<u16>,
 ) {
+    run_inner(
+        config,
+        config_file,
+        metadata_bytes,
+        command,
+        proxy_port,
+        None,
+    )
+    .await;
+}
+
+pub async fn run_retirement_wait(
+    config: Config,
+    config_file: &Path,
+    metadata_bytes: u64,
+    mode: &str,
+    prefix: &Path,
+) {
+    let wait = retirement_wait::Wait::new(mode, prefix);
+    run_inner(
+        config,
+        config_file,
+        metadata_bytes,
+        "successor-lineage-retire",
+        None,
+        Some(wait),
+    )
+    .await;
+}
+
+async fn run_inner(
+    config: Config,
+    config_file: &Path,
+    metadata_bytes: u64,
+    command: &str,
+    proxy_port: Option<u16>,
+    retirement_wait: Option<retirement_wait::Wait>,
+) {
     assert!(metadata_bytes <= MAX_LINEAGE_METADATA_BYTES);
     let operation = match command {
         "successor-prepare" => "prepare",
@@ -67,7 +107,14 @@ pub async fn run(
         "successor-lineage-retire" => "retire",
         _ => panic!("unknown finite successor operation"),
     };
-    assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty" | "live" | "live-new"));
+    assert!(
+        proxy_port.is_none()
+            || matches!(
+                operation,
+                "prepare" | "empty" | "live" | "live-new" | "retire"
+            )
+    );
+    assert!(retirement_wait.is_none() || (operation == "retire" && proxy_port.is_none()));
     assert!(proxy_port.is_none_or(|port| port != 0));
     let mutation_bytes = match operation {
         "prepare" | "gap" | "live" | "live-new" | "acquisition-claims" => 8192,
@@ -243,6 +290,7 @@ pub async fn run(
                 custody.native.as_mut().unwrap(),
                 metadata,
                 mutation_permit.unwrap(),
+                retirement_wait.as_ref(),
             )
             .await
     } else if claims {

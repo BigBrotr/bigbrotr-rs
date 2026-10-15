@@ -920,10 +920,13 @@ fn main() {
                 | "successor-empty"
                 | "successor-lineage-live"
                 | "successor-lineage-live-new"
+                | "successor-lineage-retire"
         );
     assert_eq!(
         args.len(),
-        if args[1].starts_with("history-")
+        if args[1] == "successor-lineage-retire-wait" {
+            8
+        } else if args[1].starts_with("history-")
             || args[1] == "empty-retirement-first"
             || transition_proxy
         {
@@ -1019,6 +1022,15 @@ fn main() {
                 .await;
             } else if args[1] == "successor-history" {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
+            } else if args[1] == "successor-lineage-retire-wait" {
+                ingest_successor_history::transition::run_retirement_wait(
+                    config,
+                    Path::new(&args[4]),
+                    args[5].parse().expect("explicit metadata byte capacity"),
+                    &args[6],
+                    Path::new(&args[7]),
+                )
+                .await;
             } else if matches!(
                 args[1].as_str(),
                 "successor-prepare"
