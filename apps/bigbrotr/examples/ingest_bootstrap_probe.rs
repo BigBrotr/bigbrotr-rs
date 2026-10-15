@@ -913,9 +913,14 @@ fn main() {
             | "successor-activated-acquisition-expiry"
             | "successor-activated-retirement-expiry"
     );
+    let transition_proxy =
+        args.len() == 7 && matches!(args[1].as_str(), "successor-prepare" | "successor-empty");
     assert_eq!(
         args.len(),
-        if args[1].starts_with("history-") || args[1] == "empty-retirement-first" {
+        if args[1].starts_with("history-")
+            || args[1] == "empty-retirement-first"
+            || transition_proxy
+        {
             7
         } else if empty_lock
             || successor_gate
@@ -1007,6 +1012,7 @@ fn main() {
                     Path::new(&args[4]),
                     args[5].parse().expect("explicit metadata byte capacity"),
                     &args[1],
+                    transition_proxy.then(|| args[6].parse().expect("explicit Control proxy port")),
                 )
                 .await;
             } else if args[1] == "successor-lineage-history" {

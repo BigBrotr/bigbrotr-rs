@@ -1,6 +1,6 @@
 //! Finite actual-Control successor preparation and unactivated recovery.
 //! Each invocation owns one native lifetime. There is no writer delivery,
-//! activation, raw registry mutation, fault hook or in-process reopening.
+//! activation, raw registry mutation, product fault hook or in-process reopening.
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{SuccessorPreparation, SuccessorPreparationRequest},
@@ -30,7 +30,13 @@ impl Native {
     }
 }
 
-pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64, command: &str) {
+pub async fn run(
+    config: Config,
+    config_file: &Path,
+    metadata_bytes: u64,
+    command: &str,
+    proxy_port: Option<u16>,
+) {
     assert!(metadata_bytes <= MAX_LINEAGE_METADATA_BYTES);
     let operation = match command {
         "successor-prepare" => "prepare",
@@ -39,6 +45,8 @@ pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64, comman
         "successor-gap" => "gap",
         _ => panic!("unknown finite successor operation"),
     };
+    assert!(proxy_port.is_none() || matches!(operation, "prepare" | "empty"));
+    assert!(proxy_port.is_none_or(|port| port != 0));
     let mutation_bytes = match operation {
         "prepare" | "gap" => 8192,
         "empty" => 4096,
@@ -144,8 +152,16 @@ pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64, comman
         "role":hex(&role),"incarnation":hex(&incarnation),"lease_ttl_us":CONTROL_TTL.as_micros().to_string()}),
     );
     probe.snapshot("before-claim").await;
+    let mut control_config = config.clone();
+    if let Some(port) = proxy_port {
+        // This finite-only transport seam forwards the actual Control session.
+        // The already connected observer always stays on the direct endpoint.
+        control_config.port(port);
+        emit(serde_json::json!({"event":"lineage-transition-transport",
+            "control_port":port,"observer_port":5432,"proxied":true}));
+    }
     let (client, connection) = probe
-        .bounded("connect", config.connect(NoTls))
+        .bounded("connect", control_config.connect(NoTls))
         .await
         .unwrap();
     let driver = tokio::spawn(connection);
@@ -206,10 +222,18 @@ pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64, comman
     } else {
         drop(owner);
     }
-    crate::ingest_closing::join(driver, false).await;
+    let driver_result = tokio::time::timeout(Duration::from_secs(5), driver)
+        .await
+        .expect("Control driver join outcome unknown")
+        .expect("Control driver panicked");
+    let failed = driver_result.is_err();
     emit(
-        serde_json::json!({"event":"lineage-history-driver","driver":"control","failed":false,"joined":true}),
+        serde_json::json!({"event":"lineage-history-driver","driver":"control","failed":failed,"joined":true}),
     );
+    // Preserve the observed outcome before refusing an unrelated driver failure.
+    // The independent fault reader also checks the exact operation error and
+    // real wire boundary; a proxy argument alone never certifies injected loss.
+    assert!(!failed || (proxy_port.is_some() && result.is_err()));
     probe.absent(&backend).await;
     emit(serde_json::json!({"event":"lineage-history-control",
         "phase":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},

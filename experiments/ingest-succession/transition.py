@@ -5,6 +5,7 @@ No original native store is opened. Every new process must positively close
 native and join both drivers before the copied store may be inspected again.
 """
 import datetime
+from dataclasses import dataclass
 import json
 import os
 from pathlib import Path
@@ -29,6 +30,29 @@ STATUS = 'PASS_SUCCESSOR_TRANSITION_FIRST_WAVE'
 CLONES = ('activated', 'empty', 'activated-short')
 
 
+@dataclass(frozen=True)
+class Suite:
+    directory: str
+    label: str
+    status: str
+    client_prefix: str
+    database_prefix: str
+    clones: tuple
+    cases: tuple
+    scope: str
+    not_run: tuple
+
+
+FIRST_WAVE = Suite(
+    directory='transition', label=LABEL, status=STATUS,
+    client_prefix='bigbrotr-successor-transition-', database_prefix='bb_transition_',
+    clones=CLONES, cases=CASES,
+    scope='Finite prepare3, fresh empty retirement/retry3, prepare4 from both terminal2 origins and future-capacity refusal',
+    not_run=('Gap completion requires a genuinely interrupted prepared seed',
+             'Activation, writer delivery, installed succession and admitted new requests',
+             'COMMIT loss, cancellation/expiry; PostgreSQL 255-epoch capacity; RSS qualification'))
+
+
 def case_description(clone, name, database, config, predecessor):
     operation = 'empty-retry' if '-empty-retry3' in name else (
         'empty' if name.endswith('-empty3') else 'prepare')
@@ -37,14 +61,15 @@ def case_description(clone, name, database, config, predecessor):
         metadata_bytes=132607 if clone == 'activated-short' else 262144, status='RUNNING')
 
 
-def closed_and_joined(response, database):
+def closed_and_joined(response, database, *, control_failed=False):
     """Positive native/process telemetry, separate from scientific acceptance."""
+    assert type(control_failed) is bool
     assert response['returncode'] == 0
     events = [json.loads(line) for line in response['stdout'].splitlines()]
     assert not any(e.get('event') == 'lineage-history-timeout' for e in events)
     native, = [i for i, e in enumerate(events) if e == dict(event='lineage-history-native', state='closed')]
     control, = [i for i, e in enumerate(events) if e == dict(event='lineage-history-driver',
-        driver='control', failed=False, joined=True)]
+        driver='control', failed=control_failed, joined=True)]
     observer, = [i for i, e in enumerate(events) if e == dict(event='lineage-history-driver',
         driver='observer', failed=False, joined=True)]
     assert [e for e in events if e.get('event') == 'lineage-history-driver'] == [events[control], events[observer]]
@@ -60,14 +85,15 @@ def closed_and_joined(response, database):
     return events
 
 
-def external(pg, client, output, case, directory, response):
+def external(pg, client, output, case, directory, response, *, control_failed=False, proxy_closed=True):
     """Persist each observation before rejecting missing custody or semantics."""
     name, database = case['name'], case['database']
     errors = []
     custody = 'UNKNOWN_PROCESS_OUTCOME'
     events = None
     try:
-        events = closed_and_joined(response, database)
+        assert proxy_closed is True, 'proxy custody not established'
+        events = closed_and_joined(response, database, control_failed=control_failed)
         custody = 'OBSERVED_CLOSED_AND_JOINED'
     except BaseException as error:
         errors.append(dict(stage='probe-custody', error=repr(error)))
@@ -152,7 +178,29 @@ def execute(pg, client, output, case, directory, config, expected):
     return after, final_native, final_inputs
 
 
-def run(root, build):
+def run_sequence(pg, client, output, clone, directory, expected, report):
+    """The original nine-case sequence; resource ownership stays in run()."""
+    mode, database, config = clone['name'], clone['database'], clone['config']
+    names = ('activated-metadata-short',) if mode == 'activated-short' else tuple(
+        mode + '-' + operation for operation in ('prepare3', 'empty3', 'empty-retry3', 'prepare4'))
+    predecessor = None
+    for label in names:
+        case = case_description(mode, label, database, config, predecessor)
+        report['cases'].append(case)
+        lab.write_json(output / 'result.json', report)
+        # The next process starts from the preceding complete external
+        # state, never from a newly adopted or normalized baseline.
+        expected = execute(pg, client, output, case, directory, config, expected)
+        case['catalog_after'] = catalog(pg, database)
+        assert case['catalog_after'] == clone['catalog_before']
+        predecessor = label
+        lab.write_json(output / 'result.json', report)
+    return predecessor
+
+
+def run(root, build, *, suite=None, sequence=run_sequence):
+    if suite is None:
+        suite = FIRST_WAVE
     assert SOURCE == root / 'source'
     revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
     assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
@@ -187,20 +235,17 @@ def run(root, build):
     assert borrowed['HostConfig']['Memory'] == 1536 * 1024**2 and borrowed['HostConfig']['NanoCpus'] == 2_000_000_000
     assert not any(c['State']['Running'] and 'bigbrotr' in c['Name'] for c in containers)
     assert shutil.disk_usage(root).free > 2 * 1024**3
-    output = root / 'transition'
+    output = root / suite.directory
     output.mkdir(mode=0o700)
     owner = schema.secrets.token_hex(16)
-    client = 'bigbrotr-successor-transition-' + revision[:7]
+    client = suite.client_prefix + revision[:7]
     assert not any(c['Name'].lstrip('/') == client for c in containers)
     tree = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD^{tree}']).stdout.strip()
     report = dict(status='RUNNING', source=revision, tree=tree, build=built, component=component, owner=owner,
-        label=LABEL, postgres=borrowed['Id'], postgres_owner=pg['owner'], client=None, databases=[],
+        label=suite.label, postgres=borrowed['Id'], postgres_owner=pg['owner'], client=None, databases=[],
         started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(), origins={}, clones=[], cases=[],
         free_bytes_before=shutil.disk_usage(root).free,
-        scope='Finite prepare3, fresh empty retirement/retry3, prepare4 from both terminal2 origins and future-capacity refusal',
-        not_run=['Gap completion requires a genuinely interrupted prepared seed',
-                 'Activation, writer delivery, installed succession and admitted new requests',
-                 'COMMIT loss, cancellation/expiry; PostgreSQL 255-epoch capacity; RSS qualification'])
+        scope=suite.scope, not_run=list(suite.not_run))
     lab.write_json(output / 'preflight-containers.json', containers)
     lab.write_json(output / 'result.json', report)
     origins = {}
@@ -247,7 +292,7 @@ def run(root, build):
             origins[name]['catalog'] = catalog(pg, database)
             report['origins'][name].update(rows=observed, catalog=origins[name]['catalog'])
             lab.write_json(output / (name + '-original.json'), observed)
-        ident = lab.docker('create', '--init', '--name', client, '--label', LABEL + '=' + owner,
+        ident = lab.docker('create', '--init', '--name', client, '--label', suite.label + '=' + owner,
             '--cpus', '2', '--memory', '1536m', '--memory-swap', '1536m', '--pids-limit', '128',
             '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
             '--user', f'{os.getuid()}:{os.getgid()}', '--network', 'container:' + borrowed['Id'],
@@ -260,10 +305,10 @@ def run(root, build):
         lab.write_json(output / 'result.json', report)
         lab.docker('start', ident)
         state = dict(pg, client=client)
-        for mode in CLONES:
+        for mode in suite.clones:
             name = 'empty' if mode == 'empty' else 'activated'
             original = origins[name]
-            database = 'bb_transition_' + revision[:7] + '_' + mode.replace('-', '_')
+            database = suite.database_prefix + revision[:7] + '_' + mode.replace('-', '_')
             assert database not in report['database_names_before']
             clone = dict(name=mode, origin=name, database=database, directory=mode, status='RUNNING', migrations=[])
             report['clones'].append(clone)
@@ -305,25 +350,12 @@ def run(root, build):
             clone['catalog_before'] = catalog(pg, database)
             lab.write_json(output / 'result.json', report)
             expected = (migrated, original['native'], original['inputs'])
-            names = ('activated-metadata-short',) if mode == 'activated-short' else tuple(
-                mode + '-' + operation for operation in ('prepare3', 'empty3', 'empty-retry3', 'prepare4'))
-            predecessor = None
-            for label in names:
-                case = case_description(mode, label, database, config, predecessor)
-                report['cases'].append(case)
-                lab.write_json(output / 'result.json', report)
-                # The next process starts from the preceding complete external
-                # state, never from a newly adopted or normalized baseline.
-                expected = execute(pg, client, output, case, directory, config, expected)
-                case['catalog_after'] = catalog(pg, database)
-                assert case['catalog_after'] == clone['catalog_before']
-                predecessor = label
-                lab.write_json(output / 'result.json', report)
+            predecessor = sequence(pg, client, output, clone, directory, expected, report)
             clone.update(status='PASS', final_case=predecessor, catalog_after=catalog(pg, database))
             assert clone['catalog_after'] == clone['catalog_before']
             lab.write_json(output / 'result.json', report)
-        assert tuple(case['name'] for case in report['cases']) == CASES
-        report['status'] = STATUS
+        assert tuple(case['name'] for case in report['cases']) == suite.cases
+        report['status'] = suite.status
     except BaseException as error:
         report.update(status='FAIL', error=repr(error))
         raise
@@ -369,11 +401,11 @@ def run(root, build):
                 answer = lab.docker('inspect', client, check=False)
                 if answer.returncode == 0:
                     item, = json.loads(answer.stdout)
-                    assert item['Config']['Labels'].get(LABEL) == owner
+                    assert item['Config']['Labels'].get(suite.label) == owner
                     report['client'] = item['Id']
             except BaseException as error:
                 errors.append(dict(client_creation=repr(error)))
-        for ident, label, expected in [(report['client'], LABEL, owner), (borrowed['Id'], lab.LABEL, pg['owner'])]:
+        for ident, label, expected in [(report['client'], suite.label, owner), (borrowed['Id'], lab.LABEL, pg['owner'])]:
             if ident is None:
                 continue
             try:
@@ -401,8 +433,8 @@ def run(root, build):
         if errors or any(report.get(k) for k in ('missing_owned', 'unrelated_changed', 'unexpected_containers')):
             report['status'] = 'INCOMPLETE_CUSTODY'
         lab.write_json(output / 'result.json', report)
-    assert report['status'] == STATUS
-    print(json.dumps(dict(status=STATUS, cases=[c['name'] for c in report['cases']], root=str(root))))
+    assert report['status'] == suite.status
+    print(json.dumps(dict(status=suite.status, cases=[c['name'] for c in report['cases']], root=str(root))))
 
 
 if __name__ == '__main__':
