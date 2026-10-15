@@ -92,6 +92,10 @@ const _: () = assert!(
 );
 
 impl SuccessorHistory {
+    /// Private custody transfer: no second allocation and no new authority.
+    pub(super) fn into_lineage(self) -> RetainedLineage {
+        self.lineage
+    }
     pub(super) fn control(&self) -> ingest_registry::ControlOwner {
         self.control
     }

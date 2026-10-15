@@ -1,5 +1,6 @@
 //! Preparation and unactivated recovery for the epoch-indexed family. None of
-//! these owners can adopt a recorded incarnation or deliver an active writer.
+//! these plans can adopt a recorded incarnation. The private activation child
+//! consumes only a continuously retained, successfully prepared candidate.
 use super::*;
 use crate::{
     runtime::{OwnedPermit, policy_authority::PolicyLeaseTracker},
@@ -17,6 +18,10 @@ use std::{mem::size_of, sync::atomic::Ordering};
 #[path = "successor_transition_rows.rs"]
 mod rows;
 use rows::Intent;
+#[path = "successor_activation.rs"]
+mod activation;
+pub(super) use activation::LiveSuccessorBinding;
+pub use activation::{LiveSuccessorWriter, SuccessorActivation};
 
 /// Scheduling is sampled once, under actual Control and dataset custody. A
 /// delayed plan may expire; preparing it never silently resets either deadline.

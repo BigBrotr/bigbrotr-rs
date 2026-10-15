@@ -113,8 +113,8 @@ pub use successor_history::{
 #[path = "successor_transition.rs"]
 mod successor_transition;
 pub use successor_transition::{
-    SuccessorEmptyPlan, SuccessorGapPlan, SuccessorPreparation, SuccessorPreparationPlan,
-    SuccessorPreparationRequest,
+    LiveSuccessorWriter, SuccessorActivation, SuccessorEmptyPlan, SuccessorGapPlan,
+    SuccessorPreparation, SuccessorPreparationPlan, SuccessorPreparationRequest,
 };
 #[path = "initial_succession.rs"]
 mod initial_succession;
@@ -135,6 +135,8 @@ pub use initial_batch::{
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
     InitialVisibilityRequest, LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest,
     LiveInitialEventRequest, LiveInitialObservationRequest, LiveInitialVisibilityRequest,
+    LiveSuccessorCertificationRequest, LiveSuccessorDictionaryAppendRequest,
+    LiveSuccessorEventRequest, LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest,
 };
 pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{

@@ -25,10 +25,14 @@ use crate::{
     },
 };
 use bigbrotr_model::{
-    EvidenceIntent, ObservedTime, PolicyEpoch, ProducerEpoch, ProducerRequestId, QualifiedRef,
-    RequestSequence,
+    EvidenceIntent, ObservedTime, PolicyEpoch, ProducerEpoch, ProducerRequestId, ProducerSlotId,
+    QualifiedRef, RequestSequence,
 };
 use std::sync::atomic::{AtomicBool, Ordering};
+
+#[path = "initial_dispatch.rs"]
+mod dispatch;
+use dispatch::NativeOwner;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialOperationError<E> {
@@ -108,30 +112,56 @@ struct InitialIngestContext<'a> {
 enum NativeAuthority<'a> {
     Initial(&'a ingest_registry::InitialRegistration),
     Live(&'a initial_activation::LiveInitialBinding),
+    Successor(&'a successor_transition::LiveSuccessorBinding),
 }
 impl<'a> NativeAuthority<'a> {
-    fn previous(self) -> &'a ingest_registry::InitialRegistration {
+    fn dataset(self) -> DatasetId {
         match self {
-            Self::Initial(s) => s,
-            Self::Live(b) => &b.previous,
+            Self::Initial(s) => s.dataset_id,
+            Self::Live(b) => b.previous.dataset_id,
+            Self::Successor(b) => b.dataset(),
+        }
+    }
+    fn instance(self) -> [u8; 16] {
+        match self {
+            Self::Initial(s) => s.instance_id,
+            Self::Live(b) => b.previous.instance_id,
+            Self::Successor(b) => b.instance(),
+        }
+    }
+    fn slot(self) -> ProducerSlotId {
+        match self {
+            Self::Initial(s) => s.producer_slot_id,
+            Self::Live(b) => b.previous.producer_slot_id,
+            Self::Successor(b) => b.slot(),
+        }
+    }
+    fn schema(self) -> u32 {
+        match self {
+            Self::Initial(_) => 14,
+            Self::Live(_) => 32,
+            Self::Successor(_) => 38,
         }
     }
     fn control(self) -> ingest_registry::ControlOwner {
         match self {
             Self::Initial(s) => s.control,
             Self::Live(b) => b.control,
+            Self::Successor(b) => b.control(),
         }
     }
     fn epoch(self) -> u64 {
         match self {
             Self::Initial(_) => 1,
             Self::Live(_) => 2,
+            Self::Successor(b) => b.epoch(),
         }
     }
     fn limit(self) -> u32 {
         match self {
             Self::Initial(s) => s.outstanding_request_limit,
             Self::Live(b) => b.intent.request_limit,
+            Self::Successor(b) => b.limit(),
         }
     }
     fn policy(self) -> PolicySnapshot {
@@ -143,6 +173,7 @@ impl<'a> NativeAuthority<'a> {
                 policy_digest: *s.policy_digest.as_bytes(),
             },
             Self::Live(b) => b.intent.policy,
+            Self::Successor(b) => b.policy(),
         }
     }
 }
@@ -300,6 +331,14 @@ pub struct LiveInitialDictionaryAppendRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+// Payloads carry no authority or epoch1 registration. Both live families use
+// the same data shape; the opaque writer selects the checked authority branch.
+pub type LiveSuccessorEventRequest<'a> = LiveInitialEventRequest<'a>;
+pub type LiveSuccessorDictionaryAppendRequest<'a> = LiveInitialDictionaryAppendRequest<'a>;
+pub type LiveSuccessorCertificationRequest<'a> = LiveInitialCertificationRequest<'a>;
+pub type LiveSuccessorVisibilityRequest<'a> = LiveInitialVisibilityRequest<'a>;
+pub type LiveSuccessorObservationRequest<'a> = LiveInitialObservationRequest<'a>;
+
 impl ControlSession {
     /// Run on the same retained native owner as admission. This read establishes
     /// immutable attribution only; job/source authority is checked separately.
@@ -311,7 +350,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredObservation>, InitialEventError> {
         self.read_native_observation(
-            store,
+            NativeOwner::Store(store),
             NativeAuthority::Initial(input.registration),
             LiveInitialObservationRequest {
                 ingest_root: input.ingest_root,
@@ -334,7 +373,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredObservation>, InitialEventError> {
         self.read_native_observation(
-            writer.native.store_mut(),
+            NativeOwner::Store(writer.native.store_mut()),
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
@@ -345,7 +384,7 @@ impl ControlSession {
 
     async fn read_native_observation(
         &mut self,
-        store: &mut IngestStore,
+        mut store: NativeOwner<'_>,
         authority: NativeAuthority<'_>,
         input: LiveInitialObservationRequest<'_>,
         permit: OwnedPermit,
@@ -359,7 +398,7 @@ impl ControlSession {
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -372,8 +411,9 @@ impl ControlSession {
                 validate,
             )
             .await?;
-        let result = store.read_observation(input.bindings, input.limits, permit, || {
-            if input.cancelled.load(Ordering::Relaxed) {
+        let cancelled = input.cancelled;
+        let result = store.read_observation(input, permit, || {
+            if cancelled.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
             lease
@@ -383,7 +423,7 @@ impl ControlSession {
         tx.rollback()
             .await
             .map_err(|_| InitialEventError::DeliveryUnknown)?;
-        if input.cancelled.load(Ordering::Relaxed)
+        if cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -403,7 +443,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredVisibility>, InitialEventError> {
         self.read_native_visibility(
-            store,
+            NativeOwner::Store(store),
             NativeAuthority::Initial(input.registration),
             LiveInitialVisibilityRequest {
                 ingest_root: input.ingest_root,
@@ -426,7 +466,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredVisibility>, InitialEventError> {
         self.read_native_visibility(
-            writer.native.store_mut(),
+            NativeOwner::Store(writer.native.store_mut()),
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
@@ -437,7 +477,7 @@ impl ControlSession {
 
     async fn read_native_visibility(
         &mut self,
-        store: &mut IngestStore,
+        mut store: NativeOwner<'_>,
         authority: NativeAuthority<'_>,
         input: LiveInitialVisibilityRequest<'_>,
         permit: OwnedPermit,
@@ -451,7 +491,7 @@ impl ControlSession {
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -464,7 +504,7 @@ impl ControlSession {
                 validate,
             )
             .await?;
-        let result = store.read_visibility(input.reference, input.limits, permit, || {
+        let result = store.read_visibility(&input, permit, || {
             if input.cancelled.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
@@ -496,7 +536,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
         self.certify_native_event(
-            store,
+            NativeOwner::Store(store),
             NativeAuthority::Initial(input.registration),
             LiveInitialCertificationRequest {
                 ingest_root: input.ingest_root,
@@ -522,7 +562,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
         self.certify_native_event(
-            writer.native.store_mut(),
+            NativeOwner::Store(writer.native.store_mut()),
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
@@ -533,7 +573,7 @@ impl ControlSession {
 
     async fn certify_native_event(
         &mut self,
-        store: &mut IngestStore,
+        mut store: NativeOwner<'_>,
         authority: NativeAuthority<'_>,
         input: LiveInitialCertificationRequest<'_>,
         permit: OwnedPermit,
@@ -554,7 +594,7 @@ impl ControlSession {
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -570,24 +610,19 @@ impl ControlSession {
                 |document, digest| validate(document, digest, &input.event),
             )
             .await?;
-        let result = store.certify_event(
-            input.event,
-            input.provenance_enabled,
-            input.limits,
-            permit,
-            || {
-                if input.cancelled.load(Ordering::Relaxed) {
-                    return Err(AdmissionError::AuthorityUnavailable);
-                }
-                lease
-                    .check_delivery(identity.policy_epoch)
-                    .map_err(|_| AdmissionError::AuthorityUnavailable)
-            },
-        );
+        let cancelled = input.cancelled;
+        let result = store.certify_event(input, permit, || {
+            if cancelled.load(Ordering::Relaxed) {
+                return Err(AdmissionError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(identity.policy_epoch)
+                .map_err(|_| AdmissionError::AuthorityUnavailable)
+        });
         tx.rollback()
             .await
             .map_err(|_| InitialEventError::DeliveryUnknown)?;
-        if input.cancelled.load(Ordering::Relaxed)
+        if cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -621,7 +656,7 @@ impl ControlSession {
         };
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
-                store,
+                &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
@@ -660,7 +695,7 @@ impl ControlSession {
         // snapshot and a new local lease, accounting for both PG round trips.
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
@@ -744,7 +779,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
         self.append_native_dictionaries(
-            store,
+            NativeOwner::Store(store),
             NativeAuthority::Initial(input.registration),
             LiveInitialDictionaryAppendRequest {
                 ingest_root: input.ingest_root,
@@ -768,7 +803,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
         self.append_native_dictionaries(
-            writer.native.store_mut(),
+            NativeOwner::Store(writer.native.store_mut()),
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
@@ -779,17 +814,16 @@ impl ControlSession {
 
     async fn append_native_dictionaries(
         &mut self,
-        store: &mut IngestStore,
+        mut store: NativeOwner<'_>,
         authority: NativeAuthority<'_>,
         input: LiveInitialDictionaryAppendRequest<'_>,
         permit: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
-        let spec = authority.previous();
         let control = authority.control();
         let identity = *store.manifest().identity();
         let request = ProducerRequestId {
-            producer_slot_id: spec.producer_slot_id,
+            producer_slot_id: authority.slot(),
             producer_epoch: ProducerEpoch::new(authority.epoch())
                 .map_err(|_| OwnerError::InvalidInput)?,
             request_sequence: input.request_sequence,
@@ -801,7 +835,7 @@ impl ControlSession {
         }
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -815,13 +849,7 @@ impl ControlSession {
             )
             .await?;
         let staged = store
-            .stage_dictionary_append(
-                request,
-                input.intent,
-                input.recorded_at,
-                input.limits,
-                &permit,
-            )
+            .stage_dictionary_append(request, &input, &permit)
             .map_err(InitialEventError::Native)?;
         producer_requests::reserve(&reservation_tx, &staged, control, None, None, None)
             .await
@@ -846,7 +874,7 @@ impl ControlSession {
         // snapshot and a new local lease, accounting for both PG round trips.
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -859,21 +887,14 @@ impl ControlSession {
                 &mut validate,
             )
             .await?;
-        let result = store.append_dictionaries(
-            request,
-            input.intent,
-            input.recorded_at,
-            input.limits,
-            permit,
-            || {
-                if input.cancelled.load(Ordering::Relaxed) {
-                    return Err(AdmissionError::AuthorityUnavailable);
-                }
-                lease
-                    .check_delivery(identity.policy_epoch)
-                    .map_err(|_| AdmissionError::AuthorityUnavailable)
-            },
-        );
+        let result = store.append_dictionaries(request, &input, permit, || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(AdmissionError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(identity.policy_epoch)
+                .map_err(|_| AdmissionError::AuthorityUnavailable)
+        });
         let receipt = match result {
             Ok(receipt) => receipt,
             Err(error) => {
@@ -927,7 +948,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
         self.admit_native_event(
-            store,
+            NativeOwner::Store(store),
             NativeAuthority::Initial(input.registration),
             LiveInitialEventRequest {
                 ingest_root: input.ingest_root,
@@ -953,7 +974,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
         self.admit_native_event(
-            writer.native.store_mut(),
+            NativeOwner::Store(writer.native.store_mut()),
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
@@ -964,15 +985,14 @@ impl ControlSession {
 
     async fn admit_native_event(
         &mut self,
-        store: &mut IngestStore,
+        mut store: NativeOwner<'_>,
         authority: NativeAuthority<'_>,
         input: LiveInitialEventRequest<'_>,
         permit: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
-        let spec = authority.previous();
         let control = authority.control();
-        if input.event.request_id().producer_slot_id != spec.producer_slot_id
+        if input.event.request_id().producer_slot_id != authority.slot()
             || input.event.request_id().producer_epoch.get() != authority.epoch()
             || input.limits.max_outstanding_requests > u64::from(authority.limit())
         {
@@ -988,7 +1008,7 @@ impl ControlSession {
         let identity = *store.manifest().identity();
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -1004,9 +1024,8 @@ impl ControlSession {
                 |document, digest| validate(document, digest, &input.event),
             )
             .await?;
-        let staged = input
-            .event
-            .stage(store, input.limits, &permit)
+        let staged = store
+            .stage_event(&input.event, input.limits, &permit, input.cancelled)
             .map_err(InitialEventError::Native)?;
         producer_requests::reserve(
             &reservation_tx,
@@ -1039,7 +1058,7 @@ impl ControlSession {
         self.available = true;
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &store,
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority,
@@ -1055,21 +1074,15 @@ impl ControlSession {
                 |document, digest| validate(document, digest, &input.event),
             )
             .await?;
-        let result = store.admit_event(
-            input.event,
-            input.recorded_at,
-            input.provenance_enabled,
-            input.limits,
-            permit,
-            || {
-                if input.cancelled.load(Ordering::Relaxed) {
-                    return Err(AdmissionError::AuthorityUnavailable);
-                }
-                lease
-                    .check_delivery(identity.policy_epoch)
-                    .map_err(|_| AdmissionError::AuthorityUnavailable)
-            },
-        );
+        let cancelled = input.cancelled;
+        let result = store.admit_event(input, permit, || {
+            if cancelled.load(Ordering::Relaxed) {
+                return Err(AdmissionError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(identity.policy_epoch)
+                .map_err(|_| AdmissionError::AuthorityUnavailable)
+        });
         let outcome = match result {
             Ok(outcome) => outcome,
             Err(error) => {
@@ -1079,8 +1092,7 @@ impl ControlSession {
                 return Err(InitialEventError::Native(error));
             }
         };
-        if input.cancelled.load(Ordering::Relaxed)
-            || lease.check_delivery(identity.policy_epoch).is_err()
+        if cancelled.load(Ordering::Relaxed) || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
@@ -1092,15 +1104,14 @@ impl ControlSession {
             .map_err(InitialEventError::ImportCheckpoint)?;
         // SQL awaits can consume the lease or observe cancellation after native
         // completion. Do not publish its copy/progress with expired authority.
-        if input.cancelled.load(Ordering::Relaxed)
-            || lease.check_delivery(identity.policy_epoch).is_err()
+        if cancelled.load(Ordering::Relaxed) || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
         tx.commit()
             .await
             .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
-        if input.cancelled.load(Ordering::Relaxed)
+        if cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -1154,7 +1165,7 @@ impl ControlSession {
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(
-                store,
+                &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
@@ -1212,28 +1223,28 @@ impl ControlSession {
 
     async fn begin_initial_native_operation<'a, E>(
         &'a mut self,
-        store: &IngestStore,
+        store: &NativeOwner<'_>,
         input: InitialIngestContext<'_>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
         let authority = input.authority;
-        let spec = authority.previous();
         let control = authority.control();
         let expected_policy = authority.policy();
         let identity = *store.manifest().identity();
         if !store.matches_configured_root(input.ingest_root)
-            || spec.dataset_id != self.request.dataset
-            || spec.instance_id != *self.request.instance.as_bytes()
+            || authority.dataset() != self.request.dataset
+            || authority.instance() != *self.request.instance.as_bytes()
             || control != self.identity
         {
             return Err(OwnerError::InvalidInput.into());
         }
         match authority {
-            NativeAuthority::Initial(_) => {
+            NativeAuthority::Initial(spec) => {
                 let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
                     .map_err(|_| OwnerError::InvalidInput)?;
-                if store.manifest().key_schema() != 1
-                    || identity.dataset_id != spec.dataset_id
+                if !matches!(store, NativeOwner::Store(_))
+                    || store.manifest().key_schema() != 1
+                    || identity.dataset_id != authority.dataset()
                     || identity.owner_resource_id != spec.ingest_resource_id
                     || identity.shard_id != spec.shard_id
                     || identity.owner_epoch.get() != 1
@@ -1248,10 +1259,19 @@ impl ControlSession {
                     return Err(OwnerError::InvalidInput.into());
                 }
             }
-            NativeAuthority::Live(binding) => binding.require_store(store, self.identity)?,
+            NativeAuthority::Live(binding) => match store {
+                NativeOwner::Store(store) => binding.require_store(store, self.identity)?,
+                NativeOwner::Successor(_) => return Err(OwnerError::InvalidInput.into()),
+            },
+            NativeAuthority::Successor(binding) => match store {
+                NativeOwner::Successor(_) => {
+                    binding.require_manifest(store.manifest(), self.identity)?
+                }
+                NativeOwner::Store(_) => return Err(OwnerError::InvalidInput.into()),
+            },
         }
         let mut lease = PolicyLeaseTracker::new(
-            spec.dataset_id,
+            authority.dataset(),
             identity.process_incarnation,
             identity.policy_epoch,
             PolicyLeaseTtl::new(input.policy_ttl).map_err(|_| OwnerError::InvalidInput)?,
@@ -1259,21 +1279,26 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(
-            &mut self.client,
-            if authority.epoch() == 1 { 14 } else { 32 },
-        )
-        .await
-        .map_err(transaction_error)?;
+        let tx = application_transaction(&mut self.client, authority.schema())
+            .await
+            .map_err(transaction_error)?;
+        if let NativeAuthority::Successor(binding) = authority {
+            binding.lock_control(&tx).await?;
+        }
         require(&tx, self.request.dataset, self.identity).await?;
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
         if policy != expected_policy {
             return Err(OwnerError::InvalidPolicy.into());
         }
+        if let NativeAuthority::Successor(binding) = authority {
+            // Acquire ordered lineage parents before any job lock. The complete
+            // check below samples authority again after every intervening wait.
+            binding.require(&tx).await?;
+        }
         if let Some((request, phase)) = input.request {
             producer_sources::require_binding(
                 &tx,
-                spec.dataset_id,
+                authority.dataset(),
                 request,
                 input.source.map(|s| s.binding),
                 input
@@ -1290,10 +1315,10 @@ impl ControlSession {
             .map_err(InitialOperationError::Source)?;
         let job_remaining = if let Some(check) = input.source {
             let remaining =
-                producer_sources::require_job(&tx, spec.dataset_id, check.binding, check.job)
+                producer_sources::require_job(&tx, authority.dataset(), check.binding, check.job)
                     .await
                     .map_err(InitialOperationError::Source)?;
-            producer_sources::require_current(&tx, spec.dataset_id, check)
+            producer_sources::require_current(&tx, authority.dataset(), check)
                 .await
                 .map_err(InitialOperationError::Source)?;
             remaining
@@ -1306,14 +1331,14 @@ impl ControlSession {
             {
                 return Err(OwnerError::InvalidPolicy.into());
             }
-            input_bindings::lock_job(&tx, spec.dataset_id, control, job)
+            input_bindings::lock_job(&tx, authority.dataset(), control, job)
                 .await
                 .map_err(InitialOperationError::InputBinding)?;
         }
         if let Some((request, _)) = input.request {
             input_bindings::lock_request_job(
                 &tx,
-                spec.dataset_id,
+                authority.dataset(),
                 control,
                 request,
                 expected_policy.config_revision,
@@ -1323,7 +1348,7 @@ impl ControlSession {
             .map_err(InitialOperationError::InputBinding)?;
         }
         let remaining = match authority {
-            NativeAuthority::Initial(_) => {
+            NativeAuthority::Initial(spec) => {
                 ingest_registry::require_initial_registration(&tx, spec)
                     .await
                     .map_err(InitialOperationError::Registry)?;
@@ -1335,12 +1360,13 @@ impl ControlSession {
                     .ok_or(OwnerError::Unavailable)?
             }
             NativeAuthority::Live(binding) => binding.require(&tx).await?,
+            NativeAuthority::Successor(binding) => binding.require(&tx).await?,
         };
         lease
             .complete_refresh(
                 &ticket,
                 LeaseResponse {
-                    dataset: spec.dataset_id,
+                    dataset: authority.dataset(),
                     process_incarnation: identity.process_incarnation,
                     policy_epoch: PolicyEpoch::new(policy.policy_revision),
                     ttl: input
@@ -1351,5 +1377,88 @@ impl ControlSession {
             )
             .map_err(|_| OwnerError::Unavailable)?;
         Ok((tx, lease))
+    }
+}
+
+impl ControlSession {
+    pub async fn read_live_successor_observation(
+        &mut self,
+        writer: &mut LiveSuccessorWriter,
+        input: LiveSuccessorObservationRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredObservation>, InitialEventError> {
+        self.read_native_observation(
+            NativeOwner::Successor(&mut writer.native),
+            NativeAuthority::Successor(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+    pub async fn read_live_successor_visibility(
+        &mut self,
+        writer: &mut LiveSuccessorWriter,
+        input: LiveSuccessorVisibilityRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredVisibility>, InitialEventError> {
+        self.read_native_visibility(
+            NativeOwner::Successor(&mut writer.native),
+            NativeAuthority::Successor(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+    pub async fn certify_live_successor_event(
+        &mut self,
+        writer: &mut LiveSuccessorWriter,
+        input: LiveSuccessorCertificationRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
+    ) -> Result<StoredCertification, InitialEventError> {
+        self.certify_native_event(
+            NativeOwner::Successor(&mut writer.native),
+            NativeAuthority::Successor(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+    pub async fn append_live_successor_dictionaries(
+        &mut self,
+        writer: &mut LiveSuccessorWriter,
+        input: LiveSuccessorDictionaryAppendRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<StoredReceipt, InitialEventError> {
+        self.append_native_dictionaries(
+            NativeOwner::Successor(&mut writer.native),
+            NativeAuthority::Successor(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
+    }
+    pub async fn admit_live_successor_event(
+        &mut self,
+        writer: &mut LiveSuccessorWriter,
+        input: LiveSuccessorEventRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
+    ) -> Result<StoredOutcome, InitialEventError> {
+        self.admit_native_event(
+            NativeOwner::Successor(&mut writer.native),
+            NativeAuthority::Successor(&writer.binding),
+            input,
+            permit,
+            validate,
+        )
+        .await
     }
 }
