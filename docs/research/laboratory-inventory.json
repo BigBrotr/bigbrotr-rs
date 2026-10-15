@@ -51417,8 +51417,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "CONNECTED_LIVE_AND_COMMIT_LOSS_PASS_ACTIVATED_RECOVERY_IN_PROGRESS",
-    "observed_at": "2026-10-15T16:16:30.410294+00:00",
+    "status": "CONNECTED_ACTIVATED_RECOVERY_PASS_SOURCE_CLOSURE_IN_PROGRESS",
+    "observed_at": "2026-10-15T16:25:15.695220+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -52887,7 +52887,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Run exact six-origin recovery/retry with unchanged qualifiedbb2d4b8 binaries, independent raw replay and root custody; all source/workflow/retirement and installed gates remain open.",
+    "ongoing": "Retire three qualified probe/engine/oracle refs with worktrees/artifacts preserved, then integrate/review distinct successor source closure and qualify actual first/retry against six real recovered states. Source/workflow/retirement/installed gates remain open.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -56325,6 +56325,420 @@
       },
       "review": "Root complete initial743lines plus final3-line catalog SHA fence, both pure generators and all245artifact/5source/2link hashes verified; independent successor_restart_design AI source review closed without blocker at frozen hash. Reused reader imports identical to main.",
       "runtime": "NOT_RUN"
+    },
+    "activated_recovery_connected": {
+      "status": "PASS_SUCCESSOR_RECOVERY_FIRST_WAVE",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-engine-e2eb140",
+      "source": "e2eb14064900ec2ba97fa3b551a686c1195244b6",
+      "tree": "ecbad905bb62ed19411219ea156a286c6caf2c37",
+      "sessions": {
+        "preparation": "63806joined0",
+        "engine": "83038joined0",
+        "replay": "99308joined0",
+        "custody": "9484joined0"
+      },
+      "result_sha256": "618a1e7ec2a100e26074285edda72a27f275d9953ea8e1771afb2d85ea5a7e56",
+      "replay_sha256": "ddb291875f398d1e5e3079238a20a60b48f135083adc76f63347890125b2b65f",
+      "audit_path": "audit-root/audit-v2.json",
+      "audit_sha256": "cb1a9b54e569c42387a5d5064f1a0478ea7ed0468df7c6cae2ad9724eca6bce5",
+      "snapshots": 400,
+      "tables_per_snapshot": 75,
+      "negative_controls": 239,
+      "bound_files": 285,
+      "source_files": 1908,
+      "protected_elfs": 128,
+      "unchanged_nonborrowed_containers": 1353,
+      "build_reused": "ingest-succession-recovery-bb2d4b8/out/artifacts; product/probe/migration inputs exact, no compiler/cache used",
+      "resources": {
+        "owner": "b48752e102ce8fbbb769afdcb3ec150e",
+        "label": "org.bigbrotr.succession-recovery",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "client": "38e9d281b74e98ab6af9bf993e2d40f7ebd796e01ad8dc2ecfcdf99e867ea3cf",
+        "databases": [
+          "bb_successor_recover_e2eb140_activation_after_loss",
+          "bb_successor_recover_e2eb140_outcome_before_loss",
+          "bb_successor_recover_e2eb140_outcome_after_loss",
+          "bb_successor_recover_e2eb140_activated_live3",
+          "bb_successor_recover_e2eb140_empty_live3",
+          "bb_successor_recover_e2eb140_activated_later_live4"
+        ],
+        "started_at": "2026-10-15T16:18:07.157800+00:00",
+        "finished_at": "2026-10-15T16:19:34.340356+00:00",
+        "free_bytes_before": 30704009216,
+        "free_bytes_after": 30440849408,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "unexpected_containers": []
+      },
+      "cases": [
+        {
+          "case": "activation-after-loss-recover",
+          "database": "bb_successor_recover_e2eb140_activation_after_loss",
+          "snapshots": 30,
+          "native_rows": 73,
+          "sequence": 90,
+          "inputs": 6,
+          "control_epoch": 17,
+          "refreshes": 10,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 0,
+            "reserved_through": 0,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 0,
+              "last_complete_sequence": 0,
+              "digest": "b21e1ceb0c5ec3a033b71b82592dfce8afe2882e134ccd666a641b76c3453928",
+              "event_request_mask": 0
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "activation-after-loss-retry",
+          "database": "bb_successor_recover_e2eb140_activation_after_loss",
+          "snapshots": 30,
+          "native_rows": 73,
+          "sequence": 90,
+          "inputs": 6,
+          "control_epoch": 18,
+          "refreshes": 10,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 0,
+            "reserved_through": 0,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 0,
+              "last_complete_sequence": 0,
+              "digest": "b21e1ceb0c5ec3a033b71b82592dfce8afe2882e134ccd666a641b76c3453928",
+              "event_request_mask": 0
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "outcome-before-loss-recover",
+          "database": "bb_successor_recover_e2eb140_outcome_before_loss",
+          "snapshots": 32,
+          "native_rows": 79,
+          "sequence": 98,
+          "inputs": 7,
+          "control_epoch": 17,
+          "refreshes": 11,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 1,
+            "reserved_through": 1,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 1,
+              "last_complete_sequence": 1,
+              "digest": "10409e404194feca0e2cbf420265bef53e85b2aa023a075aefcc235910d17fef",
+              "event_request_mask": 0
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "outcome-before-loss-retry",
+          "database": "bb_successor_recover_e2eb140_outcome_before_loss",
+          "snapshots": 32,
+          "native_rows": 79,
+          "sequence": 98,
+          "inputs": 7,
+          "control_epoch": 18,
+          "refreshes": 11,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 1,
+            "reserved_through": 1,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 1,
+              "last_complete_sequence": 1,
+              "digest": "10409e404194feca0e2cbf420265bef53e85b2aa023a075aefcc235910d17fef",
+              "event_request_mask": 0
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "outcome-after-loss-recover",
+          "database": "bb_successor_recover_e2eb140_outcome_after_loss",
+          "snapshots": 32,
+          "native_rows": 79,
+          "sequence": 98,
+          "inputs": 7,
+          "control_epoch": 17,
+          "refreshes": 11,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 1,
+            "reserved_through": 1,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 1,
+              "last_complete_sequence": 1,
+              "digest": "ffff29f3a86221e9c0a24148cfe358192e48b80c1b15f8f4eb0e0b3f2bc080d0",
+              "event_request_mask": 0
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "outcome-after-loss-retry",
+          "database": "bb_successor_recover_e2eb140_outcome_after_loss",
+          "snapshots": 32,
+          "native_rows": 79,
+          "sequence": 98,
+          "inputs": 7,
+          "control_epoch": 18,
+          "refreshes": 11,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 1,
+            "reserved_through": 1,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 1,
+              "last_complete_sequence": 1,
+              "digest": "ffff29f3a86221e9c0a24148cfe358192e48b80c1b15f8f4eb0e0b3f2bc080d0",
+              "event_request_mask": 0
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "activated-live3-recover",
+          "database": "bb_successor_recover_e2eb140_activated_live3",
+          "snapshots": 36,
+          "native_rows": 90,
+          "sequence": 112,
+          "inputs": 9,
+          "control_epoch": 16,
+          "refreshes": 13,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 3,
+            "reserved_through": 3,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 3,
+              "last_complete_sequence": 4,
+              "digest": "a28c898ad203911bbe5672bd6768bff0a09f84116767ccc3eddf95959dbd0c54",
+              "event_request_mask": 6
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "activated-live3-retry",
+          "database": "bb_successor_recover_e2eb140_activated_live3",
+          "snapshots": 36,
+          "native_rows": 90,
+          "sequence": 112,
+          "inputs": 9,
+          "control_epoch": 17,
+          "refreshes": 13,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 3,
+            "reserved_through": 3,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 3,
+              "last_complete_sequence": 4,
+              "digest": "a28c898ad203911bbe5672bd6768bff0a09f84116767ccc3eddf95959dbd0c54",
+              "event_request_mask": 6
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "empty-live3-recover",
+          "database": "bb_successor_recover_e2eb140_empty_live3",
+          "snapshots": 32,
+          "native_rows": 72,
+          "sequence": 90,
+          "inputs": 7,
+          "control_epoch": 13,
+          "refreshes": 11,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 3,
+            "reserved_through": 3,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 3,
+              "last_complete_sequence": 4,
+              "digest": "9a56354b12c4084244f2ffdc1606ef12a04869d65d63f3afd3d7bcea2793f671",
+              "event_request_mask": 6
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "empty-live3-retry",
+          "database": "bb_successor_recover_e2eb140_empty_live3",
+          "snapshots": 32,
+          "native_rows": 72,
+          "sequence": 90,
+          "inputs": 7,
+          "control_epoch": 14,
+          "refreshes": 11,
+          "observation": {
+            "target_epoch": 3,
+            "issued_through": 3,
+            "reserved_through": 3,
+            "staged_input": null,
+            "verified_through": 3,
+            "last_epoch": {
+              "epoch": 3,
+              "terminal_kind": "activated",
+              "resolved_requests": 3,
+              "last_complete_sequence": 4,
+              "digest": "9a56354b12c4084244f2ffdc1606ef12a04869d65d63f3afd3d7bcea2793f671",
+              "event_request_mask": 6
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "activated-later-live4-recover",
+          "database": "bb_successor_recover_e2eb140_activated_later_live4",
+          "snapshots": 38,
+          "native_rows": 93,
+          "sequence": 117,
+          "inputs": 9,
+          "control_epoch": 18,
+          "refreshes": 14,
+          "observation": {
+            "target_epoch": 4,
+            "issued_through": 3,
+            "reserved_through": 3,
+            "staged_input": null,
+            "verified_through": 4,
+            "last_epoch": {
+              "epoch": 4,
+              "terminal_kind": "activated",
+              "resolved_requests": 3,
+              "last_complete_sequence": 4,
+              "digest": "9da473bde1c9372cabe61ce8c1dee09260dc31d159c317e29d38a68281a2210e",
+              "event_request_mask": 6
+            },
+            "positive_recovery": true
+          }
+        },
+        {
+          "case": "activated-later-live4-retry",
+          "database": "bb_successor_recover_e2eb140_activated_later_live4",
+          "snapshots": 38,
+          "native_rows": 93,
+          "sequence": 117,
+          "inputs": 9,
+          "control_epoch": 19,
+          "refreshes": 14,
+          "observation": {
+            "target_epoch": 4,
+            "issued_through": 3,
+            "reserved_through": 3,
+            "staged_input": null,
+            "verified_through": 4,
+            "last_epoch": {
+              "epoch": 4,
+              "terminal_kind": "activated",
+              "resolved_requests": 3,
+              "last_complete_sequence": 4,
+              "digest": "9da473bde1c9372cabe61ce8c1dee09260dc31d159c317e29d38a68281a2210e",
+              "event_request_mask": 6
+            },
+            "positive_recovery": true
+          }
+        }
+      ],
+      "preservation": "All six original full SQL/catalog/input/native physical censuses intact; originals never opened as native engines. All prior128ELFs and1353nonborrowed container projections unchanged. Client143/PG0 exited/PID0/noOOM; complete prior failures retained.",
+      "scope": "Twelve finite positive recovery/retry processes; no installed, source/workflow/retirement, tail, failure-injection or RSS qualification",
+      "not_run": [
+        "Installed recovery, source closure, workflow abandonment and retirement",
+        "Recovery COMMIT loss, cancellation/expiry, unresolved staged/reserved tails and corruption refusals",
+        "PostgreSQL 255-epoch capacity, performance and RSS qualification"
+      ]
+    },
+    "activated_recovery_orchestration_failures": {
+      "invocation": {
+        "status": "FAIL_BEFORE_ENGINE_START",
+        "chunk": "2503a2",
+        "exit_code": 1,
+        "record": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-engine-e2eb140/root-invocation-failure-1.json",
+        "sha256": "ea78b1130fa9197c31137ae3bfe5a58feeb214288d43376575f32b5e201212d4",
+        "cause": "Root supplied build run directory instead of out/artifacts. Failure before Docker lookup/output.mkdir; corrected argument starts first engine in same prepared root. No engine or source failure."
+      },
+      "custody_v1": {
+        "status": "FAIL_SOURCE_CENSUS_EXTRA_BYTECODE",
+        "chunk": "83e8a4",
+        "exit_code": 1,
+        "record": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-engine-e2eb140/audit-root/audit-v1-failure.json",
+        "sha256": "94dcf298ef855148ebd61eccda5c3e97a4b284778b2297161e4b8f7a39bd7d3e",
+        "cause": "Standalone raw reader generated four ignored Python bytecode companions. No tracked source changed or missing. Original auditor and all four files preserved; v2 binds exact1908source files plus exact4path/hash/size companions, not a blanket exclusion. Original failure remains FAIL."
+      }
+    },
+    "activated_recovery_reader_hygiene": {
+      "status": "SOURCE_HYGIENE_AST_PASS",
+      "path": "experiments/ingest-succession/recovery_replay.py",
+      "tested_source_sha256": "cedb11a52b0a09cfb15b418e135517d3b1ea49fc1726a67c6a84f54d8f7106f1",
+      "updated_source_sha256": "e08e5e295a88eb689fbd98a1f0163428439ee7f99d011a94c7e8bc5ea940794d",
+      "change": "Set sys.dont_write_bytecode before helper imports for future standalone readers; all existing function/class ASTs unchanged. Actual raw evidence remains bound to exacte2eb140; no engine/replay campaign repeated."
+    },
+    "successor_source_work": {
+      "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_RUNTIME_NOT_RUN",
+      "base": "e2eb14064900ec2ba97fa3b551a686c1195244b6",
+      "scope": "Distinct later-epoch source owner/proof; existing native science kernel, open repair and closed existing-only replay, atomic source publication/exact retry. No acquisition/retirement implementation in this slice.",
+      "worktrees": [
+        {
+          "owner": "recovery_review",
+          "path": "/home/tux/bigbrotr-rs/.research/successor-pg-source-20261015",
+          "branch": "implementation/successor-pg-source"
+        },
+        {
+          "owner": "successor_restart_design",
+          "path": "/home/tux/bigbrotr-rs/.research/successor-native-source-20261015",
+          "branch": "implementation/successor-native-source"
+        }
+      ],
+      "design": "SQL0038 already has Source classifier and guards. Public positive recovery remains source-open. Add native observe_closed without writes; one lineage allocation/grant; distinct PG source wrappers. Import Event prefixes qualify source closure but still veto retirement absent genuine workflow bindings.",
+      "review": "Read-only independent design mapped complete legacy/native/PG owners and relevant SQL0038; no new runtime claim.",
+      "root_only_builds": true,
+      "registered_worktrees": 118
     }
   }
 }

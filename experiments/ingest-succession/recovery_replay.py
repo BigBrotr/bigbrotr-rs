@@ -12,7 +12,10 @@ import json
 import math
 from pathlib import Path
 import re
+import sys
 import tomllib
+
+sys.dont_write_bytecode = True
 
 import history_replay as history
 import transition_replay as transition
