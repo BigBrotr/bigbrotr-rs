@@ -1,5 +1,6 @@
 //! The live native owner consumes the existing private command queue serially.
 //! HTTP and password tasks run on the parent runtime; neither borrows native state.
+use super::owner::RuntimeContext;
 use super::*;
 use bigbrotr::runtime::policy_authority::{LeaseError, PolicyLeaseTracker, PolicyLeaseTtl};
 use bigbrotr::storage::postgres::control_owner::PolicySnapshot;
@@ -7,7 +8,8 @@ use std::time::Duration;
 
 pub(super) struct CommandOwner<'a> {
     pub(super) owner: &'a mut ControlSession,
-    pub(super) spec: &'a InitialRegistration,
+    context: RuntimeContext<'a>,
+    dataset: DatasetId,
     policy: PolicySnapshot,
     profile: Profile,
     pub(super) root: &'a Resolved,
@@ -24,7 +26,13 @@ fn authority(error: LeaseError) -> (u8, String) {
     (4, error.to_string())
 }
 
-impl CommandOwner<'_> {
+impl<'a> CommandOwner<'a> {
+    /// Archive remains an initial-only consumer. Return the original context's
+    /// reference, without borrowing the command owner across its later waits.
+    pub(super) fn initial_registration(&self) -> Result<&'a InitialRegistration> {
+        self.context.initial().map_err(owner_error)
+    }
+
     pub(super) fn operation_window(&mut self, deadline: Instant) -> Result<Duration> {
         let maximum = self
             .maximum()?
@@ -54,7 +62,12 @@ impl CommandOwner<'_> {
     }
 
     async fn renew_for(&mut self, native: Option<&NativeOwner>) -> Result<Instant> {
-        if self.profile == Profile::Successor && !matches!(native, Some(NativeOwner::Live(_))) {
+        if self.profile == Profile::Successor
+            && !matches!(
+                native,
+                Some(NativeOwner::Live(_) | NativeOwner::Successor(_))
+            )
+        {
             return Err((4, "successor renewal requires its retained writer".into()));
         }
         let ttl = duration(self.root, "authorization_ttl");
@@ -101,13 +114,23 @@ impl CommandOwner<'_> {
                         )
                         .await
                 }
+                Some(NativeOwner::Successor(writer)) => {
+                    self.owner
+                        .renew_live_successor_ingest(
+                            writer,
+                            ttl,
+                            |doc, digest| validate_owner(self.root, self.profile, doc, digest),
+                            &Cell::new(false),
+                        )
+                        .await
+                }
                 Some(NativeOwner::Candidate(_)) => {
                     return Err((4, "candidate cannot renew".into()));
                 }
                 Some(NativeOwner::Initial(_)) | None => {
                     self.owner
                         .renew_initial_ingest(
-                            self.spec,
+                            self.context.initial().map_err(owner_error)?,
                             ttl,
                             |doc, digest| validate(self.root, doc, digest),
                             &Cell::new(false),
@@ -130,7 +153,7 @@ impl CommandOwner<'_> {
             .complete_refresh(
                 &ticket,
                 super::super::response(
-                    self.spec.dataset_id,
+                    self.dataset,
                     self.owner.identity().process_incarnation,
                     snapshot,
                     ttl,
@@ -281,6 +304,63 @@ pub(super) async fn maintain(
     budget: &ResourceBudget,
     progress: &watch::Sender<Progress>,
     cancellation: &Cancellation,
+    report: Value,
+) -> Result<()> {
+    let context = match custody.store.as_ref() {
+        Some(NativeOwner::Initial(_)) => RuntimeContext::Initial(spec),
+        Some(NativeOwner::Live(_)) => RuntimeContext::Live,
+        _ => {
+            return Err((
+                4,
+                "legacy lifecycle requires its original native owner".into(),
+            ));
+        }
+    };
+    maintain_context(
+        custody,
+        context,
+        root,
+        budget,
+        progress,
+        cancellation,
+        report,
+    )
+    .await
+}
+
+pub(super) async fn maintain_successor(
+    custody: &mut Custody,
+    root: &Resolved,
+    budget: &ResourceBudget,
+    progress: &watch::Sender<Progress>,
+    cancellation: &Cancellation,
+    report: Value,
+) -> Result<()> {
+    if !matches!(custody.store.as_ref(), Some(NativeOwner::Successor(_))) {
+        return Err((
+            4,
+            "successor lifecycle requires its continuously retained writer".into(),
+        ));
+    }
+    maintain_context(
+        custody,
+        RuntimeContext::Live,
+        root,
+        budget,
+        progress,
+        cancellation,
+        report,
+    )
+    .await
+}
+
+async fn maintain_context(
+    custody: &mut Custody,
+    context: RuntimeContext<'_>,
+    root: &Resolved,
+    budget: &ResourceBudget,
+    progress: &watch::Sender<Progress>,
+    cancellation: &Cancellation,
     mut report: Value,
 ) -> Result<()> {
     let Custody {
@@ -290,13 +370,15 @@ pub(super) async fn maintain(
         owner,
     } = custody;
     let store = store.as_mut().expect("initialized native owner");
+    context.require(store).map_err(owner_error)?;
     let profile = store.profile()?;
-    let policy = store.policy(spec)?;
+    let policy = store.policy(context)?;
+    let dataset = store.dataset()?;
     if profile == Profile::Successor && archive.is_some() {
         return Err((3, "successor Archive is not available".into()));
     }
     let lease = PolicyLeaseTracker::new(
-        spec.dataset_id,
+        dataset,
         owner.identity().process_incarnation,
         PolicyEpoch::new(policy.policy_revision),
         PolicyLeaseTtl::new(duration(root, "authorization_ttl")).map_err(authority)?,
@@ -304,7 +386,8 @@ pub(super) async fn maintain(
     .map_err(authority)?;
     let mut state = CommandOwner {
         owner,
-        spec,
+        context,
+        dataset,
         policy,
         profile,
         root,
@@ -469,7 +552,7 @@ pub(super) async fn maintain(
                     // The hard deadline and independent parent watchdog remain.
                     tokio::time::timeout(maximum,
                         state.sync.as_deref_mut().expect("selected Sync").dispatch(sync::Dispatch {
-                            owner: state.owner, writer: store, spec, root, budget, cancel: cancellation,
+                            owner: state.owner, writer: store, context, root, budget, cancel: cancellation,
                             deadline: Instant::now() + maximum,
                         }),
                     ).await.map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))??;

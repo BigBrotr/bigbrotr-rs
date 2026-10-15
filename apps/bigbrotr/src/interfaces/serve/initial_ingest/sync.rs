@@ -2,6 +2,7 @@
 //! Scanning is scheduling only: neither EOSE nor a pass claims durable coverage.
 mod observation;
 mod receive;
+use super::owner::RuntimeContext;
 use super::*;
 use crate::config::acquisition::{SyncArrivalPolicy, authorize_sync_collection};
 use bigbrotr::{
@@ -17,8 +18,8 @@ use bigbrotr::{
     storage::{
         postgres::{
             control_owner::{
-                InitialCertificationRequest, InitialEventRequest, InitialVisibilityRequest,
-                RelaySourceError, RelaySourceRequest,
+                LiveSuccessorCertificationRequest, LiveSuccessorEventRequest,
+                LiveSuccessorVisibilityRequest, RelaySourceError, RelaySourceRequest,
             },
             producer_sources::SourceBindingError,
         },
@@ -228,9 +229,9 @@ impl Sync {
             .writer
             .visibility(
                 work.owner,
-                InitialVisibilityRequest {
+                work.context,
+                LiveSuccessorVisibilityRequest {
                     ingest_root: path,
-                    registration: work.spec,
                     reference: scope.scope().visibility(),
                     limits,
                     policy_ttl: ttl,
@@ -380,9 +381,9 @@ impl Sync {
                 .writer
                 .certify(
                     work.owner,
-                    InitialCertificationRequest {
+                    work.context,
+                    LiveSuccessorCertificationRequest {
                         ingest_root: path,
-                        registration: work.spec,
                         event: prepared,
                         relay_source: Some(source.binding()),
                         acquisition: Some(context),
@@ -402,7 +403,7 @@ impl Sync {
             if !needs_admission {
                 continue;
             }
-            if self.next_request > u64::from(work.writer.limit(work.spec)) {
+            if self.next_request > u64::from(work.writer.limit(work.context)?) {
                 // No ACK or slot retirement is implied by copying receipts.
                 // This owner can keep serving/certifying without new mutations.
                 return Ok(());
@@ -410,8 +411,8 @@ impl Sync {
             let (intent, permit) = prepare()?.ok_or_else(|| error("retained input changed"))?;
             let event = PreparedEvent::new(
                 ProducerRequestId {
-                    producer_slot_id: work.spec.producer_slot_id,
-                    producer_epoch: ProducerEpoch::new(work.writer.epoch()).map_err(error)?,
+                    producer_slot_id: work.writer.slot(work.context)?,
+                    producer_epoch: ProducerEpoch::new(work.writer.epoch()?).map_err(error)?,
                     request_sequence: RequestSequence::new(self.next_request).map_err(error)?,
                 },
                 intent,
@@ -419,15 +420,15 @@ impl Sync {
                 permit,
             )
             .map_err(error)?;
-            let admission = work.admission_limits();
+            let admission = work.admission_limits()?;
             let ttl = work.remaining()?;
             let outcome = work
                 .writer
                 .admit(
                     work.owner,
-                    InitialEventRequest {
+                    work.context,
+                    LiveSuccessorEventRequest {
                         ingest_root: path,
-                        registration: work.spec,
                         event,
                         relay_source: Some(source.binding()),
                         acquisition: Some(context),
@@ -458,7 +459,7 @@ impl Sync {
 pub(super) struct Dispatch<'a> {
     pub owner: &'a mut ControlSession,
     pub writer: &'a mut NativeOwner,
-    pub spec: &'a InitialRegistration,
+    pub context: RuntimeContext<'a>,
     pub root: &'a Resolved,
     pub budget: &'a ResourceBudget,
     pub cancel: &'a Cancellation,
@@ -474,11 +475,11 @@ impl Dispatch<'_> {
             .filter(|d| !d.is_zero())
             .ok_or_else(|| error("dispatch deadline exhausted"))
     }
-    fn admission_limits(&self) -> AdmissionLimits {
-        AdmissionLimits {
-            max_outstanding_requests: u64::from(self.writer.limit(self.spec)),
+    fn admission_limits(&self) -> Result<AdmissionLimits> {
+        Ok(AdmissionLimits {
+            max_outstanding_requests: u64::from(self.writer.limit(self.context)?),
             ..AdmissionLimits::default()
-        }
+        })
     }
     fn certification_limits(&self) -> CertificationLimits {
         CertificationLimits::default()

@@ -3,7 +3,9 @@ use super::*;
 use bigbrotr::{
     acquisition::observation::ObservationBindings,
     storage::{
-        postgres::control_owner::{InitialDictionaryAppendRequest, InitialObservationRequest},
+        postgres::control_owner::{
+            LiveSuccessorDictionaryAppendRequest, LiveSuccessorObservationRequest,
+        },
         rocks::store::AdmissionError,
     },
 };
@@ -26,7 +28,7 @@ impl Dispatch<'_> {
         let limits = AdmissionLimits {
             max_batch_bytes: 64 * 1024,
             max_dependencies: 8,
-            max_outstanding_requests: u64::from(self.writer.limit(self.spec)),
+            max_outstanding_requests: u64::from(self.writer.limit(self.context)?),
         };
         let visible = scope.scope().visibility();
         let mut prepared = match self.writer.prepare_dictionaries(
@@ -110,9 +112,9 @@ impl Dispatch<'_> {
             .writer
             .observation(
                 self.owner,
-                InitialObservationRequest {
+                self.context,
+                LiveSuccessorObservationRequest {
                     ingest_root: path,
-                    registration: self.spec,
                     bindings,
                     limits: reads,
                     policy_ttl: ttl,
@@ -126,7 +128,7 @@ impl Dispatch<'_> {
         if let Some(existing) = existing {
             return Ok(Some(existing));
         }
-        if *next_request > u64::from(self.writer.limit(self.spec)) {
+        if *next_request > u64::from(self.writer.limit(self.context)?) {
             // This new descriptor set needs a mutation slot. A full initial
             // window defers it without ending HTTP, renewal or existing reads.
             return Ok(None);
@@ -136,9 +138,9 @@ impl Dispatch<'_> {
             .writer
             .append(
                 self.owner,
-                InitialDictionaryAppendRequest {
+                self.context,
+                LiveSuccessorDictionaryAppendRequest {
                     ingest_root: path,
-                    registration: self.spec,
                     request_sequence: RequestSequence::new(*next_request).map_err(error)?,
                     intent: prepared.intent(),
                     recorded_at: recorded()?,
@@ -161,9 +163,9 @@ impl Dispatch<'_> {
         self.writer
             .observation(
                 self.owner,
-                InitialObservationRequest {
+                self.context,
+                LiveSuccessorObservationRequest {
                     ingest_root: path,
-                    registration: self.spec,
                     bindings,
                     limits: reads,
                     policy_ttl: ttl,
