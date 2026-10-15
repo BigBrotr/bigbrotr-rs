@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main plus two active local installed harness/raw capture refs; remote main only.132worktrees preserved,121local/51remote refs retired,77detached. All artifacts/datasets retained.",
+    "remaining": "Only main local and remote at19:20Z;132 worktrees preserved,123local/51remote refs retired,79detached. All artifacts and datasets retained.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -50843,9 +50843,9 @@
       "root_recheck": "15 original commits,42 complete changed-file blob/mode comparisons exactly match main-ancestor integrations; all original commit objects remain archived."
     },
     "totals": {
-      "local_refs_removed": 121,
+      "local_refs_removed": 123,
       "remote_refs_removed": 51,
-      "worktrees_detached_preserved": 77
+      "worktrees_detached_preserved": 79
     },
     "old_writer": {
       "source": "f899896b1207f5e71c4e39d9ab7814b293814735",
@@ -51725,6 +51725,17 @@
       "bundle_sha256": "e51c99c076f5b4eb4fb510819346abda5275a8fb97cebfe33d03ca5abfb1888c",
       "executor": "5022 joined0",
       "scope": "One source-reviewed and compiled installed lifecycle ref only. Actual installed engine remains NOT_RUN. Main plus active dispatch/capture and harness refs remain; all worktrees, ignored/external evidence and datasets preserved"
+    },
+    "qualified_installed_family_followup": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T19:20:06.832653+00:00",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/installed-family.bundle",
+      "bundle_bytes": 15836084,
+      "bundle_sha256": "eb6887a1e82a5443f081d1cbc6cb8806e35d2ff3ad0c40966b8c78ea0073a931",
+      "scope": "Two source-reviewed and actual-engine-qualified fixture/capture refs. Main is the only remaining local/remote branch. Every worktree, ignored/external artifact, original/fault dataset and full original commit history is preserved.",
+      "report": ".research/branch-retirement-20261015/installed-family.json",
+      "sha256": "cf3a8c2308661bc1f49b42d14fb17982026ac1e8e76d82b209b45171a6f7e871",
+      "executor": "66931 joined0"
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
@@ -52045,14 +52056,12 @@
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
     "branch_totals": {
-      "local_retired": 121,
+      "local_retired": 123,
       "remote_retired": 51,
-      "detached_worktrees": 77,
+      "detached_worktrees": 79,
       "registered_worktrees": 132,
       "remaining_local": [
-        "implementation/installed-successor-dispatch",
-        "main",
-        "qualification/installed-successor-engine"
+        "main"
       ]
     },
     "failed_lineage_build": {
@@ -59613,9 +59622,7 @@
       "free_bytes": 26600398848,
       "registered_worktrees": 132,
       "local_branches": [
-        "implementation/installed-successor-dispatch",
-        "main",
-        "qualification/installed-successor-engine"
+        "main"
       ],
       "protected_elfs": 143,
       "build_state": "stopped-retained; all handles joined",
@@ -59625,9 +59632,9 @@
     "installed_successor_worktrees": [
       {
         "path": "/home/tux/bigbrotr-rs/.research/installed-successor-dispatch-20261015",
-        "branch": "implementation/installed-successor-dispatch",
+        "branch": null,
         "owner": "successor_restart_design",
-        "status": "source committed and integrated; clean; ignored source-only checks retained; engine NOT_RUN"
+        "status": "detached original; qualified ref archived/bundled/retired; complete file/link/stat census unchanged including ignored artifacts; author writes finished"
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/installed-successor-lifecycle-20261015",
@@ -59637,9 +59644,9 @@
       },
       {
         "path": "/home/tux/bigbrotr-rs/.research/installed-successor-engine-20261015",
-        "branch": "qualification/installed-successor-engine",
+        "branch": null,
         "owner": "recovery_review",
-        "status": "source committed and integrated; clean; ignored source-only checks retained; engine NOT_RUN"
+        "status": "detached original; qualified ref archived/bundled/retired; complete file/link/stat census unchanged including ignored artifacts; author writes finished"
       }
     ],
     "installed_successor_build": {
@@ -59882,6 +59889,17 @@
         "Original current files reread by custody; SQL/catalog preservation is captured-run evidence."
       ],
       "next_action": "Expose and qualify explicit repeatable recovery/source/abandon/retirement CLI consumers using existing successor adapters, then fresh successor activation on copied installed endpoints. Keep M1\u2013M5 incomplete."
+    },
+    "qualified_installed_family_ref_retirement": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T19:20:06.832653+00:00",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/installed-family.bundle",
+      "bundle_bytes": 15836084,
+      "bundle_sha256": "eb6887a1e82a5443f081d1cbc6cb8806e35d2ff3ad0c40966b8c78ea0073a931",
+      "scope": "Two source-reviewed and actual-engine-qualified fixture/capture refs. Main is the only remaining local/remote branch. Every worktree, ignored/external artifact, original/fault dataset and full original commit history is preserved.",
+      "report": ".research/branch-retirement-20261015/installed-family.json",
+      "sha256": "cf3a8c2308661bc1f49b42d14fb17982026ac1e8e76d82b209b45171a6f7e871",
+      "executor": "66931 joined0"
     }
   }
 }

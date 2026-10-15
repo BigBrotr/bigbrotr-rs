@@ -12,10 +12,10 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD93597217aa9f23a99090a280837c0bc12ae90d34.
-Verified remote9359721: push12563joined0/77a66a, independent613aa0 exact.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD4fcad7e5e340e4733abdbe48dcacc220a8aa24a2.
+Verified remote4fcad7e: push42136joined0/98f597, independentb131e7 exact.
 Fixture9e584b3→583ea14 and rawbindered38515→c41eb54 integrated;
-source evidence9359721 pushed; actual engine evidence pending this coherent commit.
+source evidence9359721 and actual engine evidence4fcad7e pushed.
 Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
 Root CLI/module/Archive getters/entrypoint tests/docs/build profile committed
 as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; qualified build/evidence03a35c0 pushed,
@@ -24,10 +24,11 @@ Exact installed build28171/prepare59862/audit71762 joined0. Build PASS20tests;
 Lifecycle ref retirement5022 joined0: original7288dbcd preserved detached,
 full-history bundlee51c99c0 and file census87e40eff intact;121local/51remote refs
 retired cumulatively,77detached/132preserved worktrees.
-Two qualified installed refs await retirement; 132 worktrees remain preserved.
-Root alone owns integration, builds, cache and engines. Both fixture authors have
-finished their implementation; the harness author is completing a read-only map
-of the next CLI consumers. The custody auditor is complete and its run joined.
+Both qualified fixture/capture refs retired: executor66931 joined0, reportcf3a8c23,
+full-history bundleeb6887a1; every worktree file/link/stat including ignored artifacts
+unchanged. Only main remains local/remote; cumulative123local/51remote retired,
+79detached/132preserved worktrees. All agent writes stopped. Root retains sole
+integration, build/cache and engine ownership.
 
 ## Active task and next action
 
@@ -40,8 +41,7 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: preserve qualified installed artifacts and retire redundant
-fixture/capture refs after file census; implement explicit installed repeatable
+Next bounded action: implement explicit installed repeatable
 recovery/source/abandon/retirement consumers using existing qualified adapters,
 then qualify a complete cycle on fresh copies of9359721 endpoints.
 Build root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`,

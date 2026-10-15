@@ -31291,6 +31291,17 @@
           "Original current files reread by custody; SQL/catalog preservation is captured-run evidence."
         ],
         "next_action": "Expose and qualify explicit repeatable recovery/source/abandon/retirement CLI consumers using existing successor adapters, then fresh successor activation on copied installed endpoints. Keep M1\u2013M5 incomplete."
+      },
+      "qualified_installed_family_ref_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-15T19:20:06.832653+00:00",
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/installed-family.bundle",
+        "bundle_bytes": 15836084,
+        "bundle_sha256": "eb6887a1e82a5443f081d1cbc6cb8806e35d2ff3ad0c40966b8c78ea0073a931",
+        "scope": "Two source-reviewed and actual-engine-qualified fixture/capture refs. Main is the only remaining local/remote branch. Every worktree, ignored/external artifact, original/fault dataset and full original commit history is preserved.",
+        "report": ".research/branch-retirement-20261015/installed-family.json",
+        "sha256": "cf3a8c2308661bc1f49b42d14fb17982026ac1e8e76d82b209b45171a6f7e871",
+        "executor": "66931 joined0"
       }
     }
   }
