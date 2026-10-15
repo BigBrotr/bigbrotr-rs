@@ -365,9 +365,16 @@ One owner serializes exact identity decisions for each writable directory.
   Rejected Event without a job refuses Outcome(Conflict) without target writes.
   Root raw replay verifies2 seeds/6 complete observations/74 controls; independent
   source/artifact/custody audit passes, preserving45 original paths/9 inputs/76 ELFs.
-  This refusal precedes final SQL Event-mask dispatch. Typed workflow/copy refusals
-  and cancellation/expiry remain NOT_RUN. Goal resumed2026-10-15. Repeated lifetimes
-  remain separate. Archive selection refuses until its lifetime-specific
+  This refusal precedes final SQL Event-mask dispatch. Installed3811f36 adds8 CLI
+  on7clones: genuine zero-request acquisition first/retry and six workflow/copy/
+  input/mixed refusals. Root37complete states/132controls and independent custody
+  audit pass; three original histories remain intact. Synthetic binding is not
+  authentic import execution. Installedfd40012 passes SIGTERM during the final
+  job wait after COMMIT6: no COMMIT7 or target/native/input writes, exact holder
+  and backend exclusion. Root3states/32controls and author custody audit pass.
+  Genuine import veto2750aa4 is prepared NOT_RUN; actual UTC expiry is source work
+  only. Goal remains ACTIVE; repeated lifetimes remain separate. Archive selection
+  refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
   refusal is its epoch preflight, not the SQL receipt veto;
