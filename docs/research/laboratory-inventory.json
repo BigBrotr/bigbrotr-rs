@@ -52557,7 +52557,13 @@
       "protected_elfs": 104,
       "unchanged_containers": 1328,
       "error": "ModuleNotFoundError: No module named 'bootstrap_oracle'",
-      "scope": "Import fails before run() or history output creation. No database/container/native engine started; exact failure receipt and source retained. Correct helper alias initialization before fresh run."
+      "scope": "Import fails before run() or history output creation. No database/container/native engine started; exact failure receipt and source retained. Correct helper alias initialization before fresh run.",
+      "correction": {
+        "original": "e289c4e314295a3ee1a2962686c47b03446e7ec6",
+        "main": "d40ef0c",
+        "source_import_smoke": "PASS_SUBPROCESSES_BLOCKED",
+        "scope": "No engine in import smoke; real activated probe separately ran in d40ef0c"
+      }
     },
     "history_engine_harness": {
       "original": "675201be44f9fd994feb4e6a35a8cf14b3121fef",
@@ -52565,6 +52571,48 @@
       "sha256": "5dfc247939e9edd77ad5d393f693cd0c5a5a3c82d38bb4117708b06112981d9e",
       "review": "Root read complete436-line harness including identity/custody/timeout deltas; shared helper bootstrap alias missing at runtime. AST/diff checks alone did not qualify Python imports.",
       "status": "FIRST_ENTRYPOINT_IMPORT_FAIL"
+    },
+    "history_engine_catalog_failure": {
+      "status": "FAIL",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-history-engine-d40ef0c",
+      "source": "d40ef0c4238b1e03b76615772c9ac8664707ab21",
+      "tree": "793c0947e4188a52aa4ee9a06db79bc6a11b9049",
+      "preparation_session": 78006,
+      "engine_session": 40697,
+      "engine_exit_code": 1,
+      "started_at": "2026-10-15T13:08:02.678987+00:00",
+      "finished_at": "2026-10-15T13:08:11.150245+00:00",
+      "cause": "catalog() passed --schema=control without --schema-only; full pg_dump includes intended new Control owner/role data. Raw schema/ACL sections unchanged.",
+      "completed_cases": [
+        "activated-terminal2"
+      ],
+      "not_run": [
+        "empty-terminal2",
+        "activated-metadata-short"
+      ],
+      "partial_replay": {
+        "chunk": "be06fb",
+        "exit_code": 0,
+        "status": "PASS_PARTIAL_ACTIVATED_CAPTURE",
+        "original_run_status": "FAIL",
+        "snapshots": 26,
+        "tables": 75,
+        "controls": 14,
+        "sha256": "1e98a80ac58817b4830a56312a19d48bd7e508b3fe959b4b441dfb896f0c6309"
+      },
+      "custody": {
+        "session": 70195,
+        "exit_code": 0,
+        "sha256": "4b2bd3867b9f64d8045bae1d12ccc4c82271668066fc4ced4d7b3f4eb56441e6",
+        "files": 1878,
+        "protected_elfs": 104,
+        "unchanged_nonborrowed_containers": 1327
+      },
+      "client": "de991df5f367f0b87328ba1c7647778d9f7e2e9247c802c1caf55d8deb2bf321",
+      "owner": "854f2aa6cc0fe91026140367b2e797d4",
+      "free_bytes_after": 35075756032,
+      "originals_preserved": true,
+      "correction": "Add --schema-only to preserve ACL/DDL comparison while independent full-row reducer checks intentional Control data transitions. Corrected engine NOT_RUN."
     }
   }
 }

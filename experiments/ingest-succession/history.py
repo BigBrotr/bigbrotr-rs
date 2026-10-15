@@ -47,7 +47,7 @@ def content_census(files):
 def catalog(pg, database):
     # Unlike schema_digest, retain ACLs as well as all schema definitions.
     result = lab.docker('exec', pg['postgres'], 'pg_dump', '--no-password', '-U', 'postgres',
-        '-d', database, '--schema=control', '--no-owner')
+        '-d', database, '--schema=control', '--schema-only', '--no-owner')
     return '\n'.join(line for line in result.stdout.splitlines()
         if not line.startswith(('\\restrict ', '\\unrestrict ')))
 

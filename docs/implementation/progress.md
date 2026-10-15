@@ -29,16 +29,24 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
 [lab inventory](../research/laboratory-inventory.json).
 
-Root's next bounded action: integrate the minimal shared-helper import correction,
-then prepare a fresh exact-source history-engine root and execute all three cases
-with the qualified59ce0fd CLI/probe and independent146f7ce reader. First harness
-675201b→d81ade4 failed during import: `initial_history`→`installed.py` requires
-`bootstrap_oracle` initialization. Entrypoint chunk e9e5c5 exited1 before `run()`;
-no history directory, database or owned container was created/started.
-Preparation77459 and read-only custody7110 joined0; audit7b0d159e verifies1878source
-files,104protectedELFs and1328unchanged container projections. Full failure receipt
-at `/runs/ingest-succession-history-engine-d81ade4/root-entrypoint-failure.json`.
-Preserve that root; never retry it. Native/SQL history engine remains NOT_RUN.
+Root's next bounded action: prepare a fresh exact-source history-engine root and
+execute all three cases after the one-flag catalog correction (`--schema-only`).
+Reuse59ce0fd probe/CLI and146f7ce reader; product inputs remain unchanged.
+
+Run d40ef0c preparation78006/engine40697 joined0/1,13:08:02Z–13:08:11Z,
+remains FAIL: activated-terminal2 passes, then the catalog comparison wrongly
+included intended new Control15 rows. Empty/short NOT_RUN. Root partial replay
+be06fb PASS binds26full75-table snapshots/14controls (SHA1e98a80a), retaining global
+FAIL. Custody70195 PASS audit4b2bd386 binds1878files/104ELFs/1327unchanged prior
+nonborrowed projections; originals' complete physical censuses intact. PG0/client143
+stopped/PID0/noOOM. Raw catalog differences are only COPY data; fix excludes data
+from the catalog comparison while full independent row validation remains.
+
+Earlier harness675201b→d81ade4 failed during import before `run()` or resource
+creation. Correctione289c4e→d40ef0c registers the shared bootstrap oracle alias;
+source import smoke with subprocesses blocked PASS. Original wrapper e9e5c5 FAIL,
+preparation77459/custody7110 joined0; audit7b0d159e verifies1878files/104ELFs and
+1328unchanged containers. Both failed roots are retained and must not be replayed.
 
 Cases: `activated-terminal2`, `empty-terminal2`, `activated-metadata-short`.
 Positive metadata132608; refusal132095 against required132096. Require actual
