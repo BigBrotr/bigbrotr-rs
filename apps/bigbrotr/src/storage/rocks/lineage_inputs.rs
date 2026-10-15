@@ -8,6 +8,12 @@ use std::sync::atomic::{AtomicBool, Ordering};
 type Stamp = ([u8; 71], [u8; 32]);
 const _: () = assert!(std::mem::size_of::<[Stamp; MAX_FILES]>() + SCRATCH < 16 * 1024);
 
+struct InputScan {
+    all: [u8; 32],
+    previous: [u8; 32],
+    tail: Option<SuccessorStagedInput>,
+}
+
 impl IngestStore {
     pub(in crate::storage::rocks::store) fn lineage_input_census(
         &self,
@@ -30,7 +36,7 @@ impl IngestStore {
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], [u8; 32]), BootstrapError> {
         self.lineage_input_scan(expected_count, accepts, addition, None, cancelled)
-            .map(|(all, prior, _)| (all, prior))
+            .map(|scan| (scan.all, scan.previous))
     }
 
     /// Recovery alone may retain one current issued+1 input. All issued files
@@ -43,7 +49,7 @@ impl IngestStore {
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
         self.lineage_input_scan(issued_count, accepts, None, Some(tail), cancelled)
-            .map(|(all, _, tail)| (all, tail))
+            .map(|scan| (scan.all, scan.tail))
     }
 
     fn lineage_input_scan(
@@ -53,7 +59,7 @@ impl IngestStore {
         addition: Option<(ProducerRequestId, [u8; 32], u64)>,
         tail: Option<ProducerRequestId>,
         cancelled: &AtomicBool,
-    ) -> Result<([u8; 32], [u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
+    ) -> Result<InputScan, BootstrapError> {
         let check = || {
             if cancelled.load(Ordering::Relaxed) {
                 Err(BootstrapError::AuthorityUnavailable)
@@ -210,7 +216,11 @@ impl IngestStore {
             all
         };
         check()?;
-        Ok((all, previous, observed_tail))
+        Ok(InputScan {
+            all,
+            previous,
+            tail: observed_tail,
+        })
     }
 }
 

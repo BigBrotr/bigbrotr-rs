@@ -52885,7 +52885,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Root qualifies activated-family recovery components; isolated finite consumer, connected six-seed engine and independent reader in progress. No positive runtime claim yet.",
+    "ongoing": "Qualify minimal private InputScan naming correction after103 component passes and one Clippy failure; preserve original run. Integrate six-origin harness/independent reader, then actual recovery/retry.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -56055,6 +56055,63 @@
       "operation": "recover",
       "review": "Root read entire264-line consumer, full host/history caller and relevant dispatcher branch; no unresolved finding. Scoped rustfmt/diff checks PASS. Product APIs unchanged.",
       "scope": "Retain activated recovery owner in native custody; inspect, close, ordered originals/copies, epoch/final proof and snapshots including failed operations. Native close and both drivers joined before completion. No source/workflow/retirement/writer authority."
+    },
+    "activated_recovery_first_build": {
+      "status": "FAIL_CLIPPY_TYPE_COMPLEXITY_COMPONENT_TESTS_PASS",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-3f41881",
+      "source": "3f41881a766914b53691b1fccb659930e9f09b1f",
+      "tree": "967e0350e7a5aef01030e6ce3b05358f610cea4a",
+      "preparation_session": "82804joined0",
+      "build_session": "47532joined1",
+      "custody_session": "36448joined0",
+      "audit_sha256": "bfe62c5661da8b770299c0948d1f509a8c03149bd199e5b1d8798d7eb6866a8d",
+      "tests_passed": 103,
+      "test_counts": {
+        "lineage_tests": 37,
+        "request_input_tests": 8,
+        "dictionary_append_tests": 13,
+        "producer_recovery_tests": 11,
+        "source_closure_tests": 3,
+        "activated_recovery_tests": 16,
+        "successor_history::tests": 4,
+        "successor_transition": 11
+      },
+      "executables_sha256": {
+        "native_components": "aa9373f3d5ad0eb46a0881b6e4dc5a7d541ea936e70b731eb4c9a4429af09754",
+        "ingest_bootstrap_probe": "e30447c74c45efcff87d07f98e0a0659af09ee3af076456fb1733bf57a249bc4",
+        "bigbrotr": "e8adf90e0f84f6a4de5d7eb36388ce016195d64180d29fdae64b1b5fcea8a7cd"
+      },
+      "protected_prior_elfs": 122,
+      "total_retained_elfs": 125,
+      "source_files": 1906,
+      "unchanged_prior_containers": 1350,
+      "resources": {
+        "source": "3f41881a766914b53691b1fccb659930e9f09b1f",
+        "tree": "967e0350e7a5aef01030e6ce3b05358f610cea4a",
+        "owner": "63273004ad9c4d138d53e7649e6467c2",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-3f41881",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "11eac24e56f6d3eeac5735c556caf719668542776cec8d6cd0361ebef01407ae"
+          },
+          {
+            "name": "native",
+            "id": "7b6dc1490b01049112acdb3b6c369b8fd95647ecb3dadc15ed7b4abe75f8c6b2"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-15T15:58:03.666765+00:00",
+        "inventory_changed": [],
+        "free_bytes_after": 31289307136,
+        "finished_at": "2026-10-15T16:00:17.516328+00:00"
+      },
+      "failure": "Only Clippy type_complexity at rocks/lineage_inputs.rs private triple return; compile and all103 component tests pass. Preserve aggregate FAIL. Root replaces private tuple with named InputScan fields; behavior and public signatures unchanged; followup NOT_RUN.",
+      "scope": "Seven new native recovery groups and four new PG pure tests included; no connected recovery."
     }
   }
 }
