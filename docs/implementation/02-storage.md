@@ -342,7 +342,7 @@ One owner serializes exact identity decisions for each writable directory.
   preserved; the corrected observational query bounds parallelism locally.
   Root replay and author custody audits pass.
   [Activated producer retirement](../reference/ingest-registration.md#activated-initial-producer-retirement-under-implementation)
-  is implemented at388a01a and under qualification: existing-CLOSING/native Event
+  is implemented at388a01a with bounded qualification: existing-CLOSING/native Event
   proof, existing-copy-only replay and additive0037 atomic twelve-row terminal
   transition. Root and independent persistent-boundary source reviews are complete;
   48 native and48 entrypoint/schema/migration tests plus Clippy pass on exact
@@ -384,7 +384,12 @@ One owner serializes exact identity decisions for each writable directory.
   finite10s operation does not qualify installed1s supervision. Combined0446653
   compiles both new probes with Clippy;48native/48entrypoint tests at388a are reused
   by exact compiled-input equivalence, not rerun. Genuine unresolved zero-request
-  claim refusal has reviewed source/pure/build PASS; actual engine remains NOT_RUN.
+  claim refusal08bded4 passes finiteControl8/installedsource9/retirement10: the sole
+  authentic queued job remains unchanged and names the veto after source closes0.
+  Native52/sequence63/four inputs remain exact. Independent raw replay12snapshots/
+  fourCLIstates/twoexternalanchors/36controls and custody audit pass. Original
+  pre-probe41255aa FAIL (copied inode comparison) and all26artifacts remain intact;
+  corrected copied-byte/type/mode verification preserves full original custody.
   Goal remains ACTIVE; repeated lifetimes remain separate. Archive selection
   refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated

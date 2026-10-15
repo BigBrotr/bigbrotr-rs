@@ -1,8 +1,9 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T09:55Z on Tux. Runtime Goal is ACTIVE; prior pause revoked.
-Workflow3811f36, installed SIGTERMfd40012 and corrected genuine import6e40fc5
-qualification, root replay and custody audit PASS. Main is the integrated state;
+Observed 2026-10-15T10:05:24+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
+corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
+Main is the integrated state;
 selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -13,11 +14,11 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `82d0f71`.
-Verified private push21618 is `0446653a95c9beb835c910a0e646611b02b3e458`;
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `08bded4`.
+Verified private push98542 is `08bded4f96b4ab3940d260631a21723b5fdb83f6`;
 remote has main only. Main contains both reviewed finite probes, dispatcher,
 custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
-current evidence/inventory/checkpoint update recording successful build and expiry.
+current evidence/inventory/checkpoint update recording corrected zero qualification.
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none is complete.
 [Storage task](02-storage.md), [registration contract](../reference/ingest-registration.md),
@@ -30,10 +31,32 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: commit the reviewed copy correction and original
-failure audit, then run a fresh exact revision using combined build0446653. No Rust change or rebuild
-is needed for the Python-only fixture fix. Distinct revisions avoid retained
-client collisions; never remove an earlier client or overwrite a failed result.
+Root's next bounded action: finish the repeatable-succession contract decision
+and affected-owner review, then update the existing owning contracts before
+implementation. Support both fully retired activated2 and retired unactivated
+empty2 as explicit genesis cases. Later prepared-but-unactivated attempts require
+recovery/retirement without adoption. Bound chain/frontier memory and work separately
+from the global64-input/32MiB spool, reserving room for recovery before creating
+another attempt. No schema3/epoch3 implementation or new format has begun.
+
+Root read complete ingest-registration, manifest/key format, native manifest,
+initial_writer and initial_handoff owners for this next boundary. recovery_review
+is read-only on chain budget and singleton/trigger hazards; remaining affected
+PG/native/installed consumers still need root review before edits. One versioned
+protocol should serve2-to-3 and3-to-4; no per-epoch classifier duplication or
+implicit unbounded-lifetime claim. Keep the existing plan and evidence authority.
+
+Corrected zero engine `/runs/ingest-activated-retirement-unresolved-engine-08bded4`:
+engine78863/root replay73034 joined0 PASS,09:55:11Z–09:55:38Z. Genuine typed
+Control8 activation/login/accept/queued claim, zero requests; source9 closes0,
+retirement10 names unresolved workflow veto. Job unchanged; native52/sequence63,
+four inputs intact.12finite snapshots/4CLIstates/2externalanchors/36controls;
+raw replay binds647files, SHA2f33043e5c74d264bef7306fe6342da681771f88ace0c40ecb89fa42cad23833.
+Result75aa923c/contextdee61b8f. Build0446653 reused unchanged. Custody14352 joined0
+PASS:1853engine/build files,78ELFs,1300nonborrowed projections,86artifactmanifest
+07488efa. Originalf12 and previous41255FAIL/26artifacts remain unchanged. Audit
+e86a4c28; independent raw replay is separate, not duplicated by custody audit;
+freeze10-15T09:56:00.110627Z1302containers SHA042cb5685d05686ba9034e5754255c7f91b20a0aeeb47e149564731713f4c0ab.
 
 Zero engine `/runs/ingest-activated-retirement-unresolved-engine-41255aa`:
 85068 joined1 FAIL,09:49:39Z–09:49:43Z, result a82718fbf255641221a39890bb757bfff5936e539d171393cf81c54eebfd42b1.
@@ -75,18 +98,20 @@ Freeze09:44:24.500777Z1300containers
 SHA1280424d676b1c43ebcc022d43e2813c360c842f4af3d75e86ce5d458e80c191.
 
 Zero-claim original530be40/custodyc9d3dd0 is integrated056a118/ae236bc with
-dispatch0342378. ActualControl8 activation/login/typed sole-job claim is expected
-with zero issued; source9 closes0, retirement10 names unresolved workflow. Pure
+dispatch0342378. Actual Control8 activation/login/typed sole-job claim has zero
+issued; source9 closes0, retirement10 names unresolved workflow. Pure
 12snapshots/fourCLIstates/36controls and16custody mocks PASS; combined build PASS;
-first real attempt failed before seed as above. Root also found wrapper return did not establish native exclusion;
+first attempt failed before seed; corrected actual engine/replay PASS above.
+Root also found wrapper return did not establish native exclusion;
 positive closure and both driver joins now gate reopening. Unknown custody retains
 SQL/input and native NOT_RUN. Complete affected source and typed consumers read.
 
-successor_restart_design completed the Python copy fix in its clean native worktree.
-recovery_review prepares independent zero raw replay in postgres worktree;
-cleanup_review completed expiry audit and now checks failed zero custody in its qualification worktree. No agent
-has engine/SQL/native mutation authority. Both qualification branches stay until
-reviewed outcomes are integrated and original commits archived.
+successor_restart_design is idle after the completed copy fix. recovery_review
+finished the independent zero raw replay and now reviews repeated-lifetime budgets
+and SQL compatibility read-only. cleanup_review is idle after both zero custody
+audits. No agent has engine/SQL/native mutation authority. Both qualification
+branches are retired; original refs/bundle and detached worktrees preserve all
+commits and ignored evidence.
 
 Corrected genuine import6e40fc5, workflow3811f36 and installed SIGTERMfd40012
 engine/root replay/custody PASS remain retained. Original import2750aa4 FAIL is
@@ -94,7 +119,7 @@ preserved with all156artifacts; timestamp spelling/ledger ordering were correcte
 in the reader only. Ordinary OPEN-to-closed source under schema37 was exercised
 with retirement grants present. Detailed identities and limits are in evidence.
 
-Remaining retirement gate: genuine unresolved zero-request claim refusal.
+Retirement actual refusal/expiry gates and custody audits pass within the recorded bounds.
 Repeated lifetimes, import logical closure, ACK/GC, epoch3, Archive restart and
 M1–M5 remain separate. Retirement reclaims no native capacity. Read-only succession
 mapping identifies a versioned append-only chain anchored1-to-2 and shared rules
@@ -138,6 +163,16 @@ SHA88e5f1bd0bd156419875d997ed9b1a05d9c2f7d963d5da1215032bf481cf30d9.
 No worktree changed; remote remains main only. Cumulative82 local/51 remote refs
 retired,38 worktrees detached; all retained worktrees/artifacts preserved.
 This executor is RETIRED_COMPLETE_DO_NOT_REPLAY.
+
+Qualified probe branch retirement10478 joined0 removed both final local refs.
+Only main remains locally and remotely. Expiryadd6df and zero8491379 original
+closures stay under `refs/archive/qualified-probes-20261015`; verified bundle
+`.research/branch-retirement-20261015/qualified-probes.bundle`,13,806,485bytes,
+SHAae3bb2bd834c570f9584c862c43872b71b4bee852cada112b9e779df76a921d9.
+Both worktrees detached at identical original commits with unchanged full censuses
+(2873/2253paths). Four original/integrated commit pairs and nine final source blobs
+reconciled. Cumulative84local/51remote refs retired,40detached, all93worktrees
+preserved. Executor RETIRED_COMPLETE_DO_NOT_REPLAY; no dataset/artifact deleted.
 
 ## Completed retirement evidence
 
@@ -232,7 +267,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after expiry09:43:51Z:41,206,956,032; remeasure before allocating. Small engines
+Free bytes after corrected zero09:55:38Z:41,029,115,904; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive
