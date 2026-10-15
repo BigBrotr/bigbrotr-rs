@@ -118,7 +118,7 @@ pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64) {
         "metadata_scratch_bytes":LINEAGE_SCRATCH_BYTES,"metadata_entry_bytes":LINEAGE_ENTRY_BYTES,
         "input_bytes":RetainedRequestInput::required_data_bytes(recovery_limits().input).unwrap(),
         "outcome_bytes":recovery_limits().required_data_bytes().unwrap(),
-        "effect_bytes":recovery_limits().event.required_dictionary_replay_data_bytes().unwrap(),
+        "effect_bytes":recovery_limits().required_data_bytes().unwrap(),
         "native_bytes":128*MIB,"transport_bytes":4*MIB,"observation_bytes":32*MIB,
         "operation_timeout_ms":10000,"frame_bytes":FRAME_BYTES}),
     );
@@ -474,14 +474,8 @@ fn replay_grants(budget: &ResourceBudget) -> (OwnedPermit, OwnedPermit) {
     )
 }
 fn effect_grant(budget: &ResourceBudget) -> OwnedPermit {
-    grant(
-        budget,
-        recovery_limits()
-            .event
-            .required_dictionary_replay_data_bytes()
-            .unwrap(),
-        0,
-    )
+    // The public replay grant covers the final dictionary/effect census too.
+    grant(budget, recovery_limits().required_data_bytes().unwrap(), 0)
 }
 fn recovery_limits() -> ProducerRecoveryLimits {
     ProducerRecoveryLimits {
