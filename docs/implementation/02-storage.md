@@ -372,8 +372,14 @@ One owner serializes exact identity decisions for each writable directory.
   authentic import execution. Installedfd40012 passes SIGTERM during the final
   job wait after COMMIT6: no COMMIT7 or target/native/input writes, exact holder
   and backend exclusion. Root3states/32controls and author custody audit pass.
-  Genuine import veto2750aa4 is prepared NOT_RUN; actual UTC expiry is source work
-  only. Goal remains ACTIVE; repeated lifetimes remain separate. Archive selection
+  Genuine import6e40fc5 passes real Serve8/source9/acquisition10/retirement11:
+  import claim is preserved and names the final veto; root13states/27controls
+  and independent custody audit pass. It also exercises ordinary OPEN source
+  closure under schema37 with retirement grants present. Earlier2750aa4 remains
+  FAIL due to oracle timestamp/row-order assumptions; its captures and corrected
+  offline replay are retained separately. Actual UTC expiry and unresolved
+  zero-request claim refusal are reviewed/in-progress probe work, NOT_RUN.
+  Goal remains ACTIVE; repeated lifetimes remain separate. Archive selection
   refuses until its lifetime-specific
   assumptions are replaced. Activated-zero old-loader refusals and unactivated
   positive history pass ata80710a (four processes/39snapshots/84controls); gap's
