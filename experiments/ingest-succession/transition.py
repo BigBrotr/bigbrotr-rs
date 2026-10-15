@@ -206,6 +206,45 @@ def run_sequence(pg, client, output, clone, directory, expected, report):
     return predecessor
 
 
+def legacy_installed_origin(basis, origin, retained):
+    """Explicit old installed receipt shape; never a fallback for newer reports.
+
+    The independently pinned whole verification binds its final state to the
+    still-retained SQL/native/input endpoint. Live catalog and physical origin
+    preservation remain the same outer checks as for succession origins.
+    """
+    assert origin['origin_format'] == 'legacy-installed'
+    assert set(retained['client']) == {'id', 'name'}
+    assert retained['client']['id'] == origin['client_id']
+    group, = retained['cases']
+    assert group['status'] == 'PASS'
+    previous, = [c for c in group['cases'] if c['name'] == origin['source_clone']]
+    assert previous['status'] == 'PASS'
+    final, = [c for c in previous['attempts'] if c['name'] == origin['final_case']]
+    assert final['status'] == 'PASS'
+    assert final['verification_sha256'] == origin['verification_sha256']
+    path = basis / origin['verification_file']
+    assert digest(path) == origin['verification_sha256']
+    context = read(path)
+    assert normalized(context['after']) == normalized(read(basis / origin['snapshot']))
+    assert context['native_after'] == read(basis / origin['native_file'])
+    saved_inputs = read(basis / origin['inputs_file'])
+    assert context['inputs_after'] == saved_inputs.get('inputs', saved_inputs)
+    response = context['response']
+    assert response['outcome'] == 'PROCESS_EXITED'
+    assert response['returncode'] == 0 and not response['stderr']
+    terminal = response['terminal']
+    assert terminal['exit_code'] == 0 and terminal['reaped'] is True and terminal['forced'] is False
+    assert terminal['config'] == '/lab/' + origin['database'] + '.toml'
+    assert terminal['prefix'] == '/lab/' + origin['final_case']
+    result, = [json.loads(line) for line in response['stdout'].splitlines()]
+    assert result['native'] == 'closed' and result['owner_release'] == 'committed'
+    assert result['state'] in ('activated-initial-retired', 'empty-attempt-retired')
+    assert result['producer_epoch'] == '2' and result['ready'] is False
+    assert origin['database'] in retained['databases']
+    return origin['client_id']
+
+
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=()):
     if suite is None:
@@ -218,10 +257,16 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         assert set(origin_for_clone) == set(suite.clones)
         assert set(origin_for_clone.values()) == {o['name'] for o in origin_specs}
         for origin in origin_specs:
-            assert set(origin) == {'name', 'run', 'subdirectory', 'database', 'status', 'source',
+            fields = {'name', 'run', 'subdirectory', 'database', 'status', 'source',
                 'owner', 'label', 'client_id', 'source_clone', 'final_case', 'catalog_sha256',
                 'result_sha256', 'snapshot', 'snapshot_sha256', 'native_file', 'native_sha256',
                 'inputs_file', 'inputs_sha256', 'store'}
+            if 'origin_format' in origin:
+                assert origin['origin_format'] == 'legacy-installed'
+                fields |= {'origin_format', 'verification_file', 'verification_sha256'}
+                assert origin['verification_file'] == origin['final_case'] + '-verification.json'
+                assert re.fullmatch(r'[0-9a-f]{64}', origin['verification_sha256'])
+            assert set(origin) == fields
             assert all(type(value) is str and value for value in origin.values())
             for field in ('name', 'run', 'subdirectory', 'source_clone', 'final_case'):
                 assert re.fullmatch(r'[a-z0-9-]+', origin[field]), field
@@ -249,7 +294,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     qualification = read(build.parent / 'qualification.json')
     assert qualification['status'] in ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
-        'PASS_SUCCESSION_RECOVERY_COMPONENTS')
+        'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
     for field in ('tree', 'source_manifest_sha256', 'lockfile_sha256'):
@@ -305,17 +350,20 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
             if explicit_origins:
                 assert retained['source'] == origin['source']
                 assert retained['owner'] == origin['owner'] and retained['label'] == origin['label']
-                assert type(retained['client']) is str and retained['client'] == origin['client_id']
-                assert not retained['unexpected_containers']
-                previous, = [c for c in retained['clones'] if c['name'] == origin['source_clone']]
-                assert previous['database'] == origin['database'] and previous['status'] == 'PASS'
-                assert previous['final_case'] == origin['final_case']
-                assert previous['directory'] + '/store' == origin['store']
-                final, = [c for c in retained['cases'] if c['name'] == origin['final_case']]
-                assert final['status'] == 'PASS' and final['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
-                assert final['returncode'] == 0
-                assert hashlib.sha256(previous['final_catalog'].encode()).hexdigest() == origin['catalog_sha256']
-                previous_client = retained['client']
+                if origin.get('origin_format') == 'legacy-installed':
+                    previous_client = legacy_installed_origin(basis, origin, retained)
+                else:
+                    assert type(retained['client']) is str and retained['client'] == origin['client_id']
+                    assert not retained['unexpected_containers']
+                    previous, = [c for c in retained['clones'] if c['name'] == origin['source_clone']]
+                    assert previous['database'] == origin['database'] and previous['status'] == 'PASS'
+                    assert previous['final_case'] == origin['final_case']
+                    assert previous['directory'] + '/store' == origin['store']
+                    final, = [c for c in retained['cases'] if c['name'] == origin['final_case']]
+                    assert final['status'] == 'PASS' and final['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
+                    assert final['returncode'] == 0
+                    assert hashlib.sha256(previous['final_catalog'].encode()).hexdigest() == origin['catalog_sha256']
+                    previous_client = retained['client']
             else:
                 previous_client = retained['client']['id']
             old, = [c for c in containers if c['Id'] == previous_client]
