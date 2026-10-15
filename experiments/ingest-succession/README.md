@@ -1,0 +1,45 @@
+# Repeatable succession portable fixtures
+
+`portable-handoff-v2.json` is generated independently from the field tables in
+[the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
+at revision `12c3534c6c970839a4371fc00b4ac3eac6730cb0`. The generator uses Python
+standard-library byte construction, `struct` and SHA-256. It neither imports a
+product codec nor executes Rust, SQL or a native store.
+
+Run the deterministic selfcheck from the repository root:
+
+```sh
+python3 -B experiments/ingest-succession/generate.py
+```
+
+`--write` regenerates the checked-in JSON. Default execution compares all generated
+bytes with that file. Selfchecks inspect field offsets, lengths, key identities,
+chain links, hashes and profile arithmetic. They do not execute the product's
+decoder or claim that it rejects the malformed vectors.
+
+The JSON contains:
+
+- `valid`: locally valid value/key bytes and explicit decoded fields. Unsigned
+  64-bit fields are decimal strings. `profile_epoch_admitted` tests only the
+  target epoch cap, not native authority, registry consistency or namespace
+  eligibility. Empty/sparse namespace vectors are codec cases; connected work
+  independently requires all nine kinds. High-epoch vectors are not complete
+  historical lineages.
+- `invalid`: concrete local format/transition violations with a base vector and
+  reason. Product tests should reject each value. `truncation_sweeps` names valid
+  vectors whose every proper byte prefix must also be rejected.
+- `chain_checks`: exact legacy-to-v2 and v2-to-v2 links, plus locally valid values
+  with a wrong parent hash, slot or adjacent manifest. These negative cases need
+  the retained parent; they are not local codec errors.
+- `closure_vectors`: independently assembled source/empty closure preimages and
+  hashes. Request/outcome bytes are synthetic hash inputs, not decodable positive
+  outcomes or admitted scientific facts. Legacy closure scalars are explicitly
+  unverified fixture data. Activated-zero and empty-zero use distinct domains.
+- `profile`: the separate membership, compact-metadata and input-spool ceilings.
+  Epoch255 fits32,640 memberships; epoch256 needs32,896 and refuses even though
+  its metadata formula equals256KiB. Formula arithmetic is not an allocation,
+  transport-buffer, disk/RSS or recoverability measurement.
+
+Both terminal kinds are portable data only. No fixture proves retirement,
+activation absence, exclusivity, root/sequence binding, positive replay, workflow
+completion or an installed journey. Those boundaries remain separately required.
