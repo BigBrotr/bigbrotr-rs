@@ -74,3 +74,11 @@ explicit migration0038 and the additional privileges in `schema_grants.sql`.
 Its negative DELETE/TRUNCATE cases require separate temporary fixture privileges
 on those copies. It checks complete control rows, transaction boundaries and
 terminal deltas; it cannot prove native effects, positive replay or writer custody.
+
+`history_replay.py RUN_ROOT` independently checks the three finite connected-history
+cases. It binds original terminal2 captures, migration38 output, full SQL/xmin,
+native rows/sequence, inputs, Control refresh/end and complete driver observations.
+Literal receipt/closure construction is separate from the Rust implementation.
+The reader only reads retained artifacts; it never starts an engine or repairs a
+capture. Artificial reader controls are separately labeled and do not qualify a
+connected product run. See the current checkpoint for actual execution status.

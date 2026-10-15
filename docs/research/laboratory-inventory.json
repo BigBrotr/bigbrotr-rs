@@ -51127,7 +51127,7 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "BACKEND_CONTEXT_FIX_SOURCE_REVIEWED_REBUILD_PENDING",
+    "status": "SQL_AND_NATIVE_HISTORY_COMPONENTS_PASS_CONNECTED_HISTORY_PENDING",
     "observed_at": "2026-10-15T12:33:28.165387+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -52514,6 +52514,33 @@
       "status": "SOURCE_REVIEWED_NOT_INTEGRATED",
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
+    },
+    "ongoing": "Finish/review connected harness and run3real terminal2 fresh copies with qualified59ce0fd probe and independent146f7ce reader. PG preparation/gap/empty consumer source work continues; activation/writer/installed incomplete.",
+    "history_reader": {
+      "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
+      "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
+      "main": "146f7ce",
+      "sha256": "0a1c8b850f10206b4750e43a476a7808a69393a68e95d5b12305962974111b30",
+      "review": "Root read complete625-line independent reader, including literal receipts/closures,75-table/xmin transitions, migration/source pins and raw transport binding. No product codec/engine imported.",
+      "pure": {
+        "sessions": [
+          20866,
+          52183
+        ],
+        "exit_codes": [
+          0,
+          0
+        ],
+        "contexts": 3,
+        "snapshots": 55,
+        "semantic_counterexamples": 39,
+        "file_counterexamples": 10,
+        "bound_files": 54,
+        "manifest": "/home/tux/bigbrotr-rs/.research/successor-history-oracle-20261015/.research/history-reader-selfcheck-20261015/manifest-v1.json",
+        "manifest_sha256": "930cf9f2ead53e2967dc377d6fb2a6278279c126ad3ec728201d7a0786662a69",
+        "root_verification": "All manifest file hashes and actual result controls checked; root did not rerun artificial generator"
+      },
+      "scope": "Pure reader controls only, with artificial Control observations; actual connected history NOT_RUN."
     }
   }
 }
