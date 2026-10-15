@@ -118,6 +118,10 @@ pub use initial_handoff::{
 mod initial_writer;
 pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 
+#[path = "lineage.rs"]
+mod lineage;
+pub use lineage::{RetainedLineage, RetainedLineageEntry, RetainedTerminalKind};
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;
