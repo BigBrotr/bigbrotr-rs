@@ -188,9 +188,15 @@ def specification(case):
     return origin, retry, SHAPES[index // 2]
 
 
-def science(pg, native, inputs, origin):
-    """Reconstruct every receipt/closure, including old-than-parent dependencies."""
+def science(pg, native, inputs, origin, *, source_purpose=False):
+    """Reconstruct every receipt/closure, including old-than-parent dependencies.
+
+    Source purpose additionally checks a closed head against its retained exact
+    digest/cut and existing copies. Ordinary recovery remains source-open only.
+    """
+    assert type(source_purpose) is bool
     head, issued, cut, *_ = SHAPES[CLONES.index(origin)]
+    source_closed = source_purpose and only(pg['source_streams'], owner_epoch=head)['state'] == 'closed'
     values = native_map(native)
     legacy = only(pg['initial_ingest_successions'])
     ds, resource, slot = (binary(legacy[k]) for k in ('dataset_id', 'owner_resource_id', 'producer_slot_id'))
@@ -307,7 +313,7 @@ def science(pg, native, inputs, origin):
                 assert outcome['request_digest'] == request['request_digest'] and outcome['manifest_sha256'] == request['manifest_sha256']
                 assert outcome['policy_epoch'] == policy and outcome['outcome_kind'] == outcome_kind
             else:
-                assert origin == 'outcome-before-loss' and (epoch, n) == (head, 1)
+                assert not source_closed and origin == 'outcome-before-loss' and (epoch, n) == (head, 1)
             requests[epoch, n] = dict(receipt=receipt, kind=outcome_kind, policy=policy)
             prefix += be(n) + binary(request['request_digest']) + bytes.fromhex(sha(receipt))
         digest = sha(prefix + be(source_cut))
@@ -320,8 +326,13 @@ def science(pg, native, inputs, origin):
             assert source['state'] == 'closed' and source['closure_digest'] == '\\x' + digest
             assert source['last_complete_sequence'] == source_cut and producer['state'] == 'retired'
         else:
-            assert source['state'] == 'open' and source['closure_digest'] is None and source['last_complete_sequence'] is None
-            assert producer['state'] in ('open', 'closing')
+            if source_closed:
+                assert source['last_complete_sequence'] == source_cut and source['closure_digest'] == '\\x' + digest
+                assert type(source['closed_at_us']) is int and source['closed_at_us'] > 0
+                assert producer['state'] == 'closing'
+            else:
+                assert source['state'] == 'open' and source['closure_digest'] is None and source['last_complete_sequence'] is None
+                assert producer['state'] in ('open', 'closing')
             assert only(pg['ingest_activations'], target_epoch=head)
         summaries.append(dict(epoch=epoch, terminal_kind=kind, resolved_requests=count,
             last_complete_sequence=source_cut, digest=digest,
