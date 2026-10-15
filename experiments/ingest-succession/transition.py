@@ -69,7 +69,7 @@ def closed_and_joined(response, database, *, control_failed=False,
     assert type(control_failed) is bool
     assert completion_event in ('lineage-transition-complete', 'lineage-live-complete',
                                 'lineage-recovery-complete', 'lineage-source-complete',
-                                'lineage-acquisition-complete')
+                                'lineage-acquisition-complete', 'lineage-retirement-complete')
     assert response['returncode'] == 0
     events = [json.loads(line) for line in response['stdout'].splitlines()]
     assert not any(e.get('event') == 'lineage-history-timeout' for e in events)
