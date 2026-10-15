@@ -1281,5 +1281,6 @@ authenticated acquisition, historical/new/retried signed events, provenance on
 and off, renewal beyond the original deadline and joined SIGTERM. Original SQL,
 native data and input attribution remain independently checked. This is the first
 continuous installed writer consumer, not completion of installed recovery,
-source/workflow closure, retirement, tails, capacity or Archive restart. Its build
-and actual installed qualification are still NOT_RUN.
+source/workflow closure, retirement, tails, capacity or Archive restart. Its
+exact4cfac91 build passes20 focused Serve/entrypoint tests and CLI/probe/Clippy;
+actual installed qualification remains NOT_RUN.

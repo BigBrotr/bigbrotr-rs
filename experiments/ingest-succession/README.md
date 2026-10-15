@@ -242,3 +242,12 @@ terminal receipt and timestamp. This finite qualification uses the existing
 Rust tests. Reuse of prior component tests requires unchanged product sources.
 Actual run status belongs to the checkpoint; installed lifetimes, additional
 failure boundaries, capacity and RSS remain separate obligations.
+
+The `ingest-succession-installed` build profile compiles the installed CLI and
+finite inspection probe, runs the Serve ownership/supervision unit tests and
+actual early-entrypoint checks, and runs Clippy. It preserves the binary test
+executable separately from the normal CLI. The exact4cfac91 run passes20 tests
+and all four commands; the existing evidence register binds its source and
+artifacts. Unchanged native/PG component results retain their earlier exact
+scope. This build does not execute the three installed HTTP/Sync lifetimes or
+qualify their renewal, provenance or shutdown against actual engines.

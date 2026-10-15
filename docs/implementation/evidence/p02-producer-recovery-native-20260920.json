@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "INSTALLED_SUCCESSOR_SOURCE_BUILD_NOT_RUN",
+      "status": "INSTALLED_SUCCESSOR_BUILD_PASS_ENGINE_NOT_RUN",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave.",
+      "ongoing": "Complete and review three-origin installed harness/semantic reader/raw capture binder; then exact-source engine qualification with unchanged4cfac91 binaries.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -31050,6 +31050,70 @@
           "Lifecycle static reader first no-index exit-code assumption failure preserved separately; no product failure."
         ],
         "next_action": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave."
+      },
+      "installed_successor_build": {
+        "status": "PASS_INSTALLED_COMPONENTS",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91",
+        "source": "4cfac916ba81b2b73d5e117f1ad73f2240102e7c",
+        "tree": "602f928149b2584b0e69d06abf1b31a06fb5a040",
+        "preparation_session": "59862 joined0",
+        "build_session": "28171 joined0",
+        "audit_session": "71762 joined0",
+        "started_at": "2026-10-15T18:56:19.492088+00:00",
+        "finished_at": "2026-10-15T18:58:31.577743+00:00",
+        "audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91/audit-root/audit-v1.json",
+          "sha256": "6e14c82e3a98c382cfffacef335a86add4d4c23abd8a368604db0345592258d3"
+        },
+        "source_files": 1934,
+        "new_tests_passed": 20,
+        "test_counts": {
+          "serve_owner": 13,
+          "control_runtime_entrypoint": 7
+        },
+        "commands": {
+          "collected": 4,
+          "executed": 4,
+          "failed": 0,
+          "not_run": 0
+        },
+        "compiler_diagnostics": [],
+        "protected_elfs_before": 139,
+        "new_elfs": {
+          "bigbrotr": "9338a528ddc5660c5189feb2556890f15f3d7059de5c76e09f8a0b4a0ba24588",
+          "control_runtime_entrypoint": "6dc38156d0c59fb6aa38cadc912cd54ab6a59b5a473611742bd739158f85eed5",
+          "serve_owner": "917e67d2a8bcef1a363afd89f32ef2737eda16eb79284111c82573aff6ee1fc4",
+          "ingest_bootstrap_probe": "bf467b625995c811930ec242466cb1c2456b116f96d0fc9c0c0b4c3bf0a9555a"
+        },
+        "protected_elfs_after": 143,
+        "unchanged_containers": 1368,
+        "owner": "bae3bd989927fa093b7aaa4840d8eac3",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "b72f2b8321c5f4131625cd87a8d9bff0fc80ea9b2c81cb0814c31a83145be4e5"
+          },
+          {
+            "name": "native",
+            "id": "f21726fc3811bc70afe1570a5d132923d935f28cf86cc97893fae1e2f7ff78ec"
+          }
+        ],
+        "terminal": "Both0/exited/PID0/noOOM; all1368prior projections unchanged",
+        "previous_components": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bf2c33d/audit-root/audit-v1.json",
+          "sha256": "fba88a00ef3c295afb39fad80d1180e22925b37af37ad92233809940d0ed68c8",
+          "source": "bf2c33d24faf00689b959456216146ee8b779930",
+          "tests": 122
+        },
+        "engine": "NOT_RUN",
+        "limits": [
+          "Custody PASS preserves actual build FAIL/NOT_RUN and never substitutes for qualification.",
+          "New test counts/names come from actual logs; the earlier 122 storage component tests were not rerun.",
+          "Earlier tests apply only to the exact unchanged kernel/fixture/contract/dependency inputs listed here; installed interfaces changed.",
+          "The lifecycle helper was authored by this reviewer; this is source/artifact/log custody, not independent semantic proof.",
+          "Installed PostgreSQL/HTTP/Sync lifetimes and system journeys remain NOT_RUN by this build profile.",
+          "No compiler, retained executable, native/SQL engine, or mutable cache is opened by this auditor."
+        ]
       }
     }
   }

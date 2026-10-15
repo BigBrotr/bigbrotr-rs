@@ -398,8 +398,9 @@ inputs. Preserve all state after an interruption or unknown outcome. Installed
 recovery of this new lifetime remains a separate responsibility; do not retry
 activation against an unretired head. The [repeatable succession contract](ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
 and existing recovery evidence track implementation and qualification separately.
-This installed path has not yet been built or exercised; component and finite
-probe results do not qualify it.
+The exact4cfac91 build passes20 focused Serve/entrypoint tests, CLI/probe
+compilation and Clippy. Actual installed PostgreSQL/HTTP/Sync qualification is
+still NOT_RUN; component and finite probe results do not qualify that journey.
 
 ## Recovering the activated successor
 

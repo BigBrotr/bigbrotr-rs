@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T18:55:17.969649+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
+Observed 2026-10-15T19:00:18.176414+00:00 on Tux. Goal ACTIVE; earlier pause revoked.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -12,15 +12,17 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD4e26b9e063355f795e83b373469aa440bff494e8.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD4cfac916ba81b2b73d5e117f1ad73f2240102e7c.
 Last verified remote1514d6d: push56803joined0/c7046f, independentd79c4a.
 Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
-Root CLI/module/Archive getters/entrypoint tests/docs/build profile and this
-source checkpoint pending coherent commit. No merge/rebase. Actual build NOT_RUN.
+Root CLI/module/Archive getters/entrypoint tests/docs/build profile committed
+as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; main ahead of remote, no merge/rebase.
+Exact installed build28171/prepare59862/audit71762 joined0. Build PASS20tests;
+result/evidence checkpoint pending commit/push.
 Three active installed refs/132worktrees; all former refs already archived and
 retired. Root alone owns integration/build/cache/engines. Harness/reader agent
-works in installed-successor-engine-20261015; lifecycle agent drafts ignored
-build auditor, dispatch agent's independent lifecycle source review complete.
+works in installed-successor-engine-20261015; lifecycle agent's ignored build auditor complete; dispatch agent now implements
+independent raw capture binder in its assigned WT.
 
 ## Active task and next action
 
@@ -33,11 +35,11 @@ Owners: [storage task](02-storage.md),
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: commit the complete installed source, prepare exact isolated
-`ingest-succession-installed` build and run focused Serve/entrypoint tests plus
-CLI/probe/Clippy. Audit actual artifacts and terminal resource custody. Then
-integrate/qualify the three-case HTTP/Sync harness on real terminal2/n copies.
-No installed process/engine has run yet.
+Next bounded action: integrate/review three-case HTTP/Sync harness, semantic
+reader and raw binder; qualify real terminal2/n copies with the exact unchanged
+4cfac91 CLI/probe. No new compiler unless product source changes.
+Build root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`,
+exact4cfac91/tree602f9281;139priorELFs protected. No installed process/engine has run yet.
 
 ## Current installed successor source
 
@@ -55,8 +57,12 @@ independent review. Root sourcebinding41537c61 verifies original/integrated blob
 10lifecycle artifacts, dispatchmanifesteecebf10 and exact review hashes.
 Lifecycle43f17711/staticresultd0a73ad0, manifest305aa2a0; original static reader's
 no-index exit-code assumption FAIL preserved. Scoped rustfmt/diff checks PASS;
-11older build-profile command plans identical, new focused plan checked without
-executing Cargo. No new Rust tests, compilation or runtime claimed yet.
+11older build-profile command plans identical. Exact4cfac91 build then passes
+20actual tests (13Serve/7entrypoint), CLI/probe compilation and Clippy, four checks,
+zero diagnostics. Audit6e14c82e binds1934source files,139prior+4new=143ELFpaths and
+1368unchanged prior containers. Both fetch/native exit0/PID0/noOOM; all handles
+joined. Build18:56:19Z–18:58:31Z. Authenticated bf2c122 storage component results
+remain bound only to unchanged kernel/fixture/dependency inputs. EngineNOT_RUN.
 
 Resource overlap: native128MiB, input allowance24MiB, lineage256KiB and
 preparation8KiBdata/native plus real Control/replay/selectedSync preflight.
@@ -256,14 +262,16 @@ No artifact/worktree/dataset/container deleted.
 Fault ref retirement37601joined0: bundleafa3457b,16,042,489bytes, completeoriginal
 histories; all tracked/ignored/link/stat censuses unchanged, three WTs detached.
 Fresh read-only observation 2026-10-15T18:55:17.969649+00:00: 1368containers,
-all BigBrotr stopped, six unrelated services active; free27316985856bytes.
+all BigBrotr stopped, six unrelated services active; free27316985856bytes at that
+prebuild observation. Postbuild1370containers; both new build containers stopped,
+free27126202368bytes at terminal report.
 All prior build/engine/replay/audit/ref-retirement handles terminal. Installed source
-integrated locally; new build/engine NOT_RUN. Borrowed PG7177550705c49, owner5e69b0f060b1607c25230d1dbd3e5608,
+integrated locally; build PASS20tests; installed engine NOT_RUN. Borrowed PG7177550705c49, owner5e69b0f060b1607c25230d1dbd3e5608,
 `/runs/relay-source-recheck-e06f580/pg`, PG16.15/1.5GiB2CPU64MiBshm.
 
 Root-only compiler cache `/runs/network-1154757/out/build/{target,cargo-home}`,
 owner8b21a13162699a6038154874c2ac89da, exclusive `.compiler-cache.lock`.
-139protectedELFs outside cache. Reserve12GiBbuild/2GiBsmallengine;64GiB+577MiB
+143protectedELFpaths outside cache. Reserve12GiBbuild/2GiBsmallengine;64GiB+577MiB
 export reserve unavailable. Never lower reserves/delete evidence. Remeasure current
 ownership/state/headroom before reuse. Preserve unrelated services/host activity.
 

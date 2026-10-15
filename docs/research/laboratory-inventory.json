@@ -51717,7 +51717,7 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "INSTALLED_SUCCESSOR_SOURCE_BUILD_NOT_RUN",
+    "status": "INSTALLED_SUCCESSOR_BUILD_PASS_ENGINE_NOT_RUN",
     "observed_at": "2026-10-15T18:55:17.969649+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -52786,7 +52786,7 @@
       "scope": "One local redundant ref only; no worktree, ignored artifact, lab, container or dataset removed",
       "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY"
     },
-    "next_build": "ingest-succession-installed exact committed source; not prepared or started",
+    "next_build": "No new compiler needed unless product changes; use qualified4cfac91 binaries for docs/experiment-only engine source.",
     "schema_backend_component": {
       "source": "6b15deeabab9f082824ce70aa8d1eb691d072d8b",
       "tree": "b26da0ea752e631e622276b8d9b1d10d16bca4b1",
@@ -53187,7 +53187,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave.",
+    "ongoing": "Complete and review three-origin installed harness/semantic reader/raw capture binder; then exact-source engine qualification with unchanged4cfac91 binaries.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -59569,8 +59569,8 @@
       "next_action": "Commit complete installed source, prepare exact isolated installed build, run focused serve/entrypoint checks and CLI/probe/Clippy; retain and audit result before actual engine wave."
     },
     "installed_successor_resources": {
-      "observed_at": "2026-10-15T18:55:17.969649+00:00",
-      "container_count": 1368,
+      "observed_at": "2026-10-15T19:00:18.176414+00:00",
+      "container_count": 1370,
       "active": [
         {
           "id": "03469e9876eb150f7889a6ea7823ec34e7e28c04ab75aef6d03746d1f03ea088",
@@ -59597,14 +59597,17 @@
           "name": "/tgdataset-mongo"
         }
       ],
-      "free_bytes": 27316985856,
+      "free_bytes": 27110563840,
       "registered_worktrees": 132,
       "local_branches": [
         "implementation/installed-successor-dispatch",
         "implementation/installed-successor-lifecycle",
         "main",
         "qualification/installed-successor-engine"
-      ]
+      ],
+      "protected_elfs": 143,
+      "build_state": "stopped-retained; all handles joined",
+      "engine": "NOT_RUN"
     },
     "installed_successor_worktrees": [
       {
@@ -59625,6 +59628,70 @@
         "owner": "recovery_review",
         "status": "harness/reader implementation in progress; no engine/build"
       }
-    ]
+    ],
+    "installed_successor_build": {
+      "status": "PASS_INSTALLED_COMPONENTS",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91",
+      "source": "4cfac916ba81b2b73d5e117f1ad73f2240102e7c",
+      "tree": "602f928149b2584b0e69d06abf1b31a06fb5a040",
+      "preparation_session": "59862 joined0",
+      "build_session": "28171 joined0",
+      "audit_session": "71762 joined0",
+      "started_at": "2026-10-15T18:56:19.492088+00:00",
+      "finished_at": "2026-10-15T18:58:31.577743+00:00",
+      "audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91/audit-root/audit-v1.json",
+        "sha256": "6e14c82e3a98c382cfffacef335a86add4d4c23abd8a368604db0345592258d3"
+      },
+      "source_files": 1934,
+      "new_tests_passed": 20,
+      "test_counts": {
+        "serve_owner": 13,
+        "control_runtime_entrypoint": 7
+      },
+      "commands": {
+        "collected": 4,
+        "executed": 4,
+        "failed": 0,
+        "not_run": 0
+      },
+      "compiler_diagnostics": [],
+      "protected_elfs_before": 139,
+      "new_elfs": {
+        "bigbrotr": "9338a528ddc5660c5189feb2556890f15f3d7059de5c76e09f8a0b4a0ba24588",
+        "control_runtime_entrypoint": "6dc38156d0c59fb6aa38cadc912cd54ab6a59b5a473611742bd739158f85eed5",
+        "serve_owner": "917e67d2a8bcef1a363afd89f32ef2737eda16eb79284111c82573aff6ee1fc4",
+        "ingest_bootstrap_probe": "bf467b625995c811930ec242466cb1c2456b116f96d0fc9c0c0b4c3bf0a9555a"
+      },
+      "protected_elfs_after": 143,
+      "unchanged_containers": 1368,
+      "owner": "bae3bd989927fa093b7aaa4840d8eac3",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "b72f2b8321c5f4131625cd87a8d9bff0fc80ea9b2c81cb0814c31a83145be4e5"
+        },
+        {
+          "name": "native",
+          "id": "f21726fc3811bc70afe1570a5d132923d935f28cf86cc97893fae1e2f7ff78ec"
+        }
+      ],
+      "terminal": "Both0/exited/PID0/noOOM; all1368prior projections unchanged",
+      "previous_components": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bf2c33d/audit-root/audit-v1.json",
+        "sha256": "fba88a00ef3c295afb39fad80d1180e22925b37af37ad92233809940d0ed68c8",
+        "source": "bf2c33d24faf00689b959456216146ee8b779930",
+        "tests": 122
+      },
+      "engine": "NOT_RUN",
+      "limits": [
+        "Custody PASS preserves actual build FAIL/NOT_RUN and never substitutes for qualification.",
+        "New test counts/names come from actual logs; the earlier 122 storage component tests were not rerun.",
+        "Earlier tests apply only to the exact unchanged kernel/fixture/contract/dependency inputs listed here; installed interfaces changed.",
+        "The lifecycle helper was authored by this reviewer; this is source/artifact/log custody, not independent semantic proof.",
+        "Installed PostgreSQL/HTTP/Sync lifetimes and system journeys remain NOT_RUN by this build profile.",
+        "No compiler, retained executable, native/SQL engine, or mutable cache is opened by this auditor."
+      ]
+    }
   }
 }
