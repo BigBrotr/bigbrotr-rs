@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:21:09.508684+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:25:35.678571+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,10 +14,10 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `30beaf3`.
-Verified private push95774 is `03bdcbef3834636b4c5f10329e4611ac5cc0521a`;
-remote main was independently read at that exact revision. Inspector after that
-push is locally qualified; root records its result before the next private push.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `1c7b49d`.
+Verified private push64046 is `277f305b2e63d2e1e9f30ee15238e24e945d4b89`;
+remote main was independently read at that exact revision. SQL0038 originalc4daa50
+is integrated1c7b49d locally; root's catalog/runner/grant changes await this commit.
 Only main is remote. No merge/rebase pending. The completed codec qualification
 and fixture ref retirement are committed and privately pushed.
 
@@ -32,10 +32,15 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: integrate frozen SQL0038/fixture c4daa50 with the
-migration catalog/manifest and explicit scoped grants, then qualify its SQL-only
-journey on isolated copies of both retired epoch2 origins. Read affected registry,
-CLI/schema tests and execution owners before edits; no native authority is claimed.
+Root's next bounded action: exact-source `ingest-succession-schema` build,
+covering control_schema/migrate_entrypoint, literal fixture and Clippy, retaining
+its actual CLI for subsequent isolated SQL-only copies of both retired epoch2
+origins. New preparation `.research/repeatable-succession-schema-prepare-20261015.py`
+is NOT_RUN;84 protected executables and12GiB reserve. No SQL engine is active.
+Root read complete final0038/414-line fixture, existing migration catalog/schema
+and early CLI tests, build runners and PG lab utility. New grants explicitly list
+three SELECT/two INSERT relations and13 helpers; destructive fixture grants are
+separate. Registry migration is integrated; typed consumers remain unimplemented.
 
 Corrected exact30beaf3 lineage build26704 joined0 PASS,11:18:44Z–11:19:18Z:
 7lineage+8request-input+7legacy-handoff=22 Rust tests, literal fixture and Clippy.
@@ -64,11 +69,11 @@ Root read complete new owners/tests and affected request-input/legacy fixture
 owners. Native agent implements ordered positive replay under the same grant;
 no structural observation grants a writer.
 
-SQL0038 and fixture frozen in originalc4daa50, author WT clean/idle. Independent
+SQL0038 and fixture frozen originalc4daa50→integrated1c7b49d, author WT clean/idle. Independent
 AI source review closed migrationSHA5d72e598 after claim-before-activation/order,
 prelock race, unactivated lease, recovery0 and legacy1 timestamp fixes. Same flat
-checker supports terminal head2. Actual SQL/catalog/grants/Rust integration and
-fixture execution remain NOT_RUN; root owns these next. Topology count derives
+checker supports terminal head2. Catalog/schema-test/scoped-grant integration is source-reviewed; compiled checks,
+actual SQL/ACL/fixture execution and typed Rust lifecycle remain NOT_RUN. Topology count derives
 from E/E+1 shape; legacy0001 still requires initial0, so no arbitrary-offset
 engine support is claimed. No SQL branch is retired before reconciliation.
 

@@ -43,3 +43,16 @@ The JSON contains:
 Both terminal kinds are portable data only. No fixture proves retirement,
 activation absence, exclusivity, root/sequence binding, positive replay, workflow
 completion or an installed journey. Those boundaries remain separately required.
+
+`native.py` runs exact-source codec, structural lineage (`lineage`) or migration
+catalog/early CLI (`schema`) checks in the existing isolated laboratory. Schema
+mode retains its CLI and build identity for a separate actual PostgreSQL run;
+passing that build does not execute SQL. The current checkpoint and evidence own
+completed run identities and failures.
+
+`../control-migrations/repeatable_succession_cases.sql` is a separate SQL-only
+fixture. It requires disposable copies of both genuinely retired epoch2 origins,
+explicit migration0038 and the additional privileges in `schema_grants.sql`.
+Its negative DELETE/TRUNCATE cases require separate temporary fixture privileges
+on those copies. It checks complete control rows, transaction boundaries and
+terminal deltas; it cannot prove native effects, positive replay or writer custody.

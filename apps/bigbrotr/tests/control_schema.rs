@@ -13,6 +13,7 @@ fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_
         (34, 35, "0035_activated_source_closure.sql"),
         (35, 36, "0036_activated_acquisition_abandonment.sql"),
         (36, 37, "0037_activated_initial_retirement.sql"),
+        (37, 38, "0038_repeatable_ingest_succession.sql"),
     ] {
         let applied: Vec<_> = plan(&[], previous)
             .unwrap()
@@ -39,8 +40,8 @@ fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_
 }
 
 #[test]
-fn activated_retirement_keeps_earlier_floors_but_validates_its_whole_ledger() {
-    let mut applied: Vec<_> = plan(&[], 37)
+fn repeatable_succession_keeps_earlier_floors_but_validates_its_whole_ledger() {
+    let mut applied: Vec<_> = plan(&[], 38)
         .unwrap()
         .pending
         .iter()
@@ -53,21 +54,21 @@ fn activated_retirement_keeps_earlier_floors_but_validates_its_whole_ledger() {
             writer_floor: m.writer_floor,
         })
         .collect();
-    for previous in [23, 28, 29, 31, 32, 34, 35, 36, 37] {
+    for previous in [23, 28, 29, 31, 32, 34, 35, 36, 37, 38] {
         assert!(migrations::require_applied(&applied, previous).is_ok());
     }
-    assert!(plan(&applied, 37).unwrap().pending.is_empty());
+    assert!(plan(&applied, 38).unwrap().pending.is_empty());
     let last = applied.pop().unwrap();
     assert_eq!(
-        migrations::require_applied(&applied, 37),
-        Err(MigrationError::MissingPrerequisite(37))
+        migrations::require_applied(&applied, 38),
+        Err(MigrationError::MissingPrerequisite(38))
     );
-    assert!(migrations::require_applied(&applied, 36).is_ok());
+    assert!(migrations::require_applied(&applied, 37).is_ok());
     applied.push(last);
     applied.last_mut().unwrap().checksum[0] ^= 1;
     assert_eq!(
         migrations::require_applied(&applied, 23),
-        Err(MigrationError::ChecksumMismatch(37))
+        Err(MigrationError::ChecksumMismatch(38))
     );
 }
 

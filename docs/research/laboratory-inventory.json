@@ -51127,8 +51127,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "PORTABLE_AND_LINEAGE_COMPONENTS_PASS_SQL_FROZEN_CONNECTED_INCOMPLETE",
-    "observed_at": "2026-10-15T11:21:09.508684+00:00",
+    "status": "LINEAGE_COMPONENT_PASS_SQL_INTEGRATED_SCHEMA_BUILD_NOT_RUN",
+    "observed_at": "2026-10-15T11:25:35.678571+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51156,7 +51156,7 @@
         "path": "/home/tux/bigbrotr-rs/.research/repeatable-succession-postgres-20261015",
         "branch": "implementation/repeatable-succession-postgres",
         "owner": "recovery_review",
-        "scope": "Frozen c4daa50 SQL0038/fixture, clean and idle; root integration/runtime pending",
+        "scope": "Original c4daa50 integrated1c7b49d; frozen clean and idle pending runtime and branch reconciliation",
         "created_from": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
         "preserve_ignored_artifacts": true
       }
@@ -51200,6 +51200,14 @@
         "status": "PASS_STRUCTURAL_NATIVE_AND_SIDECAR_CENSUS",
         "scope": "Read-only compact metadata/native/sidecar census; no positive lineage or connected authority",
         "correction": "ad08e5a89ba9ccb448df69976564a6beebbeb111"
+      },
+      "sql_family": {
+        "original": "c4daa50c0c275955c792662ce8e243bbd2163692",
+        "main": "1c7b49d",
+        "migration_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
+        "fixture_sha256": "9b3fcbdc6dc8a29c3d9627647d091d971a7db70e9111514bd156a82f844fd70e",
+        "source_review": "Author and independent cleanup_review source review; root complete integrated migration/fixture read. No runtime proof.",
+        "status": "SQL_NOT_RUN"
       }
     },
     "completed_build": {
@@ -51447,6 +51455,13 @@
       "free_bytes_after": 40430948352,
       "preparation_script": ".research/repeatable-succession-lineage-retry-prepare-20261015.py",
       "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+    },
+    "next_build": {
+      "profile": "ingest-succession-schema",
+      "status": "NOT_RUN",
+      "preparation_script": ".research/repeatable-succession-schema-prepare-20261015.py",
+      "protected_elfs": 84,
+      "required_free_bytes": 12884901888
     }
   }
 }

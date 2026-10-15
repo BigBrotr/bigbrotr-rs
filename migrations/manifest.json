@@ -213,6 +213,10 @@
     {
       "version": 37,
       "name": "0037_activated_initial_retirement.sql"
+    },
+    {
+      "version": 38,
+      "name": "0038_repeatable_ingest_succession.sql"
     }
   ],
   "reserved": [
