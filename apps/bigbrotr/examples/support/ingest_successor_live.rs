@@ -200,6 +200,40 @@ impl Probe {
         mutation: OwnedPermit,
         new_event: bool,
     ) -> Result<serde_json::Value, Failure> {
+        let target = self
+            .activate_live(owner, native, metadata, mutation)
+            .await?;
+        let writer = native.live.writer.as_mut().unwrap();
+        let fixture = Fixture::load(self, writer);
+        self.dictionary(owner, writer, &fixture).await?;
+        self.event_pair(owner, writer, &fixture, &fixture.old, 2, "already-durable")
+            .await?;
+        if new_event {
+            self.event_pair(owner, writer, &fixture, &fixture.fresh, 3, "new-event")
+                .await?;
+        }
+        self.visibility(owner, writer, fixture.scope).await?;
+        self.certification(owner, writer, &fixture, &fixture.old, "historical")
+            .await?;
+        if new_event {
+            self.certification(owner, writer, &fixture, &fixture.fresh, "current")
+                .await?;
+        }
+        Ok(
+            serde_json::json!({"target_epoch":target,"requests":if new_event {3}else{2},
+            "writer_delivered":true,"new_event":new_event,"read_only_checks":if new_event {3}else{2}}),
+        )
+    }
+    // Shared only inside the finite consumer: candidate/preparation/activation
+    // remain in Native custody before every observer await. Existing live modes
+    // keep the exact calls, event order and refresh/renew sequence.
+    pub(super) async fn activate_live(
+        &self,
+        owner: &mut ControlSession,
+        native: &mut Native,
+        metadata: OwnedPermit,
+        mutation: OwnedPermit,
+    ) -> Result<u64, Failure> {
         self.transition(owner, native, metadata, Some(mutation), "prepare")
             .await?;
         native.live.activation = Some(SuccessorActivation::new(native.preparation.take().unwrap()));
@@ -270,25 +304,7 @@ impl Probe {
         self.snapshot("live-renew-returned").await;
         result.map_err(|e| Failure::at("live-renew", Some(target), None, e))?;
         assert!(started.get());
-        let fixture = Fixture::load(self, writer);
-        self.dictionary(owner, writer, &fixture).await?;
-        self.event_pair(owner, writer, &fixture, &fixture.old, 2, "already-durable")
-            .await?;
-        if new_event {
-            self.event_pair(owner, writer, &fixture, &fixture.fresh, 3, "new-event")
-                .await?;
-        }
-        self.visibility(owner, writer, fixture.scope).await?;
-        self.certification(owner, writer, &fixture, &fixture.old, "historical")
-            .await?;
-        if new_event {
-            self.certification(owner, writer, &fixture, &fixture.fresh, "current")
-                .await?;
-        }
-        Ok(
-            serde_json::json!({"target_epoch":target,"requests":if new_event {3}else{2},
-            "writer_delivered":true,"new_event":new_event,"read_only_checks":if new_event {3}else{2}}),
-        )
+        Ok(target)
     }
     async fn dictionary(
         &self,

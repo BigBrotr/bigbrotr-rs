@@ -5,6 +5,12 @@ use super::*;
 pub(super) use bigbrotr::storage::postgres::control_owner::ActivatedSuccessorSourceRecovery;
 use recovery::staged_value;
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum SourceFinish {
+    Publish,
+    Abandon,
+}
+
 impl Probe {
     pub(super) async fn close_successor_source(
         &self,
@@ -12,6 +18,18 @@ impl Probe {
         native: &mut Native,
         metadata: OwnedPermit,
         closing: OwnedPermit,
+    ) -> Result<serde_json::Value, Failure> {
+        self.source_pass(owner, native, metadata, closing, SourceFinish::Publish)
+            .await
+    }
+
+    pub(super) async fn source_pass(
+        &self,
+        owner: &mut ControlSession,
+        native: &mut Native,
+        metadata: OwnedPermit,
+        closing: OwnedPermit,
+        finish: SourceFinish,
     ) -> Result<serde_json::Value, Failure> {
         self.snapshot("before-source").await;
         let result = self
@@ -70,7 +88,7 @@ impl Probe {
         );
         result.map_err(|error| Failure::at("close", Some(epoch), None, error))?;
         assert!(recovered.is_closed());
-        self.replay_source(owner, native.recovery(), recovered)
+        self.replay_source(owner, native.recovery(), recovered, finish)
             .await
     }
 
@@ -79,6 +97,7 @@ impl Probe {
         owner: &mut ControlSession,
         recovery: &IngestRecovery,
         recovered: &ActivatedSuccessorSourceRecovery,
+        finish: SourceFinish,
     ) -> Result<serde_json::Value, Failure> {
         let mut resolution = recovered
             .resolution(recovery, &self.cancelled)
@@ -158,6 +177,16 @@ impl Probe {
             "last_epoch":last,"matches_source":true,"source_closure":false,"workflow":false,
             "retirement":false,"admission":false,"activation":false}),
         );
+        if finish == SourceFinish::Abandon {
+            let jobs = self
+                .finish_acquisition(owner, proof, recovered.epoch())
+                .await?;
+            return Ok(serde_json::json!({"target_epoch":recovered.epoch(),
+                "issued_through":recovered.issued_through(),"reserved_through":recovered.reserved_through(),
+                "staged_input":staged_value(recovered.staged_input()),"verified_through":verified_through,
+                "last_epoch":last,"positive_recovery":true,"source_closure":false,
+                "workflow":true,"acquisition_jobs":jobs}));
+        }
         self.snapshot("before-source-publish").await;
         let result = self
             .bounded(
