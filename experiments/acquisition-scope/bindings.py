@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_activated_retirement_guards = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-retirement-guards'
 ingest_activated_retirement_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-retirement-faults'
 ingest_activated_retirement = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-retirement'
 ingest_activated_acquisition_expiry = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-acquisition-expiry'
@@ -113,7 +114,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_activated_retirement_faults or ingest_activated_retirement or ingest_activated_acquisition_expiry or ingest_activated_acquisition_interruptions or ingest_activated_acquisition_limits or ingest_activated_acquisition_http or ingest_activated_acquisition_guards or ingest_activated_acquisition_claims or ingest_activated_acquisition_faults or ingest_activated_acquisition or ingest_activated_source_prefix or ingest_activated_source_locks or ingest_activated_source_durable or ingest_activated_source_faults or ingest_activated_source or ingest_activated_refusals or ingest_activated_zero or ingest_activated_faults or ingest_activated_recovery or ingest_installed_live or ingest_live_refusals or ingest_live_routes or ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_activated_retirement_guards or ingest_activated_retirement_faults or ingest_activated_retirement or ingest_activated_acquisition_expiry or ingest_activated_acquisition_interruptions or ingest_activated_acquisition_limits or ingest_activated_acquisition_http or ingest_activated_acquisition_guards or ingest_activated_acquisition_claims or ingest_activated_acquisition_faults or ingest_activated_acquisition or ingest_activated_source_prefix or ingest_activated_source_locks or ingest_activated_source_durable or ingest_activated_source_faults or ingest_activated_source or ingest_activated_refusals or ingest_activated_zero or ingest_activated_faults or ingest_activated_recovery or ingest_installed_live or ingest_live_refusals or ingest_live_routes or ingest_live_guards or ingest_live or installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -470,6 +471,14 @@ if ingest_live_guards:
     report['not_run'] = ['renewal refusal/expiry/COMMIT loss and activated-zero old-loader routes',
         'first-request manifest mismatch, real network provenance and installed successor consumers',
         'native syscall uncertainty/power loss, general lifetimes, ACK/GC and full M1',
+        'capacity/load/aged-state and arm64/release']
+
+if ingest_activated_retirement_guards:
+    report['wave'] = 'activated-retirement-sql-guards'
+    report['not_run'] = ['typed native retirement authority; qualified separately',
+        'ordinary source OPEN transition, zero-request/import lifecycle',
+        'COMMIT loss or concurrent retirement; separate qualification',
+        'repeated lifetimes, ACK/GC, epoch3, Archive restart and full M1',
         'capacity/load/aged-state and arm64/release']
 
 if ingest_activated_retirement_faults:
@@ -1025,6 +1034,9 @@ if ingest_live:
 if ingest_live_guards:
     success_status = 'PASS_LIVE_INITIAL_GUARDS'
 
+if ingest_activated_retirement_guards:
+    success_status = 'PASS_ACTIVATED_RETIREMENT_SQL_GUARDS'
+
 if ingest_activated_retirement_faults:
     success_status = 'PASS_INSTALLED_ACTIVATED_RETIREMENT_COMMIT_LOSS'
 
@@ -1259,6 +1271,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_activated_retirement_guards:
+        cases = ['activated-retirement-sql-guards']
     elif ingest_activated_retirement_faults:
         cases = ['installed-activated-retirement-faults']
     elif ingest_activated_retirement:
@@ -1366,6 +1380,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_activated_retirement_guards:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from activated_retirement_guards import run_all as run_activated_retirement_guards
+            report['cases'].append(run_activated_retirement_guards(pg, client, output, rows, clone))
             save()
         elif ingest_activated_retirement_faults:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1643,6 +1662,16 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_activated_retirement_guards:
+        from activated_retirement_guards import CASES as ACTIVATED_RETIREMENT_GUARD_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and report['cases'][0]['name'] == 'activated-retirement-sql-guards'
+            and report['cases'][0]['sql_attempts'] == len(ACTIVATED_RETIREMENT_GUARD_CASES)
+            and [r['name'] for r in report['cases'][0]['cases']] == list(ACTIVATED_RETIREMENT_GUARD_CASES)
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases'])
+            and report['cases'][0]['oracle']['status'] == 'PASS'
+            and report['cases'][0]['negative_controls']['status'] == 'PASS',
+            'activated-retirement-guard-case-set')
     if ingest_activated_retirement_faults:
         from activated_retirement_faults import CASES as ACTIVATED_RETIREMENT_FAULT_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
