@@ -6,9 +6,11 @@ native and join both drivers before the copied store may be inspected again.
 """
 import datetime
 from dataclasses import dataclass
+import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -65,7 +67,8 @@ def closed_and_joined(response, database, *, control_failed=False,
                       completion_event='lineage-transition-complete'):
     """Positive native/process telemetry, separate from scientific acceptance."""
     assert type(control_failed) is bool
-    assert completion_event in ('lineage-transition-complete', 'lineage-live-complete')
+    assert completion_event in ('lineage-transition-complete', 'lineage-live-complete',
+                                'lineage-recovery-complete')
     assert response['returncode'] == 0
     events = [json.loads(line) for line in response['stdout'].splitlines()]
     assert not any(e.get('event') == 'lineage-history-timeout' for e in events)
@@ -202,9 +205,41 @@ def run_sequence(pg, client, output, clone, directory, expected, report):
     return predecessor
 
 
-def run(root, build, *, suite=None, sequence=run_sequence):
+def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
+        origin_for_clone=None, extra_grants=()):
     if suite is None:
         suite = FIRST_WAVE
+    explicit_origins = origin_specs is not None
+    if explicit_origins:
+        assert isinstance(origin_specs, tuple) and origin_specs
+        assert len({o['name'] for o in origin_specs}) == len(origin_specs)
+        assert len({o['database'] for o in origin_specs}) == len(origin_specs)
+        assert set(origin_for_clone) == set(suite.clones)
+        assert set(origin_for_clone.values()) == {o['name'] for o in origin_specs}
+        for origin in origin_specs:
+            assert set(origin) == {'name', 'run', 'subdirectory', 'database', 'status', 'source',
+                'owner', 'label', 'client_id', 'source_clone', 'final_case', 'catalog_sha256',
+                'result_sha256', 'snapshot', 'snapshot_sha256', 'native_file', 'native_sha256',
+                'inputs_file', 'inputs_sha256', 'store'}
+            assert all(type(value) is str and value for value in origin.values())
+            for field in ('name', 'run', 'subdirectory', 'source_clone', 'final_case'):
+                assert re.fullmatch(r'[a-z0-9-]+', origin[field]), field
+            assert re.fullmatch(r'[a-z0-9_]+', origin['database'])
+            assert origin['store'] == origin['source_clone'] + '/store'
+            for field in ('snapshot', 'native_file', 'inputs_file'):
+                assert Path(origin[field]).name == origin[field] and origin[field].endswith('.json')
+            for field in ('result_sha256', 'snapshot_sha256', 'native_sha256', 'inputs_sha256',
+                          'catalog_sha256', 'client_id'):
+                assert re.fullmatch(r'[0-9a-f]{64}', origin[field]), field
+            assert re.fullmatch(r'[0-9a-f]{40}', origin['source'])
+            assert re.fullmatch(r'[0-9a-f]{32}', origin['owner'])
+            assert origin['label'].startswith('org.bigbrotr.') and origin['status'].startswith('PASS_')
+        pins = {o['name']: o for o in origin_specs}
+    else:
+        assert origin_for_clone is None
+        origin_specs, pins = schema.ORIGINS, PINS
+        origin_for_clone = {mode: 'empty' if mode == 'empty' else 'activated' for mode in suite.clones}
+    assert isinstance(extra_grants, tuple) and all(isinstance(s, str) and s for s in extra_grants)
     assert SOURCE == root / 'source'
     revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
     assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
@@ -212,7 +247,8 @@ def run(root, build, *, suite=None, sequence=run_sequence):
     component = read(build / 'component-result.json')
     qualification = read(build.parent / 'qualification.json')
     assert qualification['status'] in ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
-        'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD')
+        'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
+        'PASS_SUCCESSION_RECOVERY_COMPONENTS')
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
     for field in ('tree', 'source_manifest_sha256', 'lockfile_sha256'):
@@ -254,10 +290,10 @@ def run(root, build, *, suite=None, sequence=run_sequence):
     lab.write_json(output / 'result.json', report)
     origins = {}
     try:
-        for origin in schema.ORIGINS:
-            name, pin = origin['name'], PINS[origin['name']]
+        for origin in origin_specs:
+            name, pin = origin['name'], pins[origin['name']]
             assert all(origin[k] == pin[k] for k in pin if k in origin)
-            basis = root.parent / origin['run'] / 'bindings'
+            basis = root.parent / origin['run'] / origin.get('subdirectory', 'bindings')
             for filename, expected in [('result.json', pin['result_sha256']),
                     (pin['snapshot'], pin['snapshot_sha256']), (pin['native_file'], pin['native_sha256']),
                     (pin['inputs_file'], pin['inputs_sha256'])]:
@@ -265,7 +301,23 @@ def run(root, build, *, suite=None, sequence=run_sequence):
             retained = read(basis / 'result.json')
             assert retained['status'] == origin['status']
             assert not any(retained[k] for k in ('cleanup_errors', 'missing_owned', 'unrelated_changed'))
-            old, = [c for c in containers if c['Id'] == retained['client']['id']]
+            if explicit_origins:
+                assert retained['source'] == origin['source']
+                assert retained['owner'] == origin['owner'] and retained['label'] == origin['label']
+                assert type(retained['client']) is str and retained['client'] == origin['client_id']
+                assert not retained['unexpected_containers']
+                previous, = [c for c in retained['clones'] if c['name'] == origin['source_clone']]
+                assert previous['database'] == origin['database'] and previous['status'] == 'PASS'
+                assert previous['final_case'] == origin['final_case']
+                assert previous['directory'] + '/store' == origin['store']
+                final, = [c for c in retained['cases'] if c['name'] == origin['final_case']]
+                assert final['status'] == 'PASS' and final['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
+                assert final['returncode'] == 0
+                assert hashlib.sha256(previous['final_catalog'].encode()).hexdigest() == origin['catalog_sha256']
+                previous_client = retained['client']
+            else:
+                previous_client = retained['client']['id']
+            old, = [c for c in containers if c['Id'] == previous_client]
             assert old['Config']['Labels'][retained['label']] == retained['owner']
             assert not old['State']['Running'] and not old['State']['Pid'] and not old['State']['OOMKilled']
             assert not any(c['State']['Running'] and any(str(basis) in m.get('Source', '')
@@ -288,12 +340,14 @@ def run(root, build, *, suite=None, sequence=run_sequence):
             time.sleep(.2)
         assert lab.sql(pg, 'postgres', 'SHOW server_version_num;') == '160015'
         report['database_names_before'] = lab.sql(pg, 'postgres', 'SELECT datname FROM pg_database ORDER BY datname;').splitlines()
-        for origin in schema.ORIGINS:
+        for origin in origin_specs:
             name, database = origin['name'], origin['database']
             assert schema.absence(pg, database) == []
             observed = schema.rows(pg, database)
             assert normalized(observed) == normalized(origins[name]['rows'])
             origins[name]['catalog'] = catalog(pg, database)
+            if explicit_origins:
+                assert hashlib.sha256(origins[name]['catalog'].encode()).hexdigest() == origin['catalog_sha256']
             report['origins'][name].update(rows=observed, catalog=origins[name]['catalog'])
             lab.write_json(output / (name + '-original.json'), observed)
         ident = lab.docker('create', '--init', '--name', client, '--label', suite.label + '=' + owner,
@@ -310,14 +364,14 @@ def run(root, build, *, suite=None, sequence=run_sequence):
         lab.docker('start', ident)
         state = dict(pg, client=client)
         for mode in suite.clones:
-            name = 'empty' if mode == 'empty' else 'activated'
+            name = origin_for_clone[mode]
             original = origins[name]
             database = suite.database_prefix + revision[:7] + '_' + mode.replace('-', '_')
             assert database not in report['database_names_before']
             clone = dict(name=mode, origin=name, database=database, directory=mode, status='RUNNING', migrations=[])
             report['clones'].append(clone)
             lab.write_json(output / 'result.json', report)
-            lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {PINS[name]["database"]};')
+            lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {pins[name]["database"]};')
             report['databases'].append(database)
             copied = schema.rows(pg, database)
             lab.write_json(output / (mode + '-copy-before.json'), copied)
@@ -347,7 +401,7 @@ def run(root, build, *, suite=None, sequence=run_sequence):
             migrated = schema.rows(pg, database)
             lab.write_json(output / (mode + '-migrated.json'), migrated)
             statements = [(SOURCE / 'experiments/ingest-succession/schema_grants.sql').read_text(),
-                'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;']
+                'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;', *extra_grants]
             clone['grants'] = []
             for statement in statements:
                 clone['grants'].append(dict(statement=statement, stdout=lab.sql(pg, database, statement)))
@@ -374,7 +428,7 @@ def run(root, build, *, suite=None, sequence=run_sequence):
                 assert clone['final_backends'] == []
             except BaseException as error:
                 errors.append(dict(copy=clone['database'], error=repr(error)))
-        for origin in schema.ORIGINS:
+        for origin in origin_specs:
             name = origin['name']
             if name not in origins:
                 continue
