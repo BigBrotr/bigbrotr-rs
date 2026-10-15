@@ -73,6 +73,234 @@ fn reach_head(f: &Fixture, cursor: &mut SuccessorRecoveryResolution<'_>, epoch: 
     }
 }
 
+fn copy_native_fixture(from: &std::path::Path, to: &std::path::Path) {
+    std::fs::create_dir(to).unwrap();
+    std::fs::set_permissions(to, std::fs::metadata(from).unwrap().permissions()).unwrap();
+    for entry in std::fs::read_dir(from).unwrap() {
+        let entry = entry.unwrap();
+        let target = to.join(entry.file_name());
+        if entry.file_type().unwrap().is_dir() {
+            copy_native_fixture(&entry.path(), &target);
+        } else {
+            std::fs::copy(entry.path(), target).unwrap();
+        }
+    }
+}
+
+fn closed_recovery(f: &Fixture) -> IngestRecovery {
+    drop(active(f, false));
+    let mut r = f.reopen();
+    let mut barrier = owner(f, &r);
+    close(f, &mut r, &mut barrier);
+    drop(barrier);
+    r
+}
+
+#[test]
+fn successor_source_observes_only_existing_closing_without_native_writes() {
+    let f = prepared_fixture();
+    let mut writer = active(&f, false);
+    append_and_check(&f, &mut writer, 1);
+    drop(writer);
+    let mut r = f.reopen();
+    let mut observed = owner(&f, &r);
+    let allocation = observed.entry(1).unwrap() as *const _;
+    let open = snapshot(&f, &r.store);
+    assert_eq!(
+        observed.observe_closed(&r, grant(&f.budget, 4096, 4096), &NOT_CANCELLED, || Ok(())),
+        Err(BootstrapError::StateMismatch)
+    );
+    assert_eq!(observed.entry(1).unwrap() as *const _, allocation);
+    assert_eq!(snapshot(&f, &r.store), open);
+    // A refused observation cannot be reused to dispatch a barrier.
+    assert_eq!(
+        observed.close_producer(&mut r, grant(&f.budget, 4096, 4096), &NOT_CANCELLED, || Ok(
+            ()
+        )),
+        Err(BootstrapError::AuthorityUnavailable)
+    );
+    assert_eq!(snapshot(&f, &r.store), open);
+    drop(observed);
+    let mut barrier = owner(&f, &r);
+    close(&f, &mut r, &mut barrier);
+    drop(barrier);
+
+    let closed = snapshot(&f, &r.store);
+    let mut observed = owner(&f, &r);
+    let allocation = observed.entry(1).unwrap() as *const _;
+    let reserved = f.budget.snapshot();
+    assert!(observed.resolution(&r, &NOT_CANCELLED).is_err());
+    assert_eq!(
+        observed.observe_closed(&r, grant(&f.budget, 4095, 4096), &NOT_CANCELLED, || Ok(())),
+        Err(BootstrapError::InsufficientReservation)
+    );
+    assert_eq!(f.budget.snapshot(), reserved);
+    observed.validate(&r, &NOT_CANCELLED).unwrap();
+    observed
+        .observe_closed(&r, grant(&f.budget, 4096, 4096), &NOT_CANCELLED, || Ok(()))
+        .unwrap();
+    assert_eq!(observed.entry(1).unwrap() as *const _, allocation);
+    let retained = f.budget.snapshot();
+    assert_eq!(
+        retained.used().data_bytes(),
+        reserved.used().data_bytes() + 4096
+    );
+    assert_eq!(
+        retained.used().native_bytes(),
+        reserved.used().native_bytes() + 4096
+    );
+    assert_eq!(retained.active_permits(), reserved.active_permits() + 1);
+    observed
+        .observe_closed(&r, grant(&f.budget, 4096, 4096), &NOT_CANCELLED, || Ok(()))
+        .unwrap();
+    assert_eq!(
+        f.budget.snapshot(),
+        retained,
+        "retry retains no second grant"
+    );
+    let proof = finish(&f, &r, &observed).unwrap();
+    assert!(proof.matches_owner(&observed));
+    assert_eq!(
+        proof.last_epoch().digest,
+        epoch_digest(&f, &r, 3, 1, 1, false)
+    );
+    assert_eq!(proof.last_epoch().resolved_requests, 1);
+    assert_eq!(proof.last_epoch().last_complete_sequence, 1);
+    proof.validate(&NOT_CANCELLED).unwrap();
+    assert_eq!(snapshot(&f, &r.store), closed);
+}
+
+#[test]
+fn successor_source_observation_refuses_stale_sequence_inputs_and_foreign_root() {
+    for change_input in [false, true] {
+        let f = prepared_fixture();
+        let r = closed_recovery(&f);
+        let mut observed = owner(&f, &r);
+        let sequence = r.store.db.latest_sequence_number();
+        if change_input {
+            let path = f.path().join("producer-inputs-v1").join(input_name(1, 1));
+            let mut bytes = std::fs::read(&path).unwrap();
+            bytes[0] ^= 1;
+            std::fs::write(path, bytes).unwrap();
+            assert_eq!(r.store.db.latest_sequence_number(), sequence);
+        } else {
+            let manifest = r.manifest().encode();
+            put(&r.store, IngestKey::Manifest, manifest.as_bytes());
+            assert_eq!(r.store.db.latest_sequence_number(), sequence + 1);
+        }
+        let before = snapshot(&f, &r.store);
+        assert_eq!(
+            observed.observe_closed(&r, grant(&f.budget, 4096, 4096), &NOT_CANCELLED, || Ok(())),
+            Err(BootstrapError::StateMismatch)
+        );
+        assert!(observed.resolution(&r, &NOT_CANCELLED).is_err());
+        assert_eq!(snapshot(&f, &r.store), before);
+    }
+
+    let f = prepared_fixture();
+    let r = closed_recovery(&f);
+    let mut observed = owner(&f, &r);
+    let original = snapshot(&f, &r.store);
+    let root = r.store.handoff_root_identity().unwrap();
+    let path = f.root.path().join("closed-equal-content-foreign-root");
+    drop(r);
+    copy_native_fixture(&f.path(), &path);
+    let copied = IngestRecovery::inspect(
+        &path,
+        f.previous.identity().dataset_id,
+        f.native,
+        grant(&f.budget, 0, 128 * MIB),
+    )
+    .unwrap();
+    assert_eq!(kv(&copied.store), original.0);
+    assert_eq!(copied.store.db.latest_sequence_number(), original.1);
+    assert_eq!(inputs(&path), original.2);
+    assert_ne!(copied.store.handoff_root_identity().unwrap(), root);
+    assert_eq!(
+        observed.observe_closed(
+            &copied,
+            grant(&f.budget, 4096, 4096),
+            &NOT_CANCELLED,
+            || Ok(())
+        ),
+        Err(BootstrapError::StateMismatch)
+    );
+    assert_eq!(kv(&copied.store), original.0);
+    assert_eq!(copied.store.db.latest_sequence_number(), original.1);
+    assert_eq!(inputs(&path), original.2);
+}
+
+#[test]
+fn successor_source_observation_keeps_custody_after_cancellation_or_authority_loss() {
+    for fault in 0..5 {
+        let f = prepared_fixture();
+        let mut r = closed_recovery(&f);
+        let baseline = f.budget.snapshot();
+        let mut observed = owner(&f, &r);
+        let allocation = observed.entry(1).unwrap() as *const _;
+        let reserved = f.budget.snapshot();
+        let cancelled = AtomicBool::new(fault == 0);
+        if fault == 4 {
+            r.store.write_uncertain = true;
+        }
+        let before = snapshot(&f, &r.store);
+        let mut calls = 0;
+        let result = observed.observe_closed(&r, grant(&f.budget, 4096, 4096), &cancelled, || {
+            calls += 1;
+            if fault == 1 || (fault == 2 && calls == 2) {
+                return Err(BootstrapError::AuthorityUnavailable);
+            }
+            if fault == 3 && calls == 2 {
+                cancelled.store(true, Ordering::Relaxed);
+            }
+            Ok(())
+        });
+        assert_eq!(
+            result,
+            Err(if fault == 4 {
+                BootstrapError::CommitUnknown
+            } else {
+                BootstrapError::AuthorityUnavailable
+            })
+        );
+        assert_eq!(
+            calls,
+            if fault == 0 || fault == 4 {
+                0
+            } else if fault == 1 {
+                1
+            } else {
+                2
+            }
+        );
+        assert_eq!(observed.entry(1).unwrap() as *const _, allocation);
+        let retained = f.budget.snapshot();
+        assert_eq!(
+            retained.used().data_bytes(),
+            reserved.used().data_bytes() + 4096
+        );
+        assert_eq!(
+            retained.used().native_bytes(),
+            reserved.used().native_bytes() + 4096
+        );
+        assert_eq!(retained.active_permits(), reserved.active_permits() + 1);
+        cancelled.store(false, Ordering::Relaxed);
+        r.store.write_uncertain = false;
+        assert_eq!(
+            observed.validate(&r, &NOT_CANCELLED),
+            Err(BootstrapError::AuthorityUnavailable)
+        );
+        assert!(observed.resolution(&r, &NOT_CANCELLED).is_err());
+        assert_eq!(snapshot(&f, &r.store), before);
+        drop(observed);
+        assert_eq!(
+            f.budget.snapshot(),
+            baseline,
+            "grant released only with retained owner"
+        );
+    }
+}
+
 #[test]
 fn successor_recovery_closes_and_replays_real_writer_three_and_four_with_literal_outcomes() {
     for variant in 0..3 {
@@ -409,21 +637,8 @@ fn successor_recovery_binds_root_sequence_and_retains_failed_barrier_custody() {
     let copy_path = f.root.path().join("equal-content-foreign-root");
     // Copy native bytes and private sidecars as a complete operator fixture;
     // equal logical state never transfers the original handle's root identity.
-    fn copy(from: &std::path::Path, to: &std::path::Path) {
-        std::fs::create_dir(to).unwrap();
-        std::fs::set_permissions(to, std::fs::metadata(from).unwrap().permissions()).unwrap();
-        for entry in std::fs::read_dir(from).unwrap() {
-            let entry = entry.unwrap();
-            let target = to.join(entry.file_name());
-            if entry.file_type().unwrap().is_dir() {
-                copy(&entry.path(), &target);
-            } else {
-                std::fs::copy(entry.path(), target).unwrap();
-            }
-        }
-    }
     drop(r);
-    copy(&f.path(), &copy_path);
+    copy_native_fixture(&f.path(), &copy_path);
     let copied = IngestRecovery::inspect(
         &copy_path,
         f.previous.identity().dataset_id,

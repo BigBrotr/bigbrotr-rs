@@ -252,6 +252,42 @@ impl NativeSuccessorRecovery {
         }
         result
     }
+    /// Source-closed replay observes an existing barrier. It cannot normalize
+    /// OPEN native state, change the sequence or construct a predecessor proof.
+    /// After grant admission, the same allocation and closing grant remain
+    /// retained on every error.
+    pub(in crate::storage) fn observe_closed(
+        &mut self,
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<(), BootstrapError> {
+        if permit.request().units().data_bytes() < 4096
+            || permit.request().units().native_bytes() < 4096
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        if self.closing_permit.is_none() {
+            self.closing_permit = Some(permit);
+        }
+        let result = (|| {
+            self.validate(recovery, cancelled)?;
+            authority()?;
+            if !self.is_closing() {
+                return Err(BootstrapError::StateMismatch);
+            }
+            self.lineage.inspect_census(recovery, cancelled)?;
+            self.validate(recovery, cancelled)?;
+            authority()?;
+            check_cancelled(cancelled)
+        })();
+        if result.is_err() {
+            self.failed = true;
+        }
+        result
+    }
     pub(in crate::storage) fn resolution<'a>(
         &'a self,
         recovery: &'a IngestRecovery,
