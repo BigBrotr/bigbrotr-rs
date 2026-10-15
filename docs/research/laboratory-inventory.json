@@ -51106,8 +51106,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "SOURCE_IMPLEMENTATION_STARTED_RUNTIME_NOT_RUN",
-    "observed_at": "2026-10-15T10:26:06+00:00",
+    "status": "PORTABLE_COMPONENTS_INTEGRATED_BUILD_NOT_RUN",
+    "observed_at": "2026-10-15T10:43:09.429482+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51154,6 +51154,32 @@
       "retained_input_files_max": 64,
       "retained_input_bytes_max": 33554432
     },
-    "qualification": "NOT_RUN; selected contracts and independent AI source/design review are not runtime evidence"
+    "qualification": "NOT_RUN; selected contracts and independent AI source/design review are not runtime evidence",
+    "integrated_components": {
+      "fixture": {
+        "original": "8ca4b2726ccc0deef50456be15e7ac68b5272af1",
+        "main": "8acfaea",
+        "golden_sha256": "59d1f717d248aa0c4d0e2b49873495a6a825db59f641f730fb288408c7c4a49a",
+        "selfcheck": "PASS; product consumer NOT_RUN"
+      },
+      "codec": {
+        "original": "1f529a7645a7769f43b43ab567d55527119beecb",
+        "main": "c8fa882"
+      },
+      "legacy_schema_hardening": {
+        "original": "88176972cd9b7bc26da79edfbf253f38a3bacb22",
+        "main": "d8173a0",
+        "postgres_companion": "15f4244",
+        "review": "Independent AI source review found and closed schema2/3 owner1 bootstrap/closing gap; actual tests NOT_RUN"
+      }
+    },
+    "next_build": {
+      "profile": "ingest-succession-codec",
+      "status": "NOT_RUN",
+      "preparation_script": ".research/repeatable-succession-build-prepare-20261015.py",
+      "protected_elfs": 78,
+      "required_free_bytes": 12884901888,
+      "scope": "Codec, manifest/key, schema3 inspection refusal, legacy bootstrap/closing/recovery/handoff checks and Clippy; connected repeatable succession NOT_RUN"
+    }
   }
 }

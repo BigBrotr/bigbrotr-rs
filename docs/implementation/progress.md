@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T10:23:15+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T10:43:09.429482+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,11 +14,12 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `12c3534`.
-Verified private push64456 is `12c3534c6c970839a4371fc00b4ac3eac6730cb0`;
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `d8173a0`.
+Verified private push64928 is `cb14fa788fe8368ae4d634864c2f3c9c42a14d2c`;
+codec and legacy schema guards after that push remain local pending the build.
 remote has main only. Main contains both reviewed finite probes, dispatcher,
 custody fix and prebuild checkpoint. No merge/rebase pending. Root owns the
-current new-worktree inventory/checkpoint update. The retirement
+current integrated-component checkpoint before the exact-source build. The retirement
 evidence and final branch cleanup are committed and privately pushed.
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none is complete.
@@ -32,15 +33,31 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: implement the selected version2 handoff codec and
-lineage resource profile in an isolated worktree, with independent literal byte
-fixtures; then extend positive native lineage replay and its SQL/installed consumers.
-Source implementation has started in the three new isolated worktrees below; no
-new component is integrated or built, and all runtime qualification remains NOT_RUN. The owning
+Root's next bounded action: execute the bounded exact-source
+`ingest-succession-codec` profile after committing this checkpoint. Preparation
+script `.research/repeatable-succession-build-prepare-20261015.py` is NOT_RUN;
+it verifies78 protected executables and12GiB headroom before creating a fresh
+source clone. Do not replay it after its destination exists. No build or engine
+has started for this slice. Runtime/compiled checks remain NOT_RUN.
+
+Integrated fixture8ca4b27→8acfaea, codec1f529a7→c8fa882 and native schema
+hardening8817697→d8173a0; root PG companion15f4244. The independent Python
+fixture selfcheck passes11valid/38malformed declarations,5chain and3closure
+recipes;6533 proper prefixes are inputs for future Rust execution. FixtureSHA
+59d1f717d248aa0c4d0e2b49873495a6a825db59f641f730fb288408c7c4a49a.
+Root and cleanup_review completed source review. The reviewer found a real
+legacy boundary: schema2/3 with owner1 could reach bootstrap/closing because
+some owners checked epoch without schema. Native and connected PG paths now
+require schema1 before sidecar/reservation/barrier; new native tests distinguish
+schema2/3, OPEN/CLOSING and exact preservation. Source review is not execution.
+
+The owning
 [repeatable contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
 and [portable format](../reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 select one family for2-to3/3-to4, both retired activated2 and retired unactivated
-empty2 origins, and later prepared-empty recovery/retirement without adoption.
+empty2 origins. Only codec/profile arithmetic and legacy refusal hardening exist;
+positive lineage, actual compact allocation, SQL family, candidate/activation,
+new recovery and installed journeys remain incomplete.
 
 Selection: unchanged42-byte key01_0a, new value02_0a length319..643, manifest
 schema3, exact incoming-value hash and positive whole-lineage replay; no redundant
@@ -59,7 +76,8 @@ activated_recovery/retirement; migrations0030/31/32/37; installed successor owne
 Root also read complete admission, dictionary_preparation, dictionary_append,
 certification, receipt_effects and PG initial_batch kernels. New affected
 PG/installed consumers need complete review before their edits;
-Archive/ACK/GC are not reviewed here.
+Root also read installed owner/recovery/sync and native bootstrap/closing owners
+and their complete affected tests. Archive/ACK/GC are not reviewed here.
 
 Independent AI reviews by native/PG agents mapped whole-history freshness,
 sidecar census, quadratic topology growth, pending native-old preparation and
@@ -72,8 +90,9 @@ detached worktrees stay preserved. New worktrees at12c3534:
 `.research/repeatable-succession-codec-20261015` (independent literal fixtures),
 `.research/repeatable-succession-postgres-20261015` (additive SQL family/fixture).
 Their three local branches are intentional active work; only main is remote.
-Native agent owns codec paths, cleanup_review owns experiments/ingest-succession,
-recovery_review owns migration0038 and its SQL fixture. Root owns integration.
+Native and fixture agents finished their committed source work and review;
+recovery_review is implementing migration0038 and its SQL fixture. Root owns
+the build/integration and the dedicated experiments/ingest-succession/native.py runner.
 No subagent may run an engine/build or mutate shared cache/retained labs. See
 `implementation_repeatable_ingest_succession_20261015` in laboratory inventory.
 
