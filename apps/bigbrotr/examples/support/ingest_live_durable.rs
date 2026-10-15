@@ -44,6 +44,7 @@ pub(super) enum Mode {
     ExtraIntents,
     Limit64,
     Limit65,
+    ZeroClaim,
 }
 impl Mode {
     pub(super) fn parse(mode: &str) -> Option<Self> {
@@ -52,6 +53,7 @@ impl Mode {
             "successor-live-acquisition-claims" => Some(Self::ExtraIntents),
             "successor-live-acquisition-limit64" => Some(Self::Limit64),
             "successor-live-acquisition-limit65" => Some(Self::Limit65),
+            "successor-live-acquisition-zero-claim" => Some(Self::ZeroClaim),
             _ => None,
         }
     }
@@ -59,7 +61,7 @@ impl Mode {
         match self {
             Self::Limit64 => Some(64),
             Self::Limit65 => Some(65),
-            Self::AlreadyDurable | Self::ExtraIntents => None,
+            Self::AlreadyDurable | Self::ExtraIntents | Self::ZeroClaim => None,
         }
     }
 }
@@ -112,6 +114,9 @@ pub(super) async fn run(
     previous: &InitialRegistration,
     mode: Mode,
 ) -> bool {
+    if mode == Mode::ZeroClaim {
+        return zero_claim(probe, owner).await;
+    }
     assert!(
         probe.root.local("sync"),
         "explicit finite network role selection"
@@ -454,7 +459,7 @@ pub(super) async fn run(
         // Keep the actual activator and authenticated session alive. A queued
         // claim with no producer requests must be discoverable independently
         // of request bindings; the other accepted intent must remain unclaimed.
-        let before_inputs = input_bytes(&input_directory);
+        let before_inputs = input_bytes(&input_directory, 5);
         let refreshed = bounded(owner.refresh(|doc, digest| probe.validate(doc, digest))).await;
         probe.snapshot("claims-control-refreshed").await;
         let policy = refreshed.unwrap();
@@ -514,7 +519,7 @@ pub(super) async fn run(
             }
         }
         let (after_rows, after_sequence) = raw_state(&probe.path);
-        let after_inputs = input_bytes(&input_directory);
+        let after_inputs = input_bytes(&input_directory, 5);
         emit(serde_json::json!({"event":"live-extra-intents",
             "claimed_job":jobs[0],"unclaimed_job":jobs[1],"extra_executions":0,
             "native_rows":after_rows.len(),"native_sequence":after_sequence,
@@ -551,7 +556,7 @@ async fn limit_intents(
     // Snapshot count is constant, avoiding quadratic full-table output.
     assert!(matches!(total, 64 | 65));
     let directory = probe.path.join("producer-inputs-v1");
-    let before_inputs = input_bytes(&directory);
+    let before_inputs = input_bytes(&directory, 5);
     let before_native = raw_state(&probe.path);
     probe.snapshot("limits-before").await;
     let mut created = 0_u8;
@@ -641,7 +646,7 @@ async fn limit_intents(
     }
     probe.snapshot("limits-after").await;
     let after_native = raw_state(&probe.path);
-    let after_inputs = input_bytes(&directory);
+    let after_inputs = input_bytes(&directory, 5);
     passed &= created == total - 1
         && before_native == after_native
         && (after_native.0.len(), after_native.1) == (53, 64)
@@ -655,10 +660,114 @@ async fn limit_intents(
     passed
 }
 
-fn input_bytes(directory: &Path) -> Vec<serde_json::Value> {
+async fn zero_claim(probe: &Probe, owner: &mut ControlSession) -> bool {
+    let directory = probe.path.join("producer-inputs-v1");
+    let before_native = raw_state(&probe.path);
+    let before_inputs = input_bytes(&directory, 4);
+    probe.snapshot("zero-claim-before").await;
+    let result = zero_claim_work(probe, owner).await;
+    // Even a failed or timed-out typed call retains its effects before teardown.
+    probe.snapshot("zero-claim-queued").await;
+    let after_native = raw_state(&probe.path);
+    let after_inputs = input_bytes(&directory, 4);
+    let passed = result.is_ok()
+        && (before_native.0.len(), before_native.1) == (52, 62)
+        && before_native == after_native
+        && before_inputs == after_inputs;
+    emit(serde_json::json!({"event":"live-zero-claim-state",
+        "error":result.as_ref().err(),"native_rows":after_native.0.len(),
+        "native_sequence":after_native.1,"inputs_before":before_inputs,
+        "inputs_after":after_inputs,"executions":0,"passed":passed}));
+    passed
+}
+
+async fn zero_claim_work(probe: &Probe, owner: &mut ControlSession) -> Result<(), String> {
+    let scope_id: AcquisitionScopeId = "a39723d7c49af2c99498fb2f59c03b16".parse().unwrap();
+    let login = limit_call(owner.begin_browser_login("alice", "127.0.0.1".parse().unwrap())).await;
+    emit(
+        serde_json::json!({"event":"live-zero-claim-login","phase":"begin",
+        "error":login.as_ref().err()}),
+    );
+    let verified = login?
+        .verify(
+            b"Independent owner password 2026",
+            &mut grant(&probe.budget, HASH_RESERVATION, 0),
+        )
+        .map_err(|e| format!("{e:?}"));
+    emit(
+        serde_json::json!({"event":"live-zero-claim-login","phase":"verify",
+        "error":verified.as_ref().err()}),
+    );
+    let browser =
+        limit_call(owner.finish_browser_login(verified?, SessionLifetime::default())).await;
+    emit(
+        serde_json::json!({"event":"live-zero-claim-login","phase":"finish",
+        "error":browser.as_ref().err()}),
+    );
+    let browser = browser?;
+    let refreshed = limit_call(owner.refresh(|doc, digest| probe.validate(doc, digest))).await;
+    emit(serde_json::json!({"event":"live-zero-claim-refresh",
+        "policy":refreshed.as_ref().ok().map(|p|serde_json::json!({
+            "config_revision":p.config_revision,"policy_revision":p.policy_revision,
+            "config_digest":hex(&p.config_digest),"policy_digest":hex(&p.policy_digest)})),
+        "error":refreshed.as_ref().err()}));
+    probe.snapshot("zero-claim-refreshed").await;
+    let policy = refreshed?;
+    if (policy.config_revision, policy.policy_revision) != (1, 1) {
+        return Err("unexpected accepted policy".into());
+    }
+    let started = Cell::new(false);
+    let accepted = limit_call(owner.accept_acquisition(
+        &browser.session,
+        &browser.csrf,
+        [0xa6; 16].try_into().unwrap(),
+        &AcquisitionCommand {
+            scope_id,
+            deadline_us: JobDuration::new(30_000_000).unwrap(),
+            expected_config_revision: Revision::try_from("1".to_owned()).unwrap(),
+            expected_policy_revision: Revision::try_from("1".to_owned()).unwrap(),
+        },
+        &started,
+    ))
+    .await;
+    emit(
+        serde_json::json!({"event":"live-zero-claim-acceptance","request_key":hex(&[0xa6;16]),
+        "receipt":accepted.as_ref().ok(),"error":accepted.as_ref().err(),"commit_started":started.get()}),
+    );
+    probe.snapshot("zero-claim-accepted").await;
+    let accepted = accepted?;
+    if !started.get() || !accepted.created {
+        return Err("new acceptance required".into());
+    }
+    let started = Cell::new(false);
+    let claimed = limit_call(owner.claim_acquisition(accepted.job_id, &started)).await;
+    emit(serde_json::json!({"event":"live-zero-claim-claim",
+        "job":claimed.as_ref().ok().map(|j|serde_json::json!({"id":j.id,"scope":j.scope,
+            "state":j.state,"job_revision":j.revision,"checkpoint_revision":j.checkpoint_revision,
+            "accepted_at_us":j.accepted_at_us,"deadline_at_us":j.deadline_at_us,
+            "owner":j.owner.map(|i|serde_json::json!({"resource":i.resource,"epoch":i.epoch.get(),
+                "incarnation":i.incarnation}))})),"error":claimed.as_ref().err(),"commit_started":started.get()}));
+    let claimed = claimed?;
+    if !started.get()
+        || claimed.id != accepted.job_id
+        || claimed.scope != scope_id
+        || claimed.state != bigbrotr::management::jobs::JobState::Queued
+        || (claimed.revision, claimed.checkpoint_revision) != (2, 0)
+        || !claimed.owner.is_some_and(|i| {
+            i.resource == owner.identity().resource_id
+                && i.epoch == owner.identity().epoch
+                && i.incarnation == owner.identity().process_incarnation
+        })
+    {
+        return Err("exact live zero-request claim required".into());
+    }
+    Ok(())
+}
+
+fn input_bytes(directory: &Path, expected: usize) -> Vec<serde_json::Value> {
     let mut inputs: Vec<_> = std::fs::read_dir(directory)
         .unwrap()
-        .take(6)
+        .take(expected + 1)
         .map(|entry| {
             let entry = entry.unwrap();
             assert!(entry.file_type().unwrap().is_file());
@@ -672,7 +781,7 @@ fn input_bytes(directory: &Path) -> Vec<serde_json::Value> {
             serde_json::json!({"name":entry.file_name().to_str().unwrap(),"bytes":hex(&bytes)})
         })
         .collect();
-    assert_eq!(inputs.len(), 5);
+    assert_eq!(inputs.len(), expected);
     inputs.sort_unstable_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
     inputs
 }

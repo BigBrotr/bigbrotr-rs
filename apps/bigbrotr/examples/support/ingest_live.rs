@@ -158,17 +158,22 @@ pub(super) async fn run(
     }
     if let Some(durable_mode) = durable::Mode::parse(mode) {
         let passed = durable::run(&probe, &mut owner, &mut writer, &spec, durable_mode).await;
-        if durable_mode.limit().is_some() {
+        if durable_mode.limit().is_some() || durable_mode == durable::Mode::ZeroClaim {
+            let prefix = if durable_mode == durable::Mode::ZeroClaim {
+                "zero-claim"
+            } else {
+                "limit"
+            };
             drop(writer);
-            let stopped = finish_limits(&probe, owner, driver, &backend, passed).await;
+            let stopped = finish_limits(&probe, owner, driver, &backend, passed, prefix).await;
             probe.snapshot("final").await;
             drop(probe);
-            let observer = join_limit_driver(observer_driver, "observer").await;
+            let observer = join_limit_driver(observer_driver, "observer", prefix).await;
             emit(serde_json::json!({"event":"live-complete","mode":mode,
                 "native":"closed","control":if passed && stopped {
                     "released-and-joined"
                 } else { "failed-see-custody-events" },
-                "writer":false,"admission":true,"passed":passed && stopped && observer}));
+                "writer":false,"admission":durable_mode != durable::Mode::ZeroClaim,"passed":passed && stopped && observer}));
             assert!(
                 passed && stopped && observer,
                 "preserved count fixture failure"
@@ -231,7 +236,7 @@ pub(super) async fn run(
     crate::ingest_closing::join(observer_driver, false).await;
 }
 
-// Only the count fixture uses this failure-aware ending. Every operation error
+// The count and zero-claim fixtures use this failure-aware ending. Every operation error
 // has already been emitted; release/driver errors remain separate observations.
 async fn finish_limits(
     probe: &Probe,
@@ -239,25 +244,26 @@ async fn finish_limits(
     driver: Driver,
     backend: &Backend,
     passed: bool,
+    prefix: &str,
 ) -> bool {
     probe.snapshot("final-before-control-end").await;
     let identity = owner.identity();
     let released = if passed {
         let result = durable::limit_call(owner.release()).await;
         emit(
-            serde_json::json!({"event":"live-limit-release", "attempted":true,
+            serde_json::json!({"event":format!("live-{prefix}-release"), "attempted":true,
             "error":result.as_ref().err()}),
         );
         result.is_ok()
     } else {
         drop(owner);
         emit(
-            serde_json::json!({"event":"live-limit-release", "attempted":false,
+            serde_json::json!({"event":format!("live-{prefix}-release"), "attempted":false,
             "error":null}),
         );
         false
     };
-    let joined = join_limit_driver(driver, "control").await;
+    let joined = join_limit_driver(driver, "control", prefix).await;
     emit(
         serde_json::json!({"event":"successor-control","stage":"final",
         "phase":if released && joined {"released-and-joined"} else {"failed-see-custody-events"},
@@ -285,8 +291,10 @@ async fn finish_limits(
         Ok::<(), tokio_postgres::Error>(())
     })
     .await;
-    emit(serde_json::json!({"event":"live-limit-backend-absence",
-        "error":absent.as_ref().err()}));
+    emit(
+        serde_json::json!({"event":format!("live-{prefix}-backend-absence"),
+        "error":absent.as_ref().err()}),
+    );
     if absent.is_ok() {
         backend.emit(false);
     }
@@ -294,7 +302,7 @@ async fn finish_limits(
     released && joined && absent.is_ok()
 }
 
-async fn join_limit_driver(mut driver: Driver, stage: &str) -> bool {
+async fn join_limit_driver(mut driver: Driver, stage: &str, prefix: &str) -> bool {
     let (result, aborted) = match tokio::time::timeout(Duration::from_secs(5), &mut driver).await {
         Ok(result) => (result, false),
         Err(_) => {
@@ -310,7 +318,7 @@ async fn join_limit_driver(mut driver: Driver, stage: &str) -> bool {
         Err(error) => Some(format!("{error:?}")),
     };
     emit(
-        serde_json::json!({"event":"live-limit-driver","stage":stage,
+        serde_json::json!({"event":format!("live-{prefix}-driver"),"stage":stage,
         "joined":true,"failed":error.is_some(),"aborted":aborted,"error":error}),
     );
     error.is_none() && !aborted
