@@ -21,7 +21,7 @@ use std::{
 };
 
 #[path = "successor_history_rows.rs"]
-mod rows;
+pub(super) mod rows;
 use rows::{Epoch, ProducerState, SourceState};
 
 /// Classification of the observed pair of SQL/native heads, never authority to
@@ -76,7 +76,7 @@ pub struct SuccessorReplayRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
-// Fixed PG context, cursor and the 64 digest tuples fit a small part of scratch.
+// Fixed PG context, cursor and both callee/caller 64-tuple buffers fit scratch.
 // Native sidecar inspection and SQL projection decoding run serially. Transport
 // buffers/policy documents retain the existing separate Control/driver grant;
 // semantic input/effect decoding has its own admission grant.
@@ -86,7 +86,7 @@ const _: () =
 const _: () = assert!(
     size_of::<SuccessorHistory>()
         + size_of::<SuccessorHistoryResolution<'_>>()
-        + size_of::<[(u64, [u8; 32], [u8; 32]); 64]>()
+        + 2 * size_of::<[(u64, [u8; 32], [u8; 32]); 64]>()
         + 8 * 1024 // native sidecar hashing scratch, used serially with SQL rows
         < LINEAGE_SCRATCH_BYTES as usize
 );

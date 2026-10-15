@@ -22,6 +22,12 @@ use rows::Intent;
 mod activation;
 pub(super) use activation::LiveSuccessorBinding;
 pub use activation::{LiveSuccessorWriter, SuccessorActivation};
+#[path = "successor_recovery.rs"]
+mod recovery;
+pub use recovery::{
+    ActivatedSuccessorRecovery, ActivatedSuccessorResolution, ResolvedActivatedSuccessor,
+    SuccessorRecoveryInput,
+};
 
 /// Scheduling is sampled once, under actual Control and dataset custody. A
 /// delayed plan may expire; preparing it never silently resets either deadline.

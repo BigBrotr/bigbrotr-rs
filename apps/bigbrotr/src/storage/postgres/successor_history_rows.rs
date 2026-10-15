@@ -5,35 +5,35 @@ use super::*;
 use crate::storage::rocks::manifest::IngestManifest;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum ProducerState {
+pub(in crate::storage::postgres::control_owner) enum ProducerState {
     Open,
     Closing,
     Retired,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum SourceState {
+pub(in crate::storage::postgres::control_owner) enum SourceState {
     Open,
     Closing,
     Closed,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) struct Epoch {
-    pub(super) manifest: IngestManifest,
-    pub(super) incoming: [u8; 32],
-    pub(super) slot: ProducerSlotId,
-    pub(super) reserved: u64,
-    pub(super) activated: bool,
-    pub(super) producer: ProducerState,
-    pub(super) source: SourceState,
-    pub(super) source_cut: Option<u64>,
-    pub(super) source_digest: Option<[u8; 32]>,
+pub(in crate::storage::postgres::control_owner) struct Epoch {
+    pub(in crate::storage::postgres::control_owner) manifest: IngestManifest,
+    pub(in crate::storage::postgres::control_owner) incoming: [u8; 32],
+    pub(in crate::storage::postgres::control_owner) slot: ProducerSlotId,
+    pub(in crate::storage::postgres::control_owner) reserved: u64,
+    pub(in crate::storage::postgres::control_owner) activated: bool,
+    pub(in crate::storage::postgres::control_owner) producer: ProducerState,
+    pub(in crate::storage::postgres::control_owner) source: SourceState,
+    pub(in crate::storage::postgres::control_owner) source_cut: Option<u64>,
+    pub(in crate::storage::postgres::control_owner) source_digest: Option<[u8; 32]>,
 }
 impl Epoch {
-    pub(super) fn epoch(&self) -> u64 {
+    pub(in crate::storage::postgres::control_owner) fn epoch(&self) -> u64 {
         self.manifest.identity().owner_epoch.get()
     }
-    pub(super) fn prepared(&self) -> bool {
+    pub(in crate::storage::postgres::control_owner) fn prepared(&self) -> bool {
         !self.activated
             && self.producer == ProducerState::Open
             && self.source == SourceState::Open
@@ -41,7 +41,7 @@ impl Epoch {
             && self.source_cut.is_none()
             && self.source_digest.is_none()
     }
-    fn kind(&self) -> RetainedTerminalKind {
+    pub(in crate::storage::postgres::control_owner) fn kind(&self) -> RetainedTerminalKind {
         if self.epoch() == 1 {
             RetainedTerminalKind::Initial
         } else if self.activated {
@@ -50,7 +50,10 @@ impl Epoch {
             RetainedTerminalKind::UnactivatedEmpty
         }
     }
-    pub(super) fn require_summary(&self, summary: &LineageEpochSummary) -> Result<(), OwnerError> {
+    pub(in crate::storage::postgres::control_owner) fn require_summary(
+        &self,
+        summary: &LineageEpochSummary,
+    ) -> Result<(), OwnerError> {
         if self.producer != ProducerState::Retired
             || self.source != SourceState::Closed
             || summary.epoch != self.epoch()
@@ -65,7 +68,7 @@ impl Epoch {
     }
 }
 
-pub(super) async fn registered_epoch(
+pub(in crate::storage::postgres::control_owner) async fn registered_epoch(
     tx: &Transaction<'_>,
     recovery: &IngestRecovery,
 ) -> Result<u64, ProducerResolveError> {
@@ -89,7 +92,7 @@ pub(super) async fn registered_epoch(
     Ok(epoch)
 }
 
-pub(super) async fn read_epoch(
+pub(in crate::storage::postgres::control_owner) async fn read_epoch(
     tx: &Transaction<'_>,
     recovery: &IngestRecovery,
     epoch: u64,
@@ -275,12 +278,37 @@ pub(super) async fn require_recorded(
     if count > 64 {
         return Err(OwnerError::InvalidMetadata.into());
     }
+    let records = recorded_prefix(
+        tx,
+        recovery,
+        native.lineage().producer_slot_id(),
+        epoch,
+        count,
+    )
+    .await?;
+    if !native.matches_recorded(epoch, records[..count].iter().copied()) {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    Ok(())
+}
+
+/// One bounded row at a time, reused by distinct proof owners. Reading these
+/// hashes is not itself positive evidence; each caller compares its sealed proof.
+pub(in crate::storage::postgres::control_owner) async fn recorded_prefix(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    slot: ProducerSlotId,
+    epoch: u64,
+    count: usize,
+) -> Result<[(u64, [u8; 32], [u8; 32]); 64], ProducerResolveError> {
+    if !(1..=255).contains(&epoch) || count > 64 {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
     // Fixed stack scratch, not a second lineage/history allocation. Each query
     // returns one bounded projection; the flat checker already proved exact
     // prefix cardinality and locked all immutable producer/source parents.
     let mut records = [(0_u64, [0_u8; 32], [0_u8; 32]); 64];
     let id = recovery.manifest().identity();
-    let slot = native.lineage().producer_slot_id();
     for (offset, record) in records[..count].iter_mut().enumerate() {
         let sequence = (offset + 1) as u64;
         let row = tx
@@ -306,10 +334,7 @@ pub(super) async fn require_recorded(
             fixed(&row, 2)?,
         );
     }
-    if !native.matches_recorded(epoch, records[..count].iter().copied()) {
-        return Err(OwnerError::InvalidMetadata.into());
-    }
-    Ok(())
+    Ok(records)
 }
 
 const _: () = assert!(size_of::<[(u64, [u8; 32], [u8; 32]); 64]>() < 8 * 1024);

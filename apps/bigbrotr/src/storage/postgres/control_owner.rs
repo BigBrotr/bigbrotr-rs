@@ -113,8 +113,10 @@ pub use successor_history::{
 #[path = "successor_transition.rs"]
 mod successor_transition;
 pub use successor_transition::{
-    LiveSuccessorWriter, SuccessorActivation, SuccessorEmptyPlan, SuccessorGapPlan,
+    ActivatedSuccessorRecovery, ActivatedSuccessorResolution, LiveSuccessorWriter,
+    ResolvedActivatedSuccessor, SuccessorActivation, SuccessorEmptyPlan, SuccessorGapPlan,
     SuccessorPreparation, SuccessorPreparationPlan, SuccessorPreparationRequest,
+    SuccessorRecoveryInput,
 };
 #[path = "initial_succession.rs"]
 mod initial_succession;
