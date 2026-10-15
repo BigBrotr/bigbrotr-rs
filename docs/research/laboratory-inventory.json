@@ -50808,8 +50808,8 @@
     "status": "COMPLETE_INACTIVE_REFS_RETIRED_ALL_ARTIFACTS_PRESERVED",
     "authority": "Q36; owner requested current integrated main and removal of useless branch refs",
     "canonical_branch": "main",
-    "main_source": "bb2d4b89d36fe347b20a8f8385d4895f1b86d557",
-    "main_verified_push": "25597joined0; independent ls-remote8a7270 confirms bb2d4b8",
+    "main_source": "c196acd16d41f178a1e1ae58e12f3e0843df55c7",
+    "main_verified_push": "80081joined0; independent ls-remote c39184 confirms c196acd",
     "root": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015",
     "inventory": ".research/branch-inventory-cleanup-review-20261015/inventory.json",
     "original_refs": 133,
@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main plus three necessary recovery probe/engine/oracle qualification refs locally; remote main only at last verifiedbb2d4b8. All116registered worktrees and ignored/external evidence preserved.",
+    "remaining": "main plus two active successor source implementation branches locally; remote main only verifiedc196acd. All118registered worktrees and ignored/external evidence preserved.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -50843,9 +50843,9 @@
       "root_recheck": "15 original commits,42 complete changed-file blob/mode comparisons exactly match main-ancestor integrations; all original commit objects remain archived."
     },
     "totals": {
-      "local_refs_removed": 104,
+      "local_refs_removed": 107,
       "remote_refs_removed": 51,
-      "worktrees_detached_preserved": 60
+      "worktrees_detached_preserved": 63
     },
     "old_writer": {
       "source": "f899896b1207f5e71c4e39d9ab7814b293814735",
@@ -51402,11 +51402,12 @@
         "qualified_writer_component_retirement",
         "qualified_live_retirement",
         "qualified_live_fault_retirement",
-        "qualified_recovery_component_retirement"
+        "qualified_recovery_component_retirement",
+        "qualified_recovery_retirement"
       ],
       "latest_report": {
-        "path": ".research/branch-retirement-20261015/successor-recovery-components.json",
-        "sha256": "3d645e5d1305eafc04b43a4865fa9b62ef047f7628a9b809b72817369ffd6f15"
+        "path": ".research/branch-retirement-20261015/successor-recovery-qualification.json",
+        "sha256": "aa5808faf32f9ae9122a568d371df42dcadce44862785bd667b6d3372b034cd2"
       },
       "successor_live_fault": {
         "report": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-live-fault-qualification.json",
@@ -52887,7 +52888,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Retire three qualified probe/engine/oracle refs with worktrees/artifacts preserved, then integrate/review distinct successor source closure and qualify actual first/retry against six real recovered states. Source/workflow/retirement/installed gates remain open.",
+    "ongoing": "Review/integrate distinct successor source closure and qualify actual first/retry against six real recovered states. All recovery refs retired with artifacts/worktrees preserved; source/workflow/retirement/installed gates remain open.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -56739,6 +56740,74 @@
       "review": "Read-only independent design mapped complete legacy/native/PG owners and relevant SQL0038; no new runtime claim.",
       "root_only_builds": true,
       "registered_worktrees": 118
+    },
+    "qualified_recovery_retirement": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T16:26:24.514673+00:00",
+      "records": [
+        {
+          "branch": "implementation/successor-recovery-probe",
+          "original": "8de328a3ac8ea57bcb7838cfc9fed68414a14dfe",
+          "integrated": "e7890f6b6934810156d11d1fc311dd6ba897f6d3",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-probe-20261015",
+          "archive_ref": "refs/archive/qualified-successor-recovery-qualification-20261015/implementation/successor-recovery-probe",
+          "blobs": {
+            "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "78a505996a9cd945c77a74aaa6177afc350712b1",
+            "apps/bigbrotr/examples/support/ingest_successor_recovery.rs": "466e2a859277919d4ee4d1c07c0e58fb487fbb57",
+            "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "4aab30d4bdece9e04c6b30afcea970db670c9e35"
+          },
+          "qualified_corrections": {},
+          "census_paths": 2095,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-qualified-probe-before-census.json",
+          "census_sha256": "2a0c220e021554c1680df4533a02466cad9699ebf5e9b90552b93c6db5b2c7a2"
+        },
+        {
+          "branch": "qualification/successor-recovery-engine",
+          "original": "eb8a134ed27dd3e52d0923ccf6c60d384e0d9ee5",
+          "integrated": "15c5782494487d78f1969308209ba3003544a1ae",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-engine-20261015",
+          "archive_ref": "refs/archive/qualified-successor-recovery-qualification-20261015/qualification/successor-recovery-engine",
+          "blobs": {
+            "experiments/ingest-succession/recovery.py": "af65f78f0163af6fc1ae43cc567f04c0b88d825c",
+            "experiments/ingest-succession/transition.py": "229f7148e59b14cf86f6207f7ba70e4bf0b3b0ec"
+          },
+          "qualified_corrections": {},
+          "census_paths": 2380,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-qualified-engine-before-census.json",
+          "census_sha256": "a1e1d2538890dcfb4db99e32c9250fef1e57288bb188c4c41456241aae47c9e3"
+        },
+        {
+          "branch": "qualification/successor-recovery-oracle",
+          "original": "7a43f38476a0c6a92b28910fcf53c228d8c498dc",
+          "integrated": "4e8f852f6623029c9b2c6e9419368cc49ac6c257",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-recovery-oracle-20261015",
+          "archive_ref": "refs/archive/qualified-successor-recovery-qualification-20261015/qualification/successor-recovery-oracle",
+          "blobs": {
+            "experiments/ingest-succession/recovery_replay.py": "0c90553afbd466b6609a8b8d391279d71d82d88e"
+          },
+          "qualified_corrections": {
+            "experiments/ingest-succession/recovery_replay.py": {
+              "commit": "c196acd16d41f178a1e1ae58e12f3e0843df55c7",
+              "blob": "f8918d785ded41adf91ccdce6ef026f6ee608337",
+              "reason": "Standalone reader bytecode suppression before imports; all existing function/class ASTs identical; raw scientific evidence remains pinned to e2eb140"
+            }
+          },
+          "census_paths": 2368,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-qualified-oracle-before-census.json",
+          "census_sha256": "c92d3bb29309d90c9fb66a935f6f022ffafde803046d71c079b3863482b06bc1"
+        }
+      ],
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-qualification.bundle",
+      "bundle_bytes": 14677711,
+      "bundle_sha256": "9aff4b4909c0d6b57300698da83637e6d84e442c3be580b44445a091ecfd2f57",
+      "audit_sha256": "cb1a9b54e569c42387a5d5064f1a0478ea7ed0468df7c6cae2ad9724eca6bce5",
+      "replay_sha256": "ddb291875f398d1e5e3079238a20a60b48f135083adc76f63347890125b2b65f",
+      "scope": "Three local qualified refs only; two new source-closure implementation refs remain active. All worktrees, ignored/external evidence and datasets preserved",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "session": 65818,
+      "exit_code": 0,
+      "report_path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-recovery-qualification.json",
+      "report_sha256": "aa5808faf32f9ae9122a568d371df42dcadce44862785bd667b6d3372b034cd2"
     }
   }
 }

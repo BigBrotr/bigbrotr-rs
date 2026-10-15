@@ -15,10 +15,10 @@ artifact, dataset, original/failure fixture and unrelated workload. Public
 publication/deployment and Cargo promotion remain separately authorized.
 
 Canonical `/home/tux/bigbrotr-rs` uses main. Observed and independently verified
-remote HEAD e2eb14064900ec2ba97fa3b551a686c1195244b6, tree
-ecbad905bb62ed19411219ea156a286c6caf2c37; push71030joined0, remotecc63c2.
-No merge/rebase. Current root edits are this evidence/checkpoint update plus the
-reader's bytecode suppression; all existing reader function/class ASTs unchanged.
+remote HEAD c196acd16d41f178a1e1ae58e12f3e0843df55c7;
+push80081joined0, remotec39184. Engine source remains exact e2eb140.
+No merge/rebase. Current root edits only record completed branch retirement. Reader bytecode
+suppression is committed; all existing function/class ASTs remain unchanged.
 Native/PG/probe/engine/reader recovery components are integrated and qualified
 within the scopes below. Two new source implementation worktrees branch frome2eb140.
 
@@ -34,9 +34,9 @@ Active evidence node:
 `initial_successor_preparation_20261012.repeatable_succession_20261015`;
 inventory node: `implementation_repeatable_ingest_succession_20261015`.
 
-Next bounded action: archive/bundle and retire the three qualified recovery
-probe/engine/oracle branch refs, preserving all files. Then review/integrate the
-successor source closure seam being authored in the two isolated worktrees:
+Next bounded action: review/integrate the successor source closure seam being
+authored in the two isolated worktrees, then add its finite first/retry consumer
+and independently checked actual SQL/native captures:
 
 - `.research/successor-native-source-20261015`, branch
   `implementation/successor-native-source`, owner successor_restart_design:
@@ -112,9 +112,10 @@ other failures remain preserved. No completed run/preparation may be replayed.
 
 ## Branches and resources
 
-104local/51remote refs retired,60worktrees detached with original commits and full
-censuses unchanged. All118registered worktrees preserved. Three qualified recovery
-refs await retirement; two new source implementation refs are active; remote main
+107local/51remote refs retired,63worktrees detached with original commits and full
+censuses unchanged. All118registered worktrees preserved. Recovery probe/engine/oracle
+retirement65818joined0 preserved all three originals, full worktrees and ignored
+artifacts in bundle9aff4b49. Two new source implementation refs are active; remote main
 only at last verification. Native/PG recovery retirement67406joined0 archived
 original8b9c1ab/310d549 in bundle6b8af983 with qualified InputScan correction.
 All original closures remain in refs/archive/* and verified bundles under
