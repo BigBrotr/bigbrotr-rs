@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T11:45:02.096838+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
+Observed 2026-10-15T11:50:05.833988+00:00 on Tux. Runtime Goal is ACTIVE; prior pause revoked.
 Workflow3811f36, SIGTERMfd40012, import6e40fc5, actual expiry0446653 and
 corrected zero-claim08bded4 engines, raw replays and custody audits PASS.
 Main is the integrated state;
@@ -14,7 +14,7 @@ sole integrating owner. Q36 directs verified integrated work onto main and
 removal of redundant branches. Preserve worktrees, ignored/external evidence and
 unrelated workloads. Public publication/deployment and Cargo promotion remain separate.
 
-Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `b8054b3`.
+Canonical `/home/tux/bigbrotr-rs` uses `main`, observed HEAD `b4a6926`.
 Verified private push64046 is `277f305b2e63d2e1e9f30ee15238e24e945d4b89`;
 remote main was independently read at that exact revision. SQL0038 originalc4daa50
 is integrated1c7b49d locally; catalog/runner/grants6699e1c pass compiled checks.
@@ -33,11 +33,22 @@ Dated pause records and old branch names are historical.
 
 ## Current work and precise next action
 
-Root's next bounded action: fresh SQL-only retry using the qualified b8054b3 CLI,
-prepared by `.research/repeatable-succession-sql-retry-prepare-20261015.py`
-(NOT_RUN),90 protectedELFs and2GiB reserve. First verify the prior failed clone's
-full rows/catalog against the retained activated original; rollback remains
-unverified until that observation. Then migrate and run both origin SQL shapes.
+Root's next bounded action: exact `ingest-succession-replay` build, prepared by
+`.research/repeatable-succession-replay-prepare-20261015.py` (NOT_RUN),90protectedELFs,
+12GiB reserve. It combines new native replay and affected legacy tests with the
+corrected CLI/schema. Then a fresh SQL copy verifies the full-width fix and both origins.
+
+SQL6350901 preparation86173/engine91755 joined1 FAIL at unsigned_full_width;
+actual CLI plan/apply/reapply38 all exit0. Genuine new Control claim committed
+before fixture failure; failed copy retained unchanged, backend absent. Original
+45b8462 failed migration rollback now OBSERVED by full rows/catalog. Both originals
+preserved; PG0/client143 stopped/PID0/noOOM. Custody95246 joined0 PASS,1867files,
+90ELFs/1312unchanged nonborrowed projections; audit7c41293e in
+`/runs/ingest-succession-sql-6350901/audit-root/audit-v1.json`. No empty copy/later
+shapes ran. Correction uses div(n,256); literal high-u64 checks extended. A read
+of the unchanged failed copy will capture the old quotient/bytes on next SQL run.
+Native positive18c6fc4 integratedb4a6926; all new owners/shared diff/867test lines
+read. Source/rustfmt review only; Rust qualification pending combined build.
 
 Corrected schema b8054b3 preparation66676/build82773 joined0 PASS,
 11:36:25Z–11:37:33Z:38schema+3entrypoint tests, literal fixture and Clippy.
@@ -47,8 +58,7 @@ reportc34d2cf7 under `/runs/ingest-succession-schema-b8054b3/audit-root/audit-v1
 Both owned containers stopped0/PID0/noOOM; all90ELFs retained. Preparation complete,
 never replay. Fixture initializer now qualifies context.resource to avoid local-name
 ambiguity; this source-review correction is not an observed engine finding.
-Native positive replay18c6fc4 is frozen/clean; root read owners/shared diff, new
-867-line test owner still awaits complete review before integration/build.
+Native positive replay18c6fc4 is frozen/clean and integrated as recorded above.
 
 SQL engine45b8462 preparation87882/engine41324 joined1 FAIL,11:31:55Z–11:31:59Z.
 Actual plan names38; first apply exit1. PG log: syntax error at character2755,
@@ -419,7 +429,7 @@ originals as writers.
 Private Git backs up tracked source only; ignored labs remain on Tux, and
 unavailable Mac captures remain unavailable.
 
-Free bytes after corrected build11:37:33Z:40,025,485,312; remeasure before allocating. Small engines
+Free bytes after failed SQL11:45:25Z:39,937,503,232; remeasure before allocating. Small engines
 require2GiB, builds12GiB;64GiB+577MiB exports unavailable. Never lower reserves.
 Cleanup executor RETIRED_VERIFIED must never be replayed or retired caches reused.
 Current cache `network-1154757/out/build/{target,cargo-home}` requires exclusive

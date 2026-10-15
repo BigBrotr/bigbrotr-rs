@@ -73,7 +73,7 @@ $$;
 CREATE FUNCTION pg_temp.u64(value numeric) RETURNS bytea LANGUAGE plpgsql IMMUTABLE AS $$
 DECLARE answer text:=''; n numeric:=value; i integer;
 BEGIN
-    FOR i IN 1..8 LOOP answer:=lpad(to_hex(mod(n,256)::integer),2,'0')||answer; n:=trunc(n/256); END LOOP;
+    FOR i IN 1..8 LOOP answer:=lpad(to_hex(mod(n,256)::integer),2,'0')||answer; n:=div(n,256); END LOOP;
     IF n<>0 OR value<0 OR trunc(value)<>value THEN RAISE EXCEPTION 'fixture integer overflow'; END IF;
     RETURN decode(answer,'hex');
 END $$;
@@ -300,6 +300,10 @@ SELECT pg_temp.claim_control();
 COMMIT;
 SELECT pg_temp.assert_true('terminal_genesis_flat',(SELECT (control.lock_ingest_lineage(resource,2)).epoch>0 FROM fixture_context));
 SELECT pg_temp.assert_true('unsigned_full_width',control.ingest_lineage_u64(18446744073709551615)=decode('ffffffffffffffff','hex')
+    AND control.ingest_lineage_u64(18446744073709551360)=decode('ffffffffffffff00','hex')
+    AND control.ingest_lineage_u64(9223372036854775808)=decode('8000000000000000','hex')
+    AND control.ingest_lineage_u64(0)=decode('0000000000000000','hex')
+    AND pg_temp.u64(18446744073709551615)=decode('ffffffffffffffff','hex')
     AND control.ingest_lineage_uint(decode('8000000000000000','hex'),0,8)=9223372036854775808);
 SELECT pg_temp.assert_true('manifest_coordinates_are_not_epoch_count',
     (SELECT m.topology=9223372036854775808 AND m.recovery=decode(repeat('00',16),'hex')

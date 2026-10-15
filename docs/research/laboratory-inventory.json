@@ -51127,7 +51127,7 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "COMPONENTS_PASS_SQL_CORRECTED_ENGINE_PENDING",
+    "status": "SQL_UNSIGNED_FIX_AND_NATIVE_REPLAY_INTEGRATED_BUILD_NOT_RUN",
     "observed_at": "2026-10-15T11:36:09.773394+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
@@ -51207,10 +51207,16 @@
         "migration_sha256": "5d72e598b6cea655ee60a9de1a8dbab430f3509c69f8d90f34802ef544e0d9af",
         "fixture_sha256": "9b3fcbdc6dc8a29c3d9627647d091d971a7db70e9111514bd156a82f844fd70e",
         "source_review": "Author and independent cleanup_review source review; root complete integrated migration/fixture read. No runtime proof.",
-        "status": "FIRST_ENGINE_APPLY_FAIL_SYNTAX_CORRECTED_RETRY_NOT_RUN",
+        "status": "APPLY_PASS_FIXTURE_FAIL_UNSIGNED_CORRECTED_RETRY_PENDING",
         "corrected_migration_sha256": "93295f32991d1bf3a3e43c242015349de5bd3b66a3802e91261bead209863f26",
         "corrected_fixture_sha256": "a0843249eebce2992df364f6c2ea856b012ada518f4bcb00888198b806f5eb4a",
-        "fixture_correction": "Qualify context.resource in PL/pgSQL local initializer; source-review correction, not observed runtime failure."
+        "fixture_correction": "Qualify context.resource in PL/pgSQL local initializer; source-review correction, not observed runtime failure.",
+        "numeric_corrected_sha256": "5be6fac96e0e671553eebf7f8c0231a19e95b0e61e2b26b86bcdbb724661b99e"
+      },
+      "positive_replay": {
+        "original": "18c6fc404d705d37500ee34992ad23ba9b6447bd",
+        "main": "b4a6926",
+        "status": "SOURCE_REVIEWED_BUILD_NOT_RUN"
       }
     },
     "completed_build": {
@@ -51673,12 +51679,81 @@
       "preparation_script": ".research/repeatable-succession-schema-retry-prepare-20261015.py",
       "preparation_state": "COMPLETE_DO_NOT_REPLAY"
     },
-    "next_engine": {
-      "profile": "ingest-succession-sql",
+    "sql_unsigned_failure": {
+      "status": "FAIL_SQL_FULL_WIDTH_ASSERTION",
+      "source": "63509016a44bc3c82c3736b7d5abec5f3c161983",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-6350901",
+      "preparation_session": 86173,
+      "engine_session": 91755,
+      "wrapper_exit": 1,
+      "started_at": "2026-10-15T11:45:19.285604+00:00",
+      "finished_at": "2026-10-15T11:45:25.509822+00:00",
+      "result_sha256": "463acb91f75a005018b328e2465dfea9cc337c42178564fe41fcc622828a8138",
+      "actual": "Actual CLI plan/apply/reapply38 exit0. Fixture exit3 unsigned_full_width after genuine Control claim committed. Empty clone and later SQL shapes NOT_RUN.",
+      "prior_syntax_rollback": {
+        "database": "bb_succession_45b8462_activated",
+        "status": "ROLLBACK_OBSERVED_BY_FULL_ROWS_AND_CATALOG",
+        "original_result_sha256": "37e54317fbb663930f0d244299a865cbc548c7c66f95ffee7d03ab23c52189d9"
+      },
+      "correction": "Use exact div(n,256), not trunc(n/256), in unpublished0038 and fixture; add literal boundary expectations. Old applied research copy remains untouched. Diagnostic rounding read pending.",
+      "dependency_reference": "https://www.postgresql.org/docs/16/functions-math.html",
+      "audit": {
+        "session": 95246,
+        "exit_code": 0,
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-sql-6350901/audit-root/audit-v1.json",
+        "sha256": "7c41293ed14f16d1d15d022add87cb0d8c0535f2fc657d49de406ffe9ed7ed4e",
+        "source_files": 1867,
+        "protected_elfs": 90,
+        "unchanged_nonborrowed_containers": 1312,
+        "capture": {
+          "observed_at": "2026-10-15T11:47:05.507843+00:00",
+          "containers": 1314,
+          "sha256": "223da4c4e78968ffaf21856da91e3fabf7d9225455e419b050b6fcf6239f0ce6"
+        }
+      },
+      "owned_terminal": {
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:45:19.338475437Z",
+            "FinishedAt": "2026-10-15T11:45:24.613897409Z"
+          }
+        },
+        "client": {
+          "id": "933d70b8419e380bb06330748b1706b1357995c6338acf46cbbed389d21cbcb9",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-15T11:45:21.369217675Z",
+            "FinishedAt": "2026-10-15T11:45:23.943564446Z"
+          }
+        }
+      },
+      "free_bytes_after": 39937503232,
+      "preparation_state": "COMPLETE_DO_NOT_REPLAY"
+    },
+    "next_build": {
+      "profile": "ingest-succession-replay",
       "status": "NOT_RUN",
-      "preparation_script": ".research/repeatable-succession-sql-retry-prepare-20261015.py",
+      "preparation_script": ".research/repeatable-succession-replay-prepare-20261015.py",
       "protected_elfs": 90,
-      "required_free_bytes": 2147483648
+      "required_free_bytes": 12884901888
     }
   }
 }

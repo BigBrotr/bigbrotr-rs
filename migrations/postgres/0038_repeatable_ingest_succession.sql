@@ -22,7 +22,7 @@ BEGIN
         RAISE EXCEPTION 'invalid lineage u64' USING ERRCODE='23514';
     END IF;
     FOR i IN REVERSE 7..0 LOOP
-        answer:=set_byte(answer,i,mod(remaining,256)::integer); remaining:=trunc(remaining/256);
+        answer:=set_byte(answer,i,mod(remaining,256)::integer); remaining:=div(remaining,256);
     END LOOP;
     RETURN answer;
 END $$;

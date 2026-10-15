@@ -15,9 +15,10 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'])
+replay = sys.argv[1:] == ['replay']
 lineage = sys.argv[1:] == ['lineage']
-schema = sys.argv[1:] == ['schema']
+schema = sys.argv[1:] == ['schema'] or replay
 
 
 def sources():
@@ -44,6 +45,9 @@ if lineage:
 if schema:
     identity['scope'] = ('Additive migration catalog and early CLI checks; retained exact CLI for separate '
                          'PostgreSQL qualification. SQL and connected succession NOT_RUN')
+if replay:
+    identity['scope'] = ('Ordered native lineage replay, affected legacy compatibility and schema/CLI build; '
+                         'SQL, connected succession and installed journeys NOT_RUN')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -61,11 +65,15 @@ if lineage:
              ('legacy_handoff', ['--lib', 'initial_handoff_tests'])]
 if schema:
     tests = [(name, ['--test', name]) for name in ['control_schema', 'migrate_entrypoint']]
+if replay:
+    tests += [(name, ['--lib', name + '_tests']) for name in [
+        'lineage', 'request_input', 'initial_handoff', 'dictionary_append',
+        'producer_recovery', 'source_closure', 'activated_recovery', 'activated_source']]
 steps = [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])]
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1'])
           for name, selection in tests]
-clippy_targets = (['--bin', 'bigbrotr', '--test', 'control_schema', '--test', 'migrate_entrypoint']
+clippy_targets = (['--lib', '--bin', 'bigbrotr', '--test', 'control_schema', '--test', 'migrate_entrypoint']
                   if schema else ['--lib', '--test', 'rocks_succession', '--test', 'rocks_manifest',
                                   '--test', 'rocks_keys', '--test', 'rocks_store'])
 steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
@@ -137,7 +145,8 @@ if schema:
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_SCHEMA_COMPONENTS' if schema
+qualification = dict(identity, status='PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS' if replay
+                     else 'PASS_SUCCESSION_SCHEMA_COMPONENTS' if schema
                      else 'PASS_SUCCESSION_LINEAGE_INSPECTION' if lineage
                      else 'PASS_SUCCESSION_CODEC_COMPONENTS', test_counts=counts)
 (Path('/out') / 'qualification.json').write_text(json.dumps(qualification, indent=2) + '\n')

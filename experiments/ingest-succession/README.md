@@ -50,6 +50,10 @@ mode retains its CLI and build identity for a separate actual PostgreSQL run;
 passing that build does not execute SQL. The current checkpoint and evidence own
 completed run identities and failures.
 
+`replay` combines the ordered positive lineage tests and affected legacy recovery,
+dictionary and source-closure checks with the schema/CLI build. Its native fixtures
+install epoch3 bytes directly: they do not qualify a connected successor writer.
+
 `../control-migrations/repeatable_succession_cases.sql` is a separate SQL-only
 fixture. It requires disposable copies of both genuinely retired epoch2 origins,
 explicit migration0038 and the additional privileges in `schema_grants.sql`.

@@ -88,7 +88,8 @@ def run(root, build):
     assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
     built = read(build / 'build-result.json')
     assert digest(build / 'bigbrotr') == built['binary_sha256']
-    assert read(build.parent / 'qualification.json')['status'] == 'PASS_SUCCESSION_SCHEMA_COMPONENTS'
+    assert read(build.parent / 'qualification.json')['status'] in (
+        'PASS_SUCCESSION_SCHEMA_COMPONENTS', 'PASS_SUCCESSION_REPLAY_SCHEMA_COMPONENTS')
     changes = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
     assert all(name.startswith(('docs/', 'experiments/')) for name in changes), changes
     # Compiled migration bytes and application/catalog inputs must still match.
@@ -153,6 +154,23 @@ def run(root, build):
         lab.write_json(output / 'prior-failed-migration-state.json', failed_rows)
         report['prior_failed_migration'] = dict(database=failed_database,
             status='ROLLBACK_OBSERVED_BY_FULL_ROWS_AND_CATALOG', original_result_sha256=digest(previous_failure))
+        # Keep the applied, failed full-width fixture copy unchanged. Reading its
+        # old function distinguishes quotient rounding from byte-decoder errors.
+        width_failure = root.parent / 'ingest-succession-sql-6350901/sql'
+        assert digest(width_failure / 'result.json') == '463acb91f75a005018b328e2465dfea9cc337c42178564fe41fcc622828a8138'
+        assert digest(width_failure / 'activated-final.json') == 'fb91778d1d4e70f1c6a5653dca9f4c420e4d013d31bd74da33e8d3c2c1e2a108'
+        width_database, = read(width_failure / 'result.json')['databases']
+        assert absence(pg, width_database) == []
+        assert normalized(rows(pg, width_database)) == normalized(read(width_failure / 'activated-final.json'))
+        report['prior_unsigned_failure'] = json.loads(lab.sql(pg, width_database, """
+            SELECT json_build_object(
+                'encoded',encode(control.ingest_lineage_u64(18446744073709551615),'hex'),
+                'rounded_quotient',trunc(18446744073709551615::numeric/256)::text,
+                'integer_quotient',div(18446744073709551615::numeric,256)::text,
+                'decoded',control.ingest_lineage_uint(decode('8000000000000000','hex'),0,8)::text);
+        """))
+        assert normalized(rows(pg, width_database)) == normalized(read(width_failure / 'activated-final.json'))
+        assert absence(pg, width_database) == []
         ident = lab.docker('create', '--init', '--name', client, '--label', label + '=' + owner,
             '--cpus', '2', '--memory', '1536m', '--memory-swap', '1536m', '--pids-limit', '128',
             '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
