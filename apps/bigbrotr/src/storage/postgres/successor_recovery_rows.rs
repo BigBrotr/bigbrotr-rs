@@ -8,10 +8,11 @@ pub(super) struct Activation {
     transaction: u64,
 }
 
-pub(super) async fn require_positive(
+pub(super) async fn require_context(
     tx: &Transaction<'_>,
     intent: &Intent,
     current: ingest_registry::ControlOwner,
+    purpose: Purpose,
 ) -> Result<(), ProducerResolveError> {
     if current.resource_id != intent.preparer.resource_id
         || current.epoch <= intent.preparer.epoch
@@ -22,7 +23,7 @@ pub(super) async fn require_positive(
     // This exact classifier excludes the old preparer, checks every ancestor,
     // and samples current Control UTC after locks. It does not require the old
     // Ingest deadline or old current-policy selection to remain live/current.
-    if rows::require_target(tx, intent, "positive")
+    if rows::require_target(tx, intent, purpose.classifier())
         .await?
         .is_some()
     {
@@ -82,6 +83,56 @@ pub(super) fn require_head(
     Ok(())
 }
 
+// A closed source must already have both closing barriers. Neither an OPEN
+// native marker nor a partially closing SQL source can be normalized on retry.
+pub(super) fn require_source_head(
+    head: &Epoch,
+    issued: u64,
+    native_closing: bool,
+    limit: u32,
+) -> Result<(), OwnerError> {
+    if head.source == SourceState::Open {
+        return require_head(head, issued, native_closing, limit);
+    }
+    if head.source != SourceState::Closed
+        || head.producer != ProducerState::Closing
+        || !native_closing
+        || head.source_cut.is_none()
+        || head.source_digest.is_none()
+        || issued != head.reserved
+    {
+        return Err(OwnerError::InvalidMetadata);
+    }
+    // Reuse every ordinary identity/count bound, with only the deliberately
+    // different source state cleared in this fixed local projection.
+    let open = Epoch {
+        source: SourceState::Open,
+        source_cut: None,
+        source_digest: None,
+        ..*head
+    };
+    require_head(&open, issued, native_closing, limit)
+}
+
+pub(super) fn require_summary(
+    summary: &LineageEpochSummary,
+    head: &Epoch,
+    issued: u64,
+    native_cut: u64,
+) -> Result<(), OwnerError> {
+    if summary.epoch != head.epoch()
+        || summary.terminal_kind != RetainedTerminalKind::Activated
+        || summary.resolved_requests != issued
+        || summary.last_complete_sequence != native_cut
+        || (head.source == SourceState::Closed
+            && (head.source_cut != Some(summary.last_complete_sequence)
+                || head.source_digest != Some(summary.digest)))
+    {
+        return Err(OwnerError::InvalidMetadata);
+    }
+    Ok(())
+}
+
 pub(super) async fn require_native(
     tx: &Transaction<'_>,
     recovery: &IngestRecovery,
@@ -96,7 +147,11 @@ pub(super) async fn require_native(
     {
         return Err(OwnerError::InvalidMetadata.into());
     }
-    require_head(
+    let check = match owner.purpose {
+        Purpose::Positive => require_head,
+        Purpose::Source => require_source_head,
+    };
+    check(
         &owner.head,
         owner.issued_through(),
         owner.native.is_closing(),
@@ -127,7 +182,10 @@ pub(super) async fn require_native(
             {
                 return Err(OwnerError::InvalidMetadata.into());
             }
-        } else if row != owner.head || entry.terminal_claim().is_some() {
+        } else if row != owner.head
+            || entry.terminal_claim().is_some()
+            || (row.source == SourceState::Closed && row.source_cut != Some(entry.source_through()))
+        {
             return Err(OwnerError::InvalidMetadata.into());
         }
     }

@@ -25,8 +25,9 @@ pub use activation::{LiveSuccessorWriter, SuccessorActivation};
 #[path = "successor_recovery.rs"]
 mod recovery;
 pub use recovery::{
-    ActivatedSuccessorRecovery, ActivatedSuccessorResolution, ResolvedActivatedSuccessor,
-    SuccessorRecoveryInput,
+    ActivatedSuccessorRecovery, ActivatedSuccessorResolution, ActivatedSuccessorSourceRecovery,
+    ActivatedSuccessorSourceResolution, ResolvedActivatedSuccessor,
+    ResolvedActivatedSuccessorSource, SuccessorRecoveryInput,
 };
 
 /// Scheduling is sampled once, under actual Control and dataset custody. A

@@ -14,6 +14,28 @@ use successor_history::rows::{self as history_rows, Epoch, ProducerState, Source
 
 #[path = "successor_recovery_rows.rs"]
 mod projection;
+#[path = "successor_source.rs"]
+mod source;
+pub use source::{
+    ActivatedSuccessorSourceRecovery, ActivatedSuccessorSourceResolution,
+    ResolvedActivatedSuccessorSource,
+};
+
+// Private purpose, selected only by distinct connected factories. No caller can
+// convert a source owner into the public source-open recovery capability.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Purpose {
+    Positive,
+    Source,
+}
+impl Purpose {
+    fn classifier(self) -> &'static str {
+        match self {
+            Self::Positive => "positive",
+            Self::Source => "source",
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ClosingState {
@@ -53,6 +75,7 @@ pub struct ActivatedSuccessorRecovery {
     head: Epoch,
     control: ingest_registry::ControlOwner,
     state: ClosingState,
+    purpose: Purpose,
 }
 
 /// Ordered whole-history replay. Only this connected owner can accept a native
@@ -67,6 +90,7 @@ pub struct ActivatedSuccessorResolution<'a> {
 /// Complete issued/reserved recovery and exact SQL copies. This borrowed result
 /// deliberately exposes no lineage, source closure, retirement or writer proof.
 pub struct ResolvedActivatedSuccessor<'a> {
+    recovery: &'a IngestRecovery,
     owner: &'a ActivatedSuccessorRecovery,
     native: ResolvedSuccessorRecovery<'a>,
 }
@@ -86,6 +110,7 @@ const _: () = assert!(
         + 2 * size_of::<Epoch>()
         + 2 * size_of::<projection::Activation>()
         + 2 * size_of::<[(u64, [u8; 32], [u8; 32]); 64]>()
+        + 1024 // distinct source wrappers and one post-publication projection
         + 16 * 1024
         < LINEAGE_SCRATCH_BYTES as usize / 2
 );
@@ -167,6 +192,26 @@ impl ControlSession {
         input_permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedSuccessorRecovery, ProducerResolveError> {
+        self.inspect_successor_recovery(
+            recovery,
+            input,
+            metadata_permit,
+            input_permit,
+            Purpose::Positive,
+            validate,
+        )
+        .await
+    }
+
+    async fn inspect_successor_recovery(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: SuccessorReplayRequest<'_>,
+        metadata_permit: OwnedPermit,
+        input_permit: OwnedPermit,
+        purpose: Purpose,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedSuccessorRecovery, ProducerResolveError> {
         let current = self.identity;
         let operation = history_request(&input);
         let (tx, mut lease, policy) = self
@@ -176,7 +221,7 @@ impl ControlSession {
         let intent = rows::read(&tx, recovery, epoch).await?;
         // Locks current Control, dataset and ordered parents before inspecting
         // native. Historical scheduling expiry is deliberately irrelevant.
-        projection::require_positive(&tx, &intent, current).await?;
+        projection::require_context(&tx, &intent, current, purpose).await?;
         let activation = projection::activation(&tx, &intent).await?;
         let head = history_rows::read_epoch(&tx, recovery, epoch).await?;
         let native = NativeSuccessorRecovery::inspect(recovery, metadata_permit, input.cancelled)
@@ -188,6 +233,7 @@ impl ControlSession {
             head,
             control: current,
             state: ClosingState::Inspected,
+            purpose,
         };
         projection::require_native(&tx, recovery, &owner, input.cancelled).await?;
         owner
@@ -224,38 +270,49 @@ impl ControlSession {
         let (tx, mut lease, policy) = self
             .begin_checked_successor_recovery(recovery, owner, &input, validate)
             .await?;
-        owner
-            .native
-            .close_producer(recovery, permit, input.cancelled, || {
-                native_authority(&mut lease, policy, input.cancelled)
-            })
-            .map_err(native_error)?;
-        let changed = tx
-            .execute(
-                "UPDATE control.producer_epochs SET state='closing'
+        if owner.head.source == SourceState::Closed {
+            owner
+                .native
+                .observe_closed(recovery, permit, input.cancelled, || {
+                    native_authority(&mut lease, policy, input.cancelled)
+                })
+                .map_err(native_error)?;
+            successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current)
+                .await?;
+        } else {
+            owner
+                .native
+                .close_producer(recovery, permit, input.cancelled, || {
+                    native_authority(&mut lease, policy, input.cancelled)
+                })
+                .map_err(native_error)?;
+            let changed = tx
+                .execute(
+                    "UPDATE control.producer_epochs SET state='closing'
             WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea
                 AND producer_epoch=$3::text::numeric AND state='open'",
-                &[
-                    &&recovery.manifest().identity().dataset_id.as_bytes()[..],
-                    &&owner.producer_slot_id().as_bytes()[..],
-                    &owner.epoch().to_string(),
-                ],
-            )
-            .await
-            .map_err(backend)?;
-        if changed != u64::from(owner.head.producer == ProducerState::Open) {
-            return Err(OwnerError::InvalidMetadata.into());
+                    &[
+                        &&recovery.manifest().identity().dataset_id.as_bytes()[..],
+                        &&owner.producer_slot_id().as_bytes()[..],
+                        &owner.epoch().to_string(),
+                    ],
+                )
+                .await
+                .map_err(backend)?;
+            if changed != u64::from(owner.head.producer == ProducerState::Open) {
+                return Err(OwnerError::InvalidMetadata.into());
+            }
+            projection::require_context(&tx, &owner.intent, current, owner.purpose).await?;
+            owner
+                .native
+                .validate(recovery, input.cancelled)
+                .map_err(native_error)?;
+            rows::require_live(&tx, current, None).await?;
+            initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+            tx.commit()
+                .await
+                .map_err(|_| ProducerResolveError::CommitUnknown)?;
         }
-        projection::require_positive(&tx, &owner.intent, current).await?;
-        owner
-            .native
-            .validate(recovery, input.cancelled)
-            .map_err(native_error)?;
-        rows::require_live(&tx, current, None).await?;
-        initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
-        tx.commit()
-            .await
-            .map_err(|_| ProducerResolveError::CommitUnknown)?;
         // Never reset the monotonic deadline after COMMIT or native validation.
         owner
             .native
@@ -333,6 +390,14 @@ impl ControlSession {
                     manifest,
                 )
                 .await?;
+                successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current)
+                    .await?;
+            } else if owner.head.source == SourceState::Closed {
+                // Source closure is not workflow retirement. Exact existing
+                // Event copies remain admissible here, including unbound ones.
+                producer_outcomes::require_recovered(&tx, &original, pending.resolved())
+                    .await
+                    .map_err(ProducerResolveError::Outcome)?;
                 successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current)
                     .await?;
             } else {
@@ -446,27 +511,16 @@ impl ControlSession {
             .native
             .finish(limits, permit)
             .map_err(ProducerResolveError::Native)?;
-        for epoch in 1..=native.verified_through() {
-            initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
-            let entry = resolution
-                .owner
-                .native
-                .entry(epoch)
-                .ok_or(OwnerError::InvalidMetadata)?;
-            let count =
-                usize::try_from(entry.issued_through()).map_err(|_| OwnerError::InvalidMetadata)?;
-            let records = history_rows::recorded_prefix(
-                &tx,
-                resolution.recovery,
-                resolution.owner.producer_slot_id(),
-                epoch,
-                count,
-            )
-            .await?;
-            if !native.matches_recorded(epoch, records[..count].iter().copied()) {
-                return Err(OwnerError::InvalidMetadata.into());
-            }
-        }
+        require_recorded_recovery(
+            &tx,
+            resolution.recovery,
+            resolution.owner,
+            &native,
+            &mut lease,
+            policy,
+            input.cancelled,
+        )
+        .await?;
         native
             .validate(resolution.cancelled)
             .map_err(native_error)?;
@@ -480,6 +534,7 @@ impl ControlSession {
         }
         self.available = true;
         Ok(ResolvedActivatedSuccessor {
+            recovery: resolution.recovery,
             owner: resolution.owner,
             native,
         })
@@ -519,7 +574,7 @@ impl ControlSession {
         let (tx, lease, policy) = self
             .begin_activated_successor_recovery(recovery, input, validate)
             .await?;
-        projection::require_positive(&tx, &owner.intent, owner.control).await?;
+        projection::require_context(&tx, &owner.intent, owner.control, owner.purpose).await?;
         if projection::activation(&tx, &owner.intent).await? != owner.activation
             || history_rows::read_epoch(&tx, recovery, owner.epoch()).await? != owner.head
         {
@@ -565,12 +620,37 @@ fn require_head_summary(
     summary: &LineageEpochSummary,
     owner: &ActivatedSuccessorRecovery,
 ) -> Result<(), OwnerError> {
-    if summary.epoch != owner.epoch()
-        || summary.terminal_kind != RetainedTerminalKind::Activated
-        || summary.resolved_requests != owner.issued_through()
-        || summary.last_complete_sequence != owner.native.head().source_through()
-    {
-        return Err(OwnerError::InvalidMetadata);
+    projection::require_summary(
+        summary,
+        &owner.head,
+        owner.issued_through(),
+        owner.native.head().source_through(),
+    )
+}
+
+async fn require_recorded_recovery(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    owner: &ActivatedSuccessorRecovery,
+    native: &ResolvedSuccessorRecovery<'_>,
+    lease: &mut PolicyLeaseTracker,
+    policy: PolicyEpoch,
+    cancelled: &AtomicBool,
+) -> Result<(), ProducerResolveError> {
+    for epoch in 1..=native.verified_through() {
+        initial_history::check_delivery(lease, policy, cancelled)?;
+        let entry = owner
+            .native
+            .entry(epoch)
+            .ok_or(OwnerError::InvalidMetadata)?;
+        let count =
+            usize::try_from(entry.issued_through()).map_err(|_| OwnerError::InvalidMetadata)?;
+        let records =
+            history_rows::recorded_prefix(tx, recovery, owner.producer_slot_id(), epoch, count)
+                .await?;
+        if !native.matches_recorded(epoch, records[..count].iter().copied()) {
+            return Err(OwnerError::InvalidMetadata.into());
+        }
     }
     Ok(())
 }
