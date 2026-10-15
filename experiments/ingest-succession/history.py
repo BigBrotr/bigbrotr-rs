@@ -5,6 +5,7 @@ The existing terminal2 origins remain immutable. Unknown process custody never
 permits a native inspection; the owner-checked outer cleanup reaps the client.
 """
 import datetime
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -19,6 +20,11 @@ import schema
 from history_replay import CASES, PINS, negative_controls, verify
 
 SOURCE = Path(__file__).resolve().parents[2]
+bootstrap_spec = importlib.util.spec_from_file_location(
+    'bootstrap_oracle', SOURCE / 'experiments/ingest-bootstrap/oracle.py')
+bootstrap_oracle = importlib.util.module_from_spec(bootstrap_spec)
+sys.modules['bootstrap_oracle'] = bootstrap_oracle
+bootstrap_spec.loader.exec_module(bootstrap_oracle)
 sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
 from initial_history import capture, inputs_at, observe_backend_absence, server_clock
 from initial_succession import census
