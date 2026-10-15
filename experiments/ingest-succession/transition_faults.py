@@ -68,25 +68,34 @@ def invoke(pg, client, output, case, proxy_source, fault):
     except BaseException as error:
         response['orchestration_error'] = repr(error)
     finally:
-        path = output / (name + '-response.json')
-        if path.exists():
-            recorded = read(path)
-            if 'orchestration_error' in response:
-                recorded['orchestration_error'] = response['orchestration_error']
-            response = recorded
-        response['seconds'] = time.monotonic() - started
         try:
-            window['after_us'] = history.server_clock(pg, database)
-        except BaseException as error:
-            response['clock_error'] = repr(error)
-        # Preserve the probe's actual result before collecting any proxy checks.
-        lab.write_json(path, response)
-        lab.write_json(output / (name + '-clock.json'), window)
-        if proxy is not None:
-            finish_proxy(proxy, fault['wire'])
-        lab.write_json(output / (name + '-fault.json'), fault)
-        if fault is not None:
-            lab.write_json(output / (name + '-wire.json'), fault['wire'])
+            path = output / (name + '-response.json')
+            if path.exists():
+                recorded = read(path)
+                if not isinstance(recorded, dict):
+                    raise ValueError('response is not an object')
+                if 'orchestration_error' in response:
+                    recorded['orchestration_error'] = response['orchestration_error']
+                response = recorded
+            response['seconds'] = time.monotonic() - started
+            try:
+                window['after_us'] = history.server_clock(pg, database)
+            except BaseException as error:
+                response['clock_error'] = repr(error)
+            # Preserve the actual response before collecting proxy checks.
+            lab.write_json(path, response)
+            lab.write_json(output / (name + '-clock.json'), window)
+        finally:
+            # Malformed/truncated output or a failed capture write must still
+            # reap the proxy. Leave its original response bytes untouched on a
+            # decode failure; execute() records the unknown external outcome.
+            try:
+                if proxy is not None:
+                    finish_proxy(proxy, fault['wire'])
+            finally:
+                lab.write_json(output / (name + '-fault.json'), fault)
+                if fault is not None:
+                    lab.write_json(output / (name + '-wire.json'), fault['wire'])
     return response, window
 
 

@@ -101,3 +101,19 @@ full SQL/native deltas from retained raw captures, including each process bounda
 These processes close their candidates; the resulting receipts cannot be used to
 adopt a writer. Interrupted gap/CLOSING recovery, activation and installed journeys
 remain separate qualifications.
+
+`transition_faults.py RUN_ROOT BUILD_ARTIFACTS` uses the same resource owner and
+one fresh activated-terminal2 copy for five processes: prepare with the COMMIT11
+reply removed after server completion, direct gap recovery, empty retirement with
+COMMIT11 stopped before forwarding, direct empty completion and exact retry.
+The unchanged loopback wire proxy creates both interrupted states. The finite
+probe's optional proxy argument changes only Control transport; its observer stays
+direct. Missing native/driver/proxy custody prevents native reopen; available
+SQL/input captures remain provisional. Proxy collection runs even if decoding or
+writing the process response fails, retaining malformed original bytes.
+
+`transition_fault_replay.py RUN_ROOT` reads those retained captures independently,
+including the exact wire boundary, full75-table/native state chain and replacement
+Control's exclusion of an unreleased predecessor. Caller CommitUnknown is kept
+distinct from the observed durable outcome. These five processes qualify neither
+activation nor admission, installed supervision, cancellation/expiry or RSS.

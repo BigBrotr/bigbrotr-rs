@@ -51397,8 +51397,8 @@
     }
   },
   "implementation_repeatable_ingest_succession_20261015": {
-    "status": "CONNECTED_PREPARATION_EMPTY_RETRY_AND_LATER_PREPARATION_PASS_INTERRUPTED_ACTIVATION_WRITER_PENDING",
-    "observed_at": "2026-10-15T13:54:45.858489+00:00",
+    "status": "CONNECTED_PREPARATION_EMPTY_GAP_AND_COMMIT_LOSS_PASS_ACTIVATION_WRITER_PENDING",
+    "observed_at": "2026-10-15T14:18:13.189082+00:00",
     "task": "P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete",
     "contract": "docs/reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented",
     "source_base": "12c3534c6c970839a4371fc00b4ac3eac6730cb0",
@@ -51485,6 +51485,40 @@
         "created_from": "e33075ef9c8d43a38998a1529d08b5b6ab03ed7f",
         "preserve_ignored_artifacts": true,
         "detached_at": "ffa5a0bbc6f55b5da12966c564ce6d7987c85e74"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-faults-20261015",
+        "owner": "recovery_review",
+        "created_from": "9f06d150eeec7613dd2d46c5bdc33ea574bf47d2",
+        "branch": null,
+        "scope": "Qualified fault probe/harness, archived and detached; all63pure artifacts retained.",
+        "preserve_ignored_artifacts": true,
+        "detached_at": "5b87baeb14bbb2ba86a703fdf68fb769399ab23f"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-fault-oracle-20261015",
+        "owner": "cleanup_review",
+        "created_from": "9f06d150eeec7613dd2d46c5bdc33ea574bf47d2",
+        "branch": null,
+        "scope": "Qualified independent reader, archived and detached; all94artificial artifacts retained.",
+        "preserve_ignored_artifacts": true,
+        "detached_at": "8488e473182c77524e87fe0276985951df3f851b"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-writer-20261015",
+        "owner": "successor_restart_design",
+        "created_from": "9f06d150eeec7613dd2d46c5bdc33ea574bf47d2",
+        "branch": "implementation/successor-writer",
+        "scope": "Source-only native activation/writer/frontier implementation; no runtime/build/cache authority.",
+        "preserve_ignored_artifacts": true
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-activation-20261015",
+        "owner": "recovery_review",
+        "created_from": "fee2e5c0e64b5196f46188fa19ecf526744bd64e",
+        "branch": "implementation/successor-activation",
+        "scope": "Source-only PG activation, fixed writer binding and shared batch dispatch; no native/examples/runtime/build/cache edits.",
+        "preserve_ignored_artifacts": true
       }
     ],
     "resource_policy": {
@@ -52814,7 +52848,7 @@
       "review": "Root read all3new native owners/tests and4seams; no concrete blocker found.6testgroups NOT_RUN. Integrate with concrete PG preparation/gap/empty consumer before build; no private mutator dead-code suppression.",
       "scope": "Fresh candidate continuous custody, positive4put handoff, gap noadoption, empty1marker retirement. Activation/writer/installed remain incomplete."
     },
-    "ongoing": "Next genuineinterruption5wave: prepare COMMITaftercomplete\u2192gap\u2192empty COMMITbeforeforward\u2192emptycompletion\u2192retry. Sourceprobe+harness recovery_review, independentoracle cleanup_review. Native activation/writer/frontier source-only separately; no adoption of firstwave closed candidates.",
+    "ongoing": "Native continuous-custody activation/writer/frontier and paired PG activation/shared-batch dispatch are source-only in separate active worktrees. Root next reviews integrated owners before exact build/components and real live fixture. Preserve qualified fault roots and every failed/historical artifact; no adoption of closed candidates.",
     "history_reader": {
       "status": "SOURCE_INTEGRATED_PURE_CONTROLS_PASS_ENGINE_NOT_RUN",
       "original": "86c8321e1d3c89cdc2dcfe134f2dd312d3cf039f",
@@ -54216,6 +54250,458 @@
         "path": ".research/branch-retirement-20261015/successor-transition-qualification.json",
         "sha256": "7fb03cb8590645c1491e6d9844dfcaf7fff9608ad91b9b79a84917309702f549"
       }
+    },
+    "transition_fault_probe_build": {
+      "source": "869ee860a7087211bbb412e82958b1011e9278ab",
+      "tree": "44f28957b41adbc5acc80caccf17a0f88c1cb296",
+      "owner": "f0d21dd828398ee4bf191713dd513883",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "bded2bafb41cf8e926cfd6d9cc612511c6e79c53d95c8b4771a0f603195c13fc"
+        },
+        {
+          "name": "native",
+          "id": "d4b6536bdb5d3e4b12d7a38ac738b33766c5ccd077fca8ce7bf8e6dfb174c0b8"
+        }
+      ],
+      "started_at": "2026-10-15T14:09:42.947710+00:00",
+      "finished_at": "2026-10-15T14:11:23.699700+00:00",
+      "free_bytes_after": 33265291264,
+      "qualification": "PASS_SUCCESSION_TRANSITION_PROBE_BUILD",
+      "inventory_changed": [],
+      "status": "PASS_SUCCESSION_TRANSITION_PROBE_BUILD",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-869ee86",
+      "preparation": {
+        "session": 55878,
+        "exit_code": 0
+      },
+      "build": {
+        "session": 73790,
+        "exit_code": 0
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-probe-869ee86/audit-root/audit-v1.json",
+        "sha256": "9e2ed3d4a9ef8b1c03a9a1d727263087c42881556169eb02099e4fe1a0c5c476",
+        "session": 11101,
+        "exit_code": 0,
+        "source_files": 1888,
+        "protected_elfs": 112,
+        "new_elfs": 2,
+        "unchanged_containers": 1339
+      },
+      "executables": {
+        "ingest_bootstrap_probe": "61d825734de6a372e0d583cf14d6cc98cb257f049f7f7d6bcbbb9594ead04e80",
+        "bigbrotr": "6b8087b1062f7c12c0a51945c18fc34ef3d58802facfbd758346649f6d274e8c"
+      },
+      "rust_tests": 0,
+      "component_reuse": "Product and migrations unchanged from qualified4e204f9; f0cd56321lineage/native+4PG tests retained. Only finite probe/examples/experiments/docs changed.",
+      "scope": "Wire-fault-capable finite probe and CLI compilation/Clippy; real connected execution recorded separately."
+    },
+    "transition_fault_source": {
+      "harness_original": "5b87baeb14bbb2ba86a703fdf68fb769399ab23f",
+      "harness_main": "869ee860a7087211bbb412e82958b1011e9278ab",
+      "reader_original": "8488e473182c77524e87fe0276985951df3f851b",
+      "reader_main": "2a9b3abf9f722f0e4858bf4833fa38eb330b867e",
+      "harness_manifest": {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-faults-20261015/.research/successor-transition-faults-selfcheck-20261015/manifest.json",
+        "sha256": "28e5ad12c5d14c729cf129ab5a41f6306cbe8001bc3a8f962f8b8fa134a335c4"
+      },
+      "reader_manifest": {
+        "path": "/home/tux/bigbrotr-rs/.research/successor-transition-fault-oracle-20261015/.research/transition-fault-reader-selfcheck-20261015/manifest-v1.json",
+        "sha256": "e3aa13081b261cdd8a3ff5487a0e3e8c6d7951bf8d9f83abe1b0d2a29dbf8ca1"
+      },
+      "import_smoke": {
+        "path": "/home/tux/bigbrotr-rs/.research/transition-fault-root-import-20261015.json",
+        "sha256": "59c4bf27feeaa1f5d14a095f17697f10f6a9b2aaf6c50e5348633e26c05af26c"
+      },
+      "review": "Root complete modified probe464, shared runner442, fault driver175, independent reader622; actual dispatcher delta and fault proxy335/Process/finish_proxy ownership boundaries. Independent AI review by cleanup_review confirms COMMIT11 and unchanged default9 path; one malformed-output proxy-finally finding handled separately.",
+      "pure": {
+        "harness_checks": 14,
+        "harness_artifacts": 63,
+        "reader_cases": 5,
+        "reader_snapshots": 142,
+        "reader_controls": 82,
+        "reader_file_controls": 12,
+        "reader_bound_files": 86,
+        "reader_artifacts": 94,
+        "reader_artifact_bytes": 89642203,
+        "limits": "Reader artificial assembler reuses its Model; pure positives establish protocol/file shape only. Actual product semantic replay is separate. Root verified all frozen source/artifact hashes."
+      }
+    },
+    "transition_fault_connected": {
+      "status": "PASS_SUCCESSOR_TRANSITION_COMMIT_LOSS",
+      "source": "2a9b3abf9f722f0e4858bf4833fa38eb330b867e",
+      "tree": "ef696ef29defbf1153d38f5a86ffcd514213b6ec",
+      "owner": "7c9380bd4b09aed5bff5f111b5e7b674",
+      "label": "org.bigbrotr.succession-transition-fault",
+      "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "client": "7aa6cd5361ead11cdff76464d707c25f1e2c7e9840c7ac6b86cbfc3657005ce8",
+      "started_at": "2026-10-15T14:12:52.054842+00:00",
+      "finished_at": "2026-10-15T14:13:17.285462+00:00",
+      "free_bytes_after": 33126715392,
+      "scope": "Actual prepare COMMIT reply loss, fresh pending gap, native CLOSING before SQL COMMIT and fresh terminal recovery/retry",
+      "not_run": [
+        "Empty legacy genesis COMMIT-loss variant",
+        "Activation, writer delivery, installed succession and admitted new requests",
+        "Process kill, cancellation/expiry, other COMMIT boundaries, 255-epoch capacity and RSS qualification"
+      ],
+      "unrelated_changed": [],
+      "unexpected_containers": [],
+      "missing_owned": [],
+      "cleanup_errors": [],
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-faults-engine-2a9b3ab",
+      "preparation": {
+        "session": 37892,
+        "exit_code": 0
+      },
+      "engine": {
+        "session": 17335,
+        "exit_code": 0
+      },
+      "raw_result": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-faults-engine-2a9b3ab/transition-faults/result.json",
+        "sha256": "ec24193a730607ab2f52fbce2b29220b840b4d8858d975938f36c518066a54e2"
+      },
+      "replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-faults-engine-2a9b3ab/root-independent-replay.json",
+        "sha256": "1990db0efb8a2ea87183ea60dde6b0c5cf906a5bf0f41115f5f88426ffd0e364",
+        "session": 67243,
+        "exit_code": 0,
+        "status": "PASS_SUCCESSOR_TRANSITION_COMMIT_LOSS_REPLAY",
+        "snapshots": 142,
+        "semantic_controls": 82,
+        "bound_files": 86
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-transition-faults-engine-2a9b3ab/audit-root/audit-v1.json",
+        "sha256": "5635bcbbe54d30997f39bb1e9db5f5af964d43dcddd1ba7c18d9dff60f88e14a",
+        "session": 11553,
+        "exit_code": 0,
+        "status": "PASS_READ_ONLY_TRANSITION_FAULT_CUSTODY",
+        "source_files": 1889,
+        "protected_elfs": 114,
+        "unchanged_nonborrowed_containers": 1340
+      },
+      "cases": [
+        {
+          "name": "activated-prepare-after",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-prepare-after",
+            "database": "bb_transition_fault_2a9b3ab_activated",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 70,
+            "sequence": 85,
+            "inputs": 6,
+            "control_epoch": 15,
+            "refreshes": 9,
+            "caller_unknown": true,
+            "persistent_outcome": "prepared-native-old",
+            "scope": "Finite interrupted preparation/gap/empty recovery; no candidate adoption, activation, admission, installed or RSS claim"
+          },
+          "controls": 19,
+          "wire": {
+            "reason": "after-complete",
+            "commits_seen": 11,
+            "commits_forwarded": 11,
+            "server_commit_complete": 11,
+            "client_commit_complete": 10,
+            "faults": 1
+          }
+        },
+        {
+          "name": "activated-gap",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-gap",
+            "database": "bb_transition_fault_2a9b3ab_activated",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 73,
+            "sequence": 89,
+            "inputs": 6,
+            "control_epoch": 16,
+            "refreshes": 9,
+            "caller_unknown": false,
+            "persistent_outcome": "prepared-native-complete",
+            "scope": "Finite interrupted preparation/gap/empty recovery; no candidate adoption, activation, admission, installed or RSS claim"
+          },
+          "controls": 16,
+          "wire": null
+        },
+        {
+          "name": "activated-empty-before",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-empty-before",
+            "database": "bb_transition_fault_2a9b3ab_activated",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 73,
+            "sequence": 90,
+            "inputs": 6,
+            "control_epoch": 17,
+            "refreshes": 9,
+            "caller_unknown": true,
+            "persistent_outcome": "native-closing-SQL-open",
+            "scope": "Finite interrupted preparation/gap/empty recovery; no candidate adoption, activation, admission, installed or RSS claim"
+          },
+          "controls": 17,
+          "wire": {
+            "reason": "before-forward",
+            "commits_seen": 11,
+            "commits_forwarded": 10,
+            "server_commit_complete": 10,
+            "client_commit_complete": 10,
+            "faults": 1
+          }
+        },
+        {
+          "name": "activated-empty-complete",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-empty-complete",
+            "database": "bb_transition_fault_2a9b3ab_activated",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 73,
+            "sequence": 90,
+            "inputs": 6,
+            "control_epoch": 18,
+            "refreshes": 9,
+            "caller_unknown": false,
+            "persistent_outcome": "empty-terminal",
+            "scope": "Finite interrupted preparation/gap/empty recovery; no candidate adoption, activation, admission, installed or RSS claim"
+          },
+          "controls": 16,
+          "wire": null
+        },
+        {
+          "name": "activated-empty-retry",
+          "oracle": {
+            "status": "PASS",
+            "case": "activated-empty-retry",
+            "database": "bb_transition_fault_2a9b3ab_activated",
+            "snapshots": 30,
+            "tables": 75,
+            "native_rows": 73,
+            "sequence": 90,
+            "inputs": 6,
+            "control_epoch": 19,
+            "refreshes": 10,
+            "caller_unknown": false,
+            "persistent_outcome": "unchanged-empty-terminal",
+            "scope": "Finite interrupted preparation/gap/empty recovery; no candidate adoption, activation, admission, installed or RSS claim"
+          },
+          "controls": 14,
+          "wire": null
+        }
+      ],
+      "originals": {
+        "activated": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        },
+        "empty": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        }
+      },
+      "owned_terminal": {
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-15T14:12:52.114411375Z",
+            "FinishedAt": "2026-10-15T14:13:16.400644524Z"
+          }
+        },
+        "client": {
+          "id": "7aa6cd5361ead11cdff76464d707c25f1e2c7e9840c7ac6b86cbfc3657005ce8",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-15T14:12:53.689664962Z",
+            "FinishedAt": "2026-10-15T14:13:15.9108039Z"
+          }
+        }
+      },
+      "retirement": {
+        "at_us": 1792073587750524,
+        "digest": "3296fe0cea1145ec5fdcb65f42c07f3f47e0a56f31004a24d1e849d34d2f4654",
+        "xmin": "31523",
+        "retry": "Exact rows/timestamps/digest/xmin/native sequence preserved"
+      }
+    },
+    "qualified_transition_fault_branch_retirement": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-15T14:14:54.657511+00:00",
+      "records": [
+        {
+          "branch": "qualification/successor-transition-faults",
+          "original": "5b87baeb14bbb2ba86a703fdf68fb769399ab23f",
+          "integrated": "869ee860a7087211bbb412e82958b1011e9278ab",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-transition-faults-20261015",
+          "archive_ref": "refs/archive/qualified-successor-transition-fault-20261015/qualification/successor-transition-faults",
+          "blobs": {
+            "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "fbe49ebb12f94d934f1d4b9d96cb8b6021ccae2d",
+            "apps/bigbrotr/examples/support/ingest_successor_transition.rs": "0857374b922b65d3d426b15403c62f0aecba9158",
+            "experiments/ingest-succession/transition.py": "38c73c1ae883dcf167f5df840ae036c6f63fe8a0",
+            "experiments/ingest-succession/transition_faults.py": "652c2ba520fb193aca70d6a01ecf34a2ef4340ae"
+          },
+          "qualified_corrections": {},
+          "census_paths": 2153,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-faults-before-census.json",
+          "census_sha256": "a4d3e9dda1ba5721a61dd994296d465de36e172666c642c6621e1c419fd27ce0"
+        },
+        {
+          "branch": "qualification/successor-transition-fault-oracle",
+          "original": "8488e473182c77524e87fe0276985951df3f851b",
+          "integrated": "2a9b3abf9f722f0e4858bf4833fa38eb330b867e",
+          "worktree": "/home/tux/bigbrotr-rs/.research/successor-transition-fault-oracle-20261015",
+          "archive_ref": "refs/archive/qualified-successor-transition-fault-20261015/qualification/successor-transition-fault-oracle",
+          "blobs": {
+            "experiments/ingest-succession/transition_fault_replay.py": "8f2158e2b47d0582dda8eb1f7d601f79cbb52544"
+          },
+          "qualified_corrections": {},
+          "census_paths": 3006,
+          "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-fault-oracle-before-census.json",
+          "census_sha256": "bb3864446f78fde6a953a0e08dec6ccc4ba6b1c28f7935d4044d3335947ff319"
+        }
+      ],
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-fault-qualification.bundle",
+      "bundle_bytes": 14427313,
+      "bundle_sha256": "e0e57314c9f031bb5130f709f4b8b91f3ac446226f4610f03e69e0bd6cc4cf8b",
+      "replay_sha256": "1990db0efb8a2ea87183ea60dde6b0c5cf906a5bf0f41115f5f88426ffd0e364",
+      "audit_sha256": "5635bcbbe54d30997f39bb1e9db5f5af964d43dcddd1ba7c18d9dff60f88e14a",
+      "scope": "Two local refs only; all worktrees, ignored/external evidence and datasets preserved",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "report": {
+        "path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/successor-transition-fault-qualification.json",
+        "sha256": "d42eb57284bcd0a7d8367e6eaae1173574c318a6ce7758a920ebafba4972091b"
+      },
+      "session": 91769,
+      "exit_code": 0,
+      "totals": {
+        "local_refs_retired": 97,
+        "remote_refs_retired": 51,
+        "detached_worktrees": 53,
+        "registered_worktrees_preserved": 108
+      },
+      "remaining_local_refs": [
+        "main",
+        "implementation/successor-activation",
+        "implementation/successor-writer"
+      ]
+    },
+    "transition_fault_finally_correction": {
+      "source": {
+        "path": "/home/tux/bigbrotr-rs/experiments/ingest-succession/transition_faults.py",
+        "sha256": "59bfb4f0975e600956823b8dcdcd1ba5ac6188c21c922efef4e8464befbf8458"
+      },
+      "root": "/home/tux/bigbrotr-rs/.research/transition-fault-finally-selfcheck-20261015",
+      "manifest": {
+        "path": "/home/tux/bigbrotr-rs/.research/transition-fault-finally-selfcheck-20261015/complete-manifest-v1.json",
+        "sha256": "31b1940673e002b2fffaee04e0bc2c4ba2c175ce3259563e028cb26a0c2344e0"
+      },
+      "files_verified": 96,
+      "bytes": 134622,
+      "check": {
+        "path": "/home/tux/bigbrotr-rs/.research/transition-fault-finally-selfcheck-20261015/retry-v2/check.py",
+        "sha256": "1704cedd324affebbd7148330bda8ee0e14c94dde898333c86c9349133afe500"
+      },
+      "result": {
+        "blocked_operations": [],
+        "cases": [
+          {
+            "after_finish": 1,
+            "before_finish": 0,
+            "original_error_preserved": true,
+            "original_response_preserved": true,
+            "scenario": "malformed-json"
+          },
+          {
+            "after_finish": 1,
+            "before_finish": 0,
+            "original_error_preserved": false,
+            "original_response_preserved": true,
+            "scenario": "nonobject-json"
+          },
+          {
+            "after_finish": 1,
+            "before_finish": 0,
+            "original_error_preserved": true,
+            "original_response_preserved": true,
+            "scenario": "response-write-failure"
+          },
+          {
+            "after_finish": 1,
+            "before_finish": 0,
+            "original_error_preserved": true,
+            "original_response_preserved": false,
+            "scenario": "final-clock-write-failure"
+          }
+        ],
+        "executions": 14,
+        "failure_cases": 4,
+        "non_invoke_ast_unchanged": true,
+        "normal_cases": 3,
+        "normal_equivalence": [
+          {
+            "finish_calls": 1,
+            "identical": true,
+            "scenario": "normal-prepare"
+          },
+          {
+            "finish_calls": 1,
+            "identical": true,
+            "scenario": "normal-empty"
+          },
+          {
+            "finish_calls": 0,
+            "identical": true,
+            "scenario": "normal-direct"
+          }
+        ],
+        "real_proxy_or_engine_execution": "NOT_RUN",
+        "scope": "Pure invoke control flow only; mock finish_proxy proves call count, not real remote reaping",
+        "status": "PASS",
+        "path": "/home/tux/bigbrotr-rs/.research/transition-fault-finally-selfcheck-20261015/retry-v2/results-v1.json",
+        "sha256": "0ffdfb9cabb3cb50e81f927c9b6b055802145c24348cf67dece3dc6f0da6b67a"
+      },
+      "first_mock_failure": {
+        "path": "/home/tux/bigbrotr-rs/.research/transition-fault-finally-selfcheck-20261015/results-v1.json",
+        "sha256": "b9c5ee7500d68acee0acffc1daf5d4e8ec817d2cf8e36101de4166340ce8dac7",
+        "status": "FAIL",
+        "cause": "Mock incorrectly expected unchanged TypeError for nonobject response; correction explicitly returns ValueError. Only mock expectation changed in retry-v2; source unchanged.",
+        "preserved": true
+      },
+      "review": "Independent AI review found response decode/write could bypass finish_proxy. Root nested finally guarantees collection attempt; frozen pure checks confirm four errors and three normal paths, 14 invocations. Root read complete mock and verified all96 artifact hashes.",
+      "limits": "Pure checks prove finish_proxy call count, not real process reaping. Existing real2a9b3ab run remains exact and unmodified; its qualified normal path is equivalent. No additional engine campaign."
     }
   }
 }
