@@ -35245,6 +35245,184 @@
           "bytes": 831,
           "sha256": "b7ca0130390280150b00de3990d5fb34a4ca82449d389b7a83534d832149677b"
         }
+      },
+      "archive_attempt_limits_source": {
+        "status": "REVIEWED_SOURCE_ONLY_NOT_INTEGRATED_BUILD_ENGINE_NOT_RUN",
+        "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018",
+        "branch": "qualification/archive-catch-up-attempt-limits",
+        "base": "d910233ad0a593d08e571955dde51873d947c616",
+        "commits": [
+          "bfe1b14c0b04f4194e09c1fafc6447d9cdd514e6",
+          "acc9bea67d5380f35c2fbf8d69ceed4539925133"
+        ],
+        "manifest": {
+          "path": ".research/archive-catch-up-refusals-20261018/.research/archive-attempt-limits-selfcheck-20261018/manifest-v2.json",
+          "bytes": 7377,
+          "sha256": "07fb13513ab8d1609cdf22a26665eb233345cdd281eb367be4acdc49e56b46eb"
+        },
+        "independent_review": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-attempt-limits-independent-review-20261018/review.json",
+          "bytes": 7477,
+          "sha256": "d4e41d2ad95a6f56e4dffb90fc2b258cd9b5b6d27165c46fb211155a2f53cac9"
+        },
+        "sources": [
+          {
+            "path": "apps/bigbrotr/examples/support/ingest_archive_attempts.rs",
+            "bytes": 15436,
+            "sha256": "26ac6f9d24544aa34638a8327832dd2513b00f2e728d08f8d7c92f6bd66cb961"
+          },
+          {
+            "path": "apps/bigbrotr/examples/support/ingest_successor_history.rs",
+            "bytes": 21969,
+            "sha256": "97f874e1facbc0c22a466430e4578c070281e7e287c936af58173590b931fe59"
+          },
+          {
+            "path": "apps/bigbrotr/examples/ingest_bootstrap_probe.rs",
+            "bytes": 41913,
+            "sha256": "4893eea29ecd994ba3ae5bb90e8746de160ed8a12749585bc9dc882ebb5b8969"
+          },
+          {
+            "path": "experiments/ingest-bootstrap/installed_archive_attempt_limits.py",
+            "bytes": 13525,
+            "sha256": "3f2c1aa2fc68b456284f1b7ca127feb280d18a6b90f181c19bc0bfd14e3d4b9e"
+          },
+          {
+            "path": "experiments/ingest-bootstrap/installed_archive_attempt_limits_oracle.py",
+            "bytes": 22950,
+            "sha256": "106a691780287c59a962ddb4b860cbbe83da6fa742133ff087278b1633ad8fb9"
+          },
+          {
+            "path": "experiments/ingest-bootstrap/installed_archive_attempt_limits_capture.py",
+            "bytes": 12093,
+            "sha256": "e9ddaa08bdb847106698abb8c401f27b6f181165c285e8da68d7cdd826360991"
+          },
+          {
+            "path": "experiments/acquisition-scope/bindings.py",
+            "bytes": 144960,
+            "sha256": "f35fe010f68328609e82b4825247a7cf63857091a3f21bcd8f86b3f7ff1de71a"
+          }
+        ],
+        "scope": "One actual initial/terminal3 lineage; true typed LocalAttempt holder releases native/global coordinator/Control drivers before ready, remains held through installed Occupied refusal. Fresh helper then persists/registers122 valid original-batch unprovisioned intents; installed catch-up must reject126issued+3planned before issuance127. No SQL seal, synthetic positive receipt, new production API or migration.",
+        "root_review": "Complete4 new owners, full changed3hook delta, complete existing history helper/lifetime/inputs/archive_coordinator/inventory/plan and finite contracts read. Final keepalive delta read. All7 source blobs and28 final manifest artifacts authenticated; compiler/runtime not run.",
+        "author_checks": "Source-only AST/scoped rustfmt/three exact inverse paths PASS; artificial45snapshots16context mutations,8finish+3holder-finally mocks,4raw helpers20mutations+2name/Id controls PASS. These are author pure evidence, not executed engine qualification.",
+        "finding": "Independent review found600s client keepalive shorter than admitted setup1800/cap4200. acc9bea selects10800s only for new profile; old600s and product deadlines unchanged. No remaining concrete source blocker in stated review scope.",
+        "limits": "Actual compilation/Clippy, engine resource/runtime envelope and full raw replay NOT_RUN. Typed holder does not substitute for queued-COMMIT/live-writer evidence. Integrate/build after current unchanged9a fault/refusal sequence. Original69a branch and all ignored artifacts preserved."
+      },
+      "archive_download_headroom": {
+        "status": "PASS_HISTORICAL_CARGO_DOWNLOADS_RETIRED_VERIFIED",
+        "prepare_session": 26628,
+        "prepare_joined_exit_code": 0,
+        "execute_session": 60947,
+        "execute_joined_exit_code": 0,
+        "invocation": {
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-downloads-20261018/retire-cargo-archives.py",
+            "execute",
+            "--manifest-sha256",
+            "a0f4143d7d5997b027ee17e4c15795bca441cfb0ddd80745841022f9de0f76fd"
+          ],
+          "started_at": "2026-10-18T18:11:38.569125+00:00",
+          "finished_at": "2026-10-18T18:16:12.496280+00:00",
+          "exit_code": 0
+        },
+        "receipt": {
+          "allocated_candidate_bytes": 2317864960,
+          "archive_headroom_sufficient_now": true,
+          "deleted_files": 13081,
+          "free_bytes_after": 70222426112,
+          "free_bytes_before": 67911114752,
+          "host_after": {
+            "candidate_hits": [],
+            "inspected": {
+              "cmdline": 486,
+              "cwd": 39,
+              "exe": 39,
+              "fd": 39,
+              "maps": 432
+            },
+            "unavailable": {
+              "cwd": 447,
+              "exe": 447,
+              "fd": 447,
+              "maps": 54
+            }
+          },
+          "manifest_sha256": "a0f4143d7d5997b027ee17e4c15795bca441cfb0ddd80745841022f9de0f76fd",
+          "observed_free_delta_bytes": 2311311360,
+          "preservation": "Every nondeleted Cargo-home file hash/directory identity/symlink and complete stable-field Docker projection preserved, plus explicit original resource/source/archive/lock and190ELF/10asset pins. Other datasets/native roots were not recaptured.",
+          "protected_elfs_verified": 190,
+          "reserve_plus_envelope_bytes": 69324505088,
+          "scope_note": "Free difference includes concurrent activity on the shared host; no container/volume/source/dataset deletion.",
+          "status": "RETIRED_VERIFIED",
+          "time": 1792347372.0144737
+        },
+        "cargo_homes": 51,
+        "retained_entries_verified": 877257,
+        "protected_elfs": 190,
+        "protected_native_assets": 10,
+        "preserved_input_pins": 219,
+        "container_projections_verified": 1401,
+        "source_review": "Root read complete draft and all final deltas; independent source review found missing evidence-directory fsync, corrected before freeze. Scope limited to51Cargo homes; currentnetwork115 excluded. Actual prepare established Cargo.lock/index checksum and complete streamed tar/source equality for every selected singlelink/nonexec .crate.",
+        "artifacts": {
+          "retire-cargo-archives.py": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/retire-cargo-archives.py",
+            "bytes": 36504,
+            "sha256": "b7e958c6ff92005c6e5a7e4140dd6bd90a0ce1c010c4a5bd57d1c700738cb529"
+          },
+          "proposal.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/proposal.json",
+            "bytes": 4991088,
+            "sha256": "4acb69155a41499f82df8dcc4b79d453ee7edbbf1ba918559f63b462b9300e8e"
+          },
+          "manifest.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/manifest.json",
+            "bytes": 3155,
+            "sha256": "a0782e91e4a401cde95e69857a78b0f1cf1ba780cd1de308208d9becbd3bfef1"
+          },
+          "source-notes.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/source-notes.json",
+            "bytes": 6891,
+            "sha256": "b320f900673891c1240e3af83fa5d41428ffd87bd18e95b48448c23d05871b89"
+          },
+          "frozen-manifest.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/frozen-manifest.json",
+            "bytes": 515675553,
+            "sha256": "a0f4143d7d5997b027ee17e4c15795bca441cfb0ddd80745841022f9de0f76fd"
+          },
+          "root-source-review.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/root-source-review.json",
+            "bytes": 1410,
+            "sha256": "d9c4f5000473b4dadc99a08bebb57e923a803a996ae7906b04f48cb1200ec5a9"
+          },
+          "root-prepare-result.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/root-prepare-result.json",
+            "bytes": 299,
+            "sha256": "76297153be415d591ab96f76e2e0d7551016cc67f7fe17a5b87161b01e948179"
+          },
+          "execution-started.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/execution-started.json",
+            "bytes": 406,
+            "sha256": "8dee201f79241bf629807031caa7d19a25ca5b92462b2e6351333c105c137239"
+          },
+          "deleted-paths.jsonl": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/deleted-paths.jsonl",
+            "bytes": 3680405,
+            "sha256": "7449a1053eedd66acef6e962d7e3e99ddfb1794e81da9d1ffc7d06923709a8a9"
+          },
+          "retirement-receipt.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/retirement-receipt.json",
+            "bytes": 1117,
+            "sha256": "be38d6e05102cefa921b603a19a8fc20bda6172173034788365cc1ede6342d35"
+          },
+          "root-execute-result.json": {
+            "path": ".research/tux-maintenance-cargo-downloads-20261018/root-execute-result.json",
+            "bytes": 396,
+            "sha256": "1b24b5d5ee0822c52b3f457fb2832783ef947f9307008ccafea14d2edb59d14e"
+          }
+        },
+        "limits": "No replay: one-shot retirement is complete. Original datasets/native roots/logs outside51Cargo homes were not recaptured or selected. Source/index/git trees, explicit source/artifact pins and all stable container projections verified. Unavailable /proc entries remain unproven. Free-space difference includes concurrent shared-host activity. Future Cargo may redownload exact checksum-bound packages."
       }
     }
   }

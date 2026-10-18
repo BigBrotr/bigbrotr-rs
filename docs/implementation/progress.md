@@ -1,15 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T17:57Z on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T18:17Z on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and active responsibility
 
-Canonical `/home/tux/bigbrotr-rs`, main60f0ccfe4b1cd5f79a3b229023a2d8c08ecf0c2e; remote same revision verified.
+Canonical `/home/tux/bigbrotr-rs`, main26e7e24a11c8db2959a919600eb86cbd99c48803; remote same revision verified.
 Root is the sole integrating owner; Tux alone handles development and tests.
 No merge/rebase pending. Proxy traffic correction and its five tests are committed.
-Current root edits correct two raw readers' client name/Id binding and update these records.
+Raw reader name/Id correction26e7e24 is pushed. Current root edits record the
+reviewed, separately frozen attempt-limit fixture and verified cache retirement.
 Product/build source unchanged.
 
 Current task: P02-T04 Steps3/4/5, enabling P01-T09 Step4/M1 after selected
@@ -99,12 +100,18 @@ Templates/manifest385c1152/review532250a8 under
 `.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018`.
 Older templates and failed evidence remain unchanged.
 
-Next: commit/push the identity correction and records; recover verified regenerable
-headroom without lowering reserve. Metadata-only review found13,081 downloaded
-.crate archives/2,317,864,960 allocated bytes across51 previously inventoried old
-Cargo homes, excluding the current cache. Source/checksum/custody preflight and
-retirement are not yet executed; source-only author prepares a guarded proposal.
-Once admitted, prepare ONE fresh fault root from clean main using
+Historical download retirement is COMPLETE: prepare26628/execute60947 joined0.
+Root `.research/tux-maintenance-cargo-downloads-20261018`, helperb7e958c6;
+manifest a0f4143d (515,675,553 bytes). All13,081 .crate archives had actual exact
+lock/index checksum and streamed complete tar/source closure before removal.
+2,317,864,960 allocated candidate bytes; observed free gain2,311,311,360B,
+free70,222,426,112B at18:16:12Z.877,257 retained entries,219 source/asset pins,
+190ELFs,10native assets and1401 stable container projections verified unchanged.
+Source/index/git and currentnetwork115 remain. No other datasets/native/log interiors
+were recaptured. Unavailable/proc observations disclosed. Receipt and all original
+records retained; never replay this completed one-shot.
+
+Next: commit/push these records, then prepare ONE fresh fault root from clean main using
 `.research/archive-renewal-dispatch-20261018/prepare-fault-journey.py` SHAfb429707,
 build9a/audit1164, profile`archive-catch-up-faults`. After actual enginePASS, run
 strict fault_capture then custody fd64df24 before any borrowed-PG reuse.
@@ -131,11 +138,15 @@ Artificial6contexts/186states/72controls,10custody mocks,13raw helpers and9selec
 checks PASS; all six actual engines/full raw replays NOT_RUN.
 Manifest `.research/archive-catch-up-refusals-20261018/.research/archive-catch-up-refusal-selfcheck-20261018/manifest.json`, SHA980adfde.
 
-Source-only author now implements the two genuine held LocalAttempt /126issued+3planned
-cap fixtures in the former refusal worktree, new branch
-`qualification/archive-catch-up-attempt-limits` basedd910233. Original69a branch
-and all ignored artifacts retained. Draft finite probe/harness/oracle/binder are
-unintegrated, build/engineNOT_RUN. No product adapter/API change intended.
+Attempt-limit packet is frozen on separate `qualification/archive-catch-up-attempt-limits`
+(base d910233), commitsbfe1b14/acc9bea. Root read complete4newowners and consumed
+custody/input/issuance/history/planning boundaries; manifest07fb1351 and all7sources/
+28artifacts authenticated. Independent reviewd4e41d2a found600s client keepalive
+incompatible with new1800/4200s fixture limits; acc9bea opts only this profile into
+10800s. Old profiles/product deadlines unchanged; no remaining concrete source
+finding. Artificial/model/mock/static checks PASS; compile/engine/full raw replay
+NOT_RUN. Original69a branch/ignored artifacts retained. Integrate only after the
+current unchanged9a fault/refusal sequence, then build the new probe.
 Refusal original custody template24620f51/manifeste3c7f68a remains historical;
 complete456line delta is now read. Latest corrected templatec023b95d as above.
 Preparation5b61ccf3 in archive-renewal-dispatch is reviewed,
@@ -143,7 +154,10 @@ closed-six-selector, unchanged admission. No runtime authority is delegated.
 
 ## Resources and preservation
 
-No root-owned runtime/compiler/native/SQL remains active at this observation.
+Maintenance60947 has joined0. No root-owned product runtime/compiler/native/SQL
+process remains active. Source-only review identified the later256MiB export gate
+requires a smaller admitted native read/export profile; current configured floor
+is705.125MiB, not measured RSS. Existing task contracts remain authority.
 Compiler root `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,
 owner8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.
