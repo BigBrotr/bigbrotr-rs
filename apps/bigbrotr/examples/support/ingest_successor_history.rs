@@ -20,6 +20,8 @@ use bigbrotr_model::{
 };
 use std::{fmt::Debug, future::Future, path::PathBuf, sync::atomic::Ordering};
 
+#[path = "ingest_archive_attempts.rs"]
+pub(super) mod archive_attempts;
 #[path = "ingest_successor_transition.rs"]
 pub(super) mod transition;
 

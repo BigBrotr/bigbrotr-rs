@@ -61,11 +61,12 @@ installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-
 installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
 installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-signed'
+installed_archive_attempt_limits = len(sys.argv) == 4 and sys.argv[2] == '--installed-archive-attempt-limits'
 installed_archive_catch_up_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-archive-catch-up-faults'
 archive_refusal_flags = {'--installed-archive-catch-up-refusal-'+case:case for case in
     ('current-join','orphan-history','family-counts','missing-input','frontier-cancel','frontier-control-loss')}
 installed_archive_catch_up_refusal = archive_refusal_flags.get(sys.argv[2]) if len(sys.argv)==4 else None
-installed_archive_catch_up = bool(installed_archive_catch_up_refusal) or installed_archive_catch_up_faults or len(sys.argv) == 4 and sys.argv[2] == '--installed-archive-catch-up'
+installed_archive_catch_up = installed_archive_attempt_limits or bool(installed_archive_catch_up_refusal) or installed_archive_catch_up_faults or len(sys.argv) == 4 and sys.argv[2] == '--installed-archive-catch-up'
 installed_archive_export = installed_archive_catch_up or len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-export'
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
@@ -320,6 +321,12 @@ if installed_archive_catch_up_refusal:
     report['not_run'] = ['other refusal selectors require separate fresh roots',
         'held typed LocalAttempt and valid issued-plus-planned capacity boundary',
         'ordinary HTTP/export/restart and lost COMMIT belong to separate journeys',
+        'Archive ACK/GC and import logical closure', 'capacity/load/aged-state', 'arm64/release']
+
+if installed_archive_attempt_limits:
+    report['wave'] = 'installed-archive-attempt-limits'
+    report['not_run'] = ['ordinary HTTP/export and lost COMMIT belong to separate journeys',
+        'live worker/queued COMMIT exclusion is separate from the typed holder case',
         'Archive ACK/GC and import logical closure', 'capacity/load/aged-state', 'arm64/release']
 
 if installed_sync:
@@ -1048,7 +1055,8 @@ if ingest_windows:
 if installed_archive_publication:
     success_status = 'PASS_INSTALLED_ARCHIVE_PUBLICATION'
 if installed_archive_export:
-    success_status = ('PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL' if installed_archive_catch_up_refusal else
+    success_status = ('PASS_INSTALLED_ARCHIVE_ATTEMPT_LIMITS' if installed_archive_attempt_limits else
+        'PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL' if installed_archive_catch_up_refusal else
         'PASS_INSTALLED_ARCHIVE_CATCH_UP_FAULTS' if installed_archive_catch_up_faults else
         'PASS_INSTALLED_ARCHIVE_CATCH_UP_JOURNEY' if installed_archive_catch_up else 'PASS_INSTALLED_ARCHIVE_EXPORT')
 if installed_sync:
@@ -1721,7 +1729,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if installed_archive_catch_up_refusal:
+            if installed_archive_attempt_limits:
+                from installed_archive_attempt_limits import run as run_installed
+            elif installed_archive_catch_up_refusal:
                 from installed_archive_catch_up_refusals import run as run_refusal
                 run_installed = functools.partial(run_refusal,case=installed_archive_catch_up_refusal)
             elif installed_archive_catch_up_faults:

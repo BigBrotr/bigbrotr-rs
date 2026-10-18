@@ -924,7 +924,9 @@ fn main() {
         );
     assert_eq!(
         args.len(),
-        if args[1] == "successor-lineage-retire-wait" {
+        if args[1] == "successor-archive-attempt-holder" {
+            7
+        } else if args[1] == "successor-lineage-retire-wait" {
             8
         } else if args[1].starts_with("history-")
             || args[1] == "empty-retirement-first"
@@ -934,6 +936,7 @@ fn main() {
         } else if empty_lock
             || successor_gate
             || args[1] == "successor-lineage-history"
+            || args[1] == "successor-archive-attempt-cap"
             || matches!(
                 args[1].as_str(),
                 "successor-prepare"
@@ -1051,6 +1054,17 @@ fn main() {
                     args[5].parse().expect("explicit metadata byte capacity"),
                     &args[1],
                     transition_proxy.then(|| args[6].parse().expect("explicit Control proxy port")),
+                )
+                .await;
+            } else if matches!(
+                args[1].as_str(),
+                "successor-archive-attempt-holder" | "successor-archive-attempt-cap"
+            ) {
+                ingest_successor_history::archive_attempts::run(
+                    config,
+                    Path::new(&args[4]),
+                    args[5].parse().unwrap(),
+                    args.get(6).map(|v| Path::new(v)),
                 )
                 .await;
             } else if args[1] == "successor-lineage-history" {
