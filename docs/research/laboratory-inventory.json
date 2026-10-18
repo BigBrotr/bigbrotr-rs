@@ -64914,6 +64914,48 @@
           "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-limits-custody-20261018/root-review-final.json",
           "sha256": "f908ff15c5ce47300bfeb780420994bba7940a186611572a18066679eaa53660"
         }
+      },
+      "build_helpers": {
+        "status": "ROOT_AND_INDEPENDENT_SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+        "observed_at": "2026-10-18T18:54:23.214647+00:00",
+        "preparation": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-build-preparation-20261018/prepare-attempt-build.py",
+          "bytes": 8555,
+          "sha256": "bbc8cd3aff1541712e4f61a5d11ee8524109d93615b1c4eca46d87336bc4daf4"
+        },
+        "build_auditor": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-build-preparation-20261018/audit-attempt-build-template-v2.py",
+          "bytes": 34578,
+          "sha256": "660da49b164371f98d1dffd2378ab3f7ce9b4a2739abaa4b12e2edc9f88e69df"
+        },
+        "engine_preparation": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-build-preparation-20261018/prepare-attempt-engine.py",
+          "bytes": 7861,
+          "sha256": "b47fa121568925a7568f5a4efd4ee8acf8b3a92c14331af1df54359bca19b477"
+        },
+        "manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-build-preparation-20261018/manifest.json",
+          "bytes": 1985,
+          "sha256": "a6b624b47c40afcb258814c1907d3741d512d46eef4811519df99ca1eb37124e"
+        },
+        "correction_manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-build-preparation-20261018/manifest-v2.json",
+          "bytes": 4673,
+          "sha256": "57c84692839d33cad1521c1a4b4e0dc2598e0d4d7e99e32ec9ca9ef51159546f"
+        },
+        "root_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-build-preparation-20261018/root-review-v2.json",
+          "bytes": 851,
+          "sha256": "9088f2c8910ecc54eb191f8454b0241cbff6675ee0bab82f61b9c98e4bf1becc"
+        },
+        "independent_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-build-review-20261018/review-v2.json",
+          "bytes": 4164,
+          "sha256": "a9e0bf96fe28740947aa0e814075ff3b817591de25881a24c3d3ca91d420d6b1"
+        },
+        "scope": "Explicit future clean-main revision/tree; exact seven acc9bea fixture blobs; unchanged9a build runner and41-test selection; preserve190 prior ELFs and ten native assets; six future build ELFs extend custody to196. Engine retains64GiB+577MiB reserve. No helper import or runtime execution.",
+        "finding": "v1 omitted interrupted out/build-checks/result.tmp from recursive pins; v2 adds only that directory. Original source and checker-only failure retained.",
+        "limits": "Build, engine, strict replay and custody remain NOT_RUN. Failed future build requires explicit preserved-artifact reconciliation before another preparation. Cooperative root/compiler lock and observed stopped consumers are the existing cache exclusion boundary, not arbitrary host-writer exclusion."
       }
     },
     "archive_download_headroom": {
@@ -65089,7 +65131,7 @@
       "scope": "Only selected same-root publication/first-frontier after-COMMIT reply loss, original resolution and exact retry. Initial+nine prefix and4fault processes, full captured science/raw custody actually exercised. Does not qualify six refusal cases,attempt custody/totalcap,capacity/RSS,ACK/GC,broad M1-M5 or release. Original d910/7d FAIL unchanged. Never replay custody after intentional PG reuse."
     },
     "archive_source_cache_headroom": {
-      "status": "PREPARATION_PASS_EXECUTION_RUNNING",
+      "status": "PASS_REDUNDANT_CARGO_SOURCE_CACHES_RETIRED_VERIFIED",
       "root": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018",
       "source": {
         "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/retire-cargo-sources.py",
@@ -65124,8 +65166,8 @@
       "packages_per_root": 266,
       "selected_old_roots": 9,
       "retained_counterpart": "private-panel-referrer-cc4aa3a",
-      "review": "Root complete636draft+finaldelta; recovery_review full draft/baseline diff/finaldelta; all10authorfiles authenticated. No concrete blocker. Runtime fresh equivalence/noELF/stopped owners still required before deletion.",
-      "limits": "Only exact package source caches, parent roots retained; counterpart byte/path/mode/owner/link/mtime equivalence mandatory. No currentnetwork115/worktrees/datasets/logs/native assets. Interrupted final unlink may be unjournaled: reconcile frozenmanifest/filesystem and preserve counterpart; never autoreplay.",
+      "review": "Root complete helper and delta plus independent review; actual preparation verified full equivalence/noELF/stopped owners. Actual46202 joined0; all153756 journal paths unique,133209files/20547directories,2235510784allocated bytes. Postcondition verifies full retained ten-home census/counterpart,54input pins,190ELFs,10assets and1403 stable container projections.",
+      "limits": "One-shot completed; never replay. Free-space delta1460027392B includes shared-host activity and is smaller than2235510784candidate bytes; no attribution to other activity is inferred. Inaccessible /proc entries remain unproven. Currentnetwork115/worktrees/datasets/logs/native roots were not selected; out-of-scope interiors were not recaptured.",
       "prepare_exit_code": 0,
       "prepare_wrapper": {
         "command": [
@@ -65222,7 +65264,176 @@
         "retained_entries": 22984
       },
       "containers": 1403,
-      "input_pins": 54
+      "input_pins": 54,
+      "execution_joined_exit_code": 0,
+      "execution_wrapper": {
+        "command": [
+          "/usr/bin/python3",
+          "-B",
+          "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/retire-cargo-sources.py",
+          "execute",
+          "--manifest-sha256",
+          "15f265d0f6e1b4284efa7a7bce35efdfe6731acc681e2ec85c97fc13dde90ad4"
+        ],
+        "started_at": "2026-10-18T18:37:01.628471+00:00",
+        "actual_joins": {
+          "preparation84124": 0,
+          "manifest_review14945": 0
+        },
+        "exit_code": 0,
+        "finished_at": "2026-10-18T19:18:24.504620+00:00"
+      },
+      "receipt": {
+        "allocated_candidate_bytes": 2235510784,
+        "archive_headroom_sufficient_now": true,
+        "deleted_entries": 153756,
+        "free_bytes_after": 70860189696,
+        "free_bytes_before": 69400162304,
+        "host_after": {
+          "candidate_hits": [],
+          "inspected": {
+            "cmdline": 484,
+            "cwd": 40,
+            "exe": 40,
+            "fd": 40,
+            "maps": 429
+          },
+          "unavailable": {
+            "cwd": 444,
+            "exe": 444,
+            "fd": 444,
+            "maps": 55
+          }
+        },
+        "manifest_sha256": "15f265d0f6e1b4284efa7a7bce35efdfe6731acc681e2ec85c97fc13dde90ad4",
+        "observed_free_delta_bytes": 1460027392,
+        "preservation": "Every nondeleted entry of the ten Cargo homes preserved, including exact complete counterpart and all Cargo.lock/index/source pins. Only source-parent directory size/blocks/nlink/times may change from known child removals; physical identity/mode/ownership remain.190ELF/10asset pins and all stable Docker projections preserved. Outside-home datasets/native roots not recaptured.",
+        "protected_elfs_verified": 190,
+        "reserve_plus_envelope_bytes": 69324505088,
+        "scope_note": "Free difference includes shared-host activity. Only proven redundant old package source-cache entries removed; no container/volume/worktree/dataset/log/native-asset deletion.",
+        "status": "RETIRED_VERIFIED",
+        "time": 1792351104.437573
+      },
+      "completion_artifacts": {
+        "execution-started.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/execution-started.json",
+          "bytes": 407,
+          "sha256": "04dd95ec0af37c6c1c3e12f5a2a1507d135fdba851b33df308154fd74e66888c"
+        },
+        "deleted-paths.jsonl": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/deleted-paths.jsonl",
+          "bytes": 47065970,
+          "sha256": "81b789ac1e2bb54c2f30151dce94fa870f514de3d6d5a0a71d111a63e660f35b"
+        },
+        "retirement-receipt.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/retirement-receipt.json",
+          "bytes": 1318,
+          "sha256": "6b58da199fbe0f47427f4e13dbbc80756abcdaf30fccfbb8195afcf269ade219"
+        },
+        "root-execute-result.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/root-execute-result.json",
+          "bytes": 483,
+          "sha256": "f8ebddc7e0e0600b594b6a5ec4f2e146de34b2af951fa8cadd42061fe3e33c69"
+        },
+        "root-execute.stdout": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/root-execute.stdout",
+          "bytes": 1206,
+          "sha256": "458787a41e69b1c0e3cb1c16118b041c19747f81e93b31444e81bddd0f943d0c"
+        },
+        "root-execute.stderr": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/root-execute.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "retained_entries_verified": 22984,
+      "protected_native_assets": 10
+    },
+    "archive_journey_ref_retirement": {
+      "status": "RETIRED_REDUNDANT_BRANCH_WORKTREE_AND_IGNORED_PRESERVED",
+      "finished_at": "2026-10-18T19:00:32.743896+00:00",
+      "observed_at": "2026-10-18T19:00:32.719867+00:00",
+      "branch": "qualification/archive-catch-up-journey",
+      "head": "c7b643dad5be24396efe68b4e75543cd9acc9c1e",
+      "bundle_sha256": "86a024ab268ab19db76a4d85c4424103cba0236178239c141691f3782f4b2545",
+      "prerequisite": "b3735e9890e916b5a45de507ef12496f2c77096d",
+      "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018",
+      "source_commits": 7,
+      "ignored_files": 227,
+      "ignored_bytes": 2168574,
+      "bundle": "/home/tux/bigbrotr-rs/.research/archive-catch-up-ref-retirement-20261018/original-journey-commits.bundle",
+      "bundle_bytes": 70497,
+      "limit": "Incremental bundle requires recorded merge-base already reachable from main. Exact worktree HEAD remains detached and all227 ignored files retain hashes. No remote branch, other worktree, runtime/container/cache or external lab changed.",
+      "reconciliation": {
+        "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-ref-retirement-20261018/reconciliation.json",
+        "bytes": 50020,
+        "sha256": "2ab843f3decf25cdfa2995068b485a09bfe7c1554acc30f86314f22e3b0c0cf6"
+      },
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-ref-retirement-20261018/retirement-result.json",
+        "bytes": 991,
+        "sha256": "65caa883cc85dbdfd9ace1208047177bcbef9ad76f7ac2c7b15355a880173705"
+      }
+    },
+    "archive_export_memory_source": {
+      "status": "SOURCE_REVIEW_FINDINGS_CLOSED_NOT_INTEGRATED_RUNTIME_NOT_RUN",
+      "observed_at": "2026-10-18T19:14:59.531905+00:00",
+      "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
+      "branch": "qualification/export-memory-probe",
+      "base": "d716b99947f13bf22726c044836f97ad131c3f90",
+      "source": "a0f604a5b951dc95668bc130de4d8a789e16cfa0",
+      "manifest": {
+        "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-memory-source-20261018/manifest.json",
+        "bytes": 2855,
+        "sha256": "153bb3d30ec71b6e80e6bf11ef6e58c798553365c7d94605cc0ddb5f22538c66"
+      },
+      "root_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-memory-source-20261018/root-review-v1.json",
+        "bytes": 2053,
+        "sha256": "176a95f972d53e1fb7b2f2e561c95c72575362e817c9383b936840834d26e4ef"
+      },
+      "source_diff": {
+        "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-memory-source-20261018/source.diff",
+        "bytes": 64642,
+        "sha256": "c76022d32828b4f9866aef3baa67395bc76623d91fe65645a1b63f33adfc6c21"
+      },
+      "scope": "One actual accepted exact-ID job through Control/CatalogCapture/pin/reservation/start/query/output/completion and actual driver joins; unchanged9a worker; whole-call process/cgroup/scratch samples and logical grants; existing signed94577B event under full1MiB envelope. No producer/production configuration change or internal worker phases.",
+      "checks": "Scoped formatting/AST/exact inverse of old probe modes/diff PASS. Compilation,Clippy,tests,helper execution,real setup/engine/full custody NOT_RUN.",
+      "findings": [
+        "Retain WrittenExport outside fallible operation through actual Control driver join, including unknown COMMIT.",
+        "Retain original destination and CheckedDestination outside reservation future through actual Control driver join."
+      ],
+      "prerequisites": "Fresh real typed publication and genuinely accepted94577B job; old small E_public export seed is not that setup. Root-owned fresh-container/source/SQL/backend/artifact custody audit still required.",
+      "limits": "Configured Control baseline includes512MiB extra; it is distinct from per-export cap and measured memory. No256MiB qualification or five-export completion. Future generic frozen-signed-event support only compares pinned signature bytes/independent ID; known current recipe already has independent BIP340 authoring evidence. Original packet and both review versions preserved; narrow correction remains unintegrated and uncompiled.",
+      "correction": {
+        "source": "c68ac35c3ec87e764fbef85e7a2eddaaadec5b6c",
+        "manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-memory-custody-correction-20261018/manifest.json",
+          "bytes": 3192,
+          "sha256": "e5b485a2e946fc05758aeafaf336db66fd458bf85cab6e5b815f753e6b6be8b9"
+        },
+        "source_diff": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-memory-custody-correction-20261018/source.diff",
+          "bytes": 4892,
+          "sha256": "1567a41f009891ff5f77f13db1baa850bff4d81ec77647a995e86f386fab6575"
+        },
+        "root_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-memory-custody-correction-20261018/root-review.json",
+          "bytes": 1366,
+          "sha256": "8c67dee488bb59603a96374322378e3b52a66aaa9cfcb91e3adf5bf63db5b6cd"
+        },
+        "independent_original_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-memory-review-20261018/review-v1.json",
+          "bytes": 12692,
+          "sha256": "98a1ba3c6e7c5e7836a229306d9bd9dcd0e007553687674949e2ab8ed86fe672"
+        },
+        "independent_final_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-memory-review-20261018/review-v2.json",
+          "bytes": 3431,
+          "sha256": "46a460254bb2588fa1c7c6f5c39289d43252e77974581c097c1ed55e7e4aa0d6"
+        },
+        "disposition": "Both original custody findings closed in the narrow source correction: Held retains original/checked destination before reservation and WrittenExport before fallible output marker through actual Control driver join. CatalogCapture and six other packet files unchanged. No new concrete source blocker; compiler/tests/helper/engine remain NOT_RUN."
+      }
     }
   }
 }
