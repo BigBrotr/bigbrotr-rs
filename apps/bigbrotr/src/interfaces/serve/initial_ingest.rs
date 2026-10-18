@@ -79,6 +79,8 @@ struct Custody {
 #[derive(Clone)]
 struct Progress {
     deadline: Instant,
+    // Static source metadata only; None is the initial, unpublished phase.
+    phase: Option<&'static std::panic::Location<'static>>,
     initialized: Option<Value>,
     shutdown: Option<management::Shutdown>,
 }
@@ -231,7 +233,7 @@ pub(super) fn run(
         // Keep the sender across both phases. Closing it after preparation can
         // otherwise look like terminal owner loss before its JoinHandle is ready.
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, initialized: None, shutdown: None,
+            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None,
         });
         let prepare_root = root.clone();
         let prepare_budget = budget.clone();
@@ -384,17 +386,45 @@ fn validate_owner(
     let restored = super::accepted_policy(root, document, digest)?;
     accepted_owner_profile(&restored, profile)
 }
+fn phase_label(location: Option<&'static std::panic::Location<'static>>) -> String {
+    let Some(location) = location else {
+        return "initialization".into();
+    };
+    // Do not print an absolute compiler/worktree path. These private callers
+    // belong to this repository subtree; unknown mappings disclose no path.
+    let file = location.file();
+    let relative = file
+        .strip_prefix("apps/bigbrotr/src/")
+        .or_else(|| file.strip_prefix("src/"))
+        .or_else(|| file.split_once("/apps/bigbrotr/src/").map(|(_, tail)| tail))
+        .unwrap_or("<unmapped-source>");
+    format!("{relative}:{}:{}", location.line(), location.column())
+}
+
+#[track_caller]
 fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Result<()> {
     let now = Instant::now();
-    if now >= progress.borrow().deadline {
-        return Err((
-            4,
-            "initial Ingest phase completed after its deadline; preserve retained state".into(),
-        ));
+    let requested = std::panic::Location::caller();
+    {
+        let previous = progress.borrow();
+        if now >= previous.deadline {
+            return Err((
+                4,
+                format!(
+                    "initial Ingest phase completed after its deadline; preserve retained state; prior_phase={}; requested_phase={}; overdue_us={}",
+                    phase_label(previous.phase),
+                    phase_label(Some(requested)),
+                    now.duration_since(previous.deadline).as_micros(),
+                ),
+            ));
+        }
     }
     // Only a timely phase may publish a new deadline. This also covers native
     // calls that returned after both the worker and parent were unscheduled.
-    progress.send_modify(|value| value.deadline = now + timeout);
+    progress.send_modify(|value| {
+        value.deadline = now + timeout;
+        value.phase = Some(requested);
+    });
     Ok(())
 }
 
@@ -596,10 +626,54 @@ mod tests {
         let expired = Instant::now() - std::time::Duration::from_secs(1);
         let (progress, _observed) = watch::channel(Progress {
             deadline: expired,
+            phase: None,
             initialized: None,
             shutdown: None,
         });
-        let _ = phase(&progress, std::time::Duration::from_secs(5));
+        let error = phase(&progress, std::time::Duration::from_secs(5)).unwrap_err();
+        assert_eq!(error.0, 4);
+        assert!(error.1.starts_with("initial Ingest phase completed after its deadline; preserve retained state; prior_phase=initialization; requested_phase=interfaces/serve/initial_ingest.rs:"));
+        let overdue = error
+            .1
+            .rsplit_once("; overdue_us=")
+            .unwrap()
+            .1
+            .parse::<u128>()
+            .unwrap();
+        assert!(overdue >= 1_000_000);
+        assert!(!error.1.contains(env!("CARGO_MANIFEST_DIR")));
         assert_eq!(progress.borrow().deadline, expired);
+        assert!(progress.borrow().phase.is_none());
+    }
+
+    #[tokio::test]
+    async fn a_phase_refusal_retains_the_prior_static_callsite() {
+        let (progress, _observed) = watch::channel(Progress {
+            deadline: Instant::now() + std::time::Duration::from_secs(60),
+            phase: None,
+            initialized: None,
+            shutdown: None,
+        });
+        phase(&progress, std::time::Duration::from_secs(5)).unwrap();
+        let prior = progress.borrow().phase.unwrap();
+        let expired = Instant::now() - std::time::Duration::from_secs(1);
+        progress.send_modify(|value| value.deadline = expired);
+        let error = phase(&progress, std::time::Duration::from_secs(60)).unwrap_err();
+        assert!(
+            error
+                .1
+                .contains(&format!("prior_phase={};", phase_label(Some(prior))))
+        );
+        let requested = error
+            .1
+            .split("requested_phase=")
+            .nth(1)
+            .unwrap()
+            .split(';')
+            .next()
+            .unwrap();
+        assert_ne!(requested, phase_label(Some(prior)));
+        assert_eq!(progress.borrow().deadline, expired);
+        assert!(std::ptr::eq(progress.borrow().phase.unwrap(), prior));
     }
 }

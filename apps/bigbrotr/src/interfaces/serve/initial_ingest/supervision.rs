@@ -110,7 +110,7 @@ where
         let mut stop = Stop::new()?;
         let cancellation = Arc::new(Cancellation::new());
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, initialized: None, shutdown: None,
+            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None,
         });
         let (send_driver, receive_driver) = tokio::sync::oneshot::channel();
         let worker_cancel = cancellation.clone();
@@ -173,6 +173,7 @@ mod tests {
         });
         let (_progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + Duration::from_secs(60),
+            phase: None,
             initialized: None,
             shutdown: None,
         });
@@ -204,6 +205,7 @@ mod tests {
         let cancel = Cancellation::new();
         let (progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() - Duration::from_secs(1),
+            phase: None,
             initialized: Some(json!({"state":"initialized"})),
             shutdown: None,
         });
@@ -246,6 +248,7 @@ mod tests {
         });
         let (_progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + Duration::from_secs(60),
+            phase: None,
             initialized: None,
             shutdown: None,
         });
@@ -278,6 +281,7 @@ mod tests {
         });
         let (_progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + Duration::from_secs(60),
+            phase: None,
             initialized: None,
             shutdown: None,
         });
@@ -376,6 +380,7 @@ mod tests {
         });
         let (progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + Duration::from_secs(60),
+            phase: None,
             initialized: Some(json!({"state":"initialized"})),
             shutdown: None,
         });

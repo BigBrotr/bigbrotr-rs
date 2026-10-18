@@ -45,9 +45,28 @@ def run(directory):
         actions = ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
     assert me['stored_actions'] == actions
     observations, statuses, errors = [], [], []
+    diagnostics = (directory / 'diagnostics.json').exists()
+    diagnostic_errors = []
+    if diagnostics:
+        assert json.loads((directory / 'diagnostics.json').read_text()) == dict(
+            format='bigbrotr-archive-journey-diagnostics/1', status_limit=256)
+    def diagnostic(name, values):
+        if not diagnostics:
+            return
+        try:
+            assert len(values) <= 256, 'HTTP diagnostic observation bound'
+            publish(directory, name, values)
+        except BaseException as error:
+            if len(diagnostic_errors) < 8:
+                diagnostic_errors.append(dict(stage=name, error_type=type(error).__name__))
+            try:
+                publish(directory, 'http-diagnostic-errors.json', diagnostic_errors)
+            except BaseException:
+                pass
     def call(path, value, key):
         status, answer = request('POST', '/management/v1/' + path, value, {**auth, 'Idempotency-Key': key})
         observations.append(dict(path=path, input=value, key=key, status=status, body=answer))
+        diagnostic('http-observations.json', observations)
         assert status == 202 and answer['created'] and answer['command_key'] == key
         return answer
     def barrier(name, seconds=15, poll=None):
@@ -56,7 +75,11 @@ def run(directory):
         while not (directory / (name + '.continue')).exists():
             assert not errors and time.monotonic() < deadline, name
             if poll is not None and time.monotonic() >= next_poll:
-                statuses.append(poll())
+                observed = poll()
+                if diagnostics:
+                    assert len(statuses) < 256, 'HTTP status observation bound'
+                statuses.append(observed)
+                diagnostic('status-observations.json', statuses)
                 next_poll = time.monotonic() + .5
             time.sleep(.01)
     visibility = json.loads((directory / 'visibility.json').read_text())
@@ -99,6 +122,7 @@ def run(directory):
         worker.join(4)
         assert not worker.is_alive(), 'independent relay did not join'
     assert not errors
+    assert not diagnostic_errors, 'HTTP diagnostic capture failed'
     return dict(login=logged_in, logout=logged_out, observations=observations, job_status=final_status)
 
 

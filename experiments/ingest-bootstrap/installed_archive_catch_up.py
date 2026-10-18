@@ -224,8 +224,59 @@ def run(pg,client,output,database,name,rows,**context):
     qualification=read(build.parent/'qualification.json')
     assert qualification['status']=='PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS'
     assert qualification['source']==built['source']
-    return initial(pg,client,output,database,name,rows,setup_upgrade=upgrade,
-        continuation=lambda *args: continue_journey(pg,client,output,database,rows,*args),**context)
+    try:
+        return initial(pg,client,output,database,name,rows,setup_upgrade=upgrade,
+            preserve_diagnostics=True,
+            continuation=lambda *args: continue_journey(pg,client,output,database,rows,*args),**context)
+    except BaseException as error:
+        # This boundary is inside bindings.run: its owned PostgreSQL is still
+        # alive. Capture SQL only; neither process closure nor native custody is
+        # inferred from a failed CLI or a successful observer query.
+        try:
+            failure_diagnostics(pg,output,database,name,rows,context['resources'],error)
+        except BaseException as capture_error:
+            error.add_note('Archive failure diagnostics unavailable: '+type(capture_error).__name__)
+        raise
+
+
+def failure_diagnostics(pg,output,database,name,rows,resources,original):
+    report=dict(format='bigbrotr-archive-failure-diagnostics/1',
+        original_error_type=type(original).__name__,database=database,
+        process_custody='NOT_ASSERTED',native_opened=False,captures=[],errors=[])
+    def save():
+        try:
+            target=output/(name+'-failure-diagnostics.json')
+            partial=target.with_suffix('.partial')
+            lab.write_json(partial,report); partial.replace(target)
+        except BaseException as error:
+            if len(report['errors'])<8:
+                report['errors'].append(dict(stage='report',error_type=type(error).__name__))
+    def capture_sql(label,read):
+        entry=dict(stage=label,started_monotonic_ns=time.monotonic_ns(),status='UNKNOWN')
+        report['captures'].append(entry); save()
+        try:
+            value=read()
+            entry['completed_monotonic_ns']=time.monotonic_ns()
+            target=output/(name+'-failure-'+label+'.json')
+            partial=target.with_suffix('.partial')
+            lab.write_json(partial,value); partial.replace(target)
+            entry.update(status='CAPTURED',file=target.name)
+        except BaseException as error:
+            entry.update(status='FAILED',error_type=type(error).__name__)
+        save()
+    capture_sql('control',lambda:rows(database))
+    try:
+        selected=[r for r in resources.get('archive_resources',[])
+            if r['control_database']==database and r['home']==str(output/name)]
+        assert len(selected)==1, 'exact Archive resource unavailable'
+        catalog=selected[0]['catalog_database']
+        assert catalog==database+'_cat', 'unexpected Archive catalog'
+    except BaseException as error:
+        report['errors'].append(dict(stage='catalog-identity',error_type=type(error).__name__))
+        save()
+    else:
+        report['catalog_database']=catalog
+        capture_sql('catalog',lambda:catalog_rows(pg,catalog))
 
 
 def continue_journey(pg,client,output,database,rows,setup,initialized,initial_after,wanted,initial_result):

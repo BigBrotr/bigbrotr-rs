@@ -59,10 +59,31 @@ def provision_reader(pg, output, name, setup, save):
     return reader
 
 
-def run(pg, client, output, database, name, rows, *, continuation=None, **context):
+def run(pg, client, output, database, name, rows, *, continuation=None, preserve_diagnostics=False, **context):
     assert name in CASES or name == 'archive-export'
     setup = prepare(pg, client, output, database, name, rows, **context)
     directory = setup['home']; prefix = output / name
+    diagnostic_errors = []
+    polls = 0
+    def diagnostic(label, value):
+        if not preserve_diagnostics:
+            return
+        try:
+            target = output / (name + '-' + label + '.json')
+            partial = target.with_suffix('.partial')
+            lab.write_json(partial, value)
+            partial.replace(target)
+        except BaseException as error:
+            # Keep the last complete observation; a failed diagnostic must not
+            # replace the actual runtime failure. Report at most eight errors.
+            if len(diagnostic_errors) < 8:
+                diagnostic_errors.append(dict(stage=label, error_type=type(error).__name__))
+            try:
+                lab.write_json(output / (name + '-diagnostic-errors.json'), diagnostic_errors)
+            except BaseException:
+                pass
+    if preserve_diagnostics:
+        lab.write_json(directory / 'diagnostics.json', dict(format='bigbrotr-archive-journey-diagnostics/1', status_limit=256))
     reader = provision_reader(pg, output, name, setup, context['save'])
     lab.sql(pg, database, '''
         GRANT SELECT,INSERT ON control.acquisition_jobs TO bigbrotr_control;
@@ -165,10 +186,15 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     (directory / 'prepared.continue').write_text('source checked\n')
     observations = stage('submitted')
     def published():
+        nonlocal polls
         assert not (directory / 'relay-error.json').exists(), 'independent relay failed'
         assert not Path(str(prefix) + '.terminal.json').exists(), 'installed owner ended before full frontier'
         assert not (directory / 'client-exit.json').exists(), 'independent client ended before full frontier'
+        started_ns = time.monotonic_ns()
         state = rows(database)
+        polls += 1
+        diagnostic('latest-poll', dict(poll=polls, started_monotonic_ns=started_ns,
+            completed_monotonic_ns=time.monotonic_ns(), control=state))
         assert len(state['producer_requests']) <= 4 and len(state['producer_outcomes']) <= 4
         ready = any(r['last_complete_sequence'] == 12 for r in state['consumer_frontiers'])
         if not ready:
@@ -285,6 +311,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         http_status_observations=len(statuses),
         signal_seconds=signal_seconds, selected_quiet_signal=signal, websocket_rounds=len(transcript),
         terminal=ended, export=export, **native_evidence)
+    assert not diagnostic_errors, 'Archive diagnostic capture failed'
     if continuation is not None:
         return continuation(setup, initialized, after, wanted, result)
     return result
