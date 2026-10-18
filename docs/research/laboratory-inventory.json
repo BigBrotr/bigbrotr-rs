@@ -61378,7 +61378,7 @@
       "next": "Fresh exact-source packaged component build preserving153priorELFs"
     },
     "installed_build_attempts": {
-      "observed_at": "2026-10-18T14:46:05.722104+00:00",
+      "observed_at": "2026-10-18T14:51:35.581552+00:00",
       "attempts": [
         {
           "source": "d7b8aec688370d04f01a91bf56c1a3ec2ef4814e",
@@ -61663,10 +61663,89 @@
               "message": "error: could not compile `bigbrotr` (lib) due to 1 previous error"
             }
           ]
+        },
+        {
+          "source": "48956e2234028e2e676a04ee00ac8ee87d98ea20",
+          "tree": "208e3ca8f70ea8ba356ff597751ccdc0c420f198",
+          "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-48956e2",
+          "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-48956e2/audit-root/audit-v1.json",
+          "audit_sha256": "f64a7fdd96f6d895061c1f5a2cb31c7639277d8a0a11329c8c3c1e9cd37bbd65",
+          "status": "FAIL",
+          "worker_status": "PASS",
+          "postcheck_status": "PASS",
+          "checks": {
+            "collected": 5,
+            "executed": 5,
+            "failed": 1,
+            "not_run": 0
+          },
+          "test_counts": {
+            "frontier_intents": {
+              "status": "ok",
+              "passed": 6,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 332
+            },
+            "serve_owner": {
+              "status": "ok",
+              "passed": 19,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 79
+            },
+            "control_runtime_entrypoint": {
+              "status": "ok",
+              "passed": 8,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 0
+            }
+          },
+          "tests_failed": [],
+          "not_run": [],
+          "protected_elfs": 166,
+          "new_elfs": {
+            "bigbrotr": "1097065d6a18a61920d69bd0fb4356a3d432185b1b4d023544b65894e7a4a88a",
+            "ingest_bootstrap_probe": "361c6a81c87037c772852364d72b66f859267d105e04b65214b167123fd71913",
+            "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+            "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+            "serve_owner": "9f8bdb976c5310088201235f99266d11427f341e6da76bffc4ce52a44c705b04",
+            "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+          },
+          "unchanged_containers": 1387,
+          "compiler_diagnostics": [
+            {
+              "check": "frontier_intents",
+              "line": 289,
+              "encoding": "cargo-json",
+              "level": "warning",
+              "code": {
+                "code": "dropping_copy_types",
+                "explanation": null
+              },
+              "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+            },
+            {
+              "check": "clippy",
+              "line": 4,
+              "encoding": "text",
+              "message": "error: this `if` statement can be collapsed"
+            },
+            {
+              "check": "clippy",
+              "line": 32,
+              "encoding": "text",
+              "message": "error: could not compile `bigbrotr` (bin \"bigbrotr\") due to 1 previous error"
+            }
+          ]
         }
       ],
-      "state": "Three runs stopped-retained, all parent handles joined; no owned engine/build active",
-      "protected_elfs": 166,
+      "state": "Fourth build joined1; custody audit joined0; all owned containers stopped/PID0/noOOM. Fifth corrected source not yet built.",
+      "protected_elfs": 172,
       "preservation": "Original compiler failure, actual failed CLI test, every worker/component ELF and source/log/native asset retained",
       "source_agent": "Source-only same-root journey in .research/archive-catch-up-journey-20261018, branch qualification/archive-catch-up-journey; no runtime authorized to agent"
     }

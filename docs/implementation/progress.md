@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T14:46:05.722104+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:51:35.581552+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -9,10 +9,10 @@ Existing task files own the plan; this checkpoint locates current work and evide
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
 Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
-Current HEAD1d42894 includes both source corrections and first build evidence.
-All33 targeted tests now pass; Clippy found one manual range expression in the
-new journal. The equivalent RangeInclusive correction and this checkpoint are
-not yet committed.
+Current HEAD48956e2 includes the journal range correction and earlier evidence.
+All33 targeted tests pass again; Clippy now reaches the binary and flags one
+nested receipt condition. The equivalent collapsed condition and this checkpoint
+are not yet committed. No owned build/engine remains active.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -124,14 +124,14 @@ Both author worktrees and ignored manifests remain retained. Root has wired
 its authority/inventory/plan/capture/publication children. Complete retained input
 replay, original journal operation lookups, actual native receipt/membership,
 whole-job planning, original topology/grouping, joined publication and zero-bound
-frontier bridges are composed. All new runtime/CLI/journal Rust tests remain
-NOT_RUN. Scoped rustfmt and diff checks PASS. No runtime readiness is claimed.
+frontier bridges are composed. All33 selected runtime/CLI/journal Rust tests pass in the builds below.
+Connected SQL/native catch-up remains NOT_RUN; no runtime readiness is claimed.
 
 Journal8388712 integratedfa15a74, frozen source manifest20393164 under
 `.research/archive-frontier-intents-20261018/.research/archive-frontier-intents-source-20261018`.
 It retains256 immutable64KiB intents, a1024-entry total directory census, scan64KiB
 and serial intent1MiB grants. Root read all new source/tests and verified final
-manifest/blobs. Six authored groups NOT_RUN; source-only literal and formatting
+manifest/blobs. Six authored groups now PASS; source-only literal and formatting
 checks are separate. Resolve original IDs under fresh Control before new work;
 no journal deletion, repair or cross-root adoption. Absent multiheader replacement
 refuses; present original grouping is independently replayed and verified.
@@ -144,18 +144,18 @@ absent multiheader refusal and conflicting duplicate presence. Actual CLI test
 requires missing-native refusal before credentials, without creating a store.
 A second source finding required manager+cut+intent overlap admission when no
 new attempts need a Publisher. The actual manager preparation now remains held
-through peak preflight on that path. Review remains in progress; no test/build
-or engine has started yet.
+through peak preflight on that path. Independent composition review completed below; component tests pass.
+Connected engine qualification remains NOT_RUN.
 
 Runner083c2028 integrated150f1da, frozen manifestf228a245 under
 `.research/archive-catch-up-runner-20261018/.research/archive-catch-up-runner-20261018`.
 Profile `ingest-succession-archive-installed` builds the exact worker from pinned
 read-only assets, embeds its identity into the fresh CLI/probe, and runs journal,
 Serve and entrypoint tests plus Clippy and packaged worker verification. Sixteen
-source/AST checks PASS only; all actual build/postchecks NOT_RUN. Root owns every
-compiler/cache/engine action. The idle runner author is now mapping the genuine
-same-physical-root installed journey read-only; the journal author is preparing
-an ignored read-only custody auditor source. No new master plan is introduced.
+source/AST checks PASS; subsequent actual build/postchecks are recorded below. Root owns every
+compiler/cache/engine action. The runner author is implementing the genuine
+same-physical-root installed journey; the journal author completed
+the read-only custody auditor source. No new master plan is introduced.
 Independent AI source review closed atd7b8aec with both findings fixed, no other
 concrete blocker in its read scope. Recordd7fa596b under
 `.research/archive-catch-up-resume-20261018/composition-review.json`; this excludes
@@ -184,9 +184,8 @@ Both runs live at `/home/tux/bigbrotr-implementation-20260917/runs/`
 `ingest-succession-archive-installed-{d7b8aec,b3735e9}`. Read-only audit-v1.json
 is under each audit-root. The preparation scripts in
 `.research/archive-catch-up-resume-20261018` are EXECUTED; never replay old roots.
-The latest audit protects160ELFs outside mutable compiler caches. Independent
-journal source review is checking the exact locked rustix1.1.5 census allocation;
-no runtime qualification is implied by that review.
+These historical audits preserve their original failures and ELFs. The independent
+journal source review completed below; no runtime qualification is implied.
 
 Third packaged build1d42894/treefaad1a99: actual worker/CLI/probe, all33 tests
 (journal6, Serve19, entrypoint8) and build-info/verify-worker PASS. Overall FAIL:
@@ -199,6 +198,13 @@ all owned containers stopped/PID0/noOOM. Every failed run and artifact remains.
 Independent journal reviewf83941fb is complete: full codec/census/tests plus exact
 locked rustix1.1.5 source/allocation, no concrete blocker; not power-loss evidence.
 
+Fourth packaged build48956e2/tree208e3ca8: worker/CLI/probe, all33 tests and
+build-info/verify-worker PASS. Overall FAIL: Clippy collapsible_if at the new
+publication.rs414. Root collapses the equivalent condition; scoped rustfmt/diff
+checks PASS. Auditf64a7fdd binds1967sources,166prior+6new=172ELFs and1387unchanged
+containers; prepare32227/build21553/audit66068 joined0/1/0. All owned containers
+stopped/PID0/noOOM; raw failures, worker assets and executables retained.
+
 A bounded source agent now owns new installed catch-up journey helpers and narrow
 existing hooks in `.research/archive-catch-up-journey-20261018`, branch
 `qualification/archive-catch-up-journey`, baseb3735e9. Same fresh physical roots:
@@ -208,7 +214,7 @@ Independent expected science22facts/7receipts, counts[13,2,2,2,3], snapshot8,
 sourcebounds12/0/10; actual validated initial revisionR advances by3. All75tables
 remain checked. Source under development; protocol/engine NOT_RUN. No copied
 coordinator adoption and no reduction of64GiB+577MiB completion reserve.
-Next bounded action: freeze root Clippy range cleanup and qualify a fresh
+Next bounded action: freeze root Clippy condition cleanup and qualify a fresh
 exact-source packaged build, then review/run this genuine same-root journey.
 M1–M5 remain incomplete; goalACTIVE.
 

@@ -411,17 +411,16 @@ async fn resolve_intents(
                     .read_archive_frontier(coordinator.identity().catalog(), intent.operation_id()),
             )
             .await?;
-        if let Some(receipt) = receipt {
-            if !intent.matches_receipt(&receipt)
+        if let Some(receipt) = receipt
+            && (!intent.matches_receipt(&receipt)
                 || inventory.current.current_receipt().is_none_or(|current| {
                     current.revision < receipt.revision
                         || current.revision == receipt.revision && current != receipt
-                })
-            {
-                return Err(error(
-                    "original frontier receipt differs from retained intent/current head",
-                ));
-            }
+                }))
+        {
+            return Err(error(
+                "original frontier receipt differs from retained intent/current head",
+            ));
         }
     }
     Ok(scan)

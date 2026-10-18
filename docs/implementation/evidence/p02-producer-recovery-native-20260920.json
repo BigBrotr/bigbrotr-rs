@@ -32524,7 +32524,7 @@
         "next": "Exact-source packaged worker/CLI component build; then genuine same-physical-root installed journey"
       },
       "archive_installed_build_attempts": {
-        "observed_at": "2026-10-18T14:46:05.722104+00:00",
+        "observed_at": "2026-10-18T14:51:35.581552+00:00",
         "attempts": [
           {
             "source": "d7b8aec688370d04f01a91bf56c1a3ec2ef4814e",
@@ -32809,12 +32809,92 @@
                 "message": "error: could not compile `bigbrotr` (lib) due to 1 previous error"
               }
             ]
+          },
+          {
+            "source": "48956e2234028e2e676a04ee00ac8ee87d98ea20",
+            "tree": "208e3ca8f70ea8ba356ff597751ccdc0c420f198",
+            "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-48956e2",
+            "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-48956e2/audit-root/audit-v1.json",
+            "audit_sha256": "f64a7fdd96f6d895061c1f5a2cb31c7639277d8a0a11329c8c3c1e9cd37bbd65",
+            "status": "FAIL",
+            "worker_status": "PASS",
+            "postcheck_status": "PASS",
+            "checks": {
+              "collected": 5,
+              "executed": 5,
+              "failed": 1,
+              "not_run": 0
+            },
+            "test_counts": {
+              "frontier_intents": {
+                "status": "ok",
+                "passed": 6,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 332
+              },
+              "serve_owner": {
+                "status": "ok",
+                "passed": 19,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 79
+              },
+              "control_runtime_entrypoint": {
+                "status": "ok",
+                "passed": 8,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 0
+              }
+            },
+            "tests_failed": [],
+            "not_run": [],
+            "protected_elfs": 166,
+            "new_elfs": {
+              "bigbrotr": "1097065d6a18a61920d69bd0fb4356a3d432185b1b4d023544b65894e7a4a88a",
+              "ingest_bootstrap_probe": "361c6a81c87037c772852364d72b66f859267d105e04b65214b167123fd71913",
+              "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+              "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+              "serve_owner": "9f8bdb976c5310088201235f99266d11427f341e6da76bffc4ce52a44c705b04",
+              "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+            },
+            "unchanged_containers": 1387,
+            "compiler_diagnostics": [
+              {
+                "check": "frontier_intents",
+                "line": 289,
+                "encoding": "cargo-json",
+                "level": "warning",
+                "code": {
+                  "code": "dropping_copy_types",
+                  "explanation": null
+                },
+                "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+              },
+              {
+                "check": "clippy",
+                "line": 4,
+                "encoding": "text",
+                "message": "error: this `if` statement can be collapsed"
+              },
+              {
+                "check": "clippy",
+                "line": 32,
+                "encoding": "text",
+                "message": "error: could not compile `bigbrotr` (bin \"bigbrotr\") due to 1 previous error"
+              }
+            ]
           }
         ],
         "dispositions": {
           "d7b8aec": "Compiler E0432 private module import, fixed b3735e9 through public export",
           "b3735e9": "Worker/CLI/probe compiled, journal6/Serve19 PASS; entrypoint7PASS1FAIL on MissingDatabase Debug text; fix uses existing StoreError Display, remove two unused imports; Clippy NOT_RUN",
-          "1d42894": "All33 targeted testsPASS, actual worker/CLI/probe and packaged postchecksPASS; ClippyFAIL manual_range_contains in new journal. Root uses RangeInclusive::contains; no runtime engine qualification. Existing dropping_copy_types warning in lineage_replay_tests.rs:498 retained, not introduced here."
+          "1d42894": "All33 targeted testsPASS, actual worker/CLI/probe and packaged postchecksPASS; ClippyFAIL manual_range_contains in new journal. Root uses RangeInclusive::contains; no runtime engine qualification. Existing dropping_copy_types warning in lineage_replay_tests.rs:498 retained, not introduced here.",
+          "48956e2": "All33 targeted testsPASS, worker/CLI/probe and packaged postchecksPASS; ClippyFAIL collapsible_if in new publication.rs. Root collapses the equivalent receipt condition. Connected journey NOT_RUN; historical Copy-drop warning remains separate."
         },
         "review": {
           "path": ".research/archive-catch-up-resume-20261018/composition-review.json",
