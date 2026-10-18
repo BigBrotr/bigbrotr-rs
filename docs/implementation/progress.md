@@ -1,16 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:22Z on Tux. Goal **ACTIVE**, verified with the goal control
+Observed 2026-10-18T19:26Z on Tux. Goal **ACTIVE**, verified with the goal control
 following the owner's explicit resume. M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`a99c041769a791d5c923be2b3f555881674a7553`, already pushed and verified remotely.
+`67350645e2a641ecca8eedbce4074dbf7203f38b`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Root's current documentation edits preserve the failed
-initial prefix of the current-join refusal run. Product source is unchanged.
+No merge/rebase pending. Root's current documentation edits record completed current-join qualification
+and the preserved initial failure's bounded diagnosis. Product source is unchanged.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -88,23 +88,40 @@ Limited read-only custody22494 joined0, SHA13cc824a, binds2084files/190ELFs,
 1402unchanged nonborrowed containers and original SQLbasis. PG/client stopped0/143.
 The exact timed-out Sync sub-await is unknown; no false refusal PASS.
 
-Root and bounded source review found no demonstrated blocker to one unchanged
-fresh trial; exact sub-await remains unknown. Checkpoint/push this failure, then
-prepare **one fresh unchanged-product/current-join attempt** from
-clean main with `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
-(SHA5b61ccf3), build9a/audit1164. Run actual engine, strict
-`installed_archive_catch_up_refusal_capture.py` replay and latest custody template
-SHA `c023b95dc0a72a98d1df17476bb3c46f40d3ed01571257b2e1285cc984375921`
-before borrowed-PG reuse. Template lives under journeyWT's
-`.research/archive-catch-up-client-name-audit-20261018`.
+Bounded diagnosis7cef1f9c under journeyWT's
+`.research/archive-current-join-initial-diagnosis-20261018/source-note.json`
+compares exact initial owners/configuration/accepted policy with normal410.
+Four positive outcome copies and a completed47ms relay are observed; precise
+pending await/latency cause remains unknown. No deadline/profile was widened.
 
-The six cases are current-join, orphan-history, family-counts, missing-input,
-frontier-cancel and frontier-control-loss. All six actual engines/replays are
-NOT_RUN at the selected refusal boundary; the a99 initial failure is separate.
-Artificial/model/custody-helper checks do not qualify them. Each case
-needs its own genuine initial→terminal3 setup, unique clean source revision/root
-and coherent evidence checkpoint. Do not prepare multiple cases at one HEAD:
-the client name includes source7. Preserve each original failure.
+The one new unchanged trial **current-join6735064 PASS**:
+prepare2145/engine57754/replay12410/custody85430 all joined0.
+Engine19:23:17Z–19:24:59Z,11installed processes; actual refusal exit4 unforced/reaped.
+Independent31snapshots/75tables/10negative controls; no new Archive attempt or
+frontier from the refused command. Strict replay binds509files; custody binds
+1981source files/190ELFs, SHA
+`c3d396e801f2a65521deb5084daf49b4e2497d9efad6094038151b76dcfde6a9`.
+PG/client stopped0/143, PID0/noOOM; cleanup/missing/unrelated arrays empty.
+Do not replay custody after PG reuse. This success does not erase the a99 failure.
+
+Next runtime: **fresh orphan-history refusal**, then family-counts, missing-input,
+frontier-cancel, frontier-control-loss. Those five engines/replays remain NOT_RUN.
+First restore required headroom: free69067194368B at completed run was below
+unchanged69324505088B preparation floor. cleanup_review is inspecting a bounded
+proposal of37further duplicate historical Cargo source copies (~9GB), keeping
+complete counterparts. No new cleanup authorized by a mere size estimate; root
+must authenticate exact proposal and fresh exclusion/equivalence before removal.
+No candidate executor has been run. Preserve all original data/evidence.
+
+After headroom and this checkpoint commit/push, use the existing
+`.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
+(SHA5b61ccf3), build9a/audit1164, case orphan-history from clean main.
+Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
+and latest custody templatec023b95d under journeyWT's
+`.research/archive-catch-up-client-name-audit-20261018` before borrowed-PG reuse.
+Each case needs its own genuine initial→terminal3 setup, unique clean revision/root
+and coherent checkpoint; client names include source7. Preserve every failure.
+A repeated initial Sync timeout requires targeted diagnostics before more trials.
 
 ## Reviewed work not yet integrated or executed
 
@@ -158,9 +175,10 @@ No remote branch or external lab was changed.
 ## Resource custody and remaining scope
 
 All fault/refusal-prefix/replay/audit/maintenance processes above have joined.
-Only successor_restart_design is doing bounded read-only source diagnosis;
-other agents are idle. No runtime currently active. A repeated initial Sync
-timeout requires targeted diagnosis, not indefinite retry or relaxed deadlines.
+cleanup_review is freezing the exact headroom proposal; recovery_review will
+author its source-only package-level retirement helper for root/independent
+review. successor_restart_design is idle. No runtime currently active; the673
+refusal custody is complete. No new cleanup helper has been executed.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner
 8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.

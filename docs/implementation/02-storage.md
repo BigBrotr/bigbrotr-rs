@@ -671,7 +671,10 @@ raw replay binds612 files and91 negative controls; the
 records the exact build, artifacts and original failed runs. Fixture `f45b1b0`
 now qualifies both publication and first-frontier COMMIT-reply loss, fresh
 resolution and exact retry: fourteen actual processes, 593 raw-bound files and 91
-negative controls. Actual refusals/cancellation, held-attempt custody and
+negative controls. The current-join refusal now passes at fixture `6735064`:
+eleven actual processes,31states/75tables,509raw-bound files and10negative controls;
+no new Archive attempt/frontier. The original `a99c041` initial Sync timeout remains
+a preserved failure. Five other refusals/cancellation, held-attempt custody and
 total-cap qualification remain open. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix

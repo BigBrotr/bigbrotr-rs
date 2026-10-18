@@ -65533,8 +65533,149 @@
             "bytes": 427,
             "sha256": "69d51daa8670cc284eb0b11aa3f0d1c473807286d4536d0774e0cf47aabe15f2"
           }
+        },
+        "bounded_diagnosis": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-current-join-initial-diagnosis-20261018/source-note.json",
+          "bytes": 16235,
+          "sha256": "7cef1f9ccc0e3cd209fb6d38a9011d45a2d213a2fb83d497414dbdef6186997c",
+          "conclusion": "No demonstrated fixture/schema mismatch or deterministic blocker to one fresh unchanged-product/profile attempt. Demonstrated outer whole-Sync-dispatch timeout after positive request4 SQL copy; exact pending await and scheduling cause remain unobserved.",
+          "scope": "Read-only source/raw comparison; no runtime or stronger causal inference. Root verified all16 raw pins."
         }
+      },
+      {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+        "case": "current-join",
+        "source": "67350645e2a641ecca8eedbce4074dbf7203f38b",
+        "tree": "ba1bb5525967eb286c9e489d48a82d6f7360e99a",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064",
+        "prepare_session": 2145,
+        "prepare_joined_exit_code": 0,
+        "engine_session": 57754,
+        "engine_joined_exit_code": 0,
+        "replay_session": 12410,
+        "replay_joined_exit_code": 0,
+        "custody_session": 85430,
+        "custody_joined_exit_code": 0,
+        "engine_wrapper": {
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064/source/experiments/acquisition-scope/bindings.py",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064",
+            "--installed-archive-catch-up-refusal-current-join",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+          ],
+          "source": "67350645e2a641ecca8eedbce4074dbf7203f38b",
+          "started_at": "2026-10-18T19:23:17.044270+00:00",
+          "exit_code": 0,
+          "finished_at": "2026-10-18T19:24:59.474077+00:00"
+        },
+        "oracle": {
+          "case": "current-join",
+          "control_released": false,
+          "control_tables": 75,
+          "exit_code": 4,
+          "expected_refusal": true,
+          "installed_processes": 11,
+          "new_archive_attempts": 0,
+          "new_frontier_revisions": 0,
+          "original_frontier_revision": 4,
+          "same_physical_roots": true,
+          "snapshots": 31,
+          "source_scope": "independent whole-state reducer; wait timing is observed, no internal timer claim",
+          "status": "PASS"
+        },
+        "negative_controls": {
+          "rejected": [
+            "forced-process",
+            "unknown-process",
+            "wrong-error",
+            "unrelated-SQL",
+            "native-write",
+            "backend-live",
+            "Control-normalized",
+            "old-frontier-rewritten",
+            "scope-obligation-added",
+            "guard-catalog-changed"
+          ],
+          "scope": "assembled-context mutations, not independent engine or isolated-predicate coverage",
+          "status": "PASS"
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064/audit-root/audit-v1.json",
+          "bytes": 367116,
+          "sha256": "c3d396e801f2a65521deb5084daf49b4e2497d9efad6094038151b76dcfde6a9"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064/root-independent-replay.json",
+          "bytes": 134997,
+          "sha256": "d329201065e81717e866e0296ab6e3bc5d81f1d5d6a110941dcf4f103265e1da"
+        },
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064/root-preparation.json",
+          "bytes": 29812,
+          "sha256": "1f58882a507180233bf5fdd1235db135e89bd4afc813e9181bc5d7b314f0ed0e"
+        },
+        "source_files": 1981,
+        "protected_elfs": 190,
+        "raw_bound_files": 509,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "terminal": {
+          "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec": {
+            "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-18T19:23:17.979448232Z",
+              "FinishedAt": "2026-10-18T19:24:58.616910687Z"
+            }
+          },
+          "db0c4e1dd64963e8c08e0da051e58fe5d7c2efd5708c4ace268f9ce156e14afa": {
+            "name": "/bigbrotr-acquisition-binding-6735064",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-18T19:23:19.230252475Z",
+              "FinishedAt": "2026-10-18T19:24:57.928473695Z"
+            }
+          }
+        },
+        "free_bytes_after": 69067194368,
+        "limits": "Only current-join refusal on fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original a99 initial Sync failure remains FAIL; this unchanged-profile trial does not identify or fix its unobserved timing cause. Five other refusals and attempt-cap/capacity/RSS remain NOT_RUN. Never replay custody after borrowed-PG reuse."
       }
-    ]
+    ],
+    "archive_refusal_qualification": {
+      "current-join": {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+        "source": "67350645e2a641ecca8eedbce4074dbf7203f38b",
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064/audit-root/audit-v1.json",
+          "bytes": 367116,
+          "sha256": "c3d396e801f2a65521deb5084daf49b4e2497d9efad6094038151b76dcfde6a9"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-current-join-engine-6735064/root-independent-replay.json",
+          "bytes": 134997,
+          "sha256": "d329201065e81717e866e0296ab6e3bc5d81f1d5d6a110941dcf4f103265e1da"
+        },
+        "scope": "Only current-join refusal on fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original a99 initial Sync failure remains FAIL; this unchanged-profile trial does not identify or fix its unobserved timing cause. Five other refusals and attempt-cap/capacity/RSS remain NOT_RUN. Never replay custody after borrowed-PG reuse."
+      }
+    }
   }
 }
