@@ -218,3 +218,38 @@ adapter. Actual bind aliases, live contention, SIGKILL/restart, partial bindings
 blocked inventory cancellation are exercised. The local fixture creates an
 initialization reservation only; it does not install a native scientific catalog.
 No pre-protocol history adoption, Archive dispatch or protection is qualified.
+
+## Finite retained-lineage catch-up candidate
+
+The implementation now includes this finite command:
+
+```sh
+bigbrotr archive catch-up --file /etc/bigbrotr/instance.toml
+```
+
+At product revision `ced7693`, compilation, 33 selected component tests, Clippy
+and installed worker verification pass. The connected catch-up/read/export/restart
+journey remains under qualification; see the
+[current checkpoint](../implementation/progress.md) for the actual result.
+
+The command requires the original initialized catalog, persistence registration,
+physical native and coordinator roots, retained inputs and journals on the same
+boot. Control, Ingest and Archive must be assigned locally, with a matching
+accepted publication policy. The native and registered Ingest heads must already
+be fully terminal: legacy epoch 2 or a later supported epoch. Use their explicit
+recovery, source-closure, acquisition-abandonment and retirement operations first;
+catch-up performs none of those transitions itself.
+
+It reconciles all issued attempts and retained frontier operations before issuing
+missing complete batches. It preserves historical receipts and advances the
+complete frontier through each required topology. A matching fresh-process retry
+returns the existing frontier without another attempt or revision. Success follows
+actual native/worker/driver closure and Control teardown; it starts no service.
+
+Preserve the configuration, physical roots, original inputs, journals and partial
+results after refusal or lost delivery. Do not delete state, copy another
+coordinator or rerun initialization to force acceptance. The
+[owning contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
+and [admitted profile](../reference/archive-handoff.md#total-admitted-profile)
+define reconciliation and limits. Reader authorization, export capacity and pins
+remain separate prerequisites. This command performs no pending ACK or reclamation.
