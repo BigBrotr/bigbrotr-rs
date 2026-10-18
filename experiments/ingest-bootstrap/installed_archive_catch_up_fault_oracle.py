@@ -286,17 +286,11 @@ def catalog_growth(phase,science):
         assert row['contains_null'] in (old['contains_null'],True)
         assert row['xmin']==only(b['public.ducklake_table_stats'],table_id=row['table_id'])['xmin']
 
-    # Native scalar extrema are checked as exact reductions of all retained
-    # file statistics. Newly encoded file statistics remain observed metadata;
-    # actual scientific values are independently read and compared in full.
+    # Pinned DuckLake MergeStats compares BLOB statistics as their escaped
+    # strings, not byte values. Match that metadata reduction here; it is not
+    # a scientific BLOB range. Actual values are independently read in full.
     def scalar(value,kind):
         if kind.startswith(('uint','int')):return int(value)
-        if kind=='blob':
-            result=bytearray();offset=0
-            while offset<len(value):
-                if value.startswith('\\x',offset):result.append(int(value[offset+2:offset+4],16));offset+=4
-                else:result.extend(value[offset].encode());offset+=1
-            return bytes(result)
         return value
     for row in b['public.ducklake_table_column_stats']:
         records=[r for r in b['public.ducklake_file_column_stats'] if r['table_id']==row['table_id'] and r['column_id']==row['column_id']]
@@ -326,8 +320,14 @@ def catalog_roles(phase):
     wanted['roles']+=additions;wanted['roles'].sort(key=lambda r:int(r['oid']))
     newmembers=[r for r in observed['members'] if r not in wanted['members']]
     assert len(newmembers)==len(additions) and {r['roleid'] for r in newmembers}=={r['oid'] for r in additions}
+    # PostgreSQL 16 assigns each membership its own row OID.
+    assert len({r['oid'] for r in observed['members']})==len(observed['members'])
+    oldoids={r['oid'] for r in wanted['members']}
     template=next(r for r in wanted['members'] if r['roleid'] in {p['login_oid'] for p in oldattempts})
-    for row in newmembers:assert row==dict(template,roleid=row['roleid'],xmin=row['xmin'])
+    for row in newmembers:
+        assert str(row['oid']).isdecimal() and int(row['oid'])>0 and row['oid'] not in oldoids
+        assert str(row['xmin']).isdecimal() and int(row['xmin'])>0
+        assert {k:v for k,v in row.items() if k not in ('oid','roleid','xmin')}=={k:v for k,v in template.items() if k not in ('oid','roleid','xmin')}
     wanted['members']+=newmembers;wanted['members'].sort(key=lambda r:tuple(int(r[k]) for k in ('roleid','member','grantor')))
     assert wanted==observed
 
