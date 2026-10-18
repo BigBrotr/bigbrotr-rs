@@ -60399,6 +60399,52 @@
           "input_files": 7
         }
       ]
+    },
+    "installed_cycle_ref_retirement": {
+      "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-18T12:41:34.540635+00:00",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/installed-cycle.bundle",
+      "bundle_bytes": 15976984,
+      "bundle_sha256": "0485e2ebf4b24efd77b518443948569124fc40107f4e22f743856b5ac9aba325",
+      "audit_sha256": "383eb79ac4ce84869128239a5a0107f73a67e556d5bcc36b0466aa401a3bcf02",
+      "scope": "Two source-reviewed and actual-engine-qualified recovery/cycle refs. Main is the only remaining local/remote branch. Every worktree, ignored/external artifact, original/fault dataset and full original commit history is preserved.",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "report": {
+        "path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/installed-cycle.json",
+        "sha256": "8fd97d43c536ac1c93fae17c2a3f6f0c13282e308211158749fc5f3f2eebe559"
+      },
+      "records": [
+        {
+          "branch": "implementation/installed-successor-recovery",
+          "original": "361c1099ca41e0fa2d3d3efcd9860d966d6e5212",
+          "integrated": "652a9bb693ba510d046e0d576b513dbee25445d5",
+          "worktree": "/home/tux/bigbrotr-rs/.research/installed-successor-recovery-20261015",
+          "archive_ref": "refs/archive/qualified-installed-cycle-20261018/implementation/installed-successor-recovery",
+          "qualified_corrections": {
+            "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family.rs": {
+              "integrated_blob": "2b37eb5c10eb34cab40b557f9cb2f04c9e2cd60b",
+              "qualified_blob": "900275c2db49eb9a5c79c0c076910d28d3ddc488",
+              "source": "3bdcdd188dee80514fdaf79e554ad69c948a8163",
+              "scope": "Debug/exit3 conversion only; reviewed and qualified by22tests and27installed processes"
+            }
+          },
+          "census_paths": 2136,
+          "census_sha256": "cb9ad4010933714f759ab61c19b939ab0ff5bbece8b2f6a454ce581bc226f8ba"
+        },
+        {
+          "branch": "qualification/installed-successor-cycle",
+          "original": "6117544e184b325cce7bbd2c660c5f970b73b22a",
+          "integrated": "f1a8535433f1040b1eb3d1187577af90ef741514",
+          "worktree": "/home/tux/bigbrotr-rs/.research/installed-successor-cycle-20261015",
+          "archive_ref": "refs/archive/qualified-installed-cycle-20261018/qualification/installed-successor-cycle",
+          "qualified_corrections": {},
+          "census_paths": 3384,
+          "census_sha256": "0f64009897dfe6e267c6443b7db11dcd738c1776129eb4a390178cbae228a494"
+        }
+      ],
+      "handle": "90560 joined0",
+      "registered_worktrees": 134,
+      "detached_worktrees": 133
     }
   }
 }

@@ -8,7 +8,7 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD/verified remote04e41c1.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD/verified remote9f699be.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 This evidence/checkpoint update is pending commit/push. No merge/rebase pending.
@@ -28,8 +28,8 @@ not transport liveness. Historical consumed-acquire limitation remains explicit,
 with no demonstrated authority bypass. Two new actual-helper cancellation,
 timeout, unwind and disarm tests now PASS within the15Serve tests.
 
-Original branches and both clean worktrees under `.research/installed-successor-`
-`{recovery,cycle}-20261015` remain preserved. Agents finished source-only work;
+Original commits and both clean worktrees under `.research/installed-successor-`
+`{recovery,cycle}-20261015` remain preserved, now detached. Cycle authors finished;
 root retains exclusive compiler/cache/SQL/native/engine ownership. The new harness
 uses27real processes on three fresh9359721 copies: four finite operations each
 with exact retry, then new Serve epochs4/4/5, renewal and joined shutdown.
@@ -86,17 +86,20 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: commit/push this qualified cycle, retire its two redundant
-source refs while preserving original history/worktrees/ignored artifacts, then
-implement installed recovery of unactivated prepared attempts using existing
-repeatable adapters. Source-only recovery_review is mapping the four contracted
+Next bounded action: implement installed recovery of unactivated prepared attempts
+using existing repeatable adapters. Source-only recovery_review is mapping the four contracted
 states (PG/native gap, OPEN0, CLOSING0, exact terminal retry); no product edits yet.
 Root owns all compilation and actual engines. Preserve source-open/closed/terminal
 retry distinctions. Prepared recovery must never adopt a writer. Import logical
 closure, staged tails, ACK/GC, Archive restart and full M1–M5 remain unfinished.
 
-All134worktrees,123local/51remote retired refs' bundles and79detached trees remain
-preserved. No branch retirement/deletion in this slice. Pause snapshots remain at
+Fresh Git census: all134worktrees remain,133detached and canonical main.
+The earlier79detached count was historical, not the complete current census.
+The two qualified source refs were retired (90560 joined0), leaving only main locally and remotely. Cumulative
+retirement125local/51remote refs; original full histories archived and bundled at
+`.research/branch-retirement-20261018/installed-cycle.bundle`,15,976,984bytes,
+SHA0485e2eb. Every tracked/ignored/link/stat census unchanged. No worktree, artifact,
+dataset or container was deleted. Pause snapshots remain at
 `.research/installed-cycle-resume-20261018/pause/`; ignored data, original/fault
 states, logs and external laboratories remain. Current cycle audit sees all owned
 BigBrotr containers stopped; six unrelated services remain untouched. Compiler
