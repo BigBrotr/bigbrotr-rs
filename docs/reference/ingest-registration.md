@@ -1309,6 +1309,6 @@ The installed qualification must close and retry each stage on fresh copies of
 the three installed9359721 endpoints, preserving complete SQL/native/input bytes
 outside each operation's write set. It must then activate genuine epochs4/4/5
 without recreating old jobs or commands, observe renewal beyond the initial lease
-and join shutdown. This consumer's compilation and installed cycle remain NOT_RUN
-until bound evidence is recorded; prepared-gap/empty recovery, unresolved tails,
+and join shutdown. Exact3bdcdd1 compilation,15Serve/7entrypoint tests and Clippy
+PASS; the full installed cycle remains NOT_RUN. Prepared-gap/empty recovery, unresolved tails,
 import logical closure, ACK/GC and Archive restart remain separate requirements.

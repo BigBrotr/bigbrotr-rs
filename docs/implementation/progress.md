@@ -1,47 +1,39 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T12:24:40.000402+00:00 on Tux. Goal ACTIVE after explicit owner resume on2026-10-18;
-the earlier pause is revoked. The preceding goal turn made progress by preserving
-six unfinished files and pushing checkpoint7f40c12, then actually pausing. Resume
-verified main/remote7f40c12, exact six-file snapshots and six unchanged unrelated
-active services. Selected M1–M5 remain INCOMPLETE. Follow the
+Observed 2026-10-18T12:35:58.725478+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
 
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, branch main, observed HEAD652a9bb after integrating
-original361c1099; remote last verified7f40c12. Root CLI/tests/reference docs were committed as34d9280. Its first build failed
-E0277: RequestInputError lacks Display. The minimal Debug/exit3 correction and
-this failure evidence are pending commit. Tests and Clippy were NOT_RUN.
-No merge/rebase is pending; no future commit hash is guessed here.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEADf1a8535; remote last verified
+7f40c12. Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
+RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
+This evidence/checkpoint update is pending commit/push. No merge/rebase pending.
 
-The four epoch3-or-later recovery modes are implemented using existing schema0038
-adapters: positive recovery, source closure, fresh closed-source acquisition
-abandonment and existing-only retirement. One native-first custody retains each
-opaque owner outside cancelled operation futures. Source closure and abandonment
-remain distinct; no writer adoption, import-veto relaxation, tail resolution or
-ACK/GC. Root CLI selects12 mutually exclusive recovery modes and preserves legacy
-defaults; actual entrypoint cases cover all66pairs and native-before-credentials.
+The four epoch3-or-later recovery modes use existing schema0038 adapters:
+positive recovery, separate source closure, fresh closed-source acquisition
+abandonment and existing-only retirement. Native-first custody retains opaque
+owners outside cancelled futures. No writer adoption, import-veto relaxation,
+tail resolution or ACK/GC. CLI selects12 mutually exclusive modes; the seven
+actual entrypoint tests cover all66pairs and native-before-credentials.
 
-Independent AI review found and closed caller-driven Control acquire cancellation
-ordering and incorrect Control exit-code mapping. External pinned acquisition plus
-ClaimExit closes native before caller-driven future destruction; acquired Control
-moves into custody before disarm. Adapter OwnerError or physical transport failure
-can already close the client; driver/grant retention never claims remote liveness.
-Older consumed-acquire callers retain that explicitly documented limitation, with
-no demonstrated authority bypass; historical evidence is not reclassified.
+Independent AI review closed caller-driven acquisition cancellation ordering and
+Control exit-code mapping. ClaimExit closes native before caller-driven future
+destruction; acquired Control enters custody before disarm. Adapter OwnerError or
+physical transport failure can already end transport; driver/grant retention is
+not transport liveness. Historical consumed-acquire limitation remains explicit,
+with no demonstrated authority bypass. Two new actual-helper cancellation,
+timeout, unwind and disarm tests now PASS within the15Serve tests.
 
-Original361c1099 remains on `implementation/installed-successor-recovery` in
-`.research/installed-successor-recovery-20261015`, clean and preserved. Two new
-actual-helper tests cover cancellation/timeout/unwind/disarm; they are NOT_RUN.
-The other active WT `.research/installed-successor-cycle-20261015`, branch
-`qualification/installed-successor-cycle`, owns only new installed_cycle*.py.
-Harness author and independent reviewer are working on27processes over three
-fresh copies of the existing9359721 endpoints, followed by new Serve epochs4/4/5.
-First exact build97536 joined1, prepare56531/audit31871 joined0. No new engine
-run has begun. Both build containers are stopped and retained.
+Original branches and both clean worktrees under `.research/installed-successor-`
+`{recovery,cycle}-20261015` remain preserved. Agents finished source-only work;
+root retains exclusive compiler/cache/SQL/native/engine ownership. The new harness
+uses27real processes on three fresh9359721 copies: four finite operations each
+with exact retry, then new Serve epochs4/4/5, renewal and joined shutdown.
+No new jobs/Sync/HTTP in those final Serve processes. Engine remains NOT_RUN.
 
 ## Evidence, resources and next action
 
@@ -50,38 +42,47 @@ See [storage task](02-storage.md),
 [repeatable contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented),
 [later recovery commands](../reference/ingest-store.md#recovering-a-later-activated-successor-under-implementation),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
-[lab inventory](../research/laboratory-inventory.json), node `installed_cycle_source`
-under the existing repeatable succession records.
+[lab inventory](../research/laboratory-inventory.json), nodes `installed_cycle_build`
+and `installed_cycle_harness` under the existing repeatable succession records.
 
-PASS source checks: root original/integrated/manifest/review-bound hashes,
-scoped rustfmt/diff checks; author exact inverse preserves old recovery branches.
-Source manifest a073f1b2 is under the recovery WT's
-`.research/installed-successor-recovery-selfcheck-20261018/source-manifest.json`.
-Independent review `.research/installed-cycle-review-20261018/review-final.json`
-SHAabe50322 closes without remaining source blocker. Root binding
-`.research/installed-cycle-resume-20261018/source-binding.json` records exact inputs.
-These are source claims, not runtime qualification. Compilation, current Rust/CLI
-tests and full installed cycle remain NOT_RUN. Existing4cfac91/9359721 results below
-are unchanged historical evidence; Oct18 resumption checked311artifacts/143ELFs.
+Exact corrected build3bdcdd1/treee00d0198 PASS: CLI/probe compilation,15Serve and
+7entrypoint tests, Clippy, four checks and zero diagnostics. Prepare96177,
+build28720 and custody41353 joined0. Run12:28:29Z–12:30:46Z, root
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-3bdcdd1`.
+Audit8b9bcc1b binds1943sourcefiles,144prior+4new=148ELFs and1373unchanged prior
+containers. Both fetch/native exit0/PID0/noOOM; free25,543,696,384bytes at completion.
+Earlierbf2c33d122 storage tests reused only for authenticated unchanged kernels,
+fixtures and dependencies; no claim that the entire product has been retested.
 
-Next bounded action: commit the RequestInputError conversion fix, then run the
-corrected exact-revision `ingest-succession-installed` build with
-`.research/installed-cycle-resume-20261018/prepare-build-followup.py` and
-`audit-build-followup-template.py`. Original prepare-build.py is EXECUTED, do not
-replay. Failed34d9280 run is retained; custody audit e1ce2244 proves143old+1new=144
-ELFs and1371unchanged containers. No executed test failure: all tests were NOT_RUN.
-The root alone owns compiler/cache/engine operations. After build, qualify the
-reviewed installed cycle using fresh9359721 clones, never rerun old commands
-against an advanced endpoint. Distinguish original source-open recovery retries
-from closed-source and terminal retries. Import logical closure remains separate.
+Original34d9280 compilation E0277 remains FAIL, its tests/Clippy NOT_RUN. Its
+custodye1ce2244 preserves143prior+1newELF. No executed test failure. Both original
+and corrected build roots, logs and artifacts are retained; prepare scripts are
+EXECUTED and must not be replayed.
+
+Harness sourcebinding3af4bccb authenticates original/integrated fourfiles and1163
+retained artifacts. Author manifest aeb7e6eb and AI review a8d9daaf agree with the
+final sources. Artificial protocol27contexts/63states/288controls and12raw-file
+mutations/10custody mocks PASS; shared-Model generation is not engine evidence.
+Malformed terminal capture was corrected before integration. Root read the full
+drafts and final preservation/configuration delta. Build/source audit templates
+are independently retained under `.research/installed-cycle-resume-20261018`.
+
+Next bounded action: commit/push this checkpoint, then execute its unexecuted
+`prepare-engine.py 3bdcdd188dee80514fdaf79e554ad69c948a8163
+8b9bcc1b688842db3d025ffd699fe4c6a6cacfd305c50102e9ff14ed41b79acc` once from cleanmain.
+Launch installed_cycle.py using the resulting exact source and qualified artifacts;
+join the engine, run its independent offline raw reader, then the read-only custody
+audit with actual source/build/replay pins. Preserve every failed/unknown outcome.
+Never replay old commands against advanced endpoints. Source-open, closed-source
+and terminal retries have different prerequisites; import logical closure is separate.
 
 All134worktrees,123local/51remote retired refs' bundles and79detached trees remain
-preserved; no branch retirement or deletion occurred in this slice. Pause snapshots
-remain under `.research/installed-cycle-resume-20261018/pause/`; old ignored data,
-logs, fault/original states and external laboratories are retained. No owned engine
-or active BigBrotr container observed; six unrelated services remain untouched.
-Existing build `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`
-and engine `.../ingest-succession-installed-family-engine-9359721` are stopped/retained.
+preserved. No branch retirement/deletion in this slice. Pause snapshots remain at
+`.research/installed-cycle-resume-20261018/pause/`; ignored data, original/fault
+states, logs and external laboratories remain. Current audit sees all owned
+BigBrotr containers stopped; six unrelated services remain untouched. Compiler
+cache is unused by the forthcoming engine;148protectedELFs remain outside it.
+The older sections below describe their dated evidence, not current live processes.
 
 ## Current installed successor source
 

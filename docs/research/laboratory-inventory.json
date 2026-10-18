@@ -60075,7 +60075,8 @@
         "path": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/source-binding.json",
         "sha256": "07222dcb54b032cebb33ab45caf221a378a860a89723806ec06b8e62658fb9ef"
       },
-      "goal": "ACTIVE by explicit user resume; full M1-M5 remains incomplete"
+      "goal": "ACTIVE by explicit user resume; full M1-M5 remains incomplete",
+      "superseded_by": "Corrected source3bdcdd1 installed_cycle_build PASS; full engine remains NOT_RUN."
     },
     "installed_cycle_first_build": {
       "status": "FAIL_COMPILE_REQUEST_INPUT_ERROR_DISPLAY",
@@ -60144,7 +60145,135 @@
       },
       "all_preserved_elfs": 144,
       "unchanged_containers": 1371,
-      "fix": "Map RequestInputError via Debug and exit3, matching existing replay_grants; no adapter semantics changed. Corrected compilation still NOT_RUN."
+      "fix": "Corrected in3bdcdd1; installed_cycle_build records actual PASS. Original failure and NOT_RUN tests remain historical."
+    },
+    "installed_cycle_build": {
+      "status": "PASS_SUCCESSION_INSTALLED_COMPONENTS",
+      "source": "3bdcdd188dee80514fdaf79e554ad69c948a8163",
+      "tree": "e00d0198e5c6e6c2cc4f5c6c7e892e3c3cf2733d",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-3bdcdd1",
+      "started_at": "2026-10-18T12:28:29.749415+00:00",
+      "finished_at": "2026-10-18T12:30:46.799762+00:00",
+      "prepare_handle": "96177 joined0",
+      "build_handle": "28720 joined0",
+      "audit_handle": "41353 joined0",
+      "custody_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-3bdcdd1/audit-root/audit-v1.json",
+        "sha256": "8b9bcc1b688842db3d025ffd699fe4c6a6cacfd305c50102e9ff14ed41b79acc"
+      },
+      "checks": {
+        "collected": 4,
+        "executed": 4,
+        "failed": 0,
+        "not_run": 0
+      },
+      "actual_test_counts": {
+        "serve_owner": {
+          "status": "ok",
+          "passed": 15,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 79
+        },
+        "control_runtime_entrypoint": {
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        }
+      },
+      "compiler_diagnostics": [],
+      "protected_prior_elfs": 144,
+      "new_elfs": {
+        "bigbrotr": "90fbd23b0372733eb0b5a30e7953e8bcff1b7f22cac4d2e40329febf12df340c",
+        "serve_owner": "2dc299427e8708cbdd38c7f7880bf5cf3fa3c18d2d827de7e3c7db8c9b1a2360",
+        "ingest_bootstrap_probe": "bf467b625995c811930ec242466cb1c2456b116f96d0fc9c0c0b4c3bf0a9555a",
+        "control_runtime_entrypoint": "4634144cf640b3a9d2b07a614b090af4bad7b349a0ef19410460c68b7612a6ff"
+      },
+      "all_preserved_elfs": 148,
+      "unchanged_containers": 1373,
+      "owner": "6c153696b06a3f2706c28454d23bb5bc",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "5d8b396ab3eb7416adc16fc3ca236fe3aa58a712b626b01173a00e2942b47b83"
+        },
+        {
+          "name": "native",
+          "id": "8360a7a14bdb48a7d6c238bf45740ca731924b45169bd57bd5ca9f9dd977fb82"
+        }
+      ],
+      "state": "stopped-retained; fetch/native exit0/PID0/noOOM",
+      "free_bytes_after": 25543696384,
+      "reused_component_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bf2c33d/audit-root/audit-v1.json",
+        "sha256": "fba88a00ef3c295afb39fad80d1180e22925b37af37ad92233809940d0ed68c8",
+        "source": "bf2c33d24faf00689b959456216146ee8b779930",
+        "tests": 122
+      },
+      "limits": [
+        "Custody PASS preserves actual build FAIL/NOT_RUN and never substitutes for qualification.",
+        "New test counts/names come from actual logs; the earlier 122 storage component tests were not rerun.",
+        "Earlier tests apply only to the exact unchanged kernel/fixture/contract/dependency inputs listed here; installed interfaces changed.",
+        "Root custody audit authenticates source, artifacts and raw logs; it is not independent semantic proof.",
+        "Installed PostgreSQL/HTTP/Sync lifetimes and system journeys remain NOT_RUN by this build profile.",
+        "No compiler, retained executable, native/SQL engine, or mutable cache is opened by this auditor."
+      ]
+    },
+    "installed_cycle_harness": {
+      "status": "SOURCE_INTEGRATED_ARTIFICIAL_CHECKS_PASS_ENGINE_NOT_RUN",
+      "original": "6117544e184b325cce7bbd2c660c5f970b73b22a",
+      "integrated": "f1a8535433f1040b1eb3d1187577af90ef741514",
+      "source_binding": {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/cycle-source-binding.json",
+        "sha256": "3af4bccb2f03a7074a517e6b8ba9f15b48073ea9ba987d57e82f123073effd21"
+      },
+      "review": {
+        "path": ".research/installed-cycle-review-20261018/installed-cycle-source-review.json",
+        "sha256": "a8d9daafb97aa8e84c0457dfea281832d4c67fecd50d671640dcc114ddb75e9e"
+      },
+      "source": {
+        "experiments/ingest-succession/installed_cycle.py": {
+          "lines": 199,
+          "bytes": 12125,
+          "sha256": "879b5b5e6764f80daa6d5d9a3c45c564264301e2964bcd9ac5eef6411cbf69d4"
+        },
+        "experiments/ingest-succession/installed_cycle_client.py": {
+          "lines": 52,
+          "bytes": 2143,
+          "sha256": "f4be4d1b837ccde9fec488bd19259595d8c5d94d791ad4b4884f4dec2f8d661a"
+        },
+        "experiments/ingest-succession/installed_cycle_model.py": {
+          "lines": 365,
+          "bytes": 27804,
+          "sha256": "2d8e399b4616c77cdcfc7c4dad4201a6b839ec326d5c75ddc7b4fa7f5ce73c49"
+        },
+        "experiments/ingest-succession/installed_cycle_replay.py": {
+          "lines": 376,
+          "bytes": 27388,
+          "sha256": "7e9362588ade2cccae4dde9188c2e5483675a953607154efd33847712600f142"
+        }
+      },
+      "author_checks": {
+        "status": "PASS_ARTIFICIAL_PROTOCOL_AND_FILE_TRANSPORT_ONLY",
+        "shared_model": true,
+        "cases": 27,
+        "states": 63,
+        "controls": 288,
+        "bound_files": 778,
+        "routes": 5,
+        "rejected_routes": 4,
+        "real_engine": "NOT_RUN"
+      },
+      "retained_artifacts": 1163,
+      "limits": [
+        "Artificial transcripts share the independent Python Model and establish protocol/negative-control behavior, not Rust/SQL execution.",
+        "SQL/catalog original preservation can only be qualified by the actual future captured run; offline reader checks captured evidence and rereads physical/input files.",
+        "No new job or HTTP command in Serve4/4/5; no Archive, import closure, unresolved input cleanup, ACK/GC or fault injection campaign."
+      ]
     }
   }
 }
