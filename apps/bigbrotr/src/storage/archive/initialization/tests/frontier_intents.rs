@@ -6,7 +6,7 @@ use crate::{
             FrontierIntentError, FrontierIntentScan, LocalCoordinator, RetainedFrontierIntent,
             frontier_intents::tests::{fixture_bytes, fixture_name, retain_fixture},
         },
-        postgres::archive_frontier::ArchiveFrontierReceipt,
+        postgres::control_owner::ArchiveFrontierReceipt,
     },
 };
 use bigbrotr_model::Digest256;

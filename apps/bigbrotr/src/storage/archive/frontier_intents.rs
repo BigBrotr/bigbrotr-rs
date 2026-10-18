@@ -2,7 +2,7 @@
 //! This journal supplies no catalog observation, current Control, or frontier
 //! authority. Every original operation must be looked up by the fenced caller.
 use super::{LifetimeError, LocalCoordinator, ObservedCut, lifetime};
-use crate::{runtime::OwnedPermit, storage::postgres::archive_frontier::ArchiveFrontierReceipt};
+use crate::{runtime::OwnedPermit, storage::postgres::control_owner::ArchiveFrontierReceipt};
 use bigbrotr_model::{DatasetId, Digest256, OwnerResourceId};
 use bigbrotr_protocol::archive_cut::{CutObservation, CutRead, FORMAT};
 use rustix::fs::{Dir, Mode};

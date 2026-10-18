@@ -10,7 +10,9 @@ Existing task files own the plan; this checkpoint locates current work and evide
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
 Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
 Current HEAD150f1da includes journalfa15a74 and the packaged-worker build profile.
-Root finite catch-up composition/CLI/tests and this checkpoint are not yet committed.
+Root finite catch-up composition878d671 and overlap fixd7b8aec are committed.
+The first exact packaged buildd7b8aec failed on the new journal import; the
+public re-export correction and this checkpoint are not yet committed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -154,10 +156,24 @@ source/AST checks PASS only; all actual build/postchecks NOT_RUN. Root owns ever
 compiler/cache/engine action. The idle runner author is now mapping the genuine
 same-physical-root installed journey read-only; the journal author is preparing
 an ignored read-only custody auditor source. No new master plan is introduced.
-Next bounded action: complete source review, freeze this composition and run the
-exact packaged component build, retaining all failures and153 prior ELFs. Then
-qualify a fresh genuine same-root Archive/read/export/restart journey; old copied
-SQL cannot confer inode/boot custody. M1–M5 remain incomplete.
+Independent AI source review closed atd7b8aec with both findings fixed, no other
+concrete blocker in its read scope. Recordd7fa596b under
+`.research/archive-catch-up-resume-20261018/composition-review.json`; this excludes
+an independent complete journal codec review and does not replace runtime proof.
+
+First packaged buildd7b8aec/treeb43279c2 failed at probe_build: E0432 in journal
+import of the private `postgres::archive_frontier` module. Worker build PASS;
+all journal/Serve/entrypoint tests and Clippy NOT_RUN. Root corrects both owner
+and test imports to the public `control_owner::ArchiveFrontierReceipt` export.
+Original sources/logs/assets/new worker and153previousELFs remain retained.
+Run `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-d7b8aec`;
+prepare58388 joined0 and build1644 joined1. Both owned build containers stopped
+by the runner; read-only custody audit pending. Prepare-installed-build.py is
+EXECUTED, never replay its original root. No owned build/engine remains active.
+Next bounded action: audit this original failure, freeze the narrow correction,
+then fresh exact-source packaged build. After component qualification, create a
+genuine same-root Archive/read/export/restart journey; copied SQL cannot transfer
+inode/boot custody. M1–M5 remain incomplete.
 
 Headroom cleanup completed13:44:18Z, prepare59509/execute50680 joined0.
 `.research/tux-maintenance-20261018` retains script4ad74f58, frozen manifest
