@@ -20,10 +20,91 @@ pub(super) struct CommandOwner<'a> {
     public_routes: bool,
     sync: Option<&'a mut sync::Sync>,
     archive_selected: bool,
+    // One already-selected request retains its existing grant while awaiting
+    // renewal or the end of independent Archive work. Never a second queue.
+    pending: Option<management::Work>,
+    pending_renewed: bool,
 }
 
 fn authority(error: LeaseError) -> (u8, String) {
     (4, error.to_string())
+}
+
+const DISPATCH_MARGIN: Duration = Duration::from_millis(100);
+
+#[derive(Debug, PartialEq, Eq)]
+enum Admission {
+    Ready,
+    Renew,
+    Defer,
+}
+
+fn admission(now: Instant, due: Instant, deadline: Option<Instant>) -> Admission {
+    if deadline.is_some_and(|end| end.saturating_duration_since(now) < DISPATCH_MARGIN) {
+        Admission::Defer
+    } else if due.saturating_duration_since(now) < DISPATCH_MARGIN {
+        Admission::Renew
+    } else {
+        Admission::Ready
+    }
+}
+
+fn renewed_due(
+    now: Instant,
+    remaining: Duration,
+    heartbeat: Duration,
+    elapsed: Duration,
+) -> Result<Instant> {
+    let period = (remaining / 2).min(heartbeat.saturating_sub(elapsed));
+    if period <= DISPATCH_MARGIN {
+        return Err((4, "initial Ingest renewal left no margin beyond the 100ms dispatch window; preserve retained state".into()));
+    }
+    Ok(now + period)
+}
+
+// Taking a retained item happens only when this future is actually polled in
+// the management slot. No await separates take from Ready; losing biased arms
+// leave it in its owner. Management::next is itself cancellation-safe.
+async fn next_command(
+    pending: &mut Option<management::Work>,
+    management: &mut Option<management::Management>,
+) -> management::Work {
+    match pending.take() {
+        Some(work) => work,
+        None => super::super::next_management(management).await,
+    }
+}
+
+async fn bounded_capped<T>(
+    maximum: Duration,
+    deadline: Option<Instant>,
+    cancellation: &Cancellation,
+    work: impl Future<Output = Result<T>>,
+) -> Result<T> {
+    if let Some(deadline) = deadline {
+        // A Sleep can remain Pending until its timer driver catches up. Check
+        // actual authority before the nested future gets its first poll.
+        if cancellation.requested.load(Ordering::Acquire) {
+            return Err((
+                4,
+                "initial Ingest cancelled; original attempt may need recovery".into(),
+            ));
+        }
+        if Instant::now() >= deadline {
+            return Err((
+                4,
+                "initial Archive deadline; retain original outcome".into(),
+            ));
+        }
+        tokio::select! {
+            biased;
+            _ = cancellation.wait() => Err((4, "initial Ingest cancelled; original attempt may need recovery".into())),
+            _ = tokio::time::sleep_until(deadline) => Err((4, "initial Archive deadline; retain original outcome".into())),
+            result = bounded(maximum, cancellation, work) => result,
+        }
+    } else {
+        bounded(maximum, cancellation, work).await
+    }
 }
 
 impl<'a> CommandOwner<'a> {
@@ -47,21 +128,38 @@ impl<'a> CommandOwner<'a> {
 
     fn next_renewal(&mut self, started: Instant) -> Result<Instant> {
         // Slow valid responses already consumed authority and heartbeat time.
-        let period = (self.lease.remaining_validity().map_err(authority)? / 2)
-            .min(duration(self.root, "heartbeat_interval").saturating_sub(started.elapsed()));
-        Ok(Instant::now() + period)
+        renewed_due(
+            Instant::now(),
+            self.lease.remaining_validity().map_err(authority)?,
+            duration(self.root, "heartbeat_interval"),
+            started.elapsed(),
+        )
     }
 
-    async fn renew(&mut self) -> Result<Instant> {
+    async fn renew(&mut self, deadline: Instant) -> Result<Instant> {
         // Archive callbacks remain strictly initial-only. They never borrow a
         // live writer or turn historical registration into current authority.
         if self.profile != Profile::Initial {
             return Err((4, "initial Archive cannot renew a successor".into()));
         }
-        self.renew_for(None).await
+        self.renew_capped(None, Some(deadline)).await
     }
 
     async fn renew_for(&mut self, native: Option<&NativeOwner>) -> Result<Instant> {
+        self.renew_capped(native, None).await
+    }
+
+    async fn renew_capped(
+        &mut self,
+        native: Option<&NativeOwner>,
+        deadline: Option<Instant>,
+    ) -> Result<Instant> {
+        // Covers both biased timer paths, even if no management slot is reached
+        // between renewals. A selected item may wait through one real renewal;
+        // a second one fails closed instead of indefinitely deferring that item.
+        if self.pending_renewed {
+            return Err((4, "initial Ingest retained command could not be admitted after renewal; preserve retained state".into()));
+        }
         if self.profile == Profile::Successor
             && !matches!(
                 native,
@@ -77,12 +175,12 @@ impl<'a> CommandOwner<'a> {
         } else {
             duration(self.root, "renewal_timeout").min(ttl)
         };
-        phase(self.progress, maximum)?;
+        phase_capped(self.progress, maximum, deadline)?;
         let ticket = self.lease.begin_refresh().map_err(authority)?;
         let started = Instant::now();
         let mut administration = true;
         let mut public_routes = true;
-        let snapshot = bounded(maximum, self.cancellation, async {
+        let snapshot = bounded_capped(maximum, deadline, self.cancellation, async {
             let snapshot = self
                 .owner
                 .refresh(|doc, digest| {
@@ -162,6 +260,7 @@ impl<'a> CommandOwner<'a> {
             .map_err(authority)?;
         self.administration = Some(administration);
         self.public_routes = public_routes;
+        self.pending_renewed = self.pending.is_some();
         Ok(started)
     }
 
@@ -176,14 +275,31 @@ impl<'a> CommandOwner<'a> {
         &mut self,
         work: management::Work,
         management: &mut Option<management::Management>,
-        due: Instant,
+        due: &mut Instant,
+        deadline: Option<Instant>,
     ) -> Result<()> {
+        assert!(self.pending.is_none(), "selected command already retained");
+        self.pending = Some(work);
+        // The select may have slept since its earlier admission check. No
+        // command transaction starts until this fresh decision permits it.
+        let now = Instant::now();
+        match admission(now, *due, deadline) {
+            Admission::Defer => return Ok(()),
+            Admission::Renew => {
+                *due = now;
+                return Ok(());
+            }
+            Admission::Ready => {}
+        }
         let maximum = self
             .maximum()?
             .min(due.saturating_duration_since(Instant::now()));
-        phase(self.progress, maximum)?;
-        let execution = bounded(
+        phase_capped(self.progress, maximum, deadline)?;
+        let work = self.pending.take().expect("selected command retained");
+        self.pending_renewed = false;
+        let execution = bounded_capped(
             maximum,
+            deadline,
             self.cancellation,
             management.as_mut().expect("command source").execute(
                 work,
@@ -202,7 +318,16 @@ impl<'a> CommandOwner<'a> {
             self.lease
                 .check_delivery(self.lease.known_epoch())
                 .map_err(authority)?;
-            self.idle_phase(due)?;
+            if let Some(deadline) = deadline {
+                phase_capped(
+                    self.progress,
+                    due.saturating_duration_since(Instant::now())
+                        + duration(self.root, "renewal_timeout"),
+                    Some(deadline),
+                )?;
+            } else {
+                self.idle_phase(*due)?;
+            }
             if let Some(response) = response {
                 response.deliver();
             }
@@ -225,24 +350,30 @@ impl<'a> CommandOwner<'a> {
             self.lease
                 .check_delivery(self.lease.known_epoch())
                 .map_err(authority)?;
-            phase(
+            phase_capped(
                 self.progress,
-                (deadline.min(*due + duration(self.root, "renewal_timeout")))
+                (*due + duration(self.root, "renewal_timeout"))
                     .saturating_duration_since(Instant::now()),
+                Some(deadline),
             )?;
+            // Do not dequeue more HTTP near this independent operation's end.
+            // A race-selected item stays retained if the postselect check defers.
+            let commands = admission(Instant::now(), *due, Some(deadline)) != Admission::Defer;
             tokio::select! {
                 biased;
                 _ = self.cancellation.wait() => return Err((4, "initial Archive cancelled; retain original outcome".into())),
                 _ = tokio::time::sleep_until(deadline) => return Err((4, "initial Archive deadline; retain original outcome".into())),
                 _ = tokio::time::sleep_until(*due) => {
-                    let started = self.renew().await?;
+                    let started = self.renew(deadline).await?;
                     *due = self.next_renewal(started)?;
                     if let Some(management) = management.as_ref() {
                         management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch()).map_err(authority)?)?;
                     }
                 },
                 result = &mut work => return result,
-                work = super::super::next_management(management) => self.command(work, management, (*due).min(deadline)).await?,
+                work = next_command(&mut self.pending, management), if commands => {
+                    self.command(work, management, due, Some(deadline)).await?;
+                },
             }
         }
     }
@@ -398,8 +529,13 @@ async fn maintain_context(
         public_routes: false,
         sync: sync.as_mut(),
         archive_selected: archive.is_some(),
+        pending: None,
+        pending_renewed: false,
     };
     let started = state.renew_for(Some(store)).await?;
+    // Measure the actual renewal, before independent startup work consumes time.
+    // An overdue due time after startup is still handled by the renewal arm.
+    let mut due = state.next_renewal(started)?;
     if state.sync.is_some() {
         let maximum = state.maximum()?;
         phase(progress, maximum)?;
@@ -503,7 +639,6 @@ async fn maintain_context(
         } else {
             json!([])
         };
-        let mut due = state.next_renewal(started)?;
         let mut dispatch_due = Instant::now() + sync::INTERVAL;
         let mut publish_due = Instant::now() + archive.as_ref().map_or(Duration::ZERO, archive::Archive::delay);
         state.idle_phase(due)?;
@@ -515,7 +650,7 @@ async fn maintain_context(
                 .map_err(authority)?;
             // Avoid starting a new bounded operation with only a timer tick
             // left. This advances renewal; it never extends the old authority.
-            if due.saturating_duration_since(Instant::now()) < Duration::from_millis(100) {
+            if admission(Instant::now(), due, None) == Admission::Renew {
                 due = Instant::now();
             }
             tokio::select! {
@@ -533,6 +668,12 @@ async fn maintain_context(
                     }
                 },
                 _ = tokio::time::sleep_until(publish_due), if archive.is_some() => {
+                    // The timer may become ready only after select slept near
+                    // renewal. No native/Sync effect precedes this recheck.
+                    if admission(Instant::now(), due, None) == Admission::Renew {
+                        due = Instant::now();
+                        continue;
+                    }
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
                     let archive = archive.as_mut().expect("selected Archive");
@@ -544,6 +685,12 @@ async fn maintain_context(
                     state.idle_phase(due)?;
                 },
                 _ = tokio::time::sleep_until(dispatch_due), if state.sync.is_some() => {
+                    // The timer may become ready only after select slept near
+                    // renewal. No native/Sync effect precedes this recheck.
+                    if admission(Instant::now(), due, None) == Admission::Renew {
+                        due = Instant::now();
+                        continue;
+                    }
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
                     // A signal asks this serial consumer to finish its current
@@ -561,8 +708,8 @@ async fn maintain_context(
                     dispatch_due = Instant::now() + sync::INTERVAL;
                     state.idle_phase(due)?;
                 },
-                work = super::super::next_management(&mut management) => {
-                    state.command(work, &mut management, due).await?;
+                work = next_command(&mut state.pending, &mut management) => {
+                    state.command(work, &mut management, &mut due, None).await?;
                 },
             }
         }
@@ -576,4 +723,242 @@ async fn maintain_context(
     }
     outcome?;
     phase_result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+    #[test]
+    fn admission_is_rechecked_after_a_select_wait() {
+        let start = Instant::now();
+        let due = start + Duration::from_millis(150);
+        assert_eq!(admission(start, due, None), Admission::Ready);
+        // HTTP and either Sync/Archive timer can become ready only now: the
+        // earlier floor was true, but a 5ms operation cannot fit this horizon.
+        let selected = start + Duration::from_millis(149);
+        assert_eq!(admission(selected, due, None), Admission::Renew);
+        let renewed = renewed_due(
+            selected,
+            Duration::from_secs(4),
+            Duration::from_secs(1),
+            Duration::from_millis(5),
+        )
+        .unwrap();
+        assert_eq!(admission(selected, renewed, None), Admission::Ready);
+    }
+
+    #[test]
+    fn a_short_archive_horizon_defers_instead_of_borrowing_new_budget() {
+        let start = Instant::now();
+        let due = start + Duration::from_secs(1);
+        let end = start + Duration::from_millis(99);
+        assert_eq!(admission(start, due, Some(end)), Admission::Defer);
+        assert_eq!(admission(end, due, Some(end)), Admission::Defer);
+        // A different operation after the original Archive future returned can
+        // consume the retained request, under the actual current owner window.
+        assert_eq!(admission(end, due, None), Admission::Ready);
+    }
+
+    #[test]
+    fn slow_valid_renewals_cannot_create_an_unbounded_renewal_only_loop() {
+        let now = Instant::now();
+        let error = renewed_due(
+            now,
+            Duration::from_secs(5),
+            Duration::from_millis(200),
+            Duration::from_millis(250),
+        )
+        .unwrap_err();
+        assert_eq!(error.0, 4);
+        assert!(error.1.contains("100ms dispatch window"));
+        assert!(
+            renewed_due(
+                now,
+                Duration::from_millis(199),
+                Duration::from_secs(1),
+                Duration::ZERO
+            )
+            .is_err()
+        );
+        assert!(
+            renewed_due(
+                now,
+                Duration::from_secs(5),
+                Duration::from_millis(200),
+                Duration::from_millis(100)
+            )
+            .is_err()
+        );
+        assert_eq!(
+            renewed_due(
+                now,
+                Duration::from_secs(5),
+                Duration::from_millis(200),
+                Duration::from_millis(99)
+            )
+            .unwrap(),
+            now + DISPATCH_MARGIN + Duration::from_millis(1)
+        );
+    }
+
+    #[tokio::test]
+    async fn external_deadline_and_cancellation_precede_first_nested_poll() {
+        let cancellation = Cancellation::new();
+        let polled = Cell::new(false);
+        // Do not rely on the timer driver having observed this fresh expiry.
+        let expired = Instant::now();
+        let outcome = bounded_capped(
+            Duration::from_secs(5),
+            Some(expired),
+            &cancellation,
+            async {
+                polled.set(true);
+                Ok(())
+            },
+        )
+        .await;
+        assert_eq!(
+            outcome.unwrap_err().1,
+            "initial Archive deadline; retain original outcome"
+        );
+        assert!(!polled.get());
+        cancellation.request();
+        let outcome = bounded_capped(
+            Duration::from_secs(5),
+            Some(expired),
+            &cancellation,
+            async {
+                polled.set(true);
+                Ok(())
+            },
+        )
+        .await;
+        assert!(
+            outcome
+                .unwrap_err()
+                .1
+                .starts_with("initial Ingest cancelled")
+        );
+        assert!(!polled.get());
+    }
+
+    #[test]
+    fn nested_phase_publication_keeps_the_absolute_archive_ceiling() {
+        let old = Instant::now() + Duration::from_secs(60);
+        let (progress, _observed) = watch::channel(Progress {
+            deadline: old,
+            phase: None,
+            initialized: None,
+            shutdown: None,
+        });
+        let end = Instant::now() + Duration::from_secs(1);
+        phase_capped(&progress, Duration::from_secs(5), Some(end)).unwrap();
+        assert_eq!(progress.borrow().deadline, end);
+        // A subsequent phase must keep the same Instant, not renew its budget.
+        phase_capped(&progress, Duration::from_secs(20), Some(end)).unwrap();
+        assert_eq!(progress.borrow().deadline, end);
+    }
+
+    #[tokio::test]
+    async fn a_selected_http_request_retains_its_permit_until_consumed_or_dropped() {
+        use bigbrotr::runtime::policy_authority::LeaseResponse;
+        let mut root = crate::config::load(
+            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../config/recipes/archive-only.toml"),
+        )
+        .unwrap();
+        let reserved = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = reserved.local_addr().unwrap();
+        root.values
+            .insert("administration.listen.port".into(), json!(address.port()));
+        let budget = super::super::budget(&root, false, false).unwrap();
+        let dataset = "01010101010101010101010101010101".parse().unwrap();
+        let incarnation = "02020202020202020202020202020202".parse().unwrap();
+        let epoch = PolicyEpoch::new(1);
+        let ttl = Duration::from_secs(5);
+        let mut lease = PolicyLeaseTracker::new(
+            dataset,
+            incarnation,
+            epoch,
+            PolicyLeaseTtl::new(ttl).unwrap(),
+        )
+        .unwrap();
+        let ticket = lease.begin_refresh().unwrap();
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset,
+                    process_incarnation: incarnation,
+                    policy_epoch: epoch,
+                    ttl,
+                },
+            )
+            .unwrap();
+        drop(reserved);
+        let mut management = Some(
+            management::Management::start(
+                &root,
+                budget.clone(),
+                lease.delivery_window(epoch).unwrap(),
+                None,
+                management::Profile::Initial {
+                    public_routes: true,
+                },
+            )
+            .await
+            .unwrap(),
+        );
+        let client = tokio::spawn(async move {
+            let mut socket = tokio::net::TcpStream::connect(address).await.unwrap();
+            socket.write_all(format!("GET /management/v1/me HTTP/1.1\r\nHost: {address}\r\nCookie: BigBrotrLocalSession={}\r\n\r\n", "11".repeat(32)).as_bytes()).await.unwrap();
+            let mut bytes = Vec::new();
+            socket.read_to_end(&mut bytes).await.unwrap();
+            bytes
+        });
+        let work = tokio::time::timeout(
+            Duration::from_secs(1),
+            super::super::super::next_management(&mut management),
+        )
+        .await
+        .unwrap();
+        let mut pending = Some(work);
+        let retained = budget.snapshot().active_permits();
+        assert!(retained >= 2);
+        tokio::select! {
+            biased;
+            _ = std::future::ready(()) => {},
+            _ = next_command(&mut pending, &mut management) => panic!("management overtook ready timer/result"),
+        }
+        assert!(pending.is_some());
+        assert_eq!(budget.snapshot().active_permits(), retained);
+        tokio::select! {
+            biased;
+            _ = std::future::ready(()) => {},
+            _ = next_command(&mut pending, &mut management), if false => panic!("disabled management slot ran"),
+        }
+        assert!(pending.is_some());
+        let work = next_command(&mut pending, &mut management).await;
+        assert!(pending.is_none());
+        assert_eq!(budget.snapshot().active_permits(), retained);
+        pending = Some(work);
+        management
+            .as_mut()
+            .unwrap()
+            .stop(Duration::from_secs(1))
+            .await
+            .unwrap();
+        assert!(
+            tokio::time::timeout(Duration::from_secs(1), client)
+                .await
+                .unwrap()
+                .unwrap()
+                .is_empty()
+        );
+        // Socket termination alone never releases the selected request's grant.
+        assert_eq!(budget.snapshot().active_permits(), 1);
+        drop(pending);
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
 }

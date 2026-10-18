@@ -403,6 +403,15 @@ fn phase_label(location: Option<&'static std::panic::Location<'static>>) -> Stri
 
 #[track_caller]
 fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Result<()> {
+    phase_capped(progress, timeout, None)
+}
+
+#[track_caller]
+fn phase_capped(
+    progress: &watch::Sender<Progress>,
+    timeout: std::time::Duration,
+    ceiling: Option<Instant>,
+) -> Result<()> {
     let now = Instant::now();
     let requested = std::panic::Location::caller();
     {
@@ -422,7 +431,7 @@ fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Re
     // Only a timely phase may publish a new deadline. This also covers native
     // calls that returned after both the worker and parent were unscheduled.
     progress.send_modify(|value| {
-        value.deadline = now + timeout;
+        value.deadline = ceiling.map_or(now + timeout, |ceiling| ceiling.min(now + timeout));
         value.phase = Some(requested);
     });
     Ok(())
