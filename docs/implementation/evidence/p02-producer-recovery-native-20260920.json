@@ -32220,6 +32220,65 @@
           "gap-live": 1087512,
           "open-live": 1013677
         }
+      },
+      "installed_prepared_ref_retirement": {
+        "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
+        "observed_at": "2026-10-18T13:15:55.695131+00:00",
+        "records": [
+          {
+            "branch": "implementation/installed-prepared-recovery",
+            "original": "fc5724cd614ae3e47b0d9076365d5b8ab19e1437",
+            "integrated": "cdeb470e4813410f29a0ad0e2b22045a5e3b1301",
+            "worktree": "/home/tux/bigbrotr-rs/.research/installed-prepared-recovery-20261018",
+            "archive_ref": "refs/archive/qualified-installed-prepared-20261018/implementation/installed-prepared-recovery",
+            "blobs": {
+              "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs": "b144739074ed58cbcb3bd9bde01a8799dda44a32",
+              "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family.rs": "fae98b7999e02c6b40e96645c0f505e39b729e98",
+              "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/prepared.rs": "a5e012ca44cf05b86d387fc7f342ae7e8291998f"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2143,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/installed-prepared-recovery-before-census.json",
+            "census_sha256": "6cdf30d09d16d605bd0546b1dbef052d70de7e921126bd188d45183e9bf75ba2"
+          },
+          {
+            "branch": "qualification/installed-prepared-cycle",
+            "original": "5a80da942124c9c5adc7961bd2796272b209991b",
+            "integrated": "6101cda6d08409d26934f39d685eac05f5052936",
+            "worktree": "/home/tux/bigbrotr-rs/.research/installed-prepared-cycle-20261018",
+            "archive_ref": "refs/archive/qualified-installed-prepared-20261018/qualification/installed-prepared-cycle",
+            "blobs": {
+              "experiments/ingest-succession/installed_prepared.py": "27952e3a48a8bf512c8e1623c56f1234b459771d",
+              "experiments/ingest-succession/installed_prepared_client.py": "1b9ac5b8d687993ad31120fb7798b6ed5aa33b0e",
+              "experiments/ingest-succession/installed_prepared_model.py": "e188c31f3dcae2c6faeca85bda407a9ef9fea972",
+              "experiments/ingest-succession/installed_prepared_replay.py": "90e04897d7c08dc0abffd5acbf607711aa110caf",
+              "experiments/ingest-succession/installed_prepared_setup.py": "1d0638eecc3e39271569ed8154bfacd242845bd2"
+            },
+            "qualified_corrections": {},
+            "census_paths": 2904,
+            "census_file": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/installed-prepared-cycle-before-census.json",
+            "census_sha256": "d67226849f7fd12462ba81809285ee99fd274639fdd249a67468d83531bfa0e4"
+          }
+        ],
+        "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/installed-prepared.bundle",
+        "bundle_bytes": 16099393,
+        "bundle_sha256": "4521a7b04b9e37af4fb5bff40df9ac2dab520f774b6c32f6607e6981d0d56355",
+        "audit_sha256": "804ca720528c2be1fa8b70c0d821d541321a2a642ccf328a9fb2544c5ecbb287",
+        "scope": "Two source-reviewed and actual-engine-qualified prepared consumer/harness refs. Main is the only remaining local/remote branch. Every worktree, ignored/external artifact, original/fault dataset and full original commit history is preserved.",
+        "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+        "report": {
+          "path": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/installed-prepared.json",
+          "sha256": "ddad1f2d738eff865f4ab14563d8ac6a4578d8506e70aa1957c091a14ca86885"
+        },
+        "executor_session": 80251,
+        "joined_exit": 0,
+        "current_git_census": {
+          "registered": 136,
+          "detached": 135,
+          "branches": [
+            "main"
+          ]
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T13:14:51.150967+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T13:16:37.004013+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,13 +8,13 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD6a3fa53; last verified remoteab8cc79.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD/verified remote334ac62.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
 Exactf4f23db build PASS; harness5a80da94 integrated as6101cda and bound at6a3fa53.
-Actual prepared engine6a3fa53 now PASS; current qualification-doc updates pending
-commit/push. No merge/rebase is pending.
+Actual prepared engine6a3fa53 PASS, qualification docs committed/pushed334ac62.
+Current ref-retirement/checkpoint update pending commit. No merge/rebase is pending.
 
 The four epoch3-or-later recovery modes use existing schema0038 adapters:
 positive recovery, separate source closure, fresh closed-source acquisition
@@ -90,11 +90,13 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: commit/push this qualified prepared journey, then retire its
-two redundant source refs while preserving both worktrees and complete histories.
-The prepared retirement script is NOT_EXECUTED. In parallel, source-only reviews
-locate the next M1 retained-Archive consumer and safely reclaimable headroom;
-root must reconcile those findings with existing contracts before implementation.
+Next bounded action: reconcile the bounded next-slice and headroom reviews in
+`.research/installed-prepared-resume-20261018` with the existing M1/P02-T04
+contracts, then specify the missing retained-Archive consumer before implementation.
+Known originals contain inode-bound Archive custody and cannot be adopted from
+cloned SQL alone; a fresh genuine same-root journey is required. Default Archive/
+export reserve64GiB is not available at24.5GB free; do not reduce it or delete
+evidence. No cleanup or new Archive implementation has started.
 Consumerfc5724c/cdeb470 is frozen: three files, scoped rustfmt/diff and four
 source-only inverse checks PASS; installed engine now separately qualified below. Author manifest49bed9c1
 and independent AI review4e068ef4 are authenticated in source-binding.json under
@@ -111,8 +113,8 @@ The exact artifact count and hashes are in that binding. Both generator iteratio
 are preserved. Actual installed evidence is separately recorded below.
 
 Frozen harness sources remain in
-`.research/installed-prepared-cycle-20261018`, branch
-`qualification/installed-prepared-cycle`, same base. Agreed bounded journey:
+`.research/installed-prepared-cycle-20261018`, now detached at original5a80da94.
+Consumer worktree is detached at originalfc5724c. Qualified bounded journey:
 actual prepared/native gap3, OPEN4, CLOSING4, first+terminal retry, fresh Serve4/5;
 refuse activated OPEN0 and old terminal2 without a pending preparation. Five
 copies/twelve processes executed (two finite setup, ten installed); actual PASS below.
@@ -170,20 +172,17 @@ M1 Archive responsibility; cleanup_review reads regenerable-cache/headroom evide
 Both write ignored notes only. Import logical closure, staged tails, ACK/GC,
 Archive restart and full M1–M5 remain unfinished.
 
-Ref-retirement Git census: all134worktrees remained,133detached and canonical main.
-The earlier79detached count was historical, not the complete current census.
-The two qualified source refs were retired (90560 joined0), leaving main alone at
-that boundary. Two new branches/worktrees above now serve concrete implementation
-and qualification work:136registered,133detached, canonical main plus two agents.
-Remote main remains the only remote branch. Cumulative
-retirement125local/51remote refs; original full histories archived and bundled at
-`.research/branch-retirement-20261018/installed-cycle.bundle`,15,976,984bytes,
-SHA0485e2eb. Every tracked/ignored/link/stat census unchanged. No worktree, artifact,
-dataset or container was deleted. Pause snapshots remain at
-`.research/installed-cycle-resume-20261018/pause/`; ignored data, original/fault
-states, logs and external laboratories remain. Current cycle audit sees all owned
-BigBrotr containers stopped; six unrelated services remain untouched. Compiler
-cache was unused by both installed cycles;152protectedELFs remain outside it.
+Prepared ref retirement80251 joined0 after verified main334ac62. Both original
+histories are archived under `refs/archive/qualified-installed-prepared-20261018/`
+and bundled at `.research/branch-retirement-20261018/installed-prepared.bundle`,
+16,099,393bytes, SHA4521a7b0; complete history verified. Every tracked/ignored/link/
+stat census remains unchanged. Current Git has136worktrees:135detached plus
+canonical main, which is the sole local/remote branch. Cumulative retired refs:
+127local/51remote. Earlier installed-cycle bundle0485e2eb and all older histories
+remain intact. No worktree, artifact, dataset or container was deleted.
+Pause snapshots and all ignored/external labs remain. Latest custody sees owned
+BigBrotr containers stopped, with six unrelated services unchanged. Compiler cache
+was not used by either installed cycle;152protectedELFs remain outside it.
 The older sections below describe their dated evidence, not current live processes.
 
 ## Current installed successor source
