@@ -12,10 +12,12 @@ SOURCE = Path('/out/build/source')
 sys.path.insert(0, str(SOURCE))
 from tools.build import clean_environment, file_hash, native_toolchain
 from tools.ci import execute
+from tools.archive_bundle import build_environment, install_bundle, native_target, verify_bundle
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'])
+archive_installed = sys.argv[1:] == ['archive-installed']
 archive_components = sys.argv[1:] == ['archive-components']
 installed = sys.argv[1:] == ['installed']
 recovery = sys.argv[1:] == ['recovery']
@@ -26,7 +28,7 @@ history = sys.argv[1:] == ['history']
 transition_probe = sys.argv[1:] == ['transition-probe']
 probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
-build_probe = probe or transition or writer or recovery or installed
+build_probe = probe or transition or writer or recovery or installed or archive_installed
 lineage = sys.argv[1:] == ['lineage']
 schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
@@ -90,7 +92,73 @@ if archive_components:
     identity['scope'] = ('Proof-bound historical pending reads, retained PostgreSQL frontier reconstruction, '
                          'and Archive receipt/membership/initialization library components plus library Clippy. '
                          'CLI helper composition, connected SQL/native Archive and installed catch-up NOT_RUN.')
+if archive_installed:
+    identity['scope'] = ('Exact packaged Archive worker and embedded CLI identity; retained frontier journal, '
+                         'installed Serve composition and early CLI components plus Clippy. '
+                         'Connected SQL/native Archive catch-up, read/export and restart NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
+artifacts = Path('/out/artifacts')
+if archive_installed:
+    artifacts.mkdir()
+    bundle = artifacts / 'archive-worker'
+    bundle.mkdir()
+    assets = install_bundle(Path('/archive-inputs'), bundle, native_target())
+    archive_environment = build_environment(bundle)
+    env.update(archive_environment)
+    identity.update(archive_assets=assets, archive_build_environment=archive_environment,
+                    archive_registry_sha256=file_hash(SOURCE / 'contracts/release/archive-engine.json'))
+
+    def archive_check_inputs(stage):
+        observation = dict(stage=stage, status='RUNNING')
+        try:
+            observation.update(source_files_sha256=sources(),
+                source_manifest_sha256=file_hash(build / 'source-manifest.json'),
+                native_tools_sha256={name: file_hash(Path(tool['path'])) for name, tool in native['tools'].items()},
+                input_assets=verify_bundle(Path('/archive-inputs'), native_target()),
+                installed_assets=verify_bundle(bundle, native_target()))
+            assert observation['source_files_sha256'] == manifest['files_sha256']
+            assert observation['source_manifest_sha256'] == identity['source_manifest_sha256']
+            assert observation['native_tools_sha256'] == {name: tool['sha256'] for name, tool in native['tools'].items()}
+            assert observation['input_assets'] == observation['installed_assets'] == assets
+            observation['status'] = 'PASS'
+        except BaseException as error:
+            observation.update(status='FAIL', error=type(error).__name__ + ': ' + str(error))
+            raise
+        finally:
+            (artifacts / ('archive-inputs-' + stage + '.json')).write_text(json.dumps(observation, indent=2) + '\n')
+
+    archive_check_inputs('before')
+    worker_result = execute([('worker', ['cargo', 'build', '--locked', '--offline', '--release',
+        '-p', 'bigbrotr-archive-worker', '--bin', 'bigbrotr-archive-worker', '--message-format=json'])],
+        Path('/out/worker-build'), SOURCE, env, identity, 1800)
+    worker_paths = set()
+    worker_log = Path('/out/worker-build/worker.log')
+    for line in worker_log.read_text().splitlines() if worker_log.exists() else []:
+        if not line.startswith('{'):
+            continue
+        item = json.loads(line)
+        if (item.get('reason') == 'compiler-artifact' and item.get('executable')
+                and item['target']['kind'] == ['bin'] and item['target']['name'] == 'bigbrotr-archive-worker'
+                and item['profile']['test'] is False):
+            assert Path(item['target']['src_path']) == SOURCE / 'apps/bigbrotr-archive-worker/src/main.rs'
+            worker_paths.add(item['executable'])
+    worker_identity = None
+    if worker_paths:
+        assert len(worker_paths) == 1
+        worker = Path(worker_paths.pop())
+        assert worker.is_relative_to(build / 'target') and not worker.is_symlink()
+        with worker.open('rb') as stream:
+            assert stream.read(4) == b'\x7fELF'
+        shutil.copy2(worker, bundle / 'bigbrotr-archive-worker')
+        worker_identity = dict(bytes=worker.stat().st_size, sha256=file_hash(worker))
+        assert file_hash(bundle / 'bigbrotr-archive-worker') == worker_identity['sha256']
+    (artifacts / 'worker-result.json').write_text(json.dumps(dict(identity,
+        status=worker_result['status'], archive_worker=worker_identity), indent=2) + '\n')
+    archive_check_inputs('after-worker')
+    assert worker_result['status'] == 'PASS' and worker_identity is not None
+    identity['archive_worker'] = worker_identity
+    env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker_identity['bytes']),
+               BIGBROTR_ARCHIVE_WORKER_SHA256=worker_identity['sha256'])
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
          ('rocks_manifest', ['--test', 'rocks_manifest']),
@@ -135,9 +203,11 @@ if recovery:
         'lineage_tests', 'request_input_tests', 'dictionary_append_tests',
         'producer_recovery_tests', 'source_closure_tests', 'activated_recovery_tests',
         'successor_history::tests', 'successor_transition']]
-if installed:
+if installed or archive_installed:
     tests = [('serve_owner', ['--bin', 'bigbrotr', 'interfaces::serve::']),
              ('control_runtime_entrypoint', ['--test', 'control_runtime_entrypoint'])]
+    if archive_installed:
+        tests.insert(0, ('frontier_intents', ['--lib', 'frontier_intents']))
 if archive_components:
     tests = [(name, ['--lib', selection]) for name, selection in [
         ('historical_pending', 'lineage_pending_tests'),
@@ -159,7 +229,7 @@ clippy_targets = (['--lib', '--bin', 'bigbrotr', '--test', 'control_schema', '--
                                   '--test', 'rocks_keys', '--test', 'rocks_store'])
 if build_probe:
     clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
-if installed:
+if installed or archive_installed:
     clippy_targets += ['--test', 'control_runtime_entrypoint']
 if archive_components:
     clippy_targets = ['--lib']
@@ -168,8 +238,8 @@ steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '
 result = execute(steps, checks, SOURCE, env, identity, 1800)
 # Preserve built test executables even when a later check fails. Cargo outputs
 # are acceleration only; these copies and raw logs are the retained artifacts.
-artifacts = Path('/out/artifacts')
-artifacts.mkdir()
+if not archive_installed:
+    artifacts.mkdir()
 executables, counts, cli_paths = {}, {}, set()
 for name, selection in (tests + [('probe_build', None)] if build_probe else tests):
     log = checks / (name + '.log')
@@ -219,6 +289,33 @@ if cli_paths:
         assert stream.read(4) == b'\x7fELF'
     shutil.copy2(executable, artifacts / 'bigbrotr')
     executables['bigbrotr'] = file_hash(artifacts / 'bigbrotr')
+archive_postcheck = None
+if archive_installed:
+    archive_check_inputs('after')
+    assert file_hash(bundle / 'bigbrotr-archive-worker') == worker_identity['sha256']
+    assert (bundle / 'bigbrotr-archive-worker').stat().st_size == worker_identity['bytes']
+    # Retain every available ELF first. Postchecks also run if a later component
+    # or Clippy failed, but never authorize a partial build as qualification.
+    if 'bigbrotr' in executables:
+        archive_postcheck = execute([
+            ('build-info', [str(artifacts / 'bigbrotr'), 'build-info']),
+            ('verify-worker', [str(artifacts / 'bigbrotr'), 'archive', 'verify-worker', '--root', str(bundle)]),
+        ], Path('/out/archive-postchecks'), SOURCE, env, identity, 120)
+        info, verified = None, None
+        if archive_postcheck['status'] == 'PASS':
+            info = json.loads(Path('/out/archive-postchecks/build-info.log').read_text())
+            verified = json.loads(Path('/out/archive-postchecks/verify-worker.log').read_text())
+        (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
+            binary_sha256=executables['bigbrotr'], build_info=info, archive_verification=verified,
+            postcheck_status=archive_postcheck['status']), indent=2) + '\n')
+        assert archive_postcheck['status'] == 'PASS'
+        assert info['source'] == dict(state='builder-supplied', revision=manifest['revision'],
+            tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
+        assert info['archive_worker'] == worker_identity
+        assert verified['result'] == 'verified' and verified['executable'] == worker_identity
+        for name in ('Cargo.lock', 'rust-toolchain.toml', 'contracts/release/dependencies.json',
+                     'contracts/protocol/versions.json', 'contracts/protocol/nip01-event.json'):
+            assert info['inputs_sha256'][name] == manifest['files_sha256'][name]
 for tool in native['tools'].values():
     assert file_hash(Path(tool['path'])) == tool['sha256']
 assert sources() == manifest['files_sha256']
@@ -231,13 +328,16 @@ assert set(counts) == {name for name, _ in tests}
 assert set(executables) == {'native_components' if selection[0] == '--lib' else name
                             for name, selection in tests} | ({'bigbrotr'} if schema else set()) | (
                                 {'ingest_bootstrap_probe'} if build_probe else set())
-if schema:
+if schema and not archive_installed:
     info = json.loads(subprocess.check_output([str(artifacts / 'bigbrotr'), 'build-info'], env=env))
     assert info['source'] == dict(state='builder-supplied', revision=manifest['revision'],
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_ARCHIVE_CATCH_UP_COMPONENTS' if archive_components
+if archive_installed:
+    assert archive_postcheck is not None and archive_postcheck['status'] == 'PASS'
+qualification = dict(identity, status='PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS' if archive_installed
+                     else 'PASS_ARCHIVE_CATCH_UP_COMPONENTS' if archive_components
                      else 'PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed
                      else 'PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery
                      else 'PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS' if writer_followup
