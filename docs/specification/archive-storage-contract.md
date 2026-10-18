@@ -1096,6 +1096,152 @@ the test blocker; it does not establish permanent-blocker cancellation latency.
 Preserved fixture failures and scope limits are in the report. Authoritative
 source handoff, native pin/GC lock orders and protected read/export remain required.
 
+### Finite retained Archive catch-up (selected, under implementation)
+
+P02-T04 Steps 3/4/5 and P01-T09 Step 4 select an explicit finite
+`archive catch-up --file ROOT` operation on an already initialized, protocol-bound
+local Archive and a fully terminal positive Ingest lineage. The
+[native handoff/profile contract](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation)
+defines the proof, batch access, total bounds and custody it must consume. This
+is a new installed owning consumer of the existing attempt, receipt, persistence,
+frontier and pin protocols; it is not a claim that those components already form
+a qualified restart dispatcher. Existing `archive recover` continues to resolve
+initialization only, and the initial publisher's six initial-only access sites
+remain unchanged.
+
+The finite process holds exclusive native recovery and same-boot local coordinator
+custody before acquiring or retaining the connections that can act for them. It
+requires the exact initialization, coordinator and protocol 1 persistence bindings
+for the configured dataset, catalog, roots and physical state. A copied SQL row,
+copied journal, matching path text or matching content hash does not transfer a
+root/inode/boot-bound capability. Pre-protocol, missing, different or partial
+bindings refuse; this operation neither initializes nor rebinds them. The real
+current Control validates accepted policy and complete terminal Ingest SQL state;
+positive replay covers the actual registered/native head and all original inputs.
+It repairs no Ingest outcomes, closes no source or workflow and performs no Ingest
+retirement. Such prerequisites have their own finite commands.
+
+#### Complete retained-state reconciliation
+
+Inventory every issued Archive attempt through one fixed, checked cutoff, in
+ordinal order, including attempts without a receipt. Enforce the total 128-attempt
+profile before retaining unbounded history or issuing more work. Bind each intent
+to its exact dataset/catalog, ordinal/predecessor, schema/topology, digest,
+coordinator/worker/attempt identities, protocol/coordinator binding and complete
+retained input headers. Preserve original grouping, source intervals, digests and
+issuance attribution. The next issuance ordinal follows the complete issued
+history, never the number of successful receipts. Page completion or `latest`
+observations grant no replay authority.
+
+Load the current Archive consumer explicitly and distinguish true absence from
+an incompatible existing head. If a consumer or retained frontier exists, require
+its exact current revision, sealed topology, complete bounds, snapshot/operation
+binding, selected `archive_frontier_batches`, original intents and actual retained
+headers. A missing joined snapshot/attempt/header row must not become a virgin
+state merely because a convenience selection query returns no row. Validate the
+current frontier as a complete prefix of the requested terminal lineage, without
+inventing a source cut from published counts. True absence is admissible only with
+the positively checked initialized/protocol state and no contradictory retained
+frontier rows; it is not a license to discard issued attempts or catalog receipts.
+
+Reconcile every retained attempt before dispatching another writer. Recover its
+exact local attempt custody, exclude previous clients and unresolved transactions
+under the existing catalog protocol, and inspect a fresh, unfiltered receipt scan
+through EOF. Receipt presence must match its full immutable identity, original
+inputs and complete membership; final capture additionally establishes whole-cut
+reference closure and the qualified local persistence path. Preserve the original
+receipt topology even when the new complete frontier has a later topology.
+Missing input/journal state, conflicting identities, partial scans or missing
+exclusion remain UNKNOWN and stop the operation. No deletion, guessed absence,
+manufactured journal or retrospective protocol upgrade resolves them.
+
+`NotImported` from the custodied resolver establishes only its named catalog
+observation. Receipt absence alone establishes even less. Replaying a missing
+batch requires both positive exclusion of all old credential holders/transactions
+and fresh complete absence at the required boundary, plus verified original
+inputs. A recovered attempt never relaunches its old worker or credential. Any
+permitted retry uses a new, genuinely issued attempt/worker/login and new local
+journal; the old intent, input identity and journal remain retained. A committed
+receipt with lost delivery is verified and reused, never inserted again. Existing
+reader leases and retention claims are not reclaimed as part of catch-up.
+
+#### Missing batches, complete frontier and exact retry
+
+After complete reconciliation and whole-job resource admission, publish only
+missing complete pending batches in dependency order. No fact is admitted again,
+and no historical batch is regrouped or retagged to fit the current topology.
+New unissued batches use the checked sealed topology; retained attempts continue
+to be interpreted with their original schema/topology and complete headers. The
+complete cut includes every lineage stream and explicit zero cuts. Older receipt
+topologies may contribute to that later cut under the existing exact-membership
+and same-cut reference rules.
+
+Capture the actual native catalog snapshot under the existing disabled-writer
+owner barrier, with joined observation and live manager/Control authority. Bind
+the selected original inputs, whole bounds, native snapshot/counts and logical
+Archive owner into the existing atomic frontier transaction. Current Control and
+the Archive scheduling lease must pass their actual post-wait/delivery checks.
+A new zero-only topology can require a new complete frontier without a new fact
+publication. Releasing the barrier, losing the manager or expiring authority does
+not leave a usable capture for later publication.
+
+Before allocating a new logical Archive owner, operation or revision, compare the complete
+requested state with the retained current frontier. An identical cut, topology,
+selected attempt set and validated native snapshot/membership returns that exact
+frontier. It creates no attempt, scientific row, file generation or frontier
+revision and preserves original immutable attribution, timestamps and row versions.
+Operational current-Control claim/refresh/release and idempotent catalog role
+sealing are allowed; no immutability promise is made for PostgreSQL system-role
+tuple `xmin` when sealing executes `ALTER ROLE`. Changed or malformed scientific
+state is a refusal, not an excuse to overwrite the previous frontier.
+
+Unknown publication or frontier COMMIT delivery stops further dispatch. Retain
+the exact attempt/operation identities and custody, then use fresh-process
+exclusion and result resolution. A committed result preserves its original
+receipt/frontier and attribution; a positively absent result may proceed only
+through the ordinary checked new-work boundary. Never retry an INSERT because
+a response timed out. The command reports success only after real workers and
+drivers are joined, native custody is closed and actual Control teardown has
+completed. Unknown cleanup or termination cannot become a success response.
+
+#### Required connected journey and limits
+
+Qualification uses a fresh genuine dataset/catalog/coordinator with actual typed
+initialization and at least one original Archive publication, then preserves those
+same physical roots through later installed Ingest lifetimes and restart. Existing
+laboratory clones whose SQL retains another root's coordinator binding are useful
+scientific evidence, not valid catch-up setup. Do not rebind their identifiers,
+copy historical authority or delete receipts to manufacture a clean start.
+
+The bounded journey must admit a real signed network event under a later installed
+Ingest lifetime, positively resolve and terminalize that lineage, run catch-up and
+run it again in a fresh process. Verify all old/new source batches, full signed
+event identity, complete multi-stream cut and unchanged initial admission/minima.
+The retry preserves scientific bytes and exact immutable SQL rows, including
+issuer/time/`xmin`. Ordinary authorized history and JSONL export then consume the
+result with real snapshot pins; restart on the same roots and repeat read/export.
+Accepted scope grants, complete exported bytes/manifest, output custody and the
+unchanged configured completion reserve are prerequisites, not inferred from a
+frontier receipt. The already qualified resend/provenance semantics may be reused
+at their exact scope; this slice does not silently claim all M1 workloads.
+
+Discriminating qualification must cover the new owning boundaries: historical
+pending access rejects stale/foreign proof or a missing required marker; total
+attempt/cut/wire/resource refusal precedes new issuance; malformed current-head
+relations cannot select virgin state; unresolved retained attempt/worker custody
+prevents new publication; and lost publication/frontier delivery resolves the
+original result without duplication. Cancellation or authority expiry after a
+real wait must retain custody and stop new effects. Reuse unchanged qualified
+component evidence where applicable rather than reclassifying source review or
+artificial models as engine proof.
+
+This selection grants neither pending ACK/GC nor a stronger durability class.
+General import logical closure, unresolved Ingest tails, cross-boot restore,
+copied-coordinator adoption, S3, continuous Archive scheduling and broader phase
+completion remain separate. No new persistent format or schema migration is
+selected here; implementation must reuse the existing immutable ledgers unless
+a concrete missing invariant requires an explicitly reviewed additive change.
+
 ### Native snapshot pin candidate
 
 P02-T07 adds migration0017 over the existing snapshot lease and retention claim

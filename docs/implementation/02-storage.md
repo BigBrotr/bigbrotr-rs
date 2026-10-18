@@ -658,6 +658,15 @@ and scratch are preserved. It uses 1 GiB read/export operation caps, not the pen
 256MiB acceptance. Initial publisher failure schedules and broader M1 remain open;
 no task checkbox closes from this bounded composition.
 
+The next selected Steps 3/4/5 responsibility is
+[finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation),
+with the [positive historical handoff and admitted profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
+It connects a fully terminal repeated Ingest lineage to missing-batch publication,
+an exact retry of the complete frontier, and the same-root read/export/restart
+journey in P01-T09 Step 4. Implementation and connected qualification remain owed;
+initial-only consumers and initialization recovery stay unchanged. No task or
+milestone checkbox changes from this selection.
+
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
 `contracts/archive/v1/batch.json`, `packaging/archive-worker/`,

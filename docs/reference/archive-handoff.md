@@ -631,3 +631,106 @@ and all 41 retained Rocks rows remain unchanged in each journey.
 This is the same-boot ext4 custody prerequisite. Cross-boot recovery, installed
 lifecycle/resource reconciliation and incomplete-journal
 recovery, aged journal/receipt costs, protection and complete M1 remain open.
+
+## Finite retained-lineage catch-up (selected, under implementation)
+
+P02-T04 Steps 3/4/5 selects a finite `archive catch-up --file ROOT` consumer for
+the retained, fully terminal Ingest lineage. It enables the next P01-T09 Step 4
+journey without making the initial publisher a general restart owner. The
+[storage contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
+owns reconciliation, frontier publication, retry and qualification. This section
+owns its native handoff, admission and custody boundaries. These are selected
+requirements, not an implemented command or connected qualification claim.
+
+### Positive historical access
+
+The caller exclusively opens the existing Ingest root and retains that recovery
+owner throughout the operation. It must positively replay the complete original
+request history through the actual terminal head, including historical positive
+dependencies and the final semantic fact/index census. The existing strict
+lineage/input census remains in force. Native CLOSING, portable handoff bytes,
+SQL cuts or an epoch counter alone cannot supply this proof. The registered and
+native heads must agree: an active head, prepared attempt, pending native handoff,
+unresolved reservation or staged input is outside this consumer. The selected
+entry shapes are genuine terminal legacy epoch 2 and terminal later-family heads.
+No next-generation allocation or candidate is needed to archive the last admitted
+epoch, including the profile's maximum epoch.
+
+A narrow native accessor borrows the complete `ResolvedLineage` and reads one
+original pending batch from its own retained recovery owner. It checks the same
+root/sequence/input stamp, dataset and qualified stream, and requires the whole
+batch to lie within that stream's positively resolved terminal cut. It returns a
+checked `PendingBatch` with its actual grant, never an `IngestStore`, writer or
+mutable recovery extraction. Revalidate the stamp around the read and before
+downstream effects; cancellation or stale state refuses without normalization.
+The PostgreSQL `VerifiedSuccessorHistory` consumer separately establishes complete
+terminal SQL state and actual current Control authority. The native accessor has
+no dependency on PostgreSQL and cannot make SQL terminal state from a digest.
+
+Read only complete original batch boundaries, in stream epoch and source-sequence
+order. Every selected nonzero batch requires its retained pending marker, complete
+facts and matching canonical digest. A missing marker is an error, not evidence
+of ACK, GC, non-admission or prior Archive publication. A zero cut needs no pending
+read and remains explicit in the complete frontier. Preserve the existing narrow
+legacy source 1/zero-counter exception exactly; it adds no exception for missing
+nonzero pending batches. Rejected or AlreadyDurable requests can have no new facts
+while still participating in complete original-input replay.
+
+### Total admitted profile
+
+The first finite profile has the following independent limits. All arithmetic
+is checked; an override cannot silently increase these limits.
+
+| Retained or prospective work | Maximum / admission rule |
+| --- | --- |
+| Ingest lineage | Existing 255 epochs, 32,768 topology memberships and 256 KiB metadata profile; one retained lineage allocation, no future-epoch reservation |
+| Original Ingest inputs | Existing global 64 files/32 MiB, with their exact contents and existing replay grants |
+| Archive attempt history | At most 128 for the sum of all issued and planned new attempts, counting failed, absent and unresolved attempts; fixed-cutoff pages of 64 do not replace this total bound |
+| One pending batch | 64 records and 1 MiB encoded bytes; its data grant is the actual checked `required_data_bytes()` including decoding and container storage |
+| Retained Archive inputs | Existing 1 MiB data grant and one item per retained handle; complete original headers and expected receipt identity remain admitted |
+| Complete cut | Existing 128 selected receipts, 1024 streams and 1024 total ranges, including explicit zero bounds |
+| Private control wire | Existing 32 KiB serialized limit, including actual credential/route fields and complete cut framing |
+
+The default pending decoder's 8 MiB allocation allowance is additional to its 1 MiB
+encoded allowance and record/container overhead. One MiB of encoded data is not
+a one-MiB memory promise. Account the simultaneously retained lineage, attempt
+page/state, input handles, receipt expectations, complete-cut serialization,
+one pending batch, Control/catalog transports, worker control and child native
+lanes. Use the existing checked grant requirements rather than another vector of
+decoded facts or an uncharged list of all inputs. Larger batches, history or wire
+refuse; a valid 255-epoch lineage is not a promise that 255 useful archived lifetimes
+fit this smaller Archive profile. These are admission bounds, not measured RSS.
+
+Before new attempt issuance or native publication, enumerate and validate the
+complete retained obligations, admit the prospective total and cut, validate the
+actual route/reader/worker prerequisites and reserve their overlapping resources.
+Unresolved observations cannot be dropped to make the profile fit. If resolution
+changes the missing-batch plan, recheck its exact admitted shape before dispatch.
+Do not begin a partial new publication because only its first batch fits. Preserve
+the existing independent filesystem/completion admission: build or small-engine
+headroom cannot stand in for the configured Archive/export reserve. In particular,
+the existing 64 GiB export reserve plus required growth is not reduced for a small
+fixture; an unavailable reserve prevents that runtime qualification.
+
+### Custody and existing consumers
+
+The finite owner retains the recovery/lineage grants, initialized local coordinator,
+attempt custody and actual Control/catalog driver handles outside cancellable
+operation futures. Every launched worker inherits the required custody and keeps
+its application/native grants until actual reap. Dropping a future, lease expiry,
+a socket error or an empty backend observation does not release a possibly live
+worker or outstanding transaction. Unknown termination retains the affected
+capacity and refuses further dispatch or cleanup. Preserve original inputs,
+journals, files and all partial results for explicit fresh-process reconciliation.
+Refresh accepted authority and check cancellation/current UTC after lock waits and
+before effects and delivery; no historical issuer needs to remain live.
+
+Successful delivery follows native close and the actual worker/driver joins and
+Control teardown; finite completion is not role readiness. This consumer creates
+no Ingest write authority and does not adopt a prepared or activated candidate.
+The six initial-only Archive access sites remain initial-only, and ordinary
+successor Serve does not acquire a publisher. `archive recover` remains the
+existing initialization-only recovery command. Reader authorization, snapshot
+pins, export admission and their custody remain separate existing obligations.
+No pending ACK/GC, import logical closure, copied-coordinator adoption, cross-boot
+recovery, S3 qualification or continuous publisher scheduling is selected here.
