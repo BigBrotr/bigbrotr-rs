@@ -35140,11 +35140,16 @@
           "bytes": 2389,
           "sha256": "cd149fc560ab512c1fa868e7a2bb12f26d749dba8a4f8d4df5e71447586ac9ab"
         },
-        "limits": "New engine/raw replay/custody NOT_RUN. Preserve failed d910233 and its UNKNOWN state. Fresh exact-source root required after failed-run custody capture.",
+        "limits": "Fresh preparation60f0ccf failed unchanged reserve before root allocation; corrected engine/raw replay/custody NOT_RUN. Preserve failed d910233 and UNKNOWN custody; use new client-name template.",
         "record": {
           "path": ".research/archive-proxy-profile-20261018/source-review.json",
           "bytes": 4526,
           "sha256": "33b7bc1ac1fe78570a86dd01a792e6d49315095f56e49af01dd14b104141d105"
+        },
+        "latest_custody_template": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/audit-fault-client-name-template.py",
+          "bytes": 43995,
+          "sha256": "fd64df24a2100a7428ce39a3a73b085494d2ad9bb7eb8d0c8d6dfa5e0f536c5c"
         }
       },
       "archive_refusal_helpers": {
@@ -35168,8 +35173,78 @@
           "bytes": 3361,
           "sha256": "e3c7f68a34ef184013972981e30d7180d4e64dff645e82ad087900c1dea9cc87"
         },
-        "status": "SOURCE_ONLY_PREPARATION_REVIEWED_REFUSAL_AUDITOR_AWAITING_ROOT_DIFF_REVIEW",
-        "runtime": "NOT_RUN"
+        "status": "SOURCE_ONLY_PREPARATION_AND_COMPLETE_AUDITOR_DIFF_REVIEWED",
+        "runtime": "NOT_RUN",
+        "latest_custody_template": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/audit-refusal-client-name-template.py",
+          "bytes": 44852,
+          "sha256": "c023b95dc0a72a98d1df17476bb3c46f40d3ed01571257b2e1285cc984375921"
+        },
+        "latest_manifest": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/manifest.json",
+          "bytes": 3085,
+          "sha256": "385c11523c6a2a2dae76e9d781578c39cc3b422152d4a3e361d1ddf81ab350fa"
+        }
+      },
+      "archive_client_identity_correction": {
+        "status": "SOURCE_REVIEW_PASS_NEW_ENGINES_NOT_RUN",
+        "finding": "Actual journey.client and proxy Docker argv retain the client name; report.client.id is the immutable container Id. Strict raw readers now bind the name plus a unique terminal selected by Id with the matching slash-prefixed Name. Custody templates preserve their existing full Id/Name/owner checks.",
+        "source": [
+          {
+            "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive_catch_up_fault_capture.py",
+            "bytes": 10590,
+            "sha256": "f405d7088f099686b64765be04ad9f954f93d3130dbc16f864acc077bc915ce6"
+          },
+          {
+            "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive_catch_up_refusal_capture.py",
+            "bytes": 11066,
+            "sha256": "a0d6119e23307c92d6c213026e9e75cff50dc1eed07cb758e4d1dc33cc730740"
+          }
+        ],
+        "review": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/review.json",
+          "bytes": 4175,
+          "sha256": "532250a8bdb913e3ac3d3e756ffaf64aad575e5ff23c9a5bcca5d5785bb1557f"
+        },
+        "manifest": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/manifest.json",
+          "bytes": 3085,
+          "sha256": "385c11523c6a2a2dae76e9d781578c39cc3b422152d4a3e361d1ddf81ab350fa"
+        },
+        "templates": [
+          {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/audit-fault-client-name-template.py",
+            "bytes": 43995,
+            "sha256": "fd64df24a2100a7428ce39a3a73b085494d2ad9bb7eb8d0c8d6dfa5e0f536c5c"
+          },
+          {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018/audit-refusal-client-name-template.py",
+            "bytes": 44852,
+            "sha256": "c023b95dc0a72a98d1df17476bb3c46f40d3ed01571257b2e1285cc984375921"
+          }
+        ],
+        "root_review": "Read complete prior456line refusal delta and complete21line traffic delta; read complete final name/Id deltas and actual d910233/caller mapping. Reauthenticated sources, original raw artifacts and frozen template hashes; AST PASS. Independent AI review confirms same boundary.",
+        "limits": "Historical source-only reviews did not exercise full actual runtime binding. d910233 stays FAIL/UNKNOWN. New full raw replay and engine qualification NOT_RUN."
+      },
+      "archive_fault_preparation_capacity": {
+        "status": "FAIL_CAPACITY_BEFORE_ROOT_CREATION",
+        "observed_at": "2026-10-18T17:49:23.957886+00:00",
+        "session": 90833,
+        "joined_exit_code": 1,
+        "source": "60f0ccfe4b1cd5f79a3b229023a2d8c08ecf0c2e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-60f0ccf",
+        "root_absent": true,
+        "preparation_script": ".research/archive-renewal-dispatch-20261018/prepare-fault-journey.py",
+        "script_sha256": "fb4297078cafe13465b1f0ee1ccaa2e53cca28a377ed52dde6635a67d2ad0259",
+        "failed_assertion": "free >=64*1024**3+577*1024**2",
+        "required_free_bytes": 69324505088,
+        "free_bytes_after_failure": 69223391232,
+        "limit": "Failing preflight free value was not printed; this later observation is not substituted for the original instant. No engine/root allocation occurred.",
+        "record": {
+          "path": ".research/archive-proxy-profile-20261018/prepare-60f0ccf-capacity-failure.json",
+          "bytes": 831,
+          "sha256": "b7ca0130390280150b00de3990d5fb34a4ca82449d389b7a83534d832149677b"
+        }
       }
     }
   }

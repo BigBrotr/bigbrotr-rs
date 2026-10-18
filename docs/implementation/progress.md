@@ -1,15 +1,15 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T17:47Z on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T17:57Z on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and active responsibility
 
-Canonical `/home/tux/bigbrotr-rs`, main d910233; remote exactd910233 verified.
+Canonical `/home/tux/bigbrotr-rs`, main60f0ccfe4b1cd5f79a3b229023a2d8c08ecf0c2e; remote same revision verified.
 Root is the sole integrating owner; Tux alone handles development and tests.
-No merge/rebase pending. Current root edits add an explicit proxy traffic profile, opt in the fault
-driver/oracle, add five boundary tests and bind failure/correction evidence.
+No merge/rebase pending. Proxy traffic correction and its five tests are committed.
+Current root edits correct two raw readers' client name/Id binding and update these records.
 Product/build source unchanged.
 
 Current task: P02-T04 Steps3/4/5, enabling P01-T09 Step4/M1 after selected
@@ -85,14 +85,30 @@ Five actual in-memory frame/connection/byte/default-profile tests PASS; independ
 source review found no concrete blocker. Original d910233 remains FAIL/UNKNOWN.
 Source review `.research/archive-proxy-profile-20261018/source-review.json`, SHA33b7bc1a.
 
-Next: commit/push the reviewed correction and these records, then prepare ONE fresh
-fault journey from clean main using
+Fresh preparation60f0ccf session90833 joined1 before root creation: unchanged
+reserve69,324,505,088B failed. The intended root remains absent; no engine started.
+Later free69,223,391,232B is a separate observation, not the failing instant.
+Record `.research/archive-proxy-profile-20261018/prepare-60f0ccf-capacity-failure.json`.
+
+Root also found the raw readers/auditors compared a Docker name to its Id.
+Both readers now bind actual name plus unique terminal Id/Name; new templates
+fd64df24(fault)/c023b95d(refusal) preserve all other identity/custody requirements.
+Full bounded deltas and actual d910233 mapping reviewed; hashes/AST PASS,
+independent source review confirms. New engines/full replays remain NOT_RUN.
+Templates/manifest385c1152/review532250a8 under
+`.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018`.
+Older templates and failed evidence remain unchanged.
+
+Next: commit/push the identity correction and records; recover verified regenerable
+headroom without lowering reserve. Metadata-only review found13,081 downloaded
+.crate archives/2,317,864,960 allocated bytes across51 previously inventoried old
+Cargo homes, excluding the current cache. Source/checksum/custody preflight and
+retirement are not yet executed; source-only author prepares a guarded proposal.
+Once admitted, prepare ONE fresh fault root from clean main using
 `.research/archive-renewal-dispatch-20261018/prepare-fault-journey.py` SHAfb429707,
-build9a/audit1164 and unchanged69,324,505,088B reserve. Profile`archive-catch-up-faults`.
-After enginePASS, execute its actual `installed_archive_catch_up_fault_capture.py`
-then NEW reviewed custody template56860025 under
-`.research/archive-catch-up-journey-20261018/.research/archive-catch-up-fault-traffic-audit-20261018`.
-Original c169 template remains historical. No completed root may be replayed.
+build9a/audit1164, profile`archive-catch-up-faults`. After actual enginePASS, run
+strict fault_capture then custody fd64df24 before any borrowed-PG reuse.
+No completed root may be replayed.
 
 ## Integrated fault/refusal sources and pending work
 
@@ -120,9 +136,9 @@ cap fixtures in the former refusal worktree, new branch
 `qualification/archive-catch-up-attempt-limits` basedd910233. Original69a branch
 and all ignored artifacts retained. Draft finite probe/harness/oracle/binder are
 unintegrated, build/engineNOT_RUN. No product adapter/API change intended.
-Refusal custody template24620f51/manifeste3c7f68a is frozen in the journeyWT under
-`.research/archive-catch-up-refusal-custody-20261018`; root must read its complete
-diff before execution. Preparation5b61ccf3 in archive-renewal-dispatch is reviewed,
+Refusal original custody template24620f51/manifeste3c7f68a remains historical;
+complete456line delta is now read. Latest corrected templatec023b95d as above.
+Preparation5b61ccf3 in archive-renewal-dispatch is reviewed,
 closed-six-selector, unchanged admission. No runtime authority is delegated.
 
 ## Resources and preservation

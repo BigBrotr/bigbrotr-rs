@@ -71,7 +71,9 @@ def replay(root):
     state('catch-up-initial',journey['initial_state'])
     assert f.bytes(directory/'archive-catch-up-commit-proxy.py')==f.bytes(root/'source/experiments/archive-engine/native_commit_proxy.py')
     assert hashlib.sha256(f.bytes(directory/'archive-catch-up-commit-proxy.py')).hexdigest()==journey['proxy_sha256']
-    assert journey['client']==report['client']['id']
+    assert journey['client']==report['client']['name']
+    client_terminal,=[item for item in report['terminal'] if item['Id']==report['client']['id']]
+    assert client_terminal['Name']=='/'+journey['client']
     for phase in journey['steps']+journey['faults']:
         name='catch-up-'+phase['step'];prefix=directory/name
         def item(suffix):return f.json(directory/(name+'-'+suffix+'.json'))

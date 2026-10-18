@@ -54,7 +54,9 @@ def replay(root):
     resource,=report['archive_resources'];assert resource==journey['setup_resource']==journey['initial_setup']['resource']
     home=Path(resource['home']);assert home==directory/'archive-export'
     assert journey['config']==resource['config'] and journey['database']==resource['control_database']
-    assert journey['client']==report['client']['id']
+    assert journey['client']==report['client']['name']
+    client_terminal,=[item for item in report['terminal'] if item['Id']==report['client']['id']]
+    assert client_terminal['Name']=='/'+journey['client']
     assert journey['initial_setup']['control']==f.json(directory/'archive-export-setup-control.json')
     assert journey['initial_setup']['catalog']==f.json(directory/'archive-export-setup-catalog.json')
     for suffix in ('lineage-upgrade','lineage-migrations','lineage-grants','reader-privileges','setup-roles','setup-files'):
