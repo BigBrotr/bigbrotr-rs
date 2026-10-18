@@ -363,3 +363,42 @@ fn explicit_recovery_modes_conflict_before_configuration_io() {
         }
     }
 }
+
+#[test]
+fn archive_catch_up_preserves_missing_native_before_credentials() {
+    use std::os::unix::fs::PermissionsExt;
+    let directory = tempfile::tempdir().unwrap();
+    let root = directory.path().canonicalize().unwrap();
+    let file = root.join("root.toml");
+    let state = root.join("archive-state");
+    fs::create_dir(&state).unwrap();
+    fs::set_permissions(&state, fs::Permissions::from_mode(0o700)).unwrap();
+    let store = root.join("absent-ingest");
+    let mut config: toml::Table = include_str!("../../../config/recipes/archive-only.toml")
+        .parse()
+        .unwrap();
+    config["storage"]["ingest_root"] = store.to_str().unwrap().into();
+    config["storage"]["archive_state_root"] = state.to_str().unwrap().into();
+    config["postgres"]["control"]["password_ref"] =
+        "file:/nonexistent/archive-catch-up-password".into();
+    let original = toml::to_string(&config).unwrap();
+    fs::write(&file, &original).unwrap();
+    let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+        .env_clear()
+        .args(["archive", "catch-up", "--file"])
+        .arg(&file)
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(4));
+    assert!(result.stdout.is_empty());
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        error.contains("initialized store or CURRENT is absent"),
+        "{error}"
+    );
+    assert!(!error.contains("protected PostgreSQL password"));
+    assert!(!store.exists());
+    assert_eq!(fs::read_to_string(&file).unwrap(), original);
+    assert_eq!(fs::read_dir(&state).unwrap().count(), 0);
+    assert_eq!(fs::read_dir(&root).unwrap().count(), 2);
+}

@@ -46,6 +46,7 @@ enum Operation {
     InitializeCoordinator,
     InspectReceipt,
     RecoverIngest,
+    ArchiveCatchUp,
 }
 
 pub(crate) fn ingest_command() -> Command {
@@ -98,6 +99,17 @@ pub(crate) fn recover_ingest(args: &ArgMatches) -> ! {
     )
 }
 
+pub(super) fn archive_catch_up_command() -> Command {
+    Command::new("catch-up")
+        .about("Publish complete retained batches from a fully terminal Ingest lineage")
+        .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
+        .after_help("Requires local Control, Ingest and Archive, current accepted publication policy, the installed worker and the original initialized native/archive/coordinator roots. Stop the original owners first. Verifies every retained request and issued attempt before new publication. Uses at most 128 issued attempts including failed attempts; each complete batch has at most 64 facts and 1 MiB encoded data. Missing journals, unknown outcomes and absent multiheader replacement refuse while preserving evidence. Frontier operation IDs are synced before SQL publication; retry with the same roots. No listener, acquisition, migration, ACK or garbage collection. This finite profile is under qualification. Exit: 0 catch-up complete and owners released, 1 I/O, 2 usage, 3 configuration/policy/resources, 4 cancelled/unresolved/unknown outcome.")
+}
+
+pub(super) fn archive_catch_up(args: &ArgMatches) -> ! {
+    execute_operation(args, Operation::ArchiveCatchUp)
+}
+
 pub(super) fn coordinator_command() -> Command {
     Command::new("coordinator-initialize")
         .about("Bind fresh Archive coordination and qualified local persistence explicitly")
@@ -138,6 +150,9 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
     };
     let outcome = (|| {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
+        if matches!(operation, Operation::ArchiveCatchUp) {
+            return initial_ingest::archive_catch_up::run(root, &mut output);
+        }
         if matches!(operation, Operation::RecoverIngest) {
             use initial_ingest::recovery::Action;
             let action = if args.get_flag("retire-empty-successor") {

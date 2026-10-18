@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T14:09:35.855047+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:28:03.250775+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,9 +8,9 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main; last verified remote f8ff61f.
-Current HEAD e613a19 includes the reviewed Archive sources and new library
-qualification profile; this checkpoint/contract update is not yet committed.
+Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
+Current HEAD150f1da includes journalfa15a74 and the packaged-worker build profile.
+Root finite catch-up composition/CLI/tests and this checkpoint are not yet committed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -117,25 +117,44 @@ existing recovery evidence and lab inventory; all raw files and prior ELFs retai
 PG loaderb1306302 integrated asb4873fc; native helper0bc8bcb integrated as7e01db1.
 Root verified exact frozen manifests/blobs after its complete source review;
 independent helper review found no concrete source blocker, not a runtime proof.
-Both author worktrees and ignored manifests remain retained. Root is authoring
-untracked `apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up.rs`
-and its `authority.rs` child: incomplete, not wired, NOT_RUN. Publication/planner
-and actual CLI connection remain to implement. Root retains compiler/cache/engine
-ownership. The remaining source agent is bounded to new local frontier-intent
-storage/tests in `.research/archive-frontier-intents-20261018`, based one613a19.
+Both author worktrees and ignored manifests remain retained. Root has wired
+`archive catch-up --file ROOT` through `initial_ingest/archive_catch_up.rs` and
+its authority/inventory/plan/capture/publication children. Complete retained input
+replay, original journal operation lookups, actual native receipt/membership,
+whole-job planning, original topology/grouping, joined publication and zero-bound
+frontier bridges are composed. All new runtime/CLI/journal Rust tests remain
+NOT_RUN. Scoped rustfmt and diff checks PASS. No runtime readiness is claimed.
 
-Composition review found that old frontier operation IDs are volatile. The owning
-Archive contracts now select a synchronized immutable local frontier-intent
-journal before commit, at most256records/64KiB each and1024state-directory entries;
-scan64KiB/oneitem and one decoded intent1MiB/oneitem. Resolve every original ID
-under fresh current Control before new publication, separately verify current
-head, retain all successes/absences/partial records. No SQL migration. Source is
-in progress, all journal tests/engine behavior NOT_RUN. An absent multiheader
-attempt refuses before fresh issuance under the existing single-batch publisher
-profile; present original grouping can be independently replayed and verified.
-Next bounded action: compose complete native/input inventory and whole-job plan,
-then integrate/review the journal and catalog capture/frontier orchestration,
-before wiring the command and qualifying its genuine same-root installed journey.
+Journal8388712 integratedfa15a74, frozen source manifest20393164 under
+`.research/archive-frontier-intents-20261018/.research/archive-frontier-intents-source-20261018`.
+It retains256 immutable64KiB intents, a1024-entry total directory census, scan64KiB
+and serial intent1MiB grants. Root read all new source/tests and verified final
+manifest/blobs. Six authored groups NOT_RUN; source-only literal and formatting
+checks are separate. Resolve original IDs under fresh Control before new work;
+no journal deletion, repair or cross-root adoption. Absent multiheader replacement
+refuses; present original grouping is independently replayed and verified.
+
+Independent AI composition review found that changed per-family counts in a
+retained frontier could otherwise be silently replaced. Root now compares actual
+original-prefix counts before any new publication and added an equal-total,
+different-distribution refusal test. Replacement tests cover original topology,
+absent multiheader refusal and conflicting duplicate presence. Actual CLI test
+requires missing-native refusal before credentials, without creating a store.
+Further source review is in progress; no test/build or engine has started yet.
+
+Runner083c2028 integrated150f1da, frozen manifestf228a245 under
+`.research/archive-catch-up-runner-20261018/.research/archive-catch-up-runner-20261018`.
+Profile `ingest-succession-archive-installed` builds the exact worker from pinned
+read-only assets, embeds its identity into the fresh CLI/probe, and runs journal,
+Serve and entrypoint tests plus Clippy and packaged worker verification. Sixteen
+source/AST checks PASS only; all actual build/postchecks NOT_RUN. Root owns every
+compiler/cache/engine action. The idle runner author is now mapping the genuine
+same-physical-root installed journey read-only; the journal author is preparing
+an ignored read-only custody auditor source. No new master plan is introduced.
+Next bounded action: complete source review, freeze this composition and run the
+exact packaged component build, retaining all failures and153 prior ELFs. Then
+qualify a fresh genuine same-root Archive/read/export/restart journey; old copied
+SQL cannot confer inode/boot custody. M1–M5 remain incomplete.
 
 Headroom cleanup completed13:44:18Z, prepare59509/execute50680 joined0.
 `.research/tux-maintenance-20261018` retains script4ad74f58, frozen manifest

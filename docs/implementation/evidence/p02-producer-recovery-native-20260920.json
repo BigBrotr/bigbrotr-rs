@@ -32486,6 +32486,42 @@
           "CLI helpers/composition, connected SQL/native Archive and installed catch-up remain NOT_RUN by this library profile.",
           "No compiler, retained executable, native/SQL engine, or mutable cache is opened by this auditor."
         ]
+      },
+      "archive_finite_runtime_sources": {
+        "observed_at": "2026-10-18T14:28:03.250775+00:00",
+        "status": "WIRED_UNQUALIFIED_SOURCE",
+        "sources": [
+          {
+            "name": "frontier_intents",
+            "original": "8388712194768ea30aab875c02dc8f250312545e",
+            "integrated": "fa15a74",
+            "manifest": ".research/archive-frontier-intents-20261018/.research/archive-frontier-intents-source-20261018/manifest.json",
+            "sha256": "203931647255a9853aed5c052d9b40963c3c50ad3d8f738ca1a0ede4788654e3",
+            "review": "Root complete new owner/tests and narrow integration read; frozen manifest/blobs matched",
+            "checks": "Literal bytes/source formatting PASS; Rust/tests/Clippy/engines NOT_RUN"
+          },
+          {
+            "name": "archive_installed_runner",
+            "original": "083c2028997f232dde53c8fa3fe5621f9f8468f4",
+            "integrated": "150f1da",
+            "manifest": ".research/archive-catch-up-runner-20261018/.research/archive-catch-up-runner-20261018/manifest.json",
+            "sha256": "f228a24598cdd649440bcf13883471931cb32591a245129953870f6a857f5f98",
+            "review": "Root reused prior complete owning runner read and read full final delta; frozen source/artifact manifest matched",
+            "checks": "16 AST/source checks PASS; actual worker/CLI/tests/Clippy/postchecks NOT_RUN"
+          }
+        ],
+        "root_files": [
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up.rs",
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up"
+        ],
+        "checks": {
+          "rustfmt": "PASS scoped",
+          "diff": "PASS",
+          "rust": "NOT_RUN",
+          "engines": "NOT_RUN"
+        },
+        "review_finding": "Current-frontier equal-total/different-family distribution must refuse before new effects; root compares joined original-prefix counts and adds independent counts test",
+        "next": "Exact-source packaged worker/CLI component build; then genuine same-physical-root installed journey"
       }
     }
   }

@@ -639,8 +639,8 @@ the retained, fully terminal Ingest lineage. It enables the next P01-T09 Step 4
 journey without making the initial publisher a general restart owner. The
 [storage contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
 owns reconciliation, frontier publication, retry and qualification. This section
-owns its native handoff, admission and custody boundaries. These are selected
-requirements, not an implemented command or connected qualification claim.
+owns its native handoff, admission and custody boundaries. The command source is wired and remains under qualification; selected requirements
+are not a connected qualification claim.
 
 ### Positive historical access
 

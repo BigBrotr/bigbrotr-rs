@@ -1,5 +1,6 @@
 //! Explicit initial lifetimes. The worker never returns a live native handle.
 mod archive;
+pub(super) mod archive_catch_up;
 mod commands;
 mod dictionaries;
 mod owner;

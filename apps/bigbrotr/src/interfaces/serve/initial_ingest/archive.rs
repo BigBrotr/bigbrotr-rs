@@ -1,6 +1,6 @@
 //! Initial local publisher: complete pending batches, then a captured frontier.
 //! No pending ACK, source closure, replay adoption or index readiness is implied.
-mod native;
+pub(super) mod native;
 use super::commands::CommandOwner;
 use super::*;
 use crate::interfaces::archive_preflight as preflight;
