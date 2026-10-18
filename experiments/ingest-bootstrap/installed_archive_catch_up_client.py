@@ -4,7 +4,7 @@ This client never reads Control rows, native records, or expected receipts. Its
 inputs are the explicit signed events and the independently selected allocation.
 """
 import hashlib
-import http.client
+import http.client as http_client
 import json
 import os
 from pathlib import Path
@@ -70,7 +70,7 @@ def http(home, restart):
     def record(label, **value):
         observations.append(dict(case=label, **value)); trace.write_text(json.dumps(observations, indent=2)+'\n')
     def request(method, path, body=None, headers=None):
-        connection = http.client.HTTPConnection('127.0.0.1', 18081, timeout=6)
+        connection = http_client.HTTPConnection('127.0.0.1', 18081, timeout=6)
         try:
             connection.request(method, path, None if body is None else json.dumps(body),
                 {'Origin': origin, 'Content-Type': 'application/json', **(headers or {})})
