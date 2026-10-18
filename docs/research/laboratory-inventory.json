@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-18T16:49:45.020152+00:00",
+  "updated_at": "2026-10-18T16:55:31.174911+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "Prepare49731 joined0; engine40193 joined1; failed-custody20590 joined0. PG/client stopped at16:40:36Z, exit0/143 PID0 noOOM. No owned runtime/compiler/native/SQL. Fault source author finalizing source-only freeze; independent reviews complete. Next exact-source compiler build not yet started.",
+    "processes": "Prepare11865/build61068/audit16469 joined0. No owned runtime/compiler/native/SQL. Both build containers stopped exit0/PID0/noOOM; borrowedPG unchanged/stopped. All agent tasks complete. Next normal journey NOT_RUN.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -61892,12 +61892,101 @@
             "audit": 78427,
             "all_joined_exit": 0
           }
+        },
+        {
+          "source": "9a7fd81f3d1d351a206a54415f27cf8c7ca055c0",
+          "tree": "124db7fd291accb66f30eb0ceb9fceaf9f750107",
+          "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81",
+          "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/audit-root/audit-v1.json",
+          "audit_sha256": "1164abade607ced8e3c93ed7fd48f13c73e8167c3a259e839376ba9728fb3494",
+          "status": "PASS",
+          "worker_status": "PASS",
+          "postcheck_status": "PASS",
+          "checks": {
+            "collected": 5,
+            "executed": 5,
+            "failed": 0,
+            "not_run": 0
+          },
+          "test_counts": {
+            "frontier_intents": {
+              "status": "ok",
+              "passed": 6,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 332
+            },
+            "serve_owner": {
+              "status": "ok",
+              "passed": 27,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 79
+            },
+            "control_runtime_entrypoint": {
+              "status": "ok",
+              "passed": 8,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 0
+            }
+          },
+          "tests_failed": [],
+          "not_run": [],
+          "protected_elfs": 184,
+          "new_elfs": {
+            "serve_owner": "226d77ad6520114f123678b65d3554307d309f87528edae92cb1f69524ea3d56",
+            "ingest_bootstrap_probe": "361c6a81c87037c772852364d72b66f859267d105e04b65214b167123fd71913",
+            "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+            "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+            "bigbrotr": "9aec5a68571ff44f7888d883c3b0913e0774328f3969ac9fd7d3f445ba2bbc8d",
+            "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+          },
+          "unchanged_containers": 1396,
+          "compiler_diagnostics": [
+            {
+              "check": "frontier_intents",
+              "line": 289,
+              "encoding": "cargo-json",
+              "level": "warning",
+              "code": {
+                "code": "dropping_copy_types",
+                "explanation": null
+              },
+              "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+            }
+          ],
+          "sessions": {
+            "prepare": 11865,
+            "build": 61068,
+            "audit": 16469,
+            "all_joined_exit": 0
+          },
+          "wrapper": {
+            "command": [
+              "python3",
+              "-B",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/source/experiments/network-transport/lab.py",
+              "9a7fd81f3d1d351a206a54415f27cf8c7ca055c0",
+              "124db7fd291accb66f30eb0ceb9fceaf9f750107",
+              "ingest-succession-archive-installed"
+            ],
+            "source": "9a7fd81f3d1d351a206a54415f27cf8c7ca055c0",
+            "started_at": "2026-10-18T16:50:44.227949+00:00",
+            "exit_code": 0,
+            "finished_at": "2026-10-18T16:54:04.109860+00:00"
+          },
+          "free_bytes_after": 71987421184
         }
       ],
       "state": "Sixth installed build40bc295 and custody audit PASS; all owned containers stopped/PID0/noOOM. Fresh connected journey NOT_RUN.",
       "protected_elfs": 184,
       "preservation": "Original compiler failure, actual failed CLI test, every worker/component ELF and source/log/native asset retained",
-      "source_agent": "Completed source-only author and independent AI reviewer; no active agent task."
+      "source_agent": "Completed source-only author and independent AI reviewer; no active agent task.",
+      "next": "Fresh normal installed journey with qualified9a7fd81 and current stopped PG baseline; then actual raw replay/custody. Fault source29d43a0 remains separately source-only."
     },
     "branch_retirement": {
       "status": "PASS_INTEGRATED_REFS_RETIRED_FILES_PRESERVED",
@@ -62712,7 +62801,90 @@
       },
       "record_path": ".research/archive-renewal-dispatch-20261018/source-review.json",
       "record_sha256": "72ccce0dc6b2837b567cfe7f4a6e573e475e6c4ea9cb2da3eae027928ba56390",
-      "next": "Commit current correction, prepare one exact-source installed build using the bound helpers; run existing required journal/Serve/entrypoint tests and Clippy, audit actual artifacts before a fresh normal journey."
+      "next": "Fresh normal installed journey; use190 protectedELFs and prepared e1d82ee6/audit6c7efb8a helpers with actual build audit1164abade.",
+      "qualification": {
+        "status": "PASS_INSTALLED_COMPONENTS",
+        "build_source": "9a7fd81f3d1d351a206a54415f27cf8c7ca055c0",
+        "audit_sha256": "1164abade607ced8e3c93ed7fd48f13c73e8167c3a259e839376ba9728fb3494",
+        "passed_tests": 41,
+        "regressions": [
+          "serve_owner:interfaces::serve::initial_ingest::commands::tests::a_selected_http_request_retains_its_permit_until_consumed_or_dropped",
+          "serve_owner:interfaces::serve::initial_ingest::commands::tests::renewal_admission_does_not_wait_for_a_timer_tick"
+        ],
+        "scope": "Compilation,41 actual tests,Clippy and packaged worker checks; connected normal journey after correction NOT_RUN."
+      },
+      "journey_helpers": {
+        "status": "SOURCE_ONLY_NOT_RUN",
+        "files": {
+          "prepare-journey.py": {
+            "sha256": "e1d82ee6454f6907efc47cc7584bdf112853736dd9c173cc2bd5465d2684c446",
+            "base_sha256": "6e3c7ad2f2a3c003260f86800f3307ce6f88d4f761025bb519417b54061d926b",
+            "diff_sha256": "bf882b7003fb15f3a10e2e7a02e592bb9f5c97249bd9927a05803bce50e8c454"
+          },
+          "audit-engine-template.py": {
+            "sha256": "6c7efb8adcbf5a2b089c59617686e5beb47f4bdb43fa90c91dbfe760ee497c0e",
+            "base_sha256": "8402a325e9589197a82b8ba77a56625c2b704fd7b89c85c29361ea4c3cae8af1",
+            "diff_sha256": "d25dcbc55c6b4d2ed040b0b24d789a37aba1ac690669f2aa5d4b670a8c4631b8"
+          }
+        },
+        "scope": "Fixed9a7fd81 build,184prior+6new=190ELFs. Requires actual completed build audit hash as input; no qualification inferred. Historical chain has8 including new, within unchanged bound8."
+      }
+    },
+    "fault_source": {
+      "status": "SOURCE_REVIEWED_NOT_INTEGRATED_NOT_RUN",
+      "observed_at": "2026-10-18T16:52:50.338804+00:00",
+      "original": "29d43a0befe00eccfebcfed1320272469b7ccb13",
+      "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-fault-selfcheck-20261018/manifest.json",
+      "manifest_sha256": "66e8c7ab320500b3d9fc9e7c1725a8119f9dc0604d1f5d7b98a4a798da95749c",
+      "sources": [
+        {
+          "path": "experiments/acquisition-scope/bindings.py",
+          "bytes": 142941,
+          "sha256": "c2bcb00296b2e611e335c58c4fbda5bb2b8e4d1d63b3ac73e9f11da653550201"
+        },
+        {
+          "path": "experiments/ingest-bootstrap/installed_archive_catch_up.py",
+          "bytes": 28425,
+          "sha256": "53596e28537b9c06f87ac20e965895e4884a0496af52be79dd0b86c1b2b6209d"
+        },
+        {
+          "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_capture.py",
+          "bytes": 10433,
+          "sha256": "3a14047a374051078e070a9a71c5c913355a0e63792d9c1faad8fe8e2304feb4"
+        },
+        {
+          "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+          "bytes": 40345,
+          "sha256": "8ac9025816a56696b4ecbdf12c1bbbbda24f22195f07eabf13cc40d34b575411"
+        },
+        {
+          "path": "experiments/ingest-bootstrap/installed_archive_catch_up_faults.py",
+          "bytes": 13387,
+          "sha256": "160ea92c54e2ea5eb7b0ce7d31a0c6838b7de2c438895d5728751063faf5a66a"
+        }
+      ],
+      "bound_artifacts": 92,
+      "checks": {
+        "check-2.json": {
+          "status": "PASS",
+          "count": 32
+        },
+        "capture-check-1.json": {
+          "status": "PASS",
+          "count": 5
+        }
+      },
+      "review": "Root read complete3newmodules, complete2hookdiffs and full2bounded source-check scripts; independent recovery_review closed same exact source hashes. Reused genuine normal journey/proxy/custody code was previously source-reviewed; no unrelated old campaign re-review claimed. Every source/artifact hash and commit bytes authenticated.",
+      "limits": [
+        "No connected fault qualification; root owns all runtime.",
+        "Fresh resolver seal/EOF/membership order is source-reviewed; observed before/after values do not establish per-statement timing. Numeric xmin ordering is not used as commit-time evidence.",
+        "No HTTP/export/restart repetition; normal journey remains separately qualified by root.",
+        "No cancellation/expiry/cap/malformed-history campaign; existing required-discriminators mapping remains owning scope.",
+        "The final C API science and append-only original file identities bind receipt5 reuse; no partial native reader opens an unsealed catalog."
+      ],
+      "next": "Integrate only after normal journey qualification with corrected9a7fd81 product; root alone executes connected fault campaign and actual independent raw replay.",
+      "root_review_path": ".research/archive-renewal-dispatch-20261018/fault-source-review.json",
+      "root_review_sha256": "40622601948e682b6f9cee75617e22529857134d7c2647b8b2feb17ff0bbdab5"
     }
   }
 }
