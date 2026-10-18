@@ -4,8 +4,8 @@ mod descriptor;
 mod observe;
 use bigbrotr::{
     export::{
-        destination::{LocalDestination, check_filesystem_growth},
-        execution::{ExecutionCustody, ExportLimits, ExportState},
+        destination::{CheckedDestination, LocalDestination, check_filesystem_growth},
+        execution::{ExecutionCustody, ExportLimits, ExportState, WrittenExport},
     },
     runtime::{
         OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest,
@@ -93,7 +93,10 @@ struct Held {
     control_grant: Option<OwnedPermit>,
     catalog_grant: Option<OwnedPermit>,
     output_grant: Option<OwnedPermit>,
+    destination: Option<Arc<LocalDestination>>,
+    checked_destination: Option<CheckedDestination>,
     output: Option<ExecutionCustody>,
+    written: Option<WrittenExport>,
 }
 async fn join(mut driver: Driver) -> (bool, bool) {
     match tokio::time::timeout(Duration::from_secs(5), &mut driver).await {
@@ -145,9 +148,13 @@ impl Held {
                 )
                 .is_ok();
         }
-        // Do not shorten the output lock or credential charge to a query future.
+        // Destination and written-observation custody outlive unknown SQL futures
+        // and are released only after the actual Control driver has joined.
         self.control_grant.take();
+        self.written.take();
         self.output.take();
+        self.checked_destination.take();
+        self.destination.take();
         self.output_grant.take();
         self.coordinator.take();
         if clean {
@@ -358,6 +365,8 @@ async fn work(
     )
     .map_err(error)?;
     let checked = destination.clone().check_for_acceptance().map_err(error)?;
+    held.destination = Some(destination);
+    held.checked_destination = Some(checked);
     let identity = CatalogIdentity::local(
         case.dataset,
         original.selection().catalog(),
@@ -389,12 +398,16 @@ async fn work(
     std::str::from_utf8(password.as_bytes()).map_err(error)?;
     held.output_grant = Some(grant(budget, MIB)?);
     bounded(owner.refresh(|text, digest| documents.validate(text, digest))).await?;
-    let queued = bounded(owner.reserve_export(
-        case.job,
-        case.limits.export_limits()?,
-        &checked,
-        &Cell::new(false),
-    ))
+    let queued = bounded(
+        owner.reserve_export(
+            case.job,
+            case.limits.export_limits()?,
+            held.checked_destination
+                .as_ref()
+                .ok_or("missing checked destination")?,
+            &Cell::new(false),
+        ),
+    )
     .await?;
     observation.mark("reserved", serde_json::json!({"artifact":queued.reservation().ok_or("reservation missing")?.artifact(),
         "query":queued.selection().query(),"catalog":queued.selection().catalog(),"frontier_revision":queued.selection().frontier_revision()}))?;
@@ -446,7 +459,14 @@ async fn work(
     let running =
         bounded(owner.start_export(&queued, &capture, pin.lease_id, &Cell::new(false))).await?;
     let mut window = action.complete(running.remaining()).map_err(error)?;
-    let output = running.prepare(destination).map_err(error)?;
+    let output = running
+        .prepare(
+            held.destination
+                .as_ref()
+                .ok_or("missing destination")?
+                .clone(),
+        )
+        .map_err(error)?;
     held.output = Some(output.custody());
     let custody = coordinator.reader_custody().map_err(error)?;
     let query = queued.selection().query().clone();
@@ -511,10 +531,13 @@ async fn work(
     if native.0.event().is_none() {
         return Err("expected signed event absent".into());
     }
-    let written = native
-        .1
-        .write_with_window(native.0, cancelled, native.2)
-        .map_err(error)?;
+    held.written = Some(
+        native
+            .1
+            .write_with_window(native.0, cancelled, native.2)
+            .map_err(error)?,
+    );
+    let written = held.written.as_ref().ok_or("missing written export")?;
     observation.mark(
         "output-written",
         serde_json::json!({"rows":written.files().data.rows,"bytes":written.files().data.bytes,
@@ -522,7 +545,7 @@ async fn work(
     )?;
     lease.check_delivery(lease.known_epoch()).map_err(error)?;
     let complete =
-        bounded(owner.complete_export(&written, &capture, pin.lease_id, &Cell::new(false))).await?;
+        bounded(owner.complete_export(written, &capture, pin.lease_id, &Cell::new(false))).await?;
     if complete.state() != ExportState::Succeeded || complete.files() != Some(written.files()) {
         return Err("completion differs".into());
     }
