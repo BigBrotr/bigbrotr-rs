@@ -32279,6 +32279,47 @@
             "main"
           ]
         }
+      },
+      "archive_pending_bridge_source": {
+        "status": "SOURCE_REVIEWED_INTEGRATED_TESTS_NOT_RUN",
+        "original": "5c70778a86c4adde90d23cabd86bffc84c9f1cdd",
+        "integrated": "8cf12cb",
+        "base": "c25eb517c9b3d6dbea51d41460c3ee1d5ca44344",
+        "manifest": ".research/lineage-pending-bridge-20261018/.research/native-bridge-source-20261018/manifest.json",
+        "manifest_sha256": "7bffe65ad7cd53a0539703d1a12772c6e6771b24903f47b6c7d313914545b0ed",
+        "sources": [
+          {
+            "path": "apps/bigbrotr/src/storage/rocks/lineage_pending_tests.rs",
+            "bytes": 12718,
+            "sha256": "390447dbb7342c5fdda30802bfeefe9bac1fd04d785759c263a14ad34c3d88cc"
+          },
+          {
+            "path": "apps/bigbrotr/src/storage/rocks/lineage_replay.rs",
+            "bytes": 18796,
+            "sha256": "eabf22ad8b4596448c653efbb0b22c18a54b0802b156e580eb702ae05b20697a"
+          },
+          {
+            "path": "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs",
+            "bytes": 29647,
+            "sha256": "88da4a445151424f2c070953477e2a215530254df5e97a067104740d97e6978c"
+          },
+          {
+            "path": "apps/bigbrotr/src/storage/rocks/store.rs",
+            "bytes": 19594,
+            "sha256": "24b9251a4f6048362426e546130d25b2f98a66fdbee0a93fe38f44e438050ff4"
+          }
+        ],
+        "scope": "Read one complete pending batch only under a full-head, no-pending native lineage proof. Validate metadata/root/native sequence/all original inputs before and after read; retain actual PendingBatch allocation through delivery. Current SQL terminal/Control and downstream custody remain separate caller obligations.",
+        "checks": {
+          "rustfmt": "PASS author scoped; compiler not invoked",
+          "diff": "PASS",
+          "original_integrated_blobs": "PASS root exact four-file comparison",
+          "root_review": "Complete final bridge/test changes and existing owning lineage/pending APIs read; no new semantic finding",
+          "tests": "NOT_RUN five authored native groups",
+          "build": "NOT_RUN",
+          "connected_archive": "NOT_RUN"
+        },
+        "limits": "Signed existing history fixture and raw original facts support bridge checks only. Mid-I/O cancellation is source-reviewed, not runtime-demonstrated. No archive CLI integration yet."
       }
     }
   }

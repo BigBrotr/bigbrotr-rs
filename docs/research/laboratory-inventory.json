@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-15T12:39:12.850956+00:00",
+  "updated_at": "2026-10-18T13:46:17.287217+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -60899,5 +60899,279 @@
         ]
       }
     }
+  },
+  "tux_intermediate_retirement_20261018": {
+    "status": "RETIRED_VERIFIED",
+    "owner": "Root sole integrating owner under Q35; existing evidence-preserving cleanup authority",
+    "raw_root": ".research/tux-maintenance-20261018",
+    "completed_at": "2026-10-18T13:44:18.441914+00:00",
+    "source_head_before_execution": "4a8f882",
+    "script_sha256": "4ad74f58bb834545759b45222a345026dcb5a96005bcd679f634ef9752ffa3bb",
+    "manifest_sha256": "3deba21ac6943f483c1b94d4c1ac3d4ef680f78316fdcd43e4637124ddac9313",
+    "manifest_bytes": 458197150,
+    "reviewed_proposal_sha256": "3555f80c678f83cde8bbd88e67b6a6ea4c800cb1b270929dfee8de10288ae155",
+    "summary": {
+      "allocated_candidate_bytes": 54573449216,
+      "by_target": [
+        {
+          "allocated_bytes": 2284978176,
+          "files": 2214,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-73e6517/out/build/target"
+        },
+        {
+          "allocated_bytes": 2283794432,
+          "files": 2214,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f660ab8/out/build/target"
+        },
+        {
+          "allocated_bytes": 2283126784,
+          "files": 2214,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9fa8b98/out/build/target"
+        },
+        {
+          "allocated_bytes": 2269736960,
+          "files": 2211,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-rollback-ed2a93b/out/build/target"
+        },
+        {
+          "allocated_bytes": 2266030080,
+          "files": 2210,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-324b8eb/out/build/target"
+        },
+        {
+          "allocated_bytes": 2266038272,
+          "files": 2210,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-http-53c6c9d/out/build/target"
+        },
+        {
+          "allocated_bytes": 1951084544,
+          "files": 1974,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-mtls-d5cfcd4/out/build/target"
+        },
+        {
+          "allocated_bytes": 1935798272,
+          "files": 1952,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-auth-567c2e6/out/build/target"
+        },
+        {
+          "allocated_bytes": 1935835136,
+          "files": 1951,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-binding-53707a2/out/build/target"
+        },
+        {
+          "allocated_bytes": 1933836288,
+          "files": 1950,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103/out/build/target"
+        },
+        {
+          "allocated_bytes": 1921290240,
+          "files": 1947,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147/out/build/target"
+        },
+        {
+          "allocated_bytes": 1921044480,
+          "files": 1947,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac/out/build/target"
+        },
+        {
+          "allocated_bytes": 1881133056,
+          "files": 1882,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485/out/build/target"
+        },
+        {
+          "allocated_bytes": 1881104384,
+          "files": 1882,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002/out/build/target"
+        },
+        {
+          "allocated_bytes": 1881079808,
+          "files": 1882,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-5ad77af/out/build/target"
+        },
+        {
+          "allocated_bytes": 1881079808,
+          "files": 1882,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-ead11f8/out/build/target"
+        },
+        {
+          "allocated_bytes": 1588301824,
+          "files": 1792,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-0b3a427/out/build/target"
+        },
+        {
+          "allocated_bytes": 1585270784,
+          "files": 1790,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-b12c902/out/build/target"
+        },
+        {
+          "allocated_bytes": 1585270784,
+          "files": 1790,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-7ff0691/out/build/target"
+        },
+        {
+          "allocated_bytes": 1585270784,
+          "files": 1790,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-2075a39/out/build/target"
+        },
+        {
+          "allocated_bytes": 1571155968,
+          "files": 1786,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-ea270ac/out/build/target"
+        },
+        {
+          "allocated_bytes": 1571155968,
+          "files": 1786,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/publication-c9a29e0/out/build/target"
+        },
+        {
+          "allocated_bytes": 1570922496,
+          "files": 1786,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-a91ae01/out/build/target"
+        },
+        {
+          "allocated_bytes": 1570922496,
+          "files": 1786,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-27ab36c/out/build/target"
+        },
+        {
+          "allocated_bytes": 1570922496,
+          "files": 1786,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-2e15f8c/out/build/target"
+        },
+        {
+          "allocated_bytes": 1570054144,
+          "files": 1785,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-164a9bc/out/build/target"
+        },
+        {
+          "allocated_bytes": 1570054144,
+          "files": 1784,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-schema-0e2ca43/out/build/target"
+        },
+        {
+          "allocated_bytes": 1566625792,
+          "files": 1782,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-credentials-d2b2609/out/build/target"
+        },
+        {
+          "allocated_bytes": 1445265408,
+          "files": 1752,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-944f3e6/out/build/target"
+        },
+        {
+          "allocated_bytes": 1445265408,
+          "files": 1752,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-2e732f6/out/build/target"
+        }
+      ],
+      "delete_files": 57469,
+      "free_bytes_observed": 24397496320,
+      "manifest_sha256": "3deba21ac6943f483c1b94d4c1ac3d4ef680f78316fdcd43e4637124ddac9313",
+      "projected_free_bytes": 78970945536,
+      "protected_elfs": 152,
+      "reserve_plus_envelope_bytes": 69324505088,
+      "retained_entries": 772682
+    },
+    "receipt": ".research/tux-maintenance-20261018/retirement-receipt.json",
+    "receipt_sha256": "a59dbbda9d1536f205292bfc8c59d0999630594963a714bbb06c658351bc827e",
+    "deleted_path_journal_sha256": "5bcb902f1743f1a0dbac1d2f27ad3b04e0490bdde4e60b165bfbae434462c4cf",
+    "result": {
+      "allocated_candidate_bytes": 54573449216,
+      "archive_headroom_sufficient_now": true,
+      "deleted_files": 57469,
+      "free_bytes_after": 78422478848,
+      "free_bytes_before": 23936835584,
+      "host_after": {
+        "candidate_hits": [],
+        "inspected": {
+          "cmdline": 487,
+          "cwd": 41,
+          "exe": 41,
+          "fd": 41,
+          "maps": 432
+        },
+        "unavailable": {
+          "cwd": 446,
+          "exe": 446,
+          "fd": 446,
+          "maps": 55
+        }
+      },
+      "manifest_sha256": "3deba21ac6943f483c1b94d4c1ac3d4ef680f78316fdcd43e4637124ddac9313",
+      "observed_free_delta_bytes": 54485643264,
+      "preservation": "Every nondeleted recorded readable file hash, opaque directory identity, symlink, and complete stable-field Docker projection and protected 152 ELF hashes unchanged. Final ELFs remain at original paths.",
+      "protected_elfs_verified": 152,
+      "reserve_plus_envelope_bytes": 69324505088,
+      "scope_note": "Free difference includes concurrent activity on the shared host; no container/volume/source/dataset deletion.",
+      "status": "RETIRED_VERIFIED",
+      "time": 1792331058.4419136
+    },
+    "processes": {
+      "prepare": "59509 joined0",
+      "execute": "50680 joined0",
+      "remaining_owned_maintenance": "none",
+      "docker_stable_projection_preserved": 1379,
+      "unrelated_running_preserved": 6
+    },
+    "preservation_boundary": "772682 retained paths unchanged (direct-parent directory timestamps/size may reflect unlink); all other readable hashes and stat identities checked.152 qualified ELF hashes outside targets and all in-target final/shared ELFs preserved.58 opaque pgdata/secrets root identities checked, interiors not read. Unavailable /proc counts explicitly remain a limit. No container, volume, source, dataset, worktree or current shared cache deletion.",
+    "future_use": "The30 named historical targets are retired partial caches; never reuse incrementally. Rebuild only into fresh/current qualified shared target. Frozen manifest/execution are completed one-shot operations; never replay."
+  },
+  "implementation_archive_catch_up_20261018": {
+    "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_NO_ENGINE",
+    "contract": {
+      "original": "de794eb9a596013ca4976fec8a11fa595394e437",
+      "integrated": "4a8f882",
+      "topology_clarification_original": "d51b32b60c64442e01d5fb28bbbb5c44bdc8dbc7",
+      "topology_clarification_integrated": "96965b5"
+    },
+    "native_bridge": {
+      "status": "SOURCE_REVIEWED_INTEGRATED_TESTS_NOT_RUN",
+      "original": "5c70778a86c4adde90d23cabd86bffc84c9f1cdd",
+      "integrated": "8cf12cb",
+      "base": "c25eb517c9b3d6dbea51d41460c3ee1d5ca44344",
+      "manifest": ".research/lineage-pending-bridge-20261018/.research/native-bridge-source-20261018/manifest.json",
+      "manifest_sha256": "7bffe65ad7cd53a0539703d1a12772c6e6771b24903f47b6c7d313914545b0ed",
+      "sources": [
+        {
+          "path": "apps/bigbrotr/src/storage/rocks/lineage_pending_tests.rs",
+          "bytes": 12718,
+          "sha256": "390447dbb7342c5fdda30802bfeefe9bac1fd04d785759c263a14ad34c3d88cc"
+        },
+        {
+          "path": "apps/bigbrotr/src/storage/rocks/lineage_replay.rs",
+          "bytes": 18796,
+          "sha256": "eabf22ad8b4596448c653efbb0b22c18a54b0802b156e580eb702ae05b20697a"
+        },
+        {
+          "path": "apps/bigbrotr/src/storage/rocks/lineage_replay_tests.rs",
+          "bytes": 29647,
+          "sha256": "88da4a445151424f2c070953477e2a215530254df5e97a067104740d97e6978c"
+        },
+        {
+          "path": "apps/bigbrotr/src/storage/rocks/store.rs",
+          "bytes": 19594,
+          "sha256": "24b9251a4f6048362426e546130d25b2f98a66fdbee0a93fe38f44e438050ff4"
+        }
+      ],
+      "scope": "Read one complete pending batch only under a full-head, no-pending native lineage proof. Validate metadata/root/native sequence/all original inputs before and after read; retain actual PendingBatch allocation through delivery. Current SQL terminal/Control and downstream custody remain separate caller obligations.",
+      "checks": {
+        "rustfmt": "PASS author scoped; compiler not invoked",
+        "diff": "PASS",
+        "original_integrated_blobs": "PASS root exact four-file comparison",
+        "root_review": "Complete final bridge/test changes and existing owning lineage/pending APIs read; no new semantic finding",
+        "tests": "NOT_RUN five authored native groups",
+        "build": "NOT_RUN",
+        "connected_archive": "NOT_RUN"
+      },
+      "limits": "Signed existing history fixture and raw original facts support bridge checks only. Mid-I/O cancellation is source-reviewed, not runtime-demonstrated. No archive CLI integration yet."
+    },
+    "cleanup": "tux_intermediate_retirement_20261018",
+    "worktrees": [
+      ".research/archive-catch-up-contract-20261018",
+      ".research/lineage-pending-bridge-20261018",
+      ".research/archive-catch-up-topology-20261018",
+      ".research/archive-catch-up-native-20261018"
+    ],
+    "processes": "Source agents only; no compiler, native, SQL or Docker operation active. All prior data/artifacts retained. Root finite authority draft remains untracked and not wired; current PG worktree recorded when author freezes."
   }
 }

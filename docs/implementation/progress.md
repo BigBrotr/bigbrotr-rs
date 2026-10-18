@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T13:16:37.004013+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T13:46:05Z on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,13 +8,15 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD/verified remote334ac62.
+Canonical `/home/tux/bigbrotr-rs`, main; last verified remote c25eb51 before the
+current coherent Archive changes. Their next private push is pending below.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
 Exactf4f23db build PASS; harness5a80da94 integrated as6101cda and bound at6a3fa53.
 Actual prepared engine6a3fa53 PASS, qualification docs committed/pushed334ac62.
-Current ref-retirement/checkpoint update pending commit. No merge/rebase is pending.
+Ref retirement and its checkpoint are committed/pushed atc25eb51. The current
+Archive selection/headroom work is below; no merge/rebase is pending.
 
 The four epoch3-or-later recovery modes use existing schema0038 adapters:
 positive recovery, separate source closure, fresh closed-source acquisition
@@ -90,13 +92,44 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: reconcile the bounded next-slice and headroom reviews in
-`.research/installed-prepared-resume-20261018` with the existing M1/P02-T04
-contracts, then specify the missing retained-Archive consumer before implementation.
+Next bounded action: implement the selected finite retained-Archive catch-up
+under P02-T04 Steps3/4/5 and P01-T09 Step4. Contract de794eb9 integrated as4a8f882;
+native proof-bound pending bridge5c70778 integrated as8cf12cb. Root read the full
+new bridge/tests; five test groups are authored, rustfmt/diff checks PASS,
+compilation/tests NOT_RUN. Source manifest7bffe65a is retained in
+`.research/lineage-pending-bridge-20261018/.research/native-bridge-source-20261018`.
+The accepted topology clarification d51b32b is integrated: preserve the current
+prefix and add zero bounds across each immediate sealed topology, using actual
+latest snapshot capture; publish the final complete cut at the target. Full
+unfiltered receipt scans admit all128 possible issued attempts, not only selected
+receipts. No migration or weakening of the existing predecessor guard.
+
+Root is authoring the finite runtime; its untracked
+`apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up/authority.rs`
+is incomplete, not wired and NOT_RUN. Separate writable worktrees contain the
+PG retained-frontier loader (`successor_restart_design`) and native receipt/
+membership custody helpers (`cleanup_review`). Neither agent may run engines,
+builds or the shared cache. The prior native/contract author is finished. Root
+retains all compiler/cache/native/SQL ownership; no new build or engine started.
+The design remains in `next-slice-review.json` under
+`.research/installed-prepared-resume-20261018` (SHAb805cf38); owning contracts
+include the subsequent reviewed zero-extension clarification.
+
+Headroom cleanup completed13:44:18Z, prepare59509/execute50680 joined0.
+`.research/tux-maintenance-20261018` retains script4ad74f58, frozen manifest
+3deba21a (458197150bytes), deletion journal5bcb902f and receipt a59dbbda.
+57469 format-checked single-link compiler intermediates in30 historical targets
+were removed;54573449216allocatedbytes,54485643264observedfreeincrease.
+Free78422478848bytes exceeds unchanged64GiB+577MiB reserve69324505088bytes.
+772682 retained entries,152qualifiedELFs and1379stablecontainer projections
+preserved;6unrelated services running unchanged. Opaque pgdata/secrets interiors
+were untouched, not hashed; unavailable /proc observations remain disclosed.
+All30 historical targets are retired partial caches; never reuse incrementally.
+Current network-1154757 target/cargo-home remain untouched. This one-shot cleanup
+is EXECUTED and must not be replayed. See the existing lab inventory entry
+`tux_intermediate_retirement_20261018` for exact paths/hashes and limits.
 Known originals contain inode-bound Archive custody and cannot be adopted from
-cloned SQL alone; a fresh genuine same-root journey is required. Default Archive/
-export reserve64GiB is not available at24.5GB free; do not reduce it or delete
-evidence. No cleanup or new Archive implementation has started.
+cloned SQL alone; a fresh genuine same-root journey is still required.
 Consumerfc5724c/cdeb470 is frozen: three files, scoped rustfmt/diff and four
 source-only inverse checks PASS; installed engine now separately qualified below. Author manifest49bed9c1
 and independent AI review4e068ef4 are authenticated in source-binding.json under
@@ -167,9 +200,8 @@ build run directory instead of out/artifacts. It failed at transition.py292 befo
 output creation or any engine/SQL/native start. Corrected argument reused the
 untouched source/prepared root; no preparation replay. Failure11e561f4 is retained
 and authenticated by the successful custody audit, not relabelled PASS.
-No owned build/engine remains active. successor_restart_design researches the next
-M1 Archive responsibility; cleanup_review reads regenerable-cache/headroom evidence.
-Both write ignored notes only. Import logical closure, staged tails, ACK/GC,
+No owned build/engine remains active. Current Archive source assignments and
+completed cleanup are recorded above. Import logical closure, staged tails, ACK/GC,
 Archive restart and full M1–M5 remain unfinished.
 
 Prepared ref retirement80251 joined0 after verified main334ac62. Both original
