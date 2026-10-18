@@ -1,18 +1,18 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T18:30Z on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T18:37Z on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and active responsibility
 
-Canonical `/home/tux/bigbrotr-rs`, main7d2d96f7458def34a4f9c0a3084b174a061a9744; remote same revision verified before this continuation.
+Canonical `/home/tux/bigbrotr-rs`, mainf45b1b035fb2577e874e2655afd1e4f00b996cbb; remote same revision verified.
 Root is the sole integrating owner; Tux alone handles development and tests.
 No merge/rebase pending. Proxy traffic correction and its five tests are committed.
 Raw reader name/Id correction26e7e24 and cache retirement7d2d96f are pushed.
-Current root edits fix the remaining scientific-oracle name/Id assertion and
-record the actual failed7d2d96f run plus separate corrected-oracle diagnosis.
-Product/build source unchanged; original FAIL artifacts untouched.
+Scientific-oracle correction and failed7d custody/diagnosis are pushedf45b1b0.
+Current root edits record actual fresh fault qualification and running source-cache
+retirement. Product/build source unchanged; original FAIL artifacts untouched.
 
 Current task: P02-T04 Steps3/4/5, enabling P01-T09 Step4/M1 after selected
 P02-T01 Step5 / P02-T02 Step4 succession work. See the
@@ -96,7 +96,8 @@ Root also found the raw readers/auditors compared a Docker name to its Id.
 Both readers now bind actual name plus unique terminal Id/Name; new templates
 fd64df24(fault)/c023b95d(refusal) preserve all other identity/custody requirements.
 Full bounded deltas and actual d910233 mapping reviewed; hashes/AST PASS,
-independent source review confirms. New engines/full replays remain NOT_RUN.
+independent source review confirms. Fresh fault engine/replay now PASS as below;
+refusal engines/full replays remain NOT_RUN.
 Templates/manifest385c1152/review532250a8 under
 `.research/archive-catch-up-journey-20261018/.research/archive-catch-up-client-name-audit-20261018`.
 Older templates and failed evidence remain unchanged.
@@ -108,11 +109,12 @@ lock/index checksum and streamed complete tar/source closure before removal.
 2,317,864,960 allocated candidate bytes; observed free gain2,311,311,360B,
 free70,222,426,112B at18:16:12Z.877,257 retained entries,219 source/asset pins,
 190ELFs,10native assets and1401 stable container projections verified unchanged.
-Source/index/git and currentnetwork115 remain. No other datasets/native/log interiors
+After that download retirement, source/index/git and currentnetwork115 remained.
+No other datasets/native/log interiors
 were recaptured. Unavailable/proc observations disclosed. Receipt and all original
 records retained; never replay this completed one-shot.
 
-Latest fault run: `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f`.
+Second fault run: `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f`.
 Source7d2d96f7458def34a4f9c0a3084b174a061a9744,
 treef3c2760ea27c67fb26f6e75a737205ad70cc4370. Prepare24597joined0;
 engine4484joined1,18:21:09Z–18:23:28Z. Initial+nine prefix zero; publication-loss
@@ -136,11 +138,55 @@ custody2161joined0 at18:29:42Z: audit-failure-v1.json SHA8877a815fbd24e380a94c83
 basis and nonborrowed containers preserved. Original engineFAIL unchanged.
 Never replay this audit after intentional borrowed-PG reuse.
 
-Next: commit/push correction and evidence, then prepare ONE fresh fault root
-from clean main with
-`.research/archive-renewal-dispatch-20261018/prepare-fault-journey.py` SHAfb429707,
-build9a/audit1164. After actual enginePASS, run strict fault_capture and custody
-fd64df24 before any borrowed-PG reuse. Do not replay any completed root.
+Latest fault qualification PASS: root
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0`,
+sourcef45b1b035fb2577e874e2655afd1e4f00b996cbb,
+tree944c4c4bea0c38514a5add02a495a1837c43d60b. Preparation8912joined0;
+engine74147joined0,18:31:04Z–18:33:45Z. All14 actual processes unforced/reaped,
+expected error4 for both reply losses, zero for resolution/exact retry. Actual
+proxy server COMMIT/no-client-reply: publication79300frames/26connections,
+frontier20388frames/1connection, both joined0. Full36states/75tables/22facts,
+7receipts,snapshot8/frontier4→7 and91negative controls PASS.
+
+Strict actual raw replay15730joined0,18:34:01Z–18:34:23Z, binds593files.
+Read-only custody16792joined0 at18:34:51Z: audit-v1.json SHA
+e40efc94d5485b784379cd37ae922b7bbd5cd24c6cc01df769ff96f1a3a65ef0,
+1981source/190ELFs/14processes. OriginalSQLbasis/nonborrowed containers unchanged;
+PG/client stopped0/143/PID0/noOOM; cleanup/missing/unrelated errors empty.
+Never replay this audit after intentional PG reuse. No task checkbox closes;
+six refusals/cancellation, held-attempt custody/totalcap and broader gates remain.
+
+## Current maintenance and next action
+
+Owned cache retirement46202 is ACTIVE, only root may join/stop it. Folder
+`.research/tux-maintenance-cargo-source-headroom-20261018`;
+helper04e5ed9101d4e958fea33cbd4090bdf4dc2577859588c13386e918d79804e3b8,
+author manifestde665665. Root full636draft+finaldelta and independent644source
+review closed without blocker; all10authorfiles authenticated. Complete proposal
+selects9old Cargo source caches, each266packages identical to retained
+private-panel-referrer-cc4aa3a. Currentnetwork115 excluded.133209regularfiles,
+20547directories,765executable-bit source files; all selected/counterpart ELF,
+symlink,special,multilink nodes refuse. Candidate parents remain.
+
+Actual prepare84124joined0 at18:35:39Z: fresh complete byte/metadata/history
+closure PASS. Frozen compressed manifest15f265d0f6e1b4284efa7a7bce35efdfe6731acc681e2ec85c97fc13dde90ad4,
+8865662bytes;176740entries,153756selected,22984retained,54source/asset pins,
+190ELFs/10assets/1403containers. Root manifest review14945joined0. Allocated
+candidates2235510784B; free69411348480B before manifest. Actual deletion result
+and full postcheck still PENDING. No runtime/compiler/SQL or other cleanup may
+start until this frozen container/protected scope closes.
+
+Next: join46202 and inspect its original receipt/error/journal. On success,
+record exact result and commit/push maintenance completion,
+then prepare one fresh `current-join` refusal root from clean main using
+`.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py` SHA5b61ccf3,
+build9a/audit1164,case`current-join`. Run its actual installed engine, strict
+refusal_capture and custodyc023b95d before any borrowed-PG reuse. Each subsequent
+case has its own fresh root and coherent checkpoint; no completed root replay.
+If maintenance fails/interruption occurs, preserve everything and reconcile
+frozenmanifest/filesystem separately: final fsynced removal may precede journal
+line. Never reset/replay execution-started. Dataset/log/worktree/native assets
+are outside selection, not independently recaptured.
 
 ## Integrated fault/refusal sources and pending work
 
@@ -148,7 +194,7 @@ Fault original29d43a0 integrated005348b; corrections7c2628f/c7b643d integrated
 4aafcb3/bc53ba3. Exact final five blobs match frozen author source; full root
 source review and33+24 scoped controls recorded. First fault run failed before
 the intended injection;7d completed four phases then failed the final name
-assertion. Full fresh fault qualification remains incomplete as above.
+assertion. Freshf45b fault qualification now passes as above.
 Design: publication COMMIT reply loss, fresh resolver reuses original receipt,
 first bridge COMMIT reply loss, fresh original-operation resolution, exact retry.
 Actual proxy join and worker/driver/backend custody precede native inspection.
@@ -176,17 +222,20 @@ current unchanged9a fault/refusal sequence, then build the new probe.
 Refusal original custody template24620f51/manifeste3c7f68a remains historical;
 complete456line delta is now read. Latest corrected templatec023b95d as above.
 Preparation5b61ccf3 in archive-renewal-dispatch is reviewed,
-closed-six-selector, unchanged admission. No runtime authority is delegated.
+closed-six-selector, unchanged admission. No runtime authority is delegated. New attempt custody template517c6b06 is
+source-frozen under journeyWT/.research/archive-attempt-limits-custody-20261018;
+manifest76abaab4. Root full762line review and214line driver recheck closed, all9
+artifacts and7fixture sources authenticated; no concrete blocker. Future newly
+qualifiedbuild/engine/rawreplay/audit remain NOT_RUN.
 
 ## Resources and preservation
 
-Maintenance60947 and fault engine4484 have joined; no root-owned product runtime/
-compiler/native/SQL process remains active. Source-only agents inspect future
-export admission, a scoped failed-run custody template and duplicate old Cargo
-source-cache headroom. No further cleanup executed. The later256MiB gate needs
-five completed signed exports (not five formats/concurrent-five); current
-configured floor705.125MiB is not measured RSS. A reader-specific measured profile
-and precise grant lifetimes remain future work under existing contracts.
+Fault74147/replay15730/audit16792 and cache preparation84124 have joined0.
+Only maintenance46202 is active; agents performed source-only work. All artifacts
+and previous failures remain. The later256MiB gate requires five completed signed
+exports, not five formats/concurrent-five. Current admission705.125MiB is not
+measured RSS. Reader-only measured profile and precise grant lifetimes remain
+future work under existing contracts; no admission or product limit changed.
 Compiler root `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,
 owner8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.

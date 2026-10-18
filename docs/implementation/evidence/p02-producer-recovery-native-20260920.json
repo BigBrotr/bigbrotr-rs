@@ -35305,9 +35305,328 @@
               }
             ],
             "limits": "Actual selected COMMIT/no-client-reply witnesses and all four phase captures exist, but original final verifier failed and strict successful raw replay is NOT_RUN. Separate corrected-oracle offline diagnosis does not promote original engineFAIL. No fresh-engine qualification inferred."
+          },
+          {
+            "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_FAULTS",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0",
+            "source": "f45b1b035fb2577e874e2655afd1e4f00b996cbb",
+            "tree": "944c4c4bea0c38514a5add02a495a1837c43d60b",
+            "prepare_session": 8912,
+            "prepare_exit_code": 0,
+            "engine_session": 74147,
+            "engine_exit_code": 0,
+            "wrapper": {
+              "command": [
+                "/usr/bin/python3",
+                "-B",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/source/experiments/acquisition-scope/bindings.py",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0",
+                "--installed-archive-catch-up-faults",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+              ],
+              "source": "f45b1b035fb2577e874e2655afd1e4f00b996cbb",
+              "started_at": "2026-10-18T18:31:04.325638+00:00",
+              "exit_code": 0,
+              "finished_at": "2026-10-18T18:33:45.996487+00:00"
+            },
+            "completed_prefix": [
+              "abandon1",
+              "retire1",
+              "live2",
+              "abandon2",
+              "retire2",
+              "live3",
+              "source3",
+              "abandon3",
+              "retire3"
+            ],
+            "completed_fault_phases": [
+              "publication-loss",
+              "frontier-loss",
+              "resolution",
+              "exact-retry"
+            ],
+            "oracle": {
+              "status": "PASS",
+              "installed_processes": 14,
+              "continuation_processes": 13,
+              "control_tables": 75,
+              "snapshots": 36,
+              "scientific_records": 22,
+              "archive_receipts": 7,
+              "family_counts": [
+                13,
+                2,
+                2,
+                2,
+                3
+              ],
+              "initial_frontier_revision": 4,
+              "final_frontier_revision": 7,
+              "final_snapshot": 8,
+              "publication_receipt_reused": true,
+              "first_bridge_operation_reused": true,
+              "exact_retry": true,
+              "same_physical_roots": true
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "count": 91,
+              "rejected": [
+                "unknown-process",
+                "forced-process",
+                "unknown-proxy",
+                "proxy-reader-alive",
+                "client-id-instead-of-name",
+                "proxy-client-mismatch",
+                "missing-after-complete",
+                "wrong-root",
+                "duplicate-attempt",
+                "missing-zero-stream",
+                "original-attempt-xmin",
+                "original-operation-xmin",
+                "old-input-bytes",
+                "frontier-journal-bytes",
+                "native-sequence",
+                "retry-added-revision",
+                "unrelated-acquisition_gaps",
+                "unrelated-acquisition_jobs",
+                "unrelated-acquisition_scope_commands",
+                "unrelated-acquisition_scopes",
+                "unrelated-acquisition_selectors",
+                "unrelated-allocation_domains",
+                "unrelated-archive_attempts",
+                "unrelated-archive_coordinators",
+                "unrelated-archive_frontier_batches",
+                "unrelated-archive_frontier_snapshots",
+                "unrelated-archive_owner_sessions",
+                "unrelated-archive_persistence",
+                "unrelated-archive_pin_recoveries",
+                "unrelated-archive_snapshot_pins",
+                "unrelated-artifact_files",
+                "unrelated-artifacts",
+                "unrelated-browser_sessions",
+                "unrelated-config_revisions",
+                "unrelated-consumer_frontier_revisions",
+                "unrelated-consumer_frontiers",
+                "unrelated-consumers",
+                "unrelated-cursor_key_lifecycle",
+                "unrelated-cursor_key_materials",
+                "unrelated-cursor_key_transitions",
+                "unrelated-cursor_keyrings",
+                "unrelated-cursor_keys",
+                "unrelated-datasets",
+                "unrelated-export_execution_units",
+                "unrelated-export_jobs",
+                "unrelated-export_resume_commands",
+                "unrelated-import_checkpoints",
+                "unrelated-import_record_closures",
+                "unrelated-ingest_activations",
+                "unrelated-ingest_successions",
+                "unrelated-ingest_terminal_transactions",
+                "unrelated-initial_ingest_activations",
+                "unrelated-initial_ingest_successions",
+                "unrelated-job_admissions",
+                "unrelated-job_input_bounds",
+                "unrelated-jobs",
+                "unrelated-local_accounts",
+                "unrelated-local_credentials",
+                "unrelated-login_buckets",
+                "unrelated-management_audit",
+                "unrelated-management_commands",
+                "unrelated-network_routes",
+                "unrelated-owner_challenges",
+                "unrelated-owner_epochs",
+                "unrelated-policy_revisions",
+                "unrelated-principal_grants",
+                "unrelated-principals",
+                "unrelated-producer_checkpoints",
+                "unrelated-producer_epochs",
+                "unrelated-producer_input_bindings",
+                "unrelated-producer_outcomes",
+                "unrelated-producer_requests",
+                "unrelated-producer_slots",
+                "unrelated-projection_chunk_bounds",
+                "unrelated-projection_chunks",
+                "unrelated-projection_generations",
+                "unrelated-reauthentication_proofs",
+                "unrelated-relay_access_contexts",
+                "unrelated-relay_endpoints",
+                "unrelated-relay_enrollment_changes",
+                "unrelated-relay_enrollments",
+                "unrelated-relay_registration_commands",
+                "unrelated-retention_claims",
+                "unrelated-role_instances",
+                "unrelated-schema_versions",
+                "unrelated-scope_grant_changes",
+                "unrelated-scope_grants",
+                "unrelated-snapshot_leases",
+                "unrelated-source_streams",
+                "unrelated-topology_generations",
+                "unrelated-topology_streams"
+              ]
+            },
+            "phases": [
+              {
+                "step": "publication-loss",
+                "exit_code": 4,
+                "unforced_reaped": true,
+                "proxy_terminal": {
+                  "event": "terminal",
+                  "mode": "after-complete",
+                  "target": "publication",
+                  "connections": 26,
+                  "bytes": 6950682,
+                  "frames": 79300,
+                  "data_queries": 1,
+                  "data_commits": 1,
+                  "server_complete": 1,
+                  "client_complete": 0,
+                  "faults": 1,
+                  "owner_requests": 0,
+                  "owner_forwarded": 0,
+                  "owner_complete": 0,
+                  "guard_rejections": 0,
+                  "serialization_rejections": 0,
+                  "rejection_sequence": [],
+                  "auth_finals_omitted": 0,
+                  "frontend_queries": 1679,
+                  "coordinator_inserts": 0,
+                  "pin_claim_injections": 0,
+                  "pin_rejections": [],
+                  "session_mutations_complete": 0,
+                  "reader_queries": 0,
+                  "capture_verify_requests": 0,
+                  "resume_authority_requests": 0,
+                  "resume_expiry_rejections": 0,
+                  "resume_expiry_idle": 0,
+                  "unexpected": 0,
+                  "profile": "retained-catch-up",
+                  "frame_limit": 131072,
+                  "connection_limit": 64
+                }
+              },
+              {
+                "step": "frontier-loss",
+                "exit_code": 4,
+                "unforced_reaped": true,
+                "proxy_terminal": {
+                  "event": "terminal",
+                  "mode": "after-complete",
+                  "target": "control-frontier",
+                  "connections": 1,
+                  "bytes": 2154089,
+                  "frames": 20388,
+                  "data_queries": 1,
+                  "data_commits": 1,
+                  "server_complete": 1,
+                  "client_complete": 0,
+                  "faults": 1,
+                  "owner_requests": 0,
+                  "owner_forwarded": 0,
+                  "owner_complete": 0,
+                  "guard_rejections": 0,
+                  "serialization_rejections": 0,
+                  "rejection_sequence": [],
+                  "auth_finals_omitted": 0,
+                  "frontend_queries": 1089,
+                  "coordinator_inserts": 0,
+                  "pin_claim_injections": 0,
+                  "pin_rejections": [],
+                  "session_mutations_complete": 0,
+                  "reader_queries": 0,
+                  "capture_verify_requests": 0,
+                  "resume_authority_requests": 0,
+                  "resume_expiry_rejections": 0,
+                  "resume_expiry_idle": 0,
+                  "unexpected": 0,
+                  "profile": "retained-catch-up",
+                  "frame_limit": 131072,
+                  "connection_limit": 64
+                }
+              },
+              {
+                "step": "resolution",
+                "exit_code": 0,
+                "unforced_reaped": true,
+                "proxy_terminal": null
+              },
+              {
+                "step": "exact-retry",
+                "exit_code": 0,
+                "unforced_reaped": true,
+                "proxy_terminal": null
+              }
+            ],
+            "raw_replay": {
+              "session": 15730,
+              "joined_exit_code": 0,
+              "wrapper": {
+                "command": [
+                  "/usr/bin/python3",
+                  "-B",
+                  "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/source/experiments/ingest-bootstrap/installed_archive_catch_up_fault_capture.py",
+                  "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0"
+                ],
+                "started_at": "2026-10-18T18:34:01.485182+00:00",
+                "engine_join_attestation": "Root tool74147 joined0",
+                "exit_code": 0,
+                "finished_at": "2026-10-18T18:34:23.703234+00:00"
+              },
+              "report": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/root-independent-replay.json",
+                "bytes": 151926,
+                "sha256": "ee74dd972354e7bb78edf1d173b926be922e00bb6c8923d892aafa18cea91d40"
+              },
+              "bound_files": 593
+            },
+            "custody": {
+              "session": 16792,
+              "joined_exit_code": 0,
+              "status": "PASS_READ_ONLY_INSTALLED_ARCHIVE_CATCH_UP_FAULT_CUSTODY",
+              "source_files": 1981,
+              "protected_elfs": 190,
+              "installed_processes": 14,
+              "report": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/audit-root/audit-v1.json",
+                "bytes": 382081,
+                "sha256": "e40efc94d5485b784379cd37ae922b7bbd5cd24c6cc01df769ff96f1a3a65ef0"
+              }
+            },
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "bound_files": [
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/root-preparation.json",
+                "bytes": 29810,
+                "sha256": "d0519c35b906cf4d467812112a7a0ab850a759cd9d181fedcac2e4613a60fbe3"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/root-engine-result.json",
+                "bytes": 664,
+                "sha256": "f5f9e3e7eb17edee958858ce588e3d376e11abe3dcba917a3fb8ecfcc18dca50"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/root-replay-result.json",
+                "bytes": 538,
+                "sha256": "90ee70c492eeca631e71a1472e63ec2ab21d56ef03d6479a18e316aa45ea83b2"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/bindings/result.json",
+                "bytes": 20640,
+                "sha256": "f97a4560d899dab6f4f626a4b7be9edd3b4beaef2f879e2eba5e1ebe1bc8e026"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/bindings/archive-catch-up-faults.json",
+                "bytes": 23077681,
+                "sha256": "a444df5f9bd8886b930a1897231d33850b7c00d8de73cfa0d6576a6b9fce32a8"
+              }
+            ],
+            "limits": "Only selected same-root publication/first-frontier after-COMMIT reply loss, original resolution and exact retry. Initial+nine prefix and4fault processes, full captured science/raw custody actually exercised. Does not qualify six refusal cases,attempt custody/totalcap,capacity/RSS,ACK/GC,broad M1-M5 or release. Original d910/7d FAIL unchanged. Never replay custody after intentional PG reuse."
           }
         ],
-        "observed_at": "2026-10-18T18:23:28.151641+00:00"
+        "observed_at": "2026-10-18T18:33:45.996487+00:00"
       },
       "archive_fault_proxy_profile": {
         "status": "HARNESS_CORRECTION_REVIEWED_COMPONENTS_PASS_ENGINE_NOT_RUN",
@@ -35569,7 +35888,25 @@
         "root_review": "Complete4 new owners, full changed3hook delta, complete existing history helper/lifetime/inputs/archive_coordinator/inventory/plan and finite contracts read. Final keepalive delta read. All7 source blobs and28 final manifest artifacts authenticated; compiler/runtime not run.",
         "author_checks": "Source-only AST/scoped rustfmt/three exact inverse paths PASS; artificial45snapshots16context mutations,8finish+3holder-finally mocks,4raw helpers20mutations+2name/Id controls PASS. These are author pure evidence, not executed engine qualification.",
         "finding": "Independent review found600s client keepalive shorter than admitted setup1800/cap4200. acc9bea selects10800s only for new profile; old600s and product deadlines unchanged. No remaining concrete source blocker in stated review scope.",
-        "limits": "Actual compilation/Clippy, engine resource/runtime envelope and full raw replay NOT_RUN. Typed holder does not substitute for queued-COMMIT/live-writer evidence. Integrate/build after current unchanged9a fault/refusal sequence. Original69a branch and all ignored artifacts preserved."
+        "limits": "Actual compilation/Clippy, engine resource/runtime envelope and full raw replay NOT_RUN. Typed holder does not substitute for queued-COMMIT/live-writer evidence. Integrate/build after current unchanged9a fault/refusal sequence. Original69a branch and all ignored artifacts preserved.",
+        "custody_template": {
+          "status": "ROOT_SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+          "template": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-limits-custody-20261018/audit-attempt-limits-final.py",
+            "bytes": 47363,
+            "sha256": "517c6b06e0bae2ebb41b2f599bcc7320e35d8c112f660941570e724ef4c84995"
+          },
+          "manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-limits-custody-20261018/manifest-final.json",
+            "bytes": 2555,
+            "sha256": "76abaab4f035db76e3aca79b7d15472a256783373def823805b226a97ea38c71"
+          },
+          "scope": "Complete762line final template in bounded untruncated chunks; complete214line current attempt driver reread; complete manifest/readscope. Sevenacc9bea owners and Control/local/native/input boundaries reuse prior complete root review; current full faultcustody fd64/build9a chain and failure delta also read this continuation. No full new reread of unchanged global scientificmodel/native library/migrations. Source review only. Newbuild/actualattemptengine/fullrawreplay/audit NOT_RUN. Does not integrate acc9bea or authorize source mismatch. Incomplete intermediate drafts preserved.",
+          "root_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018/.research/archive-attempt-limits-custody-20261018/root-review-final.json",
+            "sha256": "f908ff15c5ce47300bfeb780420994bba7940a186611572a18066679eaa53660"
+          }
+        }
       },
       "archive_download_headroom": {
         "status": "PASS_HISTORICAL_CARGO_DOWNLOADS_RETIRED_VERIFIED",
@@ -35688,7 +36025,7 @@
         "limits": "No replay: one-shot retirement is complete. Original datasets/native roots/logs outside51Cargo homes were not recaptured or selected. Source/index/git trees, explicit source/artifact pins and all stable container projections verified. Unavailable /proc entries remain unproven. Free-space difference includes concurrent shared-host activity. Future Cargo may redownload exact checksum-bound packages."
       },
       "archive_fault_oracle_identity_correction": {
-        "status": "SOURCE_CORRECTION_OFFLINE_DIAGNOSIS_PASS_FRESH_ENGINE_NOT_RUN",
+        "status": "SOURCE_CORRECTION_FRESH_ENGINE_RAW_REPLAY_AND_CUSTODY_PASS",
         "source_file": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
         "source_sha256": "e996d04ee39f5586b0edee76c77b256e855f133a2fd7bea988243c884c46c273",
         "finding": "Driver and bindings emit bigbrotr-acquisition-binding- plus seven source hex characters. Scientific verifier incorrectly required64hex container Id, after separate raw reader/auditor corrections had fixed those consumers.",
@@ -35711,7 +36048,173 @@
           "scope": "Exact3line diff, actual bindings name construction, runner/continuation parameter, complete wire argv equality, unique terminal Id/Name raw binding and adjacent refusal/attempt-limit binders/oracles.",
           "findings": "Correct NAME generated from source[:7]; Id remains separately bound. Two controls discriminate grammar and exact proxy argv. No adjacent64hex-client assumption found.",
           "limits": "Source-only AI review; no test/engine/native/SQL/tool execution delegated."
+        },
+        "qualification": {
+          "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_FAULTS",
+          "source": "f45b1b035fb2577e874e2655afd1e4f00b996cbb",
+          "custody_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/audit-root/audit-v1.json",
+            "bytes": 382081,
+            "sha256": "e40efc94d5485b784379cd37ae922b7bbd5cd24c6cc01df769ff96f1a3a65ef0"
+          },
+          "raw_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/root-independent-replay.json",
+            "bytes": 151926,
+            "sha256": "ee74dd972354e7bb78edf1d173b926be922e00bb6c8923d892aafa18cea91d40"
+          },
+          "scope": "Only selected same-root publication/first-frontier after-COMMIT reply loss, original resolution and exact retry. Initial+nine prefix and4fault processes, full captured science/raw custody actually exercised. Does not qualify six refusal cases,attempt custody/totalcap,capacity/RSS,ACK/GC,broad M1-M5 or release. Original d910/7d FAIL unchanged. Never replay custody after intentional PG reuse."
         }
+      },
+      "archive_fault_qualification": {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_FAULTS",
+        "source": "f45b1b035fb2577e874e2655afd1e4f00b996cbb",
+        "custody_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/audit-root/audit-v1.json",
+          "bytes": 382081,
+          "sha256": "e40efc94d5485b784379cd37ae922b7bbd5cd24c6cc01df769ff96f1a3a65ef0"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-f45b1b0/root-independent-replay.json",
+          "bytes": 151926,
+          "sha256": "ee74dd972354e7bb78edf1d173b926be922e00bb6c8923d892aafa18cea91d40"
+        },
+        "scope": "Only selected same-root publication/first-frontier after-COMMIT reply loss, original resolution and exact retry. Initial+nine prefix and4fault processes, full captured science/raw custody actually exercised. Does not qualify six refusal cases,attempt custody/totalcap,capacity/RSS,ACK/GC,broad M1-M5 or release. Original d910/7d FAIL unchanged. Never replay custody after intentional PG reuse."
+      },
+      "archive_source_cache_headroom": {
+        "status": "PREPARATION_PASS_EXECUTION_RUNNING",
+        "root": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018",
+        "source": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/retire-cargo-sources.py",
+          "bytes": 35113,
+          "sha256": "04e5ed9101d4e958fea33cbd4090bdf4dc2577859588c13386e918d79804e3b8"
+        },
+        "manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/manifest.json",
+          "bytes": 1709,
+          "sha256": "de6656653be7eb0521599a67aa8b3dfe5a657e9e28febb080a1a799a3da39fd0"
+        },
+        "source_notes": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/source-notes.json",
+          "bytes": 10054,
+          "sha256": "d7c29d00a6c897dc47233857ad0e6e1ddc8a5159b914cdfbd7766c0e34a9e852"
+        },
+        "root_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/root-source-review.json",
+          "bytes": 1129,
+          "sha256": "e9c1e141cfe54129cc91e8d495ac60d1eaa6910231ac3e2241c7ffef3c735e9c"
+        },
+        "proposal": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/proposal.json",
+          "bytes": 36652,
+          "sha256": "bad15085bdcff02f55c2af82d93857503dbe5e47804b824c9301dc6bde27c729"
+        },
+        "prepare_session": 84124,
+        "candidate_allocated_bytes": 2235510784,
+        "candidate_regular_files": 133209,
+        "candidate_directories": 20547,
+        "candidate_executable_bit_files": 765,
+        "packages_per_root": 266,
+        "selected_old_roots": 9,
+        "retained_counterpart": "private-panel-referrer-cc4aa3a",
+        "review": "Root complete636draft+finaldelta; recovery_review full draft/baseline diff/finaldelta; all10authorfiles authenticated. No concrete blocker. Runtime fresh equivalence/noELF/stopped owners still required before deletion.",
+        "limits": "Only exact package source caches, parent roots retained; counterpart byte/path/mode/owner/link/mtime equivalence mandatory. No currentnetwork115/worktrees/datasets/logs/native assets. Interrupted final unlink may be unjournaled: reconcile frozenmanifest/filesystem and preserve counterpart; never autoreplay.",
+        "prepare_exit_code": 0,
+        "prepare_wrapper": {
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/retire-cargo-sources.py",
+            "prepare"
+          ],
+          "started_at": "2026-10-18T18:35:12.725678+00:00",
+          "preceding_fault_actual_joins": {
+            "engine74147": 0,
+            "replay15730": 0,
+            "audit16792": 0
+          },
+          "exit_code": 0,
+          "finished_at": "2026-10-18T18:35:39.858359+00:00"
+        },
+        "frozen_manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/frozen-manifest.json.gz",
+          "bytes": 8865662,
+          "sha256": "15f265d0f6e1b4284efa7a7bce35efdfe6731acc681e2ec85c97fc13dde90ad4"
+        },
+        "frozen_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-source-headroom-20261018/root-manifest-review.json",
+          "bytes": 5357,
+          "sha256": "0b2c79c57523fab89a74374d17e16fb8c1ce751a329722a7871df4bb20612508"
+        },
+        "execution_session": 46202,
+        "summary": {
+          "allocated_candidate_bytes": 2235510784,
+          "by_target": [
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-73e6517/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f660ab8/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9fa8b98/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-rollback-ed2a93b/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-324b8eb/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-http-53c6c9d/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248393728,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-32dd58d/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            },
+            {
+              "allocated_bytes": 248389632,
+              "entries": 17084,
+              "files": 14801,
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f"
+            }
+          ],
+          "delete_directories": 20547,
+          "delete_entries": 153756,
+          "delete_files": 133209,
+          "free_bytes_observed": 69411348480,
+          "projected_free_bytes": 71646859264,
+          "protected_elfs": 190,
+          "reserve_plus_envelope_bytes": 69324505088,
+          "retained_entries": 22984
+        },
+        "containers": 1403,
+        "input_pins": 54
       }
     }
   }
