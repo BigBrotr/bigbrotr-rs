@@ -1,17 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:18Z on Tux. Goal **ACTIVE**, verified with the goal control
+Observed 2026-10-18T19:22Z on Tux. Goal **ACTIVE**, verified with the goal control
 following the owner's explicit resume. M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`d716b99947f13bf22726c044836f97ad131c3f90`, already pushed and verified remotely.
+`a99c041769a791d5c923be2b3f555881674a7553`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Root's current documentation edits record verified cache and redundant-branch
-retirement, future helper/export source reviews and this checkpoint. Product source
-is unchanged; the next coherent documentation commit follows this recorded HEAD.
+No merge/rebase pending. Root's current documentation edits preserve the failed
+initial prefix of the current-join refusal run. Product source is unchanged.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -80,7 +79,18 @@ assigned to the difference from candidate bytes. Reserve69324505088B remains.
 Receipt and complete153756-entry journal are bound in existing evidence/inventory.
 This one-shot executor is complete; never replay it. No runtime remains active.
 
-Save/push this coherent completion checkpoint, then prepare **one fresh current-join refusal** from
+The first current-join attempt at a99c041 failed before the selected refusal.
+Prepare56594 joined0; engine46140 joined1 at19:19:47Z. Initial CLI exited4,
+unforced/reaped in1.900s: `initial Sync deadline; preserve original outcome`.
+No Archive attempt/frontier was issued; full75-table diagnostics and raw artifacts
+remain at `runs/ingest-succession-archive-catch-up-refusal-current-join-engine-a99c041`.
+Limited read-only custody22494 joined0, SHA13cc824a, binds2084files/190ELFs,
+1402unchanged nonborrowed containers and original SQLbasis. PG/client stopped0/143.
+The exact timed-out Sync sub-await is unknown; no false refusal PASS.
+
+Root and bounded source review found no demonstrated blocker to one unchanged
+fresh trial; exact sub-await remains unknown. Checkpoint/push this failure, then
+prepare **one fresh unchanged-product/current-join attempt** from
 clean main with `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
 (SHA5b61ccf3), build9a/audit1164. Run actual engine, strict
 `installed_archive_catch_up_refusal_capture.py` replay and latest custody template
@@ -90,7 +100,8 @@ before borrowed-PG reuse. Template lives under journeyWT's
 
 The six cases are current-join, orphan-history, family-counts, missing-input,
 frontier-cancel and frontier-control-loss. All six actual engines/replays are
-NOT_RUN; artificial/model/custody-helper checks do not qualify them. Each case
+NOT_RUN at the selected refusal boundary; the a99 initial failure is separate.
+Artificial/model/custody-helper checks do not qualify them. Each case
 needs its own genuine initial→terminal3 setup, unique clean source revision/root
 and coherent evidence checkpoint. Do not prepare multiple cases at one HEAD:
 the client name includes source7. Preserve each original failure.
@@ -146,9 +157,10 @@ No remote branch or external lab was changed.
 
 ## Resource custody and remaining scope
 
-All fault/replay/audit/maintenance processes above have joined. All source-only
-agents have completed their bounded work and are idle. Next runtime is the
-root-owned current-join refusal, not yet started at this observation.
+All fault/refusal-prefix/replay/audit/maintenance processes above have joined.
+Only successor_restart_design is doing bounded read-only source diagnosis;
+other agents are idle. No runtime currently active. A repeated initial Sync
+timeout requires targeted diagnosis, not indefinite retry or relaxed deadlines.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner
 8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.
