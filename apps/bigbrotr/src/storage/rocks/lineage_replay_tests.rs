@@ -9,6 +9,9 @@ static NOT_CANCELLED: AtomicBool = AtomicBool::new(false);
 #[path = "successor_handoff_tests.rs"]
 mod successor_handoff_tests;
 
+#[path = "lineage_pending_tests.rs"]
+mod lineage_pending_tests;
+
 fn stored_input(f: &Fixture, epoch: u64, sequence: u64, bytes: &[u8]) {
     let path = f
         .path()

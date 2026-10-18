@@ -4,12 +4,30 @@ use super::lineage::{NativeSuccessorRecovery, RetainedLineage, RetainedTerminalK
 use super::producer_recovery::{RecoveryContext, ResolvedProducerRequest};
 use super::source_closure::Prefix;
 use super::{
-    AdmissionError, BootstrapError, IngestRecovery, ProducerRecoveryError, ProducerRecoveryLimits,
+    AdmissionError, BootstrapError, IngestRecovery, PendingBatch, PendingError, PendingReadLimits,
+    ProducerRecoveryError, ProducerRecoveryLimits,
 };
 use crate::{runtime::OwnedPermit, storage::rocks::succession::PredecessorTerminalKind};
-use bigbrotr_model::{Digest256, ProducerEpoch, ProducerRequestId, RequestSequence};
+use bigbrotr_model::{
+    Digest256, ProducerEpoch, ProducerRequestId, RequestSequence, SourceRecordId,
+};
 use sha2::{Digest, Sha256};
-use std::sync::atomic::AtomicBool;
+use std::{fmt, sync::atomic::AtomicBool};
+
+/// A historical pending read never turns missing data into an Archive result.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LineagePendingError {
+    Proof(BootstrapError),
+    Read(PendingError),
+    OutsideVerifiedCut,
+    RequiredBatchMissing,
+}
+impl fmt::Display for LineagePendingError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "verified lineage pending read failed: {self:?}")
+    }
+}
+impl std::error::Error for LineagePendingError {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct LineageEpochSummary {
@@ -330,6 +348,83 @@ impl ResolvedLineage<'_> {
     }
     pub fn validate(&self, cancelled: &AtomicBool) -> Result<(), BootstrapError> {
         self.lineage.validate(self.recovery, cancelled)
+    }
+
+    /// Read one complete original batch under the full native-head proof.
+    /// SQL terminal state, current Control and Archive authority remain caller
+    /// obligations. The returned bytes retain their grant but confer no writer,
+    /// publication or acknowledgement capability. The caller keeps this proof
+    /// and its native owner alive and revalidates before downstream effects.
+    pub fn read_complete_pending_batch(
+        &self,
+        first: SourceRecordId,
+        limits: PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<PendingBatch, LineagePendingError> {
+        // Admit the complete pending allocation before even rereading sidecars.
+        // The snapshot reader independently enforces the same floor.
+        let required = limits
+            .required_data_bytes()
+            .map_err(LineagePendingError::Read)?;
+        if permit.request().units().data_bytes() < required || permit.request().units().items() == 0
+        {
+            return Err(LineagePendingError::Read(
+                PendingError::InsufficientReservation,
+            ));
+        }
+        if self.verified_through()
+            != self
+                .lineage
+                .native_head()
+                .manifest()
+                .identity()
+                .owner_epoch
+                .get()
+            || self.lineage.pending_target().is_some()
+        {
+            return Err(LineagePendingError::Proof(BootstrapError::StateMismatch));
+        }
+        self.validate(cancelled)
+            .map_err(LineagePendingError::Proof)?;
+        if first.dataset_id != self.recovery.manifest().identity().dataset_id {
+            return Err(LineagePendingError::Read(PendingError::ForeignDataset));
+        }
+        let entry = self
+            .lineage
+            .entry(first.owner_epoch.get())
+            .filter(|entry| {
+                first.shard_id == entry.manifest().identity().shard_id
+                    && first.owner_epoch.get() <= self.verified_through()
+                    && first.sequence.get() <= entry.source_through()
+            })
+            .ok_or(LineagePendingError::OutsideVerifiedCut)?;
+        let result = self
+            .recovery
+            .store
+            .read_pending_batch(first, limits, permit, cancelled)
+            .map_err(LineagePendingError::Read)
+            .and_then(|batch| batch.ok_or(LineagePendingError::RequiredBatchMissing))
+            .and_then(|batch| {
+                let last = batch.batch().last();
+                if batch.batch().first() != first
+                    || last.dataset_id != first.dataset_id
+                    || last.shard_id != first.shard_id
+                    || last.owner_epoch != first.owner_epoch
+                    || last.sequence.get() > entry.source_through()
+                {
+                    Err(LineagePendingError::OutsideVerifiedCut)
+                } else {
+                    Ok(batch)
+                }
+            });
+        // Always check after the snapshot read, including its failures. Preserve
+        // its original error if validation also fails; neither outcome advances
+        // a cursor or delivers a partial batch.
+        let validated = self.validate(cancelled).map_err(LineagePendingError::Proof);
+        let batch = result?;
+        validated?;
+        Ok(batch)
     }
 
     pub fn matches_recorded(

@@ -130,7 +130,9 @@ pub use lineage::{RetainedLineage, RetainedLineageEntry, RetainedTerminalKind};
 
 #[path = "lineage_replay.rs"]
 mod lineage_replay;
-pub use lineage_replay::{LineageEpochSummary, LineageResolution, ResolvedLineage};
+pub use lineage_replay::{
+    LineageEpochSummary, LineagePendingError, LineageResolution, ResolvedLineage,
+};
 
 #[path = "lineage_effects.rs"]
 mod lineage_effects;
