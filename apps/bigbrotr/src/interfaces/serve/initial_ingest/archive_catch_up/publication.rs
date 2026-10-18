@@ -130,7 +130,19 @@ pub(super) async fn run(
     } else {
         None
     };
+    // With no new native writer, no Publisher retains the manager reservation.
+    // Still admit manager + cut + original intent together before any bridge.
+    let manager_preflight = if prepared.is_none() {
+        Some(
+            context
+                .prepare_manager(authority, owner, Instant::now() + OPERATION)
+                .await?,
+        )
+    } else {
+        None
+    };
     peak(root, budget, &native_budget)?;
+    drop(manager_preflight);
 
     let (selected, absent): (Vec<_>, Vec<_>) = std::mem::take(&mut inventory.attempts)
         .into_iter()

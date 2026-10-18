@@ -140,7 +140,10 @@ original-prefix counts before any new publication and added an equal-total,
 different-distribution refusal test. Replacement tests cover original topology,
 absent multiheader refusal and conflicting duplicate presence. Actual CLI test
 requires missing-native refusal before credentials, without creating a store.
-Further source review is in progress; no test/build or engine has started yet.
+A second source finding required manager+cut+intent overlap admission when no
+new attempts need a Publisher. The actual manager preparation now remains held
+through peak preflight on that path. Review remains in progress; no test/build
+or engine has started yet.
 
 Runner083c2028 integrated150f1da, frozen manifestf228a245 under
 `.research/archive-catch-up-runner-20261018/.research/archive-catch-up-runner-20261018`.

@@ -37,6 +37,26 @@ pub(super) struct Outcome {
 }
 
 impl Context<'_, '_> {
+    pub(super) async fn prepare_manager(
+        &self,
+        authority: &mut Authority<'_>,
+        owner: &mut ControlSession,
+        deadline: Instant,
+    ) -> Result<(PreparedConnection, OwnedPermit)> {
+        let root = self.root.clone();
+        let app = self.budget.clone();
+        authority
+            .blocking(owner, deadline, move |_| {
+                postgres_command::prepare_catalog_as(
+                    &root,
+                    required(&root, "postgres.catalog.user")?,
+                    required(&root, "postgres.catalog.password_ref")?,
+                    &app,
+                )
+            })
+            .await
+    }
+
     pub(super) async fn run(
         &self,
         authority: &mut Authority<'_>,
@@ -47,18 +67,7 @@ impl Context<'_, '_> {
         authority.refresh(owner).await?;
         authority.local(|cancel| self.proof.validate(cancel).map_err(error))?;
         let deadline = Instant::now() + OPERATION;
-        let root = self.root.clone();
-        let app = self.budget.clone();
-        let prepared = authority
-            .blocking(owner, deadline, move |_| {
-                postgres_command::prepare_catalog_as(
-                    &root,
-                    required(&root, "postgres.catalog.user")?,
-                    required(&root, "postgres.catalog.password_ref")?,
-                    &app,
-                )
-            })
-            .await?;
+        let prepared = self.prepare_manager(authority, owner, deadline).await?;
         let (mut manager, connection) = authority
             .external(
                 owner,
