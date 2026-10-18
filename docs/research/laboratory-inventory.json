@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-18T14:09:35.855047+00:00",
+  "updated_at": "2026-10-18T16:10:17.567729+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "No runtime/compiler/SQL/native active. One source-only author implements post-selection scheduling correction in retained journey worktree; one independent source reviewer checks it. New build templates source-reviewed but not executed.",
+    "processes": "Build14910 and audit78427 joined0; fetch/native stopped/PID0/noOOM; borrowed PG remains stopped at15:41:43Z. No owned runtime/compiler/native/SQL or active agent.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -61388,7 +61388,7 @@
       }
     },
     "installed_build_attempts": {
-      "observed_at": "2026-10-18T14:56:34.271520+00:00",
+      "observed_at": "2026-10-18T16:10:17.567729+00:00",
       "attempts": [
         {
           "source": "d7b8aec688370d04f01a91bf56c1a3ec2ef4814e",
@@ -61819,12 +61819,85 @@
               "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
             }
           ]
+        },
+        {
+          "source": "40bc295f97adf00d5f2afe833eaef9e99f3b1f23",
+          "tree": "3e3076829b908bcdd819fa0a64541ff614940862",
+          "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295",
+          "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295/audit-root/audit-v1.json",
+          "audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f",
+          "status": "PASS",
+          "worker_status": "PASS",
+          "postcheck_status": "PASS",
+          "checks": {
+            "collected": 5,
+            "executed": 5,
+            "failed": 0,
+            "not_run": 0
+          },
+          "test_counts": {
+            "frontier_intents": {
+              "status": "ok",
+              "passed": 6,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 332
+            },
+            "serve_owner": {
+              "status": "ok",
+              "passed": 26,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 79
+            },
+            "control_runtime_entrypoint": {
+              "status": "ok",
+              "passed": 8,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 0
+            }
+          },
+          "tests_failed": [],
+          "not_run": [],
+          "protected_elfs": 178,
+          "new_elfs": {
+            "bigbrotr": "f520ae1bd0ad41f0a1b7639d29406ffa208b964f7e4b566e81056b2d414e1490",
+            "serve_owner": "821b3fdfce7b05f4be5de6859eab616b36a45265aa859e29e70d428f58a91303",
+            "ingest_bootstrap_probe": "361c6a81c87037c772852364d72b66f859267d105e04b65214b167123fd71913",
+            "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+            "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+            "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+          },
+          "unchanged_containers": 1392,
+          "compiler_diagnostics": [
+            {
+              "check": "frontier_intents",
+              "line": 289,
+              "encoding": "cargo-json",
+              "level": "warning",
+              "code": {
+                "code": "dropping_copy_types",
+                "explanation": null
+              },
+              "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+            }
+          ],
+          "sessions": {
+            "prepare": 94443,
+            "build": 14910,
+            "audit": 78427,
+            "all_joined_exit": 0
+          }
         }
       ],
-      "state": "Fifth build ced7693 and custody audit PASS, joined0. All owned containers stopped/PID0/noOOM; no current engine. Connected same-root journey NOT_RUN.",
-      "protected_elfs": 178,
+      "state": "Sixth installed build40bc295 and custody audit PASS; all owned containers stopped/PID0/noOOM. Fresh connected journey NOT_RUN.",
+      "protected_elfs": 184,
       "preservation": "Original compiler failure, actual failed CLI test, every worker/component ELF and source/log/native asset retained",
-      "source_agent": "Source-only same-root journey in .research/archive-catch-up-journey-20261018, branch qualification/archive-catch-up-journey; no runtime authorized to agent"
+      "source_agent": "Completed source-only author and independent AI reviewer; no active agent task."
     },
     "branch_retirement": {
       "status": "PASS_INTEGRATED_REFS_RETIRED_FILES_PRESERVED",
@@ -62099,7 +62172,7 @@
     "initial_deadline_diagnostics": {
       "original": "90dfa92d4a80fa40b956ce6f42e3a9647f29a65b",
       "integrated": "2315fb662a884e779bf0ee1c4cac2247c7f43ab4",
-      "status": "DIAGNOSTICS_SOURCE_REVIEWED_BUILD_NOT_RUN",
+      "status": "DIAGNOSTICS_SOURCE_REVIEWED_COMPONENT_QUALIFICATION_PASS",
       "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-journey-diagnostics-20261018/manifest.json",
       "manifest_sha256": "ed04e1570fe226899169b6dbfca2db4fc47e3277ad60cbac32052215e372c92b",
       "scope": "Diagnostic preservation only; deadlines and execution scheduling unchanged",
@@ -62126,20 +62199,74 @@
           "engines": "NOT_RUN"
         },
         "rustfmt_parse": "PASS (two owners, skip_children)",
-        "rust_tests": "NOT_RUN",
-        "build": "NOT_RUN",
-        "engines": "NOT_RUN"
+        "rust_tests": "PASS under40bc295 Serve26",
+        "build": "PASS40bc295; auditdafd7715",
+        "engines": "NOT_RUN for new source"
       },
       "review": "Root complete diagnostic diff/affectedphase,supervision and client owners; independent AI recovery_review confirms expiry semantics unchanged. Exact source/artifact hashes checked.",
-      "next": "Separate bounded post-selection admission correction is being authored; no build or fresh engine yet."
+      "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved."
     },
     "deadline_build_preparation": {
       "root": ".research/archive-deadline-build-20261018",
       "manifest_sha256": "956cc08a2b7d05a60e9cea9fe7fae3733fa88f993ece0f3c9fe815b04eda044d",
       "root_review_sha256": "ebebbc7d01df5745f0b56deef97420a41509e5b8f5e771be0e737d1a15e6b085",
-      "status": "SOURCE_REVIEWED_EXECUTION_NOT_RUN",
+      "status": "EXECUTED_BUILD_AND_AUDIT_PASS_DO_NOT_REPLAY",
       "parent_source": "ced7693",
-      "protected_elfs": 178
+      "protected_elfs": 178,
+      "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295",
+      "source": "40bc295f97adf00d5f2afe833eaef9e99f3b1f23",
+      "build_audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f",
+      "next_journey": {
+        "prepare": ".research/archive-deadline-build-20261018/prepare-journey.py",
+        "prepare_sha256": "6e3c7ad2f2a3c003260f86800f3307ce6f88d4f761025bb519417b54061d926b",
+        "auditor_manifest": ".research/archive-deadline-build-20261018/engine-auditor-manifest.json",
+        "auditor_manifest_sha256": "15de291e2d2e9178bcddf78e897ca2f0106617dfba0918e3ead2d4428fee4675",
+        "auditor_sha256": "8402a325e9589197a82b8ba77a56625c2b704fd7b89c85c29361ea4c3cae8af1",
+        "status": "ROOT_FULL_SOURCE_AND_FINITE_DIFF_REVIEWED_NOT_EXECUTED",
+        "build_audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f"
+      }
+    },
+    "initial_admission": {
+      "original": "68cc6dd4a11b0f77476148c313cc4569d1e73861",
+      "integrated": "40bc295f97adf00d5f2afe833eaef9e99f3b1f23",
+      "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-admission-selfcheck-20261018/manifest.json",
+      "manifest_sha256": "f102622df1b7e9a8ee444cde3b01c825e37c1331e106574c947e9c8721981cc1",
+      "source": {
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest.rs": {
+          "bytes": 26432,
+          "sha256": "becfb3c9654e810c9a9c3091568158673e4e7829506b7d06cba2d5a4c5819376"
+        },
+        "apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs": {
+          "bytes": 36777,
+          "sha256": "d2cf44b64aca1eafa8eed65da46a6a6b9e539252b048f57d31c7ac0391abb8fe"
+        }
+      },
+      "status": "SOURCE_REVIEWED_COMPONENT_QUALIFICATION_PASS",
+      "semantics": [
+        "Fresh postselect admission before HTTP, Sync and Archive publication effects; original100ms margin unchanged.",
+        "One pending Work retains existing request grant across external calls, no new queue or allocation.",
+        "Pending take only when management future is polled; cancellation, renewal and ready external result keep priority.",
+        "Selected Work survives at most one completed real renewal: central renewal guard refuses a second before SQL; flag clears on actual admission.",
+        "Renewal response must leave strictly more than100ms; independent startup is not counted as renewal latency.",
+        "Original external absolute deadline caps phase publication, nested renewal and following command. Synchronous cancellation/deadline checks precede first nested poll.",
+        "Short external budget defers unadmitted HTTP without discarding Work or extending deadline."
+      ],
+      "authored_tests": [
+        "interfaces::serve::initial_ingest::commands::tests::admission_is_rechecked_after_a_select_wait",
+        "interfaces::serve::initial_ingest::commands::tests::a_short_archive_horizon_defers_instead_of_borrowing_new_budget",
+        "interfaces::serve::initial_ingest::commands::tests::slow_valid_renewals_cannot_create_an_unbounded_renewal_only_loop",
+        "interfaces::serve::initial_ingest::commands::tests::external_deadline_and_cancellation_precede_first_nested_poll",
+        "interfaces::serve::initial_ingest::commands::tests::nested_phase_publication_keeps_the_absolute_archive_ceiling",
+        "interfaces::serve::initial_ingest::commands::tests::a_selected_http_request_retains_its_permit_until_consumed_or_dropped"
+      ],
+      "qualification_audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295/audit-root/audit-v1.json",
+      "qualification_audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f",
+      "review": "Root read complete affected owners and final diff; independent AI recovery_review closed exact source hashes. Manifest/artifact/commit bytes authenticated. Six new tests actually PASS in Serve26.",
+      "limits": [
+        "Actual expired callsite in failed6474507 engine remains unknown; source counterexamples do not establish its trigger.",
+        "No runtime slow-SQL pending-renewal schedule, global fairness or arbitrary-descheduling progress claim.",
+        "Fresh normal same-root journey and required new-owner faults remain NOT_RUN."
+      ]
     }
   }
 }

@@ -32521,10 +32521,10 @@
           "engines": "NOT_RUN"
         },
         "review_finding": "Current-frontier equal-total/different-family distribution must refuse before new effects; root compares joined original-prefix counts and adds independent counts test",
-        "next": "Freeze diagnostic preservation source; review separate minimal admission fix and bounded discriminating controls before fresh exact build/journey."
+        "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved."
       },
       "archive_installed_build_attempts": {
-        "observed_at": "2026-10-18T14:56:34.271520+00:00",
+        "observed_at": "2026-10-18T16:10:17.567729+00:00",
         "attempts": [
           {
             "source": "d7b8aec688370d04f01a91bf56c1a3ec2ef4814e",
@@ -32955,6 +32955,79 @@
                 "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
               }
             ]
+          },
+          {
+            "source": "40bc295f97adf00d5f2afe833eaef9e99f3b1f23",
+            "tree": "3e3076829b908bcdd819fa0a64541ff614940862",
+            "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295",
+            "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295/audit-root/audit-v1.json",
+            "audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f",
+            "status": "PASS",
+            "worker_status": "PASS",
+            "postcheck_status": "PASS",
+            "checks": {
+              "collected": 5,
+              "executed": 5,
+              "failed": 0,
+              "not_run": 0
+            },
+            "test_counts": {
+              "frontier_intents": {
+                "status": "ok",
+                "passed": 6,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 332
+              },
+              "serve_owner": {
+                "status": "ok",
+                "passed": 26,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 79
+              },
+              "control_runtime_entrypoint": {
+                "status": "ok",
+                "passed": 8,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 0
+              }
+            },
+            "tests_failed": [],
+            "not_run": [],
+            "protected_elfs": 178,
+            "new_elfs": {
+              "bigbrotr": "f520ae1bd0ad41f0a1b7639d29406ffa208b964f7e4b566e81056b2d414e1490",
+              "serve_owner": "821b3fdfce7b05f4be5de6859eab616b36a45265aa859e29e70d428f58a91303",
+              "ingest_bootstrap_probe": "361c6a81c87037c772852364d72b66f859267d105e04b65214b167123fd71913",
+              "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+              "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+              "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+            },
+            "unchanged_containers": 1392,
+            "compiler_diagnostics": [
+              {
+                "check": "frontier_intents",
+                "line": 289,
+                "encoding": "cargo-json",
+                "level": "warning",
+                "code": {
+                  "code": "dropping_copy_types",
+                  "explanation": null
+                },
+                "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+              }
+            ],
+            "sessions": {
+              "prepare": 94443,
+              "build": 14910,
+              "audit": 78427,
+              "all_joined_exit": 0
+            }
           }
         ],
         "dispositions": {
@@ -32962,13 +33035,14 @@
           "b3735e9": "Worker/CLI/probe compiled, journal6/Serve19 PASS; entrypoint7PASS1FAIL on MissingDatabase Debug text; fix uses existing StoreError Display, remove two unused imports; Clippy NOT_RUN",
           "1d42894": "All33 targeted testsPASS, actual worker/CLI/probe and packaged postchecksPASS; ClippyFAIL manual_range_contains in new journal. Root uses RangeInclusive::contains; no runtime engine qualification. Existing dropping_copy_types warning in lineage_replay_tests.rs:498 retained, not introduced here.",
           "48956e2": "All33 targeted testsPASS, worker/CLI/probe and packaged postchecksPASS; ClippyFAIL collapsible_if in new publication.rs. Root collapses the equivalent receipt condition. Connected journey NOT_RUN; historical Copy-drop warning remains separate.",
-          "ced7693": "PASS all5 component checks, journal6/Serve19/entrypoint8 tests, Clippy zero diagnostics, actual worker/CLI/probe and packaged build-info/verify-worker. Existing Copy-drop library-test warning retained; connected runtime NOT_RUN."
+          "ced7693": "PASS all5 component checks, journal6/Serve19/entrypoint8 tests, Clippy zero diagnostics, actual worker/CLI/probe and packaged build-info/verify-worker. Existing Copy-drop library-test warning retained; connected runtime NOT_RUN.",
+          "40bc295": "PASS all five checks; journal6/Serve26/entrypoint8, actual worker/CLI/probe, build-info/verify-worker and Clippy without diagnostics. Existing Copy-drop warning retained. Initial scheduling and diagnostic tests exercised; connected journey NOT_RUN."
         },
         "review": {
           "path": ".research/archive-catch-up-resume-20261018/composition-review.json",
           "sha256": "d7fa596b81b6a24fd0ff1b09d2b6e989bf88079b3635676725cd5b8d3ce4b726"
         },
-        "next": "Finish/freeze and review genuine same-root journey harness, then run installed initial/succession/catch-up/read/export/restart using qualified ced7693 artifacts; preserve all prior outcomes. Connected qualification remains NOT_RUN.",
+        "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved.",
         "journal_review": {
           "path": ".research/archive-catch-up-resume-20261018/journal-review.json",
           "sha256": "f83941fbb706ffc9860157bd493829c7253f455e191f3dcf091f89976a88ee0e",
@@ -33160,7 +33234,7 @@
       "archive_initial_deadline_diagnostics": {
         "original": "90dfa92d4a80fa40b956ce6f42e3a9647f29a65b",
         "integrated": "2315fb662a884e779bf0ee1c4cac2247c7f43ab4",
-        "status": "DIAGNOSTICS_SOURCE_REVIEWED_BUILD_NOT_RUN",
+        "status": "DIAGNOSTICS_SOURCE_REVIEWED_COMPONENT_QUALIFICATION_PASS",
         "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-journey-diagnostics-20261018/manifest.json",
         "manifest_sha256": "ed04e1570fe226899169b6dbfca2db4fc47e3277ad60cbac32052215e372c92b",
         "scope": "Diagnostic preservation only; deadlines and execution scheduling unchanged",
@@ -33187,12 +33261,54 @@
             "engines": "NOT_RUN"
           },
           "rustfmt_parse": "PASS (two owners, skip_children)",
-          "rust_tests": "NOT_RUN",
-          "build": "NOT_RUN",
-          "engines": "NOT_RUN"
+          "rust_tests": "PASS under40bc295 Serve26",
+          "build": "PASS40bc295; auditdafd7715",
+          "engines": "NOT_RUN for new source"
         },
         "review": "Root complete diagnostic diff/affectedphase,supervision and client owners; independent AI recovery_review confirms expiry semantics unchanged. Exact source/artifact hashes checked.",
-        "next": "Separate bounded post-selection admission correction is being authored; no build or fresh engine yet."
+        "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved."
+      },
+      "archive_initial_admission": {
+        "original": "68cc6dd4a11b0f77476148c313cc4569d1e73861",
+        "integrated": "40bc295f97adf00d5f2afe833eaef9e99f3b1f23",
+        "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-admission-selfcheck-20261018/manifest.json",
+        "manifest_sha256": "f102622df1b7e9a8ee444cde3b01c825e37c1331e106574c947e9c8721981cc1",
+        "source": {
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest.rs": {
+            "bytes": 26432,
+            "sha256": "becfb3c9654e810c9a9c3091568158673e4e7829506b7d06cba2d5a4c5819376"
+          },
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs": {
+            "bytes": 36777,
+            "sha256": "d2cf44b64aca1eafa8eed65da46a6a6b9e539252b048f57d31c7ac0391abb8fe"
+          }
+        },
+        "status": "SOURCE_REVIEWED_COMPONENT_QUALIFICATION_PASS",
+        "semantics": [
+          "Fresh postselect admission before HTTP, Sync and Archive publication effects; original100ms margin unchanged.",
+          "One pending Work retains existing request grant across external calls, no new queue or allocation.",
+          "Pending take only when management future is polled; cancellation, renewal and ready external result keep priority.",
+          "Selected Work survives at most one completed real renewal: central renewal guard refuses a second before SQL; flag clears on actual admission.",
+          "Renewal response must leave strictly more than100ms; independent startup is not counted as renewal latency.",
+          "Original external absolute deadline caps phase publication, nested renewal and following command. Synchronous cancellation/deadline checks precede first nested poll.",
+          "Short external budget defers unadmitted HTTP without discarding Work or extending deadline."
+        ],
+        "authored_tests": [
+          "interfaces::serve::initial_ingest::commands::tests::admission_is_rechecked_after_a_select_wait",
+          "interfaces::serve::initial_ingest::commands::tests::a_short_archive_horizon_defers_instead_of_borrowing_new_budget",
+          "interfaces::serve::initial_ingest::commands::tests::slow_valid_renewals_cannot_create_an_unbounded_renewal_only_loop",
+          "interfaces::serve::initial_ingest::commands::tests::external_deadline_and_cancellation_precede_first_nested_poll",
+          "interfaces::serve::initial_ingest::commands::tests::nested_phase_publication_keeps_the_absolute_archive_ceiling",
+          "interfaces::serve::initial_ingest::commands::tests::a_selected_http_request_retains_its_permit_until_consumed_or_dropped"
+        ],
+        "qualification_audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295/audit-root/audit-v1.json",
+        "qualification_audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f",
+        "review": "Root read complete affected owners and final diff; independent AI recovery_review closed exact source hashes. Manifest/artifact/commit bytes authenticated. Six new tests actually PASS in Serve26.",
+        "limits": [
+          "Actual expired callsite in failed6474507 engine remains unknown; source counterexamples do not establish its trigger.",
+          "No runtime slow-SQL pending-renewal schedule, global fairness or arbitrary-descheduling progress claim.",
+          "Fresh normal same-root journey and required new-owner faults remain NOT_RUN."
+        ]
       }
     }
   }

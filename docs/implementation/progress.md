@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T15:44:58.929862+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T16:10:17.567729+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
 current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Historical detail remains in the evidence/laboratory records below and Git history;
@@ -9,10 +9,10 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 ## Repository and active responsibility
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; observed HEAD and verified remote
-`e8fdf6f`. Product `ced7693`, packaged qualification, ref retirement and user help
-are pushed. Journey source is integrated from a2439a8 into 51fff8f; no merge/rebase
-is pending. Diagnostic source90dfa92 is integrated as2315fb6; its documentation is not yet committed. Engine wrapper 40167 joined 1; no runtime remains active.
+Canonical `/home/tux/bigbrotr-rs`; main HEAD 40bc295, last verified remote 6284381.
+Diagnostic source 90dfa92→2315fb6 and admission fix 68cc6dd→40bc295 are integrated.
+No merge/rebase is pending. Build 14910 and audit 78427 joined 0; no runtime remains
+active. This checkpoint/evidence update is pending commit and push.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -72,23 +72,21 @@ These are scoped source reviews, not power-loss or connected-engine evidence.
 
 ## Qualified artifacts and retained failures
 
-Current exact packaged build: ced7693e0ce78553f5a64b7a67dfb7d1c7cd31d1,
-tree 89360589aca7e4368ce2df4752206a4a3dfd0921. Root:
-`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-ced7693`.
-Profile `ingest-succession-archive-installed` passes all five component checks:
-actual CLI/probe compilation, journal 6, Serve 19, entrypoint 8 tests and Clippy.
-Exact worker build and packaged `build-info`/`archive verify-worker` pass.
-Clippy has zero diagnostics; the unchanged library-unit `dropping_copy_types`
-warning in `lineage_replay_tests.rs:498` remains separately recorded.
+Current exact packaged build: 40bc295f97adf00d5f2afe833eaef9e99f3b1f23,
+tree 3e3076829b908bcdd819fa0a64541ff614940862. Root:
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295`.
+All five checks PASS: CLI/probe compilation, journal 6, Serve 26, entrypoint 8 tests
+and Clippy without diagnostics. Actual worker build, packaged build-info and
+verify-worker PASS. The unchanged library-test Copy-drop warning at
+lineage_replay_tests.rs:498 remains separate. No connected-engine claim yet.
 
-Run 14:52:07Z–14:55:26Z; prepare 24369, build 5625 and audit 49465 all joined 0.
+Run 16:05:46Z–16:09:07Z; prepare 94443, build 14910 and audit 78427 joined 0.
 Read-only `audit-root/audit-v1.json` SHA
-1c266222096017e27c487ba076b49519ebb69502dd6d77b5c126e4743aed8fb9
-binds 1967 source files, 172 prior plus six new = 178 protected ELF paths,
-actual pinned worker/assets, raw test output and 1389 unchanged prior containers.
-Fetch/native exited 0, PID 0, no OOM. Completion free space: 74,571,853,824 bytes.
-Use `out/artifacts` as the installed build argument, not the run directory.
-The independently built worker is embedded into the CLI by exact size/SHA identity.
+dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f
+binds 1974 source files, 178 prior plus 6 new = 184 protected ELF paths and 1392
+unchanged prior containers. Fetch/native exited 0 / PID 0 / no OOM. Free after build:
+73,310,355,456 bytes. Use `out/artifacts` as installed build argument. Prior
+ced7693 PASS remains retained with audit 1c266222 and its exact earlier scope.
 
 All preceding failed build roots remain under the same lab prefix, with their
 original scripts, logs, retained ELFs and separate read-only custody audits:
@@ -164,8 +162,8 @@ prove catalog COMMIT. No continuation journey JSON or read/export/catch-up ran.
 PG/client exited 0/143, stopped/PID0/noOOM, with empty cleanup/missing/unrelated
 errors. Preserve this root; never rerun its preparation or overwrite the failure.
 
-Failed-run custody audit25350 joined0: `audit-root/audit-failure-v1.json`,
-SHA3df265f2, binds1974 source files,178 protected ELFs and232 retained engine files.
+Failed-run custody audit25350 joined 0: `audit-root/audit-failure-v1.json`,
+SHA3df265f2, binds 1974 source files, 178 protected ELFs and232 retained engine files.
 Custody PASS preserves engine FAIL; all13 continuations/scientific replay NOT_RUN.
 Root then restarted only the owned PG for explicit read-only repeatable-read SQL.
 `diagnostic-root/sql-forensics-v1` preserves complete75-table Control and32-table
@@ -189,21 +187,26 @@ need admission-time scrutiny. This does not identify the actual failed callsite.
 `.research/archive-catch-up-resume-20261018/initial-deadline-review.json` and the
 existing evidence node bind this distinction; no timeout widening is justified.
 
-Diagnostic source90dfa92 is integrated as2315fb6. Root source/manifest checks and
-11 source-extracted Python preservation controls PASS; two phase tests are authored,
-Rust build/tests and fresh engine NOT_RUN. It records static prior/requested
-callsite and monotonic overdue duration, latest completed SQL poll, SQL failure
-captures and bounded incremental HTTP observations. No deadline changes in this commit.
-Independent AI review confirms the existing expiry predicate and supervisor unchanged.
+Diagnostic 90dfa92→2315fb6 and admission 68cc6dd→40bc295 are integrated and pass
+fresh component qualification. Six new admission tests plus one diagnostic test
+and the strengthened existing diagnostic test run within actual Serve 26. Python
+preservation controls remain their separately recorded source-only scope.
+Manifest f102622d in the retained author worktree binds the admission source.
+Root and independent AI review closed exact hashes before build.
 
-Next bounded action: finish/review the separate post-selection admission correction
-in the retained journey worktree, including selected Work/grant preservation and
-exact absolute Archive caps. One author and independent reviewer are active.
-Then build fresh clean exact source with the reviewed templates under
-`.research/archive-deadline-build-20261018`; manifest956cc08a, root reviewebebbc7d.
-Parentced7693 and178 protected ELF paths stay preserved. Templates NOT_EXECUTED;
-root selection comes from clean main at actual preparation. Then one fresh same-root
-journey; never overwrite engine6474507 or rerun its diagnostic.
+Admission is rechecked after selection; one pending Work retains its existing
+grant. The central renewal guard refuses a second renewal for that unadmitted
+item. An exact 100 ms renewal horizon refuses; original absolute Archive deadline
+caps every nested phase/command. Cancellation and expiry are checked before the
+first nested poll. No lease/config widening or progress claim under arbitrary descheduling.
+The prior 6474507 engine's actual expired callsite remains unknown.
+
+Next bounded action: prepare and run one fresh same-root journey using 40bc295
+artifacts and audit dafd7715. Reviewed one-shot prepare and success-custody auditor
+live under `.research/archive-deadline-build-20261018`; preparation/build of 40bc295
+are EXECUTED, journey preparation and auditor NOT_EXECUTED. New auditor 8402a325,
+manifest 15de291e, requires 184 protected ELFs and actual build-audit SHA. Never
+reuse failed 6474507, overwrite its diagnostic or use old PG timestamps.
 
 Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
 still follows a successful normal journey. Independent source mapping identifies
@@ -215,10 +218,10 @@ capacity boundaries remain separate.
 
 ## Host resources and preservation
 
-No owned runtime/compiler remains active after the SQL diagnostic and independent
-terminal inspection. One source-only author and independent reviewer are active on the scheduling
-correction; custody work is complete. Unrelated workloads remain outside this session's authority.
-Verify actual receipts/ownership before any further engine or database action.
+No owned runtime/compiler/SQL/native remains active after build and audit. All
+source-only agent tasks completed. Borrowed PG remains stopped since 15:41:43Z.
+Unrelated workloads remain outside this session's authority. Verify ownership
+and actual resource state before the next engine action.
 
 Root-only compiler cache:
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,
