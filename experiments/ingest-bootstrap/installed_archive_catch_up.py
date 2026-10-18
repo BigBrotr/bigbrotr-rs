@@ -217,7 +217,7 @@ def execute(pg,client,output,database,rows,setup,step,before,action=None):
     return value
 
 
-def run(pg,client,output,database,name,rows,**context):
+def run(pg,client,output,database,name,rows,*,continuation=None,**context):
     from installed_archive_journey import run as initial
     assert name=='archive-export'
     built=context['built']; build=Path(context['build'])
@@ -227,7 +227,7 @@ def run(pg,client,output,database,name,rows,**context):
     try:
         return initial(pg,client,output,database,name,rows,setup_upgrade=upgrade,
             preserve_diagnostics=True,
-            continuation=lambda *args: continue_journey(pg,client,output,database,rows,*args),**context)
+            continuation=lambda *args: (continuation or continue_journey)(pg,client,output,database,rows,*args),**context)
     except BaseException as error:
         # This boundary is inside bindings.run: its owned PostgreSQL is still
         # alive. Capture SQL only; neither process closure nor native custody is
