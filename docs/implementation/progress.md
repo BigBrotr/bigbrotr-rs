@@ -1,16 +1,21 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:53Z on Tux. Goal **ACTIVE**, verified with the goal control
-following the owner's explicit resume. M1–M5 remain INCOMPLETE. Existing task files
+Observed 2026-10-18T19:56Z on Tux. **Owner-requested pause; safe shutdown complete.**
+The owner explicitly stopped further implementation, tests, builds, cleanup and
+delegation. After saving/pushing this checkpoint, root must set the actual goal
+control to **PAUSED**, without marking it complete. Resume only on a new explicit
+owner request; verify the goal control then. M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`be181ceeccc325fd6cdd366163e72b292f3b082d`, already pushed and verified remotely.
+`2426646776f5ce3c0250a3366b559e96a0e00a1a`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Root's current documentation edits record the completed
-family-counts refusal qualification. Product source is unchanged.
+No merge/rebase pending. Root's current documentation edits save the owner-requested
+pause and the interrupted missing-input run. Product source is unchanged. The
+attempt-limit and export-memory worktrees are clean on their preserved commits;
+their reviewed source is not integrated or runtime-qualified.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -118,8 +123,28 @@ processes and refusal exit4 unforced/reaped. Independent31states/75tables and
 509files; custody23ab5c37 binds1981source files/190ELFs. PG/client stopped0/143,
 PID0/noOOM; cleanup/missing/unrelated arrays empty. Do not rerun custody after PG reuse.
 
-Next runtime: **fresh missing-input refusal**, then frontier-cancel and
-frontier-control-loss. Those three engines/replays remain NOT_RUN.
+The **missing-input2426646 run was interrupted for this pause**. Preparation38651
+joined0; engine11859 joined with child exit-2 (SIGINT), wrapper tool254, at19:55:38Z.
+The verified controller pidfd received SIGINT during the already-running negative
+controls. All nine prefix steps and the refusal exit4 unforced/reaped had been
+captured; the captured state oracle says PASS, but negative controls did not finish.
+Original engine/fixture status remains **FAIL / KeyboardInterrupt**, never a
+qualified PASS. Strict independent replay and full custody audit are **NOT_RUN**.
+Existing cleanup completed with no errors/missing/unrelated changes. The limited
+shutdown snapshot at19:56:14Z confirms exact owned PG/client stopped0/143, PID0,
+noOOM, no matching host runtime process. No additional test campaign was started.
+Artifacts remain at `runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646`,
+including `root-owner-pause-interruption.json`, `root-owner-pause-resources.json`,
+raw logs, original before/after SQL captures and quarantined input bytes.
+The existing report/inventory records `pause_checkpoint_20261018_1956` and the
+interrupted attempt. The earlier a99 initial Sync timeout remains unresolved;
+later successful trials do not establish its cause or fix.
+
+**First action after explicit resume:** reconcile exact main/remote and the
+interrupted missing-input artifact identities, then freeze its preservation/custody
+before borrowed-PG reuse. Never replay its engine in the existing root or normalize
+its FAIL. Only then prepare a fresh missing-input run; frontier-cancel and
+frontier-control-loss remain NOT_RUN. No further work is authorized while paused.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
@@ -136,7 +161,7 @@ is not solely attributed to the selected9009500160B. All source/data/log evidenc
 worktrees and original failures remain preserved. Detailed pins and limitations
 are in `archive_package_cache_headroom` in the existing report/inventory.
 
-After this checkpoint commit/push, use the existing
+Only after explicit resume and the interrupted-run reconciliation above, use the existing
 `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
 (SHA5b61ccf3), build9a/audit1164, case missing-input from clean main.
 Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
@@ -198,13 +223,18 @@ No remote branch or external lab was changed.
 ## Resource custody and remaining scope
 
 All fault/refusal-prefix/replay/audit/maintenance processes above have joined.
-cleanup_review completed the final package helper review and is idle;
-recovery_review is preparing a source-only genuine accepted large signed-event
-export-memory job path under the existing export-memory worktree, without changing
-the reviewed packet or executing any runtime. successor_restart_design is idle.
-No runtime currently active. Both old nine-root
+All child agents are stopped/completed; the pause was communicated to them.
+recovery_review performed only static reads for the large signed export setup and
+made zero file changes. It found two setup gaps: the relay encoder accepts frames
+below65536B, while the frozen event is94577B; ordinary Serve can reserve a job
+immediately after HTTP acceptance, while Initial cannot accept Export. Minimal
+bounded relay framing and a genuine typed acceptance-only fixture consumer were
+authorized for later work, but implementation is NOT_STARTED. The reviewed
+c68ac35 packet and all source-only artifacts remain intact.
+No session runtime is active. Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
-The673 refusal custody is complete and must not be rerun after borrowed-PG reuse.
+The673/e919/be181 refusal custody checks are complete and must not be rerun after
+borrowed-PG reuse. The interrupted2426646 full custody check remains NOT_RUN.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner
 8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.

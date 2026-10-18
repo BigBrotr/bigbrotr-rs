@@ -65994,6 +65994,218 @@
         ],
         "free_bytes_after": 337011318784,
         "limits": "Only family-counts refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures remain FAIL. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
+      },
+      {
+        "status": "INTERRUPTED_OWNER_PAUSE_ORIGINAL_HARNESS_FAIL",
+        "case": "missing-input",
+        "source": "2426646776f5ce3c0250a3366b559e96a0e00a1a",
+        "tree": "9d9de3b1472794a462e8915e3fb983570a8762e6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646",
+        "prepare_session": 38651,
+        "prepare_joined_exit_code": 0,
+        "engine_session": 11859,
+        "engine_joined_exit_code": -2,
+        "wrapper_tool_exit_code": 254,
+        "engine_wrapper": {
+          "started": "2026-10-18T19:54:00.320816+00:00",
+          "command": [
+            "python3",
+            "-B",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/source/experiments/acquisition-scope/bindings.py",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646",
+            "--installed-archive-catch-up-refusal-missing-input",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+          ],
+          "preparation_session": 38651,
+          "preparation_joined_exit_code": 0,
+          "source": "2426646776f5ce3c0250a3366b559e96a0e00a1a",
+          "tree": "9d9de3b1472794a462e8915e3fb983570a8762e6",
+          "finished": "2026-10-18T19:55:38.218485+00:00",
+          "exit_code": -2
+        },
+        "original_harness_status": "FAIL",
+        "original_failure": "KeyboardInterrupt: ",
+        "interruption_boundary": "Explicit root SIGINT to verified controller pidfd while already-running in-process negative controls deep-copied the captured context. All nine prefix steps and actual refusal terminal were already captured; negative controls incomplete. No new replay/custody was started.",
+        "completed_prefix_steps": [
+          "abandon1",
+          "retire1",
+          "live2",
+          "abandon2",
+          "retire2",
+          "live3",
+          "source3",
+          "abandon3",
+          "retire3"
+        ],
+        "captured_oracle": {
+          "status": "PASS",
+          "case": "missing-input",
+          "expected_refusal": true,
+          "exit_code": 4,
+          "installed_processes": 11,
+          "control_tables": 75,
+          "snapshots": 31,
+          "new_archive_attempts": 0,
+          "new_frontier_revisions": 0,
+          "original_frontier_revision": 4,
+          "control_released": false,
+          "same_physical_roots": true,
+          "source_scope": "independent whole-state reducer; wait timing is observed, no internal timer claim"
+        },
+        "captured_refusal_terminal": {
+          "pid": 2524,
+          "config": "/lab/bb_scope_bind_2426646_archive_export.toml",
+          "prefix": "/lab/catch-up-refusal-missing-input",
+          "command": [
+            "/build/bigbrotr",
+            "archive",
+            "catch-up",
+            "--file",
+            "/lab/bb_scope_bind_2426646_archive_export.toml"
+          ],
+          "start_ticks": 573558752,
+          "reaped": true,
+          "exit_code": 4,
+          "forced": false,
+          "error": null,
+          "elapsed_seconds": 0.2641587629914284
+        },
+        "negative_controls": "INTERRUPTED_NOT_COMPLETED",
+        "strict_independent_replay": "NOT_RUN",
+        "custody_audit": "NOT_RUN",
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "resource_snapshot": {
+          "status": "OWNER_PAUSE_RESOURCE_SNAPSHOT_NOT_QUALIFICATION",
+          "time": "2026-10-18T19:56:14.680662+00:00",
+          "engine_session": 11859,
+          "engine_joined_exit_code": -2,
+          "wrapper_tool_exit_code": 254,
+          "containers": [
+            {
+              "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-18T19:54:01.171791181Z",
+                "FinishedAt": "2026-10-18T19:55:37.32900262Z"
+              },
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "owner_label": "org.bigbrotr.control-migration-lab"
+            },
+            {
+              "Id": "4205b643b43db89c26d762d0853d9ff4fc56f6283aaae20291985d34c576017f",
+              "Name": "/bigbrotr-acquisition-binding-2426646",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-18T19:54:02.127278055Z",
+                "FinishedAt": "2026-10-18T19:55:36.643233002Z"
+              },
+              "owner": "b36d3c6f3f97b332885be193f102533a",
+              "owner_label": "org.bigbrotr.acquisition-binding"
+            }
+          ],
+          "matching_runtime_processes": [],
+          "worktrees": {
+            "/home/tux/bigbrotr-rs": {
+              "head": "2426646776f5ce3c0250a3366b559e96a0e00a1a",
+              "branch": "main",
+              "status": ""
+            },
+            "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018": {
+              "head": "acc9bea67d5380f35c2fbf8d69ceed4539925133",
+              "branch": "qualification/archive-catch-up-attempt-limits",
+              "status": ""
+            },
+            "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018": {
+              "head": "c68ac35c3ec87e764fbef85e7a2eddaaadec5b6c",
+              "branch": "qualification/export-memory-probe",
+              "status": ""
+            },
+            "/home/tux/bigbrotr-rs/.research/archive-catch-up-journey-20261018": {
+              "head": "c7b643dad5be24396efe68b4e75543cd9acc9c1e",
+              "branch": "",
+              "status": ""
+            }
+          },
+          "agents": "All live child agents completed; recovery_review confirms no files changed/no runtime; other agents had completed source-only work.",
+          "limits": "Only shutdown/resource observation. No independent replay, custody audit, native or SQL verification started. Original FAIL/KeyboardInterrupt remains unchanged."
+        },
+        "artifacts": {
+          "root-preparation.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-preparation.json",
+            "bytes": 29816,
+            "sha256": "7ada868e59ee2ab47183bc034d60926e72833f5aa66e32b000c16cf3b76a293b"
+          },
+          "root-engine-invocation.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-engine-invocation.json",
+            "bytes": 749,
+            "sha256": "62b597832112f45121d85f2f54843d94defa21b412872b08367eea09113bd106"
+          },
+          "root-engine-result.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-engine-result.json",
+            "bytes": 72,
+            "sha256": "d7bfea7f18fcc3272a227cb2dfe5a1050bde36a7930cd2660abb7bfc77ccd78a"
+          },
+          "root-engine.stdout": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-engine.stdout",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "root-engine.stderr": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-engine.stderr",
+            "bytes": 4937,
+            "sha256": "8a87fdf6ce2e93c7297a6eb0dc684043d3e99c107880707b68883cbd9618bd54"
+          },
+          "root-owner-pause-interruption.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-owner-pause-interruption.json",
+            "bytes": 1154,
+            "sha256": "80be20cc0f216bcb66a8aef4454522d2ee55ccf5233e277dc35b20232c57deb1"
+          },
+          "root-owner-pause-resources.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/root-owner-pause-resources.json",
+            "bytes": 2598,
+            "sha256": "aa5a464eabe7933158b498df8b609b7b6abc66aaa988f65cc316ef4da9c9b9aa"
+          },
+          "bindings/result.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/bindings/result.json",
+            "bytes": 13737,
+            "sha256": "69f35d4784b31c5ad313538d207c33a500051858b5087d70fbd1cb9c8de826f7"
+          },
+          "bindings/archive-catch-up-refusal.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/bindings/archive-catch-up-refusal.json",
+            "bytes": 22995207,
+            "sha256": "a6b33d557f9dd1cef1693de9c2dceeec457ab915b2c280711b52e0b0b7c6f5e1"
+          },
+          "bindings/catch-up-originals-before.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/bindings/catch-up-originals-before.json",
+            "bytes": 110224,
+            "sha256": "29c2a2887bc812379681675df53039d70168b3f4b2c2cc5999b1c341910e1622"
+          },
+          "bindings/catch-up-originals-after.json": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-2426646/bindings/catch-up-originals-after.json",
+            "bytes": 110224,
+            "sha256": "29c2a2887bc812379681675df53039d70168b3f4b2c2cc5999b1c341910e1622"
+          }
+        },
+        "limits": "Original FAIL/KeyboardInterrupt is never promoted from the captured oracle PASS or error4 process. Full source/raw/native preservation audit not run during pause. All datasets/logs/quarantined inputs/worktrees/ignored artifacts retained. No cleanup or public publication. Before borrowed-PG reuse after explicit resume, reconcile and freeze the interrupted run custody; never rerun this engine in its existing root."
       }
     ],
     "archive_refusal_qualification": {
@@ -66236,6 +66448,24 @@
       },
       "root_completion_check": "Actual execute19616 joined0. Complete9378-line journal exactly equals frozen ordered package units/ordinals; all paths unique and all610097entries/529697files/9009500160allocated bytes reconcile. Full post-preservation passed in reviewed executor. No failure artifact; stderr empty.",
       "limits": "One-shot complete: never replay. Preserve original manifests/journals/datasets/logs/worktrees/failures. Full41-home retention census and explicit180input/190ELF/10asset pins verified; out-of-scope interiors not recaptured. Accessible process checks disclose unreadable entries and are cooperative snapshots. Shared-host free-space increased sharply before removal; observed11161845760B delta during deletion exceeds9009500160candidate bytes and is not solely attributed to this operation. Namespace fsync is not secure erasure or physical reclaim proof."
+    },
+    "pause_checkpoint_20261018_1956": {
+      "status": "OWNER_REQUESTED_SUSPENSION_SAFE_STOP_CHECKPOINT",
+      "observed_at": "2026-10-18T19:56:14.680662+00:00",
+      "head": "2426646776f5ce3c0250a3366b559e96a0e00a1a",
+      "branch": "main",
+      "runtime": "No session runtime remains; engine11859 joined -2, wrapper254. Owned PG/client stopped0/143/PID0/noOOM; shutdown snapshot confirms exact owners.",
+      "agents": "All child agents stopped/completed; export setup performed static reads only, zero modifications.",
+      "goal_control": "Invoke update_goal(status=paused) after this checkpoint commit/push; incomplete product must not be marked complete. Resume only on explicit owner request.",
+      "not_integrated": {
+        "attempt_limits": "qualification/archive-catch-up-attempt-limits acc9bea67d5380f35c2fbf8d69ceed4539925133, clean; reviewed source/static only, compiler/engine NOT_RUN",
+        "export_memory": "qualification/export-memory-probe c68ac35c3ec87e764fbef85e7a2eddaaadec5b6c, clean; reviewed correction only, compiler/engine NOT_RUN",
+        "refusal_branch": "qualification/archive-catch-up-refusals 69a32b6172ed4446ff7322d384d2516a13227c7b preserved; no branch retirement during pause"
+      },
+      "export_setup_findings": "Only source reading performed: relay send_frame supports payloads below65536B and cannot send frozen94577B EVENT; ordinary Serve may reserve immediately after HTTP acceptance, while Initial cannot accept Export. Minimal bounded relay framing plus actual typed acceptance-only qualification consumer authorized for later explicit resume, implementation NOT_STARTED. Production/c68ac35 packet unchanged.",
+      "unresolved_sync_timeout": "a99c041 initial Sync timeout remains FAIL; exact pending await/timing cause unknown. Later unchanged successful trials do not identify/fix it. Repeated timeout requires targeted diagnostics, not deadline widening or blind retries.",
+      "next_action": "After explicit owner resume, inspect this checkpoint, exact main/remote and retained interruption artifacts. Reconcile interrupted missing-input root and freeze preservation/custody before borrowed-PG reuse; do not replay it or normalize FAIL. Then run missing-input in a fresh exact-revision root with unchanged9a product; frontier-cancel/control-loss and attempt-limit qualification remain NOT_RUN.",
+      "preservation": "All .research, external labs, original failures, datasets, logs, quarantine files and worktrees retained. Both nine-root and37-root cache retirements already complete and verified; never replay. No new cleanup or verification campaign for pause."
     }
   }
 }
