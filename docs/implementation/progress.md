@@ -1,16 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:26Z on Tux. Goal **ACTIVE**, verified with the goal control
+Observed 2026-10-18T19:45Z on Tux. Goal **ACTIVE**, verified with the goal control
 following the owner's explicit resume. M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`67350645e2a641ecca8eedbce4074dbf7203f38b`, already pushed and verified remotely.
+`46b291a906dda300d2b637a90ca1b871c1738e89`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Root's current documentation edits record completed current-join qualification
-and the preserved initial failure's bounded diagnosis. Product source is unchanged.
+No merge/rebase pending. Root's current documentation edits record the completed
+37-root duplicate Cargo source retirement. Product source is unchanged.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -106,14 +106,23 @@ Do not replay custody after PG reuse. This success does not erase the a99 failur
 
 Next runtime: **fresh orphan-history refusal**, then family-counts, missing-input,
 frontier-cancel, frontier-control-loss. Those five engines/replays remain NOT_RUN.
-First restore required headroom: free69067194368B at completed run was below
-unchanged69324505088B preparation floor. cleanup_review is inspecting a bounded
-proposal of37further duplicate historical Cargo source copies (~9GB), keeping
-complete counterparts. No new cleanup authorized by a mere size estimate; root
-must authenticate exact proposal and fresh exclusion/equivalence before removal.
-No candidate executor has been run. Preserve all original data/evidence.
+The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
+19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
+helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
+Frozen manifest9a627127 under
+`.research/tux-maintenance-cargo-package-headroom-20261018` binds37old source roots,
+four retained complete counterparts and9378packages. Actual cleanup removed
+529697files/80400directories,9009500160allocated bytes. Complete90236retained
+entries,180input pins,190ELFs/10assets and1405stable container projections passed
+post-verification. The full journal exactly matches every frozen package/ordinal.
+No failure artifact or stderr; never replay the completed one-shot executor.
+Free293816459264B exceeds the unchanged69324505088B floor. Shared-host free space
+also changed independently before/during cleanup; the11161845760B observed delta
+is not solely attributed to the selected9009500160B. All source/data/log evidence,
+worktrees and original failures remain preserved. Detailed pins and limitations
+are in `archive_package_cache_headroom` in the existing report/inventory.
 
-After headroom and this checkpoint commit/push, use the existing
+After this checkpoint commit/push, use the existing
 `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
 (SHA5b61ccf3), build9a/audit1164, case orphan-history from clean main.
 Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
@@ -175,10 +184,10 @@ No remote branch or external lab was changed.
 ## Resource custody and remaining scope
 
 All fault/refusal-prefix/replay/audit/maintenance processes above have joined.
-cleanup_review is freezing the exact headroom proposal; recovery_review will
-author its source-only package-level retirement helper for root/independent
-review. successor_restart_design is idle. No runtime currently active; the673
-refusal custody is complete. No new cleanup helper has been executed.
+cleanup_review and recovery_review completed the final package helper reviews;
+successor_restart_design is idle. No runtime currently active. Both old nine-root
+and new37-root cache retirements are complete; neither executor may be replayed.
+The673 refusal custody is complete and must not be rerun after borrowed-PG reuse.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner
 8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.

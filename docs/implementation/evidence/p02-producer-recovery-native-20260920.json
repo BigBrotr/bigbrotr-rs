@@ -36668,6 +36668,200 @@
           },
           "scope": "Only current-join refusal on fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original a99 initial Sync failure remains FAIL; this unchanged-profile trial does not identify or fix its unobserved timing cause. Five other refusals and attempt-cap/capacity/RSS remain NOT_RUN. Never replay custody after borrowed-PG reuse."
         }
+      },
+      "archive_package_cache_headroom": {
+        "status": "PASS_DUPLICATE_CARGO_PACKAGE_NAMESPACES_RETIRED_VERIFIED",
+        "root": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018",
+        "source_head": "46b291a906dda300d2b637a90ca1b871c1738e89",
+        "sessions": {
+          "prepare72510": 0,
+          "manifest_inspection70453": 0,
+          "manifest_review41961": 0,
+          "execute19616": 0
+        },
+        "prepare": {
+          "started": "2026-10-18T19:38:29.771074+00:00",
+          "command": [
+            "python3",
+            "-B",
+            "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/retire-cargo-packages.py",
+            "prepare"
+          ],
+          "source_sha256": "f37f584b24d0969ff531efbf45f4b0667dae7648b47432a529ccb17ac14840cb",
+          "head": "46b291a906dda300d2b637a90ca1b871c1738e89",
+          "finished": "2026-10-18T19:40:38.327760+00:00",
+          "exit_code": 0
+        },
+        "execute": {
+          "started": "2026-10-18T19:41:31.019319+00:00",
+          "command": [
+            "python3",
+            "-B",
+            "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/retire-cargo-packages.py",
+            "execute",
+            "--manifest-sha256",
+            "9a627127c7121ce20cf333c930472bd273a7f156de2a9771e67994cff4c92d27"
+          ],
+          "source_sha256": "f37f584b24d0969ff531efbf45f4b0667dae7648b47432a529ccb17ac14840cb",
+          "manifest_sha256": "9a627127c7121ce20cf333c930472bd273a7f156de2a9771e67994cff4c92d27",
+          "root_review_sha256": "8538719c9899d6c6b93be4f9f0db37f184e4846a9b3e75a7a0e914fa484ee230",
+          "actual_joins": {
+            "prepare72510": 0,
+            "manifest_inspection70453": 0,
+            "manifest_review41961": 0
+          },
+          "finished": "2026-10-18T19:45:04.866435+00:00",
+          "exit_code": 0
+        },
+        "selected_roots": 37,
+        "complete_counterparts": [
+          "archive-attempts-b245644",
+          "installed-publication-61271e2",
+          "private-panel-referrer-cc4aa3a",
+          "job-admission-8fae53a"
+        ],
+        "completed_packages": 9378,
+        "deleted_files": 529697,
+        "deleted_directories": 80400,
+        "allocated_candidate_bytes": 9009500160,
+        "retained_entries_verified": 90236,
+        "input_pins": 180,
+        "protected_elfs": 190,
+        "protected_native_assets": 10,
+        "stable_container_projections": 1405,
+        "receipt": {
+          "allocated_candidate_bytes": 9009500160,
+          "archive_headroom_sufficient_now": true,
+          "completed_packages": 9378,
+          "deleted_entries": 610097,
+          "deleted_files": 529697,
+          "durability": "Every package root removed then surviving registry parent fsynced before completed-package journal fsync. Not per-leaf durability, secure erasure or a physical-space guarantee.",
+          "free_bytes_after": 293816459264,
+          "free_bytes_before": 282654613504,
+          "host_after": {
+            "candidate_hits": [],
+            "inspected": {
+              "cmdline": 523,
+              "cwd": 50,
+              "exe": 50,
+              "fd": 48,
+              "maps": 468
+            },
+            "unavailable": {
+              "cwd": 473,
+              "exe": 473,
+              "fd": 475,
+              "maps": 55
+            }
+          },
+          "manifest_sha256": "9a627127c7121ce20cf333c930472bd273a7f156de2a9771e67994cff4c92d27",
+          "observed_free_delta_bytes": 11161845760,
+          "preservation": "Every nondeleted entry in41 Cargo homes including four counterparts, original source/state/lock/190ELF/10asset pins, mounts and stable Docker projection verified. Only retained source-parent directory mutable accounting changes from known removals. Outside-home datasets/logs/worktrees/native roots unselected, not recaptured.",
+          "protected_elfs_verified": 190,
+          "reserve_plus_envelope_bytes": 69324505088,
+          "scope_note": "Free delta includes shared-host activity. No currentnetwork115, unique274-package home, container/volume/worktree/data/log/native-asset deletion.",
+          "status": "RETIRED_VERIFIED",
+          "time": 1792352704.643677
+        },
+        "artifacts": {
+          "retire-cargo-packages.py": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/retire-cargo-packages.py",
+            "bytes": 45817,
+            "sha256": "f37f584b24d0969ff531efbf45f4b0667dae7648b47432a529ccb17ac14840cb"
+          },
+          "manifest.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/manifest.json",
+            "bytes": 1775,
+            "sha256": "63a749a0fc3ccfa1f1e5aaba4c87c93a100467eb89c73e615d88143e84fdaa07"
+          },
+          "source-notes.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/source-notes.json",
+            "bytes": 7574,
+            "sha256": "608a4b63fdeaace003dcf125a535ece1490e39194cbc2b4b43bdf7d1aca3e17f"
+          },
+          "static-checks.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/static-checks.json",
+            "bytes": 1822,
+            "sha256": "d6e811d54d1d90ad9bb59383b73052aea05f76b2318adf03ec1433fe4abf49bf"
+          },
+          "root-source-review.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-source-review.json",
+            "bytes": 775,
+            "sha256": "f3d2e0cee9364e59999430ce5837e34eb34344f3c3b277103256e9b2555f8f87"
+          },
+          "root-manifest-review.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-manifest-review.json",
+            "bytes": 19188,
+            "sha256": "8538719c9899d6c6b93be4f9f0db37f184e4846a9b3e75a7a0e914fa484ee230"
+          },
+          "root-prepare-invocation.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-prepare-invocation.json",
+            "bytes": 364,
+            "sha256": "ffb0986f1ed05082fb3ac5c7373135ff9022ab9f56b9179de02a3e39616661be"
+          },
+          "root-prepare-result.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-prepare-result.json",
+            "bytes": 71,
+            "sha256": "ebba35f172d3a172d6716947f92f775eccc8487cd4208a417f5534dfaf89718c"
+          },
+          "frozen-manifest.json.gz": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/frozen-manifest.json.gz",
+            "bytes": 35253864,
+            "sha256": "9a627127c7121ce20cf333c930472bd273a7f156de2a9771e67994cff4c92d27"
+          },
+          "dry-run-summary.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/dry-run-summary.json",
+            "bytes": 9719,
+            "sha256": "e046d1a95d6c7331860a8e11959fe4d04871d7cb0d4a1580b97f5e8c591f1619"
+          },
+          "execution-started.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/execution-started.json",
+            "bytes": 500,
+            "sha256": "f07dcd429c13532e87523bf7ff6a0e184c30f3b34a560085c6da8bdc1a4d44a0"
+          },
+          "completed-packages.jsonl": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/completed-packages.jsonl",
+            "bytes": 6238332,
+            "sha256": "e908bb67cf25004e69827b87ad1b3f6c4e8a8703107db023e123174306a56980"
+          },
+          "retirement-receipt.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/retirement-receipt.json",
+            "bytes": 1493,
+            "sha256": "3343d028ef8455b7286d33f6440e639e7627652f5c062485e783f3b81ebfc96b"
+          },
+          "root-execute-invocation.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-execute-invocation.json",
+            "bytes": 701,
+            "sha256": "fff7ff5b05a9728cf1a17feb454f2bf1e0c2db7b077a738740a688b7aea097dd"
+          },
+          "root-execute-result.json": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-execute-result.json",
+            "bytes": 71,
+            "sha256": "d541c28577c9a746fe5f33cea0c5bed9177d07be35bfd9d04e4920522897e13f"
+          },
+          "root-execute.stdout": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-execute.stdout",
+            "bytes": 1375,
+            "sha256": "9fc2f244b5e19d160c7eaab735755532c551cc38cf0468af8fa9e5882c27285f"
+          },
+          "root-execute.stderr": {
+            "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-cargo-package-headroom-20261018/root-execute.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "proposal": {
+          "path": "/home/tux/bigbrotr-rs/.research/sustained-headroom-review-20261018/proposal-v2.json",
+          "bytes": 217136,
+          "sha256": "d8de4c30796ffd06a2885e855a01c12bff25c15d4eee251048091d1b901191ea"
+        },
+        "independent_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/sustained-headroom-review-20261018/package-helper-review.json",
+          "bytes": 5151,
+          "sha256": "1b972dbf91f27629065b35136b9eaa291031b1bd42ccba2e25461e769b0d0064"
+        },
+        "root_completion_check": "Actual execute19616 joined0. Complete9378-line journal exactly equals frozen ordered package units/ordinals; all paths unique and all610097entries/529697files/9009500160allocated bytes reconcile. Full post-preservation passed in reviewed executor. No failure artifact; stderr empty.",
+        "limits": "One-shot complete: never replay. Preserve original manifests/journals/datasets/logs/worktrees/failures. Full41-home retention census and explicit180input/190ELF/10asset pins verified; out-of-scope interiors not recaptured. Accessible process checks disclose unreadable entries and are cooperative snapshots. Shared-host free-space increased sharply before removal; observed11161845760B delta during deletion exceeds9009500160candidate bytes and is not solely attributed to this operation. Namespace fsync is not secure erasure or physical reclaim proof."
       }
     }
   }
