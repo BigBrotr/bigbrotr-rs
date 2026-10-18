@@ -49,6 +49,15 @@ fn admission(now: Instant, due: Instant, deadline: Option<Instant>) -> Admission
     }
 }
 
+async fn renewal_due(due: Instant) {
+    // A newly created Sleep can remain Pending until the timer driver advances.
+    // Retained commands are already Ready: near renewal, return Ready directly
+    // so the biased renewal arm wins without moving the original due time.
+    if admission(Instant::now(), due, None) != Admission::Renew {
+        tokio::time::sleep_until(due).await;
+    }
+}
+
 fn renewed_due(
     now: Instant,
     remaining: Duration,
@@ -84,18 +93,7 @@ async fn bounded_capped<T>(
     if let Some(deadline) = deadline {
         // A Sleep can remain Pending until its timer driver catches up. Check
         // actual authority before the nested future gets its first poll.
-        if cancellation.requested.load(Ordering::Acquire) {
-            return Err((
-                4,
-                "initial Ingest cancelled; original attempt may need recovery".into(),
-            ));
-        }
-        if Instant::now() >= deadline {
-            return Err((
-                4,
-                "initial Archive deadline; retain original outcome".into(),
-            ));
-        }
+        check_external_deadline(deadline, cancellation)?;
         tokio::select! {
             biased;
             _ = cancellation.wait() => Err((4, "initial Ingest cancelled; original attempt may need recovery".into())),
@@ -105,6 +103,22 @@ async fn bounded_capped<T>(
     } else {
         bounded(maximum, cancellation, work).await
     }
+}
+
+fn check_external_deadline(deadline: Instant, cancellation: &Cancellation) -> Result<()> {
+    if cancellation.requested.load(Ordering::Acquire) {
+        return Err((
+            4,
+            "initial Ingest cancelled; original attempt may need recovery".into(),
+        ));
+    }
+    if Instant::now() >= deadline {
+        return Err((
+            4,
+            "initial Archive deadline; retain original outcome".into(),
+        ));
+    }
+    Ok(())
 }
 
 impl<'a> CommandOwner<'a> {
@@ -275,7 +289,7 @@ impl<'a> CommandOwner<'a> {
         &mut self,
         work: management::Work,
         management: &mut Option<management::Management>,
-        due: &mut Instant,
+        due: Instant,
         deadline: Option<Instant>,
     ) -> Result<()> {
         assert!(self.pending.is_none(), "selected command already retained");
@@ -283,12 +297,9 @@ impl<'a> CommandOwner<'a> {
         // The select may have slept since its earlier admission check. No
         // command transaction starts until this fresh decision permits it.
         let now = Instant::now();
-        match admission(now, *due, deadline) {
+        match admission(now, due, deadline) {
             Admission::Defer => return Ok(()),
-            Admission::Renew => {
-                *due = now;
-                return Ok(());
-            }
+            Admission::Renew => return Ok(()),
             Admission::Ready => {}
         }
         let maximum = self
@@ -326,7 +337,7 @@ impl<'a> CommandOwner<'a> {
                     Some(deadline),
                 )?;
             } else {
-                self.idle_phase(*due)?;
+                self.idle_phase(due)?;
             }
             if let Some(response) = response {
                 response.deliver();
@@ -347,6 +358,7 @@ impl<'a> CommandOwner<'a> {
     ) -> Result<T> {
         tokio::pin!(work);
         loop {
+            check_external_deadline(deadline, self.cancellation)?;
             self.lease
                 .check_delivery(self.lease.known_epoch())
                 .map_err(authority)?;
@@ -363,7 +375,7 @@ impl<'a> CommandOwner<'a> {
                 biased;
                 _ = self.cancellation.wait() => return Err((4, "initial Archive cancelled; retain original outcome".into())),
                 _ = tokio::time::sleep_until(deadline) => return Err((4, "initial Archive deadline; retain original outcome".into())),
-                _ = tokio::time::sleep_until(*due) => {
+                _ = renewal_due(*due) => {
                     let started = self.renew(deadline).await?;
                     *due = self.next_renewal(started)?;
                     if let Some(management) = management.as_ref() {
@@ -372,7 +384,7 @@ impl<'a> CommandOwner<'a> {
                 },
                 result = &mut work => return result,
                 work = next_command(&mut self.pending, management), if commands => {
-                    self.command(work, management, due, Some(deadline)).await?;
+                    self.command(work, management, *due, Some(deadline)).await?;
                 },
             }
         }
@@ -648,15 +660,10 @@ async fn maintain_context(
                 .lease
                 .check_delivery(state.lease.known_epoch())
                 .map_err(authority)?;
-            // Avoid starting a new bounded operation with only a timer tick
-            // left. This advances renewal; it never extends the old authority.
-            if admission(Instant::now(), due, None) == Admission::Renew {
-                due = Instant::now();
-            }
             tokio::select! {
                 biased;
                 _ = cancellation.wait() => return Ok(()),
-                _ = tokio::time::sleep_until(due) => {
+                _ = renewal_due(due) => {
                     let started = state.renew_for(Some(store)).await?;
                     due = state.next_renewal(started)?;
                     state.idle_phase(due)?;
@@ -671,7 +678,6 @@ async fn maintain_context(
                     // The timer may become ready only after select slept near
                     // renewal. No native/Sync effect precedes this recheck.
                     if admission(Instant::now(), due, None) == Admission::Renew {
-                        due = Instant::now();
                         continue;
                     }
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
@@ -688,7 +694,6 @@ async fn maintain_context(
                     // The timer may become ready only after select slept near
                     // renewal. No native/Sync effect precedes this recheck.
                     if admission(Instant::now(), due, None) == Admission::Renew {
-                        due = Instant::now();
                         continue;
                     }
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
@@ -709,7 +714,7 @@ async fn maintain_context(
                     state.idle_phase(due)?;
                 },
                 work = next_command(&mut state.pending, &mut management) => {
-                    state.command(work, &mut management, &mut due, None).await?;
+                    state.command(work, &mut management, due, None).await?;
                 },
             }
         }
@@ -729,6 +734,20 @@ async fn maintain_context(
 mod tests {
     use super::*;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+    #[tokio::test]
+    async fn renewal_admission_does_not_wait_for_a_timer_tick() {
+        let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+        for due in [
+            Instant::now() + Duration::from_millis(50),
+            Instant::now(),
+        ] {
+            let mut renewal = std::pin::pin!(renewal_due(due));
+            assert!(renewal.as_mut().poll(&mut context).is_ready());
+        }
+        let mut renewal = std::pin::pin!(renewal_due(Instant::now() + Duration::from_secs(60)));
+        assert!(renewal.as_mut().poll(&mut context).is_pending());
+    }
 
     #[test]
     fn admission_is_rechecked_after_a_select_wait() {
@@ -926,6 +945,36 @@ mod tests {
         let mut pending = Some(work);
         let retained = budget.snapshot().active_permits();
         assert!(retained >= 2);
+        let due = Instant::now() + Duration::from_millis(50);
+        tokio::select! {
+            biased;
+            _ = renewal_due(due) => {},
+            _ = next_command(&mut pending, &mut management) => panic!("retained command overtook due renewal"),
+        }
+        assert!(pending.is_some());
+        assert_eq!(budget.snapshot().active_permits(), retained);
+        let cancellation = Cancellation::new();
+        let renewed = Cell::new(false);
+        for cancelled in [false, true] {
+            if cancelled {
+                cancellation.request();
+            }
+            let outcome = bounded_capped(
+                Duration::from_secs(5),
+                Some(Instant::now()),
+                &cancellation,
+                async {
+                    renewal_due(due).await;
+                    renewed.set(true);
+                    Ok(())
+                },
+            )
+            .await;
+            assert!(outcome.is_err());
+            assert!(!renewed.get());
+            assert!(pending.is_some());
+            assert_eq!(budget.snapshot().active_permits(), retained);
+        }
         tokio::select! {
             biased;
             _ = std::future::ready(()) => {},

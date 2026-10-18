@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T16:22:14.789328+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T16:49:45.029373+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
 current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Historical detail remains in the evidence/laboratory records below and Git history;
@@ -9,10 +9,10 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 ## Repository and active responsibility
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; main and verified remote ed1e485. Qualified
-product 40bc295 is pushed. No merge/rebase is pending. Engine 8902 joined 1;
-all owned runtime resources stopped. Current documentation records its real
-partial outcome; the client-fixture correction 08d282c is integrated as 3d0f09d.
+Canonical `/home/tux/bigbrotr-rs`; main and verified remote 4aaf017. Qualified
+product 40bc295 is pushed. No merge/rebase pending. Latest engine 40193 joined 1;
+its live3 product exited 4 and outer resources stopped. The renewal-dispatch
+correction below is source-reviewed and awaits exact-source build qualification.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -21,7 +21,9 @@ P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
 and [native handoff/profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
 The installed `archive catch-up --file ROOT` source is wired and its components
 pass. First qualification failed during initial publication; the second reached catch-up
-and retry, then failed in the HTTP test client. Full connected qualification is open.
+and retry, then failed in the HTTP test client. The corrected fixture
+subsequently stopped at live3 on an idle watchdog deadline. Full connected
+qualification remains open.
 No task checkbox closes from component tests or AI review.
 
 Durable evidence: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
@@ -108,7 +110,8 @@ All one-shot preparation scripts for these runs are EXECUTED; never replay them.
 
 Frozen same-root journey a2439a8 is integrated on main at 51fff8f. Author worktree
 `.research/archive-catch-up-journey-20261018`, branch
-`qualification/archive-catch-up-journey`, is clean and retained. Seven new
+`qualification/archive-catch-up-journey`, is retained; a source-only fault
+slice is being finalized there. Seven new
 `installed_archive_catch_up*.py` modules plus four narrow existing hooks are
 reviewed. Author AST/import/25 bounded controls and root manifest/diff checks PASS.
 The first inert-import smoke FAIL is retained and corrected. At that source freeze, engines and full scientific replay were NOT_RUN;
@@ -242,11 +245,34 @@ stable Docker state. Receipt records 4,483,653,632 B observed free-space gain
 and 72,637,558,784 B free afterward; shared-host activity affects the difference.
 Preserve receipt, journal, sources and all remaining artifacts. NEVER replay.
 
-Next bounded action: prepare a fresh journey with HTTP fixture 3d0f09d and
-qualified 40bc295, rechecking available reserve. No Rust rebuild is needed for
-this experiment-only correction. Preserve both failed roots. Success auditor
-8402a325 / manifest 15de291e is still NOT_RUN; new preparation must use current
-stopped PG state and 184 protected ELF paths.
+Fresh preparation 49731 joined 0 at source 4aaf017, then engine 40193 joined 1
+(16:39:12Z–16:40:37Z). Initial publication and five continuations completed;
+live3 exited 4/unforced/reaped after 3.219s. Its diagnostic names idle phase
+commands.rs:268 and cleanup phase:720, 502us late. Transport client exited 1
+with RemoteDisconnected during a job GET. All seven product process receipts
+are preserved. Fixture live3 custody stays UNKNOWN; no after-native dump,
+source3 onward, catch-up, retry, read/export/restart or scientific replay ran.
+Read-only audit 20590 joined 0, SHA aa3b4919: 1974 source files, 184 ELFs,
+seven process receipts and 127 structurally bound raw files. Engine FAIL and
+native-release UNKNOWN remain unchanged. Complete records are under
+`archive_connected_journey_attempts` and `.research/archive-renewal-dispatch-20261018`.
+
+Source analysis found repeated due=now rewrites can keep a retained ready HTTP
+command ahead of a newly pending Tokio timer, starving actual renewal. This is
+compatible with the observed watchdog failure, not proof of its unique trigger.
+The correction uses renewal_due to return Ready directly inside the existing
+100ms margin, preserves the original due time and retained Work/grant, and
+keeps cancellation and absolute Archive ceilings. Both root and independent
+source review found no remaining blocker in the affected code. Source review
+SHA 72ccce0d binds commands.rs 0d8f3b3e. New first-poll and actual retained-Work
+regressions are authored; their execution remains NOT_RUN.
+
+Next bounded action: commit the correction and run the existing exact-source
+installed build with `.research/archive-renewal-dispatch-20261018` helpers.
+Preparation SHA 7f6ef101 / build auditor 9bfa19a1 preserve all 184 prior ELFs.
+Qualify actual tests/Clippy/artifacts, then prepare a fresh normal journey with
+that new product and corrected HTTP fixture. Preserve all failed roots/audits;
+never replay an audit after intentional borrowed-PG state changes.
 
 Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
 still follows a successful normal journey. Independent source mapping identifies
@@ -258,11 +284,12 @@ capacity boundaries remain separate.
 
 ## Host resources and preservation
 
-Engine 8902 is joined; no owned runtime/compiler/SQL/native remains active.
-Borrowed PG stopped at 16:13:39Z, client exit 143; PID 0 / no OOM.
-Cleanup execute 63988 joined 0. One source-only next-fault designer is active;
-independent source review clarified local custody versus catalog sealing.
-Unrelated workloads remain untouched. Verify ownership before the next engine.
+Engine 40193 joined 1 and custody audit 20590 joined 0. No owned runtime,
+compiler, SQL or native operation remains active. Borrowed PG and client stopped
+at 16:40:36Z, exits 0/143, PID 0/no OOM; cleanup errors and unrelated changes empty.
+Cleanup execute 63988 joined 0. Fault source author is finalizing the preserved
+worktree; independent source reviews completed. Verify ownership before any
+next engine action. Unrelated workloads remain untouched.
 
 Root-only compiler cache:
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,

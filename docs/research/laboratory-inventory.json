@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-18T16:38:30.050617+00:00",
+  "updated_at": "2026-10-18T16:49:45.020152+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "Cleanup prepare43209/execute63988 joined0. No owned runtime/compiler/native/SQL. Source-only lost-COMMIT author active; reviewer supplied custody-versus-sealing finding. Next root-owned normal journey uses fresh reserve check and stopped PG baseline.",
+    "processes": "Prepare49731 joined0; engine40193 joined1; failed-custody20590 joined0. PG/client stopped at16:40:36Z, exit0/143 PID0 noOOM. No owned runtime/compiler/native/SQL. Fault source author finalizing source-only freeze; independent reviews complete. Next exact-source compiler build not yet started.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -62446,6 +62446,155 @@
           ],
           "free_bytes_after": 73076006912,
           "next": "Run fresh normal journey with corrected HTTP fixture3d0f09d and unchanged qualified40bc295 artifacts; preserve both failures and all custody evidence."
+        },
+        {
+          "observed_at": "2026-10-18T16:45:21.714280+00:00",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-4aaf017",
+          "source": "4aaf017366803d19e85dfafd9515c3965021ecc7",
+          "status": "FAIL",
+          "prepare_session": 49731,
+          "prepare_exit_code": 0,
+          "engine_session": 40193,
+          "engine_exit_code": 1,
+          "wrapper": {
+            "command": [
+              "python3",
+              "-B",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-4aaf017/source/experiments/acquisition-scope/bindings.py",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-4aaf017",
+              "--installed-archive-catch-up",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-40bc295/out/artifacts"
+            ],
+            "source": "4aaf017366803d19e85dfafd9515c3965021ecc7",
+            "started_at": "2026-10-18T16:39:12.014037+00:00",
+            "exit_code": 1,
+            "finished_at": "2026-10-18T16:40:37.732905+00:00"
+          },
+          "completed_continuations": [
+            "abandon1",
+            "retire1",
+            "live2",
+            "abandon2",
+            "retire2"
+          ],
+          "failed_step": "live3",
+          "product_error": "error: initial Ingest phase completed after its deadline; preserve retained state; prior_phase=interfaces/serve/initial_ingest/commands.rs:268:9; requested_phase=interfaces/serve/initial_ingest/commands.rs:720:24; overdue_us=502\n",
+          "product_terminal": {
+            "pid": 1980,
+            "config": "/lab/bb_scope_bind_4aaf017_archive_export.toml",
+            "prefix": "/lab/catch-up-live3",
+            "command": [
+              "/build/bigbrotr",
+              "serve",
+              "--file",
+              "/lab/bb_scope_bind_4aaf017_archive_export.toml",
+              "--activate-successor",
+              "--roles",
+              "control,ingest,sync"
+            ],
+            "start_ticks": 572388509,
+            "reaped": true,
+            "exit_code": 4,
+            "forced": false,
+            "error": null,
+            "elapsed_seconds": 3.2193006444722414
+          },
+          "fixture_custody": {
+            "status": "UNKNOWN",
+            "errors": [
+              {
+                "stage": "custody",
+                "error": "AssertionError()"
+              }
+            ]
+          },
+          "backends": {
+            "exact": [
+              {
+                "pid": 3740,
+                "backend_start": "2026-10-18T16:40:31.001461+00:00",
+                "database": "bb_scope_bind_4aaf017_archive_export",
+                "present": false
+              }
+            ],
+            "all": {
+              "bb_scope_bind_4aaf017_archive_export": "0",
+              "bb_scope_bind_4aaf017_archive_export_cat": "0"
+            }
+          },
+          "transport_terminal": {
+            "exit_code": 1,
+            "reaped": true,
+            "outcome": "PROCESS_EXITED"
+          },
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "terminal": [
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-18T16:39:12.923689167Z",
+                "FinishedAt": "2026-10-18T16:40:36.860276631Z"
+              }
+            },
+            {
+              "id": "d307a9aed1817e90a75e5cc810056ca0e014249b8b6b06e3ce27808984533572",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-18T16:39:14.024393254Z",
+                "FinishedAt": "2026-10-18T16:40:36.180902967Z"
+              }
+            }
+          ],
+          "free_bytes_after": 72485769216,
+          "bound_files": {
+            "root-preparation.json": "a9d0cbf8a8058fd528c55068fb797055f8ed9809dd7c9f885087d77f383d9585",
+            "root-engine-invocation.json": "ffaf85dca69b66b04a66a18dea3defac614cde1d3bee1a01bbd572355749a743",
+            "root-engine-result.json": "31e0cae847cdf5d2e13660c04d3dbf8a0164681fbde29c69fc602638b1adfdab",
+            "root-engine.stderr": "35e0cb70a25f1c960326f8c777dcf3f9d0d9ef0d0715ab0a51cdba3261216baf",
+            "bindings/result.json": "0a7e38a0300f328c03725a31ab6920ae225f0d9a580a74a1002038a1bbdadcc3",
+            "bindings/archive-catch-up-journey.json": "9257bf540cf5c92d8530b67104c45fadb4a34d877b1dd022c6b82cff18f7a0a9",
+            "bindings/catch-up-live3-response.json": "d643d49b8e477a8e867d2fe911fa6458c31ab7ee9ff72c8485097914fadd25af",
+            "bindings/catch-up-live3-custody.json": "6c51a1eccf3c7a35e78c11afd78bdd9fd086b52cba2f40b0baa30c24e4e37145",
+            "bindings/catch-up-live3-backends.json": "34dc4055f018f293155a10288878f69dcf409c4e6cfdc21e8b1b93e750decd6c",
+            "bindings/catch-up-network/client.stderr": "00d9d3f04995eb49946477b3894aa9a49fb943bbce0c85d3433206c727866831",
+            "bindings/catch-up-network/client-exit.json": "3386cb5a966bf11ff32274a0dd14067be1da313d38f400cdde375176a0b47e31",
+            "bindings/archive-export-failure-diagnostics.json": "d7c7970d4089d083cc79b97d669cd136b639de19907f5caa58e77309638fcadf"
+          },
+          "source_finding": "Moving due=now on repeated ready retained commands can starve renewal while fresh Tokio Sleep remains Pending; source-compatible with observed idle watchdog expiry, not proven sole actual trigger.",
+          "not_run": "source3 onward, catch-up, retry, HTTP/read/export/restart, independent full scientific replay. No native dump after failed live3; its fixture custody remains UNKNOWN. No repeat engine scheduled until source defect corrected and prior evidence bound.",
+          "record_path": ".research/archive-renewal-dispatch-20261018/engine-failure.json",
+          "record_sha256": "ce804a193042b975ad7cb961e913009611dbd5f3813da3e6f5be374cf7d0b0fb",
+          "custody_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-4aaf017/audit-root/audit-failure-v1.json",
+            "sha256": "aa3b4919a3ab064efe3733eba65ea6ba231eaa49b58cf875c4028eb05802d805",
+            "status": "PASS_READ_ONLY_FAILED_ARCHIVE_CATCH_UP_CUSTODY",
+            "session": 20590,
+            "joined_exit_code": 0,
+            "protected_elfs": 184,
+            "source_files": 1974,
+            "installed_processes": 7,
+            "structurally_bound_raw_files": 127,
+            "limits": "Custody-only PASS preserves engineFAIL/live3UNKNOWN. No native reopen, scientific replay or later journey is inferred. Never replay after intentional PG restart."
+          }
         }
       ],
       "preparation_failures": [
@@ -62539,6 +62688,31 @@
         "time": 1792341223.804435
       },
       "deletion_journal_sha256": "9fc40b9889c3bf1799644ab6ea80bb948452ffef16caa3126a75928381a8a099"
+    },
+    "renewal_dispatch": {
+      "status": "SOURCE_REVIEWED_NOT_RUN",
+      "source": "apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs",
+      "source_sha256": "0d8f3b3e983f5a5b53307dbc7f1b01f31acca15d85f9aa7dcf1fb5b24ca59d4f",
+      "observed_at": "2026-10-18T16:49:01.235955+00:00",
+      "independent_reviewer": "/root/recovery_review",
+      "findings": "No concrete blocker in full finite diff/helpers/both loops/command/renew_capped/complete regressions. renewal_due first poll is directly Ready within existing100ms admission margin; all moving due=now rewrites removed; immutable due passed to command. Same biased renewal body retains Work and grants. Synchronous cancellation/absolute expiry checked before external and nested first poll. Next due assigned only from actual completed renewal.",
+      "root_review": "Complete commands.rs, supervision.rs, affected initial_ingest phase/bounded/owner boundary and actual retained failed receipt inspected; inherited unchanged product contracts/callers previously read.",
+      "not_run": "New Rust tests/build/Clippy and connected retry NOT_RUN. First-poll helper and real retained Work regression are authored only. No arbitrary scheduling progress or sole-cause claim for actual failure.",
+      "helpers": {
+        "prepare-condition-build.py": {
+          "base_sha256": "3324a6b2bd9391ba529d70e9855ce0bdccf3a740af81f890d2cae720bbb19cf5",
+          "sha256": "7f6ef101a697aef938e289f01d794fb2ebd0f63776f22b35b51d2b3814762178",
+          "diff_sha256": "0df8eb6fbab4478f5905b48ebec1098bd16c05e6ef3e0879e4c7006926d76e7c"
+        },
+        "audit-condition-template.py": {
+          "base_sha256": "47f571d273067427b772c8bb4eb7f6da3441a4f5b025e9413d28c9bc1c42a8ae",
+          "sha256": "9bfa19a1c92ecab714a7f32a1582af1252ddb34dab47ec30f28757dd93297f02",
+          "diff_sha256": "13e6128100f5692112295775e25a79bc80628efc49ce3f4b77cb670cf562e83c"
+        }
+      },
+      "record_path": ".research/archive-renewal-dispatch-20261018/source-review.json",
+      "record_sha256": "72ccce0dc6b2837b567cfe7f4a6e573e475e6c4ea9cb2da3eae027928ba56390",
+      "next": "Commit current correction, prepare one exact-source installed build using the bound helpers; run existing required journal/Serve/entrypoint tests and Clippy, audit actual artifacts before a fresh normal journey."
     }
   }
 }
