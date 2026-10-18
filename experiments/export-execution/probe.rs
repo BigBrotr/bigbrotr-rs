@@ -1,4 +1,5 @@
 //! Isolated real adapter/native/output fixture, not the installed scheduler.
+mod memory;
 mod resume;
 mod rollback;
 use bigbrotr::{
@@ -129,6 +130,18 @@ fn directory(path: &Path) {
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     let mode = std::env::args().nth(1).unwrap();
+    if mode == "measure" {
+        let args: Vec<_> = std::env::args().collect();
+        if args.len() != 3 {
+            eprintln!("usage: export-execution-probe measure /lab/case.json");
+            std::process::exit(2);
+        }
+        if let Err(error) = memory::run(Path::new(&args[2])).await {
+            eprintln!("export measurement refused: {error}");
+            std::process::exit(4);
+        }
+        return;
+    }
     assert!(matches!(
         mode.as_str(),
         "migrate" | "denied" | "run" | "resolve" | "rollback" | "resume" | "resume-denied"
