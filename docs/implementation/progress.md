@@ -1,345 +1,153 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T16:55:31.185586+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
-M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
-current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
-Historical detail remains in the evidence/laboratory records below and Git history;
-the longer checkpoint at `97b8dc9` is preserved, not a current process inventory.
+Observed 2026-10-18T17:14Z on Tux. Goal ACTIVE after the owner's explicit resume.
+M1–M5 remain INCOMPLETE. Existing task files own the plan. Follow the
+[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and active responsibility
 
-Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; main and verified remote 9a7fd81. Qualified
-product 9a7fd81 is pushed. No merge/rebase pending. Latest engine 40193 joined 1;
-its live3 product exited 4 and outer resources stopped. The renewal-dispatch
-correction below now passes exact-source build qualification; its new normal
-journey remains NOT_RUN.
+Canonical `/home/tux/bigbrotr-rs`, main a62f08a, remote exact a62f08a verified.
+Root is the sole integrating owner; Tux alone handles development and tests.
+No merge/rebase is pending. Current root edits correct three experiment oracle
+files and update this checkpoint, existing evidence and inventory. No product
+source or qualified executable changed. Independent source review is complete; its /me idle-time binding finding is fixed.
 
-Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
+Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
-[storage task](02-storage.md),
-[finite catch-up contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
-and [native handoff/profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
-The installed `archive catch-up --file ROOT` source is wired and its components
-pass. First qualification failed during initial publication; the second reached catch-up
-and retry, then failed in the HTTP test client. The corrected fixture
-subsequently stopped at live3 on an idle watchdog deadline. Full connected
-qualification remains open.
-No task checkbox closes from component tests or AI review.
+[storage task](02-storage.md), [finite catch-up contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
+and [native profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
+No task closes from component tests or AI review alone.
 
-Durable evidence: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
+Durable details: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
 node `initial_successor_preparation_20261012.repeatable_succession_20261015`.
-Current children: `archive_pending_bridge_source`, `archive_component_sources`,
-`archive_component_build`, `archive_finite_runtime_sources` and
-`archive_installed_build_attempts`.
-[Laboratory inventory](../research/laboratory-inventory.json) owns resource records:
-`implementation_archive_catch_up_20261018`, `tux_intermediate_retirement_20261018`
-and `tux_branch_retirement_20261015`. Earlier qualification remains under the same
-report's source/acquisition/retirement/installed-family/cycle/prepared children.
+[Laboratory inventory](../research/laboratory-inventory.json), node
+`implementation_archive_catch_up_20261018`, owns roots/resources. Historical
+checkpoint a62f08a preserves earlier detailed chronology; it is not current status.
 
-## Implemented boundary and review
+## Current result and correction
 
-The runtime owner is `apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up.rs`
-with authority, inventory, plan, capture and publication children. It opens the
-existing native/coordinator custody before credentials, verifies the complete
-terminal native/SQL lineage and all retained inputs/attempts, resolves original
-frontier operation IDs, admits the entire missing-batch plan, publishes complete
-original batches, then bridges each immediate topology with explicit zero bounds
-before the final complete cut. Exact retry preserves immutable attribution and
-scientific state. Actual native/worker/driver joins and Control teardown precede
-success delivery. It creates no Ingest writer, adoption, ACK/GC or listener.
+Latest engine root:
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-a62f08a`.
+Source a62f08a4fedd454ce9e593a57a6a45dd870e892d, tree
+24c8eb0c14eaabf5f94e986305a3274790be72a2. Prepare74810 joined0;
+engine94225 joined1, 16:56:14Z–16:58:51Z. All14 product processes exited0,
+unforced/reaped; all13 continuations including catch-up, exact retry, ordinary
+HTTP/history/export and restart completed. Both HTTP clients report PASS.
+Final independent verification failed at catalog line85. Engine and aggregate
+remain FAIL; their full science did not complete, raw success replay and negative
+controls NOT_RUN. No original output was rewritten.
 
-Limits remain explicit: 128 issued-plus-planned Archive attempts; 256 immutable
-frontier intents of at most 64 KiB; a complete 1024-entry state-directory census;
-64 KiB scan and 1 MiB decoded-intent grants; existing full-cut/wire/pending bounds.
-The pending decoder's real allocation exceeds its encoded-byte allowance.
-Filesystem/export admission retains the separate 64 GiB plus 577 MiB requirement.
-No copied coordinator, boot rebinding, journal repair or history deletion is allowed.
+Read-only failed-run custody9843 joined0. `audit-root/audit-failure-v1.json`,
+SHA c87e57ed63885fec2b9ef7f24dc32941e304e55544633259891d6926bdfbdb5d,
+binds1974 source files,190 protected ELFs,14 process receipts and270 structural
+raw files. PG/client are stopped/PID0/noOOM, exits0/143; cleanup/missing/unrelated
+errors empty. Never replay that auditor after intentional borrowed-PG changes.
 
-Original source commits were reconciled with their exact integrations:
-contract de794eb9→4a8f882, topology d51b32b→96965b5, pending bridge 5c70778→8cf12cb,
-PG frontier b130630→b4873fc, native receipts 0bc8bcb→7e01db1,
-journal 8388712→fa15a74 and runner 083c202→150f1da. Frozen author manifests remain
-in the preserved worktrees and are linked by the existing evidence records.
-Root CLI/composition 878d671, overlap/count corrections d7b8aec and subsequent
-compiler/diagnostic/lint corrections end at the qualified product ced7693.
+Root corrected verifier assumptions using pinned source and original raw evidence:
 
-Independent AI composition review found and closed two source defects: changed
-per-family counts at the retained prefix must refuse before publication, and the
-zero-new-attempt path must hold the actual manager preparation across peak admission.
-Record `.research/archive-catch-up-resume-20261018/composition-review.json`,
-SHA d7fa596b81b6a24fd0ff1b09d2b6e989bf88079b3635676725cd5b8d3ce4b726.
-Independent complete journal/census review includes exact locked rustix 1.1.5
-allocation source; record `journal-review.json` in the same directory,
-SHA f83941fbb706ffc9860157bd493829c7253f455e191f3dcf091f89976a88ee0e.
-These are scoped source reviews, not power-loss or connected-engine evidence.
+- DuckLake value_count means non-null count; require exact nonnegative integers,
+  value_count+null_count=record_count and valid dimensions. All283 new statistics
+  meet this;77 were falsely refused by null_count<=value_count.
+- Pinned DuckLake BLOB global extrema use escaped-text order. Six metadata
+  extrema differ from decoded-byte order. The full scientific C API reader stays
+  independent. Inspected upstream optimizer/constant-pruning paths do not use
+  those BLOB global extrema as byte bounds; no broad upstream query proof implied.
+- PostgreSQL membership rows receive fresh unique OIDs. Historical rows and all
+  role/member/grantor/privilege fields remain checked exactly.
+- Commands/reads need not update last_seen. This sequential browser fixture's
+  commands precede logout and expiry; export completion precedes logout.
+- SHA256 bytes need explicit SQL bytea or JSON hex presentation; export jobs do
+  not inherit acquisition_job_protocol from the old acquisition-row template.
 
-## Qualified artifacts and retained failures
+Separate offline diagnostic43366 joined0 using the corrected oracle:
+`.research/archive-catalog-counts-20261018/diagnosis-v8.json`, SHA
+ 4107b563f3e5d5e2b9d543f977d58b43245a1c984f7d81dc1871794bdf358735.
+It checks42 observations,75 Control tables,22 facts,7 receipts, snapshot8,
+frontier4→7, counts[13,2,2,2,3], exact export retry and91 negative controls.
+This is changed-oracle diagnosis on preserved captures, not strict success replay
+or a new engine PASS. The original status is changed only in separate memory;
+original SHA11ed80db remains exact. Six earlier diagnostic failures and their
+sources are retained. Existing evidence node `archive_journey_oracle_correction`
+binds all sources, findings, scoped checks and limits.
 
-Current exact packaged build: 9a7fd81f3d1d351a206a54415f27cf8c7ca055c0,
-tree 124db7fd291accb66f30eb0ceb9fceaf9f750107. Root:
+## Qualified product and next action
+
+Exact packaged build remains9a7fd81f3d1d351a206a54415f27cf8c7ca055c0,
+tree124db7fd291accb66f30eb0ceb9fceaf9f750107, root
 `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81`.
-All five checks PASS: CLI/probe compilation, journal 6, Serve 27, entrypoint 8
-and Clippy. Actual worker build, packaged build-info and verify-worker PASS.
-The existing library-test Copy-drop warning remains separate; Clippy passes.
-The first-poll renewal test and strengthened actual retained-Work test both PASS.
+Prepare11865/build61068/audit16469 joined0. Five checks PASS: compile, journal6,
+Serve27, entrypoint8 and Clippy;41 actual tests. Worker build, build-info and
+verify-worker PASS. Audit1164abade607ced8e3c93ed7fd48f13c73e8167c3a259e839376ba9728fb3494
+binds1974 source files and190 preserved ELFs. Existing Copy-drop warning in a
+library test is separate from passing Clippy. No rebuild for experiment-only fixes.
 
-Run 16:50:44Z–16:54:04Z; prepare 11865/build 61068/audit 16469 joined 0.
-Read-only `audit-root/audit-v1.json` SHA
-1164abade607ced8e3c93ed7fd48f13c73e8167c3a259e839376ba9728fb3494
-binds 1974 source files, 184 prior plus 6 new = 190 protected ELF paths and
-1396 unchanged prior containers. Fetch/native stopped cleanly. CLI SHA 9aec5a68.
-Use `out/artifacts` as installed argument. Earlier 40bc295 and ced7693 builds
-remain PASS within their original component scope; all failed runs remain FAIL.
-No connected journey after the renewal correction has yet run.
+The renewal correction preserves the original due time and returns Ready inside
+its100ms margin; retained Work keeps its grant and original Archive deadline.
+It closes a source starvation counterexample compatible with the earlier live3
+watchdog failure, without claiming its unique trigger or arbitrary scheduling progress.
 
-All preceding failed build roots remain under the same lab prefix, with their
-original scripts, logs, retained ELFs and separate read-only custody audits:
+Next bounded action: commit/push the corrected
+normal oracle and real checkpoint. Reconcile actual free space before preparing
+one fresh normal journey using unchanged qualified9a7fd81. Helpers:
+`.research/archive-renewal-dispatch-20261018/prepare-journey.py` SHAe1d82ee6,
+success auditor6c7efb8a. Bind build audit1164abade and190 ELFs; require
+69,324,505,088B free. Latest17:14 observation68,905,132,032B is below admission.
+Source-only candidate review for bounded compiler-intermediate cleanup is active;
+no new cleanup executed. Never weaken the capacity guard or replay an existing root.
+After fresh enginePASS, run its actual strict raw reader, then read-only custody.
 
-| Revision | Actual result | Audit SHA prefix |
-| --- | --- | --- |
-| d7b8aec | Worker PASS; probe compilation E0432; tests/Clippy NOT_RUN | 0a904870 |
-| b3735e9 | Compilation, journal 6 and Serve 19 PASS; entrypoint 7 PASS/1 FAIL on diagnostic wording; Clippy NOT_RUN | 692c4dec |
-| 1d42894 | All 33 tests and packaged checks PASS; Clippy manual_range_contains FAIL | b724078d |
-| 48956e2 | All 33 tests and packaged checks PASS; Clippy collapsible_if FAIL | f64a7fdd |
+## Pending independent work
 
-Earlier e613a19/tree973205bb library-only build passes 35 tests: historical pending
-5, retained PG frontier 6, receipts 3, membership 3 and custody 18, plus Clippy.
-Audit a8263d7e binds that exact scope; it does not prove installed composition.
-All one-shot preparation scripts for these runs are EXECUTED; never replay them.
+Fault source is frozen in `.research/archive-catch-up-journey-20261018`, branch
+`qualification/archive-catch-up-journey`, HEADc7b643d. Original29d43a0 remains
+preserved; followups7c2628f/c7b643d correct counts/BLOB/membership using the shared
+normal helper. Source-only33+24 controls PASS; full four-process fault journey,
+scientific replay and89 whole-transcript negative controls NOT_RUN.
+Root read all original files/hooks and both complete followup deltas/check scripts;
+existing manifests bind source and artifacts. Integrate/run after normal success.
 
-## Work in progress and next action
+Fault design: real publication COMMIT delivery loss, fresh resolver reuses original
+receipt, first frontier COMMIT delivery loss, fresh original-operation resolution,
+then exact retry. Same physical roots; no synthetic positive receipts or SQL seals.
+Local diagnostic custody and resolver credential sealing remain distinct.
+Fault custody template under `.research/archive-deadline-build-20261018`,
+SHAc169d78e; original manifest9b63a3f3 and provenance supplement05c1b5bb retained.
+Source-only/NOT_RUN. Future profile/root `archive-catch-up-faults`.
 
-Frozen same-root journey a2439a8 is integrated on main at 51fff8f. Author worktree
-`.research/archive-catch-up-journey-20261018`, branch
-`qualification/archive-catch-up-journey`, is retained; a source-only fault
-slice is being finalized there. Seven new
-`installed_archive_catch_up*.py` modules plus four narrow existing hooks are
-reviewed. Author AST/import/25 bounded controls and root manifest/diff checks PASS.
-The first inert-import smoke FAIL is retained and corrected. At that source freeze, engines and full scientific replay were NOT_RUN;
-the two later failed engine attempts are recorded below.
+Source-only refusal author owns separate worktree
+`.research/archive-catch-up-refusals-20261018`, branch
+`qualification/archive-catch-up-refusals`, basea62f08a plus original fault29d43a0
+cherry-picked as31b250f. Six planned actual cases each require a fresh original
+terminal3 root: missing current join, orphan history, changed family counts,
+missing retained input, cancellation during observed SQL wait, exact Control
+backend loss during wait. No engine/native/SQL/compiler delegated.
+Genuine held-attempt and valid issued+planned cap remain separate NOT_RUN work.
 
-The journey keeps one freshly initialized physical dataset/catalog/coordinator:
-initial signed Archive/Sync, terminal epoch 1, genuine empty epoch 2 then retirement,
-genuine signed successor epoch 3 then terminalization, catch-up and fresh retry,
-ordinary authorized history/export, joined stop/restart and repeated read/export.
-Expected independent science: 22 facts, 7 original batch receipts, family counts
-[13,2,2,2,3], snapshot 8, bounds 12/0/10, frontier R+3. All 75 Control tables checked.
-Root and independent AI reviewer closed the actual frozen source; full report
-`.research/archive-catch-up-resume-20261018/journey-source-review.json` is bound
-by the evidence node `archive_connected_journey_source`. The author manifest
-SHA 9a968649 and complete frozen source hashes remain in the author worktree.
-Source review is not connected-engine evidence or exhaustive negative coverage.
+## Resources, preservation and remaining gates
 
-Custody template is frozen at
-`.research/archive-catch-up-custody-20261018/audit-engine-template.py`,
-SHA d26aa071f6150aa46da84d5fb33f80d44283307e0a81cab2aa7968d7c41099d6.
-AST-only PASS; execution NOT_RUN. Root preparation script
-`.research/archive-catch-up-resume-20261018/prepare-journey.py` first attempt:
-session 62229 joined 1 at the free-space guard, before creating any engine root.
-That failure is preserved; no database, worker or runtime began in that attempt.
-The later admitted run below is now EXECUTED and must never be overwritten.
-Further fresh preparation requires actual reserve 69,324,505,088 B and reconciled
-clean exact source; never replay a successfully created one-shot run.
-
-The first preparation failure remains retained. The subsequent bounded cleanup
-retired 16,943 verified compiler intermediates from eight historical targets,
-retaining all 227,593 other entries, 178 qualified ELFs and unchanged container
-projections. Prepare 3240 and execute 28698 joined 0. Frozen manifest bb2c965f,
-receipt and deletion journal are under `.research/tux-maintenance-followup-20261018`;
-the same lab inventory node binds full hashes and target names. Free space after
-cleanup was 78,657,138,688 B; measured gain 16,878,981,120 B. These eight targets
-are retired partial caches; preserve final artifacts and never reuse or replay
-their executor. The earlier 56-file current-cache retirement remains separately
-recorded. Unrelated nsealr work and the six unrelated services were untouched.
-
-Actual engine root:
-`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-6474507`.
-Exact source 64745070b7d9601ad0b2ee6af5d353198e0d874a,
-tree c77db8676e459c9fc9e80327561f144456c19edb. Preparation 69850 joined 0,
-with 78,656,954,368 B free and unchanged 69,324,505,088 B admission requirement.
-`root-preparation.json` and `root-engine-invocation.json` bind the inputs.
-Root wrapper 40167 joined 1 at 15:29:04Z; `bindings/result.json` is FAIL.
-Initial child 212 was unforced/reaped, exit 4 after 35.43s, reporting
-`initial Ingest phase completed after its deadline; preserve retained state`.
-The HTTP client then exited 1 with ConnectionRefused. Only initial startup was
-reported; two actual attempt input files/Parquet groups exist, which do not alone
-prove catalog COMMIT. No continuation journey JSON or read/export/catch-up ran.
-PG/client exited 0/143, stopped/PID0/noOOM, with empty cleanup/missing/unrelated
-errors. Preserve this root; never rerun its preparation or overwrite the failure.
-
-Failed-run custody audit25350 joined 0: `audit-root/audit-failure-v1.json`,
-SHA3df265f2, binds 1974 source files, 178 protected ELFs and232 retained engine files.
-Custody PASS preserves engine FAIL; all13 continuations/scientific replay NOT_RUN.
-Root then restarted only the owned PG for explicit read-only repeatable-read SQL.
-`diagnostic-root/sql-forensics-v1` preserves complete75-table Control and32-table
-catalog captures, unchanged original66/64-table datasets, redacted role metadata
-and no other client backends. Both catalog snapshots2/3 and Control frontier
-revisions1/2 are committed, with complete sequence bounds2/3 and dictionary counts2/3.
-No native or Parquet scientific reader was opened. The exact expired phase remains unknown.
-
-Diagnostic wrapper65011 joined1: its final assertion compared Docker Mounts in
-list order. Only order changed; complete normalized mount objects match. The
-original FAIL report0a533860 is preserved. Separate read-only reconciliation
-`custody-reconciliation.json` SHA6f96ca89 passes and binds all raw captures,
-232 unchanged engine files and unchanged other1391 containers. PG exited 0/PID0,
-noOOM at15:41:43Z; no product/native process was restarted. Do not replay either
-one-shot diagnostic or old auditor against the intentionally changed PG timestamps.
-
-Independent AI source review proves a separate scheduling counterexample:
-HTTP can arrive after a pre-select100ms safeguard, immediately before renewal,
-and receive an arbitrarily short operation budget. Both main/external dispatch
-need admission-time scrutiny. This does not identify the actual failed callsite.
-`.research/archive-catch-up-resume-20261018/initial-deadline-review.json` and the
-existing evidence node bind this distinction; no timeout widening is justified.
-
-Diagnostic 90dfa92→2315fb6 and admission 68cc6dd→40bc295 are integrated and pass
-fresh component qualification. Six new admission tests plus one diagnostic test
-and the strengthened existing diagnostic test run within actual Serve 26. Python
-preservation controls remain their separately recorded source-only scope.
-Manifest f102622d in the retained author worktree binds the admission source.
-Root and independent AI review closed exact hashes before build.
-
-Admission is rechecked after selection; one pending Work retains its existing
-grant. The central renewal guard refuses a second renewal for that unadmitted
-item. An exact 100 ms renewal horizon refuses; original absolute Archive deadline
-caps every nested phase/command. Cancellation and expiry are checked before the
-first nested poll. No lease/config widening or progress claim under arbitrary descheduling.
-The prior 6474507 engine's actual expired callsite remains unknown.
-
-Second engine root ends `archive-catch-up-engine-be57042`, source
-be5704224c71f55e7d128a880fd8601bc85ee8f9, tree 5e098299471035f212bfbc78e51974f3eda8f718.
-Prepare 98751 joined 0; engine 8902 joined 1, 16:11:15Z–16:13:39Z. Initial plus
-11 continuations through catch-up/retry completed. Catch-up reports snapshot 8,
-frontier 7, counts [13,2,2,2,3], 3 new attempts and 3 frontier revisions; fresh retry
-reports unchanged 7/8 and 0/0 new effects. These are actual retained outputs,
-not completed independent full-journey scientific replay.
-
-Ordinary Control then exited 0/unforced/reaped with exact/global backend absence,
-but the HTTP fixture failed after CLI login, before its first direct HTTP request:
-`def http` shadows the imported module, causing AttributeError at HTTPConnection.
-All 13 installed terminal receipts are zero/unforced/reaped; cleanup errors empty.
-The partial journey remains FAIL; ordinary verification, restart and final
-oracle/negative controls/replay NOT_RUN. New evidence node
-`archive_connected_journey_attempts` retains this separately from 6474507.
-
-HTTP alias fix 08d282c→3d0f09d changes two lines. All six source-extracted
-regression controls PASS, including exact original AttributeError reproduction.
-Manifest 3bd70045 binds source and actual failure; this is no runtime pass.
-
-Failed-run custody audit 43564 joined 0: `audit-root/audit-failure-v1.json`,
-SHA f597c077, binds 1974 source files, 184 protected ELFs, all 13 process
-receipts and 240 structurally bound raw captures. Engine FAIL stays unchanged;
-no scientific replay or additional engine ran. Full manifest and limits are in
-the same evidence node. Do not replay this audit after restarting borrowed PG.
-
-Next preparation 27159 joined 1 at the unchanged capacity guard, before
-creating root ed1e485. Later observed free space 68,570,226,688 B was below
-69,324,505,088 B. The explicit failure record under the build-helper root is
-bound by the same evidence node; no new engine or database started.
-
-Additional stopped historical compiler-intermediate retirement completed at
-16:33:43Z under `.research/tux-maintenance-archive-read-20261018`.
-Prepare 43209 / execute 63988 joined 0. Frozen manifest 1b271e34 names
-13 targets; all 9,229 intermediates were removed. Full preservation verification
-passed for 467,933 other entries, 184 ELFs, five pinned Archive assets and
-stable Docker state. Receipt records 4,483,653,632 B observed free-space gain
-and 72,637,558,784 B free afterward; shared-host activity affects the difference.
-Preserve receipt, journal, sources and all remaining artifacts. NEVER replay.
-
-Fresh preparation 49731 joined 0 at source 4aaf017, then engine 40193 joined 1
-(16:39:12Z–16:40:37Z). Initial publication and five continuations completed;
-live3 exited 4/unforced/reaped after 3.219s. Its diagnostic names idle phase
-commands.rs:268 and cleanup phase:720, 502us late. Transport client exited 1
-with RemoteDisconnected during a job GET. All seven product process receipts
-are preserved. Fixture live3 custody stays UNKNOWN; no after-native dump,
-source3 onward, catch-up, retry, read/export/restart or scientific replay ran.
-Read-only audit 20590 joined 0, SHA aa3b4919: 1974 source files, 184 ELFs,
-seven process receipts and 127 structurally bound raw files. Engine FAIL and
-native-release UNKNOWN remain unchanged. Complete records are under
-`archive_connected_journey_attempts` and `.research/archive-renewal-dispatch-20261018`.
-
-Source analysis found repeated due=now rewrites can keep a retained ready HTTP
-command ahead of a newly pending Tokio timer, starving actual renewal. This is
-compatible with the observed watchdog failure, not proof of its unique trigger.
-The correction uses renewal_due to return Ready directly inside the existing
-100ms margin, preserves the original due time and retained Work/grant, and
-keeps cancellation and absolute Archive ceilings. Both root and independent
-source review found no remaining blocker in the affected code. Source review
-SHA 72ccce0d binds commands.rs 0d8f3b3e. New first-poll and actual retained-Work
-regressions now PASS in exact build 9a7fd81 (41 tests total).
-
-Next bounded action: prepare one fresh normal journey using qualified 9a7fd81
-and HTTP fixture 3d0f09d. Helpers under `.research/archive-renewal-dispatch-20261018`:
-preparation e1d82ee6 / success auditor 6c7efb8a, 190 protected ELFs, unchanged
-69,324,505,088 B reserve. Bind actual build audit 1164abade. After engine PASS,
-run the actual independent raw reader and read-only custody audit. Preserve all
-failed roots/audits; never replay an audit after intentional borrowed-PG changes.
-
-Fault source 29d43a0 is frozen in the retained journey worktree, not integrated
-or executed. Three new modules and two narrow compatible hooks were fully read
-by root and independently reviewed. Manifest 66e8c7ab binds all source and92
-artifacts; root review 40622601. AST/diff,32 protocol/byte and5 mocked-driver
-custody checks PASS. Preserved import/serialization selfcheck failures remain.
-Actual four-process fault sequence and89 scientific negative controls NOT_RUN.
-Integrate/run after the normal journey succeeds; no product change in this slice.
-
-Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
-still follows a successful normal journey. Independent source mapping identifies
-publication after-COMMIT delivery loss, fresh-process receipt reuse plus first
-bridge delivery loss, fresh original operation resolution and exact retry as the
-next useful fault slice. Existing proxy selects actual queries; never infer a
-fixed COMMIT ordinal or call a local timeout SQL UTC expiry. Other refusal and
-capacity boundaries remain separate.
-
-## Host resources and preservation
-
-Engine 40193 joined 1 and custody audit 20590 joined 0. No owned runtime,
-compiler, SQL or native operation remains active. Borrowed PG and client stopped
-at 16:40:36Z, exits 0/143, PID 0/no OOM; cleanup errors and unrelated changes empty.
-Cleanup execute 63988 joined 0. All agent tasks completed; fault source is frozen in the preserved
-worktree. Build 61068 and its audit 16469 joined 0. Verify ownership before any
-next engine action. Unrelated workloads remain untouched.
-
-Root-only compiler cache:
+No root-owned runtime/compiler/native/SQL remains active. Only headroom source inspection and
+refusal implementation agents are active. Unrelated services/work remain untouched.
+Compiler cache stays root-exclusive under
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,
-owner 8b21a13162699a6038154874c2ac89da, exclusive `.compiler-cache.lock`.
-Build image sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d,
-Rust 1.98.1 Linux amd64. Pinned read-only Archive assets are under
-`/runs/installed-publication-61271e2/out/archive-worker` in the same lab.
-Build admission is 12 GiB; Archive/export admission is 69,324,505,088 bytes.
-Borrowed PG 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
-owner 5e69b0f060b1607c25230d1dbd3e5608, lives at
-`/runs/relay-source-recheck-e06f580/pg` in that lab; stopped, retained, PG 16.15.
+owner8b21a13162699a6038154874c2ac89da, exclusive `.compiler-cache.lock`.
+Rust1.98.1 Linuxamd64 build image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.
+Native Archive assets remain under installed-publication-61271e2/out/archive-worker.
+Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
+owner5e69b0f060b1607c25230d1dbd3e5608, retained relay-source-recheck-e06f580/pg.
 
-Headroom cleanup completed 13:44:18Z, prepare 59509/execute 50680 joined 0.
-`.research/tux-maintenance-20261018` retains frozen manifest 3deba21a, deletion
-journal 5bcb902f and receipt a59dbbda. Exactly 57,469 verified compiler intermediates
-in 30 historical targets were removed, freeing 54,485,643,264 observed bytes.
-772,682 retained entries and all then-qualified 152 ELFs were preserved. These 30
-targets are retired partial caches; never reuse them. Current cache, native data,
-Docker data, secrets and evidence were untouched. This one-shot cleanup is EXECUTED.
+All original failed builds/engines6474507/be57042/4aaf017/a62f08a, diagnostic
+failures, native datasets, ignored `.research`, external logs and artifacts remain.
+Existing reports retain exact statuses and separate custody audits. Never replay
+one-shot preparation, old audits after PG reuse, or completed cleanup executors.
+Prior cleanup30roots/57,469 intermediates,8roots/16,943 and13roots/9,229 is complete;
+last receiptadaabd2e/4.48GB observed gain is under tux-maintenance-archive-read-20261018.
+Earlier current-cache56rlib retirement is separate and complete.
+Seven retired component refs remain in archived refs and bundle97b09ad6; worktrees
+and ignored artifacts were preserved. Both current qualification branches are needed.
 
-Seven Archive source refs retired only after verified push b8dfa61; session 51903
-joined 0. Original and integrated commits were reconciled, then complete histories
-archived under `refs/archive/retained-archive-components-20261018/` and bundled in
-`.research/branch-retirement-20261018/archive-components.bundle` (15,385,967 bytes,
-SHA 97b09ad6ce41d5c3c3f084c771ae0a4f8e76d72d7c594c8dd45dd78abe5f4c28).
-Report `archive-components.json` SHA
-8b60df247c8bbb2c9429ac5aead2a752354178aae3856a53eab50ce39eab5c9a.
-Every tracked/ignored/link/stat census stayed identical. Retirement is COMPLETE;
-never replay its executor. Current Git: 144 worktrees, 142 detached; main and the
-active journey branch remain locally, remote main only. No worktree, original/fault
-dataset, artifact or container was deleted. All older bundles and pause snapshots remain.
-
-## Remaining gates
-
-Selected catch-up excludes ACK/GC, unresolved Ingest tails, import logical closure,
-cross-boot restore, S3 and continuous publisher scheduling. They do not disappear
-from their owning tasks where selected. Broader M1–M5 journeys, backup/restore,
-capacity/aged-state/RSS and the five exports below 256 MiB remain incomplete.
-Earlier acquisition DSM failure, PG checkpointer SIGSEGV, missing schema32 response,
-original build/fixture failures and dirty network-1154757 evidence stay retained;
-none are relabelled PASS. GitHub billing/Q33, native arm64, signing, registry and
-public promotion retain their separate gates. GitHub protects committed source;
-ignored/external laboratory artifacts stay on Tux. No public release is authorized.
+Broader M1–M5 journeys, ACK/GC, selected import/restore paths, capacity/aged-state/RSS,
+five exports below256MiB and release acceptance remain incomplete. Existing task
+contracts own these gates; the finite catch-up exclusion does not delete them.
+GitHub billing/Q33, nativearm64, signing, registry and public promotion remain
+separate gates. Source pushes protect committed work; external/ignored artifacts
+remain on Tux. No public release is authorized.

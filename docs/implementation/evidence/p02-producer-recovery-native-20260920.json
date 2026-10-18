@@ -33400,7 +33400,7 @@
       },
       "archive_connected_journey_attempts": {
         "previous_attempt": "archive_connected_journey (6474507 retained unchanged)",
-        "observed_at": "2026-10-18T16:22:14.789328+00:00",
+        "observed_at": "2026-10-18T17:13:20.504106+00:00",
         "attempts": [
           {
             "status": "FAIL_ORDINARY_HTTP_FIXTURE_BEFORE_FIRST_REQUEST",
@@ -33725,6 +33725,107 @@
               "structurally_bound_raw_files": 127,
               "limits": "Custody-only PASS preserves engineFAIL/live3UNKNOWN. No native reopen, scientific replay or later journey is inferred. Never replay after intentional PG restart."
             }
+          },
+          {
+            "observed_at": "2026-10-18T17:13:20.504106+00:00",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-a62f08a",
+            "source": "a62f08a4fedd454ce9e593a57a6a45dd870e892d",
+            "tree": "24c8eb0c14eaabf5f94e986305a3274790be72a2",
+            "status": "FAIL",
+            "prepare_session": 74810,
+            "prepare_exit_code": 0,
+            "engine_session": 94225,
+            "engine_exit_code": 1,
+            "wrapper": {
+              "command": [
+                "python3",
+                "-B",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-a62f08a/source/experiments/acquisition-scope/bindings.py",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-a62f08a",
+                "--installed-archive-catch-up",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+              ],
+              "source": "a62f08a4fedd454ce9e593a57a6a45dd870e892d",
+              "started_at": "2026-10-18T16:56:14.401124+00:00",
+              "exit_code": 1,
+              "finished_at": "2026-10-18T16:58:51.280364+00:00"
+            },
+            "completed_continuations": [
+              "abandon1",
+              "retire1",
+              "live2",
+              "abandon2",
+              "retire2",
+              "live3",
+              "source3",
+              "abandon3",
+              "retire3",
+              "catchup",
+              "catchup-retry",
+              "ordinary",
+              "ordinary-restart"
+            ],
+            "product_processes": "14_ZERO_UNFORCED_REAPED",
+            "failed_step": "final independent verify; catalog statistics line85",
+            "fixture_error": "AssertionError()",
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "terminal": [
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "state": {
+                  "Status": "exited",
+                  "Running": false,
+                  "Paused": false,
+                  "Restarting": false,
+                  "OOMKilled": false,
+                  "Dead": false,
+                  "Pid": 0,
+                  "ExitCode": 0,
+                  "Error": "",
+                  "StartedAt": "2026-10-18T16:56:15.291163859Z",
+                  "FinishedAt": "2026-10-18T16:58:50.38426343Z"
+                }
+              },
+              {
+                "id": "bee7868529ad16e88ee624533f136672b6c8e384fc296748d0a08c2d393abea4",
+                "state": {
+                  "Status": "exited",
+                  "Running": false,
+                  "Paused": false,
+                  "Restarting": false,
+                  "OOMKilled": false,
+                  "Dead": false,
+                  "Pid": 0,
+                  "ExitCode": 143,
+                  "Error": "",
+                  "StartedAt": "2026-10-18T16:56:16.318534741Z",
+                  "FinishedAt": "2026-10-18T16:58:49.705024307Z"
+                }
+              }
+            ],
+            "not_run": "Original full scientific verification did not complete; original negative controls and success raw replay NOT_RUN. Separate changed-oracle offline diagnosis below never changes these statuses.",
+            "custody_audit": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-a62f08a/audit-root/audit-failure-v1.json",
+              "sha256": "c87e57ed63885fec2b9ef7f24dc32941e304e55544633259891d6926bdfbdb5d",
+              "status": "PASS_READ_ONLY_FAILED_FINAL_ORACLE_ARCHIVE_CUSTODY",
+              "session": 9843,
+              "joined_exit_code": 0,
+              "source_files": 1974,
+              "protected_elfs": 190,
+              "installed_processes": 14,
+              "structurally_bound_raw_files": 270
+            },
+            "bound_files": {
+              "root-preparation.json": "6bd10dc46b1b9e4560137e07ea5a22f483ff2d9f8c18cb7b8f9ba10377e9d78c",
+              "root-engine-invocation.json": "699d89fcb4ba626f6e0f6b69706b49ad8e31e55e82f2eaa8919bdb57320e8559",
+              "root-engine-result.json": "80fe8ebe1d678f5572daea0d263ed49f146e878d7b93ae8f517d56aec1c90c3f",
+              "root-engine.stderr": "65157a850192f175a26eb030b586d7492ed74583c829f37308fc84b78ed49296",
+              "bindings/result.json": "22c8a069e738457f10c95d1df219ca1c42c2899f8b2cac387dd76fef9f5ebdda",
+              "bindings/archive-catch-up-journey.json": "11ed80db196cf775a99534f254d65b7bbbec78fe2410c73e062183a5147ec1f9"
+            },
+            "free_bytes_observed": 68905132032
           }
         ],
         "preparation_failures": [
@@ -33887,7 +33988,390 @@
         ],
         "next": "Integrate only after normal journey qualification with corrected9a7fd81 product; root alone executes connected fault campaign and actual independent raw replay.",
         "root_review_path": ".research/archive-renewal-dispatch-20261018/fault-source-review.json",
-        "root_review_sha256": "40622601948e682b6f9cee75617e22529857134d7c2647b8b2feb17ff0bbdab5"
+        "root_review_sha256": "40622601948e682b6f9cee75617e22529857134d7c2647b8b2feb17ff0bbdab5",
+        "followup_corrections": [
+          {
+            "original": "7c2628f9dc355792290209a635c9763509650374",
+            "status": "SOURCE_READY_ENGINE_NOT_RUN",
+            "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-fault-column-stats-20261018/manifest.json",
+            "manifest_sha256": "39eea99a05fce50301f7dc2c0fa71490e179e57d222e088984d6ae4045f75ced",
+            "source": {
+              "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+              "bytes": 40335,
+              "sha256": "beedf03a923f515d854b05fb5390f3ed994f9ddeae977d14f908b908eb3b6b4f"
+            },
+            "checks": 33,
+            "runtime": "NOT_RUN"
+          },
+          {
+            "original": "c7b643dad5be24396efe68b4e75543cd9acc9c1e",
+            "status": "SOURCE_READY_ENGINE_NOT_RUN",
+            "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-fault-extrema-20261018/manifest.json",
+            "manifest_sha256": "2736afabe45cfa6fd51bea2c0c456935ec9de14f0e9e9b615e3a88a209ea8eb0",
+            "source": {
+              "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+              "bytes": 40464,
+              "sha256": "61d278619b25e673d24a78a97253bdee22f047ee93677512012b29789c151844"
+            },
+            "checks": 24,
+            "runtime": "NOT_RUN"
+          }
+        ]
+      },
+      "archive_journey_oracle_correction": {
+        "status": "SOURCE_CORRECTED_OFFLINE_DIAGNOSIS_PASS_FRESH_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-18T17:16:48.429538+00:00",
+        "base": "a62f08a4fedd454ce9e593a57a6a45dd870e892d",
+        "source_sha256": {
+          "experiments/ingest-bootstrap/installed_archive_catch_up_http.py": "c390965e009afad8288f495d9a79cbdd50dbe789c8a6e20f107ae155e1f9202b",
+          "experiments/ingest-bootstrap/installed_archive_catch_up_catalog.py": "712e19883900524e19338eda7d4301977f7d08e559e60e4a32a7f4d3147fef72",
+          "experiments/ingest-bootstrap/installed_archive_catch_up_oracle.py": "b44c623068a105473e5ce5a0ce9283c8f980d7989f8cc4aa487cfba0c1a82017"
+        },
+        "findings": [
+          "Pinned DuckLake value_count is non-null count; all283 new stats have value_count+null_count=record_count; old oracle falsely rejected77. Exact integer/nonnegative counts and dimensions, explicit unknown refusal retained.",
+          "Pinned DuckLake MergeStats compares BLOB extrema as escaped strings; six actual global extrema differ from decoded-byte reduction. Scientific C API values remain independently compared. Inspected global optimizer and constant-pruning paths do not consume BLOB extrema as byte bounds; no general upstream query qualification inferred.",
+          "PostgreSQL16 membership rows receive fresh OIDs. New OIDs must be positive/unique/nonhistorical; member/grantor/privileges and historical rows stay exact.",
+          "Commands and reads need not touch browser idle timestamp. Sequential client commands are bounded by issuance, actual logout and expiry; export completion precedes its actual logout.",
+          "HTTP reducer imported byte-valued SHA256; SQL bytea and JSON hexadecimal presentation are now explicit.",
+          "Export job expectation must clear inherited acquisition_job_protocol while keeping export_job_protocol1.",
+          "Independent AI review found final last_seen could drift despite the sole successful /me touch. Full exact /me response now binds final session expiry and idle expiry. Three new whole-model negatives exercise this binding, membershipOID and count sum;91 total pass."
+        ],
+        "primary_references": [
+          "https://github.com/duckdb/ducklake/blob/d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4/src/storage/ducklake_metadata_manager.cpp",
+          "https://github.com/duckdb/ducklake/blob/d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4/src/storage/ducklake_stats.cpp",
+          "https://www.postgresql.org/docs/16/catalog-pg-auth-members.html"
+        ],
+        "product_source_references": [
+          "apps/bigbrotr/src/storage/postgres/browser_sessions.rs",
+          "apps/bigbrotr/src/storage/postgres/browser_reauthentication.rs",
+          "apps/bigbrotr/src/storage/postgres/export_jobs.rs"
+        ],
+        "diagnosis": {
+          "path": ".research/archive-catalog-counts-20261018/diagnosis-v8.json",
+          "sha256": "4107b563f3e5d5e2b9d543f977d58b43245a1c984f7d81dc1871794bdf358735",
+          "session": 43366,
+          "joined_exit_code": 0,
+          "scope": "OFFLINE_DIAGNOSIS_ONLY; original engine remains FAIL; no raw replay or runtime qualification",
+          "model": {
+            "status": "PASS",
+            "installed_processes": 14,
+            "continuation_processes": 13,
+            "control_tables": 75,
+            "snapshots": 42,
+            "scientific_records": 22,
+            "archive_receipts": 7,
+            "family_counts": [
+              13,
+              2,
+              2,
+              2,
+              3
+            ],
+            "initial_frontier_revision": 4,
+            "final_frontier_revision": 7,
+            "final_snapshot": 8,
+            "export_exact_retry": true,
+            "same_physical_roots": true
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 91,
+            "rejected": [
+              "native-sequence",
+              "unknown-process",
+              "forced-process",
+              "wrong-physical-inode",
+              "head-fact-payload",
+              "old-receipt-xmin",
+              "missing-zero-stream",
+              "missing-archive-receipt",
+              "export-artifact-bytes",
+              "retained-export-pin",
+              "live2-started-source",
+              "ordinary-failed-client",
+              "ordinary-me-idle",
+              "membership-oid",
+              "catalog-nonnull-count",
+              "ordinary-stopped-identity",
+              "unrelated-table-acquisition_gaps",
+              "unrelated-table-acquisition_jobs",
+              "unrelated-table-acquisition_scope_commands",
+              "unrelated-table-acquisition_scopes",
+              "unrelated-table-acquisition_selectors",
+              "unrelated-table-allocation_domains",
+              "unrelated-table-archive_attempts",
+              "unrelated-table-archive_coordinators",
+              "unrelated-table-archive_frontier_batches",
+              "unrelated-table-archive_frontier_snapshots",
+              "unrelated-table-archive_owner_sessions",
+              "unrelated-table-archive_persistence",
+              "unrelated-table-archive_pin_recoveries",
+              "unrelated-table-archive_snapshot_pins",
+              "unrelated-table-artifact_files",
+              "unrelated-table-artifacts",
+              "unrelated-table-browser_sessions",
+              "unrelated-table-config_revisions",
+              "unrelated-table-consumer_frontier_revisions",
+              "unrelated-table-consumer_frontiers",
+              "unrelated-table-consumers",
+              "unrelated-table-cursor_key_lifecycle",
+              "unrelated-table-cursor_key_materials",
+              "unrelated-table-cursor_key_transitions",
+              "unrelated-table-cursor_keyrings",
+              "unrelated-table-cursor_keys",
+              "unrelated-table-datasets",
+              "unrelated-table-export_execution_units",
+              "unrelated-table-export_jobs",
+              "unrelated-table-export_resume_commands",
+              "unrelated-table-import_checkpoints",
+              "unrelated-table-import_record_closures",
+              "unrelated-table-ingest_activations",
+              "unrelated-table-ingest_successions",
+              "unrelated-table-ingest_terminal_transactions",
+              "unrelated-table-initial_ingest_activations",
+              "unrelated-table-initial_ingest_successions",
+              "unrelated-table-job_admissions",
+              "unrelated-table-job_input_bounds",
+              "unrelated-table-jobs",
+              "unrelated-table-local_accounts",
+              "unrelated-table-local_credentials",
+              "unrelated-table-login_buckets",
+              "unrelated-table-management_audit",
+              "unrelated-table-management_commands",
+              "unrelated-table-network_routes",
+              "unrelated-table-owner_challenges",
+              "unrelated-table-owner_epochs",
+              "unrelated-table-policy_revisions",
+              "unrelated-table-principal_grants",
+              "unrelated-table-principals",
+              "unrelated-table-producer_checkpoints",
+              "unrelated-table-producer_epochs",
+              "unrelated-table-producer_input_bindings",
+              "unrelated-table-producer_outcomes",
+              "unrelated-table-producer_requests",
+              "unrelated-table-producer_slots",
+              "unrelated-table-projection_chunk_bounds",
+              "unrelated-table-projection_chunks",
+              "unrelated-table-projection_generations",
+              "unrelated-table-reauthentication_proofs",
+              "unrelated-table-relay_access_contexts",
+              "unrelated-table-relay_endpoints",
+              "unrelated-table-relay_enrollment_changes",
+              "unrelated-table-relay_enrollments",
+              "unrelated-table-relay_registration_commands",
+              "unrelated-table-retention_claims",
+              "unrelated-table-role_instances",
+              "unrelated-table-schema_versions",
+              "unrelated-table-scope_grant_changes",
+              "unrelated-table-scope_grants",
+              "unrelated-table-snapshot_leases",
+              "unrelated-table-source_streams",
+              "unrelated-table-topology_generations",
+              "unrelated-table-topology_streams"
+            ]
+          },
+          "original_sha256": "11ed80db196cf775a99534f254d65b7bbbec78fe2410c73e062183a5147ec1f9"
+        },
+        "preserved_diagnostic_failures": [
+          {
+            "path": ".research/archive-catalog-counts-20261018/diagnosis-v1.json",
+            "sha256": "c209968d26857b6018654b54bab99ce770e2a8aeea709f31db093af50fb3cc22",
+            "status": "FAIL_OFFLINE_DIAGNOSIS",
+            "error": "TypeError(\"function() argument 'code' must be code, not str\")"
+          },
+          {
+            "path": ".research/archive-catalog-counts-20261018/diagnosis-v2.json",
+            "sha256": "11977307971097bc7d814751fbda47472b60c84ec2cef6b53253991b507f97ff",
+            "status": "FAIL_OFFLINE_DIAGNOSIS",
+            "error": "AssertionError()"
+          },
+          {
+            "path": ".research/archive-catalog-counts-20261018/diagnosis-v3.json",
+            "sha256": "cd9cd80471203cfb010001aefa13e461c3fb41657ef8787d9936920931f28939",
+            "status": "FAIL_OFFLINE_DIAGNOSIS",
+            "error": "AssertionError()"
+          },
+          {
+            "path": ".research/archive-catalog-counts-20261018/diagnosis-v4.json",
+            "sha256": "50e558c3920a5cac05eea7dfc6e5d7ff4f661ae4c8e4c7062d5b1561597a1d13",
+            "status": "FAIL_OFFLINE_DIAGNOSIS",
+            "error": "AssertionError()"
+          },
+          {
+            "path": ".research/archive-catalog-counts-20261018/diagnosis-v5.json",
+            "sha256": "8c6dfb0f96a3e37af8279200e9cd83d66493d6c03f0648d0a320cbd3c1b1f49f",
+            "status": "FAIL_OFFLINE_DIAGNOSIS",
+            "error": "TypeError('can only concatenate str (not \"bytes\") to str')"
+          },
+          {
+            "path": ".research/archive-catalog-counts-20261018/diagnosis-v6.json",
+            "sha256": "f977a8dbc08b47a3e1ef8545bc0ce194159e34c6b0a255a0123d14e3c47f785a",
+            "status": "FAIL_OFFLINE_DIAGNOSIS",
+            "error": "AssertionError('jobs')"
+          }
+        ],
+        "source_reviews": {
+          "root": "Complete changed catalog/oracle/HTTP owners and diff; session, reauthentication and export SQL owners; complete pinned stats.cpp; upstream consumer review delegated with exact source ranges. Complete33/24 author check scripts read; full source/artifact hashes authenticated.",
+          "independent": "cleanup_review read complete three final reducers, browser_sessions, real client, relevant Me/revoke/export paths and pinned DuckLake counts/MergeStats. One concrete /me-idle binding finding fixed; no remaining blocker in changed scope. Source-only AI review, no independent runtime."
+        },
+        "limits": "No product code changed and no new compilation is needed. Offline diagnostic uses RUNNING only in separate memory to exercise the revised verifier on original captured observations; it is not the strict raw-success reader and does not promote engineFAIL. Fresh exact-source engine/raw replay required.",
+        "upstream_review": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-fault-extrema-20261018/review.json",
+          "sha256": "5551e859b313ae9cee9c4c8b560215a78dc27edeb25c42e6b2c212efafa87cda"
+        },
+        "author_followups": [
+          {
+            "original": "7c2628f9dc355792290209a635c9763509650374",
+            "status": "SOURCE_READY_ENGINE_NOT_RUN",
+            "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-fault-column-stats-20261018/manifest.json",
+            "manifest_sha256": "39eea99a05fce50301f7dc2c0fa71490e179e57d222e088984d6ae4045f75ced",
+            "source": {
+              "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+              "bytes": 40335,
+              "sha256": "beedf03a923f515d854b05fb5390f3ed994f9ddeae977d14f908b908eb3b6b4f"
+            },
+            "checks": 33,
+            "runtime": "NOT_RUN"
+          },
+          {
+            "original": "c7b643dad5be24396efe68b4e75543cd9acc9c1e",
+            "status": "SOURCE_READY_ENGINE_NOT_RUN",
+            "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-fault-extrema-20261018/manifest.json",
+            "manifest_sha256": "2736afabe45cfa6fd51bea2c0c456935ec9de14f0e9e9b615e3a88a209ea8eb0",
+            "source": {
+              "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+              "bytes": 40464,
+              "sha256": "61d278619b25e673d24a78a97253bdee22f047ee93677512012b29789c151844"
+            },
+            "checks": 24,
+            "runtime": "NOT_RUN"
+          }
+        ],
+        "previous_offline_pass": {
+          "path": ".research/archive-catalog-counts-20261018/diagnosis-v7.json",
+          "sha256": "a60487d17bf665436e2d6b5be09c957ddc4ad83e7f0c615008cf6a8869f53e68",
+          "session": 84447,
+          "joined_exit_code": 0,
+          "scope": "OFFLINE_DIAGNOSIS_ONLY; original engine remains FAIL; no raw replay or runtime qualification",
+          "model": {
+            "status": "PASS",
+            "installed_processes": 14,
+            "continuation_processes": 13,
+            "control_tables": 75,
+            "snapshots": 42,
+            "scientific_records": 22,
+            "archive_receipts": 7,
+            "family_counts": [
+              13,
+              2,
+              2,
+              2,
+              3
+            ],
+            "initial_frontier_revision": 4,
+            "final_frontier_revision": 7,
+            "final_snapshot": 8,
+            "export_exact_retry": true,
+            "same_physical_roots": true
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "count": 88,
+            "rejected": [
+              "native-sequence",
+              "unknown-process",
+              "forced-process",
+              "wrong-physical-inode",
+              "head-fact-payload",
+              "old-receipt-xmin",
+              "missing-zero-stream",
+              "missing-archive-receipt",
+              "export-artifact-bytes",
+              "retained-export-pin",
+              "live2-started-source",
+              "ordinary-failed-client",
+              "ordinary-stopped-identity",
+              "unrelated-table-acquisition_gaps",
+              "unrelated-table-acquisition_jobs",
+              "unrelated-table-acquisition_scope_commands",
+              "unrelated-table-acquisition_scopes",
+              "unrelated-table-acquisition_selectors",
+              "unrelated-table-allocation_domains",
+              "unrelated-table-archive_attempts",
+              "unrelated-table-archive_coordinators",
+              "unrelated-table-archive_frontier_batches",
+              "unrelated-table-archive_frontier_snapshots",
+              "unrelated-table-archive_owner_sessions",
+              "unrelated-table-archive_persistence",
+              "unrelated-table-archive_pin_recoveries",
+              "unrelated-table-archive_snapshot_pins",
+              "unrelated-table-artifact_files",
+              "unrelated-table-artifacts",
+              "unrelated-table-browser_sessions",
+              "unrelated-table-config_revisions",
+              "unrelated-table-consumer_frontier_revisions",
+              "unrelated-table-consumer_frontiers",
+              "unrelated-table-consumers",
+              "unrelated-table-cursor_key_lifecycle",
+              "unrelated-table-cursor_key_materials",
+              "unrelated-table-cursor_key_transitions",
+              "unrelated-table-cursor_keyrings",
+              "unrelated-table-cursor_keys",
+              "unrelated-table-datasets",
+              "unrelated-table-export_execution_units",
+              "unrelated-table-export_jobs",
+              "unrelated-table-export_resume_commands",
+              "unrelated-table-import_checkpoints",
+              "unrelated-table-import_record_closures",
+              "unrelated-table-ingest_activations",
+              "unrelated-table-ingest_successions",
+              "unrelated-table-ingest_terminal_transactions",
+              "unrelated-table-initial_ingest_activations",
+              "unrelated-table-initial_ingest_successions",
+              "unrelated-table-job_admissions",
+              "unrelated-table-job_input_bounds",
+              "unrelated-table-jobs",
+              "unrelated-table-local_accounts",
+              "unrelated-table-local_credentials",
+              "unrelated-table-login_buckets",
+              "unrelated-table-management_audit",
+              "unrelated-table-management_commands",
+              "unrelated-table-network_routes",
+              "unrelated-table-owner_challenges",
+              "unrelated-table-owner_epochs",
+              "unrelated-table-policy_revisions",
+              "unrelated-table-principal_grants",
+              "unrelated-table-principals",
+              "unrelated-table-producer_checkpoints",
+              "unrelated-table-producer_epochs",
+              "unrelated-table-producer_input_bindings",
+              "unrelated-table-producer_outcomes",
+              "unrelated-table-producer_requests",
+              "unrelated-table-producer_slots",
+              "unrelated-table-projection_chunk_bounds",
+              "unrelated-table-projection_chunks",
+              "unrelated-table-projection_generations",
+              "unrelated-table-reauthentication_proofs",
+              "unrelated-table-relay_access_contexts",
+              "unrelated-table-relay_endpoints",
+              "unrelated-table-relay_enrollment_changes",
+              "unrelated-table-relay_enrollments",
+              "unrelated-table-relay_registration_commands",
+              "unrelated-table-retention_claims",
+              "unrelated-table-role_instances",
+              "unrelated-table-schema_versions",
+              "unrelated-table-scope_grant_changes",
+              "unrelated-table-scope_grants",
+              "unrelated-table-snapshot_leases",
+              "unrelated-table-source_streams",
+              "unrelated-table-topology_generations",
+              "unrelated-table-topology_streams"
+            ]
+          },
+          "original_sha256": "11ed80db196cf775a99534f254d65b7bbbec78fe2410c73e062183a5147ec1f9"
+        },
+        "record_path": ".research/archive-catalog-counts-20261018/source-review.json",
+        "record_sha256": "f70f24cbe4b8e530e56a9c446a65db86b0a5788e29ec838e9e7af8867ee8158e"
       }
     }
   }

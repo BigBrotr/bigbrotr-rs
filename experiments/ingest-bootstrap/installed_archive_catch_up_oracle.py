@@ -271,9 +271,14 @@ def roles(before,after,phase):
     wanted['roles']+=additions;wanted['roles'].sort(key=lambda r:int(r['oid']))
     newmembers=[r for r in observed['members'] if r not in wanted['members']]
     assert len(newmembers)==3 and {r['roleid'] for r in newmembers}=={r['oid'] for r in additions}
+    # PostgreSQL 16 assigns each membership its own row OID.
+    assert len({r['oid'] for r in observed['members']})==len(observed['members'])
+    oldoids={r['oid'] for r in wanted['members']}
     oldmember=next(r for r in wanted['members'] if r['roleid'] in {p['oid'] for p in before['system_roles']['roles'] if p['rolname'] in oldnames})
     for r in newmembers:
-        assert {k:v for k,v in r.items() if k not in ('roleid','xmin')}=={k:v for k,v in oldmember.items() if k not in ('roleid','xmin')}
+        assert str(r['oid']).isdecimal() and int(r['oid'])>0 and r['oid'] not in oldoids
+        assert str(r['xmin']).isdecimal() and int(r['xmin'])>0
+        assert {k:v for k,v in r.items() if k not in ('oid','roleid','xmin')}=={k:v for k,v in oldmember.items() if k not in ('oid','roleid','xmin')}
     wanted['members']+=newmembers;wanted['members'].sort(key=lambda r:tuple(int(r[k]) for k in ('roleid','member','grantor')))
     assert wanted==observed
 
@@ -403,6 +408,13 @@ def negative_controls(value):
     check('retained-export-pin',lambda v:next(r for r in v['steps'][12]['after']['control']['snapshot_leases'] if r['state']=='active').__setitem__('state','released'))
     check('live2-started-source',lambda v:v['steps'][2]['fixture']['snapshots'][0]['control']['source_streams'][-1].__setitem__('state','closed'))
     check('ordinary-failed-client',lambda v:v['steps'][11]['fixture']['http_response'].__setitem__('returncode',1))
+    check('ordinary-me-idle',lambda v:v['steps'][11]['fixture']['http'][0]['me'].__setitem__('idle_expires_at_us','0'))
+    check('membership-oid',lambda v:v['steps'][9]['after']['system_roles']['members'][-1].__setitem__('oid','0'))
+    def wrong_null_count(v):
+        phase=v['steps'][9];old={r['data_file_id'] for r in phase['before']['catalog']['public.ducklake_data_file']}
+        row=next(r for r in phase['after']['catalog']['public.ducklake_file_column_stats'] if r['data_file_id'] not in old)
+        row['null_count']+=1
+    check('catalog-nonnull-count',wrong_null_count)
     def wrong_stopped(v):
         response=v['steps'][11]['response'];reports=[json.loads(s) for s in response['stdout'].splitlines()]
         reports[-1]['owner_epoch']='0';response['stdout']='\n'.join(map(json.dumps,reports))+'\n'

@@ -10,6 +10,15 @@ from installed_archive_catch_up_model import only,clock
 from installed_family_replay import instant
 
 
+def verify_file_counts(row,file):
+    # Pinned DuckLake d8a1881 stores non-null values in value_count. This
+    # fixture requires complete per-record counts: unknown is refused.
+    assert all(type(row[k]) is int and row[k]>=0 for k in ('value_count','null_count','column_size_bytes'))
+    assert all(type(file[k]) is int and file[k]>=0 for k in ('record_count','file_size_bytes'))
+    assert row['value_count']+row['null_count']==file['record_count']
+    assert row['column_size_bytes']<=file['file_size_bytes']
+
+
 def verify_catalog(phase,science):
     before,after=phase['before'],phase['after'];a,b=before['catalog'],after['catalog']
     assert set(a)==set(b) and len(a)==32
@@ -82,7 +91,7 @@ def verify_catalog(phase,science):
         file=only(b['public.ducklake_data_file'],data_file_id=row['data_file_id'])
         assert (row['table_id'],row['column_id']) in columns and row['table_id']==file['table_id'] and row['xmin']==file['xmin']
         assert set(row)=={'data_file_id','table_id','column_id','column_size_bytes','value_count','null_count','min_value','max_value','contains_nan','extra_stats','xmin'}
-        assert 0<=row['null_count']<=row['value_count'] and 0<=row['column_size_bytes']<=file['file_size_bytes']
+        verify_file_counts(row,file)
         assert row['contains_nan'] is None and row['extra_stats'] is None
     keys=lambda rows,key:{tuple(r[k] for k in key) for r in rows}
     assert len(keys(b['public.ducklake_file_column_stats'],('data_file_id','column_id')))==len(b['public.ducklake_file_column_stats'])
@@ -93,17 +102,11 @@ def verify_catalog(phase,science):
         assert row['contains_null'] in (old['contains_null'],True)
         assert row['xmin']==only(b['public.ducklake_table_stats'],table_id=row['table_id'])['xmin']
 
-    # Native scalar extrema are checked as exact reductions of all retained
-    # file statistics. Newly encoded file statistics remain observed metadata;
-    # actual scientific values are independently read and compared in full.
+    # Pinned DuckLake MergeStats compares BLOB statistics as their escaped
+    # strings, not byte values. Match that metadata reduction here; it is not
+    # a scientific BLOB range. Actual values are independently read in full.
     def scalar(value,kind):
         if kind.startswith(('uint','int')):return int(value)
-        if kind=='blob':
-            result=bytearray();offset=0
-            while offset<len(value):
-                if value.startswith('\\x',offset):result.append(int(value[offset+2:offset+4],16));offset+=4
-                else:result.extend(value[offset].encode());offset+=1
-            return bytes(result)
         return value
     for row in b['public.ducklake_table_column_stats']:
         records=[r for r in b['public.ducklake_file_column_stats'] if r['table_id']==row['table_id'] and r['column_id']==row['column_id']]

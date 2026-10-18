@@ -234,7 +234,12 @@ def ordinary_http(model, phase, selection, restart):
         issued_at_us=session['issued_at_us'],expires_at_us=session['issued_at_us']+28_800_000_000,idle_window_us=1_800_000_000,
         last_seen_at_us=session['last_seen_at_us'],idle_expires_at_us=session['last_seen_at_us']+1_800_000_000,
         revoked_at_us=session['revoked_at_us'],xmin=session['xmin']))
-    assert login['me']['principal_id']==ACTOR[2:] and login['me']['grant_revision']==str(prior_grant)
+    # The one successful /me is this client's only idle touch. Later commands
+    # and reads must preserve the expiry observed here through final logout.
+    assert login['me']==dict(format='bigbrotr-session/1',principal_id=ACTOR[2:],credential_revision='1',
+        grant_revision=str(prior_grant),config_revision=str(config),policy_revision=str(policy),
+        expires_at_us=str(session['expires_at_us']),idle_expires_at_us=str(session['idle_expires_at_us']),
+        stored_actions=ACTIONS,authority='observation-only')
     def audit(action,subject,at=None,tx=None):
         row=only(observed['management_audit'],action=action,subject_id=subject)
         aid=model.identity(row['audit_id'][2:]);clock(row['created_at_us'],window);fresh_xmin(row['xmin'],original)
@@ -267,10 +272,13 @@ def ordinary_http(model, phase, selection, restart):
     def command(key,action,digest):
         row=only(observed['management_commands'],actor_id=ACTOR,request_key=key)
         at,tx=row['accepted_at_us'],row['xmin'];clock(at,window);fresh_xmin(tx,original)
-        assert session['issued_at_us']<=at<=session['last_seen_at_us']
+        # Commands/reads need not touch idle time. This sequential client logs
+        # out after completing its commands, reads and export.
+        assert session['issued_at_us']<=at<=session['revoked_at_us']
+        assert at<min(session['expires_at_us'],session['idle_expires_at_us'])
         a=audit(action,key,at,tx)
         wanted['management_commands'].append(dict(dataset_id=ds,actor_id=ACTOR,request_key=key,action=action,
-            request_digest='\\x'+digest,expected_config_revision=config,policy_revision=policy,audit_id=a['audit_id'],
+            request_digest=bytea(digest),expected_config_revision=config,policy_revision=policy,audit_id=a['audit_id'],
             accepted_at_us=at,authority_mode=None,document_digest=None,xmin=tx))
         return at,tx
     grant_pins=[]
@@ -287,7 +295,7 @@ def ordinary_http(model, phase, selection, restart):
             assert session['issued_at_us']<=issued['created_at_us']<=at<detail['proof_expires_at_us']
             assert detail['proof_expires_at_us']==issued['created_at_us']+300_000_000
             reauth=by('reauthenticate-'+action);assert reauth['status']==201 and reauth['response']['proof_id']==proof[2:]
-            assert reauth['response']['command_digest']==digest
+            assert reauth['response']['command_digest']==digest.hex()
             expected_command=dict(principal_id=ACTOR[2:],action=action,enabled=True,scope=scope,
                 expected_config_revision=str(config),expected_policy_revision=str(policy),
                 expected_grant_revision=str(prior_grant+index-1),allocation=allocation)
@@ -334,10 +342,10 @@ def ordinary_http(model, phase, selection, restart):
             +bytes.fromhex(selection['binding_sha256'])+b'\x01\x01'+be(config)+be(policy))
         accepted,tx=command(key,'job.export.accept',digest)
         completed=job['completed_at_us'];clock(completed,window);fresh_xmin(job['xmin'],original)
-        assert accepted<=completed<=session['last_seen_at_us'] and job['xmin']!=tx
+        assert accepted<=completed<=session['revoked_at_us'] and job['xmin']!=tx
         base=only(original['jobs'],request_key='\\x'+'e4'*16)
-        wanted['jobs'].append(dict(base,job_id=jobid,request_key=key,request_digest='\\x'+digest,kind='export',state='succeeded',
-            job_revision=4,checkpoint_revision=1,input_topology_generation=2,input_complete=True,export_job_protocol=1,
+        wanted['jobs'].append(dict(base,job_id=jobid,request_key=key,request_digest=bytea(digest),kind='export',state='succeeded',
+            job_revision=4,checkpoint_revision=1,input_topology_generation=2,input_complete=True,export_job_protocol=1,acquisition_job_protocol=None,
             config_revision=config,policy_revision=policy,created_at_us=accepted,completed_at_us=completed,
             reason_code=None,result_manifest_digest=job['result_manifest_digest'],owner_resource_id=control['resource_id'],
             owner_epoch=control['epoch'],owner_incarnation=control['process_incarnation'],xmin=job['xmin']))
@@ -366,14 +374,14 @@ def ordinary_http(model, phase, selection, restart):
             accepted_revisions=dict(configuration=str(config),policy=str(policy)),included_families=['signed-events'],
             excluded_families=['internal-payload-envelopes','eligibility-facts','first-local-receive','relay-provenance','imported-claims','measurements',
                 'documents','dictionaries','coverage','derived-results','deployment-state'],
-            files=[dict(file_id='events',path='events.jsonl',format='nostr-jsonl/1',bytes=str(len(raw)),rows='1',sha256=sha(raw))])
-        assert manifest==expected_manifest and job['result_manifest_digest']=='\\x'+sha(manifest_raw)
+            files=[dict(file_id='events',path='events.jsonl',format='nostr-jsonl/1',bytes=str(len(raw)),rows='1',sha256=sha(raw).hex())])
+        assert manifest==expected_manifest and job['result_manifest_digest']==bytea(sha(manifest_raw))
         wanted['artifacts'].append(dict(artifact_id=artifactid,job_id=jobid,dataset_id=ds,principal_id=ACTOR,destination_id=detail['destination_id'],
             destination_binding_sha256=detail['destination_binding_sha256'],manifest_format='bigbrotr-signed-events-export/1',manifest_bytes=len(manifest_raw),
-            manifest_sha256='\\x'+sha(manifest_raw),file_count=1,total_bytes=len(raw)+len(manifest_raw),verification_pin_id=artifact['verification_pin_id'],
+            manifest_sha256=bytea(sha(manifest_raw)),file_count=1,total_bytes=len(raw)+len(manifest_raw),verification_pin_id=artifact['verification_pin_id'],
             completed_at_us=completed,xmin=job['xmin']))
         wanted['artifact_files'].append(dict(artifact_id=artifactid,file_id='events',relative_path='events.jsonl',format='nostr-jsonl/1',
-            byte_count=len(raw),row_count=1,sha256='\\x'+sha(raw),xmin=job['xmin']))
+            byte_count=len(raw),row_count=1,sha256=bytea(sha(raw)),xmin=job['xmin']))
     else:
         accepted=only(original['management_commands'],request_key=key)['accepted_at_us']
         assert phase['artifact_contents']==phase['prior_artifact_contents'] and phase['artifact_files']==phase['prior_artifact_files']
