@@ -674,7 +674,9 @@ resolution and exact retry: fourteen actual processes, 593 raw-bound files and 9
 negative controls. The current-join refusal now passes at fixture `6735064`:
 eleven actual processes,31states/75tables,509raw-bound files and10negative controls;
 no new Archive attempt/frontier. The original `a99c041` initial Sync timeout remains
-a preserved failure. Five other refusals/cancellation, held-attempt custody and
+a preserved failure. The orphan-history refusal also passes at fixture`e919097`:
+eleven actual processes,31states/75tables,511raw-bound files and10negative controls,
+with no new Archive attempt/frontier. Four other refusals/cancellation, held-attempt custody and
 total-cap qualification remain open. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix

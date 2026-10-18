@@ -1,16 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:45Z on Tux. Goal **ACTIVE**, verified with the goal control
+Observed 2026-10-18T19:49Z on Tux. Goal **ACTIVE**, verified with the goal control
 following the owner's explicit resume. M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`46b291a906dda300d2b637a90ca1b871c1738e89`, already pushed and verified remotely.
+`e9190979aa922eb71f674d11ec7784a8ea02678f`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
 No merge/rebase pending. Root's current documentation edits record the completed
-37-root duplicate Cargo source retirement. Product source is unchanged.
+orphan-history refusal qualification. Product source is unchanged.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -104,8 +104,15 @@ frontier from the refused command. Strict replay binds509files; custody binds
 PG/client stopped0/143, PID0/noOOM; cleanup/missing/unrelated arrays empty.
 Do not replay custody after PG reuse. This success does not erase the a99 failure.
 
-Next runtime: **fresh orphan-history refusal**, then family-counts, missing-input,
-frontier-cancel, frontier-control-loss. Those five engines/replays remain NOT_RUN.
+The fresh **orphan-history e919097 PASS** has preparation85111/engine9231/
+replay60311/custody10910 all joined0. Engine19:46:47Z–19:48:30Z; eleven actual
+processes and refusal exit4 unforced/reaped. Independent31states/75tables and
+10negative controls confirm no new Archive attempt/frontier. Strict replay binds
+511files; custody e4c3e195 binds1981source files/190ELFs. PG/client stopped0/143,
+PID0/noOOM; cleanup/missing/unrelated arrays empty. Do not rerun custody after PG reuse.
+
+Next runtime: **fresh family-counts refusal**, then missing-input, frontier-cancel,
+frontier-control-loss. Those four engines/replays remain NOT_RUN.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
@@ -124,7 +131,7 @@ are in `archive_package_cache_headroom` in the existing report/inventory.
 
 After this checkpoint commit/push, use the existing
 `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
-(SHA5b61ccf3), build9a/audit1164, case orphan-history from clean main.
+(SHA5b61ccf3), build9a/audit1164, case family-counts from clean main.
 Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
 and latest custody templatec023b95d under journeyWT's
 `.research/archive-catch-up-client-name-audit-20261018` before borrowed-PG reuse.

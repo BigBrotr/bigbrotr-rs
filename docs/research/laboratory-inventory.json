@@ -65658,6 +65658,174 @@
         },
         "free_bytes_after": 69067194368,
         "limits": "Only current-join refusal on fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original a99 initial Sync failure remains FAIL; this unchanged-profile trial does not identify or fix its unobserved timing cause. Five other refusals and attempt-cap/capacity/RSS remain NOT_RUN. Never replay custody after borrowed-PG reuse."
+      },
+      {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+        "case": "orphan-history",
+        "source": "e9190979aa922eb71f674d11ec7784a8ea02678f",
+        "tree": "aa99b0563e51465b6cc61cd23c3ffc6b52f7cf97",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097",
+        "prepare_session": 85111,
+        "prepare_joined_exit_code": 0,
+        "engine_session": 9231,
+        "engine_joined_exit_code": 0,
+        "replay_session": 60311,
+        "replay_joined_exit_code": 0,
+        "custody_session": 10910,
+        "custody_joined_exit_code": 0,
+        "engine_wrapper": {
+          "started": "2026-10-18T19:46:47.745110+00:00",
+          "command": [
+            "python3",
+            "-B",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/source/experiments/acquisition-scope/bindings.py",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097",
+            "--installed-archive-catch-up-refusal-orphan-history",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+          ],
+          "preparation_session": 85111,
+          "preparation_joined_exit_code": 0,
+          "source": "e9190979aa922eb71f674d11ec7784a8ea02678f",
+          "tree": "aa99b0563e51465b6cc61cd23c3ffc6b52f7cf97",
+          "finished": "2026-10-18T19:48:30.273123+00:00",
+          "exit_code": 0
+        },
+        "oracle": {
+          "case": "orphan-history",
+          "control_released": false,
+          "control_tables": 75,
+          "exit_code": 4,
+          "expected_refusal": true,
+          "installed_processes": 11,
+          "new_archive_attempts": 0,
+          "new_frontier_revisions": 0,
+          "original_frontier_revision": 4,
+          "same_physical_roots": true,
+          "snapshots": 31,
+          "source_scope": "independent whole-state reducer; wait timing is observed, no internal timer claim",
+          "status": "PASS"
+        },
+        "negative_controls": {
+          "rejected": [
+            "forced-process",
+            "unknown-process",
+            "wrong-error",
+            "unrelated-SQL",
+            "native-write",
+            "backend-live",
+            "Control-normalized",
+            "old-frontier-rewritten",
+            "scope-obligation-added",
+            "guard-catalog-changed"
+          ],
+          "scope": "assembled-context mutations, not independent engine or isolated-predicate coverage",
+          "status": "PASS"
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/audit-root/audit-v1.json",
+          "bytes": 367348,
+          "sha256": "e4c3e195528bc475fd2b2ebf24fb8a437c2c7a46d47dc01857c5f7ea44ee119e"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/root-independent-replay.json",
+          "bytes": 136597,
+          "sha256": "c35c3ed28c8a1d10a45dd81df4a1d3812c6a408f761fadd1d92f4e65b77682d8"
+        },
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/root-preparation.json",
+          "bytes": 29819,
+          "sha256": "45d5a0acb6424864d0381a3a9e11c2a5ef0d39a478725d05b06297858774b570"
+        },
+        "source_files": 1981,
+        "protected_elfs": 190,
+        "raw_bound_files": 511,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-18T19:46:48.678377055Z",
+              "FinishedAt": "2026-10-18T19:48:29.391829878Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "997e128449f88dc2245747ba7ec843917553562c084996250b7bf70b5524d439",
+            "Name": "/bigbrotr-acquisition-binding-e919097",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-18T19:46:49.725913074Z",
+              "FinishedAt": "2026-10-18T19:48:28.698475452Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "free_bytes_after": 293641379840,
+        "limits": "Only orphan-history refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures remain FAIL. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
       }
     ],
     "archive_refusal_qualification": {
@@ -65675,6 +65843,21 @@
           "sha256": "d329201065e81717e866e0296ab6e3bc5d81f1d5d6a110941dcf4f103265e1da"
         },
         "scope": "Only current-join refusal on fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original a99 initial Sync failure remains FAIL; this unchanged-profile trial does not identify or fix its unobserved timing cause. Five other refusals and attempt-cap/capacity/RSS remain NOT_RUN. Never replay custody after borrowed-PG reuse."
+      },
+      "orphan-history": {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+        "source": "e9190979aa922eb71f674d11ec7784a8ea02678f",
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/audit-root/audit-v1.json",
+          "bytes": 367348,
+          "sha256": "e4c3e195528bc475fd2b2ebf24fb8a437c2c7a46d47dc01857c5f7ea44ee119e"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-orphan-history-engine-e919097/root-independent-replay.json",
+          "bytes": 136597,
+          "sha256": "c35c3ed28c8a1d10a45dd81df4a1d3812c6a408f761fadd1d92f4e65b77682d8"
+        },
+        "scope": "Only orphan-history refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures remain FAIL. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
       }
     },
     "archive_package_cache_headroom": {
