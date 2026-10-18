@@ -1288,3 +1288,27 @@ new/historical/retried signed events, provenance off/on, renewal and joined SIGT
 The independent capture reader binds all75SQL tables, complete native/input bytes
 and original preservation. Current sources remain open and jobs queued revision2;
 recovery/source/workflow/retirement cycles and Archive remain separate gates.
+
+### Installed activated successor recovery (under implementation)
+
+The four explicit [later recovery modes](ingest-store.md#recovering-a-later-activated-successor-under-implementation)
+consume the existing schema0038 adapters at any activated epoch3 through255.
+Positive recovery, source publication, fresh closed-source acquisition abandonment
+and existing-only retirement are separate operations with distinct opaque proof
+owners. They retain the native handle and proof reservations through teardown;
+no error or unknown COMMIT becomes a successful report or a reusable writer.
+
+The consumer admits the actual overlap before Control claim or native barrier:
+native and transport, one256KiB lineage allocation, a4096-byte data/native closing
+or observation grant, and serial input/outcome replay or effect-census grants.
+Only abandonment and retirement additionally need the128KiB final job grant.
+It uses configured phase deadlines and fresh current-authority checks during
+ordered replay. Recovering the current head does not reserve another generation.
+
+The installed qualification must close and retry each stage on fresh copies of
+the three installed9359721 endpoints, preserving complete SQL/native/input bytes
+outside each operation's write set. It must then activate genuine epochs4/4/5
+without recreating old jobs or commands, observe renewal beyond the initial lease
+and join shutdown. This consumer's compilation and installed cycle remain NOT_RUN
+until bound evidence is recorded; prepared-gap/empty recovery, unresolved tails,
+import logical closure, ACK/GC and Archive restart remain separate requirements.

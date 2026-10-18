@@ -55,31 +55,38 @@ pub(crate) fn ingest_command() -> Command {
         .disable_help_subcommand(true)
         .subcommand(Command::new("recover")
             .about("Close an explicitly selected producer and resolve retained positive outcomes")
+            .group(clap::ArgGroup::new("recovery-mode").multiple(false).args([
+                "close-source", "abandon-acquisition", "retire-initial", "retire-empty-attempt",
+                "activated-successor", "close-activated-source", "abandon-activated-acquisition",
+                "retire-activated-initial", "successor", "close-successor-source",
+                "abandon-successor-acquisition", "retire-successor",
+            ]))
             .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
             .arg(Arg::new("close-source").long("close-source").action(clap::ArgAction::SetTrue)
                 .help("Also close the initial source after complete positive resolution; does not retire or activate a successor"))
             .arg(Arg::new("abandon-acquisition").long("abandon-acquisition").action(clap::ArgAction::SetTrue)
-                .conflicts_with("close-source")
                 .help("Close the initial source and explicitly abandon its original queued acquisition intents; retains coverage gaps"))
             .arg(Arg::new("retire-initial").long("retire-initial").action(clap::ArgAction::SetTrue)
-                .conflicts_with_all(["close-source", "abandon-acquisition"])
                 .help("Retire the initial producer/domains and release Ingest after explicit source closure and acquisition abandonment; retains all detail"))
             .arg(Arg::new("retire-empty-attempt").long("retire-empty-attempt").action(clap::ArgAction::SetTrue)
-                .conflicts_with_all(["close-source", "abandon-acquisition", "retire-initial"])
                 .help("Retire an existing empty prepared attempt after verifying every original input and outcome; preserves all detail"))
             .arg(Arg::new("activated-successor").long("activated-successor").action(clap::ArgAction::SetTrue)
-                .conflicts_with_all(["close-source", "abandon-acquisition", "retire-initial", "retire-empty-attempt"])
                 .help("Close the already activated epoch2 producer and resolve retained positive outcomes under fresh Control; leaves its source open and returns no writer"))
             .arg(Arg::new("close-activated-source").long("close-activated-source").action(clap::ArgAction::SetTrue)
-                .conflicts_with_all(["close-source", "abandon-acquisition", "retire-initial", "retire-empty-attempt", "activated-successor"])
                 .help("Close source2 after complete positive resolution; exact closed retries preserve existing copies and no producer retirement is performed"))
             .arg(Arg::new("abandon-activated-acquisition").long("abandon-activated-acquisition").action(clap::ArgAction::SetTrue)
-                .conflicts_with_all(["close-source", "abandon-acquisition", "retire-initial", "retire-empty-attempt", "activated-successor", "close-activated-source"])
                 .help("Close source2 and record whole-intent gaps for the activating Control's queued acquisition jobs; preserves native data and producer lifetime"))
             .arg(Arg::new("retire-activated-initial").long("retire-activated-initial").action(clap::ArgAction::SetTrue)
-                .conflicts_with_all(["close-source", "abandon-acquisition", "retire-initial", "retire-empty-attempt", "activated-successor", "close-activated-source", "abandon-activated-acquisition"])
                 .help("Retire the activated producer, domains and Ingest owner after explicit source closure and workflow abandonment; preserves all native data and outcome copies"))
-            .after_help("Stop the original native owner first. Requires local Control/Ingest, the existing native store, retained original inputs and an initialized Control database. Uses fresh Control authority and current accepted policy. Preserves unresolved reservations; never infers noncommit. Starts no listener or acquisition. Default recovery leaves the source open; explicit --close-source requires all original requests and a complete native source prefix. Explicit --abandon-acquisition also records whole-intent coverage gaps and cancels up to64 original queued acquisition jobs under migration0027. Explicit --retire-initial requires migration0029 and already complete closure/abandonment; it refuses import obligations and unbound historical Events. Explicit --retire-empty-attempt requires migration0031 and the retained preparation intent; it verifies predecessor history and retires only the unactivated empty epoch2 attempt. Explicit --activated-successor requires migration0034 and the exact retained activation; it closes producer2 and resolves positive outcomes under fresh Control/current policy, preserving original inputs and recorder attribution. It leaves source2 open and cannot resume acquisition. Missing originals, unresolved workflow claims or mixed terminal state refuse. Explicit --close-activated-source requires migration0035 and proves the complete original request/source2 prefix before closing it. Closed retries require existing exact outcome copies; producer and workflow retirement remain separate. Explicit --abandon-activated-acquisition requires migration0036 and extends source2 closure with whole-intent uncertainty records for up to64 queued jobs owned by its activating Control. It preserves sessions and earlier source closure if later abandonment refuses; exact retries preserve original attribution. Explicit --retire-activated-initial requires migration0037 and already complete source2 closure and workflow abandonment. It verifies existing outcome copies and native closing, then retires producer2, its nine domains and Ingest owner atomically. It refuses unbound Events and import obligations; exact retries preserve terminal history. Activated retirement is under qualification. No mode acknowledges, reclaims receipts or activates a successor. Exit: 0 requested recovery completed and Control released, 1 I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled/unresolved/unknown outcome. Retry the same root and mode after inspecting retained state."))
+            .arg(Arg::new("successor").long("successor").action(clap::ArgAction::SetTrue)
+                .help("Close an activated epoch3-or-later producer and resolve retained positive outcomes; leaves its source open and returns no writer"))
+            .arg(Arg::new("close-successor-source").long("close-successor-source").action(clap::ArgAction::SetTrue)
+                .help("Close the activated epoch3-or-later source after complete ordered replay; closed retries preserve exact existing outcome copies"))
+            .arg(Arg::new("abandon-successor-acquisition").long("abandon-successor-acquisition").action(clap::ArgAction::SetTrue)
+                .help("Explicitly abandon the activated successor's queued acquisition intents after source closure; records whole-intent gaps and preserves unclaimed jobs"))
+            .arg(Arg::new("retire-successor").long("retire-successor").action(clap::ArgAction::SetTrue)
+                .help("Retire an activated epoch3-or-later producer after source closure and workflow abandonment; exact retries preserve terminal history"))
+            .after_help("Stop the original native owner first. Requires local Control/Ingest, the existing native store, retained original inputs and an initialized Control database. Uses fresh Control authority and current accepted policy. Preserves unresolved reservations; never infers noncommit. Starts no listener or acquisition. Default recovery leaves the source open; explicit --close-source requires all original requests and a complete native source prefix. Explicit --abandon-acquisition also records whole-intent coverage gaps and cancels up to64 original queued acquisition jobs under migration0027. Explicit --retire-initial requires migration0029 and already complete closure/abandonment; it refuses import obligations and unbound historical Events. Explicit --retire-empty-attempt requires migration0031 and the retained preparation intent; it verifies predecessor history and retires only the unactivated empty epoch2 attempt. Explicit --activated-successor requires migration0034 and the exact retained activation; it closes producer2 and resolves positive outcomes under fresh Control/current policy, preserving original inputs and recorder attribution. It leaves source2 open and cannot resume acquisition. Missing originals, unresolved workflow claims or mixed terminal state refuse. Explicit --close-activated-source requires migration0035 and proves the complete original request/source2 prefix before closing it. Closed retries require existing exact outcome copies; producer and workflow retirement remain separate. Explicit --abandon-activated-acquisition requires migration0036 and extends source2 closure with whole-intent uncertainty records for up to64 queued jobs owned by its activating Control. It preserves sessions and earlier source closure if later abandonment refuses; exact retries preserve original attribution. Explicit --retire-activated-initial requires migration0037 and already complete source2 closure and workflow abandonment. It verifies existing outcome copies and native closing, then retires producer2, its nine domains and Ingest owner atomically. It refuses unbound Events and import obligations; exact retries preserve terminal history. Repeatable modes require migration0038 and an activated epoch3-or-later head with the complete retained lineage. --successor is positive recovery while the source is open; it preserves unresolved staged/reserved tails and returns no writer. --close-successor-source proves and publishes the complete source cut; closed retries require all exact outcome copies. --abandon-successor-acquisition requires the source already closed and rechecks its proof before recording gaps for the original activator's queued jobs. --retire-successor repairs no outcome copy and implicitly closes no source or workflow; unbound Events and import obligations refuse. These modes do not complete unactivated preparation gaps or empty attempts. No mode acknowledges, reclaims receipts or activates a successor. Exit: 0 requested recovery completed and Control released, 1 I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled/unresolved/unknown outcome. Retry the same root and mode after inspecting retained state."))
 }
 
 pub(crate) fn recover_ingest(args: &ArgMatches) -> ! {
@@ -131,7 +138,15 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
         if matches!(operation, Operation::RecoverIngest) {
             use initial_ingest::recovery::Action;
-            let action = if args.get_flag("retire-activated-initial") {
+            let action = if args.get_flag("retire-successor") {
+                Action::RetireSuccessor
+            } else if args.get_flag("abandon-successor-acquisition") {
+                Action::AbandonSuccessorAcquisition
+            } else if args.get_flag("close-successor-source") {
+                Action::CloseSuccessorSource
+            } else if args.get_flag("successor") {
+                Action::Successor
+            } else if args.get_flag("retire-activated-initial") {
                 Action::RetireActivatedInitial
             } else if args.get_flag("abandon-activated-acquisition") {
                 Action::AbandonActivatedAcquisition

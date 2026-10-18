@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "PAUSED_INSTALLED_SUCCESSOR_CYCLE_DRAFT_UNVERIFIED",
+      "status": "INSTALLED_SUCCESSOR_RECOVERY_SOURCE_INTEGRATED_QUALIFICATION_OPEN",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "STOPPED by explicit owner request on 2026-10-18. Partial CLI and recovery consumer retained uncommitted; no new build/test/engine. Resume only on explicit request, following progress.md.",
+      "ongoing": "Exact-source ingest-succession-installed build, then source review/qualification of fresh9359721 cycle clones; preserve143existing ELFs and all prior artifacts.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -31418,6 +31418,45 @@
         "preservation": "All original dirty files, worktrees, ignored .research, external labs, datasets, logs, failures and bundles retained in place; copies here protect only current incomplete source. No branch retired and no resource deleted.",
         "commit_scope": "Commit and push only this progress/evidence/inventory checkpoint on main. Retain the six incomplete source files uncommitted in their original worktrees and snapshot; do not integrate unresolved CLI Action variants.",
         "next_action": "Only after explicit resume: reconcile Git and six preserved source files against this snapshot, then finish source review of the consumer and its ControlSession::acquire cancellation/native/client custody boundary before integration or compilation. Root CLI references four Action variants still only present in the recovery worktree. Harness remains to implement; later qualification uses fresh9359721 copies."
+      },
+      "installed_cycle_source": {
+        "status": "SOURCE_INTEGRATED_BUILD_AND_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-18T12:24:40.000402+00:00",
+        "original": "361c1099ca41e0fa2d3d3efcd9860d966d6e5212",
+        "integrated": "652a9bb693ba510d046e0d576b513dbee25445d5",
+        "source_manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-successor-recovery-20261015/.research/installed-successor-recovery-selfcheck-20261018/source-manifest.json",
+          "sha256": "a073f1b24c6d4c4bc2ea3124b8ba6c4616fe3d7a1b8ca2a753c53230b62392f1"
+        },
+        "review": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-cycle-review-20261018/review-final.json",
+          "sha256": "abe503229a5ada37096af2d300857aa6942234297bd407c9d6844bdb80c017bb"
+        },
+        "integrated_sources": {
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs": "9661050ae493d83c81c7146363679efbd81f280b36e0caf0dc358cb945a40a30",
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family.rs": "afeecb00737462c15da948a07149e453520e8ac6a7fd03f879fb620b58ceaa39",
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/retirement.rs": "9f11e54be428781c7a628fbe6b3a6d43f7ab4525a9acde651e896a4e02036176",
+          "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/source.rs": "23646a3b39638b62087c8b6a9eebda83bf646f3608c1925566ac76024e04503c"
+        },
+        "root_changes": {
+          "apps/bigbrotr/src/interfaces/serve.rs": "6df74f6ca4f35fe4a4eb0876d131eb9732cccc08282ea1c86357cdefe3ad0358",
+          "apps/bigbrotr/tests/control_runtime_entrypoint.rs": "68b899e1cb7af4373aed4e74464b429166bd246f0177a87b39e4687f00dec7d1",
+          "docs/reference/ingest-registration.md": "535945cdaca38c644ab5f972c88b7e4d9445e01f730137d93e0967fe8824c23d",
+          "docs/reference/ingest-store.md": "fa3d4b97c545c0c85eedadd8e3dd4681710a5ee6b0a99b1cfbc1154573e8d5a2"
+        },
+        "checks": "PASS exact original/integrated/manifest hashes, review-bound files, scoped formatting and diff checks; author exact inverse of legacy dispatch PASS. Root reviewed new consumer, final guard/tests, CLI/tests, linked grants/supervision and Control acquisition/release. Unchanged deep kernels not requalified.",
+        "findings": "Caller-driven acquire cancellation drop order and Control exit-code mapping corrected; two actual-helper tests authored, NOT_RUN. Adapter OwnerError/remote failure can independently end transport; retained driver task is not transport liveness. Legacy consumed-acquire limitation remains explicit in review.",
+        "not_run": [
+          "compilation",
+          "authored and entrypoint tests",
+          "installed27-process full cycle"
+        ],
+        "next": "Exact-source ingest-succession-installed build, then source review/qualification of fresh9359721 cycle clones; preserve143existing ELFs and all prior artifacts.",
+        "source_binding": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/source-binding.json",
+          "sha256": "07222dcb54b032cebb33ab45caf221a378a860a89723806ec06b8e62658fb9ef"
+        },
+        "goal": "ACTIVE by explicit user resume; full M1-M5 remains incomplete"
       }
     }
   }

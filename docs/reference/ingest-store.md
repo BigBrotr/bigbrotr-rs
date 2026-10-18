@@ -399,8 +399,53 @@ recovery of this new lifetime remains a separate responsibility; do not retry
 activation against an unretired head. The [repeatable succession contract](ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
 and existing recovery evidence track implementation and qualification separately.
 The exact4cfac91 build passes20 focused Serve/entrypoint tests, CLI/probe
-compilation and Clippy. Actual installed PostgreSQL/HTTP/Sync qualification is
-still NOT_RUN; component and finite probe results do not qualify that journey.
+compilation and Clippy. Installed9359721 qualifies three PostgreSQL/HTTP/Sync
+lifetimes from both terminal epoch2 shapes and terminal epoch3, with signed
+new/historical/retried events, provenance off/on, renewal and joined SIGTERM.
+Its sources remain open and jobs queued; it does not qualify their full recovery
+and retirement cycle.
+
+## Recovering a later activated successor (under implementation)
+
+After stopping the epoch3-or-later owner, select one finite operation per process:
+
+```sh
+bigbrotr ingest recover --file ROOT --successor
+bigbrotr ingest recover --file ROOT --close-successor-source
+bigbrotr ingest recover --file ROOT --abandon-successor-acquisition
+bigbrotr ingest recover --file ROOT --retire-successor
+```
+
+These modes require migration0038, the existing application recovery grants,
+local Control/Ingest, the entire native store and every original input. Each
+opens the native store before protected connection setup and acquires fresh
+Control authority under current accepted policy. They select the retained
+activated head, without caller-supplied identities or a resumed writer.
+
+`--successor` closes that producer and resolves positive outcomes while its
+source remains open. It can copy missing current outcomes; historical copies
+must already be exact. It preserves unresolved reservations and staged inputs.
+`--close-successor-source` proves the complete ordered history and publishes the
+source cut and digest. A closed retry requires existing exact outcome copies.
+
+`--abandon-successor-acquisition` requires the source already closed and verifies
+it again in a fresh process. It records whole-intent coverage gaps for the
+original activator's queued acquisition jobs, preserving unclaimed jobs.
+`--retire-successor` requires completed source closure and workflow abandonment;
+it verifies existing copies and retires the producer, its nine allocation domains
+and Ingest owner. An exact retry preserves original attribution and row versions.
+Unresolved import obligations and unbound historical Events refuse retirement.
+
+Retry a mode only while its prerequisites remain valid: positive recovery is
+source-open-only, and terminal retirement has its own retry. No mode starts
+acquisition, resolves an unactivated preparation, acknowledges inputs or reclaims
+space. A successful `bigbrotr-ingest-recovery/1` report contains the actual epoch,
+request bounds and verified history; it is published after native closure,
+Control release and driver join. Preserve state after errors or unknown outcomes.
+Once retirement is complete, `serve --activate-successor` can prepare the next
+generation. The full installed cycle is NOT_RUN for this new consumer; the
+existing [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+tracks its qualification separately from the earlier live-writer result.
 
 ## Recovering the activated successor
 

@@ -296,6 +296,10 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
         Some("--close-activated-source"),
         Some("--abandon-activated-acquisition"),
         Some("--retire-activated-initial"),
+        Some("--successor"),
+        Some("--close-successor-source"),
+        Some("--abandon-successor-acquisition"),
+        Some("--retire-successor"),
     ] {
         let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
         command
@@ -321,59 +325,22 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
 
 #[test]
 fn explicit_recovery_modes_conflict_before_configuration_io() {
-    for (selected, others) in [
-        (
-            "--retire-activated-initial",
-            &[
-                "--close-source",
-                "--abandon-acquisition",
-                "--retire-initial",
-                "--retire-empty-attempt",
-                "--activated-successor",
-                "--close-activated-source",
-                "--abandon-activated-acquisition",
-            ][..],
-        ),
-        (
-            "--retire-empty-attempt",
-            &[
-                "--close-source",
-                "--abandon-acquisition",
-                "--retire-initial",
-            ][..],
-        ),
-        (
-            "--activated-successor",
-            &[
-                "--close-source",
-                "--abandon-acquisition",
-                "--retire-initial",
-                "--retire-empty-attempt",
-            ][..],
-        ),
-        (
-            "--close-activated-source",
-            &[
-                "--close-source",
-                "--abandon-acquisition",
-                "--retire-initial",
-                "--retire-empty-attempt",
-                "--activated-successor",
-            ][..],
-        ),
-        (
-            "--abandon-activated-acquisition",
-            &[
-                "--close-source",
-                "--abandon-acquisition",
-                "--retire-initial",
-                "--retire-empty-attempt",
-                "--activated-successor",
-                "--close-activated-source",
-            ][..],
-        ),
-    ] {
-        for other in others {
+    let modes = [
+        "--close-source",
+        "--abandon-acquisition",
+        "--retire-initial",
+        "--retire-empty-attempt",
+        "--activated-successor",
+        "--close-activated-source",
+        "--abandon-activated-acquisition",
+        "--retire-activated-initial",
+        "--successor",
+        "--close-successor-source",
+        "--abandon-successor-acquisition",
+        "--retire-successor",
+    ];
+    for (index, &selected) in modes.iter().enumerate() {
+        for &other in &modes[index + 1..] {
             let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
                 .env_clear()
                 .args([
