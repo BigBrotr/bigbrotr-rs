@@ -10,9 +10,9 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
 Canonical `/home/tux/bigbrotr-rs`; observed HEAD and verified remote
-`19dbd5c`. Product `ced7693`, packaged qualification, ref retirement and user help
+`e8fdf6f`. Product `ced7693`, packaged qualification, ref retirement and user help
 are pushed. Journey source is integrated from a2439a8 into 51fff8f; no merge/rebase
-is pending. This SQL/diagnostic checkpoint is not yet committed. Engine wrapper 40167 joined 1; no runtime remains active.
+is pending. Diagnostic source90dfa92 is integrated as2315fb6; its documentation is not yet committed. Engine wrapper 40167 joined 1; no runtime remains active.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -189,12 +189,21 @@ need admission-time scrutiny. This does not identify the actual failed callsite.
 `.research/archive-catch-up-resume-20261018/initial-deadline-review.json` and the
 existing evidence node bind this distinction; no timeout widening is justified.
 
-Next bounded action: review/freeze the author’s diagnostic change in the retained
-journey worktree: prior/requested phase location and overdue duration; last SQL
-poll and postfailure captures; incremental bounded HTTP observations. Review the
-separate admission-fix design before implementation, preserving original Archive
-deadline/authority and selected Work/grant. Then one fresh exact-source build and
-same-root journey, without overwriting this failure. No new runtime has begun.
+Diagnostic source90dfa92 is integrated as2315fb6. Root source/manifest checks and
+11 source-extracted Python preservation controls PASS; two phase tests are authored,
+Rust build/tests and fresh engine NOT_RUN. It records static prior/requested
+callsite and monotonic overdue duration, latest completed SQL poll, SQL failure
+captures and bounded incremental HTTP observations. No deadline changes in this commit.
+Independent AI review confirms the existing expiry predicate and supervisor unchanged.
+
+Next bounded action: finish/review the separate post-selection admission correction
+in the retained journey worktree, including selected Work/grant preservation and
+exact absolute Archive caps. One author and independent reviewer are active.
+Then build fresh clean exact source with the reviewed templates under
+`.research/archive-deadline-build-20261018`; manifest956cc08a, root reviewebebbc7d.
+Parentced7693 and178 protected ELF paths stay preserved. Templates NOT_EXECUTED;
+root selection comes from clean main at actual preparation. Then one fresh same-root
+journey; never overwrite engine6474507 or rerun its diagnostic.
 
 Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
 still follows a successful normal journey. Independent source mapping identifies
@@ -207,8 +216,8 @@ capacity boundaries remain separate.
 ## Host resources and preservation
 
 No owned runtime/compiler remains active after the SQL diagnostic and independent
-terminal inspection. One source-only author is active on diagnostic preservation
-and scheduling design; custody and independent scheduling reviewers completed. Unrelated workloads remain outside this session's authority.
+terminal inspection. One source-only author and independent reviewer are active on the scheduling
+correction; custody work is complete. Unrelated workloads remain outside this session's authority.
 Verify actual receipts/ownership before any further engine or database action.
 
 Root-only compiler cache:

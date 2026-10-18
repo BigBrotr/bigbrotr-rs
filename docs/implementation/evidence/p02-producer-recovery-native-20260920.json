@@ -33156,6 +33156,43 @@
         "path": ".research/archive-catch-up-resume-20261018/required-discriminators-review.json",
         "sha256": "8a2668d7c0e8efed3edcdab6ad8745b5479b71cec152a5ac480aa66a86917850",
         "status": "SOURCE_MAPPING_ONLY_NOT_RUNTIME_QUALIFICATION"
+      },
+      "archive_initial_deadline_diagnostics": {
+        "original": "90dfa92d4a80fa40b956ce6f42e3a9647f29a65b",
+        "integrated": "2315fb662a884e779bf0ee1c4cac2247c7f43ab4",
+        "status": "DIAGNOSTICS_SOURCE_REVIEWED_BUILD_NOT_RUN",
+        "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-journey-diagnostics-20261018/manifest.json",
+        "manifest_sha256": "ed04e1570fe226899169b6dbfca2db4fc47e3277ad60cbac32052215e372c92b",
+        "scope": "Diagnostic preservation only; deadlines and execution scheduling unchanged",
+        "checks": {
+          "python_ast": "PASS",
+          "python_source_extracted_preservation": {
+            "status": "PASS",
+            "scope": "source-extracted Python preservation only; no product or engine",
+            "checks": [
+              "complete",
+              "control-fails",
+              "catalog-fails",
+              "report-fails",
+              "wrong-catalog",
+              "original-preserved-False",
+              "original-preserved-True",
+              "last-complete-poll-preserved",
+              "legacy-default-no-diagnostic-write",
+              "http-observations-incremental-atomic",
+              "http-observation-bound-preserves-last"
+            ],
+            "external_process_and_network": "BLOCKED",
+            "rust_tests": "NOT_RUN",
+            "engines": "NOT_RUN"
+          },
+          "rustfmt_parse": "PASS (two owners, skip_children)",
+          "rust_tests": "NOT_RUN",
+          "build": "NOT_RUN",
+          "engines": "NOT_RUN"
+        },
+        "review": "Root complete diagnostic diff/affectedphase,supervision and client owners; independent AI recovery_review confirms expiry semantics unchanged. Exact source/artifact hashes checked.",
+        "next": "Separate bounded post-selection admission correction is being authored; no build or fresh engine yet."
       }
     }
   }
