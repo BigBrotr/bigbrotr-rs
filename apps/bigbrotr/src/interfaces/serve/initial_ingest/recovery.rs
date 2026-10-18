@@ -19,6 +19,7 @@ use tokio::sync::oneshot;
 mod activated;
 mod empty;
 pub(super) mod replay;
+mod successor_family;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(in crate::interfaces::serve) enum Action {
@@ -31,6 +32,10 @@ pub(in crate::interfaces::serve) enum Action {
     CloseActivatedSource,
     AbandonActivatedAcquisition,
     RetireActivatedInitial,
+    Successor,
+    CloseSuccessorSource,
+    AbandonSuccessorAcquisition,
+    RetireSuccessor,
 }
 
 pub(super) fn limits() -> ProducerRecoveryLimits {
@@ -81,6 +86,18 @@ pub(in crate::interfaces::serve) fn run(
         ));
     }
     match action {
+        Action::Successor => {
+            return successor_family::run(root, successor_family::Mode::Resolve, output);
+        }
+        Action::CloseSuccessorSource => {
+            return successor_family::run(root, successor_family::Mode::CloseSource, output);
+        }
+        Action::AbandonSuccessorAcquisition => {
+            return successor_family::run(root, successor_family::Mode::AbandonAcquisition, output);
+        }
+        Action::RetireSuccessor => {
+            return successor_family::run(root, successor_family::Mode::Retire, output);
+        }
         Action::ActivatedSuccessor => {
             return activated::run(root, activated::Mode::Resolve, output);
         }
@@ -359,7 +376,11 @@ async fn connected(
             | Action::ActivatedSuccessor
             | Action::CloseActivatedSource
             | Action::AbandonActivatedAcquisition
-            | Action::RetireActivatedInitial => {
+            | Action::RetireActivatedInitial
+            | Action::Successor
+            | Action::CloseSuccessorSource
+            | Action::AbandonSuccessorAcquisition
+            | Action::RetireSuccessor => {
                 unreachable!("separate successor recovery")
             }
         });
