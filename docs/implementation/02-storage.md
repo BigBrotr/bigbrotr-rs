@@ -663,8 +663,14 @@ The next selected Steps 3/4/5 responsibility is
 with the [positive historical handoff and admitted profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
 It connects a fully terminal repeated Ingest lineage to missing-batch publication,
 an exact retry of the complete frontier, and the same-root read/export/restart
-journey in P01-T09 Step 4. Implementation and connected qualification remain owed;
-initial-only consumers and initialization recovery stay unchanged. Existing
+journey in P01-T09 Step 4. The normal installed journey now passes at fixture
+`410d804` with qualified product`9a7fd81`: fourteen real processes, seven Archive
+receipts, snapshot8/frontier7, exact retry and real HTTP/export/restart. Independent
+raw replay binds612 files and91 negative controls; the
+[existing recovery report](evidence/p02-producer-recovery-native-20260920.json)
+records the exact build, artifacts and original failed runs. Lost-COMMIT, actual
+refusals/cancellation, held-attempt custody and total-cap qualification remain
+open. Initial-only consumers and initialization recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix
 and adding zero bounds before the final terminal cut; all native receipt scans
 retain the full admitted inventory bound. This reuses the current guards and
