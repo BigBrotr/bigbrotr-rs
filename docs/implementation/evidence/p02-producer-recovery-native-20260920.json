@@ -32521,7 +32521,7 @@
           "engines": "NOT_RUN"
         },
         "review_finding": "Current-frontier equal-total/different-family distribution must refuse before new effects; root compares joined original-prefix counts and adds independent counts test",
-        "next": "Restore unchanged export headroom through verified regenerable old compiler cache retirement, then prepare and execute frozen same-root journey against qualified ced7693 artifacts. Preserve failed preparation; no engine has started."
+        "next": "Authenticate failed-run custody before any further observation; diagnose exact initial phase deadline boundary. No continuation or raw scientific replay has run; preserve all partial native/catalog state and original timestamps."
       },
       "archive_installed_build_attempts": {
         "observed_at": "2026-10-18T14:56:34.271520+00:00",
@@ -33021,6 +33021,39 @@
         },
         "review_record": ".research/archive-catch-up-resume-20261018/journey-source-review.json",
         "review_sha256": "505cec6534d09a3e1f852b444a4807e3178481b2184e0ff123cfe3d06440a3fe"
+      },
+      "archive_connected_journey": {
+        "status": "FAIL_INITIAL_PUBLICATION_BEFORE_CONTINUATION",
+        "source": "64745070b7d9601ad0b2ee6af5d353198e0d874a",
+        "tree": "c77db8676e459c9fc9e80327561f144456c19edb",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-6474507",
+        "prepare_session": 69850,
+        "prepare_exit_code": 0,
+        "engine_session": 40167,
+        "engine_exit_code": 1,
+        "preparation_sha256": "66759490b2d3e3c5a12ed09a506b552cb37e9bf9827f2eb7393d419deae6eb02",
+        "invocation_sha256": "a5bb9f28497b54fd7bd0a366194eba193aef73876d7271007b10dcef25177f78",
+        "build_source": "ced7693e0ce78553f5a64b7a67dfb7d1c7cd31d1",
+        "raw_replay": "NOT_RUN",
+        "custody_audit": "NOT_RUN",
+        "observed_at": "2026-10-18T15:29:40.179594+00:00",
+        "finished_at": "2026-10-18T15:29:04.809973+00:00",
+        "engine_result_sha256": "1167862ec8851ad6855c91dd66216e77bbc4e8e8c11f54834692a1fee2c4ed0c",
+        "failure": "AssertionError: installed owner ended before full frontier",
+        "initial_child": {
+          "pid": 212,
+          "start_ticks": "571956123",
+          "exit_code": 4,
+          "reaped": true,
+          "forced": false,
+          "elapsed_seconds": 35.429679551161826
+        },
+        "initial_stderr": "error: initial Ingest phase completed after its deadline; preserve retained state\n",
+        "http_client_exit_code": 1,
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "next": "Authenticate failed-run custody before any further observation; diagnose exact initial phase deadline boundary. No continuation or raw scientific replay has run; preserve all partial native/catalog state and original timestamps."
       }
     }
   }

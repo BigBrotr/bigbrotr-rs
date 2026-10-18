@@ -61122,7 +61122,7 @@
     "future_use": "The30 named historical targets are retired partial caches; never reuse incrementally. Rebuild only into fresh/current qualified shared target. Frozen manifest/execution are completed one-shot operations; never replay."
   },
   "implementation_archive_catch_up_20261018": {
-    "status": "CONNECTED_JOURNEY_SOURCE_INTEGRATED_ENGINE_NOT_RUN_HEADROOM",
+    "status": "CONNECTED_JOURNEY_FAIL_INITIAL_PUBLICATION_DIAGNOSIS",
     "contract": {
       "original": "de794eb9a596013ca4976fec8a11fa595394e437",
       "integrated": "4a8f882",
@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "All build wrappers/audits joined. Journey preparation62229 joined1 before root creation. Cache preflight29447/30723 joined1 without unlink; retirement72086 joined0. No owned engine/build/native/database active. One bounded source-only cleanup proposal agent active; other source agents complete.",
+    "processes": "Engine40167 joined1; initial process212 exited4 unforced/reaped; HTTP client1. Borrowed PG exit0 and bounded client143 are stopped/PID0/noOOM in actual final report. No build/native/engine active. Two bounded source-only agents: initial deadline diagnosis and failed-run custody adaptation.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -61912,6 +61912,92 @@
         "30723 empty metadata guard, no changes"
       ]
     },
-    "headroom_followup": "Host free continued falling during no BigBrotr runtime; unrelated nsealr cwd observed, owner notified. .research/tux-maintenance-followup-20261018 source-only proposal in progress. Never touch unrelated workload. Engine stays NOT_RUN until actual unchanged reserve is available."
+    "headroom_followup": {
+      "allocated_candidate_bytes": 16883802112,
+      "archive_headroom_sufficient_now": true,
+      "deleted_files": 16943,
+      "free_bytes_after": 78657138688,
+      "free_bytes_before": 61778157568,
+      "host_after": {
+        "candidate_hits": [],
+        "inspected": {
+          "cmdline": 512,
+          "cwd": 44,
+          "exe": 44,
+          "fd": 44,
+          "maps": 457
+        },
+        "unavailable": {
+          "cwd": 468,
+          "exe": 468,
+          "fd": 468,
+          "maps": 55
+        }
+      },
+      "manifest_sha256": "bb2c965f4b32af0d0d6032e86f12b7b2e74bd4ce81e1623323296c1cf6dc31d4",
+      "observed_free_delta_bytes": 16878981120,
+      "preservation": "Every nondeleted recorded readable file hash, opaque directory identity, symlink, and complete stable-field Docker projection and protected 178 ELF hashes unchanged. Final ELFs remain at original paths.",
+      "protected_elfs_verified": 178,
+      "reserve_plus_envelope_bytes": 69324505088,
+      "scope_note": "Free difference includes concurrent activity on the shared host; no container/volume/source/dataset deletion.",
+      "status": "RETIRED_VERIFIED",
+      "time": 1792337261.1452622,
+      "root": ".research/tux-maintenance-followup-20261018",
+      "source_sha256": "32930cc0cd4911d0c5c1d51e361093c5ba158c30f7558865a8f7127d1014ca6a",
+      "receipt_sha256": "ddb400d3a0ae161a428455c5a7c447b284dc0508c84fc1a0b1e2359188367d41",
+      "deleted_paths_sha256": "70f0a64adafaad63edab9bccd62c094dd60af4d7223df45464826197afbf9e3a",
+      "frozen_manifest_sha256": "bb2c965f4b32af0d0d6032e86f12b7b2e74bd4ce81e1623323296c1cf6dc31d4",
+      "prepare_session": 3240,
+      "execute_session": 28698,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "retained_entries": 227593,
+      "executor": "EXECUTED_DO_NOT_REPLAY",
+      "targets": [
+        "export-runtime-6499656",
+        "export-runtime-f6770e9",
+        "job-admission-8fae53a",
+        "export-checker-fixed-4e6b5c0",
+        "private-history-32dd58d",
+        "history-capture-b5c862a",
+        "catalog-product-dbc5211",
+        "catalog-product-652e043"
+      ]
+    },
+    "connected_journey": {
+      "status": "FAIL_INITIAL_PUBLICATION_BEFORE_CONTINUATION",
+      "source": "64745070b7d9601ad0b2ee6af5d353198e0d874a",
+      "tree": "c77db8676e459c9fc9e80327561f144456c19edb",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-6474507",
+      "prepare_session": 69850,
+      "prepare_exit_code": 0,
+      "engine_session": 40167,
+      "engine_exit_code": 1,
+      "preparation_sha256": "66759490b2d3e3c5a12ed09a506b552cb37e9bf9827f2eb7393d419deae6eb02",
+      "invocation_sha256": "a5bb9f28497b54fd7bd0a366194eba193aef73876d7271007b10dcef25177f78",
+      "build_source": "ced7693e0ce78553f5a64b7a67dfb7d1c7cd31d1",
+      "raw_replay": "NOT_RUN",
+      "custody_audit": "NOT_RUN",
+      "observed_at": "2026-10-18T15:29:40.179594+00:00",
+      "finished_at": "2026-10-18T15:29:04.809973+00:00",
+      "engine_result_sha256": "1167862ec8851ad6855c91dd66216e77bbc4e8e8c11f54834692a1fee2c4ed0c",
+      "failure": "AssertionError: installed owner ended before full frontier",
+      "initial_child": {
+        "pid": 212,
+        "start_ticks": "571956123",
+        "exit_code": 4,
+        "reaped": true,
+        "forced": false,
+        "elapsed_seconds": 35.429679551161826
+      },
+      "initial_stderr": "error: initial Ingest phase completed after its deadline; preserve retained state\n",
+      "http_client_exit_code": 1,
+      "cleanup_errors": [],
+      "missing_owned": [],
+      "unrelated_changed": [],
+      "next": "Authenticate failed-run custody before any further observation; diagnose exact initial phase deadline boundary. No continuation or raw scientific replay has run; preserve all partial native/catalog state and original timestamps."
+    }
   }
 }

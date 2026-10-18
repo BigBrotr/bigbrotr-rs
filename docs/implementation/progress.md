@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T15:21:47.601714+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T15:29:40.179594+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
 current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Historical detail remains in the evidence/laboratory records below and Git history;
@@ -9,10 +9,10 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 ## Repository and active responsibility
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; observed HEAD `51fff8f`, last verified remote
-`b2c7b9b`. Product `ced7693`, packaged qualification, ref retirement and user help
+Canonical `/home/tux/bigbrotr-rs`; observed HEAD and verified remote
+`6474507`. Product `ced7693`, packaged qualification, ref retirement and user help
 are pushed. Journey source is integrated from a2439a8 into 51fff8f; no merge/rebase
-is pending. This current evidence update is not yet committed. No engine is active.
+is pending. This current runtime/cleanup checkpoint is not yet committed. Engine wrapper 40167 joined 1; no runtime remains active.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -20,7 +20,7 @@ P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
 [finite catch-up contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
 and [native handoff/profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
 The installed `archive catch-up --file ROOT` source is wired and its components
-pass. Connected catch-up/read/export/restart qualification remains NOT_RUN.
+pass. Connected qualification failed during initial publication; continuation is NOT_RUN.
 No task checkbox closes from component tests or AI review.
 
 Durable evidence: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
@@ -131,37 +131,64 @@ Custody template is frozen at
 `.research/archive-catch-up-custody-20261018/audit-engine-template.py`,
 SHA d26aa071f6150aa46da84d5fb33f80d44283307e0a81cab2aa7968d7c41099d6.
 AST-only PASS; execution NOT_RUN. Root preparation script
-`.research/archive-catch-up-resume-20261018/prepare-journey.py` was invoked once:
+`.research/archive-catch-up-resume-20261018/prepare-journey.py` first attempt:
 session 62229 joined 1 at the free-space guard, before creating any engine root.
-The failure is preserved; no database, worker or runtime began. It may be invoked
-again only after actual reserve 69,324,505,088 B is restored and clean exact source
-reconciled; a successfully created one-shot run must never be overwritten.
+That failure is preserved; no database, worker or runtime began in that attempt.
+The later admitted run below is now EXECUTED and must never be overwritten.
+Further fresh preparation requires actual reserve 69,324,505,088 B and reconciled
+clean exact source; never replay a successfully created one-shot run.
 
-Host free fell from 74.5 GB to 69.1 GB and then 62.5 GB while no BigBrotr engine ran.
-An unrelated active process cwd under nsealr was observed; the owner was asked to
-coordinate allocation. Do not stop or modify unrelated workloads. Root retired
-56 verified regenerable single-link nonempty product rlib/rmeta cache entries:
-545,526,495 logical bytes, 178 qualified ELFs and 11,806 other cache entries preserved.
-Receipt `.research/archive-catch-up-resume-20261018/product-intermediates-retirement/result.json`.
-Sessions 29447/30723 refused hard-link/empty-metadata preconditions before changes;
-corrected retirement 72086 joined 0. The retirement is EXECUTED, never replay.
-Free at completion 64,339,574,784 B remained below required reserve because the
-host continued allocating. One source-only cleanup agent is preparing a finite
-old-target proposal under `.research/tux-maintenance-followup-20261018`.
+The first preparation failure remains retained. The subsequent bounded cleanup
+retired 16,943 verified compiler intermediates from eight historical targets,
+retaining all 227,593 other entries, 178 qualified ELFs and unchanged container
+projections. Prepare 3240 and execute 28698 joined 0. Frozen manifest bb2c965f,
+receipt and deletion journal are under `.research/tux-maintenance-followup-20261018`;
+the same lab inventory node binds full hashes and target names. Free space after
+cleanup was 78,657,138,688 B; measured gain 16,878,981,120 B. These eight targets
+are retired partial caches; preserve final artifacts and never reuse or replay
+their executor. The earlier 56-file current-cache retirement remains separately
+recorded. Unrelated nsealr work and the six unrelated services were untouched.
 
-Next bounded action: inspect the new finite cleanup proposal, retain every
-executable/source/log/dataset, retire only verified regenerable old compiler
-intermediates with before/after preservation checks. Once actual reserve exists,
-prepare and execute the integrated same-root journey using ced7693 artifacts;
-join wrapper, independently replay raw observations, then audit custody. Preserve
-all failures. After normal journey, required interruption/COMMIT-loss,
-cancellation/expiry and refusal qualification remains in the existing task.
+Actual engine root:
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-6474507`.
+Exact source 64745070b7d9601ad0b2ee6af5d353198e0d874a,
+tree c77db8676e459c9fc9e80327561f144456c19edb. Preparation 69850 joined 0,
+with 78,656,954,368 B free and unchanged 69,324,505,088 B admission requirement.
+`root-preparation.json` and `root-engine-invocation.json` bind the inputs.
+Root wrapper 40167 joined 1 at 15:29:04Z; `bindings/result.json` is FAIL.
+Initial child 212 was unforced/reaped, exit 4 after 35.43s, reporting
+`initial Ingest phase completed after its deadline; preserve retained state`.
+The HTTP client then exited 1 with ConnectionRefused. Only initial startup was
+reported; two actual attempt input files/Parquet groups exist, which do not alone
+prove catalog COMMIT. No continuation journey JSON or read/export/catch-up ran.
+PG/client exited 0/143, stopped/PID0/noOOM, with empty cleanup/missing/unrelated
+errors. Preserve this root; never rerun its preparation or overwrite the failure.
+
+Next bounded action: review and execute the failed-run custody auditor being
+adapted under `.research/archive-catch-up-custody-20261018`; preserve the original
+success auditor unchanged. It must bind actual failed wrapper/child receipts,
+raw files, source/build/178 ELFs, original rows and terminal containers, while
+leaving scientific replay/continuation NOT_RUN. Then diagnose the exact initial
+phase boundary: existing captures identify the expired monotonic phase check,
+not its callsite or a proven host/SQL cause. A bounded source author reviews
+initial publisher/phase/HTTP/renewal and schema deltas. Do not widen deadlines
+or classify the failure as infrastructure without evidence. No further runtime
+observation or fresh run has started.
+
+Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
+still follows a successful normal journey. Independent source mapping identifies
+publication after-COMMIT delivery loss, fresh-process receipt reuse plus first
+bridge delivery loss, fresh original operation resolution and exact retry as the
+next useful fault slice. Existing proxy selects actual queries; never infer a
+fixed COMMIT ordinal or call a local timeout SQL UTC expiry. Other refusal and
+capacity boundaries remain separate.
 
 ## Host resources and preservation
 
-No owned build/engine remains active at the latest completed audit. One bounded source-only cleanup proposal task is active; journey, independent
-review and custody-template tasks are complete. No runtime resources belong to it. Six unrelated services remain
-outside project ownership; do not touch them. Reobserve actual ownership before reuse.
+No owned runtime/compiler remains active in the joined failed-run report.
+Two source-only tasks are active: deadline diagnosis and failed-run custody
+adaptation. Unrelated workloads remain outside this session's authority.
+Verify actual receipts/ownership before any further engine or database action.
 
 Root-only compiler cache:
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,
