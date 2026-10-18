@@ -59,7 +59,7 @@ def provision_reader(pg, output, name, setup, save):
     return reader
 
 
-def run(pg, client, output, database, name, rows, **context):
+def run(pg, client, output, database, name, rows, *, continuation=None, **context):
     assert name in CASES or name == 'archive-export'
     setup = prepare(pg, client, output, database, name, rows, **context)
     directory = setup['home']; prefix = output / name
@@ -276,12 +276,15 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     for db in (database, setup['resource']['catalog_database']):
         assert lab.sql(pg, db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()') == '0'
     export = None
-    if name == 'archive-export':
+    if name == 'archive-export' and continuation is None:
         from installed_archive_export import run as run_export
         export = run_export(pg, client, output, database, name, rows, setup, initialized, after)
-    return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks_archive=True,
+    result = dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks_archive=True,
         complete_scientific_rows=12, complete_archive_batches=4, retained_inputs=retained,
         frontier_snapshot=5, same_owner_renewed=True, archive_owner_retained_and_expired=True,
         http_status_observations=len(statuses),
         signal_seconds=signal_seconds, selected_quiet_signal=signal, websocket_rounds=len(transcript),
         terminal=ended, export=export, **native_evidence)
+    if continuation is not None:
+        return continuation(setup, initialized, after, wanted, result)
+    return result

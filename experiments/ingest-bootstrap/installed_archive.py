@@ -158,7 +158,8 @@ def global_roles(pg):
     """))
 
 
-def prepare(pg, client, output, database, name, rows, resources, save, build, built):
+def prepare(pg, client, output, database, name, rows, resources, save, build, built,
+            setup_upgrade=None):
     verified = artifacts(build, built)
     info = invoke(client, output, name + '-build-info', 'build-info')
     assert info['archive_worker'] == verified['worker']
@@ -170,6 +171,8 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     lab.write_json(output / (name + '-artifacts.json'), verified)
     upgrade_registry(pg, client, output, database, name, rows)
     upgrade_scopes(pg, client, output, database, name, rows)
+    if setup_upgrade is not None:
+        setup_upgrade(pg, client, output, database, name, rows)
     policy_setup(pg, database, name, rows, output, administration=True)
     before = rows(database)
     assert not before['owner_epochs'] and not before['producer_requests']

@@ -19,7 +19,7 @@ class Result(C.Structure):
         ('deprecated_error_message', C.c_void_p), ('internal_data', C.c_void_p)]
 
 
-def read(config, temporary):
+def read(config, temporary, *, full_stream_order=False):
     bundle = Path('/build/archive-worker')
     header = (bundle / 'lib/duckdb.h').read_text()
     declaration = re.search(r'typedef struct \{([^{}]+)\}\s*duckdb_result;', header)
@@ -111,7 +111,9 @@ def read(config, temporary):
             event_eligibility_facts='hex(event_id) AS event_id,hex(body_digest) AS body_digest,hex(sig) AS sig,first_eligible_at,origin,ref_value(import_lineage) AS import_lineage',
             event_receive_facts='hex(event_id) AS event_id,received_at,ref_value(observer_id) AS observer_id,clock_value(clock_quality) AS clock_quality,source_value(corrects) AS corrects',
             provenance_facts='hex(event_id) AS event_id,ref_value(endpoint_id) AS endpoint_id,ref_value(observer_id) AS observer_id,ref_value(access_scope_id) AS access_scope_id,received_at,clock_value(clock_quality) AS clock_quality,ref_value(verification_method_id) AS verification_method_id,source_value(corrects) AS corrects')
-        tables = {name: execute(f'SELECT to_json(r) FROM (SELECT {common},{fields} FROM archive.{name} ORDER BY source_record_id.sequence LIMIT 17) r', name, 16)
+        order = ('source_record_id.dataset_id,source_record_id.shard_id,source_record_id.owner_epoch,source_record_id.sequence'
+            if full_stream_order else 'source_record_id.sequence')
+        tables = {name: execute(f'SELECT to_json(r) FROM (SELECT {common},{fields} FROM archive.{name} ORDER BY {order} LIMIT 17) r', name, 16)
             for name, fields in families.items()}
         tables['archive_commits'] = execute('SELECT to_json(r) FROM (SELECT hex(dataset_id) AS dataset_id,schema_version,topology_generation,hex(batch_digest) AS batch_digest,record_count,input_ranges,hex(attempt_id) AS attempt_id,publication_ordinal FROM archive.archive_commits ORDER BY publication_ordinal LIMIT 9) r', 'commits', 8)
         execute('ROLLBACK', 'rollback')
@@ -124,7 +126,10 @@ def read(config, temporary):
 
 
 if __name__ == '__main__':
-    config, temporary = map(Path, sys.argv[1:])
+    assert len(sys.argv) in (3, 4)
+    full_stream_order = len(sys.argv) == 4
+    assert not full_stream_order or sys.argv[3] == '--full-stream-order'
+    config, temporary = map(Path, sys.argv[1:3])
     assert config.is_absolute() and temporary.is_absolute()
     temporary.mkdir(mode=0o700)
-    print(json.dumps(read(tomllib.loads(config.read_text()), temporary)))
+    print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=full_stream_order)))

@@ -60,7 +60,8 @@ installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-
 installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
 installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-signed'
-installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-export'
+installed_archive_catch_up = len(sys.argv) == 4 and sys.argv[2] == '--installed-archive-catch-up'
+installed_archive_export = installed_archive_catch_up or len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-export'
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
@@ -134,6 +135,27 @@ assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--un
 reuse_build = registration_faults or guards or interruptions or commits or ((installed_archive or installed_sync or initial_ingest or observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
+if installed_archive_catch_up:
+    component = json.loads((build / 'component-result.json').read_text())
+    qualification = json.loads((build.parent / 'qualification.json').read_text())
+    assert component['status'] == 'PASS' and qualification['status'] == 'PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS'
+    assert component['source'] == qualification['source'] == built['source']
+    assert component['tree'] == qualification['tree'] == built['tree']
+    for field in ('lockfile_sha256','source_manifest_sha256','archive_worker','archive_registry_sha256'):
+        assert component[field] == qualification[field] == built[field]
+    manifest = build.parent / 'build/source-manifest.json'
+    declared = json.loads(manifest.read_text())
+    assert hashlib.sha256(manifest.read_bytes()).hexdigest() == built['source_manifest_sha256']
+    assert declared['revision'] == built['source'] and declared['tree'] == built['tree']
+    assert built['tree'] == lab.command(['git','-C',str(SOURCE),'rev-parse',built['source']+'^{tree}']).stdout.strip()
+    assert component['executables_sha256']['bigbrotr'] == built['binary_sha256']
+    assert built['build_info']['source'] == dict(revision=built['source'],tree=built['tree'],dirty=False,
+        state='builder-supplied',manifest_sha256=built['source_manifest_sha256'])
+    assert built['build_info']['archive_worker'] == built['archive_worker']
+    assert built['postcheck_status']=='PASS' and built['archive_verification']['result']=='verified'
+    assert built['archive_verification']['executable']==built['archive_worker']
+    built = dict(built, probe_name='ingest_bootstrap_probe',
+        probe_sha256=component['executables_sha256']['ingest_bootstrap_probe'])
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
 if reuse_build:
     # Reuse only reviewed exact artifacts with unchanged production/build inputs.
@@ -277,6 +299,11 @@ if installed_archive_export:
     report['not_run'] = ['M1 successor/replay/indexing', 'five signed exports under256MiB',
         'durable EOSE/progress', 'publication crash/COMMIT/cancellation/unknown outcomes',
         'earlier Sync/reader refusal waves not repeated', 'capacity/load/aged-state', 'arm64/release']
+
+if installed_archive_catch_up:
+    report['wave'] = 'installed-archive-catch-up-same-root'
+    report['not_run'] = ['Archive ACK/GC and import logical closure',
+        'catch-up interruption/COMMIT/lease schedules', 'capacity/load/aged-state', 'arm64/release']
 
 if installed_sync:
     report['wave'] = ('installed-sync-visibility' if installed_sync_visibility
@@ -689,7 +716,7 @@ def containers():
 def rows(db):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in (64, 66, 67, 68, 69, 70, 71, 72) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in ((64, 66, 67, 68, 69, 70, 71, 72, 75) if installed_archive_catch_up else (64, 66, 67, 68, 69, 70, 71, 72)) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     # This finite observer can otherwise launch parallel aggregate workers for
@@ -1004,7 +1031,7 @@ if ingest_windows:
 if installed_archive_publication:
     success_status = 'PASS_INSTALLED_ARCHIVE_PUBLICATION'
 if installed_archive_export:
-    success_status = 'PASS_INSTALLED_ARCHIVE_EXPORT'
+    success_status = 'PASS_INSTALLED_ARCHIVE_CATCH_UP_JOURNEY' if installed_archive_catch_up else 'PASS_INSTALLED_ARCHIVE_EXPORT'
 if installed_sync:
     success_status = ('PASS_INSTALLED_SYNC_VISIBILITY' if installed_sync_visibility
         else 'PASS_INSTALLED_SYNC_NATURAL_EXPIRY' if installed_sync_expiry
@@ -1201,6 +1228,8 @@ try:
         time.sleep(.1)
     basic = rows('bb_scope_54d1a18_basic')
     template = rows('bb_source_template')
+    if installed_archive_catch_up:
+        lab.write_json(output/'catch-up-originals-before.json',dict(bb_scope_54d1a18_basic=basic,bb_source_template=template))
     require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
     require(not template['producer_requests'] and not template['owner_epochs'], 'original-template-preconditions')
     registration_basis = ('bb_scope_bind_45f7593_registration_journey' if registration_faults or scope_http
@@ -1673,7 +1702,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if installed_archive_publication:
+            if installed_archive_catch_up:
+                from installed_archive_catch_up import run as run_installed
+            elif installed_archive_publication:
                 from installed_archive_journey import run as run_installed
             elif installed_archive_setup:
                 from installed_archive import run as run_installed
@@ -1750,8 +1781,14 @@ try:
             reason='Writer-first policy commit incorrectly permits original scope when its epoch predicate is removed')
         save()
         require(rows(completed) == basis_rows, 'signed-parent-changed')
-    require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
-        and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
+    if installed_archive_catch_up:
+        original_after=dict(bb_scope_54d1a18_basic=rows('bb_scope_54d1a18_basic'),bb_source_template=rows('bb_source_template'))
+        lab.write_json(output/'catch-up-originals-after.json',original_after)
+        require(original_after==dict(bb_scope_54d1a18_basic=basic,bb_source_template=template)
+            and (basis/'result.json').read_bytes()==basis_report,'retained-original-changed')
+    else:
+        require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
+            and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
     if registration_http or registration_faults or scope_http:
         final_original = dict(database=registration_basis,
             rows=rows(registration_basis), physical=physical(registration_basis))
@@ -2127,6 +2164,13 @@ except BaseException as error:
     raise
 finally:
     errors = []
+    if installed_archive_catch_up and (output/'catch-up-originals-before.json').exists() and not (output/'catch-up-originals-after.json').exists():
+        try:
+            original_after=dict(bb_scope_54d1a18_basic=rows('bb_scope_54d1a18_basic'),bb_source_template=rows('bb_source_template'))
+            lab.write_json(output/'catch-up-originals-after.json',original_after)
+            require(original_after==json.loads((output/'catch-up-originals-before.json').read_text()),'retained-original-changed')
+        except BaseException as error:
+            errors.append('original-capture-'+type(error).__name__)
     owned = [target['Id']] + ([report['client']['id']] if report['client'] else [])
     for ident in reversed(owned):
         try:
