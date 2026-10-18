@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-18T16:22:14.789328+00:00",
+  "updated_at": "2026-10-18T16:38:30.050617+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "Engine8902 joined1 and failed-custody43564 joined0. PG/client stopped at16:13:39Z/16:13:38Z, exit0/143, PID0/noOOM. No owned runtime/compiler/native/SQL or active agent. Retained be57042 audit must not replay after next intentional borrowed-PG restart.",
+    "processes": "Cleanup prepare43209/execute63988 joined0. No owned runtime/compiler/native/SQL. Source-only lost-COMMIT author active; reviewer supplied custody-versus-sealing finding. Next root-owned normal journey uses fresh reserve check and stopped PG baseline.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -62447,6 +62447,19 @@
           "free_bytes_after": 73076006912,
           "next": "Run fresh normal journey with corrected HTTP fixture3d0f09d and unchanged qualified40bc295 artifacts; preserve both failures and all custody evidence."
         }
+      ],
+      "preparation_failures": [
+        {
+          "path": ".research/archive-deadline-build-20261018/prepare-ed1e485-capacity-failure.json",
+          "sha256": "2324b10f50f8755d651354a3083045dbf1a5cae8f28ed293516959b76466d243",
+          "status": "FAIL_CAPACITY_BEFORE_ROOT_CREATION",
+          "session": 27159,
+          "joined_exit_code": 1,
+          "source": "ed1e4853d8cf6d36fd34daf318f82ec32267fca9",
+          "root_absent": true,
+          "required_free_bytes": 69324505088,
+          "free_bytes_after_failure": 68491890688
+        }
       ]
     },
     "http_client_correction": {
@@ -62473,6 +62486,59 @@
       },
       "review": "Root read complete client/direct callsites, full two-line diff and complete source-extracted regression; all source/manifest/artifact/commit bytes authenticated.",
       "runtime": "NOT_RUN after alias correction; exact original failed run preserved."
+    },
+    "archive_read_headroom": {
+      "root": ".research/tux-maintenance-archive-read-20261018",
+      "status": "RETIRED_VERIFIED",
+      "prepare_session": 43209,
+      "prepare_exit_code": 0,
+      "execute_session": 63988,
+      "source_sha256": "aaac9dcc6bb865e17d6c70cd75a39074a7cca93d41243223dba6b65d4c90599a",
+      "source_manifest_sha256": "97d8ed8006122eddca67da99c3d249464a2cd82cb854e37bfe5102836b4585f3",
+      "frozen_manifest_sha256": "1b271e344fbb483c1ecae838ff38516643dcbf69662b2c0fdbbafbec06f52fc6",
+      "targets": 13,
+      "candidate_files": 9229,
+      "allocated_candidate_bytes": 4487389184,
+      "retained_entries": 467933,
+      "protected_elfs": 184,
+      "protected_archive_assets": 5,
+      "scope": "Format-checked single-link compiler intermediates only; preserve every other full-run path, final ELF, data, raw evidence and native asset. No current cache or unrelated workload mutation.",
+      "resume": "Completed; NEVER replay. Preserve frozen manifest, deletion journal, receipt and all retained artifacts. Retired compiler intermediates are not reusable build caches.",
+      "execute_exit_code": 0,
+      "receipt": ".research/tux-maintenance-archive-read-20261018/retirement-receipt.json",
+      "receipt_sha256": "adaabd2e56fed1eb810d44357ec75cb30324c0f5a1c3df59cc65848ef1c317e2",
+      "result": {
+        "allocated_candidate_bytes": 4487389184,
+        "archive_headroom_sufficient_now": true,
+        "deleted_files": 9229,
+        "free_bytes_after": 72637558784,
+        "free_bytes_before": 68153905152,
+        "host_after": {
+          "candidate_hits": [],
+          "inspected": {
+            "cmdline": 488,
+            "cwd": 37,
+            "exe": 37,
+            "fd": 37,
+            "maps": 434
+          },
+          "unavailable": {
+            "cwd": 451,
+            "exe": 451,
+            "fd": 451,
+            "maps": 54
+          }
+        },
+        "manifest_sha256": "1b271e344fbb483c1ecae838ff38516643dcbf69662b2c0fdbbafbec06f52fc6",
+        "observed_free_delta_bytes": 4483653632,
+        "preservation": "Every nondeleted recorded readable file hash, opaque directory identity, symlink, and complete stable-field Docker projection and protected 184 ELF hashes unchanged. Final ELFs remain at original paths.",
+        "protected_elfs_verified": 184,
+        "reserve_plus_envelope_bytes": 69324505088,
+        "scope_note": "Free difference includes concurrent activity on the shared host; no container/volume/source/dataset deletion.",
+        "status": "RETIRED_VERIFIED",
+        "time": 1792341223.804435
+      },
+      "deletion_journal_sha256": "9fc40b9889c3bf1799644ab6ea80bb948452ffef16caa3126a75928381a8a099"
     }
   }
 }

@@ -9,7 +9,7 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 ## Repository and active responsibility
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; main HEAD 3d0f09d, last verified remote be57042. Qualified
+Canonical `/home/tux/bigbrotr-rs`; main and verified remote ed1e485. Qualified
 product 40bc295 is pushed. No merge/rebase is pending. Engine 8902 joined 1;
 all owned runtime resources stopped. Current documentation records its real
 partial outcome; the client-fixture correction 08d282c is integrated as 3d0f09d.
@@ -228,11 +228,25 @@ receipts and 240 structurally bound raw captures. Engine FAIL stays unchanged;
 no scientific replay or additional engine ran. Full manifest and limits are in
 the same evidence node. Do not replay this audit after restarting borrowed PG.
 
-Next bounded action: prepare one fresh same-root journey with corrected HTTP
-fixture 3d0f09d and unchanged qualified 40bc295 artifacts.
-No Rust rebuild is needed for this experiment-only correction. Preserve both
-failed roots. Success auditor 8402a325 / manifest 15de291e is still NOT_RUN;
-new preparation must use current stopped PG state and 184 protected ELF paths.
+Next preparation 27159 joined 1 at the unchanged capacity guard, before
+creating root ed1e485. Later observed free space 68,570,226,688 B was below
+69,324,505,088 B. The explicit failure record under the build-helper root is
+bound by the same evidence node; no new engine or database started.
+
+Additional stopped historical compiler-intermediate retirement completed at
+16:33:43Z under `.research/tux-maintenance-archive-read-20261018`.
+Prepare 43209 / execute 63988 joined 0. Frozen manifest 1b271e34 names
+13 targets; all 9,229 intermediates were removed. Full preservation verification
+passed for 467,933 other entries, 184 ELFs, five pinned Archive assets and
+stable Docker state. Receipt records 4,483,653,632 B observed free-space gain
+and 72,637,558,784 B free afterward; shared-host activity affects the difference.
+Preserve receipt, journal, sources and all remaining artifacts. NEVER replay.
+
+Next bounded action: prepare a fresh journey with HTTP fixture 3d0f09d and
+qualified 40bc295, rechecking available reserve. No Rust rebuild is needed for
+this experiment-only correction. Preserve both failed roots. Success auditor
+8402a325 / manifest 15de291e is still NOT_RUN; new preparation must use current
+stopped PG state and 184 protected ELF paths.
 
 Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
 still follows a successful normal journey. Independent source mapping identifies
@@ -245,9 +259,10 @@ capacity boundaries remain separate.
 ## Host resources and preservation
 
 Engine 8902 is joined; no owned runtime/compiler/SQL/native remains active.
-Borrowed PG stopped at 16:13:39Z, client exit 143; PID 0 / no OOM. All source-only
-agent tasks completed. Unrelated workloads remain untouched. Verify ownership
-before any next engine action.
+Borrowed PG stopped at 16:13:39Z, client exit 143; PID 0 / no OOM.
+Cleanup execute 63988 joined 0. One source-only next-fault designer is active;
+independent source review clarified local custody versus catalog sealing.
+Unrelated workloads remain untouched. Verify ownership before the next engine.
 
 Root-only compiler cache:
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,

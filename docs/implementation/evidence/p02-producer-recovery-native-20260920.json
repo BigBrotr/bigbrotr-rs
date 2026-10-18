@@ -33489,7 +33489,35 @@
             "free_bytes_after": 73076006912,
             "next": "Run fresh normal journey with corrected HTTP fixture3d0f09d and unchanged qualified40bc295 artifacts; preserve both failures and all custody evidence."
           }
-        ]
+        ],
+        "preparation_failures": [
+          {
+            "path": ".research/archive-deadline-build-20261018/prepare-ed1e485-capacity-failure.json",
+            "sha256": "2324b10f50f8755d651354a3083045dbf1a5cae8f28ed293516959b76466d243",
+            "status": "FAIL_CAPACITY_BEFORE_ROOT_CREATION",
+            "session": 27159,
+            "joined_exit_code": 1,
+            "source": "ed1e4853d8cf6d36fd34daf318f82ec32267fca9",
+            "root_absent": true,
+            "required_free_bytes": 69324505088,
+            "free_bytes_after_failure": 68491890688
+          }
+        ],
+        "headroom_recovery": {
+          "inventory_node": "implementation_archive_catch_up_20261018.archive_read_headroom",
+          "status": "RETIRED_VERIFIED",
+          "receipt": ".research/tux-maintenance-archive-read-20261018/retirement-receipt.json",
+          "receipt_sha256": "adaabd2e56fed1eb810d44357ec75cb30324c0f5a1c3df59cc65848ef1c317e2",
+          "execute_session": 63988,
+          "joined_exit_code": 0,
+          "deleted_files": 9229,
+          "observed_free_delta_bytes": 4483653632,
+          "free_bytes_after": 72637558784,
+          "protected_elfs": 184,
+          "retained_entries": 467933,
+          "limits": "Free difference includes concurrent activity on the shared host; no container/volume/source/dataset deletion.",
+          "next": "Fresh normal journey with corrected HTTP fixture and unchanged qualified40bc295 build; admission rechecks actual free bytes. No completed-project claim."
+        }
       },
       "archive_http_client_correction": {
         "original": "08d282c697622f3f674632ae70bf0911143b1c68",
