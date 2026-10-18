@@ -61180,7 +61180,7 @@
       ".research/archive-frontier-intents-20261018",
       ".research/archive-catch-up-refusals-20261018"
     ],
-    "processes": "Engine94225joined1; final-oracle custody9843joined0. All14productprocesses zero/unforced/reaped; borrowedPG/client stopped. No owned runtime/compiler/native/SQL. Root offline diagnosis43366joined0,91negativecontrolsPASS. Independent source review complete; headroom source candidate review active; refusal source author active in separate worktree; fault corrections frozen not integrated.",
+    "processes": "Cleanup original76909joined143 preserved interrupted; recovery46004joined0 at17:29Z, full closed-set poststatePASS. No owned runtime/compiler/native/SQL remains active. Normal engine not yet rerun. Refusal source frozen69a32b6; independent source-only review active.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -63385,6 +63385,143 @@
       },
       "record_path": ".research/archive-catalog-counts-20261018/source-review.json",
       "record_sha256": "f70f24cbe4b8e530e56a9c446a65db86b0a5788e29ec838e9e7af8867ee8158e"
+    },
+    "renewal_headroom": {
+      "status": "PASS_RECOVERY_REGENERABLE_DEPENDENCY_INTERMEDIATES_RETIRED",
+      "owner": "root",
+      "observed_at": "2026-10-18T17:29:06.391151+00:00",
+      "raw_root": ".research/tux-maintenance-archive-renewal-20261018",
+      "scope": "Closed1309 single-link nonempty nonexecutable dependency Cargo rlib/rmeta intermediates only; exact frozen proposal. The earlier56 product-only files are a separate completed cleanup. No dataset, native asset, ELF, source or raw log selected.",
+      "original": {
+        "status": "INTERRUPTED_EXIT_143_NO_RESULT",
+        "session": 76909,
+        "joined_exit_code": 143,
+        "journaled_removals": 379,
+        "observed_absent_without_journal": 1,
+        "reason": "Root incorrectly submitted execution despite the failed changed-source hash precheck. Root stopped its exact process; actual final source differed only by fail-closed os.walk error handling. Original artifacts remain byte-for-byte and no success receipt was fabricated.",
+        "artifacts": [
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/root-interruption.json",
+            "bytes": 755,
+            "sha256": "70e706eaa909bfbaab39434997677ba82be6a4c2d95bdac230a148ce7170d2ed"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retirement/manifest.json",
+            "bytes": 8032877,
+            "sha256": "874d7003652cd3f6531ab3143c15b87d794ef3b0c60429fea0363057c947b7ec"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retirement/deletions.jsonl",
+            "bytes": 62317,
+            "sha256": "7d3ac2a1e27beee68b4426cb8cedd468d86e5c2d68f647a9b9809d061dde0728"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retirement/execution-started.json",
+            "bytes": 92,
+            "sha256": "71c0e1323427f4e0983ec10f00378c2f3c965dd05b509c49307726127fe22079"
+          }
+        ]
+      },
+      "recovery": {
+        "session": 46004,
+        "joined_exit_code": 0,
+        "started_at": "2026-10-18T17:28:45.886037+00:00",
+        "finished_at": "2026-10-18T17:29:06.391151+00:00",
+        "artifacts": [
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/recover-product-intermediates.py",
+            "bytes": 10408,
+            "sha256": "48323b798ff6fb7769df9df8a6ad645d0b21ac699c91852f638fcd35ebaa85e3"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retire-product-intermediates.py",
+            "bytes": 15003,
+            "sha256": "a1ef12ea16e341af6c5ab78cdf65a1ff7ec3cdb16db73bffc9335807df0585bd"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/headroom-candidate.json",
+            "bytes": 911054,
+            "sha256": "17680f83a2b67129a35a55c2410a8e8afbf579c4c5579570db24388ef87cf0d4"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/root-recovery-source-review.json",
+            "bytes": 912,
+            "sha256": "3436e4a1d27cc6c66e3b445419ecc1737d608d8d22ccee6cd0e7a2fbe0a9c351"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/root-recovery-invocation.json",
+            "bytes": 308,
+            "sha256": "45ebf0dfe26b10ed2d2e38f304bcdfb63f4a720229b02b45556f899ac5b4781d"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/root-recovery-result.json",
+            "bytes": 379,
+            "sha256": "811973c98cbe915070170d22ce68c9cb161be041a820a93b3ad3494e233069e0"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/root-recovery.stdout",
+            "bytes": 812,
+            "sha256": "0417c2edaaab0ec0e4797cd93aff0ad4d1f4635ab8537c27432c6b6466b03a88"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/root-recovery.stderr",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retirement-recovery/manifest.json",
+            "bytes": 7878337,
+            "sha256": "9f73b752025a511f33c036d6948b25185c8c3c706aa21cf94d571e647ae20c77"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retirement-recovery/deletions.jsonl",
+            "bytes": 152548,
+            "sha256": "778b9fa2da6305fb085031d22c2136876e87e89847931de586912a5597206ad4"
+          },
+          {
+            "path": ".research/tux-maintenance-archive-renewal-20261018/retirement-recovery/result.json",
+            "bytes": 932,
+            "sha256": "7f1864d77bbc9d456a263a7ab54d4dcb936879eb3e39894c1c0e80c65461e2a7"
+          }
+        ],
+        "result": {
+          "executor": "EXECUTED_DO_NOT_REPLAY",
+          "free_after": 70666690560,
+          "free_before": 69348827136,
+          "host_after": {
+            "hits": [],
+            "inspected": {
+              "cmdline": 486,
+              "cwd": 40,
+              "exe": 40,
+              "fd": 40,
+              "maps": 432
+            },
+            "unavailable": {
+              "cwd": 446,
+              "exe": 446,
+              "fd": 446,
+              "maps": 54
+            }
+          },
+          "original_journaled_removals": 379,
+          "original_observed_absent_without_journal": 1,
+          "original_outcome": "INTERRUPTED_EXIT_143_NO_RESULT",
+          "protected_asset_paths": 10,
+          "protected_elfs": 190,
+          "recovery_journaled_removals": 929,
+          "recovery_logical_bytes": 1324118328,
+          "required_free_bytes": 69324505088,
+          "status": "PASS_RECOVERY_REGENERABLE_DEPENDENCY_INTERMEDIATES_RETIRED",
+          "total_allocated_candidate_bytes": 2153873408,
+          "total_logical_bytes": 2151280491,
+          "total_reconciled_absent": 1309,
+          "unchanged_cache_entries": 10500,
+          "unchanged_containers": 1399
+        }
+      },
+      "review": "Root complete helper/recovery/delta and independent cleanup_review source review. Candidate relative-field mismatch fixed before execution; exact source hash gated in same wrapper before invocation. Full prestate matched original minus380; full poststate original minus1309; all protected hashes/stat and1399 stable container projections unchanged.",
+      "limits": "Unavailable /proc entries and other namespaces remain unproven; exclusive compiler-cache lock and stopped overlapping Docker consumers required. No shared-host disk allocation cause inferred. Regeneration may rebuild dependencies. Never replay either one-shot executor."
     }
   }
 }

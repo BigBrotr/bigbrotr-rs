@@ -1,16 +1,17 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T17:14Z on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T17:30Z on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and active responsibility
 
-Canonical `/home/tux/bigbrotr-rs`, main a62f08a, remote exact a62f08a verified.
+Canonical `/home/tux/bigbrotr-rs`, main 2a548374d0e1027ff148961ffd09a7fda4b4d2b7,
+remote exact2a54837 verified.
 Root is the sole integrating owner; Tux alone handles development and tests.
-No merge/rebase is pending. Current root edits correct three experiment oracle
-files and update this checkpoint, existing evidence and inventory. No product
-source or qualified executable changed. Independent source review is complete; its /me idle-time binding finding is fixed.
+No merge/rebase is pending. Commit2a54837 integrated the three corrected oracle files and their evidence.
+Current root edits record cleanup recovery in this checkpoint, existing evidence
+and inventory. No product source or qualified executable changed.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -86,15 +87,25 @@ its100ms margin; retained Work keeps its grant and original Archive deadline.
 It closes a source starvation counterexample compatible with the earlier live3
 watchdog failure, without claiming its unique trigger or arbitrary scheduling progress.
 
-Next bounded action: commit/push the corrected
-normal oracle and real checkpoint. Reconcile actual free space before preparing
-one fresh normal journey using unchanged qualified9a7fd81. Helpers:
+Next bounded action: commit/push the recovered headroom record, then prepare one
+fresh normal journey from clean main using unchanged qualified9a7fd81. Helpers:
 `.research/archive-renewal-dispatch-20261018/prepare-journey.py` SHAe1d82ee6,
 success auditor6c7efb8a. Bind build audit1164abade and190 ELFs; require
-69,324,505,088B free. Latest17:14 observation68,905,132,032B is below admission.
-Source-only candidate review for bounded compiler-intermediate cleanup is active;
-no new cleanup executed. Never weaken the capacity guard or replay an existing root.
-After fresh enginePASS, run its actual strict raw reader, then read-only custody.
+69,324,505,088B free. After enginePASS, run its actual strict raw reader, then
+read-only custody. Never replay existing roots or old audits after PG reuse.
+
+Cleanup recovery completed17:29:06Z under
+`.research/tux-maintenance-archive-renewal-20261018`. Original76909joined143
+remains interrupted/noresult: root incorrectly submitted execution after a failed
+source hash precheck, then stopped its exact process.379 journaled removals plus
+one observed missing file were reconciled as the first380 of1309 frozen Cargo
+rlib/rmeta candidates. Separate recovery46004joined0 removed the remaining929;
+full before/after cache hashes/stat,190 protectedELFs,10assets and1399 stable
+container projections matched. Recovery source48323b79 received root and independent
+source review; exact hash gating preceded execution. Total1309 reconciled absent,
+2,153,873,408 allocated candidate bytes. Free70,666,690,560B at completion.
+Original evidence is preserved; neither executor may be replayed. Detailed hashes
+and limits live in existing report `archive_renewal_headroom`/inventory `renewal_headroom`.
 
 ## Pending independent work
 
@@ -114,10 +125,11 @@ Fault custody template under `.research/archive-deadline-build-20261018`,
 SHAc169d78e; original manifest9b63a3f3 and provenance supplement05c1b5bb retained.
 Source-only/NOT_RUN. Future profile/root `archive-catch-up-faults`.
 
-Source-only refusal author owns separate worktree
+Source-only refusal packet is frozen in separate worktree
 `.research/archive-catch-up-refusals-20261018`, branch
 `qualification/archive-catch-up-refusals`, basea62f08a plus original fault29d43a0
-cherry-picked as31b250f. Six planned actual cases each require a fresh original
+cherry-picked as31b250f and oracle2a54837 as e2806e7. New commit69a32b6 is the
+sole refusal delta; independent source review is active. Six planned actual cases each require a fresh original
 terminal3 root: missing current join, orphan history, changed family counts,
 missing retained input, cancellation during observed SQL wait, exact Control
 backend loss during wait. No engine/native/SQL/compiler delegated.
@@ -125,8 +137,7 @@ Genuine held-attempt and valid issued+planned cap remain separate NOT_RUN work.
 
 ## Resources, preservation and remaining gates
 
-No root-owned runtime/compiler/native/SQL remains active. Only headroom source inspection and
-refusal implementation agents are active. Unrelated services/work remain untouched.
+No root-owned runtime/compiler/native/SQL remains active. Only independent refusal source review is active. Unrelated services/work remain untouched.
 Compiler cache stays root-exclusive under
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,
 owner8b21a13162699a6038154874c2ac89da, exclusive `.compiler-cache.lock`.
