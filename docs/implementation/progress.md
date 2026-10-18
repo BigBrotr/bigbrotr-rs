@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T14:56:34.271520+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:57:54.233353+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,10 +8,10 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
-Current HEADced7693 includes all Archive runtime/journal/runner corrections.
-Exact packaged build PASS:33 selected tests, Clippy, worker and packaged checks.
-This qualification checkpoint is not yet committed. No owned build/engine remains
+Canonical `/home/tux/bigbrotr-rs`, main; current HEAD and verified remoteb8dfa61.
+Productced7693 and qualification evidence are committed and pushed. Exact packaged
+build PASS:33 selected tests, Clippy, worker and packaged checks. This branch
+retirement checkpoint is not yet committed. No owned build/engine remains
 active; connected same-root journey is still being authored and reviewed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
@@ -214,6 +214,15 @@ audit49465 joined0. Audit1c266222 binds1967sources,172prior+6new=178ELFs and
 at completion exceeds unchanged69,324,505,088byte Archive/export reserve. Run root
 has suffixced7693; all previous failures and immutable assets remain protected.
 This qualifies components, not the connected catch-up/read/export/restart journey.
+
+Archive component ref retirement51903 joined0 after verified pushb8dfa61.
+Seven original/integrated commits reconciled, complete histories archived under
+`refs/archive/retained-archive-components-20261018/` and bundled in
+`.research/branch-retirement-20261018/archive-components.bundle` (15,385,967bytes,
+SHA97b09ad6). Every tracked/ignored/link/stat census stayed identical. Report
+`archive-components.json`, SHA8b60df24, is COMPLETE_DO_NOT_REPLAY.
+Current Git:144worktrees,142detached; main and active journey source branch remain.
+Remote main only. All original/fault datasets, artifacts and worktrees preserved.
 
 A bounded source agent now owns new installed catch-up journey helpers and narrow
 existing hooks in `.research/archive-catch-up-journey-20261018`, branch

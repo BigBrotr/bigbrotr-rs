@@ -50830,7 +50830,7 @@
       "inactive_worktrees_detached": 28,
       "all_worktree_paths_and_commit_ids_preserved": true
     },
-    "remaining": "main plus2clean prepared local recovery/cycle branches, remote main only;134 worktrees retained. Cumulative123local/51remote retired,79detached. No cleanup pending at pause.",
+    "remaining": "Current2026-10-18: main plus active qualification/archive-catch-up-journey; remote main only.144 worktrees preserved,142detached. Historical totals below describe earlier dated rounds; current Archive followup is separately recorded.",
     "round_two": {
       "wrapper": "8203 joined0",
       "record": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261015/retirement-final.json",
@@ -51414,6 +51414,11 @@
         "sha256": "c6b7b60b6f7bd8c80c20c336377280b6f24d0dda53b97e98dc8437822b71b515",
         "session": 1396,
         "exit_code": 0
+      },
+      "archive_components": {
+        "evidence_node": "implementation_archive_catch_up_20261018.branch_retirement",
+        "report": ".research/branch-retirement-20261018/archive-components.json",
+        "sha256": "8b60df247c8bbb2c9429ac5aead2a752354178aae3856a53eab50ce39eab5c9a"
       }
     },
     "qualified_source_followup": {
@@ -61820,6 +61825,31 @@
       "protected_elfs": 178,
       "preservation": "Original compiler failure, actual failed CLI test, every worker/component ELF and source/log/native asset retained",
       "source_agent": "Source-only same-root journey in .research/archive-catch-up-journey-20261018, branch qualification/archive-catch-up-journey; no runtime authorized to agent"
+    },
+    "branch_retirement": {
+      "status": "PASS_INTEGRATED_REFS_RETIRED_FILES_PRESERVED",
+      "observed_at": "2026-10-18T14:57:13.859478+00:00",
+      "bundle": "/home/tux/bigbrotr-rs/.research/branch-retirement-20261018/archive-components.bundle",
+      "bundle_bytes": 15385967,
+      "bundle_sha256": "97b09ad6ce41d5c3c3f084c771ae0a4f8e76d72d7c594c8dd45dd78abe5f4c28",
+      "audit_sha256": "1c266222096017e27c487ba076b49519ebb69502dd6d77b5c126e4743aed8fb9",
+      "executor_state": "RETIRED_COMPLETE_DO_NOT_REPLAY",
+      "scope": "Seven original source refs reconciled against their exact cherry-picked integration and archived with full history. Later current-tree corrections are recorded, not assumed identical. Packaged component build separately qualified; connected catch-up remains unqualified. Main and the active journey source branch remain. Every worktree, ignored/external artifact, original/fault dataset and full original commit history is preserved.",
+      "report": ".research/branch-retirement-20261018/archive-components.json",
+      "report_sha256": "8b60df247c8bbb2c9429ac5aead2a752354178aae3856a53eab50ce39eab5c9a",
+      "session": 51903,
+      "exit_code": 0,
+      "removed_branches": [
+        "docs/archive-catch-up-contract",
+        "docs/archive-catch-up-topology",
+        "implementation/archive-catch-up-native",
+        "implementation/archive-catch-up-runner",
+        "implementation/archive-frontier-intents",
+        "implementation/archive-retained-frontier",
+        "implementation/lineage-pending-bridge"
+      ],
+      "worktrees_preserved": 7,
+      "main_verified_push": "b8dfa61278b79ec8ffd28465b3a3bece6e3701f7"
     }
   }
 }
