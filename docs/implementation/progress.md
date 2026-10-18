@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T14:40:03.885187+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:46:05.722104+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -9,9 +9,10 @@ Existing task files own the plan; this checkpoint locates current work and evide
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
 Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
-Current HEADb3735e9 includes finite runtime878d671, admission fixd7b8aec and the
-journal public import correction. Root now fixes the failed CLI diagnostic and
-unused imports; these changes and this checkpoint are not yet committed.
+Current HEAD1d42894 includes both source corrections and first build evidence.
+All33 targeted tests now pass; Clippy found one manual range expression in the
+new journal. The equivalent RangeInclusive correction and this checkpoint are
+not yet committed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -187,6 +188,17 @@ The latest audit protects160ELFs outside mutable compiler caches. Independent
 journal source review is checking the exact locked rustix1.1.5 census allocation;
 no runtime qualification is implied by that review.
 
+Third packaged build1d42894/treefaad1a99: actual worker/CLI/probe, all33 tests
+(journal6, Serve19, entrypoint8) and build-info/verify-worker PASS. Overall FAIL:
+Clippy manual_range_contains at frontier_intents.rs566. Root adopts the idiomatic
+range check. Existing unit-test dropping_copy_types warning in unchanged
+lineage_replay_tests.rs498 remains separately recorded. No executed test failure.
+Auditb724078d binds1967sources,160prior+6new=166ELFs,1385unchanged containers;
+prepare55831/build39176/audit58138 joined0/1/0. Run root has suffix1d42894;
+all owned containers stopped/PID0/noOOM. Every failed run and artifact remains.
+Independent journal reviewf83941fb is complete: full codec/census/tests plus exact
+locked rustix1.1.5 source/allocation, no concrete blocker; not power-loss evidence.
+
 A bounded source agent now owns new installed catch-up journey helpers and narrow
 existing hooks in `.research/archive-catch-up-journey-20261018`, branch
 `qualification/archive-catch-up-journey`, baseb3735e9. Same fresh physical roots:
@@ -196,7 +208,7 @@ Independent expected science22facts/7receipts, counts[13,2,2,2,3], snapshot8,
 sourcebounds12/0/10; actual validated initial revisionR advances by3. All75tables
 remain checked. Source under development; protocol/engine NOT_RUN. No copied
 coordinator adoption and no reduction of64GiB+577MiB completion reserve.
-Next bounded action: freeze root diagnostic/import cleanup and qualify a fresh
+Next bounded action: freeze root Clippy range cleanup and qualify a fresh
 exact-source packaged build, then review/run this genuine same-root journey.
 M1–M5 remain incomplete; goalACTIVE.
 

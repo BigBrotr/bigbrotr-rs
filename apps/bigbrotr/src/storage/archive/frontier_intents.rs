@@ -563,7 +563,7 @@ fn check_header(
         return Err(FrontierIntentError::Identity);
     }
     let n = u32::from_be_bytes(bytes[176..180].try_into().expect("header")) as usize;
-    if n < 2 || n > MAX_BYTES - PREFIX - 32 {
+    if !(2..=MAX_BYTES - PREFIX - 32).contains(&n) {
         return Err(FrontierIntentError::ResourceLimit);
     }
     Ok(n)
