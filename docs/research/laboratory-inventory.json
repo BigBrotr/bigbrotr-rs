@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "Engine40167 joined1; initial process212 exited4 unforced/reaped; HTTP client1. Borrowed PG exit0 and bounded client143 are stopped/PID0/noOOM in actual final report. No build/native/engine active. Two bounded source-only agents: initial deadline diagnosis and failed-run custody adaptation.",
+    "processes": "Failed engine40167 and custody25350 joined; diagnostic65011 joined1 due solely to order-sensitive Docker Mounts assertion, reconciled read-only with unchanged normalized mounts. PG restarted only for explicit read-only SQL and stopped/PID0/exit0 at15:41:43Z;232 original engine files unchanged. No runtime/build/SQL/native active. One source-only author adds diagnostics and designs admission correction; independent scheduling review complete.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -61979,8 +61979,20 @@
       "invocation_sha256": "a5bb9f28497b54fd7bd0a366194eba193aef73876d7271007b10dcef25177f78",
       "build_source": "ced7693e0ce78553f5a64b7a67dfb7d1c7cd31d1",
       "raw_replay": "NOT_RUN",
-      "custody_audit": "NOT_RUN",
-      "observed_at": "2026-10-18T15:29:40.179594+00:00",
+      "custody_audit": {
+        "status": "PASS_READ_ONLY_FAILED_ARCHIVE_CATCH_UP_CUSTODY",
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-6474507/audit-root/audit-failure-v1.json",
+        "sha256": "3df265f2e5711f6784cdf1ed5fe3594ff71bb018be365d4478d5823293f50955",
+        "session": 25350,
+        "exit_code": 0,
+        "protected_elfs": 178,
+        "retained_files": 232,
+        "source_files": 1974,
+        "engine_status": "FAIL",
+        "raw_replay": "NOT_RUN",
+        "continuation": "NOT_RUN"
+      },
+      "observed_at": "2026-10-18T15:44:58.929862+00:00",
       "finished_at": "2026-10-18T15:29:04.809973+00:00",
       "engine_result_sha256": "1167862ec8851ad6855c91dd66216e77bbc4e8e8c11f54834692a1fee2c4ed0c",
       "failure": "AssertionError: installed owner ended before full frontier",
@@ -61997,7 +62009,92 @@
       "cleanup_errors": [],
       "missing_owned": [],
       "unrelated_changed": [],
-      "next": "Authenticate failed-run custody before any further observation; diagnose exact initial phase deadline boundary. No continuation or raw scientific replay has run; preserve all partial native/catalog state and original timestamps."
+      "next": "Freeze diagnostic preservation source; review separate minimal admission fix and bounded discriminating controls before fresh exact build/journey.",
+      "postfailure_sql": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-6474507/diagnostic-root/sql-forensics-v1",
+        "session": 65011,
+        "exit_code": 1,
+        "original_result": {
+          "status": "FAIL_POSTFAILURE_SQL_CAPTURE_OR_CUSTODY",
+          "sha256": "0a533860a2eb6cdb1870ebe0ab1d29d58810075fa4ee26754012cfc6f3984c6e"
+        },
+        "reconciliation": {
+          "status": "PASS_READ_ONLY_POSTFAILURE_CAPTURE_CUSTODY_RECONCILIATION",
+          "sha256": "6f96ca89fa6495dc310f82f70c5110c73b3fc67b588ff086ac3428534f561899"
+        },
+        "reason": "The original cleanup assertion compared Docker Mounts in list order. Only ordering changed; normalized complete mount objects are equal. No query rerun or engine restart.",
+        "observed": {
+          "archive_attempt_ordinals": [
+            1,
+            2
+          ],
+          "catalog_attempt_ordinals": [
+            1,
+            2
+          ],
+          "catalog_snapshots": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "consumer_revisions": [
+            2
+          ],
+          "owner_states": [
+            {
+              "role": "archive",
+              "epoch": 1,
+              "state": "active"
+            },
+            {
+              "role": "control",
+              "epoch": 1,
+              "state": "released"
+            },
+            {
+              "role": "control",
+              "epoch": 2,
+              "state": "released"
+            },
+            {
+              "role": "control",
+              "epoch": 3,
+              "state": "active"
+            },
+            {
+              "role": "ingest",
+              "epoch": 1,
+              "state": "active"
+            }
+          ]
+        },
+        "control_tables": 75,
+        "catalog_tables": 32,
+        "original_sql_unchanged": {
+          "bb_scope_54d1a18_basic": {
+            "tables": 66,
+            "unchanged": true
+          },
+          "bb_source_template": {
+            "tables": 64,
+            "unchanged": true
+          }
+        },
+        "retained_engine_files_unchanged": 232,
+        "postgres_stopped": true,
+        "other_client_backends": [],
+        "limits": [
+          "Postfailure read-only SQL observations are separate from the original engine report; no successful end-to-end journey or scientific replay inferred.",
+          "The exact expired phase remains unknown; native/Parquet scientific contents were not opened.",
+          "SQL active owner rows are historical authority records; actual parent and all client backends are stopped/absent."
+        ]
+      },
+      "diagnosis": {
+        "path": ".research/archive-catch-up-resume-20261018/initial-deadline-review.json",
+        "sha256": "fcd9f224928a45ef813b7e093c586e14d80a21a2e656a987ebbc4c8e7a6ae62f",
+        "status": "SOURCE_COUNTEREXAMPLE_NOT_OBSERVED_FAILURE_CAUSE"
+      }
     }
   }
 }

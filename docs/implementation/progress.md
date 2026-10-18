@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T15:29:40.179594+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T15:44:58.929862+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
 current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Historical detail remains in the evidence/laboratory records below and Git history;
@@ -10,9 +10,9 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
 Canonical `/home/tux/bigbrotr-rs`; observed HEAD and verified remote
-`6474507`. Product `ced7693`, packaged qualification, ref retirement and user help
+`19dbd5c`. Product `ced7693`, packaged qualification, ref retirement and user help
 are pushed. Journey source is integrated from a2439a8 into 51fff8f; no merge/rebase
-is pending. This current runtime/cleanup checkpoint is not yet committed. Engine wrapper 40167 joined 1; no runtime remains active.
+is pending. This SQL/diagnostic checkpoint is not yet committed. Engine wrapper 40167 joined 1; no runtime remains active.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -164,16 +164,37 @@ prove catalog COMMIT. No continuation journey JSON or read/export/catch-up ran.
 PG/client exited 0/143, stopped/PID0/noOOM, with empty cleanup/missing/unrelated
 errors. Preserve this root; never rerun its preparation or overwrite the failure.
 
-Next bounded action: review and execute the failed-run custody auditor being
-adapted under `.research/archive-catch-up-custody-20261018`; preserve the original
-success auditor unchanged. It must bind actual failed wrapper/child receipts,
-raw files, source/build/178 ELFs, original rows and terminal containers, while
-leaving scientific replay/continuation NOT_RUN. Then diagnose the exact initial
-phase boundary: existing captures identify the expired monotonic phase check,
-not its callsite or a proven host/SQL cause. A bounded source author reviews
-initial publisher/phase/HTTP/renewal and schema deltas. Do not widen deadlines
-or classify the failure as infrastructure without evidence. No further runtime
-observation or fresh run has started.
+Failed-run custody audit25350 joined0: `audit-root/audit-failure-v1.json`,
+SHA3df265f2, binds1974 source files,178 protected ELFs and232 retained engine files.
+Custody PASS preserves engine FAIL; all13 continuations/scientific replay NOT_RUN.
+Root then restarted only the owned PG for explicit read-only repeatable-read SQL.
+`diagnostic-root/sql-forensics-v1` preserves complete75-table Control and32-table
+catalog captures, unchanged original66/64-table datasets, redacted role metadata
+and no other client backends. Both catalog snapshots2/3 and Control frontier
+revisions1/2 are committed, with complete sequence bounds2/3 and dictionary counts2/3.
+No native or Parquet scientific reader was opened. The exact expired phase remains unknown.
+
+Diagnostic wrapper65011 joined1: its final assertion compared Docker Mounts in
+list order. Only order changed; complete normalized mount objects match. The
+original FAIL report0a533860 is preserved. Separate read-only reconciliation
+`custody-reconciliation.json` SHA6f96ca89 passes and binds all raw captures,
+232 unchanged engine files and unchanged other1391 containers. PG exited0/PID0,
+noOOM at15:41:43Z; no product/native process was restarted. Do not replay either
+one-shot diagnostic or old auditor against the intentionally changed PG timestamps.
+
+Independent AI source review proves a separate scheduling counterexample:
+HTTP can arrive after a pre-select100ms safeguard, immediately before renewal,
+and receive an arbitrarily short operation budget. Both main/external dispatch
+need admission-time scrutiny. This does not identify the actual failed callsite.
+`.research/archive-catch-up-resume-20261018/initial-deadline-review.json` and the
+existing evidence node bind this distinction; no timeout widening is justified.
+
+Next bounded action: review/freeze the author’s diagnostic change in the retained
+journey worktree: prior/requested phase location and overdue duration; last SQL
+poll and postfailure captures; incremental bounded HTTP observations. Review the
+separate admission-fix design before implementation, preserving original Archive
+deadline/authority and selected Work/grant. Then one fresh exact-source build and
+same-root journey, without overwriting this failure. No new runtime has begun.
 
 Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
 still follows a successful normal journey. Independent source mapping identifies
@@ -185,9 +206,9 @@ capacity boundaries remain separate.
 
 ## Host resources and preservation
 
-No owned runtime/compiler remains active in the joined failed-run report.
-Two source-only tasks are active: deadline diagnosis and failed-run custody
-adaptation. Unrelated workloads remain outside this session's authority.
+No owned runtime/compiler remains active after the SQL diagnostic and independent
+terminal inspection. One source-only author is active on diagnostic preservation
+and scheduling design; custody and independent scheduling reviewers completed. Unrelated workloads remain outside this session's authority.
 Verify actual receipts/ownership before any further engine or database action.
 
 Root-only compiler cache:
