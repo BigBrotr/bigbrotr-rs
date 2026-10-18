@@ -1,16 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:49Z on Tux. Goal **ACTIVE**, verified with the goal control
+Observed 2026-10-18T19:53Z on Tux. Goal **ACTIVE**, verified with the goal control
 following the owner's explicit resume. M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`e9190979aa922eb71f674d11ec7784a8ea02678f`, already pushed and verified remotely.
+`be181ceeccc325fd6cdd366163e72b292f3b082d`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
 No merge/rebase pending. Root's current documentation edits record the completed
-orphan-history refusal qualification. Product source is unchanged.
+family-counts refusal qualification. Product source is unchanged.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -111,8 +111,15 @@ processes and refusal exit4 unforced/reaped. Independent31states/75tables and
 511files; custody e4c3e195 binds1981source files/190ELFs. PG/client stopped0/143,
 PID0/noOOM; cleanup/missing/unrelated arrays empty. Do not rerun custody after PG reuse.
 
-Next runtime: **fresh family-counts refusal**, then missing-input, frontier-cancel,
-frontier-control-loss. Those four engines/replays remain NOT_RUN.
+The fresh **family-counts be181ce PASS** has preparation55062/engine45417/
+replay27307/custody35826 all joined0. Engine19:50:55Z–19:52:39Z; eleven actual
+processes and refusal exit4 unforced/reaped. Independent31states/75tables and
+10negative controls confirm no new Archive attempt/frontier. Strict replay binds
+509files; custody23ab5c37 binds1981source files/190ELFs. PG/client stopped0/143,
+PID0/noOOM; cleanup/missing/unrelated arrays empty. Do not rerun custody after PG reuse.
+
+Next runtime: **fresh missing-input refusal**, then frontier-cancel and
+frontier-control-loss. Those three engines/replays remain NOT_RUN.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
@@ -131,7 +138,7 @@ are in `archive_package_cache_headroom` in the existing report/inventory.
 
 After this checkpoint commit/push, use the existing
 `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
-(SHA5b61ccf3), build9a/audit1164, case family-counts from clean main.
+(SHA5b61ccf3), build9a/audit1164, case missing-input from clean main.
 Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
 and latest custody templatec023b95d under journeyWT's
 `.research/archive-catch-up-client-name-audit-20261018` before borrowed-PG reuse.
@@ -191,8 +198,11 @@ No remote branch or external lab was changed.
 ## Resource custody and remaining scope
 
 All fault/refusal-prefix/replay/audit/maintenance processes above have joined.
-cleanup_review and recovery_review completed the final package helper reviews;
-successor_restart_design is idle. No runtime currently active. Both old nine-root
+cleanup_review completed the final package helper review and is idle;
+recovery_review is preparing a source-only genuine accepted large signed-event
+export-memory job path under the existing export-memory worktree, without changing
+the reviewed packet or executing any runtime. successor_restart_design is idle.
+No runtime currently active. Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 The673 refusal custody is complete and must not be rerun after borrowed-PG reuse.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner
