@@ -15,7 +15,8 @@ from tools.ci import execute
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'])
+archive_components = sys.argv[1:] == ['archive-components']
 installed = sys.argv[1:] == ['installed']
 recovery = sys.argv[1:] == ['recovery']
 writer_followup = sys.argv[1:] == ['writer-followup']
@@ -85,6 +86,10 @@ if installed:
     identity['scope'] = ('Installed successor CLI/owner supervision and entrypoint checks, CLI/probe '
                          'compilation and Clippy. Actual PostgreSQL/HTTP/Sync lifetimes NOT_RUN; '
                          'unchanged native/PG component evidence remains separately bound.')
+if archive_components:
+    identity['scope'] = ('Proof-bound historical pending reads, retained PostgreSQL frontier reconstruction, '
+                         'and Archive receipt/membership/initialization library components plus library Clippy. '
+                         'CLI helper composition, connected SQL/native Archive and installed catch-up NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 checks = Path('/out/build-checks')
 tests = [('rocks_succession', ['--test', 'rocks_succession']),
@@ -133,9 +138,17 @@ if recovery:
 if installed:
     tests = [('serve_owner', ['--bin', 'bigbrotr', 'interfaces::serve::']),
              ('control_runtime_entrypoint', ['--test', 'control_runtime_entrypoint'])]
+if archive_components:
+    tests = [(name, ['--lib', selection]) for name, selection in [
+        ('historical_pending', 'lineage_pending_tests'),
+        ('retained_frontier', 'archive_retained_frontier::tests'),
+        ('archive_receipts', 'storage::archive::receipts::tests'),
+        ('archive_membership', 'storage::archive::membership::tests'),
+        ('archive_custody', 'storage::archive::initialization::tests')]]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
-         if build_probe else [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
+         if build_probe else [] if archive_components else
+         [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1',
                   *(['--skip', 'signed_pending_reopens_and_reaches_the_supervised_native_worker_without_acknowledgement']
@@ -148,6 +161,8 @@ if build_probe:
     clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
 if installed:
     clippy_targets += ['--test', 'control_runtime_entrypoint']
+if archive_components:
+    clippy_targets = ['--lib']
 steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                      *clippy_targets, '--', '-D', 'warnings'])]
 result = execute(steps, checks, SOURCE, env, identity, 1800)
@@ -222,7 +237,8 @@ if schema:
         tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
     (artifacts / 'build-result.json').write_text(json.dumps(dict(identity,
         binary_sha256=executables['bigbrotr'], build_info=info), indent=2) + '\n')
-qualification = dict(identity, status='PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed
+qualification = dict(identity, status='PASS_ARCHIVE_CATCH_UP_COMPONENTS' if archive_components
+                     else 'PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed
                      else 'PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery
                      else 'PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS' if writer_followup
                      else 'PASS_SUCCESSION_WRITER_COMPONENTS' if writer

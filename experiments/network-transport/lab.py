@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed',
+    'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed',
     'ingest-activated-retirement', 'ingest-activated-durable', 'ingest-activated-source', 'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
@@ -169,6 +169,7 @@ try:
         'ingest-succession-writer-followup': ['writer-followup'],
         'ingest-succession-recovery': ['recovery'],
         'ingest-succession-installed': ['installed'],
+        'ingest-succession-archive-components': ['archive-components'],
         'acquisition-transport': ['acquisition-transport'],
         'dictionary-append': ['dictionary-append'],
         'websocket': ['websocket'],
@@ -219,7 +220,7 @@ try:
         'acquisition-jobs-faults': ['acquisition-jobs-faults'],
         'acquisition-claims': ['acquisition-claims'],
     }.get(profile, [])
-    native_script = ('ingest-succession/native.py' if profile in ('ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
+    native_script = ('ingest-succession/native.py' if profile in ('ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
                      else 'archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
                      else native_path + '/native.py')
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
@@ -242,6 +243,7 @@ try:
                 'ingest-succession-writer-followup': 'PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS',
                 'ingest-succession-recovery': 'PASS_SUCCESSION_RECOVERY_COMPONENTS',
                 'ingest-succession-installed': 'PASS_SUCCESSION_INSTALLED_COMPONENTS',
+                'ingest-succession-archive-components': 'PASS_ARCHIVE_CATCH_UP_COMPONENTS',
                 'relay-registry-faults': 'PASS_REGISTRY_FAULT_BUILD_ONLY',
                 'relay-enrollment': 'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
                 'relay-enrollment-faults': 'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
