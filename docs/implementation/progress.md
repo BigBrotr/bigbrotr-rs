@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T15:02:28.403270+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T15:21:47.601714+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
 current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Historical detail remains in the evidence/laboratory records below and Git history;
@@ -9,10 +9,10 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 ## Repository and active responsibility
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; current HEAD and verified remote `97b8dc9`.
-Product `ced7693` and packaged qualification `b8dfa61` are committed and pushed.
-Ref retirement is committed and pushed at `97b8dc9`. No merge/rebase is pending.
-This checkpoint simplification is not yet committed. No owned build/engine is active.
+Canonical `/home/tux/bigbrotr-rs`; observed HEAD `51fff8f`, last verified remote
+`b2c7b9b`. Product `ced7693`, packaged qualification, ref retirement and user help
+are pushed. Journey source is integrated from a2439a8 into 51fff8f; no merge/rebase
+is pending. This current evidence update is not yet committed. No engine is active.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -107,55 +107,60 @@ All one-shot preparation scripts for these runs are EXECUTED; never replay them.
 
 ## Work in progress and next action
 
-One source author owns `.research/archive-catch-up-journey-20261018`, branch
-`qualification/archive-catch-up-journey`, base b3735e9. New
-`experiments/ingest-bootstrap/installed_archive_catch_up*.py` and narrow hooks in
-`installed_archive.py`, `installed_archive_journey.py`, `installed_archive_read.py`
-and `experiments/acquisition-scope/bindings.py` are still uncommitted author work.
-Do not overwrite it. Root owns all compiler/cache/native/SQL/Docker operations.
+Frozen same-root journey a2439a8 is integrated on main at 51fff8f. Author worktree
+`.research/archive-catch-up-journey-20261018`, branch
+`qualification/archive-catch-up-journey`, is clean and retained. Seven new
+`installed_archive_catch_up*.py` modules plus four narrow existing hooks are
+reviewed. Author AST/import/25 bounded controls and root manifest/diff checks PASS.
+The first inert-import smoke FAIL is retained and corrected. Actual engines,
+full scientific state replay and negative controls remain NOT_RUN.
 
 The journey keeps one freshly initialized physical dataset/catalog/coordinator:
 initial signed Archive/Sync, terminal epoch 1, genuine empty epoch 2 then retirement,
 genuine signed successor epoch 3 then terminalization, catch-up and fresh retry,
 ordinary authorized history/export, joined stop/restart and repeated read/export.
-Expected scientific state is independently constructed: 22 facts, seven original
-batch receipts, family counts [13,2,2,2,3], snapshot 8, source bounds 12/0/10.
-Validated initial frontier revision R advances by three. All 75 Control tables
-remain checked. No SQL/catalog clone supplies native/coordinator authority.
+Expected independent science: 22 facts, 7 original batch receipts, family counts
+[13,2,2,2,3], snapshot 8, bounds 12/0/10, frontier R+3. All 75 Control tables checked.
+Root and independent AI reviewer closed the actual frozen source; full report
+`.research/archive-catch-up-resume-20261018/journey-source-review.json` is bound
+by the evidence node `archive_connected_journey_source`. The author manifest
+SHA 9a968649 and complete frozen source hashes remain in the author worktree.
+Source review is not connected-engine evidence or exhaustive negative coverage.
 
-Root read the new driver/client/model/oracle/HTTP drafts and C-API reader, retaining
-review snapshots under `.research/archive-catch-up-resume-20261018/root-journey-read-v1`.
-Final source/hash deltas still need review. Independent reviewer recovery_review
-is active; its transient model-capacity interruption was resumed, not called PASS.
-Findings corrected by the author: coordinator incarnation equals current Control;
-reader pin TTL is a remaining-runtime scalar bounded by five seconds, while the
-durable export pin remains exactly 30 seconds. Ordinary wire formats, source-cut
-shape, exact backend helper signature, system-role observations, raw Archive inputs
-and failure-aware transport-client joins were also corrected during source work.
-The top-level verifier and raw binder are still being completed. No engine result
-or final review is claimed for this draft.
+Custody template is frozen at
+`.research/archive-catch-up-custody-20261018/audit-engine-template.py`,
+SHA d26aa071f6150aa46da84d5fb33f80d44283307e0a81cab2aa7968d7c41099d6.
+AST-only PASS; execution NOT_RUN. Root preparation script
+`.research/archive-catch-up-resume-20261018/prepare-journey.py` was invoked once:
+session 62229 joined 1 at the free-space guard, before creating any engine root.
+The failure is preserved; no database, worker or runtime began. It may be invoked
+again only after actual reserve 69,324,505,088 B is restored and clean exact source
+reconciled; a successfully created one-shot run must never be overwritten.
 
-Custody author cleanup_review writes only the ignored
-`.research/archive-catch-up-custody-20261018` directory. Its candidate auditor is
-NOT_FROZEN/NOT_RUN pending the final binder contract. Old source worktrees remain
-quiescent. Root's `.research/archive-catch-up-resume-20261018/prepare-journey.py`
-is authored and NOT_RUN; it requires clean exact source, the qualified build audit,
-178 preserved ELFs and unchanged completion reserve before creating a new root.
+Host free fell from 74.5 GB to 69.1 GB and then 62.5 GB while no BigBrotr engine ran.
+An unrelated active process cwd under nsealr was observed; the owner was asked to
+coordinate allocation. Do not stop or modify unrelated workloads. Root retired
+56 verified regenerable single-link nonempty product rlib/rmeta cache entries:
+545,526,495 logical bytes, 178 qualified ELFs and 11,806 other cache entries preserved.
+Receipt `.research/archive-catch-up-resume-20261018/product-intermediates-retirement/result.json`.
+Sessions 29447/30723 refused hard-link/empty-metadata preconditions before changes;
+corrected retirement 72086 joined 0. The retirement is EXECUTED, never replay.
+Free at completion 64,339,574,784 B remained below required reserve because the
+host continued allocating. One source-only cleanup agent is preparing a finite
+old-target proposal under `.research/tux-maintenance-followup-20261018`.
 
-Next bounded action: finish/freeze the genuine journey source and raw binder;
-review final deltas and bind source/protocol checks; integrate coherently; prepare
-and run the actual installed journey with ced7693 artifacts. Join the wrapper,
-then independently replay raw observations, then run the custody audit. Preserve
-all failures and fix only their actual cause. Record results in the existing
-report/lab nodes and this checkpoint. After the normal journey, qualify the new
-owner's required interruption/COMMIT-loss, cancellation/expiry and refusal boundaries,
-reusing unchanged valid component evidence at its exact scope.
+Next bounded action: inspect the new finite cleanup proposal, retain every
+executable/source/log/dataset, retire only verified regenerable old compiler
+intermediates with before/after preservation checks. Once actual reserve exists,
+prepare and execute the integrated same-root journey using ced7693 artifacts;
+join wrapper, independently replay raw observations, then audit custody. Preserve
+all failures. After normal journey, required interruption/COMMIT-loss,
+cancellation/expiry and refusal qualification remains in the existing task.
 
 ## Host resources and preservation
 
-No owned build/engine remains active at the latest completed audit. Three bounded
-source tasks are active: journey author, independent reviewer and custody-auditor
-author. No runtime resources belong to those tasks. Six unrelated services remain
+No owned build/engine remains active at the latest completed audit. One bounded source-only cleanup proposal task is active; journey, independent
+review and custody-template tasks are complete. No runtime resources belong to it. Six unrelated services remain
 outside project ownership; do not touch them. Reobserve actual ownership before reuse.
 
 Root-only compiler cache:

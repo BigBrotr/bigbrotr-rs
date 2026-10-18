@@ -32521,7 +32521,7 @@
           "engines": "NOT_RUN"
         },
         "review_finding": "Current-frontier equal-total/different-family distribution must refuse before new effects; root compares joined original-prefix counts and adds independent counts test",
-        "next": "Finish/freeze and review genuine same-root journey harness, then run installed initial/succession/catch-up/read/export/restart using qualified ced7693 artifacts; preserve all prior outcomes. Connected qualification remains NOT_RUN."
+        "next": "Restore unchanged export headroom through verified regenerable old compiler cache retirement, then prepare and execute frozen same-root journey against qualified ced7693 artifacts. Preserve failed preparation; no engine has started."
       },
       "archive_installed_build_attempts": {
         "observed_at": "2026-10-18T14:56:34.271520+00:00",
@@ -32975,6 +32975,52 @@
           "status": "PASS_SCOPED_AI_SOURCE_REVIEW",
           "scope": "Full new codec/census/tests and exact rustix1.1.5 allocation read; no runtime or power-loss claim"
         }
+      },
+      "archive_connected_journey_source": {
+        "status": "SOURCE_REVIEW_COMPLETE_RUNTIME_NOT_RUN",
+        "source_original": "a2439a8ad8c833bfb19bade1d634330d03108be2",
+        "integrated": "51fff8fd0fb36635b87d8627a62940928a82ff19",
+        "observed_at": "2026-10-18T15:21:47.601714+00:00",
+        "author_manifest": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-journey-selfcheck-20261018/manifest.json",
+        "author_manifest_sha256": "9a968649a1d1b3005d34353d6902cb819bbaeaf04e3e5497c63f1b1d0006ee8e",
+        "review": "Root complete new owners and final deltas; independent AI recovery_review complete seven new files/four hooks and relevant inherited owners/callers. Findings corrected before freeze.",
+        "findings": [
+          "Current coordinator identity binding",
+          "Reader TTL remaining deadline <=5 seconds; durable export pin30 seconds",
+          "Live2 intermediate full75-table preservation",
+          "Exact ordinary/startup/stopped report identities",
+          "Catalog scientific table names and current attempt attribution",
+          "Actual final destination lstat and bytes",
+          "HTTP client success and actual backend absence observation deadline"
+        ],
+        "checks": {
+          "author_ast_import": "PASS",
+          "author_bounded_controls": 25,
+          "root_manifest": "PASS",
+          "diff": "PASS",
+          "full_journey": "NOT_RUN",
+          "scientific_negative_controls": "NOT_RUN"
+        },
+        "limits": [
+          "AI source review, not runtime qualification",
+          "Table mutation negatives exercise preservation, not isolated/exhaustive predicate coverage",
+          "New Parquet encoded/stat metadata observed; independent full scientific census remains required"
+        ],
+        "custody_template": {
+          "path": ".research/archive-catch-up-custody-20261018/audit-engine-template.py",
+          "sha256": "d26aa071f6150aa46da84d5fb33f80d44283307e0a81cab2aa7968d7c41099d6",
+          "status": "FROZEN_NOT_RUN"
+        },
+        "preparation": {
+          "session": 62229,
+          "exit_code": 1,
+          "status": "FAIL_HEADROOM_BEFORE_ROOT_CREATION",
+          "required_free_bytes": 69324505088,
+          "root_created": false,
+          "engine": "NOT_RUN"
+        },
+        "review_record": ".research/archive-catch-up-resume-20261018/journey-source-review.json",
+        "review_sha256": "505cec6534d09a3e1f852b444a4807e3178481b2184e0ff123cfe3d06440a3fe"
       }
     }
   }

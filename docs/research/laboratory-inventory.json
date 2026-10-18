@@ -61122,7 +61122,7 @@
     "future_use": "The30 named historical targets are retired partial caches; never reuse incrementally. Rebuild only into fresh/current qualified shared target. Frozen manifest/execution are completed one-shot operations; never replay."
   },
   "implementation_archive_catch_up_20261018": {
-    "status": "PACKAGED_COMPONENTS_PASS_CONNECTED_JOURNEY_SOURCE_IN_PROGRESS",
+    "status": "CONNECTED_JOURNEY_SOURCE_INTEGRATED_ENGINE_NOT_RUN_HEADROOM",
     "contract": {
       "original": "de794eb9a596013ca4976fec8a11fa595394e437",
       "integrated": "4a8f882",
@@ -61179,7 +61179,7 @@
       ".research/archive-retained-frontier-20261018",
       ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "Root prepare24369/build5625/audit49465 joined0. Fetch/native exit0, stopped/PID0/noOOM; no owned engine/build active. Three bounded source agents: journey author, independent review, ignored custody-auditor author. Root exclusive compiler/cache/SQL/native/engine owner.",
+    "processes": "All build wrappers/audits joined. Journey preparation62229 joined1 before root creation. Cache preflight29447/30723 joined1 without unlink; retirement72086 joined0. No owned engine/build/native/database active. One bounded source-only cleanup proposal agent active; other source agents complete.",
     "component_sources": [
       {
         "name": "archive_retained_frontier",
@@ -61850,6 +61850,68 @@
       ],
       "worktrees_preserved": 7,
       "main_verified_push": "b8dfa61278b79ec8ffd28465b3a3bece6e3701f7"
-    }
+    },
+    "connected_journey_source": {
+      "status": "SOURCE_REVIEW_COMPLETE_RUNTIME_NOT_RUN",
+      "source_original": "a2439a8ad8c833bfb19bade1d634330d03108be2",
+      "integrated": "51fff8fd0fb36635b87d8627a62940928a82ff19",
+      "observed_at": "2026-10-18T15:21:47.601714+00:00",
+      "author_manifest": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-journey-selfcheck-20261018/manifest.json",
+      "author_manifest_sha256": "9a968649a1d1b3005d34353d6902cb819bbaeaf04e3e5497c63f1b1d0006ee8e",
+      "review": "Root complete new owners and final deltas; independent AI recovery_review complete seven new files/four hooks and relevant inherited owners/callers. Findings corrected before freeze.",
+      "findings": [
+        "Current coordinator identity binding",
+        "Reader TTL remaining deadline <=5 seconds; durable export pin30 seconds",
+        "Live2 intermediate full75-table preservation",
+        "Exact ordinary/startup/stopped report identities",
+        "Catalog scientific table names and current attempt attribution",
+        "Actual final destination lstat and bytes",
+        "HTTP client success and actual backend absence observation deadline"
+      ],
+      "checks": {
+        "author_ast_import": "PASS",
+        "author_bounded_controls": 25,
+        "root_manifest": "PASS",
+        "diff": "PASS",
+        "full_journey": "NOT_RUN",
+        "scientific_negative_controls": "NOT_RUN"
+      },
+      "limits": [
+        "AI source review, not runtime qualification",
+        "Table mutation negatives exercise preservation, not isolated/exhaustive predicate coverage",
+        "New Parquet encoded/stat metadata observed; independent full scientific census remains required"
+      ],
+      "custody_template": {
+        "path": ".research/archive-catch-up-custody-20261018/audit-engine-template.py",
+        "sha256": "d26aa071f6150aa46da84d5fb33f80d44283307e0a81cab2aa7968d7c41099d6",
+        "status": "FROZEN_NOT_RUN"
+      },
+      "preparation": {
+        "session": 62229,
+        "exit_code": 1,
+        "status": "FAIL_HEADROOM_BEFORE_ROOT_CREATION",
+        "required_free_bytes": 69324505088,
+        "root_created": false,
+        "engine": "NOT_RUN"
+      }
+    },
+    "product_intermediates_retirement": {
+      "status": "PASS_REGENERABLE_PRODUCT_INTERMEDIATES_RETIRED",
+      "removed_files": 56,
+      "logical_bytes": 545526495,
+      "free_before": 63793971200,
+      "free_after": 64339574784,
+      "protected_elfs": 178,
+      "other_cache_entries": 11806,
+      "executor": "EXECUTED_DO_NOT_REPLAY",
+      "report": ".research/archive-catch-up-resume-20261018/product-intermediates-retirement/result.json",
+      "report_sha256": "fc36bdb393661d043ab7a66524d1c28bf806c4f5efecf743702e754e34e4220b",
+      "scope": "56 single-link nonempty libbigbrotr rlib/rmeta files only in owned mutable target;178 qualified ELFs and11806 other cache entries unchanged. Hard-linked and empty intermediates retained. No dependency/source/log/data/engine artifact removed.",
+      "failures": [
+        "29447 hard-linked library guard, no changes",
+        "30723 empty metadata guard, no changes"
+      ]
+    },
+    "headroom_followup": "Host free continued falling during no BigBrotr runtime; unrelated nsealr cwd observed, owner notified. .research/tux-maintenance-followup-20261018 source-only proposal in progress. Never touch unrelated workload. Engine stays NOT_RUN until actual unchanged reserve is available."
   }
 }
