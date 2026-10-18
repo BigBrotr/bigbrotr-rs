@@ -15,6 +15,7 @@ import installed_archive_catch_up_oracle as normal
 from installed_archive_catch_up_oracle import (Model, only, same, sha, be, binary,
     clock, fresh_xmin, instant, exclusion, archive_science, cut_digest, COUNTS)
 from installed_archive_catch_up_client import argv
+from installed_archive_catch_up_catalog import verify_file_counts
 
 CASES=('publication-loss','frontier-loss','resolution','exact-retry')
 TARGETS={'publication-loss':'publication','frontier-loss':'control-frontier'}
@@ -274,7 +275,7 @@ def catalog_growth(phase,science):
         file=only(b['public.ducklake_data_file'],data_file_id=row['data_file_id'])
         assert (row['table_id'],row['column_id']) in columns and row['table_id']==file['table_id'] and row['xmin']==file['xmin']
         assert set(row)=={'data_file_id','table_id','column_id','column_size_bytes','value_count','null_count','min_value','max_value','contains_nan','extra_stats','xmin'}
-        assert 0<=row['null_count']<=row['value_count'] and 0<=row['column_size_bytes']<=file['file_size_bytes']
+        verify_file_counts(row,file)
         assert row['contains_nan'] is None and row['extra_stats'] is None
     keys=lambda rows,key:{tuple(r[k] for k in key) for r in rows}
     assert len(keys(b['public.ducklake_file_column_stats'],('data_file_id','column_id')))==len(b['public.ducklake_file_column_stats'])
