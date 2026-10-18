@@ -1,8 +1,9 @@
 # Current execution checkpoint
 
-Observed 2026-10-15T19:21:49.335301+00:00 on Tux. Work STOPPED at the owner's explicit
+Observed 2026-10-18T12:13:04.126183+00:00 on Tux. Work STOPPED at the owner's explicit
 pause request for exhausted credits. Do not resume until explicitly requested.
-The goal controller is set to paused after saving/pushing this checkpoint.
+The goal controller must be set to paused after saving/pushing this checkpoint;
+the controller response, not this document, establishes its effective state.
 Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 This checkpoint locates work; existing tasks own the plan and evidence owns results.
@@ -14,38 +15,47 @@ state. Preserve all worktrees, ignored/external artifacts, datasets, original an
 failed fixtures and unrelated workloads. Public deployment/publication and Cargo
 promotion retain separate authority.
 
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD5f0879213f0287a91cb0fd7a3749c37366e49a4d.
-Verified remote4fcad7e: push42136joined0/98f597, independentb131e7 exact.
-Fixture9e584b3→583ea14 and rawbindered38515→c41eb54 integrated;
-source evidence9359721 and actual engine evidence4fcad7e pushed.
-Dispatcha055d423→b445c9b and lifecycle7288dbcd→4e26b9e integrated locally.
-Root CLI/module/Archive getters/entrypoint tests/docs/build profile committed
-as4cfac916ba81b2b73d5e117f1ad73f2240102e7c; qualified build/evidence03a35c0 pushed,
-no merge/rebase.
-Exact installed build28171/prepare59862/audit71762 joined0. Build PASS20tests;
-Lifecycle ref retirement5022 joined0: original7288dbcd preserved detached,
-full-history bundlee51c99c0 and file census87e40eff intact;121local/51remote refs
-retired cumulatively,77detached/132preserved worktrees.
-Both qualified fixture/capture refs retired: executor66931 joined0, reportcf3a8c23,
-full-history bundleeb6887a1; every worktree file/link/stat including ignored artifacts
-unchanged. Cumulative123local/51remote retired and79detached worktrees preserved.
-Immediately before pause, two clean worktrees were created at5f08792:
-`.research/installed-successor-recovery-20261015` on
-`implementation/installed-successor-recovery`, and
-`.research/installed-successor-cycle-20261015` on
-`qualification/installed-successor-cycle`. Neither has an assigned task or code
-changes. Total134 worktrees remain preserved. Main and both new worktrees were
-clean at the pause observation; only this checkpoint/evidence/inventory update is
-pending commit/push. Retirement5f08792 is included in that push.
+Canonical `/home/tux/bigbrotr-rs`, branch `main`, observed HEAD and remote
+`4d324b7cebb5a2a92f99c50f49f8122c2dfc6bda` (remote checked by216d95).
+This checkpoint-only commit follows that revision; its hash is intentionally not
+guessed here. Prior installed9359721 evidence, branch retirements and Oct15 pause
+checkpoint are already integrated and pushed. No merge/rebase in progress.
+Cumulative123local/51remote refs retired,79detached/134preserved worktrees.
+No ref or worktree is retired during this pause.
 
-All three agents are completed and have been told to pause. No owned compiler,
-product process, build or experiment remains active. All execution handles are
-joined and laboratory containers stopped/retained. Six unrelated services remain
-active and untouched. Fresh observation:
-`.research/installed-family-root-selfcheck-20261015/pause-observation.json`.
-Preserve all ignored/external data, logs, original/fault states and bundles.
+Incomplete source remains UNCOMMITTED and must not be reset or treated as tested:
 
-## Active task and next action
+- Root owns `apps/bigbrotr/src/interfaces/serve.rs` and
+  `apps/bigbrotr/tests/control_runtime_entrypoint.rs`: four successor recovery
+  flags, mutually exclusive 12-mode group and expanded entrypoint cases. Dispatch
+  references four Action variants not yet integrated into main. The dirty checkout
+  is not build-ready; the committed baseline remains the last integrated product.
+- `.research/installed-successor-recovery-20261015`, branch
+  `implementation/installed-successor-recovery`, HEAD4d324b7: modified
+  `apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs`, untracked
+  `recovery/successor_family.rs` and children `source.rs`, `retirement.rs`.
+  The consumer is a draft; final review remains incomplete. Agent recovery_review
+  has stopped without staging, committing or integrating it.
+- `.research/installed-successor-cycle-20261015`, branch
+  `qualification/installed-successor-cycle`, HEAD4d324b7: clean. Agent
+  successor_restart_design completed reading/design only; installed_cycle harness
+  files have not been written.
+
+Only progress/evidence/inventory documents are committed and pushed for this pause.
+All six incomplete source files remain in place, with exact copies and Git patches
+under `.research/installed-cycle-resume-20261018/pause/`.
+Its `observation.json` (SHA25dbcf9f) binds full paths/hashes, branches, dirty states
+and active resources. Existing ignored `.research`, external labs, datasets, logs,
+original/fault states, bundles and all worktrees are retained without deletion.
+
+All three agents acknowledged stop. No owned compiler/product/engine process or
+active BigBrotr container was observed at this checkpoint; no execution handle
+remains open. Six unrelated services remain active and untouched: inspirehep-reindex
+PostgreSQL/RabbitMQ/Redis/OpenSearch, Ollama and tgdataset MongoDB. The paused slice
+created no engine, native/database owner or runtime resource requiring shutdown.
+Reviewer cleanup_review wrote no report files; its unfinished finding is recorded below.
+
+## Active task, verification and next action
 
 P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1; none complete.
 Owners: [storage task](02-storage.md),
@@ -54,22 +64,41 @@ Owners: [storage task](02-storage.md),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json),
 [lab inventory](../research/laboratory-inventory.json).
 Active evidence node `initial_successor_preparation_20261012.repeatable_succession_20261015`;
-inventory node `implementation_repeatable_ingest_succession_20261015`.
+inventory node `implementation_repeatable_ingest_succession_20261015`;
+both record `pause_checkpoint_20261018`.
 
-Next bounded action, ONLY AFTER EXPLICIT RESUME: reconcile this checkpoint and
-read the preserved technical note
+PASS already observed before pause: Oct18 read-only resumption authenticated311
+retained artifacts and143protected ELFs (`.research/installed-cycle-resume-20261018/observation.json`).
+Root tracked diff-check PASS; recovery author reports scoped rustfmt1.98.1 on the
+three new consumer files and tracked diff-check PASS. These are source hygiene,
+not product qualification. Prior exact4cfac91 build20tests and installed9359721
+three-lifetime engine PASS remain historical, unchanged evidence below.
+FAIL: no new failed build/test/engine in this resumed slice, because none started.
+Historical failed fixtures remain retained. NOT_RUN: draft compilation, CLI
+execution, test suites, installed full-cycle engine and final integrated review.
+
+Independent AI review is INCOMPLETE, with no confirmed blocker or approval.
+Open boundary: cancellation during `ControlSession::acquire`, which takes the
+client by value inside the operation; distinguish retaining the driver JoinHandle
+from possible client/transport closure before the native destructor. Complete that
+review against final source and root CLI wiring before relying on the draft.
+
+Next bounded action, ONLY AFTER EXPLICIT RESUME: reconcile current Git and the six
+saved source files against the pause snapshot, then finish the consumer review,
+starting at the ControlSession acquisition/cancellation boundary. Only afterwards
+complete/integrate coherent source and qualify it; do not compile the unresolved
+root dispatch alone. Recovery/source-close/fresh closed-source abandonment/retirement
+remain four distinct modes. The cycle harness is still to implement; eventual
+qualification uses fresh copies of9359721 endpoints and a new Serve lifetime at
+epochs4/4/5, not replay of existing e1..e4 commands. Import closure stays separate.
+
+Preserved design note:
 `.research/installed-successor-engine-20261015/.research/installed-recovery-next-slice-20261015/notes-final.json`
-(SHAc49fddb2). Assign the two prepared worktrees, then expose four mutually
-exclusive modes under `ingest recover`: `--successor`, `--close-successor-source`,
-`--abandon-successor-acquisition`, `--retire-successor`, using the existing adapters.
-Root owns CLI/tests/docs; the recovery owner can use a new module plus existing
-dispatch. Source publication and fresh closed-source abandonment are distinct.
-No implementation, build or engine for this next slice has started (NOT_RUN).
-Later qualification must use fresh copies of9359721 endpoints and a new Serve
-lifetime without reusing existing e1..e4 commands; import closure stays separate.
-Build root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`,
-exact4cfac91/tree602f9281;143ELFs protected after build. Installed9359721 has passed
-with these unchanged CLI/probe artifacts; no new compiler run.
+(SHAc49fddb2). Existing qualified build root:
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-4cfac91`.
+Engine root:
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-family-engine-9359721`.
+No new compiler or engine run was started for this draft or to perfect this checkpoint.
 
 ## Current installed successor source
 

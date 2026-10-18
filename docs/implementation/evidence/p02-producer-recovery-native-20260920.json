@@ -22944,7 +22944,7 @@
       }
     },
     "repeatable_succession_20261015": {
-      "status": "INSTALLED_SUCCESSOR_FAMILY_PASS_FULL_CYCLE_OPEN",
+      "status": "PAUSED_INSTALLED_SUCCESSOR_CYCLE_DRAFT_UNVERIFIED",
       "portable_component": {
         "status": "PASS_SUCCESSION_CODEC_COMPONENTS",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-codec-fc6f9a0",
@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Complete and review three-origin installed harness/semantic reader/raw capture binder; then exact-source engine qualification with unchanged4cfac91 binaries.",
+      "ongoing": "STOPPED by explicit owner request on 2026-10-18. Partial CLI and recovery consumer retained uncommitted; no new build/test/engine. Resume only on explicit request, following progress.md.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -31334,6 +31334,90 @@
           "path": "/home/tux/bigbrotr-rs/.research/installed-successor-engine-20261015/.research/installed-recovery-next-slice-20261015/notes-final.json",
           "sha256": "c49fddb2f695673919ee813f362af798872828a7397c1fb40253cf584fedb4aa"
         }
+      },
+      "pause_checkpoint_20261018": {
+        "status": "WORK_STOPPED_OWNER_REQUESTED_PAUSE",
+        "observed_at": "2026-10-18T12:13:04.126183+00:00",
+        "head": "4d324b7cebb5a2a92f99c50f49f8122c2dfc6bda",
+        "branch": "main",
+        "remote_at_stop": "4d324b7cebb5a2a92f99c50f49f8122c2dfc6bda (git ls-remote, 216d95)",
+        "goal_control": "Explicit owner pause. Set controller to paused after checkpoint commit/push; never mark complete.",
+        "fresh_observation": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/observation.json",
+          "sha256": "25dbcf9ff633bcb0ca57e24843aab668dd36207f8b4c14831913c79b0fb97ffe"
+        },
+        "resume_observation": ".research/installed-cycle-resume-20261018/observation.json: PASS_RESUME_CUSTODY_INPUTS; 311 retained artifacts and 143 protected ELFs checked before this pause, no engine rerun.",
+        "worktrees": {
+          "root": {
+            "path": "/home/tux/bigbrotr-rs",
+            "branch": "main",
+            "head": "4d324b7cebb5a2a92f99c50f49f8122c2dfc6bda",
+            "status": " M apps/bigbrotr/src/interfaces/serve.rs\n M apps/bigbrotr/tests/control_runtime_entrypoint.rs\n",
+            "files": [
+              {
+                "path": "apps/bigbrotr/src/interfaces/serve.rs",
+                "sha256": "6df74f6ca4f35fe4a4eb0876d131eb9732cccc08282ea1c86357cdefe3ad0358",
+                "backup": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/snapshot/root/apps/bigbrotr/src/interfaces/serve.rs"
+              },
+              {
+                "path": "apps/bigbrotr/tests/control_runtime_entrypoint.rs",
+                "sha256": "68b899e1cb7af4373aed4e74464b429166bd246f0177a87b39e4687f00dec7d1",
+                "backup": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/snapshot/root/apps/bigbrotr/tests/control_runtime_entrypoint.rs"
+              }
+            ],
+            "patch": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/root.patch",
+            "patch_sha256": "5f979a9788d9b58f428a176bdef1d8fa40884a8ad5e6991847a4501d915ef4d4"
+          },
+          "recovery": {
+            "path": "/home/tux/bigbrotr-rs/.research/installed-successor-recovery-20261015",
+            "branch": "implementation/installed-successor-recovery",
+            "head": "4d324b7cebb5a2a92f99c50f49f8122c2dfc6bda",
+            "status": " M apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs\n?? apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family.rs\n?? apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/retirement.rs\n?? apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/source.rs\n",
+            "files": [
+              {
+                "path": "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs",
+                "sha256": "9661050ae493d83c81c7146363679efbd81f280b36e0caf0dc358cb945a40a30",
+                "backup": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/snapshot/recovery/apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery.rs"
+              },
+              {
+                "path": "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family.rs",
+                "sha256": "d2c4f0a43006e9abfa109447f0224f43ac38a990527ae67f1bd0c6a66d5f18f3",
+                "backup": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/snapshot/recovery/apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family.rs"
+              },
+              {
+                "path": "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/retirement.rs",
+                "sha256": "9f11e54be428781c7a628fbe6b3a6d43f7ab4525a9acde651e896a4e02036176",
+                "backup": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/snapshot/recovery/apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/retirement.rs"
+              },
+              {
+                "path": "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/source.rs",
+                "sha256": "23646a3b39638b62087c8b6a9eebda83bf646f3608c1925566ac76024e04503c",
+                "backup": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/snapshot/recovery/apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/successor_family/source.rs"
+              }
+            ],
+            "patch": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/recovery.patch",
+            "patch_sha256": "a2b21f2c4ebe80c17e9a5ceed6528d4bd2f5541c6c6a5c58c6cca673f7307bcc"
+          },
+          "cycle": {
+            "path": "/home/tux/bigbrotr-rs/.research/installed-successor-cycle-20261015",
+            "branch": "qualification/installed-successor-cycle",
+            "head": "4d324b7cebb5a2a92f99c50f49f8122c2dfc6bda",
+            "status": "",
+            "files": [],
+            "patch": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/pause/cycle.patch",
+            "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "complete": "Prior installed9359721 three-lifetime qualification remains PASS, backed by audit ca106936 and raw eed8d278. Current work is only an unfinished installed recovery consumer and CLI draft.",
+        "pass": "Before pause: root tracked diff-check PASS; agent reports scoped rustfmt1.98.1 on three new consumer files and tracked diff-check PASS. These are not compilation or product qualification.",
+        "fail": "No new failed build/test/engine observed; none was started in this resumed slice. Historical failures remain preserved in existing evidence.",
+        "not_run": "Current draft compilation, CLI execution, unit/integration tests, installed full-cycle engine and final integrated review NOT_RUN. Harness source not written. Final consumer review incomplete.",
+        "open_review": "INCOMPLETE. No confirmed blocker. Open question: cancellation during ControlSession::acquire takes client by value inside operation; distinguish JoinHandle retention from client/transport closing before native destructor. Reviewer has not frozen final hashes or completed root CLI review.",
+        "agents": "recovery_review, successor_restart_design and cleanup_review all acknowledged stop; no active task/process/resource reported. No new delegation after pause request.",
+        "active": "No owned compiler/product/engine process observed; no BigBrotr running container. Six unrelated services active and untouched: inspirehep-reindex db/mq/cache/es, ollama, tgdataset-mongo.",
+        "preservation": "All original dirty files, worktrees, ignored .research, external labs, datasets, logs, failures and bundles retained in place; copies here protect only current incomplete source. No branch retired and no resource deleted.",
+        "commit_scope": "Commit and push only this progress/evidence/inventory checkpoint on main. Retain the six incomplete source files uncommitted in their original worktrees and snapshot; do not integrate unresolved CLI Action variants.",
+        "next_action": "Only after explicit resume: reconcile Git and six preserved source files against this snapshot, then finish source review of the consumer and its ControlSession::acquire cancellation/native/client custody boundary before integration or compilation. Root CLI references four Action variants still only present in the recovery worktree. Harness remains to implement; later qualification uses fresh9359721 copies."
       }
     }
   }
