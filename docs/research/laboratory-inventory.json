@@ -60596,6 +60596,249 @@
         "path": "/home/tux/bigbrotr-rs/.research/installed-prepared-resume-20261018/harness-source-binding.json",
         "sha256": "f1c0a28835042e4a35f6e2b48ded7c9fbb704e2b68a8dc108687a8c126024865"
       }
+    },
+    "installed_prepared_engine": {
+      "status": "PASS_INSTALLED_PREPARED_SUCCESSOR_CYCLE",
+      "source": "6a3fa5319471af2c834a1e4c7241f90df604aef4",
+      "tree": "91ab9a017a752d5a3fc6574db2a3255449c77401",
+      "owner": "2a2266c820d547c18a818eef94cb89bb",
+      "label": "org.bigbrotr.installed-prepared",
+      "client": "39d2f1968fa1121623d2d1875b9878bab141a1ba48446dad8a6ced641e1d36ac",
+      "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "started_at": "2026-10-18T13:10:43.588257+00:00",
+      "finished_at": "2026-10-18T13:11:37.158592+00:00",
+      "free_bytes_after": 24540663808,
+      "cleanup_errors": [],
+      "missing_owned": [],
+      "unrelated_changed": [],
+      "unexpected_containers": [],
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-prepared-engine-6a3fa53",
+      "prepare_session": 82309,
+      "engine_session": 38076,
+      "raw_session": 4472,
+      "custody_session": 36520,
+      "all_wrappers_joined_exit": 0,
+      "build_source": "f4f23dbb506016892addbdd8746014b91bf260ba",
+      "raw_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-prepared-engine-6a3fa53/root-independent-replay.json",
+        "sha256": "531346c11a0d909aca403868a6249c20a43618498214d8bd2d1586beff76285c",
+        "bound_files": 1099,
+        "observations": {
+          "setup_processes": 2,
+          "installed_successes": 8,
+          "installed_refusals": 2,
+          "installed_states": 26,
+          "setup_snapshots": 58
+        },
+        "negative_controls": 144
+      },
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-prepared-engine-6a3fa53/audit-root/audit-v1.json",
+        "sha256": "804ca720528c2be1fa8b70c0d821d541321a2a642ccf328a9fb2544c5ecbb287",
+        "source_files": 1953,
+        "protected_elfs": 152,
+        "unchanged_nonborrowed_containers": 1377
+      },
+      "cases": [
+        {
+          "name": "gap-prepare-loss",
+          "oracle": {
+            "status": "PASS_SETUP_COMMIT_UNKNOWN",
+            "case": "gap-prepare-loss",
+            "database": "bb_installed_prepared_6a3fa53_gap",
+            "snapshots": 28,
+            "tables": 75,
+            "native_rows": 70,
+            "sequence": 85,
+            "inputs": 6,
+            "control_epoch": 15,
+            "refreshes": 9,
+            "caller_unknown": true,
+            "persistent_outcome": "prepared-native-old",
+            "scope": "Two actual finite setup boundaries; failed caller is not successful installed recovery"
+          },
+          "negative_control_count": 11
+        },
+        {
+          "name": "gap-retire",
+          "oracle": {
+            "status": "PASS",
+            "case": "gap-retire",
+            "operation": "empty",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 73,
+            "native_sequence": 90,
+            "input_files": 6
+          },
+          "negative_control_count": 13
+        },
+        {
+          "name": "gap-retry",
+          "oracle": {
+            "status": "PASS",
+            "case": "gap-retry",
+            "operation": "empty",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 73,
+            "native_sequence": 90,
+            "input_files": 6
+          },
+          "negative_control_count": 13
+        },
+        {
+          "name": "gap-live",
+          "oracle": {
+            "status": "PASS",
+            "case": "gap-live",
+            "operation": "live",
+            "states": 5,
+            "tables": 75,
+            "native_rows": 76,
+            "native_sequence": 94,
+            "input_files": 6
+          },
+          "negative_control_count": 11
+        },
+        {
+          "name": "open-retire",
+          "oracle": {
+            "status": "PASS",
+            "case": "open-retire",
+            "operation": "empty",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 58,
+            "native_sequence": 73,
+            "input_files": 4
+          },
+          "negative_control_count": 13
+        },
+        {
+          "name": "open-retry",
+          "oracle": {
+            "status": "PASS",
+            "case": "open-retry",
+            "operation": "empty",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 58,
+            "native_sequence": 73,
+            "input_files": 4
+          },
+          "negative_control_count": 13
+        },
+        {
+          "name": "open-live",
+          "oracle": {
+            "status": "PASS",
+            "case": "open-live",
+            "operation": "live",
+            "states": 5,
+            "tables": 75,
+            "native_rows": 61,
+            "native_sequence": 77,
+            "input_files": 4
+          },
+          "negative_control_count": 11
+        },
+        {
+          "name": "closing-empty-loss",
+          "oracle": {
+            "status": "PASS_SETUP_COMMIT_UNKNOWN",
+            "case": "closing-empty-loss",
+            "database": "bb_installed_prepared_6a3fa53_closing",
+            "snapshots": 30,
+            "tables": 75,
+            "native_rows": 76,
+            "sequence": 95,
+            "inputs": 6,
+            "control_epoch": 19,
+            "refreshes": 10,
+            "caller_unknown": true,
+            "persistent_outcome": "native-closing-SQL-open",
+            "scope": "Two actual finite setup boundaries; failed caller is not successful installed recovery"
+          },
+          "negative_control_count": 11
+        },
+        {
+          "name": "closing-retire",
+          "oracle": {
+            "status": "PASS",
+            "case": "closing-retire",
+            "operation": "empty",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 76,
+            "native_sequence": 95,
+            "input_files": 6
+          },
+          "negative_control_count": 13
+        },
+        {
+          "name": "closing-retry",
+          "oracle": {
+            "status": "PASS",
+            "case": "closing-retry",
+            "operation": "empty",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 76,
+            "native_sequence": 95,
+            "input_files": 6
+          },
+          "negative_control_count": 13
+        },
+        {
+          "name": "activated-refused",
+          "oracle": {
+            "status": "PASS_EXPECTED_REFUSAL",
+            "case": "activated-refused",
+            "operation": "refused",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 94,
+            "native_sequence": 116,
+            "input_files": 8
+          },
+          "negative_control_count": 11
+        },
+        {
+          "name": "legacy-refused",
+          "oracle": {
+            "status": "PASS_EXPECTED_REFUSAL",
+            "case": "legacy-refused",
+            "operation": "refused",
+            "states": 2,
+            "tables": 75,
+            "native_rows": 70,
+            "native_sequence": 85,
+            "input_files": 6
+          },
+          "negative_control_count": 11
+        }
+      ],
+      "original_preservation": "Four exact original endpoint SQL/catalog/native physical/input censuses preserved; five fresh copies.",
+      "terminal": "Client143/PG0, both stopped/PID0/noOOM. All case processes joined; exact/global backends absent before copied native opens. No owned engine active.",
+      "preserved_invocation_failure": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-prepared-engine-6a3fa53/root-invocation-v1-failure.json",
+        "sha256": "11e561f4b70d5c1592f3994378662f2bcc4ea034c1ef2f300f709dd3a22cd5b5",
+        "status": "FAIL_BEFORE_ENGINE_START",
+        "tool_chunk": "17dce0",
+        "cause": "Wrong root build-directory argument before any engine/output creation; corrected to out/artifacts without source change or preparation replay."
+      },
+      "limits": [
+        "Two setup CommitUnknown outcomes are separate from eight successful installed processes and two expected exit4 refusals.",
+        "144 negative transcript controls are reader controls, not 144 actual injected failures.",
+        "Final Serve4/5 performs no new acquisition; existing accepted policy may expose the private listener.",
+        "No capacity/RSS, unresolved-tail, import logical closure, ACK/GC, Archive restart or full M1-M5 qualification."
+      ],
+      "renewal_margin_us": {
+        "gap-live": 1087512,
+        "open-live": 1013677
+      }
     }
   }
 }

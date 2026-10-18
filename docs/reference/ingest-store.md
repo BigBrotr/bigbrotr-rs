@@ -481,10 +481,15 @@ capacity for the existing attempt, without reserving another generation.
 
 The successful report distinguishes the verified predecessor prefix of a first
 retirement from the full terminal history checked on retry. It is emitted only
-after native closure, Control release and driver join. Exactf4f23db CLI/probe
-compilation,22affected tests and Clippy PASS. Installed engine qualification
-for this consumer remains NOT_RUN; component and existing repeatable adapter
-evidence do not substitute for this installed journey.
+after native closure, Control release and driver join. Exact `f4f23db` CLI/probe
+compilation, 22 affected tests and Clippy PASS. Installed `6a3fa53` exercises five
+fresh copies and twelve processes: genuine SQL/native gap and CLOSING setups,
+first retirement and terminal retries, fresh Serve epochs4/5, activated OPEN0
+and legacy-terminal refusal. Complete SQL/native/input states are compared;
+originals remain unchanged. The two setup calls retain their CommitUnknown
+outcomes. Successful installed reports and expected refusals are separate results.
+This qualifies the selected recovery path, without claiming unresolved-tail
+repair, input reclamation, Archive restart or capacity/RSS bounds.
 
 ## Recovering the activated successor
 

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T13:09:53.542839+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T13:14:51.150967+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,12 +8,13 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD6101cda; last verified remoteab8cc79.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD6a3fa53; last verified remoteab8cc79.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
-Exactf4f23db build now PASS; harness5a80da94 integrated as6101cda. Current
-harness-evidence/checkpoint update pending commit. No merge/rebase is pending.
+Exactf4f23db build PASS; harness5a80da94 integrated as6101cda and bound at6a3fa53.
+Actual prepared engine6a3fa53 now PASS; current qualification-doc updates pending
+commit/push. No merge/rebase is pending.
 
 The four epoch3-or-later recovery modes use existing schema0038 adapters:
 positive recovery, separate source closure, fresh closed-source acquisition
@@ -89,12 +90,13 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: commit the harness evidence, prepare one exact-source
-installed-prepared engine using prepare-engine.py and qualifiedf4f23db, then
-join engine, raw replay and custody in that order. Product bytes remain unchanged;
-this docs/experiment-only integration needs no new Rust build.
+Next bounded action: commit/push this qualified prepared journey, then retire its
+two redundant source refs while preserving both worktrees and complete histories.
+The prepared retirement script is NOT_EXECUTED. In parallel, source-only reviews
+locate the next M1 retained-Archive consumer and safely reclaimable headroom;
+root must reconcile those findings with existing contracts before implementation.
 Consumerfc5724c/cdeb470 is frozen: three files, scoped rustfmt/diff and four
-source-only inverse checks PASS; installed engine remains NOT_RUN. Author manifest49bed9c1
+source-only inverse checks PASS; installed engine now separately qualified below. Author manifest49bed9c1
 and independent AI review4e068ef4 are authenticated in source-binding.json under
 `.research/installed-prepared-resume-20261018`. Root read the complete final260-line
 child and parent deltas. Original clean worktree and all artifacts remain under
@@ -106,16 +108,16 @@ in `.research/installed-prepared-resume-20261018/harness-source-binding.json`.
 Artificial12contexts/58setup snapshots/26installed states/144controls,467file
 bindings/12file mutations/13custody mocks PASS; shared-Model protocol only.
 The exact artifact count and hashes are in that binding. Both generator iterations
-are preserved. No installed engine has run yet.
+are preserved. Actual installed evidence is separately recorded below.
 
 Frozen harness sources remain in
 `.research/installed-prepared-cycle-20261018`, branch
 `qualification/installed-prepared-cycle`, same base. Agreed bounded journey:
 actual prepared/native gap3, OPEN4, CLOSING4, first+terminal retry, fresh Serve4/5;
 refuse activated OPEN0 and old terminal2 without a pending preparation. Five
-copies/twelve processes planned (two finite setup, ten installed); all NOT_RUN.
+copies/twelve processes executed (two finite setup, ten installed); actual PASS below.
 Old intermediate snapshots are not clonable final state. Missing interrupted
-states will be produced on fresh copies with the existing qualified finite/proxy
+states were produced on fresh copies with the existing qualified finite/proxy
 boundaries; original stores remain untouched. No new fault matrix is selected.
 
 The command --retire-empty-successor uses existing schema0038 adapters; no new
@@ -133,11 +135,39 @@ and Clippy, zero diagnostics. Prepare22708/build58321/custody65714 joined0;
 Auditba797328 binds1948sourcefiles,148prior+4new=152protectedELFs and1376unchanged
 priorcontainers. Fetch/native exit0/PID0/noOOM; free24,923,684,864bytes. Priorbf2c122
 component tests reused only for unchanged authenticated kernels/fixtures/dependencies.
-New prepare-engine.py exists but is NOT_EXECUTED; custody template is source work.
-Installed prepared engine remains NOT_RUN. Root owns all compiler/cache/engine
-operations; no build/engine is active. successor_restart_design now performs
-source-only next-slice dependency analysis toward M1, writing ignored notes only.
-Import logical closure, staged tails, ACK/GC,
+Prepare-engine.py and audit-prepared-template.py are EXECUTED for6a3fa53;
+never replay them. Root owns all compiler/cache/engine operations.
+
+Exact engine6a3fa53/tree91ab9a01 PASS_INSTALLED_PREPARED_SUCCESSOR_CYCLE:
+prepare82309/engine38076/raw4472/custody36520 joined0,13:10:43Z–13:11:37Z.
+Root `ingest-succession-installed-prepared-engine-6a3fa53` in the existing lab.
+Raw531346c1 binds1099files,58setup snapshots+26installed states×75tables and
+144negative transcript controls. Custody804ca720 binds1953sourcefiles,152ELFs
+and1377unchanged nonborrowed containers. Four original complete SQL/catalog/
+physical native/input censuses are preserved. Client143/PG0 stopped/PID0/noOOM;
+all cleanup/missing/unrelated/unexpected arrays empty, free24,540,663,808bytes.
+
+Gap setup genuinely commits SQL3 after COMMIT11 reply loss, retaining native2
+at70rows/sequence85/six inputs. Installed recovery completes +4 then closes +1;
+retry preserves73/90/6. Fresh Serve4 ends76/94/6. OPEN4 first closes +1 and retry
+preserves58/73/4, then Serve5 ends61/77/4. CLOSING4 setup loses COMMIT12 before
+forwarding after native close; installed finish and retry preserve76/95/6.
+First empty retirement changes13 target rows plus receipt; terminal retry preserves
+all original terminal time/attribution/xmin. First report verifies E-1, retry E.
+Activated OPEN0 and old terminal2 without pending preparation exit4 with native/
+inputs unchanged; only fresh active Control claims remain as expected, with actual
+backends absent. Serve4/5 renew >1.013s beyond their first deadline and join SIGTERM;
+no new acquisition or input is issued. Both setup callers remain CommitUnknown,
+separate from eight successful installed processes and two expected refusals.
+
+Original invocation17dce0 remains FAIL_BEFORE_ENGINE_START: root supplied the
+build run directory instead of out/artifacts. It failed at transition.py292 before
+output creation or any engine/SQL/native start. Corrected argument reused the
+untouched source/prepared root; no preparation replay. Failure11e561f4 is retained
+and authenticated by the successful custody audit, not relabelled PASS.
+No owned build/engine remains active. successor_restart_design researches the next
+M1 Archive responsibility; cleanup_review reads regenerable-cache/headroom evidence.
+Both write ignored notes only. Import logical closure, staged tails, ACK/GC,
 Archive restart and full M1–M5 remain unfinished.
 
 Ref-retirement Git census: all134worktrees remained,133detached and canonical main.
@@ -153,7 +183,7 @@ dataset or container was deleted. Pause snapshots remain at
 `.research/installed-cycle-resume-20261018/pause/`; ignored data, original/fault
 states, logs and external laboratories remain. Current cycle audit sees all owned
 BigBrotr containers stopped; six unrelated services remain untouched. Compiler
-cache was unused by the cycle;148protectedELFs remain outside it.
+cache was unused by both installed cycles;152protectedELFs remain outside it.
 The older sections below describe their dated evidence, not current live processes.
 
 ## Current installed successor source

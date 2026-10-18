@@ -1315,6 +1315,12 @@ Final lifetimes renew beyond their first lease and join shutdown. Their heads
 remain OPEN0; this last activation issues no new request. Raw replay verifies
 63states and288negative transcript controls; those controls are not fault injection.
 The [bound evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-records original-store preservation and stopped resources. Installed prepared-gap/
-empty recovery, unresolved tails, import logical closure, ACK/GC and Archive
+records original-store preservation and stopped resources. The explicit
+[empty-successor consumer](ingest-store.md#recovering-an-unactivated-later-preparation-under-implementation)
+is separately qualified at `6a3fa53`: five copies, two actual interrupted-state
+setups, eight successful installed processes and two classification refusals.
+Gap completion releases the stale lineage before serial reinspection; first
+retirement proves through E-1 and terminal retry through E. Its 8KiB mutation
+reservation precedes the serial 4KiB empty-close reservation, without reserving
+another generation. Unresolved tails, import logical closure, ACK/GC and Archive
 restart remain separate requirements.

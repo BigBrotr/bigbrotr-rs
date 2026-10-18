@@ -399,8 +399,13 @@ One owner serializes exact identity decisions for each writable directory.
   finite modes with exact retries, then continuous Serve4/4/5 and joined shutdown.
   Independent raw replay checks63complete75-table states and288transcript controls;
   original native/input/catalog state is preserved. Final Serve issues no new job.
-  Prepared gap/empty recovery, restart/resend, tails, ACK/GC and Archive restart
-  remain open; this selected cycle completes neither Step4 nor M1.
+  Installed prepared recovery at `6a3fa53` qualifies five fresh copies and twelve
+  processes: two genuine interrupted setups, gap/OPEN/CLOSING first retirement
+  and exact retry, Serve4/5 and activated/legacy refusal. Independent replay checks
+  58 setup snapshots plus 26 installed states and 144 transcript controls, with
+  full original preservation. Its exact `f4f23db` build passes 22 tests and Clippy.
+  Restart/resend, tails, ACK/GC and Archive restart remain open; these selected
+  cycles complete neither Step4 nor M1.
   Its explicit metadata/topology limits admit at most255 total epochs, independent
   of the64-input spool. Independent AI contract review corrected the legitimate
   PG/native gap exception and current-batch dependency wording. The first portable
