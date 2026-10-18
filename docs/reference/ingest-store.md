@@ -481,9 +481,10 @@ capacity for the existing attempt, without reserving another generation.
 
 The successful report distinguishes the verified predecessor prefix of a first
 retirement from the full terminal history checked on retry. It is emitted only
-after native closure, Control release and driver join. Compilation and installed
-qualification for this consumer are NOT_RUN; the existing repeatable adapter
-evidence does not substitute for this installed journey.
+after native closure, Control release and driver join. Exactf4f23db CLI/probe
+compilation,22affected tests and Clippy PASS. Installed engine qualification
+for this consumer remains NOT_RUN; component and existing repeatable adapter
+evidence do not substitute for this installed journey.
 
 ## Recovering the activated successor
 

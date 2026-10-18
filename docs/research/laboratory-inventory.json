@@ -60467,6 +60467,77 @@
         "sha256": "bbaf57e9be5612db3bccc80ece3a8824b27ea016df90794e366d6607eaf69fc1"
       },
       "source_checks": "Scoped rustfmt/diff and four inverse-source checks PASS. Independent AI review reports no concrete blocker; runtime NOT_RUN."
+    },
+    "installed_prepared_build": {
+      "status": "PASS_SUCCESSION_INSTALLED_COMPONENTS",
+      "source": "f4f23dbb506016892addbdd8746014b91bf260ba",
+      "tree": "d7c73643ffd733306de8305ede62d0495455e583",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-f4f23db",
+      "audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-f4f23db/audit-root/audit-v1.json",
+        "sha256": "ba797328bddf0e00e5eae9014039b4b48033afd51df04145f69b5d12ba543977"
+      },
+      "preparation_session": 22708,
+      "build_session": 58321,
+      "custody_session": 65714,
+      "all_joined_exit": 0,
+      "started_at": "2026-10-18T13:01:15.667335+00:00",
+      "finished_at": "2026-10-18T13:03:32.816469+00:00",
+      "actual_tests": {
+        "serve_owner": {
+          "status": "ok",
+          "passed": 15,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 79
+        },
+        "control_runtime_entrypoint": {
+          "status": "ok",
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered_out": 0
+        }
+      },
+      "checks": {
+        "collected": 4,
+        "executed": 4,
+        "failed": 0,
+        "not_run": 0
+      },
+      "compiler_diagnostics": [],
+      "source_files": 1948,
+      "protected_prior_elfs": 148,
+      "new_elfs": {
+        "ingest_bootstrap_probe": "bf467b625995c811930ec242466cb1c2456b116f96d0fc9c0c0b4c3bf0a9555a",
+        "serve_owner": "96a2a6d48f0aa35f0ee5f6a469ab0c3f5a2e61e357030c4bc868a363da87780e",
+        "bigbrotr": "81b3ed5a9133b3519baabf9e11710ab7aa021b22fe0f193b5efad214c25648dc",
+        "control_runtime_entrypoint": "383caf6a23bbb05734fc85f5733788a32a692e1141a89a3b9cd19d9035c9792a"
+      },
+      "protected_total_elfs": 152,
+      "unchanged_prior_containers": 1376,
+      "owner": "c749d91bac453191c15c9f2b69513c85",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "b96230bc68cf9d571c533501f7562b2c0f6e1934f77af675c129f039bd082dd1"
+        },
+        {
+          "name": "native",
+          "id": "0faeef636cd046581a05ccbf32a6f267995a40604ad434827153a28f953cdcb3"
+        }
+      ],
+      "terminal": "Both fetch/native exited0/PID0/noOOM; all wrappers joined; no active build.",
+      "free_bytes_after": 24923684864,
+      "reused_component_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-recovery-bf2c33d/audit-root/audit-v1.json",
+        "sha256": "fba88a00ef3c295afb39fad80d1180e22925b37af37ad92233809940d0ed68c8",
+        "source": "bf2c33d24faf00689b959456216146ee8b779930",
+        "tests": 122
+      },
+      "limits": "Earlier122 storage tests apply only to authenticated unchanged kernel/fixture/dependency inputs. Actual installed prepared engine NOT_RUN. No capacity/RSS or full-product claim."
     }
   }
 }

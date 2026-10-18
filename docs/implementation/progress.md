@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T13:00:04.917730+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T13:04:51.847953+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,13 +8,12 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEADcdeb470; last verified remote01b05d7.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEADf4f23db; last verified remote01b05d7.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
-Prepared consumerfc5724c integrated ascdeb470. Root serve.rs CLI,
-control_runtime_entrypoint.rs, ingest-store.md and evidence/checkpoint changes
-are ready for the accompanying commit; compilation remains NOT_RUN.
-No merge/rebase is pending.
+Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
+Exactf4f23db build now PASS; current build-evidence/checkpoint update pending
+commit. No merge/rebase is pending.
 
 The four epoch3-or-later recovery modes use existing schema0038 adapters:
 positive recovery, separate source closure, fresh closed-source acquisition
@@ -22,7 +21,7 @@ abandonment and existing-only retirement. Native-first custody retains opaque
 owners outside cancelled futures. No writer adoption, import-veto relaxation,
 tail resolution or ACK/GC. Qualified3bdcdd1 CLI selects12 exclusive modes; its
 seven entrypoint tests cover all66pairs and native-before-credentials. The new
-thirteenth flag and78pairs remain uncompiled in the root work below.
+thirteenth flag and78pairs now pass in exactf4f23db below.
 
 Independent AI review closed caller-driven acquisition cancellation ordering and
 Control exit-code mapping. ClaimExit closes native before caller-driven future
@@ -90,10 +89,12 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: commit the root CLI/tests/docs and run one exact-revision
-installed build with prepare-build.py below, then join and audit its actual result.
+Next bounded action: finish independent source/raw-capture review of the
+prepared harness, integrate its coherent source and run the bounded installed
+engine on five copies using qualifiedf4f23db CLI/probe. No build rerun is needed
+for docs/experiment-only changes; bind unchanged product bytes before execution.
 Consumerfc5724c/cdeb470 is frozen: three files, scoped rustfmt/diff and four
-source-only inverse checks PASS; runtime remains NOT_RUN. Author manifest49bed9c1
+source-only inverse checks PASS; installed engine remains NOT_RUN. Author manifest49bed9c1
 and independent AI review4e068ef4 are authenticated in source-binding.json under
 `.research/installed-prepared-resume-20261018`. Root read the complete final260-line
 child and parent deltas. Original clean worktree and all artifacts remain under
@@ -118,13 +119,18 @@ or next-generation reservation. First retirement verifies through E-1; exact
 terminal retry through E. Native2/schema2 admits only a genuine pending target3.
 No candidate/writer adoption, implicit activated recovery or input reclamation.
 Design f688aec2 and source-manifest81e76c5b are retained under
-`.research/installed-cycle-resume-20261018/prepared-design/`. New root prepare-build.py
-and audit-build-template.py in `.research/installed-prepared-resume-20261018` are
-NOT_EXECUTED; they bind qualified3bdcdd1 and148protected priorELFs. Do not replay
-any old prepare/run. Compilation, new Rust checks and installed prepared engine
-remain NOT_RUN. Root owns all compiler/cache/engine operations. No new engine or
-build is active. Import logical closure, staged tails, ACK/GC, Archive restart and
-full M1–M5 remain unfinished.
+`.research/installed-cycle-resume-20261018/prepared-design/`. Root prepare-build.py and audit-build-template.py in
+`.research/installed-prepared-resume-20261018` are EXECUTED forf4f23db; never replay.
+Exact buildf4f23db/treed7c73643 PASS:4checks,15Serve+7entrypoint tests, CLI/probe
+and Clippy, zero diagnostics. Prepare22708/build58321/custody65714 joined0;
+13:01:15Z–13:03:32Z. Root `ingest-succession-installed-f4f23db` in the existing lab.
+Auditba797328 binds1948sourcefiles,148prior+4new=152protectedELFs and1376unchanged
+priorcontainers. Fetch/native exit0/PID0/noOOM; free24,923,684,864bytes. Priorbf2c122
+component tests reused only for unchanged authenticated kernels/fixtures/dependencies.
+New prepare-engine.py exists but is NOT_EXECUTED; custody template is source work.
+Installed prepared engine remains NOT_RUN. Root owns all compiler/cache/engine
+operations; no build/engine is active. Import logical closure, staged tails, ACK/GC,
+Archive restart and full M1–M5 remain unfinished.
 
 Ref-retirement Git census: all134worktrees remained,133detached and canonical main.
 The earlier79detached count was historical, not the complete current census.
