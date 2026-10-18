@@ -16,6 +16,12 @@ use tokio_postgres::{Client, Row, Transaction};
 mod archive_coordinator;
 #[path = "archive_frontier.rs"]
 mod archive_frontier;
+#[path = "archive_retained_frontier.rs"]
+mod archive_retained_frontier;
+pub use archive_retained_frontier::{
+    BoundRetainedArchiveFrontier, RetainedArchiveError, RetainedArchiveFrontier,
+    RetainedArchiveRequest,
+};
 #[path = "archive_persistence.rs"]
 mod archive_persistence;
 #[path = "browser_reauthentication.rs"]
