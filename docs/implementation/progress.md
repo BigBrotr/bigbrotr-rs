@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T14:51:35.581552+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:56:34.271520+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -9,10 +9,10 @@ Existing task files own the plan; this checkpoint locates current work and evide
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
 Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
-Current HEAD48956e2 includes the journal range correction and earlier evidence.
-All33 targeted tests pass again; Clippy now reaches the binary and flags one
-nested receipt condition. The equivalent collapsed condition and this checkpoint
-are not yet committed. No owned build/engine remains active.
+Current HEADced7693 includes all Archive runtime/journal/runner corrections.
+Exact packaged build PASS:33 selected tests, Clippy, worker and packaged checks.
+This qualification checkpoint is not yet committed. No owned build/engine remains
+active; connected same-root journey is still being authored and reviewed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -205,6 +205,16 @@ checks PASS. Auditf64a7fdd binds1967sources,166prior+6new=172ELFs and1387unchang
 containers; prepare32227/build21553/audit66068 joined0/1/0. All owned containers
 stopped/PID0/noOOM; raw failures, worker assets and executables retained.
 
+Fifth packaged buildced7693/tree89360589 PASS: all5 component checks, journal6,
+Serve19 and entrypoint8 tests; Clippy zero diagnostics. Actual worker/CLI/probe
+and packaged build-info/verify-worker PASS. The unchanged library-unit Copy-drop
+warning remains disclosed separately. Run14:52:07Z–14:55:26Z, prepare24369/build5625/
+audit49465 joined0. Audit1c266222 binds1967sources,172prior+6new=178ELFs and
+1389unchanged prior containers; fetch/native exit0/PID0/noOOM. Free74,571,853,824bytes
+at completion exceeds unchanged69,324,505,088byte Archive/export reserve. Run root
+has suffixced7693; all previous failures and immutable assets remain protected.
+This qualifies components, not the connected catch-up/read/export/restart journey.
+
 A bounded source agent now owns new installed catch-up journey helpers and narrow
 existing hooks in `.research/archive-catch-up-journey-20261018`, branch
 `qualification/archive-catch-up-journey`, baseb3735e9. Same fresh physical roots:
@@ -214,8 +224,14 @@ Independent expected science22facts/7receipts, counts[13,2,2,2,3], snapshot8,
 sourcebounds12/0/10; actual validated initial revisionR advances by3. All75tables
 remain checked. Source under development; protocol/engine NOT_RUN. No copied
 coordinator adoption and no reduction of64GiB+577MiB completion reserve.
-Next bounded action: freeze root Clippy condition cleanup and qualify a fresh
-exact-source packaged build, then review/run this genuine same-root journey.
+Next bounded action: finish/freeze and review the genuine same-root harness,
+then run it with the exact qualifiedced7693 artifacts. Root has read the current
+new driver/client/model/oracle draft and changed C-API reader. Independent review
+found an oracle-only error: the current Control incarnation is the coordinator
+incarnation, not a fresh ID; author is correcting it. Ordinary HTTP/export/restart
+reducer and raw binder remain in progress. Source review is not engine evidence.
+The ignored prepare-journey.py is authored, NOT_RUN, and requires clean exact
+source/build audit and the unchanged completion reserve before creating its root.
 M1–M5 remain incomplete; goalACTIVE.
 
 Headroom cleanup completed13:44:18Z, prepare59509/execute50680 joined0.

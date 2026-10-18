@@ -32488,8 +32488,8 @@
         ]
       },
       "archive_finite_runtime_sources": {
-        "observed_at": "2026-10-18T14:28:03.250775+00:00",
-        "status": "WIRED_UNQUALIFIED_SOURCE",
+        "observed_at": "2026-10-18T14:56:34.271520+00:00",
+        "status": "WIRED_COMPONENTS_PASS_CONNECTED_NOT_RUN",
         "sources": [
           {
             "name": "frontier_intents",
@@ -32517,14 +32517,14 @@
         "checks": {
           "rustfmt": "PASS scoped",
           "diff": "PASS",
-          "rust": "NOT_RUN",
+          "rust": "PASS ced7693 component compilation/33tests/Clippy; archive_installed_build_attempts binds exact artifacts",
           "engines": "NOT_RUN"
         },
         "review_finding": "Current-frontier equal-total/different-family distribution must refuse before new effects; root compares joined original-prefix counts and adds independent counts test",
-        "next": "Exact-source packaged worker/CLI component build; then genuine same-physical-root installed journey"
+        "next": "Finish/freeze and review genuine same-root journey harness, then run installed initial/succession/catch-up/read/export/restart using qualified ced7693 artifacts; preserve all prior outcomes. Connected qualification remains NOT_RUN."
       },
       "archive_installed_build_attempts": {
-        "observed_at": "2026-10-18T14:51:35.581552+00:00",
+        "observed_at": "2026-10-18T14:56:34.271520+00:00",
         "attempts": [
           {
             "source": "d7b8aec688370d04f01a91bf56c1a3ec2ef4814e",
@@ -32888,19 +32888,87 @@
                 "message": "error: could not compile `bigbrotr` (bin \"bigbrotr\") due to 1 previous error"
               }
             ]
+          },
+          {
+            "source": "ced7693e0ce78553f5a64b7a67dfb7d1c7cd31d1",
+            "tree": "89360589aca7e4368ce2df4752206a4a3dfd0921",
+            "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-ced7693",
+            "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-ced7693/audit-root/audit-v1.json",
+            "audit_sha256": "1c266222096017e27c487ba076b49519ebb69502dd6d77b5c126e4743aed8fb9",
+            "status": "PASS",
+            "worker_status": "PASS",
+            "postcheck_status": "PASS",
+            "checks": {
+              "collected": 5,
+              "executed": 5,
+              "failed": 0,
+              "not_run": 0
+            },
+            "test_counts": {
+              "frontier_intents": {
+                "status": "ok",
+                "passed": 6,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 332
+              },
+              "serve_owner": {
+                "status": "ok",
+                "passed": 19,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 79
+              },
+              "control_runtime_entrypoint": {
+                "status": "ok",
+                "passed": 8,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 0
+              }
+            },
+            "tests_failed": [],
+            "not_run": [],
+            "protected_elfs": 172,
+            "new_elfs": {
+              "bigbrotr": "2f29a932d431b019e2f41befc20b58cf7f612255654f9e182b0b3be4849520a9",
+              "serve_owner": "b23769b60d36c86f6ecbe425a6ad59e7bb3bbec247e3ce32dde2233826710223",
+              "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+              "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+              "ingest_bootstrap_probe": "361c6a81c87037c772852364d72b66f859267d105e04b65214b167123fd71913",
+              "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+            },
+            "unchanged_containers": 1389,
+            "compiler_diagnostics": [
+              {
+                "check": "frontier_intents",
+                "line": 289,
+                "encoding": "cargo-json",
+                "level": "warning",
+                "code": {
+                  "code": "dropping_copy_types",
+                  "explanation": null
+                },
+                "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+              }
+            ]
           }
         ],
         "dispositions": {
           "d7b8aec": "Compiler E0432 private module import, fixed b3735e9 through public export",
           "b3735e9": "Worker/CLI/probe compiled, journal6/Serve19 PASS; entrypoint7PASS1FAIL on MissingDatabase Debug text; fix uses existing StoreError Display, remove two unused imports; Clippy NOT_RUN",
           "1d42894": "All33 targeted testsPASS, actual worker/CLI/probe and packaged postchecksPASS; ClippyFAIL manual_range_contains in new journal. Root uses RangeInclusive::contains; no runtime engine qualification. Existing dropping_copy_types warning in lineage_replay_tests.rs:498 retained, not introduced here.",
-          "48956e2": "All33 targeted testsPASS, worker/CLI/probe and packaged postchecksPASS; ClippyFAIL collapsible_if in new publication.rs. Root collapses the equivalent receipt condition. Connected journey NOT_RUN; historical Copy-drop warning remains separate."
+          "48956e2": "All33 targeted testsPASS, worker/CLI/probe and packaged postchecksPASS; ClippyFAIL collapsible_if in new publication.rs. Root collapses the equivalent receipt condition. Connected journey NOT_RUN; historical Copy-drop warning remains separate.",
+          "ced7693": "PASS all5 component checks, journal6/Serve19/entrypoint8 tests, Clippy zero diagnostics, actual worker/CLI/probe and packaged build-info/verify-worker. Existing Copy-drop library-test warning retained; connected runtime NOT_RUN."
         },
         "review": {
           "path": ".research/archive-catch-up-resume-20261018/composition-review.json",
           "sha256": "d7fa596b81b6a24fd0ff1b09d2b6e989bf88079b3635676725cd5b8d3ce4b726"
         },
-        "next": "Fresh exact-source corrected component build; connected journey remains NOT_RUN",
+        "next": "Finish/freeze and review genuine same-root journey harness, then run installed initial/succession/catch-up/read/export/restart using qualified ced7693 artifacts; preserve all prior outcomes. Connected qualification remains NOT_RUN.",
         "journal_review": {
           "path": ".research/archive-catch-up-resume-20261018/journal-review.json",
           "sha256": "f83941fbb706ffc9860157bd493829c7253f455e191f3dcf091f89976a88ee0e",
