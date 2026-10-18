@@ -394,6 +394,13 @@ One owner serializes exact identity decisions for each writable directory.
   [repeatable succession contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
   now defines both retired epoch2 origins, one version2 handoff/schema3 family,
   whole-lineage positive replay and prepared-empty recovery without adoption.
+  Installed activated recovery at3bdcdd1 passes22Rust tests and Clippy; actual
+  cycle04e41c1 qualifies27processes across three retained-lifetime copies, all four
+  finite modes with exact retries, then continuous Serve4/4/5 and joined shutdown.
+  Independent raw replay checks63complete75-table states and288transcript controls;
+  original native/input/catalog state is preserved. Final Serve issues no new job.
+  Prepared gap/empty recovery, restart/resend, tails, ACK/GC and Archive restart
+  remain open; this selected cycle completes neither Step4 nor M1.
   Its explicit metadata/topology limits admit at most255 total epochs, independent
   of the64-input spool. Independent AI contract review corrected the legitimate
   PG/native gap exception and current-batch dependency wording. The first portable

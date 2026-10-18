@@ -1305,10 +1305,16 @@ Only abandonment and retirement additionally need the128KiB final job grant.
 It uses configured phase deadlines and fresh current-authority checks during
 ordered replay. Recovering the current head does not reserve another generation.
 
-The installed qualification must close and retry each stage on fresh copies of
-the three installed9359721 endpoints, preserving complete SQL/native/input bytes
-outside each operation's write set. It must then activate genuine epochs4/4/5
-without recreating old jobs or commands, observe renewal beyond the initial lease
-and join shutdown. Exact3bdcdd1 compilation,15Serve/7entrypoint tests and Clippy
-PASS; the full installed cycle remains NOT_RUN. Prepared-gap/empty recovery, unresolved tails,
-import logical closure, ACK/GC and Archive restart remain separate requirements.
+Exact3bdcdd1 compilation,15Serve/7entrypoint tests and Clippy PASS. Installed
+engine04e41c1 then qualifies27processes on three fresh9359721 copies: first and
+exact retry of all four operations, followed by new Serve4/4/5 without recreating
+jobs or commands. Complete75-table states, native rows and original inputs are
+compared independently. Source/terminal retry timestamps, attribution and row
+versions remain exact; unclaimed jobs and historical commands are preserved.
+Final lifetimes renew beyond their first lease and join shutdown. Their heads
+remain OPEN0; this last activation issues no new request. Raw replay verifies
+63states and288negative transcript controls; those controls are not fault injection.
+The [bound evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+records original-store preservation and stopped resources. Installed prepared-gap/
+empty recovery, unresolved tails, import logical closure, ACK/GC and Archive
+restart remain separate requirements.

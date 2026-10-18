@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T12:35:58.725478+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T12:40:03.775926+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,8 +8,8 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEADf1a8535; remote last verified
-7f40c12. Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD/verified remote04e41c1.
+Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 This evidence/checkpoint update is pending commit/push. No merge/rebase pending.
 
@@ -33,7 +33,8 @@ Original branches and both clean worktrees under `.research/installed-successor-
 root retains exclusive compiler/cache/SQL/native/engine ownership. The new harness
 uses27real processes on three fresh9359721 copies: four finite operations each
 with exact retry, then new Serve epochs4/4/5, renewal and joined shutdown.
-No new jobs/Sync/HTTP in those final Serve processes. Engine remains NOT_RUN.
+No new jobs/Sync/HTTP requests in those final Serve processes. Actual cycle PASS;
+the accepted policy can retain its existing private listener.
 
 ## Evidence, resources and next action
 
@@ -42,8 +43,8 @@ See [storage task](02-storage.md),
 [repeatable contract](../reference/ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented),
 [later recovery commands](../reference/ingest-store.md#recovering-a-later-activated-successor-under-implementation),
 [recovery evidence](evidence/p02-producer-recovery-native-20260920.json) and
-[lab inventory](../research/laboratory-inventory.json), nodes `installed_cycle_build`
-and `installed_cycle_harness` under the existing repeatable succession records.
+[lab inventory](../research/laboratory-inventory.json), nodes `installed_cycle_build`,
+`installed_cycle_harness` and `installed_cycle_engine` in the repeatable records.
 
 Exact corrected build3bdcdd1/treee00d0198 PASS: CLI/probe compilation,15Serve and
 7entrypoint tests, Clippy, four checks and zero diagnostics. Prepare96177,
@@ -67,21 +68,39 @@ Malformed terminal capture was corrected before integration. Root read the full
 drafts and final preservation/configuration delta. Build/source audit templates
 are independently retained under `.research/installed-cycle-resume-20261018`.
 
-Next bounded action: commit/push this checkpoint, then execute its unexecuted
-`prepare-engine.py 3bdcdd188dee80514fdaf79e554ad69c948a8163
-8b9bcc1b688842db3d025ffd699fe4c6a6cacfd305c50102e9ff14ed41b79acc` once from cleanmain.
-Launch installed_cycle.py using the resulting exact source and qualified artifacts;
-join the engine, run its independent offline raw reader, then the read-only custody
-audit with actual source/build/replay pins. Preserve every failed/unknown outcome.
-Never replay old commands against advanced endpoints. Source-open, closed-source
-and terminal retries have different prerequisites; import logical closure is separate.
+Exact engine04e41c1/tree9aeb5abb PASS_INSTALLED_SUCCESSOR_CYCLE, root
+`/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-cycle-engine-04e41c1`.
+Prepare88761/engine50071/raw16253/custody28866 joined0,12:36:35Z–12:37:52Z.
+Raw9bafc72f binds1409files/63states×75tables/288negative controls across27actual
+processes. Custody383eb79a binds1947sourcefiles/148ELFs/1374unchanged nonborrowed
+containers. Original full SQL/catalog/physical native/input censuses unchanged.
+
+Each3/3/4 head closes with one native put, then finite retries/source publication,
+whole-intent acquisition abandonment and terminal retirement preserve native/input
+bytes. Original activator jobs become cancelled with gaps; accepted-unclaimed jobs
+and prior commands stay unchanged. Retirement changes twelve target rows plus
+receipt; retry preserves attribution/timestamps/xmin. Fresh Serve4/4/5 renew beyond
+initial lease by at least1.024s and join SIGTERM. Final native rows/sequence/inputs:
+94/116/8,94/114/7,97/119/7. New heads remain OPEN0, no new requests or input files.
+Every CLI process exit0/native closed/drivers joined/backends absent. Client143/PG0
+stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
+25,258,786,816bytes at terminal report; no owned engine remains active.
+
+Next bounded action: commit/push this qualified cycle, retire its two redundant
+source refs while preserving original history/worktrees/ignored artifacts, then
+implement installed recovery of unactivated prepared attempts using existing
+repeatable adapters. Source-only recovery_review is mapping the four contracted
+states (PG/native gap, OPEN0, CLOSING0, exact terminal retry); no product edits yet.
+Root owns all compilation and actual engines. Preserve source-open/closed/terminal
+retry distinctions. Prepared recovery must never adopt a writer. Import logical
+closure, staged tails, ACK/GC, Archive restart and full M1–M5 remain unfinished.
 
 All134worktrees,123local/51remote retired refs' bundles and79detached trees remain
 preserved. No branch retirement/deletion in this slice. Pause snapshots remain at
 `.research/installed-cycle-resume-20261018/pause/`; ignored data, original/fault
-states, logs and external laboratories remain. Current audit sees all owned
+states, logs and external laboratories remain. Current cycle audit sees all owned
 BigBrotr containers stopped; six unrelated services remain untouched. Compiler
-cache is unused by the forthcoming engine;148protectedELFs remain outside it.
+cache was unused by the cycle;148protectedELFs remain outside it.
 The older sections below describe their dated evidence, not current live processes.
 
 ## Current installed successor source

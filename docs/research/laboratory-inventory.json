@@ -60076,7 +60076,7 @@
         "sha256": "07222dcb54b032cebb33ab45caf221a378a860a89723806ec06b8e62658fb9ef"
       },
       "goal": "ACTIVE by explicit user resume; full M1-M5 remains incomplete",
-      "superseded_by": "Corrected source3bdcdd1 installed_cycle_build PASS; full engine remains NOT_RUN."
+      "superseded_by": "Corrected source3bdcdd1 installed_cycle_build PASS and exact04e41c1 installed_cycle_engine PASS within their recorded scope."
     },
     "installed_cycle_first_build": {
       "status": "FAIL_COMPILE_REQUEST_INPUT_ERROR_DISPLAY",
@@ -60273,6 +60273,131 @@
         "Artificial transcripts share the independent Python Model and establish protocol/negative-control behavior, not Rust/SQL execution.",
         "SQL/catalog original preservation can only be qualified by the actual future captured run; offline reader checks captured evidence and rereads physical/input files.",
         "No new job or HTTP command in Serve4/4/5; no Archive, import closure, unresolved input cleanup, ACK/GC or fault injection campaign."
+      ],
+      "superseded_by": "Actual04e41c1 installed_cycle_engine PASS; author artificial checks remain protocol-only evidence."
+    },
+    "installed_cycle_engine": {
+      "status": "PASS_INSTALLED_SUCCESSOR_CYCLE",
+      "source": "04e41c162f9841a3378250252a46bda872d2de1f",
+      "tree": "9aeb5abb0dc170eab5fd54170ef8d3bb36d2e610",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-cycle-engine-04e41c1",
+      "build_source": "3bdcdd188dee80514fdaf79e554ad69c948a8163",
+      "build_audit_sha256": "8b9bcc1b688842db3d025ffd699fe4c6a6cacfd305c50102e9ff14ed41b79acc",
+      "prepare_handle": "88761 joined0",
+      "engine_handle": "50071 joined0",
+      "raw_replay_handle": "16253 joined0",
+      "custody_handle": "28866 joined0",
+      "started_at": "2026-10-18T12:36:35.065617+00:00",
+      "finished_at": "2026-10-18T12:37:52.489800+00:00",
+      "owner": "ae7eae5475e07e4d07608b8acba5f5f4",
+      "client": "961b9f088b73ab3c44ae492883e5ae6084db3d439adeab82d49570dacfc4eb99",
+      "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "raw_replay": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-cycle-engine-04e41c1/root-independent-replay.json",
+        "sha256": "9bafc72fda089797a9959ce4931f5ae2408894ba7e13494cb604617c5f0f8835",
+        "bound_files": 1409,
+        "cases": 27,
+        "states": 63,
+        "tables": 75,
+        "negative_controls": 288
+      },
+      "custody_audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-cycle-engine-04e41c1/audit-root/audit-v1.json",
+        "sha256": "383eb79ac4ce84869128239a5a0107f73a67e556d5bcc36b0466aa401a3bcf02",
+        "source_files": 1947,
+        "protected_elfs": 148,
+        "unchanged_nonborrowed_containers": 1374
+      },
+      "cases": [
+        "activated-recover",
+        "activated-recover-retry",
+        "activated-source",
+        "activated-source-retry",
+        "activated-abandon",
+        "activated-abandon-retry",
+        "activated-retire",
+        "activated-retire-retry",
+        "activated-live",
+        "empty-recover",
+        "empty-recover-retry",
+        "empty-source",
+        "empty-source-retry",
+        "empty-abandon",
+        "empty-abandon-retry",
+        "empty-retire",
+        "empty-retire-retry",
+        "empty-live",
+        "later-recover",
+        "later-recover-retry",
+        "later-source",
+        "later-source-retry",
+        "later-abandon",
+        "later-abandon-retry",
+        "later-retire",
+        "later-retire-retry",
+        "later-live"
+      ],
+      "outcomes": [
+        "Eight fresh finite processes per clone qualify first/retry positive recovery, source closure, whole-intent acquisition abandonment and exact terminal retirement, followed by fresh continuous Serve4/4/5.",
+        "One native closing put, then no further finite native mutation; source closure preserves scientific copies, abandonment cancels only activator jobs with whole-intent gaps, retirement changes twelve target rows plus receipt.",
+        "Retries preserve original source/terminal timestamps, attribution and xmin. Accepted-unclaimed jobs and prior commands remain unchanged.",
+        "Final fresh startup changes four native keys; no new job, Sync or HTTP request. The accepted policy may expose its existing private listener.",
+        "Every process exits0 with native closed, actual driver joined and PostgreSQL backend absent before copied native reopen. Original SQL/catalog/physical native/input censuses preserved."
+      ],
+      "state": "stopped-retained; client143/PG0/PID0/noOOM",
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "missing_owned": [],
+      "unexpected_containers": [],
+      "free_bytes_after": 25258786816,
+      "limits": [
+        "New acquisition in the final Serve; unresolved staged/reserved input tails",
+        "Import closure, Archive, acknowledgement/GC, injected faults and capacity/RSS qualification",
+        "Custody PASS is distinct from engine qualification and the separately executed scientific/raw replay.",
+        "Only the root-supplied SHA authenticates that joined replay; this auditor neither imports nor executes it.",
+        "Original SQL/catalog preservation is captured-run evidence, not a new query. Original full physical native/input censuses are reread as files only.",
+        "The installed lifecycle consumer was authored by this auditor; this report is custody/source binding, not independent scientific proof.",
+        "Any engine FAIL, incomplete/unknown process custody or missing replay refuses PASS; failed audit attempts remain separate.",
+        "No executable, compiler, SQL/native engine, container mutation or mutable cache is used by this auditor.",
+        "No new acquisition in final Serve, import logical closure, Archive, input-tail repair, ACK/GC, injected-fault or capacity/RSS claim."
+      ],
+      "final_states": [
+        {
+          "status": "PASS",
+          "case": "activated-live",
+          "operation": "live",
+          "producer_epoch": "4",
+          "states": 5,
+          "tables": 75,
+          "source_digest": "22f0693c254a636696b97dc4f8d033ce7c0ee2b2064c398fe314b4da37c84c5b",
+          "native_rows": 94,
+          "native_sequence": 116,
+          "input_files": 8
+        },
+        {
+          "status": "PASS",
+          "case": "empty-live",
+          "operation": "live",
+          "producer_epoch": "4",
+          "states": 5,
+          "tables": 75,
+          "source_digest": "6456a070cc5d17f5653dd006fbb0cbf327946f371ceac955dc4e330bb9ff5878",
+          "native_rows": 94,
+          "native_sequence": 114,
+          "input_files": 7
+        },
+        {
+          "status": "PASS",
+          "case": "later-live",
+          "operation": "live",
+          "producer_epoch": "5",
+          "states": 5,
+          "tables": 75,
+          "source_digest": "4aa3521bdc7eafc8903118373a805b4a8b1df1dbd3e9d599743fce5b304efd40",
+          "native_rows": 97,
+          "native_sequence": 119,
+          "input_files": 7
+        }
       ]
     }
   }

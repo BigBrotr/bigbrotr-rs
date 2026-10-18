@@ -443,9 +443,13 @@ space. A successful `bigbrotr-ingest-recovery/1` report contains the actual epoc
 request bounds and verified history; it is published after native closure,
 Control release and driver join. Preserve state after errors or unknown outcomes.
 Once retirement is complete, `serve --activate-successor` can prepare the next
-generation. The full installed cycle is NOT_RUN for this new consumer; the
-existing [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-tracks its qualification separately from the earlier live-writer result.
+generation. Exact04e41c1 qualifies27actual processes over three fresh copies:
+first/retry recovery, source closure, abandonment and retirement, then continuous
+Serve4/4/5 with renewal and joined shutdown. The final Serve processes issue no
+new jobs or input; this does not qualify prepared attempts, tails, import closure
+or Archive restart. The [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+binds full SQL/native/input preservation and distinguishes the earlier live-writer
+journey from this installed finite-operation cycle.
 
 ## Recovering the activated successor
 
