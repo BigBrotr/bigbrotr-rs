@@ -35042,9 +35042,272 @@
               }
             ],
             "limits": "Observed default proxy limit during retained scans; no selected transaction or injected fault, so no COMMIT-loss qualification. Original FAIL/UNKNOWN preserved; outer stoppedPG/client and files bound separately. No source/product normalization or native after-state invented."
+          },
+          {
+            "status": "FAIL_FINAL_ORACLE_CLIENT_NAME_AS_ID",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f",
+            "source": "7d2d96f7458def34a4f9c0a3084b174a061a9744",
+            "tree": "f3c2760ea27c67fb26f6e75a737205ad70cc4370",
+            "prepare_session": 24597,
+            "prepare_exit_code": 0,
+            "engine_session": 4484,
+            "engine_exit_code": 1,
+            "wrapper": {
+              "command": [
+                "/usr/bin/python3",
+                "-B",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/source/experiments/acquisition-scope/bindings.py",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f",
+                "--installed-archive-catch-up-faults",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+              ],
+              "source": "7d2d96f7458def34a4f9c0a3084b174a061a9744",
+              "started_at": "2026-10-18T18:21:09.497068+00:00",
+              "exit_code": 1,
+              "finished_at": "2026-10-18T18:23:28.151641+00:00"
+            },
+            "completed_prefix": [
+              "abandon1",
+              "retire1",
+              "live2",
+              "abandon2",
+              "retire2",
+              "live3",
+              "source3",
+              "abandon3",
+              "retire3"
+            ],
+            "completed_fault_phases": [
+              "publication-loss",
+              "frontier-loss",
+              "resolution",
+              "exact-retry"
+            ],
+            "actual_processes": "14_UNFORCED_REAPED: initial and nine prefix zero; publication-loss/frontier-loss four; resolution/exact-retry zero",
+            "phases": [
+              {
+                "step": "publication-loss",
+                "returncode": 4,
+                "stderr": "error: initial Archive refused; preserve original state: OutcomeUnknown\n",
+                "custody": {
+                  "status": "OBSERVED_CLOSED_AND_JOINED",
+                  "process_closed": true,
+                  "proxy_closed": true,
+                  "errors": []
+                },
+                "proxy_terminal": {
+                  "event": "terminal",
+                  "mode": "after-complete",
+                  "target": "publication",
+                  "connections": 26,
+                  "bytes": 6950661,
+                  "frames": 79300,
+                  "data_queries": 1,
+                  "data_commits": 1,
+                  "server_complete": 1,
+                  "client_complete": 0,
+                  "faults": 1,
+                  "owner_requests": 0,
+                  "owner_forwarded": 0,
+                  "owner_complete": 0,
+                  "guard_rejections": 0,
+                  "serialization_rejections": 0,
+                  "rejection_sequence": [],
+                  "auth_finals_omitted": 0,
+                  "frontend_queries": 1679,
+                  "coordinator_inserts": 0,
+                  "pin_claim_injections": 0,
+                  "pin_rejections": [],
+                  "session_mutations_complete": 0,
+                  "reader_queries": 0,
+                  "capture_verify_requests": 0,
+                  "resume_authority_requests": 0,
+                  "resume_expiry_rejections": 0,
+                  "resume_expiry_idle": 0,
+                  "unexpected": 0,
+                  "profile": "retained-catch-up",
+                  "frame_limit": 131072,
+                  "connection_limit": 64
+                }
+              },
+              {
+                "step": "frontier-loss",
+                "returncode": 4,
+                "stderr": "error: Archive catch-up refused; preserve original state: CommitUnknown\n",
+                "custody": {
+                  "status": "OBSERVED_CLOSED_AND_JOINED",
+                  "process_closed": true,
+                  "proxy_closed": true,
+                  "errors": []
+                },
+                "proxy_terminal": {
+                  "event": "terminal",
+                  "mode": "after-complete",
+                  "target": "control-frontier",
+                  "connections": 1,
+                  "bytes": 2183483,
+                  "frames": 20633,
+                  "data_queries": 1,
+                  "data_commits": 1,
+                  "server_complete": 1,
+                  "client_complete": 0,
+                  "faults": 1,
+                  "owner_requests": 0,
+                  "owner_forwarded": 0,
+                  "owner_complete": 0,
+                  "guard_rejections": 0,
+                  "serialization_rejections": 0,
+                  "rejection_sequence": [],
+                  "auth_finals_omitted": 0,
+                  "frontend_queries": 1102,
+                  "coordinator_inserts": 0,
+                  "pin_claim_injections": 0,
+                  "pin_rejections": [],
+                  "session_mutations_complete": 0,
+                  "reader_queries": 0,
+                  "capture_verify_requests": 0,
+                  "resume_authority_requests": 0,
+                  "resume_expiry_rejections": 0,
+                  "resume_expiry_idle": 0,
+                  "unexpected": 0,
+                  "profile": "retained-catch-up",
+                  "frame_limit": 131072,
+                  "connection_limit": 64
+                }
+              },
+              {
+                "step": "resolution",
+                "returncode": 0,
+                "stderr": "",
+                "custody": {
+                  "status": "OBSERVED_CLOSED_AND_JOINED",
+                  "process_closed": true,
+                  "proxy_closed": true,
+                  "errors": []
+                },
+                "proxy_terminal": null
+              },
+              {
+                "step": "exact-retry",
+                "returncode": 0,
+                "stderr": "",
+                "custody": {
+                  "status": "OBSERVED_CLOSED_AND_JOINED",
+                  "process_closed": true,
+                  "proxy_closed": true,
+                  "errors": []
+                },
+                "proxy_terminal": null
+              }
+            ],
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "native_final_readback": "CAPTURED_EXIT_ZERO",
+            "semantic_verify": "FAIL_CLIENT_NAME_AS_ID_AFTER_PREFIX",
+            "raw_replay": "NOT_RUN",
+            "negative_controls": "NOT_RUN_IN_ENGINE",
+            "custody": {
+              "session": 2161,
+              "joined_exit_code": 0,
+              "status": "PASS_READ_ONLY_FAILED_ARCHIVE_CATCH_UP_FAULT_CUSTODY",
+              "source_files": 1981,
+              "protected_elfs": 190,
+              "installed_processes": 14,
+              "structurally_bound_raw_files": 281,
+              "report": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/audit-root/audit-failure-v1.json",
+                "bytes": 473137,
+                "sha256": "8877a815fbd24e380a94c83f06dbc3c9a7414b9a90810e14a1c67523cd1bbf94"
+              },
+              "template_sha256": "cacc21f68f3100adc0ee6ef18184f9486d9111f840d7115ae4092a57761a7e22",
+              "limits": [
+                "Custody PASS is separate from original engine FAIL. The actual wrapper exit1/trace and14 completed process envelopes are bound; no successful scientific or raw replay is required or inferred. Wrapper join is root-attested.",
+                "No SQL, RocksDB, DuckDB, retained executable, compiler, mutable compiler cache, or expected-state reader is opened or executed by this auditor.",
+                "Docker inspection normalizes only Health.Log within the declared Id/Name/Image/State/Mounts projection; original labels are compared separately.",
+                "The same fresh physical native, coordinator, Archive and scratch roots are bound from retained observations and final file bytes/inodes. No old coordinator is cloned or adopted.",
+                "Original preservation binds complete retained before/after rows of the two queried SQL basis databases. Other historical database interiors and old native datasets were not independently queried or recaptured.",
+                "Catalog/native/input assertions use captured observations and regular-file hashes; this auditor does not create new engine observations or prove stronger durability.",
+                "The full retained-file census includes hash-only evidence. Those hashes preserve bytes but do not imply every auxiliary file was scientifically interpreted by the raw reader.",
+                "The catch-up CLI does not emit native/owner_release telemetry. Actual error-4/zero exit, unforced reap, positive proxy completion, exact/global backend absence and captured final state are bound without inventing those fields or separately observable worker/driver joins.",
+                "Publication-loss may retain attempt5 enabled and its login. Diagnostic dump custody is distinct from publication authority. Subsequent seal/receipt membership and immutable-operation reuse are captured here but not scientifically qualified by this failed-custody audit.",
+                "Both retained proxy envelopes require actual selected server COMMIT completion with omitted client completion and clean joined terminal. Their scientific transaction interpretation remains separate; error4/xmin/normal journey evidence cannot qualify it.",
+                "This auditor authored prior native catch-up helpers, frontier intent storage and reused lifecycle helpers. The present work is custody/source binding, not independent product semantic qualification.",
+                "Any incomplete/forced process, unknown proxy/backend custody, changed artifact, different original failure or unexpected container refuses custody PASS and preserves a separate audit-failure report. Original FAIL and all earlier statuses remain unchanged.",
+                "Only the two selected after-complete faults and direct resolution/retry are within this wave. Ordinary HTTP/export/restart, other interruptions, cancellation/lease schedules, ACK/GC, capacity/RSS/load, arm64 and release qualification are not inferred."
+              ]
+            },
+            "offline_candidate_diagnosis": {
+              "session": 80529,
+              "joined_exit_code": 0,
+              "report": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-fault-oracle-identity-20261018/diagnosis-v1.json",
+                "bytes": 8117,
+                "sha256": "35049c1843c4a042b0725793f277f1ec7c5a4ac035723c7cd41fa12a85f0ae94"
+              },
+              "status": "PASS_OFFLINE_CANDIDATE_ORACLE_DIAGNOSIS",
+              "oracle": {
+                "status": "PASS",
+                "installed_processes": 14,
+                "continuation_processes": 13,
+                "control_tables": 75,
+                "snapshots": 36,
+                "scientific_records": 22,
+                "archive_receipts": 7,
+                "family_counts": [
+                  13,
+                  2,
+                  2,
+                  2,
+                  3
+                ],
+                "initial_frontier_revision": 4,
+                "final_frontier_revision": 7,
+                "final_snapshot": 8,
+                "publication_receipt_reused": true,
+                "first_bridge_operation_reused": true,
+                "exact_retry": true,
+                "same_physical_roots": true
+              },
+              "negative_control_count": 91,
+              "limits": "Separate offline candidate-oracle diagnosis of captured data only. In-memory status set RUNNING solely to invoke verifier; original failed reports remain byte-identical. No engine, SQL, native store or strict raw replay executed. Does not qualify a fresh installed run."
+            },
+            "bound_files": [
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/root-preparation.json",
+                "bytes": 29810,
+                "sha256": "a13ebc31667a52c8f6d2c2fc24f445f66ab7796c318b2766f3e49de5673d16d6"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/root-engine-invocation.json",
+                "bytes": 593,
+                "sha256": "f7d4dccfc3dde86ab0f7bcc7096615747e7ead62fb8e20532602d8c67006e7ba"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/root-engine-result.json",
+                "bytes": 664,
+                "sha256": "ef46d498c7a7ab086ef84c14450d411ffbbfdaebf7d1ce5dc551ec57d1433a46"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/root-engine.stderr",
+                "bytes": 2642,
+                "sha256": "388461874b0d5e0dc051ddec862154919491288d585c4e7d8130a53baea5982a"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/bindings/result.json",
+                "bytes": 13601,
+                "sha256": "cd2a70bee02e0f997cc3ad83fb3b5706603d74aef8c9257785360251aed9068a"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-7d2d96f/bindings/archive-catch-up-faults.json",
+                "bytes": 22863963,
+                "sha256": "1190d0c55a80de30e29fa1caf192f66091c830d21bd9241daa03c6b8b4994dbd"
+              }
+            ],
+            "limits": "Actual selected COMMIT/no-client-reply witnesses and all four phase captures exist, but original final verifier failed and strict successful raw replay is NOT_RUN. Separate corrected-oracle offline diagnosis does not promote original engineFAIL. No fresh-engine qualification inferred."
           }
         ],
-        "observed_at": "2026-10-18T17:39:45.099852+00:00"
+        "observed_at": "2026-10-18T18:23:28.151641+00:00"
       },
       "archive_fault_proxy_profile": {
         "status": "HARNESS_CORRECTION_REVIEWED_COMPONENTS_PASS_ENGINE_NOT_RUN",
@@ -35423,6 +35686,32 @@
           }
         },
         "limits": "No replay: one-shot retirement is complete. Original datasets/native roots/logs outside51Cargo homes were not recaptured or selected. Source/index/git trees, explicit source/artifact pins and all stable container projections verified. Unavailable /proc entries remain unproven. Free-space difference includes concurrent shared-host activity. Future Cargo may redownload exact checksum-bound packages."
+      },
+      "archive_fault_oracle_identity_correction": {
+        "status": "SOURCE_CORRECTION_OFFLINE_DIAGNOSIS_PASS_FRESH_ENGINE_NOT_RUN",
+        "source_file": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+        "source_sha256": "e996d04ee39f5586b0edee76c77b256e855f133a2fd7bea988243c884c46c273",
+        "finding": "Driver and bindings emit bigbrotr-acquisition-binding- plus seven source hex characters. Scientific verifier incorrectly required64hex container Id, after separate raw reader/auditor corrections had fixed those consumers.",
+        "change": "Require exact generated name shape; wire argv still binds same name; raw reader independently requires unique Docker Id and matching terminal Name. Added Id-instead-of-name and wrong-proxy-client controls.",
+        "root_review": "Complete487line scientific oracle, full changed runner continuation and bindings name construction, raw capture consumer read; nearby refusal/attempt clients inspected for same assertion. AST/diff check PASS. Scientific model unchanged.",
+        "diagnosis": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-fault-oracle-identity-20261018/diagnosis-v1.json",
+          "bytes": 8117,
+          "sha256": "35049c1843c4a042b0725793f277f1ec7c5a4ac035723c7cd41fa12a85f0ae94"
+        },
+        "diagnostic_helper": {
+          "path": "/home/tux/bigbrotr-rs/.research/archive-fault-oracle-identity-20261018/diagnose.py",
+          "bytes": 3137,
+          "sha256": "60dbd24b7137c1e7ef0eb585856c654211062e80592ff3258899f5175c26b12a"
+        },
+        "independent_review": {
+          "reviewer": "recovery_review",
+          "status": "NO_CONCRETE_SOURCE_BLOCKER",
+          "source_sha256": "e996d04ee39f5586b0edee76c77b256e855f133a2fd7bea988243c884c46c273",
+          "scope": "Exact3line diff, actual bindings name construction, runner/continuation parameter, complete wire argv equality, unique terminal Id/Name raw binding and adjacent refusal/attempt-limit binders/oracles.",
+          "findings": "Correct NAME generated from source[:7]; Id remains separately bound. Two controls discriminate grammar and exact proxy argv. No adjacent64hex-client assumption found.",
+          "limits": "Source-only AI review; no test/engine/native/SQL/tool execution delegated."
+        }
       }
     }
   }

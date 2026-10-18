@@ -428,7 +428,7 @@ def verify(value):
     revision,science,previous,count=prefix(value);original=previous;baseline=value['initial_state']
     direct=tomllib.loads(value['steps'][-1]['config_text'])
     assert direct['postgres']['control']['endpoint']==direct['postgres']['catalog']['endpoint']=='127.0.0.1:5432'
-    assert re.fullmatch('[0-9a-f]{64}',value['client'])
+    assert re.fullmatch('bigbrotr-acquisition-binding-[0-9a-f]{7}',value['client'])
     for phase in value['faults']:
         case=phase['step'];common(phase,previous,baseline,value['database'],value['setup_resource']['catalog_database'],loss=case in TARGETS)
         assert phase['operation']=='catchup' and not phase['fixture']['snapshots']
@@ -460,6 +460,8 @@ def negative_controls(value):
     check('forced-process',lambda v:v['faults'][0]['response']['terminal'].__setitem__('forced',True))
     check('unknown-proxy',lambda v:v['faults'][0]['wire'].__setitem__('status','UNKNOWN'))
     check('proxy-reader-alive',lambda v:v['faults'][0]['wire']['process'].__setitem__('readers_joined',False))
+    check('client-id-instead-of-name',lambda v:v.__setitem__('client','0'*64))
+    check('proxy-client-mismatch',lambda v:v['faults'][0]['wire']['process']['command'].__setitem__(3,v['client']+'-other'))
     def missing_commit(v):
         process=v['faults'][0]['wire']['process'];events=[json.loads(s) for s in process['stdout'].splitlines()]
         for e in events:e['server_complete']=0
