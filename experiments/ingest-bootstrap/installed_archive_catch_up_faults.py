@@ -82,7 +82,7 @@ def execute(pg,client,output,database,rows,setup,case,previous):
     try:
         if target:
             proxy_command=['docker','exec','-i',client,'python3','-B','/lab/'+PROXY,
-                '--target',target,'--mode','after-complete']
+                '--target',target,'--mode','after-complete','--profile','retained-catch-up']
             proxy=Process(proxy_command,input_pipe=True,limit=256*1024)
             wire=dict(status='UNKNOWN',target=target,mode='after-complete',ready=None,process=proxy_result(proxy,proxy_command))
             save_wire()

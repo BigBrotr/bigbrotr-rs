@@ -1,15 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T17:35Z on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T17:47Z on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and active responsibility
 
-Canonical `/home/tux/bigbrotr-rs`, main a8142a9; last verified remote410d804.
+Canonical `/home/tux/bigbrotr-rs`, main d910233; remote exactd910233 verified.
 Root is the sole integrating owner; Tux alone handles development and tests.
-No merge/rebase pending. Current uncommitted root docs bind the normal PASS,
-fault/refusal source integration and this checkpoint. Product/build source unchanged.
+No merge/rebase pending. Current root edits add an explicit proxy traffic profile, opt in the fault
+driver/oracle, add five boundary tests and bind failure/correction evidence.
+Product/build source unchanged.
 
 Current task: P02-T04 Steps3/4/5, enabling P01-T09 Step4/M1 after selected
 P02-T01 Step5 / P02-T02 Step4 succession work. See the
@@ -62,20 +63,43 @@ binds1974 source files and190 protected ELFs. No rebuild for experiment-only wor
 The renewal fix retains original due time/Work/deadline and lets due renewal
 precede retained commands inside its existing100ms margin.
 
-Next: commit/push these records, then prepare ONE fresh fault journey from clean
-main using `.research/archive-renewal-dispatch-20261018/prepare-fault-journey.py`
-SHAfb429707, build9a7fd81 and audit1164abade. Profile/root prefix
-`archive-catch-up-faults`; flag`--installed-archive-catch-up-faults`.
-Require unchanged69,324,505,088B free and all190ELFs. On actual enginePASS run
-`installed_archive_catch_up_fault_capture.py` in that exact source, save separate
-raw replay, then custody templatec169d78e from
-`.research/archive-deadline-build-20261018`. No replay of an existing run root.
+Latest fault run: `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233`.
+Source d910233ad0a593d08e571955dde51873d947c616, treee048c4387e7f3c80fa0c85ef61123e152efd9144.
+Prepare16592joined0, engine79314joined1 at17:39:45Z. Initial+nine prefix processes
+exited0; first publication-loss exited4/ObservationUnknown, unforced/reaped.
+Proxy exited3 at20002frames/9connections/1,671,074B; selectedqueries/commits/faults0.
+It hit the original20000-frame fixture budget during retained reconciliation.
+Original phase custody remainsUNKNOWN; no after-native read, completed fault phase,
+semantic verifier, raw replay or controls. PG/client stopped0/143/PID0/noOOM;
+exact/global backend absence captured. Original datasets and logs preserved.
+
+Read-only failed-run custody46287joined0: audit-failure-v1.json SHA
+ef708db549c312ff38f5be2909a2e11af9946d7317b17f70db504158175f0429,
+1980source/190ELFs/11processes/199structuralraw. This binds failed-run custody,
+not successful fault science. Never replay after intentional PG reuse.
+
+Root correction: explicit `retained-catch-up` proxy profile131072frames/64connections
+for this fixed four-issued/seven-final-attempt fixture. Original defaults/event
+shape,8MiB frame/64MiB wire/120s lifetime and all product bounds unchanged.
+Five actual in-memory frame/connection/byte/default-profile tests PASS; independent
+source review found no concrete blocker. Original d910233 remains FAIL/UNKNOWN.
+Source review `.research/archive-proxy-profile-20261018/source-review.json`, SHA33b7bc1a.
+
+Next: commit/push the reviewed correction and these records, then prepare ONE fresh
+fault journey from clean main using
+`.research/archive-renewal-dispatch-20261018/prepare-fault-journey.py` SHAfb429707,
+build9a/audit1164 and unchanged69,324,505,088B reserve. Profile`archive-catch-up-faults`.
+After enginePASS, execute its actual `installed_archive_catch_up_fault_capture.py`
+then NEW reviewed custody template56860025 under
+`.research/archive-catch-up-journey-20261018/.research/archive-catch-up-fault-traffic-audit-20261018`.
+Original c169 template remains historical. No completed root may be replayed.
 
 ## Integrated fault/refusal sources and pending work
 
 Fault original29d43a0 integrated005348b; corrections7c2628f/c7b643d integrated
 4aafcb3/bc53ba3. Exact final five blobs match frozen author source; full root
-source review and33+24 scoped controls recorded. Whole fault engine NOT_RUN.
+source review and33+24 scoped controls recorded. First fault run failed before
+the intended injection as above; full four-phase qualification remains NOT_RUN.
 Design: publication COMMIT reply loss, fresh resolver reuses original receipt,
 first bridge COMMIT reply loss, fresh original-operation resolution, exact retry.
 Actual proxy join and worker/driver/backend custody precede native inspection.
@@ -91,10 +115,15 @@ Artificial6contexts/186states/72controls,10custody mocks,13raw helpers and9selec
 checks PASS; all six actual engines/full raw replays NOT_RUN.
 Manifest `.research/archive-catch-up-refusals-20261018/.research/archive-catch-up-refusal-selfcheck-20261018/manifest.json`, SHA980adfde.
 
-Source-only agents are designing the two remaining genuine held LocalAttempt /
-issued-plus-planned cap fixtures and authoring a refusal custody template. They
-have no runtime/compiler/native/SQL authority. Both qualification worktrees and
-branches still have useful unintegrated evidence/work; do not discard them.
+Source-only author now implements the two genuine held LocalAttempt /126issued+3planned
+cap fixtures in the former refusal worktree, new branch
+`qualification/archive-catch-up-attempt-limits` basedd910233. Original69a branch
+and all ignored artifacts retained. Draft finite probe/harness/oracle/binder are
+unintegrated, build/engineNOT_RUN. No product adapter/API change intended.
+Refusal custody template24620f51/manifeste3c7f68a is frozen in the journeyWT under
+`.research/archive-catch-up-refusal-custody-20261018`; root must read its complete
+diff before execution. Preparation5b61ccf3 in archive-renewal-dispatch is reviewed,
+closed-six-selector, unchanged admission. No runtime authority is delegated.
 
 ## Resources and preservation
 

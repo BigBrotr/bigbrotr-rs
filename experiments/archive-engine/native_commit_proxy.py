@@ -129,9 +129,16 @@ class ResumeAuthorityObserver:
 
 
 class Proxy:
-    def __init__(self, mode, target='publication', lifetime_seconds=120):
+    def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default'):
         self.mode = mode
         self.target = target
+        # Retained reconciliation opens several real readers before the selected
+        # publication. Its explicit fixture profile keeps byte/time/frame bounds;
+        # old callers retain their original traffic admission and event shape.
+        if profile not in ('default', 'retained-catch-up'):
+            raise ValueError('profile')
+        self.profile = profile
+        self.frame_limit, self.connection_limit = (20000, 16) if profile == 'default' else (131072, 64)
         assert lifetime_seconds in (120, 180)
         self.lifetime_seconds = lifetime_seconds
         self.writers = []
@@ -150,6 +157,9 @@ class Proxy:
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
 
     def emit(self, event, **extra):
+        if self.profile != 'default':
+            extra.update(profile=self.profile, frame_limit=self.frame_limit,
+                         connection_limit=self.connection_limit)
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
 
     async def hold(self, stage, backend_pid):
@@ -175,13 +185,13 @@ class Proxy:
             raise ValueError('frame')
         self.report['bytes'] += length + 1
         self.report['frames'] += 1
-        if self.report['bytes'] > MAX_WIRE or self.report['frames'] > 20000:
+        if self.report['bytes'] > MAX_WIRE or self.report['frames'] > self.frame_limit:
             raise ValueError('budget')
         return tag, header, await reader.readexactly(length - 4)
 
     async def session(self, reader, writer):
         self.report['connections'] += 1
-        if self.report['connections'] > 16:
+        if self.report['connections'] > self.connection_limit:
             writer.close()
             raise ValueError('connections')
         self.writers.append(writer)
@@ -494,9 +504,11 @@ if __name__ == '__main__':
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
+    parser.add_argument('--profile', choices=['default', 'retained-catch-up'], default='default',
+                        help='Closed retained catch-up fixture:131072 frames/64 connections; unchanged64MiB wire and lifetime')
     try:
         args = parser.parse_args()
-        sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds).run()))
+        sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds, args.profile).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)

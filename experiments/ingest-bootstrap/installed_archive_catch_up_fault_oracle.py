@@ -28,7 +28,7 @@ def wire_checked(wire,target,source,client):
     assert wire['target']==target and wire['mode']=='after-complete'
     p=wire['process'];assert p['exit']==0 and p['overflow'] is False and p['readers_joined'] is True and not p['stderr']
     assert p['command']==['docker','exec','-i',client,'python3','-B','/lab/archive-catch-up-commit-proxy.py',
-        '--target',target,'--mode','after-complete']
+        '--target',target,'--mode','after-complete','--profile','retained-catch-up']
     events=[json.loads(s) for s in p['stdout'].splitlines()]
     assert [e['event'] for e in events]==['ready','fault','terminal']
     ready,fault,end=events;assert ready==wire['ready'] and ready['source_sha256']==source
@@ -37,7 +37,8 @@ def wire_checked(wire,target,source,client):
         assert event['target']==target and event['mode']=='after-complete'
         for key in ('connections','bytes','frames','data_queries','data_commits','server_complete','client_complete','faults'):
             assert type(event[key]) is int and event[key]>=0
-        assert event['connections']<=16 and event['bytes']<=64*1024**2 and event['frames']<=20000
+        assert event['profile']=='retained-catch-up' and event['frame_limit']==131072 and event['connection_limit']==64
+        assert event['connections']<=64 and event['bytes']<=64*1024**2 and event['frames']<=131072
         for key in ('owner_requests','owner_forwarded','owner_complete','guard_rejections','serialization_rejections',
             'auth_finals_omitted','coordinator_inserts','pin_claim_injections','session_mutations_complete',
             'reader_queries','capture_verify_requests','resume_authority_requests','resume_expiry_rejections','resume_expiry_idle'):

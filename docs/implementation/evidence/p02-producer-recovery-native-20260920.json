@@ -34839,6 +34839,337 @@
           "frontier-control-loss"
         ],
         "limits": "Each case requires a separate genuine initial-to-terminal3 root and actual strict raw replay. Held typed LocalAttempt and genuine issued-plus-planned cap remain separate NOT_RUN work. No engine/SQL/native/compiler delegated."
+      },
+      "archive_fault_journey_attempts": {
+        "attempts": [
+          {
+            "status": "FAIL_BEFORE_SELECTED_FAULT_PROXY_FRAME_BUDGET",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233",
+            "source": "d910233ad0a593d08e571955dde51873d947c616",
+            "tree": "e048c4387e7f3c80fa0c85ef61123e152efd9144",
+            "prepare_session": 16592,
+            "prepare_exit_code": 0,
+            "engine_session": 79314,
+            "engine_exit_code": 1,
+            "wrapper": {
+              "command": [
+                "/usr/bin/python3",
+                "-B",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/source/experiments/acquisition-scope/bindings.py",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233",
+                "--installed-archive-catch-up-faults",
+                "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+              ],
+              "source": "d910233ad0a593d08e571955dde51873d947c616",
+              "started_at": "2026-10-18T17:38:05.233324+00:00",
+              "exit_code": 1,
+              "finished_at": "2026-10-18T17:39:45.099852+00:00"
+            },
+            "completed_prefix": [
+              "abandon1",
+              "retire1",
+              "live2",
+              "abandon2",
+              "retire2",
+              "live3",
+              "source3",
+              "abandon3",
+              "retire3"
+            ],
+            "completed_fault_phases": [],
+            "failed_phase": "publication-loss",
+            "product_processes": "10_EXITED_ZERO_PLUS_1_EXITED_FOUR_ALL_UNFORCED_REAPED",
+            "response": {
+              "returncode": 4,
+              "stdout": "",
+              "stderr": "error: initial Archive refused; preserve original state: ObservationUnknown\n",
+              "outcome": "PROCESS_EXITED",
+              "terminal": {
+                "pid": 2477,
+                "config": "/lab/catch-up-publication-loss.toml",
+                "prefix": "/lab/catch-up-publication-loss",
+                "command": [
+                  "/build/bigbrotr",
+                  "archive",
+                  "catch-up",
+                  "--file",
+                  "/lab/catch-up-publication-loss.toml"
+                ],
+                "start_ticks": 572743360,
+                "reaped": true,
+                "exit_code": 4,
+                "forced": false,
+                "error": null,
+                "elapsed_seconds": 2.15499927662313
+              }
+            },
+            "original_custody": {
+              "status": "UNKNOWN",
+              "process_closed": false,
+              "proxy_closed": false,
+              "errors": [
+                {
+                  "stage": "process-custody",
+                  "error": "AssertionError()"
+                },
+                {
+                  "stage": "proxy-custody",
+                  "error": "AssertionError()"
+                }
+              ]
+            },
+            "proxy": {
+              "status": "UNKNOWN",
+              "target": "publication",
+              "mode": "after-complete",
+              "ready": {
+                "event": "ready",
+                "mode": "after-complete",
+                "target": "publication",
+                "connections": 0,
+                "bytes": 0,
+                "frames": 0,
+                "data_queries": 0,
+                "data_commits": 0,
+                "server_complete": 0,
+                "client_complete": 0,
+                "faults": 0,
+                "owner_requests": 0,
+                "owner_forwarded": 0,
+                "owner_complete": 0,
+                "guard_rejections": 0,
+                "serialization_rejections": 0,
+                "rejection_sequence": [],
+                "auth_finals_omitted": 0,
+                "frontend_queries": 0,
+                "coordinator_inserts": 0,
+                "pin_claim_injections": 0,
+                "pin_rejections": [],
+                "session_mutations_complete": 0,
+                "reader_queries": 0,
+                "capture_verify_requests": 0,
+                "resume_authority_requests": 0,
+                "resume_expiry_rejections": 0,
+                "resume_expiry_idle": 0,
+                "port": 46763,
+                "source_sha256": "ed9c41299c691236e189bab25adf9241f6dbf483473848974c14e91bba5f5939"
+              },
+              "process": {
+                "command": [
+                  "docker",
+                  "exec",
+                  "-i",
+                  "bigbrotr-acquisition-binding-d910233",
+                  "python3",
+                  "-B",
+                  "/lab/archive-catch-up-commit-proxy.py",
+                  "--target",
+                  "publication",
+                  "--mode",
+                  "after-complete"
+                ],
+                "exit": 3,
+                "stdout": "{\"event\": \"ready\", \"mode\": \"after-complete\", \"target\": \"publication\", \"connections\": 0, \"bytes\": 0, \"frames\": 0, \"data_queries\": 0, \"data_commits\": 0, \"server_complete\": 0, \"client_complete\": 0, \"faults\": 0, \"owner_requests\": 0, \"owner_forwarded\": 0, \"owner_complete\": 0, \"guard_rejections\": 0, \"serialization_rejections\": 0, \"rejection_sequence\": [], \"auth_finals_omitted\": 0, \"frontend_queries\": 0, \"coordinator_inserts\": 0, \"pin_claim_injections\": 0, \"pin_rejections\": [], \"session_mutations_complete\": 0, \"reader_queries\": 0, \"capture_verify_requests\": 0, \"resume_authority_requests\": 0, \"resume_expiry_rejections\": 0, \"resume_expiry_idle\": 0, \"port\": 46763, \"source_sha256\": \"ed9c41299c691236e189bab25adf9241f6dbf483473848974c14e91bba5f5939\"}\n{\"event\": \"terminal\", \"mode\": \"after-complete\", \"target\": \"publication\", \"connections\": 9, \"bytes\": 1671074, \"frames\": 20002, \"data_queries\": 0, \"data_commits\": 0, \"server_complete\": 0, \"client_complete\": 0, \"faults\": 0, \"owner_requests\": 0, \"owner_forwarded\": 0, \"owner_complete\": 0, \"guard_rejections\": 0, \"serialization_rejections\": 0, \"rejection_sequence\": [], \"auth_finals_omitted\": 0, \"frontend_queries\": 454, \"coordinator_inserts\": 0, \"pin_claim_injections\": 0, \"pin_rejections\": [], \"session_mutations_complete\": 0, \"reader_queries\": 0, \"capture_verify_requests\": 0, \"resume_authority_requests\": 0, \"resume_expiry_rejections\": 0, \"resume_expiry_idle\": 0, \"unexpected\": 2}\n",
+                "stderr": "",
+                "overflow": false,
+                "readers_joined": true
+              }
+            },
+            "backend_absence": {
+              "exact": [
+                {
+                  "pid": 4740,
+                  "backend_start": "2026-10-18T17:39:39.514835+00:00",
+                  "database": "bb_scope_bind_d910233_archive_export",
+                  "present": false
+                }
+              ],
+              "all": {
+                "bb_scope_bind_d910233_archive_export": "0",
+                "bb_scope_bind_d910233_archive_export_cat": "0"
+              }
+            },
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "native_after": "NOT_OPENED",
+            "semantic_verify": "NOT_RUN",
+            "raw_replay": "NOT_RUN",
+            "negative_controls": "NOT_RUN",
+            "custody": {
+              "session": 46287,
+              "joined_exit_code": 0,
+              "status": "PASS_READ_ONLY_FAILED_ARCHIVE_PROXY_BUDGET_CUSTODY",
+              "source_files": 1980,
+              "protected_elfs": 190,
+              "structurally_bound_raw_files": 199,
+              "report": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/audit-root/audit-failure-v1.json",
+                "bytes": 418948,
+                "sha256": "ef708db549c312ff38f5be2909a2e11af9946d7317b17f70db504158175f0429"
+              }
+            },
+            "bound_files": [
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/root-preparation.json",
+                "bytes": 29690,
+                "sha256": "91b3a70f7ac06d3a0777f55491796fcf52e448b884344abcd74c437cfd2e6bf6"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/root-engine-invocation.json",
+                "bytes": 593,
+                "sha256": "702547d0026d4364d16f28eb91c076beef3073cb4c0a2463029322a5156d236e"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/root-engine-result.json",
+                "bytes": 664,
+                "sha256": "f96e4dd1d8b5d16babe405e1cb18390c795c3c94e0c3a120d0743be430f587b1"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/bindings/result.json",
+                "bytes": 13602,
+                "sha256": "c97c2675201fcbab42fe2414e7f8c1c25f48f9452197fe7062c9ab9ba6ad8675"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/bindings/archive-catch-up-faults.json",
+                "bytes": 15404922,
+                "sha256": "4d8f954b88dbac9609a43e977bf87a7533ad41b515a2fed026d6ba4e0210a0db"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233/bindings/catch-up-publication-loss-wire.json",
+                "bytes": 2914,
+                "sha256": "25fa7f3eb322520a138862b0b1b91cbb92baaadfa48f14e0a3932a51082d9479"
+              }
+            ],
+            "limits": "Observed default proxy limit during retained scans; no selected transaction or injected fault, so no COMMIT-loss qualification. Original FAIL/UNKNOWN preserved; outer stoppedPG/client and files bound separately. No source/product normalization or native after-state invented."
+          }
+        ],
+        "observed_at": "2026-10-18T17:39:45.099852+00:00"
+      },
+      "archive_fault_proxy_profile": {
+        "status": "HARNESS_CORRECTION_REVIEWED_COMPONENTS_PASS_ENGINE_NOT_RUN",
+        "original_run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-faults-engine-d910233",
+        "original_status": "FAIL",
+        "original_engine_session": 79314,
+        "original_exit_code": 1,
+        "original_phase_custody": "UNKNOWN",
+        "observed_proxy_terminal": {
+          "event": "terminal",
+          "mode": "after-complete",
+          "target": "publication",
+          "connections": 9,
+          "bytes": 1671074,
+          "frames": 20002,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 454,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 0,
+          "resume_expiry_rejections": 0,
+          "resume_expiry_idle": 0,
+          "unexpected": 2
+        },
+        "product_error": "ObservationUnknown",
+        "cause": "Exact historical proxy enforces20000 total frames. It stopped during retained-reader reconciliation at20002 frames/9connections/1671074bytes, with no selected transaction or injected fault. Do not treat this as intended COMMIT-loss evidence.",
+        "sources": [
+          {
+            "path": "experiments/archive-engine/native_commit_proxy.py",
+            "bytes": 29344,
+            "sha256": "8f4a590c1b8415f3c669b0b039d2b6b2cff528ff719930028c52fcf11476ab0b"
+          },
+          {
+            "path": "experiments/archive-engine/native_commit_proxy_tests.py",
+            "bytes": 4037,
+            "sha256": "273243cfe337be842ee22c58670edaca32f34bd3d3b1810f67a875b8222d8439"
+          },
+          {
+            "path": "experiments/ingest-bootstrap/installed_archive_catch_up_faults.py",
+            "bytes": 13419,
+            "sha256": "4e98c39e73c0b5d4bd257edb5d55270c1e45dc426e7bad9457a2631dec2ad735"
+          },
+          {
+            "path": "experiments/ingest-bootstrap/installed_archive_catch_up_fault_oracle.py",
+            "bytes": 40617,
+            "sha256": "f02f80884c5a95cf2d00840dc4a6f94af9a11f166fae8e1e1afd4e8ce4496cab"
+          }
+        ],
+        "scope": "Explicit closed retained-catch-up proxy profile131072frames/64connections for the fixed four-issued/seven-final-attempt fixture; unchanged8MiB frame/64MiB wire/120s lifetime. Original default20000/16/eventshape unchanged. No product deadline, admission or resource setting changed; this is not qualification of the full128attempt product profile.",
+        "checks": {
+          "command": "python3 -B experiments/archive-engine/native_commit_proxy_tests.py -v",
+          "execution": "direct exec bfbede",
+          "exit_code": 0,
+          "tests": 5,
+          "stdout": {
+            "path": ".research/archive-proxy-profile-20261018/tests-v1.stdout",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "path": ".research/archive-proxy-profile-20261018/tests-v1.stderr",
+            "bytes": 687,
+            "sha256": "9b8ab4aa926a6fda44af176e1dc3228a244a10475e71ddc4fc4a6a9de12b9dcf"
+          },
+          "scope": "Actual in-memory framing/admission boundary tests; no socket, SQL or native process"
+        },
+        "review": {
+          "root": "Full original500line proxy and complete delta; final new test bodies, full fault driver and changed wire oracle; complete21line custody-template delta read. Original capture and counters inspected.",
+          "independent": "successor_restart_design complete proxy/tests/driver, wire checker and final custody boundaries; default traffic/event behavior preserved, exact selected serverCOMMIT/no client completion still required, no concrete blocker. Source-only AI review, no rerun."
+        },
+        "custody_template": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-fault-traffic-audit-20261018/audit-fault-retained-traffic-template.py",
+          "bytes": 43972,
+          "sha256": "568600259e932a345e91ab625608ad25c5b6699eb992dd55a6a747fa2dab7aeb"
+        },
+        "custody_manifest": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-fault-traffic-audit-20261018/manifest.json",
+          "bytes": 2389,
+          "sha256": "cd149fc560ab512c1fa868e7a2bb12f26d749dba8a4f8d4df5e71447586ac9ab"
+        },
+        "limits": "New engine/raw replay/custody NOT_RUN. Preserve failed d910233 and its UNKNOWN state. Fresh exact-source root required after failed-run custody capture.",
+        "record": {
+          "path": ".research/archive-proxy-profile-20261018/source-review.json",
+          "bytes": 4526,
+          "sha256": "33b7bc1ac1fe78570a86dd01a792e6d49315095f56e49af01dd14b104141d105"
+        }
+      },
+      "archive_refusal_helpers": {
+        "preparation": {
+          "path": ".research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py",
+          "bytes": 4914,
+          "sha256": "5b61ccf3bb9e44078b35a1d572cc4b26b540618b9cd676300ee760780bffd1ba"
+        },
+        "preparation_review": {
+          "path": ".research/archive-renewal-dispatch-20261018/prepare-refusal-source-review.json",
+          "bytes": 1022,
+          "sha256": "b4485c9757d82f75b71385157d39ee0ede0ad4d8160756d77534a2e5252c93d4"
+        },
+        "custody_template": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-refusal-custody-20261018/audit-refusal-template.py",
+          "bytes": 44837,
+          "sha256": "24620f51bba48aff2d2157a39ea9eed84e873fba74ac877642315e781b57b27b"
+        },
+        "custody_manifest": {
+          "path": ".research/archive-catch-up-journey-20261018/.research/archive-catch-up-refusal-custody-20261018/manifest.json",
+          "bytes": 3361,
+          "sha256": "e3c7f68a34ef184013972981e30d7180d4e64dff645e82ad087900c1dea9cc87"
+        },
+        "status": "SOURCE_ONLY_PREPARATION_REVIEWED_REFUSAL_AUDITOR_AWAITING_ROOT_DIFF_REVIEW",
+        "runtime": "NOT_RUN"
       }
     }
   }
