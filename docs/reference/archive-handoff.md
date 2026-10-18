@@ -676,6 +676,16 @@ legacy source 1/zero-counter exception exactly; it adds no exception for missing
 nonzero pending batches. Rejected or AlreadyDurable requests can have no new facts
 while still participating in complete original-input replay.
 
+For an existing Archive frontier behind the terminal topology, preserve its exact
+published cut while advancing through each immediate sealed topology: retain all
+old bounds and selected receipts, adding explicit zero bounds for newly introduced
+streams. This is valid only for the checked cumulative lineage membership; it is
+not permission to discard or regress a stream. Observe each such prefix at the
+actual latest catalog snapshot under `CatalogCapture`, then publish the full
+terminal cut at the target topology. A later receipt keeps its original topology
+and complete membership; do not retag or split it to fill an intermediate cut.
+A genuinely absent frontier may start directly at the checked target topology.
+
 ### Total admitted profile
 
 The first finite profile has the following independent limits. All arithmetic
@@ -700,6 +710,11 @@ lanes. Use the existing checked grant requirements rather than another vector of
 decoded facts or an uncharged list of all inputs. Larger batches, history or wire
 refuse; a valid 255-epoch lineage is not a promise that 255 useful archived lifetimes
 fit this smaller Archive profile. These are admission bounds, not measured RSS.
+The cut worker scans the entire native receipt ledger through EOF, even when its
+selected prefix has no receipts or only zero bounds. Admit that scan against the
+full bounded receipt inventory (at most 128), never the selected receipt count.
+Materialize one intermediate cut at a time under the same profile; the existing
+lineage bound also bounds the number of immediate topology steps.
 
 Before new attempt issuance or native publication, enumerate and validate the
 complete retained obligations, admit the prospective total and cut, validate the

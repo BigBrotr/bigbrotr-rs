@@ -664,8 +664,12 @@ with the [positive historical handoff and admitted profile](../reference/archive
 It connects a fully terminal repeated Ingest lineage to missing-batch publication,
 an exact retry of the complete frontier, and the same-root read/export/restart
 journey in P01-T09 Step 4. Implementation and connected qualification remain owed;
-initial-only consumers and initialization recovery stay unchanged. No task or
-milestone checkbox changes from this selection.
+initial-only consumers and initialization recovery stay unchanged. Existing
+frontiers traverse immediate sealed topologies by preserving their exact prefix
+and adding zero bounds before the final terminal cut; all native receipt scans
+retain the full admitted inventory bound. This reuses the current guards and
+latest-snapshot capture without a migration. No task or milestone checkbox
+changes from this selection.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

@@ -1176,6 +1176,28 @@ complete cut includes every lineage stream and explicit zero cuts. Older receipt
 topologies may contribute to that later cut under the existing exact-membership
 and same-cut reference rules.
 
+An existing frontier advances topology only through its immediate sealed
+successor. For the selected cumulative Ingest lineage, bridge any intermediate
+topologies by preserving the exact currently published bounds and selected
+attempts and adding zero bounds for new streams. Do not require the full terminal
+cut at an intermediate topology: a genuine receipt may already have committed
+under a later topology before delivery was lost, and its identity/grouping cannot
+be rewritten. Each bridge uses a newly joined observation of the requested prefix
+at the actual latest snapshot, including exact original membership and reference
+closure. Later disjoint facts may remain outside that prefix; missing, conflicting
+or surplus members inside it refuse. Historical snapshot selection cannot stand
+in for this latest observation. No migration or bypass of the existing immediate
+predecessor guard is selected.
+
+After the intermediate steps, publish the full terminal cut at the target
+topology, preserving all earlier receipts. Zero-only epochs still add explicit
+bounds; they need no fact publication. If no frontier genuinely exists, the first
+revision can directly name the checked target topology. After interruption,
+resolve the original frontier operation and validate the actual retained current
+head before continuing the remaining steps. Never recreate a committed bridge or
+restart from an assumed topology. An already identical target frontier takes the
+exact-retry path below, without any intermediate or duplicate revision.
+
 Capture the actual native catalog snapshot under the existing disabled-writer
 owner barrier, with joined observation and live manager/Control authority. Bind
 the selected original inputs, whole bounds, native snapshot/counts and logical
