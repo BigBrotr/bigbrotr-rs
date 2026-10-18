@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T12:40:03.775926+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T13:00:04.917730+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,17 +8,21 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD/verified remote9f699be.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEADcdeb470; last verified remote01b05d7.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
-This evidence/checkpoint update is pending commit/push. No merge/rebase pending.
+Prepared consumerfc5724c integrated ascdeb470. Root serve.rs CLI,
+control_runtime_entrypoint.rs, ingest-store.md and evidence/checkpoint changes
+are ready for the accompanying commit; compilation remains NOT_RUN.
+No merge/rebase is pending.
 
 The four epoch3-or-later recovery modes use existing schema0038 adapters:
 positive recovery, separate source closure, fresh closed-source acquisition
 abandonment and existing-only retirement. Native-first custody retains opaque
 owners outside cancelled futures. No writer adoption, import-veto relaxation,
-tail resolution or ACK/GC. CLI selects12 mutually exclusive modes; the seven
-actual entrypoint tests cover all66pairs and native-before-credentials.
+tail resolution or ACK/GC. Qualified3bdcdd1 CLI selects12 exclusive modes; its
+seven entrypoint tests cover all66pairs and native-before-credentials. The new
+thirteenth flag and78pairs remain uncompiled in the root work below.
 
 Independent AI review closed caller-driven acquisition cancellation ordering and
 Control exit-code mapping. ClaimExit closes native before caller-driven future
@@ -86,16 +90,48 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: implement installed recovery of unactivated prepared attempts
-using existing repeatable adapters. Source-only recovery_review is mapping the four contracted
-states (PG/native gap, OPEN0, CLOSING0, exact terminal retry); no product edits yet.
-Root owns all compilation and actual engines. Preserve source-open/closed/terminal
-retry distinctions. Prepared recovery must never adopt a writer. Import logical
-closure, staged tails, ACK/GC, Archive restart and full M1–M5 remain unfinished.
+Next bounded action: commit the root CLI/tests/docs and run one exact-revision
+installed build with prepare-build.py below, then join and audit its actual result.
+Consumerfc5724c/cdeb470 is frozen: three files, scoped rustfmt/diff and four
+source-only inverse checks PASS; runtime remains NOT_RUN. Author manifest49bed9c1
+and independent AI review4e068ef4 are authenticated in source-binding.json under
+`.research/installed-prepared-resume-20261018`. Root read the complete final260-line
+child and parent deltas. Original clean worktree and all artifacts remain under
+`.research/installed-prepared-recovery-20261018`. No concrete review blocker.
+Root CLI covers13exclusive flags/78conflict pairs and missing-native checks.
+cleanup_review now independently reviews the harness source; no engine execution.
 
-Fresh Git census: all134worktrees remain,133detached and canonical main.
+Source-only successor_restart_design owns new installed_prepared*.py in
+`.research/installed-prepared-cycle-20261018`, branch
+`qualification/installed-prepared-cycle`, same base. Agreed bounded journey:
+actual prepared/native gap3, OPEN4, CLOSING4, first+terminal retry, fresh Serve4/5;
+refuse activated OPEN0 and old terminal2 without a pending preparation. Five
+copies/twelve processes planned (two finite setup, ten installed); all NOT_RUN.
+Old intermediate snapshots are not clonable final state. Missing interrupted
+states will be produced on fresh copies with the existing qualified finite/proxy
+boundaries; original stores remain untouched. No new fault matrix is selected.
+
+The command --retire-empty-successor uses existing schema0038 adapters; no new
+storage API or migration is planned. Confirmed gap completion releases stale
+history before serial reinspection with the same native/Control; no second lineage
+or next-generation reservation. First retirement verifies through E-1; exact
+terminal retry through E. Native2/schema2 admits only a genuine pending target3.
+No candidate/writer adoption, implicit activated recovery or input reclamation.
+Design f688aec2 and source-manifest81e76c5b are retained under
+`.research/installed-cycle-resume-20261018/prepared-design/`. New root prepare-build.py
+and audit-build-template.py in `.research/installed-prepared-resume-20261018` are
+NOT_EXECUTED; they bind qualified3bdcdd1 and148protected priorELFs. Do not replay
+any old prepare/run. Compilation, new Rust checks and installed prepared engine
+remain NOT_RUN. Root owns all compiler/cache/engine operations. No new engine or
+build is active. Import logical closure, staged tails, ACK/GC, Archive restart and
+full M1–M5 remain unfinished.
+
+Ref-retirement Git census: all134worktrees remained,133detached and canonical main.
 The earlier79detached count was historical, not the complete current census.
-The two qualified source refs were retired (90560 joined0), leaving only main locally and remotely. Cumulative
+The two qualified source refs were retired (90560 joined0), leaving main alone at
+that boundary. Two new branches/worktrees above now serve concrete implementation
+and qualification work:136registered,133detached, canonical main plus two agents.
+Remote main remains the only remote branch. Cumulative
 retirement125local/51remote refs; original full histories archived and bundled at
 `.research/branch-retirement-20261018/installed-cycle.bundle`,15,976,984bytes,
 SHA0485e2eb. Every tracked/ignored/link/stat census unchanged. No worktree, artifact,

@@ -31826,6 +31826,28 @@
         "handle": "90560 joined0",
         "registered_worktrees": 134,
         "detached_worktrees": 133
+      },
+      "installed_prepared_source": {
+        "status": "SOURCE_REVIEWED_BUILD_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-18T13:00:04.917730+00:00",
+        "base": "01b05d7fc86e17344acb8a2fb4eac53a738a6d11",
+        "consumer_worktree": "/home/tux/bigbrotr-rs/.research/installed-prepared-recovery-20261018",
+        "harness_worktree": "/home/tux/bigbrotr-rs/.research/installed-prepared-cycle-20261018",
+        "design": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-cycle-resume-20261018/prepared-design/conclusion.json",
+          "sha256": "f688aec2c5d8b0d0c3b39d4affd666e2125cc1d264ff54d6ae864ccc58bc7309"
+        },
+        "scope": "Explicit --retire-empty-successor, native gap3 / OPEN4 / CLOSING4 / exact terminal retry, no writer adoption. Existing storage API/schema38.",
+        "planned_engine": "Five fresh copies/twelve processes: two actual finite interrupted-state setups, eight positive installed processes and two classification refusals. All NOT_RUN.",
+        "root_scripts": "/home/tux/bigbrotr-rs/.research/installed-prepared-resume-20261018; prepared but NOT_EXECUTED",
+        "active_resources": "Harness source-only author/reviewer; consumer frozen. Root compiler/engine not yet started.148protected ELF paths preserved.",
+        "original_commit": "fc5724cd614ae3e47b0d9076365d5b8ab19e1437",
+        "integrated_commit": "cdeb470e4813410f29a0ad0e2b22045a5e3b1301",
+        "source_binding": {
+          "path": "/home/tux/bigbrotr-rs/.research/installed-prepared-resume-20261018/source-binding.json",
+          "sha256": "bbaf57e9be5612db3bccc80ece3a8824b27ea016df90794e366d6607eaf69fc1"
+        },
+        "source_checks": "Scoped rustfmt/diff and four inverse-source checks PASS. Independent AI review reports no concrete blocker; runtime NOT_RUN."
       }
     }
   }

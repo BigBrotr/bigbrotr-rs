@@ -451,6 +451,40 @@ or Archive restart. The [recovery evidence](../implementation/evidence/p02-produ
 binds full SQL/native/input preservation and distinguishes the earlier live-writer
 journey from this installed finite-operation cycle.
 
+## Recovering an unactivated later preparation (under implementation)
+
+Stop the attempted owner and retain its complete store and original inputs, then
+use the explicit finite command:
+
+```sh
+bigbrotr ingest recover --file ROOT --retire-empty-successor
+```
+
+This mode requires migration0038, the existing recovery grants and a recorded
+unactivated preparation for epoch3 or later. Fresh Control authority verifies
+the complete predecessor history and exact existing outcome copies. It selects
+the action from the retained PostgreSQL and native state:
+
+| Retained state | Recovery action |
+| --- | --- |
+| SQL prepared, native still at predecessor | Complete the exact recorded handoff, inspect and replay the resulting state, then retire the empty attempt |
+| Prepared native OPEN0 | Close the empty producer and publish its complete SQL retirement |
+| Prepared native CLOSING0, SQL not terminal | Finish the SQL retirement without another native write |
+| Exact unactivated terminal head | Verify the complete history through that head and preserve its terminal timestamp, attribution and row versions |
+
+An activated head requires the activated recovery modes even when it has issued
+zero requests. Missing original inputs, missing outcome copies, unresolved claims
+and inconsistent state refuse recovery. The command preserves every input and
+creates no writer, candidate or new preparation. Native epoch2 is accepted only
+as the predecessor of a genuine recorded epoch3 preparation gap. Recovery needs
+capacity for the existing attempt, without reserving another generation.
+
+The successful report distinguishes the verified predecessor prefix of a first
+retirement from the full terminal history checked on retry. It is emitted only
+after native closure, Control release and driver join. Compilation and installed
+qualification for this consumer are NOT_RUN; the existing repeatable adapter
+evidence does not substitute for this installed journey.
+
 ## Recovering the activated successor
 
 After stopping the epoch2 owner, the selected finite recovery command is:
