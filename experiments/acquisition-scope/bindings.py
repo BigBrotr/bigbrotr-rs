@@ -1282,7 +1282,8 @@ try:
         '--mount', f'type=bind,src={output},dst=/lab',
         '--mount', f'type=bind,src={pg_root}/secrets,dst=/run/secrets,readonly',
         '--mount', f'type=bind,src={build},dst=/build,readonly', *instrument_mount, pg['client_image'],
-        'python3', '-c', 'import time; time.sleep(600)').stdout.strip()
+        'python3', '-c', ('import time; time.sleep(10800)' if installed_archive_attempt_limits
+                         else 'import time; time.sleep(600)')).stdout.strip()
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
