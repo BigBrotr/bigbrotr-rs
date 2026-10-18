@@ -1,17 +1,18 @@
-//! Finite recovery of an activated epoch3-or-later lifetime. Every mode retains
+//! Finite recovery of a retained epoch3-or-later lifetime. Every mode retains
 //! the exclusive native handle and its opaque proof owner through teardown;
 //! none returns a writer, adopts an incarnation or resolves import obligations.
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
         ActivatedSuccessorRecovery, ActivatedSuccessorRetirement, ActivatedSuccessorSourceRecovery,
-        InitialHistoryRequest, SuccessorReplayRequest,
+        InitialHistoryRequest, SuccessorHistory, SuccessorReplayRequest,
     },
     rocks::{store::LineageEpochSummary, succession::MAX_LINEAGE_METADATA_BYTES},
 };
 use bigbrotr_model::ProducerSlotId;
 use std::time::Duration;
 
+mod prepared;
 mod retirement;
 mod source;
 
@@ -23,10 +24,11 @@ pub(super) enum Mode {
     CloseSource,
     AbandonAcquisition,
     Retire,
+    RetireEmpty,
 }
 
 // Field order also protects unwinding: close native before releasing retained
-// proof grants or dropping Control. Only one of the three proof owners is used.
+// proof grants or dropping Control. Only one of the four proof owners is used.
 // After acquisition, bounded operations borrow Control in this custody. The
 // acquisition future owns its client and has a separate native-first guard.
 #[derive(Default)]
@@ -35,6 +37,7 @@ struct Custody {
     positive: Option<ActivatedSuccessorRecovery>,
     source: Option<ActivatedSuccessorSourceRecovery>,
     retirement: Option<ActivatedSuccessorRetirement>,
+    history: Option<SuccessorHistory>,
     owner: Option<ControlSession>,
     client: Option<tokio_postgres::Client>,
 }
@@ -97,12 +100,19 @@ async fn own(
         grant(&budget, 0, native_limits().native_allowance_bytes())?,
     )
     .map_err(error)?;
-    if native.manifest().key_schema() != 3
-        || !(3..=255).contains(&native.manifest().identity().owner_epoch.get())
-    {
+    let shape = (
+        native.manifest().identity().owner_epoch.get(),
+        native.manifest().key_schema(),
+    );
+    if !matches!(shape, (3..=255, 3)) && !(mode == Mode::RetireEmpty && shape == (2, 2)) {
         return Err((
             4,
-            "successor recovery requires native schema3 and epoch3..255".into(),
+            if mode == Mode::RetireEmpty {
+                "empty successor recovery requires schema2/epoch2 or schema3/epoch3..255"
+            } else {
+                "successor recovery requires native schema3 and epoch3..255"
+            }
+            .into(),
         ));
     }
     let mut custody = Custody {
@@ -117,10 +127,15 @@ async fn own(
         &budget,
     )?;
     // One lineage allocation includes its fixed PG/native scratch. Retain the
-    // closing grant alongside it; input/outcome replay and the final effect
+    // mutation grant alongside it; input/outcome replay and the final effect
     // census are serial. Admit each actual overlap before a claim or barrier.
     let metadata = grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
-    let closing = grant(&budget, 4096, 4096)?;
+    let mutation_bytes = if mode == Mode::RetireEmpty {
+        8192
+    } else {
+        4096
+    };
+    let closing = grant(&budget, mutation_bytes, mutation_bytes)?;
     drop(replay_grants(&budget)?);
     drop(effect_grant(&budget)?);
     if matches!(mode, Mode::AbandonAcquisition | Mode::Retire) {
@@ -187,6 +202,7 @@ async fn own(
             work.source(&mut custody, metadata, closing, mode).await?
         }
         Mode::Retire => work.retire(&mut custody, metadata, closing).await?,
+        Mode::RetireEmpty => work.retire_empty(&mut custody, metadata, closing).await?,
     };
     let grace = duration(&root, "graceful_shutdown_timeout");
     phase(&progress, grace)?;
@@ -357,6 +373,7 @@ impl Completed {
             Mode::CloseSource => "successor-source-closed",
             Mode::AbandonAcquisition => "successor-acquisition-abandoned",
             Mode::Retire => "successor-retired",
+            Mode::RetireEmpty => unreachable!("separate empty-successor report"),
         };
         json!({"format":"bigbrotr-ingest-recovery/1","state":state,
             "dataset_id":id.dataset_id,"owner_resource_id":id.owner_resource_id,
