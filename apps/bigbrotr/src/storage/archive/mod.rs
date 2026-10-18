@@ -1,6 +1,7 @@
 mod bootstrap;
 mod client_identity;
 mod coordinator;
+mod frontier_intents;
 mod initialization;
 mod inputs;
 mod installation;
@@ -14,6 +15,7 @@ mod worker;
 
 pub use client_identity::{NativeClientIdentity, NativeIdentityError};
 pub use coordinator::{LocalCoordinator, ReaderCustody};
+pub use frontier_intents::{FrontierIntentError, FrontierIntentScan, RetainedFrontierIntent};
 pub use initialization::LocalInitialization;
 pub use inputs::{InputError, RetainedInputs};
 pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};

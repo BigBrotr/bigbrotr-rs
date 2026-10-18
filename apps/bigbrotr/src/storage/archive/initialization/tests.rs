@@ -2,6 +2,7 @@ use super::*;
 use std::{fs, os::unix::fs::PermissionsExt};
 const BOOT: &str = "01234567-89ab-cdef-0123-456789abcdef";
 
+mod frontier_intents;
 mod inputs;
 mod retained_receipts;
 
