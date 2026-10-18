@@ -12,8 +12,9 @@ Existing task files own the plan; this checkpoint locates current work and evide
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
 Canonical `/home/tux/bigbrotr-rs`, branch main, observed HEAD652a9bb after integrating
-original361c1099; remote last verified7f40c12. Root CLI/tests/reference docs and
-this checkpoint/evidence/inventory are the pending coherent companion commit.
+original361c1099; remote last verified7f40c12. Root CLI/tests/reference docs were committed as34d9280. Its first build failed
+E0277: RequestInputError lacks Display. The minimal Debug/exit3 correction and
+this failure evidence are pending commit. Tests and Clippy were NOT_RUN.
 No merge/rebase is pending; no future commit hash is guessed here.
 
 The four epoch3-or-later recovery modes are implemented using existing schema0038
@@ -39,7 +40,8 @@ The other active WT `.research/installed-successor-cycle-20261015`, branch
 `qualification/installed-successor-cycle`, owns only new installed_cycle*.py.
 Harness author and independent reviewer are working on27processes over three
 fresh copies of the existing9359721 endpoints, followed by new Serve epochs4/4/5.
-No new engine or compiler run has begun at this observation.
+First exact build97536 joined1, prepare56531/audit31871 joined0. No new engine
+run has begun. Both build containers are stopped and retained.
 
 ## Evidence, resources and next action
 
@@ -62,11 +64,12 @@ These are source claims, not runtime qualification. Compilation, current Rust/CL
 tests and full installed cycle remain NOT_RUN. Existing4cfac91/9359721 results below
 are unchanged historical evidence; Oct18 resumption checked311artifacts/143ELFs.
 
-Next bounded action: commit the reviewed root CLI/tests/docs companion, then
-prepare and execute exact-revision `ingest-succession-installed` on the existing
-exclusive compiler cache. New unexecuted scripts are
-`.research/installed-cycle-resume-20261018/prepare-build.py` and
-`audit-build-template.py`; preserve originals, actual failures and all143prior ELFs.
+Next bounded action: commit the RequestInputError conversion fix, then run the
+corrected exact-revision `ingest-succession-installed` build with
+`.research/installed-cycle-resume-20261018/prepare-build-followup.py` and
+`audit-build-followup-template.py`. Original prepare-build.py is EXECUTED, do not
+replay. Failed34d9280 run is retained; custody audit e1ce2244 proves143old+1new=144
+ELFs and1371unchanged containers. No executed test failure: all tests were NOT_RUN.
 The root alone owns compiler/cache/engine operations. After build, qualify the
 reviewed installed cycle using fresh9359721 clones, never rerun old commands
 against an advanced endpoint. Distinguish original source-open recovery retries

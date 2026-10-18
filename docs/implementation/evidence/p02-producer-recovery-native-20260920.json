@@ -23133,7 +23133,7 @@
           "Profile cap255 arithmetic passes; installed epoch255 cost/latency remains NOT_RUN."
         ]
       },
-      "ongoing": "Exact-source ingest-succession-installed build, then source review/qualification of fresh9359721 cycle clones; preserve143existing ELFs and all prior artifacts.",
+      "ongoing": "Corrected exact-source installed build after34d9280 E0277, preserving144ELFs. Harness/reader source qualification ongoing.",
       "lineage_compile_failure": {
         "status": "FAIL_COMPILE_E0277",
         "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-lineage-e47b698",
@@ -31457,6 +31457,75 @@
           "sha256": "07222dcb54b032cebb33ab45caf221a378a860a89723806ec06b8e62658fb9ef"
         },
         "goal": "ACTIVE by explicit user resume; full M1-M5 remains incomplete"
+      },
+      "installed_cycle_first_build": {
+        "status": "FAIL_COMPILE_REQUEST_INPUT_ERROR_DISPLAY",
+        "source": "34d928015d179d9a14b5d8ee0c1c66eeaee938bf",
+        "tree": "4bf94da8999fc32034fe2e250ddecaa28588175e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-34d9280",
+        "prepare_handle": "56531 joined0",
+        "build_handle": "97536 joined1",
+        "audit_handle": "31871 joined0",
+        "custody_audit": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-installed-34d9280/audit-root/audit-v1.json",
+          "sha256": "e1ce2244d9144096d8016f1840f22f48711a6ea484642fc49d57c38208105cf5"
+        },
+        "diagnostics": [
+          {
+            "check": "probe_build",
+            "line": 292,
+            "encoding": "cargo-json",
+            "level": "error",
+            "code": {
+              "code": "E0277",
+              "explanation": "You tried to use a type which doesn't implement some trait in a place which\nexpected that trait.\n\nErroneous code example:\n\n```compile_fail,E0277\n// here we declare the Foo trait with a bar method\ntrait Foo {\n    fn bar(&self);\n}\n\n// we now declare a function which takes an object implementing the Foo trait\nfn some_func<T: Foo>(foo: T) {\n    foo.bar();\n}\n\nfn main() {\n    // we now call the method with the i32 type, which doesn't implement\n    // the Foo trait\n    some_func(5i32); // error: the trait bound `i32 : Foo` is not satisfied\n}\n```\n\nIn order to fix this error, verify that the type you're using does implement\nthe trait. Example:\n\n```\ntrait Foo {\n    fn bar(&self);\n}\n\n// we implement the trait on the i32 type\nimpl Foo for i32 {\n    fn bar(&self) {}\n}\n\nfn some_func<T: Foo>(foo: T) {\n    foo.bar(); // we can now use this method since i32 implements the\n               // Foo trait\n}\n\nfn main() {\n    some_func(5i32); // ok!\n}\n```\n\nOr in a generic context, an erroneous code example would look like:\n\n```compile_fail,E0277\nfn some_func<T>(foo: T) {\n    println!(\"{:?}\", foo); // error: the trait `core::fmt::Debug` is not\n                           //        implemented for the type `T`\n}\n\nfn main() {\n    // We now call the method with the i32 type,\n    // which *does* implement the Debug trait.\n    some_func(5i32);\n}\n```\n\nNote that the error here is in the definition of the generic function. Although\nwe only call it with a parameter that does implement `Debug`, the compiler\nstill rejects the function. It must work with all possible input types. In\norder to make this example compile, we need to restrict the generic type we're\naccepting:\n\n```\nuse std::fmt;\n\n// Restrict the input type to types that implement Debug.\nfn some_func<T: fmt::Debug>(foo: T) {\n    println!(\"{:?}\", foo);\n}\n\nfn main() {\n    // Calling the method is still fine, as i32 implements Debug.\n    some_func(5i32);\n\n    // This would fail to compile now:\n    // struct WithoutDebug;\n    // some_func(WithoutDebug);\n}\n```\n\nRust only looks at the signature of the called function, as such it must\nalready specify all requirements that will be used for every type parameter.\n"
+            },
+            "message": "`RequestInputError` doesn't implement `std::fmt::Display`"
+          },
+          {
+            "check": "probe_build",
+            "line": 293,
+            "encoding": "cargo-json",
+            "level": "error",
+            "code": {
+              "code": "E0277",
+              "explanation": "You tried to use a type which doesn't implement some trait in a place which\nexpected that trait.\n\nErroneous code example:\n\n```compile_fail,E0277\n// here we declare the Foo trait with a bar method\ntrait Foo {\n    fn bar(&self);\n}\n\n// we now declare a function which takes an object implementing the Foo trait\nfn some_func<T: Foo>(foo: T) {\n    foo.bar();\n}\n\nfn main() {\n    // we now call the method with the i32 type, which doesn't implement\n    // the Foo trait\n    some_func(5i32); // error: the trait bound `i32 : Foo` is not satisfied\n}\n```\n\nIn order to fix this error, verify that the type you're using does implement\nthe trait. Example:\n\n```\ntrait Foo {\n    fn bar(&self);\n}\n\n// we implement the trait on the i32 type\nimpl Foo for i32 {\n    fn bar(&self) {}\n}\n\nfn some_func<T: Foo>(foo: T) {\n    foo.bar(); // we can now use this method since i32 implements the\n               // Foo trait\n}\n\nfn main() {\n    some_func(5i32); // ok!\n}\n```\n\nOr in a generic context, an erroneous code example would look like:\n\n```compile_fail,E0277\nfn some_func<T>(foo: T) {\n    println!(\"{:?}\", foo); // error: the trait `core::fmt::Debug` is not\n                           //        implemented for the type `T`\n}\n\nfn main() {\n    // We now call the method with the i32 type,\n    // which *does* implement the Debug trait.\n    some_func(5i32);\n}\n```\n\nNote that the error here is in the definition of the generic function. Although\nwe only call it with a parameter that does implement `Debug`, the compiler\nstill rejects the function. It must work with all possible input types. In\norder to make this example compile, we need to restrict the generic type we're\naccepting:\n\n```\nuse std::fmt;\n\n// Restrict the input type to types that implement Debug.\nfn some_func<T: fmt::Debug>(foo: T) {\n    println!(\"{:?}\", foo);\n}\n\nfn main() {\n    // Calling the method is still fine, as i32 implements Debug.\n    some_func(5i32);\n\n    // This would fail to compile now:\n    // struct WithoutDebug;\n    // some_func(WithoutDebug);\n}\n```\n\nRust only looks at the signature of the called function, as such it must\nalready specify all requirements that will be used for every type parameter.\n"
+            },
+            "message": "`RequestInputError` doesn't implement `std::fmt::Display`"
+          },
+          {
+            "check": "probe_build",
+            "line": 294,
+            "encoding": "cargo-json",
+            "level": "failure-note",
+            "code": null,
+            "message": "For more information about this error, try `rustc --explain E0277`."
+          },
+          {
+            "check": "probe_build",
+            "line": 295,
+            "encoding": "text",
+            "message": "error: could not compile `bigbrotr` (bin \"bigbrotr\") due to 2 previous errors"
+          },
+          {
+            "check": "probe_build",
+            "line": 296,
+            "encoding": "text",
+            "message": "warning: build failed, waiting for other jobs to finish..."
+          }
+        ],
+        "not_run": [
+          "serve_owner",
+          "control_runtime_entrypoint",
+          "clippy"
+        ],
+        "protected_elfs": 143,
+        "retained_new_elfs": {
+          "ingest_bootstrap_probe": "bf467b625995c811930ec242466cb1c2456b116f96d0fc9c0c0b4c3bf0a9555a"
+        },
+        "all_preserved_elfs": 144,
+        "unchanged_containers": 1371,
+        "fix": "Map RequestInputError via Debug and exit3, matching existing replay_grants; no adapter semantics changed. Corrected compilation still NOT_RUN."
       }
     }
   }

@@ -256,7 +256,12 @@ impl Work<'_> {
     fn input_grant(&self) -> Result<OwnedPermit> {
         grant(
             self.budget,
-            RetainedRequestInput::required_data_bytes(limits().input).map_err(error)?,
+            RetainedRequestInput::required_data_bytes(limits().input).map_err(|e| {
+                (
+                    3,
+                    format!("Ingest recovery input reservation refused: {e:?}"),
+                )
+            })?,
             0,
         )
     }
