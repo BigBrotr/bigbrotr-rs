@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-18T13:46:17.287217+00:00",
+  "updated_at": "2026-10-18T14:09:35.855047+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -61117,7 +61117,7 @@
     "future_use": "The30 named historical targets are retired partial caches; never reuse incrementally. Rebuild only into fresh/current qualified shared target. Frozen manifest/execution are completed one-shot operations; never replay."
   },
   "implementation_archive_catch_up_20261018": {
-    "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_NO_ENGINE",
+    "status": "LIBRARY_COMPONENTS_PASS_RUNTIME_IN_PROGRESS_NO_ENGINE",
     "contract": {
       "original": "de794eb9a596013ca4976fec8a11fa595394e437",
       "integrated": "4a8f882",
@@ -61125,7 +61125,7 @@
       "topology_clarification_integrated": "96965b5"
     },
     "native_bridge": {
-      "status": "SOURCE_REVIEWED_INTEGRATED_TESTS_NOT_RUN",
+      "status": "SOURCE_REVIEWED_INTEGRATED_COMPONENTS_PASS",
       "original": "5c70778a86c4adde90d23cabd86bffc84c9f1cdd",
       "integrated": "8cf12cb",
       "base": "c25eb517c9b3d6dbea51d41460c3ee1d5ca44344",
@@ -61159,8 +61159,8 @@
         "diff": "PASS",
         "original_integrated_blobs": "PASS root exact four-file comparison",
         "root_review": "Complete final bridge/test changes and existing owning lineage/pending APIs read; no new semantic finding",
-        "tests": "NOT_RUN five authored native groups",
-        "build": "NOT_RUN",
+        "tests": "PASS five new native groups at exact e613a19",
+        "build": "PASS exact library compilation/Clippy e613a19",
         "connected_archive": "NOT_RUN"
       },
       "limits": "Signed existing history fixture and raw original facts support bridge checks only. Mid-I/O cancellation is source-reviewed, not runtime-demonstrated. No archive CLI integration yet."
@@ -61170,8 +61170,177 @@
       ".research/archive-catch-up-contract-20261018",
       ".research/lineage-pending-bridge-20261018",
       ".research/archive-catch-up-topology-20261018",
-      ".research/archive-catch-up-native-20261018"
+      ".research/archive-catch-up-native-20261018",
+      ".research/archive-retained-frontier-20261018",
+      ".research/archive-frontier-intents-20261018"
     ],
-    "processes": "Source agents only; no compiler, native, SQL or Docker operation active. All prior data/artifacts retained. Root finite authority draft remains untracked and not wired; current PG worktree recorded when author freezes."
+    "processes": "Build wrapper and actual fetch/native containers joined0/PID0/noOOM. Source author active only in frontier-intents worktree. Root owns compiler/cache/native/SQL; no engine active. Root parent+authority drafts unwired, untracked, NOT_RUN.",
+    "component_sources": [
+      {
+        "name": "archive_retained_frontier",
+        "original": "b1306302b6a633e3fdc5c458ba1ab98d8ed17697",
+        "integrated": "b4873fc",
+        "manifest": ".research/archive-retained-frontier-20261018/.research/archive-retained-frontier-20261018/manifest.json",
+        "sha256": "14ee4560f2b7474af6f8c4d1643542dd975b735b76f8f0a4fbd825eada4e2a13",
+        "review": "Root complete affected source review; exact frozen blob comparison before cherry-pick. Native helper additionally received independent read-only AI review.",
+        "qualification": "Library components PASS at e613a19. SQL/connected runtime and bin-only native helper composition NOT_RUN."
+      },
+      {
+        "name": "archive_native_helpers",
+        "original": "0bc8bcb2fa2a987cb6fb771a2a55edc9f74f9b7e",
+        "integrated": "7e01db1",
+        "manifest": ".research/archive-catch-up-native-20261018/.research/archive-catch-up-native-source-20261018/manifest.json",
+        "sha256": "5796657c6f6dd0357cb8b6e877c9be7b6ddb7d0639b93a2dd189bc192807c2a3",
+        "review": "Root complete affected source review; exact frozen blob comparison before cherry-pick. Native helper additionally received independent read-only AI review.",
+        "qualification": "Library components PASS at e613a19. SQL/connected runtime and bin-only native helper composition NOT_RUN."
+      }
+    ],
+    "component_build": {
+      "status": "PASS_SCOPED_LIBRARY_COMPONENTS",
+      "source": "e613a196cd8f3627e52575df7f30523722a9fde9",
+      "tree": "973205bb4fe737b9c1e386f6ca3c36f1a0919ca5",
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-e613a19",
+      "audit": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-e613a19/audit-root/audit-v1.json",
+      "audit_sha256": "a8263d7e6f2643f25168d2b50cb3ab1fcc390c9e95e6a1eb70a35d77e20d328a",
+      "checks": {
+        "collected": 6,
+        "executed": 6,
+        "failed": 0,
+        "not_run": 0
+      },
+      "test_counts": {
+        "historical_pending": 5,
+        "retained_frontier": 6,
+        "archive_receipts": 3,
+        "archive_membership": 3,
+        "archive_custody": 18
+      },
+      "tests_passed": [
+        "historical_pending:storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::lineage_pending_preserves_limit_cancel_and_grant_errors_without_delivery",
+        "historical_pending:storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::lineage_pending_reads_original_historical_and_current_batches_without_writes",
+        "historical_pending:storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::lineage_pending_refuses_foreign_zero_out_of_cut_and_interior_identities",
+        "historical_pending:storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::lineage_pending_refuses_stale_native_and_physical_input_custody",
+        "historical_pending:storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::lineage_pending_requires_full_head_without_pending_preparation",
+        "retained_frontier:storage::postgres::control_owner::archive_retained_frontier::tests::complete_prefix_refuses_partial_overlap_missing_header_and_range_relabeling",
+        "retained_frontier:storage::postgres::control_owner::archive_retained_frontier::tests::exact_request_snapshot_attestation_and_family_counts_are_bound",
+        "retained_frontier:storage::postgres::control_owner::archive_retained_frontier::tests::metadata_ownership_and_whole_job_limit_include_failed_attempts",
+        "retained_frontier:storage::postgres::control_owner::archive_retained_frontier::tests::missing_duplicate_foreign_or_different_selected_input_cannot_match",
+        "retained_frontier:storage::postgres::control_owner::archive_retained_frontier::tests::old_topology_and_sparse_attempts_retain_exact_snapshot_and_complete_headers",
+        "retained_frontier:storage::postgres::control_owner::archive_retained_frontier::tests::only_complete_terminal_history_is_a_loader_prerequisite",
+        "archive_receipts:storage::archive::receipts::tests::invalid_or_unfunded_expectations_refuse_before_any_launch_or_grant",
+        "archive_receipts:storage::archive::receipts::tests::preflight_sizes_the_complete_native_receipt_request_without_io",
+        "archive_receipts:storage::archive::receipts::tests::receipt_reply_rejects_duplicate_conflicting_fields_and_trailing_values",
+        "archive_membership:storage::archive::membership::tests::member_admission_preserves_invalid_limits_and_funds_actual_batch",
+        "archive_membership:storage::archive::membership::tests::member_response_is_bound_to_identity_snapshot_and_complete_counts",
+        "archive_membership:storage::archive::membership::tests::membership_wire_preflight_checks_complete_input_and_credentials",
+        "archive_custody:storage::archive::initialization::tests::a_native_command_clone_keeps_custody_until_its_child_exits",
+        "archive_custody:storage::archive::initialization::tests::another_data_file_or_partial_marker_cannot_be_silently_adopted",
+        "archive_custody:storage::archive::initialization::tests::competing_initializers_never_replace_the_winning_journal",
+        "archive_custody:storage::archive::initialization::tests::coordinator_children_retain_custody_until_the_last_actual_exit",
+        "archive_custody:storage::archive::initialization::tests::coordinator_keeps_driver_custody_and_preserves_partial_binding",
+        "archive_custody:storage::archive::initialization::tests::coordinator_state_requires_explicit_binding_and_excludes_other_roots",
+        "archive_custody:storage::archive::initialization::tests::inputs::cancellation_short_grants_links_and_oversized_inputs_preserve_state",
+        "archive_custody:storage::archive::initialization::tests::inputs::header_limit_is_inclusive_and_large_counts_do_not_expand_into_fact_bodies",
+        "archive_custody:storage::archive::initialization::tests::inputs::refuses_changed_grouping_and_partial_bytes_without_repair",
+        "archive_custody:storage::archive::initialization::tests::inputs::retains_complete_grouping_before_issuance_and_recovers_receipt_without_facts",
+        "archive_custody:storage::archive::initialization::tests::only_actual_reacquisition_is_recovery_not_consumed_provisioning_or_launch",
+        "archive_custody:storage::archive::initialization::tests::owned_reader_custody_survives_thread_join_until_the_result_is_consumed",
+        "archive_custody:storage::archive::initialization::tests::partial_modified_and_copied_reservations_are_preserved_and_refused",
+        "archive_custody:storage::archive::initialization::tests::pin_recovery_custody_cannot_be_rewrapped_into_a_reader",
+        "archive_custody:storage::archive::initialization::tests::provisioning_is_once_only_and_never_authorized_by_recovery_or_a_previous_launch",
+        "archive_custody:storage::archive::initialization::tests::recovery_is_held_by_the_unpolled_driver_and_never_authorizes_a_new_launch",
+        "archive_custody:storage::archive::initialization::tests::reserves_the_actual_root_and_never_recreates_an_existing_intent",
+        "archive_custody:storage::archive::initialization::tests::retained_receipts::retained_receipt_and_membership_keep_custody_and_separate_unavailable_lanes"
+      ],
+      "new_elfs": {
+        "native_components": "c8b05ca492fcf9a0ccf9e8acdc761fe02485d7014d681f98b2eb017aeb77c8fa"
+      },
+      "compiler_diagnostics": [
+        {
+          "check": "historical_pending",
+          "line": 291,
+          "encoding": "cargo-json",
+          "level": "warning",
+          "code": {
+            "code": "dropping_copy_types",
+            "explanation": null
+          },
+          "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+        },
+        {
+          "check": "retained_frontier",
+          "line": 288,
+          "encoding": "cargo-json",
+          "level": "warning",
+          "code": {
+            "code": "dropping_copy_types",
+            "explanation": null
+          },
+          "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+        },
+        {
+          "check": "archive_receipts",
+          "line": 288,
+          "encoding": "cargo-json",
+          "level": "warning",
+          "code": {
+            "code": "dropping_copy_types",
+            "explanation": null
+          },
+          "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+        },
+        {
+          "check": "archive_membership",
+          "line": 288,
+          "encoding": "cargo-json",
+          "level": "warning",
+          "code": {
+            "code": "dropping_copy_types",
+            "explanation": null
+          },
+          "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+        },
+        {
+          "check": "archive_custody",
+          "line": 288,
+          "encoding": "cargo-json",
+          "level": "warning",
+          "code": {
+            "code": "dropping_copy_types",
+            "explanation": null
+          },
+          "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+        }
+      ],
+      "source_files": 1958,
+      "protected_prior_elfs": 152,
+      "unchanged_prior_containers": 1379,
+      "started_at": "2026-10-18T14:04:10.869485+00:00",
+      "finished_at": "2026-10-18T14:04:49.081112+00:00",
+      "free_bytes_after": 78251585536,
+      "sessions": {
+        "prepare": {
+          "id": 5787,
+          "exit": 0
+        },
+        "build": {
+          "id": 5039,
+          "exit": 0
+        },
+        "custody": {
+          "id": 54479,
+          "exit": 0
+        }
+      },
+      "state": "stopped-retained",
+      "limits": [
+        "Custody PASS preserves actual build FAIL/NOT_RUN and never substitutes for qualification.",
+        "New test counts/names come from actual logs; no legacy test campaign is claimed to have been rerun.",
+        "Root custody audit authenticates source, artifacts and raw logs; it is not independent semantic proof.",
+        "CLI helpers/composition, connected SQL/native Archive and installed catch-up remain NOT_RUN by this library profile.",
+        "No compiler, retained executable, native/SQL engine, or mutable cache is opened by this auditor."
+      ]
+    },
+    "local_build_helpers": ".research/archive-catch-up-resume-20261018 (prepare EXECUTED; never replay)"
   }
 }

@@ -698,6 +698,7 @@ is checked; an override cannot silently increase these limits.
 | Archive attempt history | At most 128 for the sum of all issued and planned new attempts, counting failed, absent and unresolved attempts; fixed-cutoff pages of 64 do not replace this total bound |
 | One pending batch | 64 records and 1 MiB encoded bytes; its data grant is the actual checked `required_data_bytes()` including decoding and container storage |
 | Retained Archive inputs | Existing 1 MiB data grant and one item per retained handle; complete original headers and expected receipt identity remain admitted |
+| Frontier operation intents | At most 256 immutable records of at most 64 KiB each; a complete state-directory census admits at most 1024 entries, including unrelated entries; 64 KiB/one item for the scan and 1 MiB/one item for a single decoded intent |
 | Complete cut | Existing 128 selected receipts, 1024 streams and 1024 total ranges, including explicit zero bounds |
 | Private control wire | Existing 32 KiB serialized limit, including actual credential/route fields and complete cut framing |
 
@@ -715,6 +716,22 @@ selected prefix has no receipts or only zero bounds. Admit that scan against the
 full bounded receipt inventory (at most 128), never the selected receipt count.
 Materialize one intermediate cut at a time under the same profile; the existing
 lineage bound also bounds the number of immediate topology steps.
+
+Frontier intent records are local recovery inputs, not capture or publication
+authority. Before any frontier transaction, synchronize its original nonzero
+operation ID, expected revision, exact observed `CutRead`, snapshot, digest and
+family counts under the existing coordinator binding. The selected version 1
+record uses the `BBFRONT\x01` magic, coordinator digest, dataset/catalog/operation
+identities, big-endian revision/snapshot/counts/JSON length, canonical complete
+`CutRead` JSON and a domain-separated SHA-256 checksum. Its filename is
+`frontier-<32 lowercase operation hex>.intent`. Reject partial bytes, mismatched
+names, unknown versions, unsafe links and incompatible identities; preserve them
+without repair. A matching complete retry synchronizes the existing bytes.
+The caller reads one intent at a time under its grant and resolves every original
+operation using fresh current Control before creating another. Success and
+positive absence do not delete records. Admit enough remaining slots for all
+prospective intermediate and final frontiers before new publication; exhausted
+history refuses without garbage collection or truncation.
 
 Before new attempt issuance or native publication, enumerate and validate the
 complete retained obligations, admit the prospective total and cut, validate the

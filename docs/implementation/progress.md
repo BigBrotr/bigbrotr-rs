@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T13:46:05Z on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:09:35.855047+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,8 +8,9 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main; last verified remote c25eb51 before the
-current coherent Archive changes. Their next private push is pending below.
+Canonical `/home/tux/bigbrotr-rs`, main; last verified remote f8ff61f.
+Current HEAD e613a19 includes the reviewed Archive sources and new library
+qualification profile; this checkpoint/contract update is not yet committed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -95,8 +96,7 @@ stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 Next bounded action: implement the selected finite retained-Archive catch-up
 under P02-T04 Steps3/4/5 and P01-T09 Step4. Contract de794eb9 integrated as4a8f882;
 native proof-bound pending bridge5c70778 integrated as8cf12cb. Root read the full
-new bridge/tests; five test groups are authored, rustfmt/diff checks PASS,
-compilation/tests NOT_RUN. Source manifest7bffe65a is retained in
+new bridge/tests; its five test groups now PASS in exact e613a19 below. Source manifest7bffe65a is retained in
 `.research/lineage-pending-bridge-20261018/.research/native-bridge-source-20261018`.
 The accepted topology clarification d51b32b is integrated: preserve the current
 prefix and add zero bounds across each immediate sealed topology, using actual
@@ -104,16 +104,38 @@ latest snapshot capture; publish the final complete cut at the target. Full
 unfiltered receipt scans admit all128 possible issued attempts, not only selected
 receipts. No migration or weakening of the existing predecessor guard.
 
-Root is authoring the finite runtime; its untracked
-`apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up/authority.rs`
-is incomplete, not wired and NOT_RUN. Separate writable worktrees contain the
-PG retained-frontier loader (`successor_restart_design`) and native receipt/
-membership custody helpers (`cleanup_review`). Neither agent may run engines,
-builds or the shared cache. The prior native/contract author is finished. Root
-retains all compiler/cache/native/SQL ownership; no new build or engine started.
-The design remains in `next-slice-review.json` under
-`.research/installed-prepared-resume-20261018` (SHAb805cf38); owning contracts
-include the subsequent reviewed zero-extension clarification.
+Exact e613a19/tree973205bb library build PASS:35 tests across historical pending5,
+retained PG frontier6, receipts3, membership3 and custody18; Clippy0diagnostics.
+Audit a8263d7e binds1958sourcefiles,152prior+1newELF and1379unchanged prior
+containers. Run14:04:10Z–14:04:49Z, prepare5787/build5039/audit54479 joined0.
+Root `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-e613a19`;
+actual fetch/native exit0/PID0/noOOM, free78251585536bytes. CLI helpers and
+composition, connected SQL/native Archive and installed catch-up remain NOT_RUN.
+No current engine/build remains active. See `archive_component_build` in the
+existing recovery evidence and lab inventory; all raw files and prior ELFs retained.
+
+PG loaderb1306302 integrated asb4873fc; native helper0bc8bcb integrated as7e01db1.
+Root verified exact frozen manifests/blobs after its complete source review;
+independent helper review found no concrete source blocker, not a runtime proof.
+Both author worktrees and ignored manifests remain retained. Root is authoring
+untracked `apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up.rs`
+and its `authority.rs` child: incomplete, not wired, NOT_RUN. Publication/planner
+and actual CLI connection remain to implement. Root retains compiler/cache/engine
+ownership. The remaining source agent is bounded to new local frontier-intent
+storage/tests in `.research/archive-frontier-intents-20261018`, based one613a19.
+
+Composition review found that old frontier operation IDs are volatile. The owning
+Archive contracts now select a synchronized immutable local frontier-intent
+journal before commit, at most256records/64KiB each and1024state-directory entries;
+scan64KiB/oneitem and one decoded intent1MiB/oneitem. Resolve every original ID
+under fresh current Control before new publication, separately verify current
+head, retain all successes/absences/partial records. No SQL migration. Source is
+in progress, all journal tests/engine behavior NOT_RUN. An absent multiheader
+attempt refuses before fresh issuance under the existing single-batch publisher
+profile; present original grouping can be independently replayed and verified.
+Next bounded action: compose complete native/input inventory and whole-job plan,
+then integrate/review the journal and catalog capture/frontier orchestration,
+before wiring the command and qualifying its genuine same-root installed journey.
 
 Headroom cleanup completed13:44:18Z, prepare59509/execute50680 joined0.
 `.research/tux-maintenance-20261018` retains script4ad74f58, frozen manifest

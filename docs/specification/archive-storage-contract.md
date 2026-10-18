@@ -1222,7 +1222,17 @@ the exact attempt/operation identities and custody, then use fresh-process
 exclusion and result resolution. A committed result preserves its original
 receipt/frontier and attribution; a positively absent result may proceed only
 through the ordinary checked new-work boundary. Never retry an INSERT because
-a response timed out. The command reports success only after real workers and
+a response timed out. Before the frontier transaction, synchronize its complete
+original operation intent in the bounded local journal specified by the
+[handoff contract](../reference/archive-handoff.md#total-admitted-profile).
+After acquiring fresh Control and excluding the previous transaction, resolve
+every retained operation ID and compare any immutable receipt with its original
+snapshot, expected revision, request digest and family counts. Separately load
+and validate the actual current frontier; a journal entry or historical result
+does not establish that current head. Positive absence permits only an ordinary
+new operation after a fresh latest capture, never reuse of an expired capture.
+Keep all complete and incomplete journal records; unknown lookup or malformed
+local state stops before fresh publication. The command reports success only after real workers and
 drivers are joined, native custody is closed and actual Control teardown has
 completed. Unknown cleanup or termination cannot become a success response.
 
