@@ -51,6 +51,55 @@ struct Input<'a> {
     catalog_id: bigbrotr_model::OwnerResourceId,
     expected: &'a MembershipRead,
 }
+impl CatalogRoute<'_> {
+    /// Bound the complete credential-bearing wire, including possible TLS FD
+    /// growth, before any catalog exclusion or publication effects.
+    pub fn validate_membership(
+        &self,
+        expected: &MembershipRead,
+        identity: &CatalogIdentity,
+        credential: CatalogReaderCredentials<'_>,
+    ) -> Result<(), ReceiptError> {
+        expected.validate(usize::MAX).map_err(input_error)?;
+        prepare_input(expected, identity, self, credential, true).map(|_| ())
+    }
+}
+fn prepare_input(
+    expected: &MembershipRead,
+    identity: &CatalogIdentity,
+    route: &CatalogRoute<'_>,
+    credential: CatalogReaderCredentials<'_>,
+    allow_fd_growth: bool,
+) -> Result<
+    (
+        zeroize::Zeroizing<String>,
+        Option<super::client_identity::NativeTlsHandoff>,
+    ),
+    ReceiptError,
+> {
+    let (dsn, tls) = receipts::reader_connection(
+        expected.receipt.dataset_id,
+        identity,
+        route,
+        credential,
+        allow_fd_growth,
+        "bigbrotr-archive-membership",
+    )?;
+    let input = Input {
+        catalog: super::bootstrap::Input {
+            dsn: &dsn,
+            data_root: identity.root(),
+        },
+        catalog_id: identity.catalog(),
+        expected,
+    };
+    input
+        .catalog
+        .validate()
+        .map_err(ReceiptError::Preparation)?;
+    receipts::wire_fits(&input)?;
+    Ok((dsn, tls))
+}
 impl Preparation<'_> {
     pub fn inspect_membership(
         self,
@@ -61,15 +110,52 @@ impl Preparation<'_> {
         budget: &ResourceBudget,
         max_facts: usize,
     ) -> Result<MembershipObservation, ReceiptError> {
-        validate_membership_limits(self.limits, expected, max_facts)?;
-        let (dsn, tls) = receipts::reader_connection(
-            expected.receipt.dataset_id,
+        self.inspect_membership_inner(
+            expected,
             identity,
             route,
             credential,
-            false,
-            "bigbrotr-archive-membership",
-        )?;
+            super::WorkerBudgets::combined(budget),
+            max_facts,
+            None,
+        )
+    }
+
+    /// Actual joined membership inspection with coordinator custody inherited by
+    /// the native child. No snapshot pin, publication or protection is implied.
+    pub fn inspect_membership_retained(
+        self,
+        expected: &MembershipRead,
+        custody: &super::ReaderCustody,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budgets: super::WorkerBudgets<'_>,
+        max_facts: usize,
+    ) -> Result<MembershipObservation, ReceiptError> {
+        self.inspect_membership_inner(
+            expected,
+            custody.identity(),
+            route,
+            credential,
+            budgets,
+            max_facts,
+            Some(custody),
+        )
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn inspect_membership_inner(
+        self,
+        expected: &MembershipRead,
+        identity: &CatalogIdentity,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budgets: super::WorkerBudgets<'_>,
+        max_facts: usize,
+        custody: Option<&super::ReaderCustody>,
+    ) -> Result<MembershipObservation, ReceiptError> {
+        validate_membership_limits(self.limits, expected, max_facts)?;
+        let (dsn, tls) = prepare_input(expected, identity, route, credential, false)?;
         let input = Input {
             catalog: super::bootstrap::Input {
                 dsn: &dsn,
@@ -78,20 +164,14 @@ impl Preparation<'_> {
             catalog_id: identity.catalog(),
             expected,
         };
-        input
-            .catalog
-            .validate()
-            .map_err(ReceiptError::Preparation)?;
-        receipts::wire_fits(&input)?;
-        let mut process = self
-            .start_with_custody(
-                "inspect-membership",
-                &[self.limits.max_records.to_string(), max_facts.to_string()],
-                super::WorkerBudgets::combined(budget),
-                None,
-                tls,
-            )
-            .map_err(ReceiptError::Preparation)?;
+        let arguments = [self.limits.max_records.to_string(), max_facts.to_string()];
+        let mut process = match custody {
+            Some(custody) => {
+                self.start_reader("inspect-membership", &arguments, budgets, custody, tls)
+            }
+            None => self.start_with_custody("inspect-membership", &arguments, budgets, None, tls),
+        }
+        .map_err(ReceiptError::Preparation)?;
         let transfer = serde_json::to_writer(&mut process, &input);
         let output = process.finish();
         if matches!(output, Err(ProcessError::TerminationUnknown)) {
@@ -132,6 +212,60 @@ mod tests {
         ))
         .unwrap();
         serde_json::from_value(v["read"].clone()).unwrap()
+    }
+
+    #[test]
+    fn membership_wire_preflight_checks_complete_input_and_credentials() {
+        use crate::storage::{
+            archive::CatalogTls, postgres::connection_settings::PlaintextBoundary,
+        };
+        use bigbrotr_protocol::archive_receipt::ReceiptRange;
+        let route = CatalogRoute {
+            address: "127.0.0.1".parse().unwrap(),
+            port: 5432,
+            database: "archive",
+            tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+        };
+        let mut read = read();
+        let identity = CatalogIdentity::local(
+            read.receipt.dataset_id,
+            [2; 16].try_into().unwrap(),
+            "/archive/",
+        )
+        .unwrap();
+        let credential = || CatalogReaderCredentials {
+            login: "reader",
+            password: "fixture-only",
+        };
+        assert_eq!(
+            route.validate_membership(&read, &identity, credential()),
+            Ok(())
+        );
+        assert_eq!(
+            route.validate_membership(
+                &read,
+                &identity,
+                CatalogReaderCredentials {
+                    login: "reader",
+                    password: ""
+                }
+            ),
+            Err(ReceiptError::InvalidInput)
+        );
+        read.receipt.input_ranges = (0..1024)
+            .map(|shard_id| ReceiptRange {
+                shard_id,
+                owner_epoch: 1,
+                first_sequence: 1,
+                last_sequence: 1,
+            })
+            .collect();
+        read.receipt.record_count = 1024;
+        assert_eq!(read.validate(1024), Ok(()));
+        assert_eq!(
+            route.validate_membership(&read, &identity, credential()),
+            Err(ReceiptError::ResourceLimit)
+        );
     }
 
     #[test]

@@ -175,6 +175,47 @@ impl Preparation<'_> {
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
     ) -> Result<ReceiptObservation, ReceiptError> {
+        self.inspect_receipt_inner(
+            expected,
+            identity,
+            route,
+            credential,
+            super::WorkerBudgets::combined(budget),
+            None,
+        )
+    }
+
+    /// Fresh unfiltered receipt inspection under retained coordinator custody.
+    /// Application and child-native grants are independent and stay with the
+    /// actual worker until reap. This is still receipt evidence, not membership
+    /// or writer exclusion; the caller must establish both separately.
+    pub fn inspect_receipt_retained(
+        self,
+        expected: &ReceiptExpectation,
+        custody: &super::ReaderCustody,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budgets: super::WorkerBudgets<'_>,
+    ) -> Result<ReceiptObservation, ReceiptError> {
+        self.inspect_receipt_inner(
+            expected,
+            custody.identity(),
+            route,
+            credential,
+            budgets,
+            Some(custody),
+        )
+    }
+
+    fn inspect_receipt_inner(
+        self,
+        expected: &ReceiptExpectation,
+        identity: &CatalogIdentity,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budgets: super::WorkerBudgets<'_>,
+        custody: Option<&super::ReaderCustody>,
+    ) -> Result<ReceiptObservation, ReceiptError> {
         validate_receipt_limits(self.limits)?;
         let (dsn, tls) = prepare_input(expected, identity, route, credential, false)?;
         let input = Input {
@@ -185,21 +226,24 @@ impl Preparation<'_> {
             catalog_id: identity.catalog(),
             expected,
         };
-        let mut process = self
-            .start_with_custody(
-                "inspect-receipt",
-                &[self.limits.max_records.to_string()],
-                super::WorkerBudgets::combined(budget),
-                None,
-                tls,
-            )
-            .map_err(ReceiptError::Preparation)?;
+        let arguments = [self.limits.max_records.to_string()];
+        let mut process = match custody {
+            Some(custody) => {
+                self.start_reader("inspect-receipt", &arguments, budgets, custody, tls)
+            }
+            None => self.start_with_custody("inspect-receipt", &arguments, budgets, None, tls),
+        }
+        .map_err(ReceiptError::Preparation)?;
         let transfer = serde_json::to_writer(&mut process, &input);
         let output = process.finish();
         if matches!(output, Err(ProcessError::TerminationUnknown)) {
             return Err(ReceiptError::TerminationUnknown);
         }
-        if transfer.is_err() {
+        if transfer.is_err()
+            || (custody.is_some()
+                && (self.cancelled.load(std::sync::atomic::Ordering::Relaxed)
+                    || std::time::Instant::now() >= self.deadline))
+        {
             return Err(ReceiptError::ObservationUnknown);
         }
         decode_response(

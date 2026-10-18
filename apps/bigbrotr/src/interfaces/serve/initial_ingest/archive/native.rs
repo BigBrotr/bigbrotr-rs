@@ -6,14 +6,16 @@ use bigbrotr::storage::{
 };
 use std::path::PathBuf;
 
-pub(super) struct Publisher {
+pub(in crate::interfaces::serve::initial_ingest) mod catch_up;
+
+pub(in crate::interfaces::serve::initial_ingest) struct Publisher {
     connection: PreparedConnection,
     grant: OwnedPermit,
     installation: WorkerInstallation,
     scratch: PathBuf,
     limits: PreparationLimits,
 }
-pub(super) fn publisher(
+pub(in crate::interfaces::serve::initial_ingest) fn publisher(
     root: &Resolved,
     budget: &ResourceBudget,
     identity: &CatalogIdentity,
@@ -48,7 +50,7 @@ pub(super) fn publisher(
 }
 
 #[allow(clippy::too_many_arguments)]
-pub(super) fn publish(
+pub(in crate::interfaces::serve::initial_ingest) fn publish(
     app: ResourceBudget,
     native: ResourceBudget,
     identity: CatalogIdentity,
@@ -124,14 +126,14 @@ pub(super) fn publish(
     })
 }
 
-pub(super) struct Reader {
+pub(in crate::interfaces::serve::initial_ingest) struct Reader {
     route: preflight::NativeRoute,
     pinned: transport::PinnedRoute,
     login: String,
     password: SecretBytes,
     _permit: OwnedPermit,
 }
-pub(super) struct PreparedReader {
+pub(in crate::interfaces::serve::initial_ingest) struct PreparedReader {
     pub(super) connection: PreparedConnection,
     pub(super) grant: OwnedPermit,
     password: SecretBytes,
@@ -155,7 +157,10 @@ impl Reader {
         })
     }
 }
-pub(super) fn reader(root: &Resolved, budget: &ResourceBudget) -> Result<PreparedReader> {
+pub(in crate::interfaces::serve::initial_ingest) fn reader(
+    root: &Resolved,
+    budget: &ResourceBudget,
+) -> Result<PreparedReader> {
     required(root, "postgres.catalog.read_user")?;
     let (connection, grant) = postgres_command::prepare_catalog_as(
         root,
@@ -249,7 +254,7 @@ pub(super) async fn check_reader(
     drop(prepared.grant);
     result
 }
-pub(super) fn validate_cut(
+pub(in crate::interfaces::serve::initial_ingest) fn validate_cut(
     reader: &Reader,
     identity: &CatalogIdentity,
     read: &CutRead,
@@ -271,7 +276,7 @@ pub(super) fn validate_cut(
 }
 
 #[allow(clippy::too_many_arguments)]
-pub(super) fn cut(
+pub(in crate::interfaces::serve::initial_ingest) fn cut(
     root: Resolved,
     app: ResourceBudget,
     native: ResourceBudget,
@@ -281,16 +286,31 @@ pub(super) fn cut(
     deadline: Instant,
     cancel: &AtomicBool,
 ) -> Result<ObservedCut> {
-    let mut limits = preflight::limits(&root)?;
-    limits.max_records = read.receipts.len().max(1);
-    limits.max_encoded_bytes = ENCODED;
-    let max_facts = usize::try_from(
-        read.receipts
-            .iter()
-            .try_fold(0u64, |n, r| n.checked_add(r.record_count))
-            .ok_or_else(|| error("cut count overflow"))?,
+    let scan_limit = read.receipts.len().max(1);
+    cut_with_scan_limit(
+        root, app, native, reader, custody, read, scan_limit, deadline, cancel,
     )
-    .map_err(error)?;
+}
+
+/// The unfiltered worker scans all catalog receipts, even for a shorter selected
+/// prefix (including an empty cut). The finite caller admits the complete issued
+/// inventory separately; legacy callers retain their original scan bound.
+#[allow(clippy::too_many_arguments)]
+pub(in crate::interfaces::serve::initial_ingest) fn cut_with_scan_limit(
+    root: Resolved,
+    app: ResourceBudget,
+    native: ResourceBudget,
+    reader: Arc<Reader>,
+    custody: ReaderCustody,
+    read: CutRead,
+    scan_limit: usize,
+    deadline: Instant,
+    cancel: &AtomicBool,
+) -> Result<ObservedCut> {
+    let max_facts = cut_scan_capacity(&read, scan_limit)?;
+    let mut limits = preflight::limits(&root)?;
+    limits.max_records = scan_limit;
+    limits.max_encoded_bytes = ENCODED;
     let (installation, scratch, _) = preflight::worker(
         &root,
         custody.identity(),
@@ -324,10 +344,26 @@ pub(super) fn cut(
     .map_err(error)
 }
 
+/// Zero selected facts still need a nonzero bounded scan allowance. The full
+/// receipt-table inventory is independent of this selected scientific prefix.
+fn cut_scan_capacity(read: &CutRead, scan_limit: usize) -> Result<usize> {
+    if scan_limit == 0 || scan_limit > 128 || scan_limit < read.receipts.len() {
+        return Err(error("complete receipt scan limit"));
+    }
+    usize::try_from(
+        read.receipts
+            .iter()
+            .try_fold(0u64, |n, r| n.checked_add(r.record_count))
+            .ok_or_else(|| error("cut count overflow"))?,
+    )
+    .map(|count| count.max(1))
+    .map_err(error)
+}
+
 /// Poll the actual transport, never a detachable task. The work owns its Client
 /// and destroys it on all ordinary exits. Unwind drops both futures; the custody
 /// wrapper destroys its transport before closing the retained descriptor.
-pub(super) async fn drive<T>(
+pub(in crate::interfaces::serve::initial_ingest) async fn drive<T>(
     mut connection: transport::Driver,
     work: impl Future<Output = Result<T>>,
 ) -> Result<T> {
@@ -357,6 +393,25 @@ pub(super) async fn drive<T>(
 mod tests {
     use super::*;
 
+    #[test]
+    fn empty_cut_admits_the_full_catalog_inventory_without_inventing_facts() {
+        let value: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../../../../tests/fixtures/protocol/archive-cut.json"
+        ))
+        .unwrap();
+        let mut read: CutRead = serde_json::from_value(value["read"].clone()).unwrap();
+        assert!(cut_scan_capacity(&read, 1).is_err());
+        assert_eq!(cut_scan_capacity(&read, 128).unwrap(), 9);
+        read.receipts.clear();
+        for bound in &mut read.bounds {
+            bound.complete_through = 0;
+        }
+        assert_eq!(cut_scan_capacity(&read, 128).unwrap(), 1);
+        assert_eq!(read.validate(1), Ok(0));
+        assert!(cut_scan_capacity(&read, 0).is_err());
+        assert!(cut_scan_capacity(&read, 129).is_err());
+    }
+
     #[tokio::test]
     async fn transport_loss_still_collects_the_owned_work() {
         let finished = Arc::new(AtomicBool::new(false));
@@ -376,7 +431,7 @@ mod tests {
         assert!(finished.load(Ordering::Acquire));
     }
 }
-pub(super) async fn connect_manager(
+pub(in crate::interfaces::serve::initial_ingest) async fn connect_manager(
     prepared: PreparedConnection,
     reader: &Reader,
 ) -> Result<(tokio_postgres::Client, transport::Driver)> {
@@ -386,7 +441,7 @@ pub(super) async fn connect_manager(
     Ok((client, driver))
 }
 
-pub(super) async fn finite<T>(
+pub(in crate::interfaces::serve::initial_ingest) async fn finite<T>(
     deadline: Instant,
     cancel: &AtomicBool,
     work: impl Future<Output = Result<T>>,

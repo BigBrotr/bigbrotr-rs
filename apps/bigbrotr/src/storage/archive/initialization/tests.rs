@@ -3,6 +3,7 @@ use std::{fs, os::unix::fs::PermissionsExt};
 const BOOT: &str = "01234567-89ab-cdef-0123-456789abcdef";
 
 mod inputs;
+mod retained_receipts;
 
 #[test]
 fn pin_recovery_custody_cannot_be_rewrapped_into_a_reader() {
