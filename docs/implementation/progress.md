@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T16:10:17.567729+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
+Observed 2026-10-18T16:22:14.789328+00:00 on Tux. Goal ACTIVE after the owner's explicit resume.
 M1–M5 remain INCOMPLETE. Existing task files own the plan; this checkpoint locates
 current work and evidence. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Historical detail remains in the evidence/laboratory records below and Git history;
@@ -9,10 +9,10 @@ the longer checkpoint at `97b8dc9` is preserved, not a current process inventory
 ## Repository and active responsibility
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: `main` is integrated state.
-Canonical `/home/tux/bigbrotr-rs`; main HEAD 40bc295, last verified remote 6284381.
-Diagnostic source 90dfa92→2315fb6 and admission fix 68cc6dd→40bc295 are integrated.
-No merge/rebase is pending. Build 14910 and audit 78427 joined 0; no runtime remains
-active. This checkpoint/evidence update is pending commit and push.
+Canonical `/home/tux/bigbrotr-rs`; main HEAD 3d0f09d, last verified remote be57042. Qualified
+product 40bc295 is pushed. No merge/rebase is pending. Engine 8902 joined 1;
+all owned runtime resources stopped. Current documentation records its real
+partial outcome; the client-fixture correction 08d282c is integrated as 3d0f09d.
 
 Current task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 after the selected
 P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
@@ -20,7 +20,8 @@ P02-T01 Step 5 / P02-T02 Step 4 succession work. See the
 [finite catch-up contract](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
 and [native handoff/profile](../reference/archive-handoff.md#finite-retained-lineage-catch-up-selected-under-implementation).
 The installed `archive catch-up --file ROOT` source is wired and its components
-pass. Connected qualification failed during initial publication; continuation is NOT_RUN.
+pass. First qualification failed during initial publication; the second reached catch-up
+and retry, then failed in the HTTP test client. Full connected qualification is open.
 No task checkbox closes from component tests or AI review.
 
 Durable evidence: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
@@ -110,8 +111,8 @@ Frozen same-root journey a2439a8 is integrated on main at 51fff8f. Author worktr
 `qualification/archive-catch-up-journey`, is clean and retained. Seven new
 `installed_archive_catch_up*.py` modules plus four narrow existing hooks are
 reviewed. Author AST/import/25 bounded controls and root manifest/diff checks PASS.
-The first inert-import smoke FAIL is retained and corrected. Actual engines,
-full scientific state replay and negative controls remain NOT_RUN.
+The first inert-import smoke FAIL is retained and corrected. At that source freeze, engines and full scientific replay were NOT_RUN;
+the two later failed engine attempts are recorded below.
 
 The journey keeps one freshly initialized physical dataset/catalog/coordinator:
 initial signed Archive/Sync, terminal epoch 1, genuine empty epoch 2 then retirement,
@@ -176,7 +177,7 @@ Diagnostic wrapper65011 joined1: its final assertion compared Docker Mounts in
 list order. Only order changed; complete normalized mount objects match. The
 original FAIL report0a533860 is preserved. Separate read-only reconciliation
 `custody-reconciliation.json` SHA6f96ca89 passes and binds all raw captures,
-232 unchanged engine files and unchanged other1391 containers. PG exited0/PID0,
+232 unchanged engine files and unchanged other1391 containers. PG exited 0/PID0,
 noOOM at15:41:43Z; no product/native process was restarted. Do not replay either
 one-shot diagnostic or old auditor against the intentionally changed PG timestamps.
 
@@ -201,12 +202,37 @@ caps every nested phase/command. Cancellation and expiry are checked before the
 first nested poll. No lease/config widening or progress claim under arbitrary descheduling.
 The prior 6474507 engine's actual expired callsite remains unknown.
 
-Next bounded action: prepare and run one fresh same-root journey using 40bc295
-artifacts and audit dafd7715. Reviewed one-shot prepare and success-custody auditor
-live under `.research/archive-deadline-build-20261018`; preparation/build of 40bc295
-are EXECUTED, journey preparation and auditor NOT_EXECUTED. New auditor 8402a325,
-manifest 15de291e, requires 184 protected ELFs and actual build-audit SHA. Never
-reuse failed 6474507, overwrite its diagnostic or use old PG timestamps.
+Second engine root ends `archive-catch-up-engine-be57042`, source
+be5704224c71f55e7d128a880fd8601bc85ee8f9, tree 5e098299471035f212bfbc78e51974f3eda8f718.
+Prepare 98751 joined 0; engine 8902 joined 1, 16:11:15Z–16:13:39Z. Initial plus
+11 continuations through catch-up/retry completed. Catch-up reports snapshot 8,
+frontier 7, counts [13,2,2,2,3], 3 new attempts and 3 frontier revisions; fresh retry
+reports unchanged 7/8 and 0/0 new effects. These are actual retained outputs,
+not completed independent full-journey scientific replay.
+
+Ordinary Control then exited 0/unforced/reaped with exact/global backend absence,
+but the HTTP fixture failed after CLI login, before its first direct HTTP request:
+`def http` shadows the imported module, causing AttributeError at HTTPConnection.
+All 13 installed terminal receipts are zero/unforced/reaped; cleanup errors empty.
+The partial journey remains FAIL; ordinary verification, restart and final
+oracle/negative controls/replay NOT_RUN. New evidence node
+`archive_connected_journey_attempts` retains this separately from 6474507.
+
+HTTP alias fix 08d282c→3d0f09d changes two lines. All six source-extracted
+regression controls PASS, including exact original AttributeError reproduction.
+Manifest 3bd70045 binds source and actual failure; this is no runtime pass.
+
+Failed-run custody audit 43564 joined 0: `audit-root/audit-failure-v1.json`,
+SHA f597c077, binds 1974 source files, 184 protected ELFs, all 13 process
+receipts and 240 structurally bound raw captures. Engine FAIL stays unchanged;
+no scientific replay or additional engine ran. Full manifest and limits are in
+the same evidence node. Do not replay this audit after restarting borrowed PG.
+
+Next bounded action: prepare one fresh same-root journey with corrected HTTP
+fixture 3d0f09d and unchanged qualified 40bc295 artifacts.
+No Rust rebuild is needed for this experiment-only correction. Preserve both
+failed roots. Success auditor 8402a325 / manifest 15de291e is still NOT_RUN;
+new preparation must use current stopped PG state and 184 protected ELF paths.
 
 Required interruption/COMMIT-loss, cancellation/expiry and refusal qualification
 still follows a successful normal journey. Independent source mapping identifies
@@ -218,10 +244,10 @@ capacity boundaries remain separate.
 
 ## Host resources and preservation
 
-No owned runtime/compiler/SQL/native remains active after build and audit. All
-source-only agent tasks completed. Borrowed PG remains stopped since 15:41:43Z.
-Unrelated workloads remain outside this session's authority. Verify ownership
-and actual resource state before the next engine action.
+Engine 8902 is joined; no owned runtime/compiler/SQL/native remains active.
+Borrowed PG stopped at 16:13:39Z, client exit 143; PID 0 / no OOM. All source-only
+agent tasks completed. Unrelated workloads remain untouched. Verify ownership
+before any next engine action.
 
 Root-only compiler cache:
 `/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/{target,cargo-home}`,

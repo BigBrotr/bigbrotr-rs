@@ -32521,7 +32521,7 @@
           "engines": "NOT_RUN"
         },
         "review_finding": "Current-frontier equal-total/different-family distribution must refuse before new effects; root compares joined original-prefix counts and adds independent counts test",
-        "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved."
+        "next": "Run fresh normal journey with corrected HTTP fixture3d0f09d and unchanged qualified40bc295 artifacts; preserve both failures and all custody evidence."
       },
       "archive_installed_build_attempts": {
         "observed_at": "2026-10-18T16:10:17.567729+00:00",
@@ -33042,7 +33042,7 @@
           "path": ".research/archive-catch-up-resume-20261018/composition-review.json",
           "sha256": "d7fa596b81b6a24fd0ff1b09d2b6e989bf88079b3635676725cd5b8d3ce4b726"
         },
-        "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved.",
+        "next": "Run fresh normal journey with corrected HTTP fixture3d0f09d and unchanged qualified40bc295 artifacts; preserve both failures and all custody evidence.",
         "journal_review": {
           "path": ".research/archive-catch-up-resume-20261018/journal-review.json",
           "sha256": "f83941fbb706ffc9860157bd493829c7253f455e191f3dcf091f89976a88ee0e",
@@ -33263,7 +33263,7 @@
           "rustfmt_parse": "PASS (two owners, skip_children)",
           "rust_tests": "PASS under40bc295 Serve26",
           "build": "PASS40bc295; auditdafd7715",
-          "engines": "NOT_RUN for new source"
+          "engines": "be57042 initial and11continuations completed, overallFAIL client naming defect; full qualification incomplete"
         },
         "review": "Root complete diagnostic diff/affectedphase,supervision and client owners; independent AI recovery_review confirms expiry semantics unchanged. Exact source/artifact hashes checked.",
         "next": "Run fresh genuine same-root journey with qualified40bc295 artifacts; old6474507 failure and all artifacts remain preserved."
@@ -33307,8 +33307,214 @@
         "limits": [
           "Actual expired callsite in failed6474507 engine remains unknown; source counterexamples do not establish its trigger.",
           "No runtime slow-SQL pending-renewal schedule, global fairness or arbitrary-descheduling progress claim.",
-          "Fresh normal same-root journey and required new-owner faults remain NOT_RUN."
+          "New same-root journeybe57042 reached catch-up/retry but FAIL in ordinary HTTP fixture; final science/restart and required new-owner faults remain NOT_RUN."
         ]
+      },
+      "archive_connected_journey_attempts": {
+        "previous_attempt": "archive_connected_journey (6474507 retained unchanged)",
+        "observed_at": "2026-10-18T16:22:14.789328+00:00",
+        "attempts": [
+          {
+            "status": "FAIL_ORDINARY_HTTP_FIXTURE_BEFORE_FIRST_REQUEST",
+            "source": "be5704224c71f55e7d128a880fd8601bc85ee8f9",
+            "tree": "5e098299471035f212bfbc78e51974f3eda8f718",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-be57042",
+            "prepare_session": 98751,
+            "prepare_exit_code": 0,
+            "engine_session": 8902,
+            "engine_exit_code": 1,
+            "started_at": "2026-10-18T16:11:15.743063+00:00",
+            "finished_at": "2026-10-18T16:13:39.895075+00:00",
+            "build_source": "40bc295f97adf00d5f2afe833eaef9e99f3b1f23",
+            "build_audit_sha256": "dafd7715e55cf9ec89a9b448f7056df6725a99edd9dcb2e78d95c317c568989f",
+            "bound_records": {
+              "root-preparation.json": "a04818f25398eb9de83e4ca0ee97454da00303a285d20fad85eac7c39c5d9dab",
+              "root-engine-invocation.json": "6cfb1871130e8e9155e243ee9c8f59bc23f62c4c93eeee9092d355b1427ea893",
+              "root-engine-result.json": "33bd065262c9385c04d0bb41aebab43e14f4a3e8d2efe67230042b2d8d711e4d",
+              "root-engine.stderr": "1ae756910737ecd8099f3cf1dd44e5c157d524a378d34daf5a28b87aa39e2645",
+              "bindings/result.json": "c8759b2a10041198f7dfcaaad467a194a2025c6cf33d0549bb954de0ee1adfde",
+              "bindings/archive-catch-up-journey.json": "152053fe7328609c7b23e32e9da36aab3f25a1828206977a9d31f7e5ff8ac9c0",
+              "bindings/catch-up-ordinary-http-response.json": "b5c7ae9a2412d25fe697b3c15934f670d6350e04f1a4787184479202b26884bc",
+              "bindings/catch-up-ordinary-custody.json": "8d1b3a7c552367d3087fe6d5c54ef6c6bfb855d4b49f30d7b127c4e4a34dde72",
+              "bindings/catch-up-ordinary-backends.json": "8fdbf99aca96c100ab87bf1fed739032d5de2e2bd06f9a351dca17bace6bd352"
+            },
+            "completed_continuations": [
+              "abandon1",
+              "retire1",
+              "live2",
+              "abandon2",
+              "retire2",
+              "live3",
+              "source3",
+              "abandon3",
+              "retire3",
+              "catchup",
+              "catchup-retry"
+            ],
+            "actual_terminal_processes": 13,
+            "ordinary": "Actual Control exited0/unforced/reaped, exact/global backends absent; HTTP fixture failed after CLI login and before first direct HTTP request. No ordinary verification record.",
+            "catch_up": {
+              "catchup": {
+                "catalog_id": "27499a8e017538b45641285c1fe6a34f",
+                "dataset_id": "309d9507c5b5c39e9947e1406482d519",
+                "family_counts": [
+                  13,
+                  2,
+                  2,
+                  2,
+                  3
+                ],
+                "format": "bigbrotr-archive-catch-up/1",
+                "frontier_revision": 7,
+                "issued_attempts_before": 4,
+                "new_attempts": 3,
+                "new_frontier_revisions": 3,
+                "operation_id": [
+                  34,
+                  241,
+                  162,
+                  60,
+                  162,
+                  241,
+                  171,
+                  89,
+                  126,
+                  76,
+                  115,
+                  45,
+                  229,
+                  147,
+                  77,
+                  82
+                ],
+                "request_digest": "eaaaf536a5a46e810bced848687b55ef83292a486c23b2113c50ea95defdf8c9",
+                "snapshot_id": 8,
+                "terminal_epoch": 3
+              },
+              "catchup-retry": {
+                "catalog_id": "27499a8e017538b45641285c1fe6a34f",
+                "dataset_id": "309d9507c5b5c39e9947e1406482d519",
+                "family_counts": [
+                  13,
+                  2,
+                  2,
+                  2,
+                  3
+                ],
+                "format": "bigbrotr-archive-catch-up/1",
+                "frontier_revision": 7,
+                "issued_attempts_before": 7,
+                "new_attempts": 0,
+                "new_frontier_revisions": 0,
+                "operation_id": [
+                  34,
+                  241,
+                  162,
+                  60,
+                  162,
+                  241,
+                  171,
+                  89,
+                  126,
+                  76,
+                  115,
+                  45,
+                  229,
+                  147,
+                  77,
+                  82
+                ],
+                "request_digest": "eaaaf536a5a46e810bced848687b55ef83292a486c23b2113c50ea95defdf8c9",
+                "snapshot_id": 8,
+                "terminal_epoch": 3
+              }
+            },
+            "http_failure": "Imported http module is shadowed by def http; request constructor raises AttributeError. Product40bc295 unchanged.",
+            "custody_audit": {
+              "status": "PASS_READ_ONLY_FAILED_ARCHIVE_CATCH_UP_CUSTODY",
+              "run_status": "FAIL",
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-engine-be57042/audit-root/audit-failure-v1.json",
+              "sha256": "f597c077ec0066226a734cb2452f657b3cd0abf16b02651b12e8bc2fd4d2f704",
+              "session": 43564,
+              "joined_exit_code": 0,
+              "source_files": 1974,
+              "protected_elfs": 184,
+              "processes": 13,
+              "structurally_bound_raw_files": 240,
+              "retained_files": 614,
+              "unchanged_nonborrowed_containers": 1393,
+              "source_manifest": ".research/archive-deadline-build-20261018/failed-engine-manifest.json",
+              "source_manifest_sha256": "35fe26785d050cd418a8965e58e34461ca3ce8dabab56bec9e685bb7af991300",
+              "limits": "EngineFAIL remains. Complete11continuation receipts and separate ordinary zero-exit custody bound; scientific replay, ordinary history/export completion, restart and final negative controls NOT_RUN. Current raw files/physical identities are preserved; no engine opened."
+            },
+            "independent_scientific_replay": "NOT_RUN; final journey incomplete",
+            "restart": "NOT_RUN",
+            "cleanup_errors": [],
+            "missing_owned": [],
+            "unrelated_changed": [],
+            "terminal": [
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "state": {
+                  "Status": "exited",
+                  "Running": false,
+                  "Paused": false,
+                  "Restarting": false,
+                  "OOMKilled": false,
+                  "Dead": false,
+                  "Pid": 0,
+                  "ExitCode": 0,
+                  "Error": "",
+                  "StartedAt": "2026-10-18T16:11:16.67262105Z",
+                  "FinishedAt": "2026-10-18T16:13:39.02393586Z"
+                }
+              },
+              {
+                "id": "eab430aa132d86ef6c1291a5ecf5c0a518fa8d11674b348a1dffdfc85f2c0356",
+                "state": {
+                  "Status": "exited",
+                  "Running": false,
+                  "Paused": false,
+                  "Restarting": false,
+                  "OOMKilled": false,
+                  "Dead": false,
+                  "Pid": 0,
+                  "ExitCode": 143,
+                  "Error": "",
+                  "StartedAt": "2026-10-18T16:11:17.693607677Z",
+                  "FinishedAt": "2026-10-18T16:13:38.325981108Z"
+                }
+              }
+            ],
+            "free_bytes_after": 73076006912,
+            "next": "Run fresh normal journey with corrected HTTP fixture3d0f09d and unchanged qualified40bc295 artifacts; preserve both failures and all custody evidence."
+          }
+        ]
+      },
+      "archive_http_client_correction": {
+        "original": "08d282c697622f3f674632ae70bf0911143b1c68",
+        "integrated": "3d0f09d9b0247e5e104abcc523ffbffae788286e",
+        "manifest": ".research/archive-catch-up-journey-20261018/.research/archive-http-client-selfcheck-20261018/manifest.json",
+        "manifest_sha256": "3bd7004518da310c2ddd0438292c94111eacacfce9e7a50052da7287eb75aeb5",
+        "source": {
+          "experiments/ingest-bootstrap/installed_archive_catch_up_client.py": {
+            "bytes": 9297,
+            "sha256": "fa6679a395c7d1ab39ff0c374b32cba76433574a5300ad4b584ef9bdfd7e5910"
+          }
+        },
+        "regression": {
+          "status": "PASS",
+          "controls": 6,
+          "scope": "Full module namespace plus unchanged nested request AST, mocked HTTPConnection only; subprocess and actual socket entrypoints blocked. No private access subprocess invoked.",
+          "original": "Exact observed AttributeError required before transport construction; retained traceback.",
+          "corrected": "GET/POST construction, real JSON/body/header/status/read-limit/finally-close logic; oversized/invalidJSON/transport-error refusal controls.",
+          "limitations": [
+            "Nested transport boundary only, not complete login/history/export workflow.",
+            "No connected engine, product compiler, SQL, native open, Docker, or cache action."
+          ]
+        },
+        "review": "Root read complete client/direct callsites, full two-line diff and complete source-extracted regression; all source/manifest/artifact/commit bytes authenticated.",
+        "runtime": "NOT_RUN after alias correction; exact original failed run preserved."
       }
     }
   }
