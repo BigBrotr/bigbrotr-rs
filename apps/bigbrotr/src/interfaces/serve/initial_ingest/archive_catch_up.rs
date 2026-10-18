@@ -120,7 +120,7 @@ async fn own(
         native_limits(),
         grant(&budget, 0, native_limits().native_allowance_bytes())?,
     )
-    .map_err(error)?;
+    .map_err(|e| (4, e.to_string()))?;
     if !matches!(
         (
             native.manifest().identity().owner_epoch.get(),

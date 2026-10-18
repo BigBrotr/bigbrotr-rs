@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T14:28:03.250775+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T14:40:03.885187+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -9,10 +9,9 @@ Existing task files own the plan; this checkpoint locates current work and evide
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
 Canonical `/home/tux/bigbrotr-rs`, main; last verified remote1ae876c.
-Current HEAD150f1da includes journalfa15a74 and the packaged-worker build profile.
-Root finite catch-up composition878d671 and overlap fixd7b8aec are committed.
-The first exact packaged buildd7b8aec failed on the new journal import; the
-public re-export correction and this checkpoint are not yet committed.
+Current HEADb3735e9 includes finite runtime878d671, admission fixd7b8aec and the
+journal public import correction. Root now fixes the failed CLI diagnostic and
+unused imports; these changes and this checkpoint are not yet committed.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
@@ -163,17 +162,43 @@ an independent complete journal codec review and does not replace runtime proof.
 
 First packaged buildd7b8aec/treeb43279c2 failed at probe_build: E0432 in journal
 import of the private `postgres::archive_frontier` module. Worker build PASS;
-all journal/Serve/entrypoint tests and Clippy NOT_RUN. Root corrects both owner
-and test imports to the public `control_owner::ArchiveFrontierReceipt` export.
-Original sources/logs/assets/new worker and153previousELFs remain retained.
-Run `/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-d7b8aec`;
-prepare58388 joined0 and build1644 joined1. Both owned build containers stopped
-by the runner; read-only custody audit pending. Prepare-installed-build.py is
-EXECUTED, never replay its original root. No owned build/engine remains active.
-Next bounded action: audit this original failure, freeze the narrow correction,
-then fresh exact-source packaged build. After component qualification, create a
-genuine same-root Archive/read/export/restart journey; copied SQL cannot transfer
-inode/boot custody. M1–M5 remain incomplete.
+all journal/Serve/entrypoint tests and Clippy NOT_RUN. Corrected inb3735e9 through
+the public `control_owner::ArchiveFrontierReceipt` export (owner and test imports).
+Custody0a904870 binds1967sources,153prior+1newELF,1381unchanged containers;
+prepare58388 joined0/build1644 joined1/audit72465 joined0. Original failure retained.
+
+Second packaged buildb3735e9/tree43e9b2fb compiled actual worker/CLI/probe; journal6
+and Serve19 PASS. Entrypoint7PASS1FAIL: the new command printed internal
+MissingDatabase instead of the existing operator-facing StoreError message.
+Root changes this one mapping to Display and removes two unused imports. No
+semantic failure is inferred from that assertion; the remaining assertions in
+that failing test were not reached. Clippy NOT_RUN because the entrypoint failed.
+Actual build-info/packaged verify-worker PASS despite overall build FAIL.
+Custody692c4dec binds1967sources,154prior+6new=160ELFs,1383unchanged containers;
+prepare47642 joined0/build2693 joined1/audit67475 joined0. Both runs retain all
+sources, assets, ELFs, raw logs and original failures. Owned containers stopped,
+PID0, noOOM; parent handles joined, no current owned engine/build.
+
+Both runs live at `/home/tux/bigbrotr-implementation-20260917/runs/`
+`ingest-succession-archive-installed-{d7b8aec,b3735e9}`. Read-only audit-v1.json
+is under each audit-root. The preparation scripts in
+`.research/archive-catch-up-resume-20261018` are EXECUTED; never replay old roots.
+The latest audit protects160ELFs outside mutable compiler caches. Independent
+journal source review is checking the exact locked rustix1.1.5 census allocation;
+no runtime qualification is implied by that review.
+
+A bounded source agent now owns new installed catch-up journey helpers and narrow
+existing hooks in `.research/archive-catch-up-journey-20261018`, branch
+`qualification/archive-catch-up-journey`, baseb3735e9. Same fresh physical roots:
+initial signed Archive/Sync, terminal2, genuine successor3 with new/historical
+signed events, terminal3, catch-up/retry, ordinary history/export and readerrestart.
+Independent expected science22facts/7receipts, counts[13,2,2,2,3], snapshot8,
+sourcebounds12/0/10; actual validated initial revisionR advances by3. All75tables
+remain checked. Source under development; protocol/engine NOT_RUN. No copied
+coordinator adoption and no reduction of64GiB+577MiB completion reserve.
+Next bounded action: freeze root diagnostic/import cleanup and qualify a fresh
+exact-source packaged build, then review/run this genuine same-root journey.
+M1–M5 remain incomplete; goalACTIVE.
 
 Headroom cleanup completed13:44:18Z, prepare59509/execute50680 joined0.
 `.research/tux-maintenance-20261018` retains script4ad74f58, frozen manifest

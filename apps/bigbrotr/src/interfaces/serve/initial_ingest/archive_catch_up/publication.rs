@@ -2,11 +2,10 @@
 use super::super::archive::native;
 use super::*;
 use bigbrotr::storage::{
-    archive::{FrontierIntentScan, LocalAttempt, RetainedFrontierIntent, RetainedInputs},
+    archive::{FrontierIntentScan, LocalAttempt, RetainedFrontierIntent},
     rocks::store::PendingBatchHeader,
 };
 use bigbrotr_model::ArchiveBatch;
-use bigbrotr_protocol::archive_cut::CutRead;
 
 #[allow(clippy::too_many_arguments)]
 pub(super) async fn run(
