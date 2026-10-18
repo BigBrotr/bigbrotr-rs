@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T13:04:51.847953+00:00 on Tux. Goal ACTIVE after explicit owner resume;
+Observed 2026-10-18T13:09:53.542839+00:00 on Tux. Goal ACTIVE after explicit owner resume;
 the earlier pause is revoked. Selected M1–M5 remain INCOMPLETE. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Existing task files own the plan; this checkpoint locates current work and evidence.
@@ -8,12 +8,12 @@ Existing task files own the plan; this checkpoint locates current work and evide
 ## Repository and current work
 
 Q34/Q35: Tux alone, root sole integrating owner. Q36: main is integrated state.
-Canonical `/home/tux/bigbrotr-rs`, main, observed HEADf4f23db; last verified remote01b05d7.
+Canonical `/home/tux/bigbrotr-rs`, main, observed HEAD6101cda; last verified remoteab8cc79.
 Source361c1099 integrated as652a9bb; root CLI/tests/docs34d9280 and narrow
 RequestInputError Debug/exit3 fix3bdcdd1. Harness6117544 integrated asf1a8535.
 Prepared consumerfc5724c integrated ascdeb470 and root CLI/tests/docsf4f23db.
-Exactf4f23db build now PASS; current build-evidence/checkpoint update pending
-commit. No merge/rebase is pending.
+Exactf4f23db build now PASS; harness5a80da94 integrated as6101cda. Current
+harness-evidence/checkpoint update pending commit. No merge/rebase is pending.
 
 The four epoch3-or-later recovery modes use existing schema0038 adapters:
 positive recovery, separate source closure, fresh closed-source acquisition
@@ -89,10 +89,10 @@ Every CLI process exit0/native closed/drivers joined/backends absent. Client143/
 stopped/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Free
 25,258,786,816bytes at terminal report; no owned engine remains active.
 
-Next bounded action: finish independent source/raw-capture review of the
-prepared harness, integrate its coherent source and run the bounded installed
-engine on five copies using qualifiedf4f23db CLI/probe. No build rerun is needed
-for docs/experiment-only changes; bind unchanged product bytes before execution.
+Next bounded action: commit the harness evidence, prepare one exact-source
+installed-prepared engine using prepare-engine.py and qualifiedf4f23db, then
+join engine, raw replay and custody in that order. Product bytes remain unchanged;
+this docs/experiment-only integration needs no new Rust build.
 Consumerfc5724c/cdeb470 is frozen: three files, scoped rustfmt/diff and four
 source-only inverse checks PASS; installed engine remains NOT_RUN. Author manifest49bed9c1
 and independent AI review4e068ef4 are authenticated in source-binding.json under
@@ -100,9 +100,15 @@ and independent AI review4e068ef4 are authenticated in source-binding.json under
 child and parent deltas. Original clean worktree and all artifacts remain under
 `.research/installed-prepared-recovery-20261018`. No concrete review blocker.
 Root CLI covers13exclusive flags/78conflict pairs and missing-native checks.
-cleanup_review now independently reviews the harness source; no engine execution.
+Independent harness review782343bb is complete, no concrete blocker. All five
+source hashes equal the complete root read and author freeze; binding is recorded
+in `.research/installed-prepared-resume-20261018/harness-source-binding.json`.
+Artificial12contexts/58setup snapshots/26installed states/144controls,467file
+bindings/12file mutations/13custody mocks PASS; shared-Model protocol only.
+The exact artifact count and hashes are in that binding. Both generator iterations
+are preserved. No installed engine has run yet.
 
-Source-only successor_restart_design owns new installed_prepared*.py in
+Frozen harness sources remain in
 `.research/installed-prepared-cycle-20261018`, branch
 `qualification/installed-prepared-cycle`, same base. Agreed bounded journey:
 actual prepared/native gap3, OPEN4, CLOSING4, first+terminal retry, fresh Serve4/5;
@@ -129,7 +135,9 @@ priorcontainers. Fetch/native exit0/PID0/noOOM; free24,923,684,864bytes. Priorbf
 component tests reused only for unchanged authenticated kernels/fixtures/dependencies.
 New prepare-engine.py exists but is NOT_EXECUTED; custody template is source work.
 Installed prepared engine remains NOT_RUN. Root owns all compiler/cache/engine
-operations; no build/engine is active. Import logical closure, staged tails, ACK/GC,
+operations; no build/engine is active. successor_restart_design now performs
+source-only next-slice dependency analysis toward M1, writing ignored notes only.
+Import logical closure, staged tails, ACK/GC,
 Archive restart and full M1–M5 remain unfinished.
 
 Ref-retirement Git census: all134worktrees remained,133detached and canonical main.

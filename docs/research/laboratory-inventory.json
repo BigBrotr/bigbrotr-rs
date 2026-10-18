@@ -60538,6 +60538,64 @@
         "tests": 122
       },
       "limits": "Earlier122 storage tests apply only to authenticated unchanged kernel/fixture/dependency inputs. Actual installed prepared engine NOT_RUN. No capacity/RSS or full-product claim."
+    },
+    "installed_prepared_harness": {
+      "status": "SOURCE_ARTIFACT_BINDING_PASS_ENGINE_NOT_RUN",
+      "observed_at": "2026-10-18T13:09:53.542839+00:00",
+      "original_commit": "5a80da942124c9c5adc7961bd2796272b209991b",
+      "integrated_commit": "6101cda6d08409d26934f39d685eac05f5052936",
+      "source": {
+        "experiments/ingest-succession/installed_prepared.py": {
+          "sha256": "c92d18c5c13c1086c62065cd555856d3f3d99ef626f46207b7df97a27278569a",
+          "bytes": 15175,
+          "lines": 243
+        },
+        "experiments/ingest-succession/installed_prepared_client.py": {
+          "sha256": "8318f6bc086007160bb89520077e8b5ed39be9655bf0d1eae446d423693c4eae",
+          "bytes": 2012,
+          "lines": 48
+        },
+        "experiments/ingest-succession/installed_prepared_model.py": {
+          "sha256": "384e2d4e599adb6fa9d9a845937118ec50aa7363bb77971abf0f2dd48efe0456",
+          "bytes": 18705,
+          "lines": 279
+        },
+        "experiments/ingest-succession/installed_prepared_replay.py": {
+          "sha256": "987ca1c19f78e78957bfc49732ef394394807149ceb03ec2111d67be967c8379",
+          "bytes": 32054,
+          "lines": 422
+        },
+        "experiments/ingest-succession/installed_prepared_setup.py": {
+          "sha256": "6be7d4a077fa572148740d9e86217aed9665b97dbf11cc3a5db790b09ba74d9d",
+          "bytes": 15401,
+          "lines": 223
+        }
+      },
+      "author_manifest": {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-prepared-cycle-20261018/.research/installed-prepared-selfcheck-20261018/manifest.json",
+        "sha256": "0f62861c02ed2f9f4c83520ae550dbdf106d4dbd0793645f3a42460df5b0beb9"
+      },
+      "independent_ai_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-prepared-review-20261018/harness-review-final.json",
+        "sha256": "782343bb1fba0ca55baae4483f35d989b0f22753cb73693af2c3c75d0495276f"
+      },
+      "artifact_count": 506,
+      "author_checks": {
+        "shared_model": true,
+        "qualification": "Protocol/file transport only, not independent product or engine evidence",
+        "contexts": 12,
+        "setup_snapshots": 58,
+        "installed_states": 26,
+        "controls": 144,
+        "bound_files": 467,
+        "file_controls": 12,
+        "custody_mocks": 13
+      },
+      "root_read_scope": "Complete five files, all hashes identical to root draft-read record; reused qualified shared owners, no new broad runtime claim.",
+      "binding": {
+        "path": "/home/tux/bigbrotr-rs/.research/installed-prepared-resume-20261018/harness-source-binding.json",
+        "sha256": "f1c0a28835042e4a35f6e2b48ded7c9fbb704e2b68a8dc108687a8c126024865"
+      }
     }
   }
 }
