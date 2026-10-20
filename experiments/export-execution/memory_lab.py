@@ -67,7 +67,7 @@ def inspect(ident):
 
 class Laboratory:
     def __init__(self, root, build, probe, instrument, *, application_build=None, export_memory_mib=1024,
-                 signed_input='archive-sample'):
+                 signed_input='archive-sample', manager_build=None):
         require(root.is_absolute() and root.resolve() == root and not root.exists(), 'fresh canonical root')
         require(not git('status', '--porcelain', '--untracked-files=all'), 'clean committed source')
         require(shutil.disk_usage(root.parent).free >= 69324505088, 'completion reserve plus headroom')
@@ -75,6 +75,8 @@ class Laboratory:
         self.application_source = APPLICATION_SOURCE
         self.artifacts = ARTIFACTS
         self.application_qualification = None
+        self.manager_build = None
+        self.manager_qualification = None
         self.reference_build = build if application_build is not None else None
         self.ingest_build = build
         self.ingest_visible = ('/reference-build' if self.reference_build is not None else '/build') + '/ingest_bootstrap_probe'
@@ -134,6 +136,74 @@ class Laboratory:
         require(not git('diff', '--name-only', self.application_source, 'HEAD', '--',
             'apps', 'crates', 'Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml',
             'tools/build.py', 'tools/archive_bundle.py', 'contracts', 'migrations'), 'unchanged qualified product inputs')
+        if manager_build is not None:
+            require(self.application_qualification is not None
+                    and self.application_source == 'f1e726f78d7f925cf84cec19117fee5d607773c5',
+                    'manager measurement uses the qualified f1e installed application')
+            require(manager_build.is_absolute() and manager_build.resolve() == manager_build
+                    and not root.is_relative_to(manager_build), 'separate canonical manager build root')
+            resources_path = manager_build / 'resources.json'
+            qualification_path = manager_build / 'out/qualification.json'
+            manifest_path = manager_build / 'out/build/source-manifest.json'
+            result_path = manager_build / 'out/manager-memory-checks/result.json'
+            for path in (resources_path, qualification_path, manifest_path, result_path):
+                require(path.is_file() and path.resolve() == path, 'regular manager build receipt')
+            resources = json.loads(resources_path.read_text())
+            qualification = json.loads(qualification_path.read_text())
+            manifest = json.loads(manifest_path.read_text())
+            result = json.loads(result_path.read_text())
+            source, tree = qualification['source'], qualification['tree']
+            require(re.fullmatch('[0-9a-f]{40}', source) and re.fullmatch('[0-9a-f]{40}', tree)
+                    and git('rev-parse', source + '^{tree}') == tree
+                    and resources['root'] == str(manager_build) and resources['source'] == source
+                    and resources['tree'] == tree and resources['state'] == 'stopped-retained'
+                    and resources['qualification'] == qualification['status'] == 'PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY',
+                    'stopped exact-source manager build only')
+            require(sha(manifest_path) == qualification['source_manifest_sha256']
+                    and manifest['revision'] == source and manifest['tree'] == tree
+                    and result == qualification['manager_memory'] and result['status'] == 'PASS'
+                    and result['source'] == source and result['tree'] == tree
+                    and result['source_manifest']['sha256'] == qualification['source_manifest_sha256'],
+                    'matching manager source and compiler/test receipts')
+            expected_checks = {'rustc-path', 'rustc-version', 'cargo-metadata', 'cargo-lib',
+                               'rustc-diagnostic', 'rustc-counter-tests', 'allocator-counter-tests'}
+            require(len(result['checks']) == len(expected_checks)
+                    and {check['name'] for check in result['checks']} == expected_checks
+                    and all(check['status'] == 'PASS' and check['returncode'] == 0 for check in result['checks'])
+                    and type(result['counter_tests']) is int and result['counter_tests'] > 0
+                    and result['compiler']['bytes'] > 0
+                    and re.fullmatch('[0-9a-f]{64}', result['compiler']['sha256'])
+                    and result['compiler']['version'].startswith('rustc 1.98.1 ')
+                    and 'host: x86_64-unknown-linux-gnu' in result['compiler']['version'],
+                    'nonempty all-pass deterministic tests and pinned compiler')
+            require(not git('diff', '--name-only', source, 'HEAD', '--',
+                'apps', 'crates', 'Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml',
+                'tools/build.py', 'tools/archive_bundle.py', 'contracts', 'migrations',
+                'experiments/export-execution/memory_measure.rs', 'experiments/export-execution/memory.rs',
+                'experiments/export-execution/memory', 'experiments/export-execution/memory_run.py',
+                'experiments/export-execution/memory_oracle.py', 'experiments/export-execution/manager_memory_build.py'),
+                'unchanged qualified measurement and shared product sources')
+            self.manager_build = manager_build / 'out/artifacts'
+            require(self.manager_build.is_dir() and self.manager_build.resolve() == self.manager_build,
+                    'canonical manager artifact root')
+            for name, label in [('export-manager-memory-probe', 'executable'),
+                                ('export-manager-memory-tests', 'test_binary')]:
+                path = self.manager_build / name
+                require(path.is_file() and path.resolve() == path, 'regular qualified manager executable')
+                actual = {key: value for key, value in pin(path).items() if key != 'path'}
+                require(actual == qualification['artifacts'][name]
+                        == {key: result[label][key] for key in ('bytes', 'sha256')}, 'manager executable bytes')
+            bundle = self.manager_build / 'archive-worker'
+            actual = {'archive-worker/' + str(path.relative_to(bundle)): dict(bytes=path.stat().st_size, sha256=sha(path))
+                      for path in bundle.rglob('*') if path.is_file() and path.resolve() == path}
+            expected = {name: value for name, value in qualification['artifacts'].items() if name.startswith('archive-worker/')}
+            require(actual == expected and set(actual) == {name for name in self.artifacts if name.startswith('archive-worker/')}
+                    and all(value['sha256'] == self.artifacts[name] for name, value in actual.items()),
+                    'unchanged qualified manager native bundle; unrelated rlibs remain receipt-pinned')
+            self.manager_qualification = dict(root=str(manager_build), source=source, tree=tree,
+                resources=pin(resources_path), qualification=pin(qualification_path),
+                source_manifest=pin(manifest_path), result=pin(result_path),
+                executable=pin(self.manager_build / 'export-manager-memory-probe', '/manager-build/export-manager-memory-probe'))
         require(sha(probe / 'export-execution-probe') == PROBE_SHA, 'qualified new export probe')
         require(sha(instrument / 'strace-exit-fixed') == TRACER_SHA, 'qualified process tracer')
         require(inspect(CLIENT)['Id'] == CLIENT, 'exact client image')
@@ -149,6 +219,8 @@ class Laboratory:
             self.state.update(application_source=self.application_source,
                 application_build=self.application_qualification,
                 ingest_probe_source=APPLICATION_SOURCE, reference_build=str(self.reference_build))
+        if self.manager_qualification is not None:
+            self.state['manager_build'] = self.manager_qualification
         if export_memory_mib != 1024:
             self.state['export_memory_mib'] = export_memory_mib
         if signed_input != 'archive-sample':
@@ -168,6 +240,18 @@ class Laboratory:
                     stream.write(raw)
                 path.chmod(0o400)
                 self.application_qualification[key] = pin(path, '/lab/' + path.name)
+            self.save()
+        if self.manager_qualification is not None:
+            for key in ('resources', 'qualification', 'source_manifest', 'result'):
+                original = self.manager_qualification[key]
+                raw = Path(original['path']).read_bytes()
+                require(len(raw) == original['bytes'] and hashlib.sha256(raw).hexdigest() == original['sha256'],
+                        'unchanged supplied manager receipt')
+                path = self.out / ('manager-build-' + key + '.json')
+                with path.open('xb') as stream:
+                    stream.write(raw)
+                path.chmod(0o400)
+                self.manager_qualification[key] = pin(path, '/lab/' + path.name)
             self.save()
 
     def save(self):
@@ -257,6 +341,8 @@ class Laboratory:
             '--mount', f'type=bind,src={self.build},dst=/build,readonly',
             *(['--mount', f'type=bind,src={self.reference_build},dst=/reference-build,readonly']
               if self.reference_build is not None else []),
+            *(['--mount', f'type=bind,src={self.manager_build},dst=/manager-build,readonly']
+              if self.manager_build is not None else []),
             '--mount', f'type=bind,src={self.probe},dst=/probe,readonly',
             '--mount', f'type=bind,src={self.instrument},dst=/instrument,readonly',
             '--mount', f'type=bind,src={SOURCE},dst=/source,readonly',
@@ -421,6 +507,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                     reference_build=str(self.reference_build))
             if self.export_memory_mib != 1024:
                 inventory['export_memory_mib'] = self.export_memory_mib
+            if self.manager_qualification is not None:
+                inventory['manager_build'] = self.manager_qualification
             write(self.out / 'input-inventory.json', inventory)
             self.spec['inventory'] = pin(self.out / 'input-inventory.json', '/lab/input-inventory.json')
             write(self.out / 'setup-input.json', self.spec)
@@ -456,6 +544,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                     '/source': (SOURCE, False), '/instrument': (self.instrument, False)}
         if self.reference_build is not None:
             expected['/reference-build'] = (self.reference_build, False)
+        if self.manager_build is not None:
+            expected['/manager-build'] = (self.manager_build, False)
         for target, (source, writable) in expected.items():
             mount, = [row for row in terminal['Mounts'] if row['Destination'] == target]
             require(Path(mount['Source']) == source and mount['RW'] == writable, 'exact original physical mount')
@@ -510,6 +600,101 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         self.state.update(outcome='ACCEPTED_INPUTS_PREPARED',
             acceptance_result=pin(self.out / 'fresh-root/accept-run/result.json'),
             measurement='NOT_RUN', qualification_256mib=False, five_exports_acceptance=False)
+        self.save()
+
+    def manager_measure(self):
+        """Measure one accepted job; preserve the original accepted descriptor."""
+        require(self.manager_qualification is not None and self.state['outcome'] == 'ACCEPTED_INPUTS_PREPARED',
+                'fresh manager diagnostic after genuine single acceptance')
+        fresh = self.out / 'fresh-root'
+        accepted = json.loads((fresh / 'accept-run/result.json').read_text())
+        original = pin(fresh / 'run.json')
+        require(accepted['run_sha256'] == original['sha256'], 'same accepted original descriptor')
+        descriptor = json.loads((fresh / 'run.json').read_text())
+        require(descriptor['probe'] == '/probe/export-execution-probe' and descriptor['probe_sha256'] == PROBE_SHA
+                and descriptor['cgroup'] == '/sys/fs/cgroup'
+                and not (fresh / 'manager-measure-run').exists() and not (fresh / 'measure-ledger.jsonl').exists(),
+                'first measurement and original qualified acceptance probe')
+        descriptor.update(probe=self.manager_qualification['executable']['path'],
+                          probe_sha256=self.manager_qualification['executable']['sha256'])
+        write(fresh / 'manager-run.json', descriptor)
+        self.state.update(manager_descriptor=pin(fresh / 'manager-run.json'), original_accepted_run=original)
+        self.save()
+        # A short file command keeps strace's exec arguments complete. SQL is
+        # read-only through IO; the original captures and science remain intact.
+        script = """import json,os,sys,tomllib
+from pathlib import Path
+sys.dont_write_bytecode=True
+sys.path.insert(0,'/source/experiments/export-execution')
+from memory_setup_io import IO,write,require,census
+from memory_setup import immutable
+from memory_oracle import verify
+os.umask(0o077)
+phase=sys.argv[1]
+require(phase in ('before','after'),'explicit capture phase')
+fresh=Path('/lab/fresh-root')
+output=Path('/lab')/('manager-'+phase)
+output.mkdir(mode=0o700)
+spec=json.loads((fresh/'input.json').read_text())
+config=tomllib.loads((fresh/'destination.toml').read_text())
+io=IO(output,spec,config)
+try:
+ io.backends('before',absent=True)
+ state=io.capture('state')
+ files=immutable(fresh)
+ write(output/'files.json',files)
+ write(output/'scratch.json',census(fresh/'scratch'))
+ if phase=='before':
+  require(state==json.loads((fresh/'accept-run/after.json').read_text()),'same entire accepted SQL state')
+  require(files==json.loads((fresh/'prepared.json').read_text())['files'],'same original physical roots')
+ else:
+  before=json.loads(Path('/lab/manager-before/state.json').read_text())
+  require(state['catalog']==before['catalog'],'complete catalog unchanged')
+  original=json.loads(Path('/lab/manager-before/files.json').read_text())
+  require(all(files[name]==original[name] for name in ('store','data','state')),'scientific roots unchanged')
+  write(output/'science.json',verify(fresh/'manager-measure-run'))
+ io.backends('after',absent=True)
+except BaseException:
+ io.failure_custody()
+ raise
+"""
+        path = self.out / 'manager-capture.py'
+        with path.open('x') as stream:
+            stream.write(script)
+        path.chmod(0o400)
+        def freshness(start):
+            group = Path(start['cgroup'])
+            limits = json.loads((fresh / 'case.json').read_text())['limits']
+            maximum = int((group / 'memory.max').read_text())
+            swap = (group / 'memory.swap.max').read_text().strip()
+            require(maximum == limits['memory_max_bytes'] == 1536*MIB and swap == '0',
+                    'fresh manager observer/probe/worker cgroup with no swap')
+            write(self.out / 'manager-measure-freshness.json', dict(start=start, memory_max=maximum,
+                memory_swap_max=swap, case=pin(fresh / 'case.json'), run=pin(fresh / 'manager-run.json'),
+                original_accepted_run=original, capture_script=pin(path),
+                observer_source=pin(SOURCE / 'experiments/export-execution/memory_run.py'),
+                science_source=pin(SOURCE / 'experiments/export-execution/memory_oracle.py'),
+                manager=self.manager_qualification,
+                scope='Fresh sole gated observer; observer+diagnostic+worker, no tracer or peak reset/subtraction'))
+        self.run('manager-before', ['python3', '-B', '/lab/manager-capture.py', 'before'], trace=True, minimum_workers=0)
+        self.exclusion('manager-before')
+        self.state.update(state='manager-measuring', outcome='MANAGER_MEASUREMENT_RUNNING')
+        self.save()
+        self.run('manager-measure', ['python3', '-B', '/source/experiments/export-execution/memory_run.py',
+            '/lab/fresh-root/manager-run.json', '/lab/fresh-root/manager-measure-run'],
+            memory_mib=1536, before_release=freshness)
+        self.exclusion('manager-measure')
+        require(pin(fresh / 'run.json') == original, 'original accepted run descriptor preserved')
+        self.run('manager-after', ['python3', '-B', '/lab/manager-capture.py', 'after'], trace=True, minimum_workers=0)
+        self.exclusion('manager-after')
+        self.state.update(outcome='CAPTURED_MANAGER_SCIENCE_SQL_AUDIT_PENDING',
+            manager_capture=pin(fresh / 'manager-measure-run/result.json'),
+            manager_science=pin(self.out / 'manager-after/science.json'),
+            manager_before=pin(self.out / 'manager-before/state.json'),
+            manager_after=pin(self.out / 'manager-after/state.json'),
+            qualification_256mib=False, five_exports_acceptance=False,
+            review_required='Root and critical review must audit nine-table delta, physical output and outcome; '
+                            'this1536MiB diagnostic is separate from installed256MiB qualification.')
         self.save()
 
     def installed_five(self):
@@ -636,24 +821,32 @@ def main():
     parser.add_argument('--export-memory-mib', type=int, choices=(256, 1024), default=1024)
     parser.add_argument('--signed-input', choices=('archive-sample', 'content-heavy', 'tag-heavy'),
         default='archive-sample', help='frozen supported Sync boundary; export row profile remains1MiB')
-    parser.add_argument('--prepare-only', action='store_true', help='stop before root Export acceptance')
-    parser.add_argument('--installed-five', action='store_true',
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--prepare-only', action='store_true', help='stop before root Export acceptance')
+    modes.add_argument('--installed-five', action='store_true',
         help='prepare genuine256MiB policy and observe five ordinary Serve exports')
+    modes.add_argument('--manager-build', type=Path,
+        help='qualified manager diagnostic build root; accept and measure one fresh job')
     args = parser.parse_args()
     require(all(p.is_absolute() and p.resolve() == p for p in
                 (args.root, args.build, args.probe, args.instrument,
                  *([args.application_build] if args.application_build is not None else []))),
             'canonical absolute laboratory inputs')
+    require(args.manager_build is None or (args.manager_build.is_absolute()
+            and args.manager_build.resolve() == args.manager_build and args.application_build is not None),
+            'canonical manager build with qualified installed application')
     os.umask(0o077)
     require(not args.installed_five or (args.application_build is not None
             and args.export_memory_mib == 256 and not args.prepare_only), 'explicit installed five profile')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
         application_build=args.application_build, export_memory_mib=args.export_memory_mib,
-        signed_input=args.signed_input)
+        signed_input=args.signed_input, manager_build=args.manager_build)
     try:
         lab.acceptance(prepare_only=args.prepare_only or args.installed_five)
         if args.installed_five:
             lab.installed_five()
+        if args.manager_build is not None:
+            lab.manager_measure()
     except BaseException as error:
         lab.state.update(outcome='UNKNOWN_PRESERVED', error=type(error).__name__,
             next='Authenticate retained outcome; never replay this root or repair authority automatically')
