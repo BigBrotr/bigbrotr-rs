@@ -36740,7 +36740,7 @@
         }
       },
       "archive_export_memory_source": {
-        "status": "INTEGRATED_SOURCE_BUILD_AND_RUNTIME_PENDING",
+        "status": "PROBE_BUILD_QUALIFIED_SETUP_CUSTODY_PREREQUISITE_OPEN",
         "observed_at": "2026-10-18T19:14:59.531905+00:00",
         "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
         "branch": "qualification/export-memory-probe",
@@ -37035,6 +37035,43 @@
           "root_review": "Complete changed native owner and exact diff, existing full runner review reused with changed routing checked; execute/write_report and native environment/toolchain owners read. No concrete blocker. AST and diff --check PASS.",
           "scope": "Existing isolated exact-revision/cache-lock runner, export-memory-probe profile; only example cargo build and Clippy. ELF preserved outside mutable cache. No engine/test/memory PASS.",
           "qualified_component_reuse": "git diff 6c42a41..f85c556 is empty for apps/, crates/, Cargo.toml/lock, rust-toolchain.toml, tools/build.py, tools/archive_bundle.py and contracts/. Actual retained artifact/bundle verification remains required before runtime."
+        },
+        "build_qualification_20261020": {
+          "status": "PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY",
+          "source": "e4f470f37b11e354783778d09cd34c372533df54",
+          "tree": "97b908a1617e34872075a35a2aff6e00c6bfda11",
+          "lab": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-probe-e4f470f",
+          "session": "47035 joined0",
+          "checks": [
+            {
+              "name": "build",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 27.65646547358483
+            },
+            {
+              "name": "clippy",
+              "status": "PASS",
+              "exit_code": 0,
+              "seconds": 5.371118249371648
+            }
+          ],
+          "verification": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-probe-e4f470f/root-verification.json",
+            "bytes": 6427,
+            "sha256": "c909d09993ce4e2ae083d8b083f33a34f44f5eddff81e55ee2b2dc07dd2e5684"
+          },
+          "artifact": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-probe-e4f470f/out/artifacts/export-execution-probe",
+            "bytes": 9559576,
+            "sha256": "046b3d2f88ec7c1a4750ad4307e5d691947fb23560159363f5462f988ce1e927"
+          },
+          "scope": "Exact new example build and Clippy, preserved ELF and owned stopped-container custody. No tests repeated for unchanged product sources; actual fresh setup/acceptance/measurement remains NOT_RUN."
+        },
+        "outer_custody_gap_20261020": {
+          "status": "OPEN_BEFORE_FIRST_SETUP",
+          "finding": "Setup performs native-dump/scientific-census immediately after publisher direct-child/group/backend checks. No outer acknowledgement gate exists. Those checks do not exclude escaped startup-capable descendants or establish complete transient worker PID/start/exit/cgroup custody required by FRESH_SETUP. An after-run audit cannot authorize the earlier reopen.",
+          "next": "Resolve this boundary in the existing fixture before runtime; preserve actual process/container isolation and independent evidence. No change to product semantics, deadlines or memory gate."
         }
       },
       "archive_refusal_journey_attempts": [

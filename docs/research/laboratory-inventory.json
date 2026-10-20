@@ -65594,7 +65594,7 @@
       }
     },
     "archive_export_memory_source": {
-      "status": "INTEGRATED_SOURCE_BUILD_AND_RUNTIME_PENDING",
+      "status": "PROBE_BUILD_QUALIFIED_SETUP_CUSTODY_PREREQUISITE_OPEN",
       "observed_at": "2026-10-18T19:14:59.531905+00:00",
       "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
       "branch": "qualification/export-memory-probe",
@@ -65745,6 +65745,28 @@
         "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.build_profile_20261020",
         "runtime": "NOT_RUN",
         "allocation": "Existing compiler cache with exclusive lock; new exact-revision build root is pending. No runtime/cleanup resources created."
+      },
+      "build_qualification_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.build_qualification_20261020",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-probe-e4f470f",
+        "source": "e4f470f37b11e354783778d09cd34c372533df54",
+        "owner": "df7fea4f12f12e4c6ebd40c2fdfa84bb",
+        "owner_label": "org.bigbrotr.network-transport",
+        "state": "stopped-retained",
+        "observed_at": "2026-10-20T11:43:15.590292+00:00",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "f6d82d9c1e65946cbe357740df59a1fc119051348dd166ee98ea311716ac01e1"
+          },
+          {
+            "name": "native",
+            "id": "dc0b3794db7b74a8f92dcb5b9e322f72a0ca2e058a23a4d6336212a6e7fae12a"
+          }
+        ],
+        "free_bytes_after": 324104470528,
+        "preservation": "New probe outside mutable compiler cache; logs, manifest, source checkout and terminal receipts retained. Existing runner prior container projections unchanged; targeted root terminal inspection matched. No PG or runtime setup created."
       }
     },
     "archive_refusal_journey_attempts": [

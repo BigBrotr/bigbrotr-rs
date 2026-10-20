@@ -10,15 +10,15 @@ Q37 model allocation and Q38 evidence-reuse rules are in the
 P02-T04/P01-T09: qualify the full signed export path and its memory gate after
 finite retained Archive catch-up. Root is the sole integrating/runtime owner in
 `/home/tux/bigbrotr-rs`, branch `main`. Verified pushed HEAD is
-`f85c556c85bb3595bb73568b5bdb7fac130a67b0`, tree`73bd2b9c08a4a623ec76eccfa8ec33a81f9beb21`.
-Export merge push64433 joined0 and exact remote main verified.
+`e4f470f37b11e354783778d09cd34c372533df54`, tree`97b908a1617e34872075a35a2aff6e00c6bfda11`.
+Build-profile push44632 joined0 and exact remote main verified.
 
 All21 integrated export source files equal reviewed130a850; all five original
 commits are merge ancestry. Qualified6c product, dependencies, contracts and build
-owners are unchanged. Current root-owned changes add an `export-memory-probe`
-profile to the existing isolated compiler runner and `--memory-probe` to the
-existing export builder. AST/whitespace checks PASS; scoped critical source
-review found no blocker. Probe compilation and setup remain NOT_RUN.
+owners are unchanged. The new `export-memory-probe`
+profile reuses the existing isolated compiler/cache-lock runner. Session47035
+joined0: build and Clippy PASS, retained ELF046b3d2f, root custodyc909d099.
+Current root-owned edits record this coherent result. Setup remains NOT_RUN.
 Root/reviewer verified Astra/xhigh continuity is reused under Q38.
 
 ## Verified evidence and open problems
@@ -53,14 +53,16 @@ node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence:
   another trial. Original interrupted2426646 and all other failed runs remain
   preserved with their explicit limits; do not promote them to PASS.
 - Export setup130a850 closes the initial destination-profile source conflict;
-  independent005831e2/rootc266ddb7 reviews are complete. Genuine initialization,
-  grants/acceptance, exact builds, worker custody and memory qualification remain
-  NOT_RUN. Source-only evidence does not close the five-export256MiB gate.
+  independent005831e2/rootc266ddb7 reviews are complete. Probe build/Clippy now PASS at e4f470f. Genuine initialization,
+  grants/acceptance, worker custody and memory qualification remain NOT_RUN.
+  The setup reopens native data without an outer custody acknowledgement; close
+  that concrete prerequisite before running it. No five-export256MiB claim.
 
 ## Processes and retained resources
 
-No root engine/compiler/cleanup process is active. All source-only reviewers
-have completed; root owns all runtime and integration.
+No root engine/compiler/cleanup process is active. One existing Astra source-only agent
+is checking minimal outer-custody composition; root owns all runtime and integration.
+New build containers are stopped0/PID0/noOOM, verified in the linked inventory.
 
 Last verified owned runtime custody is11:11:34Z: d775 cliented93a565 and borrowed
 PG71775507 stopped. This is a dated observation, not a new live inspection.
@@ -74,23 +76,21 @@ Qualified6c/9a builds and original58/c543/d775 failures remain separate.
 Export setup worktree is `.research/export-memory-setup-20261020`, branch
 `qualification/export-memory-setup`, HEAD130a850. Other retained branches/worktrees
 and completed maintenance receipts are inventoried; no additional cleanup is due.
-Latest pre-build free space is324486991872B. Check before significant runtime
+Latest post-build free space is324104470528B. Check before significant runtime
 allocation against69324505088B reserve,
 and verify actual ownership/isolation before resource changes. Unrelated workloads
 remain untouched; no complete inventory is needed for current Python/docs edits.
 
 ## Next bounded action
 
-Commit the reviewed build-only profile, then run targeted probe build/Clippy with
-the existing `network-transport/lab.py` profile `export-memory-probe`, a clean
-exact-revision clone and the exclusive compiler cache lock. Reuse
-unchanged qualified application/ingest-probe/worker artifacts only with exact
-identity and source reconciliation. Before significant allocation check headroom
-and actual owned cache/container state; no unrelated whole-host inventory.
-After the build, exercise genuine fresh setup, acceptance and measured exports,
-retaining worker/container/cgroup custody and independent raw-state expectations.
-Preserve the full1MiB row envelope and256MiB export gate. No extra attempt engine
-is needed solely for the corrected verifier.
+Resolve the before-reopen custody gap in the existing fresh-setup fixture. Its
+publisher/group/backend checks cannot substitute for complete worker/container
+exclusion; no real setup has been invoked. Reuse the qualified probe and unchanged
+6c application/ingest-probe/worker with actual artifact/source reconciliation.
+Then exercise genuine fresh setup, acceptance and measured exports in fresh owned
+containers, preserving independent raw-state expectations and full1MiB row envelope.
+The256MiB/five-export gate remains open. No extra attempt engine is needed solely
+for the corrected verifier.
 
 Continue the existing dependency-ready plan. M1–M5, ACK/GC, import/restore,
 capacity/aged-state/RSS and full product/release journeys remain open; Q33 hosted
