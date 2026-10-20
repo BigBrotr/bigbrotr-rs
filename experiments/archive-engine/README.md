@@ -424,3 +424,72 @@ size/hash. It runs all-target input Clippy and retains per-command logs in
 `out/native-tests/producer-inputs`. Then run the installed signed publication cases
 against that lab; source checks, independent scientific oracle and terminal audit
 still apply. The flag adds no producer ledger, ACK or successor-owner authority.
+
+## Explicit native row boundary fixture
+
+`event_cases.py ROOT --native-row-boundary` selects two new fresh typed
+publication cases, `row_exact` and `row_over`. It is exclusive with the older
+case selectors and runs neither their fault campaigns nor PostgreSQL restarts.
+This candidate is source/offline checked only: native publication, exact-limit
+success, one-byte-over refusal, custody and resource observations are **NOT_RUN**.
+
+The required current examples are `archive_publication_probe`,
+`archive_event_probe` and `archive_read_probe`; the production worker package
+remains unchanged. Root supplies the existing exact owned laboratory layout and
+protected credentials, actual qualified initializer `/out/native-tests/bigbrotr`,
+and `ready.json` hashes for `publisher`, `event_reader`, `reader`, `worker` and
+`control`. `source` names the probe source; `control_source` separately names the
+actual initializer source. The outer owner authenticates these against build
+receipts before starting any process and owns terminal container/cgroup/backend
+audit. A wrapper failure is unresolved and preserved; do not retry or repair a
+partially created case.
+
+The frozen `native-row-policy.json` differs from the existing receipt policy
+only at `ingest.max_event_bytes=1048576`. Existing typed initialization and
+activation accept that document in a fresh Control database; its actual source
+SHA and product-policy digest are retained. The selected authority callback and
+`PreparedEvent` verifier require this same limit. No SQL policy/receipt edit or
+production Sync limit change is involved. This authorizes a closed typed fixture
+source, not an installed network/import journey. The two cases use disjoint
+attempt-byte bases 16 and 32 because writer login names are cluster-global.
+
+The existing author `tests/fixtures/protocol/write_archive_event_response.py`
+adds `--case native-row-exact` and `--case native-row-over`; `--check` reauthors
+and compares the frozen bytes. It uses the existing public test key 3, maintained
+secp256k1 signer and independent BIP340 equation verifier. Runtime oracles remain
+stdlib-only. Both events contain 174,637 NULs, empty tags, created_at 1 and kind 1:
+
+| Case | ASCII tail | Signed JSON bytes | Complete worker row bytes | Frozen input SHA256 |
+|---|---|---|---|---|
+| Exact | `a` | 1,048,156 | 1,048,576 | `bfa8ae62e35b6009bb258eeaa202b2e383c4a95ae0cf0495a50fd524b48b26df` |
+| Over | `aa` | 1,048,157 | 1,048,577 | `fab1ddd561475a589b6322e11cdfbb35a5fd3a5e4f63220c359e382fbf62d3ec` |
+
+The target is the complete worker `NativeFact` JSON projection, including source,
+scope, recorded time, digest, schema, kind and payload. It is not content length,
+the signed envelope or the independent census envelope. Decoded strings remain
+below 256 KiB and fact/preparation CBOR below the unchanged publisher bounds.
+The scientific census envelope is 35 bytes larger than the worker projection,
+so only this explicit mode selects a 2 MiB census bound. Complete pre-clamp
+projection bytes are also captured and compared with the independent encoder.
+The bounded wrapper permits 8 MiB output only for these cases; its original
+256 KiB default remains unchanged.
+
+After publisher and all drivers join, the fixture requires absent PostgreSQL
+backends, retains the original catalog/Parquet baseline, authenticates actual
+accepted policy rows and checks complete retained producer/Archive input bytes.
+Only then does the independent census reopen the archive. The same quiescence
+check precedes the product read. Its exact query selects scope 04/1, source
+shard 0/epoch 1 through sequence 10, and snapshot 3. The explicit
+`export-native-row/1` profile uses the qualified export engine/native grants
+64/96 MiB, 1 MiB row cap, one thread, at most two rows, 256 MiB scan cap and
+five-second deadline. The exact row must return the complete signed event;
+the valid overbound row must return exactly `ResourceLimit`. Original science,
+catalog, inputs and policy rows/xmin must remain unchanged.
+
+`test_memory_oracle.py --native-row` provides offline signing, independent Node
+ID/row-byte/hash crosschecks and negative controls over constructed verifier unit
+inputs. These checks are not actual native results. The older three frozen
+fixtures and publication oracle defaults remain unchanged. This slice can
+qualify native row handling under exclusive fixture custody; it does not supply
+installed Export authentication, retained job pins, manager/driver overlap,
+whole-process 256 MiB sizing or full signed export artifacts.

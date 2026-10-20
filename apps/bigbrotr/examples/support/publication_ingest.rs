@@ -89,8 +89,20 @@ fn native() -> RocksNativeLimits {
     })
     .unwrap()
 }
-pub fn event(large: bool) -> SignedEvent {
-    if large {
+pub fn event(mode: &str) -> SignedEvent {
+    let native = match mode {
+        "row_exact" => Some(include_str!(
+            "../../../../tests/fixtures/protocol/archive-event-native-row-exact.json"
+        )),
+        "row_over" => Some(include_str!(
+            "../../../../tests/fixtures/protocol/archive-event-native-row-over.json"
+        )),
+        _ => None,
+    };
+    if let Some(literal) = native {
+        return serde_json::from_str(literal).unwrap();
+    }
+    if mode == "large" {
         let recipe: serde_json::Value = serde_json::from_str(include_str!(
             "../../../../tests/fixtures/protocol/archive-event-response.json"
         ))
@@ -162,6 +174,7 @@ pub fn logical_state(path: &Path) -> (usize, String) {
     (count, hex(&digest.finalize()))
 }
 
+#[allow(clippy::too_many_arguments)]
 pub async fn prepare(
     owner: &mut ControlSession,
     policy: bigbrotr::storage::postgres::control_owner::PolicySnapshot,
@@ -170,8 +183,13 @@ pub async fn prepare(
     budget: &ResourceBudget,
     cancel: &AtomicBool,
     mode: &str,
+    validate: fn(&str, [u8; 32]) -> Result<(), OwnerError>,
 ) -> IngestStore {
-    let large = mode == "large";
+    let max_event_bytes = if matches!(mode, "row_exact" | "row_over") {
+        MIB as usize
+    } else {
+        256 * 1024
+    };
     let history = mode == "history";
     let outstanding = if history { 5 } else { 4 };
     let now: i64 = observer
@@ -293,7 +311,7 @@ pub async fn prepare(
         } else {
             observation
         };
-        let mut input = event(large);
+        let mut input = event(mode);
         if bad == "signature" {
             input.sig = Signature::from_bytes([0; 64]);
         }
@@ -307,7 +325,7 @@ pub async fn prepare(
                 request_sequence: RequestSequence::new(sequence).unwrap(),
             },
             EventIntent::network(1, scope, input, observation).unwrap(),
-            256 * 1024,
+            max_event_bytes,
             grant(budget, MIB, 0),
         )
         .unwrap();
@@ -341,14 +359,14 @@ pub async fn prepare(
                     if candidate.visibility_scope_id() != scope
                         || candidate.origin() != EventOrigin::Network
                         || candidate.observation() != Some(&observation)
-                        || candidate.verification_limit_bytes() != 256 * 1024
+                        || candidate.verification_limit_bytes() != max_event_bytes
                     {
                         return Err(OwnerError::InvalidPolicy);
                     }
                     if matches!(bad, "valid" | "retry" | "earlier")
                         && candidate
                             .verified_event()
-                            .is_none_or(|v| v.event() != &event(large))
+                            .is_none_or(|v| v.event() != &event(mode))
                     {
                         return Err(OwnerError::InvalidPolicy);
                     }

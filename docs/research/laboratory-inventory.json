@@ -66146,6 +66146,16 @@
         "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.supported_boundaries_20261020",
         "qualification": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/supported-boundaries-root-qualification-v1.json",
         "preserve": "All source worktrees, signing distributions, inputs, datasets, raw captures, logs, traces and original failures retained; no cleanup."
+      },
+      "native_row_boundary_20261020": {
+        "state": "source-only; no build/runtime resources created",
+        "fixture_worktree": "/home/tux/bigbrotr-rs/.research/export-installed-oracle-20261020",
+        "fixture_branch": "work/export-native-row-boundary",
+        "build_worktree": "/home/tux/bigbrotr-rs/.research/catalog-layout-fixture-20261020",
+        "build_branch": "work/export-native-row-build",
+        "reviews": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020",
+        "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.native_row_boundary_20261020",
+        "preserve": "All prior and new ignored source/evidence/signing material; no cleanup."
       }
     },
     "archive_refusal_journey_attempts": [

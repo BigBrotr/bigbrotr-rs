@@ -11,8 +11,20 @@ fn main() {
     let mode = &args[1];
     assert!(matches!(
         mode.as_str(),
-        "normal" | "history" | "before" | "after" | "owner_first" | "held_commit" | "held_rollback"
+        "normal"
+            | "history"
+            | "before"
+            | "after"
+            | "owner_first"
+            | "held_commit"
+            | "held_rollback"
+            | "row_exact"
+            | "row_over"
     ));
+    let native_row = matches!(mode.as_str(), "row_exact" | "row_over");
+    if native_row {
+        assert_eq!(args.len(), 2);
+    }
     let mutation = args
         .get(2)
         .filter(|value| matches!(value.as_str(), "visibility-repeat" | "visibility-conflict"));
@@ -94,7 +106,16 @@ fn main() {
             .unwrap()
             .map(|v| {
                 let s = v.unwrap();
-                assert!(s.len() < 1024 * 1024);
+                // Scientific census metadata is a different envelope from the
+                // worker NativeFact row; only explicit boundary cases enlarge it.
+                assert!(
+                    s.len()
+                        < if native_row {
+                            2 * 1024 * 1024
+                        } else {
+                            1024 * 1024
+                        }
+                );
                 serde_json::from_str(&s).unwrap()
             })
             .collect();
@@ -119,21 +140,43 @@ fn main() {
     } else {
         assert_eq!(event_count, 1);
         let actual=c.query_row("SELECT lower(hex(e.event_id)),lower(hex(e.pubkey)),e.created_at,e.kind,to_json(e.tags),e.content,lower(hex(v.sig)) FROM archive.events e JOIN archive.event_eligibility_facts v ON e.event_id=v.event_id AND e.visibility_scope_id=v.visibility_scope_id",[],|r|Ok(SignedEvent {id:r.get::<_,String>(0)?.parse().unwrap(),pubkey:r.get::<_,String>(1)?.parse().unwrap(),created_at:NostrTime(r.get(2)?),kind:r.get(3)?,tags:serde_json::from_str(&r.get::<_,String>(4)?).unwrap(),content:r.get(5)?,sig:r.get::<_,String>(6)?.parse().unwrap()})).unwrap();
-        let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../experiments/identity-contract/signed-fixture.json"
-        ))
-        .unwrap();
-        let expected: SignedEvent =
-            serde_json::from_value(fixture["events"]["E_public"].clone()).unwrap();
+        let expected: SignedEvent = match mode.as_str() {
+            "row_exact" => serde_json::from_str(include_str!(
+                "../../../tests/fixtures/protocol/archive-event-native-row-exact.json"
+            ))
+            .unwrap(),
+            "row_over" => serde_json::from_str(include_str!(
+                "../../../tests/fixtures/protocol/archive-event-native-row-over.json"
+            ))
+            .unwrap(),
+            _ => {
+                let fixture: serde_json::Value = serde_json::from_str(include_str!(
+                    "../../../experiments/identity-contract/signed-fixture.json"
+                ))
+                .unwrap();
+                serde_json::from_value(fixture["events"]["E_public"].clone()).unwrap()
+            }
+        };
         assert_eq!(actual, expected);
         Some(
-            bigbrotr_protocol::verify_owned(actual, 256 * 1024)
-                .unwrap()
-                .into_event(),
+            bigbrotr_protocol::verify_owned(
+                actual,
+                if native_row { 1024 * 1024 } else { 256 * 1024 },
+            )
+            .unwrap()
+            .into_event(),
         )
     };
-    println!(
-        "{}",
-        serde_json::json!({"event":"readback","mode":mode,"tables":tables,"signed_event":event})
-    );
+    let mut output =
+        serde_json::json!({"event":"readback","mode":mode,"tables":tables,"signed_event":event});
+    if native_row {
+        // Independently capture the complete native projection before the
+        // product reader's left()/byte gate. Python compares every original byte
+        // with its separately encoded fixed-identity expectation.
+        c.execute_batch("CREATE MACRO native_ref(r) AS struct_pack(dataset_id:=lower(hex(r.dataset_id)),dictionary_kind:=r.dictionary_kind,allocation_domain:=lower(hex(r.allocation_domain)),ordinal:=r.ordinal::VARCHAR); CREATE MACRO native_source(r) AS struct_pack(dataset_id:=lower(hex(r.dataset_id)),shard_id:=r.shard_id,owner_epoch:=r.owner_epoch::VARCHAR,sequence:=r.sequence::VARCHAR)").unwrap();
+        let row: String = c.query_row("SELECT to_json(struct_pack(source:=native_source(source_record_id),scope:=native_ref(visibility_scope_id),recorded:=recorded_at::VARCHAR,digest:=lower(hex(payload_digest)),schema:=record_schema_version,kind:=record_kind,payload:=struct_pack(event_id:=lower(hex(event_id)),pubkey:=lower(hex(pubkey)),created_at:=created_at,kind:=kind,tags:=tags,content:=content,event_ordinal:=native_ref(event_ordinal)))) FROM archive.events WHERE source_record_id.sequence=7 LIMIT 2", [], |r| r.get(0)).unwrap();
+        assert_eq!(row.len(), 1024 * 1024 + usize::from(mode == "row_over"));
+        output["native_payload_json"] = serde_json::json!(row);
+    }
+    println!("{output}");
 }

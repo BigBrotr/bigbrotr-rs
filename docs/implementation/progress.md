@@ -7,11 +7,10 @@ incomplete. Existing task plan, Q37 model allocation and Q38 evidence reuse appl
 
 P08-T04 Step 3 / P01-T05 Step 2: qualify export ownership and memory without
 reducing fidelity or widening deadlines. Root owns `main` in
-`/home/tux/bigbrotr-rs`. Execution source is `764133884055c14ba123e8b7197f4f0ad75042d5`;
-this checkpoint commit records its completed qualification. Last verified remote
-before this checkpoint was `b6a8481a57ef1aefcac4d17cca07c86d70fd5e4a`
-(push12520 joined0). Current integration consists of fixture helpers and outcome
-documents; application `f1e726f` and qualified worker/build inputs are unchanged.
+`/home/tux/bigbrotr-rs`. Last verified remote is
+`c0d57a3ce286d54cbee8b92bdea008b4408e1a84` (push43380 joined0). This checkpoint
+integrates native-row fixture `c9ca467` with build helper `7789c52` and the reviewed
+outer launcher. Application `f1e726f` and production worker/build inputs are unchanged.
 
 Both exact 262,144-byte signed inputs now complete real publication and five
 ordinary authenticated HTTP exports each under accepted 256 MiB policy. The
@@ -25,8 +24,9 @@ blocker. Full 1 MiB native-row, TLS and internal-owner high-water remain open.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), node
 `initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source`,
-owns source/review/qualification identities in `supported_boundaries_20261020` and
-prior `installed_five_20261020`, `export_admission_20261020` and catalog evidence.
+owns source/review/qualification identities in `supported_boundaries_20261020`,
+the current `native_row_boundary_20261020`, prior `installed_five_20261020`,
+`export_admission_20261020` and catalog evidence.
 Reuse those unchanged results; no whole-task completion is claimed.
 
 ## Problems and preserved state
@@ -49,20 +49,27 @@ The [inventory](../research/laboratory-inventory.json) records both retained roo
 the private runtime source `.research/export-supported-memory-source-7641338` and
 isolated signing distributions. Preserve all data, failures, logs and `.research`.
 
-One Astra/xhigh author is working source-only in
+The Astra/xhigh fixture author's clean source is retained in
 `.research/export-installed-oracle-20261020`, branch `work/export-native-row-boundary`
-from7641338. This work is unintegrated/uncompiled; no runtime is delegated. The
-integrated `work/export-supported-boundaries` ref can be retired after exact push
-and ancestry checks; its worktree/evidence remain retained. No cleanup is due.
+at `c9ca467`. Sol/xhigh's build-profile commit `7789c52` remains
+in `.research/catalog-layout-fixture-20261020`, branch `work/export-native-row-build`;
+the profile builds/Clippies only the three affected probes and reuses the pinned
+worker. Neither build nor runtime has run. The author packet records 22 offline
+negative controls and seven original-mode equivalence checks; root pins/literal
+inspection pass. Integrated branch refs may be retired only after exact push and
+ancestry/worktree checks. All worktrees/evidence remain retained. No cleanup is due.
 
 ## Next bounded action
 
-Review the existing typed publication/event-probe extension for independently
-signed escape-heavy input at the full native JSON row limit and one byte beyond,
-using the unchanged reduced 64+96 MiB export-read profile. Preserve old defaults,
-actual policy/signature/admission/publication and independent expected bytes.
-Build/runtime are **NOT_RUN** for that next candidate. Keep its native-only custody
-scope distinct from installed authority and reduced-manager/driver/TLS coverage.
+Source review is complete with no remaining blocker. Build the integrated exact source once with
+`experiments/network-transport/lab.py REV TREE export-native-row` in its private
+fresh run checkout. After its build/artifact/terminal checks, use `event_lab.py`
+with that build and retained `export-admission-f1e726f` in a separate fresh root.
+The exact 1 MiB native row must succeed and one byte beyond must return
+`ResourceLimit` under unchanged 64+96 MiB grants/five-second deadline. Preserve
+actual policy/signature/admission/publication, independent bytes and custody.
+Build/runtime are **NOT_RUN**; installed authority and manager/driver/TLS gates
+remain separate.
 
 ACK/GC, import/restore, capacity/aged-state and complete M1–M5 delivery remain open.
 Q33 hosted CI billing, native arm64 and signing/registry are separate gates.

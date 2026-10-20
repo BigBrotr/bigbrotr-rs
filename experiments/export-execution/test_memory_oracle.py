@@ -264,8 +264,103 @@ def boundaries():
               'No production parser refusal, publication, native reader or memory/runtime qualification.')
 
 
+def native_rows():
+    """Author/verifier unit controls, not a fabricated native execution capture."""
+    import importlib.util
+    import subprocess
+    root = Path(__file__).resolve().parents[2]
+    sys.path.insert(0, str(root / 'experiments/archive-engine'))
+    import signed_publication_oracle as science
+    path = root / 'tests/fixtures/protocol/write_archive_event_response.py'
+    spec = importlib.util.spec_from_file_location('native_row_author', path)
+    author = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(author)
+    sys.path.insert(0, str(root / 'experiments/identity-contract'))
+    from signed_fixture import verified
+
+    controls, inputs, crosscheck = [], {}, {}
+    def reject(name, call):
+        try:
+            call()
+        except (AssertionError, ValueError):
+            controls.append(dict(name=name, status='REJECTED_OFFLINE'))
+        else:
+            raise AssertionError('incorrect native-row oracle acceptance: ' + name)
+
+    # Preserve the three earlier literal byte sequences, not merely their lengths.
+    for case in author.CASES:
+        raw, _ = author.build(case)
+        name = 'archive-event-response.json' if case == 'archive-sample' else 'archive-event-' + case + '.json'
+        assert (path.parent / name).read_bytes() == raw
+    original_policy = oracle.load(root / 'experiments/archive-engine/receipt-policy.json')
+    policy = oracle.load(root / 'experiments/archive-engine/native-row-policy.json')
+    expected_policy = copy.deepcopy(original_policy)
+    expected_policy['settings']['ingest.max_event_bytes'] = 1048576
+    assert policy == expected_policy, 'one explicitly selected fresh fixture policy difference'
+    identities = set()
+    for mode, case in zip(science.NATIVE_ROW_MODES, author.NATIVE_CASES):
+        raw, metrics = author.build(case)
+        assert (path.parent / ('archive-event-' + case + '.json')).read_bytes() == raw
+        value = science.mode_event(mode)
+        assert verified(value) and len(raw) < policy['settings']['ingest.max_event_bytes']
+        reject(mode + '-old-installed-input-limit', lambda: author.supported(value))
+        row = science.native_payload_json(value)
+        assert len(row) == 1048576 + (mode == 'row_over')
+        batches, _ = science.corpus(value)
+        assert all(len(bytes.fromhex(fact['preimage_hex'])) < 262144 for batch in batches for fact in batch['facts'])
+        assert len(value['content'].encode()) < 262144 and not value['tags']
+        new_ids = {bytes(item['attempt_id']) for item in science.input_expectations(mode)}
+        assert len(new_ids) == 4 and not identities.intersection(new_ids)
+        assert all(item[0] < 180 and len(set(item)) == 1 for item in new_ids)
+        identities.update(new_ids)
+        readback = science.expected(mode)
+        observation = dict(result=dict(status='refused', error='ResourceLimit') if mode == 'row_over'
+            else dict(status='observed', snapshot_id='3', event=value),
+            elapsed_ms=0, cancelled=False, active_permits=0,
+            profile=dict(name='export-native-row/1', engine_bytes=64*1024*1024,
+                native_reserve_bytes=96*1024*1024, row_bytes=1048576, max_records=2,
+                threads=1, deadline_ms=5000, scan_bytes=256*1024*1024))
+        assert science.check_native_row(mode, readback, observation) == dict(
+            bytes=len(row), sha256=oracle.digest(row))
+        mutations = [
+            ('truncated-preclamp-row', lambda r, o: r.update(native_payload_json=r['native_payload_json'][:-1])),
+            ('different-scientific-content', lambda r, o: r['tables']['events'][0].update(content='bad')),
+            ('wrong-fact-digest', lambda r, o: r['tables']['events'][0].update(payload_digest='00'*32)),
+            ('wrong-native-budget', lambda r, o: o['profile'].update(native_reserve_bytes=384*1024*1024)),
+            ('longer-deadline', lambda r, o: o['profile'].update(deadline_ms=15000)),
+            ('retained-permit', lambda r, o: o.update(active_permits=1)),
+            ('cancelled-observation', lambda r, o: o.update(cancelled=True)),
+            ('wrong-result', lambda r, o: o.update(result=dict(status='absent'))),
+            ('unexpected-metadata', lambda r, o: o.update(unrelated=True)),
+        ]
+        for label, change in mutations:
+            changed_read, changed_observation = copy.deepcopy(readback), copy.deepcopy(observation)
+            change(changed_read, changed_observation)
+            reject(mode + '-' + label, lambda: science.check_native_row(mode, changed_read, changed_observation))
+        if mode == 'row_over':
+            changed = copy.deepcopy(observation)
+            changed['result'] = dict(status='observed', snapshot_id='3', event=value)
+            reject('valid-overbound-cannot-pass', lambda: science.check_native_row(mode, readback, changed))
+            changed['result'] = dict(status='refused', error='ObservationUnknown')
+            reject('unrelated-refusal-cannot-pass', lambda: science.check_native_row(mode, readback, changed))
+        crosscheck[mode] = dict(event=value, row=json.loads(row))
+        inputs[mode] = metrics
+    script = ("const f=require('fs'),c=require('crypto'),v=JSON.parse(f.readFileSync(0,'utf8'));"
+        "console.log(JSON.stringify(Object.fromEntries(Object.entries(v).map(([k,{event:e,row:r}])=>[k,"
+        "{id:c.createHash('sha256').update(JSON.stringify([0,e.pubkey,e.created_at,e.kind,e.tags,e.content])).digest('hex'),"
+        "row_bytes:Buffer.byteLength(JSON.stringify(r)),row_sha256:c.createHash('sha256').update(JSON.stringify(r)).digest('hex')}]))));")
+    separate = json.loads(subprocess.check_output(['node', '-e', script], input=oracle.encoded(crosscheck)))
+    assert all(separate[mode] == dict(id=metrics['event_id'], row_bytes=metrics['native_row_bytes'],
+        row_sha256=metrics['native_row_sha256']) for mode, metrics in inputs.items())
+    return dict(status='PASS_OFFLINE_NATIVE_ROW_AUTHOR_AND_ORACLE', inputs=inputs, controls=controls,
+        node_crosscheck=separate,
+        scope='Signed literals and constructed verifier unit inputs only. No observed publication, native row, refusal, custody or memory/runtime result.')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] == '--boundaries':
+    if len(sys.argv) == 2 and sys.argv[1] == '--native-row':
+        print(json.dumps(native_rows(), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--boundaries':
         print(json.dumps(boundaries(), indent=2))
     elif len(sys.argv) == 3 and sys.argv[1] == '--installed':
         print(json.dumps(installed(oracle.load(sys.argv[2])), indent=2))

@@ -37753,6 +37753,46 @@
           "scope": "Two exact262144-byte signed inputs, content-heavy and tag-heavy; latter also65536 EVENT lexical nodes. Genuine publication and five sequential ordinary authenticated exports percase under accepted256MiB policy. Complete signed-file/75-table/custody audits PASS;17 offline negative controls rejected percase. Fresh no-swap256MiB observer+Serve+CLI/native cgroup peaks103550976/105959424B with no max/OOM events.",
           "limits": "PostgreSQL outside; warm cache/libraries, configured whole-service grants larger than256MiB. Full1MiB native row,TLS,cold/concurrent/aged load,live ledger and internal owner high-water NOT_QUALIFIED. Existing capture qualification flags stay false; this receipt is the root scoped adjudication.",
           "next": "Qualify the separate native1MiB row boundary via existing typed fixtures with explicit matching accepted input policy; preserve separate installed authority and reduced-manager/driver/TLS gates."
+        },
+        "native_row_boundary_20261020": {
+          "status": "SOURCE_REVIEWED_BUILD_AND_RUNTIME_NOT_RUN",
+          "fixture_source": "c9ca467cbd57c4f200499f9e5a9c2e6f579a0607",
+          "build_profile_source": "7789c5208f6284e72a68aef9fedad46863b82ee7",
+          "author": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-installed-oracle-20261020/.research/native-row-boundary-20261020/manifest-v1.json",
+            "bytes": 9709,
+            "sha256": "81a45eed900574f1ca20159920b5dc24313754d958a5fb7ef6962b104a2dca42"
+          },
+          "source_reviews": [
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-root-source-v1.json",
+              "bytes": 2082,
+              "sha256": "a6c8fdcb22baafc181d3986629cf0fc7a1da153becf83032e35be07961cbeacb"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-build-review-v1.json",
+              "bytes": 4301,
+              "sha256": "a9565b64f9ddaae27771dc858676c625f2274399a84fc4b7d779aa1a90492b88"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-fixture-review-v1.json",
+              "bytes": 12825,
+              "sha256": "65cc87b51e70e9ef878758776ddfa1f9b9e427779ab25d932f3602b93a51d816"
+            }
+          ],
+          "launcher": {
+            "path": "/home/tux/bigbrotr-rs/experiments/archive-engine/event_lab.py",
+            "bytes": 17738,
+            "sha256": "07d014e973d852d51f4ff616902c0069361f4b5a413555af5e956d65e00a0b16"
+          },
+          "checks": {
+            "offline": "PASS;22negative controls, independent signature/Node checks and7old-mode equivalence; pinned author packet",
+            "build": "NOT_RUN",
+            "native": "NOT_RUN",
+            "critical_review": "PASS; no concrete blocker in inspected native-only scope; all four outer findings resolved"
+          },
+          "scope": "Two signed inputs yielding complete NativeFact rows1048576/1048577B. Selected fresh typed1MiB input policy, actual query64+96MiB grants and5000ms deadline; exact row succeeds, overbound must return ResourceLimit.",
+          "limits": "Offline source preparation only; actual native serialization/publication/refusal/custody unobserved. No installed Export authorization/pins, full-service256MiB, TLS or internal-owner high-water claim."
         }
       },
       "archive_refusal_journey_attempts": [
