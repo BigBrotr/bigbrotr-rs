@@ -88,6 +88,92 @@ def verify_signed_files(destination, artifact, job, science):
     return dict(rows=1, bytes=len(raw), sha256=digest(raw), manifest_sha256=digest(manifest_raw))
 
 
+
+# This descriptor's real ConnectionSettings uses LocalPlaintext and one bounded
+# password input (65536 bytes plus its overbound sentinel), charged eight times.
+# Keep this independent arithmetic aligned with that closed descriptor, not an
+# observed password length or a baseline subtraction.
+MANAGER_BYTES = 16 * 1048576 + 8 * (65536 + 1)
+ALLOCATION_SCOPE = 'whole-probe-rust-requested-live/1'
+ALLOCATION_PROFILE = 'reduced-plaintext-manager/1'
+ALLOCATION_EXCLUSIONS = ['allocator-overhead-and-usable-size', 'transient-realloc-overlap',
+    'native-and-TLS-allocators', 'child-processes', 'kernel-and-RSS',
+    'terminal-record-formatting-after-cut']
+REDUCED_NAMES = ['allocation-profile', 'preflight', 'whole-call-admitted',
+    'control-connected', 'control-acquired', 'catalog-preparation-start',
+    'catalog-preparation-complete', 'catalog-connected', 'catalog-inspection-start',
+    'catalog-inspection-complete', 'reserved', 'catalog-capture-start',
+    'catalog-capture-complete', 'captured-and-pinned', 'native-query-call',
+    'native-query-returned', 'output-written', 'sql-completed', 'catalog-rollback-start',
+    'catalog-rollback-complete', 'pin-released-capture-finished', 'catalog-driver-join-start',
+    'catalog-driver-joined', 'catalog-grant-release-start', 'catalog-grant-released',
+    'control-release-returned', 'control-driver-joined', 'operation-returned', 'grants-released']
+
+
+def allocation_observation(markers, ledger, terminal):
+    """Shared strict counter predicate; caller separately proves science/custody.
+
+    Inputs to unit controls are constructed values, never fabricated captures.
+    Two serialized streams are ordered separately: concurrent snapshot/emit
+    timing does not establish a total order or a quiescent allocation cut.
+    """
+    def snapshot(value):
+        require(set(value) == {'scope', 'live_bytes', 'peak_bytes', 'accounting_valid'}
+                and value['scope'] == ALLOCATION_SCOPE and value['accounting_valid'] is True,
+                'valid always-on allocation accounting')
+        require(all(type(value[key]) is int and 0 <= value[key] < 2**64
+                    for key in ('live_bytes', 'peak_bytes'))
+                and value['live_bytes'] <= value['peak_bytes'], 'allocation snapshot bounds')
+        return value['peak_bytes']
+
+    require(markers and ledger, 'allocation observation streams present')
+    maxima = []
+    for stream in (markers, ledger):
+        peaks = [snapshot(row['rust_allocations']) for row in stream]
+        require(peaks == sorted(peaks), 'allocation peak monotonic within each stream')
+        maxima.append(max(peaks))
+    require(set(terminal) == {'event', 'profile', 'cut', 'status', 'catalog_manager_bytes',
+            'rust_allocations', 'operation_error', 'exclusions'}
+            and terminal['event'] == 'export-allocation-terminal'
+            and terminal['profile'] == ALLOCATION_PROFILE
+            and terminal['cut'] == 'after-runtime-drop-before-terminal-format'
+            and type(terminal['catalog_manager_bytes']) is int
+            and terminal['catalog_manager_bytes'] == MANAGER_BYTES
+            and terminal['operation_error'] is None
+            and terminal['exclusions'] == ALLOCATION_EXCLUSIONS,
+            'closed post-runtime allocation cut')
+    peak = snapshot(terminal['rust_allocations'])
+    require(peak >= max(maxima), 'terminal allocation peak covers both streams')
+    within = peak <= MANAGER_BYTES
+    expected = ('OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET' if within
+                else 'INCONCLUSIVE_WHOLE_PARENT_EXCEEDS_MANAGER')
+    require(terminal['status'] == expected, 'allocation outcome derived from whole-parent peak')
+    return dict(status=('OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET' if within
+                        else 'INCONCLUSIVE_WHOLE_PARENT_EXCEEDS_MANAGER'),
+        catalog_manager_bytes=MANAGER_BYTES, whole_parent_peak_bytes=peak,
+        live_bytes_at_cut=terminal['rust_allocations']['live_bytes'],
+        scope=ALLOCATION_SCOPE, cut=terminal['cut'], exclusions=ALLOCATION_EXCLUSIONS,
+        per_owner_attribution=False, physical_memory_bound=False,
+        scope_limit='Plaintext fixture capture only; external SQL/physical custody remains required.')
+
+
+def reduced_boundaries(by_name, limits):
+    require(limits['engine_memory_bytes'] == 64 * 1048576
+            and limits['native_reserve_bytes'] == 96 * 1048576, 'unchanged reduced native profile')
+    require(by_name['allocation-profile'] == dict(profile=ALLOCATION_PROFILE,
+            catalog_manager_bytes=MANAGER_BYTES, catalog_extra_bytes=0, driver_drain_ms=2000,
+            scope=ALLOCATION_SCOPE, reset=False, baseline_subtraction=False), 'actual reduced observation profile')
+    require(by_name['catalog-preparation-complete'] == dict(grant_bytes=MANAGER_BYTES, grant_held=True),
+            'prepared manager grant held')
+    require(by_name['catalog-driver-join-start'] == dict(grant_held=True, driver_present=True, drain_ms=2000)
+            and by_name['catalog-grant-release-start'] == dict(grant_held=True, driver_present=False)
+            and by_name['catalog-grant-released'] == dict(grant_held=False), 'manager grant survives driver join')
+    for name in ('catalog-preparation-start', 'catalog-inspection-start', 'catalog-inspection-complete',
+                 'catalog-capture-start', 'catalog-capture-complete',
+                 'catalog-rollback-start', 'catalog-rollback-complete'):
+        require(by_name[name] == {}, 'closed reduced boundary marker')
+
+
 def verify(root):
     initial, result = load(root / 'input.json'), load(root / 'result.json')
     spec, case = initial['spec'], initial['case']
@@ -108,9 +194,14 @@ def verify(root):
              'reserved', 'captured-and-pinned', 'native-query-call', 'native-query-returned', 'output-written',
              'sql-completed', 'pin-released-capture-finished', 'catalog-driver-joined', 'control-release-returned',
              'control-driver-joined', 'operation-returned', 'grants-released']
+    reduced = bool(events and events[-1].get('event') == 'export-allocation-terminal')
+    terminal = events.pop() if reduced else None
+    if reduced:
+        names = REDUCED_NAMES
     require(len(events) == len(names) + 1, 'complete caller grammar')
+    marker_keys = {'event', 'phase', 'name', 'elapsed_us', 'fields'} | ({'rust_allocations'} if reduced else set())
     for index, (entry, name) in enumerate(zip(events[:-1], names), 1):
-        require(set(entry) == {'event', 'phase', 'name', 'elapsed_us', 'fields'}
+        require(set(entry) == marker_keys
                 and entry['event'] == 'export-measure' and entry['phase'] == index and entry['name'] == name,
                 'caller marker order')
         require(type(entry['elapsed_us']) is int and entry['elapsed_us'] >= 0, 'finite caller timestamp')
@@ -124,10 +215,12 @@ def verify(root):
     require(by_name['preflight'] == dict(job=case['job'], event_id=case['event_id'],
             worker_sha256=case['worker_sha256'], worker_bytes=case['worker_bytes']), 'actual selected inputs')
     require(by_name['whole-call-admitted'] == dict(control_service_bytes=528*mib+8*65537,
-            catalog_manager_bytes=80*mib+8*65537, reader_bytes=mib, output_bytes=mib,
+            catalog_manager_bytes=MANAGER_BYTES if reduced else 80*mib+8*65537, reader_bytes=mib, output_bytes=mib,
             query_parent_bytes=64*(limits['row_bytes']+2048),
             native_bytes=limits['engine_memory_bytes']+limits['native_reserve_bytes'],
             native_control_bytes=131072, fixture_bytes=16*mib, job_cap_qualification=False), 'owner-specific configured admission')
+    if reduced:
+        reduced_boundaries(by_name, limits)
     require(by_name['native-query-call'] == dict(row_bytes=limits['row_bytes'], engine_memory_bytes=limits['engine_memory_bytes'],
             native_reserve_bytes=limits['native_reserve_bytes'], scan_bytes=limits['scan_bytes']), 'actual whole native call limits')
     for name, connection in [('control-connected', case['control']), ('catalog-connected', case['catalog'])]:
@@ -181,7 +274,7 @@ def verify(root):
             require(0 <= row[key] <= case['limits'][key], 'real grant ceiling')
     native_phases = [r for r in ledger if r['phase'] == names.index('native-query-call') + 1]
     require(native_phases, 'actual whole-call ledger samples; no inferred internal phase')
-    return dict(status='PASS_SCIENCE_AND_CAPTURE', rows=1, bytes=files['bytes'], samples=len(samples), ledger_samples=len(ledger),
+    answer = dict(status='PASS_SCIENCE_AND_CAPTURE', rows=1, bytes=files['bytes'], samples=len(samples), ledger_samples=len(ledger),
         parent_rss_sample_max=max(p['memory'].get('VmRSS', 0) for p in parent_samples),
         worker_rss_sample_max=max(p['memory'].get('VmRSS', 0) for p in worker_samples),
         worker_hwm_observed_max=max(p['memory'].get('VmHWM', 0) for p in worker_samples),
@@ -191,6 +284,9 @@ def verify(root):
         scratch_allocated_sample_max=max(s['scratch']['allocated_bytes'] for s in samples),
         qualification_256mib=False, five_exports_acceptance=False, precise_worker_inner_phases=False,
         limits='Sampling can miss peaks; cgroup lifetime includes observer and cache; external fresh-container/SQL audit still required.')
+    if reduced:
+        answer['manager_allocation_observation'] = allocation_observation(events[:-1], ledger, terminal)
+    return answer
 
 
 if __name__ == '__main__':

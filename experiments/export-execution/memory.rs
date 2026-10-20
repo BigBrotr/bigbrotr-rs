@@ -30,6 +30,9 @@ use bigbrotr::{
 };
 use bigbrotr_model::{DatasetId, Digest256, JobId, PolicyEpoch};
 use descriptor::{Case, Connection, Documents};
+#[allow(unused_imports)] // Standalone allocator wrapper only; ordinary probe has no meter.
+pub(super) use observe::AllocationSnapshot;
+use observe::SnapshotFn;
 use observe::{Observer, emit};
 use sha2::{Digest, Sha256};
 use std::{
@@ -99,8 +102,8 @@ struct Held {
     output: Option<ExecutionCustody>,
     written: Option<WrittenExport>,
 }
-async fn join(mut driver: Driver) -> (bool, bool) {
-    match tokio::time::timeout(Duration::from_secs(5), &mut driver).await {
+async fn join(mut driver: Driver, drain: Duration) -> (bool, bool) {
+    match tokio::time::timeout(drain, &mut driver).await {
         Ok(Ok(Ok(()))) => (true, false),
         Ok(_) => (true, true),
         Err(_) => {
@@ -113,9 +116,18 @@ async fn join(mut driver: Driver) -> (bool, bool) {
 impl Held {
     async fn close(&mut self, success: bool, observation: &Observer) -> Result<()> {
         let mut clean = true;
+        // Default probes retain their five-second fixture drain. Only the
+        // explicit reduced profile matches postgres_command::DRIVER_DRAIN.
+        let drain = Duration::from_secs(if observation.reduced() { 2 } else { 5 });
+        clean &= observation
+            .note("catalog-driver-join-start", || {
+                serde_json::json!({"grant_held":self.catalog_grant.is_some(),
+                "driver_present":self.catalog_driver.is_some(),"drain_ms":drain.as_millis()})
+            })
+            .is_ok();
         self.manager.take();
         if let Some(driver) = self.catalog_driver.take() {
-            let (natural, failed) = join(driver).await;
+            let (natural, failed) = join(driver, drain).await;
             clean &= natural && !failed;
             clean &= observation
                 .mark(
@@ -124,7 +136,19 @@ impl Held {
                 )
                 .is_ok();
         }
+        clean &= observation
+            .note("catalog-grant-release-start", || {
+                serde_json::json!({"grant_held":self.catalog_grant.is_some(),
+                "driver_present":self.catalog_driver.is_some()})
+            })
+            .is_ok();
         self.catalog_grant.take();
+        clean &= observation
+            .note(
+                "catalog-grant-released",
+                || serde_json::json!({"grant_held":self.catalog_grant.is_some()}),
+            )
+            .is_ok();
         if let Some(owner) = self.owner.take() {
             if success {
                 let released = bounded(owner.release()).await;
@@ -140,7 +164,7 @@ impl Held {
             }
         }
         if let Some(driver) = self.control_driver.take() {
-            let (natural, failed) = join(driver).await;
+            let (natural, failed) = join(driver, drain).await;
             clean &= natural && !failed;
             clean &= observation
                 .mark(
@@ -176,25 +200,62 @@ async fn connect(
     OwnedPermit,
 )> {
     let settings = input.settings()?;
+    let bytes = prepared_bytes(&settings, extra)?;
     // Installed connection accounting: input copies +16MiB, plus the owner's
-    // extra reservation (Control512MiB; catalog64MiB). Logical charges, not RSS.
-    let bytes = (settings.preparation_input_reservation_bytes() as u64)
-        .checked_mul(8)
-        .and_then(|n| n.checked_add(16 * MIB + extra))
-        .ok_or("credential arithmetic")?;
+    // extra reservation (Control512MiB; ordinary catalog64MiB, reduced0).
+    // Logical charges, not RSS.
     let permit = grant(budget, bytes)?;
     let prepared = settings.prepare().map_err(error)?;
     let (client, driver, route) = bounded(transport::connect_pinned(prepared, None)).await?;
     Ok((client, driver, route, permit))
 }
+fn connection_bytes(input: &Connection, extra: u64) -> Result<u64> {
+    prepared_bytes(&input.settings()?, extra)
+}
+fn prepared_bytes(settings: &ConnectionSettings<'_>, extra: u64) -> Result<u64> {
+    (settings.preparation_input_reservation_bytes() as u64)
+        .checked_mul(8)
+        .and_then(|n| n.checked_add(16 * MIB + extra))
+        .ok_or_else(|| "credential arithmetic".into())
+}
 
 pub(super) async fn run(path: &Path) -> Result<()> {
+    run_observed(path, None).await.map(|_| ())
+}
+/// Explicit standalone-wrapper profile; the ordinary Cargo probe is unchanged.
+#[allow(dead_code)] // Direct-rustc wrapper entry, intentionally unused by Cargo probe.
+pub(super) async fn run_reduced(path: &Path, snapshot: SnapshotFn) -> Result<u64> {
+    run_observed(path, Some(snapshot)).await
+}
+async fn run_observed(path: &Path, snapshot: Option<SnapshotFn>) -> Result<u64> {
     let case = Case::read(path)?;
+    if snapshot.is_some()
+        && (case.limits.row_bytes != MIB as usize
+            || case.limits.engine_memory_bytes != 64 * MIB
+            || case.limits.native_reserve_bytes != 96 * MIB)
+    {
+        return Err("reduced measurement requires unchanged full-row64+96MiB profile".into());
+    }
+    let catalog_bytes = if snapshot.is_some() {
+        connection_bytes(&case.catalog, 0)?
+    } else {
+        0 // Unobserved return value; default performs no additional preparation.
+    };
     let budget = case.limits.budget()?;
     // Fixed small fixture/controller/JSON/observer charge, separate from actual drivers.
     let fixture_grant = grant(&budget, FIXTURE_BYTES)?;
     let documents = Documents::read(&case)?;
-    let observer = Observer::start(&case.ledger, &budget)?;
+    let observer = match snapshot {
+        Some(snapshot) => Observer::observed(&case.ledger, &budget, Some(snapshot))?,
+        None => Observer::start(&case.ledger, &budget)?,
+    };
+    observer.note("allocation-profile", || {
+        serde_json::json!({
+            "profile":"reduced-plaintext-manager/1","catalog_manager_bytes":catalog_bytes,
+            "catalog_extra_bytes":0,"driver_drain_ms":2000,
+            "scope":"whole-probe-rust-requested-live/1","reset":false,"baseline_subtraction":false
+        })
+    })?;
     let cancelled = Arc::new(AtomicBool::new(false));
     let signal_flag = cancelled.clone();
     let signal = tokio::spawn(async move {
@@ -231,7 +292,8 @@ pub(super) async fn run(path: &Path) -> Result<()> {
     emit(
         serde_json::json!({"event":"export-measure-complete","name":case.name,
         "status":"COMPLETE","authority":"one-accepted-job","inner_phases":"not-observed"}),
-    )
+    )?;
+    Ok(catalog_bytes)
 }
 
 async fn work(
@@ -247,18 +309,9 @@ async fn work(
         serde_json::json!({"job":case.job,"event_id":case.event_id,
         "worker_sha256":case.worker_sha256,"worker_bytes":case.worker_bytes}),
     )?;
-    let control_bytes = case
-        .control
-        .settings()?
-        .preparation_input_reservation_bytes() as u64
-        * 8
-        + 528 * MIB;
-    let catalog_bytes = case
-        .catalog
-        .settings()?
-        .preparation_input_reservation_bytes() as u64
-        * 8
-        + 80 * MIB;
+    let control_bytes = connection_bytes(&case.control, 512 * MIB)?;
+    let catalog_extra = if observation.reduced() { 0 } else { 64 * MIB };
+    let catalog_bytes = connection_bytes(&case.catalog, catalog_extra)?;
     let parent_bytes = (case.limits.row_bytes as u64 + 2048) * 64;
     let native_bytes = case
         .limits
@@ -377,20 +430,25 @@ async fn work(
     held.coordinator = Some(LocalCoordinator::open(&identity, &case.state_root).map_err(error)?);
     let coordinator = held.coordinator.as_ref().ok_or("missing coordinator")?;
     bounded(owner.require_archive_coordinator(coordinator)).await?;
-    let (manager, driver, route, permit) = connect(&case.catalog, budget, 64 * MIB).await?;
+    observation.note("catalog-preparation-start", || serde_json::json!({}))?;
+    let (manager, driver, route, permit) = connect(&case.catalog, budget, catalog_extra).await?;
     held.catalog_grant = Some(permit);
     held.manager = Some(manager);
     held.catalog_driver = Some(tokio::spawn(
         coordinator.retain_connection(driver).map_err(error)?,
     ));
+    observation.note("catalog-preparation-complete",
+        || serde_json::json!({"grant_bytes":catalog_bytes,"grant_held":held.catalog_grant.is_some()}))?;
     let manager = held.manager.as_mut().ok_or("missing catalog")?;
     observation.mark("catalog-connected", backend(manager).await?)?;
+    observation.note("catalog-inspection-start", || serde_json::json!({}))?;
     bounded(catalog_guard::inspect_reader(
         manager,
         &identity,
         &case.reader_user,
     ))
     .await?;
+    observation.note("catalog-inspection-complete", || serde_json::json!({}))?;
     let reader_grant = grant(budget, MIB)?;
     let password = SecretFile::parse(&case.reader_password_ref)
         .map_err(error)?
@@ -412,6 +470,7 @@ async fn work(
     .await?;
     observation.mark("reserved", serde_json::json!({"artifact":queued.reservation().ok_or("reservation missing")?.artifact(),
         "query":queued.selection().query(),"catalog":queued.selection().catalog(),"frontier_revision":queued.selection().frontier_revision()}))?;
+    observation.note("catalog-capture-start", || serde_json::json!({}))?;
     let capture = bounded(CatalogCapture::at_snapshot(
         manager,
         coordinator,
@@ -419,6 +478,7 @@ async fn work(
         Duration::from_secs(30),
     ))
     .await?;
+    observation.note("catalog-capture-complete", || serde_json::json!({}))?;
     let pin = bounded(owner.register_archive_pin(
         &capture,
         &ArchivePinRequest {
@@ -553,7 +613,9 @@ async fn work(
     observation.mark("sql-completed",serde_json::json!({"job":case.job,"revision":complete.revision(),
         "manifest":complete.result(),"artifact":complete.reservation().ok_or("completion reservation missing")?.artifact()}))?;
     bounded(owner.release_archive_pin(&pin, &Cell::new(false))).await?;
+    observation.note("catalog-rollback-start", || serde_json::json!({}))?;
     bounded(capture.finish()).await?;
+    observation.note("catalog-rollback-complete", || serde_json::json!({}))?;
     observation.mark("pin-released-capture-finished", serde_json::json!({}))?;
     Ok(())
 }

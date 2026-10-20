@@ -66176,6 +66176,25 @@
         },
         "terminal_observation": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-runtime-root-v1.json",
         "qualification": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-root-qualification-v1.json"
+      },
+      "manager_observation_20261020": {
+        "state": "source-only; no build/runtime resources",
+        "base": "c50eb8c016eafd3ee29a678a02e4784c2f8493e0",
+        "author_worktree": "/home/tux/bigbrotr-rs/.research/export-manager-memory-20261020",
+        "author_branch": "work/export-manager-memory",
+        "builder_worktree": "/home/tux/bigbrotr-rs/.research/export-manager-memory-build-20261020",
+        "builder_branch": "work/export-manager-memory-build",
+        "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.manager_observation_20261020",
+        "preserve": "Existing worktrees, datasets, logs and ignored evidence retained. No cleanup.",
+        "runtime_source_worktree": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-manager-memory-runtime-20261020",
+          "branch": "work/export-manager-memory-runtime",
+          "base": "c50eb8c016eafd3ee29a678a02e4784c2f8493e0",
+          "owner": "catalog_layout_fixture gpt-6.1-sol/xhigh",
+          "scope": "Frozen source-only existing-lab parameter; critical runtime review active; root alone owns execution",
+          "commit": "6302ccdf7746617daa1b33de99c3209066ae874e"
+        },
+        "source_state": "Three clean author branches integrated in current source commit; build/runtime NOT_RUN, no engine/compiler active. No cleanup."
       }
     },
     "archive_refusal_journey_attempts": [

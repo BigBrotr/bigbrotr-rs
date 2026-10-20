@@ -115,3 +115,94 @@ qualify smaller grants, a smaller event envelope, or five completed exports.
 On timeout, nonzero exit, forced reap, OOM, missing worker samples, failed driver
 join, retained grants, or changed inputs, retain all artifacts. No successful
 marker substitutes for the external SQL/backend/container custody audit.
+
+
+## Explicit reduced plaintext manager observation
+
+`memory_measure.rs` is a standalone research entry, directly linked by the existing
+build owner against the exact Cargo-selected libraries. It imports only `memory.rs`
+and applies `forbid(unsafe_code)` to that reused module. Its System allocator
+wrapper is the only unsafe source; no Cargo manifest, product lint or product code
+changes. Direct dependencies are `bigbrotr`, `bigbrotr_model`, `bigbrotr_protocol`,
+`getrandom`, `serde`, `serde_json`, `sha2`, `tokio`, and `tokio_postgres`. The same
+source has deterministic `rustc --test` counter checks. Both executable/test
+compilation and execution require root qualification and exact artifact pins.
+
+The new executable retains `measure CASE`, so the existing closed run descriptor,
+`memory_run.py`, full signed-file oracle and external custody audit remain the
+consumers. Select it by its independently pinned executable path/hash. Ordinary
+`export-execution-probe measure` and acceptance mode retain their previous output,
+80 MiB plus credential catalog charge, and five-second fixture driver drain.
+The explicit wrapper selects catalog extra=0 and a two-second driver drain,
+matching `prepare_export` and `postgres_command::DRIVER_DRAIN`. It requires the
+existing 1 MiB row and 64+96 MiB native profile. Control, query/output/reader grants,
+query/action deadlines and failure/output custody remain unchanged.
+
+The descriptor permits only local plaintext. The actual preparation API supplies
+the manager charge: 16 MiB plus eight copies of its 65,536-byte password bound
+and one-byte overbound sentinel, **17,301,512 bytes**. The independent oracle
+checks that arithmetic. This is configured bounded-input accounting, not eight
+copies of the observed secret length. TLS/mTLS are outside this profile.
+
+The allocator counts successful `alloc`/`alloc_zeroed`, successful realloc size
+deltas and matching deallocations from process startup. Failure preserves the
+prior charge. Checked arithmetic sets a permanent invalid flag on underflow or
+overflow. No reset, active window, allocation-owner tagging, locks or allocator
+callback formatting occurs. Snapshots help publish observed live bytes into the
+global monotonic peak, including a pending allocation's peak update. A snapshot
+is not an atomic multi-field or quiescent process cut. Deallocation stays charged
+until the real delegate returns. System-internal realloc overlap, usable size,
+allocator overhead, FFI/native/TLS allocation, children, kernel and physical
+RSS are not measured by this counter. The separate existing process/cgroup
+observations remain necessary.
+
+In this mode each caller marker and ledger sample adds the closed object
+`rust_allocations={scope,live_bytes,peak_bytes,accounting_valid}` with
+`scope=whole-probe-rust-requested-live/1`. Additional finite caller markers bracket
+catalog preparation, inspection, snapshot capture, explicit rollback, driver join
+and grant release. They describe actual outer calls and held options, not worker
+interior phases or inferred allocations. The manager grant remains held through
+actual driver join. Failed joins and unknown output keep their prior cleanup
+semantics; added marker failures do not skip driver cleanup.
+
+After the measurement future, sampler and signal task finish, the wrapper
+naturally drops the Tokio runtime. It then takes the final counter snapshot before
+formatting the `export-allocation-terminal` record. Runtime destruction may wait
+for blocking threads; the existing finite outer timeout retains UNKNOWN if this
+cannot complete. No terminal success is fabricated by timed runtime shutdown.
+Allocations still live at this cut are counted; zero is not required. Terminal
+formatting after the cut is explicitly excluded.
+
+The full capture verifier requires original science/process checks, natural
+catalog and Control joins, released grants, exact reduced marker grammar, valid
+counters, monotonically increasing peaks within each serialized stream separately,
+and a terminal peak covering both streams. Concurrent ledger and main-thread
+snapshots are not sorted together by timestamps. Its nested
+`manager_allocation_observation.status` is `OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET`
+only if the conservative **whole-parent** peak (including runtime, observer,
+Control and query decode Rust allocations) is at most 17,301,512 bytes. That
+supports a requested-allocation observation for this plaintext fixture; it is
+not per-owner attribution, physical memory, universal catalog sizing, installed
+scheduler or TLS qualification. A larger whole-parent peak yields
+`INCONCLUSIVE_WHOLE_PARENT_EXCEEDS_MANAGER`, with the successful science capture
+preserved. Invalid counters, missing terminal/joins, or operation failure cannot
+pass. Existing qualification flags remain false.
+
+Offline counter-verifier unit controls use
+`python3 -B experiments/export-execution/test_memory_oracle.py --allocations`.
+These constructed records do not manufacture a live capture. The seven Rust
+counter checks cover preexisting/zeroed blocks, realloc growth/shrink and content,
+deterministic allocation/realloc failure, cross-thread lifetime, known concurrent
+sum, delayed peak publication, and permanent invalid arithmetic. They are separate
+from the real signed-event capture and must pass before interpreting its meter.
+
+The existing oversized function-identity layout fixture supplies a useful early
+inspection refusal input. The wrapper already records cleanup joins and the
+operation error on this path, then emits `UNKNOWN_OR_FAILED` after runtime drop;
+this is not a successful export/capture predicate. A compatible fresh layout
+case, independent refusal/drain/SQL/backend audit and real execution remain root
+prerequisites. No timed fault injection, proxy adaptation or refusal PASS oracle
+is introduced here. A positive run needs a genuinely new Accepted job and pin;
+completed jobs cannot be replayed. Previously qualified application/worker assets
+may be reused with their original source identity, while this new wrapper must be
+built and pinned separately. This source packet claims no new runtime result.

@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'export-memory-probe', 'catalog-layout', 'export-admission', 'export-native-row',
+    'export-memory-probe', 'catalog-layout', 'export-admission', 'export-native-row', 'export-manager-memory-probe',
     'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed',
     'ingest-activated-retirement', 'ingest-activated-durable', 'ingest-activated-source', 'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
@@ -123,7 +123,7 @@ def run_container(name, network, argv, seconds):
         bundle = base / 'runs/installed-publication-61271e2/out/archive-worker'
         assert bundle.is_dir() and bundle.resolve() == bundle
         archive_mount = ['--mount', f'type=bind,src={bundle},dst=/archive-inputs,readonly']
-    elif profile in ('catalog-layout', 'export-admission', 'export-native-row') and name == 'native':
+    elif profile in ('catalog-layout', 'export-admission', 'export-native-row', 'export-manager-memory-probe') and name == 'native':
         bundle = base / 'runs/ingest-succession-archive-installed-6c42a41/out/artifacts/archive-worker'
         assert bundle.is_dir() and bundle.resolve() == bundle
         archive_mount = ['--mount', f'type=bind,src={bundle},dst=/archive-inputs,readonly']
@@ -166,6 +166,7 @@ try:
         'export-memory-probe': ['--memory-probe'],
         'export-admission': ['--admission'],
         'export-native-row': ['--native-row'],
+        'export-manager-memory-probe': ['--manager-memory-probe'],
         'catalog-layout': ['--layout'],
         'ingest-succession-lineage': ['lineage'],
         'ingest-succession-schema': ['schema'],
@@ -232,7 +233,7 @@ try:
     }.get(profile, [])
     native_script = ('ingest-succession/native.py' if profile in ('ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
                      else 'archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
-                     else 'export-execution/native.py' if profile in ('export-memory-probe', 'export-admission', 'export-native-row')
+                     else 'export-execution/native.py' if profile in ('export-memory-probe', 'export-admission', 'export-native-row', 'export-manager-memory-probe')
                      else 'archive-engine/native_scientific_guard.py' if profile == 'catalog-layout'
                      else native_path + '/native.py')
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
@@ -242,6 +243,7 @@ try:
                 'export-memory-probe': 'PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY',
                 'export-admission': 'PASS_EXPORT_ADMISSION_BUILD_ONLY',
                 'export-native-row': 'PASS_EXPORT_NATIVE_ROW_BUILD_ONLY',
+                'export-manager-memory-probe': 'PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY',
                 'catalog-layout': 'PASS_CATALOG_LAYOUT_BUILD_ONLY',
                 'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
                 'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',

@@ -37826,6 +37826,51 @@
             "bytes": 10649,
             "sha256": "7fd28ea4f66f22ca84e5fd01f4363d65ffcefa81a75617c04ac914c68b128908"
           }
+        },
+        "manager_observation_20261020": {
+          "status": "SOURCE_IMPLEMENTATION_IN_PROGRESS_BUILD_RUNTIME_NOT_RUN",
+          "source": "c50eb8c016eafd3ee29a678a02e4784c2f8493e0",
+          "application_source": "f1e726f78d7f925cf84cec19117fee5d607773c5",
+          "assessment": "Current plaintext manager charge17301512B includes credential copies and remains held through both inspections, native/output overlap, rollback, client drop and driver join; unknown completion retains output through outer Control driver join. No source early-release/reservation defect found in inspected path.",
+          "remaining": "Empirical live allocations across credential preparation, inspection, retained transport buffers and drain. Existing installed whole-parent RSS/cgroup has no owner attribution; no baseline subtraction. No independently enforced16MiB manager RSS requirement is claimed.",
+          "reuse": "Existing memory.rs/observe.rs and capture/science/guard fixtures. Old measurement profile still reserves catalog80MiB plus credentials and allows5s driver cleanup; cannot qualify reduced f1e path unchanged.",
+          "next": "Finalize explicit reduced observation profile and conservative whole-probe requested-live Rust allocator accounting in a standalone research wrapper importing memory.rs; preserve old mode, actual cleanup boundary, product unsafe prohibition and f1e/6c identities. Source/build/runtime NOT_RUN for this proposed extension.",
+          "review_scope": "Astra/xhigh complete current dispatch, transport/preparation, catalog inspection/capture and measurement owners; targeted Serve join and guard/custody fixtures; prior pinned upstream buffer review reused. No new allocator/TLS internals or runtime audit.",
+          "design": "Standalone memory_measure.rs imports safe memory.rs, always-on whole-parent requested-live/peak counter fromstartup, permanent invalid arithmetic flag, no baseline subtraction; safe optional observer callback. Exact credential-derived reduced manager charge and2s drain, old80MiB/5s defaults unchanged. Conservative observed peak<=actualmanager charge may bound requested Rust bytes for this run; excess is inconclusive for owner attribution. Product unsafe lint/Cargo manifests unchanged.",
+          "source_candidates": {
+            "observation_commit": "65d26429a0825b867a6bb9b2f0adb66616380154",
+            "builder_commit": "2e8e3297c4c83a0a0b1db877ee6841de827185a2",
+            "author_manifest": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-memory-20261020/.research/manager-memory-20261020/manifest-v1.json",
+              "bytes": 7435,
+              "sha256": "7d259176dbd1dbf0bd4b4dd6de0d674794981d31b33a5959dd56353738c92f38"
+            },
+            "builder_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-memory-build-20261020/.research/manager-memory-builder-source-checks-20261020.json",
+              "bytes": 937,
+              "sha256": "794752035d5383396f110d0575effee8efb5ac1fdefa324334ac37acd800c1ef"
+            },
+            "root_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-root-source-v1.json",
+              "bytes": 2335,
+              "sha256": "0458d7f4f57f159bcca014aea3869dd880b3928e17106b9e254ee266cc64ae4f"
+            },
+            "status": "INTEGRATING_SOURCE_BUILD_READY_RUNTIME_REVIEW_PENDING",
+            "build": "NOT_RUN",
+            "runtime": "NOT_RUN",
+            "critical_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-source-review-v1.json",
+              "bytes": 12702,
+              "sha256": "41ef44f79b626d858fa8c12e7aa91d8ab4c16ae908a9f57fd83890d0a89f5c39"
+            },
+            "runtime_commit": "6302ccdf7746617daa1b33de99c3209066ae874e",
+            "runtime_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-memory-runtime-20261020/.research/manager-memory-runtime-source-checks-20261020.json",
+              "bytes": 736,
+              "sha256": "59e0e5b8fa3353e9395ebce5971032be687ca73d1d4ac7bb2ecf0f0a4be286d1"
+            },
+            "root_runtime_review": "Complete existing memory_lab.py plus frozen delta and old first-measurement protocol read. One optional new profile; old probe/acceptance preserved; new diagnostic alone changes its separate descriptor. Actual SQL9table and physical outcome qualification remains required. Critical runtime review pending."
+          }
         }
       },
       "archive_refusal_journey_attempts": [
