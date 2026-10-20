@@ -62,7 +62,8 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
 
 def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1,
              *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb',
-             additional_events=()):
+             additional_events=(), acknowledge=False):
+    assert type(acknowledge) is bool
     # Optional two additional distinct events, each with independent clock and
     # body-digest inputs. This remains an effect encoder: no ACK is inferred.
     if additional_events:
@@ -97,6 +98,10 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         recovery, owner['acquired_at_us'], topology)
     inputs, receipts = [first_input, private_input], [first_receipt, private_receipt]
     rows = {(cf, k): v for cf, k, v in rows}
+    if acknowledge:
+        # The two bootstrap dictionary operations each confirm a checkpoint
+        # and ACK before returning. No receipt/input/detail is collected.
+        rows['receipts', b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(2)+be(2)+be(0)
     # References below come only from independently constructed bootstrap bytes.
     refs = {int.from_bytes(k[-8:], 'big'): [src(int.from_bytes(k[-8:], 'big')), v[2:34]]
             for (cf, k), v in rows.items() if cf == 'facts' and k[:2] == b'\x01\x20'}
@@ -129,7 +134,7 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         rows['facts', b'\x01\x21'+src_key(first)] = b'\x01\x21'+be(last)+sha(
             b'bigbrotr/admission-batch/1\0'+cbor([dataset, 0, 1, first, last, batch]))
         rows['receipts', b'\x01\x30'+slot+be(1)+be(sequence)] = receipt
-        rows['receipts', b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(sequence)+be(0)+be(0)
+        rows['receipts', b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(sequence)+be(sequence if acknowledge else 0)+be(0)
         inputs.append(original); receipts.append(receipt)
 
     definitions = [(2, 'observer', dict(clock='system-utc', vantage=None, software=None,

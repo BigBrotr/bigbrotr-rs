@@ -19,11 +19,13 @@ THREE_EVENTS = (
      '38ca405dd59ae379c607fe64f4a9c07689f67ae604768a5974718e855a852c17'),
 )
 
+SUCCESSOR_EVENTS=(THREE_EVENTS[0],('7815649941b6434d7c525bb633ff461fb7ee341954f1bcb0bce2c9535c2bb7f7','228da010e18049c96e25f37ccb37c0704c174756d2110306a2734492270807ac'),THREE_EVENTS[2])
 
-def three_events(events):
+def three_events(events, *, successor=False):
     """Closed transport inputs only; no signature or checkpoint qualification."""
     assert isinstance(events, (tuple, list)) and len(events)==3
-    for event, (ident, digest) in zip(events, THREE_EVENTS):
+    assert type(successor) is bool
+    for event, (ident, digest) in zip(events, SUCCESSOR_EVENTS if successor else THREE_EVENTS):
         assert set(event)=={'id','pubkey','created_at','kind','tags','content','sig'}
         assert event['id']==ident and event['kind']==1
         raw=json.dumps(event,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()
@@ -32,12 +34,32 @@ def three_events(events):
     return tuple(json.loads(json.dumps(event)) for event in events)
 
 
+def ack_events(directory, *, successor=False):
+    """Read an explicit finite transport recipe; never infer ACK authority."""
+    path = directory / 'progress-ack-events.json'
+    if not path.exists():
+        return None
+    metadata = path.lstat()
+    assert stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1 and metadata.st_size <= 4096
+    assert stat.S_IMODE(metadata.st_mode) & 0o077 == 0
+    def closed(pairs):
+        value = {}
+        for key, item in pairs:
+            assert key not in value, 'duplicate ACK transport key'
+            value[key] = item
+        return value
+    value = json.loads(path.read_text(), object_pairs_hook=closed)
+    assert set(value) == {'format', 'events'} and value['format'] == 'bigbrotr-ack-events/1'
+    return three_events(value['events'],successor=successor)
+
+
 class SplitEvents:
     def __init__(self, directory, event, kind, *, event_sequence=None):
         from installed_family_client import progress_release
         path = directory / 'progress-context.json'
         assert stat.S_ISREG(path.lstat().st_mode) and path.stat().st_size <= 256
-        assert json.loads(path.read_text()) == dict(format='bigbrotr-progress-context/1',kind=kind)
+        assert json.loads(path.read_text()) == dict(
+            format='bigbrotr-progress-context/1' if event_sequence is None else 'bigbrotr-ack-context/1',kind=kind)
         self.read_release = progress_release
         self.directory, self.event = directory, event
         self.event_sequence = None if event_sequence is None else three_events(event_sequence)

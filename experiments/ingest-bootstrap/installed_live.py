@@ -126,7 +126,8 @@ COMMIT;
         lab.write_json(output / (label + '-policy.json'), context)
 
 
-def configure(pg, client, output, database, directory, original):
+def configure(pg, client, output, database, directory, original, *, ack=False):
+    assert type(ack) is bool
     config = configuration(pg, client, output, database, directory, original)
     path = output / Path(config).name
     text = path.read_text()
@@ -134,7 +135,7 @@ def configure(pg, client, output, database, directory, original):
         ('topology', 'local_roles', ['control', 'ingest', 'sync', 'archive']),
         ('administration.listen', 'port', 18081),
         ('administration', 'enabled', False), ('sync', 'enabled', False),
-        ('ingest', 'producer_outstanding_requests', 65),
+        ('ingest', 'producer_outstanding_requests', 2 if ack else 65),
         ('network.dns', 'resolver', '127.0.0.1:9'), ('network.tls', 'extra_roots', []),
         ('runtime', 'lease_ttl', '6s'), ('runtime', 'heartbeat_interval', '1s'),
         ('runtime', 'renewal_timeout', '1s'), ('runtime', 'authorization_ttl', '5s'),
@@ -153,12 +154,16 @@ def configure(pg, client, output, database, directory, original):
 
 
 def capture_case(pg, client, output, rows, mode, database, config, directory, seed, setup,
-        previous=None, *, positive, after_activated=None, progress_setup=None):
+        previous=None, *, positive, after_activated=None, progress_setup=None, ack=False):
     """Capture one owned Serve process; qualification belongs to its caller.
 
 The optional fixture runs only between confirmed activation and starting the
 HTTP client. Existing modes pass no fixture and retain the same observations.
     """
+    assert type(ack) is bool and (not ack or (positive and progress_setup is not None))
+    if ack:
+        from installed_progress_replay import require_frozen_profile
+        require_frozen_profile(ack=True)
     def dump(label, directory):
         response, _ = capture(client, output, label + '-dump', 'dump-state',
             '/lab/' + directory.name + '/store')
@@ -217,6 +222,9 @@ HTTP client. Existing modes pass no fixture and retain the same observations.
             if after_activated is not None:
                 fixture['after_activated'] = after_activated(initialized)
             target, = [r for r in initialized['control']['owner_epochs'] if r['role'] == 'ingest' and r['epoch'] == 2]
+            if ack:
+                producer, = [r for r in initialized['control']['producer_epochs'] if r['producer_epoch']==2]
+                assert producer['outstanding_request_limit']==2
             old_domain, = [r for r in before['allocation_domains'] if r['dictionary_kind'] == 4]
             lab.write_json(directory / 'visibility.json', dict(dataset_id=old_domain['dataset_id'][2:],
                 dictionary_kind=4, allocation_domain=old_domain['allocation_domain'][2:], ordinal='3'))
@@ -240,11 +248,11 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                 if stage == 'submitted':
                     if progress_setup is not None:
                         from installed_progress_context import phases
-                        phases(pg, database, directory, rows, snapshot, 'activated', prefix)
+                        phases(pg, database, directory, rows, snapshot, 'activated', prefix, ack=ack)
                     def durable():
                         observed = rows(database)
                         fresh = [r for r in observed['producer_outcomes'] if r['producer_epoch'] == 2]
-                        return observed if len(fresh) == 2 else None
+                        return observed if len(fresh) == (4 if ack else 2) else None
                     wait_for(durable, 'two durable successor requests', 10)
                 snapshot(stage)
                 continue_client(stage)
@@ -358,12 +366,19 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         context['progress_input_files'] = {phase:json.loads((directory / ('progress-'+phase+'-input-files.json')).read_text())
             for phase in ('mutation','proof-only')}
         context['progress_input_files_after'] = preparing.census(directory / 'store/producer-inputs-v1')
+    if ack:
+        context['producer_ack_profile']='two-slot-three-events/1'
+        context['ack_event_recipe']=(directory/'progress-ack-events.json').read_text()
     lab.write_json(output / (label + '-verification.json'), context)
     return context
 
 
-def run_all(pg, client, output, rows, clone, *, progress=False):
+def run_all(pg, client, output, rows, clone, *, progress=False, ack=False):
     assert type(progress) is bool
+    assert type(ack) is bool and (not ack or progress)
+    if ack:
+        from installed_progress_replay import require_frozen_profile
+        require_frozen_profile(ack=True)
     basis = output.parent.parent / preparing.SEED / 'bindings'
     store = basis / 'retire_signed/store'
     assert all(preparing.digest(basis / name) == sha for name, sha in preparing.FROZEN.items())
@@ -399,11 +414,12 @@ def run_all(pg, client, output, rows, clone, *, progress=False):
 
     def execute(mode, database, config, directory, setup, previous=None, progress_setup=None):
         context = capture_case(pg, client, output, rows, mode, database, config,
-            directory, seed, setup, previous, positive=mode in CASES[:2], progress_setup=progress_setup)
+            directory, seed, setup, previous, positive=mode in CASES[:2], progress_setup=progress_setup, ack=ack)
         if progress:
             from installed_progress_context_oracle import verify_live, controls as progress_controls
-            checked = verify_live(context)
-            controls = progress_controls(context, verify_live)
+            checker=lambda value:verify_live(value,ack=ack)
+            checked = checker(context)
+            controls = progress_controls(context, checker)
         else:
             checked = verify(**context)
             controls = negative_controls(**context)
@@ -426,16 +442,20 @@ def run_all(pg, client, output, rows, clone, *, progress=False):
                 shutil.copy2(basis / 'signed-seed/event.jsonl', directory / 'event.jsonl')
                 shutil.copy2(root / 'tests/fixtures/acquisition/selector-events.json', directory / 'selector-events.json')
                 observe_backend_absence(pg, database, output, mode + '-before')
-                config = configure(pg, client, output, database, directory, original)
+                config = configure(pg, client, output, database, directory, original, ack=ack)
                 upgrade(pg, client, output, database, config, mode, rows)
                 setup = policy(pg, database, output, mode, rows, mode != 'installed-live-off')
+                if ack:
+                    assert all(next(r for r in setup['after'][table] if r['revision']==2)[
+                        'document']['settings']['ingest.producer_outstanding_requests']==2
+                        for table in ('config_revisions','policy_revisions'))
                 progress_setup = None
                 if progress:
                     from installed_progress_context import upgrade as progress_upgrade, helpers
                     reference_catalog = catalog(pg, database)
                     progress_setup = progress_upgrade(pg, client, output, database, config, mode, rows,
-                        reference_catalog=reference_catalog)
-                    helpers(output, directory, 'activated')
+                        reference_catalog=reference_catalog, ack=ack)
+                    helpers(output, directory, 'activated', ack=ack)
                 if mode == 'installed-live-missing-original':
                     name, = [n for n in inputs if n.endswith('-0000000000000004.cbor')]
                     removed = directory / 'removed-original.cbor'
@@ -456,5 +476,6 @@ def run_all(pg, client, output, rows, clone, *, progress=False):
     return dict(name='installed-live-initial-successor', status='PASS', cli_invocations=1 if progress else 5, cases=cases,
         source_lab=str(basis.parent), source_revision=preparing.SOURCE, source_owner=preparing.OWNER,
         source_preserved=preserved, source_artifacts=preparing.FROZEN,
-        not_run=['writer replacement after activation', 'installed COMMIT loss', 'ACK/GC',
+        not_run=['writer replacement after activation', 'installed COMMIT loss',
+            'GC/full-window proof-only/loss-recovery' if ack else 'ACK/GC',
             'Archive publication', 'finite-job completion/coverage', 'full M1'])

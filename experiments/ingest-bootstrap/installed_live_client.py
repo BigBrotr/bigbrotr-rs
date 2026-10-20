@@ -80,8 +80,8 @@ def relay(directory, listener, finished, errors):
     assert hashlib.sha256(canonical).hexdigest() == new['id'] != old['id']
     split = None
     if (directory / 'progress-context.json').exists():
-        from installed_progress_transport import SplitEvents
-        split = SplitEvents(directory, new, 'activated')
+        from installed_progress_transport import SplitEvents, ack_events
+        split = SplitEvents(directory, new, 'activated', event_sequence=ack_events(directory))
     nonces = set()
     try:
         number = 0

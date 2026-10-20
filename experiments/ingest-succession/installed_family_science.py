@@ -49,7 +49,9 @@ def decode(data):
 
 
 class NetworkScience(FactEncoding):
-    def __init__(self, model, plan):
+    def __init__(self, model, plan, *, acknowledge=False):
+        assert type(acknowledge) is bool
+        self.acknowledge = acknowledge
         self.m, self.plan = model, plan
         self.values = native_map(model.native)
         self.ds, self.slot = binary(model.ds['dataset_id']), binary(model.slot)
@@ -75,7 +77,10 @@ class NetworkScience(FactEncoding):
         pending = bytes.fromhex(sha(b'bigbrotr/admission-batch/1\0' + cbor([self.ds, 0, self.epoch, first, last, batch])))
         self.put('facts', b'\x01\x21' + self.source(self.epoch, first), b'\x01\x21' + be(last) + pending)
         self.put('receipts', b'\x01\x30' + self.slot + be(self.epoch) + be(n), receipt)
-        self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31' + be(n) + bytes(16))
+        self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31' + be(n)
+            + (be(n-1)+be(0) if self.acknowledge else bytes(16)))
+        if self.acknowledge:
+            self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31'+be(n)+be(n)+be(0))
         name = self.slot.hex() + f'-{self.epoch:016x}-{n:016x}.cbor'
         assert name not in self.m.inputs
         self.m.inputs[name] = dict(bytes=len(original), sha256=sha(original))

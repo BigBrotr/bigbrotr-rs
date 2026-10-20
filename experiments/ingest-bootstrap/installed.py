@@ -33,7 +33,8 @@ def set_value(text, section, key, value):
     return text+'\n'+marker+line
 
 
-def policy_setup(pg, database, name, rows, output, administration=False):
+def policy_setup(pg, database, name, rows, output, administration=False, *, producer_window=None):
+    assert producer_window is None or (type(producer_window) is int and producer_window == 2 and name == 'sync-signed')
     before = rows(database)
     statements = []
     for table in ['config_revisions', 'policy_revisions']:
@@ -49,6 +50,8 @@ def policy_setup(pg, database, name, rows, output, administration=False):
         document['settings']['ingest.producer_outstanding_requests'] = 64 if table == 'config_revisions' else 32
         if (name == 'window-config' and table == 'config_revisions') or (name == 'window-policy' and table == 'policy_revisions'):
             document['settings']['ingest.producer_outstanding_requests'] = 1
+        if producer_window is not None:
+            document['settings']['ingest.producer_outstanding_requests'] = producer_window
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
         digest = hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest()
         statements.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, document_digest=decode('{digest}','hex')")

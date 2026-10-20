@@ -205,6 +205,10 @@ def clone_checked(folder, clone, origin, report, raw, read, *, progress=None, co
         target = '39'
         steps.append(dict(name='0039_producer_progress.sql',
             sha256=require_frozen_profile()['migration_sha256'], version='39'))
+        if progress=='ack':
+            target='40'
+            steps.append(dict(name='0040_producer_ack.sql',
+                sha256=require_frozen_profile(ack=True)['migration_sha256'],version='40'))
     assert [v['action'] for v in clone['migrations']] == ['plan','apply','apply']
     for index, answer in enumerate(clone['migrations']):
         assert set(answer) == {'action','exit_code','stdout','stderr'}
@@ -239,7 +243,7 @@ def clone_checked(folder, clone, origin, report, raw, read, *, progress=None, co
     assert {k:config['runtime'][k] for k in ('lease_ttl','heartbeat_interval','renewal_timeout','authorization_ttl','graceful_shutdown_timeout')} == dict(
         lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
     assert config['administration']['enabled'] is False and config['administration']['listen']['port']==18081
-    assert config['sync']['enabled'] is False and config['ingest']['producer_outstanding_requests']==65
+    assert config['sync']['enabled'] is False and config['ingest']['producer_outstanding_requests']==(2 if progress=='ack' else 65)
     assert config['network']['dns']['resolver']=='127.0.0.1:9' and config['network']['tls']['extra_roots']==[]
     assert config['network']['private']['rules']==[dict(endpoint='ws://127.0.0.1:7447/installed-successor-fixture',cidr='127.0.0.1/32',port=7447)]
     for filename in (name+'-config-validation.json',clone['database']+'-installed-config-validation.json'):
@@ -250,7 +254,7 @@ def clone_checked(folder, clone, origin, report, raw, read, *, progress=None, co
     baseline = migrated
     if progress is not None:
         from installed_progress_replay import legacy_state
-        baseline = legacy_state(migrated)
+        baseline = legacy_state(migrated,ack=progress=='ack')
         assert all(migrated[t] == [] for t in
             ('producer_checkpoints','acquisition_progress','producer_checkpoint_dependencies'))
     if floor==38:
@@ -309,7 +313,7 @@ def backend_checked(value, database, before, after):
     number(absence['seconds'],elapsed,6)
 
 
-def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False, commit_loss=False):
+def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False, commit_loss=False, ack=False):
     """Bind separated wire/capture phases; never certify a typed checkpoint.
 
     This is preparation for the opt-in profile. The default replay below does
@@ -318,11 +322,17 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
     from live_replay import OLD_EVENT, NEW_EVENT
     assert type(hole) is bool
     assert type(commit_loss) is bool and not (hole and commit_loss)
+    assert type(ack) is bool and (not ack or (not hole and not commit_loss))
     assert read(directory/'events.json') == [OLD_EVENT, NEW_EVENT]
     result = journey['result']
     assert result == read(directory/'client-result.json')
     assert set(result) == {'status', 'login', 'logout', 'me', 'digests', 'observations',
-        'job_status', 'relay_joined', 'unauthenticated', 'checkpoint_validation', 'native_proof_validation'}
+        'job_status', 'relay_joined', 'unauthenticated', 'checkpoint_validation', 'native_proof_validation'} | (
+            {'native_ack_validation'} if ack else set())
+    if ack:
+        from installed_progress_replay import ack_event_sequence
+        assert result['native_ack_validation']=='NOT_RUN'
+        assert read(directory/'progress-ack-events.json')==dict(format='bigbrotr-ack-events/1',events=ack_event_sequence(successor=True))
     assert result['status'] == 'CAPTURED_PROGRESS_TRANSPORT_ONLY'
     assert result['checkpoint_validation'] == result['native_proof_validation'] == 'NOT_RUN'
     assert result['relay_joined'] is True
@@ -372,6 +382,8 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
         extra |= {'progress_phase', 'event_ids', 'event_json_sha256', 'sent_at_us'}
         values = [NEW_EVENT, OLD_EVENT] if phase == 'mutation' else [NEW_EVENT]
         labels = ['distinct', 'predecessor'] if phase == 'mutation' else ['distinct-resend']
+        if ack:
+            values,labels=ack_event_sequence(successor=True),['signed']*3
         if hole and phase == 'mutation':
             values, labels = [{}, *values], ['preparation-hole', *labels]
         if phase == 'proof-only':
@@ -495,11 +507,13 @@ def inventory_checked(before, after, client, postgres):
 
 def replay(root, *, progress=None):
     from installed_family_replay import verify, negative_controls
-    assert progress in (None, 'split', 'hole')
+    assert progress in (None, 'split', 'hole', 'ack')
+    ack=progress=='ack'
+    selected_clones,selected_cases=(CLONES[:1],CASES[:1]) if ack else (CLONES,CASES)
     if progress is not None:
         import installed_progress_replay as progress_replay
-        progress_replay.require_frozen_profile()
-        assert progress == 'split', 'hole/refusal capture is not positive qualification'
+        progress_replay.require_frozen_profile(ack=ack)
+        assert progress in ('split','ack'), 'hole/refusal capture is not positive qualification'
     root=Path(root).resolve(strict=True)
     folder=root/('installed-family' if progress is None else 'installed-progress-' + progress)
     bound={}
@@ -508,19 +522,19 @@ def replay(root, *, progress=None):
         value=path.read_bytes(); bound[str(path)]=sha(value); return value
     def read(path): return loads(raw(path))
     report=read(folder/'result.json')
-    status = STATUS if progress is None else 'PASS_INSTALLED_PRODUCER_PROGRESS'
+    status = STATUS if progress is None else 'PASS_INSTALLED_PRODUCER_ACK' if ack else 'PASS_INSTALLED_PRODUCER_PROGRESS'
     label = 'org.bigbrotr.installed-successor' if progress is None else 'org.bigbrotr.installed-progress-' + progress
     assert report['status']==status and report['label']==label
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{40}',report['tree'])
     assert re.fullmatch('[0-9a-f]{32}',report['owner']) and re.fullmatch('[0-9a-f]{64}',report['client'])
     assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
-    assert [c['name'] for c in report['clones']]==list(CLONES) and [c['name'] for c in report['cases']]==list(CASES)
-    assert len(set(report['databases']))==3 and report['databases']==[c['database'] for c in report['clones']]
+    assert [c['name'] for c in report['clones']]==list(selected_clones) and [c['name'] for c in report['cases']]==list(selected_cases)
+    assert len(set(report['databases']))==len(selected_clones) and report['databases']==[c['database'] for c in report['clones']]
     assert not set(report['databases']) & set(report['database_names_before'])
     assert set(report['database_names_after'])==set(report['database_names_before'])|set(report['databases'])
     started,finished=instant(report['started_at']),instant(report['finished_at']); assert started<=finished
-    assert set(report['origins'])==set(PINS)
-    origins={n:origin_checked(root,folder,n,report['origins'][n],raw,read) for n in CLONES}
+    assert set(report['origins'])==set(selected_clones)
+    origins={n:origin_checked(root,folder,n,report['origins'][n],raw,read) for n in selected_clones}
     terminal=read(folder/'terminal-containers.json')
     inventory_checked(read(folder/'preflight-containers.json'),terminal,report['client'],report['postgres'])
     client=None
@@ -540,11 +554,11 @@ def replay(root, *, progress=None):
     allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD','PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS','PASS_SUCCESSION_INSTALLED_COMPONENTS')
-    assert qualification['status'] in (('PASS_PRODUCER_PROGRESS_COMPONENTS',) if progress else allowed)
+    assert qualification['status'] in (('PASS_PRODUCER_ACK_COMPONENTS',) if ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',) if progress else allowed)
     assert report['build']==built and report['component']==component and component['status']=='PASS'
     assert component['source']==built['source']==qualification['source']
     if progress is not None:
-        assert built['source']==progress_replay.require_frozen_profile()['product_source'], 'unreviewed progress build source'
+        assert built['source']==progress_replay.require_frozen_profile(ack=ack)['product_source'], 'unreviewed progress build source'
     for field in ('tree','source_manifest_sha256','lockfile_sha256'): assert component[field]==built[field]==qualification[field]
     manifest_bytes=raw(build.parent/'build/source-manifest.json'); assert sha(manifest_bytes)==built['source_manifest_sha256']
     manifest=loads(manifest_bytes); assert manifest['revision']==built['source'] and manifest['tree']==built['tree']
@@ -552,14 +566,30 @@ def replay(root, *, progress=None):
         assert Path(name).name==name and re.fullmatch('[a-z_]+',name) and sha(raw(build/name))==digest
     assert component['executables_sha256']['bigbrotr']==built['binary_sha256']
     assert {'bigbrotr','ingest_bootstrap_probe'}<=set(component['executables_sha256'])
+    if ack:
+        assert component['executables_sha256']==progress_replay.ACK_EXECUTABLES_SHA256
+        assert set(component['executables_sha256'])=={'bigbrotr','ingest_bootstrap_probe','native_components',
+            'sync_progress','fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
     for name,digest in manifest['files_sha256'].items():
         if name.startswith(('apps/','crates/','migrations/')) or name in ('Cargo.toml','Cargo.lock','rust-toolchain.toml'):
             assert sha(raw(root/'source'/name))==digest
     for helper,relative in [('installed_family_client.py','experiments/ingest-succession/installed_family_client.py'),
                             ('installed_sync_client.py','experiments/ingest-bootstrap/installed_sync_client.py')]:
         assert raw(folder/helper)==raw(root/'source'/relative)
+    if ack:
+        assert raw(folder/'installed_progress_transport.py')==raw(root/'source/experiments/ingest-bootstrap/installed_progress_transport.py')
+        provenance=read(folder/'progress-source.json')
+        assert set(provenance)=={'source','revision','tree','build','files_sha256'}
+        assert Path(provenance['source'])==root/'source' and Path(provenance['build'])==build
+        assert (provenance['revision'],provenance['tree'])==(report['source'],report['tree'])
+        actual=provenance['files_sha256'];compiled=manifest['files_sha256']
+        assert actual and all(not Path(name).is_absolute() and '..' not in Path(name).parts for name in actual)
+        for name,digest in actual.items(): assert sha(raw(root/'source'/name))==digest
+        assert all(name.startswith(('docs/','experiments/')) or actual.get(name)==compiled.get(name)
+            for name in set(actual)|set(compiled))
+        assert actual['migrations/postgres/0040_producer_ack.sql']==progress_replay.ACK_MIGRATION_SHA256
     results=[]; prior_window=started
-    for name,clone,case in zip(CLONES,report['clones'],report['cases'],strict=True):
+    for name,clone,case in zip(selected_clones,report['clones'],report['cases'],strict=True):
         migrated=clone_checked(folder,clone,origins[name],report,raw,read,progress=progress)
         expected=dict(name=clone['final_case'],clone=name,origin=name,operation='installed-live',predecessor=None,
             database=clone['database'],config=clone['config'],status='RUNNING',custody='OBSERVED_CLOSED_AND_JOINED')
@@ -567,7 +597,7 @@ def replay(root, *, progress=None):
         assert type(case['returncode']) is int and case['returncode']==0 and case['catalog_after']==clone['catalog_before']
         label=case['name']; item=lambda suffix: read(folder/(label+'-'+suffix+'.json'))
         context=item('verification')
-        assert set(context)==CONTEXT_FIELDS | ({'progress_profile'} if progress else set())
+        assert set(context)==CONTEXT_FIELDS | ({'progress_profile'} if progress else set()) | ({'ack_event_recipe','progress_gates'} if ack else set())
         assert context['case']==expected
         if progress:
             assert context['progress_profile'] == progress
@@ -605,8 +635,14 @@ def replay(root, *, progress=None):
         journey_checked(directory,context,identity,window,raw,read,progress=progress is not None)
         if progress:
             transport = progress_transport_checked(directory, context['journey'], snapshots,
-                window, raw, read)
+                window, raw, read,ack=ack)
             assert transport == case['progress_transport']
+            if ack:
+                assert context['ack_event_recipe']==raw(directory/'progress-ack-events.json').decode()
+                assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-context/1',kind='successor')
+                for gate,value in context['progress_gates'].items():
+                    assert gate in ('progress-mutation-observation.json','progress-proof-only-observation.json','progress-release.json')
+                    assert value==raw(directory/gate).decode()
         backend=item('backends'); assert backend==context['backend']
         assert item('control-backends')==backend['absence']; backend_checked(backend,case['database'],before,after)
         assert item('external')==dict(control=after,native=after_native,inputs=after_inputs,backend=backend,catalog=clone['catalog_before'])
@@ -617,16 +653,20 @@ def replay(root, *, progress=None):
         assert context['input_contents']=={n:raw(directory/'store/producer-inputs-v1'/n).hex() for n in after_inputs}
         same(after,read(folder/(name+'-final-sql.json')))
         if progress:
-            result,controls=progress_replay.verify(context),progress_replay.controls(context)
-            assert result['status']=='PASS_INSTALLED_PRODUCER_PROGRESS' and controls['status']=='PASS'
+            result,controls=progress_replay.verify(context,ack=ack),progress_replay.controls(context,ack=ack)
+            assert result['status']==('PASS_INSTALLED_PRODUCER_ACK' if ack else 'PASS_INSTALLED_PRODUCER_PROGRESS') and controls['status']=='PASS'
         else:
             result,controls=verify(context),negative_controls(context)
             assert result['status']==controls['status']=='PASS'
         assert case['oracle']==result and case['negative_controls']==controls
         results.append(dict(name=label,oracle=result,negative_controls=controls))
+    if ack:
+        from installed_progress_context_oracle import bind_ack_modules
+        bind_ack_modules(provenance,raw)
     return dict(status=status+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
         original_preservation='Fresh original file census; SQL/catalog preservation is captured-run evidence only',
-        scope='Raw binding and mandatory scientific replay of three installed lifetimes; no Archive, adoption, recovery, ACK/GC or full M1 claim')
+        scope=('Raw binding and complete window2 epoch3 ACK science; noGC, no full-window/loss/recovery qualification' if ack else
+            'Raw binding and mandatory scientific replay of three installed lifetimes; no Archive, adoption, recovery, ACK/GC or full M1 claim'))
 
 
 if __name__=='__main__':
@@ -634,7 +674,10 @@ if __name__=='__main__':
     parser.add_argument('root',type=Path)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--progress',action='store_true')
-    args=parser.parse_args(); result=replay(args.root,progress='split' if args.progress else None)
+    parser.add_argument('--producer-ack',action='store_true')
+    args=parser.parse_args()
+    assert not (args.progress and args.producer_ack)
+    result=replay(args.root,progress='ack' if args.producer_ack else 'split' if args.progress else None)
     text=json.dumps(result,indent=2)+'\n'
     if args.output:
         with args.output.open('x') as stream: stream.write(text)

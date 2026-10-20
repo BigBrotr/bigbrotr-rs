@@ -101,14 +101,15 @@ SUITE = transition.Suite(directory='installed-family', label='org.bigbrotr.insta
         'Writer adoption, unresolved input cleanup, COMMIT loss, capacity/RSS qualification'))
 
 
-def configure(pg, client, output, config):
+def configure(pg, client, output, config, *, ack=False):
+    assert type(ack) is bool
     path = output / Path(config).name
     text = path.read_text()
     for section, key, value in [
         ('topology', 'local_roles', ['control', 'ingest', 'sync', 'archive']),
         ('administration.listen', 'port', 18081),
         ('administration', 'enabled', False), ('sync', 'enabled', False),
-        ('ingest', 'producer_outstanding_requests', 65),
+        ('ingest', 'producer_outstanding_requests', 2 if ack else 65),
         ('network.dns', 'resolver', '127.0.0.1:9'), ('network.tls', 'extra_roots', []),
         ('runtime', 'lease_ttl', '6s'), ('runtime', 'heartbeat_interval', '1s'),
         ('runtime', 'renewal_timeout', '1s'), ('runtime', 'authorization_ttl', '5s'),
@@ -194,16 +195,22 @@ def release_progress_transport(directory, captured):
     return gate
 
 
-def execute(pg, client, output, case, directory, expected, catalog, *, progress=False, hole=False, fault=None):
+def execute(pg, client, output, case, directory, expected, catalog, *, progress=False, hole=False, fault=None, ack=False):
     from installed_family_replay import verify, negative_controls
     assert type(progress) is type(hole) is bool and (not hole or progress)
     assert fault is None or (progress and not hole)
+    assert type(ack) is bool and (not ack or (progress and not hole and fault is None and case['origin']=='activated'))
     if progress:
         import installed_progress_replay as progress_replay
-        progress_replay.require_frozen_profile()
+        progress_replay.require_frozen_profile(ack=ack)
     name, database = case['name'], case['database']
     prefix = output / name
     before = schema.rows(pg, database)
+    if ack:
+        dataset, = before['datasets']
+        for table, field in (('config_revisions','config_revision'),('policy_revisions','policy_revision')):
+            current, = [r for r in before[table] if r['revision']==dataset[field]]
+            assert current['document']['settings']['ingest.producer_outstanding_requests']==2
     native = history.dump(client, output, name + '-before', directory)
     inputs = history.inputs_at(directory / 'store')
     lab.write_json(output / (name + '-before.json'), before)
@@ -252,6 +259,10 @@ def execute(pg, client, output, case, directory, expected, catalog, *, progress=
         initialized = snapshot('activated')
         epoch = int(initial['producer_epoch'])
         target, = [r for r in initialized['control']['owner_epochs'] if r['role'] == 'ingest' and r['epoch'] == epoch]
+        if ack:
+            assert epoch==3
+            producer, = [r for r in initialized['control']['producer_epochs'] if r['producer_epoch']==epoch]
+            assert producer['outstanding_request_limit']==2
         wrapper = '''import subprocess,json,sys
 from pathlib import Path
 p=Path(sys.argv[1])
@@ -265,7 +276,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
 '''
         if progress:
             wrapper = wrapper.replace("'journey'", 'sys.argv[2]')
-            journey_mode = ('journey-progress-loss' if fault is not None else
+            journey_mode = ('journey-progress-ack' if ack else 'journey-progress-loss' if fault is not None else
                 'journey-progress-hole' if hole else 'journey-progress')
             lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name, journey_mode)
         else:
@@ -276,7 +287,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                 'successor HTTP ' + stage, 15)
             assert (directory / (stage + '.json')).exists(), 'HTTP client exited before ' + stage
             if stage == 'submitted':
-                expected_count = 2 if case['origin'] == 'activated' else 3
+                expected_count = 4 if ack else 2 if case['origin'] == 'activated' else 3
                 def durable():
                     actual = schema.rows(pg, database)
                     return actual if len([r for r in actual['producer_outcomes'] if r['producer_epoch'] == epoch]) == expected_count else None
@@ -291,12 +302,19 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                             if not found:
                                 return None
                             state = schema.rows(pg, database)
+                            if ack:
+                                from installed_progress_context_oracle import ready as ack_ready
+                                return found[0] if ack_ready(state,'successor',phase,found[0],ack=True) else None
                             return found[0] if progress_replay.phase_ready(
                                 state, case['origin'], hole, phase, epoch, found[0]) else None
                         wire = wait_for(ready, 'durable progress ' + phase, 10)
                         observed = snapshot('progress-' + phase)
-                        progress_replay.require_phase(observed['control'], case['origin'],
-                            hole, phase, epoch, wire)
+                        if ack:
+                            from installed_progress_context_oracle import ready as ack_ready
+                            assert ack_ready(observed['control'],'successor',phase,wire,ack=True)
+                        else:
+                            progress_replay.require_phase(observed['control'], case['origin'],
+                                hole, phase, epoch, wire)
                         captured = capture_progress_observation(directory, phase, observed, wire)
                         if phase == 'mutation':
                             if fault is not None:
@@ -441,7 +459,11 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         response=response, journey=journey, fixture=fixture, server_window=window, backend=backend,
         catalog_before=catalog, catalog_after=after_catalog, fixture_input=fixture_input)
     if progress:
-        context['progress_profile'] = 'commit-loss' if fault is not None else 'hole' if hole else 'split'
+        context['progress_profile'] = 'ack' if ack else 'commit-loss' if fault is not None else 'hole' if hole else 'split'
+        if ack:
+            context['ack_event_recipe']=(directory/'progress-ack-events.json').read_text()
+            context['progress_gates']={name:(directory/name).read_text() for name in (
+                'progress-mutation-observation.json','progress-release.json','progress-proof-only-observation.json')}
     if fault is not None:
         context['fault'] = fault.evidence
     lab.write_json(output / (name + '-verification.json'), context)
@@ -455,9 +477,9 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         # Raw phase/gate binding precedes all scientific qualification.
         from installed_family_capture import progress_transport_checked
         transport = progress_transport_checked(directory, journey, snapshots, window,
-            lambda path: path.read_bytes(), lambda path: json.loads(path.read_bytes()), hole=hole)
-        result, controls = progress_replay.verify(context), progress_replay.controls(context)
-        assert result['status'] == 'PASS_INSTALLED_PRODUCER_PROGRESS'
+            lambda path: path.read_bytes(), lambda path: json.loads(path.read_bytes()), hole=hole,ack=ack)
+        result, controls = progress_replay.verify(context,ack=ack), progress_replay.controls(context,ack=ack)
+        assert result['status'] == ('PASS_INSTALLED_PRODUCER_ACK' if ack else 'PASS_INSTALLED_PRODUCER_PROGRESS')
         assert controls['status'] == 'PASS' and controls['controls'] > 0
         case['progress_transport'] = transport
     else:
@@ -467,7 +489,11 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     return after, after_native, after_inputs
 
 
-def run_sequence(pg, client, output, clone, directory, expected, report, *, progress=False, hole=False):
+def run_sequence(pg, client, output, clone, directory, expected, report, *, progress=False, hole=False, ack=False):
+    assert type(ack) is bool and (not ack or (progress and not hole and clone['origin']=='activated'))
+    if ack:
+        from installed_progress_replay import require_frozen_profile
+        require_frozen_profile(ack=True)
     for helper in HELPERS:
         source = Path(__file__).with_name(helper) if helper == HELPERS[0] else (
             transition.SOURCE / 'experiments/ingest-bootstrap' / helper)
@@ -475,37 +501,47 @@ def run_sequence(pg, client, output, clone, directory, expected, report, *, prog
         if not target.exists():
             shutil.copy2(source, target)
         assert history.digest(target) == history.digest(source)
-    configure(pg, client, output, clone['config'])
+    if ack:
+        from installed_progress_context import helpers
+        helpers(output, directory, 'successor', ack=True)
+    configure(pg, client, output, clone['config'], ack=ack)
     name = CASES[CLONES.index(clone['name'])]
     case = dict(name=name, clone=clone['name'], origin=clone['origin'], operation='installed-live',
         predecessor=None, database=clone['database'], config=clone['config'], status='RUNNING')
     report['cases'].append(case)
     lab.write_json(output / 'result.json', report)
     execute(pg, client, output, case, directory, expected, clone['catalog_before'],
-        progress=progress, hole=hole)
+        progress=progress, hole=hole, ack=ack)
     case['catalog_after'] = history.catalog(pg, clone['database'])
     assert case['catalog_after'] == clone['catalog_before']
     lab.write_json(output / 'result.json', report)
     return name
 
 
-def run(root, build, *, progress=False, hole=False):
+def run(root, build, *, progress=False, hole=False, ack=False):
     assert type(progress) is type(hole) is bool and (not hole or progress)
+    assert type(ack) is bool and (not ack or (progress and not hole))
     if progress:
         from dataclasses import replace
         from installed_progress_replay import require_frozen_profile, PROGRESS_GRANTS
-        require_frozen_profile()
-        mode = 'hole' if hole else 'split'
+        require_frozen_profile(ack=ack)
+        mode = 'ack' if ack else 'hole' if hole else 'split'
         suite = replace(SUITE, directory='installed-progress-' + mode,
             label='org.bigbrotr.installed-progress-' + mode,
             status='PASS_INSTALLED_PRODUCER_PROGRESS',
             client_prefix='bigbrotr-installed-progress-' + mode + '-',
             database_prefix='bb_installed_progress_' + mode + '_',
             scope='Separated real retained EVENT quanta with typed progress; ACK0 and all detail retained')
+        if ack:
+            suite = replace(suite,clones=('activated',),cases=('activated-live3',),
+                status='PASS_INSTALLED_PRODUCER_ACK',
+                scope='One actual epoch3 consumer of a retained window2 origin; three signed events then a proof-only REQ',
+                not_run=(*suite.not_run,'Epoch4 and window32 origins; full-window proof-only and lost-completion recovery'))
         return transition.run(root, build, suite=suite,
-            sequence=lambda *args: run_sequence(*args, progress=True, hole=hole),
-            origin_specs=ORIGINS, origin_for_clone=dict(zip(CLONES, CLONES)),
-            extra_grants=(PROGRESS_GRANTS,), producer_progress=True)
+            sequence=lambda *args: run_sequence(*args, progress=True, hole=hole, ack=ack),
+            origin_specs=ORIGINS[:1] if ack else ORIGINS,
+            origin_for_clone={'activated':'activated'} if ack else dict(zip(CLONES, CLONES)),
+            extra_grants=(PROGRESS_GRANTS,), producer_progress=True, producer_ack=ack)
     return transition.run(root, build, suite=SUITE, sequence=run_sequence, origin_specs=ORIGINS,
         origin_for_clone=dict(zip(CLONES, CLONES)))
 
@@ -513,6 +549,6 @@ def run(root, build, *, progress=False, hole=False):
 if __name__ == '__main__':
     assert len(sys.argv) in (3, 4)
     mode = sys.argv[3] if len(sys.argv) == 4 else None
-    assert mode in (None, '--progress', '--progress-hole')
+    assert mode in (None, '--progress', '--progress-hole', '--producer-ack')
     run(Path(sys.argv[1]).resolve(strict=True), Path(sys.argv[2]).resolve(strict=True),
-        progress=mode is not None, hole=mode == '--progress-hole')
+        progress=mode is not None, hole=mode == '--progress-hole', ack=mode == '--producer-ack')
