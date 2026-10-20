@@ -140,9 +140,18 @@ def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, non
         assert int(wire['accepted_at_us']) == command['accepted_at_us']
 
 
-def native(client, output, name, state, initialized, transcript, completed_us, *, window=32, primary_scope=None):
+def native(client, output, name, state, initialized, transcript, completed_us, *, window=32, primary_scope=None,
+           capture_sequence=False):
     directory = output/name
-    dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/'+name+'/store')
+    if capture_sequence:
+        started_ns = time.monotonic_ns()
+    dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe',
+        'dump-state' if capture_sequence else 'dump', '/lab/'+name+'/store')
+    if capture_sequence:
+        lab.write_json(output/(name+'-dump-response.json'),dict(returncode=dumped.returncode,
+            stdout=dumped.stdout,stderr=dumped.stderr,started_monotonic_ns=started_ns,
+            finished_monotonic_ns=time.monotonic_ns()))
+        assert dumped.returncode == 0 and dumped.stderr == ''
     (output/(name+'-native.json')).write_text(dumped.stdout)
     actual = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
     originals = sorted((directory/'store/producer-inputs-v1').glob('*.cbor'))
@@ -265,7 +274,8 @@ while True:
     return selected
 
 
-def run(pg, client, output, database, name, rows, *, gap_schema=None):
+def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False):
+    assert type(progress) is bool and (not progress or (name == 'sync-signed' and gap_schema is None))
     assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES + ['sync-gap-uncorrected']
     expiry = name in EXPIRY_CASES
     full_window = name in WINDOW_CASES
@@ -303,6 +313,14 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None):
     if name == 'sync-lock':
         lab.sql(pg, database, 'REVOKE UPDATE ON control.principal_grants FROM bigbrotr_control')
         assert lab.sql(pg, database, "SELECT has_any_column_privilege('bigbrotr_control','control.principal_grants','UPDATE')") == 'f'
+    progress_capture = None
+    if progress:
+        from installed_progress_context import InitialCapture, upgrade as progress_upgrade
+        migration_config = lab.config(output, dict(pg, client=client), database,
+            endpoint='127.0.0.1:5432', boundary='loopback')
+        setup = progress_upgrade(pg, client, output, database, migration_config, name, rows)
+        progress_capture = InitialCapture(pg, database, output, name, rows, setup)
+        rows = progress_capture.rows
     before = rows(database)
     assert {23, 24, 26} <= {r['migration'] for r in before['schema_versions']}
     assert not before['owner_epochs'] and not before['producer_requests']
@@ -339,15 +357,25 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None):
         assert target.read_bytes() == Path(__file__).with_name(filename).read_bytes()
     directory = output/name; directory.mkdir(mode=0o700)
     shutil.copy2(SOURCE/'tests/fixtures/ingest/import-event.jsonl', directory/'event.jsonl')
+    if progress:
+        from installed_progress_context import helpers
+        helpers(output, directory, 'initial')
     if name == 'sync-peer-refusals' or full_window:
         from installed_sync_client import REFUSAL_SHA256
         artifact = SOURCE/'tests/fixtures/acquisition/selector-events.json'
         assert hashlib.sha256(artifact.read_bytes()).hexdigest() == REFUSAL_SHA256
         shutil.copy2(artifact, directory/'selector-events.json')
     prefix = output/name
+    if progress:
+        lab.write_json(output/(name+'-progress-invocation.json'),dict(command=[
+            'python3','/lab/installed_client.py',config,'/lab/'+name,'sync']))
     lab.docker('exec', '-d', client, 'python3', '/lab/installed_client.py', config, '/lab/'+name, 'sync')
     wait_for(lambda: Path(str(prefix)+'.pid.json').exists(), 'Sync CLI start')
     first = wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(), 'Sync initialization')
+    if progress and not isinstance(first, list):
+        lab.write_json(output / (name+'-progress-initialization-failure.json'), dict(
+            status='UNQUALIFIED_INITIALIZATION_FAILURE',control=progress_capture.raw_rows(database),
+            native='NOT_REOPENED',custody='EXISTING_OUTER_OWNER_REQUIRED'))
     if fault:
         if messages(prefix):
             stop(client, prefix); terminal(prefix)
@@ -367,6 +395,8 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None):
     initialized = first[0]
     assert initialized['ready'] is False and initialized['acquisition'] == 'finite-initial'
     initial = rows(database); lab.write_json(output/(name+'-initialized.json'), initial)
+    if progress:
+        progress_capture.snapshot('initialized')
     assert {t for t in before if before[t] != initial[t]} <= BOOTSTRAP
     original_deadline = max(r['lease_expires_at_us'] for r in initial['owner_epochs'])
     lab.write_json(directory/'visibility.json', dict(initialized['public_scope'], ordinal=str(visibility_ordinal)))
@@ -401,6 +431,8 @@ finally:
     assert len(prepared['management_commands']) == len(initial['management_commands'])+3
     assert len(prepared['management_audit']) == len(initial['management_audit'])+4
     validate_source(prepared, initialized, observations, ordinal=visibility_ordinal)
+    if progress:
+        progress_capture.snapshot('prepared')
     (directory/'prepared.continue').write_text('observed\n')
     expired_original = expiry_evidence = None
     if expiry:
@@ -440,6 +472,10 @@ finally:
         lab.write_json(output/(name+'-expiry-clock.json'), expiry_evidence)
         (directory/'expiry-continued.continue').write_text('resume authority observed\n')
     observations = stage('submitted')
+    if progress:
+        from installed_progress_context import phases
+        phases(pg, database, directory, progress_capture.raw_rows,
+            progress_capture.snapshot, 'initial', prefix)
     wanted_count = 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
     def completed():
         assert not (directory/'relay-error.json').exists(), 'independent relay failed'
@@ -461,6 +497,8 @@ finally:
         return current, now
     current, now = wait_for(completed, 'durable events and healthy renewal beyond original lease', 16)
     lab.write_json(output/(name+'-durable.json'), current)
+    if progress:
+        progress_capture.snapshot('durable')
     lab.write_json(output/(name+'-renewed.json'), dict(original_deadline=original_deadline, observed_at_us=now,
         leases=[r['lease_expires_at_us'] for r in current['owner_epochs']]))
     allowed = ('jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit')
@@ -491,6 +529,8 @@ finally:
             current, initialized, stage, now)
     stage('commands-finished')
     before_stop = rows(database); lab.write_json(output/(name+'-before-stop.json'), before_stop)
+    if progress:
+        progress_capture.snapshot('before-stop')
     from initial_jobs import logged_out
     logged_out(current, before_stop)
     selected_quiet = None
@@ -542,20 +582,25 @@ finally:
             requested_visibility_ordinal=visibility_ordinal, tcp_connections=0, monitor=monitor)
     else:
         assert len(transcript) >= 2
-        assert [t['completion'] for t in transcript[:2]] == ([
-            'request-and-websocket-close']*2 if name in EVENT_CASES else ['quiet-eof']*2)
+        if not progress:
+            assert [t['completion'] for t in transcript[:2]] == ([
+                'request-and-websocket-close']*2 if name in EVENT_CASES else ['quiet-eof']*2)
         if name == 'sync-peer-refusals':
             assert all(trace['frames'] == ['malformed-event', 'signed-outside-selector', 'signed', 'EOSE']
                 for trace in transcript[:2])
+        if progress:
+            progress_capture.exclude(after)
         native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000,
-            window=4 if full_window else 32, primary_scope=primary_scope)
+            window=4 if full_window else 32, primary_scope=primary_scope, capture_sequence=progress)
     if name == 'sync-window-source':
         from installed_sync_window import validate_monitor
         window_evidence['deferred_source_monitor'] = validate_monitor(directory, after)
     assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
+    progress_result = (progress_capture.finish(initialized, transcript, ended, selected_quiet, native_result)
+        if progress else {})
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,
         websocket_rounds=len(transcript), same_owner_renewed=True, signal_seconds=signal_elapsed,
         selected_quiet_signal=selected_quiet,
         natural_expiry=expiry_evidence,
         full_window=window_evidence,
-        terminal=ended, **native_result)
+        terminal=ended, **native_result, **progress_result)

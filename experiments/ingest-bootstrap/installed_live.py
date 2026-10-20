@@ -153,7 +153,7 @@ def configure(pg, client, output, database, directory, original):
 
 
 def capture_case(pg, client, output, rows, mode, database, config, directory, seed, setup,
-        previous=None, *, positive, after_activated=None):
+        previous=None, *, positive, after_activated=None, progress_setup=None):
     """Capture one owned Serve process; qualification belongs to its caller.
 
 The optional fixture runs only between confirmed activation and starting the
@@ -238,6 +238,9 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                     'installed successor ' + stage, 15)
                 assert (directory / (stage + '.json')).exists(), (directory / 'client.stderr').read_text()
                 if stage == 'submitted':
+                    if progress_setup is not None:
+                        from installed_progress_context import phases
+                        phases(pg, database, directory, rows, snapshot, 'activated', prefix)
                     def durable():
                         observed = rows(database)
                         fresh = [r for r in observed['producer_outcomes'] if r['producer_epoch'] == 2]
@@ -345,11 +348,22 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         input_contents=contents, snapshots=snapshots, response=response, journey=journey,
         fixture=fixture, server_window=window, backend=dict(exact=excluded, absence=absence),
         catalog_before=guards, catalog_after=current_guards, seed=seed, setup=setup, predecessor=previous)
+    if progress_setup is not None:
+        from installed_progress_context import catalog as complete_catalog
+        context['progress_setup'] = progress_setup
+        context['progress_catalog_after'] = complete_catalog(pg, database)
+        lab.write_json(output/(label+'-progress-catalog.json'),context['progress_catalog_after'])
+        context['progress_gates'] = {name:(directory / name).read_text() for name in (
+            'progress-mutation-observation.json', 'progress-proof-only-observation.json', 'progress-release.json')}
+        context['progress_input_files'] = {phase:json.loads((directory / ('progress-'+phase+'-input-files.json')).read_text())
+            for phase in ('mutation','proof-only')}
+        context['progress_input_files_after'] = preparing.census(directory / 'store/producer-inputs-v1')
     lab.write_json(output / (label + '-verification.json'), context)
     return context
 
 
-def run_all(pg, client, output, rows, clone):
+def run_all(pg, client, output, rows, clone, *, progress=False):
+    assert type(progress) is bool
     basis = output.parent.parent / preparing.SEED / 'bindings'
     store = basis / 'retire_signed/store'
     assert all(preparing.digest(basis / name) == sha for name, sha in preparing.FROZEN.items())
@@ -383,18 +397,23 @@ def run_all(pg, client, output, rows, clone):
     cases, contexts = [], {}
     on = None
 
-    def execute(mode, database, config, directory, setup, previous=None):
+    def execute(mode, database, config, directory, setup, previous=None, progress_setup=None):
         context = capture_case(pg, client, output, rows, mode, database, config,
-            directory, seed, setup, previous, positive=mode in CASES[:2])
-        checked = verify(**context)
-        controls = negative_controls(**context)
+            directory, seed, setup, previous, positive=mode in CASES[:2], progress_setup=progress_setup)
+        if progress:
+            from installed_progress_context_oracle import verify_live, controls as progress_controls
+            checked = verify_live(context)
+            controls = progress_controls(context, verify_live)
+        else:
+            checked = verify(**context)
+            controls = negative_controls(**context)
         contexts[mode] = context
         return dict(name=mode, status='PASS', actual_cli=True, attempts=1, oracle=checked,
             negative_controls=controls, backend_absence=context['backend']['absence'],
             terminal=context['response']['terminal'])
 
     try:
-        for mode in CASES:
+        for mode in (('installed-live-on',) if progress else CASES):
             if mode == 'installed-live-epoch2':
                 database, config, directory, setup = on
                 cases.append(execute(mode, database, config, directory, setup, contexts['installed-live-on']))
@@ -410,6 +429,13 @@ def run_all(pg, client, output, rows, clone):
                 config = configure(pg, client, output, database, directory, original)
                 upgrade(pg, client, output, database, config, mode, rows)
                 setup = policy(pg, database, output, mode, rows, mode != 'installed-live-off')
+                progress_setup = None
+                if progress:
+                    from installed_progress_context import upgrade as progress_upgrade, helpers
+                    reference_catalog = catalog(pg, database)
+                    progress_setup = progress_upgrade(pg, client, output, database, config, mode, rows,
+                        reference_catalog=reference_catalog)
+                    helpers(output, directory, 'activated')
                 if mode == 'installed-live-missing-original':
                     name, = [n for n in inputs if n.endswith('-0000000000000004.cbor')]
                     removed = directory / 'removed-original.cbor'
@@ -417,7 +443,7 @@ def run_all(pg, client, output, rows, clone):
                     setup['removed'] = dict(name=name, identity=inputs[name],
                         bytes=removed.read_bytes().hex(), path='/lab/' + mode + '/removed-original.cbor')
                     lab.write_json(output / (mode + '-policy.json'), setup)
-                cases.append(execute(mode, database, config, directory, setup))
+                cases.append(execute(mode, database, config, directory, setup, progress_setup=progress_setup))
                 if mode == 'installed-live-on':
                     on = (database, config, directory, setup)
             lab.write_json(output / 'installed-live-cases.json', cases)
@@ -427,7 +453,7 @@ def run_all(pg, client, output, rows, clone):
             artifacts=all(preparing.digest(basis / n) == h for n, h in preparing.FROZEN.items()))
         lab.write_json(output / 'installed-live-source-preserved.json', preserved)
         assert all(preserved.values()), preserved
-    return dict(name='installed-live-initial-successor', status='PASS', cli_invocations=5, cases=cases,
+    return dict(name='installed-live-initial-successor', status='PASS', cli_invocations=1 if progress else 5, cases=cases,
         source_lab=str(basis.parent), source_revision=preparing.SOURCE, source_owner=preparing.OWNER,
         source_preserved=preserved, source_artifacts=preparing.FROZEN,
         not_run=['writer replacement after activation', 'installed COMMIT loss', 'ACK/GC',

@@ -364,3 +364,74 @@ records all69 SQL tables,12 native rows/original CBOR and source/artifact identi
 Scope signal HTTP closure1.369s precedes the earliest2.5s command deadline;
 signal-to-reap2.132s, with upstream custody observed after CLI death. No installed
 successor, capacity or full acquisition claim follows.
+
+## Typed progress in the actual first two Sync entrypoints
+
+Source preparation only; independent review and runtime are pending. The existing
+bindings owner accepts two explicit, separate invocations with the qualified
+`d4e1b85566dee30994017834b763fe04396bcf1c` component build:
+
+```text
+python3 experiments/acquisition-scope/bindings.py LAB --installed-sync-progress BUILD
+python3 experiments/acquisition-scope/bindings.py LAB --ingest-installed-live-progress BUILD
+```
+
+`LAB/source` must be the exact clean reviewed checkout. The usual production-input
+comparison, all eight artifact hashes and source-manifest checks precede engines.
+The first invocation selects only `sync-signed` and actual `--initialize-ingest`;
+the second selects only `installed-live-on` and actual
+`--activate-initial-successor`. Three later-owner contexts with different
+predecessor origins do not substitute for these entrypoints. Existing flags,
+case lists, migration predicates and default relay frames are unchanged.
+
+Each new mode applies the exact migration39 on its own clone with ordinary
+guards, then sends one frozen signed EVENT. It captures all77 Control tables
+and original inputs after the mutation commit before releasing a later real
+REQ containing the same EVENT. The relay never waits for SQL on a socket:
+unreleased requests retain their ordinary quiet500ms behavior. Initial setup
+must already have a typed revision2/C2 dictionary head. The independent model
+then requires revision4→5/C4 with12 dependencies; epoch2 requires revision2→3/C2
+with10 dependencies. Both acquisition heads advance1→2, while the actual job
+stays queued with checkpoint0 and native ACK/retired stay0.
+
+The existing scientific encoders require the complete49-row initial state and
+84-row activated state, exact signed CBOR/original files and receipts. The new
+initial mode uses the existing `dump-state` observer and requires sequence57
+(1+12+8+20+16 writes); activated remains sequence98. Native opens occur only
+after the existing process join and positive exact Control backend exclusion.
+Producer-input inode/device/mode/link counts,
+sizes and hashes remain exact between the mutation, proof and final cuts.
+The independent216/72-byte checkpoint encoder checks fixed closure coordinates,
+native fact preimages, source context, original EVENT binding and independently
+reconstructed proof intent; hashing observed heads alone cannot establish PASS.
+
+The epoch2 projection reuses the complete schema32 SQL/scientific model, with
+the added relations/columns and migration ledger checked separately. The
+initial projection retains the established initial-owner/source/job checks and
+complete75-table preservation between observed cuts. Actual schema39 definitions
+and ACLs are retained as full before/after dumps; the old schema32 catalog pin
+applies only to its explicitly identified reference snapshot. Unknown process
+outcomes and initialization/phase failures remain unqualified. Controls include
+extra SQL/native writes, changed original bytes/inodes, missing closure,
+unbound request/intent, foreign issuer, false job completion and failed custody.
+This slice does not qualify preparation holes, COMMIT loss/recovery, ACK/GC,
+durable EOSE/coverage, complete M1, or resource-capacity bounds.
+
+Use distinct fresh LAB roots; each mode preserves its stopped container under a
+distinct name. After the root has completed its current resource audit, the same
+new oracle module reads the original files without opening an engine:
+
+```text
+python3 LAB/source/experiments/ingest-bootstrap/installed_progress_context_oracle.py LAB --kind initial
+python3 LAB/source/experiments/ingest-bootstrap/installed_progress_context_oracle.py LAB --kind activated
+```
+
+Raw replay binds tracked source hashes, the exact qualified product build and
+all eight artifacts, setup/catalog observations, full SQL cuts, both REQ phases
+and release files, actual retained input metadata/bytes, process identities,
+terminals and backend observations. It reruns the scientific predicate and
+negative controls. Retained container inventory and original database captures
+are checked separately from the root's current custody audit. Missing raw
+evidence cannot produce `PASS_RAW_CONTEXT_REPLAY`. These single-EVENT phases do
+not qualify max-three-frame latency or resolve the original a99 timeout cause;
+unchanged diagnostics, deadlines and failed outcomes remain preserved.

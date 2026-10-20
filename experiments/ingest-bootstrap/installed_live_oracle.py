@@ -397,7 +397,7 @@ def backend_checked(value, control, database, window):
     assert samples[-1]['count'] == 0 and samples[-1]['seconds'] <= absence['seconds']
 
 
-def wire_checked(journey, fixture, report, initial, window):
+def wire_checked(journey, fixture, report, initial, window, *, split=False):
     assert journey['terminal'] == dict(exit_code=0, reaped=True, outcome='PROCESS_EXITED')
     assert journey['stdout'] == journey['stderr'] == ''
     result = journey['result']
@@ -433,7 +433,12 @@ def wire_checked(journey, fixture, report, initial, window):
         assert re.fullmatch('[0-9a-f]{48}', request[1]) and int(request[1][:32], 16)
         assert request[1][:32] not in nonces
         nonces.add(request[1][:32])
-        if number == 1:
+        if split and 'progress_phase' in last:
+            assert last['progress_phase'] in ('mutation', 'proof-only')
+            assert last['frames'] == ['signed', 'EOSE'] and last['event_ids'] == [EVENT_ID.hex()]
+            assert last['completion'] == 'request-and-websocket-close'
+            assert first['request_at_us'] <= last['sent_at_us'] <= last['closed_at_us']
+        elif not split and number == 1:
             assert last['frames'] == ['distinct', 'predecessor', 'distinct-resend', 'EOSE']
             assert last['event_ids'] == [EVENT_ID.hex(),
                 '8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849', EVENT_ID.hex()]
@@ -460,7 +465,8 @@ def wire_checked(journey, fixture, report, initial, window):
 
 def verify(mode, original, after, native_before, native_after, inputs_before, inputs_after,
         input_contents, snapshots, response, journey, fixture, server_window, backend,
-        catalog_before, catalog_after, seed, setup, predecessor=None):
+        catalog_before, catalog_after, seed, setup, predecessor=None, *, split=False):
+    assert type(split) is bool and (not split or mode == 'installed-live-on')
     assert mode in CASES
     check_window(server_window)
     assert len(original) == len(after) == 72
@@ -559,7 +565,7 @@ def verify(mode, original, after, native_before, native_after, inputs_before, in
                 last_complete_sequence='12', sha256=plan['closure_digest']),
             native_profile=1, native_allowance_bytes=134217728, acquisition='finite-initial-successor', ready=False,
             listeners=[dict(kind='private-session-http', host='127.0.0.1', port=18081, profile='initial-source-commands')])
-        first = wire_checked(journey, fixture, report, snapshots[1]['control'], server_window)
+        first = wire_checked(journey, fixture, report, snapshots[1]['control'], server_window, split=split)
         science = NetworkScience(plan, prepared_rows, seed['inputs'])
         final_rows = native_rows(native_after['rows'])
         n = 4 if mode == 'installed-live-on' else 1
