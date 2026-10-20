@@ -99,7 +99,8 @@ if archive_installed:
                          'Connected SQL/native Archive catch-up, read/export and restart NOT_RUN.')
 if producer_progress:
     identity['scope'] = ('Typed producer progress reducers, native checkpoint witness/certification, '
-                         'Sync attempt/prefix and schema/CLI components, CLI/probe compilation and Clippy. '
+                         'retained fact codec, captured-input/Sync prefix and schema/CLI components, '
+                         'CLI/probe compilation and Clippy. '
                          'Connected PostgreSQL progress, installed Sync/recovery and ACK NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
@@ -223,9 +224,13 @@ if archive_components:
 if producer_progress:
     tests = [
         ('producer_progress', ['--lib', 'storage::postgres::control_owner::producer_progress::tests::']),
-        ('producer_checkpoint', ['--lib', 'storage::rocks::store::producer_checkpoint::tests::']),
+        ('producer_checkpoint', ['--lib', 'storage::rocks::store::admission_tests::producer_checkpoint_tests::']),
         ('certification', ['--lib', 'certification_tests']),
+        ('captured_input', ['--lib', 'acquisition::preparation::tests::']),
+        ('captured_binding', ['--lib', 'acquisition::session::preparation_tests::']),
         ('sync_progress', ['--bin', 'bigbrotr', 'interfaces::serve::initial_ingest::sync::']),
+        ('fact_codec', ['--test', 'fact_codec']),
+        ('evidence_intent', ['--test', 'evidence_intent']),
         ('control_schema', ['--test', 'control_schema']),
         ('migrate_entrypoint', ['--test', 'migrate_entrypoint']),
     ]
@@ -233,7 +238,8 @@ steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [] if archive_components else
          [('independent-fixture', ['python3', '-B', 'experiments/ingest-succession/generate.py'])])
-steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p',
+                  'bigbrotr-model' if producer_progress and name in {'fact_codec', 'evidence_intent'} else 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1',
                   *(['--skip', 'signed_pending_reopens_and_reaches_the_supervised_native_worker_without_acknowledgement']
                     if writer and name == 'admission_tests' else [])])
@@ -251,12 +257,16 @@ if archive_components:
     clippy_targets = ['--lib']
 steps += [('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                      *clippy_targets, '--', '-D', 'warnings'])]
+if producer_progress:
+    steps += [('model_clippy', ['cargo', 'clippy', '--locked', '--offline', '--release',
+                               '-p', 'bigbrotr-model', '--test', 'fact_codec', '--test', 'evidence_intent',
+                               '--', '-D', 'warnings'])]
 result = execute(steps, checks, SOURCE, env, identity, 1800)
 # Preserve built test executables even when a later check fails. Cargo outputs
 # are acceleration only; these copies and raw logs are the retained artifacts.
 if not archive_installed:
     artifacts.mkdir()
-executables, counts, cli_paths = {}, {}, set()
+executables, counts, cli_paths, test_names = {}, {}, set(), {}
 for name, selection in (tests + [('probe_build', None)] if build_probe else tests):
     log = checks / (name + '.log')
     if not log.exists():
@@ -266,6 +276,8 @@ for name, selection in (tests + [('probe_build', None)] if build_probe else test
     if summaries:
         assert len(summaries) == 1
         counts[name] = int(summaries[0])
+        if producer_progress:
+            test_names[name] = re.findall(r'^test (\S+) \.\.\. ok$', content, re.MULTILINE)
     paths = set()
     kind = ['example'] if selection is None else [selection[0][2:]]
     target_name = 'ingest_bootstrap_probe' if selection is None else (
@@ -335,11 +347,52 @@ if archive_installed:
 for tool in native['tools'].values():
     assert file_hash(Path(tool['path'])) == tool['sha256']
 assert sources() == manifest['files_sha256']
-receipt = dict(identity, status=result['status'], test_counts=counts,
+required_controls = {}
+if producer_progress:
+    # Literal expected controls, independent of Cargo's selected/nonempty count.
+    # Missing or renamed critical checks require explicit profile reconciliation.
+    required_controls = {
+        'producer_progress': [
+            'storage::postgres::control_owner::producer_progress::tests::' + name for name in [
+                'local_prefix_cannot_skip_or_reorder_a_retained_event',
+                'replacement_req_starts_a_new_local_prefix',
+                'retained_capacity_is_independent_of_window_credit',
+                'current_head_encoding_matches_independent_fixed_width_golden',
+                'cumulative_digest_binds_proof_position_context_and_retained_closure']],
+        'producer_checkpoint': [
+            'storage::rocks::store::admission_tests::producer_checkpoint_tests::' + name for name in [
+                'equal_native_receipts_from_another_root_cannot_mint_a_checkpoint_basis',
+                'certification_basis_is_read_only_and_expires_when_native_state_changes',
+                'ordinary_certification_and_needs_admission_do_not_create_a_checkpoint_witness',
+                'rejected_signature_has_no_success_dependencies_or_mutation_identity',
+                'retained_progress_reader_checks_exact_key_full_hash_and_original_frontier',
+                'retained_progress_reader_refuses_short_grant_cancel_and_changed_sequence']],
+        'captured_input': [
+            'acquisition::preparation::tests::a_mismatched_intent_cannot_cross_either_opaque_preparation_handoff'],
+        'captured_binding': [
+            'acquisition::session::preparation_tests::preparation_binds_original_raw_event_receive_sample_and_certified_intent'],
+        'sync_progress': [
+            'interfaces::serve::initial_ingest::sync::tests::' + name for name in [
+                'a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress',
+                'resource_and_context_failures_cannot_be_hidden_as_peer_refusals']],
+        'fact_codec': [
+            'retained_header_reader_matches_literal_frozen_source_identities',
+            'retained_header_is_not_a_payload_integrity_or_validity_certificate'],
+        'evidence_intent': [
+            'exact_dictionary_request_matches_independent_literal_bytes_and_digest',
+            'every_count_byte_and_scratch_allocation_is_caller_bounded'],
+    }
+missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
+                    for name, required in required_controls.items()
+                    if not set(required) <= set(test_names.get(name, []))}
+receipt = dict(identity, status='FAIL' if missing_controls else result['status'], test_counts=counts,
                executables_sha256=executables,
                independent_fixture_sha256=file_hash(SOURCE / 'experiments/ingest-succession/portable-handoff-v2.json'))
+if producer_progress:
+    receipt.update(test_names=test_names, required_controls=required_controls,
+                   missing_controls=missing_controls)
 (artifacts / 'component-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
-assert result['status'] == 'PASS'
+assert receipt['status'] == 'PASS'
 assert set(counts) == {name for name, _ in tests}
 assert set(executables) == {'native_components' if selection[0] == '--lib' else name
                             for name, selection in tests} | ({'bigbrotr'} if schema else set()) | (
