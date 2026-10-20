@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T10:04Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T10:12Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,14 +9,13 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`c18bc2c50d3a35862b069233348bbfc85eba8acf`, integrating the reviewed attempt-limit
-fixture. Last verified remote main is `ef70b59816cad8412b2da19e769ce510436b15af`;
-the two source commits and this documentation checkpoint await push.
+`58aca32fcdbac7ed857f96e1d1cd008603b9b371`, pushed and verified remotely.
+Its tree is `62abbbf49523b1469a63582d0008f888b351159a`.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Current documentation/evidence edits record the exact
-seven-blob integration; no production source changed. The attempt-limit and
+No merge/rebase pending. Current documentation/evidence edits record the active
+build and export source review closure; no production source changed. The attempt-limit and
 export-memory worktrees are clean on their preserved commits. Attempt-limit
-source is integrated but not compiled or runtime-qualified; export source is
+source is integrated with compilation in progress, not runtime-qualified; export source is
 not integrated.
 
 Q37 is recorded in the existing guide and decision register. Root session
@@ -25,6 +24,10 @@ Q37 is recorded in the existing guide and decision register. Root session
 catalog separately lists both allowed configurations. Global defaults are not
 proof of this session's settings. The existing review was allowed to finish;
 its effective model/effort is unverified and must be checked before reuse.
+New critical source-only author `/root/export_setup_fixture` was spawned through
+explicit Astra/xhigh controls. Root verified its session
+`01a158ca-8570-7041-9778-89e46f56320e` turn-context at2026-10-20T10:10:31.012Z:
+`gpt-6-astra` / `xhigh`, with this root's parent ID and exact agent path.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -202,11 +205,12 @@ nonborrowed containers. PG/client stopped0/143, PID0/noOOM; cleanup/missing/
 unrelated arrays empty. Never rerun custody after borrowed-PG reuse.
 
 All six ordinary refusal selectors now have their own qualified fresh roots.
-**Next action:** commit and push this integration checkpoint, then prepare and
-build that exact clean revision with the reviewed helpers below. The integrated
-seven blobs match the reviewed bfe1b14/acc9bea packet and both stable patch IDs
-match their originals. Compilation, Clippy and actual typed-holder/cap engine
-remain NOT_RUN; this does not close P02-T04 or M1.
+**Next action:** join actual build60879 of clean58aca32, inspect its real outcome,
+then run the reviewed v2 build custody audit before preparing any engine. Preparation5110
+joined0. The integrated seven blobs and both stable patch IDs match the reviewed
+bfe1b14/acc9bea packet. Worker compilation PASS; probe compilation RUNNING,
+41 selected tests/Clippy NOT_RUN at this observation. Actual typed-holder/cap
+engine remains NOT_RUN; this does not close P02-T04 or M1.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
@@ -238,7 +242,7 @@ acc9bea67d5380f35c2fbf8d69ceed4539925133. Seven exact source blobs and manifest
 It holds a real LocalAttempt through installed Occupied refusal, then genuinely
 issues122additional attempts and verifies126issued+3planned refuses before127.
 Only its new fixture profile gets10800s client lifetime; product limits unchanged.
-Pure/static checks PASS; compilation and actual engine/full replay NOT_RUN.
+Pure/static checks PASS; compilation is now running, actual engine/full replay NOT_RUN.
 The unchanged9a refusal sequence completed before integration on 2026-10-20:
 bfe1b14 maps to11397d09917e5b605ea1d4f463af162120350a2a and acc9bea maps to
 c18bc2c50d3a35862b069233348bbfc85eba8acf, both with matching stable patch IDs.
@@ -255,7 +259,8 @@ Original manifest a6b624b4; v2 manifest57c84692; independent reviewa9e0bf96 unde
 and the exact v2 delta. V2 includes interrupted component result.tmp in recursive
 pins; original helper and checker-only failure remain. Explicit future clean
 revision/tree and sevenacc9bea hashes are mandatory; unchanged41tests,
-190prior→196ELFs and64GiB+577MiB engine reserve. Every future runtime step NOT_RUN.
+190prior→196ELFs and64GiB+577MiB engine reserve. Build58aca32 is now running;
+custody and engine preparation/execution remain NOT_RUN.
 
 Export memory fixture: recovery_review owns the new isolated worktree
 `.research/export-memory-probe-20261018`, branch `qualification/export-memory-probe`,
@@ -293,11 +298,28 @@ immediately after HTTP acceptance, while Initial cannot accept Export. Minimal
 bounded relay framing and a genuine typed acceptance-only fixture consumer were
 implemented only as a source candidate, not integrated or compiled. Manifest
 75b8f6a7 under exportWT `.research/export-accept-setup-source-20261020` is
-authenticated; independent source-only review67a5ecef is complete with no concrete
-blocker, while root's affected-owner review remains incomplete. Compilation and
-runtime are NOT_RUN. The reviewed
+authenticated; independent source-only review67a5ecef and root review7a817d60
+are complete with no concrete remaining source blocker. Root reconciled full
+actual readback,0501,selection and operational owners, retained parent cleanup/
+connection accounting and relay framing. Original partial review5f78be68 remains.
+Compilation and runtime are NOT_RUN. The reviewed
 c68ac35 baseline and all original artifacts remain intact.
-No session runtime is active. Both old nine-root
+The new Astra/xhigh author works only on the fresh export setup in isolated
+`.research/export-memory-setup-20261020`, branch `qualification/export-memory-setup`,
+base370cf792. It may not run compiler/helpers/engines/SQL/Docker/cache operations.
+The old setup's replica-role policy and direct-grant mutations cannot supply the
+required genuine authority; the new fixture must use existing real initialization,
+activation/enrollment and authenticated grants, with no Export acceptance in Serve.
+
+Build60879 is active under
+`runs/ingest-succession-archive-installed-58aca32`; started10:05:04Z.
+Owner6906757f69728137ea193cd2679d316e, labelorg.bigbrotr.network-transport,
+fetchbcda8bc36fc5eb859e41dd6dd295626a57ab7a13a0225c7e38152f3e05f3c83d,
+nativec2bc41dd01d7d6bab0146a6452147d36e4b1a77123c5f19adc21e28e9cfdc48f.
+Native C++ compilation was observed active; no connected engine started.
+Current mutable resources/logs are in that root; existing report/inventory node
+`archive_attempt_limits_build_58aca32` records the observation and wrapper.
+Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 All six refusal custody checks are complete and must not be rerun after
 borrowed-PG reuse. The interrupted2426646 limited custody observation is complete; its scientific

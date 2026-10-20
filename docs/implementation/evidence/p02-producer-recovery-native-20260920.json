@@ -36452,7 +36452,7 @@
           "disposition": "Both original custody findings closed in the narrow source correction: Held retains original/checked destination before reservation and WrittenExport before fallible output marker through actual Control driver join. CatalogCapture and six other packet files unchanged. No new concrete source blocker; compiler/tests/helper/engine remain NOT_RUN."
         },
         "acceptance_setup_source_20261020": {
-          "status": "SOURCE_ONLY_FROZEN_AWAITING_ROOT_AND_INDEPENDENT_REVIEW",
+          "status": "SOURCE_REVIEW_CLOSED_BUILD_SETUP_RUNTIME_NOT_RUN",
           "source": "370cf79288cbc121582f342dd96cb4b95d7de91f",
           "base": "c68ac35c3ec87e764fbef85e7a2eddaaadec5b6c",
           "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
@@ -36475,7 +36475,28 @@
           },
           "runtime": "NOT_RUN",
           "scope": "Qualification-only finite real typed acceptance and bounded relay encoder for frozen94577-byte signed event. No reservation/execution. Genuine ingress/publication, three scope grants and outer independent replay/custody remain prerequisite work.",
-          "review": "Root authenticated manifest/source/artifact pins only; full owning source and independent review pending."
+          "review": "Root7a817d60 and independent67a5ecef closed with no concrete remaining source blocker; scoped exclusions preserved. Runtime composition and its review remain required.",
+          "review_closure_20261020": {
+            "observed_at": "2026-10-20T10:11:16.000698+00:00",
+            "previous_status": "SOURCE_ONLY_FROZEN_AWAITING_ROOT_AND_INDEPENDENT_REVIEW",
+            "previous_review": "Root authenticated manifest/source/artifact pins only; full owning source and independent review pending.",
+            "root": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-accept-setup-source-20261020/root-review-v2.json",
+              "bytes": 8459,
+              "sha256": "7a817d6045fa46c7249f394d2fccc7bc9067e4a9e99d19090af98e2f975b4fc9"
+            },
+            "independent": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018/.research/export-accept-setup-review-20261020/review-v1.json",
+              "bytes": 11808,
+              "sha256": "67a5ecefc1b6bcf9964815889c0f62286b8db6fc17054082b59386ba74318de9"
+            },
+            "source_files_authenticated": 7,
+            "author_artifacts_authenticated": 4,
+            "findings": [],
+            "scope": "Complete frozen packet plus current acceptance/readback/0501/selection/custody and relay framing owner reconciliation. Exact unchanged parent memory inverse verified; original custody corrections and review reused.",
+            "limits": "Source-only: no compilation, helper execution, SQL/native runtime, genuine setup or memory gate qualification. Old independent reviewer effective model/effort unverified; already-started review completed under Q37.",
+            "next": "Compose fresh setup and independent raw-state oracle in isolated qualification/export-memory-setup; sole root owns all runtime."
+          }
         }
       },
       "archive_refusal_journey_attempts": [
@@ -38346,6 +38367,66 @@
         "unresolved_sync_timeout": "a99c041 initial Sync timeout remains FAIL; exact pending await/timing cause unknown. Later unchanged successful trials do not identify/fix it. Repeated timeout requires targeted diagnostics, not deadline widening or blind retries.",
         "next_action": "After explicit owner resume, inspect this checkpoint, exact main/remote and retained interruption artifacts. Reconcile interrupted missing-input root and freeze preservation/custody before borrowed-PG reuse; do not replay it or normalize FAIL. Then run missing-input in a fresh exact-revision root with unchanged9a product; frontier-cancel/control-loss and attempt-limit qualification remain NOT_RUN.",
         "preservation": "All .research, external labs, original failures, datasets, logs, quarantine files and worktrees retained. Both nine-root and37-root cache retirements already complete and verified; never replay. No new cleanup or verification campaign for pause."
+      },
+      "archive_attempt_limits_build_58aca32": {
+        "status": "RUNNING",
+        "observed_at": "2026-10-20T10:12:32.539741+00:00",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-58aca32",
+        "source": "58aca32fcdbac7ed857f96e1d1cd008603b9b371",
+        "tree": "62abbbf49523b1469a63582d0008f888b351159a",
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-58aca32/root-preparation.json",
+          "bytes": 33417,
+          "sha256": "f6eb6ab97721ef2798980158dfbc6bf25f49348318a2b2567ee34d7417b2d6c1"
+        },
+        "invocation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-58aca32/root-build-invocation.json",
+          "bytes": 624,
+          "sha256": "bc0a2e36d1ef6fd346b3e584bad27c179aa0f8184803926ff23ee0a0cf32cbaa"
+        },
+        "actual_joins": {
+          "prepare5110": 0
+        },
+        "active_session": 60879,
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-58aca32/resources.json",
+          "owner": "6906757f69728137ea193cd2679d316e",
+          "owner_label": "org.bigbrotr.network-transport",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "bcda8bc36fc5eb859e41dd6dd295626a57ab7a13a0225c7e38152f3e05f3c83d"
+            },
+            {
+              "name": "native",
+              "id": "c2bc41dd01d7d6bab0146a6452147d36e4b1a77123c5f19adc21e28e9cfdc48f"
+            }
+          ]
+        },
+        "observed_checks": [
+          {
+            "name": "probe_build",
+            "status": "RUNNING"
+          },
+          {
+            "name": "frontier_intents",
+            "status": "NOT_RUN"
+          },
+          {
+            "name": "serve_owner",
+            "status": "NOT_RUN"
+          },
+          {
+            "name": "control_runtime_entrypoint",
+            "status": "NOT_RUN"
+          },
+          {
+            "name": "clippy",
+            "status": "NOT_RUN"
+          }
+        ],
+        "worker_status": "PASS",
+        "limits": "Build still running; worker PASS is a component observation, not overall build or connected qualification. Build custody, engine and strict replay NOT_RUN. Root sole cache/compiler owner; no source artifacts retired."
       }
     }
   }
