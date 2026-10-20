@@ -37071,7 +37071,97 @@
         "outer_custody_gap_20261020": {
           "status": "OPEN_BEFORE_FIRST_SETUP",
           "finding": "Setup performs native-dump/scientific-census immediately after publisher direct-child/group/backend checks. No outer acknowledgement gate exists. Those checks do not exclude escaped startup-capable descendants or establish complete transient worker PID/start/exit/cgroup custody required by FRESH_SETUP. An after-run audit cannot authorize the earlier reopen.",
-          "next": "Resolve this boundary in the existing fixture before runtime; preserve actual process/container isolation and independent evidence. No change to product semantics, deadlines or memory gate."
+          "next": "Resolve this boundary in the existing fixture before runtime; preserve actual process/container isolation and independent evidence. No change to product semantics, deadlines or memory gate.",
+          "resolution": "Reviewed phase split and outer orchestration now gate native reopening on external authenticated custody; see publication_phase_split_20261020 and outer_orchestration_source_20261020. Actual fresh runtime remains NOT_RUN."
+        },
+        "publication_phase_split_20261020": {
+          "status": "SOURCE_REVIEW_CLOSED_RUNTIME_NOT_RUN",
+          "source": "de79f94de465754efe75db5c756645d436892ad9",
+          "merge": "afa57a5",
+          "manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-20261020/.research/export-memory-phases-source-20261020/manifest.json",
+            "bytes": 2325,
+            "sha256": "4d276fb4418461822e446393508669a687312d50b62097833ffa0136b1b56768"
+          },
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/review-v1.json",
+            "bytes": 19949,
+            "sha256": "34dc32792587654d3b0b57acaa29ac2da7dc0e6b7720039d09531d8df31cde83"
+          },
+          "root_review": "Complete three-file delta and original owners reviewed; all six frozen source/artifact pins authenticated. No concrete phase-split blocker. Original preobserver physical/evidence baseline, full SQL/xmin/catalog recapture and exclusive continuation marker gate external receipt approval.",
+          "checks": "Author AST2, preservation16 and whitespace PASS; no runtime or complete outer orchestration qualification.",
+          "scope": "Publication stops before native observers; root authenticates actual full worker trace and whole-container exclusion before supplying pinned receipt. No product semantics/deadline/memory-gate change."
+        },
+        "client_dependency_20261020": {
+          "status": "IMAGE_BUILD_AND_EXECUTABLE_PIN_PASS_SETUP_NOT_RUN",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-client-20261020",
+          "image": "sha256:720f24ff85acd081de8ee8405bb2498b24cae499075bbc29f49d19756706d1a7",
+          "session": "50775 joined0",
+          "resources": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-client-20261020/resources.json",
+            "bytes": 1412,
+            "sha256": "ce78969d387a18c24a9a75dc3f11506da705a93af7dc8551f5ecf5b53735bcc6"
+          },
+          "inspection": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-client-20261020/inspection.json",
+            "bytes": 1063,
+            "sha256": "0e2cff7ab0ab67cbe5e4473282e024d0224d3667591d8163b87494da68076273"
+          },
+          "build_log": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-client-20261020/build.log",
+            "bytes": 3600,
+            "sha256": "fca48d639d027ab7fb881eaa943370ad7b99536ffae20cb6cf8d62282a440836"
+          },
+          "packages": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-client-20261020/export-client-packages.txt",
+            "bytes": 12513,
+            "sha256": "7c3908b2d4be000ad07562fdc3280a21f654e57d8d6efac0d42b01e65965accf"
+          },
+          "dockerfile": {
+            "path": "/home/tux/bigbrotr-rs/experiments/export-execution/client.Dockerfile",
+            "bytes": 614,
+            "sha256": "cc7e3bbeecaec3baaa6dbedd086dd61bf4bf5c97eddf2fa6012f1eb0e6da0df2"
+          },
+          "scope": "Research-only client derived from authenticated retained Debian12 base; psql15.19 executable and immutable image/package inventory retained. Signed apt metadata resolved package versions at build time, not a claim that future floating apt resolution is identical. No SQL/native/application setup executed."
+        },
+        "runtime_inputs_20261020": {
+          "status": "AUTHENTICATED_FOR_PENDING_FRESH_RUNTIME",
+          "product": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-runtime-inputs-20261020/product-verification.json",
+            "bytes": 4609,
+            "sha256": "7372e12cc4a1b3e414989c408a9a213fef0aace334b3b92dc0f470dbe127f0bb"
+          },
+          "tracer": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-runtime-inputs-20261020/instrument-verification.json",
+            "bytes": 9055,
+            "sha256": "73f5010d9f7584109135999558e17bdb124ba1e313644ab0c81d1280a5a8078e"
+          },
+          "scope": "Exact retained source/build receipts, eight application/probe/native-bundle files, tracer+patch+proof and targeted actual stopped-container owners authenticated. No prior engine/custody executor replay; actual setup also verifies worker before initialization."
+        },
+        "outer_orchestration_source_20261020": {
+          "status": "SOURCE_REVIEW_CLOSED_RUNTIME_NOT_RUN",
+          "root_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-outer-root-review-20261020/review-v1.json",
+            "bytes": 4620,
+            "sha256": "2671cf038e2af728db0730e3bfb556a8693ba22d23b5e634a94e4a544128ceb0"
+          },
+          "parser": {
+            "original": "555f3aee21f39f49a41ba27251ec1f7d08de946b",
+            "correction": "f179030c7f7e3b0fb163ab64e8298d0f4c0d34b1",
+            "manifest": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-trace-20261020/.research/memory-trace-checks-20261020/manifest-v2.json",
+              "bytes": 3781,
+              "sha256": "4f48fb3cff5c610da97693f18bfe61bbe0d97b332c0f63f5018f027acc59ed47"
+            }
+          },
+          "scope": "Fresh isolated PostgreSQL and per-phase process-only tracing; external complete terminal/cgroup/backend/mount/physical checks before continuation. Ends after independently checked unreserved acceptance; no measurement or five-export/256MiB claim.",
+          "source_fixes": "Exact accept-run result path; final TCP PostgreSQL readiness; cleanup failure yields nonzero without rewriting accepted outcome or masking original exception. Future cgroup path is not an allocation claim.",
+          "checks": "11 independent textual parser tests and six-root-owner AST PASS; original failures/commits/manifests retained. No helper/runtime execution yet.",
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/outer-runner-review-v1.json",
+            "bytes": 28517,
+            "sha256": "6a380beae006869ba6dd3b05a5e5ccdab86022e4148e5a8f9f622b36d3534d10"
+          }
         }
       },
       "archive_refusal_journey_attempts": [

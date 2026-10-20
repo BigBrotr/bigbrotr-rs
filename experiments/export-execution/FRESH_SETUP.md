@@ -10,7 +10,7 @@ Root invokes three finite commands in separately inventoried setup environments:
 ```text
 python3 -B experiments/export-execution/memory_setup.py publish /lab/setup-input.json
 python3 -B experiments/export-execution/memory_setup.py continue /lab/fresh-root /lab/publication-custody.json ROOT_VERIFIED_RECEIPT_SHA256
-python3 -B experiments/export-execution/memory_setup_accept.py /lab/fresh-root /sys/fs/cgroup/ROOT_RESERVED_MEASUREMENT_GROUP
+python3 -B experiments/export-execution/memory_setup_accept.py /lab/fresh-root /sys/fs/cgroup
 ```
 
 The first command requires a nonexistent fresh root and empty Control/catalog
@@ -89,9 +89,26 @@ not extend a pin. An active retained row is not current execution permission.
 
 Only a known, independently checked acceptance prepares `case.json`,
 `science.json` and `run.json` for the unchanged [measurement runner](MEMORY.md).
-The acceptance command never enters, creates or measures the supplied cgroup.
-Root must supply a genuinely fresh dedicated cgroup and run the original runner
-and oracle there. This packet makes no memory, five-export or 256 MiB claim.
+The acceptance command only records the absolute path visible to the future
+observer; `/sys/fs/cgroup` selects the root of its private cgroup namespace.
+It never enters, creates, reserves or measures that cgroup. Before measurement,
+root must provision and authenticate a genuinely fresh dedicated cgroup and run
+the original runner and oracle there. This packet makes no memory, five-export
+or 256 MiB claim.
+
+`memory_lab.py --root FRESH_EXTERNAL_ROOT --build QUALIFIED_ARTIFACT_DIRECTORY
+--probe QUALIFIED_PROBE_DIRECTORY --instrument QUALIFIED_TRACER_DIRECTORY`
+composes these phases from a clean source checkout. It creates fresh isolated
+PostgreSQL and credentials, then separate finite containers for configuration,
+publication, continuation and acceptance. Complete process traces and external
+container/cgroup/backend/mount checks gate each transition. The retained client
+image includes the exact recorded `psql` executable; `client.Dockerfile` describes
+its research-only construction, with installed package identities in the image
+build evidence. The executor ends after independently checked acceptance and
+stops its containers; it does not run measurement. Its first candidate retains
+the full 1 MiB event envelope and a 1 GiB policy export cap, not a qualified
+256 MiB result. Preserve any accepted job even if cleanup fails; `cleanup-required`
+is a nonzero executor outcome and never permission to retry acceptance.
 
 ## Publication custody receipt
 

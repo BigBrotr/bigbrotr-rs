@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Root-only follow-up: accept once, audit raw state, prepare measurement inputs.
 
-The root must first authenticate the prepared setup and reserve the future fresh
-measurement cgroup. This command never starts Serve or the measurement runner.
+The root must first authenticate the prepared setup and supply the absolute
+cgroup path visible to the future measurement observer. This descriptor does not
+reserve a cgroup: root must provision and authenticate its actual fresh identity
+before measurement. This command never starts Serve or the measurement runner.
 """
 import argparse
 import json

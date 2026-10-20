@@ -65767,6 +65767,34 @@
         ],
         "free_bytes_after": 324104470528,
         "preservation": "New probe outside mutable compiler cache; logs, manifest, source checkout and terminal receipts retained. Existing runner prior container projections unchanged; targeted root terminal inspection matched. No PG or runtime setup created."
+      },
+      "publication_phase_split_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.publication_phase_split_20261020",
+        "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-phases-20261020",
+        "branch": "qualification/export-memory-phases",
+        "state": "source-only-merged-worktree-and-evidence-retained"
+      },
+      "client_dependency_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.client_dependency_20261020",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-client-20261020",
+        "owner": "6dd53df254313d79d82fb9d040f39ce4",
+        "owner_label": "org.bigbrotr.export-client",
+        "image": "sha256:720f24ff85acd081de8ee8405bb2498b24cae499075bbc29f49d19756706d1a7",
+        "state": "built-retained",
+        "inspection_container": "2b3d01491ff3bfc1b15cdde0021db54d540e0b02b5e16a0886b27b6524745b80",
+        "inspection_state": "created/PID0/never-started at2026-10-20T11:54:49Z",
+        "preservation": "Image, context, exact package/executable copies, build log and never-started inspection container retained; no database or engine setup resources yet."
+      },
+      "outer_orchestration_source_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.outer_orchestration_source_20261020",
+        "trace_worktree": "/home/tux/bigbrotr-rs/.research/export-memory-trace-20261020",
+        "trace_branch": "qualification/export-memory-trace",
+        "trace_head": "f179030c7f7e3b0fb163ab64e8298d0f4c0d34b1",
+        "state": "source-only-integration-in-progress",
+        "preservation": "Original parser555 and correctedf179, both source manifests and all pure test logs retained. No engine setup resources yet."
       }
     },
     "archive_refusal_journey_attempts": [
