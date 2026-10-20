@@ -88,6 +88,13 @@ retained dependencies and the proxy's first successful acquisition UPDATE.
 The pinned `control-producer-progress` proxy selects UPDATE occurrence2 on that
 same actual Control backend, then interrupts only its COMMIT before forwarding
 or after server completion. No global transaction index is used.
+The fixture selects the proxy's existing `retained-catch-up` profile with
+131072 frames and64 admitted connections; this case still requires at most one
+actual connection. The64MiB wire ceiling,8MiB frame ceiling,120-second proxy
+lifetime and all product deadlines remain unchanged. Every emitted event must
+declare that exact profile and its limits. The original ca77 run exhausted the
+default20000-frame limit before UPDATE1 and remains FAIL with native not reopened;
+the larger finite profile is source-only until a fresh root-owned qualification.
 
 Both callers must naturally exit4 with the original `Progress(CommitUnknown)`
 diagnostic and only the original activation JSON. Relay, proxy and process joins

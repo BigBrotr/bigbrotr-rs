@@ -90,7 +90,8 @@ def wire_checked(value, current, *, gate_only=False):
     command = value['command']
     assert command[:3] == ['docker','exec','-i']
     assert command[4:] == ['python3','-B','/lab/progress-commit-proxy.py',
-        '--target','control-producer-progress','--mode',value['mode']]
+        '--target','control-producer-progress','--mode',value['mode'],
+        '--profile','retained-catch-up']
     process = value['process']
     assert set(process) == {'exit','stdout','stderr','overflow','readers_joined'}
     assert process['stderr'] == '' and process['overflow'] is False
@@ -106,14 +107,17 @@ def wire_checked(value, current, *, gate_only=False):
         'auth_finals_omitted','frontend_queries','coordinator_inserts','pin_claim_injections',
         'session_mutations_complete','reader_queries','capture_verify_requests','resume_authority_requests',
         'resume_expiry_rejections','resume_expiry_idle','progress_updates_complete','target_occurrence'}
-    common = counters | {'event','mode','target','rejection_sequence','pin_rejections','backend_pid'}
+    common = counters | {'event','mode','target','rejection_sequence','pin_rejections','backend_pid',
+        'profile','frame_limit','connection_limit'}
     for event in events:
         extra = {'port','source_sha256'} if event['event'] == 'ready' else {'unexpected'} if event['event'] == 'terminal' else set()
         assert set(event) == common | extra
         assert event['mode'] == value['mode'] and event['target'] == 'control-producer-progress'
+        assert event['profile'] == 'retained-catch-up'
+        assert event['frame_limit'] == 131072 and event['connection_limit'] == 64
         assert event['target_occurrence'] == 2 and event['rejection_sequence'] == event['pin_rejections'] == []
         for key in counters: number(event[key], 0, 64*1024**2, integer=True)
-        assert event['connections'] <= 1 and event['frames'] <= 20000
+        assert event['connections'] <= 1 and event['frames'] <= 131072
         for key in counters - {'connections','bytes','frames','data_queries','data_commits','server_complete',
                 'client_complete','faults','frontend_queries','progress_updates_complete','target_occurrence'}:
             assert event[key] == 0

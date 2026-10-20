@@ -52,7 +52,8 @@ class Fault:
         if not target.exists(): shutil.copy2(source, target)
         assert history.digest(target) == oracle.PROXY_SHA256
         command = ['docker','exec','-i',self.client,'python3','-B','/lab/progress-commit-proxy.py',
-            '--target','control-producer-progress','--mode',self.case['clone']]
+            '--target','control-producer-progress','--mode',self.case['clone'],
+            '--profile','retained-catch-up']
         self.evidence['command'] = command
         self.proxy = Process(command, input_pipe=True, limit=256*1024)
         def ready():
@@ -62,6 +63,8 @@ class Fault:
             if not lines or not lines[0].endswith('\n'): return None
             event = loads(lines[0]); assert event['event'] == 'ready'
             assert event['source_sha256'] == oracle.PROXY_SHA256
+            assert event['profile'] == 'retained-catch-up'
+            assert event['frame_limit'] == 131072 and event['connection_limit'] == 64
             oracle.number(event['port'],1024,65535,integer=True)
             return event
         self.evidence['ready'] = wait_for(ready, 'progress fault proxy ready', 5)

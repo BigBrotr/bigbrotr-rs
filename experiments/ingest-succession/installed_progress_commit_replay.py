@@ -52,6 +52,7 @@ def replay(root):
         assert all(state[k] is False for k in ('Running','Paused','Restarting','OOMKilled','Dead')) and not state['Error']
         assert type(state['ExitCode']) is int and state['ExitCode'] == code
     client = terminal[report['client']]
+    assert client['Name'] == '/'+oracle.CLIENT_PREFIX+report['source'][:7]
     mount = only(client['Mounts'],Destination='/lab'); assert mount['RW'] is True and mount['Source'] == str(folder)
     mount = only(client['Mounts'],Destination='/build'); assert mount['RW'] is False
     build = Path(mount['Source']); assert build.is_absolute()
@@ -136,7 +137,7 @@ def replay(root):
             assert context['input_contents'] == {n:raw(directory/'store/producer-inputs-v1'/n).hex() for n in after_inputs}
             if step == 'loss':
                 fault = item('fault'); assert fault == context['fault']
-                assert fault['command'][3] == report['client']
+                assert fault['command'][3] == client['Name'].lstrip('/')
                 changed = tomllib.loads(raw(folder/(label+'-config.toml')).decode())
                 assert changed['postgres']['control']['endpoint'] == '127.0.0.1:'+str(fault['ready']['port'])
                 changed['postgres']['control']['endpoint'] = '127.0.0.1:5432'
