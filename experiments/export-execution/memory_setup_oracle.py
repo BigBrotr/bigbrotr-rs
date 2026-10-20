@@ -5,12 +5,13 @@ receipts, batch digests, command digest and selected cuts are reconstructed.
 No production codec, query or SQL authority function computes an expectation.
 """
 import json
+from pathlib import Path
 
 from bootstrap_oracle import cbor
 from installed_sync_oracle import decode
 from installed_archive_oracle import expected as archive_expected
 from installed_archive_frontier import cut_digest, retained_inputs
-from memory_oracle import event_expected
+from memory_oracle import event_expected, verify_signed_files
 from memory_setup_io import require, sha, write
 from memory_setup_client import ACTIONS
 
@@ -391,3 +392,357 @@ def acceptance(before, after, case, selection, events):
     require(not after['export_execution_units'] and not after['artifacts'] and not after['artifact_files'],
             'no reservation, execution unit or artifact')
     return receipt['job_id']
+
+
+def installed_five(before_capture, after_capture, *, selection, principal,
+                   commands, statuses, destination, science):
+    """Audit five sequential ordinary-Serve exports after its actual shutdown.
+
+    Commands are five {key, command, receipt} records; command is the exact HTTP
+    POST body including kind. Statuses are the corresponding terminal GET bodies.
+    The prepared selection/science and both complete captures are caller-pinned
+    independent inputs. One login/logout and one new Control lifetime are required.
+    Existing jobs, including acquisition jobs, remain byte/xmin identical.
+
+    This returns SQL/file evidence only. The caller must separately authenticate
+    physical native roots, old output files, backend/process/cgroup closure and
+    memory observations before making an installed-runtime qualification claim.
+    """
+    require(len(commands) == len(statuses) == 5, 'exactly five installed commands and statuses')
+    require(set(before_capture) == set(after_capture) == {'control', 'catalog'},
+            'complete Control/catalog captures')
+    require(before_capture['catalog'] == after_capture['catalog'], 'entire catalog/xmin preserved')
+    before, after = before_capture['control'], after_capture['control']
+    allowed = ACCEPT_TABLES | {'export_execution_units', 'artifacts', 'artifact_files'}
+    unchanged(before, after, allowed)
+    for state in (before, after):
+        require(sum(len(rows) for rows in state.values()) <= 32768, 'finite installed laboratory capture')
+        for rows in state.values():
+            require(len({json.dumps(row, sort_keys=True) for row in rows}) == len(rows)
+                    and all(isinstance(row.get('xmin'), str) and row['xmin'].isdecimal()
+                            and int(row['xmin']) > 0 for row in rows), 'unique complete rows with xmin')
+    append_only(before, after, allowed - {'browser_sessions', 'login_buckets'})
+    added = {table: [row for row in after[table] if row not in before[table]] for table in allowed}
+
+    def ident(value, size=16):
+        require(isinstance(value, str) and len(value) == size * 2
+                and bytes.fromhex(value).hex() == value and int(value, 16) > 0,
+                'canonical nonzero observed identity')
+        return value
+
+    def number(value):
+        require(type(value) is int and value > 0, 'positive observed integer')
+        return value
+
+    def same(row, expected, label):
+        require(json.dumps(clean(row), sort_keys=True) == json.dumps(expected, sort_keys=True), label)
+
+    def find(table, key, value):
+        return one([row for row in added[table] if row[key] == value])
+
+    query = selection['query']
+    require(set(query) == {'dataset', 'scope', 'event_id', 'topology_generation', 'snapshot_id', 'bounds'}
+            and 1 <= len(query['bounds']) <= 1024, 'closed bounded prepared query')
+    require(science['query'] == query and science['catalog'] == selection['catalog']
+            and science['frontier_revision'] == selection['frontier_revision'], 'same independent science selection')
+    dataset, actor, catalog = BX + ident(query['dataset']), BX + ident(principal), BX + ident(selection['catalog'])
+    scope, frontier = query['scope'], number(selection['frontier_revision'])
+    require(set(scope) == {'dataset_id', 'dictionary_kind', 'allocation_domain', 'ordinal'}
+            and scope['dataset_id'] == query['dataset'] and scope['dictionary_kind'] == 4,
+            'prepared qualified visibility')
+    topology = int(query['topology_generation'])
+    require(str(topology) == query['topology_generation'] and topology >= 0, 'canonical topology generation')
+    bound_values = [(row['shard_id'], row['owner_epoch'], row['complete_through']) for row in query['bounds']]
+    require(len(set(bound_values)) == len(bound_values)
+            and all(set(row) == {'shard_id', 'owner_epoch', 'complete_through'} for row in query['bounds']),
+            'complete unique prepared bounds')
+    claims_per_pin = sum(last > 0 for _, _, last in bound_values)
+    counts = dict(jobs=5, export_jobs=5, job_admissions=5, management_commands=5,
+        management_audit=7, job_input_bounds=5 * len(bound_values),
+        export_execution_units=5, artifacts=5, artifact_files=5,
+        owner_epochs=1, role_instances=1, snapshot_leases=15, archive_snapshot_pins=15,
+        retention_claims=15 * claims_per_pin)
+    require(all(len(added[table]) == count for table, count in counts.items()), 'exact installed SQL delta cardinalities')
+    current = one(before['datasets'])
+    revisions = dict(configuration=str(current['config_revision']), policy=str(current['policy_revision']))
+    require(current['dataset_id'] == dataset and science['accepted_revisions'] == revisions,
+            'actual unchanged accepted revisions')
+    policy = one([row for row in before['policy_revisions'] if row['revision'] == current['policy_revision']])
+    settings = policy['document']['settings']
+    require(settings['export.memory.max_bytes'] == 268435456, 'actual accepted 256MiB export policy')
+    account = one([row for row in before['local_accounts'] if row['principal_id'] == actor])
+    require(account['active'] and account['dataset_id'] == dataset, 'unchanged active enrolled principal')
+    snapshot = one([row for row in before['archive_frontier_snapshots']
+                    if row['consumer_id'] == catalog and row['frontier_revision'] == frontier])
+    require(snapshot['dataset_id'] == dataset and snapshot['catalog_id'] == catalog
+            and snapshot['snapshot_id'] == query['snapshot_id'] and snapshot['topology_generation'] == topology
+            and sorted((row['shard_id'], row['owner_epoch'], row['last_complete_sequence'])
+                for row in before['consumer_frontiers']
+                if row['consumer_id'] == catalog and row['frontier_revision'] == frontier) == sorted(bound_values),
+            'independent selection equals actual retained frontier')
+    for action in ACTIONS:
+        grant = one([row for row in before['scope_grants'] if row['principal_id'] == actor
+                     and row['action'] == action and row['dictionary_kind'] == 4
+                     and row['allocation_domain'] == BX + scope['allocation_domain']
+                     and row['ordinal'] == int(scope['ordinal'])])
+        require(grant['dataset_id'] == dataset and grant['enabled'], 'actual unchanged scoped authority')
+    owner = released(before, after)
+    prior_owners = [row for row in before['owner_epochs'] if row['role'] == 'control']
+    require(owner['dataset_id'] == dataset and owner['control_fence_version'] == 1
+            and number(owner['control_backend_pid']) and owner['control_backend_start']
+            and owner['acquired_at_us'] < owner['released_at_us']
+            and owner['epoch'] == max(row['epoch'] for row in prior_owners) + 1
+            and {row['resource_id'] for row in prior_owners} == {owner['resource_id']}
+            and not any(row['role'] == 'control' and row['state'] == 'active' for row in after['owner_epochs']),
+            'one actual terminal Control lifetime')
+    for field in ('resource_id', 'process_incarnation', 'role_instance_id', 'exclusion_digest'):
+        ident(owner[field].removeprefix(BX), 32 if field == 'exclusion_digest' else 16)
+    same(owner, dict(dataset_id=dataset, role='control', resource_id=owner['resource_id'],
+        epoch=owner['epoch'], role_instance_id=owner['role_instance_id'],
+        process_incarnation=owner['process_incarnation'], state='released',
+        acquired_at_us=number(owner['acquired_at_us']), lease_expires_at_us=number(owner['lease_expires_at_us']),
+        released_at_us=number(owner['released_at_us']), exclusion_method='storage_fenced',
+        exclusion_digest=owner['exclusion_digest'], archive_frontier_protocol=None,
+        control_backend_pid=owner['control_backend_pid'], control_backend_start=owner['control_backend_start'],
+        control_fence_version=1), 'closed actual Control ownership')
+    role = one(added['role_instances'])
+    same(role, dict(role_instance_id=owner['role_instance_id'], dataset_id=dataset, role='control',
+        created_at_us=number(role['created_at_us']), retired_at_us=number(role['retired_at_us'])),
+        'closed retired Control incarnation')
+    require(role['dataset_id'] == dataset and role['role'] == 'control'
+            and role['created_at_us'] <= owner['acquired_at_us'] <= owner['released_at_us'] <= role['retired_at_us']
+            and role['xmin'] == owner['xmin'], 'atomic owner/incarnation retirement')
+    session = session_lifecycle(before, after, actor, ['job.export.accept'] * 5)
+    require(session['dataset_id'] == dataset
+            and session['credential_revision'] == account['credential_revision']
+            and session['authentication_revision'] == account['authentication_revision']
+            and owner['acquired_at_us'] <= session['issued_at_us'] <= session['last_seen_at_us']
+                <= session['revoked_at_us'] <= owner['released_at_us']
+            and session['expires_at_us'] == session['issued_at_us'] + 28_800_000_000
+            and session['idle_window_us'] == 1_800_000_000
+            and session['idle_expires_at_us'] == min(session['last_seen_at_us'] + 1_800_000_000, session['expires_at_us']),
+            'actual finite authenticated session lifecycle')
+    for name in ('session_id', 'token_digest', 'csrf_digest'):
+        ident(session[name].removeprefix(BX), 16 if name == 'session_id' else 32)
+    same(session, dict(session_id=session['session_id'], dataset_id=dataset, principal_id=actor,
+        credential_revision=account['credential_revision'], authentication_revision=account['authentication_revision'],
+        token_digest=session['token_digest'], csrf_digest=session['csrf_digest'],
+        issued_at_us=session['issued_at_us'], expires_at_us=session['issued_at_us'] + 28_800_000_000,
+        idle_window_us=1_800_000_000, last_seen_at_us=session['last_seen_at_us'],
+        idle_expires_at_us=session['idle_expires_at_us'], revoked_at_us=session['revoked_at_us']),
+        'closed authenticated session')
+    audit_issue = one([row for row in added['management_audit'] if row['action'] == 'browser.session.issue'])
+    audit_revoke = one([row for row in added['management_audit'] if row['action'] == 'browser.session.revoke'])
+    for row in added['management_audit']:
+        ident(row['audit_id'].removeprefix(BX))
+        same(row, dict(audit_id=row['audit_id'], dataset_id=dataset, actor_id=actor, action=row['action'],
+            outcome='accepted', created_at_us=number(row['created_at_us']), config_revision=current['config_revision'],
+            subject_id=row['subject_id'], policy_revision=current['policy_revision'], reason=None,
+            requester_database_role=None, requester_os_uid=None), 'closed authenticated audit row')
+    require(len({row['audit_id'] for row in added['management_audit']}) == 7
+            and not {row['audit_id'] for row in added['management_audit']}
+                & {row['audit_id'] for row in before['management_audit']}, 'fresh immutable audit identities')
+    require(audit_issue['subject_id'] == audit_revoke['subject_id'] == session['session_id']
+            and session['issued_at_us'] <= audit_issue['created_at_us']
+            and session['revoked_at_us'] <= audit_revoke['created_at_us'] <= owner['released_at_us']
+            and audit_revoke['xmin'] == session['xmin'], 'login/logout audit and revocation commit')
+    # This finite fixture logs in once from the actual loopback IPv4 peer.
+    charged = []
+    for kind, domain, value, maximum in (
+            ('account', b'account', account['username'].encode(), 5),
+            ('peer', b'peer4', bytes([127, 0, 0, 1]), 20)):
+        bucket = bytes.fromhex(sha(b'bigbrotr/login-bucket/1\0' + domain + b'\0' + value))[0]
+        old = one([row for row in before['login_buckets'] if (row['kind'], row['bucket']) == (kind, bucket)])
+        new = one([row for row in after['login_buckets'] if (row['kind'], row['bucket']) == (kind, bucket)])
+        window = new['window_started_at_us']
+        reset = window != old['window_started_at_us']
+        require((not reset or old['window_started_at_us'] + 60_000_000 <= window)
+                and window <= session['issued_at_us']
+                and (not reset or window >= owner['acquired_at_us'])
+                and 1 <= new['attempts'] <= maximum and new['xmin'] != old['xmin'],
+                'natural charged login bucket window')
+        same(new, dict(dataset_id=dataset, kind=kind, bucket=bucket, window_started_at_us=window,
+                       attempts=1 if reset else old['attempts'] + 1), 'one actual password charge')
+        charged.append((old, new))
+    require(charged[0][1]['xmin'] == charged[1][1]['xmin']
+            and [row for row in before['login_buckets'] if row not in [pair[0] for pair in charged]]
+                == [row for row in after['login_buckets'] if row not in [pair[1] for pair in charged]],
+            'only the two authenticated login buckets changed')
+    marker_raw = (Path(destination) / 'destination.json').read_bytes()
+    marker = json.loads(marker_raw)
+    require(set(marker) == {'format', 'dataset_id', 'destination_id', 'root', 'device', 'inode'}
+            and marker['format'] == 'bigbrotr-export-destination/1'
+            and marker['dataset_id'] == query['dataset'] and marker['root'] == str(destination),
+            'actual original destination binding')
+    destination_id, binding = ident(marker['destination_id']), sha(marker_raw)
+    expected_body = dict(kind='export', format='signed-events-jsonl',
+        query=dict(version=1, resource='event_history', mode='snapshot', scope=scope,
+                   filters=[dict(ids=[query['event_id']])]),
+        allocation=dict(catalog_id=selection['catalog'], frontier_revision=str(frontier)),
+        destination=dict(id=destination_id, binding_sha256=binding),
+        expected_config_revision=revisions['configuration'], expected_policy_revision=revisions['policy'])
+    require(all(set(record) == {'key', 'command', 'receipt'} and record['command'] == expected_body
+                for record in commands), 'five exact independent HTTP commands')
+    require(len({ident(record['key']) for record in commands}) == 5, 'five distinct command keys')
+    jobs = [BX + ident(record['receipt']['job_id']) for record in commands]
+    require(len(set(jobs)) == 5 and set(jobs) == {row['job_id'] for row in added['jobs']}
+            and not set(jobs) & {row['job_id'] for row in before['jobs']}, 'five genuinely new job identities')
+    require(len({row['artifact_id'] for row in added['artifacts']}) == 5
+            and not {row['artifact_id'] for row in added['artifacts']}
+                & {row['artifact_id'] for row in before['artifacts']}
+            and len({row['lease_id'] for row in added['archive_snapshot_pins']}) == 15
+            and not {row['lease_id'] for row in added['archive_snapshot_pins']}
+                & {row['lease_id'] for row in before['snapshot_leases']}
+            and len({row['claim_id'] for row in added['retention_claims']}) == 15 * claims_per_pin
+            and not {row['claim_id'] for row in added['retention_claims']}
+                & {row['claim_id'] for row in before['retention_claims']},
+            'distinct artifacts and fifteen new pins')
+    previous = audit_issue['created_at_us']
+    results = []
+    seen_pins = set()
+    for index, (record, status, job_id) in enumerate(zip(commands, statuses, jobs), 1):
+        job, detail, unit, artifact, admission = (find(table, 'job_id', job_id) for table in
+            ('jobs', 'export_jobs', 'export_execution_units', 'artifacts', 'job_admissions'))
+        artifact_id = ident(artifact['artifact_id'].removeprefix(BX))
+        files = verify_signed_files(destination, artifact_id, job_id[2:], science)
+        manifest_bytes = (Path(destination) / artifact_id / 'manifest.json').stat().st_size
+        created, completed = number(job['created_at_us']), number(job['completed_at_us'])
+        require(previous <= created <= unit['reserved_at_us'] < completed < session['revoked_at_us'],
+                'sequential accepted/reserved/completed jobs inside authenticated lifetime')
+        require(status == dict(format='bigbrotr-job-status/1', job_id=job_id[2:], kind='export',
+            state='succeeded', job_revision='4', checkpoint_revision='1', created_at_us=str(created),
+            completed_at_us=str(completed), observed_at_us=status['observed_at_us'],
+            reason_code=None, authority='observation-only')
+            and str(int(status['observed_at_us'])) == status['observed_at_us']
+            and completed <= int(status['observed_at_us']) <= session['revoked_at_us'],
+            'complete genuine terminal status')
+        previous = int(status['observed_at_us'])
+        require(record['receipt'] == dict(format='bigbrotr-job-acceptance/1', command_key=record['key'],
+            job_id=job_id[2:], accepted_at_us=str(created), created=True, execution='unobserved',
+            authority='acceptance-only'), 'exact actual new-command acceptance receipt')
+        raw, be = bytes.fromhex, lambda value, width=8: int(value).to_bytes(width, 'big')
+        digest = sha(b'bigbrotr/export-event/1\0' + raw(query['dataset']) + raw(principal) + raw(record['key'])
+            + raw(query['dataset']) + be(4, 2) + raw(scope['allocation_domain']) + be(scope['ordinal'])
+            + raw(query['event_id']) + be(100, 2) + raw(selection['catalog']) + be(frontier)
+            + raw(destination_id) + raw(binding) + b'\x01\x01'
+            + be(current['config_revision']) + be(current['policy_revision']))
+        same(job, dict(job_id=job_id, dataset_id=dataset, principal_id=actor, request_key=BX + record['key'],
+            request_digest=BX + digest, kind='export', config_revision=current['config_revision'],
+            policy_revision=current['policy_revision'], created_at_us=created, input_topology_generation=topology,
+            input_complete=True, export_job_protocol=1, acquisition_job_protocol=None,
+            state='succeeded', job_revision=4, checkpoint_revision=1, owner_role='control',
+            owner_resource_id=owner['resource_id'], owner_epoch=owner['epoch'],
+            owner_incarnation=owner['process_incarnation'], completed_at_us=completed,
+            reason_code=None, result_manifest_digest=BX + files['manifest_sha256']), 'closed completed job row')
+        same(detail, dict(job_id=job_id, dataset_id=dataset, actor_id=actor, request_key=BX + record['key'],
+            format='signed-events-jsonl', visibility='private', dictionary_kind=4,
+            allocation_domain=BX + scope['allocation_domain'], ordinal=int(scope['ordinal']),
+            event_id=BX + query['event_id'], page_size=100, catalog_id=catalog, frontier_revision=frontier,
+            destination_id=BX + destination_id, destination_binding_sha256=BX + binding,
+            pin_lease_id=detail['pin_lease_id'], allocation_pin_id=detail['allocation_pin_id'],
+            session_id=session['session_id'], actor_credential_revision=account['credential_revision'],
+            actor_authentication_revision=account['authentication_revision'],
+            actor_grant_revision=account['grant_revision']), 'closed immutable export selection')
+        command = find('management_commands', 'request_key', BX + record['key'])
+        audit = find('management_audit', 'audit_id', command['audit_id'])
+        same(command, dict(actor_id=actor, request_key=BX + record['key'], dataset_id=dataset,
+            action='job.export.accept', request_digest=BX + digest, expected_config_revision=current['config_revision'],
+            policy_revision=current['policy_revision'], audit_id=audit['audit_id'], accepted_at_us=created,
+            authority_mode=None, document_digest=None), 'closed command receipt')
+        require(audit['action'] == 'job.export.accept' and audit['subject_id'] == BX + record['key']
+                and audit['created_at_us'] == created, 'command audit closure')
+        same(admission, dict(job_id=job_id, admission_ordinal=
+            max((row['admission_ordinal'] for row in before['job_admissions']), default=0) + index),
+            'actual committed admission order')
+        bounds = [row for row in added['job_input_bounds'] if row['job_id'] == job_id]
+        require(sorted((row['shard_id'], row['owner_epoch'], row['last_complete_sequence']) for row in bounds)
+                == sorted(bound_values), 'entire immutable job input cut')
+        for row in bounds:
+            same(row, dict(job_id=job_id, dataset_id=dataset, topology_generation=topology,
+                shard_id=row['shard_id'], owner_epoch=row['owner_epoch'],
+                last_complete_sequence=row['last_complete_sequence']), 'closed job bound')
+        same(unit, dict(job_id=job_id, artifact_id=artifact['artifact_id'],
+            max_output_bytes=settings['export.artifact.max_bytes'],
+            max_temporary_bytes=2 * settings['export.artifact.max_bytes'],
+            reservation_transaction=unit['xmin'], reserved_at_us=number(unit['reserved_at_us'])),
+            'separately committed immutable output reservation')
+        same(artifact, dict(artifact_id=artifact['artifact_id'], job_id=job_id, dataset_id=dataset,
+            principal_id=actor, destination_id=BX + destination_id, destination_binding_sha256=BX + binding,
+            manifest_format='bigbrotr-signed-events-export/1', manifest_bytes=manifest_bytes,
+            manifest_sha256=BX + files['manifest_sha256'], file_count=1, total_bytes=files['bytes'] + manifest_bytes,
+            verification_pin_id=artifact['verification_pin_id'], completed_at_us=completed), 'closed completed artifact')
+        file_row = find('artifact_files', 'artifact_id', artifact['artifact_id'])
+        same(file_row, dict(artifact_id=artifact['artifact_id'], file_id='events', relative_path='events.jsonl',
+            format='nostr-jsonl/1', byte_count=files['bytes'], row_count=1, sha256=BX + files['sha256']),
+            'closed full signed file inventory')
+        require(artifact['total_bytes'] <= unit['max_output_bytes']
+                and job['xmin'] == artifact['xmin'] == file_row['xmin'], 'atomic complete output inventory')
+        acceptance_rows = [detail, command, audit, admission, *bounds]
+        pin_rows = []
+        for name, lease_id in (('allocation', detail['allocation_pin_id']), ('export', detail['pin_lease_id']),
+                               ('execution', artifact['verification_pin_id'])):
+            ident(lease_id.removeprefix(BX))
+            require(lease_id not in seen_pins, 'no pin reused between consumers')
+            seen_pins.add(lease_id)
+            pin, lease = (find(table, 'lease_id', lease_id) for table in ('archive_snapshot_pins', 'snapshot_leases'))
+            claims = [row for row in added['retention_claims'] if row['lease_id'] == lease_id]
+            retained = name == 'export'
+            purpose, state = ('export', 'active') if retained else ('reader', 'released')
+            ttl = number(pin['requested_ttl_us'])
+            require(ttl == 30_000_000 if retained else ttl <= 5_000_000, 'actual bounded per-consumer pin request')
+            same(pin, dict(lease_id=lease_id, dataset_id=dataset, consumer_id=catalog,
+                frontier_revision=frontier, issuer_role='control', issuer_resource=owner['resource_id'],
+                issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'],
+                purpose=purpose, requested_ttl_us=ttl, export_job_id=job_id if retained else None),
+                'closed reader/export pin attribution')
+            acquired, expires = number(lease['acquired_at_us']), number(lease['expires_at_us'])
+            require(owner['acquired_at_us'] <= acquired < expires <= owner['lease_expires_at_us']
+                    and expires - acquired <= ttl, 'nonrenewed Control-clamped pin expiry')
+            released_at = None if retained else number(lease['released_at_us'])
+            updated = number(lease['updated_at_us'])
+            require(updated == acquired if retained else acquired <= updated <= released_at,
+                    'nonrenewed lease update/release clock order')
+            same(lease, dict(lease_id=lease_id, dataset_id=dataset, consumer_id=catalog,
+                frontier_revision=frontier, topology_generation=topology, holder_kind='role_instance',
+                holder_role_instance_id=owner['role_instance_id'], holder_role='control',
+                holder_incarnation=owner['process_incarnation'], holder_job_id=None,
+                acquired_at_us=acquired, updated_at_us=updated,
+                expires_at_us=expires, archive_pin_protocol=1, lease_revision=1 if retained else 2,
+                state=state, released_at_us=released_at, release_reason=None if retained else 'reader_joined'),
+                'closed retained/released lease')
+            require(sorted((row['shard_id'], row['owner_epoch'], row['first_sequence'], row['last_sequence'])
+                           for row in claims) == sorted((s, e, 1, last) for s, e, last in bound_values if last > 0),
+                    'all exact source retention claims')
+            for claim in claims:
+                ident(claim['claim_id'].removeprefix(BX))
+                same(claim, dict(claim_id=claim['claim_id'], lease_id=lease_id, dataset_id=dataset,
+                    topology_generation=topology, shard_id=claim['shard_id'], owner_epoch=claim['owner_epoch'],
+                    first_sequence=1, last_sequence=claim['last_sequence'], purpose=purpose, state=state,
+                    created_at_us=number(claim['created_at_us']),
+                    released_at_us=None if retained else number(claim['released_at_us']),
+                    release_reason=None if retained else 'reader_joined'), 'closed exact retention claim')
+                require(acquired <= claim['created_at_us'] < expires
+                        and (retained or claim['created_at_us'] <= claim['released_at_us'] <= released_at),
+                        'claim lifetime inside its original pin')
+            require(all(row['xmin'] == lease['xmin'] for row in claims), 'atomic claim/lease lifecycle')
+            if retained:
+                require(created <= acquired < unit['reserved_at_us'], 'export retention created during acceptance')
+                acceptance_rows += [pin, lease, *claims]
+            else:
+                require(acquired <= (created if name == 'allocation' else completed) < expires
+                        and (created if name == 'allocation' else completed) <= released_at <= owner['released_at_us'],
+                        'reader live through its consumer then released')
+                require(pin['xmin'] != lease['xmin'], 'reader release is a separate transaction')
+            pin_rows.append((pin, lease))
+        require({row['xmin'] for row in acceptance_rows} == {detail['xmin']},
+                'one atomic acceptance with exact input and export retention')
+        transaction_ids = [detail['xmin'], unit['xmin'], job['xmin'], owner['xmin'],
+                           pin_rows[0][0]['xmin'], pin_rows[0][1]['xmin'],
+                           pin_rows[2][0]['xmin'], pin_rows[2][1]['xmin']]
+        require(len(set(transaction_ids)) == len(transaction_ids), 'distinct acceptance/reservation/read/completion/release commits')
+        results.append(dict(job=job_id[2:], artifact=artifact_id, **files))
+    require(seen_pins == {row['lease_id'] for row in added['archive_snapshot_pins']},
+            'no unexplained pin obligations')
+    return dict(status='PASS_INSTALLED_FIVE_SQL_AND_SIGNED_FILES', jobs=results, tables=75,
+        accepted_export_memory_bytes=268435456, released_reader_pins=10, retained_export_pins=5,
+        scope='SQL/xmin and independent complete signed files only; caller owns physical/process/backend/memory qualification')
