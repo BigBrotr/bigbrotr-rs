@@ -1,7 +1,8 @@
 //! Sequential original-request replay shared by explicit recovery and succession.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::ProducerResolveRequest, rocks::store::SourceResolution,
+    postgres::control_owner::ProducerResolveRequest,
+    rocks::store::{RecoveryAcknowledgementResolution, ResolvedProducerRequest, SourceResolution},
 };
 use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
 
@@ -9,6 +10,22 @@ use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
 pub(in crate::interfaces::serve::initial_ingest) enum Mode {
     Resolve,
     InspectRetirement,
+}
+
+/// The same positive replay feeds either source closure or ACK-only completion.
+/// No counter supplied by the caller can replace either opaque accumulator.
+pub(in crate::interfaces::serve::initial_ingest) enum Prefix<'a, 'native> {
+    Source(&'a mut SourceResolution<'native>),
+    Acknowledgement(&'a mut RecoveryAcknowledgementResolution<'native>),
+}
+impl Prefix<'_, '_> {
+    fn record(&mut self, original: &ResolvedProducerRequest) -> Result<()> {
+        match self {
+            Self::Source(prefix) => prefix.record(original),
+            Self::Acknowledgement(prefix) => prefix.record(original),
+        }
+        .map_err(|e| (4, e.to_string()))
+    }
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -21,7 +38,7 @@ pub(in crate::interfaces::serve::initial_ingest) async fn originals(
     recovery: &IngestRecovery,
     spec: &InitialRegistration,
     reserved: u64,
-    mut prefix: Option<&mut SourceResolution<'_>>,
+    mut prefix: Option<Prefix<'_, '_>>,
     mode: Mode,
     mut validate: impl FnMut(&str, [u8; 32]) -> std::result::Result<(), OwnerError>,
 ) -> Result<u64> {
@@ -77,7 +94,7 @@ pub(in crate::interfaces::serve::initial_ingest) async fn originals(
         })
         .await?;
         if let Some(prefix) = &mut prefix {
-            prefix.record(&result).map_err(|e| (4, e.to_string()))?;
+            prefix.record(&result)?;
         }
         drop(result);
         resolved += 1;

@@ -208,7 +208,7 @@ async fn own(
         candidate.recovery(),
         &spec,
         reserved,
-        Some(&mut prefix),
+        Some(recovery::replay::Prefix::Source(&mut prefix)),
         recovery::replay::Mode::InspectRetirement,
         validate,
     )

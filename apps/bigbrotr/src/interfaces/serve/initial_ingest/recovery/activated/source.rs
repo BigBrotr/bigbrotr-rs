@@ -47,41 +47,59 @@ pub(super) async fn resolve(
     let mut prefix = closed
         .source_resolution(native)
         .map_err(|e| (4, e.to_string()))?;
-    for sequence in 1..=closed.reserved_through() {
-        phase(progress, timeout)?;
-        bounded(timeout, cancellation, async {
-            owner.refresh(validate).await.map_err(owner_error)
-        })
-        .await?;
-        let (input, outcome) = replay_grants(budget)?;
-        phase(progress, timeout)?;
-        let result = bounded(timeout, cancellation, async {
-            owner
-                .resolve_activated_initial_source_request(
-                    native,
-                    &closed,
-                    ActivatedInitialResolveRequest {
-                        ingest_root: path,
-                        request: ProducerRequestId {
-                            producer_slot_id: closed.producer_slot_id(),
-                            producer_epoch: ProducerEpoch::new(2).expect("activated producer"),
-                            request_sequence: RequestSequence::new(sequence)
-                                .expect("nonzero sequence"),
-                        },
-                        limits: limits(),
-                        policy_ttl: duration(root, "authorization_ttl"),
-                        cancelled: &cancellation.requested,
+    for (epoch, through) in [
+        (1, closed.predecessor_issued_through()),
+        (2, closed.reserved_through()),
+    ] {
+        for sequence in 1..=through {
+            phase(progress, timeout)?;
+            bounded(timeout, cancellation, async {
+                owner.refresh(validate).await.map_err(owner_error)
+            })
+            .await?;
+            let (input, outcome) = replay_grants(budget)?;
+            phase(progress, timeout)?;
+            let original = bounded(timeout, cancellation, async {
+                let input_request = ActivatedInitialResolveRequest {
+                    ingest_root: path,
+                    request: ProducerRequestId {
+                        producer_slot_id: closed.producer_slot_id(),
+                        producer_epoch: ProducerEpoch::new(epoch).expect("retained producer epoch"),
+                        request_sequence: RequestSequence::new(sequence).expect("nonzero sequence"),
                     },
-                    input,
-                    outcome,
-                    validate,
-                )
-                .await
-                .map_err(|e| (4, e.to_string()))
-        })
-        .await?;
-        prefix.record(&result).map_err(|e| (4, e.to_string()))?;
-        drop(result);
+                    limits: limits(),
+                    policy_ttl: duration(root, "authorization_ttl"),
+                    cancelled: &cancellation.requested,
+                };
+                let result = if epoch == 1 {
+                    owner
+                        .resolve_activated_initial_source_predecessor_request(
+                            native,
+                            &closed,
+                            input_request,
+                            input,
+                            outcome,
+                            validate,
+                        )
+                        .await
+                } else {
+                    owner
+                        .resolve_activated_initial_source_request(
+                            native,
+                            &closed,
+                            input_request,
+                            input,
+                            outcome,
+                            validate,
+                        )
+                        .await
+                };
+                result.map_err(|e| (4, e.to_string()))
+            })
+            .await?;
+            prefix.record(&original).map_err(|e| (4, e.to_string()))?;
+            drop(original);
+        }
     }
     let source = prefix.finish().map_err(|e| (4, e.to_string()))?;
     phase(progress, timeout)?;
@@ -140,5 +158,10 @@ pub(super) async fn resolve(
             "jobs":abandoned.to_string(), "reason":"activated_initial_producer_abandoned",
             "coverage":"unknown"});
     }
+    let replay = source
+        .into_recovery_acknowledgement()
+        .map_err(|e| (4, e.to_string()))?;
+    drop(closed);
+    acknowledge(root, budget, progress, cancellation, owner, native, replay).await?;
     Ok(report)
 }

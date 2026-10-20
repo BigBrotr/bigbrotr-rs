@@ -38,7 +38,7 @@ use std::time::Duration;
 
 // TLS, scope, source, visibility, observation, dictionary preparation, batch,
 // three retained frames, two session items, WebSocket, Direct, DNS and one
-// effect input and progress transaction. These grants do not all overlap.
+// effect input and progress transaction/ACK. These grants do not all overlap.
 // Control, retained producer inputs and native memory have separate base slots.
 pub(super) const ITEMS: u64 = 17;
 pub(super) const INTERVAL: Duration = Duration::from_millis(250);
@@ -88,7 +88,8 @@ pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
                     data,
                     ITEMS,
                     event.required_native_bytes().map_err(error)?
-                        + dictionaries.required_native_bytes().map_err(error)?,
+                        + dictionaries.required_native_bytes().map_err(error)?
+                        + ProgressGrant::REQUIRED_NATIVE_BYTES,
                 )
                 .map_err(error)?,
             )
@@ -465,7 +466,7 @@ impl Sync {
                         ProgressGrant::new(grant(
                             work.budget,
                             ProgressGrant::REQUIRED_DATA_BYTES,
-                            0,
+                            ProgressGrant::REQUIRED_NATIVE_BYTES,
                         )?)
                         .map_err(error)?,
                     )
@@ -507,9 +508,9 @@ impl Sync {
             if !needs_admission {
                 continue;
             }
-            if self.next_request > u64::from(work.writer.limit(work.context)?) {
-                // No ACK or slot retirement is implied by copying receipts.
-                // This owner can keep serving/certifying without new mutations.
+            if !work.writer.can_reserve(work.context, self.next_request)? {
+                // A PG checkpoint alone returns no slot. Certification remains
+                // available when native credit or retained history is full.
                 return Ok(());
             }
             let event = work.trace.run(

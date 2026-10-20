@@ -8,7 +8,7 @@ impl Work<'_> {
         metadata: OwnedPermit,
         observation: OwnedPermit,
     ) -> Result<Value> {
-        let native = custody.native.as_ref().expect("exclusive native owner");
+        let native = custody.native.as_mut().expect("exclusive native owner");
         let owner = custody.owner.as_mut().expect("claimed Control");
         custody.retirement = Some(
             self.operation(owner.inspect_activated_successor_retirement(
@@ -81,6 +81,9 @@ impl Work<'_> {
             verified: proof.verified_through(),
             last: proof.last_epoch(),
         };
+        let replay = proof
+            .recovery_acknowledgement(&self.cancellation.requested)
+            .map_err(error)?;
         self.refresh(owner).await?;
         let gaps = self
             .operation(owner.retire_activated_successor_producer(
@@ -90,9 +93,19 @@ impl Work<'_> {
                 |d, h| self.validate(d, h),
             ))
             .await?;
+        let receipt = acknowledge(
+            self.root,
+            self.budget,
+            self.progress,
+            self.cancellation,
+            owner,
+            native,
+            replay,
+        )
+        .await?;
         let mut report = completed.report(native, Mode::Retire);
         report["ingest_retirement"] = json!({"allocation_domains":"9","acquisition_gaps":gaps.to_string(),
-            "owner_release":"committed","native_acknowledged":"0","native_retired":"0"});
+            "owner_release":"committed","native_acknowledged":receipt.acknowledged_through().to_string(),"native_retired":"0"});
         Ok(report)
     }
 }

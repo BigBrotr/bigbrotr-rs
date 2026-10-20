@@ -24,13 +24,17 @@ pub(super) struct SetupGrants {
 }
 impl SetupGrants {
     /// Reserve before registration/native setup. Both serial dictionary effects
-    /// retain the same progress grant through their Control completion.
+    /// retain the same progress grant through Control completion and native ACK.
     pub(super) fn reserve(budget: &ResourceBudget) -> Result<Self> {
         Ok(Self {
             bootstrap: grant(budget, 8 * MIB, 4 * MIB)?,
             private_scope: reserve_private(budget)?,
-            progress: ProgressGrant::new(grant(budget, ProgressGrant::REQUIRED_DATA_BYTES, 0)?)
-                .map_err(|e| (3, e.to_string()))?,
+            progress: ProgressGrant::new(grant(
+                budget,
+                ProgressGrant::REQUIRED_DATA_BYTES,
+                ProgressGrant::REQUIRED_NATIVE_BYTES,
+            )?)
+            .map_err(|e| (3, e.to_string()))?,
         })
     }
 }

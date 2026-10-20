@@ -2,12 +2,15 @@
 use super::*;
 use bigbrotr::storage::{
     postgres::{
-        control_owner::{ProducerCloseRequest, ProducerResolveRequest},
+        control_owner::{
+            InitialHistoryRequest, ProducerAcknowledgementReceipt, ProducerCloseRequest,
+            ProducerResolveRequest,
+        },
         ingest_registry,
     },
     rocks::store::{
         AdmissionLimits, BootstrapLimits, IngestRecovery, ProducerRecoveryLimits,
-        RetainedRequestInput,
+        RecoveryAcknowledgement, RetainedRequestInput,
     },
 };
 use bigbrotr_model::{
@@ -73,6 +76,45 @@ pub(super) fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, Own
         .required_data_bytes()
         .map_err(|e| (3, e.to_string()))?;
     Ok((grant(budget, input, 0)?, grant(budget, outcome, 0)?))
+}
+
+/// Finish only an opaque complete-original replay, after any SQL-only terminal
+/// operation has released its native proof borrow. Older schemas observe A=0.
+pub(super) async fn acknowledge(
+    root: &Resolved,
+    budget: &ResourceBudget,
+    progress: &watch::Sender<Progress>,
+    cancellation: &Cancellation,
+    owner: &mut ControlSession,
+    recovery: &mut IngestRecovery,
+    replay: RecoveryAcknowledgement,
+) -> Result<ProducerAcknowledgementReceipt> {
+    let timeout = duration(root, "renewal_timeout");
+    let validate =
+        |document: &str, digest| super::super::accepted_policy(root, document, digest).map(|_| ());
+    phase(progress, timeout)?;
+    bounded(timeout, cancellation, async {
+        owner.refresh(validate).await.map_err(owner_error)
+    })
+    .await?;
+    phase(progress, timeout)?;
+    bounded(timeout, cancellation, async {
+        owner
+            .acknowledge_recovered_producer(
+                recovery,
+                replay,
+                InitialHistoryRequest {
+                    ingest_root: Path::new(required(root, "storage.ingest_root")?),
+                    policy_ttl: duration(root, "authorization_ttl"),
+                    cancelled: &cancellation.requested,
+                },
+                grant(budget, 4096, 4096)?,
+                validate,
+            )
+            .await
+            .map_err(|e| (4, e.to_string()))
+    })
+    .await
 }
 
 pub(in crate::interfaces::serve) fn run(
@@ -167,6 +209,7 @@ async fn own(
         empty::preflight(&budget)?;
     } else {
         drop(replay_grants(&budget)?);
+        drop(grant(&budget, 4096, 4096)?);
     }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
@@ -273,6 +316,7 @@ async fn connected(
     .await?;
     let issued = closed.issued_through();
     let reserved = closed.reserved_through();
+    let mut ack_prefix = None;
     let mut prefix = if action != Action::Resolve {
         if issued != reserved {
             return Err((4, "source closure has unresolved reserved requests".into()));
@@ -283,7 +327,17 @@ async fn connected(
                 .map_err(|e| (4, e.to_string()))?,
         )
     } else {
-        drop(closed);
+        if issued == reserved {
+            ack_prefix = Some(
+                closed
+                    .acknowledgement_resolution(recovery)
+                    .map_err(|e| (4, e.to_string()))?,
+            );
+        } else {
+            // Keep positive replay of retained originals before refusing an
+            // unresolved reserved tail. It cannot mint ACK completion.
+            drop(closed);
+        }
         None
     };
     let resolved = replay::originals(
@@ -295,7 +349,10 @@ async fn connected(
         recovery,
         &spec,
         reserved,
-        prefix.as_mut(),
+        prefix
+            .as_mut()
+            .map(replay::Prefix::Source)
+            .or_else(|| ack_prefix.as_mut().map(replay::Prefix::Acknowledgement)),
         if action == Action::RetireInitial {
             replay::Mode::InspectRetirement
         } else {
@@ -304,6 +361,9 @@ async fn connected(
         validate,
     )
     .await?;
+    let mut acknowledgement = ack_prefix
+        .map(|prefix| prefix.finish().map_err(|e| (4, e.to_string())))
+        .transpose()?;
     let mut report = json!({"format":"bigbrotr-ingest-recovery/1",
         "state":"positive-outcomes-resolved", "dataset_id":spec.dataset_id,
         "owner_resource_id":spec.ingest_resource_id, "producer_slot_id":spec.producer_slot_id,
@@ -391,6 +451,27 @@ async fn connected(
         });
         report["source_closure"] = json!({"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":bigbrotr_model::Digest256::from_bytes(source.digest())});
+        acknowledgement = Some(
+            source
+                .into_recovery_acknowledgement()
+                .map_err(|e| (4, e.to_string()))?,
+        );
+    }
+    if let Some(replay) = acknowledgement {
+        let receipt = acknowledge(
+            root,
+            budget,
+            progress,
+            cancellation,
+            &mut owner,
+            recovery,
+            replay,
+        )
+        .await?;
+        if action == Action::RetireInitial {
+            report["ingest_retirement"]["native_acknowledged"] =
+                json!(receipt.acknowledged_through().to_string());
+        }
     }
     Ok((owner, report))
 }

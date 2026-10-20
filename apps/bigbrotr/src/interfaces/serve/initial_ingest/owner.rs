@@ -18,8 +18,7 @@ pub(super) enum Profile {
 impl Profile {
     pub(super) fn minimum(self, sync: bool) -> u64 {
         match (self, sync) {
-            (Self::Initial, false) | (Self::Successor, true) => 2,
-            (Self::Initial, true) => 4,
+            (Self::Initial, _) | (Self::Successor, true) => 2,
             (Self::Successor, false) => 1,
         }
     }
@@ -110,6 +109,27 @@ impl NativeOwner {
             Self::Successor(writer) => Ok(writer.outstanding_request_limit()),
             Self::Candidate(_) => Err((4, "candidate has no dispatch window".into())),
         }
+    }
+    /// Scheduling uses the exclusive owner's observed native ACK. The actual
+    /// reservation and write still repeat their authority and window checks.
+    pub(super) fn can_reserve(&self, context: RuntimeContext<'_>, next: u64) -> Result<bool> {
+        context.require(self).map_err(owner_error)?;
+        let credit = match self {
+            Self::Initial(store) => {
+                store.producer_credit(context.initial().map_err(owner_error)?.producer_slot_id)
+            }
+            Self::Live(writer) => writer.producer_credit(),
+            Self::Successor(writer) => writer.producer_credit(),
+            Self::Candidate(_) => return Err((4, "candidate has no producer credit".into())),
+        }
+        .map_err(|e| (4, format!("native producer credit unavailable: {e:?}")))?;
+        if credit.issued_through().checked_add(1) != Some(next) {
+            return Err((4, "producer dispatch sequence mismatch".into()));
+        }
+        Ok(
+            next <= bigbrotr::storage::rocks::store::RETAINED_PRODUCER_REQUEST_LIMIT
+                && credit.outstanding_requests() < u64::from(self.limit(context)?),
+        )
     }
     pub(super) fn slot(&self, context: RuntimeContext<'_>) -> Result<ProducerSlotId> {
         context.require(self).map_err(owner_error)?;

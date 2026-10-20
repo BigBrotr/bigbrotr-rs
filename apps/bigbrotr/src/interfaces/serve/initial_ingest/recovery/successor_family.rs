@@ -138,6 +138,9 @@ async fn own(
     let closing = grant(&budget, mutation_bytes, mutation_bytes)?;
     drop(replay_grants(&budget)?);
     drop(effect_grant(&budget)?);
+    if mode != Mode::RetireEmpty {
+        drop(grant(&budget, 4096, 4096)?);
+    }
     if matches!(mode, Mode::AbandonAcquisition | Mode::Retire) {
         drop(grant(&budget, FINAL_JOB_BYTES, 0)?);
     }
@@ -346,14 +349,27 @@ impl Work<'_> {
         proof
             .validate(&self.cancellation.requested)
             .map_err(error)?;
-        Ok(Completed {
+        let completed = Completed {
             slot: recovered.producer_slot_id(),
             issued: recovered.issued_through(),
             reserved: recovered.reserved_through(),
             verified: proof.verified_through(),
             last: proof.last_epoch(),
-        }
-        .report(native, Mode::Resolve))
+        };
+        let replay = proof
+            .into_recovery_acknowledgement(&self.cancellation.requested)
+            .map_err(error)?;
+        acknowledge(
+            self.root,
+            self.budget,
+            self.progress,
+            self.cancellation,
+            owner,
+            native,
+            replay,
+        )
+        .await?;
+        Ok(completed.report(native, Mode::Resolve))
     }
 }
 

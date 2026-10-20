@@ -23,11 +23,14 @@ use bigbrotr_protocol::archive_cut::{CutBound, CutRead};
 use std::time::Duration;
 
 // One pending input, reader input, catalog connection, native TLS and cut result,
-// plus up to one compact retained input per outstanding initial producer request.
+// plus one compact retained input per retained initial producer request.
 pub(super) const ITEMS: u64 = 5;
 const RECORDS: usize = 64;
 const ENCODED: usize = 1024 * 1024;
 const OPERATION: Duration = Duration::from_secs(30);
+const RETAINED_BATCHES: usize =
+    bigbrotr::storage::rocks::store::RETAINED_PRODUCER_REQUEST_LIMIT as usize;
+const _: () = assert!(RETAINED_BATCHES <= bigbrotr_protocol::archive_cut::MAX_BATCHES);
 
 pub(super) struct Archive {
     pub(super) coordinator: LocalCoordinator,
@@ -202,8 +205,8 @@ impl Archive {
         let last = end
             .checked_add(1)
             .ok_or_else(|| error("source sequence exhausted"))?;
-        if self.inputs.len() >= state.initial_registration()?.outstanding_request_limit as usize {
-            return Err(error("initial complete-batch window exhausted"));
+        if self.inputs.len() >= RETAINED_BATCHES {
+            return Err(error("initial retained complete-batch limit exhausted"));
         }
         self.inputs.try_reserve(1).map_err(error)?;
         let deadline = Instant::now() + OPERATION;
@@ -429,8 +432,6 @@ pub(super) fn validate(root: &Resolved) -> std::result::Result<(Duration, u64), 
         || bytes < 512 * MIB
         || root.number("archive.prepare_workers") == 0
         || delay.is_zero()
-        || root.number("ingest.producer_outstanding_requests")
-            > bigbrotr_protocol::archive_cut::MAX_BATCHES as u64
     {
         return Err(OwnerError::InvalidPolicy);
     }
@@ -441,19 +442,16 @@ pub(super) fn validate(root: &Resolved) -> std::result::Result<(Duration, u64), 
 mod tests {
     use super::*;
     #[test]
-    fn selected_initial_window_cannot_outlive_the_complete_cut_protocol() {
+    fn active_request_window_does_not_define_archive_retention() {
         let mut root = crate::config::load(Path::new(concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../../config/recipes/archive-only.toml"
         )))
         .unwrap();
-        for count in [32, 65, 128] {
+        for count in [2, 32, 65, 128, 129] {
             root.values
                 .insert("ingest.producer_outstanding_requests".into(), json!(count));
             assert!(validate(&root).is_ok(), "{count}");
         }
-        root.values
-            .insert("ingest.producer_outstanding_requests".into(), json!(129));
-        assert!(matches!(validate(&root), Err(OwnerError::InvalidPolicy)));
     }
 }

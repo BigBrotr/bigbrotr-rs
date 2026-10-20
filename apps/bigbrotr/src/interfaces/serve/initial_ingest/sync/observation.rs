@@ -144,14 +144,17 @@ impl Dispatch<'_> {
         if let Some(existing) = existing {
             return Ok(Some(existing));
         }
-        if *next_request > u64::from(self.writer.limit(self.context)?) {
+        if !self.writer.can_reserve(self.context, *next_request)? {
             // This new descriptor set needs a mutation slot. A full initial
             // window defers it without ending HTTP, renewal or existing reads.
             return Ok(None);
         }
-        let checkpoint =
-            ProgressGrant::new(grant(self.budget, ProgressGrant::REQUIRED_DATA_BYTES, 0)?)
-                .map_err(error)?;
+        let checkpoint = ProgressGrant::new(grant(
+            self.budget,
+            ProgressGrant::REQUIRED_DATA_BYTES,
+            ProgressGrant::REQUIRED_NATIVE_BYTES,
+        )?)
+        .map_err(error)?;
         let ttl = self.remaining()?;
         let appended = self
             .trace

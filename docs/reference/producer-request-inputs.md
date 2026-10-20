@@ -662,9 +662,12 @@ of the retained epoch3 typed state, plus missing-closure and foreign-issuer
 refusals on separate privileged corruption copies. All77 tables/xmins, native
 bytes and inputs match independent expectations; 60 corrupted-capture controls
 and raw replay binding856 files pass. First recovery changes only the explicit
-closing state and Control lifecycle; retry adds no native write. Actual initial
-and activated-epoch2 Sync/recovery, active-Control recovery after COMMIT loss and
-remaining refusal/resource cases still require qualification.
+closing state and Control lifecycle; retry adds no native write. Activated epoch2
+Sync and raw replay pass at9653725. Initial7239's complete capture passes the
+corrected50316df raw reader; its original failed verifier result remains retained.
+Fixture ecedbcaf adds both real proof-only COMMIT-loss outcomes and their fresh
+active-Control recovery/retry, with82 controls. Other recovery, refusal and
+resource scenarios remain required; all of these results retain ACK0.
 
 `CapturedEventInput` decodes the actual retained correlated EVENT, checks the
 accepted collection and actual REQ filters, and derives observation from that
@@ -767,3 +770,57 @@ No delete/truncate grant is required. Existing privileges on the unchanged
 Control/acquisition authority helpers and replaced historical validators remain
 necessary. The migrator owns trigger installation; application SQL does not
 disable those guards or seed checkpoint authority.
+
+### Native ACK and returned credit (under implementation)
+
+The next P02-T02 increment connects confirmed mutation checkpoints to the existing
+native acknowledged watermark. Its source and qualification remain in progress;
+the earlier ACK0 results above do not qualify this change. The owning
+[recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+records exact tested revisions and outstanding gates.
+
+Additive migration `0040_producer_ack.sql` separates the absolute retained limit
+from the coordination window: the next reservation is at most validated typed
+C plus the registered window, and never exceeds64. An absent or opaque legacy
+head contributes zero. SQL still does not observe or manufacture native credit;
+the live owner independently requires native A. The replaced historical validators
+retain their lifecycle and closure checks while allowing retained request counts
+above the active window. No earlier migration or retained record is rewritten.
+
+The connected mutation and dictionary operations retain their progress grant
+through confirmed PostgreSQL delivery and synchronized native ACK. The grant
+reserves 2 MiB data plus 4096 native bytes before effects. Only the private connected
+operation can authorize ACK; a decoded head or caller-supplied sequence cannot.
+The ACK batch preserves issued, closing, retired and all original request,
+receipt, input and scientific data. It advances acknowledged only when the
+validated contiguous mutation cut is greater. Uncertain completion ends usable
+ownership and requires positive recovery of the original state.
+
+Proof-only certification sends no ACK, including when a previously confirmed
+mutation cut is ahead of native acknowledged. It may advance classified progress
+while the mutation window is full without changing native sequence or detail.
+An ordinary successful mutation operation returns only after its own ACK is
+positively observed; the PostgreSQL cut alone never returns producer credit.
+
+Installed Sync uses that owner's native issued/acknowledged observation for
+scheduling. Its next request must still be exactly issued+1. Initial setup
+acknowledges the two dictionary requests before a two-slot Sync lifetime can
+continue. The active window is separate from the retained64-request/32MiB
+profile: ACK reclaims nothing. Initial Archive likewise bounds retained complete
+batches independently of the active request window, within its existing complete
+cut protocol and resource grants.
+
+Restart must validate the typed checkpoint, complete retained dependencies and
+original inputs/outcomes before accepting nonzero ACK or completing a cut ahead
+of it. Missing or inconsistent history refuses; a larger head cannot excuse a
+mixed restore cut. Recovery must preserve exact native sequence and proof
+ownership across any ACK write. Authenticated schemas before40 retain their
+original recovery behavior with A=0 and no native ACK; schema39 typed closure is
+still validated. Nonzero A cannot be accepted through a pre40 schema.
+Activated epoch2 recovery replays the exact epoch1 originals before its own;
+whole-lineage successors retain their ordered original replay. Preparing a new
+lifetime may preserve a verified closed ancestor with A<C: it supplies no live
+credit, and preparation neither rewrites that watermark nor re-stamps its proof.
+Empty, unactivated targets still require zero issued/acknowledged/retired state. Neither this increment nor its eventual
+two-slot demonstration qualifies GC, indefinite traffic, workflow completion or
+backup/restore.

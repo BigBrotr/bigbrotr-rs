@@ -10,7 +10,7 @@ pub(super) async fn resolve(
     metadata: OwnedPermit,
     closing: OwnedPermit,
 ) -> Result<Value> {
-    let native = custody.native.as_ref().expect("exclusive native owner");
+    let native = custody.native.as_mut().expect("exclusive native owner");
     let owner = custody.owner.as_mut().expect("claimed Control");
     let identity = *native.manifest().identity();
     let timeout = duration(root, "renewal_timeout");
@@ -42,41 +42,59 @@ pub(super) async fn resolve(
     let mut prefix = closed
         .source_resolution(native)
         .map_err(|e| (4, e.to_string()))?;
-    for sequence in 1..=closed.reserved_through() {
-        phase(progress, timeout)?;
-        bounded(timeout, cancellation, async {
-            owner.refresh(validate).await.map_err(owner_error)
-        })
-        .await?;
-        let (input, outcome) = replay_grants(budget)?;
-        phase(progress, timeout)?;
-        let resolved = bounded(timeout, cancellation, async {
-            owner
-                .inspect_activated_initial_retirement_request(
-                    native,
-                    &closed,
-                    ActivatedInitialResolveRequest {
-                        ingest_root: path,
-                        request: ProducerRequestId {
-                            producer_slot_id: closed.producer_slot_id(),
-                            producer_epoch: ProducerEpoch::new(2).expect("activated producer"),
-                            request_sequence: RequestSequence::new(sequence)
-                                .expect("nonzero sequence"),
-                        },
-                        limits: limits(),
-                        policy_ttl: duration(root, "authorization_ttl"),
-                        cancelled: &cancellation.requested,
+    for (epoch, through) in [
+        (1, closed.predecessor_issued_through()),
+        (2, closed.reserved_through()),
+    ] {
+        for sequence in 1..=through {
+            phase(progress, timeout)?;
+            bounded(timeout, cancellation, async {
+                owner.refresh(validate).await.map_err(owner_error)
+            })
+            .await?;
+            let (input, outcome) = replay_grants(budget)?;
+            phase(progress, timeout)?;
+            let original = bounded(timeout, cancellation, async {
+                let input_request = ActivatedInitialResolveRequest {
+                    ingest_root: path,
+                    request: ProducerRequestId {
+                        producer_slot_id: closed.producer_slot_id(),
+                        producer_epoch: ProducerEpoch::new(epoch).expect("retained producer epoch"),
+                        request_sequence: RequestSequence::new(sequence).expect("nonzero sequence"),
                     },
-                    input,
-                    outcome,
-                    validate,
-                )
-                .await
-                .map_err(|e| (4, e.to_string()))
-        })
-        .await?;
-        prefix.record(&resolved).map_err(|e| (4, e.to_string()))?;
-        drop(resolved);
+                    limits: limits(),
+                    policy_ttl: duration(root, "authorization_ttl"),
+                    cancelled: &cancellation.requested,
+                };
+                let result = if epoch == 1 {
+                    owner
+                        .inspect_activated_initial_retirement_predecessor_request(
+                            native,
+                            &closed,
+                            input_request,
+                            input,
+                            outcome,
+                            validate,
+                        )
+                        .await
+                } else {
+                    owner
+                        .inspect_activated_initial_retirement_request(
+                            native,
+                            &closed,
+                            input_request,
+                            input,
+                            outcome,
+                            validate,
+                        )
+                        .await
+                };
+                result.map_err(|e| (4, e.to_string()))
+            })
+            .await?;
+            prefix.record(&original).map_err(|e| (4, e.to_string()))?;
+            drop(original);
+        }
     }
     let source = prefix.finish().map_err(|e| (4, e.to_string()))?;
     phase(progress, timeout)?;
@@ -101,7 +119,7 @@ pub(super) async fn resolve(
     // The checked retirement context requires the exact nine-domain identity.
     // The enclosing owner closes native/releases Control; its supervisor joins
     // the transport before publishing this successful report.
-    Ok(json!({"format":"bigbrotr-ingest-recovery/1",
+    let mut report = json!({"format":"bigbrotr-ingest-recovery/1",
         "state":"activated-initial-retired", "dataset_id":identity.dataset_id,
         "owner_resource_id":identity.owner_resource_id,
         "producer_slot_id":closed.producer_slot_id(), "producer_epoch":"2",
@@ -112,5 +130,13 @@ pub(super) async fn resolve(
             "sha256":Digest256::from_bytes(source.digest())},
         "ingest_retirement":{"allocation_domains":"9", "acquisition_gaps":gaps.to_string(),
             "owner_release":"committed", "native_acknowledged":"0", "native_retired":"0"},
-        "native":"closed", "owner_release":"committed", "ready":false}))
+        "native":"closed", "owner_release":"committed", "ready":false});
+    let replay = source
+        .into_recovery_acknowledgement()
+        .map_err(|e| (4, e.to_string()))?;
+    drop(closed);
+    let receipt = acknowledge(root, budget, progress, cancellation, owner, native, replay).await?;
+    report["ingest_retirement"]["native_acknowledged"] =
+        json!(receipt.acknowledged_through().to_string());
+    Ok(report)
 }

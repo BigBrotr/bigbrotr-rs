@@ -82,6 +82,9 @@ impl Work<'_> {
             verified: proof.verified_through(),
             last: proof.last_epoch(),
         };
+        let replay = proof
+            .recovery_acknowledgement(&self.cancellation.requested)
+            .map_err(error)?;
         self.refresh(owner).await?;
         let jobs = if mode == Mode::AbandonAcquisition {
             Some(
@@ -102,6 +105,16 @@ impl Work<'_> {
             .await?;
             None
         };
+        acknowledge(
+            self.root,
+            self.budget,
+            self.progress,
+            self.cancellation,
+            owner,
+            native,
+            replay,
+        )
+        .await?;
         // Only a known final Result constructs the report. The spent owner and
         // its grants remain in Custody through native close and Control release.
         let mut report = completed.report(native, mode);
