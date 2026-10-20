@@ -271,3 +271,12 @@ It starts from reviewed370cf and preserves prior modes/defaults. AST/diff checks
 are source-only; compilation, helper execution, engines, acceptance and measurement
 remain NOT_RUN. Root owns artifact qualification, complete worker/cgroup custody,
 integration and the subsequent runtime decision. No task or memory gate closes.
+Original292b3c9 and its manifest003dcf53 remain preserved. Independent review
+7d0caba9 found that the initial publisher must omit both destination fields.
+The bounded source correction stages and validates three immutable profiles:
+the original destination-bearing recipe for initialization, destination-free
+initial publisher, and destination-bearing ordinary reader for real grants.
+Each actual file consumer is hash-bound; the follow-up authenticates every profile.
+Accepted-policy authority, production guards and the strict physical census
+before either native observer remain unchanged. Correction review and all runtime
+qualification remain pending with root.

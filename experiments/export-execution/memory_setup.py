@@ -78,7 +78,8 @@ def read_spec(path):
     for key, directory in [('ingest_root', 'store'), ('archive_root', 'data'),
                            ('archive_state_root', 'state'), ('scratch_root', 'scratch')]:
         require(config['storage'][key] == str(root / directory), 'same fresh physical root: ' + key)
-    require(config['export']['destination']['root'] == str(root / 'destination'), 'fresh destination')
+    require(set(config['export']['destination']) == {'id', 'root'}
+            and config['export']['destination']['root'] == str(root / 'destination'), 'fresh paired destination')
     for name in ('control', 'catalog'):
         entry = config['postgres'][name]
         require(entry['endpoint'] == '127.0.0.1:5432' and entry['tls']['mode'] == 'local-plaintext'
@@ -104,6 +105,36 @@ def read_spec(path):
     return spec, config
 
 
+def stage_profiles(io):
+    """Freeze deployment selections; both destination fields are policy-excluded roots."""
+    original = pinned(io.spec['config'])
+    text = original.decode()
+    publisher, count = re.subn(r'(?ms)^\[export\.destination\][ \t]*(?:#[^\n]*)?\n.*?(?=^\[|\Z)', '', text)
+    require(count == 1, 'one explicit paired destination section in the supplied recipe')
+    expected = tomllib.loads(text)
+    del expected['export']['destination']
+    selected = tomllib.loads(publisher)
+    if not expected['export'] and 'export' not in selected:
+        del expected['export']
+    require(selected == expected, 'publisher differs only by omitting both destination fields')
+    bodies = dict(destination=original, publisher=publisher.encode(),
+                  ordinary=set_value(text, 'archive.reader', 'enabled', True).encode())
+    for name, raw in bodies.items():
+        path = io.root / (name + '.toml')
+        with path.open('xb') as stream:
+            stream.write(raw)
+        path.chmod(0o400)
+        io.profiles[name] = dict(path=str(path), bytes=len(raw), sha256=sha(raw))
+    write(io.root / 'profiles.json', io.profiles)
+    reports = {name: io.cli('validate-' + name, 'config', 'validate', '--file', pin['path'])
+               for name, pin in io.profiles.items()}
+    for name, report in reports.items():
+        require(report['status'] == 'valid-static' and report['document_sha256'] == io.profiles[name]['sha256']
+                and report['initial_policy'] == reports['destination']['initial_policy'],
+                'each actual profile validates with the same accepted-policy candidate')
+    write(io.root / 'profile-validation.json', reports)
+
+
 def initialize(io, config_path):
     """Real migration/initialization/enrollment; SQL is operator privileges only."""
     config, spec = io.config, io.spec
@@ -116,7 +147,6 @@ def initialize(io, config_path):
             'real parent/worker build binding')
     verification = io.cli('verify-worker', 'archive', 'verify-worker', '--root', spec['worker']['root'])
     require(verification['result'] == 'verified', 'real full native bundle verification')
-    io.cli('config-validate', 'config', 'validate', '--file', config_path)
     io.cli('migrate', 'migrate', 'apply', '--file', config_path, '--user', spec['migrator']['user'],
            '--password-ref', spec['migrator']['password_ref'])
     application = config['postgres']['control']['user']
@@ -186,7 +216,8 @@ def immutable(root):
     return {name: census(root / name) for name in ('store', 'data', 'state', 'destination')}
 
 
-def prepare(io, config_path):
+def prepare(io):
+    config_path = Path(io.profiles['destination']['path'])
     before = initialize(io, config_path)
     principal = one(before['control']['local_accounts'])['principal_id'][2:]
     body = signed_event(io.spec['recipe']['path'])
@@ -195,7 +226,7 @@ def prepare(io, config_path):
     peer = Peer(io.root, body)
     publisher = None
     try:
-        publisher, initialized = start_serve(io, config_path, True)
+        publisher, initialized = start_serve(io, Path(io.profiles['publisher']['path']), True)
         client = Client(io, 'acquisition', principal)
         dataset = one(before['control']['datasets'])
         revisions = dict(expected_config_revision=str(dataset['config_revision']),
@@ -229,6 +260,7 @@ def prepare(io, config_path):
     write(io.root / 'publisher-scratch.json', census(io.root / 'scratch'))
     native = json.loads(io.run('native-dump', [io.spec['ingest_probe']['path'], 'dump', str(io.root / 'store')]))
     io.backends('native-dump', absent=True)
+    io.bind_profile('scientific-census', config_path)
     readback = json.loads(io.run('scientific-census', [sys.executable, '-B',
         str(SOURCE / 'experiments/ingest-bootstrap/installed_archive_read.py'), str(config_path),
         str(io.root / 'census-scratch'), '--large-signed-row', '--worker-root', io.spec['worker']['root']]))
@@ -236,10 +268,8 @@ def prepare(io, config_path):
     require(io.capture('publication-readback') == published, 'read-only native census preserved whole SQL/catalog')
     require(immutable(io.root) == fixed, 'native observers preserved original physical science')
     selection = publication(io, before, published, initialized, native, readback, peer.transcript(), receipts)
-    # This is the existing static reader-selection path. Accepted initial policy
-    # documents stay byte-for-byte unchanged; no live policy row is rewritten.
-    ordinary = io.root / 'ordinary.toml'
-    ordinary.write_text(set_value(config_path.read_text(), 'archive.reader', 'enabled', True))
+    # Select the previously frozen ordinary profile; no live file or policy edit.
+    ordinary = Path(io.profiles['ordinary']['path'])
     child, _ = start_serve(io, ordinary, False)
     grants_client = Client(io, 'grants', principal)
     allocation = dict(catalog_id=selection['catalog'], frontier_revision=str(selection['frontier_revision']))
@@ -276,9 +306,11 @@ def prepare(io, config_path):
         username=io.spec['username'], password_ref=io.spec['password_ref'],
         command_key=io.spec['keys']['accept-export'], command=command)
     write(io.root / 'accept.json', case)
+    for pin in io.profiles.values():
+        pinned(pin)
     write(io.root / 'prepared.json', dict(status='PREPARED_FOR_ROOT_ACCEPTANCE', principal=principal,
         acceptance_runtime='NOT_RUN', measurement_runtime='NOT_RUN', selection=selection, files=fixed,
-        config_file_sha256=sha(config_path.read_bytes()), ordinary_config_sha256=sha(ordinary.read_bytes())))
+        profiles=io.profiles))
     return case, selection, after, fixed
 
 
@@ -291,12 +323,11 @@ def run(spec, config):
     root.mkdir(mode=0o700)
     for name in ('data', 'state', 'scratch', 'destination'):
         (root / name).mkdir(mode=0o700)
-    config_path = root / 'initial.toml'
-    config_path.write_bytes(pinned(spec['config']))
     write(root / 'input.json', spec)
     io = IO(root, spec, config)
     try:
-        case, selection, after, fixed = prepare(io, config_path)
+        stage_profiles(io)
+        case, selection, after, fixed = prepare(io)
         # Deliberate boundary: the finite accept-only process and fresh measurement
         # cgroup are root-owned follow-ups. No accepted job is guessed here.
         write(root / 'result.json', dict(status='PREPARED_FOR_ROOT_ACCEPTANCE',

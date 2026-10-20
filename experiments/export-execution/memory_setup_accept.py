@@ -32,10 +32,16 @@ def run(root, group):
     case_path = root / 'accept.json'
     require(sha(regular(case_path, 65536)) == setup_result['accept_sha256'], 'exact prepared acceptance descriptor')
     case = json.loads(case_path.read_text())
-    config = tomllib.loads((root / 'initial.toml').read_text())
-    require(sha((root / 'initial.toml').read_bytes()) == prepared['config_file_sha256']
-            and sha((root / 'ordinary.toml').read_bytes()) == prepared['ordinary_config_sha256'],
-            'original explicit configuration inputs')
+    profiles = prepared['profiles']
+    require(set(profiles) == {'destination', 'publisher', 'ordinary'}
+            and profiles == json.loads(regular(root / 'profiles.json')), 'exact prepared profile inventory')
+    for name, pin in profiles.items():
+        require(pin['path'] == str(root / (name + '.toml'))
+                and Path(pin['path']).stat().st_mode & 0o777 == 0o400, 'original frozen profile paths')
+        pinned(pin)
+    destination = pinned(profiles['destination'])
+    require(destination == pinned(spec['config']), 'destination profile is the original supplied recipe')
+    config = tomllib.loads(destination.decode())
     output = root / 'accept-run'
     output.mkdir(mode=0o700)
     io = IO(output, spec, config)

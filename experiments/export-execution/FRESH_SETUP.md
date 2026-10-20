@@ -20,6 +20,24 @@ There is no SQL authority seed or `session_replication_role` bypass. Every
 principal grant comes from enrollment; each visibility grant uses real HTTP
 reauthentication and the scope-grant consumer.
 
+Before initialization, the fixture exclusively creates three mode-0400 TOML
+profiles and records their sizes and SHA256 hashes in `profiles.json`:
+
+| Profile | Actual consumers | Selection |
+|---|---|---|
+| `destination.toml` | Migration, configuration/authority initialization, enrollment, Archive/state/coordinator/destination initialization and scientific census | Exact supplied recipe, including both destination fields; reader disabled |
+| `publisher.toml` | Initial `serve --initialize-ingest` | Omits both `export.destination.id` and `export.destination.root`; all other parsed values equal the supplied recipe |
+| `ordinary.toml` | Ordinary Control for the three authenticated grants | Supplied destination-bearing recipe with `archive.reader.enabled=true` |
+
+All three files undergo real `config validate` before initialization. Their
+reported document hashes must match the frozen files, and their complete
+`initial_policy` candidate reports must agree. These deployment-root selections
+are excluded from persisted policy; real initialization and activation still
+establish authority. Every `--file` call checks its profile's bytes and read-only
+mode immediately before launching and retains `<call>.profile.json`; the
+positional scientific-census call does the same. No live configuration is edited.
+The acceptance follow-up reauthenticates all three pins and the original recipe.
+
 The initial Serve owns actual Sync/Ingest/Archive publication of the frozen
 94,577-byte signed event. Its relay supplies a narrowly selected callback:
 the existing handshake, masked REQ/CLOSE checks, three-second socket and small
@@ -70,7 +88,7 @@ and oracle there. This packet makes no memory, five-export or 256 MiB claim.
 | `root` | Canonical absolute nonexistent root under an existing owned parent |
 | `application_source` | Actual 40-character source revision from the passed application's clean `build-info` |
 | `application`, `probe`, `ingest_probe`, `psql` | Each `{path,bytes,sha256}` naming the actual executable; the probes include this fixture's required modes |
-| `config` | `{path,bytes,sha256}` for the explicit root-prepared TOML recipe |
+| `config` | `{path,bytes,sha256}` for the explicit root-prepared destination-bearing TOML recipe, with a separate `[export.destination]` section containing exactly `id` and `root` |
 | `recipe` | `{path,bytes,sha256}` for the frozen `archive-event-response.json`; SHA256 `815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963` |
 | `worker` | `{root,bytes,sha256}` for the unchanged qualified worker executable; root must be the application's adjacent `archive-worker` directory, which ordinary Serve actually selects |
 | `inventory`, `source_manifest` | Each `{path,bytes,sha256}` for root's authenticated environment/build/source evidence; pinning the receipt alone does not validate its contents |
@@ -98,8 +116,8 @@ Both PostgreSQL connections use the explicitly isolated loopback
 `127.0.0.1:5432`, local-plaintext/loopback TLS boundary, distinct new database
 names, narrow application/manager roles and a SELECT-only reader. The reader
 password is the existing census's 64-character lowercase hexadecimal profile.
-The only later TOML edit selects the existing static ordinary-reader path;
-accepted configuration/policy documents stay unchanged.
+The three profiles above are frozen before initialization; selecting the existing
+ordinary-reader path later does not edit any file or accepted policy document.
 
 ## Root prerequisites and retained limits
 

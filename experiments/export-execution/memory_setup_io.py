@@ -163,6 +163,7 @@ class IO:
     def __init__(self, root, spec, config):
         self.root, self.spec, self.config = Path(root), spec, config
         self.deadline, self.children, self.serial = time.monotonic() + 120, [], 0
+        self.profiles = {}
 
     def remaining(self):
         return self.deadline - time.monotonic()
@@ -178,7 +179,19 @@ class IO:
 
     def start(self, label, args, **kwargs):
         require(self.remaining() > 0, 'finite fresh setup deadline')
+        args = list(map(str, args))
+        if '--file' in args:
+            require(args.count('--file') == 1, 'one explicit command profile')
+            self.bind_profile(label, args[args.index('--file') + 1])
         return Child(self, label, args, **kwargs)
+
+    def bind_profile(self, label, path):
+        selected = [(name, pin) for name, pin in self.profiles.items() if pin['path'] == str(path)]
+        require(len(selected) == 1, 'command uses an explicitly staged profile')
+        name, pin = selected[0]
+        pinned(pin)
+        require(Path(path).stat().st_mode & 0o777 == 0o400, 'frozen read-only command profile')
+        write(self.root / (label + '.profile.json'), dict(name=name, **pin))
 
     def run(self, label, args, seconds=30, **kwargs):
         return self.start(label, args, **kwargs).join(seconds)
