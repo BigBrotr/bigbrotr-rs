@@ -10,10 +10,10 @@ restart. Current product d4e1b85 implements typed PG progress with ACK0, retaini
 all requests/receipts/inputs and granting no new credit. Qualified build, three
 successor Sync contexts and historical epoch3 recovery/refusals remain reusable.
 
-Main parented6a87bb383ea845a52b17065eb39394434f4f0f integrates qualified
-COMMIT-loss fixture ecedbcaf and was pushed/verified equal to remote. This merge
-integrates reviewed context source50316df exactly; product code is unchanged.
-Root-owned report/inventory/checkpoint changes record qualification and integration.
+Main2b00569f64abdea095e0f9f7380df756b4ca7829 integrates qualified COMMIT-loss
+fixture ecedbcaf and context source50316df; pushed/verified equal to remote.
+Product code is unchanged. This checkpoint/inventory commit records retirement
+of the two redundant branch refs and the next isolated source increment.
 Original worktrees and ignored artifacts remain.
 
 The [owning recovery report](evidence/p02-producer-recovery-native-20260920.json),
@@ -30,22 +30,29 @@ assertion. Corrected50316df independently reviewed reader passed full retained
 raw binding (4,156 files) and38 controls. Its first read rejected implicit system
 sitecustomize; unchanged reader passed with Python -S. All failures are preserved.
 Exact50316df source remains in `.research/producer-progress-contexts-20261020`,
-branch `work/producer-progress-contexts`, now integrated by this merge.
+now detached at its original commit after integration.
 
 COMMIT-loss ecedbcaf passed six real loss/recover/retry processes,82 controls and
 raw binding of2,310 files. Both ambiguous errors remain exact; recovery closes
 native once and retry writes0. Shared-verifier regression passed original three
 positive contexts/63 controls. The initial ca77 frame-cap failure remains FAIL.
 All drivers joined. Exact owned clients/borrowed PG were last observed exited,
-PID0/noOOM/cgroups absent; inventory owns custody. Authors/reviewer finished;
-no engine/build active. No cleanup or worktree removal.
+PID0/noOOM/cgroups absent; inventory owns custody. No engine/build active.
+No cleanup or worktree removal.
+
+New source-only ACK worktrees start from2b00569 under `.research/`:
+`producer-ack-storage-20261020` (export_setup_fixture: storage/model/recovery),
+`producer-ack-sync-20261020` (root: installed consumer/CLI), and
+`producer-ack-fixture-20261020` (export_setup_review: existing-harness qualification).
+`producer_recovery_review` owns critical review. Q37 configurations retain their
+previously verified Astra/xhigh continuity; inventory owns exact branch paths.
 
 ## Next action and open limits
 
-Push this coherent merge and retire only the two redundant integrated branch refs;
-preserve their exact original worktrees and all evidence. Then resume the accepted
-checkpoint→ACK design, reconciling closing/recovery/frontier consumers before
-introducing nonzero ACK. Existing P02-T02 Steps4/5/7 and the report own the gates.
+Agree the private confirmed-checkpoint→native-ACK caller boundary, implement the
+installed consumer and reconcile closing/recovery/frontier consumers before
+integrating nonzero ACK. Reuse the accepted design and existing harnesses.
+Existing P02-T02 Steps4/5/7 and the report own all qualification gates.
 
 ACK/credit/GC, preparation-hole and further recovery/refusal/resource gates remain
 open in the report. Job checkpoint0 and retained historical values do not imply

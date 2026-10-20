@@ -61099,10 +61099,11 @@
         {
           "owner": "export_setup_review",
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020",
-          "branch": "work/producer-progress-contexts",
+          "branch": null,
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Qualified reviewed503 context source integrated by current merge; original exact worktree and evidence retained. Await branch-ref retirement after push.",
-          "head": "50316df971d460b8f1123e2255d646bba9be29ed"
+          "state": "Integrated/qualified source retained at exact detached clean commit; ignored author receipts unchanged; redundant branch ref retired",
+          "head": "50316df971d460b8f1123e2255d646bba9be29ed",
+          "retired_branch": "work/producer-progress-contexts"
         },
         {
           "owner": "producer_recovery_review",
@@ -61129,10 +61130,11 @@
         {
           "owner": "export_setup_fixture",
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-commit-loss-20261020",
-          "branch": "work/producer-progress-commit-loss",
+          "branch": null,
           "base": "45cedcf3d5d4f0bbed650e7bcefdb0b12b5b43e3",
-          "state": "Qualified eced source integrated and pushed in ed6a87bb383ea845a52b17065eb39394434f4f0f; original exact worktree/evidence retained. Await branch-ref retirement.",
-          "head": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f"
+          "state": "Integrated/qualified source retained at exact detached clean commit; ignored author receipts unchanged; redundant branch ref retired",
+          "head": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f",
+          "retired_branch": "work/producer-progress-commit-loss"
         }
       ],
       "branch_retirement_20261020": {
@@ -61348,7 +61350,43 @@
           "free_bytes_after": 302041321472,
           "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_commit_loss_runs"
         }
-      ]
+      ],
+      "context_fault_branch_retirement_20261020": {
+        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/context-fault-branch-retirement-v1.json",
+        "sha256": "668ffb36c79e877bfdeb94ceb725af0e50aacb5dfde07c532122c03bcc1f1c13",
+        "integrated_main": "2b00569f64abdea095e0f9f7380df756b4ca7829",
+        "state": "Both redundant local refs retired after verified main push; exact original worktrees detached; all ignored receipts hash-equal; no remote source refs or data deletion"
+      },
+      "ack_source_work": [
+        {
+          "owner": "export_setup_fixture",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-ack-storage-20261020",
+          "branch": "work/producer-ack-storage",
+          "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
+          "scope": "Native/PG/model ACK plus all storage recovery/closing/frontier consumers",
+          "state": "Isolated source-only work; no runtime/build started"
+        },
+        {
+          "owner": "root",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-ack-sync-20261020",
+          "branch": "work/producer-ack-sync",
+          "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
+          "scope": "Installed Sync credit/setup/ACK consumer and recovery CLI",
+          "state": "Isolated source-only work; no runtime/build started"
+        },
+        {
+          "owner": "export_setup_review",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-ack-fixture-20261020",
+          "branch": "work/producer-ack-fixture",
+          "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
+          "scope": "Independent existing-harness ACK qualification",
+          "state": "Isolated source-only work; no runtime/build started"
+        }
+      ],
+      "ack_critical_review": {
+        "owner": "producer_recovery_review",
+        "state": "Source-only critical review; previously verified Astra/xhigh continuity"
+      }
     }
   },
   "tux_intermediate_retirement_20261018": {
