@@ -2,6 +2,7 @@
 pub mod import;
 pub mod job;
 pub mod observation;
+pub mod preparation;
 pub mod receive_clock;
 pub mod relay_source;
 pub mod scope;

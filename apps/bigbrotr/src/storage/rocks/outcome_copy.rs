@@ -5,7 +5,8 @@ use sha2::{Digest, Sha256};
 
 pub(in crate::storage) const MAX_OUTCOME_BYTES: usize = 64 * 1024;
 // Retained bytes plus parameter/driver staging. Native engine memory is separate.
-pub(super) const HANDOFF_DATA_BYTES: usize = 4 * MAX_OUTCOME_BYTES;
+pub(super) const HANDOFF_DATA_BYTES: usize =
+    4 * MAX_OUTCOME_BYTES + std::mem::size_of::<NativeOutcomeCopy>();
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(i16)]
@@ -26,6 +27,8 @@ pub(in crate::storage) struct NativeOutcomeCopy {
     kind: NativeOutcomeKind,
     manifest_sha256: [u8; 32],
     bytes: Vec<u8>,
+    checkpoint: Option<super::producer_checkpoint::CheckpointStamp>,
+    captured: Option<crate::acquisition::preparation::CapturedBinding>,
 }
 impl NativeOutcomeCopy {
     pub(super) fn receipt(
@@ -44,6 +47,8 @@ impl NativeOutcomeCopy {
             },
             manifest_sha256: Sha256::digest(manifest.encode().as_bytes()).into(),
             bytes: receipt.encode_persistent(MAX_OUTCOME_BYTES)?,
+            checkpoint: None,
+            captured: None,
         })
     }
     pub(super) fn rejection(
@@ -61,7 +66,23 @@ impl NativeOutcomeCopy {
             kind: NativeOutcomeKind::Rejected,
             manifest_sha256: Sha256::digest(manifest.encode().as_bytes()).into(),
             bytes,
+            checkpoint: None,
+            captured: None,
         }
+    }
+    pub(super) fn bind_checkpoint(
+        &mut self,
+        stamp: super::producer_checkpoint::CheckpointStamp,
+        captured: Option<crate::acquisition::preparation::CapturedBinding>,
+    ) {
+        self.checkpoint = Some(stamp);
+        self.captured = captured;
+    }
+    pub(super) fn checkpoint(&self) -> Option<super::producer_checkpoint::CheckpointStamp> {
+        self.checkpoint
+    }
+    pub(super) fn captured(&self) -> Option<crate::acquisition::preparation::CapturedBinding> {
+        self.captured
     }
     pub(in crate::storage) fn request(&self) -> ProducerRequestId {
         self.request

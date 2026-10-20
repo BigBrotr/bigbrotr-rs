@@ -76,6 +76,10 @@ pub use certification::{
     CertificationLimits, CertificationOutcome, PreparedCertification, StoredCertification,
 };
 
+#[path = "producer_checkpoint.rs"]
+mod producer_checkpoint;
+pub(in crate::storage) use producer_checkpoint::{CheckpointKind, NativeCheckpointBasis};
+
 #[path = "visibility.rs"]
 mod visibility;
 pub use visibility::StoredVisibility;

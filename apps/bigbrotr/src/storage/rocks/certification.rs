@@ -2,6 +2,7 @@
 use super::admission::{
     ReadBudget, input_allowance, input_capacity, matching_payload, verify_event,
 };
+use super::producer_checkpoint::{CertificationCheckpoint, CheckpointStamp};
 use super::{AdmissionError, AdmissionLimits, IngestStore, RejectionReason};
 use crate::{runtime::OwnedPermit, storage::rocks::keys::IngestKey};
 use bigbrotr_model::*;
@@ -16,6 +17,7 @@ pub struct PreparedCertification {
     event: Result<VerifiedEvent, RejectionReason>,
     allocation_bytes: usize,
     verification_limit_bytes: usize,
+    captured: Option<crate::acquisition::preparation::CapturedBinding>,
     _permit: OwnedPermit,
 }
 impl PreparedCertification {
@@ -39,8 +41,26 @@ impl PreparedCertification {
             event,
             allocation_bytes,
             verification_limit_bytes: max_event_bytes,
+            captured: None,
             _permit: permit,
         })
+    }
+    pub fn from_captured(
+        input: crate::acquisition::preparation::CapturedEventInput,
+        max_event_bytes: usize,
+    ) -> Result<Self, AdmissionError> {
+        let (intent, binding, permit) = input.into_parts();
+        let mut prepared = Self::new(intent, max_event_bytes, permit)?;
+        if prepared.digest != binding.certification_digest {
+            return Err(AdmissionError::InvalidInput);
+        }
+        prepared.captured = Some(binding);
+        Ok(prepared)
+    }
+    pub(in crate::storage) fn captured(
+        &self,
+    ) -> Option<crate::acquisition::preparation::CapturedBinding> {
+        self.captured
     }
     pub fn intent_digest(&self) -> Digest256 {
         self.digest
@@ -95,7 +115,7 @@ impl CertificationLimits {
         Ok((8 * self.max_fact_bytes
             + self.max_dependencies * (size_of::<FactRef>() + size_of::<QualifiedRef>())
             + 4 * size_of::<Fact>()
-            + size_of::<ExistingProof>()) as u64)
+            + size_of::<StoredCertification>()) as u64)
     }
 }
 
@@ -107,11 +127,15 @@ pub enum CertificationOutcome {
 }
 pub struct StoredCertification {
     outcome: CertificationOutcome,
+    checkpoint: Option<CertificationCheckpoint>,
     _permit: OwnedPermit,
 }
 impl StoredCertification {
     pub fn outcome(&self) -> &CertificationOutcome {
         &self.outcome
+    }
+    pub(super) fn checkpoint(&self) -> Option<CertificationCheckpoint> {
+        self.checkpoint
     }
 }
 
@@ -125,6 +149,29 @@ impl IngestStore {
         provenance: bool,
         limits: CertificationLimits,
         permit: OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredCertification, AdmissionError> {
+        self.certify_event_in(input, provenance, limits, permit, false, authority)
+    }
+
+    pub(in crate::storage) fn certify_checkpoint_event(
+        &mut self,
+        input: PreparedCertification,
+        provenance: bool,
+        limits: CertificationLimits,
+        permit: OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredCertification, AdmissionError> {
+        self.certify_event_in(input, provenance, limits, permit, true, authority)
+    }
+
+    fn certify_event_in(
+        &mut self,
+        input: PreparedCertification,
+        provenance: bool,
+        limits: CertificationLimits,
+        permit: OwnedPermit,
+        checkpoint: bool,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredCertification, AdmissionError> {
         if permit.request().units().data_bytes() < limits.required_data_bytes()?
@@ -154,8 +201,21 @@ impl IngestStore {
             Ok(event) => self.existing_event_effects(&input, event, limits)?,
         };
         authority()?;
+        let checkpoint = if checkpoint {
+            Some(CertificationCheckpoint {
+                stamp: CheckpointStamp::capture(self)?,
+                intent: input.digest,
+                captured: input.captured,
+            })
+        } else {
+            None
+        };
+        if checkpoint.is_some() {
+            authority()?;
+        }
         Ok(StoredCertification {
             outcome,
+            checkpoint,
             _permit: permit,
         })
     }

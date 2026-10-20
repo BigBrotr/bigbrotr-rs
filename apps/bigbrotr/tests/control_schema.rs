@@ -14,6 +14,7 @@ fn initial_preparation_retirement_activation_and_recovery_are_distinct_additive_
         (35, 36, "0036_activated_acquisition_abandonment.sql"),
         (36, 37, "0037_activated_initial_retirement.sql"),
         (37, 38, "0038_repeatable_ingest_succession.sql"),
+        (38, 39, "0039_producer_progress.sql"),
     ] {
         let applied: Vec<_> = plan(&[], previous)
             .unwrap()
@@ -908,4 +909,30 @@ fn job_admission_order_requires_an_additive_upgrade_preserving_existing_jobs() {
         Err(MigrationError::MissingPrerequisite(815))
     );
     assert!(migrations::require_applied(&applied, 813).is_ok());
+}
+
+#[test]
+fn typed_producer_progress_preserves_old_floors_but_never_ignores_a_changed_head_protocol() {
+    let mut applied: Vec<_> = plan(&[], 39)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    for floor in [2, 14, 23, 28, 29, 33, 37, 38, 39] {
+        assert!(migrations::require_applied(&applied, floor).is_ok());
+    }
+    assert!(plan(&applied, 39).unwrap().pending.is_empty());
+    applied.last_mut().unwrap().checksum[0] ^= 1;
+    assert_eq!(
+        migrations::require_applied(&applied, 23),
+        Err(MigrationError::ChecksumMismatch(39))
+    );
 }

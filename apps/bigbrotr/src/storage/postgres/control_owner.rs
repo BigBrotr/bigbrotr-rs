@@ -104,6 +104,9 @@ pub use initial_activation::LiveInitialWriter;
 mod history_authority;
 #[path = "initial_batch.rs"]
 mod initial_batch;
+#[path = "producer_progress.rs"]
+pub(super) mod producer_progress;
+pub use producer_progress::{ProducerProgressError, ProgressGrant, SyncProgress};
 #[path = "initial_empty.rs"]
 mod initial_empty;
 #[path = "initial_gap.rs"]

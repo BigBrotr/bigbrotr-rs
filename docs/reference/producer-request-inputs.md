@@ -639,3 +639,111 @@ retirement function unchanged. Complete 70-table/native effects and original see
 preservation pass. These are explicitly synthetic incompatible relational inputs,
 not qualification of genuine import admission or logical closure. No full M1 or
 whole-task completion is claimed.
+
+## Typed local classified progress (0039, source candidate)
+
+P02-T02 Steps4/5/7 add a cumulative producer head consumed by the actual initial,
+activated and successor Sync dispatch. This first increment keeps native ACK and
+retired watermarks zero and retains every input/outcome. It grants no window
+credit, completes no acquisition job and claims no remote resume cursor, EOSE
+coverage or backup qualification. `jobs.checkpoint_revision` stays zero; explicit
+whole-intent abandonment still records uncertainty and preserves scientific facts.
+Compilation and real-engine qualification of this candidate remain required.
+
+`CapturedEventInput` decodes the actual retained correlated EVENT, checks the
+accepted collection and actual REQ filters, and derives observation from that
+frame's receive sample and validated source/attribution. Its private binding
+carries raw JSON SHA256, actual 48-byte REQ ID, wire sequence, job/scope/source and
+full semantic certification digest, including rejected-signature inputs. Generic
+`PreparedEvent::new` and `PreparedCertification::new` remain usable by earlier
+consumers but cannot authorize this progress. Neither a structural ExistingProof
+nor a PG outcome copy can mint the native witness. The opted-in native operation
+stamps its actual result with the retained root device/inode, native sequence and
+manifest, rechecked before progress COMMIT. Equal receipts from another root do
+not acquire this authority.
+
+`acquisition_progress` retains one current local prefix per producer/job, not one
+row per delivery. Ordinals 1..3 count retained correlated EVENTs in one actual
+REQ; a different REQ starts at ordinal1. Parse/size/membership preparation holes
+stop progress for the remainder of that REQ while preserving ordinary admission
+of later valid events. If those admissions leave the typed cut behind reserved
+mutations, a later progress call refuses rather than silently backfilling them.
+This conservative first-slice limitation needs explicit recovery; it is not live
+continuity or completion of the ACK gate. Native rejection is a classified
+failure, distinct from an unclassified preparation hole.
+
+Classifications 2/3/4 are actual native NewFacts/AlreadyDurable/Rejected, and
+5/6 are ExistingProof/certification rejection. Each new classified position
+advances the job's progress revision and classified count; 2/3/5 advance success,
+4/6 advance rejection. Exact retained-position replay preserves the original
+revision. Dictionary setup advances only the producer cut, without inventing a
+job or frame. Proof-only progress advances revisions with the mutation cut
+unchanged. `producer_checkpoint_dependencies` retains the complete deduplicated
+FactRef union. No dependency is removed or replaced by an unproven maximum cut.
+
+The producer digest is SHA256 of ASCII `bigbrotr/producer-progress/1` plus NUL,
+dataset16, slot16, producer epoch BE64, manifest SHA256, checkpoint revision BE64,
+complete-through mutation BE64, job count BE64 and dependency count BE64, followed
+by job records sorted by job ID bytes and dependencies sorted by full source ID.
+Each job record is exactly216 bytes: job16, scope16, revision BE64, REQ48, ordinal
+BE16, wire sequence BE64, raw SHA256, intent digest32, classification BE16,
+mutation request BE64 (zero for proof/rejection certification), classified,
+successful and rejected counts (each BE64), actual received time signed BE64,
+clock resolution BE64 and anomaly flags BE32. The Sync clock has no uncertainty
+estimate; observer/clock/witness identities come from validated attribution.
+Retaining actual time/quality permits independent intent reconstruction without
+echoing the stored digest. Each dependency is dataset16, shard BE64 (u32 domain),
+source epoch BE64, source sequence BE64 and payload digest32: exactly72 bytes.
+SQL's canonical encoder and Rust's fixed-width encoder must match independent
+goldens. Physical row metadata and checkpoint commit timestamps are not digested.
+
+The mutable head has nullable format/context/count/issuer extensions; all are
+NULL for historical opaque heads. No migration adopts or rewrites an old head
+as typed progress. No-head legacy history remains readable through old recovery;
+the new dispatch refuses to synthesize completed setup from old reservations.
+Historical retirement validators accept only a structurally valid typed head and
+retain all existing workflow/import/gap checks and unactivated-target vetoes.
+They also reconstruct the head's historical Control issuer from its exact
+dataset/resource/epoch/incarnation, retained Control role instance and immutable
+backend fence metadata. This nonlocking historical read requires neither the
+old live backend/lease nor an unretired role instance; write-time authority still
+uses the current fenced Control owner.
+Native recovery separately revalidates its complete retained dependency closure;
+SQL checksum equality is not a native presence or authority proof. Unknown COMMIT
+keeps the session unavailable and requires inspection under actual recovery
+custody; it never authorizes a new request identity.
+
+This finite first slice allows64 job heads and16,384 exact dependencies per
+producer. The latter is an explicit selected profile (64×256), not a consequence
+that proof-only traffic has at most64 deliveries. Logical charges are1024 bytes
+for the head,1024 per current job and256 per reference: each covers its fixed
+payload, keys and conservative row metadata, not PostgreSQL physical pages or
+RSS. These charges share the existing32MiB cap with **all historical** retained
+input bytes plus64KiB completion allowance per request. Exhaustion refuses before
+new dispatch; freeing an active slot does not reclaim retained state. The existing
+absolute64 request/recovery envelope remains and does not satisfy indefinite live
+traffic or the two-slot ACK acceptance on its own.
+
+A separate2MiB operation grant owns the typed union and current heads:
+16,384 `FactRef` values,64 `JobHead` values,128KiB bounded SQL/parameter scratch and
+fixed bookkeeping; a compile-time size inequality checks this representation.
+Rows stream with excess-count and fixed-width sentinels before vector insertion.
+Native decoding/result handoff and the Control connection/driver retain their
+own grants; the latter survives cancellation and driver drain. The SQL canonical
+aggregate is bounded separately to64×216+16,384×72 bytes before hashing and is
+server work, not charged as Rust allocation. Native handoff headers and the
+larger certification result are included in their derived existing allowances.
+No measured process/resource bound follows from these reservations.
+
+The Control login retains its existing migration0038 privileges and additionally
+needs `SELECT, INSERT, UPDATE` on `control.producer_checkpoints` and
+`control.acquisition_progress`, and `SELECT, INSERT` on
+`control.producer_checkpoint_dependencies`. It needs `EXECUTE` on
+`control.acquisition_progress_bytes(control.acquisition_progress)`,
+`control.producer_progress_digest(control.producer_checkpoints)`,
+`control.require_producer_progress_capacity(bytea,numeric,bigint,integer,integer)`
+and `control.require_retained_producer_progress(bytea,numeric)`.
+No delete/truncate grant is required. Existing privileges on the unchanged
+Control/acquisition authority helpers and replaced historical validators remain
+necessary. The migrator owns trigger installation; application SQL does not
+disable those guards or seed checkpoint authority.

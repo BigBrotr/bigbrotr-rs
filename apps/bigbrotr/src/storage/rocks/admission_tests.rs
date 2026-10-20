@@ -1343,3 +1343,6 @@ mod initial_reconstruction_tests;
 
 #[path = "observation_tests.rs"]
 mod observation_tests;
+
+#[path = "producer_checkpoint_tests.rs"]
+mod producer_checkpoint_tests;

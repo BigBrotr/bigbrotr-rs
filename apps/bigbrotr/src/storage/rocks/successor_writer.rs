@@ -97,6 +97,108 @@ const _: () = assert!(
         < crate::storage::rocks::succession::LINEAGE_SCRATCH_BYTES as usize
 );
 impl ActiveSuccessorWriter {
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit checkpoint operation grant, cancellation and authority"
+    )]
+    pub(in crate::storage) fn admit_checkpoint_event(
+        &mut self,
+        input: PreparedEvent,
+        recorded_at: ObservedTime,
+        provenance: bool,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredOutcome, AdmissionError> {
+        let result = self.store.admit_checkpoint_event(
+            input,
+            recorded_at,
+            provenance,
+            limits,
+            permit,
+            Some(cancelled),
+            authority,
+        );
+        let validation = self.validate(cancelled);
+        let result = result?;
+        validation?;
+        Ok(result)
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit checkpoint operation grant, cancellation and authority"
+    )]
+    pub(in crate::storage) fn append_checkpoint_dictionaries(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredReceipt, AdmissionError> {
+        let result = self.store.append_checkpoint_dictionaries(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            Some(cancelled),
+            authority,
+        );
+        let validation = self.validate(cancelled);
+        let result = result?;
+        validation?;
+        Ok(result)
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit checkpoint read grant, cancellation and authority"
+    )]
+    pub(in crate::storage) fn certify_checkpoint_event(
+        &mut self,
+        input: PreparedCertification,
+        provenance: bool,
+        limits: CertificationLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredCertification, AdmissionError> {
+        self.validate(cancelled)?;
+        let result = self
+            .store
+            .certify_checkpoint_event(input, provenance, limits, permit, authority);
+        let validation = self.validate(cancelled);
+        let result = result?;
+        validation?;
+        Ok(result)
+    }
+    pub(in crate::storage) fn checkpoint_certification<'a>(
+        &self,
+        result: &'a StoredCertification,
+    ) -> Result<Option<super::NativeCheckpointBasis<'a>>, AdmissionError> {
+        self.store.checkpoint_certification(result)
+    }
+    pub(in crate::storage) fn checkpoint_event<'a>(
+        &self,
+        result: &'a StoredOutcome,
+    ) -> Result<super::NativeCheckpointBasis<'a>, AdmissionError> {
+        self.store.checkpoint_event(result)
+    }
+    pub(in crate::storage) fn checkpoint_evidence<'a>(
+        &self,
+        result: &'a StoredReceipt,
+    ) -> Result<super::NativeCheckpointBasis<'a>, AdmissionError> {
+        self.store.checkpoint_evidence(result)
+    }
+    pub(in crate::storage) fn require_checkpoint_basis(
+        &self,
+        basis: &super::NativeCheckpointBasis<'_>,
+    ) -> Result<(), AdmissionError> {
+        self.store.require_checkpoint_basis(basis)
+    }
     pub fn manifest(&self) -> &IngestManifest {
         self.store.manifest()
     }

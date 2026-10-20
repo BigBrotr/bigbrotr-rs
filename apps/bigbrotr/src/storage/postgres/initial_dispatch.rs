@@ -64,9 +64,28 @@ impl NativeOwner<'_> {
         request: ProducerRequestId,
         input: &LiveInitialDictionaryAppendRequest<'_>,
         permit: OwnedPermit,
+        checkpoint: bool,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredReceipt, AdmissionError> {
         match self {
+            Self::Store(s) if checkpoint => s.append_checkpoint_dictionaries(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+                None,
+                authority,
+            ),
+            Self::Successor(s) if checkpoint => s.append_checkpoint_dictionaries(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+                input.cancelled,
+                authority,
+            ),
             Self::Store(s) => s.append_dictionaries(
                 request,
                 input.intent,
@@ -90,9 +109,28 @@ impl NativeOwner<'_> {
         &mut self,
         input: LiveInitialEventRequest<'_>,
         permit: OwnedPermit,
+        checkpoint: bool,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredOutcome, AdmissionError> {
         match self {
+            Self::Store(s) if checkpoint => s.admit_checkpoint_event(
+                input.event,
+                input.recorded_at,
+                input.provenance_enabled,
+                input.limits,
+                permit,
+                None,
+                authority,
+            ),
+            Self::Successor(s) if checkpoint => s.admit_checkpoint_event(
+                input.event,
+                input.recorded_at,
+                input.provenance_enabled,
+                input.limits,
+                permit,
+                input.cancelled,
+                authority,
+            ),
             Self::Store(s) => s.admit_event(
                 input.event,
                 input.recorded_at,
@@ -116,9 +154,25 @@ impl NativeOwner<'_> {
         &mut self,
         input: LiveInitialCertificationRequest<'_>,
         permit: OwnedPermit,
+        checkpoint: bool,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredCertification, AdmissionError> {
         match self {
+            Self::Store(s) if checkpoint => s.certify_checkpoint_event(
+                input.event,
+                input.provenance_enabled,
+                input.limits,
+                permit,
+                authority,
+            ),
+            Self::Successor(s) if checkpoint => s.certify_checkpoint_event(
+                input.event,
+                input.provenance_enabled,
+                input.limits,
+                permit,
+                input.cancelled,
+                authority,
+            ),
             Self::Store(s) => s.certify_event(
                 input.event,
                 input.provenance_enabled,
@@ -134,6 +188,43 @@ impl NativeOwner<'_> {
                 input.cancelled,
                 authority,
             ),
+        }
+    }
+    pub(super) fn checkpoint_certification<'a>(
+        &self,
+        result: &'a StoredCertification,
+    ) -> Result<Option<crate::storage::rocks::store::NativeCheckpointBasis<'a>>, AdmissionError>
+    {
+        match self {
+            Self::Store(s) => s.checkpoint_certification(result),
+            Self::Successor(s) => s.checkpoint_certification(result),
+        }
+    }
+    pub(super) fn checkpoint_event<'a>(
+        &self,
+        result: &'a StoredOutcome,
+    ) -> Result<crate::storage::rocks::store::NativeCheckpointBasis<'a>, AdmissionError> {
+        match self {
+            Self::Store(s) => s.checkpoint_event(result),
+            Self::Successor(s) => s.checkpoint_event(result),
+        }
+    }
+    pub(super) fn checkpoint_evidence<'a>(
+        &self,
+        result: &'a StoredReceipt,
+    ) -> Result<crate::storage::rocks::store::NativeCheckpointBasis<'a>, AdmissionError> {
+        match self {
+            Self::Store(s) => s.checkpoint_evidence(result),
+            Self::Successor(s) => s.checkpoint_evidence(result),
+        }
+    }
+    pub(super) fn require_checkpoint_basis(
+        &self,
+        basis: &crate::storage::rocks::store::NativeCheckpointBasis<'_>,
+    ) -> Result<(), AdmissionError> {
+        match self {
+            Self::Store(s) => s.require_checkpoint_basis(basis),
+            Self::Successor(s) => s.require_checkpoint_basis(basis),
         }
     }
     pub(super) fn read_visibility(

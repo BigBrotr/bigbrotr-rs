@@ -77,6 +77,14 @@ pub struct StoredOutcome {
     _permit: OwnedPermit,
 }
 impl StoredOutcome {
+    pub(super) fn bind_checkpoint(
+        mut self,
+        stamp: super::producer_checkpoint::CheckpointStamp,
+        captured: Option<crate::acquisition::preparation::CapturedBinding>,
+    ) -> Self {
+        self.native_outcome.bind_checkpoint(stamp, captured);
+        self
+    }
     pub(super) fn new(
         outcome: AdmissionOutcome,
         native_outcome: super::NativeOutcomeCopy,
@@ -108,6 +116,7 @@ pub struct PreparedEvent {
     request_preimage: Vec<u8>,
     allocation_bytes: usize,
     verification_limit_bytes: usize,
+    captured: Option<crate::acquisition::preparation::CapturedBinding>,
     _permit: OwnedPermit,
 }
 impl PreparedEvent {
@@ -183,8 +192,30 @@ impl PreparedEvent {
             request_preimage,
             allocation_bytes,
             verification_limit_bytes: max_event_bytes,
+            captured: None,
             _permit: permit,
         })
+    }
+    pub fn from_captured(
+        request: ProducerRequestId,
+        input: crate::acquisition::preparation::CapturedEventInput,
+        max_event_bytes: usize,
+    ) -> Result<Self, AdmissionError> {
+        let (intent, binding, permit) = input.into_parts();
+        if intent.certification_digest() != binding.certification_digest {
+            return Err(AdmissionError::InvalidInput);
+        }
+        let mut prepared = Self::new(request, intent, max_event_bytes, permit)?;
+        prepared.captured = Some(binding);
+        Ok(prepared)
+    }
+    pub(in crate::storage) fn captured(
+        &self,
+    ) -> Option<crate::acquisition::preparation::CapturedBinding> {
+        self.captured
+    }
+    pub(in crate::storage) fn retained_input_bytes(&self) -> usize {
+        self.request_preimage.len()
     }
     /// The connected policy owner must match the verification limit to the
     /// current configuration. A caller cannot choose a larger validation policy.

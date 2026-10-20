@@ -59,6 +59,17 @@ pub struct StoredReceipt {
     _permit: OwnedPermit,
 }
 impl StoredReceipt {
+    pub(super) fn bind_checkpoint(
+        mut self,
+        stamp: super::producer_checkpoint::CheckpointStamp,
+    ) -> Self {
+        // Only actual native mutation/replay callers own a copy. A structural
+        // read deliberately remains unable to acquire checkpoint authority.
+        if let Some(copy) = &mut self.native_outcome {
+            copy.bind_checkpoint(stamp, None);
+        }
+        self
+    }
     pub(super) fn new(
         receipt: Receipt,
         native_outcome: super::NativeOutcomeCopy,
