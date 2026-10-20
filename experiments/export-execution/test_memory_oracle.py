@@ -543,6 +543,7 @@ def manager_layout_refusal():
         reject('terminal-budget-fabricated',lambda v:v['events'][-1].update(catalog_manager_bytes=oracle.MANAGER_BYTES),'raw unknown terminal retained')
         for key,value in [('index',False),('elapsed_us',-1),('items',True),('permits',-1)]:
             reject('invalid-ledger-'+key,lambda v,k=key,x=value:v['ledger'][0].update({k:x}),'closed refusal ledger attribution')
+        reject('ledger-items-over-ceiling',lambda v:v['ledger'][0].update(items=17),'closed refusal ledger attribution')
         reject('ledger-clock-regression',lambda v:v['ledger'][1].update(elapsed_us=0),'refusal ledger chronology')
         reject('ledger-phase-regression',lambda v:v['ledger'][1].update(phase=2),'refusal ledger chronology')
         reject('retained-permit',lambda v:v['ledger'][-1].update(permits=1),'all refused grants drained')

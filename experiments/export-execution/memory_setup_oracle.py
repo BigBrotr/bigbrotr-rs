@@ -134,7 +134,7 @@ def manager_layout_refusal(payload):
                 and type(row['index']) is int and row['index'] == index
                 and type(row['phase']) is int and 0 <= row['phase'] <= 16
                 and all(type(row[key]) is int and 0 <= row[key] < 2**64
-                        for key in ('elapsed_us', 'items', 'permits')),
+                        for key in ('elapsed_us', 'items', 'permits')) and row['items'] <= 16,
                 'closed refusal ledger attribution')
         for key in ('data_bytes', 'native_bytes', 'control_bytes'):
             require(type(row[key]) is int and 0 <= row[key] <= limits[key], 'refusal logical grant ceiling')
