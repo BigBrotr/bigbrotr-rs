@@ -37828,13 +37828,13 @@
           }
         },
         "manager_observation_20261020": {
-          "status": "BUILD_QUALIFIED_RUNTIME_INPUT_REFUSED",
+          "status": "PASS_SINGLE_SAMPLE_REQUESTED_ALLOCATION_OBSERVATION",
           "source": "c50eb8c016eafd3ee29a678a02e4784c2f8493e0",
           "application_source": "f1e726f78d7f925cf84cec19117fee5d607773c5",
           "assessment": "Current plaintext manager charge17301512B includes credential copies and remains held through both inspections, native/output overlap, rollback, client drop and driver join; unknown completion retains output through outer Control driver join. No source early-release/reservation defect found in inspected path.",
-          "remaining": "Empirical live allocations across credential preparation, inspection, retained transport buffers and drain. Existing installed whole-parent RSS/cgroup has no owner attribution; no baseline subtraction. No independently enforced16MiB manager RSS requirement is claimed.",
+          "remaining": "Worst-case layouts/credentials, refusal/drain, TLS and per-owner physical memory remain outside this qualified single-sample requested-allocation observation.",
           "reuse": "Existing memory.rs/observe.rs and capture/science/guard fixtures. Old measurement profile still reserves catalog80MiB plus credentials and allows5s driver cleanup; cannot qualify reduced f1e path unchanged.",
-          "next": "Use original archive-sample supported by the unchanged pinned acceptance probe; reuse qualified214764e build, fresh private exact-source root. Audit one complete measured outcome and obtain critical review.",
+          "next": "Reconcile the bounded reduced-manager layout-refusal/drain design with existing tools, implement only required parameterization, then critical source review and one fresh isolated real-PG case.",
           "review_scope": "Astra/xhigh complete current dispatch, transport/preparation, catalog inspection/capture and measurement owners; targeted Serve join and guard/custody fixtures; prior pinned upstream buffer review reused. No new allocator/TLS internals or runtime audit.",
           "design": "Standalone memory_measure.rs imports safe memory.rs, always-on whole-parent requested-live/peak counter fromstartup, permanent invalid arithmetic flag, no baseline subtraction; safe optional observer callback. Exact credential-derived reduced manager charge and2s drain, old80MiB/5s defaults unchanged. Conservative observed peak<=actualmanager charge may bound requested Rust bytes for this run; excess is inconclusive for owner attribution. Product unsafe lint/Cargo manifests unchanged.",
           "source_candidates": {
@@ -37931,7 +37931,7 @@
             },
             "remote": "Exact refs/heads/main214764e after push52856 joined0",
             "checks": "Cargo example and Clippy; locked metadata/library; direct wrapper and test compilation;7countertests PASS. All2014source and214artifact identities verified; actual2containers exited0/PID0/noOOM.",
-            "runtime": "NOT_RUN"
+            "runtime": "Qualified genuine sample; see runtime root and critical outcome receipts."
           },
           "runtime_preflight": {
             "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-runtime-preflight-failure-v1.json",
@@ -37952,7 +37952,16 @@
             "bytes": 3061,
             "sha256": "286883ebfe4cba71aa7722cf86c19fa401154792710506e77caec8b040087a1d"
           },
-          "runtime": {
+          "runtime_input_guard": {
+            "change": "Refuse non-archive-sample single acceptance before Laboratory construction; prepare-only and installed-five retain all supported signed inputs.",
+            "checks": "AST PASS; actual guard12mode/input combinations PASS; no verifier or product change.",
+            "critical_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-runtime-review-v3.json",
+              "bytes": 4203,
+              "sha256": "c37bc5c4b3c43246d9a27abac126100c2b1f5612170140c973a2d92611ca8d57"
+            }
+          },
+          "failed_runtime_tag_heavy": {
             "status": "FAIL_INCOMPATIBLE_SINGLE_ACCEPTANCE_INPUT",
             "session": "90916 joined1",
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-fde2509-private",
@@ -37973,13 +37982,46 @@
             },
             "measurement": "NOT_RUN"
           },
-          "runtime_input_guard": {
-            "change": "Refuse non-archive-sample single acceptance before Laboratory construction; prepare-only and installed-five retain all supported signed inputs.",
-            "checks": "AST PASS; actual guard12mode/input combinations PASS; no verifier or product change.",
+          "runtime": {
+            "status": "PASS_SINGLE_SAMPLE_REQUESTED_ALLOCATION_OBSERVATION",
+            "session": "86241 joined0",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-b90b678-sample",
+            "source": "fde25090f9b74e7ed36dda859a04da88ce431bb7",
+            "tree": "872d292fc823d15069a0b2356fdaa7097b189419",
+            "source_root": "/home/tux/bigbrotr-rs/.research/export-manager-memory-runtime-source-fde2509-private",
+            "owner": "eea38b0f29a15caebc1c254a6cfe24d0",
+            "input": "archive-sample",
+            "build_source": "214764ee5c0305d717f7b63ea719fb1f871c540e",
+            "launch_note": "Private checkout preparation assertion failed because launch shell cwd remained the previous exactfde2509 checkout. The subsequent command launched supported archive-sample from that unchanged privatefde source. Preserve actual runtime identity, do not restart. Root directory suffix is not source identity; b90b678 differs only by early input guard and documents, and the accepted sample satisfies the guard.",
+            "root_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-root-outcome-v1.json",
+              "bytes": 9376,
+              "sha256": "ba43afdca745e54f09aab88d5faa4117e72a2bf6fff84183ca48502753afc6eb"
+            },
+            "measurement": {
+              "status": "OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET",
+              "catalog_manager_bytes": 17301512,
+              "whole_parent_peak_bytes": 1472461,
+              "live_bytes_at_cut": 53420,
+              "scope": "whole-probe-rust-requested-live/1",
+              "cut": "after-runtime-drop-before-terminal-format",
+              "exclusions": [
+                "allocator-overhead-and-usable-size",
+                "transient-realloc-overlap",
+                "native-and-TLS-allocators",
+                "child-processes",
+                "kernel-and-RSS",
+                "terminal-record-formatting-after-cut"
+              ],
+              "per_owner_attribution": false,
+              "physical_memory_bound": false,
+              "scope_limit": "Plaintext fixture capture only; external SQL/physical custody remains required."
+            },
+            "scope": "One genuine archive-sample Export, plaintext reduced diagnostic. Requested-live observation only; no TLS, owner-specific physical/RSS, five-job or installed256MiB qualification.",
             "critical_review": {
-              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-runtime-review-v3.json",
-              "bytes": 4203,
-              "sha256": "c37bc5c4b3c43246d9a27abac126100c2b1f5612170140c973a2d92611ca8d57"
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-outcome-review-v1.json",
+              "bytes": 16606,
+              "sha256": "a9e76bb9615555e224d5288b3cbfcf8b2633143b2845ec5168de8adf2481ed8e"
             }
           }
         }

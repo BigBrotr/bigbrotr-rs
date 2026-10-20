@@ -205,4 +205,12 @@ prerequisites. No timed fault injection, proxy adaptation or refusal PASS oracle
 is introduced here. A positive run needs a genuinely new Accepted job and pin;
 completed jobs cannot be replayed. Previously qualified application/worker assets
 may be reused with their original source identity, while this new wrapper must be
-built and pinned separately. This source packet claims no new runtime result.
+built and pinned separately.
+
+The pinned single-job acceptance probe supports only `--signed-input archive-sample`;
+the launcher rejects other inputs before creating that laboratory. `--prepare-only`
+and `--installed-five` retain their three supported frozen inputs. The first reduced
+sample capture and its independent SQL/physical qualification are recorded under
+`manager_observation_20261020` in the existing
+[recovery evidence](../../docs/implementation/evidence/p02-producer-recovery-native-20260920.json).
+Its scope does not qualify oversized-layout refusal or worst-case manager sizing.

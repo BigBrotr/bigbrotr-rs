@@ -66178,7 +66178,7 @@
         "qualification": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-root-qualification-v1.json"
       },
       "manager_observation_20261020": {
-        "state": "qualified build and failed runtimes stopped-retained",
+        "state": "qualified single-sample diagnostic stopped-retained",
         "base": "c50eb8c016eafd3ee29a678a02e4784c2f8493e0",
         "author_worktree": "/home/tux/bigbrotr-rs/.research/export-manager-memory-20261020",
         "author_branch": "work/export-manager-memory",
@@ -66267,22 +66267,6 @@
             "sha256": "286883ebfe4cba71aa7722cf86c19fa401154792710506e77caec8b040087a1d"
           }
         },
-        "runtime": {
-          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-fde2509-private",
-          "state": "stopped-retained",
-          "session": "90916 joined1",
-          "source": "fde25090f9b74e7ed36dda859a04da88ce431bb7",
-          "source_root": "/home/tux/bigbrotr-rs/.research/export-manager-memory-runtime-source-fde2509-private",
-          "owner": "13f3db58645770d77d0194b0dbf10e6f",
-          "owner_label": "org.bigbrotr.export-memory-lab",
-          "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-fde2509-private/resources.json",
-          "scope": "Tag-heavy publication/grants retained; pinned acceptance descriptor refused before Export work. All5actual owned containers exited0/0/0/0/1 PID0 noOOM. Measurement NOT_RUN.",
-          "receipt": {
-            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-runtime-input-failure-v1.json",
-            "bytes": 6897,
-            "sha256": "08a216181596ddf55e6ac6ef6132037cdaff42ebc875bec99e50794a11cfae82"
-          }
-        },
         "retired_refs": [
           {
             "path": "/home/tux/bigbrotr-rs/.research/export-manager-memory-20261020",
@@ -66299,7 +66283,40 @@
             "branch": "work/export-manager-memory-runtime",
             "commit": "6302ccdf7746617daa1b33de99c3209066ae874e"
           }
-        ]
+        ],
+        "failed_runtime_tag_heavy": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-fde2509-private",
+          "state": "stopped-retained",
+          "session": "90916 joined1",
+          "source": "fde25090f9b74e7ed36dda859a04da88ce431bb7",
+          "source_root": "/home/tux/bigbrotr-rs/.research/export-manager-memory-runtime-source-fde2509-private",
+          "owner": "13f3db58645770d77d0194b0dbf10e6f",
+          "owner_label": "org.bigbrotr.export-memory-lab",
+          "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-fde2509-private/resources.json",
+          "scope": "Tag-heavy publication/grants retained; pinned acceptance descriptor refused before Export work. All5actual owned containers exited0/0/0/0/1 PID0 noOOM. Measurement NOT_RUN.",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-runtime-input-failure-v1.json",
+            "bytes": 6897,
+            "sha256": "08a216181596ddf55e6ac6ef6132037cdaff42ebc875bec99e50794a11cfae82"
+          }
+        },
+        "runtime": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-b90b678-sample",
+          "source": "fde25090f9b74e7ed36dda859a04da88ce431bb7",
+          "tree": "872d292fc823d15069a0b2356fdaa7097b189419",
+          "source_root": "/home/tux/bigbrotr-rs/.research/export-manager-memory-runtime-source-fde2509-private",
+          "owner": "eea38b0f29a15caebc1c254a6cfe24d0",
+          "state": "stopped-retained",
+          "session": "86241 joined0",
+          "owner_label": "org.bigbrotr.export-memory-lab",
+          "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-runtime-b90b678-sample/resources.json",
+          "scope": "Root verified8actual ownedcontainers exited0/PID0/noOOM, no active root holders; original and failed roots/worktrees retained.",
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-root-outcome-v1.json",
+            "bytes": 9376,
+            "sha256": "ba43afdca745e54f09aab88d5faa4117e72a2bf6fff84183ca48502753afc6eb"
+          }
+        }
       }
     },
     "archive_refusal_journey_attempts": [
