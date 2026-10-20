@@ -103,6 +103,30 @@ FROZEN_PROFILE = {
     'cases': CASE_EXPECTATIONS,
 }
 
+# Literal finite ACK recipe. No value is obtained from an observed head/ACK.
+# This keeps the historical0039 profile intact while exact0040/build identity
+# is pinned to the qualified component packet below. Installed outcomes remain
+# NOT_RUN; epoch4/window32 and full-window proof are separate gates.
+ACK_EXPECTATIONS = {
+    'initial': dict(epoch=1,request=6,mutation_revision=6,
+        dependencies=tuple((1,n) for n in range(1,23)),key='b1'),
+    'activated': dict(epoch=2,request=4,mutation_revision=4,
+        dependencies=((1,3),*tuple((2,n) for n in range(1,20))),key='f4'),
+    'successor': dict(epoch=3,request=4,mutation_revision=4,
+        dependencies=((1,3),*tuple((3,n) for n in range(1,14))),key='e4'),
+}
+ACK_MIGRATION_SHA256 = '47eaef37cc8bb475a7b597da0814c5a9dc3d4f983ed9506fdfd734d35fb64af6'
+ACK_PROFILE = dict(migration_sha256=ACK_MIGRATION_SHA256,
+    product_source='fcad4c9a01ad1aa2cc5dd419707414c9516e97ce',cases=ACK_EXPECTATIONS)
+ACK_EXECUTABLES_SHA256 = {'bigbrotr': '4c1840a4957e0939ac4b2679e9d3813ac962f3ba7f6750f7a55511cc73a339fa',
+ 'control_schema': '82b81eb6eb09433795e3e06940f6723c09ab9e72fae913c182c68c7761c979d4',
+ 'evidence_intent': '9f50cfe4d853f113d3e6b445ed72b98d9e371c174883a24223e6a58ec1634cdf',
+ 'fact_codec': '11458f28cbbf95a3e942f2a629666d4de62ff58245cf8784269d7c4158db9c07',
+ 'ingest_bootstrap_probe': '71696873eb80665817b81961f5f16cb053c491af1b19b9b5e1b3e47b69175e5e',
+ 'migrate_entrypoint': '82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57',
+ 'native_components': 'bc330c1b78c47b1a768af54ef8db58bf1ded798ef3c9a1af135933b495df1a0c',
+ 'sync_progress': '72cdf877d436cbb520d233f4c0e150647058b26c959ae796c9f35b6ee35ea02e'}
+
 # Additive authority only in the explicit0039 fixture. The ordinary0038
 # runner retains its original two grant statements.
 PROGRESS_GRANTS = """GRANT SELECT,INSERT,UPDATE ON
@@ -117,7 +141,15 @@ GRANT EXECUTE ON FUNCTION
 """
 
 
-def require_frozen_profile():
+def require_frozen_profile(*, ack=False):
+    assert type(ack) is bool
+    if ack:
+        assert ACK_PROFILE is not None, 'producer ACK fixture NOT_READY: exact reviewed0040/build/profile pending'
+        assert set(ACK_PROFILE)=={'migration_sha256','product_source','cases'}
+        assert ACK_PROFILE['migration_sha256']==ACK_MIGRATION_SHA256
+        assert re.fullmatch('[0-9a-f]{40}',ACK_PROFILE['product_source'])
+        assert ACK_PROFILE['cases']==ACK_EXPECTATIONS
+        return ACK_PROFILE
     assert FROZEN_PROFILE is not None, (
         'producer progress fixture NOT_READY: final schema/source/expectations pending')
     assert set(FROZEN_PROFILE) == {'migration_sha256', 'product_source', 'cases'}
@@ -125,6 +157,25 @@ def require_frozen_profile():
     assert re.fullmatch('[0-9a-f]{40}', FROZEN_PROFILE['product_source'])
     assert FROZEN_PROFILE['cases'] == CASE_EXPECTATIONS
     return FROZEN_PROFILE
+
+
+def ack_event_sequence(*, successor=False):
+    """Independent pinned literals, retaining their original JSON member order."""
+    from pathlib import Path
+    from live_replay import NEW_EVENT
+    root=Path(__file__).resolve().parents[2]
+    raw=(root/'tests/fixtures/acquisition/selector-events.json').read_bytes()
+    assert hashlib.sha256(raw).hexdigest()=='64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f'
+    items=json.loads(raw)['events']
+    assert type(successor) is bool
+    names=('wrong-first-tag','wrong-author') if successor else ('included','wrong-author')
+    events=[NEW_EVENT]+[next(e['event'] for e in items if e['name']==name) for name in names]
+    assert [event['id'] for event in events]==[
+        '57b20f44c0095dfc789765ed38caa8dd54ae37635dab32237c563146c8865b02',
+        ('7815649941b6434d7c525bb633ff461fb7ee341954f1bcb0bce2c9535c2bb7f7' if successor else
+         '32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791'),
+        '3ac1dd47ad27c66939e5ed24e2002e71fcfac11c63254b622b3d54ea8491ce58']
+    return copy.deepcopy(events)
 
 
 def uint(value, bits=64, minimum=0):
@@ -355,11 +406,20 @@ def require_phase(state, origin, hole, phase, epoch, wire):
         dependency_record(row)
 
 
-def legacy_state(state):
+def legacy_state(state, *, ack=False):
     """Exact schema extension projection; qualification checks every removed row."""
-    profile = require_frozen_profile()
+    profile = require_frozen_profile(ack=ack)
     assert len(state) == 77 and TABLES <= set(state)
     result = copy.deepcopy(state)
+    if ack:
+        receipt, = [r for r in result['schema_versions'] if r['migration']==40]
+        integer(receipt['applied_at_us']);xid(receipt['xmin'])
+        assert receipt==dict(migration=40,name='0040_producer_ack.sql',checksum='\\x'+profile['migration_sha256'],
+            engine='postgres-control',applied_by='bigbrotr_migrator',reader_min=1,reader_max=1,writer_floor=1,
+            applied_at_us=receipt['applied_at_us'],xmin=receipt['xmin'])
+        assert all(type(receipt[k]) is int for k in ('migration','reader_min','reader_max','writer_floor'))
+        assert max(r['applied_at_us'] for r in result['schema_versions'] if r['migration']<40)<=receipt['applied_at_us']
+        result['schema_versions'].remove(receipt)
     for table in TABLES:
         result.pop(table)
     ledger, = [r for r in result['schema_versions'] if r['migration'] == 39]
@@ -368,7 +428,7 @@ def legacy_state(state):
         if r['migration'] < 39) <= ledger['applied_at_us']
     xid(ledger['xmin'])
     assert ledger == dict(migration=39, name='0039_producer_progress.sql',
-        checksum='\\x' + profile['migration_sha256'], engine='postgres-control',
+        checksum='\\x' + (FROZEN_PROFILE if ack else profile)['migration_sha256'], engine='postgres-control',
         applied_by='bigbrotr_migrator', reader_min=1, reader_max=1, writer_floor=1,
         applied_at_us=ledger['applied_at_us'], xmin=ledger['xmin'])
     assert all(type(ledger[k]) is int for k in
@@ -391,16 +451,19 @@ def legacy_state(state):
     return result
 
 
-def legacy_context(context):
-    require_frozen_profile()
+def legacy_context(context, *, ack=False):
+    require_frozen_profile(ack=ack)
     result = copy.deepcopy(context)
     mode = result.pop('progress_profile')
-    assert mode == 'split', 'hole/refusal has a separate unqualified custody outcome'
+    assert mode == ('ack' if ack else 'split'), 'hole/refusal has a separate unqualified custody outcome'
+    if ack:
+        assert json.loads(result.pop('ack_event_recipe'))==dict(format='bigbrotr-ack-events/1',events=ack_event_sequence(successor=True))
+        result.pop('progress_gates')
     for field in ('before', 'after'):
-        result[field] = legacy_state(result[field])
+        result[field] = legacy_state(result[field],ack=ack)
     result['snapshots'] = [s for s in result['snapshots'] if not s['stage'].startswith('progress-')]
     for snapshot in result['snapshots']:
-        snapshot['control'] = legacy_state(snapshot['control'])
+        snapshot['control'] = legacy_state(snapshot['control'],ack=ack)
     result['fixture']['renewal']['current'] = copy.deepcopy(next(
         s for s in result['snapshots'] if s['stage'] == 'renewed'))
     return result
@@ -540,9 +603,11 @@ def verify_records(context, model, science, pairs):
     return results
 
 
-def verify(context):
+def verify(context, *, ack=False):
     """Full base science plus explicit typed heads; never a structural-only PASS."""
-    profile = require_frozen_profile()
+    profile = require_frozen_profile(ack=ack)
+    if ack:
+        return verify_ack(context)
     from installed_family_replay import verify as base_verify, clock, fresh_xmin
     from history_replay import only
     from live_replay import OLD_EVENT, NEW_EVENT
@@ -584,17 +649,22 @@ def verify(context):
         scope='One real mutation quantum and a distinct proof-only REQ; no EOSE/job completion or ACK/GC')
 
 
-def controls(context):
+def controls(context, *, ack=False):
     """Baseline first, including attacks with a recomputed valid head checksum."""
     from transition_replay import native_map
     from history_replay import only
-    verify(context)
+    verify(context,ack=ack)
     checks = []
     def reject(name, mutate):
         other = copy.deepcopy(context)
         mutate(other)
+        if ack and name in {'same-request','proof-reserves-request','proof-advances-complete','proof-intent',
+                'self-consistent-forged-intent','self-consistent-incomplete-closure','proof-transaction-reuse',
+                'proof-observation','missing-dependency','intermediate-unrelated-table'}:
+            from installed_progress_context_oracle import rebind_gates
+            rebind_gates(other)
         try:
-            verify(other)
+            verify(other,ack=ack)
         except (AssertionError, KeyError, ValueError, TypeError, IndexError, OverflowError):
             checks.append(name)
             return
@@ -644,7 +714,7 @@ def controls(context):
     reject('unknown-head-field', lambda c: c['after']['producer_checkpoints'][0].update(extra=1))
     reject('missing-dependency', lambda c: c['snapshots'][2]['control']['producer_checkpoint_dependencies'].pop())
     reject('request-frame-mismatch', lambda c: c['after']['producer_requests'][-1].update(
-        progress_event_ordinal=3))
+        progress_event_ordinal=1 if ack else 3))
     reject('job-completion', lambda c: only(c['after']['jobs'],
         request_key='\\x' + 'e4' * 16).update(checkpoint_revision=1))
     reject('missing-native-fact', lambda c: c['native_after']['rows'].pop())
@@ -656,5 +726,80 @@ def controls(context):
         only(c['snapshots'][2]['control']['jobs'], job_id=original['job_id']).update(
             checkpoint_revision=original['checkpoint_revision'] + 1)
     reject('intermediate-unrelated-table', historical_job_change)
+    if ack:
+        checks.extend(ack_counterexamples(context,lambda value:verify(value,ack=True),'successor'))
     return dict(status='PASS', controls=len(checks), rejected=checks,
         scope='offline retained-observation mutations; no engine fault injection')
+
+
+def verify_ack(context):
+    """One real window2 epoch3 case; cumulative typed closure plus full old science."""
+    require_frozen_profile(ack=True)
+    from installed_family_replay import verify as base_verify
+    from installed_progress_context_oracle import typed_checked, wires_checked
+    assert context['progress_profile']=='ack' and context['case']['origin']=='activated'
+    assert [s['stage'] for s in context['snapshots']]==['activated','prepared','progress-mutation',
+        'progress-proof-only','submitted','renewed','before-stop']
+    base,model,science=base_verify(context,progress=True,ack=True)
+    for cut in context['snapshots'][2:4]:
+        intermediate=copy.deepcopy(context)
+        intermediate['snapshots'][4]=dict(copy.deepcopy(cut),stage='submitted')
+        base_verify(intermediate,progress=True,ack=True)
+    phases=wires_checked(context['journey']['opened'],context['journey']['closed'],context['snapshots'],
+        ack_event_sequence(successor=True)[-1],context['progress_gates'],ack=True,successor=True)
+    result=typed_checked('successor',context['before'],context['after'],context['snapshots'],phases,
+        ack_event_sequence(successor=True)[-1],science.values,science.inputs,science.receipts,
+        science.scope,science.ref(2),None,model.control,ack=True)
+    return dict(status='PASS_INSTALLED_PRODUCER_ACK',base=base,typed=result,sql_tables=77,native_ack=4,
+        native_science='complete independent native/input reconstruction',
+        scope='Three mutations through actual window2 then a distinct three-proof REQ; retained originals, noGC')
+
+
+def ack_counterexamples(context, checker, kind):
+    """Exact native state/write accounting and three-frame/window discriminators."""
+    spec=ACK_EXPECTATIONS[kind]
+    checks=[]
+    def reject(name,change,reason=None):
+        value=copy.deepcopy(context);change(value)
+        if name=='coherent-window32-adoption':
+            from installed_progress_context_oracle import rebind_gates
+            rebind_gates(value)
+        if kind=='initial':
+            value['native_readback']['stdout']=json.dumps(value['native'])
+        try:
+            checker(value)
+        except (AssertionError,KeyError,ValueError,TypeError,IndexError,StopIteration) as error:
+            if reason is not None:
+                assert isinstance(error,AssertionError) and str(error)==reason, (name,'wrong rejection',str(error))
+            checks.append(name)
+        else:
+            raise AssertionError('ACK counterexample accepted: '+name)
+    def native(c): return c['native'] if kind=='initial' else c['native_after']
+    def state(c,field,value):
+        slot=next(r['producer_slot_id'] for r in c['after']['producer_epochs'] if r['producer_epoch']==spec['epoch'])
+        key='0131'+slot[2:]+spec['epoch'].to_bytes(8,'big').hex()
+        row,=[r for r in native(c)['rows'] if r['cf']=='receipts' and r['key']==key]
+        raw=bytearray.fromhex(row['value'])
+        assert len(raw)==26 and raw[:2]==b'\x01\x31'
+        offset={'issued':2,'acknowledged':10,'retired':18}[field]
+        raw[offset:offset+8]=value.to_bytes(8,'big');row['value']=raw.hex()
+    reject('ack-missing',lambda c:state(c,'acknowledged',0),'complete ACK native bytes differ')
+    reject('ack-beyond-issue',lambda c:state(c,'acknowledged',spec['request']+1),'complete ACK native bytes differ')
+    reject('ack-reclaimed-detail',lambda c:state(c,'retired',1),'complete ACK native bytes differ')
+    reject('ack-extra-issued-request',lambda c:state(c,'issued',spec['request']+1),'complete ACK native bytes differ')
+    reject('proof-native-extra-write',lambda c:native(c).update(sequence=native(c)['sequence']+1),'ACK native write count differs')
+    reject('missing-synced-ack-writes',lambda c:native(c).update(sequence=native(c)['sequence']-spec['request']),'ACK native write count differs')
+    reject('wrong-three-event-order',lambda c:c.update(ack_event_recipe=json.dumps(dict(
+        format='bigbrotr-ack-events/1',events=list(reversed(ack_event_sequence(successor=kind=='successor')))))))
+    def full_window(c):
+        for snapshot in c['snapshots']:
+            for row in snapshot['control']['producer_epochs']:
+                if row['producer_epoch']==spec['epoch']: row['outstanding_request_limit']=32
+        for row in c['after']['producer_epochs']:
+            if row['producer_epoch']==spec['epoch']: row['outstanding_request_limit']=32
+    reject('coherent-window32-adoption',full_window)
+    reject('third-event-unclassified',lambda c:c['after']['acquisition_progress'][0].update(
+        classified_events=5,successful_events=5,progress_revision=5))
+    reject('proof-only-new-request',lambda c:c['after']['producer_requests'].append(
+        dict(c['after']['producer_requests'][-1],request_sequence=spec['request']+1)))
+    return checks

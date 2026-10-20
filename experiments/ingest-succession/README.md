@@ -392,3 +392,38 @@ Artificial context checks reuse the reader model and establish capture protocol
 only. Actual run status belongs to the checkpoint. The job remains queued; neither
 EOSE nor shutdown proves workflow completion, source closure, retirement, Archive
 publication, restart recovery or capacity. Per-frame certification is not observed.
+
+
+`installed_family.py ROOT BUILD --producer-ack` is the additive migration40
+consumer fixture. It selects only the genuine accepted window2 activated origin
+and actual epoch3 successor; it does not rewrite window32 origins or claim
+epoch4. It shares the exact qualified `fcad4c9` build/eight-ELF gate with the
+initial/epoch2 ACK profiles documented in `../ingest-bootstrap/README.md`.
+The existing stopped-origin copy, SQL migration/grants, process/Control joins,
+raw custody and independent full native/scientific model remain the owners.
+
+Three frozen distinct signed kind1 events (NEW, selector `wrong-first-tag`,
+selector `wrong-author`) are sent in one real REQ. The retained origin already
+contains `included`, so this explicit successor recipe replaces it; the real
+selector only filters kind1 and no historical bytes are changed. After its
+complete SQL/input cut, another real REQ receives the same three events as
+proof-only duplicates. Fixed expectations are epoch3 I=A=C4, producer revisions
+4→7, acquisition revisions3→6, and14 dependencies (historical visibility1:3 plus
+current source3:1..13). The native model adds four separate ACK state writes,
+preserves every old byte/input, and keeps retired/job checkpoint0. It never
+copies observed ACK or checkpoint digest as its own expected result.
+
+Offline raw replay uses the existing reader:
+
+```text
+python3 -B -S ROOT/source/experiments/ingest-succession/installed_family_capture.py ROOT --producer-ack
+```
+
+It binds the runtime source manifest, exact build, original origin captures,
+full77-table cuts/catalogs, process/backend exclusions, both wire/gate files,
+original inputs, complete native output and baseline-first negative controls.
+The new source and controls are **runtime NOT_RUN** until root executes them.
+Full-window proof-only and lost-completion recovery require their separate real
+consumers; these eager installed paths do not manufacture an unacknowledged
+window. Existing schema38/39 modes, original FAIL records and their replay
+entrypoints are unchanged.

@@ -246,12 +246,14 @@ def legacy_installed_origin(basis, origin, retained):
 
 
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
-        origin_for_clone=None, extra_grants=(), producer_progress=False):
+        origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False):
     assert type(producer_progress) is bool
+    assert type(producer_ack) is bool and (not producer_ack or producer_progress)
     if producer_progress:
         from installed_progress_replay import require_frozen_profile
-        progress_profile = require_frozen_profile()
-        migration = SOURCE / 'migrations/postgres/0039_producer_progress.sql'
+        progress_profile = require_frozen_profile(ack=producer_ack)
+        migration = SOURCE / ('migrations/postgres/0040_producer_ack.sql' if producer_ack
+            else 'migrations/postgres/0039_producer_progress.sql')
         assert digest(migration) == progress_profile['migration_sha256']
     if suite is None:
         suite = FIRST_WAVE
@@ -301,7 +303,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
-    assert qualification['status'] in (('PASS_PRODUCER_PROGRESS_COMPONENTS',)
+    assert qualification['status'] in (('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
         if producer_progress else allowed)
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
@@ -311,6 +313,11 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         assert component[field] == qualification[field] == built[field], field
     binaries = component['executables_sha256']
     assert {'bigbrotr', 'ingest_bootstrap_probe'} <= set(binaries)
+    if producer_ack:
+        from installed_progress_replay import ACK_EXECUTABLES_SHA256
+        assert binaries==ACK_EXECUTABLES_SHA256
+        assert set(binaries)=={'bigbrotr','ingest_bootstrap_probe','native_components','sync_progress',
+            'fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
     assert all(digest(build / name) == value for name, value in binaries.items())
     assert binaries['bigbrotr'] == built['binary_sha256']
     manifest_path = build.parent / 'build/source-manifest.json'
@@ -342,6 +349,9 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(), origins={}, clones=[], cases=[],
         free_bytes_before=shutil.disk_usage(root).free,
         scope=suite.scope, not_run=list(suite.not_run))
+    if producer_ack:
+        from installed_progress_context import record_source
+        record_source(output,build,revision)
     lab.write_json(output / 'preflight-containers.json', containers)
     lab.write_json(output / 'result.json', report)
     origins = {}
@@ -445,7 +455,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
             for action in ('plan', 'apply', 'apply'):
                 try:
                     answer = lab.cli(state, 'migrate', action, '--file', config, '--user', 'bigbrotr_migrator',
-                        '--password-ref', 'file:/run/secrets/migrator', '--target', '39' if producer_progress else '38')
+                        '--password-ref', 'file:/run/secrets/migrator', '--target',
+                        '40' if producer_ack else '39' if producer_progress else '38')
                 except subprocess.TimeoutExpired as error:
                     def partial(value):
                         return value.decode(errors='replace') if isinstance(value, bytes) else value or ''

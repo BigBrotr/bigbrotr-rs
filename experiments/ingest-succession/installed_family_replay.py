@@ -313,9 +313,12 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
     fields = {'status', 'login', 'logout', 'me', 'digests', 'observations',
         'job_status', 'relay_joined', 'unauthenticated'}
     if progress is not None:
-        assert progress in ('split', 'hole')
+        assert progress in ('split', 'hole', 'ack')
         fields |= {'checkpoint_validation', 'native_proof_validation'}
         assert result['checkpoint_validation'] == result['native_proof_validation'] == 'NOT_RUN'
+        if progress=='ack':
+            fields.add('native_ack_validation')
+            assert result['native_ack_validation']=='NOT_RUN'
     assert set(result) == fields
     assert result['status'] == ('CAPTURED_PROGRESS_TRANSPORT_ONLY' if progress else 'PASS')
     assert result['relay_joined'] is True and result['unauthenticated'] == 401
@@ -357,6 +360,9 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
             assert phase in ('mutation', 'proof-only')
             labels = ['distinct', 'predecessor'] if phase == 'mutation' else ['distinct-resend']
             events = [NEW_EVENT, OLD_EVENT] if phase == 'mutation' else [NEW_EVENT]
+            if progress=='ack':
+                from installed_progress_replay import ack_event_sequence
+                labels,events=['signed']*3,ack_event_sequence(successor=True)
             if progress == 'hole' and phase == 'mutation':
                 labels, events = ['preparation-hole', *labels], [{}, *events]
             assert last['frames'] == labels + ['EOSE']
@@ -399,14 +405,15 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
 
 
 
-def verify(context, *, progress=False):
+def verify(context, *, progress=False, ack=False):
     from installed_family_http import add_http
     assert type(progress) is bool
+    assert type(ack) is bool and (not ack or progress)
     progress_mode = None
     if progress:
         from installed_progress_replay import legacy_context
         progress_mode = context['progress_profile']
-        context = legacy_context(context)
+        context = legacy_context(context,ack=ack)
     assert set(context) == {'case', 'before', 'after', 'native_before', 'native_after', 'inputs_before',
         'inputs_after', 'input_contents', 'snapshots', 'response', 'journey', 'fixture', 'server_window',
         'backend', 'catalog_before', 'catalog_after', 'fixture_input'}
@@ -455,6 +462,11 @@ def verify(context, *, progress=False):
     assert epoch == (4 if origin == 'later' else 3)
     assert model.ds['policy_revision'] == model.ds['config_revision'] == (3 if origin == 'activated' else 1)
     assert model.plan['limit'] == (2 if origin == 'activated' else 32)
+    if ack:
+        assert origin=='activated' and epoch==3
+        for table in ('config_revisions','policy_revisions'):
+            assert only(before[table],revision=3)['document']['settings']['ingest.producer_outstanding_requests']==2
+        assert only(active['producer_epochs'],producer_epoch=3)['outstanding_request_limit']==2
     provenance = origin != 'activated'
     policy = only(before['policy_revisions'], revision=model.ds['policy_revision'])
     assert policy['document']['settings']['sync.provenance'] == ('local_first_witness' if provenance else 'off')
@@ -468,7 +480,7 @@ def verify(context, *, progress=False):
     assert fixture['client_terminal'] == context['journey']['terminal']
     first = wire_checked(context['journey'], fixture, report, before, snapshots[1]['control'], window,
         progress=progress_mode)
-    science = NetworkScience(model, model.plan)
+    science = NetworkScience(model, model.plan,acknowledge=ack)
     observed_native = native_map(context['native_after'])
     n = 4 if provenance else 1
     def fact_scalar(number):
@@ -495,7 +507,24 @@ def verify(context, *, progress=False):
             (b'\x01\x20' + science.source(1, 11)).hex()])
         assert decode(original_receive[34:].split(b'\0', 1)[1])[5][1] < old_received
         historical = old_received, old_recorded
-    science.network(provenance, dictionary_at, received, recorded, resolution, historical)
+    if ack:
+        from installed_progress_replay import ack_event_sequence
+        extras=[]
+        for event, first_number in zip(ack_event_sequence(successor=True)[1:],(6,10)):
+            extra_recorded=fact_scalar(first_number)[4]
+            receive=fact_scalar(first_number+3)
+            extra_received,quality=receive[5][1],receive[5][3][1]
+            assert type(quality) is int and quality==resolution
+            assert first['sent_at_us']-quality<=extra_received<=first['closed_at_us']+quality
+            assert extra_received<=extra_recorded
+            clock(extra_received,window); clock(extra_recorded,window)
+            extras.append((event,extra_received,extra_recorded,quality))
+        science.network(False,dictionary_at,received,recorded,resolution,None,additional_events=extras)
+    else:
+        science.network(provenance, dictionary_at, received, recorded, resolution, historical)
+    if ack:
+        assert context['native_after']['sequence']==model.native['sequence'], 'ACK native write count differs'
+        assert context['native_after']['rows']==model.native['rows'], 'complete ACK native bytes differ'
     assert context['native_after'] == model.native, 'complete native bytes or sequence differ'
     assert context['inputs_after'] == model.inputs, 'complete input census differs'
     assert snapshots[0]['inputs'] == context['inputs_before']
@@ -541,7 +570,7 @@ def verify(context, *, progress=False):
             assert raw == science.inputs[int(name[-21:-5], 16)]
     backend_checked(context['backend'], model.control, case['database'], window)
     result = dict(status='PASS', name=case['name'], snapshots=5, observed_states=7, sql_tables=75,
-        target_epoch=epoch, requests=len(science.inputs), source_cut=10 if provenance else 5,
+        target_epoch=epoch, requests=len(science.inputs), source_cut=13 if ack else 10 if provenance else 5,
         native_rows=len(model.native['rows']), native_sequence=model.native['sequence'],
         original_inputs=len(context['inputs_before']), final_inputs=len(model.inputs), actual_cli=True,
         certification_per_frame='not-observed', source_closure='not-performed', workflow_completion='not-qualified')

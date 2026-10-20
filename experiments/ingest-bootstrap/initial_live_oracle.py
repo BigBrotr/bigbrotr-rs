@@ -152,8 +152,9 @@ class Science:
         self.requests, self.receipts = {}, {}
         assert ('default', b'\x01\x06' + self.ds + EVENT_ID) not in self.rows
 
-    def ref(self, kind):
-        return [self.ds, kind, self.domains[kind], 1]
+    def ref(self, kind, ordinal=1):
+        assert type(ordinal) is int and 1 <= ordinal <= 3
+        return [self.ds, kind, self.domains[kind], ordinal]
 
     @staticmethod
     def ref_key(reference):
@@ -177,8 +178,8 @@ class Science:
         prefix = bytes([1, domain])
         self.put('default', prefix + key, prefix + self.src_key(n) + self.refs[2, n][1])
 
-    def dictionary(self, n, kind, schema, value, timestamp):
-        reference = self.ref(kind)
+    def dictionary(self, n, kind, schema, value, timestamp, *, ordinal=1):
+        reference = self.ref(kind, ordinal)
         descriptor = [1, schema, 1, value]
         payload = [reference, *descriptor]
         self.fact(n, 'dictionary', payload, timestamp)
@@ -186,7 +187,7 @@ class Science:
         canonical = cbor(descriptor)
         self.put('default', b'\x01\x05' + self.ds + be(kind, 2) + sha(canonical) + self.ref_key(reference),
             b'\x01\x05' + canonical)
-        self.put('default', b'\x01\x03' + self.ds + be(kind, 2) + self.domains[kind], b'\x01\x03' + be(1))
+        self.put('default', b'\x01\x03' + self.ds + be(kind, 2) + self.domains[kind], b'\x01\x03' + be(ordinal))
         return ['dictionary', 1, payload]
 
     def commit(self, n, original, members, dependencies):

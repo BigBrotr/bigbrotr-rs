@@ -94,8 +94,15 @@ def progress_release(directory, mutation_request):
     return dict(gate, release_sha256=hashlib.sha256(raw).hexdigest())
 
 
-def relay(directory, listener, finished, errors, progress=False, hole=False):
+def relay(directory, listener, finished, errors, progress=False, hole=False, ack=False):
     assert type(progress) is type(hole) is bool and (not hole or progress)
+    assert type(ack) is bool and (not ack or (progress and not hole))
+    if ack:
+        from installed_progress_transport import ack_events
+        selected_events = ack_events(directory,successor=True)
+        assert selected_events is not None
+        assert json.loads((directory/'progress-context.json').read_text()) == dict(
+            format='bigbrotr-ack-context/1',kind='successor')
     old, new = json.loads((directory / 'events.json').read_text())
     assert (old['id'], new['id']) == EVENT_IDS
     for event in (old, new):
@@ -167,6 +174,8 @@ def relay(directory, listener, finished, errors, progress=False, hole=False):
                         # close cannot silently retry this phase on another REQ.
                         proof_sent = True
                         phase, values, labels = 'proof-only', (new,), ['distinct-resend']
+                    if ack:
+                        values, labels = selected_events, ['signed']*3
                     trace.update(progress_phase=phase, frames=labels + ['EOSE'],
                         event_ids=[value.get('id') for value in values],
                         event_json_sha256=[hashlib.sha256(json.dumps(value,
@@ -215,9 +224,10 @@ def relay(directory, listener, finished, errors, progress=False, hole=False):
         listener.close()
 
 
-def journey(directory, progress=False, hole=False, commit_loss=False):
+def journey(directory, progress=False, hole=False, commit_loss=False, ack=False):
     assert type(progress) is type(hole) is bool and (not hole or progress)
     assert type(commit_loss) is bool and (not commit_loss or (progress and not hole))
+    assert type(ack) is bool and (not ack or (progress and not hole and not commit_loss))
     if progress:
         assert not any((directory / name).exists() or (directory / name).is_symlink() for name in (
             'progress-release.json', 'progress-mutation-observation.json',
@@ -268,7 +278,7 @@ def journey(directory, progress=False, hole=False, commit_loss=False):
         selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
         **revisions), 'e3' * 16)
     worker = threading.Thread(target=relay,
-        args=(directory, relay_listener(), finished, errors, progress, hole))
+        args=(directory, relay_listener(), finished, errors, progress, hole, ack))
     worker.start()
 
     def barrier(name):
@@ -313,6 +323,8 @@ def journey(directory, progress=False, hole=False, commit_loss=False):
         assert phases == ['mutation', 'proof-only'], 'both separate transport phases must complete'
         result.update(status='CAPTURED_PROGRESS_TRANSPORT_ONLY',
             checkpoint_validation='NOT_RUN', native_proof_validation='NOT_RUN')
+        if ack:
+            result['native_ack_validation']='NOT_RUN'
     assert all(secret not in json.dumps(result) for secret in (saved['session'], saved['csrf'], password))
     publish(directory, 'client-result.json', result)
     return result
@@ -324,6 +336,7 @@ if __name__ == '__main__':
         assert len(sys.argv) == 4
         serve(Path(sys.argv[2]), Path(sys.argv[3]))
     else:
-        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole', 'journey-progress-loss') and len(sys.argv) == 3
+        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole', 'journey-progress-loss', 'journey-progress-ack') and len(sys.argv) == 3
         journey(Path(sys.argv[2]), progress=sys.argv[1] != 'journey',
-            hole=sys.argv[1] == 'journey-progress-hole', commit_loss=sys.argv[1] == 'journey-progress-loss')
+            hole=sys.argv[1] == 'journey-progress-hole', commit_loss=sys.argv[1] == 'journey-progress-loss',
+            ack=sys.argv[1] == 'journey-progress-ack')

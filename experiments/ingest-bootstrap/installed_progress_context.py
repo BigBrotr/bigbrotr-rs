@@ -27,16 +27,18 @@ def record_source(output, build, revision):
             for name in files}))
 
 
-def qualified_build(build, built):
-    profile = typed.require_frozen_profile()
+def qualified_build(build, built, *, ack=False):
+    profile = typed.require_frozen_profile(ack=ack)
     assert built['source'] == profile['product_source']
     component = json.loads((build / 'component-result.json').read_text())
     qualification = json.loads((build.parent / 'qualification.json').read_text())
-    assert qualification['status'] == 'PASS_PRODUCER_PROGRESS_COMPONENTS'
+    assert qualification['status'] == ('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
     assert component['status'] == 'PASS'
     for field in ('source', 'tree', 'source_manifest_sha256', 'lockfile_sha256'):
         assert component[field] == qualification[field] == built[field]
     binaries = component['executables_sha256']
+    if ack:
+        assert binaries==typed.ACK_EXECUTABLES_SHA256
     assert set(binaries) == {'bigbrotr', 'ingest_bootstrap_probe', 'native_components',
         'sync_progress', 'fact_codec', 'evidence_intent', 'control_schema', 'migrate_entrypoint'}
     assert all(hashlib.sha256((build / name).read_bytes()).hexdigest() == sha
@@ -50,7 +52,8 @@ def qualified_build(build, built):
         for name, sha in manifest['files_sha256'].items()
         if name.startswith(('apps/', 'crates/', 'migrations/'))
         or name in ('Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml'))
-    assert hashlib.sha256((SOURCE / 'migrations/postgres/0039_producer_progress.sql').read_bytes()
+    assert hashlib.sha256((SOURCE / ('migrations/postgres/0040_producer_ack.sql' if ack else
+        'migrations/postgres/0039_producer_progress.sql')).read_bytes()
         ).hexdigest() == profile['migration_sha256']
     return dict(built, probe_name='ingest_bootstrap_probe',
         probe_sha256=binaries['ingest_bootstrap_probe'])
@@ -74,7 +77,10 @@ def activation_acl(pg, database):
     return lab.sql(pg, database, 'SELECT json_build_object(' + ','.join(fields) + ');')
 
 
-def upgrade(pg, client, output, database, config, label, rows, *, reference_catalog=None):
+def upgrade(pg, client, output, database, config, label, rows, *, reference_catalog=None, ack=False):
+    assert type(ack) is bool
+    if ack:
+        typed.require_frozen_profile(ack=True)
     from initial_succession import physical
     from installed_progress_context_oracle import check_upgrade
     before, files = rows(database), physical(pg, database)
@@ -86,7 +92,7 @@ def upgrade(pg, client, output, database, config, label, rows, *, reference_cata
         for action in ('apply', 'reapply'):
             response = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
                 '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator',
-                '--target', '39')
+                '--target', '40' if ack else '39')
             context['responses'].append(dict(action=action, returncode=response.returncode,
                 stdout=response.stdout, stderr=response.stderr))
             assert response.returncode == 0 and not response.stderr
@@ -107,8 +113,8 @@ def upgrade(pg, client, output, database, config, label, rows, *, reference_cata
         context['acl']['after_stdout'] = activation_acl(pg, database)
         assert rows(database) == context['after'] and physical(pg, database) == context['physical_after']
         context['catalog_after'] = catalog(pg, database)
-        check_upgrade(context)
-        context['status'] = 'APPLIED_EXACT39'
+        check_upgrade(context,ack=ack)
+        context['status'] = 'APPLIED_EXACT40' if ack else 'APPLIED_EXACT39'
     finally:
         # Exceptions retain incomplete/unknown setup; there is no retry or adoption.
         if 'acl' in context:
@@ -117,18 +123,27 @@ def upgrade(pg, client, output, database, config, label, rows, *, reference_cata
     return context
 
 
-def helpers(output, directory, kind):
-    assert kind in ('initial', 'activated')
+def helpers(output, directory, kind, *, ack=False):
+    assert type(ack) is bool and kind in (('initial', 'activated', 'successor') if ack else ('initial', 'activated'))
     for source in (Path(__file__).with_name('installed_progress_transport.py'),
             SOURCE / 'experiments/ingest-succession/installed_family_client.py'):
         target = output / source.name
         if not target.exists():
             shutil.copy2(source, target)
         assert target.read_bytes() == source.read_bytes()
-    lab.write_json(directory / 'progress-context.json', dict(format='bigbrotr-progress-context/1', kind=kind))
+    if ack:
+        from installed_progress_transport import three_events
+        events = three_events(typed.ack_event_sequence(successor=kind=='successor'),successor=kind=='successor')
+        target = directory/'progress-ack-events.json'
+        with target.open('x') as stream:
+            json.dump(dict(format='bigbrotr-ack-events/1',events=events),stream)
+        target.chmod(0o600)
+    lab.write_json(directory / 'progress-context.json', dict(
+        format='bigbrotr-ack-context/1' if ack else 'bigbrotr-progress-context/1', kind=kind))
 
 
-def phases(pg, database, directory, rows, snapshot, kind, prefix):
+def phases(pg, database, directory, rows, snapshot, kind, prefix, *, ack=False):
+    assert type(ack) is bool
     from installed_family import capture_progress_observation, release_progress_transport
     from installed_progress_context_oracle import ready
     for phase in ('mutation', 'proof-only'):
@@ -138,7 +153,7 @@ def phases(pg, database, directory, rows, snapshot, kind, prefix):
             wires = [json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
             matches = [wire for wire in wires if wire.get('progress_phase') == phase]
             assert len(matches) <= 1, 'replayed typed phase'
-            return matches[0] if matches and ready(rows(database), kind, phase, matches[0]) else None
+            return matches[0] if matches and ready(rows(database), kind, phase, matches[0],ack=ack) else None
         try:
             wire = wait_for(observed, 'typed ' + kind + ' ' + phase, 10)
         except BaseException as error:
@@ -152,7 +167,7 @@ def phases(pg, database, directory, rows, snapshot, kind, prefix):
             lab.write_json(directory / ('progress-'+phase+'-failure.json'),failure)
             raise
         cut = snapshot('progress-' + phase)
-        assert ready(cut['control'], kind, phase, wire)
+        assert ready(cut['control'], kind, phase, wire,ack=ack)
         captured = capture_progress_observation(directory, phase, cut, wire)
         from initial_succession import census
         lab.write_json(directory / ('progress-'+phase+'-input-files.json'), census(directory / 'store/producer-inputs-v1'))
@@ -161,7 +176,8 @@ def phases(pg, database, directory, rows, snapshot, kind, prefix):
 
 
 class InitialCapture:
-    def __init__(self, pg, database, output, name, rows, setup):
+    def __init__(self, pg, database, output, name, rows, setup, *, ack=False):
+        self.ack=ack
         self.pg, self.database, self.output, self.name = pg, database, output, name
         self.directory, self.raw_rows, self.setup = output / name, rows, setup
         self.snapshots = []
@@ -169,7 +185,7 @@ class InitialCapture:
 
     def rows(self, database):
         assert database == self.database
-        return typed.legacy_state(self.raw_rows(database))
+        return typed.legacy_state(self.raw_rows(database),ack=self.ack)
 
     def snapshot(self, stage):
         item = dict(stage=stage, server_us=server_clock(self.pg, self.database),
@@ -221,9 +237,13 @@ class InitialCapture:
             gates={name:(self.directory / name).read_text() for name in (
                 'progress-mutation-observation.json', 'progress-proof-only-observation.json', 'progress-release.json')})
         path = self.output / (self.name + '-progress-verification.json')
+        if self.ack:
+            context.update(producer_ack_profile='two-slot-three-events/1',
+                ack_event_recipe=(self.directory/'progress-ack-events.json').read_text())
         lab.write_json(self.output/(self.name+'-progress-catalog.json'),context['catalog_after'])
         lab.write_json(path, context)  # Raw context survives verifier failure.
-        answer = verify_initial(context)
-        negative = controls(context, verify_initial)
+        checker=(lambda value:verify_initial(value,ack=True)) if self.ack else verify_initial
+        answer = checker(context)
+        negative = controls(context, checker)
         return dict(oracle=answer, negative_controls=negative,
             verification_sha256=hashlib.sha256(path.read_bytes()).hexdigest())

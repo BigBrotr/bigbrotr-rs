@@ -440,3 +440,45 @@ are checked separately from the root's current custody audit. Missing raw
 evidence cannot produce `PASS_RAW_CONTEXT_REPLAY`. These single-EVENT phases do
 not qualify max-three-frame latency or resolve the original a99 timeout cause;
 unchanged diagnostics, deadlines and failed outcomes remain preserved.
+
+
+The additive `--installed-sync-ack` and `--ingest-installed-live-ack` options
+reuse these same owners with migration40 and an actual accepted/registered
+window2. They require the exact `fcad4c9a01ad1aa2cc5dd419707414c9516e97ce`
+`PASS_PRODUCER_ACK_COMPONENTS` build and its eight literal executable hashes.
+The initial policy uses the existing explicitly privileged isolated fixture
+setup; this is not a new policy-activation qualification. Epoch2 keeps its
+established accepted revision2/window2 and the complete historical epoch1 bytes.
+
+Both real REQs contain the same ordered three distinct signed kind1 events:
+NEW, selector `included`, and selector `wrong-author` (the actual selector only
+filters kind1). The first REQ makes three new mutations; the second is released
+only after the first complete SQL/input cut and must be proof-only. Existing
+socket500ms, Control lease6s and grace2s bounds are unchanged. Each successful
+mutation/dictionary ACK adds exactly one native state put; proof-only adds none.
+No ACK count is derived from observed native state. Independent models require:
+
+| Entry | I=A=C | Producer revision mutation→proof | Acquisition revision | Dependencies | Native rows / sequence |
+| --- | --- | --- | --- | --- | --- |
+| Initial epoch1 | 6 | 6→9 | 3→6 | 22 | 75 / 95 |
+| Activated epoch2 | 4 | 4→7 | 3→6 | 20 | 110 / 134 |
+
+Every original request/receipt/fact/input remains; retired and job checkpoint
+stay0. The eight-ELF binding, accepted policy, registered window, exact heads,
+full77-table cuts/xmins, native bytes/write count, original files and custody
+must all pass, followed by the existing controls and ten ACK counterexamples.
+The profile and controls are source-ready, **installed runtime NOT_RUN** until
+root performs the fresh owned invocations. Epoch4, full-window proof-only,
+lost completion/recovery, GC and capacity remain separate gates.
+
+Use the existing commands with the ACK options and raw readers:
+
+```text
+python3 experiments/acquisition-scope/bindings.py LAB --installed-sync-ack BUILD
+python3 experiments/acquisition-scope/bindings.py LAB --ingest-installed-live-ack BUILD
+python3 -B -S LAB/source/experiments/ingest-bootstrap/installed_progress_context_oracle.py LAB --kind initial --producer-ack
+python3 -B -S LAB/source/experiments/ingest-bootstrap/installed_progress_context_oracle.py LAB --kind activated --producer-ack
+```
+
+The retained7239 failure replay remains a separate exact-source path and cannot
+be combined with ACK mode. Default schema39 profiles and outputs remain intact.

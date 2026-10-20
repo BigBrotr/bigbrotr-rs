@@ -3,6 +3,8 @@
 Only clock scalars are extracted from observations. Complete fact/receipt/input
 bytes are rebuilt independently; observed receipts never supply expectations.
 """
+import json
+
 from live_replay import Science as FactEncoding, OLD_EVENT, NEW_EVENT, body, cbor
 from history_replay import binary, be, sha
 from transition_replay import native_map, native_rows
@@ -47,7 +49,9 @@ def decode(data):
 
 
 class NetworkScience(FactEncoding):
-    def __init__(self, model, plan):
+    def __init__(self, model, plan, *, acknowledge=False):
+        assert type(acknowledge) is bool
+        self.acknowledge = acknowledge
         self.m, self.plan = model, plan
         self.values = native_map(model.native)
         self.ds, self.slot = binary(model.ds['dataset_id']), binary(model.slot)
@@ -73,7 +77,10 @@ class NetworkScience(FactEncoding):
         pending = bytes.fromhex(sha(b'bigbrotr/admission-batch/1\0' + cbor([self.ds, 0, self.epoch, first, last, batch])))
         self.put('facts', b'\x01\x21' + self.source(self.epoch, first), b'\x01\x21' + be(last) + pending)
         self.put('receipts', b'\x01\x30' + self.slot + be(self.epoch) + be(n), receipt)
-        self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31' + be(n) + bytes(16))
+        self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31' + be(n)
+            + (be(n-1)+be(0) if self.acknowledge else bytes(16)))
+        if self.acknowledge:
+            self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31'+be(n)+be(n)+be(0))
         name = self.slot.hex() + f'-{self.epoch:016x}-{n:016x}.cbor'
         assert name not in self.m.inputs
         self.m.inputs[name] = dict(bytes=len(original), sha256=sha(original))
@@ -86,7 +93,14 @@ class NetworkScience(FactEncoding):
         witness = [self.ref(1), self.ref(3), self.ref(5)] if provenance else None
         return [received, self.ref(2), quality, witness]
 
-    def network(self, provenance, dictionary_at, received, recorded, resolution, historical=None):
+    def network(self, provenance, dictionary_at, received, recorded, resolution, historical=None,
+                *, additional_events=()):
+        # Optional finite encoder seam only. Callers must independently bind
+        # all event literals and clocks; no ACK or complete-run result is inferred.
+        if additional_events:
+            assert isinstance(additional_events, (tuple,list)) and len(additional_events)==2
+            assert historical is None
+            assert len({NEW_EVENT['id'],*(event['id'] for event,_,_,_ in additional_events)})==3
         definitions = [(2, 'observer', dict(clock='system-utc', vantage=None, software=None,
             method_id=None, public_key=None, route_class=None, software_version=None))]
         if provenance:
@@ -120,7 +134,12 @@ class NetworkScience(FactEncoding):
         original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, 2], 'admit', 1,
             [1, self.scope, [*body(event), bytes.fromhex(event['sig'])], 'network', None, observation]])
         self.commit(2, original, list(range(n + 1, last + 1)), [(1, 3)] + [(self.epoch, k) for k in range(1, last + 1)])
-        if provenance:
+        if additional_events:
+            for ordinal,(event,at,committed,quality) in enumerate(additional_events,2):
+                first=last+1
+                last=self.append_network_event(event,ordinal,first,ordinal+1,
+                    at,committed,quality,provenance,n)
+        elif provenance:
             old_received, old_recorded = historical
             eid = bytes.fromhex(OLD_EVENT['id'])
             observation = self.observation(old_received, resolution, True)
@@ -133,6 +152,36 @@ class NetworkScience(FactEncoding):
             self.commit(3, original, [last + 1], deps)
         else:
             assert historical is None
+
+    def append_network_event(self, event, ordinal, first, request, received, recorded,
+                             resolution, provenance, dictionary_count):
+        """A new signed network event after the original first event encoder."""
+        assert ordinal in (2,3) and request==ordinal+1 and event['kind']==1
+        assert dictionary_count==(4 if provenance else 1)
+        eid=bytes.fromhex(event['id'])
+        assert ('default',(b'\x01\x06'+self.ds+eid).hex()) not in self.values
+        canonical=json.dumps([0,event['pubkey'],event['created_at'],event['kind'],
+            event['tags'],event['content']],ensure_ascii=False,separators=(',',':')).encode()
+        assert sha(canonical)==event['id'] and len(bytes.fromhex(event['sig']))==64
+        self.dictionary(first,8,'event',dict(event_id=eid),recorded,ordinal=ordinal)
+        self.fact(first+1,'event-payload',[*body(event),self.ref(8,ordinal)],recorded)
+        self.index(6,self.ds+eid,first+1)
+        self.fact(first+2,'event-eligibility',[eid,bytes.fromhex(sha(b'bigbrotr/body/1\0'+cbor(body(event)))),
+            bytes.fromhex(event['sig']),recorded,'network',None],recorded)
+        self.index(7,self.ds+eid+self.ref_key(self.scope),first+2)
+        observation=self.observation(received,resolution,provenance)
+        self.fact(first+3,'event-receive',[eid,received,self.ref(2),observation[2],None],recorded)
+        self.index(8,self.ds+eid+self.ref_key(self.scope),first+3)
+        last=first+3
+        if provenance:
+            last+=1
+            self.provenance(last,eid,received,observation[2],recorded)
+        original=b'bigbrotr/producer-request/1\0'+cbor([[self.slot,self.epoch,request],'admit',1,
+            [1,self.scope,[*body(event),bytes.fromhex(event['sig'])],'network',None,observation]])
+        dependencies=[(1,3)]+[(self.epoch,k) for k in range(1,dictionary_count+1)]+[
+            (self.epoch,k) for k in range(first,last+1)]
+        self.commit(request,original,list(range(first,last+1)),dependencies)
+        return last
 
     def provenance(self, n, eid, received, quality, recorded):
         self.fact(n, 'provenance', [eid, self.ref(1), self.ref(2), self.ref(3), received,

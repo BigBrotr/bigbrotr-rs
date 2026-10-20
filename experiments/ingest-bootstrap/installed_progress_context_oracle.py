@@ -56,13 +56,14 @@ def sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
-def check_upgrade(context):
+def check_upgrade(context, *, ack=False):
+    profile=typed.require_frozen_profile(ack=ack)
     assert set(context) in ({'before','after','physical_before','physical_after','status','responses',
         'catalog_before','catalog_after','acl'}, {'before','after','physical_before','physical_after','status','responses',
         'catalog_before','catalog_after','acl','reference_catalog32'})
     before, after = context['before'], context['after']
     assert len(after) == 77 and not any(after[t] for t in (*typed.TABLES, 'producer_checkpoints'))
-    old = typed.legacy_state(after)
+    old = typed.legacy_state(after,ack=ack)
     previous = {row['migration']:row for row in before['schema_versions']}
     current = {row['migration']:row for row in after['schema_versions']}
     assert len(previous)==len(before['schema_versions']) and len(current)==len(after['schema_versions']), 'duplicate migration receipt'
@@ -85,12 +86,13 @@ def check_upgrade(context):
         dict(statement='GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;',stdout=''),
         dict(statement=typed.PROGRESS_GRANTS,stdout='')], 'exact fixture grant statements'
     assert set(previous)==core|SUPPORT26, 'closed migration catalog prefix'
-    assert set(current) == set(previous) | set(range(version + 1, 40)), 'migration extension set'
+    target=40 if ack else 39
+    assert set(current) == set(previous) | set(range(version + 1, target+1)), 'migration extension set'
     assert all(current[n] == row for n, row in previous.items()), 'retained migration changed'
     transactions = set()
-    for n in range(version + 1, 40):
+    for n in range(version + 1, target+1):
         row = current[n]
-        name, digest = MIGRATIONS[n]
+        name, digest = ('0040_producer_ack.sql',profile['migration_sha256']) if n==40 else MIGRATIONS[n]
         typed.xid(row['xmin']); transactions.add(row['xmin'])
         assert row == dict(migration=n, name=name, checksum='\\x'+digest,
             engine='postgres-control', applied_by='bigbrotr_migrator', reader_min=1,
@@ -108,8 +110,8 @@ def check_upgrade(context):
     assert all(r['returncode'] == 0 and r['stderr'] == '' for r in context['responses'])
 
 
-def project32(state):
-    value = typed.legacy_state(state)
+def project32(state, *, ack=False):
+    value = typed.legacy_state(state,ack=ack)
     for table in EXTRA32:
         assert value.pop(table) == [], 'unmodeled later lifecycle row'
     # Project only the six new core receipts; retain unrelated higher IDs and
@@ -133,8 +135,9 @@ def input_custody(cuts, after, inputs):
             assert {key:metadata[key] for key in ('bytes','sha256')} == inputs[name]
 
 
-def ready(state, kind, phase, wire):
-    spec = PROFILES[kind]
+def ready(state, kind, phase, wire, *, ack=False):
+    spec = typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
+    width=3 if ack else 1
     assert len(state) == 77 and phase in ('mutation', 'proof-only')
     head = [r for r in state['producer_checkpoints'] if r['producer_epoch'] == spec['epoch']]
     jobs = [r for r in state['acquisition_progress'] if r['producer_epoch'] == spec['epoch']]
@@ -142,17 +145,21 @@ def ready(state, kind, phase, wire):
         return False
     head, job = head[0], jobs[0]
     proof = phase == 'proof-only'
-    return (head['checkpoint_revision'] == spec['mutation_revision'] + proof
+    return (head['checkpoint_revision'] == spec['mutation_revision'] + width*proof
         and head['complete_through_request'] == spec['request']
         and head['dependency_count'] == len(spec['dependencies']) and head['progress_jobs'] == 1
-        and job['progress_revision'] == job['classified_events'] == job['successful_events'] == 1 + proof
-        and job['rejected_events'] == 0 and job['event_ordinal'] == job['wire_sequence'] == 1
+        and job['progress_revision'] == job['classified_events'] == job['successful_events'] == width*(1 + proof)
+        and job['rejected_events'] == 0 and job['event_ordinal'] == job['wire_sequence'] == width
         and job['classification'] == (5 if proof else 2)
         and job['mutation_request'] == (None if proof else spec['request'])
         and typed.bytea(job['request_id'], 48) == wire['request'][1].encode())
 
 
-def wires_checked(opened, closed, snapshots, event, gates):
+def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, successor=False):
+    assert type(successor) is bool and (not successor or ack)
+    if ack:
+        assert set(gates)=={'progress-mutation-observation.json','progress-proof-only-observation.json','progress-release.json'}
+    events=typed.ack_event_sequence(successor=successor) if ack else [event]
     assert 3 <= len(opened) == len(closed) <= 128
     phases, nonces = {}, set()
     for number, (first, last) in enumerate(zip(opened, closed), 1):
@@ -177,8 +184,8 @@ def wires_checked(opened, closed, snapshots, event, gates):
             continue
         phase = last['progress_phase']
         assert phase in ('mutation','proof-only') and phase not in phases
-        assert last['frames'] == ['signed','EOSE'] and last['event_ids'] == [event['id']]
-        assert last['event_json_sha256'] == [sha(json.dumps(event,ensure_ascii=False,separators=(',',':')).encode())]
+        assert last['frames'] == ['signed']*len(events)+['EOSE'] and last['event_ids'] == [e['id'] for e in events]
+        assert last['event_json_sha256'] == [sha(json.dumps(e,ensure_ascii=False,separators=(',',':')).encode()) for e in events]
         assert last['completion'] == 'request-and-websocket-close'
         assert last['request_at_us'] <= last['sent_at_us'] <= last['closed_at_us']
         phases[phase] = last
@@ -199,8 +206,11 @@ def wires_checked(opened, closed, snapshots, event, gates):
 
 
 def typed_checked(kind, before, after, snapshots, phases, event, native, inputs, receipts,
-                  scope, observer, witness, control):
-    spec = PROFILES[kind]
+                  scope, observer, witness, control, *, ack=False):
+    spec = typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
+    events=typed.ack_event_sequence(successor=kind=='successor') if ack else [event]
+    width=len(events)
+    event=events[-1]
     epoch = spec['epoch']
     dataset = before['datasets'][0]['dataset_id']
     # Select by literal epoch, never aggregate row order.
@@ -214,14 +224,15 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
         assert set(state) == set(before) and len(state) == 77
         assert state['schema_versions'] == before['schema_versions']
         for request in state['producer_requests']:
-            if request['producer_epoch'] != epoch or request['request_sequence'] != spec['request']:
+            if request['producer_epoch'] != epoch or not spec['request']-width < request['request_sequence'] <= spec['request']:
                 assert all(request[key] is None for key in typed.REQUEST_ADDITIONS)
             else:
                 wire = phases['mutation']
+                ordinal=request['request_sequence']-(spec['request']-width)
                 assert {key:request[key] for key in typed.REQUEST_ADDITIONS} == dict(
                     progress_request_id='\\x'+wire['request'][1].encode().hex(),
-                    progress_event_ordinal=1, progress_wire_sequence=1,
-                    progress_input_sha256='\\x'+sha(json.dumps(event,ensure_ascii=False,separators=(',',':')).encode()))
+                    progress_event_ordinal=ordinal, progress_wire_sequence=ordinal,
+                    progress_input_sha256='\\x'+sha(json.dumps(events[ordinal-1],ensure_ascii=False,separators=(',',':')).encode()))
     cuts = {s['stage']:s for s in snapshots}
     mutation, proof = (cuts['progress-'+phase] for phase in ('mutation','proof-only'))
     assert mutation['inputs'] == proof['inputs']
@@ -233,22 +244,22 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
         state = cut['control']
         if not setup:
             wire = phases[phase]
-            assert ready(state,kind,phase,wire)
+            assert ready(state,kind,phase,wire,ack=ack)
             actual = only(state['acquisition_progress'])
             accepted = only(state['jobs'], request_key='\\x'+spec['key']*16)
             assert accepted['checkpoint_revision'] == 0 and accepted['state'] == 'queued'
             detail = only(state['acquisition_jobs'],job_id=accepted['job_id'])
             is_proof = phase == 'proof-only'
             job = dict(common, job_id=accepted['job_id'],scope_id=detail['scope_id'],
-                progress_revision=1+is_proof,request_id='\\x'+wire['request'][1].encode().hex(),
-                event_ordinal=1,wire_sequence=1,input_sha256='\\x'+sha(json.dumps(event,ensure_ascii=False,separators=(',',':')).encode()),
+                progress_revision=width*(1+is_proof),request_id='\\x'+wire['request'][1].encode().hex(),
+                event_ordinal=width,wire_sequence=width,input_sha256='\\x'+sha(json.dumps(event,ensure_ascii=False,separators=(',',':')).encode()),
                 classification=5 if is_proof else 2, mutation_request=None if is_proof else spec['request'],
-                classified_events=1+is_proof,successful_events=1+is_proof,rejected_events=0,
+                classified_events=width*(1+is_proof),successful_events=width*(1+is_proof),rejected_events=0,
                 observed_at_us=actual['observed_at_us'],clock_resolution_us=actual['clock_resolution_us'],
                 clock_anomaly_flags=actual['clock_anomaly_flags'],xmin=actual['xmin'])
             if is_proof:
                 digest = typed.certification_digest(event,scope,observer,observer,witness,job,wire).hex()
-                assert all(job['xmin'] != row['xmin'] for rows in typed.legacy_state(state).values() for row in rows)
+                assert all(job['xmin'] != row['xmin'] for rows in typed.legacy_state(state,ack=ack).values() for row in rows)
             else:
                 raw = inputs[spec['request']]
                 observation = decode(raw.split(b'\0',1)[1])[3][5]
@@ -258,7 +269,7 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
                 assert job['xmin'] == only(state['producer_outcomes'],producer_epoch=epoch,request_sequence=spec['request'])['xmin']
                 digest = sha(raw)
             job['intent_digest'] = '\\x'+digest
-            jobs, revision, complete = [job], spec['mutation_revision']+is_proof, spec['request']
+            jobs, revision, complete = [job], spec['mutation_revision']+width*is_proof, spec['request']
             coordinates = spec['dependencies']
         else:
             assert kind == 'initial' and not state['acquisition_progress']
@@ -302,22 +313,22 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
     for table in (*typed.TABLES,'producer_checkpoints'):
         assert after[table] == proof['control'][table]
     return dict(status='PASS_TYPED_CONTEXT',kind=kind,producer_epoch=epoch,
-        mutation_revision=spec['mutation_revision'],proof_revision=spec['mutation_revision']+1,
+        mutation_revision=spec['mutation_revision'],proof_revision=spec['mutation_revision']+width,
         complete_through_request=spec['request'],dependencies=len(spec['dependencies']),
-        acquisition_revision=2,job_checkpoint_revision=0,ack=0)
+        acquisition_revision=2*width,job_checkpoint_revision=0,ack=spec['request'] if ack else 0)
 
 
-def verify_initial(context):
+def verify_initial(context, *, ack=False):
     from installed_sync import BOOTSTRAP, COMMANDS, validate_source, validate_queued
     from initial_jobs import unchanged, logged_out, released
     from live_replay import OLD_EVENT
     assert set(context) == {'kind','setup','before','after','snapshots','report','transcript','opened',
         'terminal','stdout','stderr','signal','client_terminal','client_stdout','client_stderr','observations',
         'inputs','input_contents','native','event_bytes','native_result','catalog_after','backend_count','gates',
-        'input_files','input_files_after','backend','native_readback'}
+        'input_files','input_files_after','backend','native_readback'} | ({'producer_ack_profile','ack_event_recipe'} if ack else set())
     assert context['kind'] == 'initial'
-    check_upgrade(context['setup'])
-    assert context['setup']['status'] == 'APPLIED_EXACT39'
+    check_upgrade(context['setup'],ack=ack)
+    assert context['setup']['status'] == ('APPLIED_EXACT40' if ack else 'APPLIED_EXACT39')
     same(context['before'], context['setup']['after'])
     assert context['catalog_after'] == context['setup']['catalog_after']
     assert context['backend_count'] == 0
@@ -348,14 +359,24 @@ def verify_initial(context):
     assert sha(event_raw) == SIGNED_SHA256
     event = json.loads(event_raw)
     assert event == OLD_EVENT  # Preserve the frozen raw JSON member order too.
-    phases = wires_checked(context['opened'],context['transcript'],snapshots,event,context['gates'])
+    if ack:
+        assert context['producer_ack_profile']=='two-slot-three-events/1'
+        events=typed.ack_event_sequence()
+        assert json.loads(context['ack_event_recipe'])==dict(format='bigbrotr-ack-events/1',events=events)
+        event=events[0]
+    phases = wires_checked(context['opened'],context['transcript'],snapshots,event,context['gates'],ack=ack)
     signal = context['signal']
     quiet = only(context['transcript'],number=signal['round'])
     assert quiet['completion'] == 'quiet-eof' and not quiet['frames']
     assert signal['closed_before_signal'] is False and signal['request'] == quiet['request']
     assert quiet['request_at_us'] <= signal['signal_at_us'] <= quiet['closed_at_us']
-    before, after = typed.legacy_state(context['before']), typed.legacy_state(context['after'])
-    projected = [typed.legacy_state(s['control']) for s in snapshots]
+    before, after = typed.legacy_state(context['before'],ack=ack), typed.legacy_state(context['after'],ack=ack)
+    projected = [typed.legacy_state(s['control'],ack=ack) for s in snapshots]
+    total=6 if ack else 4
+    window=2 if ack else 32
+    if ack:
+        assert all(before[t][0]['document']['settings']['ingest.producer_outstanding_requests']==2
+            for t in ('config_revisions','policy_revisions'))
     initial, prepared, mutation, proof, durable, stopping = projected
     assert not before['owner_epochs'] and not before['producer_requests']
     assert {t for t in before if before[t] != initial[t]} <= BOOTSTRAP
@@ -364,7 +385,7 @@ def verify_initial(context):
     assert source['state'] == 'open' and source['last_complete_sequence'] is None, 'source lifecycle changed'
     producer = only(initial['producer_epochs'])
     assert producer['state'] == 'open' and producer['producer_epoch'] == producer['owner_epoch'] == 1
-    assert producer['reserved_through_request'] == 2 and producer['outstanding_request_limit'] == 32
+    assert producer['reserved_through_request'] == 2 and producer['outstanding_request_limit'] == window
     assert producer['xmin'] == only(initial['producer_requests'],request_sequence=2)['xmin']
     for state in (prepared,mutation,proof,durable,stopping,after):
         assert state['source_streams'] == initial['source_streams'], 'source lifecycle changed'
@@ -372,8 +393,8 @@ def verify_initial(context):
             assert all(row in state[table] for row in initial[table]), 'retained bootstrap originals changed'
         expected_producer = dict(producer)
         if state is not prepared:
-            expected_producer.update(reserved_through_request=4,
-                xmin=only(state['producer_requests'],request_sequence=4)['xmin'])
+            expected_producer.update(reserved_through_request=total,
+                xmin=only(state['producer_requests'],request_sequence=total)['xmin'])
         assert state['producer_epochs'] == [expected_producer], 'producer lifecycle changed'
     unchanged(initial,prepared,COMMANDS)
     assert not prepared['jobs'] and prepared['producer_requests'] == initial['producer_requests']
@@ -395,9 +416,13 @@ def verify_initial(context):
     assert set(actual) == {'event','rows','sequence'} and actual['event'] == 'dump-state'
     # One initial manifest write, twelve bootstrap entries (manifest included),
     # eight private-map, twenty attribution and sixteen signed-event entries.
-    assert type(actual['sequence']) is int and actual['sequence'] == 1+12+8+20+16
+    # Two further new-event batches are sixteen writes each. Under0040 each
+    # of the six mutating operations contributes one separate ACK state put.
+    if ack:
+        assert type(actual['sequence']) is int and actual['sequence']==95, 'ACK native write count differs'
+    assert type(actual['sequence']) is int and actual['sequence'] == 1+12+8+20+16+(32+6 if ack else 0)
     values = {(r['cf'],bytes.fromhex(r['key'])):bytes.fromhex(r['value']) for r in actual['rows']}
-    assert len(values) == len(actual['rows']) == 49
+    assert len(values) == len(actual['rows']) == (75 if ack else 49)
     facts = {int.from_bytes(key[-8:],'big'):decode(value[34:].split(b'\0',1)[1])
         for (cf,key),value in values.items() if cf == 'facts' and key[:2] == b'\x01\x20'}
     dictionary_at, recorded, received = facts[4][4],facts[8][4],facts[11][5][1]
@@ -405,9 +430,25 @@ def verify_initial(context):
     assert phases['mutation']['sent_at_us']-resolution <= received <= phases['mutation']['closed_at_us']+resolution
     assert only(after['jobs'])['created_at_us'] <= dictionary_at <= phases['mutation']['connected_at_us']
     assert received <= recorded <= snapshots[-1]['observed_by_us']
-    assert context['native_result'] == dict(native_rows=49,original_requests=4,
-        dictionary_recorded_us=dictionary_at,event_received_us=received,event_recorded_us=recorded)
-    wanted, inputs, receipts = initial_science(after,context['report'],event,dictionary_at,received,recorded,resolution)
+    options={}
+    if ack:
+        assert context['native_result']==dict(status='CAPTURED_FOR_COMPLETE_ACK_ORACLE')
+        extra=[]
+        for ordinal,literal in enumerate(events[1:],2):
+            first=8+5*(ordinal-1)
+            at=facts[first+3][5][1];committed=facts[first][4]
+            assert facts[first+3][5][3][1]==resolution
+            assert phases['mutation']['sent_at_us']-resolution<=at<=phases['mutation']['closed_at_us']+resolution
+            assert at<=committed<=snapshots[-1]['observed_by_us']
+            extra.append((literal,at,committed,resolution,sha(b'bigbrotr/body/1\0'+typed.cbor(typed.body(literal)))))
+        options=dict(additional_events=extra,acknowledge=True,
+            expected_body_digest=sha(b'bigbrotr/body/1\0'+typed.cbor(typed.body(event))))
+    else:
+        assert context['native_result'] == dict(native_rows=49,original_requests=4,
+            dictionary_recorded_us=dictionary_at,event_received_us=received,event_recorded_us=recorded)
+    wanted, inputs, receipts = initial_science(after,context['report'],event,dictionary_at,received,recorded,resolution,**options)
+    if ack:
+        assert sorted((cf,key,value) for (cf,key),value in values.items()) == wanted, 'complete ACK native bytes differ'
     assert sorted((cf,key,value) for (cf,key),value in values.items()) == wanted
     slot = context['report']['producer_slot_id']
     expected_inputs = {slot+'-0000000000000001-'+f'{n:016x}.cbor':dict(bytes=len(raw),sha256=sha(raw))
@@ -434,7 +475,7 @@ def verify_initial(context):
         outcome = only(after['producer_outcomes'],request_sequence=n)
         source = dict(relay_endpoint_id=None,relay_access_scope_id=None,relay_enrollment_generation=None,
             relay_route_id=None,acquisition_scope_id=None,acquisition_job_id=None)
-        if n == 4:
+        if n >= 4:
             source.update(relay_endpoint_id=enrollment['endpoint_id'],relay_access_scope_id=enrollment['access_scope_id'],
                 relay_enrollment_generation=1,relay_route_id=enrollment['route_id'],acquisition_scope_id=scope['scope_id'],
                 acquisition_job_id=job['job_id'])
@@ -447,62 +488,75 @@ def verify_initial(context):
             recorded_at_us=outcome['recorded_at_us'],xmin=outcome['xmin'])
         assert control['acquired_at_us'] <= request['reserved_at_us'] <= outcome['recorded_at_us'] < control['lease_expires_at_us']
         assert request['xmin'] != outcome['xmin']
-    assert only(after['producer_epochs'])['reserved_through_request'] == 4
-    assert only(after['producer_epochs'])['outstanding_request_limit'] == 32
+    assert only(after['producer_epochs'])['reserved_through_request'] == total
+    assert only(after['producer_epochs'])['outstanding_request_limit'] == window
     event_input = decode(inputs[3].split(b'\0',1)[1])[3]
     observation = event_input[5]
     return typed_checked('initial',context['before'],context['after'],snapshots,phases,event,
         {(cf,key.hex()):value.hex() for cf,key,value in wanted},dict(enumerate(inputs,1)),dict(enumerate(receipts,1)),
-        event_input[1],observation[1],observation[3],control)
+        event_input[1],observation[1],observation[3],control,ack=ack)
 
 
-def verify_live(context):
-    from installed_live_oracle import verify, native_plan, NetworkScience, BODY, SIGNATURE
+def verify_live(context, *, ack=False):
+    from installed_live_oracle import verify, native_plan, NetworkScience, BODY, SIGNATURE, ack_observations
     from initial_gap_policy import require_guards
     assert set(context) == {'mode','original','after','native_before','native_after','inputs_before','inputs_after',
         'input_contents','snapshots','response','journey','fixture','server_window','backend','catalog_before',
         'catalog_after','seed','setup','predecessor','progress_setup','progress_catalog_after','progress_gates',
-        'progress_input_files','progress_input_files_after'}
+        'progress_input_files','progress_input_files_after'} | ({'producer_ack_profile','ack_event_recipe'} if ack else set())
     assert context['mode'] == 'installed-live-on' and context['predecessor'] is None
     setup = context['progress_setup']
-    check_upgrade(setup)
-    assert setup['status'] == 'APPLIED_EXACT39'
+    check_upgrade(setup,ack=ack)
+    assert setup['status'] == ('APPLIED_EXACT40' if ack else 'APPLIED_EXACT39')
     same(context['original'],setup['after']); same(setup['before'],context['setup']['after'])
     assert context['progress_catalog_after'] == setup['catalog_after']
     assert context['catalog_before'] == context['catalog_after']
     require_guards(context['catalog_before'])
+    if ack:
+        assert context['producer_ack_profile']=='two-slot-three-events/1'
+        assert json.loads(context['ack_event_recipe'])==dict(format='bigbrotr-ack-events/1',events=typed.ack_event_sequence())
+        for table in ('config_revisions','policy_revisions'):
+            assert only(context['original'][table],revision=2)['document']['settings']['ingest.producer_outstanding_requests']==2
     projected = copy.deepcopy(context)
+    if ack:
+        projected.pop('producer_ack_profile'); projected.pop('ack_event_recipe')
     for key in ('progress_setup','progress_gates','progress_catalog_after','progress_input_files','progress_input_files_after'):
         projected.pop(key)
-    projected['original'],projected['after'] = project32(context['original']),project32(context['after'])
+    projected['original'],projected['after'] = project32(context['original'],ack=ack),project32(context['after'],ack=ack)
     assert [s['stage'] for s in context['snapshots']] == ['activated','prepared','progress-mutation',
         'progress-proof-only','submitted','renewed','before-stop']
-    projected['snapshots'] = [dict(s,control=project32(s['control'])) for s in context['snapshots']
+    projected['snapshots'] = [dict(s,control=project32(s['control'],ack=ack)) for s in context['snapshots']
         if not s['stage'].startswith('progress-')]
     projected['fixture']['renewal']['current'] = copy.deepcopy(projected['snapshots'][3])
     # The pinned schema32 catalog validates the reused72-table model. Actual39
     # definitions/ACLs remain separate exact before/after pg_dump observations.
     projected['catalog_before'] = projected['catalog_after'] = setup['reference_catalog32']
-    base = verify(**projected,split=True)
+    base = verify(**projected,split=True,ack=ack)
     input_custody(context['progress_input_files'],context['progress_input_files_after'],context['inputs_after'])
     for cut in context['snapshots'][2:4]:
         intermediate = copy.deepcopy(projected)
-        intermediate['snapshots'][2] = dict(cut,stage='submitted',control=project32(cut['control']))
-        verify(**intermediate,split=True)
+        intermediate['snapshots'][2] = dict(cut,stage='submitted',control=project32(cut['control'],ack=ack))
+        verify(**intermediate,split=True,ack=ack)
     report = json.loads(context['response']['stdout'].splitlines()[0])
     plan, rows = native_plan(context['seed'],projected['snapshots'][0]['control'],report)
-    science = NetworkScience(plan,rows,context['seed']['inputs'])
+    science = NetworkScience(plan,rows,context['seed']['inputs'],acknowledge=ack)
     actual = {(r['cf'],bytes.fromhex(r['key'])):bytes.fromhex(r['value']) for r in context['native_after']['rows']}
     fact = lambda n:decode(actual['facts',b'\x01\x20'+science.src_key(n)][34:].split(b'\0',1)[1])
-    science.network(True,fact(1)[4],fact(8)[5][1],fact(5)[4],fact(8)[5][3][1])
+    if ack:
+        first=only(context['journey']['closed'],progress_phase='mutation')
+        event,extras=ack_observations(science,actual,first,context['server_window'])
+        science.network(True,fact(1)[4],fact(8)[5][1],fact(5)[4],fact(8)[5][3][1],
+            event=event,additional_events=extras)
+    else:
+        science.network(True,fact(1)[4],fact(8)[5][1],fact(5)[4],fact(8)[5][3][1])
     assert actual == science.rows
     event = dict(pubkey=BODY[1].hex(),created_at=BODY[2],kind=BODY[3],tags=BODY[4],content=BODY[5],
         id=BODY[0].hex(),sig=SIGNATURE.hex())
     phases = wires_checked(context['journey']['opened'],context['journey']['closed'],context['snapshots'],
-        event,context['progress_gates'])
+        event,context['progress_gates'],ack=ack)
     result = typed_checked('activated',context['original'],context['after'],context['snapshots'],phases,event,
         {(cf,key.hex()):value.hex() for (cf,key),value in science.rows.items()},science.requests,science.receipts,
-        science.scope,science.ref(2),[science.ref(1),science.ref(3),science.ref(5)],only(context['after']['owner_epochs'],role='control',epoch=8))
+        science.scope,science.ref(2),[science.ref(1),science.ref(3),science.ref(5)],only(context['after']['owner_epochs'],role='control',epoch=8),ack=ack)
     return dict(result,legacy_science=base)
 
 
@@ -512,6 +566,8 @@ def controls(context, verify):
     def reject(name, change, reason=None):
         value = copy.deepcopy(context)
         change(value)
+        if context.get('producer_ack_profile')=='two-slot-three-events/1':
+            rebind_gates(value)
         try:
             verify(value)
         except (AssertionError,KeyError,TypeError,ValueError,IndexError,StopIteration) as error:
@@ -551,7 +607,8 @@ def controls(context, verify):
     reject('changed-native-value',lambda c:(c['native'] if 'native' in c else c['native_after'])['rows'][0].update(value='00'))
     reject('changed-original-input',lambda c:c['input_contents'].update({next(iter(c['input_contents'])):'00'}))
     reject('foreign-progress-issuer',lambda c:after(c)['producer_checkpoints'][0].update(issuer_epoch=999))
-    reject('head-complete-overadvance',lambda c:after(c)['producer_checkpoints'][0].update(complete_through_request=5))
+    reject('head-complete-overadvance',lambda c:after(c)['producer_checkpoints'][0].update(complete_through_request=(typed.ACK_EXPECTATIONS['initial' if 'kind' in c else 'activated']['request']+1
+            if c.get('producer_ack_profile')=='two-slot-three-events/1' else 5)))
     reject('proof-revision-missing',lambda c:phase(c)['acquisition_progress'][0].update(progress_revision=1))
     reject('proof-mutating-request',lambda c:phase(c)['acquisition_progress'][0].update(mutation_request=1))
     reject('proof-reused-request',lambda c:phase(c)['acquisition_progress'][0].update(request_id='\\x'+b'1'.hex()*48))
@@ -594,6 +651,8 @@ def controls(context, verify):
         reject('unjoined-cli',lambda c:c['response']['terminal'].update(reaped=False))
         reject('backend-not-absent',lambda c:c['backend']['absence']['attempts'][-1].update(count=1))
         reject('schema-drift',lambda c:c.update(progress_catalog_after=c['progress_catalog_after']+'changed'))
+    if context.get('producer_ack_profile')=='two-slot-three-events/1':
+        results.extend(typed.ack_counterexamples(context,verify,'initial' if 'kind' in context else 'activated'))
     return dict(status='PASS',rejected=len(results),cases=results)
 
 
@@ -614,7 +673,22 @@ def rebind_gates(context):
                 release_sha256=sha(gates['progress-release.json'].encode()))
 
 
-def replay(root, kind, *, retained_initial_capture=False):
+
+def bind_ack_modules(provenance, raw):
+    """Bind the actual pure-file verifier modules to the captured source manifest."""
+    stdlib=Path(stat.__file__).resolve().parent
+    for module in tuple(sys.modules.values()):
+        path=getattr(module,'__file__',None)
+        if path is None: continue
+        path=Path(path).resolve()
+        if path.is_relative_to(stdlib): continue
+        assert path.is_relative_to(SOURCE), 'foreign ACK replay module'
+        name=path.relative_to(SOURCE).as_posix()
+        assert name in provenance['files_sha256'], 'unbound ACK replay module'
+        assert sha(raw(path))==provenance['files_sha256'][name], 'ACK replay source changed'
+
+
+def replay(root, kind, *, retained_initial_capture=False, ack=False):
     """Read original files only; retained custody is not a current resource audit.
 
     Reuse the family reader's strict JSON and physical-file checks. No SQL,
@@ -624,6 +698,8 @@ def replay(root, kind, *, retained_initial_capture=False):
     from installed_family_capture import loads, physical
     from inventory import projection
     assert kind in ('initial','activated')
+    assert type(ack) is bool and not (ack and retained_initial_capture)
+    profile=typed.require_frozen_profile(ack=ack)
     assert type(retained_initial_capture) is bool and (not retained_initial_capture or kind=='initial')
     root=Path(root).resolve(strict=True); folder=root/'bindings'
     bound={}
@@ -640,8 +716,8 @@ def replay(root, kind, *, retained_initial_capture=False):
         assert sha(raw(folder/'result.json'))=='cee2afb1c1170a0fec63cbad5c5c32ef33142f960c1dfd3e4520ac21b5adeba8'
         assert sha(raw(root/'driver.log'))=='49670a7daed23aa50554b7581a215e56b854c6cd2359e716c43eff20a1fd7db2'
     else:
-        assert report['status']=='PASS_INSTALLED_'+kind.upper()+'_TYPED_PROGRESS'
-    assert report['wave']==kind+'-typed-progress' and report['label']=='org.bigbrotr.acquisition-binding'
+        assert report['status']=='PASS_INSTALLED_'+kind.upper()+('_PRODUCER_ACK' if ack else '_TYPED_PROGRESS')
+    assert report['wave']==kind+('-producer-ack' if ack else '-typed-progress') and report['label']=='org.bigbrotr.acquisition-binding'
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{32}',report['owner'])
     assert all(report[key]==[] for key in ('cleanup_errors','missing_owned','unrelated_changed'))
     provenance=read(folder/'progress-source.json')
@@ -661,12 +737,14 @@ def replay(root, kind, *, retained_initial_capture=False):
     build=Path(provenance['build']); assert build.is_absolute()
     built,component=read(build/'build-result.json'),read(build/'component-result.json')
     qualification=read(build.parent/'qualification.json')
-    assert component['status']=='PASS' and qualification['status']=='PASS_PRODUCER_PROGRESS_COMPONENTS'
-    assert built['source']==component['source']==qualification['source']==typed.require_frozen_profile()['product_source']
+    assert component['status']=='PASS' and qualification['status']==('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
+    assert built['source']==component['source']==qualification['source']==profile['product_source']
     for key in ('tree','source_manifest_sha256','lockfile_sha256'):
         assert built[key]==component[key]==qualification[key]
     assert set(component['executables_sha256'])=={'bigbrotr','ingest_bootstrap_probe','native_components',
         'sync_progress','fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
+    if ack:
+        assert component['executables_sha256']==typed.ACK_EXECUTABLES_SHA256
     for name,digest in component['executables_sha256'].items():
         assert sha(raw(build/name))==digest
     assert component['executables_sha256']['bigbrotr']==built['binary_sha256']
@@ -682,6 +760,8 @@ def replay(root, kind, *, retained_initial_capture=False):
     actual=provenance['files_sha256']; compiled=manifest['files_sha256']
     assert all(allow(name) or actual.get(name)==compiled.get(name) for name in set(actual)|set(compiled))
     assert actual['migrations/postgres/0039_producer_progress.sql']==typed.FROZEN_PROFILE['migration_sha256']
+    if ack:
+        assert actual['migrations/postgres/0040_producer_ack.sql']==profile['migration_sha256']
     initial=kind=='initial'; label='sync-signed' if initial else 'installed-live-on'
     directory=folder/label; prefix=folder/label
     expected_helpers=(('installed_client.py','session_client.py','installed_sync_client.py',
@@ -689,7 +769,7 @@ def replay(root, kind, *, retained_initial_capture=False):
     for name in (*expected_helpers,'installed_progress_transport.py','installed_family_client.py'):
         relative=('experiments/ingest-succession/' if name=='installed_family_client.py' else 'experiments/ingest-bootstrap/')+name
         assert raw(folder/name)==raw(root/'source'/relative)
-    assert read(directory/'progress-context.json')==dict(format='bigbrotr-progress-context/1',kind=kind)
+    assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-context/1' if ack else 'bigbrotr-progress-context/1',kind=kind)
     originals=read(folder/'progress-originals-before.json')
     assert set(originals)=={'bb_scope_54d1a18_basic','bb_source_template'}
     assert originals==read(folder/'progress-originals-after.json')
@@ -715,7 +795,7 @@ def replay(root, kind, *, retained_initial_capture=False):
         assert all(state[k] is False for k in ('Running','Paused','Restarting','OOMKilled','Dead'))
         assert state['ExitCode'] in ((0,) if ident==pg_id else (0,143))
     client=only(inventory,Id=client_id)
-    assert client['Name']=='/bigbrotr-acquisition-binding-'+report['source'][:7]+'-progress-'+kind
+    assert client['Name']=='/bigbrotr-acquisition-binding-'+report['source'][:7]+'-progress-'+kind+('-ack' if ack else '')
     assert only(client['Mounts'],Destination='/lab')['Source']==str(folder)
     mount=only(client['Mounts'],Destination='/build')
     assert mount['Source']==str(build) and mount['RW'] is False
@@ -724,6 +804,9 @@ def replay(root, kind, *, retained_initial_capture=False):
     context=read(context_file)
     if retained_initial_capture:
         assert sha(raw(context_file))=='9758b6bf4b96ef4e5ae0d88336ef354cbb50711b519ce91c29d9d2980271a5c3'
+    if ack:
+        assert context['ack_event_recipe']==raw(directory/'progress-ack-events.json').decode()
+        assert read(directory/'progress-ack-events.json')==dict(format='bigbrotr-ack-events/1',events=typed.ack_event_sequence())
     setup=context['setup'] if initial else context['progress_setup']
     assert setup==read(folder/(label+'-progress-upgrade.json'))
     assert setup['acl']==read(folder/(label+'-progress-acl.json'))
@@ -737,6 +820,8 @@ def replay(root, kind, *, retained_initial_capture=False):
     config=tomllib.loads(raw(folder/Path(identity['config']).name).decode())
     database=config['postgres']['control']['database']
     assert database in report['databases'] and config['storage']['ingest_root']=='/lab/'+label+'/store'
+    if ack:
+        assert config['ingest']['producer_outstanding_requests']==2
     assert config['runtime']['lease_ttl']=='6s' and config['runtime']['graceful_shutdown_timeout']=='2s'
     gates=context['gates'] if initial else context['progress_gates']
     for name,value in gates.items(): assert value==raw(directory/name).decode()
@@ -777,9 +862,10 @@ def replay(root, kind, *, retained_initial_capture=False):
         assert context['backend']==read(folder/(label+'-backend-exclusion.json'))
         assert context['backend']['absence']==read(folder/(label+'-backends.json'))
         assert context['backend']['absence']['database']==database
-        assert typed.legacy_state(context['before'])==read(folder/(label+'-before.json'))
-        assert typed.legacy_state(context['after'])==read(folder/(label+'-after.json'))
-        answer=verify_initial(context); negative=controls(context,verify_initial)
+        assert typed.legacy_state(context['before'],ack=ack)==read(folder/(label+'-before.json'))
+        assert typed.legacy_state(context['after'],ack=ack)==read(folder/(label+'-after.json'))
+        checker=lambda value:verify_initial(value,ack=ack)
+        answer=checker(context); negative=controls(context,checker)
         if not retained_initial_capture:
             case,=report['cases']
             assert case['verification_sha256']==sha(raw(context_file))
@@ -821,7 +907,8 @@ def replay(root, kind, *, retained_initial_capture=False):
         assert read(directory/'commands-finished.json')==commands
         assert raw(directory/'event.jsonl')==raw(basis/'signed-seed/event.jsonl')
         assert raw(directory/'selector-events.json')==raw(root/'source/tests/fixtures/acquisition/selector-events.json')
-        answer=verify_live(context); negative=controls(context,verify_live)
+        checker=lambda value:verify_live(value,ack=ack)
+        answer=checker(context); negative=controls(context,checker)
         group,=report['cases']; case,=group['cases']
         assert group['cli_invocations']==1 and group['source_preserved']==read(folder/'installed-live-source-preserved.json')
         assert group['source_lab']==str(basis.parent) and group['source_revision']==seed_owner.SOURCE
@@ -852,8 +939,10 @@ def replay(root, kind, *, retained_initial_capture=False):
                 context=bound[str(context_file)]),
             verifier=dict(path=str(verifier),sha256=verifier_sha),oracle=answer,negative_controls=negative,
             raw_files_sha256=bound,custody='RETAINED_OBSERVATIONS_ONLY_ROOT_CURRENT_AUDIT_SEPARATE')
+    if ack:
+        bind_ack_modules(provenance,raw)
     assert case['status']=='PASS' and case['oracle']==answer and case['negative_controls']==negative
-    return dict(status='PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
+    return dict(status='PASS_RAW_ACK_CONTEXT_REPLAY' if ack else 'PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
         raw_files_sha256=bound,custody='RETAINED_OBSERVATIONS_ONLY_ROOT_CURRENT_AUDIT_SEPARATE')
 
 
@@ -862,8 +951,9 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path)
     parser.add_argument('--kind',choices=('initial','activated'),required=True)
+    parser.add_argument('--producer-ack',action='store_true')
     parser.add_argument('--retained-initial-capture',action='store_true',
         help='Verify only the pinned complete7239 initial capture; preserve its original FAIL report.')
     arguments=parser.parse_args()
     print(json.dumps(replay(arguments.root,arguments.kind,
-        retained_initial_capture=arguments.retained_initial_capture),sort_keys=True))
+        retained_initial_capture=arguments.retained_initial_capture,ack=arguments.producer_ack),sort_keys=True))

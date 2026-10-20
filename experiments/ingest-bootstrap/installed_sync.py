@@ -141,7 +141,8 @@ def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, non
 
 
 def native(client, output, name, state, initialized, transcript, completed_us, *, window=32, primary_scope=None,
-           capture_sequence=False):
+           capture_sequence=False, ack=False):
+    assert type(ack) is bool and (not ack or capture_sequence)
     directory = output/name
     if capture_sequence:
         started_ns = time.monotonic_ns()
@@ -153,6 +154,10 @@ def native(client, output, name, state, initialized, transcript, completed_us, *
             finished_monotonic_ns=time.monotonic_ns()))
         assert dumped.returncode == 0 and dumped.stderr == ''
     (output/(name+'-native.json')).write_text(dumped.stdout)
+    if ack:
+        # InitialCapture immediately runs the complete independent ACK oracle
+        # over this dump plus all original SQL/input/process/gate captures.
+        return dict(status='CAPTURED_FOR_COMPLETE_ACK_ORACLE')
     actual = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
     originals = sorted((directory/'store/producer-inputs-v1').glob('*.cbor'))
     signed = name in EVENT_CASES
@@ -274,8 +279,12 @@ while True:
     return selected
 
 
-def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False):
+def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False):
     assert type(progress) is bool and (not progress or (name == 'sync-signed' and gap_schema is None))
+    assert type(ack) is bool and (not ack or progress)
+    if ack:
+        from installed_progress_replay import require_frozen_profile
+        require_frozen_profile(ack=True)
     assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES + ['sync-gap-uncorrected']
     expiry = name in EXPIRY_CASES
     full_window = name in WINDOW_CASES
@@ -299,7 +308,8 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
         'sync-source-function': 'control.require_relay_source(bytea,bytea,bytea,numeric,bytea)',
         'sync-scope-function': 'control.require_acquisition_scope(bytea,bytea,bytea,bytea)'}
     fault = name in functions or name in ('sync-lock', 'sync-change-read', 'sync-gap-uncorrected')
-    policy_setup(pg, database, name, rows, output, administration=not fault)
+    policy_setup(pg, database, name, rows, output, administration=not fault,
+        **({'producer_window':2} if ack else {}))
     if full_window:
         from installed_sync_window import configure_window
         configure_window(pg, database, rows, output, name)
@@ -318,13 +328,16 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
         from installed_progress_context import InitialCapture, upgrade as progress_upgrade
         migration_config = lab.config(output, dict(pg, client=client), database,
             endpoint='127.0.0.1:5432', boundary='loopback')
-        setup = progress_upgrade(pg, client, output, database, migration_config, name, rows)
-        progress_capture = InitialCapture(pg, database, output, name, rows, setup)
+        setup = progress_upgrade(pg, client, output, database, migration_config, name, rows, ack=ack)
+        progress_capture = InitialCapture(pg, database, output, name, rows, setup,ack=ack)
         rows = progress_capture.rows
     before = rows(database)
     assert {23, 24, 26} <= {r['migration'] for r in before['schema_versions']}
     assert not before['owner_epochs'] and not before['producer_requests']
     assert all(before[t][0]['document']['settings']['sync.enabled'] for t in ('config_revisions', 'policy_revisions'))
+    if ack:
+        assert all(before[t][0]['document']['settings']['ingest.producer_outstanding_requests']==2
+            for t in ('config_revisions','policy_revisions'))
     lab.write_json(output/(name+'-before.json'), before)
     state = dict(pg, client=client)
     config = lab.config(output, state, database, endpoint='127.0.0.1:5432', boundary='loopback')
@@ -334,6 +347,8 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
         text = set_value(text, 'runtime', 'renewal_timeout', '2s')
     if full_window:
         text = set_value(text, 'ingest', 'producer_outstanding_requests', 4)
+    if ack:
+        text = set_value(text, 'ingest', 'producer_outstanding_requests', 2)
     text = set_value(text, 'topology', 'local_roles', ['control', 'ingest', 'sync', 'archive'])
     text = set_value(text, 'network.dns', 'resolver', '127.0.0.1:9')
     text = set_value(text, 'network.tls', 'extra_roots', [])
@@ -359,7 +374,7 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
     shutil.copy2(SOURCE/'tests/fixtures/ingest/import-event.jsonl', directory/'event.jsonl')
     if progress:
         from installed_progress_context import helpers
-        helpers(output, directory, 'initial')
+        helpers(output, directory, 'initial', ack=ack)
     if name == 'sync-peer-refusals' or full_window:
         from installed_sync_client import REFUSAL_SHA256
         artifact = SOURCE/'tests/fixtures/acquisition/selector-events.json'
@@ -475,8 +490,8 @@ finally:
     if progress:
         from installed_progress_context import phases
         phases(pg, database, directory, progress_capture.raw_rows,
-            progress_capture.snapshot, 'initial', prefix)
-    wanted_count = 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
+            progress_capture.snapshot, 'initial', prefix, ack=ack)
+    wanted_count = 6 if ack else 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
     def completed():
         assert not (directory/'relay-error.json').exists(), 'independent relay failed'
         assert not Path(str(prefix)+'.terminal.json').exists(), 'initial owner ended early'
@@ -513,6 +528,8 @@ finally:
     old, = prepared['producer_epochs']; new, = current['producer_epochs']
     strip = lambda r: {k: v for k, v in r.items() if k not in ('reserved_through_request', 'xmin')}
     assert strip(old) == strip(new) and old['reserved_through_request'] == 2 and new['reserved_through_request'] == wanted_count
+    if ack:
+        assert old['outstanding_request_limit']==new['outstanding_request_limit']==2
     validate_source(current, initialized, observations, ordinal=visibility_ordinal)
     validate_queued(current, observations, ordinal=2 if expiry else 1)
     if expiry:
@@ -591,7 +608,7 @@ finally:
         if progress:
             progress_capture.exclude(after)
         native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000,
-            window=4 if full_window else 32, primary_scope=primary_scope, capture_sequence=progress)
+            window=2 if ack else 4 if full_window else 32, primary_scope=primary_scope, capture_sequence=progress,ack=ack)
     if name == 'sync-window-source':
         from installed_sync_window import validate_monitor
         window_evidence['deferred_source_monitor'] = validate_monitor(directory, after)
