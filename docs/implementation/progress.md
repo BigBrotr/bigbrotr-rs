@@ -5,13 +5,12 @@ Q37 models and Q38 evidence reuse apply. Sole integration/runtime owner: root.
 
 ## Objective and revision
 
-P02-T02 Steps4/5/7: design one durable producer checkpoint → synchronized owner
+P02-T02 Steps4/5/7: implement one durable producer checkpoint → synchronized owner
 ACK → restart path, retaining all request/receipt detail initially (noGC).
-This documentation commit follows main `855ea20c8091d2a9afefbfea510cded51f295469`
-(last exact verified remote; push46245 joined0). No new product changes.
-The max65536-byte plaintext manager case at frozen `b364611` is now qualified:
-source/integration reviews,27 offline controls, actual runtime, root custody and
-critical outcome review PASS within the stated retained f1e/214 sample scope.
+This checkpoint follows main `0e4ac3e917e09c4fc3053f5872ca5c75dbae0358`
+(last exact verified remote; push22321 joined0). Main has only these documentation
+updates; product implementation is isolated on `work/producer-checkpoint-ack`
+at `.research/producer-checkpoint-ack-20261020`, base `0e4ac3e`.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015`, owns
@@ -22,24 +21,25 @@ rewriting historical records. P08-T05 remains the separate backup/restore task.
 
 ## Processes and resources
 
-Runtime77164 joined0. All8owned containers stopped/PID0/noOOM, cgroups absent,
-no active root holder; unrelated resources unchanged. No runtime/build/cache/
-cleanup active. Source worktree/lab paths and custody are in the [inventory](../research/laboratory-inventory.json).
-The integrated credential ref is retired; worktree detached atb364611 and all
-ignored/external artifacts retained. Its author and critical reviewer are done.
-Astra/xhigh export_setup_fixture is reading the checkpoint/ACK architecture;
-source-only, no writable implementation or runtime delegation.
+No runtime/build/cache/cleanup active. Fresh container observation: no BigBrotr
+container running; the six unrelated containers remain unchanged. Prior runtime77164
+joined0 and its stopped resources/artifacts remain in the [inventory](../research/laboratory-inventory.json).
+Astra/xhigh export_setup_fixture owns source implementation in the isolated
+worktree; export_setup_review prepares discriminating scenarios using existing
+fixtures. Root alone owns builds/runtime/integration. All prior artifacts retained.
 
 ## Next action and open limits
 
-Complete and review the bounded checkpoint/ACK design against existing schema,
-producer classified-progress authority and all native closing/recovery consumers.
-Root has read complete PGproducer_outcomes, rocksproducer_closing/recovery and
-ACK contracts; detailed read boundary lives in the linked report. Current code
-rejects nonzeroACK state, so a lone ACK writer cannot be integrated safely.
-PG outcome copies or archive progress are not producer checkpoint authority.
-Then implement and qualify the two-slot window/reply-loss/restart path. Keep
-reclamation disabled until its causal closure and recovery are implemented.
+Review the first usable increment: typed cumulative PG progress, native context-bound
+classification witness, actual Sync consumer and validated zero-ACK recovery.
+Keep current window/deadlines and jobs.checkpoint_revision=0; classified local
+positions imply neither remote cursor nor completed acquisition coverage.
+The accepted design and independent countercheck are pinned in the linked report.
+Source implementation is in progress; build/real-engine qualification is NOT_RUN.
+Next add synced nativeACK with exact frontier transition and compatible recovery;
+actual ACK, not a newer PG head alone, grants credit. Qualify two-slot window,
+proof-only progress and reply-loss/restart. NoGC history64/32MiB is a temporary
+retention bound, not indefinite live capacity or completion of the ACK/GC gate.
 
 Original a99 initial Sync timeout cause remains unresolved. TLS/other credentials,
 worst-case/internal-owner/whole-service capacity, ACK/GC/import/restore and M1–M5

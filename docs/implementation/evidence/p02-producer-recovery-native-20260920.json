@@ -40981,14 +40981,28 @@
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       },
       "producer_checkpoint_ack_preparation_20261020": {
-        "status": "CRITICAL_SOURCE_DESIGN_IN_PROGRESS_NO_IMPLEMENTATION",
+        "status": "DESIGN_RECONCILED_SOURCE_IMPLEMENTATION_IN_PROGRESS_NOT_QUALIFIED",
         "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
         "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
         "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
-        "source_owner": "export_setup_fixture, verified Astra/xhigh; read-only architecture task. Root sole integrating/runtime owner.",
-        "root_read": "Complete PGproducer_outcomes.rs172, rocksproducer_closing.rs277, rocksproducer_recovery.rs377; full storage-services producerACK contract159-212 and effect rows64-66; relevant P02-T02/P08-T04/P01-T05 task sections. More current schema/callers required before implementation.",
+        "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
+        "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Complete scoped architecture/read assessment of durable checkpoint authority, current schemas and recovery consumers, then independent review and bounded implementation plus actual two-slot-window/reply-loss/restart discriminator. No receipt reclamation or mixed-cut backup qualification yet."
+        "next": "Implement and review the first usable typed-progress increment on work/producer-checkpoint-ack; reuse installed Sync/producer recovery fixtures with an explicit proof-only durable-progress discriminator. Then add synced nativeACK/frontier transition and all nonzeroACK recovery consumers; two-slot-window/reply-loss/restart real-engine qualification remains NOT_RUN.",
+        "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
+        "design": {
+          "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
+          "bytes": 22082,
+          "sha256": "976bb8728e7ef0c52c0e9219e8a55996211416c46032b45f8e7fed21ebca76be"
+        },
+        "independent_countercheck": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/design-countercheck-v1.json",
+          "bytes": 10202,
+          "sha256": "5606cdbfbd3917fa4b923337cb44618179e3415d5179b74deeebf8c203f94224"
+        },
+        "decision": "Reuse one typed cumulative producer head with retained deduplicated dependency closure and actual local acquisition attempt/ordinal. No immutable checkpoint history or native head digest. Required noGC invariant retired=0 and nativeACK<=validated head<=native issued<=PG reserved; credit follows positively observed nativeACK, never head alone. Proof-only progress changes no mutation sequence. Empty/unactivated target vetoes and whole-job uncertainty remain.",
+        "first_increment": "Typed PG progress, opaque context-bound native result and actual Sync consumer with validated zero-ACK historical recovery. Keep jobs.checkpoint_revision=0 and existing window/deadlines; this local classified progress is not coverage, EOSE or remote cursor. No nativeACK write or new credit in this increment. Intermediate source stays isolated until coherent review/qualification.",
+        "capacity": "Initial noGC history64/32MiB remains distinct from active window. Exact finite progress/closure reservation must be fixed before code admits it. This slice cannot qualify indefinite traffic, request65 at default64, GC or mixed-cut restore."
       }
     }
   }
