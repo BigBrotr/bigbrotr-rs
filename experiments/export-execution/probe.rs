@@ -130,6 +130,18 @@ fn directory(path: &Path) {
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     let mode = std::env::args().nth(1).unwrap();
+    if mode == "accept" {
+        let arguments = std::env::args().collect::<Vec<_>>();
+        if arguments.len() != 3 {
+            eprintln!("usage: export-execution-probe accept /lab/accept.json");
+            std::process::exit(2);
+        }
+        if let Err(error) = memory::accept::run(Path::new(&arguments[2])).await {
+            eprintln!("export acceptance setup refused: {error}");
+            std::process::exit(4);
+        }
+        return;
+    }
     if mode == "measure" {
         let args: Vec<_> = std::env::args().collect();
         if args.len() != 3 {

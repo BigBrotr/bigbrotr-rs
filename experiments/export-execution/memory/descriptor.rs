@@ -181,8 +181,11 @@ pub(super) fn bounded(path: &Path, maximum: usize) -> Result<Vec<u8>> {
 pub(super) struct Documents(Vec<(serde_json::Value, [u8; 32])>);
 impl Documents {
     pub fn read(case: &Case) -> Result<Self> {
+        Self::read_pair(&case.config, &case.policy)
+    }
+    pub fn read_pair(config: &Document, policy: &Document) -> Result<Self> {
         let mut docs = Vec::new();
-        for input in [&case.config, &case.policy] {
+        for input in [config, policy] {
             let bytes = bounded(&input.path, 64 * 1024)?;
             if Digest256::from_bytes(Sha256::digest(&bytes).into()) != input.sha256 {
                 return Err("trusted policy fixture hash differs".into());

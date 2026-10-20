@@ -1,5 +1,6 @@
 //! Finite measurement of one real accepted Export job. No scheduler or publisher changes.
 //! This caller names whole-call boundaries; the unchanged worker exposes no inner phases.
+pub(super) mod accept;
 mod descriptor;
 mod observe;
 use bigbrotr::{
