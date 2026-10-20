@@ -7,8 +7,11 @@ what its text records: process creation lineage, exact-path successful exec,
 terminal exit and a matching successful parent wait. A trace event's timestamp
 and line identify an observation; neither is a /proc start_ticks identity.
 
-Only decoded fork/vfork/clone/clone3, execve, wait4/waitid and exit calls are
-supported. PID reuse, nonleader exec, alternative parentage/namespaces, detached
+Decoded kill/tkill/tgkill calls are non-reaping observations: their raw PID/group
+selectors do not create identities, and a successful send is not delivery, death
+or reaping. Queued-signal syscalls remain unsupported. Only those sends and decoded
+fork/vfork/clone/clone3, execve, wait4/waitid and exit calls are supported.
+PID reuse, nonleader exec, alternative parentage/namespaces, detached
 children, truncated records and unknown forms refuse. Threads inherit their
 creator's process identity; their exits do not establish process reaping.
 Every process child must have a successful exec and a parent reap; a child that
@@ -28,6 +31,12 @@ _FLAGS = {
     'CLONE_SYSVSEM', 'CLONE_SETTLS', 'CLONE_PARENT_SETTID',
     'CLONE_CHILD_CLEARTID', 'CLONE_CHILD_SETTID', 'CLONE_VFORK',
 }
+_SIGNALS = set(('SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGBUS SIGFPE SIGKILL '
+                'SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGSTKFLT SIGCHLD '
+                'SIGCONT SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ '
+                'SIGVTALRM SIGPROF SIGWINCH SIGIO SIGPWR SIGSYS').split())
+_SIGNALS.update({'0', *(f'SIGRT_{number}' for number in range(33))})
+_SEND_ARGUMENTS = {'kill': 2, 'tkill': 2, 'tgkill': 3}
 
 
 class TraceError(ValueError):
@@ -189,12 +198,32 @@ def _ref(event):
     return {key: event[key] for key in ('pid', 'line', 'at', 'end_line', 'completed_at')}
 
 
+def _signal_send(call):
+    """Decode a send/probe result without inferring target identity or death."""
+    name, args, result, error = call['name'], call['args'], call['result'], call['error']
+    require(len(args) == _SEND_ARGUMENTS[name] and args[-1] in _SIGNALS,
+            'unsupported signal-send arguments')
+    require(all(re.fullmatch(r'-?(?:0|[1-9][0-9]*)', value) for value in args[:-1]),
+            'signal target must be a decoded numeric selector')
+    targets = [int(value) for value in args[:-1]]
+    require(all(-(2**31) <= value < 2**31 for value in targets), 'signal selector outside pid_t')
+    require((result == 0 and error is None) or
+            (result == -1 and error in ('EAGAIN', 'EINVAL', 'EPERM', 'ESRCH')),
+            'unsupported signal-send result')
+    require(name == 'kill' or result == -1 or all(value > 0 for value in targets),
+            'successful thread signal requires positive target IDs')
+    return dict(_ref(call), syscall=name, selectors=targets, signal=args[-1],
+                result=result, errno=error)
+
+
 def audit_trace(text, *, minimum_workers=1):
     """Return JSON evidence or raise TraceError; never executes or opens anything."""
     require(type(minimum_workers) is int and minimum_workers in (0, 1), 'minimum_workers must be 0 or 1')
     events = _events(text)
     tasks, births, execs, terminals, waits, exits = {}, {}, {}, {}, [], {}
-    allowed = {'fork', 'vfork', 'clone', 'clone3', 'execve', 'wait4', 'waitid', 'exit', 'exit_group'}
+    sends = []
+    allowed = {'fork', 'vfork', 'clone', 'clone3', 'execve', 'wait4', 'waitid', 'exit', 'exit_group',
+               *_SEND_ARGUMENTS}
     for event in events:
         pid = event['pid']
         tasks.setdefault(pid, []).append(event)
@@ -228,6 +257,8 @@ def audit_trace(text, *, minimum_workers=1):
             reaped = _wait(event)
             if reaped is not None:
                 waits.append((event, *reaped))
+        elif name in _SEND_ARGUMENTS:
+            sends.append(_signal_send(event))
         else:
             require(len(args) == 1 and re.fullmatch(r'[0-9]+', args[0])
                     and int(args[0]) <= 255 and result is None and event['error'] is None,
@@ -308,6 +339,7 @@ def audit_trace(text, *, minimum_workers=1):
                 trace_text_sha256=hashlib.sha256(text.encode('utf-8')).hexdigest(),
                 worker_executable=WORKER, workers=sorted(workers, key=lambda row: row['exec']['line']),
                 minimum_workers=minimum_workers, worker_count=len(workers),
+                signal_sends=sends,
                 task_count=len(tasks), process_count=len(set(groups.values())),
                 thread_count=sum(pid != owner for pid, owner in groups.items()),
                 root=dict(pid=root, exec=_ref(execs[root][0]),

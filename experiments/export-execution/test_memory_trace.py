@@ -46,6 +46,19 @@ PARENT_THREAD = '''100 1000000000.000001 execve("/usr/bin/python3", ["python3"],
 100 1000000000.000018 +++ exited with 0 +++
 '''
 
+# The finite setup sends SIGTERM to its application and probes a process group.
+# Sending a signal is not a wait; errno failures also carry no death evidence.
+SIGNAL_SENDS = PARENT_THREAD.replace(
+    '200 1000000000.000008 waitid',
+    '''100 1000000000.000008 kill(200, SIGTERM <unfinished ...>
+200 1000000000.000008 --- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=100, si_uid=1000} ---
+100 1000000000.000008 <... kill resumed>) = 0
+100 1000000000.000008 kill(-200, 0) = 0
+201 1000000000.000008 tkill(201, 0) = 0
+201 1000000000.000008 tgkill(200, 201, 0) = 0
+100 1000000000.000008 kill(999, 0) = -1 ESRCH (No such process)
+200 1000000000.000008 waitid''')
+
 
 def replace(trace, old, new):
     assert trace.count(old) == 1
@@ -53,6 +66,45 @@ def replace(trace, old, new):
 
 
 class MemoryTraceTests(unittest.TestCase):
+    def test_signal_sends_are_decoded_without_inventing_lifetimes(self):
+        result = audit_trace(SIGNAL_SENDS)
+        self.assertEqual((result['worker_count'], result['process_count'], result['thread_count']), (1, 3, 1))
+        sends = result['signal_sends']
+        self.assertEqual([item['syscall'] for item in sends], ['kill', 'kill', 'tkill', 'tgkill', 'kill'])
+        self.assertEqual([item['selectors'] for item in sends], [[200], [-200], [201], [200, 201], [999]])
+        self.assertEqual([item['signal'] for item in sends], ['SIGTERM', '0', '0', '0', '0'])
+        self.assertEqual([(item['result'], item['errno']) for item in sends],
+                         [(0, None), (0, None), (0, None), (0, None), (-1, 'ESRCH')])
+        self.assertLess(sends[0]['line'], sends[0]['end_line'])
+        self.assertEqual(result['workers'][0]['reap']['pid'], 200)
+
+    def test_signal_sends_cannot_replace_terminal_or_reap(self):
+        for omitted in (
+            '300 1000000000.000010 +++ exited with 0 +++\n',
+            '200 1000000000.000011 waitid(P_PID, 300, {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=300, si_uid=1000, si_status=0, si_utime=0, si_stime=0}, WEXITED, NULL) = 0\n',
+        ):
+            with self.subTest(omitted=omitted), self.assertRaises(TraceError):
+                audit_trace(replace(SIGNAL_SENDS, omitted, ''))
+
+    def test_malformed_or_unsupported_signal_sends_refuse(self):
+        original = 'kill(-200, 0) = 0'
+        for replacement in (
+            'kill(-200, 0) = 1',
+            'kill(-200, 0) = ? ERESTARTSYS (To be restarted)',
+            'kill(-200, 0) = -1',
+            'kill(-200, 0) = 0 ESRCH (No such process)',
+            'kill(-200, 0) = -1 UNKNOWN (Unsupported errno)',
+            'kill("-200", 0) = 0',
+            'kill(-200, 0, 1) = 0',
+            'kill(-200, SIGUNKNOWN) = 0',
+            'kill(2147483648, 0) = 0',
+            'tkill(-200, 0) = 0',
+            'tgkill(200, 0, SIGTERM) = 0',
+            'rt_sigqueueinfo(200, SIGTERM, {si_signo=SIGTERM, si_code=SI_QUEUE}) = 0',
+        ):
+            with self.subTest(replacement=replacement), self.assertRaises(TraceError):
+                audit_trace(replace(SIGNAL_SENDS, original, replacement))
+
     def test_explicit_zero_worker_phase_still_requires_complete_trace(self):
         trace = '''100 1000000000.000001 execve("/usr/bin/python3", ["python3"], NULL) = 0
 100 1000000000.000002 exit_group(0) = ?
