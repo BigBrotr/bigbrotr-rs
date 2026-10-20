@@ -18,7 +18,8 @@ import time
 
 sys.dont_write_bytecode = True
 from signed_publication_cases import command, event, execute, send, sha
-from signed_publication_oracle import EVENT, corpus, check, input_expectations
+from signed_publication_oracle import (EVENT, NATIVE_ROW_MODES, corpus, check, check_native_row, input_expectations,
+                                      input_files, mode_event, native_payload_json, producer_input_files)
 from fault_cases import Process
 
 
@@ -67,7 +68,10 @@ def cut_expectation(mode, prefix=False):
                               request_digest=cut_digest(read)), pin='not-granted')
 
 
-def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
+def main(root, capture_cut=False, reader_custody=False, query_lookup=False, native_row_boundary=False):
+    assert not native_row_boundary or not any((capture_cut, reader_custody, query_lookup))
+    if native_row_boundary:
+        query_lookup = True
     assert not (capture_cut and reader_custody)
     assert not (query_lookup and (capture_cut or reader_custody))
     if capture_cut:
@@ -90,27 +94,39 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                  ('publisher', out/'archive-publication-probe'), ('reader', out/'archive-read-probe')]
     if not capture_cut:
         artifacts.append(('event_reader', out/'archive-event-probe'))
+    if native_row_boundary:
+        artifacts.append(('control', out/'bigbrotr'))
+        assert len(ready['control_source']) == 40 and all(c in '0123456789abcdef' for c in ready['control_source'])
     for label, path in artifacts:
         assert sha(path) == ready[label]
-    evidence = root/('query-cases.json' if query_lookup else 'cut-cases.json' if capture_cut else 'event-cases.json')
+    evidence = root/('native-row-cases.json' if native_row_boundary else
+                    'query-cases.json' if query_lookup else 'cut-cases.json' if capture_cut else 'event-cases.json')
     assert not evidence.exists()
     result = dict(source=resources['source'], tree=resources['tree'], status='INCOMPLETE',
                   artifacts=ready, harness_sha256=sha(Path(__file__)),
                   oracle_sha256=sha(source/'experiments/archive-engine/signed_publication_oracle.py'),
                   cases=[])
+    output_limit = 8 * 1024 * 1024 if native_row_boundary else 256 * 1024
+    if native_row_boundary:
+        result['scope'] = ('Native exact-row boundary under exclusive trusted fixture custody. '
+            'No installed Export authorization, retained job pins, manager overlap or 256MiB process claim.')
+        result['policy_sha256'] = sha(source/'experiments/archive-engine/native-row-policy.json')
+        result['output_limit'] = output_limit
     if reader_custody:
         baseline = root/'out/native-tests/baseline-event-probe'
         assert sha(baseline) == '20709525a4ac035583b2ce7feefa12c7c09dd4d54c78c1aadad77ada14a5181e'
         result['negative_reader'] = dict(source='3f2995211bc8ea02b09e12e019d6e5d01bb55d9a', sha256=sha(baseline))
     def save():
         evidence.write_text(json.dumps(result, indent=2)+'\n')
-    def sql(db, query):
+    def sql(db, query, timeout=30):
         return command('docker', 'exec', '-i', pg, 'psql', '-XAtq', '-v', 'ON_ERROR_STOP=1',
-                       '-U', 'postgres', '-d', db, input=query)
+                       '-U', 'postgres', '-d', db, input=query, timeout=timeout)
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     inputs = root/('out/cut-inputs' if capture_cut else 'out/event-inputs')
     inputs.mkdir()
-    def run_case(label, request, wanted, interact=None, killed=False, executable='/out/native-tests/archive-event-probe', absent=False):
+    def run_case(label, request, wanted, interact=None, killed=False, executable='/out/native-tests/archive-event-probe', absent=False, expected_error=None):
+        if native_row_boundary:
+            quiescent(mode)
         case = dict(name=label, status='INCOMPLETE')
         result['cases'].append(case)
         request_path = inputs/(label+'.json')
@@ -121,7 +137,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
         save()
         try:
             execute(binary+[executable, '/out/event-inputs/'+request_path.name,
-                            '/out/event-inputs/'+temporary.name], 35, case, interact)
+                            '/out/event-inputs/'+temporary.name], 35, case, interact, output_limit=output_limit)
             save()
             if killed:
                 assert case['exit'] == 137 and not case['stdout'] and not case['stderr'] and not case['overflow']
@@ -145,6 +161,10 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                 assert int(observed['result']['snapshot_id']) == snapshot
             else:
                 assert 'event' not in observed['result'] and 'snapshot_id' not in observed['result']
+                if expected_error is not None:
+                    assert observed['result'] == dict(status='refused', error=expected_error)
+            if native_row_boundary:
+                assert check_native_row(mode, json.loads(reader['stdout']), observed) == result[mode+'_native_row']
             case['status'] = 'PASS'
             return observed
         finally:
@@ -161,9 +181,12 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
             expected.update(topology_generation='0',
                 bounds=[dict(shard_id=0, owner_epoch=1, complete_through=12 if mode=='history' else 10)],
                 snapshot_id=4 if mode=='history' else 3)
-        return dict(expected=expected,
+        result = dict(expected=expected,
                     catalog_id='5a'*16, data_root=f'/out/signed_{mode}/kind=7/',
                     database='bbpub_'+mode, max_row_bytes=1024*1024, deadline_ms=15000, cancel_file=None)
+        if native_row_boundary:
+            result.update(profile='export-native-row/1', deadline_ms=5000)
+        return result
     def metadata(db):
         names = json.loads(sql(db,"SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='public';"))
         assert all(name.startswith('ducklake_') and name.replace('_','').isalnum() for name in names)
@@ -172,11 +195,28 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
         home = root/f'out/signed_{mode}/kind=7'
         return {str(p.relative_to(home)): dict(bytes=p.stat().st_size, sha256=sha(p))
                 for p in sorted(home.rglob('*.parquet'))}
+    def quiescent(mode):
+        # Positive local joins alone do not prove remote driver disappearance.
+        until = time.monotonic() + 5
+        while True:
+            remaining = until - time.monotonic()
+            assert remaining > 0, 'native-row backend custody unresolved'
+            count = int(sql('postgres', "SELECT count(*) FROM pg_stat_activity WHERE datname IN "
+                f"('bbpub_{mode}','bbpub_control_{mode}');", timeout=min(1, remaining)))
+            if count == 0:
+                return
+            assert time.monotonic() < until, 'native-row backend custody unresolved'
+            time.sleep(.02)
+    def policy_rows(mode):
+        return json.loads(sql('bbpub_control_'+mode, "SELECT json_build_object("
+            "'config',(SELECT json_agg(t) FROM (SELECT *,xmin::text AS xmin FROM control.config_revisions)t),"
+            "'policy',(SELECT json_agg(t) FROM (SELECT *,xmin::text AS xmin FROM control.policy_revisions)t));"))
     save()
     try:
-        for mode in (['normal', 'history'] if capture_cut else ['normal', 'large', 'history']):
-            capture_for_mode = capture_cut or ((reader_custody or query_lookup) and mode != 'large')
-            value = EVENT
+        for mode in (NATIVE_ROW_MODES if native_row_boundary else
+                     ['normal', 'history'] if capture_cut else ['normal', 'large', 'history']):
+            capture_for_mode = not native_row_boundary and (capture_cut or ((reader_custody or query_lookup) and mode != 'large'))
+            value = mode_event(mode)
             if mode == 'large':
                 recipe = json.loads((source/'tests/fixtures/protocol/archive-event-response.json').read_text())
                 value = dict(recipe['event'], content=recipe['content_repeat']*recipe['content_count'])
@@ -187,16 +227,34 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
             parent = {}
             result[mode+'_publisher'] = parent
             try:
-                execute(binary+['/out/native-tests/archive-publication-probe', mode, '5432', '--capture-cut' if capture_for_mode else '--event-read'], 180, parent)
+                execute(binary+['/out/native-tests/archive-publication-probe', mode, '5432', '--capture-cut' if capture_for_mode else '--event-read'], 180, parent, output_limit=output_limit)
             finally:
                 save()
             assert parent['exit'] == 0 and not parent['stderr'] and not parent['overflow']
             values = [json.loads(line) for line in parent['stdout'].splitlines()]
             assert next(v['batches'] for v in values if v['event']=='retained-inputs') == records
-            if mode in ['normal', 'history']:
+            if native_row_boundary:
+                quiescent(mode)
+                before, original_files = metadata(db), files(mode)
+                assert len(original_files) == 8
+                result[mode+'_metadata_before'] = before
+                result[mode+'_files'] = original_files
+                policy = policy_rows(mode)
+                result[mode+'_policy'] = policy
+                literal = (source/'experiments/archive-engine/native-row-policy.json').read_bytes()
+                document = json.loads(literal)
+                policy_digest = '\\x' + hashlib.sha256(b'bigbrotr/product-policy/1\0' + literal).hexdigest()
+                assert all(len(policy[name]) == 1 and policy[name][0]['document'] == document
+                           and policy[name][0]['document_digest'] == policy_digest for name in ('config', 'policy'))
+                assert policy['config'][0]['accepted_source_digest'] == '\\x' + hashlib.sha256(literal).hexdigest()
+                home = root/f'out/signed_{mode}'
+                result[mode+'_retained_inputs'] = input_files(home, mode)
+                result[mode+'_producer_inputs'] = producer_input_files(home, event=value)
+                quiescent(mode)
+            if mode in ['normal', 'history'] or native_row_boundary:
                 reader = result[mode+'_independent_readback'] = {}
                 try:
-                    execute(binary+['/out/native-tests/archive-read-probe', mode], 45, reader)
+                    execute(binary+['/out/native-tests/archive-read-probe', mode], 45, reader, output_limit=output_limit)
                 finally:
                     save()
                 assert reader['exit'] == 0 and not reader['stderr']
@@ -204,8 +262,15 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                 # This slice consumes installed initialization/retained inputs;
                 # its dedicated mode omits previously qualified ACL fault races.
                 check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut', 'captured-prefix', 'historical-frontier', 'historical-capture', 'pin-history')], json.loads(reader['stdout']))
+                if native_row_boundary:
+                    raw = json.loads(reader['stdout'])['native_payload_json'].encode()
+                    assert raw == native_payload_json(value)
+                    result[mode+'_native_row'] = dict(bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
+                    quiescent(mode)
+                    assert metadata(db) == before and files(mode) == original_files
             request = identity(value, records, mode)
-            before, original_files = metadata(db), files(mode)
+            if not native_row_boundary:
+                before, original_files = metadata(db), files(mode)
             result[mode+'_metadata_before'] = before
             assert len(original_files) == (11 if mode == 'history' else 8)
             result[mode+'_files'] = original_files
@@ -255,7 +320,8 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                 save()
                 if capture_cut:
                     continue
-            run_case(mode+'-complete', request, value)
+            run_case(mode+'-complete', request, None if mode == 'row_over' else value,
+                     expected_error='ResourceLimit' if mode == 'row_over' else None)
             if mode == 'history':
                 assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == 4
                 request['expected']['snapshot_id'] = 3
@@ -401,9 +467,19 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                     if action == 'absent-deadline':
                         blocked['deadline_ms'] = 15000
                         run_case(label+'-absent-retry', blocked, None, absent=True)
+            if native_row_boundary:
+                quiescent(mode)
             result[mode+'_metadata_after'] = metadata(db)
             assert result[mode+'_metadata_after'] == before and files(mode) == original_files
             result[mode+'_unchanged'] = True
+            if native_row_boundary:
+                quiescent(mode)
+                assert policy_rows(mode) == policy
+                assert input_files(home, mode) == result[mode+'_retained_inputs']
+                assert producer_input_files(home, event=value) == result[mode+'_producer_inputs']
+                quiescent(mode)
+                save()
+                continue
             # A real metadata-engine restart; all scientific objects stay owned
             # and unchanged, and the next read uses fresh parent/worker processes.
             previous_start = sql(db, 'SELECT pg_postmaster_start_time()::text;')
@@ -448,5 +524,7 @@ if __name__ == '__main__':
     parser.add_argument('--capture-cut', action='store_true')
     parser.add_argument('--reader-custody', action='store_true')
     parser.add_argument('--query-lookup', action='store_true')
+    parser.add_argument('--native-row-boundary', action='store_true',
+        help='exclusive typed fixture: exact1MiB native row and one-byte-over with export read grants')
     args = parser.parse_args()
-    main(args.root.resolve(), args.capture_cut, args.reader_custody, args.query_lookup)
+    main(args.root.resolve(), args.capture_cut, args.reader_custody, args.query_lookup, args.native_row_boundary)

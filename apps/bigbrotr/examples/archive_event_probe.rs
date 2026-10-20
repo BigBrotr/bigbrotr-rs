@@ -33,6 +33,8 @@ struct Input {
     max_row_bytes: usize,
     deadline_ms: u64,
     cancel_file: Option<PathBuf>,
+    #[serde(default)]
+    profile: Option<String>,
 }
 #[derive(Deserialize)]
 #[serde(untagged)]
@@ -50,6 +52,16 @@ fn main() {
     let args: Vec<_> = std::env::args_os().collect();
     assert_eq!(args.len(), 3);
     let input: Input = serde_json::from_slice(&fs::read(&args[1]).unwrap()).unwrap();
+    let reduced = match input.profile.as_deref() {
+        None => false,
+        Some("export-native-row/1") => {
+            assert_eq!(input.max_row_bytes, 1 << 20);
+            assert_eq!(input.deadline_ms, 5000);
+            assert!(input.cancel_file.is_none() && matches!(&input.expected, Expected::Query(_)));
+            true
+        }
+        _ => panic!("closed fixture read profile"),
+    };
     let ready: serde_json::Value =
         serde_json::from_slice(&fs::read("/out/native-tests/ready.json").unwrap()).unwrap();
     let installation = WorkerInstallation {
@@ -110,12 +122,12 @@ fn main() {
                     installation: &installation,
                     temp_root: Path::new(&args[2]),
                     limits: PreparationLimits {
-                        memory_bytes: 128 << 20,
+                        memory_bytes: if reduced { 64 << 20 } else { 128 << 20 },
                         temp_bytes: 64 << 20,
                         threads: 1,
                         max_records: 2,
                         max_encoded_bytes: input.max_row_bytes,
-                        native_reserve_bytes: 384 << 20,
+                        native_reserve_bytes: if reduced { 96 << 20 } else { 384 << 20 },
                     },
                     deadline: started + Duration::from_millis(input.deadline_ms),
                     cancelled: &cancelled,
@@ -223,8 +235,9 @@ fn main() {
     if observed {
         drop(LocalCoordinator::open(&identity, &state).unwrap());
     }
-    println!(
-        "{}",
-        serde_json::json!({"result":output,"elapsed_ms":started.elapsed().as_millis(),"cancelled":cancelled.load(Ordering::Relaxed),"active_permits":budget.snapshot().active_permits()})
-    );
+    let mut report = serde_json::json!({"result":output,"elapsed_ms":started.elapsed().as_millis(),"cancelled":cancelled.load(Ordering::Relaxed),"active_permits":budget.snapshot().active_permits()});
+    if reduced {
+        report["profile"] = serde_json::json!({"name":"export-native-row/1","engine_bytes":64<<20,"native_reserve_bytes":96<<20,"row_bytes":1<<20,"max_records":2,"threads":1,"deadline_ms":5000,"scan_bytes":256<<20});
+    }
+    println!("{report}");
 }

@@ -16,6 +16,11 @@ from oracle import cbor
 
 DATASET = bytes([1]) * 16
 MODES = ('normal', 'before', 'after', 'owner_first', 'held_commit', 'held_rollback')
+NATIVE_ROW_MODES = ('row_exact', 'row_over')
+NATIVE_INPUT_SHA256 = {
+    'row_exact': 'bfa8ae62e35b6009bb258eeaa202b2e383c4a95ae0cf0495a50fd524b48b26df',
+    'row_over': 'fab1ddd561475a589b6322e11cdfbb35a5fd3a5e4f63220c359e382fbf62d3ec',
+}
 EVENT = json.loads((ROOT / 'experiments/identity-contract/signed-fixture.json').read_text())['events']['E_public']
 TABLES = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts', 'archive_commits')
 DESCRIPTOR_FIELDS = ('event_id class url clock vantage software method_id public_key route_class '
@@ -39,6 +44,72 @@ def ref_row(kind):
 
 def source(sequence):
     return [DATASET, 0, 1, sequence]
+
+
+def native_payload_json(event):
+    """Independent complete worker NativeFact JSON; fixed typed-publication IDs.
+
+    Decimal strings are intentional for owner/sequence/ordinal/recorded fields.
+    This is neither the scientific census row nor the signed EVENT envelope.
+    """
+    _, tables = corpus(event)
+    row = tables['events'][0]
+    def qualified(value):
+        return dict(dataset_id=value['dataset_id'].lower(),
+                    dictionary_kind=value['dictionary_kind'],
+                    allocation_domain=value['allocation_domain'].lower(),
+                    ordinal=str(value['ordinal']))
+    identity = row['source_record_id']
+    value = dict(
+        source=dict(dataset_id=identity['dataset_id'].lower(), shard_id=identity['shard_id'],
+                    owner_epoch=str(identity['owner_epoch']), sequence=str(identity['sequence'])),
+        scope=qualified(row['visibility_scope_id']), recorded=str(row['recorded_at']),
+        digest=row['payload_digest'].lower(), schema=row['record_schema_version'],
+        kind=row['record_kind'],
+        payload=dict(event_id=row['event_id'].lower(), pubkey=row['pubkey'].lower(),
+                     created_at=row['created_at'], kind=row['kind'], tags=row['tags'],
+                     content=row['content'], event_ordinal=qualified(row['event_ordinal'])))
+    return json.dumps(value, ensure_ascii=False, separators=(',', ':')).encode()
+
+
+def attempt_base(mode):
+    # Writer login names are cluster-global even across separate databases.
+    if mode in NATIVE_ROW_MODES:
+        return 16 if mode == 'row_exact' else 32
+    return 180 + (8 if mode == 'history' else MODES.index(mode)) * 8
+
+
+def mode_event(mode):
+    if mode not in NATIVE_ROW_MODES:
+        return EVENT
+    name = 'native-row-exact' if mode == 'row_exact' else 'native-row-over'
+    raw = (ROOT / 'tests/fixtures/protocol' / ('archive-event-' + name + '.json')).read_bytes()
+    assert len(raw) < 1048576 and hashlib.sha256(raw).hexdigest() == NATIVE_INPUT_SHA256[mode]
+    event = json.loads(raw)
+    assert set(event) == set(EVENT)
+    assert json.dumps(event, ensure_ascii=False, separators=(',', ':')).encode() == raw
+    assert hashlib.sha256(json.dumps([0, event['pubkey'], event['created_at'], event['kind'],
+        event['tags'], event['content']], ensure_ascii=False, separators=(',', ':')).encode()).hexdigest() == event['id']
+    assert len(native_payload_json(event)) == 1048576 + (mode == 'row_over')
+    return event
+
+
+def check_native_row(mode, readback, observation):
+    """Complete literal census + actual product-query response; no runtime inferred."""
+    assert mode in NATIVE_ROW_MODES
+    assert readback == expected(mode), 'complete native boundary science'
+    raw = readback['native_payload_json'].encode()
+    assert raw == native_payload_json(mode_event(mode)), 'complete pre-clamp native bytes'
+    assert set(observation) == {'result', 'elapsed_ms', 'cancelled', 'active_permits', 'profile'}
+    assert observation['profile'] == dict(name='export-native-row/1', engine_bytes=64*1024*1024,
+        native_reserve_bytes=96*1024*1024, row_bytes=1048576, max_records=2,
+        threads=1, deadline_ms=5000, scan_bytes=256*1024*1024), 'exact export native read profile'
+    assert observation['active_permits'] == 0 and observation['cancelled'] is False
+    assert type(observation['elapsed_ms']) is int and observation['elapsed_ms'] >= 0
+    wanted = dict(status='refused', error='ResourceLimit') if mode == 'row_over' else dict(
+        status='observed', snapshot_id='3', event=mode_event(mode))
+    assert observation['result'] == wanted, 'exact native boundary result'
+    return dict(bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest())
 
 
 def corpus(event=EVENT, history=False):
@@ -120,28 +191,32 @@ def corpus(event=EVENT, history=False):
 
 
 def expected(mode, bootstrap_only=False):
-    assert mode in MODES or mode == 'history'
-    batches, tables = corpus(history=mode == 'history')
+    assert mode in MODES or mode == 'history' or mode in NATIVE_ROW_MODES
+    value = mode_event(mode)
+    batches, tables = corpus(value, history=mode == 'history')
     empty_event = mode == 'before' or bootstrap_only
     if empty_event:
         for name in tables:
             tables[name] = [r for r in tables[name] if r['source_record_id']['sequence'] <= 5]
     for index, batch in enumerate(batches[:1] if empty_event else batches):
         ordinal = 2 if index == 0 else 5 if index == 2 else 4 if mode in ('owner_first', 'held_rollback') else 3
-        n = 180 + (8 if mode == 'history' else MODES.index(mode)) * 8 + ordinal
+        n = attempt_base(mode) + ordinal
         tables['archive_commits'].append(dict(dataset_id=DATASET.hex().upper(), schema_version=1,
             topology_generation=0, batch_digest=batch['archive_digest'].upper(), record_count=batch['last']-batch['first']+1,
             input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
             attempt_id=(bytes([n]) * 16).hex().upper(), publication_ordinal=ordinal))
-    return dict(event='readback', mode=mode, tables=tables, signed_event=None if empty_event else EVENT)
+    result = dict(event='readback', mode=mode, tables=tables, signed_event=None if empty_event else value)
+    if mode in NATIVE_ROW_MODES:
+        result['native_payload_json'] = native_payload_json(value).decode()
+    return result
 
 
 def input_expectations(mode):
-    batches, _ = corpus(history=mode == 'history')
+    batches, _ = corpus(mode_event(mode), history=mode == 'history')
     result = []
     for ordinal in range(1, 6 if mode == 'history' else 4 if mode in ('before', 'after') else 5):
         batch = batches[0 if ordinal == 2 else 2 if ordinal == 5 else 1]
-        n = 180 + (8 if mode == 'history' else MODES.index(mode)) * 8 + ordinal
+        n = attempt_base(mode) + ordinal
         result.append(dict(dataset_id=DATASET.hex(), schema_version=1, topology_generation='0',
             batch_digest=batch['archive_digest'], record_count=batch['last']-batch['first']+1,
             input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
@@ -168,7 +243,7 @@ def input_files(home, mode):
     # Original initialization bytes have host-specific inode/path fields. All
     # source, request and header fields below come from the independent corpus.
     initialization = hashlib.sha256((home/'kind=7/.bigbrotr-initialization/intent.json').read_bytes()).digest()
-    batches, _ = corpus(history=mode == 'history')
+    batches, _ = corpus(mode_event(mode), history=mode == 'history')
     result = []
     for expected in input_expectations(mode):
         ordinal = expected['publication_ordinal']
@@ -188,7 +263,7 @@ def input_files(home, mode):
     return result
 
 
-def producer_input_files(home, *, history=False):
+def producer_input_files(home, *, history=False, event=EVENT):
     """Exact original mutation bytes, independently authored from the fixed corpus."""
     descriptors = [
         (4, 'visibility', {'class': 'public'}),
@@ -204,7 +279,6 @@ def producer_input_files(home, *, history=False):
     dictionaries = [['dictionary', 1, [reference(k), 1, schema, 1, value]]
                     for k, schema, value in descriptors]
     inputs = [('admit-evidence', [1, reference(4), dictionaries])]
-    event = EVENT
     for sequence in ([2, 3, 4, 5] if history else [2, 3, 4]):
         signed = [bytes(32) if sequence == 3 else bytes.fromhex(event['id']),
                   bytes.fromhex(event['pubkey']), event['created_at'], event['kind'],
@@ -251,14 +325,14 @@ def check(mode, parent, reader, installed=False):
     assert before['exact_admission_retry'] and before['rejections'] == ['Signature', 'EventId']
     assert before['rocks_rows'] > 10 and before['rocks_rows'] == terminal['rocks_rows']
     assert before['rocks_digest'] == terminal['rocks_digest'] and len(before['rocks_digest']) == 64
-    assert pending['batches'] == corpus(history=mode == 'history')[0], 'independent retained fact/admission/archive identities'
+    assert pending['batches'] == corpus(mode_event(mode), history=mode == 'history')[0], 'independent retained fact/admission/archive identities'
     assert terminal['worker_active_permits'] == 0 and terminal['mode'] == mode
     outcomes = []
     for ordinal, first in [(1, 6), (2, 1), (3, 6), (4, 6), (5, 11)][:5 if mode == 'history' else 3 if mode in ('before', 'after') else 4]:
-        n = 180 + (8 if mode == 'history' else MODES.index(mode)) * 8 + ordinal
+        n = attempt_base(mode) + ordinal
         snapshots, files = ((5, 11) if ordinal == 5 else (2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or
                             ordinal == 3 and mode in ('before', 'owner_first', 'held_rollback') else (4, 8))
-        success = ordinal == 2 or ordinal == 3 and mode in ('normal', 'history', 'held_commit') or ordinal == 4 and mode in ('owner_first', 'held_rollback') or ordinal == 5
+        success = ordinal == 2 or ordinal == 3 and mode in ('normal', 'history', 'held_commit', *NATIVE_ROW_MODES) or ordinal == 4 and mode in ('owner_first', 'held_rollback') or ordinal == 5
         receipt = ('conflict' if ordinal == 4 and not success else
                    'present' if success or ordinal == 3 and mode == 'after' else 'absent')
         outcomes.append(dict(ordinal=ordinal, first=first, success=success,

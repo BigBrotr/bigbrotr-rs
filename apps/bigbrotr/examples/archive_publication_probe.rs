@@ -74,7 +74,20 @@ fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|v| format!("{v:02x}")).collect()
 }
 fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
-    let expected = include_str!("../../../experiments/archive-engine/receipt-policy.json");
+    validate_selected(document, digest, false)
+}
+fn validate_native_row(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
+    validate_selected(document, digest, true)
+}
+fn policy_document(native_row: bool) -> &'static str {
+    if native_row {
+        include_str!("../../../experiments/archive-engine/native-row-policy.json")
+    } else {
+        include_str!("../../../experiments/archive-engine/receipt-policy.json")
+    }
+}
+fn validate_selected(document: &str, digest: [u8; 32], native_row: bool) -> Result<(), OwnerError> {
+    let expected = policy_document(native_row);
     let value: serde_json::Value =
         serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
     let expected_digest: [u8; 32] = Sha256::new()
@@ -168,6 +181,9 @@ async fn provision_as(
     writer
 }
 async fn initialize_control(database: &str, installed: bool) {
+    initialize_control_policy(database, installed, false).await;
+}
+async fn initialize_control_policy(database: &str, installed: bool, native_row: bool) {
     let (mut admin, driver) = connect(database, "postgres").await;
     assert_eq!(
         migration_runner::run(
@@ -191,7 +207,7 @@ async fn initialize_control(database: &str, installed: bool) {
     drop(admin);
     driver.await.unwrap().unwrap();
     let (mut application, driver) = connect(database, "bigbrotr_control").await;
-    let document = include_str!("../../../experiments/archive-engine/receipt-policy.json");
+    let document = policy_document(native_row);
     let digest = Sha256::new()
         .chain_update(b"bigbrotr/product-policy/1\0")
         .chain_update(document)
@@ -205,7 +221,11 @@ async fn initialize_control(database: &str, installed: bool) {
             authority_mode: "managed",
             document,
             document_digest: digest,
-            source_digest: [3; 32],
+            source_digest: if native_row {
+                Sha256::digest(document.as_bytes()).into()
+            } else {
+                [3; 32]
+            },
         },
         &Cell::new(false),
     )
@@ -221,7 +241,7 @@ async fn initialize_control(database: &str, installed: bool) {
             authority_mode: "managed",
         },
         |d, h| {
-            validate(d, h).map_err(|_| {
+            validate_selected(d, h, native_row).map_err(|_| {
                 bigbrotr::storage::postgres::activation::ActivationError::PolicyInvalid
             })
         },
@@ -278,13 +298,29 @@ async fn run(
     export_jobs: bool,
 ) {
     assert!(!installed || !mode.starts_with("custody_"));
+    let native_row = matches!(mode, "row_exact" | "row_over");
+    assert!(
+        !native_row
+            || installed
+                && event_read
+                && !capture_cut
+                && !scope_grants
+                && !export_jobs
+                && port == 5432
+    );
+    let validate: fn(&str, [u8; 32]) -> Result<(), OwnerError> = if native_row {
+        validate_native_row
+    } else {
+        validate
+    };
     let manager_login = if installed {
         "CatalogManager"
     } else {
         "postgres"
     };
     let index = match mode {
-        "normal" => 0u8,
+        // New modes use separate explicit bases below; old indexes stay fixed.
+        "normal" | "row_exact" | "row_over" => 0u8,
         "large" => 7,
         "history" => 8,
         "before" => 1,
@@ -298,6 +334,11 @@ async fn run(
         | "custody_prelock_live"
         | "custody_prelock_dead" => 6,
         _ => panic!("closed case"),
+    };
+    let attempt_base = match mode {
+        "row_exact" => 16,
+        "row_over" => 32,
+        _ => 180 + index * 8,
     };
     let racing = matches!(mode, "owner_first" | "held_commit" | "held_rollback");
     let database = format!("bbpub_{mode}");
@@ -386,7 +427,7 @@ async fn run(
         assert!(!row.get::<_, bool>(2) && row.get::<_, bool>(3) && !row.get::<_, bool>(4));
         fs::write(home.join("runtime-manager.json"), serde_json::to_vec(&serde_json::json!({"current_user":row.get::<_, String>(0),"session_user":row.get::<_, String>(1),"superuser":false,"createrole":true,"inherit":false})).unwrap()).unwrap();
     }
-    initialize_control(&control, installed).await;
+    initialize_control_policy(&control, installed, native_row).await;
     if scope_grants {
         publication_scope_grants::prepare(&control).await;
         if export_jobs {
@@ -435,7 +476,10 @@ async fn run(
         publication_frontier::initialize(&mut owner, &mut admin, coordinator).await;
     }
     let path = home.join("rocks");
-    let store = ingest::prepare(&mut owner, policy, &observer, &path, &budget, &cancel, mode).await;
+    let store = ingest::prepare(
+        &mut owner, policy, &observer, &path, &budget, &cancel, mode, validate,
+    )
+    .await;
     let mut expected_pending = Vec::new();
     for first in [1, 6, 11]
         .into_iter()
@@ -494,7 +538,7 @@ async fn run(
         )
         .unwrap();
         let expected_digest = archive.digest();
-        let n = 180 + index * 8 + ordinal;
+        let n = attempt_base + ordinal;
         let request = ArchiveAttemptRequest::new(
             [n; 16],
             catalog,
@@ -680,7 +724,11 @@ async fn run(
             )
         };
         let success = ordinal == 2
-            || (ordinal == 3 && matches!(mode, "normal" | "large" | "history" | "held_commit"))
+            || (ordinal == 3
+                && matches!(
+                    mode,
+                    "normal" | "large" | "history" | "held_commit" | "row_exact" | "row_over"
+                ))
             || (ordinal == 4 && matches!(mode, "owner_first" | "held_rollback"))
             || (ordinal == 5 && mode == "history");
         if success {

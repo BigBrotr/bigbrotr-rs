@@ -8,6 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 CASES = ('archive-sample', 'content-heavy', 'tag-heavy')
+NATIVE_CASES = ('native-row-exact', 'native-row-over')
 
 
 def encoded(value):
@@ -37,6 +38,31 @@ def build(case):
     # Import the existing authoring dependency only for explicit author/check work.
     sys.path.insert(0, str(ROOT / 'experiments/identity-contract'))
     from signed_fixture import sign, verified, canonical
+    if case in NATIVE_CASES:
+        sys.path.insert(0, str(ROOT / 'experiments/archive-engine'))
+        from signed_publication_oracle import native_payload_json, corpus
+        # All hash/signature hex fields retain fixed widths. Size the independently
+        # encoded complete row with a valid empty event before signing the body.
+        empty = sign(3, 1, 1, [], '')
+        target = 1048576 + (case == 'native-row-over')
+        escaped, tail = divmod(target - len(native_payload_json(empty)), 6)
+        event = sign(3, 1, 1, [], '\0' * escaped + 'a' * tail)
+        assert verified(event)
+        raw = encoded(event)
+        row = native_payload_json(event)
+        batches, tables = corpus(event)
+        assert len(row) == target and len(raw) < 1048576
+        assert len(event['content'].encode()) < 262144, 'unchanged publisher decoded strings'
+        assert max(len(bytes.fromhex(f['preimage_hex'])) for b in batches for f in b['facts']) < 262144
+        census_bytes = max(len(encoded(r)) for rows in tables.values() for r in rows)
+        assert census_bytes < 2 * 1048576, 'explicit independent census, not the worker row cap'
+        return raw, dict(case=case, event_id=event['id'], signed_event_bytes=len(raw),
+            content_utf8_bytes=len(event['content'].encode()), nul_count=escaped, ascii_tail=tail,
+            native_row_bytes=len(row), native_row_sha256=hashlib.sha256(row).hexdigest(),
+            scientific_census_row_bytes=census_bytes,
+            fixture_sha256=hashlib.sha256(raw).hexdigest(),
+            canonical_sha256=hashlib.sha256(canonical(event)).hexdigest(),
+            verification='python-secp256k1 plus independent BIP340 equation; public test key3')
     if case == 'archive-sample':
         tags, content = [['x'], ['x', ''], ['t', 'é'], ['t', 'é']], 'archive\x00event é\n' * 4096
     elif case == 'content-heavy':
@@ -69,7 +95,7 @@ def build(case):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--case', choices=CASES, default='archive-sample')
+    parser.add_argument('--case', choices=CASES + NATIVE_CASES, default='archive-sample')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--check', action='store_true', help='reconstruct and compare without writing')
     args = parser.parse_args()

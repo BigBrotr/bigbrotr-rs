@@ -30,8 +30,9 @@ def command(*args, input=None, timeout=30):
     return r.stdout.strip()
 
 
-def execute(args, timeout, observation, interact=None, *, input_pipe=False):
-    process = Process(args, limit=256 * 1024, input_pipe=input_pipe)
+def execute(args, timeout, observation, interact=None, *, input_pipe=False, output_limit=256 * 1024):
+    assert output_limit in (256 * 1024, 8 * 1024 * 1024), 'explicit finite fixture output profile'
+    process = Process(args, limit=output_limit, input_pipe=input_pipe)
     observation.update(exit=None, remote_exclusion='UNKNOWN')
     deadline = time.monotonic() + timeout
     try:
