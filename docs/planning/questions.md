@@ -260,3 +260,18 @@ commits, active worktrees and integration; preserve worktree contents, ignored
 `.research` artifacts and external labs. Temporary active implementation branches
 remain available until their useful work is reconciled. This does not authorize
 removing evidence, rewriting published history or expanding public release scope.
+
+Q37 (2026-10-20): The owner authorizes only `gpt-6-astra` and `gpt-6.1-sol`,
+both exclusively with `xhigh` reasoning. The coordinator always uses Astra;
+architecture, concurrency, persistence, fault recovery, security, complex
+diagnosis and critical review subagents also require Astra. Prefer Sol for bounded
+implementation, local fixes and work with clear contracts and verification.
+Assess actual difficulty even for tests, tools and documentation; escalate
+substantial ambiguity, high risk or inconclusive attempts to Astra. No other
+models/efforts, including `gpt-6-sol`, or silent unavailable-model substitutions.
+Select through actual controls and verify effective configuration; report limits
+honestly. Apply to upcoming assignments without unnecessary interruption of work
+already underway. The [existing execution guide](../implementation/agent-handoff.md#starting-the-continuing-goal-on-tux)
+owns the operational allocation; the same plan, checkpoint, quality requirements
+and autonomous full-product goal remain in force. Earlier decisions remain
+historical records.

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T09:34Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T09:43Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,12 +9,19 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`4989945ba59f627c1c00fff00837edb60b36ac7f`, already pushed and verified remotely.
+`fd009b6aa9916e0ab4b64211f4766fb8d56d04b2`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Root's current documentation edits record resumption
-and completed limited custody of the interrupted missing-input run. Product source is unchanged. The
+No merge/rebase pending. Current documentation edits record Q37 and the completed
+engine boundary below. Product source is unchanged. The
 attempt-limit and export-memory worktrees are clean on their preserved commits;
 their reviewed source is not integrated or runtime-qualified.
+
+Q37 is recorded in the existing guide and decision register. Root session
+`01a12f2c-849d-7d20-9523-dcce1021b0c6` has actual turn-context metadata at
+2026-10-20T09:40:10.642Z reporting `gpt-6-astra` / `xhigh`; the available-model
+catalog separately lists both allowed configurations. Global defaults are not
+proof of this session's settings. The existing review was allowed to finish;
+its effective model/effort is unverified and must be checked before reuse.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -148,8 +155,18 @@ PID0/noOOM. Root read the complete115-line helper and delta; independent review
 FAIL/-2, interrupted negative controls and strict replay NOT_RUN remain unchanged.
 Never rerun this custody check after borrowed-PG reuse or replay the old engine.
 
-**Next action:** prepare a fresh missing-input run from clean main with unchanged
-qualified9a product, then execute its engine, independent replay and custody.
+Fresh **missing-input fd009b6 engine completed**, preparation23219 and engine2957
+joined0; engine09:35:55Z–09:37:34Z. Run
+`runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6`
+uses sourcefd009b6/tree2ae2cdc918067a8e7e267fbad0095768281c1bd4 and unchanged9a
+product. Its result reports11installed processes,31states/75tables and10negative
+controls PASS, refusal exit4, no new Archive attempt/frontier. Terminal PG/client
+stopped0/143, PID0/noOOM; cleanup/missing/unrelated arrays empty.
+**Independent strict replay and custody are NOT_RUN; qualification remains open.**
+
+**Next action:** perform that completed run's independent strict replay and custody
+before borrowed-PG reuse; inspect both results and record qualified status only
+after actual completion.
 Frontier-cancel and frontier-control-loss remain NOT_RUN.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
@@ -167,10 +184,8 @@ is not solely attributed to the selected9009500160B. All source/data/log evidenc
 worktrees and original failures remain preserved. Detailed pins and limitations
 are in `archive_package_cache_headroom` in the existing report/inventory.
 
-After this checkpoint commit/push, use the existing
-`.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
-(SHA5b61ccf3), build9a/audit1164, case missing-input from clean main.
-Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
+After this checkpoint commit/push, run strict
+`installed_archive_catch_up_refusal_capture.py` replay for fd009b6
 and latest custody templatec023b95d under journeyWT's
 `.research/archive-catch-up-client-name-audit-20261018` before borrowed-PG reuse.
 Each case needs its own genuine initial→terminal3 setup, unique clean revision/root
@@ -238,7 +253,9 @@ immediately after HTTP acceptance, while Initial cannot accept Export. Minimal
 bounded relay framing and a genuine typed acceptance-only fixture consumer were
 implemented only as a source candidate, not integrated or compiled. Manifest
 75b8f6a7 under exportWT `.research/export-accept-setup-source-20261020` is
-authenticated; root/independent full source reviews are pending. The reviewed
+authenticated; independent source-only review67a5ecef is complete with no concrete
+blocker, while root's affected-owner review remains incomplete. Compilation and
+runtime are NOT_RUN. The reviewed
 c68ac35 baseline and all original artifacts remain intact.
 No session runtime is active. Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.

@@ -238,10 +238,37 @@ boundary, offered workload and failure class.
 
 ## Starting the continuing goal on Tux
 
-The owner selected Astra with xhigh reasoning for the continuing session. On
-2026-10-12 the local Codex 0.162.1 configuration and model catalog expose
-`gpt-6-astra` and `xhigh`. Select the model in the session settings; writing its
-name inside a prompt does not change the running model. From a Tux terminal:
+Under owner decision Q37 (2026-10-20), only these configurations are authorized:
+
+| Responsibility | Exact model | Reasoning |
+|---|---|---|
+| Main coordinator; always | `gpt-6-astra` | `xhigh` |
+| Subagents for architecture, concurrency, persistence, fault recovery, security, complex diagnosis or critical review | `gpt-6-astra` | `xhigh` |
+| Subagents for bounded implementations, local fixes and work with clear contracts and verification; preferred | `gpt-6.1-sol` | `xhigh` |
+
+Judge the actual difficulty, including tests, verification tools and documentation.
+Substantial ambiguity, high risk or inconclusive Sol attempts require escalation
+to Astra, still at `xhigh`. No other model or reasoning level is authorized,
+including the older `gpt-6-sol`. If a configuration is unavailable, use the other
+only where this allocation permits; otherwise report the limit without silently
+substituting. Apply this to upcoming assignments without unnecessarily disrupting
+work already in progress.
+
+Use actual session/subagent controls for both model and reasoning. With the
+current collaboration tool, set `model` and `reasoning_effort` explicitly and use
+`fork_turns="none"` for overrides, supplying the bounded task and relevant context.
+Reuse an agent only when its effective configuration fits the assignment. Verify
+the effective settings through session status or recorded runtime metadata;
+a prompt, available-model catalog or global default alone is not that evidence.
+Report any configuration that cannot be set or verified. This allocation preserves
+all existing plan, review and verification requirements and the priority of a
+complete, correct, clean, minimal, maintainable and efficient product.
+
+The CLI exposes `/model` and `/status` for selection and verification; see the
+official [commands](https://learn.chatgpt.com/docs/developer-commands?surface=cli)
+and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+Writing a model name inside the goal does not change the running model.
+For a new coordinator session from a Tux terminal:
 
 ```sh
 codex -C /home/tux/bigbrotr-rs -m gpt-6-astra -c 'model_reasoning_effort="xhigh"'
@@ -279,8 +306,10 @@ Do not invent a new architecture or expand scope to every historical suggestion.
 
 Use bounded subagents when useful, one integrating owner, separate writable
 worktrees for parallel implementation, and independent review at consequential
-boundaries. Preserve unrelated workloads, historical/negative fixtures and the
-read-only legacy repositories. Keep migrations additive, credentials private and
+boundaries. Apply the execution guide's Q37 model/effort allocation through actual
+controls and verify effective settings. Preserve unrelated workloads,
+historical/negative fixtures and the read-only legacy repositories.
+Keep migrations additive, credentials private and
 packages unpublished. Commit coherent outcomes and push verified private work
 after reconciling the remote; do not publish, rename or deploy publicly.
 
