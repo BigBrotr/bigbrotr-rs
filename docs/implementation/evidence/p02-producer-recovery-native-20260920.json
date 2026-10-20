@@ -35975,7 +35975,7 @@
           "previous_status": "REVIEWED_SOURCE_ONLY_NOT_INTEGRATED_BUILD_ENGINE_NOT_RUN"
         },
         "clippy_correction_helpers_20261020": {
-          "status": "SOURCE_ONLY_INDEPENDENT_REVIEW_PENDING_RUNTIME_NOT_RUN",
+          "status": "SOURCE_REVIEW_CLOSED_RUNTIME_NOT_RUN",
           "manifest": {
             "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-clippy-correction-20261020/manifest-v1.json",
             "bytes": 4374,
@@ -36016,7 +36016,25 @@
             "new_sha256": "d1b463adfdefc22fdba6534b463d593679ec93fe3ff7b5bbe66c349d1db13365",
             "delta": "map(|v| Path::new(v)) -> map(Path::new)"
           },
-          "limits": "Independent review pending; compiler/Clippy after correction, helper execution, new build custody and connected attempt limits remain NOT_RUN."
+          "limits": "Root and independent source reviews closed; compiler/Clippy after correction, helper execution, new build custody and connected attempt limits remain NOT_RUN. Historical failed build remains FAIL.",
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-clippy-correction-20261020/review/review-v1.json",
+            "bytes": 14150,
+            "sha256": "2fde0e8a37523e830245575a6927aff825ff63e37465d1e795a136363c2a954c",
+            "status": "SOURCE_REVIEW_COMPLETE_NO_CONCRETE_BLOCKER_IN_REVIEWED_SCOPE",
+            "reviewer": {
+              "agent_path": "/root/attempt_correction_review",
+              "independence": "Separately tasked critical reviewer; no candidate authorship or candidate edits in this assignment.",
+              "actual_runtime_verified": true,
+              "model": "gpt-6-astra",
+              "reasoning_effort": "xhigh",
+              "session_id": "01a158d2-af13-7a40-8cb6-f55f93db7b12",
+              "parent_thread_id": "01a12f2c-849d-7d20-9523-dcce1021b0c6",
+              "runtime_metadata": "/home/tux/.codex/sessions/2026/10/20/rollout-2026-10-20T12-19-24-01a158d2-af13-7a40-8cb6-f55f93db7b12.jsonl",
+              "turn_context_timestamp": "2026-10-20T10:19:26.090Z",
+              "basis": "Read actual turn_context model, effort and collaboration settings; session_meta identifies this exact agent path and parent. Neither prompt text nor global defaults was treated as model evidence."
+            }
+          }
         }
       },
       "archive_download_headroom": {

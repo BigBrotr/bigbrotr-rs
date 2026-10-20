@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T10:20Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T10:32Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,11 +9,11 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`90da89e8c913121116a4bb88fc149bf89b023d9c`, pushed and verified remotely.
-Its tree is `a4b9802642b099df5eed20732798cc3919e829f3`.
+`c760787e1bbaef0bf25a2a2272e5b50195ed08e1`, pushed and verified remotely.
+Its tree is `a3b3d1f52058b837f98a0f9b87aa20154de0740d`.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Current edits are one Clippy correction in the
-qualification probe plus its failed-build checkpoint; no production source changed. The attempt-limit and
+No merge/rebase pending. The one-expression probe correction and failed-build
+checkpoint are committed. Current edits only record the completed independent review. The attempt-limit and
 export-memory worktrees are clean on their preserved commits. Attempt-limit
 source is integrated, with original build FAIL and correction not yet rebuilt; export source is
 not integrated.
@@ -208,9 +208,9 @@ nonborrowed containers. PG/client stopped0/143, PID0/noOOM; cleanup/missing/
 unrelated arrays empty. Never rerun custody after borrowed-PG reuse.
 
 All six ordinary refusal selectors now have their own qualified fresh roots.
-**Next action:** reconcile the independent review of the corrected preparation/
-custody helpers, commit and push the one-expression probe fix with this checkpoint,
-then prepare a new exact clean build. Original preparation5110 joined0,
+**Next action:** commit and push this source-review closure, then prepare and run
+the corrected exact clean build using the frozen helpers below; join the actual
+command and record its real outcome and custody before any attempt-limit engine. Original preparation5110 joined0,
 build60879 joined1 at10:15:19Z and custody35295 joined0. Build58aca32 remains
 **FAIL**: probe/worker compilation,41 tests and packaged postchecks PASS; Clippy
 refused `args.get(6).map(|v| Path::new(v))` at probe1067. The correction is
@@ -270,7 +270,9 @@ and the exact v2 delta. V2 includes interrupted component result.tmp in recursiv
 pins; original helper and checker-only failure remain. Explicit future clean
 revision/tree and sevenacc9bea hashes defined build58aca32; its FAIL is now frozen.
 Corrected helpers are in canonical `.research/archive-attempt-clippy-correction-20261020`,
-manifest8957a761/root reviewcb146b5a; independent review is running.
+manifest8957a761/root reviewcb146b5a. Independent review2fde0e8a is complete
+with no concrete blocker, verified Astra/xhigh. All four helpers and exact diffs
+were read; historical failed58 remains FAIL and the original review limits remain.
 They bind the one corrected probe hash, preserve failed58 and196priorELFs,
 retain the unchanged41tests and require202ELFs for a future qualified engine.
 The64GiB+577MiB engine reserve is unchanged. No corrected helper executed yet.
@@ -333,8 +335,8 @@ nativec2bc41dd01d7d6bab0146a6452147d36e4b1a77123c5f19adc21e28e9cfdc48f.
 Both owned containers are stopped and every build artifact/log is retained.
 Existing report/inventory node `archive_attempt_limits_build_58aca32` records
 the original running observation separately from the terminal FAIL/custody PASS.
-The export setup author and correction reviewer are source-only active agents;
-neither may run compiler/helpers/engines/SQL/Docker/cache operations.
+The correction reviewer has completed. The export setup author remains source-only
+active and may not run compiler/helpers/engines/SQL/Docker/cache operations.
 Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 All six refusal custody checks are complete and must not be rerun after
