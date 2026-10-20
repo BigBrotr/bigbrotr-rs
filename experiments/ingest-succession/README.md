@@ -6,7 +6,7 @@ tests and migration/CLI checks. It retains the exact CLI, finite probe and test
 executables and runs Clippy. A selected group with no passing tests cannot qualify.
 This profile alone does not exercise connected PostgreSQL progress, installed
 acquisition/recovery or native ACK. The existing progress checkpoint owns actual
-execution status; the profile is prepared before the new product tests are frozen.
+execution status and the evidence report owns exact build/test identities.
 
 `installed_family_client.py journey-progress` prepares a separate transport
 scenario using the existing authenticated journey. The first real REQ receives
@@ -23,12 +23,12 @@ binds both phase files, literal event hashes, actual distinct REQ identities,
 the release digest and unchanged input census. Its result is
 `CAPTURED_SPLIT_RELAY`, with SQL/checkpoint/native-proof validation `NOT_RUN`.
 The opt-in `installed_family.py ROOT BUILD --progress` path connects these cuts
-to the existing runner and complete raw capture reader. It is currently
-**NOT_READY**: `installed_progress_replay.FROZEN_PROFILE` is deliberately unset,
-and the runner refuses before resource creation. Final migration/source pins and
-independently fixed head/count/dependency expectations must be reviewed before
-that gate is filled. No build, connected run or executable control has run for
-this increment.
+to the existing runner and complete raw capture reader. The reviewed
+`installed_progress_replay.FROZEN_PROFILE` now binds migration0039 to the
+qualified component source `0bd27ff16b62bd4aa26b27a674f5c5af24b2a238` and the
+independently fixed head/count/dependency expectations. This enables the
+connected fixture; its actual execution and offline-control status remain in
+the existing checkpoint and evidence report.
 The selected `product_source` must exactly match the qualified build, component
 and qualification receipts in both the runner and offline replay. Later runner
 commits are permitted only by the existing docs/experiments-only source delta
