@@ -94,11 +94,14 @@ CASE_EXPECTATIONS = {
     },
 }
 
-# Deliberately unavailable until the final migration and integrated qualified
-# build source are frozen and reviewed. product_source names that exact build,
-# not an isolated author packet or a later fixture-only runner revision. No
-# caller can provide a replacement golden file or turn a valid digest into PASS.
-FROZEN_PROFILE = None
+# Frozen to the reviewed migration and qualified component build. product_source
+# names that exact build, not an isolated author packet or a later fixture-only
+# runner revision. No caller can replace the golden or turn a valid digest into PASS.
+FROZEN_PROFILE = {
+    'migration_sha256': '0b79b58fbe49d0603999af74d04f7794ae0390e8c2bb4407b52f49203f9f8bce',
+    'product_source': '0bd27ff16b62bd4aa26b27a674f5c5af24b2a238',
+    'cases': CASE_EXPECTATIONS,
+}
 
 # Additive authority only in the explicit0039 fixture. The ordinary0038
 # runner retains its original two grant statements.
