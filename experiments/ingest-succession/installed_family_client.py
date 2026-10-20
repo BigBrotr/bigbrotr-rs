@@ -215,8 +215,9 @@ def relay(directory, listener, finished, errors, progress=False, hole=False):
         listener.close()
 
 
-def journey(directory, progress=False, hole=False):
+def journey(directory, progress=False, hole=False, commit_loss=False):
     assert type(progress) is type(hole) is bool and (not hole or progress)
+    assert type(commit_loss) is bool and (not commit_loss or (progress and not hole))
     if progress:
         assert not any((directory / name).exists() or (directory / name).is_symlink() for name in (
             'progress-release.json', 'progress-mutation-observation.json',
@@ -284,15 +285,17 @@ def journey(directory, progress=False, hole=False):
             deadline_us='120000000', **revisions), 'e4' * 16)
         assert receipt['execution'] == 'unobserved' and receipt['authority'] == 'acceptance-only'
         barrier('submitted')
-        status, raw = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
-        observed = json.loads(raw)
-        assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
-            kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
-            created_at_us=receipt['accepted_at_us'], completed_at_us=None,
-            observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
-        logged_out = access('logout', '--session-ref', 'file:' + str(session))
-        assert json.loads(session.read_text()) == saved
-        assert request('GET', '/management/v1/me', headers=auth)[0] == 401
+        observed = logged_out = None
+        if not commit_loss:
+            status, raw = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
+            observed = json.loads(raw)
+            assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
+                kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
+                created_at_us=receipt['accepted_at_us'], completed_at_us=None,
+                observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
+            logged_out = access('logout', '--session-ref', 'file:' + str(session))
+            assert json.loads(session.read_text()) == saved
+            assert request('GET', '/management/v1/me', headers=auth)[0] == 401
         barrier('commands-finished')
     finally:
         finished.set()
@@ -321,6 +324,6 @@ if __name__ == '__main__':
         assert len(sys.argv) == 4
         serve(Path(sys.argv[2]), Path(sys.argv[3]))
     else:
-        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole') and len(sys.argv) == 3
+        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole', 'journey-progress-loss') and len(sys.argv) == 3
         journey(Path(sys.argv[2]), progress=sys.argv[1] != 'journey',
-            hole=sys.argv[1] == 'journey-progress-hole')
+            hole=sys.argv[1] == 'journey-progress-hole', commit_loss=sys.argv[1] == 'journey-progress-loss')

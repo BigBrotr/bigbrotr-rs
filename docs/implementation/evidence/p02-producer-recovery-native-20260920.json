@@ -41658,10 +41658,174 @@
             "finding": "Actual Serve initialization rc4: ingest registration failed Backend. PostgreSQL430 names permission denied control.initial_ingest_activations in guard_initial_activation_target; initial26 fixture upgraded39 lacks established narrow SELECT required by schema32 trigger. Migration correction succeeded; no initialized message or Sync journey.",
             "capture_replay": "NOT_RUN",
             "custody": "Root driver joined1; both exact owned containers freshly observed exited/PID0/noOOM/matching labels/cgroups absent; no cleanup errors or unrelated changes. Preserve failed artifacts."
+          },
+          {
+            "source": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556",
+            "tree": "6b3ed38afbdd64c07e758c445588e7e62fef2e8d",
+            "product_source": "d4e1b85566dee30994017834b763fe04396bcf1c",
+            "kind": "activated",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-activated-9653725",
+            "driver_session": 95693,
+            "driver_exit": 0,
+            "status": "PASS_INSTALLED_ACTIVATED_TYPED_PROGRESS",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-activated-9653725/bindings/result.json",
+              "bytes": 13917,
+              "sha256": "6596a07ea95b919082b7913877da627d4976ec82427001f97ea605cd643915be"
+            },
+            "capture_replay": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-activated-9653725/raw-replay.json",
+              "bytes": 464533,
+              "sha256": "afb75f8af6d1ee4c2de053d506a58c4f2f7a9de64136aecc90c2dbc7899bc2a7"
+            },
+            "capture_driver_session": 39120,
+            "capture_driver_exit": 0,
+            "raw_status": "PASS_RAW_CONTEXT_REPLAY",
+            "bound_file_count": 2160,
+            "oracle": {
+              "status": "PASS_TYPED_CONTEXT",
+              "kind": "activated",
+              "producer_epoch": 2,
+              "mutation_revision": 2,
+              "proof_revision": 3,
+              "complete_through_request": 2,
+              "dependencies": 10,
+              "acquisition_revision": 2,
+              "job_checkpoint_revision": 0,
+              "ack": 0,
+              "legacy_science": {
+                "status": "PASS",
+                "mode": "installed-live-on",
+                "snapshots": 5,
+                "sql_tables": 72,
+                "native_rows": 84,
+                "native_sequence": 98,
+                "original_inputs": 4,
+                "final_inputs": 6,
+                "actual_cli": true,
+                "certification_per_resend": "not-observed",
+                "completion": "not-qualified"
+              }
+            },
+            "negative_controls": 25,
+            "process": {
+              "pid": 109,
+              "config": "/lab/bb_scope_bind_9653725_installed_live_on.toml",
+              "prefix": "/lab/installed-live-on",
+              "command": [
+                "/build/bigbrotr",
+                "serve",
+                "--file",
+                "/lab/bb_scope_bind_9653725_installed_live_on.toml",
+                "--activate-initial-successor",
+                "--roles",
+                "control,ingest,sync"
+              ],
+              "start_ticks": 591055274,
+              "exit_code": 0,
+              "reaped": true,
+              "forced": false,
+              "elapsed_seconds": 7.2265176037326455
+            },
+            "scope": "Actual --activate-initial-successor with provenance on; complete77-table typed extension plus reused independent72-table lifecycle/science model. Separate signed mutation and later proof-only REQ, original input inode/bytes preserved, native84/sequence98. No ACK/retired above0, workflow completion, recovery/capacity or original a99 timeout resolution.",
+            "custody": "Root freshly observed exact ownedclient and borrowedPG exited/PID0/noOOM/matchinglabels/cgroupsabsent after runtime joined. Raw reader joined0. No cleanup errors, missing ownedcontainers or unrelatedchanges."
+          },
+          {
+            "source": "7239c7885c732298839504f013a7b3a7e832d300",
+            "tree": "e6423360e8be6e3c351861d8d5031d473c5b0ce5",
+            "kind": "initial",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-7239c78",
+            "driver_session": 48211,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-7239c78/bindings/result.json",
+              "bytes": 9621,
+              "sha256": "cee2afb1c1170a0fec63cbad5c5c32ef33142f960c1dfd3e4520ac21b5adeba8"
+            },
+            "driver_log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-7239c78/driver.log",
+              "bytes": 1386,
+              "sha256": "49670a7daed23aa50554b7581a215e56b854c6cd2359e716c43eff20a1fd7db2"
+            },
+            "context": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-7239c78/bindings/sync-signed-progress-verification.json",
+              "bytes": 3382053,
+              "sha256": "9758b6bf4b96ef4e5ae0d88336ef354cbb50711b519ce91c29d9d2980271a5c3"
+            },
+            "finding": "Actual Serve completed naturally rc0/7.93s after both phases and ordinary signal shutdown. The oracle incorrectly required empty HTTP client stdout; established session_client emits exactly one PASS/installed-sync JSON line. Original complete raw capture/report remain untouched.",
+            "context_only_replay": {
+              "source": "1e962e0278d8326c4a03637e84cee0965c35a0a9",
+              "verifier_sha256": "fb5923b4ef907e741d67e4e4f9b6b3c26fd4022415f5fe2f27da1cad3747bc6b",
+              "status": "PASS_CONTEXT_ONLY",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/initial7239-context-replay-fb5923b4.json",
+                "bytes": 1991,
+                "sha256": "081cb8241bc2c50f2ddf4d0ee2f388134a66dcda7a89de53f59d3a85434bdea3"
+              },
+              "controls": 38,
+              "native_rows": 49,
+              "native_sequence": 57,
+              "inputs": 4,
+              "scope": "Pure corrected semantic verifier and controls on preserved complete context; full raw binding still pending. Does not change original FAIL or establish a new runtime."
+            },
+            "capture_replay": {
+              "status": "PASS_RETAINED_INITIAL_CAPTURE_REPLAY",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/initial7239-raw-replay-50316df-nosite.json",
+                "bytes": 841783,
+                "sha256": "40a3958d3f3cdb9d5f77c8585a34e13bc2fb276b696450c22c86b88649e8bcc0"
+              },
+              "stderr": {
+                "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/initial7239-raw-replay-50316df-nosite.stderr",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "source": "50316df971d460b8f1123e2255d646bba9be29ed",
+              "verifier": {
+                "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/experiments/ingest-bootstrap/installed_progress_context_oracle.py",
+                "sha256": "521d2e81d6c79948adc9673eba29ece360d688f761b3e240b74f1e76bb58857b"
+              },
+              "returncode": 0,
+              "bound_file_count": 4156,
+              "oracle": {
+                "ack": 0,
+                "acquisition_revision": 2,
+                "complete_through_request": 4,
+                "dependencies": 12,
+                "job_checkpoint_revision": 0,
+                "kind": "initial",
+                "mutation_revision": 4,
+                "producer_epoch": 1,
+                "proof_revision": 5,
+                "status": "PASS_TYPED_CONTEXT"
+              },
+              "controls_rejected": 38,
+              "invocation": "python3 -B -S <exact503 oracle> <original7239 run> --kind initial --retained-initial-capture",
+              "scope": "Full retained raw binding and independent science; original runtime report remains FAIL. No engines restarted; no new runtime or ACK/credit/capacity claim."
+            },
+            "custody": "Driver joined1; actual Serve rc0, client exit0. Root exact ownedclient/borrowedPG exited/PID0/noOOM/matchinglabels/cgroupsabsent, no cleanup errors/missing/unrelated changes.",
+            "raw_replay_attempts": [
+              {
+                "status": "FAIL",
+                "returncode": 1,
+                "output": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/initial7239-raw-replay-50316df.json",
+                  "bytes": 0,
+                  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                },
+                "stderr": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/initial7239-raw-replay-50316df.stderr",
+                  "bytes": 797,
+                  "sha256": "28bf0f55259a566f6a99df481143ed33afe27b3e24c26927ecd5551183526dc8"
+                },
+                "finding": "Default Python startup imported /etc/python3.13/sitecustomize.py; strict foreign-module check rejected it. Same unchanged verifier passed with standard -S disabling implicit site customization. System file read, no system change or predicate bypass."
+              }
+            ]
           }
         ],
         "contexts_fixture_preparation": {
-          "source": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556",
+          "source": "50316df971d460b8f1123e2255d646bba9be29ed",
           "source_receipts": [
             {
               "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v1.json",
@@ -41672,6 +41836,21 @@
               "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v2.json",
               "bytes": 2290,
               "sha256": "e5a70175df29e4b8c094da035812a3957e7be76cbb47791349c47e8da5ae7fff"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v3.json",
+              "bytes": 4499,
+              "sha256": "d9cda0e3ffa55aae39ab8168dcaa1e30f709384a85114daafd5f83f6630e0fe1"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v4.json",
+              "bytes": 1661,
+              "sha256": "0da6b823aa2663882d2c5b321417ebc1d920fdfae19695a251b75b56d37c16e8"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v5.json",
+              "bytes": 3153,
+              "sha256": "9a8c80f1e6b2fe31f6d14290ad9f3ae6ed2d813994482e449fee34b2dbb55245"
             }
           ],
           "critical_ai_reviews": [
@@ -41684,10 +41863,21 @@
               "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/contexts-ledger-correction-review-v1.json",
               "bytes": 3672,
               "sha256": "711b6ceab206ea00d4cb56b8687af3ba9b3b124e33378cb63fe2a2e0db188d8e"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/contexts-acl-correction-review-v2.json",
+              "bytes": 4416,
+              "sha256": "0ee0bdfa44805e2c56689e65c16790bd5f4383a1d9e68d09dbaeead1f6662536"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/contexts-retained-capture-review-v1.json",
+              "bytes": 5453,
+              "sha256": "13d8df14946f1dbc297b4d70a3ee36facf006528f33e1b97a9bdabe5e043ce61"
             }
           ],
-          "status": "Two actual initial attempts FAIL; pending narrow trigger-read ACL correction. Productd4/build unchanged.",
-          "root_review": "Complete new owners and affected existing capture/client/science/raw-binding boundaries read, frozen deltas reconciled and source pins authenticated; unchanged owning source/custody/codec contracts reused underQ38. Whole unrelated bindings case tree not reread; actual relevant dispatch/cleanup/source/build boundaries reviewed."
+          "status": "Activated965 runtime/raw PASS; original initial7239 FAIL preserved with separate corrected503 retained raw PASS. Product/build unchanged.",
+          "root_review": "Complete new owners and affected existing capture/client/science/raw-binding boundaries read, frozen deltas reconciled and source pins authenticated; unchanged owning source/custody/codec contracts reused underQ38. Whole unrelated bindings case tree not reread; actual relevant dispatch/cleanup/source/build boundaries reviewed.",
+          "tree": "2f114884d7855e7ff96241314462674b9bdd6f19"
         },
         "fault_fixture_preparation": {
           "source": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb",
@@ -41697,9 +41887,270 @@
             "bytes": 6759,
             "sha256": "097f16d685b3a1da16326b287c27bd3168cf595285958210f611a0af67c62b2e"
           },
-          "status": "FROZEN_SOURCE_CRITICAL_REVIEW_PENDING_RUNTIME_NOT_RUN",
-          "scope": "Two proof-only COMMIT losses, explicit active-Control recovery and exact retry;82controls authored. Root reviewed new owners/shared relevant delta; independent review active. No product/build/source-contract change."
-        }
+          "status": "QUALIFIED_ECEDBCA_TWO_LOSS_FOUR_RECOVERY_AND_RAW_REPLAY_PASS",
+          "scope": "Two proof-only COMMIT losses, explicit active-Control recovery and exact retry; six real processes/82controls/raw2310files PASS. Root and independent critical source review complete. No product/build change.",
+          "critical_ai_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/commit-loss-critical-source-review-v1.json",
+            "bytes": 7654,
+            "sha256": "9610adf0419f8fe70d881913f0ca2d18f7fdaa6dcfc224be699d126d098cd0bf"
+          },
+          "qualified_source": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f",
+          "qualified_tree": "7b6bdf8b6b4f7c20a289baf04fb852c49bdff536",
+          "shared_verifier_regression": {
+            "status": "PASS_CHANGED_VERIFIER_REGRESSION",
+            "receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/integrated-eced-positive-context-replay-v1.json",
+              "bytes": 9494,
+              "sha256": "2b507b73e73fa22d28171eeeab3e7679c56e866c07791c9a17e5118474286378"
+            },
+            "driver_session": 87782,
+            "driver_exit": 0,
+            "scope": "Changed shared verifier on all three original75 positive contexts;63controls rejected. No engine rerun."
+          }
+        },
+        "installed_progress_commit_loss_runs": [
+          {
+            "source": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb",
+            "tree": "29e9e791662aaa012c57597d5e346f972b3f9995",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0",
+            "driver_session": 2635,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/installed-progress-commit-loss/result.json",
+              "bytes": 2813046,
+              "sha256": "cb4e123ffb13a6c06dc80c8c03d41454e34a5d6343d0c0d3ad77e4d7f09546d0"
+            },
+            "driver_log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/driver.log",
+              "bytes": 2484,
+              "sha256": "d1cdc07474fc101bd212547cf355c00fb823ce1a4b8b1d91ab63060c95b706de"
+            },
+            "postgres_log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/postgres-attempt.log",
+              "bytes": 1708,
+              "sha256": "a7ded6e8b850f084864aadb8c076952f7cb35c5673beb3fd22d2bed33c23b95f"
+            },
+            "fault": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/installed-progress-commit-loss/before-forward-loss-fault.json",
+              "bytes": 3307,
+              "sha256": "b218db1f82bf406eeddf18d7c5128cf81331d0c1876b1e52f63ae4f122aed88a"
+            },
+            "response": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/installed-progress-commit-loss/before-forward-loss-response.json",
+              "bytes": 2310,
+              "sha256": "5c438bbeef95e3fd26152dd152f58c5c154bb7d177a9d7903ecc5a216daa7598"
+            },
+            "custody": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/installed-progress-commit-loss/before-forward-loss-custody.json",
+              "bytes": 217,
+              "sha256": "abd44fd843121bda47e538f524ccf7c46ad35dfde8cbaebcfe749d7c460853bb"
+            },
+            "finding": "Default proxy frame limit exhausted at20001frames/1645406bytes/1071frontendqueries, before any selected UPDATE/fault. Serve naturally exited4 with Control(Backend) during admission2, last_delivered=null; PG logged EOF with open transaction. Proxy exit3; HTTP client exit1. This is an unqualified fixture transport cutoff, not proof-only CommitUnknown evidence.",
+            "native": "NOT_REOPENED: per-case custody OUTCOME_UNKNOWN; outer owned-client exclusion completed",
+            "not_run": "Both intended loss outcomes, all recovery/retry processes, controls and raw replay",
+            "next": "Reuse existing bounded retained-catch-up proxy profile, unchanged64MiB/120s and actual<=1connection; bind exact extra event metadata. Correct raw container-name vs report-ID binding against inspected terminal Name. Preserve original failure; fresh root for corrected source.",
+            "outer_custody": "Driver joined1. Root observed exact ownedclient and borrowedPG exited/PID0/noOOM/matchinglabels/cgroupsabsent; no outer cleanup errors/missing/unexpected/unrelatedchanges. Nested cleanup failure remains in original fixture receipt."
+          },
+          {
+            "source": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f",
+            "tree": "7b6bdf8b6b4f7c20a289baf04fb852c49bdff536",
+            "product_source": "d4e1b85566dee30994017834b763fe04396bcf1c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ecedbca",
+            "driver_session": 43199,
+            "driver_exit": 0,
+            "status": "PASS_INSTALLED_PROGRESS_COMMIT_LOSS",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ecedbca/installed-progress-commit-loss/result.json",
+              "bytes": 11320762,
+              "sha256": "8c886d7588207ca6463d87380ccf456545bb7d23fd9a132158de328134e459bf"
+            },
+            "capture_replay": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ecedbca/raw-replay.json",
+              "bytes": 520674,
+              "sha256": "5efea708e75233e6fb8af344c24bd209b65175aae5fb57647b0c159aa26ef501"
+            },
+            "capture_driver_session": 47776,
+            "capture_driver_exit": 0,
+            "bound_file_count": 2310,
+            "critical_correction_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/commit-loss-profile-correction-review-v1.json",
+              "bytes": 3721,
+              "sha256": "2d9f8981255ec9aaadbdcb7e8ccaf3c20ed6f8ac20579361489ceb0fe70b3fd9"
+            },
+            "author_correction": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-progress-commit-loss-20261020/.research/producer-progress-commit-loss-source-20261020/profile-correction-v1.json",
+              "bytes": 2946,
+              "sha256": "09589e8b5a2fd3dd55ed0921f5f425f9090f92ead6e6e0a4ab9cb8b909bb730a"
+            },
+            "cases": [
+              {
+                "name": "before-forward-loss",
+                "status": "PASS",
+                "returncode": 4,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "before-forward",
+                  "caller": "Progress(CommitUnknown)",
+                  "tables": 77,
+                  "typed": [
+                    {
+                      "status": "VERIFIED_TYPED_RECORDS",
+                      "jobs": 1,
+                      "dependencies": 11,
+                      "checkpoint_sha256": "ad39f90274c15881d161bb9e2b2e2f3b6fbe83b944a9b820f496d4729b57e6cf",
+                      "qualification": "NOT_RUN"
+                    }
+                  ],
+                  "head_revision": 3,
+                  "acquisition_revision": 2,
+                  "complete_through_request": 2,
+                  "dependencies": 11,
+                  "native_rows": 91,
+                  "native_sequence": 111,
+                  "native_ack": 0,
+                  "native_retired": 0
+                },
+                "negative_controls": 15
+              },
+              {
+                "name": "before-forward-recover",
+                "status": "PASS",
+                "returncode": 0,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "before-forward-recover",
+                  "tables": 77,
+                  "old_failed_control_fenced": true,
+                  "native_writes": 1,
+                  "typed_issuer_xmin_preserved": true,
+                  "native_ack": 0,
+                  "native_retired": 0
+                },
+                "negative_controls": 13
+              },
+              {
+                "name": "before-forward-retry",
+                "status": "PASS",
+                "returncode": 0,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "before-forward-retry",
+                  "tables": 77,
+                  "old_failed_control_fenced": false,
+                  "native_writes": 0,
+                  "typed_issuer_xmin_preserved": true,
+                  "native_ack": 0,
+                  "native_retired": 0
+                },
+                "negative_controls": 13
+              },
+              {
+                "name": "after-complete-loss",
+                "status": "PASS",
+                "returncode": 4,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "after-complete",
+                  "caller": "Progress(CommitUnknown)",
+                  "tables": 77,
+                  "typed": [
+                    {
+                      "status": "VERIFIED_TYPED_RECORDS",
+                      "jobs": 1,
+                      "dependencies": 11,
+                      "checkpoint_sha256": "4fa1684312f51960202865a50ce51bde6039704d93ab2f7335d0a643de3fb699",
+                      "qualification": "NOT_RUN"
+                    },
+                    {
+                      "status": "VERIFIED_TYPED_RECORDS",
+                      "jobs": 1,
+                      "dependencies": 11,
+                      "checkpoint_sha256": "a082862bab1d0df76d0111a2bc488be9645a485ac4cc8ea8989f24d985840455",
+                      "qualification": "NOT_RUN"
+                    }
+                  ],
+                  "head_revision": 4,
+                  "acquisition_revision": 3,
+                  "complete_through_request": 2,
+                  "dependencies": 11,
+                  "native_rows": 91,
+                  "native_sequence": 111,
+                  "native_ack": 0,
+                  "native_retired": 0
+                },
+                "negative_controls": 15
+              },
+              {
+                "name": "after-complete-recover",
+                "status": "PASS",
+                "returncode": 0,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "after-complete-recover",
+                  "tables": 77,
+                  "old_failed_control_fenced": true,
+                  "native_writes": 1,
+                  "typed_issuer_xmin_preserved": true,
+                  "native_ack": 0,
+                  "native_retired": 0
+                },
+                "negative_controls": 13
+              },
+              {
+                "name": "after-complete-retry",
+                "status": "PASS",
+                "returncode": 0,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "after-complete-retry",
+                  "tables": 77,
+                  "old_failed_control_fenced": false,
+                  "native_writes": 0,
+                  "typed_issuer_xmin_preserved": true,
+                  "native_ack": 0,
+                  "native_retired": 0
+                },
+                "negative_controls": 13
+              }
+            ],
+            "scope": "Two actual proof-only own-COMMIT losses on fresh activated/off epoch3 derivatives. Both preserve original Progress(CommitUnknown)/rc4, complete77-table/91native/8input science. Before forwarding retainshead3/acq2; aftercompletion retainshead4/acq3. Both C2/deps11/ACK0/retired0. Fresh config-only recovery fences failed activeControl, preserves typed historical issuer/xmin and closes native once; retry writes0. All82controls and complete raw binding PASS.",
+            "proxy_measurement": {
+              "profile": "retained-catch-up",
+              "frame_limit": 131072,
+              "wire_limit_bytes": 67108864,
+              "connection_limit": 64,
+              "actual_connections": 1,
+              "frames": [
+                27117,
+                27118
+              ],
+              "bytes": [
+                2209754,
+                2209766
+              ],
+              "selected_updates": 2,
+              "selected_commits": 1,
+              "faults": 1,
+              "server_completion": [
+                0,
+                1
+              ],
+              "client_completion": 0
+            },
+            "not_run": [
+              "Mutation-COMMIT loss, live/unjoined-owner recovery, automatic Sync retry",
+              "ACK>0, returned credit, GC, full resource/cancellation envelope, originala99 timeout resolution"
+            ],
+            "custody": "Bothrootdrivers joined0. Root exact ownedclient/borrowedPG freshly observed exited/PID0/noOOM/matchinglabels/cgroupsabsent. Outer cleanup/missing/unexpected/unrelated all empty. Originalfailedca77 preserved."
+          }
+        ]
       }
     }
   }

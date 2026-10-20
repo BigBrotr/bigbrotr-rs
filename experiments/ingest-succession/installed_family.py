@@ -194,9 +194,10 @@ def release_progress_transport(directory, captured):
     return gate
 
 
-def execute(pg, client, output, case, directory, expected, catalog, *, progress=False, hole=False):
+def execute(pg, client, output, case, directory, expected, catalog, *, progress=False, hole=False, fault=None):
     from installed_family_replay import verify, negative_controls
     assert type(progress) is type(hole) is bool and (not hole or progress)
+    assert fault is None or (progress and not hole)
     if progress:
         import installed_progress_replay as progress_replay
         progress_replay.require_frozen_profile()
@@ -237,6 +238,8 @@ def execute(pg, client, output, case, directory, expected, catalog, *, progress=
         (directory / (stage + '.continue')).write_text('observed\n')
 
     try:
+        if fault is not None:
+            fault.start()
         window['before_us'] = history.server_clock(pg, database)
         lab.write_json(output / (name + '-clock.json'), window)
         lab.docker('exec', '-d', client, 'python3', '/lab/installed_family_client.py', 'serve',
@@ -262,7 +265,8 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
 '''
         if progress:
             wrapper = wrapper.replace("'journey'", 'sys.argv[2]')
-            journey_mode = 'journey-progress-hole' if hole else 'journey-progress'
+            journey_mode = ('journey-progress-loss' if fault is not None else
+                'journey-progress-hole' if hole else 'journey-progress')
             lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name, journey_mode)
         else:
             lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name)
@@ -278,7 +282,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                     return actual if len([r for r in actual['producer_outcomes'] if r['producer_epoch'] == epoch]) == expected_count else None
                 wait_for(durable, 'successor issued durable prefix', 10)
                 if progress:
-                    for phase in ('mutation', 'proof-only'):
+                    for phase in (('mutation',) if fault is not None else ('mutation', 'proof-only')):
                         def ready():
                             assert not Path(str(prefix) + '.terminal.json').exists(), 'Serve exited before progress'
                             wires = [read(path) for path in sorted(directory.glob('relay-closed-*.json'))]
@@ -295,28 +299,35 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                             hole, phase, epoch, wire)
                         captured = capture_progress_observation(directory, phase, observed, wire)
                         if phase == 'mutation':
+                            if fault is not None:
+                                fault.gate(captured, observed)
                             release_progress_transport(directory, captured)
-            snapshot(stage)
+            if stage == 'submitted' and fault is not None:
+                wait_for(Path(str(prefix) + '.terminal.json').exists, 'COMMIT-loss Serve natural join', 10)
+                terminal = read(Path(str(prefix) + '.terminal.json'))
+            else:
+                snapshot(stage)
             advance(stage)
         wait_for(lambda: (directory / 'commands-finished.json').exists() or (directory / 'client-exit.json').exists(),
-            'successor authenticated logout', 15)
-        assert (directory / 'commands-finished.json').exists(), 'HTTP client exited before logout'
-        initial_deadline = int(initial['lease_expires_at_us'])
-        minimum = max(initial_deadline, int(initial['prepared_at_us']) + 6_000_000)
-        def renewed():
-            now = history.server_clock(pg, database)
-            assert not Path(str(prefix) + '.terminal.json').exists(), 'Serve exited before renewal observation'
-            return now if now > minimum else None
-        at = wait_for(renewed, 'successor lifetime beyond initial lease and six seconds', 15)
-        current = snapshot('renewed')
-        fixture['renewal'] = dict(initial_deadline_us=initial_deadline, observed_at_us=at,
-            initial_target=target, current=current)
-        snapshot('before-stop')
-        identity = read(Path(str(prefix) + '.pid.json'))
-        fixture['signal'] = stop_quiet(client, directory, identity, initial_deadline)
-        fixture['quiet'] = fixture['signal']['opened']
-        wait_for(Path(str(prefix) + '.terminal.json').exists, 'successor Serve join', 12)
-        terminal = read(Path(str(prefix) + '.terminal.json'))
+            'successor command client completion', 15)
+        assert (directory / 'commands-finished.json').exists(), 'HTTP client exited before completion'
+        if fault is None:
+            initial_deadline = int(initial['lease_expires_at_us'])
+            minimum = max(initial_deadline, int(initial['prepared_at_us']) + 6_000_000)
+            def renewed():
+                now = history.server_clock(pg, database)
+                assert not Path(str(prefix) + '.terminal.json').exists(), 'Serve exited before renewal observation'
+                return now if now > minimum else None
+            at = wait_for(renewed, 'successor lifetime beyond initial lease and six seconds', 15)
+            current = snapshot('renewed')
+            fixture['renewal'] = dict(initial_deadline_us=initial_deadline, observed_at_us=at,
+                initial_target=target, current=current)
+            snapshot('before-stop')
+            identity = read(Path(str(prefix) + '.pid.json'))
+            fixture['signal'] = stop_quiet(client, directory, identity, initial_deadline)
+            fixture['quiet'] = fixture['signal']['opened']
+            wait_for(Path(str(prefix) + '.terminal.json').exists, 'successor Serve join', 12)
+            terminal = read(Path(str(prefix) + '.terminal.json'))
     except BaseException as error:
         failure = error
         response['capture_error'] = repr(error)
@@ -339,6 +350,11 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                 fixture['client_terminal'] = read(directory / 'client-exit.json')
             except BaseException as error:
                 fixture['cleanup_errors'].append(dict(stage='client-join', error=repr(error)))
+        if fault is not None:
+            try:
+                fault.finish()
+            except BaseException as error:
+                fixture['cleanup_errors'].append(dict(stage='proxy-join', error=repr(error)))
         try:
             window['after_us'] = history.server_clock(pg, database)
         except BaseException as error:
@@ -360,7 +376,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         lab.write_json(output / (name + '-fixture.json'), fixture)
         after = after_inputs = after_native = after_catalog = None
         backend, errors = {}, []
-        for stage, capture in [('sql', lambda: save_sql('after')),
+        for stage, capture in [('sql', lambda: save_sql('provisional-sql' if fault is not None else 'after')),
                                ('inputs', lambda: history.inputs_at(directory / 'store'))]:
             try:
                 value = capture()
@@ -373,12 +389,19 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                 errors.append(dict(stage=stage, error=repr(error)))
         closed = False
         try:
-            process_closed(response, case)
+            if fault is None:
+                process_closed(response, case)
+            else:
+                fault.process_closed(response, case)
+                assert not fixture['cleanup_errors'], 'fault process/relay/proxy custody incomplete'
+                assert fixture['client_terminal'] == dict(exit_code=0,reaped=True,outcome='PROCESS_EXITED')
             closed = True
         except BaseException as error:
             errors.append(dict(stage='native-custody', error=repr(error)))
         try:
             backend['absence'] = history.observe_backend_absence(pg, database, output, name + '-control')
+            if fault is not None:
+                after = save_sql('after')
             old_keys = {(r['resource_id'], r['epoch']) for r in before['owner_epochs']}
             assert after is not None
             tuples = [dict(pid=r['control_backend_pid'], backend_start=r['control_backend_start'],
@@ -418,9 +441,17 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         response=response, journey=journey, fixture=fixture, server_window=window, backend=backend,
         catalog_before=catalog, catalog_after=after_catalog, fixture_input=fixture_input)
     if progress:
-        context['progress_profile'] = 'hole' if hole else 'split'
+        context['progress_profile'] = 'commit-loss' if fault is not None else 'hole' if hole else 'split'
+    if fault is not None:
+        context['fault'] = fault.evidence
     lab.write_json(output / (name + '-verification.json'), context)
-    if progress:
+    if fault is not None:
+        from installed_family_capture import progress_transport_checked
+        transport = progress_transport_checked(directory, journey, snapshots, window,
+            lambda path: path.read_bytes(), lambda path: json.loads(path.read_bytes()), commit_loss=True)
+        result, controls = fault.verify(context), fault.controls(context)
+        case['progress_transport'] = transport
+    elif progress:
         # Raw phase/gate binding precedes all scientific qualification.
         from installed_family_capture import progress_transport_checked
         transport = progress_transport_checked(directory, journey, snapshots, window,

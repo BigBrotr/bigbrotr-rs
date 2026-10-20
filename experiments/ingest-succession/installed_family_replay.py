@@ -304,8 +304,9 @@ def backend_checked(value, control, database, window):
     assert absence['attempts'][-1]['backends'] == []
 
 
-def wire_checked(journey, fixture, report, before, initial, window, *, progress=None):
+def wire_checked(journey, fixture, report, before, initial, window, *, progress=None, commit_loss=False):
     from installed_family_http import ACTIONS
+    assert type(commit_loss) is bool and (not commit_loss or progress == 'split')
     assert journey['terminal'] == dict(exit_code=0, reaped=True, outcome='PROCESS_EXITED')
     assert journey['stdout'] == journey['stderr'] == ''
     result = journey['result']
@@ -319,8 +320,11 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
     assert result['status'] == ('CAPTURED_PROGRESS_TRANSPORT_ONLY' if progress else 'PASS')
     assert result['relay_joined'] is True and result['unauthenticated'] == 401
     assert result['login'] == dict(format='bigbrotr-cli-login/1', status='session-persisted', authority='observation-only')
-    assert result['logout'] == dict(format='bigbrotr-cli-logout/1', status='revocation-acknowledged',
-        local_file='retained', drain='unobserved')
+    if commit_loss:
+        assert result['logout'] is result['job_status'] is None
+    else:
+        assert result['logout'] == dict(format='bigbrotr-cli-logout/1', status='revocation-acknowledged',
+            local_file='retained', drain='unobserved')
     old_sessions = {r['session_id'] for r in before['browser_sessions']}
     session, = [r for r in initial['browser_sessions'] if r['session_id'] not in old_sessions]
     assert result['me'] == dict(format='bigbrotr-session/1', principal_id='10' * 16,
@@ -369,24 +373,27 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
             assert first['request_at_us'] <= last['sent_at_us'] <= last['closed_at_us']
         else:
             assert last['frames'] == [] and last['completion'] == 'quiet-eof'
-    quiet = fixture['quiet']
-    assert quiet in opened and quiet['number'] > 1
-    assert int(report['lease_expires_at_us']) < quiet['request_at_us']
-    signal = fixture['signal']
-    assert set(signal) == {'kind', 'identity', 'opened', 'signal_at_us', 'signal_monotonic_ns',
-        'closed_before_signal', 'signal_returned_at_us', 'signal_returned_monotonic_ns'}
-    assert signal['opened'] == quiet and signal['closed_before_signal'] is False
-    clock(signal['signal_at_us'], window); clock(signal['signal_returned_at_us'], window)
-    assert quiet['request_at_us'] <= signal['signal_at_us'] <= signal['signal_returned_at_us']
-    assert 0 <= signal['signal_monotonic_ns'] - quiet['request_monotonic_ns'] < 100_000_000
-    assert signal['signal_monotonic_ns'] <= signal['signal_returned_monotonic_ns']
-    selected, = [r for r in closed if r['number'] == quiet['number']]
-    assert signal['signal_at_us'] <= selected['closed_at_us']
-    assert signal['signal_monotonic_ns'] <= selected['closed_monotonic_ns']
+    if not commit_loss:
+        quiet = fixture['quiet']
+        assert quiet in opened and quiet['number'] > 1
+        assert int(report['lease_expires_at_us']) < quiet['request_at_us']
+        signal = fixture['signal']
+        assert set(signal) == {'kind', 'identity', 'opened', 'signal_at_us', 'signal_monotonic_ns',
+            'closed_before_signal', 'signal_returned_at_us', 'signal_returned_monotonic_ns'}
+        assert signal['opened'] == quiet and signal['closed_before_signal'] is False
+        clock(signal['signal_at_us'], window); clock(signal['signal_returned_at_us'], window)
+        assert quiet['request_at_us'] <= signal['signal_at_us'] <= signal['signal_returned_at_us']
+        assert 0 <= signal['signal_monotonic_ns'] - quiet['request_monotonic_ns'] < 100_000_000
+        assert signal['signal_monotonic_ns'] <= signal['signal_returned_monotonic_ns']
+        selected, = [r for r in closed if r['number'] == quiet['number']]
+        assert signal['signal_at_us'] <= selected['closed_at_us']
+        assert signal['signal_monotonic_ns'] <= selected['closed_monotonic_ns']
     if progress is not None:
         phases = [r for r in closed if 'progress_phase' in r]
         assert [r['progress_phase'] for r in phases] == ['mutation', 'proof-only']
-        assert phases[0]['number'] == 1 < phases[1]['number'] < quiet['number']
+        assert phases[0]['number'] == 1 < phases[1]['number']
+        if not commit_loss:
+            assert phases[1]['number'] < quiet['number']
         assert phases[0]['request'][1] != phases[1]['request'][1]
     return closed[0]
 

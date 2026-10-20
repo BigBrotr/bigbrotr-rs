@@ -61101,8 +61101,8 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020",
           "branch": "work/producer-progress-contexts",
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Initial9b and965 attempts FAIL preserved; migrated core ledger fix reviewed, ordinary initialization narrow activation-trigger SELECT correction in progress. No initial/activated Sync PASS. Root owns runtime.",
-          "head": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556"
+          "state": "Frozen source critically reviewed; activated965 runtime/raw and retained initial7239 raw with corrected503 PASS. Original failures preserved. Awaiting integration; author finished.",
+          "head": "50316df971d460b8f1123e2255d646bba9be29ed"
         },
         {
           "owner": "producer_recovery_review",
@@ -61119,7 +61119,7 @@
           "branch": null,
           "base": "c89b9e2052cd291640cdabfdf6905ed0be6853f9",
           "head": "88a926aa47c1aed2bd831ef9ea3042bd33843143",
-          "state": "Integrated in45cedcf; exact clean original worktree retained detached; root/criticalreview/25synthetic testsPASS; connected faultNOT_RUN",
+          "state": "Integrated in45cedcf; original clean worktree retained detached. Synthetic25tests and connected eced two-mode loss/recovery/retry PASS; report owns details.",
           "model": "gpt-6.1-sol",
           "effort": "xhigh",
           "configuration_basis": "Actual session_meta agent_path and first turn_context model/effort/collaboration settings directly verified at creation: 01a15ae5-6eb4-7a22-b1f0-77b5db016b11",
@@ -61131,8 +61131,8 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-commit-loss-20261020",
           "branch": "work/producer-progress-commit-loss",
           "base": "45cedcf3d5d4f0bbed650e7bcefdb0b12b5b43e3",
-          "state": "Frozen source; root relevant source review and independent Astra critical review. Six COMMIT-loss/recovery/retry cases and82controls authored, runtime NOT_RUN.",
-          "head": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb"
+          "state": "Six real cases/82controls/raw2310files PASS; critical review and changed shared verifier regression PASS. Main merge in progress; author finished.",
+          "head": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f"
         }
       ],
       "branch_retirement_20261020": {
@@ -61262,6 +61262,91 @@
           "missing_owned": [],
           "free_bytes_after": 302674853888,
           "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_context_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-activated-9653725",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-activated-9653725/source",
+          "source_commit": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556",
+          "state": "Actual activated2 Sync and raw2160file replay PASS; drivers95693/39120joined0",
+          "client": "762d24f488deb3ed94d11ef5401105ad0584e57e3e0d3f47562cb93d12b6d471",
+          "label": "org.bigbrotr.acquisition-binding",
+          "owner": "cd47f2964d255e956c1ab7c19f74f536",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_9653725_installed_live_on"
+          ],
+          "terminal_observation": "Root freshly inspected both exact containers exited/PID0/noOOM/matchinglabels/cgroupsabsent",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "missing_owned": [],
+          "free_bytes_after": 302573752320,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_context_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-7239c78",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-7239c78/source",
+          "source_commit": "7239c7885c732298839504f013a7b3a7e832d300",
+          "state": "Original driver48211joined1/FAIL remains; actual Serve rc0 complete capture. Corrected503 retained raw4156files and38controls PASS with python -S; default-site reader failure preserved. No engine active.",
+          "client": "814aaafd720d3f611eadd8fc4df657ae4ee136bc8350ca5d10cfbb7d6f2d7056",
+          "label": "org.bigbrotr.acquisition-binding",
+          "owner": "6276a5a41fc21c2bdfa8f2861c914c61",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_7239c78_sync_signed"
+          ],
+          "terminal_observation": "Root freshly inspected both exact containers exited/PID0/noOOM/matchinglabels/cgroupsabsent",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "missing_owned": [],
+          "free_bytes_after": 302174466048,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_context_runs"
+        }
+      ],
+      "installed_progress_commit_loss_runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ca77ca0/source",
+          "source_commit": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb",
+          "state": "FAIL before target: proxy default frame cap; driver2635joined1. Native NOT_REOPENED, original evidence retained",
+          "client": "82747ced6e51bf4faddd7ce1d198f9bfc3ba066832df3f14bc2497f4260bd669",
+          "label": "org.bigbrotr.installed-progress-commit-loss",
+          "owner": "6f735094d58e3585205ab050f7a78c83",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_progress_commit_ca77ca0_before_forward"
+          ],
+          "terminal_observation": "Root exact ownedclient/borrowedPG exited/PID0/noOOM/matchinglabels/cgroupsabsent; nested proxy/client error preserved",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "unexpected_containers": [],
+          "missing_owned": [],
+          "free_bytes_after": 302496423936,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_commit_loss_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ecedbca",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-commit-loss-ecedbca/source",
+          "source_commit": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f",
+          "state": "Six actualcases/82controls/rawreplay PASS; drivers43199/47776joined0. Exact errors retained, currentresourcesstopped",
+          "client": "9a51c51afbc4e975e93fb60e3e115e3fa4bef2ff8b479d91a276ddd81ea9dd7e",
+          "label": "org.bigbrotr.installed-progress-commit-loss",
+          "owner": "20aacccdc56ef1467a591ab460ee62bb",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_progress_commit_ecedbca_before_forward",
+            "bb_progress_commit_ecedbca_after_complete"
+          ],
+          "terminal_observation": "Root exact ownedclient/borrowedPG exited/PID0/noOOM/matchinglabels/cgroupsabsent",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "unexpected_containers": [],
+          "missing_owned": [],
+          "free_bytes_after": 302041321472,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_commit_loss_runs"
         }
       ]
     }

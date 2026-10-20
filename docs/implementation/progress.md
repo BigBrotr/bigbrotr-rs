@@ -10,10 +10,10 @@ restart. Current product d4e1b85 implements typed PG progress with ACK0, retaini
 all requests/receipts/inputs and granting no new credit. Qualified build, three
 successor Sync contexts and historical epoch3 recovery/refusals remain reusable.
 
-Main fc97d43eec95c7b553417882f0e4395b2e650323 was pushed and verified equal to
-remote. This checkpoint/report/inventory change records two failed fixture
-attempts; product code is unchanged. Integrated original worktrees and ignored
-artifacts remain after redundant branch-ref retirement.
+Main parent6a6a40c5cbeb5f33937fd1e9d799e372b74400d4 was pushed and verified
+equal to remote. This merge integrates qualified COMMIT-loss fixture ecedbcaf;
+product code is unchanged. Root-owned report/inventory/checkpoint changes record
+the coherent qualification results. Original worktrees and ignored artifacts remain.
 
 The [owning recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -23,25 +23,28 @@ owns laboratory paths, branch custody and resources; no cleanup was performed.
 
 ## Current work and processes
 
-Initial/activated source is in `.research/producer-progress-contexts-20261020`,
-branch `work/producer-progress-contexts`, author `export_setup_review`.
-Initial9b driver80208 failed before Serve because its oracle confused reserved
-migration families with core chronology. Correction9653725 passed setup, but
-initial driver15335 failed registration: guard_initial_activation_target lacks
-its narrow fixture SELECT on initial_ingest_activations. Both joined1; exact
-clients/borrowed PG are exited/PID0/noOOM/cgroups absent. Original data/logs remain.
-The author is correcting fixture ACLs; no initial/activated Sync PASS yet.
+Activated epoch2 actual Sync/raw replay passed at9653725. Initial7239 completed
+Serve naturally; its original run remains FAIL for an incorrect client-stdout
+assertion. Corrected50316df independently reviewed reader passed full retained
+raw binding (4,156 files) and38 controls. Its first read rejected implicit system
+sitecustomize; unchanged reader passed with Python -S. All failures are preserved.
+Exact50316df source remains in `.research/producer-progress-contexts-20261020`,
+branch `work/producer-progress-contexts`, awaiting integration.
 
-COMMIT-loss source ca77ca0 is frozen in `.research/producer-progress-commit-loss-20261020`,
-branch `work/producer-progress-commit-loss`, base45cedcf. Its six loss/recover/retry
-cases and82 controls are NOT_RUN. `producer_recovery_review` performs critical
-review, briefly prioritizing the initial ACL correction. No engine/build active.
+COMMIT-loss ecedbcaf passed six real loss/recover/retry processes,82 controls and
+raw binding of2,310 files. Both ambiguous errors remain exact; recovery closes
+native once and retry writes0. Shared-verifier regression passed original three
+positive contexts/63 controls. The initial ca77 frame-cap failure remains FAIL.
+All drivers joined. Exact owned clients/borrowed PG were last observed exited,
+PID0/noOOM/cgroups absent; inventory owns custody. Authors/reviewer finished;
+no engine/build active. No cleanup or worktree removal.
 
 ## Next action and open limits
 
-Review the narrow ACL correction, then run actual initial and activated epoch2
-entrypoints on unchanged qualified d4e1b85 binaries in separate owned roots;
-perform each raw replay. Finish ca77ca0 critical review before its real fault run.
+Finish/push this coherent merge, then integrate context source50316df, reconcile
+its shared dispatch and retire only redundant integrated branch refs. Preserve
+the exact original worktrees and all evidence. Resume the accepted checkpoint→ACK
+design and remaining P02-T02 qualification gates from the owning report.
 
 ACK/credit/GC, preparation-hole and further recovery/refusal/resource gates remain
 open in the report. Job checkpoint0 and retained historical values do not imply

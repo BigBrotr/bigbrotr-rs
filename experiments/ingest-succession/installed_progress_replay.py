@@ -406,38 +406,25 @@ def legacy_context(context):
     return result
 
 
-def verify(context):
-    """Full base science plus explicit typed heads; never a structural-only PASS."""
-    profile = require_frozen_profile()
-    from installed_family_replay import verify as base_verify, clock, fresh_xmin
+def verify_records(context, model, science, pairs):
+    """Reuse literal typed expectations at actual observed cuts, including loss.
+
+    The caller must independently reconstruct full science and complete legacy
+    SQL first. This helper does not establish lifecycle/custody or COMMIT outcome.
+    """
+    from installed_family_replay import clock, fresh_xmin
     from history_replay import only
     from live_replay import OLD_EVENT, NEW_EVENT
     from installed_family_science import decode
     from transition_replay import native_map
-    assert context['progress_profile'] == 'split', 'refusal is not positive qualification'
-    base, model, science = base_verify(context, progress=True)
+    profile = require_frozen_profile()
     origin, epoch = context['case']['origin'], science.epoch
     phases = {row['progress_phase']: row for row in context['journey']['closed']
         if 'progress_phase' in row}
     assert set(phases) == {'mutation', 'proof-only'}
+    assert [phase for phase, _ in pairs] in (['mutation'], ['mutation', 'proof-only'])
+    mutation = pairs[0][1]
     snapshots = context['snapshots']
-    assert [s['stage'] for s in snapshots] == ['activated', 'prepared',
-        'progress-mutation', 'progress-proof-only', 'submitted', 'renewed', 'before-stop']
-    mutation, proof = snapshots[2:4]
-    # Each extra cut receives the same complete75-table scientific model as the
-    # ordinary submitted cut. Removing new relations for the legacy model must
-    # not conceal unrelated SQL changes in either intermediate observation.
-    for snapshot in (mutation, proof):
-        phase_context = copy.deepcopy(context)
-        phase_context['snapshots'][4] = dict(copy.deepcopy(snapshot), stage='submitted')
-        base_verify(phase_context, progress=True)
-    require_phase(mutation['control'], origin, False, 'mutation', epoch, phases['mutation'])
-    require_phase(proof['control'], origin, False, 'proof-only', epoch, phases['proof-only'])
-    proof_only_boundary(mutation, proof, phase_spec(origin, False, 'proof-only')['job']['progress_revision'])
-    proof_head, = proof['control']['producer_checkpoints']
-    mutation_head, = mutation['control']['producer_checkpoints']
-    fresh_xmin(proof_head['xmin'], mutation['control'])
-    assert 0 < (int(proof_head['xmin']) - int(mutation_head['xmin'])) % 2**32 < 2**31
     manifest = hashlib.sha256(science.manifest).digest()
     common = dict(dataset_id='\\x' + science.ds.hex(), producer_slot_id='\\x' + science.slot.hex(),
         producer_epoch=epoch)
@@ -467,7 +454,7 @@ def verify(context):
         assert state['schema_versions'] == original_ledger
     modeled_native = native_map(model.native)
     results = []
-    for phase, snapshot in [('mutation', mutation), ('proof-only', proof)]:
+    for phase, snapshot in pairs:
         state, wire = snapshot['control'], phases[phase]
         spec = phase_spec(origin, False, phase)
         head, = state['producer_checkpoints']
@@ -550,6 +537,42 @@ def verify(context):
             key=lambda r: (r['source_shard'], r['source_epoch'], r['source_sequence']))
         results.append(exact_snapshot(head, [actual_job], actual_dependencies,
             expected_head, [expected_job], dependencies, modeled_native))
+    return results
+
+
+def verify(context):
+    """Full base science plus explicit typed heads; never a structural-only PASS."""
+    profile = require_frozen_profile()
+    from installed_family_replay import verify as base_verify, clock, fresh_xmin
+    from history_replay import only
+    from live_replay import OLD_EVENT, NEW_EVENT
+    from installed_family_science import decode
+    from transition_replay import native_map
+    assert context['progress_profile'] == 'split', 'refusal is not positive qualification'
+    base, model, science = base_verify(context, progress=True)
+    origin, epoch = context['case']['origin'], science.epoch
+    phases = {row['progress_phase']: row for row in context['journey']['closed']
+        if 'progress_phase' in row}
+    assert set(phases) == {'mutation', 'proof-only'}
+    snapshots = context['snapshots']
+    assert [s['stage'] for s in snapshots] == ['activated', 'prepared',
+        'progress-mutation', 'progress-proof-only', 'submitted', 'renewed', 'before-stop']
+    mutation, proof = snapshots[2:4]
+    # Each extra cut receives the same complete75-table scientific model as the
+    # ordinary submitted cut. Removing new relations for the legacy model must
+    # not conceal unrelated SQL changes in either intermediate observation.
+    for snapshot in (mutation, proof):
+        phase_context = copy.deepcopy(context)
+        phase_context['snapshots'][4] = dict(copy.deepcopy(snapshot), stage='submitted')
+        base_verify(phase_context, progress=True)
+    require_phase(mutation['control'], origin, False, 'mutation', epoch, phases['mutation'])
+    require_phase(proof['control'], origin, False, 'proof-only', epoch, phases['proof-only'])
+    proof_only_boundary(mutation, proof, phase_spec(origin, False, 'proof-only')['job']['progress_revision'])
+    proof_head, = proof['control']['producer_checkpoints']
+    mutation_head, = mutation['control']['producer_checkpoints']
+    fresh_xmin(proof_head['xmin'], mutation['control'])
+    assert 0 < (int(proof_head['xmin']) - int(mutation_head['xmin'])) % 2**32 < 2**31
+    results = verify_records(context, model, science, [('mutation', mutation), ('proof-only', proof)])
     for snapshot in snapshots[4:] + [dict(control=context['after'])]:
         for table in (*TABLES, 'producer_checkpoints'):
             assert snapshot['control'][table] == proof['control'][table], ('late progress rewrite', table)
