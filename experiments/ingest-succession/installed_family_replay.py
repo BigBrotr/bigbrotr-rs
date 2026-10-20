@@ -304,14 +304,20 @@ def backend_checked(value, control, database, window):
     assert absence['attempts'][-1]['backends'] == []
 
 
-def wire_checked(journey, fixture, report, before, initial, window):
+def wire_checked(journey, fixture, report, before, initial, window, *, progress=None):
     from installed_family_http import ACTIONS
     assert journey['terminal'] == dict(exit_code=0, reaped=True, outcome='PROCESS_EXITED')
     assert journey['stdout'] == journey['stderr'] == ''
     result = journey['result']
-    assert set(result) == {'status', 'login', 'logout', 'me', 'digests', 'observations',
+    fields = {'status', 'login', 'logout', 'me', 'digests', 'observations',
         'job_status', 'relay_joined', 'unauthenticated'}
-    assert result['status'] == 'PASS' and result['relay_joined'] is True and result['unauthenticated'] == 401
+    if progress is not None:
+        assert progress in ('split', 'hole')
+        fields |= {'checkpoint_validation', 'native_proof_validation'}
+        assert result['checkpoint_validation'] == result['native_proof_validation'] == 'NOT_RUN'
+    assert set(result) == fields
+    assert result['status'] == ('CAPTURED_PROGRESS_TRANSPORT_ONLY' if progress else 'PASS')
+    assert result['relay_joined'] is True and result['unauthenticated'] == 401
     assert result['login'] == dict(format='bigbrotr-cli-login/1', status='session-persisted', authority='observation-only')
     assert result['logout'] == dict(format='bigbrotr-cli-logout/1', status='revocation-acknowledged',
         local_file='retained', drain='unobserved')
@@ -342,7 +348,20 @@ def wire_checked(journey, fixture, report, before, initial, window):
         assert re.fullmatch('[0-9a-f]{48}', request[1]) and int(request[1][:32], 16)
         assert request[1][:32] not in nonces
         nonces.add(request[1][:32])
-        if number == 1:
+        if progress is not None and 'progress_phase' in last:
+            phase = last['progress_phase']
+            assert phase in ('mutation', 'proof-only')
+            labels = ['distinct', 'predecessor'] if phase == 'mutation' else ['distinct-resend']
+            events = [NEW_EVENT, OLD_EVENT] if phase == 'mutation' else [NEW_EVENT]
+            if progress == 'hole' and phase == 'mutation':
+                labels, events = ['preparation-hole', *labels], [{}, *events]
+            assert last['frames'] == labels + ['EOSE']
+            assert last['event_ids'] == [event.get('id') for event in events]
+            assert last['event_json_sha256'] == [sha(json.dumps(event, ensure_ascii=False,
+                separators=(',', ':')).encode()) for event in events]
+            assert last['completion'] == 'request-and-websocket-close'
+            assert first['request_at_us'] <= last['sent_at_us'] <= last['closed_at_us']
+        elif number == 1:
             assert last['frames'] == ['distinct', 'predecessor', 'distinct-resend', 'EOSE']
             assert last['event_ids'] == [NEW_EVENT['id'],
                 '8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849', NEW_EVENT['id']]
@@ -364,12 +383,23 @@ def wire_checked(journey, fixture, report, before, initial, window):
     selected, = [r for r in closed if r['number'] == quiet['number']]
     assert signal['signal_at_us'] <= selected['closed_at_us']
     assert signal['signal_monotonic_ns'] <= selected['closed_monotonic_ns']
+    if progress is not None:
+        phases = [r for r in closed if 'progress_phase' in r]
+        assert [r['progress_phase'] for r in phases] == ['mutation', 'proof-only']
+        assert phases[0]['number'] == 1 < phases[1]['number'] < quiet['number']
+        assert phases[0]['request'][1] != phases[1]['request'][1]
     return closed[0]
 
 
 
-def verify(context):
+def verify(context, *, progress=False):
     from installed_family_http import add_http
+    assert type(progress) is bool
+    progress_mode = None
+    if progress:
+        from installed_progress_replay import legacy_context
+        progress_mode = context['progress_profile']
+        context = legacy_context(context)
     assert set(context) == {'case', 'before', 'after', 'native_before', 'native_after', 'inputs_before',
         'inputs_after', 'input_contents', 'snapshots', 'response', 'journey', 'fixture', 'server_window',
         'backend', 'catalog_before', 'catalog_after', 'fixture_input'}
@@ -429,7 +459,8 @@ def verify(context):
     assert set(fixture) == {'cleanup_errors', 'client_terminal', 'renewal', 'signal', 'quiet'}
     assert fixture['cleanup_errors'] == []
     assert fixture['client_terminal'] == context['journey']['terminal']
-    first = wire_checked(context['journey'], fixture, report, before, snapshots[1]['control'], window)
+    first = wire_checked(context['journey'], fixture, report, before, snapshots[1]['control'], window,
+        progress=progress_mode)
     science = NetworkScience(model, model.plan)
     observed_native = native_map(context['native_after'])
     n = 4 if provenance else 1
@@ -502,11 +533,15 @@ def verify(context):
         if f'-{epoch:016x}-' in name:
             assert raw == science.inputs[int(name[-21:-5], 16)]
     backend_checked(context['backend'], model.control, case['database'], window)
-    return dict(status='PASS', name=case['name'], snapshots=5, observed_states=7, sql_tables=75,
+    result = dict(status='PASS', name=case['name'], snapshots=5, observed_states=7, sql_tables=75,
         target_epoch=epoch, requests=len(science.inputs), source_cut=10 if provenance else 5,
         native_rows=len(model.native['rows']), native_sequence=model.native['sequence'],
         original_inputs=len(context['inputs_before']), final_inputs=len(model.inputs), actual_cli=True,
         certification_per_frame='not-observed', source_closure='not-performed', workflow_completion='not-qualified')
+    if progress:
+        result['status'] = 'VERIFIED_BASE_SCIENCE_ONLY'
+        return result, model, science
+    return result
 
 
 def negative_controls(context):

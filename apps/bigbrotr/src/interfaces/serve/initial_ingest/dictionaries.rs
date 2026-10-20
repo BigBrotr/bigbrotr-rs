@@ -1,7 +1,7 @@
 //! Initial visibility identities; no accepted enrollment or job is rebound.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::{InitialBatchRequest, InitialDictionaryAppendRequest},
+    postgres::control_owner::{InitialBatchRequest, InitialDictionaryAppendRequest, ProgressGrant},
     rocks::store::{AdmissionLimits, BootstrapLimits},
 };
 use bigbrotr_model::{
@@ -17,7 +17,25 @@ const PRIVATE_LIMITS: AdmissionLimits = AdmissionLimits {
     max_outstanding_requests: 2,
 };
 
-pub(super) fn reserve_private(budget: &ResourceBudget) -> Result<OwnedPermit> {
+pub(super) struct SetupGrants {
+    bootstrap: OwnedPermit,
+    private_scope: OwnedPermit,
+    progress: ProgressGrant,
+}
+impl SetupGrants {
+    /// Reserve before registration/native setup. Both serial dictionary effects
+    /// retain the same progress grant through their Control completion.
+    pub(super) fn reserve(budget: &ResourceBudget) -> Result<Self> {
+        Ok(Self {
+            bootstrap: grant(budget, 8 * MIB, 4 * MIB)?,
+            private_scope: reserve_private(budget)?,
+            progress: ProgressGrant::new(grant(budget, ProgressGrant::REQUIRED_DATA_BYTES, 0)?)
+                .map_err(|e| (3, e.to_string()))?,
+        })
+    }
+}
+
+fn reserve_private(budget: &ResourceBudget) -> Result<OwnedPermit> {
     grant(
         budget,
         PRIVATE_LIMITS
@@ -35,9 +53,13 @@ pub(super) async fn initialize(
     root: &Resolved,
     progress: &watch::Sender<Progress>,
     cancellation: &Cancellation,
-    bootstrap: OwnedPermit,
-    private_grant: OwnedPermit,
+    grants: SetupGrants,
 ) -> Result<(QualifiedRef, QualifiedRef)> {
+    let SetupGrants {
+        bootstrap,
+        private_scope,
+        progress: checkpoint,
+    } = grants;
     let timeout = duration(root, "renewal_timeout");
     let ttl = duration(root, "authorization_ttl");
     let path = Path::new(required(root, "storage.ingest_root")?);
@@ -86,7 +108,7 @@ pub(super) async fn initialize(
     let receipt = bounded(timeout, cancellation, async {
         custody
             .owner
-            .bootstrap_initial_dictionaries(
+            .bootstrap_initial_dictionaries_with_progress(
                 custody.store.as_mut().unwrap().initial_mut()?,
                 InitialBatchRequest {
                     ingest_root: path,
@@ -101,6 +123,7 @@ pub(super) async fn initialize(
                     cancelled: &cancellation.requested,
                 },
                 bootstrap,
+                &checkpoint,
                 |doc, digest| validate(root, doc, digest),
             )
             .await
@@ -137,7 +160,7 @@ pub(super) async fn initialize(
     let receipt = bounded(timeout, cancellation, async {
         custody
             .owner
-            .append_initial_dictionaries(
+            .append_initial_dictionaries_with_progress(
                 custody.store.as_mut().unwrap().initial_mut()?,
                 InitialDictionaryAppendRequest {
                     ingest_root: path,
@@ -149,7 +172,8 @@ pub(super) async fn initialize(
                     policy_ttl: ttl,
                     cancelled: &cancellation.requested,
                 },
-                private_grant,
+                private_scope,
+                &checkpoint,
                 |doc, digest| validate(root, doc, digest),
             )
             .await

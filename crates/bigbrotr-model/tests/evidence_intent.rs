@@ -120,6 +120,7 @@ fn exact_dictionary_request_matches_independent_literal_bytes_and_digest() {
     assert_eq!(intent.encoded_intent_bytes(), 780);
     assert_eq!(intent.dictionaries()[0].descriptor_schema(), "visibility");
     assert_eq!(intent.dictionaries()[3].descriptor_schema(), "access-scope");
+    assert_eq!(intent.request_preimage_len(request_id(), 853).unwrap(), 853);
 
     let bytes = intent.encode_request_preimage(request_id(), 853).unwrap();
     assert_eq!(bytes, from_hex(expected["preimage_hex"].as_str().unwrap()));
@@ -246,6 +247,14 @@ fn every_count_byte_and_scratch_allocation_is_caller_bounded() {
         Err(EvidenceIntentError::EncodedIntentLimit)
     );
     let intent = EvidenceIntent::new(65_535, scope, base, limits(4, 780)).unwrap();
+    assert_eq!(
+        intent.request_preimage_len(request_id(), 852),
+        Err(EvidenceIntentError::EncodedRequestLimit)
+    );
+    assert_eq!(
+        intent.request_preimage_len(request_id(), 0),
+        Err(EvidenceIntentError::EncodedRequestLimit)
+    );
     assert_eq!(
         intent.encode_request_preimage(request_id(), 852),
         Err(EvidenceIntentError::EncodedRequestLimit)

@@ -149,6 +149,9 @@ impl Dispatch<'_> {
             // window defers it without ending HTTP, renewal or existing reads.
             return Ok(None);
         }
+        let checkpoint =
+            ProgressGrant::new(grant(self.budget, ProgressGrant::REQUIRED_DATA_BYTES, 0)?)
+                .map_err(error)?;
         let ttl = self.remaining()?;
         let appended = self
             .trace
@@ -173,6 +176,7 @@ impl Dispatch<'_> {
                         limits.required_dictionary_data_bytes().map_err(error)?,
                         limits.required_native_bytes().map_err(error)?,
                     )?,
+                    &checkpoint,
                     |d, h| validate_sync(self.root, lifecycle, d, h),
                 ),
             )

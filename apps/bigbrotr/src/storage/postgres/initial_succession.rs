@@ -141,6 +141,15 @@ impl ControlSession {
             )
             .map_err(|_| OwnerError::Unavailable)?;
         check_delivery(&mut lease, current_epoch, input.cancelled)?;
+        producer_progress::recovery::require(
+            &tx,
+            recovery,
+            previous,
+            input.previous_registration.producer_slot_id,
+            &permit,
+            || producer_progress::recovery::authority(&mut lease, current_epoch, input.cancelled),
+        )
+        .await?;
         tx.commit()
             .await
             .map_err(|_| InitialSuccessionError::CommitUnknown)?;

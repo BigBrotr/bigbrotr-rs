@@ -148,6 +148,20 @@ impl ControlSession {
             control: current,
         };
         retirement_rows::require_native(&tx, recovery, &context, &native, input.cancelled).await?;
+        // No input decoder is live during this fixed streaming read. Its
+        // retained staging allowance is separate from the native lineage Vec.
+        for epoch in 1..=context.head.epoch() {
+            let entry = native.entry(epoch).ok_or(OwnerError::InvalidMetadata)?;
+            producer_progress::recovery::require(
+                &tx,
+                recovery,
+                entry.manifest(),
+                native.producer_slot_id(),
+                &_input_permit,
+                || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            )
+            .await?;
+        }
         successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
         native
             .validate(recovery, input.cancelled)

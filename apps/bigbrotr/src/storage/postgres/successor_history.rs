@@ -219,6 +219,17 @@ impl ControlSession {
             control: current,
         };
         rows::require_native(&tx, recovery, &history, input.cancelled).await?;
+        for entry in history.lineage.entries() {
+            producer_progress::recovery::require(
+                &tx,
+                recovery,
+                entry.manifest(),
+                history.producer_slot_id(),
+                history.lineage.progress_scratch(),
+                || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            )
+            .await?;
+        }
         history
             .lineage
             .validate(recovery, input.cancelled)

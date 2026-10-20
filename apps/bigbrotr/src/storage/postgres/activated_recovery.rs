@@ -147,6 +147,19 @@ impl ControlSession {
         native
             .validate(recovery)
             .map_err(InitialSuccessionError::Native)?;
+        // Both predecessor and activated target can retain typed progress. The
+        // unactivated-target protocol still keeps its separate empty veto.
+        for manifest in [native.previous_manifest(), native.manifest()] {
+            producer_progress::recovery::require(
+                &tx,
+                recovery,
+                manifest,
+                native.producer_slot_id(),
+                &permit,
+                || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
+            )
+            .await?;
+        }
         initial_history::finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);

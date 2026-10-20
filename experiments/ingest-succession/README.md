@@ -6,7 +6,7 @@ tests and migration/CLI checks. It retains the exact CLI, finite probe and test
 executables and runs Clippy. A selected group with no passing tests cannot qualify.
 This profile alone does not exercise connected PostgreSQL progress, installed
 acquisition/recovery or native ACK. The existing progress checkpoint owns actual
-execution status; the profile is prepared before the new product tests are frozen.
+execution status and the evidence report owns exact build/test identities.
 
 `installed_family_client.py journey-progress` prepares a separate transport
 scenario using the existing authenticated journey. The first real REQ receives
@@ -22,13 +22,51 @@ The default `journey` and qualified family replay are unchanged.
 binds both phase files, literal event hashes, actual distinct REQ identities,
 the release digest and unchanged input census. Its result is
 `CAPTURED_SPLIT_RELAY`, with SQL/checkpoint/native-proof validation `NOT_RUN`.
-These helpers are not yet called by the qualified runner. The opt-in profile
-still needs the frozen migration, complete independent typed head/closure
-encoding, durable-head polling, final native/SQL oracle and negative controls.
-In particular, existing migration38/75-table assertions must not be weakened
-to accept an unknown schema. The same transport cut can be reused for initial,
-activated and successor Sync, but only the successor client is parameterized
-here; no connected scenario or other entrypoint is qualified by this preparation.
+The opt-in `installed_family.py ROOT BUILD --progress` path connects these cuts
+to the existing runner and complete raw capture reader. The reviewed
+`installed_progress_replay.FROZEN_PROFILE` now binds migration0039 to the
+qualified component source `d4e1b85566dee30994017834b763fe04396bcf1c` and the
+independently fixed head/count/dependency expectations. This enables the
+connected fixture; its actual execution and offline-control status remain in
+the existing checkpoint and evidence report.
+The selected `product_source` must exactly match the qualified build, component
+and qualification receipts in both the runner and offline replay. Later runner
+commits are permitted only by the existing docs/experiments-only source delta
+and unchanged product/migration manifest checks.
+
+The independent oracle encodes each216-byte acquisition head and72-byte
+dependency record, hashes their canonical ordered stream and checks every
+dependency against independently reconstructed native bytes. The proof-only
+intent is rebuilt from the literal signed EVENT, known attribution and the
+current head's receive-time fields bounded by the actual relay capture. A stored
+intent digest is never copied as its own expectation. The existing scientific
+model checks all75 original tables at both extra cuts; the new oracle checks
+all removed0039 fields and both new tables separately. The new mode alone selects
+schema39/77 tables and its additive grants. The ordinary runner and replay retain
+the exact schema38/75-table contract.
+
+The first quantum must show the literal signed NEW and OLD outcomes. A distinct
+later REQ receives NEW only after the first SQL/input snapshot is retained. This
+proof-only cut must preserve every producer request, outcome and input, while
+advancing the classified head without changing its complete-through request.
+Full native/scientific reconstruction and baseline-first offline controls,
+including a forged intent and incomplete closure with recomputed valid head
+checksums, are required before any positive result. ACK and retired counters
+remain zero; the queued job's checkpoint remains zero.
+
+`--progress-hole` is preparation for a separate refusal capture: `{}` precedes
+the two valid signed frames in the first retained quantum. Those later ordinary
+admissions may persist, but a later progress attempt must refuse the uncovered
+mutation prefix. This path cannot emit positive qualification. The existing
+failure/custody path preserves raw SQL/input and process errors and does not
+reopen native state without its established positive close proof. Failure
+custody and a complete external refusal oracle remain pending.
+
+The existing three successor contexts are reused here (activated predecessor
+with provenance off, empty predecessor with provenance on, and later epoch with
+provenance on). Initial and activated Sync entrypoint qualification, historical
+recovery, COMMIT reply loss, ACK/GC and workflow completion remain separate work;
+this fixture does not claim them.
 
 `portable-handoff-v2.json` is generated independently from the field tables in
 [the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)

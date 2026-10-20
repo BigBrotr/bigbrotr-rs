@@ -372,3 +372,7 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "preparation_tests.rs"]
+mod preparation_tests;

@@ -10,9 +10,10 @@ use bigbrotr::{
     acquisition::{
         job::{AcquisitionJobBinding, AcquisitionScan},
         observation::StoredObservation,
+        preparation::{CapturedEventInput, CapturedInputError},
         receive_clock::ReceiveClock,
         relay_source::{StoredRelaySource, source_visibility_allowed},
-        scope::{AcquisitionEventContext, StoredAcquisitionScope},
+        scope::{AcquisitionEventContext, ScopeEventError, StoredAcquisitionScope},
     },
     management::sessions::SessionError,
     network::{DirectConnector, DnsResolver, TlsPolicy, TransportError},
@@ -20,7 +21,8 @@ use bigbrotr::{
         postgres::{
             control_owner::{
                 LiveSuccessorCertificationRequest, LiveSuccessorEventRequest,
-                LiveSuccessorVisibilityRequest, RelaySourceError, RelaySourceRequest,
+                LiveSuccessorVisibilityRequest, ProgressGrant, RelaySourceError,
+                RelaySourceRequest, SyncProgress,
             },
             producer_sources::SourceBindingError,
         },
@@ -30,15 +32,15 @@ use bigbrotr::{
         },
     },
 };
-use bigbrotr_model::{EventIntent, ProducerEpoch, ProducerRequestId, RequestSequence};
-use bigbrotr_protocol::{EventLimits, decode_event_json};
+use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
+use bigbrotr_protocol::{EventError, EventLimits};
 use std::time::Duration;
 
 // TLS, scope, source, visibility, observation, dictionary preparation, batch,
 // three retained frames, two session items, WebSocket, Direct, DNS and one
-// effect input. Preparation/socket/effect grants do not all overlap. Control,
-// retained producer inputs and native memory already have separate base slots.
-pub(super) const ITEMS: u64 = 16;
+// effect input and progress transaction. These grants do not all overlap.
+// Control, retained producer inputs and native memory have separate base slots.
+pub(super) const ITEMS: u64 = 17;
 pub(super) const INTERVAL: Duration = Duration::from_millis(250);
 
 /// Preclaim capacity check for the complete fixed finite profile. TLS roots are
@@ -74,6 +76,7 @@ pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
         + dictionaries.required_dictionary_preparation_data_bytes().map_err(error)?
         + dictionaries.required_dictionary_data_bytes().map_err(error)?
         + event.required_data_bytes().map_err(error)?
+        + ProgressGrant::REQUIRED_DATA_BYTES
         + (wire.parse_bytes + 4 * wire.event_bytes + session + arrivals) as u64
         // Current DirectConnector and DNS each charge 4MiB. RelayWebSocket
         // charges eight maximum frames plus 1MiB handshake/buffer overhead.
@@ -104,6 +107,38 @@ pub(super) struct Sync {
 
 fn error(error: impl std::fmt::Debug) -> (u8, String) {
     (4, format!("initial Sync unavailable: {error:?}"))
+}
+
+/// Preparation refusals have no durable classification in this first slice.
+/// Later valid events still follow the ordinary certification/admission path,
+/// but cannot advance a checkpoint past that hole in this actual REQ.
+struct ClassifiedPrefix {
+    continuous: bool,
+}
+impl ClassifiedPrefix {
+    fn prepared<T>(
+        &mut self,
+        input: std::result::Result<T, CapturedInputError>,
+    ) -> Result<Option<T>> {
+        let refusal = match input {
+            Ok(input) => return Ok(Some(input)),
+            Err(refusal) => refusal,
+        };
+        let peer_refusal = match refusal {
+            CapturedInputError::Decode(reason) => reason != EventError::InvalidLimits,
+            CapturedInputError::Scope(
+                ScopeEventError::OutsideCollection
+                | ScopeEventError::EphemeralExcluded
+                | ScopeEventError::OutsideRequest,
+            ) => true,
+            _ => false,
+        };
+        if !peer_refusal {
+            return Err(error(refusal));
+        }
+        self.continuous = false;
+        Ok(None)
+    }
 }
 
 impl Sync {
@@ -375,10 +410,12 @@ impl Sync {
         if work.stopped() {
             return Ok(());
         }
+        let mut prefix = ClassifiedPrefix { continuous: true };
         for (frame, (captured, observation)) in arrivals.events.iter().enumerate() {
             if work.stopped() {
                 return Ok(());
             }
+            let ordinal = u16::try_from(frame + 1).expect("at most three retained frames");
             let frame = Some(u8::try_from(frame).expect("at most three retained frames"));
             let context =
                 AcquisitionEventContext::for_job(job.id, &scope, captured.request().filters())
@@ -398,34 +435,44 @@ impl Sync {
             let prepared_bytes = captured.limits().parse_bytes as u64 + 4 * max_event_bytes as u64;
             let prepare = || -> Result<_> {
                 let permit = grant(work.budget, prepared_bytes, 0)?;
-                let Ok(decoded) = decode_event_json(captured.json(), captured.limits()) else {
-                    return Ok(None);
-                };
-                // Peer data outside the exact intent is a local refusal before
-                // any SQL/native operation, never a poisoned Control owner.
-                if context
-                    .check(source.binding(), scope.scope().visibility(), &decoded)
-                    .is_err()
-                {
-                    return Ok(None);
-                }
-                let intent =
-                    EventIntent::network(1, scope.scope().visibility(), decoded, *observation)
-                        .map_err(error)?;
-                Ok(Some((intent, permit)))
+                Ok(CapturedEventInput::prepare(
+                    captured,
+                    job.id,
+                    &scope,
+                    &source,
+                    &attribution,
+                    permit,
+                ))
             };
             let prepared =
                 work.trace
                     .run(Stage::EventPreparation, frame, None, || -> Result<_> {
-                        let Some((intent, permit)) = prepare()? else {
+                        let Some(input) = prefix.prepared(prepare()?)? else {
                             return Ok(None);
                         };
-                        PreparedCertification::new(intent, max_event_bytes, permit)
+                        PreparedCertification::from_captured(input, max_event_bytes)
                             .map(Some)
                             .map_err(error)
                     })?;
             let Some(prepared) = prepared else {
                 continue;
+            };
+            let checkpoint = if prefix.continuous {
+                Some(
+                    SyncProgress::capture(
+                        captured,
+                        ordinal,
+                        ProgressGrant::new(grant(
+                            work.budget,
+                            ProgressGrant::REQUIRED_DATA_BYTES,
+                            0,
+                        )?)
+                        .map_err(error)?,
+                    )
+                    .map_err(error)?,
+                )
+            } else {
+                None
             };
             let ttl = work.remaining()?;
             let certified = work
@@ -448,6 +495,7 @@ impl Sync {
                             cancelled: &work.cancel.requested,
                         },
                         grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
+                        checkpoint.as_ref(),
                         |d, h, e| policy.certification(d, h, e),
                     ),
                 )
@@ -469,9 +517,10 @@ impl Sync {
                 frame,
                 Some(self.next_request),
                 || -> Result<_> {
-                    let (intent, permit) =
-                        prepare()?.ok_or_else(|| error("retained input changed"))?;
-                    PreparedEvent::new(
+                    let input = prefix
+                        .prepared(prepare()?)?
+                        .ok_or_else(|| error("retained input changed"))?;
+                    PreparedEvent::from_captured(
                         ProducerRequestId {
                             producer_slot_id: work.writer.slot(work.context)?,
                             producer_epoch: ProducerEpoch::new(work.writer.epoch()?)
@@ -479,9 +528,8 @@ impl Sync {
                             request_sequence: RequestSequence::new(self.next_request)
                                 .map_err(error)?,
                         },
-                        intent,
+                        input,
                         max_event_bytes,
-                        permit,
                     )
                     .map_err(error)
                 },
@@ -513,6 +561,7 @@ impl Sync {
                             admission.required_data_bytes().map_err(error)?,
                             admission.required_native_bytes().map_err(error)?,
                         )?,
+                        checkpoint.as_ref(),
                         |d, h, e| policy.admission(d, h, e),
                     ),
                 )
@@ -574,4 +623,48 @@ fn validate_sync(
 ) -> std::result::Result<(), OwnerError> {
     let restored = super::super::accepted_policy(root, document, digest)?;
     accepted_owner_profile(&restored, profile)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress() {
+        for refusal in [
+            CapturedInputError::Decode(EventError::InvalidJson),
+            CapturedInputError::Decode(EventError::ArenaLimit),
+            CapturedInputError::Scope(ScopeEventError::OutsideCollection),
+            CapturedInputError::Scope(ScopeEventError::EphemeralExcluded),
+            CapturedInputError::Scope(ScopeEventError::OutsideRequest),
+        ] {
+            let mut prefix = ClassifiedPrefix { continuous: true };
+            assert_eq!(prefix.prepared(Ok(1)).unwrap(), Some(1));
+            assert!(prefix.continuous);
+            assert_eq!(prefix.prepared::<u8>(Err(refusal)).unwrap(), None);
+            assert!(!prefix.continuous);
+            assert_eq!(prefix.prepared(Ok(3)).unwrap(), Some(3));
+            assert!(!prefix.continuous);
+        }
+    }
+
+    #[test]
+    fn resource_and_context_failures_cannot_be_hidden_as_peer_refusals() {
+        for failure in [
+            CapturedInputError::Budget,
+            CapturedInputError::Decode(EventError::InvalidLimits),
+            CapturedInputError::Scope(ScopeEventError::InvalidRequest),
+            CapturedInputError::Scope(ScopeEventError::SourceMismatch),
+            CapturedInputError::Observation(
+                bigbrotr::acquisition::observation::ObservationError::SourceMismatch,
+            ),
+            CapturedInputError::Observation(
+                bigbrotr::acquisition::observation::ObservationError::ClockMismatch,
+            ),
+            CapturedInputError::Intent,
+        ] {
+            let mut prefix = ClassifiedPrefix { continuous: true };
+            assert!(prefix.prepared::<u8>(Err(failure)).is_err());
+        }
+    }
 }

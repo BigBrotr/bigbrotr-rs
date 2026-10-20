@@ -452,6 +452,12 @@ One owner serializes exact identity decisions for each writable directory.
   AlreadyDurable request/retry with no new facts. Reservation/race regressions
   also pass; initial fixture/audit failures remain recorded. This qualifies the
   durable copy only, not this step's logical checkpoint, ACK/GC or handoff work.
+  The [typed local progress increment](../reference/producer-request-inputs.md#typed-local-classified-progress-0039-partial-qualification)
+  adds 0039 and opaque native-bound classification in the real Sync consumer.
+  Three successor lifetimes pass; the linked reference and existing recovery
+  report own qualification and original failures. Initial/activated entrypoints,
+  typed recovery/retry and COMMIT-loss remain open. ACK, new credit, GC, coverage
+  and whole-step completion are not qualified.
   The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
   adds native-witness closure and a contiguous logical shard head in that same
   outcome transaction. [Native evidence](evidence/p03-import-checkpoints-native-20260919.json)

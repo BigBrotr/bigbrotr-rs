@@ -234,6 +234,7 @@ impl NativeOwner {
         context: RuntimeContext<'_>,
         input: LiveSuccessorCertificationRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&SyncProgress>,
         validate: impl FnMut(
             &str,
             [u8; 32],
@@ -243,35 +244,60 @@ impl NativeOwner {
         context.require(self)?;
         match self {
             Self::Initial(store) => {
-                owner
-                    .certify_initial_event(
-                        store,
-                        InitialCertificationRequest {
-                            registration: context.initial()?,
-                            ingest_root: input.ingest_root,
-                            event: input.event,
-                            relay_source: input.relay_source,
-                            acquisition: input.acquisition,
-                            provenance_enabled: input.provenance_enabled,
-                            limits: input.limits,
-                            policy_ttl: input.policy_ttl,
-                            cancelled: input.cancelled,
-                        },
-                        permit,
-                        validate,
-                    )
-                    .await
+                let input = InitialCertificationRequest {
+                    registration: context.initial()?,
+                    ingest_root: input.ingest_root,
+                    event: input.event,
+                    relay_source: input.relay_source,
+                    acquisition: input.acquisition,
+                    provenance_enabled: input.provenance_enabled,
+                    limits: input.limits,
+                    policy_ttl: input.policy_ttl,
+                    cancelled: input.cancelled,
+                };
+                match progress {
+                    Some(progress) => {
+                        owner
+                            .certify_initial_event_with_progress(
+                                store, input, permit, progress, validate,
+                            )
+                            .await
+                    }
+                    None => {
+                        owner
+                            .certify_initial_event(store, input, permit, validate)
+                            .await
+                    }
+                }
             }
-            Self::Live(writer) => {
-                owner
-                    .certify_live_initial_event(writer, input, permit, validate)
-                    .await
-            }
-            Self::Successor(writer) => {
-                owner
-                    .certify_live_successor_event(writer, input, permit, validate)
-                    .await
-            }
+            Self::Live(writer) => match progress {
+                Some(progress) => {
+                    owner
+                        .certify_live_initial_event_with_progress(
+                            writer, input, permit, progress, validate,
+                        )
+                        .await
+                }
+                None => {
+                    owner
+                        .certify_live_initial_event(writer, input, permit, validate)
+                        .await
+                }
+            },
+            Self::Successor(writer) => match progress {
+                Some(progress) => {
+                    owner
+                        .certify_live_successor_event_with_progress(
+                            writer, input, permit, progress, validate,
+                        )
+                        .await
+                }
+                None => {
+                    owner
+                        .certify_live_successor_event(writer, input, permit, validate)
+                        .await
+                }
+            },
             Self::Candidate(_) => Err(OwnerError::InvalidInput.into()),
         }
     }
@@ -281,13 +307,14 @@ impl NativeOwner {
         context: RuntimeContext<'_>,
         input: LiveSuccessorDictionaryAppendRequest<'_>,
         permit: OwnedPermit,
+        progress: &ProgressGrant,
         validate: impl FnMut(&str, [u8; 32]) -> std::result::Result<(), OwnerError>,
     ) -> std::result::Result<StoredReceipt, InitialEventError> {
         context.require(self)?;
         match self {
             Self::Initial(store) => {
                 owner
-                    .append_initial_dictionaries(
+                    .append_initial_dictionaries_with_progress(
                         store,
                         InitialDictionaryAppendRequest {
                             registration: context.initial()?,
@@ -300,18 +327,23 @@ impl NativeOwner {
                             cancelled: input.cancelled,
                         },
                         permit,
+                        progress,
                         validate,
                     )
                     .await
             }
             Self::Live(writer) => {
                 owner
-                    .append_live_initial_dictionaries(writer, input, permit, validate)
+                    .append_live_initial_dictionaries_with_progress(
+                        writer, input, permit, progress, validate,
+                    )
                     .await
             }
             Self::Successor(writer) => {
                 owner
-                    .append_live_successor_dictionaries(writer, input, permit, validate)
+                    .append_live_successor_dictionaries_with_progress(
+                        writer, input, permit, progress, validate,
+                    )
                     .await
             }
             Self::Candidate(_) => Err(OwnerError::InvalidInput.into()),
@@ -323,6 +355,7 @@ impl NativeOwner {
         context: RuntimeContext<'_>,
         input: LiveSuccessorEventRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&SyncProgress>,
         validate: impl FnMut(
             &str,
             [u8; 32],
@@ -332,36 +365,61 @@ impl NativeOwner {
         context.require(self)?;
         match self {
             Self::Initial(store) => {
-                owner
-                    .admit_initial_event(
-                        store,
-                        InitialEventRequest {
-                            registration: context.initial()?,
-                            ingest_root: input.ingest_root,
-                            event: input.event,
-                            relay_source: input.relay_source,
-                            acquisition: input.acquisition,
-                            provenance_enabled: input.provenance_enabled,
-                            recorded_at: input.recorded_at,
-                            limits: input.limits,
-                            policy_ttl: input.policy_ttl,
-                            cancelled: input.cancelled,
-                        },
-                        permit,
-                        validate,
-                    )
-                    .await
+                let input = InitialEventRequest {
+                    registration: context.initial()?,
+                    ingest_root: input.ingest_root,
+                    event: input.event,
+                    relay_source: input.relay_source,
+                    acquisition: input.acquisition,
+                    provenance_enabled: input.provenance_enabled,
+                    recorded_at: input.recorded_at,
+                    limits: input.limits,
+                    policy_ttl: input.policy_ttl,
+                    cancelled: input.cancelled,
+                };
+                match progress {
+                    Some(progress) => {
+                        owner
+                            .admit_initial_event_with_progress(
+                                store, input, permit, progress, validate,
+                            )
+                            .await
+                    }
+                    None => {
+                        owner
+                            .admit_initial_event(store, input, permit, validate)
+                            .await
+                    }
+                }
             }
-            Self::Live(writer) => {
-                owner
-                    .admit_live_initial_event(writer, input, permit, validate)
-                    .await
-            }
-            Self::Successor(writer) => {
-                owner
-                    .admit_live_successor_event(writer, input, permit, validate)
-                    .await
-            }
+            Self::Live(writer) => match progress {
+                Some(progress) => {
+                    owner
+                        .admit_live_initial_event_with_progress(
+                            writer, input, permit, progress, validate,
+                        )
+                        .await
+                }
+                None => {
+                    owner
+                        .admit_live_initial_event(writer, input, permit, validate)
+                        .await
+                }
+            },
+            Self::Successor(writer) => match progress {
+                Some(progress) => {
+                    owner
+                        .admit_live_successor_event_with_progress(
+                            writer, input, permit, progress, validate,
+                        )
+                        .await
+                }
+                None => {
+                    owner
+                        .admit_live_successor_event(writer, input, permit, validate)
+                        .await
+                }
+            },
             Self::Candidate(_) => Err(OwnerError::InvalidInput.into()),
         }
     }

@@ -32,7 +32,10 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 #[path = "initial_dispatch.rs"]
 mod dispatch;
+use super::producer_progress::{self, ProducerProgressError, ProgressGrant, SyncProgress};
 use dispatch::NativeOwner;
+#[path = "initial_progress.rs"]
+mod progress_operations;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialOperationError<E> {
@@ -44,6 +47,7 @@ pub enum InitialOperationError<E> {
     Scope(ScopeEventError),
     InputBinding(InputBindingError),
     ImportCheckpoint(ImportCheckpointError),
+    Progress(ProducerProgressError),
     /// The native result exists; this error never authorizes another request ID.
     Outcome(OutcomeError),
     /// Native work was dispatched but later cleanup/delivery is unavailable.
@@ -106,6 +110,7 @@ struct InitialIngestContext<'a> {
     source: Option<CurrentSourceCheck<'a>>,
     network_event: bool,
     job: Option<ImportJobBinding>,
+    progress: bool,
 }
 
 #[derive(Clone, Copy)]
@@ -115,6 +120,17 @@ enum NativeAuthority<'a> {
     Successor(&'a successor_transition::LiveSuccessorBinding),
 }
 impl<'a> NativeAuthority<'a> {
+    fn progress_context(
+        self,
+        manifest: &crate::storage::rocks::manifest::IngestManifest,
+    ) -> producer_progress::Context {
+        producer_progress::Context {
+            dataset: self.dataset(),
+            slot: self.slot(),
+            epoch: self.epoch(),
+            manifest: Sha256::digest(manifest.encode().as_bytes()).into(),
+        }
+    }
     fn dataset(self) -> DatasetId {
         match self {
             Self::Initial(s) => s.dataset_id,
@@ -400,6 +416,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: false,
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -493,6 +510,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: false,
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -549,6 +567,7 @@ impl ControlSession {
                 cancelled: input.cancelled,
             },
             permit,
+            None,
             validate,
         )
         .await
@@ -566,6 +585,7 @@ impl ControlSession {
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -577,6 +597,7 @@ impl ControlSession {
         authority: NativeAuthority<'_>,
         input: LiveInitialCertificationRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&SyncProgress>,
         mut validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
         if input.cancelled.load(Ordering::Relaxed) {
@@ -591,11 +612,17 @@ impl ControlSession {
             input.event.origin(),
             input.event.verified_event(),
         )?;
+        let event_progress = progress
+            .map(|p| p.bind(input.event.captured(), source))
+            .transpose()
+            .map_err(InitialEventError::Progress)?;
+        let progress_context = progress.map(|_| authority.progress_context(store.manifest()));
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -610,8 +637,23 @@ impl ControlSession {
                 |document, digest| validate(document, digest, &input.event),
             )
             .await?;
+        let mut progress_state = if progress.is_some() {
+            Some(
+                producer_progress::prepare(
+                    &tx,
+                    progress_context.expect("progress context"),
+                    event_progress,
+                    None,
+                    0,
+                )
+                .await
+                .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
         let cancelled = input.cancelled;
-        let result = store.certify_event(input, permit, || {
+        let result = store.certify_event(input, permit, progress.is_some(), || {
             if cancelled.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
@@ -619,9 +661,40 @@ impl ControlSession {
                 .check_delivery(identity.policy_epoch)
                 .map_err(|_| AdmissionError::AuthorityUnavailable)
         });
-        tx.rollback()
+        let basis = if let (Some(_), Ok(result)) = (&progress_state, &result) {
+            store
+                .checkpoint_certification(result)
+                .map_err(InitialEventError::Native)?
+        } else {
+            None
+        };
+        if let Some(basis) = basis {
+            producer_progress::record(
+                &tx,
+                progress_context.expect("progress context"),
+                progress_state.as_mut().expect("prepared progress"),
+                event_progress,
+                &basis,
+                authority.control(),
+            )
             .await
-            .map_err(|_| InitialEventError::DeliveryUnknown)?;
+            .map_err(InitialEventError::Progress)?;
+            store
+                .require_checkpoint_basis(&basis)
+                .map_err(InitialEventError::Native)?;
+            if cancelled.load(Ordering::Relaxed)
+                || lease.check_delivery(identity.policy_epoch).is_err()
+            {
+                return Err(InitialEventError::DeliveryUnknown);
+            }
+            tx.commit()
+                .await
+                .map_err(|_| InitialEventError::Progress(ProducerProgressError::CommitUnknown))?;
+        } else {
+            tx.rollback()
+                .await
+                .map_err(|_| InitialEventError::DeliveryUnknown)?;
+        }
         if cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
@@ -640,15 +713,18 @@ impl ControlSession {
     /// PG driver before close, replacement or releasing their reservations.
     /// The validator checks both complete documents against actual static roots.
     /// No public network handler may supply an arbitrary validator or root.
-    pub async fn bootstrap_initial_dictionaries(
+    async fn bootstrap_native_dictionaries(
         &mut self,
         store: &mut IngestStore,
         input: InitialBatchRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&ProgressGrant>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialBatchError> {
         let spec = input.registration;
         let identity = *store.manifest().identity();
+        let progress_context =
+            progress.map(|_| NativeAuthority::Initial(spec).progress_context(store.manifest()));
         let request = ProducerRequestId {
             producer_slot_id: spec.producer_slot_id,
             producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
@@ -658,6 +734,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
                     policy_ttl: input.policy_ttl,
@@ -669,6 +746,30 @@ impl ControlSession {
                 &mut validate,
             )
             .await?;
+        let mut progress_state = if progress.is_some() {
+            input
+                .limits
+                .required_data_bytes()
+                .map_err(InitialBatchError::Native)?;
+            let bytes = input
+                .intent
+                .request_preimage_len(request, input.limits.max_batch_bytes)
+                .map_err(|_| InitialBatchError::Progress(ProducerProgressError::Limit))?
+                as u64;
+            Some(
+                producer_progress::prepare(
+                    &reservation_tx,
+                    progress_context.expect("progress context"),
+                    None,
+                    Some((1, bytes)),
+                    input.limits.max_mappings,
+                )
+                .await
+                .map_err(InitialBatchError::Progress)?,
+            )
+        } else {
+            None
+        };
         let staged = store
             .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
             .map_err(InitialBatchError::Native)?;
@@ -697,6 +798,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
                     policy_ttl: input.policy_ttl,
@@ -708,21 +810,38 @@ impl ControlSession {
                 &mut validate,
             )
             .await?;
-        let result = store.bootstrap_dictionaries(
-            request,
-            input.intent,
-            input.recorded_at,
-            input.limits,
-            permit,
-            || {
-                if input.cancelled.load(Ordering::Relaxed) {
-                    return Err(BootstrapError::AuthorityUnavailable);
-                }
-                lease
-                    .check_delivery(identity.policy_epoch)
-                    .map_err(|_| BootstrapError::AuthorityUnavailable)
-            },
-        );
+        if let Some(state) = &progress_state {
+            producer_progress::recheck(&tx, progress_context.expect("progress context"), state)
+                .await
+                .map_err(InitialBatchError::Progress)?;
+        }
+        let require_authority = || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(BootstrapError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(identity.policy_epoch)
+                .map_err(|_| BootstrapError::AuthorityUnavailable)
+        };
+        let result = if progress.is_some() {
+            store.bootstrap_checkpoint_dictionaries(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+                require_authority,
+            )
+        } else {
+            store.bootstrap_dictionaries(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+                require_authority,
+            )
+        };
         let receipt = match result {
             Ok(receipt) => receipt,
             Err(error) => {
@@ -747,6 +866,24 @@ impl ControlSession {
         )
         .await
         .map_err(InitialBatchError::Outcome)?;
+        if let Some(state) = &mut progress_state {
+            let basis = store
+                .checkpoint_evidence(&receipt)
+                .map_err(|_| InitialBatchError::Progress(ProducerProgressError::InvalidContext))?;
+            producer_progress::record(
+                &tx,
+                progress_context.expect("progress context"),
+                state,
+                None,
+                &basis,
+                spec.control,
+            )
+            .await
+            .map_err(InitialBatchError::Progress)?;
+            store
+                .require_checkpoint_basis(&basis)
+                .map_err(|_| InitialBatchError::Progress(ProducerProgressError::InvalidContext))?;
+        }
         if input.cancelled.load(Ordering::Relaxed)
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -791,6 +928,7 @@ impl ControlSession {
                 cancelled: input.cancelled,
             },
             permit,
+            None,
             validate,
         )
         .await
@@ -807,6 +945,7 @@ impl ControlSession {
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -818,10 +957,12 @@ impl ControlSession {
         authority: NativeAuthority<'_>,
         input: LiveInitialDictionaryAppendRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&ProgressGrant>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
         let control = authority.control();
         let identity = *store.manifest().identity();
+        let progress_context = progress.map(|_| authority.progress_context(store.manifest()));
         let request = ProducerRequestId {
             producer_slot_id: authority.slot(),
             producer_epoch: ProducerEpoch::new(authority.epoch())
@@ -837,6 +978,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -848,6 +990,30 @@ impl ControlSession {
                 &mut validate,
             )
             .await?;
+        let mut progress_state = if progress.is_some() {
+            input
+                .limits
+                .required_dictionary_data_bytes()
+                .map_err(InitialEventError::Native)?;
+            let bytes = input
+                .intent
+                .request_preimage_len(request, input.limits.max_batch_bytes)
+                .map_err(|_| InitialEventError::Progress(ProducerProgressError::Limit))?
+                as u64;
+            Some(
+                producer_progress::prepare(
+                    &reservation_tx,
+                    progress_context.expect("progress context"),
+                    None,
+                    Some((request.request_sequence.get(), bytes)),
+                    input.limits.max_dependencies,
+                )
+                .await
+                .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
         let staged = store
             .stage_dictionary_append(request, &input, &permit)
             .map_err(InitialEventError::Native)?;
@@ -876,6 +1042,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -887,7 +1054,12 @@ impl ControlSession {
                 &mut validate,
             )
             .await?;
-        let result = store.append_dictionaries(request, &input, permit, || {
+        if let Some(state) = &progress_state {
+            producer_progress::recheck(&tx, progress_context.expect("progress context"), state)
+                .await
+                .map_err(InitialEventError::Progress)?;
+        }
+        let result = store.append_dictionaries(request, &input, permit, progress.is_some(), || {
             if input.cancelled.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
@@ -919,6 +1091,24 @@ impl ControlSession {
         )
         .await
         .map_err(InitialEventError::Outcome)?;
+        if let Some(state) = &mut progress_state {
+            let basis = store
+                .checkpoint_evidence(&receipt)
+                .map_err(InitialEventError::Native)?;
+            producer_progress::record(
+                &tx,
+                progress_context.expect("progress context"),
+                state,
+                None,
+                &basis,
+                control,
+            )
+            .await
+            .map_err(InitialEventError::Progress)?;
+            store
+                .require_checkpoint_basis(&basis)
+                .map_err(InitialEventError::Native)?;
+        }
         if input.cancelled.load(Ordering::Relaxed)
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -962,6 +1152,7 @@ impl ControlSession {
                 cancelled: input.cancelled,
             },
             permit,
+            None,
             validate,
         )
         .await
@@ -978,6 +1169,7 @@ impl ControlSession {
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -989,6 +1181,7 @@ impl ControlSession {
         authority: NativeAuthority<'_>,
         input: LiveInitialEventRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&SyncProgress>,
         mut validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
         let control = authority.control();
@@ -1005,11 +1198,17 @@ impl ControlSession {
             input.event.origin(),
             input.event.verified_event(),
         )?;
+        let event_progress = progress
+            .map(|p| p.bind(input.event.captured(), source))
+            .transpose()
+            .map_err(InitialEventError::Progress)?;
+        let progress_context = progress.map(|_| authority.progress_context(store.manifest()));
         let identity = *store.manifest().identity();
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -1024,22 +1223,56 @@ impl ControlSession {
                 |document, digest| validate(document, digest, &input.event),
             )
             .await?;
+        let mut progress_state = if progress.is_some() {
+            Some(
+                producer_progress::prepare(
+                    &reservation_tx,
+                    progress_context.expect("progress context"),
+                    event_progress,
+                    Some((
+                        input.event.request_id().request_sequence.get(),
+                        input.event.retained_input_bytes() as u64,
+                    )),
+                    input.limits.max_dependencies,
+                )
+                .await
+                .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
         let staged = store
             .stage_event(&input.event, input.limits, &permit, input.cancelled)
             .map_err(InitialEventError::Native)?;
-        producer_requests::reserve(
-            &reservation_tx,
-            &staged,
-            control,
-            input.relay_source,
-            input.acquisition.map(|context| context.scope().identity()),
-            input
-                .acquisition
-                .and_then(|context| context.job())
-                .map(|binding| binding.job),
-        )
-        .await
-        .map_err(InitialEventError::Reservation)?;
+        let scope = input.acquisition.map(|context| context.scope().identity());
+        let job = input
+            .acquisition
+            .and_then(|context| context.job())
+            .map(|binding| binding.job);
+        if let Some(event) = event_progress {
+            producer_requests::reserve_progress(
+                &reservation_tx,
+                &staged,
+                control,
+                input.relay_source,
+                scope,
+                job,
+                event.position(),
+            )
+            .await
+            .map_err(InitialEventError::Reservation)?;
+        } else {
+            producer_requests::reserve(
+                &reservation_tx,
+                &staged,
+                control,
+                input.relay_source,
+                scope,
+                job,
+            )
+            .await
+            .map_err(InitialEventError::Reservation)?;
+        }
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(InitialEventError::Native(
                 AdmissionError::AuthorityUnavailable,
@@ -1060,6 +1293,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
                     policy_ttl: input.policy_ttl,
@@ -1074,8 +1308,13 @@ impl ControlSession {
                 |document, digest| validate(document, digest, &input.event),
             )
             .await?;
+        if let Some(state) = &progress_state {
+            producer_progress::recheck(&tx, progress_context.expect("progress context"), state)
+                .await
+                .map_err(InitialEventError::Progress)?;
+        }
         let cancelled = input.cancelled;
-        let result = store.admit_event(input, permit, || {
+        let result = store.admit_event(input, permit, progress.is_some(), || {
             if cancelled.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
@@ -1102,6 +1341,24 @@ impl ControlSession {
         import_checkpoints::close_record(&tx, outcome.native_outcome(), control)
             .await
             .map_err(InitialEventError::ImportCheckpoint)?;
+        if let Some(state) = &mut progress_state {
+            let basis = store
+                .checkpoint_event(&outcome)
+                .map_err(InitialEventError::Native)?;
+            producer_progress::record(
+                &tx,
+                progress_context.expect("progress context"),
+                state,
+                event_progress,
+                &basis,
+                control,
+            )
+            .await
+            .map_err(InitialEventError::Progress)?;
+            store
+                .require_checkpoint_basis(&basis)
+                .map_err(InitialEventError::Native)?;
+        }
         // SQL awaits can consume the lease or observe cancellation after native
         // completion. Do not publish its copy/progress with expired authority.
         if cancelled.load(Ordering::Relaxed) || lease.check_delivery(identity.policy_epoch).is_err()
@@ -1167,6 +1424,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
+                    progress: false,
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
                     policy_ttl: input.policy_ttl,
@@ -1279,9 +1537,16 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, authority.schema())
-            .await
-            .map_err(transaction_error)?;
+        let tx = application_transaction(
+            &mut self.client,
+            if input.progress {
+                39
+            } else {
+                authority.schema()
+            },
+        )
+        .await
+        .map_err(transaction_error)?;
         if let NativeAuthority::Successor(binding) = authority {
             binding.lock_control(&tx).await?;
         }
@@ -1425,6 +1690,7 @@ impl ControlSession {
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -1441,6 +1707,7 @@ impl ControlSession {
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -1457,6 +1724,7 @@ impl ControlSession {
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await

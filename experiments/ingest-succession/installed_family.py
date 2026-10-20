@@ -194,8 +194,12 @@ def release_progress_transport(directory, captured):
     return gate
 
 
-def execute(pg, client, output, case, directory, expected, catalog):
+def execute(pg, client, output, case, directory, expected, catalog, *, progress=False, hole=False):
     from installed_family_replay import verify, negative_controls
+    assert type(progress) is type(hole) is bool and (not hole or progress)
+    if progress:
+        import installed_progress_replay as progress_replay
+        progress_replay.require_frozen_profile()
     name, database = case['name'], case['database']
     prefix = output / name
     before = schema.rows(pg, database)
@@ -256,7 +260,12 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
   value={'exit_code':None,'reaped':False,'outcome':'UNKNOWN_TIMEOUT'}
 (p/'client-exit.json').write_text(json.dumps(value))
 '''
-        lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name)
+        if progress:
+            wrapper = wrapper.replace("'journey'", 'sys.argv[2]')
+            journey_mode = 'journey-progress-hole' if hole else 'journey-progress'
+            lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name, journey_mode)
+        else:
+            lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name)
         journey_started = True
         for stage in ('prepared', 'submitted'):
             wait_for(lambda: (directory / (stage + '.json')).exists() or (directory / 'client-exit.json').exists(),
@@ -268,6 +277,25 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                     actual = schema.rows(pg, database)
                     return actual if len([r for r in actual['producer_outcomes'] if r['producer_epoch'] == epoch]) == expected_count else None
                 wait_for(durable, 'successor issued durable prefix', 10)
+                if progress:
+                    for phase in ('mutation', 'proof-only'):
+                        def ready():
+                            assert not Path(str(prefix) + '.terminal.json').exists(), 'Serve exited before progress'
+                            wires = [read(path) for path in sorted(directory.glob('relay-closed-*.json'))]
+                            found = [wire for wire in wires if wire.get('progress_phase') == phase]
+                            assert len(found) <= 1, 'replayed progress phase'
+                            if not found:
+                                return None
+                            state = schema.rows(pg, database)
+                            return found[0] if progress_replay.phase_ready(
+                                state, case['origin'], hole, phase, epoch, found[0]) else None
+                        wire = wait_for(ready, 'durable progress ' + phase, 10)
+                        observed = snapshot('progress-' + phase)
+                        progress_replay.require_phase(observed['control'], case['origin'],
+                            hole, phase, epoch, wire)
+                        captured = capture_progress_observation(directory, phase, observed, wire)
+                        if phase == 'mutation':
+                            release_progress_transport(directory, captured)
             snapshot(stage)
             advance(stage)
         wait_for(lambda: (directory / 'commands-finished.json').exists() or (directory / 'client-exit.json').exists(),
@@ -389,14 +417,26 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         inputs_before=inputs, inputs_after=after_inputs, input_contents=contents, snapshots=snapshots,
         response=response, journey=journey, fixture=fixture, server_window=window, backend=backend,
         catalog_before=catalog, catalog_after=after_catalog, fixture_input=fixture_input)
+    if progress:
+        context['progress_profile'] = 'hole' if hole else 'split'
     lab.write_json(output / (name + '-verification.json'), context)
-    result, controls = verify(context), negative_controls(context)
+    if progress:
+        # Raw phase/gate binding precedes all scientific qualification.
+        from installed_family_capture import progress_transport_checked
+        transport = progress_transport_checked(directory, journey, snapshots, window,
+            lambda path: path.read_bytes(), lambda path: json.loads(path.read_bytes()), hole=hole)
+        result, controls = progress_replay.verify(context), progress_replay.controls(context)
+        assert result['status'] == 'PASS_INSTALLED_PRODUCER_PROGRESS'
+        assert controls['status'] == 'PASS' and controls['controls'] > 0
+        case['progress_transport'] = transport
+    else:
+        result, controls = verify(context), negative_controls(context)
     case.update(status='PASS', returncode=response['returncode'], oracle=result, negative_controls=controls,
         server_window=window)
     return after, after_native, after_inputs
 
 
-def run_sequence(pg, client, output, clone, directory, expected, report):
+def run_sequence(pg, client, output, clone, directory, expected, report, *, progress=False, hole=False):
     for helper in HELPERS:
         source = Path(__file__).with_name(helper) if helper == HELPERS[0] else (
             transition.SOURCE / 'experiments/ingest-bootstrap' / helper)
@@ -410,18 +450,38 @@ def run_sequence(pg, client, output, clone, directory, expected, report):
         predecessor=None, database=clone['database'], config=clone['config'], status='RUNNING')
     report['cases'].append(case)
     lab.write_json(output / 'result.json', report)
-    execute(pg, client, output, case, directory, expected, clone['catalog_before'])
+    execute(pg, client, output, case, directory, expected, clone['catalog_before'],
+        progress=progress, hole=hole)
     case['catalog_after'] = history.catalog(pg, clone['database'])
     assert case['catalog_after'] == clone['catalog_before']
     lab.write_json(output / 'result.json', report)
     return name
 
 
-def run(root, build):
+def run(root, build, *, progress=False, hole=False):
+    assert type(progress) is type(hole) is bool and (not hole or progress)
+    if progress:
+        from dataclasses import replace
+        from installed_progress_replay import require_frozen_profile, PROGRESS_GRANTS
+        require_frozen_profile()
+        mode = 'hole' if hole else 'split'
+        suite = replace(SUITE, directory='installed-progress-' + mode,
+            label='org.bigbrotr.installed-progress-' + mode,
+            status='PASS_INSTALLED_PRODUCER_PROGRESS',
+            client_prefix='bigbrotr-installed-progress-' + mode + '-',
+            database_prefix='bb_installed_progress_' + mode + '_',
+            scope='Separated real retained EVENT quanta with typed progress; ACK0 and all detail retained')
+        return transition.run(root, build, suite=suite,
+            sequence=lambda *args: run_sequence(*args, progress=True, hole=hole),
+            origin_specs=ORIGINS, origin_for_clone=dict(zip(CLONES, CLONES)),
+            extra_grants=(PROGRESS_GRANTS,), producer_progress=True)
     return transition.run(root, build, suite=SUITE, sequence=run_sequence, origin_specs=ORIGINS,
         origin_for_clone=dict(zip(CLONES, CLONES)))
 
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 3
-    run(Path(sys.argv[1]).resolve(strict=True), Path(sys.argv[2]).resolve(strict=True))
+    assert len(sys.argv) in (3, 4)
+    mode = sys.argv[3] if len(sys.argv) == 4 else None
+    assert mode in (None, '--progress', '--progress-hole')
+    run(Path(sys.argv[1]).resolve(strict=True), Path(sys.argv[2]).resolve(strict=True),
+        progress=mode is not None, hole=mode == '--progress-hole')

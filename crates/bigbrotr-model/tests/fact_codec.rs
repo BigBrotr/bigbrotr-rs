@@ -116,6 +116,54 @@ fn frozen_facts_decode_losslessly_and_reencode_exactly() {
 }
 
 #[test]
+fn retained_header_reader_matches_literal_frozen_source_identities() {
+    for (name, input, _) in fixtures() {
+        let source = Fact::retained_source_record_id(&input, input.len()).unwrap();
+        assert_eq!(source.dataset_id.to_string(), "01".repeat(16));
+        assert_eq!(source.shard_id, 0);
+        assert_eq!(source.owner_epoch.get(), 1);
+        assert_eq!(
+            source.sequence.get(),
+            if name == "fact-eligibility" { 1 } else { 2 }
+        );
+        assert_eq!(
+            Fact::retained_source_record_id(&input, input.len() - 1),
+            Err(CodecError::InputLimit)
+        );
+    }
+}
+
+#[test]
+fn retained_header_is_not_a_payload_integrity_or_validity_certificate() {
+    let (_, input, _) = fixtures().into_iter().next().unwrap();
+    let source = Fact::retained_source_record_id(&input, input.len()).unwrap();
+    let mut corrupt = input.clone();
+    // Preserve the fixed identity/profile but destroy the scientific payload.
+    corrupt.truncate(input.len() - 20);
+    assert_eq!(
+        Fact::retained_source_record_id(&corrupt, input.len()),
+        Ok(source)
+    );
+    assert!(decode(&corrupt).is_err());
+    let kind = input
+        .windows(13)
+        .position(|s| s == b"event-payload")
+        .unwrap();
+    for (position, replacement) in [
+        (b"bigbrotr/fact/1\0".len() - 2, b'2'),
+        (kind, b'x'),
+        (kind + 13, 2),
+    ] {
+        let mut unknown = input.clone();
+        unknown[position] = replacement;
+        assert_eq!(
+            Fact::retained_source_record_id(&unknown, input.len()),
+            Err(CodecError::IncompatibleSchema)
+        );
+    }
+}
+
+#[test]
 fn incompatible_noncanonical_and_truncated_input_never_becomes_a_fact() {
     let corpus = fixtures();
     for (name, input, _) in &corpus {

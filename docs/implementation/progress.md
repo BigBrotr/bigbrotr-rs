@@ -6,51 +6,50 @@ Q37 models and Q38 evidence reuse apply. Sole integration/runtime owner: root.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: durable classified producer checkpoint → synchronized native
-ACK → restart. Current increment validates typed PG progress with native ACK0,
+ACK → restart. Current increment implements typed PG progress with native ACK0,
 retaining every request/receipt/input (noGC); it grants no new credit.
-Main0521d3e was verified equal to remote after push51565joined0.
-This checkpoint/report/inventory update awaits its coherent commit/push.
 
-Root candidate `d4e1b85566dee30994017834b763fe04396bcf1c` is clean on
+Main `d75306534d273866dbd278d4b283bb527de0c3bf` was verified equal to remote.
+The merge carrying this checkpoint integrates clean candidate
+`75df76037cb5c60458165414f133d9deafcc4112` from
 `work/producer-progress-integration` in `.research/producer-progress-integration-20261020`.
-It composes the frozen storage/CLI/recovery/fixture packets plus recorded fixes.
-Original worktrees and ignored evidence remain preserved. Product source is not
-yet on main; connected qualification remains incomplete.
+Original author worktrees and ignored evidence remain preserved.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
-producer_checkpoint_ack_preparation_20261020`, owns exact source/review pins,
-all build/runtime attempts, failures and exclusions. Build78744d4 passed76 tests,
-19 critical names,8 exact ELFs, CLI/probe and Clippy. Connected242116d passed
-migration/reapply and observed a natural successful first Sync lifetime, but its
-full oracle **FAIL**ed historical row/xmin preservation;21controls and remaining
-contexts were not reached. Earlier failures remain retained, never relabeled.
+producer_checkpoint_ack_preparation_20261020`, owns all exact pins and attempts.
+Product d4e1b85 passes 76 tests, 19 required controls, eight retained ELFs and both
+Clippy selections. Fixture 75df760 passes three real successor Sync lifetimes,
+77-table/full signed native/input preservation and 21 negative controls each.
+Raw replay binds 1013 files and repeats science/controls. Earlier failures remain
+FAIL, including migration syntax, historical xmin rewrite and the overbroad
+historical-jobs checkpoint0 assertion; their corrections are recorded separately.
 
 ## Processes and resources
 
-Only root build driver87204 is active at the last observation:
-`/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-d4e1b85`.
-It uses the existing isolated runner and exclusive compiler-cache lock.
-Prior build and installed resources were freshly observed stoppedPID0/noOOM,
-cgroups absent, no cleanup errors or unrelated changes. Source agents completed.
-No cleanup. The [inventory](../research/laboratory-inventory.json) owns resource
-identities and preserved source/data/logs; final build custody is still pending.
+Build 87204, installed 67301 and raw replay 95690 joined with exit 0. Exact owned
+build/client containers and borrowed PG were observed exited, PID 0, no OOM; final 75df760 cgroups
+absent, no cleanup errors or unrelated changes. No build/runtime active.
+Source-only agents `export_setup_review` and `producer_recovery_review` now own
+separate initial/activated and historical-recovery fixture extensions based on
+75df760. Their unpublished edits remain outside main until reviewed.
+The [inventory](../research/laboratory-inventory.json) owns paths and custody.
+No cleanup; original datasets, failed runs, logs and worktrees remain intact.
 
 ## Next action and open limits
 
-Collect driver87204. The correction replaces six newly added nullable domain
-columns with equivalent base-type CHECKs to avoid PostgreSQL16 rewriting old
-rows; scans/DDL locks remain. After build qualification, rebind the fixture's
-source/migration and rerun its unchanged strict oracle on fresh original clones.
-The old78744d4 profile binding currently rejects the changed migration before
-resources. Preserve original row values/xmins; do not relax the oracle.
+Finish this coherent main commit/push, then review and run the bounded fixture
+extensions on qualified d4e1b85 binaries: actual initial and activated-epoch2 Sync,
+and fresh config-only typed successor recovery/retry with preserved origins and
+specific corrupted-copy refusals. Reuse the existing runners and independent
+oracles; do not repeat unchanged component builds for fixture-only changes.
 
-Keep jobs.checkpoint_revision=0 and current windows/deadlines. Local classified
-positions are not remote cursor/coverage. Post-hole ordinary admissions remain;
-progress refuses crossing unclassified mutations. Failure/unknown custody is
-not positive qualification. NativeACK, two-slot credit, reply-loss/restart and
-all initial/activated/historical recovery cases retain their planned gates.
-NoGC history64/32MiB is temporary, not indefinite capacity or task completion.
-Original a99 Sync timeout cause remains unresolved. TLS/other credentials,
-whole-service capacity, ACK/GC/import/restore and M1–M5 remain open.
-Q33 CI billing, arm64 and signing/registry remain separate gates. No public release.
+The new job keeps jobs.checkpoint_revision=0; historical jobs retain their actual
+values. Classified local positions are not remote cursor/coverage. Post-hole
+ordinary admissions remain; progress refuses crossing unclassified mutations.
+NativeACK, two-slot credit, COMMIT/reply-loss, all historical recovery contexts
+and other recorded refusal/resource gates remain open. NoGC history64/32MiB is
+temporary, not indefinite capacity or task completion. Original a99 Sync timeout
+cause remains unresolved. TLS/other credentials, whole-service capacity,
+ACK/GC/import/restore and M1–M5 remain open. Q33 CI billing, arm64 and
+signing/registry remain separate gates. No public release.

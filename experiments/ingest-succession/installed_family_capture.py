@@ -182,28 +182,39 @@ def origin_checked(root, folder, name, declaration, raw, read):
     return rows,native,inputs
 
 
-def clone_checked(folder, clone, origin, report, raw, read):
+def clone_checked(folder, clone, origin, report, raw, read, *, progress=None):
     name = clone['name']
     assert clone['origin'] == name and clone['directory'] == name and clone['status'] == 'PASS'
-    assert clone['database'] == 'bb_installed_successor_'+report['source'][:7]+'_'+name
+    prefix = 'bb_installed_successor_' if progress is None else 'bb_installed_progress_' + progress + '_'
+    assert clone['database'] == prefix+report['source'][:7]+'_'+name
     assert clone['config'] == '/lab/'+clone['database']+'.toml'
     assert clone['final_case'] == CASES[CLONES.index(name)] and clone['final_backends'] == []
     same(origin[0],read(folder/(name+'-copy-before.json')))
     floor = {'activated':37,'empty':31,'later':38}[name]
     steps = [dict(name=f'{v:04d}_{history.MIGRATIONS[v][0]}.sql',sha256=history.MIGRATIONS[v][1],version=str(v)) for v in range(floor+1,39)]
+    target = '38'
+    if progress is not None:
+        from installed_progress_replay import require_frozen_profile
+        target = '39'
+        steps.append(dict(name='0039_producer_progress.sql',
+            sha256=require_frozen_profile()['migration_sha256'], version='39'))
     assert [v['action'] for v in clone['migrations']] == ['plan','apply','apply']
     for index, answer in enumerate(clone['migrations']):
         assert set(answer) == {'action','exit_code','stdout','stderr'}
         assert type(answer['exit_code']) is int and answer['exit_code'] == 0 and answer['stderr'] == ''
-        assert loads(answer['stdout']) == dict(format='bigbrotr-control-migration/1',scope='postgres-control',target_version='38',
-            source_version=str(floor) if index<2 else '38',current_version=str(floor) if index==0 else '38',
+        assert loads(answer['stdout']) == dict(format='bigbrotr-control-migration/1',scope='postgres-control',target_version=target,
+            source_version=str(floor) if index<2 else target,current_version=str(floor) if index==0 else target,
             status='planned' if index==0 else ('applied' if index==1 and steps else 'current'),
             applied_count=str(len(steps)) if index==1 else '0',steps=steps if index<2 else [],
             dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
     grants = clone['grants']
-    assert len(grants) == 2 and all(set(g)=={'statement','stdout'} and not g['stdout'].strip() for g in grants)
+    assert len(grants) == (3 if progress is not None else 2)
+    assert all(set(g)=={'statement','stdout'} and not g['stdout'].strip() for g in grants)
     assert sha(grants[0]['statement'].encode()) == '36a16062c994adfe1ba7ace4c5e56d2ed942277b0e227ddd048e320939f0e588'
     assert grants[1]['statement'] == 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;'
+    if progress is not None:
+        from installed_progress_replay import PROGRESS_GRANTS
+        assert grants[2]['statement'] == PROGRESS_GRANTS
     assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
     config = tomllib.loads(raw(folder/Path(clone['config']).name).decode())
     ds = only(origin[0]['datasets'])
@@ -225,10 +236,16 @@ def clone_checked(folder, clone, origin, report, raw, read):
         assert answer['returncode']==0 and type(answer['returncode']) is int and answer['stderr']==''
         loads(answer['stdout'])
     migrated=read(folder/(name+'-migrated.json'))
+    baseline = migrated
+    if progress is not None:
+        from installed_progress_replay import legacy_state
+        baseline = legacy_state(migrated)
+        assert all(migrated[t] == [] for t in
+            ('producer_checkpoints','acquisition_progress','producer_checkpoint_dependencies'))
     if floor==38:
-        same(origin[0],migrated)
+        same(origin[0],baseline)
     else:
-        history.baseline(migrated,origin[1],origin[2],name,read(folder/(clone['final_case']+'-clock.json')))
+        history.baseline(baseline,origin[1],origin[2],name,read(folder/(clone['final_case']+'-clock.json')))
     return migrated
 
 
@@ -281,13 +298,14 @@ def backend_checked(value, database, before, after):
     number(absence['seconds'],elapsed,6)
 
 
-def progress_transport_checked(directory, journey, snapshots, window, raw, read):
+def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False):
     """Bind separated wire/capture phases; never certify a typed checkpoint.
 
     This is preparation for the opt-in profile. The default replay below does
     not call it and retains its original closed PASS predicate.
     """
     from live_replay import OLD_EVENT, NEW_EVENT
+    assert type(hole) is bool
     assert read(directory/'events.json') == [OLD_EVENT, NEW_EVENT]
     result = journey['result']
     assert result == read(directory/'client-result.json')
@@ -342,10 +360,12 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read)
         extra |= {'progress_phase', 'event_ids', 'event_json_sha256', 'sent_at_us'}
         values = [NEW_EVENT, OLD_EVENT] if phase == 'mutation' else [NEW_EVENT]
         labels = ['distinct', 'predecessor'] if phase == 'mutation' else ['distinct-resend']
+        if hole and phase == 'mutation':
+            values, labels = [{}, *values], ['preparation-hole', *labels]
         if phase == 'proof-only':
             extra.add('progress_release')
         assert set(last) == first_fields | extra
-        assert last['event_ids'] == [value['id'] for value in values]
+        assert last['event_ids'] == [value.get('id') for value in values]
         assert last['event_json_sha256'] == [sha(json.dumps(value, ensure_ascii=False,
             separators=(',', ':')).encode()) for value in values]
         assert last['frames'] == labels + ['EOSE']
@@ -386,7 +406,7 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read)
         native_proof_validation='NOT_RUN', sql_semantics='NOT_RUN')
 
 
-def journey_checked(directory, context, identity, window, raw, read):
+def journey_checked(directory, context, identity, window, raw, read, *, progress=False):
     journey=context['journey']; fixture=context['fixture']
     assert set(journey)=={'result','terminal','stdout','stderr','opened','closed'}
     assert journey['result']==read(directory/'client-result.json') and journey['terminal']==read(directory/'client-exit.json')
@@ -395,7 +415,9 @@ def journey_checked(directory, context, identity, window, raw, read):
     assert journey['stdout']==raw(directory/'client.stdout').decode()==''
     assert journey['stderr']==raw(directory/'client.stderr').decode()==''
     assert fixture['client_terminal']==journey['terminal'] and fixture['cleanup_errors']==[]
-    result=journey['result']; assert result['status']=='PASS' and result['relay_joined'] is True
+    result=journey['result']
+    assert result['status']==('CAPTURED_PROGRESS_TRANSPORT_ONLY' if progress else 'PASS')
+    assert result['relay_joined'] is True
     commands=[read(directory/f'command-{i}.json') for i in range(1,5)]
     assert commands==result['observations']
     assert sorted(p.name for p in directory.glob('command-*.json'))==[f'command-{i}.json' for i in range(1,5)]
@@ -447,15 +469,24 @@ def inventory_checked(before, after, client, postgres):
             assert after[item['Id']]==expected, 'unrelated container projection changed'
 
 
-def replay(root):
+def replay(root, *, progress=None):
     from installed_family_replay import verify, negative_controls
-    root=Path(root).resolve(strict=True); folder=root/'installed-family'; bound={}
+    assert progress in (None, 'split', 'hole')
+    if progress is not None:
+        import installed_progress_replay as progress_replay
+        progress_replay.require_frozen_profile()
+        assert progress == 'split', 'hole/refusal capture is not positive qualification'
+    root=Path(root).resolve(strict=True)
+    folder=root/('installed-family' if progress is None else 'installed-progress-' + progress)
+    bound={}
     def raw(path):
         path=Path(path); assert stat.S_ISREG(path.lstat().st_mode), 'capture must be a regular file'
         value=path.read_bytes(); bound[str(path)]=sha(value); return value
     def read(path): return loads(raw(path))
     report=read(folder/'result.json')
-    assert report['status']==STATUS and report['label']=='org.bigbrotr.installed-successor'
+    status = STATUS if progress is None else 'PASS_INSTALLED_PRODUCER_PROGRESS'
+    label = 'org.bigbrotr.installed-successor' if progress is None else 'org.bigbrotr.installed-progress-' + progress
+    assert report['status']==status and report['label']==label
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{40}',report['tree'])
     assert re.fullmatch('[0-9a-f]{32}',report['owner']) and re.fullmatch('[0-9a-f]{64}',report['client'])
     assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
@@ -482,11 +513,14 @@ def replay(root):
     build=Path(mount['Source']); assert build.is_absolute()
     built,component=read(build/'build-result.json'),read(build/'component-result.json')
     qualification=read(build.parent/'qualification.json')
-    assert qualification['status'] in ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
+    allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD','PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS','PASS_SUCCESSION_INSTALLED_COMPONENTS')
+    assert qualification['status'] in (('PASS_PRODUCER_PROGRESS_COMPONENTS',) if progress else allowed)
     assert report['build']==built and report['component']==component and component['status']=='PASS'
     assert component['source']==built['source']==qualification['source']
+    if progress is not None:
+        assert built['source']==progress_replay.require_frozen_profile()['product_source'], 'unreviewed progress build source'
     for field in ('tree','source_manifest_sha256','lockfile_sha256'): assert component[field]==built[field]==qualification[field]
     manifest_bytes=raw(build.parent/'build/source-manifest.json'); assert sha(manifest_bytes)==built['source_manifest_sha256']
     manifest=loads(manifest_bytes); assert manifest['revision']==built['source'] and manifest['tree']==built['tree']
@@ -502,13 +536,17 @@ def replay(root):
         assert raw(folder/helper)==raw(root/'source'/relative)
     results=[]; prior_window=started
     for name,clone,case in zip(CLONES,report['clones'],report['cases'],strict=True):
-        migrated=clone_checked(folder,clone,origins[name],report,raw,read)
+        migrated=clone_checked(folder,clone,origins[name],report,raw,read,progress=progress)
         expected=dict(name=clone['final_case'],clone=name,origin=name,operation='installed-live',predecessor=None,
             database=clone['database'],config=clone['config'],status='RUNNING',custody='OBSERVED_CLOSED_AND_JOINED')
         assert {k:case[k] for k in expected}==dict(expected,status='PASS')
         assert type(case['returncode']) is int and case['returncode']==0 and case['catalog_after']==clone['catalog_before']
         label=case['name']; item=lambda suffix: read(folder/(label+'-'+suffix+'.json'))
-        context=item('verification'); assert set(context)==CONTEXT_FIELDS and context['case']==expected
+        context=item('verification')
+        assert set(context)==CONTEXT_FIELDS | ({'progress_profile'} if progress else set())
+        assert context['case']==expected
+        if progress:
+            assert context['progress_profile'] == progress
         before,after,native,after_native,inputs,after_inputs=[item(s) for s in ('before','after','before-native','after-native','inputs','after-inputs')]
         for stage,observed_native in (('before',native),('after',after_native)):
             dumped=item(stage+'-dump-response')
@@ -524,7 +562,10 @@ def replay(root):
         window=item('clock'); assert window==context['server_window']==case['server_window'] and set(window)=={'before_us','after_us'}
         number(window['before_us'],prior_window,finished,integer=True); number(window['after_us'],window['before_us'],finished,integer=True)
         prior_window=window['after_us']
-        snapshots=item('observations'); assert snapshots==context['snapshots'] and [s['stage'] for s in snapshots]==list(STAGES)
+        stages = list(STAGES)
+        if progress:
+            stages[2:2] = ['progress-mutation', 'progress-proof-only']
+        snapshots=item('observations'); assert snapshots==context['snapshots'] and [s['stage'] for s in snapshots]==stages
         observed=window['before_us']
         directory=folder/name; previous_inputs=inputs
         for snapshot in snapshots:
@@ -537,7 +578,11 @@ def replay(root):
             spool_checked(directory/'store/producer-inputs-v1',snapshot['inputs'],raw,complete=False)
             previous_inputs=snapshot['inputs']
         fixture=item('fixture'); assert fixture==context['fixture']
-        journey_checked(directory,context,identity,window,raw,read)
+        journey_checked(directory,context,identity,window,raw,read,progress=progress is not None)
+        if progress:
+            transport = progress_transport_checked(directory, context['journey'], snapshots,
+                window, raw, read)
+            assert transport == case['progress_transport']
         backend=item('backends'); assert backend==context['backend']
         assert item('control-backends')==backend['absence']; backend_checked(backend,case['database'],before,after)
         assert item('external')==dict(control=after,native=after_native,inputs=after_inputs,backend=backend,catalog=clone['catalog_before'])
@@ -547,11 +592,15 @@ def replay(root):
         spool_checked(directory/'store/producer-inputs-v1',after_inputs,raw,complete=True)
         assert context['input_contents']=={n:raw(directory/'store/producer-inputs-v1'/n).hex() for n in after_inputs}
         same(after,read(folder/(name+'-final-sql.json')))
-        result,controls=verify(context),negative_controls(context)
-        assert result['status']==controls['status']=='PASS'
+        if progress:
+            result,controls=progress_replay.verify(context),progress_replay.controls(context)
+            assert result['status']=='PASS_INSTALLED_PRODUCER_PROGRESS' and controls['status']=='PASS'
+        else:
+            result,controls=verify(context),negative_controls(context)
+            assert result['status']==controls['status']=='PASS'
         assert case['oracle']==result and case['negative_controls']==controls
         results.append(dict(name=label,oracle=result,negative_controls=controls))
-    return dict(status=STATUS+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
+    return dict(status=status+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
         original_preservation='Fresh original file census; SQL/catalog preservation is captured-run evidence only',
         scope='Raw binding and mandatory scientific replay of three installed lifetimes; no Archive, adoption, recovery, ACK/GC or full M1 claim')
 
@@ -560,7 +609,8 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path)
     parser.add_argument('--output',type=Path)
-    args=parser.parse_args(); result=replay(args.root)
+    parser.add_argument('--progress',action='store_true')
+    args=parser.parse_args(); result=replay(args.root,progress='split' if args.progress else None)
     text=json.dumps(result,indent=2)+'\n'
     if args.output:
         with args.output.open('x') as stream: stream.write(text)

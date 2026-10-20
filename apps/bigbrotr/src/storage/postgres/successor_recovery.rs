@@ -242,6 +242,23 @@ impl ControlSession {
             purpose,
         };
         projection::require_native(&tx, recovery, &owner, input.cancelled).await?;
+        // The original-input grant has not begun decoding. Its existing 64KiB
+        // staging allowance covers this sequential 4KiB closure reader.
+        for epoch in 1..=owner.epoch() {
+            let entry = owner
+                .native
+                .entry(epoch)
+                .ok_or(OwnerError::InvalidMetadata)?;
+            producer_progress::recovery::require(
+                &tx,
+                recovery,
+                entry.manifest(),
+                owner.producer_slot_id(),
+                &input_permit,
+                || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            )
+            .await?;
+        }
         owner
             .native
             .validate_tail(recovery, input.limits.input, input_permit, input.cancelled)

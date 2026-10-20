@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "Component78744d4PASS; connected242116dFAIL historical xmin preservation after natural Sync close. Correctedd4e1b85 isolated build active; all failed data/evidence preserved; no cleanup.",
+      "state": "Qualified d4e1b85 components and75df760 three successor Sync contexts/raw replay retained. All runtime drivers joined; root integrating coherent source/evidence on main. Initial/activated and historical recovery fixture source work continues; no cleanup.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -60913,7 +60913,7 @@
       "runtime_owner": "root only",
       "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020",
       "review_root": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020",
-      "observation": "Root freshly checked78744d4 build and242116d installed terminal PID0/noOOM/cgroups absent. Newd4e1b85 run owns exclusive existing cache; final observation pending. All source agents idle/completed.",
+      "observation": "Root observed d4 build containers exitedPID0/noOOM/cgroups absent;934 failed client/borrowedPG stoppedPID0/noOOM;75df760 client/borrowedPG exitedPID0/noOOM/cgroups absent after joined driver. Original sources, ignored artifacts and all failed runs retained.",
       "fixture_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fixture-20261020",
         "branch": "work/producer-progress-fixture",
@@ -60945,9 +60945,9 @@
       "integration_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-integration-20261020",
         "branch": "work/producer-progress-integration",
-        "head": "d4e1b85566dee30994017834b763fe04396bcf1c",
+        "head": "75df76037cb5c60458165414f133d9deafcc4112",
         "owner": "root",
-        "state": "Clean six-column migration correction with equivalent checks; focused build active, strict preservation rerun pending"
+        "state": "Clean reviewed source; three successor contexts and raw replayPASS; coherent main integration in progress"
       },
       "build_runs": [
         {
@@ -61014,7 +61014,7 @@
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-d4e1b85",
           "source": "d4e1b85566dee30994017834b763fe04396bcf1c",
           "owner": "bde781a9b7cae1ec768607556a70cdff",
-          "state": "running",
+          "state": "stopped-retained",
           "containers": [
             {
               "name": "fetch",
@@ -61026,7 +61026,7 @@
             }
           ],
           "driver_session": 87204,
-          "driver_status": "active at last observation",
+          "driver_status": "joined0; componentPASS76/19controls/8ELFs; exact containersPID0/noOOM/cgroups absent",
           "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
           "preserve": "detached source worktree and full run artifacts"
         }
@@ -61059,6 +61059,52 @@
           ],
           "state": "stopped-retained; driver71464joined1; full original-row oracleFAIL after natural successful Serve close; no cleanup errors or unrelated changes",
           "preserve": "source, original and clone snapshots/native stores, full actual mutation/proof-only cuts and terminal custody"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-934fc43",
+          "source": "934fc43b1828bd14f61004d687d7f3bc34499752",
+          "owner": "54be82a9e00f8da8c802255045ab831c",
+          "owner_label": "org.bigbrotr.installed-progress-split",
+          "client": "485d0294b6a366dcd2012c319c995300a8fb1826773b58182ce4caac47e17eee",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_installed_progress_split_934fc43_activated"
+          ],
+          "state": "stopped-retained; driver47419joined1; historical-job fixture assertionFAIL; no cleanup errors/unrelated changes",
+          "preserve": "Detached source worktree, full original/clone SQL/catalog/native/input and phase captures, raw outputs and terminal custody; no data cleanup"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-75df760",
+          "source": "75df76037cb5c60458165414f133d9deafcc4112",
+          "owner": "5f8281b1e15ef94c9484e191ed2d5710",
+          "owner_label": "org.bigbrotr.installed-progress-split",
+          "client": "188e8837d2c9a4724381c637958aa59bd40ef30bbbd10108cbc0222d5bb2ae1d",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_installed_progress_split_75df760_activated",
+            "bb_installed_progress_split_75df760_empty",
+            "bb_installed_progress_split_75df760_later"
+          ],
+          "state": "stopped-retained; driver67301/replay95690joined0; three contextsPASS; client/PGPID0/noOOM/cgroups absent; no cleanup errors/unrelated changes",
+          "preserve": "Detached source worktree, full original/clone SQL/catalog/native/input and phase captures, raw outputs and terminal custody; no data cleanup"
+        }
+      ],
+      "next_source_work": [
+        {
+          "owner": "export_setup_review",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020",
+          "branch": "work/producer-progress-contexts",
+          "base": "75df76037cb5c60458165414f133d9deafcc4112",
+          "state": "Assigned source-only initial/activated entrypoint fixtures; creation/HEAD pending owner report"
+        },
+        {
+          "owner": "producer_recovery_review",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-fixture-20261020",
+          "branch": "work/producer-progress-recovery-fixture",
+          "base": "75df76037cb5c60458165414f133d9deafcc4112",
+          "state": "Assigned source-only typed successor recovery/retry fixture; creation/HEAD pending owner report"
         }
       ]
     }

@@ -246,7 +246,13 @@ def legacy_installed_origin(basis, origin, retained):
 
 
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
-        origin_for_clone=None, extra_grants=()):
+        origin_for_clone=None, extra_grants=(), producer_progress=False):
+    assert type(producer_progress) is bool
+    if producer_progress:
+        from installed_progress_replay import require_frozen_profile
+        progress_profile = require_frozen_profile()
+        migration = SOURCE / 'migrations/postgres/0039_producer_progress.sql'
+        assert digest(migration) == progress_profile['migration_sha256']
     if suite is None:
         suite = FIRST_WAVE
     explicit_origins = origin_specs is not None
@@ -292,11 +298,15 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     built = read(build / 'build-result.json')
     component = read(build / 'component-result.json')
     qualification = read(build.parent / 'qualification.json')
-    assert qualification['status'] in ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
+    allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
+    assert qualification['status'] in (('PASS_PRODUCER_PROGRESS_COMPONENTS',)
+        if producer_progress else allowed)
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
+    if producer_progress:
+        assert built['source'] == progress_profile['product_source'], 'unreviewed progress build source'
     for field in ('tree', 'source_manifest_sha256', 'lockfile_sha256'):
         assert component[field] == qualification[field] == built[field], field
     binaries = component['executables_sha256']
@@ -435,7 +445,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
             for action in ('plan', 'apply', 'apply'):
                 try:
                     answer = lab.cli(state, 'migrate', action, '--file', config, '--user', 'bigbrotr_migrator',
-                        '--password-ref', 'file:/run/secrets/migrator', '--target', '38')
+                        '--password-ref', 'file:/run/secrets/migrator', '--target', '39' if producer_progress else '38')
                 except subprocess.TimeoutExpired as error:
                     def partial(value):
                         return value.decode(errors='replace') if isinstance(value, bytes) else value or ''

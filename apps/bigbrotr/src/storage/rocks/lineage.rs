@@ -258,6 +258,12 @@ impl RetainedLineage {
         self.profile
     }
 
+    /// Borrow only the already-retained grant for a sequential fixed read.
+    /// Its allocation/census/replay phases do not overlap this closure scan.
+    pub(in crate::storage) fn progress_scratch(&self) -> &OwnedPermit {
+        &self._permit
+    }
+
     pub(super) fn input_stamp(&self) -> [u8; 32] {
         self.inputs
     }

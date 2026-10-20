@@ -124,6 +124,37 @@ impl Write for CompareWriter<'_> {
 }
 
 impl Fact {
+    /// Read only the source identity and closed profile header, without decoding
+    /// or allocating the payload. This does not verify integrity, canonicality,
+    /// payload validity or authority and must not replace `decode_preimage`.
+    ///
+    /// Historical storage readback may use this after matching the complete
+    /// preimage to an already-authoritative retained digest, to check that the
+    /// embedded source identity agrees with the exact native key.
+    pub fn retained_source_record_id(
+        bytes: &[u8],
+        max_encoded_bytes: usize,
+    ) -> Result<SourceRecordId, CodecError> {
+        if bytes.len() > max_encoded_bytes {
+            return Err(CodecError::InputLimit);
+        }
+        let input = bytes
+            .strip_prefix(FACT_PREFIX)
+            .ok_or(CodecError::IncompatibleSchema)?;
+        let mut reader = FactReader {
+            decoder: Decoder::new(input),
+            limits: FactDecodeLimits {
+                max_encoded_bytes,
+                max_allocation_bytes: 0,
+                max_tag_nodes: 0,
+                max_string_bytes: 0,
+            },
+            allocated: 0,
+            tag_nodes: 0,
+        };
+        reader.fact_identity().map(|(source, _)| source)
+    }
+
     /// Encode the exact fingerprint preimage, including its domain prefix. This
     /// carries all fact fields except the self-digest, which the storage owner
     /// binds separately. Size is checked before allocating the output buffer.
@@ -270,7 +301,7 @@ struct FactReader<'a> {
     allocated: usize,
     tag_nodes: usize,
 }
-impl FactReader<'_> {
+impl<'a> FactReader<'a> {
     fn array(&mut self, length: u64) -> Result<(), CodecError> {
         if self.decoder.array()? != Some(length) {
             return Err(CodecError::Malformed);
@@ -551,7 +582,7 @@ impl FactReader<'_> {
         };
         DictionaryEntry::new(reference, descriptor).map_err(CodecError::InvalidDictionary)
     }
-    fn fact(&mut self) -> Result<Fact, CodecError> {
+    fn fact_identity(&mut self) -> Result<(SourceRecordId, &'a str), CodecError> {
         self.array(6)?;
         let id = self.source()?;
         let kind = self.decoder.str()?;
@@ -562,6 +593,10 @@ impl FactReader<'_> {
         {
             return Err(CodecError::IncompatibleSchema);
         }
+        Ok((id, kind))
+    }
+    fn fact(&mut self) -> Result<Fact, CodecError> {
+        let (id, kind) = self.fact_identity()?;
         let scope = self.reference()?;
         let recorded_at = ObservedTime::new(self.decoder.i64()?);
         let payload = match kind {
