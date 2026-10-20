@@ -95,11 +95,12 @@ def local_inputs(before,after,science):
     assert set(records)=={p for p,v in files.items() if v['sha256'] is not None}
     for p,raw in before['local_records'].items():assert records[p]==raw and files[p]==before['physical']['state']['files'][p]
     for p,raw in before['retained'].items():assert after['retained'][p]==raw
-    binding=sha(bytes.fromhex(records['coordinator.json']));initial=json.loads(bytes.fromhex(after['retained']['data/.bigbrotr-initialization/intent.json']))
+    binding=sha(bytes.fromhex(records['coordinator.json']))
+    initialization=bytes.fromhex(after['retained']['data/.bigbrotr-initialization/intent.json']);initial=json.loads(initialization)
     batch=science['batches'][4];retained=copy.deepcopy(before['retained'])
     for row in sorted(after['control']['archive_attempts'],key=lambda r:r['ordinal'])[4:]:
         name=row['attempt_id'][2:];lock=files[name+'/custody.lock']
-        raw=b'BBINPUT\x01'+bytes.fromhex(binding)+binary(row['attempt_id'])+binary(row['dataset_id'])+binary(row['catalog_id'])+binary(row['coordinator_incarnation'])+binary(row['worker_incarnation'])+be(row['ordinal'])+be(2)+bytes.fromhex(batch['archive_digest'])+be(1,4)+be(0,4)+be(3)+be(1)+b'\x01\x21'+be(4)+bytes.fromhex(batch['admission_digest'])
+        raw=b'BBINPUT\x01'+bytes.fromhex(sha(initialization))+binary(row['attempt_id'])+binary(row['dataset_id'])+binary(row['catalog_id'])+binary(row['coordinator_incarnation'])+binary(row['worker_incarnation'])+be(row['ordinal'])+be(2)+bytes.fromhex(batch['archive_digest'])+be(1,4)+be(0,4)+be(3)+be(1)+b'\x01\x21'+be(4)+bytes.fromhex(batch['admission_digest'])
         raw+=bytes.fromhex(sha(raw));assert len(raw)==266 and records[name+'.inputs']==raw.hex()
         retained['state/'+name+'.inputs']=raw.hex()
         manifest=dict(format='bigbrotr-local-archive-custody/1',boot_id=initial['boot_id'],lock_device=lock['device'],lock_inode=lock['inode'],

@@ -65170,6 +65170,10 @@
           "bytes": 3910,
           "sha256": "9ba9c2a3d0bac9bdfc74bb40c273fb04d649405edfb2c22c4db39259ff062673"
         }
+      },
+      "local_input_oracle_correction_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_attempt_limits_source.local_input_oracle_correction_20261020"
       }
     },
     "archive_download_headroom": {
@@ -65712,11 +65716,20 @@
           "bytes": 16899,
           "sha256": "7d0caba99fd7df30ccab57082753858dd5d5a0f1b5f6a713ec2538d6e50e8dd9"
         },
-        "root_review_boundary": "Manifest12 source/4 evidence/3 inherited packet pins authenticated; independent report fully read. Full12-owner root source review remains pending and is not inferred from hashes.",
+        "root_review_boundary": "Root fully read all11 changed implementation/fixture-doc owners and full shared delta at292 plus access/self-inspection/authentication owners; own branch checkpoint not adopted. Correction delta/root custody review remains pending. See exact read accounting and authenticated prior reuse.",
         "finding": "SETUP-INITIAL-DESTINATION-PROFILE: accepted setup config contains export.destination.root but Initial Serve unconditionally forbids it. No successful initial publication possible in292. Preserve production guard, remove both destination keys from initial publisher, retain explicit destination-bearing profile for genuine destination initialization/ordinary grants.",
         "disposition": "One coherent source-only correction assigned to original isolated author; preserve292 and all original manifests/reviews. Critical initial-authority/configuration boundary keeps verified Astra/xhigh. Root alone owns integration/runtime.",
         "checks": "Author9 AST/whitespace checks only; helper execution/compiler/SQL/native/runtime/custody/measurement NOT_RUN.",
-        "limits": "No export packet integrated. Five exports/256MiB gate and transient worker/container/cgroup custody remain unqualified. Direct PID/group checks do not prove escaped-descendant exclusion."
+        "limits": "No export packet integrated. Five exports/256MiB gate and transient worker/container/cgroup custody remain unqualified. Direct PID/group checks do not prove escaped-descendant exclusion.",
+        "root_baseline_read": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-root-review-20261020/baseline-read-v1.json",
+          "bytes": 3819,
+          "sha256": "8e87c6fb31e647948393f6a45eb3a6eda2239f3661f260937913c5c16a41833f"
+        },
+        "profile_correction_20261020": {
+          "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+          "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.fresh_setup_source_20261020.profile_correction_20261020"
+        }
       }
     },
     "archive_refusal_journey_attempts": [
@@ -68205,6 +68218,75 @@
           "Root attests actual wrapper join separately. Never rerun after intentional borrowed-PG reuse."
         ]
       }
+    },
+    "archive_attempt_limits_engine_d77519f": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f",
+      "source": "d77519fe428080a75fa59a4bfa34843904782371",
+      "tree": "85c17bac32fe91e258aadc7ecede0ffaf4f4eab7",
+      "resources": {
+        "owner": "56ef70bb98e1d6c758afb5ccf502b7b6",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "ed93a565ade96563ff8e94329330ed2fef439633bd44179adbdffeb2a1062e0b",
+          "name": "bigbrotr-acquisition-binding-d77519f"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_d77519f_archive_export",
+          "bb_scope_bind_d77519f_archive_export_cat"
+        ]
+      },
+      "active_session": null,
+      "actual_joins": {
+        "build_custody_73640": 0,
+        "prepare_16262": 0,
+        "engine_39165": 1,
+        "limited_custody_82499": 0
+      },
+      "observed_at": "2026-10-20T11:11:34.020852+00:00",
+      "status": "STOPPED_CUSTODY_OBSERVED_ORIGINAL_ENGINE_FAIL",
+      "evidence": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_attempt_limits_engine_d77519f"
+      },
+      "audit": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/audit-root/audit-failed-oracle-v1.json",
+        "bytes": 559025,
+        "sha256": "91a0aea15bdf08504ddeb3c208d6c4d30a8a3a719e3b26b6876a2ac61822648d"
+      },
+      "owned_terminal": {
+        "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-20T11:03:31.794549335Z",
+          "FinishedAt": "2026-10-20T11:06:38.764399121Z"
+        },
+        "ed93a565ade96563ff8e94329330ed2fef439633bd44179adbdffeb2a1062e0b": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-10-20T11:03:32.775929507Z",
+          "FinishedAt": "2026-10-20T11:06:38.074277253Z"
+        }
+      },
+      "retained_files": 2940,
+      "protected_elfs": 202,
+      "unchanged_nonborrowed_containers": 1415,
+      "limits": "Dated custody observation; never replay after borrowed PG reuse. Runtime failure/diagnosis details and initial observation belong to the linked report. No whole-host process exclusion."
     }
   }
 }

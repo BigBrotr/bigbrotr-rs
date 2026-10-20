@@ -35,8 +35,13 @@ class Model(Cycle):
     def closure(self,epoch):
         producer=only(self.pg['producer_epochs'],producer_epoch=epoch)
         issued=producer['reserved_through_request']; values=native_map(self.native)
-        manifest=bytes.fromhex(values['default','0101']) if epoch==1 else binary(only(self.pg[
-            'initial_ingest_successions' if epoch==2 else 'ingest_successions'],target_epoch=epoch)['target_manifest'])
+        if epoch==1:
+            # The native head advances; the initial handoff preserves epoch 1.
+            manifest=(binary(only(self.pg['initial_ingest_successions'])['previous_manifest'])
+                if self.pg['initial_ingest_successions'] else bytes.fromhex(values['default','0101']))
+        else:
+            manifest=binary(only(self.pg[
+                'initial_ingest_successions' if epoch==2 else 'ingest_successions'],target_epoch=epoch)['target_manifest'])
         prefix=b'bigbrotr/initial-source-closure/1\0' if epoch==1 else (
             b'bigbrotr/activated-initial-source-closure/1\0' if epoch==2 else b'bigbrotr/ingest-successor-source-closure/1\0')
         raw=prefix

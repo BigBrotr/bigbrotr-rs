@@ -36162,6 +36162,164 @@
             "bytes": 3910,
             "sha256": "9ba9c2a3d0bac9bdfc74bb40c273fb04d649405edfb2c22c4db39259ff062673"
           }
+        },
+        "local_input_oracle_correction_20261020": {
+          "status": "CAPTURED_RUNTIME_QUALIFIED_BY_CORRECTED_ANALYSIS_ORIGINAL_ENGINE_FAIL",
+          "diagnosis": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/source-note-v1.json",
+            "bytes": 9923,
+            "sha256": "c595e4245e6a7cb1918a4b155c8373a3a07a6b00ebe1bc88a09d25cde2f1ad53"
+          },
+          "review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/candidate-review-v1.json",
+            "bytes": 3234,
+            "sha256": "d2a52ae5a9f6589b04cf45dd359abe32651e3581536ee0fd0f19a543386ba945"
+          },
+          "diff": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/candidate-v1.diff",
+            "bytes": 2296,
+            "sha256": "2b7233b6fa62e54cb97846bdab3e746e7f7d20ec36596cb4052140be1b3cfc34"
+          },
+          "candidate": {
+            "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive_attempt_limits_oracle.py",
+            "bytes": 22996,
+            "sha256": "8dcb5d6d5f68a8e9750311489927bc639d35fab59cae62c4837f63a80ea8febd"
+          },
+          "scope": "Only BBINPUT initialization-journal digest. Separate SQL coordinator binding and all checks preserved; no product/build change. Original d775 FAIL unchanged.",
+          "diagnostic": {
+            "helper": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/diagnostic-v1.py",
+              "bytes": 4882,
+              "sha256": "1809eed9ffb916b31976ae029b60a5d08aa02bc8570a474c28aa7f325070c162"
+            },
+            "result": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/diagnostic-result-v1.json",
+              "bytes": 9814,
+              "sha256": "30717deac667ba3bf10670d2159723a4bb912fa5e47ddc849e2f42d37ba2561c"
+            },
+            "exit_code": 1,
+            "actual_exec_chunk": "09c8be",
+            "scientific_result": "FAIL at snapshots lineage-history-epoch summary equality after corrected local_inputs passed",
+            "negative_controls": "NOT_RUN",
+            "inputs_unchanged": true,
+            "strict_whole_run_replay": "NOT_RUN",
+            "scope": "Separate aggregate-capture diagnostic, only in-memory input status normalized; original d775 engine remains FAIL."
+          },
+          "historical_manifest_correction": {
+            "source_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/source-note-v2.json",
+              "bytes": 10144,
+              "sha256": "f208bbbe578f1e845da7d2243f8cce42653cad5913a88bcad07b793efe9f9153"
+            },
+            "diff": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/model-candidate-v2.diff",
+              "bytes": 1467,
+              "sha256": "22945163d54009e30afb9a35ed68a6c50cb16741732e42a65e418d961dec6900"
+            },
+            "source": {
+              "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive_catch_up_model.py",
+              "bytes": 18975,
+              "sha256": "48afcecbe2f8a204146fe13d1211fd4641c2f92f67f2e95b2f5212a81b036fbe"
+            }
+          },
+          "corrected_diagnostic": {
+            "helper": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/diagnostic.py",
+              "bytes": 5340,
+              "sha256": "bacd512d197efa231bc615e5153f98805606bcfba8b381c54d345e83e4486362"
+            },
+            "result": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/diagnostic-result-v2.json",
+              "bytes": 10074,
+              "sha256": "1b5f9bc15bd23e2d67e823feb84921044046bc1f8c4ee19bd3448d402c3b417b"
+            },
+            "actual_session": 11861,
+            "joined_exit": 0,
+            "scope": "12 installed processes +2 finite probes,72capturedstates/75Controltables,126issued+3planned, no new catch-up attempt/receipt/frontier;16negativecontrols rejected. Aggregate-capture diagnosis only, originalengineFAIL/strictreplayNOTRUN unchanged. Raw binding pending."
+          },
+          "raw_binding": {
+            "result": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/raw-binding-result-v1.json",
+              "bytes": 278015,
+              "sha256": "f8162f4458995574b2993579915a048cf8aa7f58b596decd335a1e834ff12ef9"
+            },
+            "helper": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/bind-captures.py",
+              "bytes": 5573,
+              "sha256": "d013b32d5647fc4262b7df87f8d6f8c94dff4fe22a9c4889bc8cfd05317e6df5"
+            },
+            "capture": {
+              "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive_attempt_limits_capture.py",
+              "bytes": 12383,
+              "sha256": "f358358e03e855d8d29129b7b905b26452e6cd4f4282277c2574abadbe3219ee"
+            },
+            "independent_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/capture-binding-review-v1.json",
+              "bytes": 4704,
+              "sha256": "e30180f0ed0dcc2678238f81dcbb519d46f570b918cf049a4a92607c38b5d6ed"
+            },
+            "actual_exec_chunk": "a34106",
+            "exit_code": 0,
+            "bound_files": 927,
+            "loaded_source": 23,
+            "final_identity_checks": {
+              "inputs_unchanged": true,
+              "loaded_source_unchanged": true,
+              "capture_unchanged": true
+            }
+          },
+          "qualification": {
+            "status": "PASS_SEPARATE_CORRECTED_ANALYSIS_OF_CAPTURED_RUNTIME",
+            "original_engine_status": "FAIL",
+            "original_engine_strict_replay": "NOT_RUN",
+            "science": {
+              "status": "PASS",
+              "installed_processes": 12,
+              "finite_probes": 2,
+              "control_tables": 75,
+              "snapshots": 72,
+              "holder": "typed LocalAttempt with released global coordinator",
+              "issued": 126,
+              "planned": 3,
+              "total": 129,
+              "new_catchup_attempts": 0,
+              "new_receipts": 0,
+              "new_frontier_revisions": 0,
+              "original_frontier_revision": 4,
+              "scope": "source-authored expected state; actual runtime required"
+            },
+            "negative_controls": {
+              "status": "PASS",
+              "rejected": [
+                "forced-holder",
+                "holder-global-lock-retained",
+                "release-before-failure",
+                "unknown-0",
+                "live-backend-0",
+                "unknown-1",
+                "live-backend-1",
+                "unknown-2",
+                "live-backend-2",
+                "wrong-cap-error",
+                "new-attempt127",
+                "old-frontier-rewrite",
+                "no-input-linkage",
+                "fabricated-coordinator",
+                "native-write",
+                "replacement-physical-root"
+              ],
+              "scope": "assembled context controls, not runtime evidence"
+            },
+            "custody_report_node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_attempt_limits_engine_d77519f.terminal_20261020",
+            "root_review": "Complete changed oracle/model/capture owners and exact diffs read; relevant format/initialization/coordinator/historical-manifest owners reconciled. Independent reviews pinned separately. All59 raw binder AST statements preserved, strict verdict/case/science gates retained. Targeted AST/whitespace checks only; prior unchanged compiled-product evidence reused.",
+            "limits": [
+              "Originald775 engine FAIL, first corrected diagnostic FAIL, earlierc543 payload FAIL and a99 Sync timeout remain unchanged.",
+              "Only the diagnostic in-memory status was normalized to reach unchanged scientific assertions; raw originals and recorded verdicts/cases were never rewritten.",
+              "Actual original14-process runtime and limited custody are reused at their recorded source/artifact/configuration identities; no new engine/build/live custody inspection.",
+              "All required raw bindings, full scientific checks and16negative controls now pass separately; this does not imply whole product or milestone completion.",
+              "Q38 permits reuse of unchanged premises. The corrected Python verifier does not require recompiling or repeating unchanged real engines."
+            ]
+          }
         }
       },
       "archive_download_headroom": {
@@ -36704,11 +36862,36 @@
             "bytes": 16899,
             "sha256": "7d0caba99fd7df30ccab57082753858dd5d5a0f1b5f6a713ec2538d6e50e8dd9"
           },
-          "root_review_boundary": "Manifest12 source/4 evidence/3 inherited packet pins authenticated; independent report fully read. Full12-owner root source review remains pending and is not inferred from hashes.",
+          "root_review_boundary": "Root fully read all11 changed implementation/fixture-doc owners and full shared delta at292 plus access/self-inspection/authentication owners; own branch checkpoint not adopted. Correction delta/root custody review remains pending. See exact read accounting and authenticated prior reuse.",
           "finding": "SETUP-INITIAL-DESTINATION-PROFILE: accepted setup config contains export.destination.root but Initial Serve unconditionally forbids it. No successful initial publication possible in292. Preserve production guard, remove both destination keys from initial publisher, retain explicit destination-bearing profile for genuine destination initialization/ordinary grants.",
           "disposition": "One coherent source-only correction assigned to original isolated author; preserve292 and all original manifests/reviews. Critical initial-authority/configuration boundary keeps verified Astra/xhigh. Root alone owns integration/runtime.",
           "checks": "Author9 AST/whitespace checks only; helper execution/compiler/SQL/native/runtime/custody/measurement NOT_RUN.",
-          "limits": "No export packet integrated. Five exports/256MiB gate and transient worker/container/cgroup custody remain unqualified. Direct PID/group checks do not prove escaped-descendant exclusion."
+          "limits": "No export packet integrated. Five exports/256MiB gate and transient worker/container/cgroup custody remain unqualified. Direct PID/group checks do not prove escaped-descendant exclusion.",
+          "root_baseline_read": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-root-review-20261020/baseline-read-v1.json",
+            "bytes": 3819,
+            "sha256": "8e87c6fb31e647948393f6a45eb3a6eda2239f3661f260937913c5c16a41833f"
+          },
+          "profile_correction_20261020": {
+            "status": "SOURCE_REVIEW_COMPLETE_RUNTIME_NOT_RUN",
+            "commit": "130a85010d5d91c863680af20f55d68dc14c68d7",
+            "manifest": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-20261020/.research/export-memory-setup-profile-correction-20261020/manifest.json",
+              "bytes": 4541,
+              "sha256": "aeed1dcdcceaa44cc3f7de99d6f8a462d8662fc3094b8416482f3d032bed250f"
+            },
+            "independent_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-review-20261020/review-v2.json",
+              "bytes": 56702,
+              "sha256": "005831e24b45a059889dae83c7e6fbd6fffc58f676ac18da84d28c0c7febc0f9"
+            },
+            "root_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-root-review-20261020/correction-review-v1.json",
+              "bytes": 3370,
+              "sha256": "c266ddb7471a92cec49174660f54fed42a3259f6a25ade5fd7bd26ef5523e864"
+            },
+            "limits": "Original292 source finding preserved, closed in corrected source only. No integration, generation, CLI validation, build/runtime/custody/measurement. Root must qualify actual artifacts and transient worker/cgroup exclusion before opens."
+          }
         }
       },
       "archive_refusal_journey_attempts": [
@@ -39196,6 +39379,220 @@
             "No complete native interior recapture or whole-host process exclusion. Other historical SQL interiors not queried.",
             "Root attests actual wrapper join separately. Never rerun after intentional borrowed-PG reuse."
           ]
+        }
+      },
+      "archive_attempt_limits_engine_d77519f": {
+        "status": "FAIL_ORACLE_LOCAL_INPUT_IDENTITY_CUSTODY_OBSERVED",
+        "observed_at": "2026-10-20T11:11:34.020852+00:00",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f",
+        "source": "d77519fe428080a75fa59a4bfa34843904782371",
+        "tree": "85c17bac32fe91e258aadc7ecede0ffaf4f4eab7",
+        "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41",
+        "build_audit_sha256": "bcf1b7e21d673cc70328a09b20c73ae5223231d0eb4874ec441d321d8dbf3dc2",
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/root-preparation.json",
+          "bytes": 33306,
+          "sha256": "e0be9dfb2dce921dd7b6e4b60c04ded98d14dcaf8958a27601b39a32078d7f30"
+        },
+        "invocation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/root-engine-invocation.json",
+          "bytes": 880,
+          "sha256": "0872b7d43940113ea766987ea0072f95a9720d75d19c245283936b28896f46f8"
+        },
+        "actual_joins": {
+          "build_custody_73640": 0,
+          "prepare_16262": 0,
+          "engine_39165": 1,
+          "limited_custody_82499": 0
+        },
+        "active_session": null,
+        "resources": {
+          "owner": "56ef70bb98e1d6c758afb5ccf502b7b6",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "ed93a565ade96563ff8e94329330ed2fef439633bd44179adbdffeb2a1062e0b",
+            "name": "bigbrotr-acquisition-binding-d77519f"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_d77519f_archive_export",
+            "bb_scope_bind_d77519f_archive_export_cat"
+          ]
+        },
+        "protected_elfs": 202,
+        "preserved_failure": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/audit-root/audit-failed-cap-v1.json",
+          "sha256": "092cb3c8cfef14b63993c3002ba74c386e85dc91fb05b8cba8f418d3e50662fa",
+          "retained_files": 2935
+        },
+        "limits": "Original engine FAIL remains preserved. Expected installed cap exit4 and complete captures observed; source diagnosis establishes independent oracle initialization-digest defect. Later scientific assertions, negative controls and strict whole-run replay remain unqualified. Limited read-only custody observed stopped PG/client0/143/PID0/noOOM; no SQL/native/compiler execution or whole-host process exclusion. Never rerun completed custody after borrowed PG reuse. Separate a99 initial Sync timeout remains unresolved.",
+        "initial_observation": {
+          "status": "RUNNING_UNQUALIFIED",
+          "observed_at": "2026-10-20T11:06:36.610688+00:00",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f",
+          "source": "d77519fe428080a75fa59a4bfa34843904782371",
+          "tree": "85c17bac32fe91e258aadc7ecede0ffaf4f4eab7",
+          "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41",
+          "build_audit_sha256": "bcf1b7e21d673cc70328a09b20c73ae5223231d0eb4874ec441d321d8dbf3dc2",
+          "preparation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/root-preparation.json",
+            "bytes": 33306,
+            "sha256": "e0be9dfb2dce921dd7b6e4b60c04ded98d14dcaf8958a27601b39a32078d7f30"
+          },
+          "invocation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/root-engine-invocation.json",
+            "bytes": 880,
+            "sha256": "0872b7d43940113ea766987ea0072f95a9720d75d19c245283936b28896f46f8"
+          },
+          "actual_joins": {
+            "build_custody_73640": 0,
+            "prepare_16262": 0
+          },
+          "active_session": 39165,
+          "resources": {
+            "owner": "56ef70bb98e1d6c758afb5ccf502b7b6",
+            "label": "org.bigbrotr.acquisition-binding",
+            "client": {
+              "id": "ed93a565ade96563ff8e94329330ed2fef439633bd44179adbdffeb2a1062e0b",
+              "name": "bigbrotr-acquisition-binding-d77519f"
+            },
+            "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "databases": [
+              "bb_scope_bind_d77519f_archive_export",
+              "bb_scope_bind_d77519f_archive_export_cat"
+            ]
+          },
+          "protected_elfs": 202,
+          "preserved_failure": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/audit-root/audit-failed-cap-v1.json",
+            "sha256": "092cb3c8cfef14b63993c3002ba74c386e85dc91fb05b8cba8f418d3e50662fa",
+            "retained_files": 2935
+          },
+          "limits": "Actual engine unjoined; replay/custody NOT_RUN. No successful cap result claimed. Retain original failures and stop for diagnosis on new failure."
+        },
+        "terminal_20261020": {
+          "original_engine_status": "FAIL",
+          "original_engine_exit": 1,
+          "selected_refusal": "CAP_REFUSAL_OBSERVED_ORACLE_LOCAL_INPUTS_FAIL",
+          "cap_process": {
+            "pid": 6062,
+            "config": "/lab/bb_scope_bind_d77519f_archive_export.toml",
+            "prefix": "/lab/attempt-cap-refusal",
+            "command": [
+              "/build/bigbrotr",
+              "archive",
+              "catch-up",
+              "--file",
+              "/lab/bb_scope_bind_d77519f_archive_export.toml"
+            ],
+            "start_ticks": 587656995,
+            "reaped": true,
+            "exit_code": 4,
+            "forced": false,
+            "error": null,
+            "elapsed_seconds": 79.57276597991586
+          },
+          "fixture_completed_prefix_steps": 9,
+          "fixture_completed_attempt_modes": [
+            "held-refusal",
+            "cap-setup",
+            "cap-refusal"
+          ],
+          "final_native_after": "CAPTURED_NOT_INDEPENDENTLY_QUALIFIED",
+          "final_backend_absence": {
+            "exact": [
+              {
+                "pid": 5297,
+                "backend_start": "2026-10-20T11:05:15.87173+00:00",
+                "database": "bb_scope_bind_d77519f_archive_export",
+                "present": false
+              }
+            ],
+            "all": {
+              "bb_scope_bind_d77519f_archive_export": "0",
+              "bb_scope_bind_d77519f_archive_export_cat": "0"
+            }
+          },
+          "unchanged_nonborrowed_containers": 1415,
+          "retained_files": 2940,
+          "protected_elfs": 202,
+          "strict_replay": "NOT_RUN",
+          "full_engine_custody": "NOT_RUN",
+          "owned_terminal": {
+            "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-20T11:03:31.794549335Z",
+              "FinishedAt": "2026-10-20T11:06:38.764399121Z"
+            },
+            "ed93a565ade96563ff8e94329330ed2fef439633bd44179adbdffeb2a1062e0b": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-20T11:03:32.775929507Z",
+              "FinishedAt": "2026-10-20T11:06:38.074277253Z"
+            }
+          },
+          "engine_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/root-engine-result.json",
+            "bytes": 74,
+            "sha256": "7b538c13c6242624bd97a612f893cda9c35461f2d587cbc199e13fb312980e26"
+          },
+          "binding_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/bindings/result.json",
+            "bytes": 13643,
+            "sha256": "5cf7fa8f98ed0521fcb664613b106e8f7383231ca3ef72a898158169abd80e93"
+          },
+          "fixture_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/bindings/archive-attempt-limits.json",
+            "bytes": 34794058,
+            "sha256": "723f6ebcdc98756777c59f791bb43cd9041cde96ee05797ff4b1e6285a2526db"
+          },
+          "cap_verification": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/bindings/attempt-cap-refusal-verification.json",
+            "bytes": 2689895,
+            "sha256": "aff5dbcece9d97527629127f79f94ebc08f93c45c917d1ead0a8ebda30406bf9"
+          },
+          "engine_stderr": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/root-engine.stderr",
+            "bytes": 3311,
+            "sha256": "c86cc834e937364c3166e2171bbd96b0552a583a30872b759f00e31f8f871a0c"
+          },
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/audit-root/audit-failed-oracle-v1.json",
+            "bytes": 559025,
+            "sha256": "91a0aea15bdf08504ddeb3c208d6c4d30a8a3a719e3b26b6876a2ac61822648d"
+          },
+          "auditor": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/audit-root/audit-failed-oracle-v1.py",
+            "bytes": 7431,
+            "sha256": "0ef729ad1692ccae0958a8893c85d130e99e4ae70d185255350fa5d6de21a650"
+          },
+          "audit_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-d77519f/audit-root/root-failed-audit-result.json",
+            "bytes": 74,
+            "sha256": "c482764de64fe6711a8bc0f0fffa308bbd78f7aeb382fb259c5b96205100ee27"
+          },
+          "custody_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-local-input-diagnosis-20261020/custody-review-v1.json",
+            "bytes": 13666,
+            "sha256": "1a8d447e1a45c684321e7e860276daba71ab28e449e0963d5cdbe734bddabeb4"
+          }
         }
       }
     }

@@ -689,8 +689,14 @@ Frontier-control-loss also passes at fixture`c950e7c`: eleven processes,
 31states/75tables,531raw-bound files and16negative controls. Exact Control-backend
 termination during the blocked INSERT preserves frontier4 and the local intent
 after three Archive publications; process exit precedes holder release.
-All six ordinary refusal selectors are qualified; held-attempt custody and
-total-cap qualification remain open. Initial-only consumers and initialization
+All six ordinary refusal selectors are qualified. Retained d77519f captures now
+also qualify held-attempt custody and the126-issued+3-planned cap refusal through
+separately reviewed corrected analysis:12 installed processes,2 finite probes,
+72states/75tables,927 raw-bound files and16 negative controls. The original
+engine remains FAIL at the input-identity verifier defect; the first offline
+diagnostic exposed a second historical-manifest defect. The corrected analysis
+is separate evidence in the same recovery report, not a rewritten run.
+No product/build change or duplicate engine run was needed. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix
 and adding zero bounds before the final terminal cut; all native receipt scans

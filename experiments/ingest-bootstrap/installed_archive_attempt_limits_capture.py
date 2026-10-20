@@ -52,18 +52,16 @@ def bind_attempt_process(f,directory,name,answer):
     assert f.json(directory/(name+'-response.json'))==answer
 
 
-def replay(root):
+def bind_captures(root):
+    """Bind captured raw bytes and terminal custody, independently of scientific verdict."""
     root=Path(root).resolve();directory=root/'bindings';f=Files()
     report=f.json(directory/'result.json');journey=f.json(directory/'archive-attempt-limits.json')
-    assert report['status']=='PASS_INSTALLED_ARCHIVE_ATTEMPT_LIMITS' and journey['status']=='PASS'
     assert report['wave']=='installed-archive-attempt-limits'
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and not report['cleanup_errors'] and not report['missing_owned'] and not report['unrelated_changed']
     assert len(report['terminal'])==2
     for item in report['terminal']:
         state=item['State'];assert state['Running'] is False and state['Pid']==0 and state['OOMKilled'] is False
         assert type(state['ExitCode']) is int and state['ExitCode']==(143 if item['Id']==report['client']['id'] else 0)
-    result,=report['cases'];assert result['status']=='PASS'
-    assert result['oracle']==journey['oracle'] and result['negative_controls']==journey['negative_controls']
     original=f.json(directory/'catch-up-originals-before.json')
     assert set(original)=={'bb_scope_54d1a18_basic','bb_source_template'} and original==f.json(directory/'catch-up-originals-after.json')
     resource,=report['archive_resources'];assert resource==journey['setup_resource']==journey['initial_setup']['resource']
@@ -151,9 +149,17 @@ def replay(root):
     for name,raw in final['local_records'].items():assert f.bytes(home/'state'/name).hex()==raw
     for path in sorted(directory.iterdir()):
         if path.is_file():f.bytes(path)
+    return dict(report=report,journey=journey,bound_files=f.bound)
+
+
+def replay(root):
+    captured=bind_captures(root);report,journey=captured['report'],captured['journey']
+    assert report['status']=='PASS_INSTALLED_ARCHIVE_ATTEMPT_LIMITS' and journey['status']=='PASS'
+    result,=report['cases'];assert result['status']=='PASS'
+    assert result['oracle']==journey['oracle'] and result['negative_controls']==journey['negative_controls']
     checked=verify(journey);controls=negative_controls(journey)
     assert checked==journey['oracle'] and controls==journey['negative_controls']
-    return dict(status='PASS',source=report['source'],oracle=checked,negative_controls=controls,bound_files=f.bound)
+    return dict(status='PASS',source=report['source'],oracle=checked,negative_controls=controls,bound_files=captured['bound_files'])
 
 
 if __name__=='__main__':
