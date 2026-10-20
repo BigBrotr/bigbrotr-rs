@@ -8,7 +8,7 @@ fn backend(_: tokio_postgres::Error) -> ProducerProgressError {
     ProducerProgressError::Backend
 }
 
-pub(super) async fn prepare(
+pub(in crate::storage::postgres::control_owner) async fn prepare(
     tx: &Transaction<'_>,
     context: Context,
     event: Option<BoundEvent<'_>>,
@@ -82,7 +82,7 @@ pub(super) async fn prepare(
 /// Between reservation COMMIT and native dispatch, reacquire existing authority
 /// and check the exact head observed before staging. Children are immutable or
 /// require an atomic head update; no second full closure allocation is needed.
-pub(super) async fn recheck(
+pub(in crate::storage::postgres::control_owner) async fn recheck(
     tx: &Transaction<'_>,
     context: Context,
     snapshot: &Snapshot,
@@ -122,7 +122,7 @@ pub(super) async fn recheck(
     Ok(())
 }
 
-pub(super) async fn record(
+pub(in crate::storage::postgres::control_owner) async fn record(
     tx: &Transaction<'_>,
     context: Context,
     snapshot: &mut Snapshot,

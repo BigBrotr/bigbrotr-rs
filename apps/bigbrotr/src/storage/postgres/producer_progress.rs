@@ -12,7 +12,7 @@ pub(super) mod recovery;
 #[path = "producer_progress_rows.rs"]
 mod rows;
 pub(super) use commit::{prepare, recheck, record};
-pub(super) use rows::load;
+use rows::load;
 
 /// The existing finite Sync receiver retains at most three correlated EVENTs.
 /// This is a local position within one actual REQ, never a remote resume cursor.
