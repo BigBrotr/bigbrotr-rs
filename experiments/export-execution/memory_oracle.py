@@ -123,13 +123,16 @@ def verify(root):
     require(raw == expected_bytes, 'full independent signed JSONL: content/tags/order/duplicates/signature')
     manifest_raw = (directory / 'manifest.json').read_bytes()
     query = science['query']
+    scope_fields = ('dataset_id', 'dictionary_kind', 'allocation_domain', 'ordinal')
+    require(set(query['scope']) == set(scope_fields), 'closed qualified scope')
+    scope = {key: query['scope'][key] for key in scope_fields}
     manifest = dict(format='bigbrotr-signed-events-export/1', artifact_id=artifact, job_id=case['job'],
         visibility='private', fidelity='full-signed-events', origin='retained-scoped-archive',
         source=dict(cut=dict(dataset_id=query['dataset'], topology_generation=query['topology_generation'],
             bounds=[dict(stream=dict(shard_id=b['shard_id'], owner_epoch=str(b['owner_epoch'])),
                          last_complete_sequence=str(b['complete_through'])) for b in query['bounds']]),
             catalog_id=science['catalog'], frontier_revision=str(science['frontier_revision']), snapshot_id=str(query['snapshot_id'])),
-        selection=dict(event_id=expected['id'], scope=query['scope']), accepted_revisions=science['accepted_revisions'],
+        selection=dict(event_id=expected['id'], scope=scope), accepted_revisions=science['accepted_revisions'],
         included_families=['signed-events'], excluded_families=['internal-payload-envelopes', 'eligibility-facts',
         'first-local-receive', 'relay-provenance', 'imported-claims', 'measurements', 'documents', 'dictionaries',
         'coverage', 'derived-results', 'deployment-state'],

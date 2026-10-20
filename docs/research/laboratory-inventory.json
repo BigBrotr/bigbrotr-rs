@@ -65939,9 +65939,92 @@
             }
           ],
           "terminal": "All3stopped0/PID0/noOOM at original close; reauthenticated12:39:49Z before any continuation. See root-audit/pre-continuation-v1.json.",
-          "preservation": "4385original output files, complete traces, publication/native roots, SQL captures, credentials and PG data retained. First continuation still NOT_RUN."
+          "preservation": "All original failed resources and output preserved; separate recovery record owns the PG restart and first continuation/acceptance. All5containers stopped0/PID0/noOOM; no native worker or root process active at accepted-v1 observation.",
+          "first_continuation": {
+            "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/recovery-resources.json",
+            "state": "stopped-retained",
+            "outcome": "ACCEPTED_INPUTS_PREPARED",
+            "finished_at": "2026-10-20T12:48:54.049938+00:00",
+            "containers": [
+              {
+                "id": "e8fbb3ab2c4c994cfc54beaa44a27518524a100182912f152db39eb2f2c5e9e4",
+                "name": "bigbrotr-export-memory-bbe2deea17-postgres"
+              },
+              {
+                "id": "7fe2e74d715d3bbadd61b6d420a66a105e414c3af95ab8a759e4cc7b3e70c72d",
+                "name": "bigbrotr-export-memory-bbe2deea17-configure"
+              },
+              {
+                "id": "1ca864ea0a5c5d31a4d1364a4c39e46bd41fc04216df1df6a406608eab2be4bd",
+                "name": "bigbrotr-export-memory-bbe2deea17-publish"
+              },
+              {
+                "id": "e260bce700e6fb022ba996ce27759b2029e6e2661daa1dc82af518a281d15c69",
+                "name": "bigbrotr-export-memory-bbe2deea17-continue"
+              },
+              {
+                "id": "253ffd957fe95fc22676967ec35a24ea913699c9e8673c89d6a7df73083c9ba6",
+                "name": "bigbrotr-export-memory-bbe2deea17-accept"
+              }
+            ],
+            "custody": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/accepted-v1.json"
+          }
         }
-      ]
+      ],
+      "finite_measurement_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.finite_measurement_20261020",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266",
+        "owner": "bbe2deea17e5648bed7cd8f8dcbd4f39",
+        "owner_label": "org.bigbrotr.export-memory-lab",
+        "state": "stopped-retained",
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/measurement-dispatch-resources.json",
+        "containers": [
+          {
+            "id": "e8fbb3ab2c4c994cfc54beaa44a27518524a100182912f152db39eb2f2c5e9e4",
+            "name": "bigbrotr-export-memory-bbe2deea17-postgres"
+          },
+          {
+            "id": "7fe2e74d715d3bbadd61b6d420a66a105e414c3af95ab8a759e4cc7b3e70c72d",
+            "name": "bigbrotr-export-memory-bbe2deea17-configure"
+          },
+          {
+            "id": "1ca864ea0a5c5d31a4d1364a4c39e46bd41fc04216df1df6a406608eab2be4bd",
+            "name": "bigbrotr-export-memory-bbe2deea17-publish"
+          },
+          {
+            "id": "e260bce700e6fb022ba996ce27759b2029e6e2661daa1dc82af518a281d15c69",
+            "name": "bigbrotr-export-memory-bbe2deea17-continue"
+          },
+          {
+            "id": "253ffd957fe95fc22676967ec35a24ea913699c9e8673c89d6a7df73083c9ba6",
+            "name": "bigbrotr-export-memory-bbe2deea17-accept"
+          },
+          {
+            "id": "9a10776e6adf804e3e94b63f0ad556b5b3c453ab28de1ba48ad559abe6912cf3",
+            "name": "bigbrotr-export-memory-bbe2deea17-measure-before"
+          },
+          {
+            "id": "eb88678598dccae4b228b35b062773f405aba09b8ca942ec41c0dbe4385c9db2",
+            "name": "bigbrotr-export-memory-bbe2deea17-measure"
+          },
+          {
+            "id": "a572d128a56817e8977930c07de3df70abf426c28b10ff3cf316f39b1b12af86",
+            "name": "bigbrotr-export-memory-bbe2deea17-measure-after"
+          }
+        ],
+        "terminal": "Eight containers stopped/PID0/noOOM; only measure-after exit1, actual measure exit0. Root custodymeasurement-outcome-v1 owns observations; original UNKNOWN records never overwritten.",
+        "offline": {
+          "id": "6c03855c0798d271cd8ec6938ef83db22128a4682a9c742df8a6ef976b6605c2",
+          "name": "/bigbrotr-export-memory-bbe2deea17-offline-oracle",
+          "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/offline-oracle-resources.json",
+          "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/offline-oracle-terminal.json",
+          "state": "stopped0/PID0/noOOM",
+          "network": "none",
+          "mounts": "all inputs read-only; no PG/native engine reopened"
+        },
+        "preservation": "Original source clones, PG/native data, all original failed/unknown records and traces, signed output, memory samples/ledger, before/afterSQL, corrected offline output and ignored reviews retained. No measurement replay, authority repair, cleanup or branch retirement."
+      }
     },
     "archive_refusal_journey_attempts": [
       {

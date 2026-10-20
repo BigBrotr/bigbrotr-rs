@@ -37226,7 +37226,32 @@
               "sha256": "8a4f0d56b8456ab975fe81132bd7eb0e624b2d11323b94e4f8a0bdae410339c7"
             },
             "scope": "Original publication naturally completed; 10 worker lifetimes,707 processes,975 threads authenticated. Docker returned identical complete Mounts records in another array order. No native observers, grants, acceptance or measurement started. All3containers stopped0/PID0/noOOM. Original UNKNOWN and all4385 output files retained.",
-            "next": "Renew actual custody with fresh outer evidence labels, then first continuation on the same original source/dataset. Do not replay publication."
+            "next": "First actual measurement completed; see finite_measurement_20261020 for preserved original failures and separate corrected offline qualification.",
+            "first_continuation": {
+              "status": "ACCEPTED_INPUTS_AND_WHOLE_CONTAINER_CUSTODY_VERIFIED",
+              "session": "62740 joined0",
+              "review": {
+                "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/first-continuation-review-v1.json",
+                "bytes": 3814,
+                "sha256": "b165798eb16c561ead05808c565458a39d858cea464a8c0d99901ce344a02571"
+              },
+              "custody": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/accepted-v1.json",
+                "bytes": 51202,
+                "sha256": "1e5a17befa326039b5c78ecf9bbdb6bc5f339497ce64dd912571f91ea9e2d4bd"
+              },
+              "execution": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/recovery-execution.json",
+                "bytes": 492,
+                "sha256": "55fb331d8b5c7790867d8cbabe563c3def84e9a9da199a7c79c6b615da2dbf4f"
+              },
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/out/publication-custody.json",
+                "bytes": 2357,
+                "sha256": "b88ee18c2a93bc68c609482f5cb2675ff23eec689c17c20b5474ca97933a83e3"
+              },
+              "scope": "Same original publication and clean6fe source; no republish. Genuine grants and first acceptance passed existing independent full-state oracle. Original failed outer result/resources unchanged. Continuation3workers/26processes/435threads,accept1worker/70processes/98threads; all5ownedcontainers natural0/PID0/noOOM, originalcgroups absent. One Accepted revision1 job, no reservation/output. Measurement NOT_RUN."
+            }
           }
         ],
         "sql_framing_correction_20261020": {
@@ -37272,7 +37297,50 @@
             "bytes": 8783,
             "sha256": "3c0dbb6fc9631a5f1f0d38cecfcdee7d53b597ed637274d76832f5d97c5b09d1"
           },
-          "limits": "The recorded one-off root composition reuses original executor run/exclusion/close and inner source; original failed resources are preserved separately. Actual execution NOT_RUN."
+          "limits": "The recorded one-off root composition reuses original executor run/exclusion/close and inner source; original failed resources are preserved separately. Actual execution NOT_RUN.",
+          "recovery_result": "First original6fe continuation62740 joined0; see fresh_setup_attempts_20261020[-1].first_continuation. Corrected canonical comparator remains source-reviewed; equivalent exact sorted comparison executed in separately pinned one-off recovery."
+        },
+        "finite_measurement_20261020": {
+          "status": "QUALIFIED_SINGLE_EXPORT_CAPTURE_WITH_SEPARATE_CORRECTED_OFFLINE_ANALYSIS",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266",
+          "runtime_source": "6fe52661e942817ed53d686d4ecc4fcd03f4a963",
+          "root_qualification": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/measurement-qualification-v1.json",
+            "bytes": 4251,
+            "sha256": "c6d11bfcfc389581c407111cde295b4103f04a737acc361305ed214c53e1eb73"
+          },
+          "original_precheck": "26387 joined1: readonly baseline completed; strict trace parser refused truncated inline-c argument. Six containers natural0, no measurement started. Same capture code passed by short filename afterward; original trace/UNKNOWN retained.",
+          "execution": "19115 joined1: actual measure container/probe natural0 and CAPTURED; after-capture container1 at literal-manifest oracle. Original capture/failed post-analysis remain intact. Corrected offline verification and independent root SQL/physical audit are separate PASS evidence; no engine replay.",
+          "source_correction": "Require exactly four scope keys and reconstruct QualifiedRef serializer order before full literal byte comparison. No product/probe/worker/budget/deadline changes.",
+          "validation": "AST/whitespace PASS; independent diagnosis/source/test review, actual read-only/no-network offline baseline and17exact-boundary regression controls PASS; whole75Control tables/catalog, all old rows and expected9-table delta audited.",
+          "observations": {
+            "status": "PASS_SCIENCE_AND_CAPTURE",
+            "rows": 1,
+            "bytes": 94578,
+            "samples": 57,
+            "ledger_samples": 128,
+            "parent_rss_sample_max": 8572928,
+            "worker_rss_sample_max": 91373568,
+            "worker_hwm_observed_max": 91373568,
+            "cgroup_lifetime_peak": 33374208,
+            "cgroup_before_peak": 8163328,
+            "ledger_sample_max": {
+              "data_bytes": 724697104,
+              "native_bytes": 167772160,
+              "control_bytes": 131072
+            },
+            "native_call_ledger_sample_max": {
+              "data_bytes": 724697104,
+              "native_bytes": 167772160,
+              "control_bytes": 131072
+            },
+            "scratch_allocated_sample_max": 0,
+            "qualification_256mib": false,
+            "five_exports_acceptance": false,
+            "precise_worker_inner_phases": false,
+            "limits": "Sampling can miss peaks; cgroup lifetime includes observer and cache; external fresh-container/SQL audit still required."
+          },
+          "limits": "Five exports and256MiB per-export gate, near-maximum/many-tag envelopes, cold/aged/mixed/failure performance, installed scheduler and complete product remain unqualified. Warm shared product/worker files from prior publication/acceptance; no cache reset. Cgroup charged memory and per-process RSS are distinct; samples can miss peaks."
         }
       },
       "archive_refusal_journey_attempts": [

@@ -1,17 +1,21 @@
 # Finite Export memory observation
 
-Source-only fixture. Compilation and runtime are **NOT_RUN**. This is one real
-accepted Export job, not the five-export M1 acceptance and not the installed
-scheduler. It does not change production configuration, publisher limits, or the
-packaged `9a7fd81` worker. A fresh `export-execution-probe` build is required.
+Finite fixture for one real accepted Export job, not the five-export M1
+acceptance or the installed scheduler. The retained6fe setup now has a genuine
+acceptance, one successful capture, independent SQL/physical custody and corrected
+offline literal verification in the [recovery report](../../docs/implementation/evidence/p02-producer-recovery-native-20260920.json).
+Original orchestration and oracle failures remain preserved. It does not change
+production configuration, publisher limits or the qualified packaged worker.
+Use the exact source/binary identities in that report; a different probe requires
+its own build qualification.
 
 The root executor first supplies an isolated, genuinely initialized catalog and
 destination, published signed event, authorized accepted exact-ID Export job and
 its existing retention pin. This packet does not create any of them. In
 particular, the old `adapter_cases.py` seed exports the small `E_public` event;
 it is **not** a ready accepted-job seed for the 94,577-byte fixture. Preparing
-that genuine job with existing ingestion/publication/login/accept APIs is still
-a root-owned prerequisite, not accomplished by this source packet.
+that genuine job with existing ingestion/publication/login/accept APIs is a
+root-owned prerequisite supplied by the separate fresh-setup protocol.
 
 The executable entry point is:
 
@@ -19,9 +23,12 @@ The executable entry point is:
 export-execution-probe measure /lab/case.json
 python3 experiments/export-execution/memory_run.py /lab/run.json /lab/capture
 python3 experiments/export-execution/memory_oracle.py /lab/capture
+python3 experiments/export-execution/test_memory_oracle.py /lab/capture
 ```
 
-The second command invokes the first. Run it as the sole initial process in a
+The last command checks the unchanged real capture and virtual negative controls;
+it never modifies retained files or starts an engine. The second command invokes
+the first. Run it as the sole initial process in a
 new dedicated cgroup-v2 container with a finite memory maximum. PostgreSQL runs
 outside that cgroup; the initial profile uses an explicitly permitted loopback
 route, for example a separately owned shared network namespace. The fixture

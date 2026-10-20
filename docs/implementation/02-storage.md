@@ -696,7 +696,13 @@ separately reviewed corrected analysis:12 installed processes,2 finite probes,
 engine remains FAIL at the input-identity verifier defect; the first offline
 diagnostic exposed a second historical-manifest defect. The corrected analysis
 is separate evidence in the same recovery report, not a rewritten run.
-No product/build change or duplicate engine run was needed. Initial-only consumers and initialization
+No product/build change or duplicate engine run was needed. The same report now
+records one genuine94,577-byte signed-event acceptance and finite Export memory
+capture on qualified6c product/worker inputs. Complete SQL and physical custody
+pass; corrected offline verification preserves the original manifest-order
+oracle failure and checks17 regression controls without replaying the job.
+This warm-cache single event is a measured baseline, not five-export/256MiB or
+maximum-envelope qualification. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix
 and adding zero bounds before the final terminal cut; all native receipt scans

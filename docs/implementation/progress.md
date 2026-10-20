@@ -9,84 +9,68 @@ reuse/checkpoint rules are in the [execution guide](agent-handoff.md) and
 
 P02-T04/P01-T09: qualify genuine full signed export acceptance and the memory gate.
 Root owns integration/runtime in `/home/tux/bigbrotr-rs`, branch `main`.
-Last verified pushed revision is `6fe52661e942817ed53d686d4ecc4fcd03f4a963`
-(push25524 joined0; exact remote verified). Phase split, complete worker trace
-parser, root orchestrator and SQL framing correction are integrated with original
-source ancestry. Prior source reviews are linked in the owning report.
-
-Actual setup76876 joined1 after successful publication. Docker returned identical
-complete mount records in a different array order; the outer comparator refused
-before native observers, grants or acceptance. Root actual audit authenticates
-the known publication, complete trace, unchanged physical roots and stopped
-resources. Original FAIL/UNKNOWN is preserved.
-
-Root-owned local edits sort complete mount records for comparison, retaining all
-fields and exact physical checks, and record this result. AST, whitespace and
-targeted independent review PASS. The original clean6fe source and dataset can
-proceed to their first continuation after renewed custody; the recorded one-off
-root invocation reuses existing executor methods and writes separate recovery
-resources/evidence. It has not executed. No product/probe/budget/deadline change.
+Last verified pushed revision is `a4282e7ffef98fe7f738b1d9a74a9fc94b955106`
+(push43605 joined0; exact remote verified). Product/probe/worker inputs unchanged.
+Root local changes correct the offline manifest oracle, add exact-boundary
+regression controls and record the completed single-export measurement.
 Verified Astra/xhigh continuity is retained under Q38.
+
+The original6fe publication and genuine acceptance were followed by one real
+Export capture: complete94,578-byte signed JSONL plus1,230-byte manifest and a
+Succeeded revision4/checkpoint1 job. Root independently audited all75Control
+tables, expected9-table changes, unchanged catalog/original native roots and
+whole-container custody. The original after-oracle failed only because its
+expected scope field order differed; the corrected offline oracle and17 precise
+regression controls pass without replaying the measurement.
 
 ## Evidence and open problems
 
 Detailed identities, original failures and reviews belong to the
 [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
-node `initial_successor_preparation_20261012.repeatable_succession_20261015`.
-Resource custody belongs to the [laboratory inventory](../research/laboratory-inventory.json),
-node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence there.
+node `initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source`.
+The `finite_measurement_20261020` entry owns the latest evidence. Root combined
+qualification `measurement-qualification-v1.json` SHAc6d11bfc links original
+failures, actual capture, independent SQL/physical audit, offline output and
+critical review. Earlier raw results/resources remain unchanged.
 
-- Qualified6c product/bundle and new export probe build/Clippy are PASS; all
-  relevant product/dependency/migration inputs remain unchanged.
-- Fresh763 publication and continuation passed real native science, all-table
-  comparisons, complete worker traces, whole-container/cgroup/backend/mount
-  custody and three genuine grants. Actual descriptor/installation prefix
-  mismatch is proven by retained bytes; diagnosisd56fa0e0 records the correction.
-  Acceptance remains FAIL; measurement and five exports/256MiB remain NOT_RUN.
-  Full1MiB event envelope and first1GiB export policy cap remain unchanged.
-- Fresh6fe publication passed with the same complete worker/process/thread
-  counts; pre-continuation custodya57305c1 authenticates4385original output files.
-  Native observers/grants/acceptance/measurement remain NOT_RUN for this root.
-  Mount-order review8eef295a identifies a bookkeeping failure; it authorizes no
-  blind retry or replacement baseline.
-- Original6f3 setup failed before migration on missing SQL statement termination;
-  corrected763 passes that boundary. Both original roots and outcomes survive.
-- Earlier a99 initial Sync timeout remains unexplained. A repeated timeout needs
-  targeted pending-await diagnosis before another trial, without widened deadlines.
-  All original failures/interruption remain preserved. Separately corrected d775
-  offline analysis does not rewrite its original failed engine; no extra attempt
-  run is needed solely for that verifier fix.
+Measured warm-cache baseline: worker RSS sample peak91,373,568B, probe8,572,928B,
+cgroup lifetime peak33,374,208B; these are distinct observations. Whole cgroup
+cap1536MiB/no swap; native query retained the full1MiB row envelope. Logical grants
+are separate from physical observations. This does not qualify five exports,
+256MiB per-export admission, maximum-size/many-tag events, cold/aged/mixed/failure
+performance or installed scheduling. Product/probe/worker inputs are unchanged.
+Original precheck trace truncation and manifest oracle failure are preserved;
+no product execution was replayed. Earlier a99 initial Sync timeout remains
+unexplained; a repeat needs pending-await diagnosis before any new trial, without
+widening deadlines. Reuse unchanged component evidence.
 
 ## Processes and resources
 
-No root engine/compiler/cleanup process is active. One existing reviewer is
-checking the concrete first-continuation invocation without runtime actions.
-All three actual setup roots are stopped-retained. For
-`runs/export-memory-setup-763182f`, original
-five-container custody79c04877 preserves4677files and complete traces. Only its
-owned PG was subsequently restarted for six read-only outcome queries; it stopped
-exit0/PID0/noOOM again at12:29:23Z. That separate recovery receipt owns the new
-PG observation; never replay the earlier custody executor. Native roots were not
-reopened or edited. Preserve original descriptor, credentials, PG data, source
-clones, logs, ignored `.research`, and every worktree.
-
-All external roots are under `/home/tux/bigbrotr-implementation-20260917/runs`.
-Client720f24ff/psql15.19 and qualified immutable probe/product/tracer artifacts
-are retained. Compiler cache stays under its existing exclusive lock; no compiler
-or cleanup is due. Check headroom before new substantial allocation and verify
-actual ownership/isolation before mutation. Unrelated workloads remain untouched.
+No root engine/compiler/cleanup process is active. Eight runtime/audit containers
+in `runs/export-memory-setup-6fe5266` are stopped/PID0/noOOM; only the original
+post-measurement oracle container exited1. Actual measure exited0. The separate
+network-none/read-only offline oracle container6c03855c also stopped0/PID0/noOOM.
+One existing Astra reviewer/author is investigating the next admission boundary
+read-only; no subagent engine/build/test is running.
+The [laboratory inventory](../research/laboratory-inventory.json),
+node `implementation_archive_catch_up_20261018.archive_export_memory_source`,
+owns resource pointers. All external roots are under
+`/home/tux/bigbrotr-implementation-20260917/runs`.
+Preserve source clones, credentials, PG/native data, logs, ignored `.research`
+and every worktree. No compiler/cache cleanup is due; unrelated workloads stay
+untouched. Verify actual ownership before reuse and space before allocation.
 
 ## Next bounded action
 
-Commit/push the reviewed mount comparator and original result. Execute the reviewed
-`export-memory-setup-6fe5266/root-audit/first-continuation.py` once: authenticate
-actual original resources, restart only owned PG, renew custody under fresh
-evidence filenames, then run first continuation and first acceptance using the
-original clean source. Preserve original UNKNOWN records; do not republish.
-After known acceptance, proceed to separate fresh-cgroup measurement and
-independent science/SQL/custody audit. Reuse unchanged component/source evidence.
+Commit/push the coherent measurement evidence and reviewed oracle correction.
+Then reconcile the owning five-export/256MiB requirement with actual installed
+Control/read/export admission paths, using this measured baseline. The existing
+agent export_setup_fixture is identifying the smallest dependency-ready slice
+and separating shared service costs from each job. Preserve full signed fidelity,
+1MiB admissibility and existing deadlines. Reuse the already qualified single
+capture; any new job/scenario must name the additional property it qualifies.
 
-Continue the existing dependency-ready plan. M1–M5, ACK/GC, import/restore,
+Continue the existing dependency-ready plan. ACK/GC, import/restore,
 capacity/aged-state/RSS and complete product/release journeys remain open;
 Q33 hosted CI billing, nativearm64 and signing/registry are separate gates.
 No public release or production deployment is authorized.
