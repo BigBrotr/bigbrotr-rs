@@ -48,6 +48,33 @@ def pinned(spec, executable=False):
     return raw
 
 
+def file_pin(path):
+    raw = regular(path)
+    return dict(path=str(path), bytes=len(raw), sha256=sha(raw))
+
+
+def publication_evidence(root, excluded=()):
+    """Pin retained raw fixture evidence without opening an engine or its roots."""
+    roots = {'store', 'data', 'state', 'destination', 'scratch'}
+    result, total, entries = {}, 0, 0
+    for entry in Path(root).iterdir():
+        if entry.name in roots or entry.name in excluded:
+            continue
+        require(not entry.is_symlink(), 'no evidence symlink')
+        paths = chain([entry], entry.rglob('*')) if entry.is_dir() else [entry]
+        for path in paths:
+            entries += 1
+            require(entries <= 8192, 'finite publication evidence entries')
+            require(not path.is_symlink(), 'no nested evidence symlink')
+            if path.is_dir():
+                continue
+            pin = file_pin(path)
+            total += pin['bytes']
+            require(len(result) < 8192 and total <= 256 * 1024 * 1024, 'finite publication evidence')
+            result[str(path.relative_to(root))] = pin
+    return dict(sorted(result.items()))
+
+
 def identity(pid):
     base = Path('/proc') / str(pid)
     fields = base.joinpath('stat').read_text().rsplit(')', 1)[1].split()

@@ -5,10 +5,11 @@ acceptance and measurement are **NOT_RUN**. This composes the existing
 [accept-only probe](ACCEPT.md) without adding a scheduler mode or changing
 production policy, migration bytes, deadlines or the packaged worker.
 
-Root invokes two finite commands in its separately inventoried setup environment:
+Root invokes three finite commands in separately inventoried setup environments:
 
 ```text
-python3 -B experiments/export-execution/memory_setup.py /lab/setup-input.json
+python3 -B experiments/export-execution/memory_setup.py publish /lab/setup-input.json
+python3 -B experiments/export-execution/memory_setup.py continue /lab/fresh-root /lab/publication-custody.json ROOT_VERIFIED_RECEIPT_SHA256
 python3 -B experiments/export-execution/memory_setup_accept.py /lab/fresh-root /sys/fs/cgroup/ROOT_RESERVED_MEASUREMENT_GROUP
 ```
 
@@ -38,26 +39,41 @@ mode immediately before launching and retains `<call>.profile.json`; the
 positional scientific-census call does the same. No live configuration is edited.
 The acceptance follow-up reauthenticates all three pins and the original recipe.
 
-The initial Serve owns actual Sync/Ingest/Archive publication of the frozen
+The `publish` phase owns actual Sync/Ingest/Archive publication of the frozen
 94,577-byte signed event. Its relay supplies a narrowly selected callback:
 the existing handshake, masked REQ/CLOSE checks, three-second socket and small
 EOSE encoder stay intact. Each large transmitted frame and its metadata are
 retained. Independent event reconstruction, native facts, complete producer
 inputs/outcomes, scientific families, native receipts and frontier digests are
-checked after actual publisher termination. The final frontier and snapshot
+checked in the continuation after actual publisher termination and root's
+authenticated custody receipt. The final frontier and snapshot
 come from this fresh publication and its independently expected batches.
 The old small event's fixed frontier/snapshot are not inputs.
 
-Ordinary Control then receives only the three scope-grant requests. The complete
+After the publisher and relay join naturally, `publish` retains the full raw
+captures, the original physical baseline and a closed `publication.json` with
+status `PUBLISHED_AWAITING_ROOT_CUSTODY`. It then exits before either native
+observer. Root must authenticate the complete process trace, natural termination
+of the phase container/tracer, empty prior cgroup, backend absence and unchanged
+physical mounts before starting `continue` in a fresh owned container.
+
+The continuation authenticates every original evidence pin, the source/inventory
+and all three configuration profiles. It compares physical files to the original
+preobserver baseline and recaptures all 75 Control tables/xmin and the catalog
+before either native observer. Ordinary Control then receives only the three
+scope-grant requests. The complete
 published files, native catalog and original Control rows/xmin survive that
 stage. The scheduler is joined before `accept.json` is written. A successful
-first command emits `PREPARED_FOR_ROOT_ACCEPTANCE`; it has accepted no Export.
+continuation emits `PREPARED_FOR_ROOT_ACCEPTANCE`; it has accepted no Export.
 
-The second command authenticates the prepared state, waits for the observed
+The final command authenticates the prepared state, waits for the observed
 account login bucket's natural 60-second expiry using PostgreSQL time, and invokes
 the exact accept-only probe once. Two logins plus three reauthentications can fill
 the five-attempt bucket. It does not edit the bucket, retry a denial, renew a pin
-or change any deadline. Each invocation has a 120-second wrapper budget; individual
+or change any deadline. Each publication, continuation and acceptance invocation
+has its own 120-second wrapper budget; root's between-phase custody audit is
+outside those budgets. Continuation authentication consumes its phase budget.
+Individual
 CLI operations default to 30 seconds, SQL to eight seconds, publication observation
 to 50 seconds, and normal Serve joining to eight seconds. Root must impose its
 own outer process/container deadline and retain unresolved descendants.
@@ -73,9 +89,60 @@ not extend a pin. An active retained row is not current execution permission.
 
 Only a known, independently checked acceptance prepares `case.json`,
 `science.json` and `run.json` for the unchanged [measurement runner](MEMORY.md).
-The second command never enters, creates or measures the supplied cgroup.
+The acceptance command never enters, creates or measures the supplied cgroup.
 Root must supply a genuinely fresh dedicated cgroup and run the original runner
 and oracle there. This packet makes no memory, five-export or 256 MiB claim.
+
+## Publication custody receipt
+
+Root produces `publication-custody.json` outside `fresh-root` after the first
+phase's entire container and tracer have terminated. The continuation requires
+its exact SHA256 as a command argument. It never creates or approves that receipt.
+The JSON object has exactly the following fields; every file pin is
+`{path,bytes,sha256}` naming a canonical protected absolute regular file visible
+at the same path in the continuation container:
+
+| Field | Required value |
+|---|---|
+| `format`, `status` | `bigbrotr-export-publication-custody/1`, `VERIFIED_FOR_NATIVE_REOPEN` |
+| `root` | Original canonical fresh-root path |
+| `publication` | Exact pin for `root/publication.json`, at most 16 MiB |
+| `source_manifest`, `inventory` | Exactly the original setup-input pins |
+| `container_id` | Complete 64-character lowercase hexadecimal prior container ID |
+| `cgroup_path` | Actual absolute host cgroup path recorded by root |
+| `tracer` | Actual authenticated executable pin for the process-only tracer |
+| `identity` | `trace-birth-exec-lineage` |
+| `evidence` | Exactly six pins: `trace`, `trace_audit`, `container`, `cgroup`, `backends`, `mounts`; each nonempty and at most 16 MiB |
+| `checks` | Exactly `natural_exit`, `empty_cgroup`, `backends_absent`, `physical_roots_unchanged`, `complete_worker_lifetimes`, `no_other_credential_holders`, each JSON `true` |
+
+The full process-only trace must start before any phase child, identify each
+transient worker's birth/exec timestamp and lineage, and retain its exit and
+parent wait outcome. These traced lifecycle identities are distinct from
+`/proc/PID/stat` start ticks. Polling samples do not establish completeness.
+Root must independently audit the pinned trace and tracer identity, actual
+terminal container state, empty prior cgroup, backend exclusion, original
+physical mounts and absence of other credential-capable holders. The continuation
+checks the closed receipt and every pin, but does not replace that external
+semantic audit with an interpretation of arbitrary evidence JSON or Boolean
+claims. The caller-supplied receipt hash is the explicit root authorization
+boundary; this is a trusted root fixture, not an untrusted receipt service.
+
+`publication.json` pins every original non-native evidence file, including
+configuration, initialization, sessions, SQL queries/results, PID/terminal records
+and complete relay frames. Native roots retain their original physical census;
+scratch retains its separate publication census. The evidence inventory allows
+8,192 entries, 16 MiB per evidence file and 256 MiB total. Keep outer trace/audit files
+outside `fresh-root`; adding files there before continuation is refused.
+`continuation-started.json` is exclusively created before authentication and never
+removed. A validation failure preserves `continuation-failure.json` with
+`UNKNOWN_PRESERVED`; neither a new receipt nor another invocation retries it.
+The continuation records `authenticated-custody.json`, and its successful result
+binds both the original publication and root receipt hashes.
+
+Root must stop and authenticate the continuation environment before acceptance,
+and the acceptance environment before measurement. The publication receipt only
+authorizes the publication-to-observer transition. Later process/container/backend
+custody and the fresh measurement cgroup remain root-owned prerequisites.
 
 ## Closed setup descriptor
 
@@ -143,7 +210,7 @@ return status and fresh Control/catalog backend absence before subsequent opens.
 Root must separately retain complete transient native-worker PID/start/exit and
 cgroup custody; process-group absence does not establish that no descendant
 escaped. External custody is required before invocation and again before
-reopening after any uncertainty. Direct SQL observations cannot exclude an
+the publication continuation or reopening after any uncertainty. Direct SQL observations cannot exclude an
 invisible startup-capable credential holder on their own.
 
 The strict physical comparison starts before either native observer. The existing
