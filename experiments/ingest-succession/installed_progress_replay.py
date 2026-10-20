@@ -302,10 +302,11 @@ def proof_only_boundary(mutation, proof, expected_revision):
     for table in ('producer_requests', 'producer_outcomes', 'producer_epochs',
                   'jobs', 'acquisition_jobs', 'job_admissions'):
         assert first[table] == later[table], ('proof-only changed', table)
-    for row in later['jobs']:
-        assert row['checkpoint_revision'] == 0
     before, = first['acquisition_progress']
     after, = later['acquisition_progress']
+    job, = [row for row in later['jobs'] if row['request_key'] == '\\x' + 'e4' * 16]
+    assert before['job_id'] == after['job_id'] == job['job_id']
+    assert job['checkpoint_revision'] == 0
     assert before['request_id'] != after['request_id'] and after['event_ordinal'] == 1
     assert after['classification'] == 5 and after['mutation_request'] is None
     assert after['progress_revision'] == after['classified_events'] == expected_revision
@@ -554,7 +555,7 @@ def verify(context):
             assert snapshot['control'][table] == proof['control'][table], ('late progress rewrite', table)
     assert mutation['observed_by_us'] <= phases['proof-only']['sent_at_us']
     assert mutation['inputs'] == proof['inputs'] == context['inputs_after']
-    assert all(r['checkpoint_revision'] == 0 for r in context['after']['jobs'])
+    assert only(context['after']['jobs'], request_key='\\x' + 'e4' * 16)['checkpoint_revision'] == 0
     return dict(status='PASS_INSTALLED_PRODUCER_PROGRESS', base=base, phases=results,
         sql_tables=77, native_ack=0, native_science='complete independent native/input reconstruction',
         scope='One real mutation quantum and a distinct proof-only REQ; no EOSE/job completion or ACK/GC')
@@ -563,6 +564,7 @@ def verify(context):
 def controls(context):
     """Baseline first, including attacks with a recomputed valid head checksum."""
     from transition_replay import native_map
+    from history_replay import only
     verify(context)
     checks = []
     def reject(name, mutate):
@@ -620,12 +622,16 @@ def controls(context):
     reject('missing-dependency', lambda c: c['snapshots'][2]['control']['producer_checkpoint_dependencies'].pop())
     reject('request-frame-mismatch', lambda c: c['after']['producer_requests'][-1].update(
         progress_event_ordinal=3))
-    reject('job-completion', lambda c: c['after']['jobs'][-1].update(checkpoint_revision=1))
+    reject('job-completion', lambda c: only(c['after']['jobs'],
+        request_key='\\x' + 'e4' * 16).update(checkpoint_revision=1))
     reject('missing-native-fact', lambda c: c['native_after']['rows'].pop())
     reject('present-backend', lambda c: c['backend']['exact'][0].update(present=True))
     reject('catalog-changed', lambda c: c.update(catalog_after=c['catalog_after'] + '\\n'))
     reject('new-table', lambda c: c['after'].update(unexpected=[]))
-    reject('intermediate-unrelated-table', lambda c: c['snapshots'][2]['control']['jobs'][0].update(
-        checkpoint_revision=1))
+    def historical_job_change(c):
+        original = c['before']['jobs'][0]
+        only(c['snapshots'][2]['control']['jobs'], job_id=original['job_id']).update(
+            checkpoint_revision=original['checkpoint_revision'] + 1)
+    reject('intermediate-unrelated-table', historical_job_change)
     return dict(status='PASS', controls=len(checks), rejected=checks,
         scope='offline retained-observation mutations; no engine fault injection')
