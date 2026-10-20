@@ -64,6 +64,9 @@ pub(super) struct TargetState {
     pub(super) source_closed: bool,
 }
 impl ActivatedInitialRecovery {
+    pub fn acknowledged_through(&self) -> u64 {
+        self.native.acknowledged_through()
+    }
     pub fn producer_slot_id(&self) -> ProducerSlotId {
         self.native.producer_slot_id()
     }
@@ -75,6 +78,21 @@ impl ActivatedInitialRecovery {
     }
 }
 impl ClosedActivatedInitialProducer {
+    pub fn acknowledged_through(&self) -> u64 {
+        self.native.acknowledged_through()
+    }
+    pub fn predecessor_issued_through(&self) -> u64 {
+        self.native.predecessor_issued_through()
+    }
+    pub fn acknowledgement_resolution<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+    ) -> Result<crate::storage::rocks::store::RecoveryAcknowledgementResolution<'a>, BootstrapError>
+    {
+        self.native
+            .source_resolution(recovery, self.reserved_through())
+            .map(crate::storage::rocks::store::RecoveryAcknowledgementResolution::activated)
+    }
     pub fn producer_slot_id(&self) -> ProducerSlotId {
         self.native.producer_slot_id()
     }
@@ -318,9 +336,67 @@ impl ControlSession {
         outcome_permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ResolvedProducerRequest, ProducerResolveError> {
+        self.resolve_activated_request(
+            recovery,
+            closed,
+            input,
+            input_permit,
+            outcome_permit,
+            false,
+            validate,
+        )
+        .await
+    }
+
+    /// Existing-only predecessor replay under the activated context. This does
+    /// not manufacture a prepared-empty history or insert ancestor outcome copies.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "closed context and per-original grants"
+    )]
+    pub async fn resolve_activated_initial_predecessor_request(
+        &mut self,
+        recovery: &IngestRecovery,
+        closed: &ClosedActivatedInitialProducer,
+        input: ActivatedInitialResolveRequest<'_>,
+        input_permit: OwnedPermit,
+        outcome_permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ResolvedProducerRequest, ProducerResolveError> {
+        self.resolve_activated_request(
+            recovery,
+            closed,
+            input,
+            input_permit,
+            outcome_permit,
+            true,
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit predecessor branch shares the original authority kernel"
+    )]
+    async fn resolve_activated_request(
+        &mut self,
+        recovery: &IngestRecovery,
+        closed: &ClosedActivatedInitialProducer,
+        input: ActivatedInitialResolveRequest<'_>,
+        input_permit: OwnedPermit,
+        outcome_permit: OwnedPermit,
+        predecessor: bool,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ResolvedProducerRequest, ProducerResolveError> {
+        let bound = if predecessor {
+            closed.predecessor_issued_through()
+        } else {
+            closed.reserved_through()
+        };
         if input.request.producer_slot_id != closed.producer_slot_id()
-            || input.request.producer_epoch.get() != 2
-            || input.request.request_sequence.get() > closed.reserved_through()
+            || input.request.producer_epoch.get() != if predecessor { 1 } else { 2 }
+            || input.request.request_sequence.get() > bound
         {
             return Err(OwnerError::InvalidInput.into());
         }
@@ -357,31 +433,47 @@ impl ControlSession {
                 .ok_or(ProducerResolveError::Native(
                     ProducerRecoveryError::Unresolved,
                 ))?;
+        let manifest = if predecessor {
+            closed.native.predecessor_manifest()
+        } else {
+            closed.native.manifest()
+        };
         if reservation.manifest_sha256
-            != <[u8; 32]>::from(Sha256::digest(closed.native.manifest().encode().as_bytes()))
+            != <[u8; 32]>::from(Sha256::digest(manifest.encode().as_bytes()))
         {
             return Err(OwnerError::InvalidMetadata.into());
         }
-        let resolved = closed
-            .native
-            .resolve_original_request(
+        let authority = || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(AdmissionError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(epoch)
+                .map_err(|_| AdmissionError::AuthorityUnavailable)
+        };
+        let resolved = if predecessor {
+            closed.native.resolve_predecessor_request(
                 recovery,
                 input.request,
                 reservation.digest,
                 input.limits,
                 input_permit,
                 outcome_permit,
-                || {
-                    if input.cancelled.load(Ordering::Relaxed) {
-                        return Err(AdmissionError::AuthorityUnavailable);
-                    }
-                    lease
-                        .check_delivery(epoch)
-                        .map_err(|_| AdmissionError::AuthorityUnavailable)
-                },
+                authority,
             )
-            .map_err(ProducerResolveError::Native)?;
-        if matches!(closed.metadata.purpose, Purpose::Retirement) {
+        } else {
+            closed.native.resolve_original_request(
+                recovery,
+                input.request,
+                reservation.digest,
+                input.limits,
+                input_permit,
+                outcome_permit,
+                authority,
+            )
+        }
+        .map_err(ProducerResolveError::Native)?;
+        if predecessor || matches!(closed.metadata.purpose, Purpose::Retirement) {
             if resolved.input_bytes() != reservation.input_bytes {
                 return Err(ProducerResolveError::Outcome(
                     producer_outcomes::OutcomeError::Conflict,

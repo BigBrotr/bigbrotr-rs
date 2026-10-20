@@ -59,6 +59,9 @@ impl ProducerClosing {
     pub fn issued_through(&self) -> u64 {
         self.state.issued
     }
+    pub fn acknowledged_through(&self) -> u64 {
+        self.state.acknowledged
+    }
     pub fn producer_slot_id(&self) -> ProducerSlotId {
         self.slot
     }
@@ -232,9 +235,12 @@ impl IngestStore {
         epoch: ProducerEpoch,
         state: ProducerState,
     ) -> Result<(), BootstrapError> {
-        // No ACK/GC adapter exists yet. This barrier cannot adopt a post-GC store
-        // or turn missing producer metadata plus retained detail into issued=0.
-        if state.acknowledged != 0 || state.retired != 0 {
+        // Structural no-GC bound only. Connected recovery separately validates
+        // ACK <= typed checkpoint and then replays every retained original.
+        if state.acknowledged > state.issued
+            || state.retired != 0
+            || state.issued > super::RETAINED_PRODUCER_REQUEST_LIMIT
+        {
             return Err(BootstrapError::StateMismatch);
         }
         let key = |n| {

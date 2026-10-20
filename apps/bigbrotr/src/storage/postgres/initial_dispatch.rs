@@ -11,6 +11,17 @@ pub(super) enum NativeOwner<'a> {
     Successor(&'a mut ActiveSuccessorWriter),
 }
 impl NativeOwner<'_> {
+    pub(super) fn acknowledge_checkpoint(
+        &mut self,
+        confirmed: ConfirmedAcknowledgement,
+        permit: &OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<(), AdmissionError> {
+        match self {
+            Self::Store(s) => s.acknowledge_checkpoint(confirmed, permit, authority),
+            Self::Successor(s) => s.acknowledge_checkpoint(confirmed, permit, authority),
+        }
+    }
     pub(super) fn manifest(&self) -> &IngestManifest {
         match self {
             Self::Store(s) => s.manifest(),

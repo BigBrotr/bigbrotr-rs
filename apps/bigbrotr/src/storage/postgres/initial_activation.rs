@@ -32,6 +32,11 @@ pub(super) struct LiveInitialBinding {
     activated_at_us: i64,
 }
 impl LiveInitialWriter {
+    pub fn producer_credit(
+        &self,
+    ) -> Result<crate::storage::rocks::store::ProducerCredit, AdmissionError> {
+        self.native.producer_credit()
+    }
     pub fn manifest(&self) -> &IngestManifest {
         self.native.manifest()
     }

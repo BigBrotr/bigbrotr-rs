@@ -199,6 +199,13 @@ impl PendingSuccessorRetirementRequest<'_, '_> {
     }
 }
 impl ResolvedSuccessorRetirement<'_> {
+    pub(in crate::storage) fn recovery_acknowledgement(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<super::super::RecoveryAcknowledgement, BootstrapError> {
+        self.validate(cancelled)?;
+        self.inner.recovery_acknowledgement(cancelled)
+    }
     pub(in crate::storage) fn owner(&self) -> &NativeSuccessorRetirement {
         self.owner
     }

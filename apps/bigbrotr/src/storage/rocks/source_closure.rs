@@ -9,7 +9,8 @@ use bigbrotr_model::{ProducerEpoch, ProducerSlotId, Sequence, SourceRecordId};
 use sha2::{Digest, Sha256};
 
 /// This accumulator owns the existing closing grant and borrows native custody.
-/// It retains no receipt vector and cannot authorize admission, ACK or retirement.
+/// It retains no receipt vector; only complete positive replay can produce
+/// the opaque recovery handoff for a separately authenticated ACK.
 pub struct SourceResolution<'a> {
     recovery: &'a IngestRecovery,
     closing: ProducerClosing,
@@ -26,8 +27,40 @@ pub struct ResolvedSource<'a> {
     digest: [u8; 32],
     event_requests: u64,
     historical: Option<HistoricalInitial<'a>>,
+    native_root: (u64, u64),
+    native_sequence: u64,
 }
 impl ResolvedSource<'_> {
+    pub fn into_recovery_acknowledgement(
+        self,
+    ) -> Result<super::RecoveryAcknowledgement, BootstrapError> {
+        self.recovery_acknowledgement()
+    }
+    pub fn recovery_acknowledgement(
+        &self,
+    ) -> Result<super::RecoveryAcknowledgement, BootstrapError> {
+        if let Some(historical) = &self.historical {
+            historical.validate()?;
+        }
+        let store = &self.recovery.store;
+        if store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if store.handoff_root_identity()? != self.native_root
+            || store.db.latest_sequence_number() != self.native_sequence
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        super::RecoveryAcknowledgement::from_replay(
+            self.recovery,
+            *self.closing.manifest(),
+            self.closing.producer_slot_id(),
+            self.closing.issued_through(),
+        )
+    }
+    pub fn acknowledged_through(&self) -> u64 {
+        self.closing.acknowledged_through()
+    }
     pub fn last_complete_sequence(&self) -> u64 {
         self.source_through
     }
@@ -179,7 +212,7 @@ impl<'a> SourceResolution<'a> {
             .ok_or(BootstrapError::StateMismatch)?;
         if !state.closing
             || state.issued != self.prefix.requests
-            || state.acknowledged != 0
+            || state.acknowledged != self.closing.acknowledged_through()
             || state.retired != 0
         {
             return Err(BootstrapError::StateMismatch);
@@ -250,6 +283,8 @@ impl<'a> SourceResolution<'a> {
             digest: self.prefix.digest.finalize().into(),
             event_requests: self.prefix.event_requests,
             historical: self.historical,
+            native_root: store.handoff_root_identity()?,
+            native_sequence: store.db.latest_sequence_number(),
         })
     }
 }
@@ -412,13 +447,16 @@ fn matches_recorded(
 }
 
 /// Ordered epoch2 resolution borrowing the exact closing proof and native owner.
-/// Neither this accumulator nor its completed witness can become an initial
-/// source, a handoff, a retirement permit or a writer.
+/// Its complete predecessor and target proof can produce a recovery ACK handoff;
+/// it cannot become an initial source, retirement permit or writer.
 pub struct ActivatedSourceResolution<'a> {
     recovery: &'a IngestRecovery,
     closing: &'a ActivatedProducerClosing,
     prefix: Prefix,
+    predecessor: Prefix,
 }
+
+const _: () = assert!(size_of::<ActivatedSourceResolution<'_>>() < 4096);
 
 /// Complete positive target prefix, tied to the same two-stream native custody.
 pub struct ResolvedActivatedSource<'a> {
@@ -439,14 +477,35 @@ impl ActivatedProducerClosing {
         if reserved_through != self.issued_through() {
             return Err(BootstrapError::StateMismatch);
         }
-        // The selected profile retains at most64 inputs, without ACK/GC. The
-        // connected wrapper additionally checks the immutable activation limit.
-        if reserved_through > 64 {
+        // The no-GC input census remains a total historical bound; releasing an
+        // active slot cannot free an original input or proof dependency.
+        if self
+            .predecessor_issued_through()
+            .checked_add(reserved_through)
+            .is_none_or(|n| n > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
             return Err(BootstrapError::InsufficientReservation);
         }
+        let previous = *self.predecessor_manifest();
+        let mut digest = Sha256::new();
+        digest.update(b"bigbrotr/initial-source-closure/1\0");
+        digest.update(Sha256::digest(previous.encode().as_bytes()));
+        digest.update(self.producer_slot_id().as_bytes());
+        digest.update(1_u64.to_be_bytes());
+        digest.update(self.predecessor_issued_through().to_be_bytes());
         Ok(ActivatedSourceResolution {
             recovery,
             closing: self,
+            predecessor: Prefix::new(
+                PrefixIdentity {
+                    manifest: previous,
+                    slot: self.producer_slot_id(),
+                    epoch: ProducerEpoch::new(1).expect("initial predecessor"),
+                    issued: self.predecessor_issued_through(),
+                    predecessor_cut: None,
+                },
+                digest,
+            ),
             prefix: Prefix::new(
                 PrefixIdentity {
                     manifest: *self.manifest(),
@@ -464,10 +523,25 @@ impl<'a> ActivatedSourceResolution<'a> {
     pub fn record(&mut self, resolved: &ResolvedProducerRequest) -> Result<(), BootstrapError> {
         self.closing.validate(self.recovery)?;
         resolved.require_native_context(self.recovery)?;
+        if self.predecessor.requests() < self.closing.predecessor_issued_through() {
+            return self.predecessor.record(resolved);
+        }
+        self.require_predecessor()?;
         self.prefix.record(resolved)
     }
 
+    fn require_predecessor(&self) -> Result<(), BootstrapError> {
+        if self.predecessor.requests() != self.closing.predecessor_issued_through()
+            || self.predecessor.source_through() != self.closing.predecessor_source_through()
+            || self.predecessor.completed_digest() != self.closing.predecessor_closure_digest()
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
     pub fn finish(mut self) -> Result<ResolvedActivatedSource<'a>, BootstrapError> {
+        self.require_predecessor()?;
         if self.prefix.requests != self.closing.issued_through() {
             return Err(BootstrapError::StateMismatch);
         }
@@ -486,6 +560,25 @@ impl<'a> ActivatedSourceResolution<'a> {
     }
 }
 impl ResolvedActivatedSource<'_> {
+    pub fn into_recovery_acknowledgement(
+        self,
+    ) -> Result<super::RecoveryAcknowledgement, BootstrapError> {
+        self.recovery_acknowledgement()
+    }
+    pub fn recovery_acknowledgement(
+        &self,
+    ) -> Result<super::RecoveryAcknowledgement, BootstrapError> {
+        self.validate()?;
+        super::RecoveryAcknowledgement::from_replay(
+            self.recovery,
+            *self.closing.manifest(),
+            self.closing.producer_slot_id(),
+            self.closing.issued_through(),
+        )
+    }
+    pub fn acknowledged_through(&self) -> u64 {
+        self.closing.acknowledged_through()
+    }
     pub fn last_complete_sequence(&self) -> u64 {
         self.source_through
     }

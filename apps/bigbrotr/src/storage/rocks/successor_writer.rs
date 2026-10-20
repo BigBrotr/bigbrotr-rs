@@ -97,6 +97,18 @@ const _: () = assert!(
         < crate::storage::rocks::succession::LINEAGE_SCRATCH_BYTES as usize
 );
 impl ActiveSuccessorWriter {
+    pub fn producer_credit(&self) -> Result<super::ProducerCredit, AdmissionError> {
+        self.store.producer_credit(self.producer_slot_id())
+    }
+    pub(in crate::storage) fn acknowledge_checkpoint(
+        &mut self,
+        confirmed: crate::storage::postgres::control_owner::ConfirmedAcknowledgement,
+        permit: &OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<(), AdmissionError> {
+        self.store
+            .acknowledge_checkpoint(confirmed, permit, authority)
+    }
     #[allow(
         clippy::too_many_arguments,
         reason = "explicit checkpoint operation grant, cancellation and authority"
@@ -372,6 +384,16 @@ impl ActiveSuccessorWriter {
         let result = result?;
         validation?;
         Ok(result)
+    }
+    #[cfg(test)]
+    pub(super) fn test_acknowledge_target(
+        &mut self,
+        target: super::AckTarget,
+        permit: &OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<(), AdmissionError> {
+        self.store
+            .test_acknowledge_target(target, permit, authority)
     }
     #[cfg(test)]
     pub(super) fn store(&self) -> &IngestStore {

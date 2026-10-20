@@ -55,7 +55,7 @@ pub(in crate::storage::postgres::control_owner) async fn require(
     slot: ProducerSlotId,
     scratch: &OwnedPermit,
     mut authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
-) -> Result<(), ProducerProgressError> {
+) -> Result<u64, ProducerProgressError> {
     let native_error = ProducerProgressError::Native;
     authority().map_err(native_error)?;
     let id = manifest.identity();
@@ -85,7 +85,8 @@ pub(in crate::storage::postgres::control_owner) async fn require(
         .query_one(
             "SELECT substring(dataset_id FROM 1 FOR 17),
                 left(reserved_through_request::text,21),
-                EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=39)
+                EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=39),
+                EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=40)
              FROM control.producer_epochs
              WHERE producer_slot_id=$1::bytea AND producer_epoch=$2::text::numeric
              FOR UPDATE",
@@ -99,7 +100,19 @@ pub(in crate::storage::postgres::control_owner) async fn require(
     }
     let reserved = rows::number(&producer, 1)?;
     let typed: bool = producer.try_get(2).map_err(backend)?;
+    let acknowledgements: bool = producer.try_get(3).map_err(backend)?;
     drop(producer);
+    if !acknowledgements {
+        native
+            .require_frontier(
+                slot,
+                ProducerEpoch::new(context.epoch)
+                    .map_err(|_| ProducerProgressError::InvalidContext)?,
+                0,
+                reserved,
+            )
+            .map_err(native_error)?;
+    }
     if !typed {
         // application_transaction already authenticated the complete migration
         // ledger under the migration lock. Old profiles can only have no head;
@@ -126,7 +139,8 @@ pub(in crate::storage::postgres::control_owner) async fn require(
                 0,
                 reserved,
             )
-            .map_err(native_error);
+            .map_err(native_error)
+            .map(|()| 0);
     }
     // SQL checks original reservation/outcome closure, historical attribution,
     // capacity and orphan absence. Client hashing and native reads below are
@@ -280,5 +294,6 @@ pub(in crate::storage::postgres::control_owner) async fn require(
         return Err(ProducerProgressError::InvalidContext);
     }
     authority().map_err(native_error)?;
-    native.validate().map_err(native_error)
+    native.validate().map_err(native_error)?;
+    Ok(complete)
 }

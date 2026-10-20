@@ -102,6 +102,9 @@ impl ActivatedInitial {
     pub(in crate::storage) fn issued_through(&self) -> u64 {
         self.producer.issued
     }
+    pub(in crate::storage) fn acknowledged_through(&self) -> u64 {
+        self.producer.acknowledged
+    }
     pub(in crate::storage) fn is_closing(&self) -> bool {
         self.producer.closing
     }
@@ -218,6 +221,49 @@ impl ActivatedInitial {
 }
 
 impl ActivatedProducerClosing {
+    pub(in crate::storage) fn predecessor_manifest(&self) -> &IngestManifest {
+        &self.context.record.previous
+    }
+    pub(in crate::storage) fn predecessor_issued_through(&self) -> u64 {
+        self.context.record.issued
+    }
+    pub(in crate::storage::rocks::store) fn predecessor_closure_digest(&self) -> [u8; 32] {
+        self.context.record.closure_digest
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "original identity and separate replay grants"
+    )]
+    pub(in crate::storage) fn resolve_predecessor_request(
+        &self,
+        recovery: &IngestRecovery,
+        request: ProducerRequestId,
+        digest: Digest256,
+        limits: ProducerRecoveryLimits,
+        input_permit: OwnedPermit,
+        outcome_permit: OwnedPermit,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<ResolvedProducerRequest, ProducerRecoveryError> {
+        self.validate(recovery).map_err(AdmissionError::from)?;
+        if request.producer_slot_id != self.producer_slot_id()
+            || request.producer_epoch.get() != 1
+            || request.request_sequence.get() > self.predecessor_issued_through()
+        {
+            return Err(AdmissionError::InvalidInput.into());
+        }
+        recovery.resolve_original_request_in(
+            request,
+            digest,
+            limits,
+            input_permit,
+            outcome_permit,
+            authority,
+            RecoveryContext::Initial(super::super::producer_recovery::ReplayContext {
+                manifest: self.predecessor_manifest(),
+                current_manifest: self.manifest(),
+            }),
+        )
+    }
     pub(in crate::storage::rocks::store) fn handoff_sha256(&self) -> [u8; 32] {
         use sha2::{Digest, Sha256};
         Sha256::digest(self.context.record.encode().as_bytes()).into()
@@ -250,6 +296,9 @@ impl ActivatedProducerClosing {
     }
     pub(in crate::storage) fn issued_through(&self) -> u64 {
         self.context.issued_through()
+    }
+    pub(in crate::storage) fn acknowledged_through(&self) -> u64 {
+        self.context.acknowledged_through()
     }
     pub(in crate::storage) fn validate(
         &self,

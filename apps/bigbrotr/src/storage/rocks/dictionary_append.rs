@@ -88,6 +88,7 @@ impl IngestStore {
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
         self.require_successor_operation(cancelled)?;
         require_permit(permit, limits)?;
+        self.require_request_capacity(request, limits.max_outstanding_requests)?;
         // Validate all allocation and closure choices before the immutable PG
         // reservation, including the actual timestamp's variable-width encoding.
         // This read-only preview emits no fact. The caller retains this exclusive
@@ -198,6 +199,9 @@ impl IngestStore {
             return Err(AdmissionError::ProducerClosing);
         }
         let sequence = request.request_sequence.get();
+        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT {
+            return Err(AdmissionError::Limit);
+        }
         if sequence <= state.retired {
             return Err(AdmissionError::RetiredRequest);
         }

@@ -103,6 +103,19 @@ impl ActivatedSuccessorSourceResolution<'_> {
     }
 }
 impl ResolvedActivatedSuccessorSource<'_> {
+    pub fn recovery_acknowledgement(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<crate::storage::rocks::store::RecoveryAcknowledgement, BootstrapError> {
+        self.validate(cancelled)?;
+        self.inner.recovery_acknowledgement(cancelled)
+    }
+    pub fn into_recovery_acknowledgement(
+        self,
+        cancelled: &AtomicBool,
+    ) -> Result<crate::storage::rocks::store::RecoveryAcknowledgement, BootstrapError> {
+        self.recovery_acknowledgement(cancelled)
+    }
     pub fn verified_through(&self) -> u64 {
         self.inner.verified_through()
     }

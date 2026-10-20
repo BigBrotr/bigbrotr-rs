@@ -56,6 +56,7 @@ pub enum RetainedTerminalKind {
 pub struct RetainedLineageEntry {
     manifest: IngestManifest,
     issued: u64,
+    acknowledged: u64,
     source_through: u64,
     incoming_sha256: [u8; 32],
     terminal_digest: [u8; 32],
@@ -72,6 +73,9 @@ impl RetainedLineageEntry {
     }
     pub fn issued_through(&self) -> u64 {
         self.issued
+    }
+    pub fn acknowledged_through(&self) -> u64 {
+        self.acknowledged
     }
     pub fn source_through(&self) -> u64 {
         self.source_through
@@ -391,7 +395,7 @@ fn entry(
             ProducerEpoch::new(epoch).map_err(|_| BootstrapError::InvalidIntent)?,
         )?
         .ok_or(BootstrapError::StateMismatch)?;
-    if producer.issued > 64 || producer.acknowledged != 0 || producer.retired != 0 {
+    if producer.issued > super::RETAINED_PRODUCER_REQUEST_LIMIT || producer.retired != 0 {
         return Err(BootstrapError::StateMismatch);
     }
     let source = counter(recovery, source_key(&manifest))?;
@@ -434,6 +438,7 @@ fn entry(
     Ok(RetainedLineageEntry {
         manifest,
         issued: producer.issued,
+        acknowledged: producer.acknowledged,
         source_through,
         incoming_sha256,
         terminal_digest: terminal.map_or([0; 32], |(_, _, _, digest)| digest),

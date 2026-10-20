@@ -80,6 +80,14 @@ pub use certification::{
 mod producer_checkpoint;
 pub(in crate::storage) use producer_checkpoint::{CheckpointKind, NativeCheckpointBasis};
 
+#[path = "producer_ack.rs"]
+mod producer_ack;
+pub(in crate::storage) use producer_ack::AckTarget;
+pub use producer_ack::{
+    ProducerCredit, RETAINED_PRODUCER_REQUEST_LIMIT, RecoveryAcknowledgement,
+    RecoveryAcknowledgementResolution,
+};
+
 #[path = "producer_progress_recovery.rs"]
 mod producer_progress_recovery;
 

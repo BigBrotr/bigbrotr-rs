@@ -26,6 +26,12 @@ impl ActivatedInitialRetirement {
     }
 }
 impl ClosedActivatedInitialRetirement {
+    pub fn predecessor_issued_through(&self) -> u64 {
+        self.0.predecessor_issued_through()
+    }
+    pub fn acknowledged_through(&self) -> u64 {
+        self.0.acknowledged_through()
+    }
     pub fn producer_slot_id(&self) -> ProducerSlotId {
         self.0.producer_slot_id()
     }
@@ -46,6 +52,29 @@ impl ClosedActivatedInitialRetirement {
 }
 
 impl ControlSession {
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "closed context and per-original grants"
+    )]
+    pub async fn inspect_activated_initial_retirement_predecessor_request(
+        &mut self,
+        recovery: &IngestRecovery,
+        closed: &ClosedActivatedInitialRetirement,
+        input: ActivatedInitialResolveRequest<'_>,
+        input_permit: OwnedPermit,
+        outcome_permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ResolvedProducerRequest, ProducerResolveError> {
+        self.resolve_activated_initial_predecessor_request(
+            recovery,
+            &closed.0,
+            input,
+            input_permit,
+            outcome_permit,
+            validate,
+        )
+        .await
+    }
     pub async fn inspect_activated_initial_retirement(
         &mut self,
         recovery: &IngestRecovery,
