@@ -29,6 +29,10 @@ and the runner refuses before resource creation. Final migration/source pins and
 independently fixed head/count/dependency expectations must be reviewed before
 that gate is filled. No build, connected run or executable control has run for
 this increment.
+The selected `product_source` must exactly match the qualified build, component
+and qualification receipts in both the runner and offline replay. Later runner
+commits are permitted only by the existing docs/experiments-only source delta
+and unchanged product/migration manifest checks.
 
 The independent oracle encodes each216-byte acquisition head and72-byte
 dependency record, hashes their canonical ordered stream and checks every

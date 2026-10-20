@@ -519,6 +519,8 @@ def replay(root, *, progress=None):
     assert qualification['status'] in (('PASS_PRODUCER_PROGRESS_COMPONENTS',) if progress else allowed)
     assert report['build']==built and report['component']==component and component['status']=='PASS'
     assert component['source']==built['source']==qualification['source']
+    if progress is not None:
+        assert built['source']==progress_replay.require_frozen_profile()['product_source'], 'unreviewed progress build source'
     for field in ('tree','source_manifest_sha256','lockfile_sha256'): assert component[field]==built[field]==qualification[field]
     manifest_bytes=raw(build.parent/'build/source-manifest.json'); assert sha(manifest_bytes)==built['source_manifest_sha256']
     manifest=loads(manifest_bytes); assert manifest['revision']==built['source'] and manifest['tree']==built['tree']

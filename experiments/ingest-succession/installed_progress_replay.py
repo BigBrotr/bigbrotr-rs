@@ -94,9 +94,10 @@ CASE_EXPECTATIONS = {
     },
 }
 
-# Deliberately unavailable until the final migration/source and independent
-# scientific/count expectations are frozen and reviewed. No caller can provide
-# a replacement golden file or turn a structurally valid head into PASS.
+# Deliberately unavailable until the final migration and integrated qualified
+# build source are frozen and reviewed. product_source names that exact build,
+# not an isolated author packet or a later fixture-only runner revision. No
+# caller can provide a replacement golden file or turn a valid digest into PASS.
 FROZEN_PROFILE = None
 
 # Additive authority only in the explicit0039 fixture. The ordinary0038

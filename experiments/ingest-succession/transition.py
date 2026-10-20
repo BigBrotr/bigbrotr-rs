@@ -305,6 +305,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         if producer_progress else allowed)
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
+    if producer_progress:
+        assert built['source'] == progress_profile['product_source'], 'unreviewed progress build source'
     for field in ('tree', 'source_manifest_sha256', 'lockfile_sha256'):
         assert component[field] == qualification[field] == built[field], field
     binaries = component['executables_sha256']
