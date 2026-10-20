@@ -66039,7 +66039,31 @@
         "build_session": "79187 joined0",
         "observed_terminal": "Both build and both runtime containers exited0/PID0/noOOM; no active engine/compiler process from this slice.",
         "fixture_worktree": "/home/tux/bigbrotr-rs/.research/catalog-layout-fixture-20261020",
-        "fixture_commit": "d7a34c24de4bfbd16b86431ed66dddf431a7ce8d"
+        "fixture_commit": "d7a34c24de4bfbd16b86431ed66dddf431a7ce8d",
+        "fixture_worktree_state": "Clean detachedd7a34c2; redundant work/catalog-layout-fixture ref retired after verified integration/push."
+      },
+      "export_admission_20261020": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-admission-f1e726f",
+        "source": "f1e726f78d7f925cf84cec19117fee5d607773c5",
+        "owner": "6d8f4ccdc5a7c173fd3c7d4698b3cebe",
+        "owner_label": "org.bigbrotr.network-transport",
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-admission-f1e726f/resources.json",
+        "state": "stopped-retained",
+        "root_session": "2382 joined0",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "7880b362cda355cfb40dcb2d95300110f8d338ff59e99d5dd3b38f8ca80ccec7"
+          },
+          {
+            "name": "native",
+            "id": "f08b7ada7b9c12cd3a9868263e8620470f3184d107398fb216036e58d4a8d93f"
+          }
+        ],
+        "last_terminal_observation": "Both exited0/PID0/noOOM; inventory_changed=[]",
+        "free_bytes": 318319792128,
+        "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.export_admission_20261020",
+        "policy": "Preserve exact source, immutable copied artifacts and logs; retained worker reused from6c42a41; compiler cache remains exclusive mutable acceleration. No cleanup due."
       }
     },
     "archive_refusal_journey_attempts": [

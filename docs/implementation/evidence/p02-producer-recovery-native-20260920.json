@@ -37410,6 +37410,137 @@
               "sha256": "2db66e93e63f1a10af43d1f81a642f9c095ac43fe249cc94250cdf0c7267db3d"
             }
           }
+        },
+        "export_admission_20261020": {
+          "status": "PASS_SOURCE_BOUNDARIES_AND_BUILD_ONLY",
+          "source": "f1e726f78d7f925cf84cec19117fee5d607773c5",
+          "tree": "8df5d0b0ec95bd5e5563d76843843b330012c72e",
+          "review": {
+            "path": ".research/export-memory-phases-review-20261020/export-admission-review-v1.json",
+            "bytes": 7009,
+            "sha256": "d86dde7268c8a946d61b221cdafb3cbe94299870df57a03521aa1a2131a350e4"
+          },
+          "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-admission-f1e726f",
+          "source_manifest": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-admission-f1e726f/out/build/source-manifest.json",
+            "bytes": 255287,
+            "sha256": "2085487f7d645c3c780ca8483f6ce44058dee98377a86c8587be7c6f8b83a5f8"
+          },
+          "qualification": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-admission-f1e726f/out/qualification.json",
+            "bytes": 6222,
+            "sha256": "a9ab71ef7de311af978f23511be83258408a83c9643ca427786df6cbe9288330"
+          },
+          "checks": [
+            {
+              "name": "admission",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "interfaces::serve::export_jobs::tests::"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 30.268618776462972
+            },
+            {
+              "name": "build",
+              "command": [
+                "cargo",
+                "build",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 65.8835162203759
+            },
+            {
+              "name": "clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 7.376868663355708
+            }
+          ],
+          "artifacts": {
+            "archive-worker/bigbrotr-archive-worker": {
+              "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1",
+              "bytes": 14421792
+            },
+            "archive-worker/extensions/ducklake.duckdb_extension": {
+              "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302",
+              "bytes": 36436086
+            },
+            "archive-worker/extensions/httpfs.duckdb_extension": {
+              "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8",
+              "bytes": 21570542
+            },
+            "archive-worker/extensions/postgres_scanner.duckdb_extension": {
+              "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c",
+              "bytes": 41696558
+            },
+            "archive-worker/lib/duckdb.h": {
+              "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d",
+              "bytes": 244057
+            },
+            "archive-worker/lib/libduckdb.so": {
+              "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405",
+              "bytes": 70529912
+            },
+            "bigbrotr": {
+              "sha256": "868cc5264b931245a7066ded3465b412659f8558fc07b616e84d8f04d7eada99",
+              "bytes": 33559112
+            }
+          },
+          "resources": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-admission-f1e726f/resources.json",
+            "bytes": 1061,
+            "sha256": "da3082c1cc5ddc42facb7fd70e50ba2445fd3aba13fb1d6927b935621e092e8d"
+          },
+          "root_session": "2382 joined0",
+          "observed_terminal": "Both owned containers exited0/PID0/noOOM; inventory_changed=[]; no compiler/engine process active.",
+          "reservation_minimum_bytes": {
+            "plaintext": 254541832,
+            "server_tls": 262930448,
+            "mutual_tls": 290193440
+          },
+          "behavior": "Export-only64+96MiB reader; full1MiB row and parent64x unchanged. Catalog16MiB plus configured credential copies retained through driverjoin. NativeTLS16MiB and128KiB control charged. Over-cap admission defers before secret I/O/reservation, without durable pause reason. Publisher/history existing profiles unchanged.",
+          "runtime": "NOT_RUN on reduced installed profile",
+          "next": "Qualify five actual jobs with a genuinely accepted256MiB operation policy, manager/driver high-water and complete signed output; preserve shared Control accounting. The prior managed seed accepts1GiB: a TOML-only change cannot replace accepted policy.",
+          "limits": [
+            "Admission arithmetic is not an RSS ceiling.",
+            "No five-export256MiB, max-event/tag-heavy, TLS runtime or new cancellation claim.",
+            "No deadline/fidelity relaxation and no shared service cost subtraction."
+          ]
         }
       },
       "archive_refusal_journey_attempts": [
