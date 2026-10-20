@@ -61384,8 +61384,20 @@
           "branch": "work/producer-ack-fixture",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Independent existing-harness ACK qualification",
-          "state": "Frozen first source preparation retained; schema40/window2 fixture extension actively authored, not qualified",
-          "head": "4b8f88bee14ab81f373dea3e10383c05e2442738"
+          "state": "Clean frozen source, critically reviewed and merged main3b5228a; author completed. New installed ACK runtime NOT_RUN.",
+          "head": "f5cd4e9d49c80bf212daf3000a82b3ac12b2e091",
+          "tree": "eea639f8f8f75fb99abfacce0b00ae3bbdbced84"
+        },
+        {
+          "owner": "export_setup_fixture",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020",
+          "branch": "work/producer-ack-loss",
+          "base": "e8e3f9db6033bb2b961236161ca29e015eaf8eff",
+          "scope": "Additive schema40 native ACK COMMIT-loss/recovery qualification using existing fixture owners",
+          "state": "Paused author; six uncommitted partial files, NOT_EXECUTABLE, not integrated; exact source/diff authenticated by root",
+          "head": "dc9bfe4c0675e5baff5742aaff82399bea0d2f17",
+          "tree": "981d319bf030510e551d29d7fee74bb0c330a5cd",
+          "pause_receipt": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/paused-partial-v1.json"
         }
       ],
       "ack_critical_review": {
@@ -61421,6 +61433,25 @@
         "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
         "free_bytes_after": 301113614336,
         "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.component_build"
+      },
+      "ack_fixture_review": {
+        "owner": "producer_recovery_review",
+        "state": "Completed; no remaining source blocker; stopped for explicit user pause",
+        "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-fixture-source-review-v1.json"
+      },
+      "pause_resource_observation": {
+        "observed_at": "2026-10-20T21:40:05.016873+00:00",
+        "build_run": "producer-ack-fcad4c9",
+        "driver_sessions": "57929 component build,76073 earlier push and19177 offline regression all joined; no retained running driver",
+        "owned_build_containers": "Exact fetch/native IDs in ack_component_build independently rechecked: matching owner,exited,PID0,noOOM,exit0,cgroups absent",
+        "borrowed_pg": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "state": "Freshly observed exited,PID0,noOOM,exit0,cgroup absent; no new fixture engine run started"
+        },
+        "project_processes": "No remaining executable process with project lab path observed; agent closure separately reconciled",
+        "preservation": "All original failures,data,logs,ignored .research,worktrees and external artifacts retained; no cleanup or branch deletion during pause; unrelated workloads untouched",
+        "agents": "export_setup_fixture,export_setup_review,producer_recovery_review received explicit pause and completed; no further task authorized until resume"
       }
     }
   },

@@ -40981,14 +40981,14 @@
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       },
       "producer_checkpoint_ack_preparation_20261020": {
-        "status": "Typed progress components76, successor Sync3, activated2 Sync, retained initial1 raw science, historical recovery/refusals and actual two-mode COMMIT loss/recovery/retry qualified. ACK/credit and remaining gates open; original failed attempts preserved.",
+        "status": "Typed progress qualification retained. Native ACK consumer/storage/recovery source now integrated; 258 component tests and required controls PASS. Connected ACK/credit/loss/recovery and remaining gates open; original failures preserved.",
         "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
         "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
         "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
-        "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Finish storage source and review; integrate with pinned consumer; reconcile changed component selections in existing build profile; build exact source before activating real window2 initial/activated/successor fixtures. No old ACK0 artifact qualifies new product.",
+        "known_gap": "Native ACK implementation and all recovery consumers are source-reviewed and component-tested; actual PostgreSQL confirmation, two-slot installed traffic, ambiguous completion and mixed-state refusals still require real-engine qualification.",
+        "next": "After explicit resume, use clean detached source containing3b5228a and qualified fcad ELFs to run --installed-sync-ack, then activated2 and successor3 with existing raw readers under python3 -B -S. Inspect resource custody before each owned run. ACK-loss source remains isolated and must be completed/reviewed before use.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41002,7 +41002,7 @@
         },
         "decision": "Reuse one typed cumulative producer head with retained deduplicated dependency closure and actual local acquisition attempt/ordinal. No immutable checkpoint history or native head digest. Required noGC invariant retired=0 and nativeACK<=validated head<=native issued<=PG reserved; credit follows positively observed nativeACK, never head alone. Proof-only progress changes no mutation sequence. Empty/unactivated target vetoes and whole-job uncertainty remain.",
         "first_increment": "Typed PG progress, opaque context-bound native result and actual Sync consumer with ACK0 historical recovery validation implemented. Entry contexts1/2/3/4 and actual proof-only COMMIT-loss recovery now have separately attributed evidence below. Only the new acquisition job retains jobs.checkpoint_revision=0; historical jobs retain original values. No native ACK write, returned credit, remote cursor/coverage or whole-job completion.",
-        "capacity": "Initial noGC history64/32MiB remains distinct from active window. Exact finite progress/closure reservation must be fixed before code admits it. This slice cannot qualify indefinite traffic, request65 at default64, GC or mixed-cut restore.",
+        "capacity": "Initial noGC history64/32MiB remains distinct from active window. Finite checkpoint/ACK grants are implemented and component-tested. Indefinite traffic, request65 at default64, GC, capacity and mixed-cut restore remain unqualified.",
         "scenario_preparation": {
           "path": ".research/producer-checkpoint-ack-review-20261020/scenarios-v1.json",
           "bytes": 17767,
@@ -42177,7 +42177,24 @@
             "commit": "4b8f88bee14ab81f373dea3e10383c05e2442738",
             "manifest": ".research/producer-ack-fixture-20261020/.research/producer-ack-fixture-source-20261020/manifest-v1.json",
             "sha256": "90ae7366cfc5ee052af405b7a139aa3b71b1ae493159b87465eae9e8abc6115c",
-            "state": "Frozen default-preserving three-event source seams; follow-up schema40/window2 profile under authoring. No new qualification predicate executed."
+            "state": "First transport freeze retained; completed schema40/window2 source preparation and review are recorded in followup. New ACK qualification predicates remain unexecuted.",
+            "followup": {
+              "commit": "f5cd4e9d49c80bf212daf3000a82b3ac12b2e091",
+              "tree": "eea639f8f8f75fb99abfacce0b00ae3bbdbced84",
+              "manifest": {
+                "path": ".research/producer-ack-fixture-20261020/.research/producer-ack-fixture-source-20261020/manifest-v2.json",
+                "sha256": "95127296faf646270e8071f28b2423edd6bcd4fcafff56c328ffec1ef406b25a"
+              },
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-fixture-source-review-v1.json",
+                "sha256": "92e40850c01490feef0ec4fed914f256b25e3b134c598566ec177ae356f41e9d"
+              },
+              "integration": "3b5228ad515896f3a8ced37d3559a0b2b5acc588",
+              "integration_tree": "981d319bf030510e551d29d7fee74bb0c330a5cd",
+              "source_identity": "Root authenticated all22 fixture files against frozen author source and661 compiled product/build inputs against qualified fcad build manifest; no conflicts or manual merge edits. Critical receipt fully read and authenticated.",
+              "status": "SOURCE_REVIEW_PASS; installed ACK modes, new counterexamples and raw replay NOT_RUN",
+              "semantics": "Actual accepted/registered window2, three distinct new signed kind1 events then gated proof-only resend; epoch3 uses explicit NEW/wrong-first-tag/wrong-author because included is already retained. Original500ms timeout unchanged."
+            }
           },
           "review_findings": [
             "Initial closing/replay and successor metadata/closing/ACK grants overlap correctly in reviewed preflight.",
@@ -42185,7 +42202,7 @@
             "Successful native ACK write with unexpected sequence poisons the actual initial/recovery owner as well as successor. Native component refusal exercised."
           ],
           "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
-          "next": "Freeze and critically review independent schema40/window2 installed fixtures, bind to qualified fcad4c9 ELFs, then execute actual initial/activated2/successor3 traffic and recovery with retained raw captures. Reuse this component build while compiled source and dependencies remain identical.",
+          "next": "After explicit resume, use clean detached source containing3b5228a and qualified fcad ELFs to run --installed-sync-ack, then activated2 and successor3 with existing raw readers under python3 -B -S. Inspect resource custody before each owned run. ACK-loss source remains isolated and must be completed/reviewed before use.",
           "storage": {
             "commit": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
             "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
@@ -42232,6 +42249,32 @@
               "COMMIT/native ACK loss, full original replay and refused mixed restores",
               "Resource capacity, Archive worker and GC qualification"
             ]
+          },
+          "fixture_default_regression": {
+            "initial_and_activated_attempt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-fixture-default-regression-3b5228a.json",
+              "sha256": "a1f38b5be1b8aec582a0702f6ee2fc33f289fc88410523bb9649a8fc05b90b8b"
+            },
+            "status": "Original aggregate attempt FAIL; initial verification and38 controls PASS before activated input refusal.",
+            "activated_finding": "Retained965 activated context predates required progress_setup.acl. Both changed3b5228a and unchanged fcad verifier refuse the same missing capture. No fabricated ACL, predicate relaxation or new runtime. Historical exact-source965 PASS remains intact.",
+            "successor_receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-fixture-default-successor-regression-3b5228a.json",
+              "sha256": "5a6801e17a93afdc003c5d22ce9e34289df077a6e73488eea2339160a4d70253"
+            },
+            "successor_status": "PASS_CHANGED_DEFAULT_SUCCESSOR_VERIFIERS: three retained original75 contexts,21 controls each; driver joined0.",
+            "scope": "Offline scientific verifier regression only; no new engine run or raw-source qualification. Reuse completed initial/successor checks while these verifier inputs remain unchanged."
+          },
+          "paused_loss_preparation": {
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020",
+            "branch": "work/producer-ack-loss",
+            "head": "dc9bfe4c0675e5baff5742aaff82399bea0d2f17",
+            "status": "PARTIAL_UNCOMMITTED_NOT_EXECUTABLE; not integrated or pushed",
+            "receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/paused-partial-v1.json",
+              "sha256": "165b7ac2f26174dde0619787cb957576bf67023463b1d4d1d42e1abae463eaab"
+            },
+            "preservation": "Root authenticated all six dirty file hashes and exact retained binary diff. Missing verify_ack_loss/recovery and raw replay predicates; AST/imports/tests/critical review/runtime NOT_RUN. No author-owned process.",
+            "resume": "Finish the existing independent C3/C4 versus native A3 loss/recovery expectations and raw binder in this worktree; review before execution. Positive installed ACK modes remain the first root runtime step."
           }
         }
       }
