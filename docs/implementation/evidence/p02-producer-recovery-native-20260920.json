@@ -37181,6 +37181,34 @@
             },
             "scope": "Config init and all three profile validations PASS. First actual readonly SQL failed because caller statement lacked a terminator before COMMIT. No migration/authority initialization/publication/acceptance; original UNKNOWN_PRESERVED remains. All three owned containers stopped0/0/1 PID0noOOM; full initial trace5processes/0workers authenticated;47evidence files retained. No memory qualification.",
             "next": "One-line SQL framing correction under targeted review; new source and root required. Never replay this root."
+          },
+          {
+            "source": "763182f255047da35a2ed178e7b71834d7213589",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f",
+            "status": "PUBLICATION_AND_GRANTS_PASS_ACCEPTANCE_DESCRIPTOR_FAIL",
+            "session": "41884 joined1",
+            "custody": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f/root-audit/pre-recovery-v1.json",
+              "bytes": 1183841,
+              "sha256": "79c04877677e2754735158a0245bd78ac4511de637cf9abe45a5c80181e684e6"
+            },
+            "summary": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f/root-audit/outcome-summary.json",
+              "bytes": 586,
+              "sha256": "e71ac30d7f1eba5e339b83a084e184ff40df4cc022f752e04bd3c0998d0e028a"
+            },
+            "readonly_recovery": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f/root-audit/sql-recovery/result.json",
+              "bytes": 944,
+              "sha256": "b2f4c349ec416ee05f5b6deb9a91413dd2fb079cb283d4bd7f1c545dd4709270"
+            },
+            "rows": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f/root-audit/sql-recovery/after.json",
+              "bytes": 449711,
+              "sha256": "e6e691fb7c4db4e0a4dcaa6dfaecc0bc55264a765728b8b3a349d87f32ad52b4"
+            },
+            "scope": "Real publication frontier4/snapshot5,12 scientific facts across5families,4receipts,49 native rows independently checked; three real grants prepared. Complete publisher10worker/707process/975thread and continuation3worker/26process/435thread traces passed with terminal/backend/mount/physical custody. Accept probe refused InvalidInput before catalog connection; no Export created. Original overall FAIL/UNKNOWN preserved; measurement NOT_RUN.",
+            "recovery_scope": "After all5owned containers terminal and full failed-accept21process/2thread/0worker audit, only owned PG restarted for6read-only queries capturing75tables/catalog. Same jobs/commands/grants/catalog; only owner_epochs and role_instances differ. PG stopped0/PID0/noOOM again; no compensation or replay."
           }
         ],
         "sql_framing_correction_20261020": {
@@ -37193,6 +37221,15 @@
           },
           "root_review": "Exact one-line framing and original failed stdin/stderr/process result reviewed. Standalone semicolon closes internal SQL before COMMIT; existing terminators/comments remain safe. Same read-only transaction, timeout, process/observer and oracle semantics.",
           "checks": "AST and whitespace PASS; next fresh actual setup is the relevant execution check."
+        },
+        "descriptor_prefix_correction_20261020": {
+          "status": "SOURCE_REVIEW_CLOSED_RUNTIME_NOT_RUN",
+          "diagnosis": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f/root-audit/descriptor-diagnosis-v1.json",
+            "bytes": 2587,
+            "sha256": "d56fa0e0d6b088a1d3e81266089639abd5f7ae560a943829e807a1a847dceca1"
+          },
+          "scope": "Correct exact catalog prefix in fixture; inherited acceptance/measurement descriptor. Product/probe unchanged; existing build qualification reused. Fresh run after coherent commit/push."
         }
       },
       "archive_refusal_journey_attempts": [

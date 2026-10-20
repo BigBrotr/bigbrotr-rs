@@ -37,7 +37,7 @@ absence and preserved inputs/catalog artifacts in its surrounding audit.
 | `control`, `catalog` | Each has `endpoint`, `database`, `user`, `password_ref` (`file:/…`). The real transport pins the route. |
 | `reader_user`, `reader_password_ref` | Actual permanently installed reader, inspected by the catalog adapter. |
 | `config`, `policy` | Each has absolute `path`, exact file `sha256`, and independently pinned SQL `stored_digest`. Documents must be <=64KiB and exactly match actual SQL under Control's checks. |
-| `data_root`, `state_root`, `destination` | Actual existing bindings. Nothing is initialized or repaired. |
+| `data_root`, `state_root`, `destination` | Actual existing bindings. `data_root` is the exact catalog prefix, including its terminal `/`; the acceptance descriptor uses the same convention. Nothing is initialized or repaired. |
 | `scratch`, `ledger` | Fresh private empty native scratch and nonexistent ledger filename. Files/failures remain retained. |
 | `worker_root`, `worker_bytes`, `worker_sha256` | Exact immutable packaged9a worker. Normal bundle/library/extension verification still runs. |
 | `limits` | Closed limits object described below. |

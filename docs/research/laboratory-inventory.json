@@ -65861,6 +65861,58 @@
             }
           ],
           "preservation": "Private credentials, PG data, all47output evidence files, original failed trace/SQL and exact clean source retained; no cleanup or replay."
+        },
+        {
+          "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+          "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.fresh_setup_attempts_20261020",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f",
+          "preparation": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f-preparation",
+          "source": "763182f255047da35a2ed178e7b71834d7213589",
+          "owner": "a7fad6c28cc1e36d994a588409ba9fb8",
+          "owner_label": "org.bigbrotr.export-memory-lab",
+          "state": "stopped-retained",
+          "outcome": "UNKNOWN_PRESERVED",
+          "containers": [
+            {
+              "id": "0e588f7fe7a7f80078e0ca9ca78a169a1ea0ebd4dd35a4c884c2c2c6de902d22",
+              "name": "bigbrotr-export-memory-a7fad6c28c-postgres"
+            },
+            {
+              "id": "cabeb1fa42fba056374dc5768d50c89863d932146411748faba228393f7eeb66",
+              "name": "bigbrotr-export-memory-a7fad6c28c-configure"
+            },
+            {
+              "id": "86366ba03130bb25d6a3a1220fcb7c240c07ff3fc582e4d905e31f4158b78841",
+              "name": "bigbrotr-export-memory-a7fad6c28c-publish"
+            },
+            {
+              "id": "a593e146b896d72f6b6a28de2872f93fb670c90bbc5f6285287e36c03560e3ee",
+              "name": "bigbrotr-export-memory-a7fad6c28c-continue"
+            },
+            {
+              "id": "2f5c60440e13cb7485068d61503bf50c33f4691247a68db48287feef786d7b27",
+              "name": "bigbrotr-export-memory-a7fad6c28c-accept"
+            }
+          ],
+          "original_terminal": "Pre-recovery audit records all5 stopped/PID0/noOOM; onlyaccept exit1",
+          "pg_readonly_recovery": {
+            "result": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-763182f/root-audit/sql-recovery/result.json",
+            "terminal": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-20T12:29:22.959418925Z",
+              "FinishedAt": "2026-10-20T12:29:23.845308348Z"
+            },
+            "finished_at": "2026-10-20T12:29:23.902096+00:00"
+          },
+          "preservation": "4677original output files, complete traces, scientific native roots, all SQL captures, originalfailed descriptor, credentials and PG data retained. Recovery touched only ownedPG; no native root reopened or acceptance replayed."
         }
       ]
     },

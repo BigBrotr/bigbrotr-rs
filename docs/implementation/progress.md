@@ -7,21 +7,25 @@ reuse/checkpoint rules are in the [execution guide](agent-handoff.md) and
 
 ## Current objective and repository
 
-P02-T04/P01-T09: qualify the genuine full signed export path and memory gate.
+P02-T04/P01-T09: qualify genuine full signed export acceptance and the memory gate.
 Root owns integration/runtime in `/home/tux/bigbrotr-rs`, branch `main`.
-Last verified pushed revision is `6f3a9dd5e5bcd02c5256be3fbd66c55802f0d9e7`,
-tree`bfd62c32228ad2e5978afd7f7afe9d33ed9a0124` (push46090 joined0, exact remote
-verified). Reviewed phase split, complete worker trace parser and root orchestrator
-are integrated with original source ancestry. Root2671cf03 and independent6a380bea
-source reviews are recorded in the linked report.
+Last verified pushed revision is `763182f255047da35a2ed178e7b71834d7213589`
+(push90508 joined0; exact remote verified). Phase split, complete worker trace
+parser, root orchestrator and SQL framing correction are integrated with original
+source ancestry. Prior source reviews are linked in the owning report.
 
-Fresh setup95861 joined1 before migration: the initial readonly `pg_tables` query
-lacked a terminator before COMMIT. Config init and all three profile validations
-PASS; publication/acceptance never started. Original FAIL/UNKNOWN remains preserved.
-Root-owned local changes terminate each SQL statement explicitly and record this
-first actual result. The one-line correction has AST PASS and targeted review68adcb37 is
-closed; no product or expectation semantics change. Root/agents retain verified
-Astra/xhigh continuity under Q38.
+Actual setup41884 joined1 after publication and grants succeeded. Acceptance
+probe4 refused `InvalidInput`: the fixture descriptor omitted the terminal `/`
+required by `CatalogIdentity::local`, before catalog connection. Read-only actual
+SQL recovery confirms no Export job; jobs/commands/grants/catalog are unchanged,
+with only Control epoch/role registration added. Original overall FAIL/UNKNOWN
+remains preserved. Root/independent author confirmed the exact source cause.
+
+Root-owned local edits add the terminal slash to `memory_setup.py`'s shared
+acceptance/measurement descriptor, clarify the existing MEMORY.md contract and
+record actual evidence/resources. AST and targeted source review PASS; this
+correction has not executed. No Rust/product/probe/budget/deadline change.
+Verified Astra/xhigh continuity is retained under Q38.
 
 ## Evidence and open problems
 
@@ -31,54 +35,46 @@ node `initial_successor_preparation_20261012.repeatable_succession_20261015`.
 Resource custody belongs to the [laboratory inventory](../research/laboratory-inventory.json),
 node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence there.
 
-- Qualified6c product/bundle and new export probe build/Clippy are PASS. Current
-  product, dependency, migration and contract inputs are unchanged. Actual
-  retained eight product/bundle files and tracer/proof/patch have been authenticated
-  again for this new consumer; the fresh setup also verifies the full bundle.
-- Publication now stops before native observers. Independent phase review is
-  closed; actual trace, terminal container/cgroup/backend/mount exclusion must
-  authorize continuation. First setup failed before migration; publication, acceptance
-  and measurement are NOT_RUN.
-  The first candidate retains the full1MiB row envelope and1GiB export policy cap;
-  five exports/256MiB remain unqualified.
-- Original d775 attempt engine is FAIL at the independent input oracle. Its
-  separately reviewed corrected offline analysis passes72states/75tables,
-  16negative controls and927raw-file bindings; it does not rewrite the original
-  result. Strict whole original replay remains NOT_RUN. No extra attempt engine
-  is needed solely for that verifier correction.
+- Qualified6c product/bundle and new export probe build/Clippy are PASS; all
+  relevant product/dependency/migration inputs remain unchanged.
+- Fresh763 publication and continuation passed real native science, all-table
+  comparisons, complete worker traces, whole-container/cgroup/backend/mount
+  custody and three genuine grants. Actual descriptor/installation prefix
+  mismatch is proven by retained bytes; diagnosisd56fa0e0 records the correction.
+  Acceptance remains FAIL; measurement and five exports/256MiB remain NOT_RUN.
+  Full1MiB event envelope and first1GiB export policy cap remain unchanged.
+- Original6f3 setup failed before migration on missing SQL statement termination;
+  corrected763 passes that boundary. Both original roots and outcomes survive.
 - Earlier a99 initial Sync timeout remains unexplained. A repeated timeout needs
   targeted pending-await diagnosis before another trial, without widened deadlines.
-  Interrupted2426646 and all original failures remain preserved.
+  All original failures/interruption remain preserved. Separately corrected d775
+  offline analysis does not rewrite its original failed engine; no extra attempt
+  run is needed solely for that verifier fix.
 
 ## Processes and resources
 
-No root engine/compiler/cleanup process or subagent is active. Targeted SQL
-framing review is complete. All original worktrees/ignored evidence
-remain preserved. Actual setup root `runs/export-memory-setup-6f3a9dd` is
-stopped-retained: owned PostgreSQL/configure/publish exit0/0/1, PID0/noOOM; root
-custodya9168c94 authenticates47files and the full initial trace5processes/0workers.
-Private credentials and PG data are retained; do not restart or replay this root.
-Exact source/invocation/output live in the paired `-preparation` directory.
+No root engine/compiler/cleanup process or subagent is active. Both actual setup
+roots are stopped-retained. For `runs/export-memory-setup-763182f`, original
+five-container custody79c04877 preserves4677files and complete traces. Only its
+owned PG was subsequently restarted for six read-only outcome queries; it stopped
+exit0/PID0/noOOM again at12:29:23Z. That separate recovery receipt owns the new
+PG observation; never replay the earlier custody executor. Native roots were not
+reopened or edited. Preserve original descriptor, credentials, PG data, source
+clones, logs, ignored `.research`, and every worktree.
 
-Research client image720f24ff contains authenticated psql15.19; its image build and
-never-started inspection container remain retained. Original6c build and tracer
-artifact authentication remains valid; older terminal observations are dated
-records, not inferred live state.
-
-External roots are under `/home/tux/bigbrotr-implementation-20260917/runs`.
-Compiler cache remains `runs/network-1154757/out/build/{target,cargo-home}` under
-its existing exclusive compiler lock. Check free space before the fresh runtime
-allocation against69324505088B headroom, and actual ownership/isolation before
-resource mutation. No additional cleanup or complete host inventory is due.
-Unrelated workloads remain untouched.
+All external roots are under `/home/tux/bigbrotr-implementation-20260917/runs`.
+Client720f24ff/psql15.19 and qualified immutable probe/product/tracer artifacts
+are retained. Compiler cache stays under its existing exclusive lock; no compiler
+or cleanup is due. Check headroom before new substantial allocation and verify
+actual ownership/isolation before mutation. Unrelated workloads remain untouched.
 
 ## Next bounded action
 
-Commit/push the reviewed correction and original failure record, then run the same existing executor once from the new clean revision into
-a new fresh root. No repeated compiler/component tests or new script suite is
-needed. Authenticate each completed phase before native reopening and preserve
-any unknown committed outcome. Measurement remains a later bounded action with a
-fresh dedicated cgroup and independent science/SQL/custody checks.
+Commit/push the reviewed descriptor-prefix correction and original result, then
+run the same existing executor once from that clean revision in a new fresh root.
+Do not edit/replay either failed root or fabricate acceptance. Reuse unchanged
+compiler/component/source evidence. After known acceptance, proceed to the
+separate fresh-cgroup measurement and independent science/SQL/custody audit.
 
 Continue the existing dependency-ready plan. M1–M5, ACK/GC, import/restore,
 capacity/aged-state/RSS and complete product/release journeys remain open;

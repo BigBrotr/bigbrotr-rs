@@ -317,7 +317,7 @@ def prepare(io, checkpoint):
         catalog={key: io.config['postgres']['catalog'][key] for key in ('endpoint', 'database', 'user', 'password_ref')},
         reader_user=io.config['postgres']['catalog']['read_user'],
         reader_password_ref=io.config['postgres']['catalog']['read_password_ref'],
-        data_root=str(io.root / 'data'), state_root=str(io.root / 'state'), destination=str(io.root / 'destination'),
+        data_root=str(io.root / 'data') + '/', state_root=str(io.root / 'state'), destination=str(io.root / 'destination'),
         worker_root=io.spec['worker']['root'], worker_bytes=io.spec['worker']['bytes'],
         worker_sha256=io.spec['worker']['sha256'], limits=io.spec['limits'])
     for name, table in [('config', 'config_revisions'), ('policy', 'policy_revisions')]:
