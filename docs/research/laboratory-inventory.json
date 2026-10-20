@@ -60905,24 +60905,24 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "Storage/schema and typed oracle source active; CLI reviewed; root recovery frozen93c45c1 under critical review; historical SQL included0039; no runtime/build/cache/cleanup started.",
+      "state": "All source packets frozen/preserved; root composed candidate0bd27ff and runs focused isolated build. Failed37ddf4f retained. No runtime fixture/cleanup.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
-      "source_owner": "export_setup_fixture; Astra/xhigh verified continuity",
+      "source_owner": "export_setup_fixture completed frozen storage packet; root owns integration",
       "runtime_owner": "root only",
       "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020",
       "review_root": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020",
-      "observation": "2026-10-20: prepared worktree clean at base before author edits; no BigBrotr container running, six unrelated container IDs unchanged. Preserve prior worktrees and external/ignored artifacts.",
+      "observation": "Actual existing runner checks cache custody/lock and retained original artifacts before exclusive reuse.37ddf4f ended with both owned containers stoppedPID0/noOOM and no unrelated inventory changes.0bd27ff active; its final custody observation pending.",
       "fixture_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fixture-20261020",
         "branch": "work/producer-progress-fixture",
         "base": "4f20300b6218acf326d9159b78f14fd0f6b1fa12",
         "owner": "export_setup_review; verified Astra/xhigh continuity, experiments-only source work",
         "scope": "Reuse installed Sync/family driver and independent captures for separate mutation/proof-only quanta; no runtime/build/cleanup authorization.",
-        "head": "0f4682925c8a9139a3ac38627de850382dd2b671",
+        "head": "fc11ba78e25c1175f459109313c8983e7d8309dd",
         "integrated_as": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
-        "state": "Transport preparation integrated. Typed oracle/runner drafted with explicit frozen-profile gate before resource actions; not frozen/tested. All worktree/ignored artifacts preserved."
+        "state": "Frozen corrected typed oracle composed in root candidate; FROZEN_PROFILE=None;21controls/runtime NOT_RUN; all ignored evidence preserved."
       },
       "sync_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-sync-20261020",
@@ -60930,17 +60930,67 @@
         "base": "4f20300b6218acf326d9159b78f14fd0f6b1fa12",
         "head": "cdd5e676600463ff4db0fed48864a954d80ed53c",
         "owner": "root",
-        "state": "Frozen CLI source critically reviewed with no concrete blocker; not integrated because storage/schema dependencies are incomplete; compilation/tests/runtime NOT_RUN."
+        "state": "Frozen/reviewed CLI composed in root candidate; original worktree retained."
       },
       "recovery_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-20261020",
         "branch": "work/producer-progress-recovery",
         "base": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
         "owner": "root",
-        "state": "Frozen clean13-file source packet under independent Astra/xhigh review; requires storage packet/module wiring before compile. Rustfmt parse/diffcheck PASS; build/tests/runtime NOT_RUN.",
+        "state": "Frozen/reviewed recovery composed in root candidate with explicit module wiring; original worktree retained.",
         "head": "93c45c16c4771108f456ae1cae5c465b8589079d"
       },
-      "review_agent": "/root/producer_recovery_review; effective gpt-6-astra/xhigh verified from actual creation metadata; source-only"
+      "review_agent": "/root/producer_recovery_review; effective gpt-6-astra/xhigh verified from actual creation metadata; source-only",
+      "head": "6a5e02296fe960de54baaa32513395ebaf559109",
+      "integration_worktree": {
+        "path": "/home/tux/bigbrotr-rs/.research/producer-progress-integration-20261020",
+        "branch": "work/producer-progress-integration",
+        "head": "0bd27ff16b62bd4aa26b27a674f5c5af24b2a238",
+        "owner": "root",
+        "state": "clean candidate, compilation in progress; main integration pending actual qualification"
+      },
+      "build_runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-37ddf4f",
+          "source": "37ddf4ff2c57449472f6a3f9ba03c806f32e8be9",
+          "owner": "b6fcb7ff25a4693ecf780cc60afe1eee",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "1edf1a73aa6951e484e10769242a571df022ceb90bffe66fe53cf7b1083bc816"
+            },
+            {
+              "name": "native",
+              "id": "3a349a969dfb3d1abef3237e4c677dfece9583a0d431a8cbda605795fa270fd9"
+            }
+          ],
+          "driver_session": 71174,
+          "driver_status": "joined1",
+          "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "preserve": "detached source worktree, full source export/logs/results/terminal inventory; no cleanup"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-0bd27ff",
+          "source": "0bd27ff16b62bd4aa26b27a674f5c5af24b2a238",
+          "owner": "539a5e998d9815f8b17efae35447dc95",
+          "state": "running",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "12161f0f81ca1c2a413d9569d98b86181edb50761de70fc6fd11d8dcc0216138"
+            },
+            {
+              "name": "native",
+              "id": "97e10543b9127ff6aa154d9cef2f5225055b64edf92e545944a81dd500e42dd1"
+            }
+          ],
+          "driver_session": 44230,
+          "driver_status": "active at last observation",
+          "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "preserve": "detached source worktree, full source export/logs/results/terminal inventory; no cleanup"
+        }
+      ]
     }
   },
   "tux_intermediate_retirement_20261018": {

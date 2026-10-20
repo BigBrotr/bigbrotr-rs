@@ -40981,14 +40981,14 @@
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       },
       "producer_checkpoint_ack_preparation_20261020": {
-        "status": "DESIGN_RECONCILED_SOURCE_IMPLEMENTATION_IN_PROGRESS_NOT_QUALIFIED",
+        "status": "SOURCE_COMPOSED_FOCUSED_BUILD_IN_PROGRESS; ACK0/noGC increment remains unqualified",
         "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
         "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
         "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Finish/freeze storage and typed oracle, resolve independent root recovery review, then combine source once and wire modules. Reconcile exact named controls (including model fact_codec and native recovery cases) before focused compilation and real-engine qualification. NoACK/credit/GC in this increment.",
+        "next": "Resolve actual focused compiler/test/Clippy results on0bd27ff, preserve each failure, then bind the opt-in fixture to the final qualified product source and run its connected three-context capture/replay. Native ACK and other entrypoint/recovery gates remain subsequent required work.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41018,9 +41018,19 @@
           "profile": "producer-progress",
           "runner": "experiments/network-transport/lab.py -> experiments/ingest-succession/native.py",
           "checks": "Root Python AST parse/diff check PASS; independent critical source review found no blocker. Existing nonempty groups, exact artifacts/source/tool and final qualification checks retained. Reconcile actual named controls at product source freeze; this profile does not embed Archive worker.",
-          "scope": "Six targeted component/schema/CLI groups, CLI/probe and Clippy. No connected PostgreSQL progress/installed Sync/recovery or nativeACK claim."
+          "scope": "Ten targeted component/schema/CLI groups, eight required retained ELFs, nineteen literal critical controls, CLI/probe and both package Clippy selections. No connected PostgreSQL/installed Sync/recovery or nativeACK claim.",
+          "final_review": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/build-profile-final-review-v1.json",
+            "bytes": 5692,
+            "sha256": "e5d616b4b1c54418b929a2847336ea56a4b341b14392ac41a012a93af79df211"
+          },
+          "evidence_intent_addendum": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/build-profile-final-review-addendum-v1.json",
+            "bytes": 3167,
+            "sha256": "8028209e9dc71c489d389e6289a8b650f434363b6930b79c6778419d4d3df343"
+          }
         },
-        "local_source_observation": "2026-10-20: main c8d33ff exact remote verified after push23090 joined0; CLI cdd5e67 frozen/reviewed; root recovery93c45c1 frozen for critical review; storage/schema and independent oracle source controls nearing freeze. No build/runtime in this interval.",
+        "local_source_observation": "Main1794148 follows verified remotee40e6e9. Product candidate0bd27ff is clean on work/producer-progress-integration; main has only the prepared builder so far. First focused build37ddf4f failed at helper visibility; correction0bd27ff now building.",
         "implementation_split": {
           "storage": "export_setup_fixture owns native/PG/schema/captured-input handoff and source controls. Root owns historical recovery callers/model header helper. Historical SQL packet independently reviewed and included unchanged in unpublished0039; no migration40.",
           "cli": "Root: cdd5e676600463ff4db0fed48864a954d80ed53c on work/producer-progress-sync, base4f20300; five CLI owners changed. Setup/dictionary progress grants; per-event borrowed progress through certification/admission; opaque CapturedEventInput; preparation holes retain subsequent admission but disable local progress for the rest of that REQ. Rustfmt parse and diff check PASS; new two targeted Sync unit cases NOT_RUN.",
@@ -41069,7 +41079,7 @@
           "base": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
           "branch": "work/producer-progress-recovery",
           "worktree": ".research/producer-progress-recovery-20261020",
-          "status": "FROZEN_CLEAN_CRITICAL_REVIEW_IN_PROGRESS_NOT_INTEGRATED",
+          "status": "FROZEN_SOURCE_CRITICALLY_REVIEWED_AND_COMPOSED; compilation/runtime qualification remains open",
           "checks": {
             "rustfmt_parse": "PASS",
             "diff_check": "PASS",
@@ -41077,16 +41087,97 @@
             "tests": "NOT_RUN",
             "runtime": "NOT_RUN"
           },
-          "scope": "Stream jobs216/deps72 without materialized closure; native exact key/frame/hash/embedded identity and stable root/sequence, ACK0 frontier. Pre39 authenticated ledger allows only absent head. Local incremental scratch4KiB with static layout allowance; native and SQL driver allocations retain their existing grants. Successor factories reuse input grant before decode or existing lineage scratch. Detailed review gate retains2MiB native fact cap compatibility."
+          "scope": "Stream jobs216/deps72 without materialized closure; native exact key/frame/hash/embedded identity and stable root/sequence, ACK0 frontier. Pre39 authenticated ledger allows only absent head. Local incremental scratch4KiB with static layout allowance; native and SQL driver allocations retain their existing grants. Successor factories reuse input grant before decode or existing lineage scratch. Detailed review gate retains2MiB native fact cap compatibility.",
+          "review": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/root-recovery-review-v1.json",
+            "bytes": 25426,
+            "sha256": "98d5229408f49f2ac710490cfdf9c75f93073a1f1545a8b68eef2c5cff88bd9e"
+          },
+          "review_root": "Read findings/gates, authenticated all47 source pins. No concrete root recovery source blocker; exact scratch static assertion and real restart/corruption/cancellation/issuer cases remain unexecuted. Native2MiB fact limit matches admitted event/dictionary profiles; pin materialization is separately granted, not a hard allocation ceiling."
         },
-        "typed_fixture_preparation": "Draft independent216/72 encoders/digest and proof-only intent reconstruction now include actual observed_at_us/resolution/anomaly fields in mutable job head. Existing runner stays default38/75; explicit progress mode39/77 blocked before resources until frozen profile agreed. Hole mode preserves later ordinary admissions then refuses crossing unclassified mutations; raw failure/custody remains OUTCOME_UNKNOWN, not positive qualification.",
+        "typed_fixture_preparation": {
+          "original_commit": "c66875fc61cc68754e7b200a5ef2a28958844661",
+          "corrected_commit": "fc11ba78e25c1175f459109313c8983e7d8309dd",
+          "manifest": {
+            "path": ".research/producer-progress-fixture-20261020/.research/producer-progress-oracle-source-20261020/manifest-v2.json",
+            "bytes": 4992,
+            "sha256": "effaaddd791f6542f6104e0ae2d26649c6f52f93d7e8b69ecc4ced123f2efb7b"
+          },
+          "review": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/fixture-source-review-v1.json",
+            "bytes": 10873,
+            "sha256": "626a3942abef97d970a4f394435ac0bfb24beebe580614de4fd86002d4e767d5"
+          },
+          "root": "Both manifests and all source/evidence pins authenticated, full review/correction receipt read. FIXTURE-1 exact built/component/qualification source binding corrected before resource loading and in offline replay. Original c668 and v1 evidence preserved.",
+          "gate": "FROZEN_PROFILE=None.21 authored controls and connected three successor-context runtime NOT_RUN. Original default38/75 stays; opt-in39/77 cannot run before final qualified source binding. Hole failure never becomes positive qualification."
+        },
         "review_agent_configuration": {
           "agent": "/root/producer_recovery_review",
           "session": "01a15aae-e043-7a53-9982-1e5ee49794ac",
           "effective_model": "gpt-6-astra",
           "effective_effort": "xhigh",
           "verified_from": "session_meta agent_path and first turn_context in local rollout2026-10-20T20-59-32; requested settings alone were not used as evidence"
-        }
+        },
+        "integrated_candidate": {
+          "worktree": ".research/producer-progress-integration-20261020",
+          "branch": "work/producer-progress-integration",
+          "base": "e40e6e9cb5722282c5a1b88eb2fd42e6222743ac",
+          "head": "0bd27ff16b62bd4aa26b27a674f5c5af24b2a238",
+          "tree": "8b9b5caddb5bb94dabca64c68644ef798170ce42",
+          "tracked_state": "clean",
+          "composed": {
+            "storage6a5e022": "d2ebaa3",
+            "CLIcdd5e67": "46f17ce",
+            "recovery93c45c1": "3aeeff7",
+            "module_wiring": "c1df96c",
+            "fixturec66875f": "04e4f1b",
+            "fixturefc11ba7": "4038657",
+            "builder1794148": "37ddf4f"
+          },
+          "storage_manifest": {
+            "path": ".research/producer-checkpoint-ack-20261020/.research/producer-progress-source-20261020/manifest-v1.json",
+            "bytes": 14868,
+            "sha256": "a30934eb0a312c13e53886eee530be287cf9c80ca0bab313cefb433d5da04aad"
+          },
+          "allocation_correction": {
+            "commit": "285609926989a60ecfc75480c9f45277079691cb",
+            "review": "Independent source review completed; storage_review owns the exact finding and resolution.",
+            "change": "Count exact EvidenceIntent request length with shared CountWriter recipe, validate existing bounded profiles first; remove both pre-grant full-buffer allocations. Encoding reuses counting; literal853/852/0 controls extended. Rustfmt/diffcheckPASS, testsNOT_RUN."
+          },
+          "compile_correction": {
+            "commit": "0bd27ff16b62bd4aa26b27a674f5c5af24b2a238",
+            "change": "Narrow prepare/recheck/record visibility to connected control_owner; make load import private. Four declarations only; root targeted review/rustfmt/diffcheckPASS."
+          },
+          "qualification": "First build37ddf4f FAIL at library E0364/E0603; all tests and ClippyNOT_RUN. Corrected0bd27ff build in progress. Source review is not runtime qualification.",
+          "storage_review": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/storage-source-review-v1.json",
+            "bytes": 20888,
+            "sha256": "5c1620a64ccc9c2b3f221e881345237b2aa2111e34daced939509a60e4898e3c",
+            "root": "Full receipt read and30 exact Git source pins authenticated. Allocation correction resolved. Receipt compile-fix-pending text predates0bd27ff, which reviewer subsequently inspected as appropriate mechanical correction. Rerun result remains pending."
+          }
+        },
+        "component_builds": [
+          {
+            "source": "37ddf4ff2c57449472f6a3f9ba03c806f32e8be9",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-37ddf4f",
+            "driver_session": 71174,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-37ddf4f/out/build-checks/result.json",
+              "bytes": 7996,
+              "sha256": "ed31cd61bf638b450132cc42e382a96235aa8c29414a515307a4d39ea3c9da09"
+            },
+            "failure": "Probe/CLI library compilation E0364/E0603: child helper visibility. No tests or Clippy executed. Raw compiler diagnostics/source export retained; no qualification.json."
+          },
+          {
+            "source": "0bd27ff16b62bd4aa26b27a674f5c5af24b2a238",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-0bd27ff",
+            "driver_session": 44230,
+            "status": "RUNNING",
+            "scope": "Same existing focused profile after changed compiler premise; no test/runtime success inferred."
+          }
+        ]
       }
     }
   }
