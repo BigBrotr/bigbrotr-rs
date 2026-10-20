@@ -535,6 +535,11 @@ within the 17,301,512 B manager allowance. Root SQL/physical/resource audits and
 independent critical reviews pass. The refusal leaves the job Accepted/unreserved
 and preserves raw failure and active SQL ownership. This is neither per-owner
 physical accounting nor worst-case/TLS/whole-service sizing.
+The same diagnostic now completes a fresh run with a 65,536-byte ASCII hexadecimal
+manager password (`b364611`, `credential_boundary_20261020` in that report).
+Independent source/outcome review and full SQL/physical/credential custody pass;
+the whole-parent requested-live peak is 1,472,461 B. This adds that plaintext
+credential shape only; the other qualification limits remain.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 

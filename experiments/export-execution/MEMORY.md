@@ -158,9 +158,12 @@ This experiment intentionally starts from compatible source `a10cab9` to reuse
 the qualified f1e installed parent, 214 manager diagnostic, 046b acceptance probe
 and 6c worker. Existing source/tree/receipt/ELF guards remain in force. It makes
 no claim for newer initial Sync diagnostic source. No ELF, product, grant,
-17,301,512-byte bound or cgroup cap changes. The maximum-password runtime is
-**NOT_RUN** pending root execution and critical review; the historical sample
-and layout-refusal results do not qualify this credential boundary.
+17,301,512-byte bound or cgroup cap changes. The exact maximum-password runtime
+at fixture `b364611` completed the signed sample with a 1,472,461-byte whole-parent
+requested-live peak; root SQL/physical/credential/custody checks pass. Its original
+results and critical review status are owned by `credential_boundary_20261020`
+in the recovery report. This covers that ASCII hexadecimal input, not arbitrary
+Unicode normalization, TLS or a physical-memory bound.
 Constructed file/CLI controls use `test_memory_oracle.py --manager-credentials`;
 they generate no runtime secret and execute no database or probe.
 

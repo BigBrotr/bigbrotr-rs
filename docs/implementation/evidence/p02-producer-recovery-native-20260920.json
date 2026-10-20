@@ -38092,8 +38092,8 @@
             }
           },
           "credential_boundary_20261020": {
-            "status": "SOURCE_REVIEWED_AND_INTEGRATED_RUNTIME_RUNNING",
-            "task": "Existing P01-T05/P08-T05 reduced-manager supported-input accounting boundary",
+            "status": "PASS_SINGLE_MAX_PLAINTEXT_MANAGER_CREDENTIAL",
+            "task": "P01-T05 resource ownership and P08-T04 Step3 portable export supported-input boundary; current label corrected from P08-T05 (backup/restore), with historical records unchanged.",
             "basis": "Astra/xhigh export_setup_fixture source diagnosis; root read complete postgres_command, connection_settings, transport and catalog inspection. No product accounting defect established. Existing server256MiB memory observation is not a universal grant or credential-shape proof.",
             "selected_case": "One fresh archive-sample plaintext manager capture with exact65536-byte hexadecimal manager password; default64 unchanged, every other credential/native reader stays<=4096. Existing17,301,512B manager charge, deadlines,2sdriverdrain,independent science and custody remain. Larger whole-parent peak remains INCONCLUSIVE.",
             "source_identity": "Fixture-only branch at a10cab94eaa6745e7457566cb7bd422f6359d397 preserves every f1e application/214 manager/046b acceptance/6cworker guard. Current73b binary differs in six initial-ingest diagnostic files and is not claimed by this retained-application case. Main will integrate only experiment/docs changes.",
@@ -38101,13 +38101,21 @@
             "scope_limits": "One maximum-byte hexadecimal credential, not arbitrary Unicode normalization, TLS, physical memory or whole-service qualification. Installed layout remains constrained by exact schema/checksum;1024objects/8192-byte decode caps are not a valid arbitrary-layout promise.",
             "source_owner": "catalog_layout_fixture gpt-6.1-sol/xhigh; existing verified configuration; isolated worktree",
             "runtime": {
-              "state": "RUNNING_SETUP",
-              "session": 77164,
+              "state": "STOPPED_RETAINED",
+              "session": "77164 joined0",
               "owner": "f6b67bcda476c2272d9972e6d1038a6f",
               "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-credential-boundary-b364611",
               "source": "b3646115e80fbe82a0a1970e2e6b3beafac76817",
               "console": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/runtime-console.log",
-              "qualification": "NOT_ASSERTED"
+              "qualification": "PASS_SINGLE65536_ASCII_HEX_PLAINTEXT_MANAGER_SAMPLE; exact retained-source scope only",
+              "manager_password_bytes": 65536,
+              "other_password_bytes": 64,
+              "whole_parent_requested_live_peak_bytes": 1472461,
+              "final_live_bytes": 53420,
+              "manager_allowance_bytes": 17301512,
+              "containers": "8 exit0/PID0/noOOM; cgroups absent, no active root holder",
+              "science": "One complete94577-byte event+newline;95808B artifact including1230B manifest.75Control/32catalog full audit;66Control/catalog unchanged,8appended lifecycle rows+selected job changed; full physical custody pass.",
+              "measurement_scope": "1536MiB observer+probe+worker cgroup; PG outside. Retainedf1e/214, not newSync or256MiB/whole-service sizing."
             },
             "upstream_authentication_read": {
               "path": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/postgres-protocol-0.6.12/src/authentication/sasl.rs",
@@ -38142,6 +38150,22 @@
               "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/runtime-preflight-v1.json",
               "bytes": 1760,
               "sha256": "401843843a0cf19ca5de19f10a1142b2780032f50958043d2590d29bd09ad107"
+            },
+            "integration": "855ea20c8091d2a9afefbfea510cded51f295469; push46245joined0, exact remote main verified",
+            "root_outcome": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/root-outcome-v1.json",
+              "bytes": 6183,
+              "sha256": "a27a55d18813f6bcaaf788e1d32df8ef5a1b54057ddb99f9d186b92ce0b2ccb9"
+            },
+            "critical_outcome": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/outcome-review-v1.json",
+              "bytes": 13538,
+              "sha256": "5d2dade9f01fd892ff07c5404a40206211ac9fcc120aaae8c54a8b068b44a70a"
+            },
+            "branch_retirement": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/branch-retirement-v1.json",
+              "bytes": 1105,
+              "sha256": "546984b1e433fa5c604ffe704aed3962035a5c054de812eea2258ff98c54697b"
             }
           }
         }
@@ -40955,6 +40979,16 @@
           }
         },
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
+      },
+      "producer_checkpoint_ack_preparation_20261020": {
+        "status": "CRITICAL_SOURCE_DESIGN_IN_PROGRESS_NO_IMPLEMENTATION",
+        "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
+        "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
+        "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
+        "source_owner": "export_setup_fixture, verified Astra/xhigh; read-only architecture task. Root sole integrating/runtime owner.",
+        "root_read": "Complete PGproducer_outcomes.rs172, rocksproducer_closing.rs277, rocksproducer_recovery.rs377; full storage-services producerACK contract159-212 and effect rows64-66; relevant P02-T02/P08-T04/P01-T05 task sections. More current schema/callers required before implementation.",
+        "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
+        "next": "Complete scoped architecture/read assessment of durable checkpoint authority, current schemas and recovery consumers, then independent review and bounded implementation plus actual two-slot-window/reply-loss/restart discriminator. No receipt reclamation or mixed-cut backup qualification yet."
       }
     }
   }
