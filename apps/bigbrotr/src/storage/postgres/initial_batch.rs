@@ -747,11 +747,15 @@ impl ControlSession {
             )
             .await?;
         let mut progress_state = if progress.is_some() {
+            input
+                .limits
+                .required_data_bytes()
+                .map_err(InitialBatchError::Native)?;
             let bytes = input
                 .intent
-                .encode_request_preimage(request, input.limits.max_batch_bytes)
+                .request_preimage_len(request, input.limits.max_batch_bytes)
                 .map_err(|_| InitialBatchError::Progress(ProducerProgressError::Limit))?
-                .len() as u64;
+                as u64;
             Some(
                 producer_progress::prepare(
                     &reservation_tx,
@@ -987,11 +991,15 @@ impl ControlSession {
             )
             .await?;
         let mut progress_state = if progress.is_some() {
+            input
+                .limits
+                .required_dictionary_data_bytes()
+                .map_err(InitialEventError::Native)?;
             let bytes = input
                 .intent
-                .encode_request_preimage(request, input.limits.max_batch_bytes)
+                .request_preimage_len(request, input.limits.max_batch_bytes)
                 .map_err(|_| InitialEventError::Progress(ProducerProgressError::Limit))?
-                .len() as u64;
+                as u64;
             Some(
                 producer_progress::prepare(
                     &reservation_tx,

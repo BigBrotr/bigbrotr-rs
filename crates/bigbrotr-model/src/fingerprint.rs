@@ -534,6 +534,22 @@ impl EvidenceIntent {
         hash(|encoder| evidence_request(id, self, encoder))
     }
 
+    /// Count the exact request preimage without allocating its output buffer.
+    /// The caller's full-request limit also bounds the counting traversal.
+    pub fn request_preimage_len(
+        &self,
+        id: ProducerRequestId,
+        max_encoded_bytes: usize,
+    ) -> Result<usize, EvidenceIntentError> {
+        let mut count = Encoder::new(CountWriter {
+            count: 0,
+            limit: max_encoded_bytes,
+        });
+        evidence_request(id, self, &mut count)
+            .map_err(|_| EvidenceIntentError::EncodedRequestLimit)?;
+        Ok(count.into_writer().count)
+    }
+
     /// Encode the same preimage consumed by `request_digest`. The caller's
     /// full-request limit is checked before fallible output allocation.
     pub fn encode_request_preimage(
@@ -541,13 +557,7 @@ impl EvidenceIntent {
         id: ProducerRequestId,
         max_encoded_bytes: usize,
     ) -> Result<Vec<u8>, EvidenceIntentError> {
-        let mut count = Encoder::new(CountWriter {
-            count: 0,
-            limit: max_encoded_bytes,
-        });
-        evidence_request(id, self, &mut count)
-            .map_err(|_| EvidenceIntentError::EncodedRequestLimit)?;
-        let size = count.into_writer().count;
+        let size = self.request_preimage_len(id, max_encoded_bytes)?;
         let mut bytes = Vec::new();
         bytes
             .try_reserve_exact(size)
