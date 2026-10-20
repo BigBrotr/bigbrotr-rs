@@ -66106,6 +66106,46 @@
         "failed_root_outcome": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79/root-outcome-v1.json",
         "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.installed_five_20261020",
         "preserve": "All data, output artifacts, traces, raw captures, logs, secrets, source worktrees and prior failures remain retained. No cleanup."
+      },
+      "boundary_fixture_signing_20261020": {
+        "root": "/home/tux/bigbrotr-rs/.research/export-boundary-signing-20261020",
+        "owner": "root BigBrotr export-boundary fixture authoring",
+        "state": "retained-offline-inputs",
+        "manifest": {
+          "path": "/home/tux/bigbrotr-rs/.research/export-boundary-signing-20261020/manifest.json",
+          "bytes": 9769,
+          "sha256": "9397e4e1921947d0498b586bcc7a8549a4c56a4c1579e0e18f7a74e6fc43d1fa"
+        },
+        "observed_imports": "CPython3.12.13; secp256k1 0.14.0; cffi2.1.1; pycparser3.11; required schnorr C function present",
+        "origin": "Private copies of already retained uv cache distributions; original cache unchanged. No package install, network or build. Exact existing Python executable pinned in manifest.",
+        "scope": "Public test fixture authoring; independent BIP340 equation/known-vector checks remain author-owned. Preserve copies and manifest."
+      },
+      "supported_boundaries_20261020": {
+        "source": "764133884055c14ba123e8b7197f4f0ad75042d5",
+        "source_worktree": "/home/tux/bigbrotr-rs/.research/export-supported-memory-source-7641338",
+        "cases": {
+          "content-heavy": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-content-heavy-7641338",
+            "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-content-heavy-7641338/resources.json",
+            "owner": "7d823adbd42d0e02e8286e524157a740",
+            "owner_label": "org.bigbrotr.export-memory-lab",
+            "root_session": "85000 joined0",
+            "state": "stopped-retained",
+            "terminal_observation": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-content-heavy-7641338/root-terminal-observation-v1.json"
+          },
+          "tag-heavy": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-tag-heavy-7641338",
+            "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-tag-heavy-7641338/resources.json",
+            "owner": "10eb8d2d81a7770dde1e44c4820df2ca",
+            "owner_label": "org.bigbrotr.export-memory-lab",
+            "root_session": "15467 joined0",
+            "state": "stopped-retained",
+            "terminal_observation": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-tag-heavy-7641338/root-terminal-observation-v1.json"
+          }
+        },
+        "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.supported_boundaries_20261020",
+        "qualification": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/supported-boundaries-root-qualification-v1.json",
+        "preserve": "All source worktrees, signing distributions, inputs, datasets, raw captures, logs, traces and original failures retained; no cleanup."
       }
     },
     "archive_refusal_journey_attempts": [

@@ -5,71 +5,64 @@ incomplete. Existing task plan, Q37 model allocation and Q38 evidence reuse appl
 
 ## Current objective and repository
 
-P08-T04 Step 3 / P01-T05 Step 2: qualify installed export ownership and memory
-without reducing fidelity or widening deadlines. Root owns `main` in
-`/home/tux/bigbrotr-rs`. HEAD `1841d7949e97b4b822a66ac1c81b74025e54d5d3` integrates
-the fresh-policy fixture, five-job capture and independent oracle. Last verified
-push `1ef48f3a85caf5f3956dda034239c322ba8c4e4d`; final qualification documentation
-is local pending coherent commit/push. No dirty product implementation.
+P08-T04 Step 3 / P01-T05 Step 2: qualify export ownership and memory without
+reducing fidelity or widening deadlines. Root owns `main` in
+`/home/tux/bigbrotr-rs`. Execution source is `764133884055c14ba123e8b7197f4f0ad75042d5`;
+this checkpoint commit records its completed qualification. Last verified remote
+before this checkpoint was `b6a8481a57ef1aefcac4d17cca07c86d70fd5e4a`
+(push12520 joined0). Current integration consists of fixture helpers and outcome
+documents; application `f1e726f` and qualified worker/build inputs are unchanged.
 
-Application `f1e726f` and unchanged packaged worker are qualified by the existing
-build/unit/Clippy evidence. The exact fixture now completes five distinct HTTP
-exports under an actually accepted 256 MiB export policy. Independent full signed
-files, all 75 Control tables/xmin, catalog, prior scientific roots and pin/claim
-lifecycles PASS; 17 negative controls reject their corruptions. Fresh no-swap
-observer+Serve+CLI/native cgroup peak: 103,530,496 B, no OOM/max events. PostgreSQL
-is outside; warm-cache scope. Whole-service logical grants and HTTP acceptance
-remain larger than 256 MiB. This does not qualify deployment sizing, maximum-event,
-TLS or reduced-manager/driver internal high-water. Final bounded outcome review
-has no blocker; the linked report pins its receipt and root qualification. No
-whole-task completion claimed.
+Both exact 262,144-byte signed inputs now complete real publication and five
+ordinary authenticated HTTP exports each under accepted 256 MiB policy. The
+content case has 18 EVENT lexical nodes; the tag case reaches 65,536. Complete
+signed files, 75 Control tables/xmin, catalog and pin/claim lifecycles PASS;
+17 offline negative controls reject their corruptions per case. Fresh no-swap
+observer+Serve+CLI/native cgroup peaks: 103,550,976 B and 105,959,424 B, no OOM/max
+events. PostgreSQL is outside; warm-cache scope. Whole-service configured grants
+and HTTP acceptance remain larger than 256 MiB. Critical outcome review has no
+blocker. Full 1 MiB native-row, TLS and internal-owner high-water remain open.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), node
 `initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source`,
-owns exact evidence: `installed_five_20261020`, `export_admission_20261020`,
-`catalog_layout_boundary_20261020` and prior `finite_measurement_20261020`.
-Reuse unchanged qualified results and source reviews.
+owns source/review/qualification identities in `supported_boundaries_20261020` and
+prior `installed_five_20261020`, `export_admission_20261020` and catalog evidence.
+Reuse those unchanged results; no whole-task completion is claimed.
 
 ## Problems and preserved state
 
-The first invocation failed argument parsing before resources; the first actual
-root failed input protection on a canonical-checkout fixture with mode 0664 before
-product operations. Both failures are retained. Exact same source succeeded from
-a private clean detached worktree; the verifier was not relaxed.
-
-Ordinary initial Sync currently refuses input limits above its default 256 KiB;
-the 1 MiB export-row reservation does not establish that this installed journey
-can acquire a 1 MiB signed event. Astra is tracing this boundary and existing
-fixture seams before the next maximum-content/tag-heavy case. The earlier a99
-initial Sync timeout remains unexplained; diagnose its pending await before
-another trial. Full native mTLS exceeds 256 MiB admission; no runtime TLS claim.
+Ordinary initial Sync refuses accepted input caps above 256 KiB. A full 1 MiB
+native metadata-bearing JSON row is a separate capacity gate. The existing typed
+publication fixture can test it only with a matching fresh accepted input policy;
+its trusted fixture custody cannot stand in for installed authorization/pins.
+The earlier a99 initial Sync timeout remains unexplained: diagnose its pending
+await before another trial. Native mTLS exceeds 256 MiB admission; no runtime TLS
+claim. Prior setup/input-protection failures and the supplementary root JSON-member
+order comparison correction remain in their original evidence; no oracle was relaxed.
 
 ## Processes and resources
 
-No engine/compiler/cleanup process is active. Runtime session `60469` joined0 at
-`runs/export-installed-memory-1841d79-private`; six actual owned containers are
-exited0/PID0/noOOM, cleanup errors empty. Failed-root session `59789` joined1 at
-`runs/export-installed-memory-1841d79`; three containers stopped, publish exit1.
-The [inventory](../research/laboratory-inventory.json) owns resource locations.
-Preserve all data, logs, failures, `.research` and external laboratories.
+No engine/compiler/cleanup process is active. Content session `85000` and tag
+session `15467` joined0; all six actual owned containers per run are
+exited0/PID0/noOOM, with empty cleanup errors and excluded backends/cgroups.
+The [inventory](../research/laboratory-inventory.json) records both retained roots,
+the private runtime source `.research/export-supported-memory-source-7641338` and
+isolated signing distributions. Preserve all data, failures, logs and `.research`.
 
-Exact runtime source worktree: `.research/export-installed-memory-source-1841d79`.
-Integrated branches `work/export-installed-fixture` and `work/export-installed-oracle`
-retain worktrees `.research/catalog-layout-fixture-20261020` and
-`.research/export-installed-oracle-20261020`. Retire refs only after final push and
-actual clean/ancestor checks; retain worktrees. No cleanup due; last preallocation
-free space was 317,785,006,080 B. Bounded outcome review and maximum-input source inspection are complete. No
-agent or runtime process is currently active apart from root.
+One Astra/xhigh author is working source-only in
+`.research/export-installed-oracle-20261020`, branch `work/export-native-row-boundary`
+from7641338. This work is unintegrated/uncompiled; no runtime is delegated. The
+integrated `work/export-supported-boundaries` ref can be retired after exact push
+and ancestry checks; its worktree/evidence remain retained. No cleanup is due.
 
 ## Next bounded action
 
-Commit/push coherent evidence and retire redundant integrated refs. Then
-parameterize the existing fixture for two independently signed 262,144-byte
-events: content-heavy and tag-heavy (the latter also at the 65,536 lexical-node
-envelope limit). Keep existing decoder/census defaults; add explicit finite
-bounds for the new cases. Reuse the qualified binaries; no rebuild is needed. Keep the full
-1 MiB native-row gate distinct if ordinary acquisition cannot reach it. Do not
-repeat unchanged build/catalog-layout/previous single-event qualification.
+Review the existing typed publication/event-probe extension for independently
+signed escape-heavy input at the full native JSON row limit and one byte beyond,
+using the unchanged reduced 64+96 MiB export-read profile. Preserve old defaults,
+actual policy/signature/admission/publication and independent expected bytes.
+Build/runtime are **NOT_RUN** for that next candidate. Keep its native-only custody
+scope distinct from installed authority and reduced-manager/driver/TLS coverage.
 
 ACK/GC, import/restore, capacity/aged-state and complete M1–M5 delivery remain open.
 Q33 hosted CI billing, native arm64 and signing/registry are separate gates.

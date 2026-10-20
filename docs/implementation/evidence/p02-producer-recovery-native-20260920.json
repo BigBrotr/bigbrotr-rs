@@ -37716,6 +37716,43 @@
             "bytes": 16084,
             "sha256": "31586ae0423bbf5769dc6d9fdf32f5e550c20c5393c1c296282e4a9fdfba1a5f"
           }
+        },
+        "supported_boundaries_20261020": {
+          "status": "PASS_TWO_SUPPORTED_SIGNED_INPUTS_FIVE_EXPORTS_EACH",
+          "fixture_source": "764133884055c14ba123e8b7197f4f0ad75042d5",
+          "fixture_tree": "8cfb2fa714c88948422040ea74b35132ce5ce80c",
+          "application_source": "f1e726f78d7f925cf84cec19117fee5d607773c5",
+          "source_manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-installed-oracle-20261020/.research/supported-boundaries-20261020/manifest-v1.json",
+            "bytes": 12250,
+            "sha256": "66882b123fd0a6784626f09950b3e16723e26eb372d8d9ab6c1a9e255fbab3f6"
+          },
+          "source_reviews": [
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/supported-boundary-root-review-v1.json",
+              "bytes": 2046,
+              "sha256": "f2ee09f856cf8a0b3d1faccc0752e22c67094b89711898a1753b9907d87f25cb"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/supported-boundaries-review-v1.json",
+              "bytes": 7310,
+              "sha256": "d9d62e3093820380a65319184df5c80356c63d29318306b1119de1cc15e55755"
+            }
+          ],
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/supported-boundaries-root-qualification-v1.json",
+            "bytes": 1664,
+            "sha256": "33b3a3004e6559d7daf152032a0ae4f625b8871cf3fba70b4afaa7be28b2f85c"
+          },
+          "checks": {
+            "offline_signed_authoring_and_boundary_controls": "PASS; pinned author packet;17 new independent fixture refusals, not production-parser refusals",
+            "real_publication_and_five_exports_each": "PASS; ten exact signed JSONL artifacts in total",
+            "independent_sql_and_signed_file_oracles": "PASS;75 tables percase;17 negative corruptions rejected percase",
+            "owned_resource_terminal": "PASS; six exited0/PID0/noOOM percase; no engine remains active"
+          },
+          "scope": "Two exact262144-byte signed inputs, content-heavy and tag-heavy; latter also65536 EVENT lexical nodes. Genuine publication and five sequential ordinary authenticated exports percase under accepted256MiB policy. Complete signed-file/75-table/custody audits PASS;17 offline negative controls rejected percase. Fresh no-swap256MiB observer+Serve+CLI/native cgroup peaks103550976/105959424B with no max/OOM events.",
+          "limits": "PostgreSQL outside; warm cache/libraries, configured whole-service grants larger than256MiB. Full1MiB native row,TLS,cold/concurrent/aged load,live ledger and internal owner high-water NOT_QUALIFIED. Existing capture qualification flags stay false; this receipt is the root scoped adjudication.",
+          "next": "Qualify the separate native1MiB row boundary via existing typed fixtures with explicit matching accepted input policy; preserve separate installed authority and reduced-manager/driver/TLS gates."
         }
       },
       "archive_refusal_journey_attempts": [

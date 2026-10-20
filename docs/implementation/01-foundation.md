@@ -481,6 +481,12 @@ and queryable with truthful role readiness, without implicit public publishing.
   (peak 103,530,496 B, PostgreSQL outside, warm-cache scope). Configured whole-service
   grants exceed 256 MiB; maximum-row/tag-heavy and internal-owner high-water remain
   unqualified. See the recovery report's `installed_five_20261020` evidence.
+  Its `supported_boundaries_20261020` extension now covers five exports each of
+  content-heavy and tag-heavy 262,144-byte events, the latter at the 65,536-node
+  envelope limit. Independent files/75-table audits pass; fresh cgroup peaks are
+  103,550,976 B and 105,959,424 B with no OOM/max events. The same warm-cache,
+  PostgreSQL-external limits apply; full 1 MiB native-row and internal-owner
+  high-water qualification remain open.
   Indexing and Ingest restart/resend remain open;
   complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event

@@ -1,7 +1,8 @@
 # Fresh signed-event setup composition
 
-Source candidate only. Helper execution, compilation, PostgreSQL/native work,
-acceptance and measurement are **NOT_RUN**. This composes the existing
+The original source-candidate status is superseded by the scoped results in the
+[recovery report](../../docs/implementation/evidence/p02-producer-recovery-native-20260920.json),
+under `archive_export_memory_source`. This composes the existing
 [accept-only probe](ACCEPT.md) without adding a scheduler mode or changing
 production policy, migration bytes, deadlines or the packaged worker.
 
@@ -298,5 +299,8 @@ the independent fixture constraints, **not** an executed product-parser result.
 These inputs reach the installed Sync normalized-byte and lexical-node limits.
 They do not reach a 1 MiB scientific native row: ordinary Sync still rejects an
 accepted `ingest.max_event_bytes` above 256 KiB, while export retains its full 1 MiB
-row allowance. New publication, five-job execution, memory and the separate
-full 1 MiB native-row gate remain **NOT_RUN** until root qualifies actual cases.
+row allowance. Source `7641338` now has separate real publication and five-job
+export captures for both inputs, with independent signed-file/SQL checks and
+fresh 256 MiB/no-swap cgroups. See `supported_boundaries_20261020` in the recovery
+report for qualified scope and exact identities. The full 1 MiB native-row gate
+remains **NOT_RUN**.

@@ -512,6 +512,13 @@ warm: configured whole-service grants and HTTP acceptance still exceed 256 MiB.
 This is the limited installed five-job gate, not whole-service deployment sizing,
 maximum-row/tag-heavy, TLS or reduced-manager internal high-water qualification.
 See `installed_five_20261020` in the same report; broader Step 3 remains open.
+The `supported_boundaries_20261020` extension at fixture `7641338` adds five exports
+each of content-heavy and tag-heavy 262,144-byte signed events; the latter also
+reaches the 65,536-node envelope limit. Both complete-file/75-table audits pass.
+Fresh 256 MiB/no-swap cgroup peaks are 103,550,976 B and 105,959,424 B, with no
+OOM/max events. The same warm-cache/PostgreSQL-external limits apply. This closes
+those supported-input cases only; full 1 MiB native-row, TLS and internal-owner
+high-water qualification remain open.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 

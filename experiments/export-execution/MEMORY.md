@@ -75,8 +75,10 @@ and compares complete JSONL and manifest bytes. It does not generate signatures.
 `frozen-signed-event` accepts an independently signed/pinned literal. The
 [fresh setup](FRESH_SETUP.md#supported-signed-input-boundary-cases) now has two
 offline-verified 262,144-byte literals, including the 65,536-node tag-heavy input.
-Their production publication/execution and memory remain separate qualification
-work; neither is a near-1-MiB native-row seed.
+Their real publication and five installed exports each are recorded in the
+recovery report's `supported_boundaries_20261020`, with separate source and outcome
+reviews. Neither is a near-1-MiB native-row seed; the empirical 256 MiB cgroup
+scope does not qualify whole-service sizing or internal-owner high-water.
 
 Resource accounting follows actual owners: Control uses credential copies plus
 16MiB+512MiB (`postgres_command::prepare_control_shared`); catalog uses copies
