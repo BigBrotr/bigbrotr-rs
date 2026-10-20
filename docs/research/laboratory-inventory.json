@@ -61101,8 +61101,8 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020",
           "branch": "work/producer-progress-contexts",
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Source author active; producer_recovery_review independently reviews current delta. Raw-file binder and initial exclusion-before-native ordering are pending; no runtime.",
-          "head": "75df76037cb5c60458165414f133d9deafcc4112"
+          "state": "Initial9b and965 attempts FAIL preserved; migrated core ledger fix reviewed, ordinary initialization narrow activation-trigger SELECT correction in progress. No initial/activated Sync PASS. Root owns runtime.",
+          "head": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556"
         },
         {
           "owner": "producer_recovery_review",
@@ -61131,7 +61131,8 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-commit-loss-20261020",
           "branch": "work/producer-progress-commit-loss",
           "base": "45cedcf3d5d4f0bbed650e7bcefdb0b12b5b43e3",
-          "state": "Source-only author active on two actual proof-only COMMIT-loss scenarios and explicit active-Control recovery/retry. Root retains sole runtime ownership. No runtime yet."
+          "state": "Frozen source; root relevant source review and independent Astra critical review. Six COMMIT-loss/recovery/retry cases and82controls authored, runtime NOT_RUN.",
+          "head": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb"
         }
       ],
       "branch_retirement_20261020": {
@@ -61220,7 +61221,49 @@
         "scope": "Retire two integrated local branch refs only; preserve exact detached worktrees, ignored files and all external evidence",
         "driver_session": 50242,
         "driver_exit": 0
-      }
+      },
+      "installed_progress_context_runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9b6f054",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9b6f054/source",
+          "source_commit": "9b6f0547dced7e17fd9eac9839aeed7b2f3e5790",
+          "state": "FAIL before Serve: fixture migration-family version selection; root driver80208 joined1",
+          "client": "88b23158a164419eb12c719bae37ec19d083964fa4b999337e2f6a4c9d7af897",
+          "label": "org.bigbrotr.acquisition-binding",
+          "owner": "582212d137227a9226fe06b89b5dde02",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_9b6f054_sync_signed"
+          ],
+          "terminal_observation": "Root freshly inspected both exact containers exited/PID0/noOOM/matching labels/cgroups absent",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "missing_owned": [],
+          "free_bytes_after": 302750466048,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_context_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725/source",
+          "source_commit": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556",
+          "state": "FAIL initial registration missing fixture trigger SELECT; root driver15335 joined1",
+          "client": "823f9234d1b4a259771c212eb90a7218cce6a4a24dad5658a5180cdaa5f2aa61",
+          "label": "org.bigbrotr.acquisition-binding",
+          "owner": "558c50985d5def6e9bb5a98c2e09efb5",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_9653725_sync_signed"
+          ],
+          "terminal_observation": "Root freshly inspected both exact containers exited/PID0/noOOM/matching labels/cgroups absent",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "missing_owned": [],
+          "free_bytes_after": 302674853888,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_context_runs"
+        }
+      ]
     }
   },
   "tux_intermediate_retirement_20261018": {

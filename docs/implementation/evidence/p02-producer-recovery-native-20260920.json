@@ -41591,6 +41591,114 @@
           },
           "outer_contract": "Independent mutation SQL/science gate plus first UPDATE completion before proof release; second successful UPDATE selects only its COMMIT on same actual Control backend. Bind PID/start and exact natural failed Serve/proxy/relay join. Reuse full native/input oracle; extend recovery explicitly for active old Control.",
           "scope": "Tool qualification only. Actual before-forward/after-complete CommitUnknown, authoritative readback and fresh recovery/retry remain NOT_RUN."
+        },
+        "installed_progress_context_runs": [
+          {
+            "source": "9b6f0547dced7e17fd9eac9839aeed7b2f3e5790",
+            "tree": "4f85c5f3ccd1987861a161e8e93dd2aa9ea143f1",
+            "product_source": "d4e1b85566dee30994017834b763fe04396bcf1c",
+            "kind": "initial",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9b6f054",
+            "driver_session": 80208,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9b6f054/bindings/result.json",
+              "bytes": 9618,
+              "sha256": "c7fd2a88d97a2ae11bc6a043e302a7d126aa652499db9ccf62affc8291f523f2"
+            },
+            "driver_log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9b6f054/driver.log",
+              "bytes": 1150,
+              "sha256": "a98f112f6a332ef8e31d9a37b6d961f4a58c70dee2c358ee3af966568b77c0c3"
+            },
+            "upgrade": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9b6f054/bindings/sync-signed-progress-upgrade.json",
+              "bytes": 1503320,
+              "sha256": "a049aa7a30051bc36096b34a80b0b74691204681786d32ab8d5cf936ed50755b"
+            },
+            "finding": "Fixture check_upgrade takes max across all migration families; unrelated migration IDs501..816 are mistaken for core schema version. Real setup apply/reapply completed; assertion refuses before Serve/Sync starts. Preserve full original ledger and correct core-prefix selection, never discard unrelated rows.",
+            "product_runtime": "NOT_RUN: fixture stopped before actual Serve initialization",
+            "capture_replay": "NOT_RUN",
+            "custody": "Root observed exact owned client and borrowed PG exited/PID0/noOOM/cgroups absent; driver joined1. No cleanup errors, missing owned containers or unrelated changes. Original failed artifacts preserved."
+          },
+          {
+            "source": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556",
+            "tree": "6b3ed38afbdd64c07e758c445588e7e62fef2e8d",
+            "kind": "initial",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725",
+            "driver_session": 15335,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725/bindings/result.json",
+              "bytes": 9625,
+              "sha256": "0dcbbd6ce4dae7bed797599f0915eb86e0030285fa660d2108fb7ce27f64fbcc"
+            },
+            "driver_log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725/driver.log",
+              "bytes": 775,
+              "sha256": "2368c6b8eae8c8535ef5352e2ddc266e813cafb9d70c0c65c74f746108165d68"
+            },
+            "postgres_log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725/postgres-attempt.log",
+              "bytes": 2021,
+              "sha256": "78b20ed5062d4d27ca2403f0a17b4698a5eba448092a8c0a989f467c944b50af"
+            },
+            "terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725/bindings/sync-signed.terminal.json",
+              "bytes": 216,
+              "sha256": "53652c122c73dbc73d6e689a9d0e618defaa1c12b17b80ef2a3adbf785878a62"
+            },
+            "stderr": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-initial-9653725/bindings/sync-signed.stderr",
+              "bytes": 43,
+              "sha256": "002558609e4c53e32389c3af87c70aa0e6a615f48964d1dc18406e9931da0d59"
+            },
+            "finding": "Actual Serve initialization rc4: ingest registration failed Backend. PostgreSQL430 names permission denied control.initial_ingest_activations in guard_initial_activation_target; initial26 fixture upgraded39 lacks established narrow SELECT required by schema32 trigger. Migration correction succeeded; no initialized message or Sync journey.",
+            "capture_replay": "NOT_RUN",
+            "custody": "Root driver joined1; both exact owned containers freshly observed exited/PID0/noOOM/matching labels/cgroups absent; no cleanup errors or unrelated changes. Preserve failed artifacts."
+          }
+        ],
+        "contexts_fixture_preparation": {
+          "source": "9653725c5b55eb4cf1977453cb6cd97ecb3ad556",
+          "source_receipts": [
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v1.json",
+              "bytes": 5940,
+              "sha256": "88a3c6dd0659c19c57cf1b76b1dd2f903bf915f459f82a82a5d4ba147227747a"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020/.research/producer-progress-contexts-source-20261020/manifest-v2.json",
+              "bytes": 2290,
+              "sha256": "e5a70175df29e4b8c094da035812a3957e7be76cbb47791349c47e8da5ae7fff"
+            }
+          ],
+          "critical_ai_reviews": [
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/contexts-critical-source-review-v2.json",
+              "bytes": 12045,
+              "sha256": "88aaf5432eb76f41c5c55f1d44b649ef4f45ce7b8591d07b045fa6e753d13ca8"
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/contexts-ledger-correction-review-v1.json",
+              "bytes": 3672,
+              "sha256": "711b6ceab206ea00d4cb56b8687af3ba9b3b124e33378cb63fe2a2e0db188d8e"
+            }
+          ],
+          "status": "Two actual initial attempts FAIL; pending narrow trigger-read ACL correction. Productd4/build unchanged.",
+          "root_review": "Complete new owners and affected existing capture/client/science/raw-binding boundaries read, frozen deltas reconciled and source pins authenticated; unchanged owning source/custody/codec contracts reused underQ38. Whole unrelated bindings case tree not reread; actual relevant dispatch/cleanup/source/build boundaries reviewed."
+        },
+        "fault_fixture_preparation": {
+          "source": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb",
+          "tree": "29e9e791662aaa012c57597d5e346f972b3f9995",
+          "author_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-progress-commit-loss-20261020/.research/producer-progress-commit-loss-source-20261020/manifest-v1.json",
+            "bytes": 6759,
+            "sha256": "097f16d685b3a1da16326b287c27bd3168cf595285958210f611a0af67c62b2e"
+          },
+          "status": "FROZEN_SOURCE_CRITICAL_REVIEW_PENDING_RUNTIME_NOT_RUN",
+          "scope": "Two proof-only COMMIT losses, explicit active-Control recovery and exact retry;82controls authored. Root reviewed new owners/shared relevant delta; independent review active. No product/build/source-contract change."
         }
       }
     }
