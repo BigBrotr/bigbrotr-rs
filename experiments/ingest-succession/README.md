@@ -80,6 +80,41 @@ and repeats all controls. This graceful origin requires its old Control released
 active-Control COMMIT-loss recovery and native-fact injection remain separate.
 Exact executed qualification belongs to the existing recovery evidence report.
 
+`installed_progress_commit_loss.py ROOT BUILD` adds a bounded opt-in pair using
+two fresh copies of the same activated/off terminal2 origin. The first real REQ
+admits NEW and certifies OLD. Before the next actual REQ receives NEW, the gate
+requires producer revision3, acquisition revision2, complete-through2, eleven
+retained dependencies and the proxy's first successful acquisition UPDATE.
+The pinned `control-producer-progress` proxy selects UPDATE occurrence2 on that
+same actual Control backend, then interrupts only its COMMIT before forwarding
+or after server completion. No global transaction index is used.
+
+Both callers must naturally exit4 with the original `Progress(CommitUnknown)`
+diagnostic and only the original activation JSON. Relay, proxy and process joins
+and exact backend exclusion precede native reopen. The external oracle expects
+heads3/2 before forwarding or4/3 after completion, with unchanged C2, eleven
+dependencies, complete native/input/request/outcome science and no job completion.
+The ordinary positive oracle remains separate. The loss path omits HTTP status
+and logout because Serve has failed; every retained auth/command/audit row still
+receives the full independent SQL model.
+
+Each loss then runs a fresh config-only `ingest recover --successor` and its exact
+retry, through the existing cycle collector. This profile explicitly expects the
+old active Control to be fenced/released and its role retired, then a fresh Control
+claim/release. The native closing bit changes once; the retry writes no native
+state. Historical head/issuer/xmin, queued job and all scientific detail remain.
+Only the operational PG endpoint switches from the proxy to the real endpoint;
+both exact config texts are retained. No Sync retry is performed.
+
+`installed_progress_commit_replay.py ROOT --output NEW_JSON` binds all six process
+captures, the two wire/gate records, complete77-table cuts, original/native/input
+files, the full tracked-source manifest, the exact qualified artifact/test-group
+sets and final resource exclusion. It reruns
+the independent predicates and baseline-first negative controls on retained
+contexts. Source-only authoring, controls and runtime status are distinct: this
+new profile is NOT_RUN until root executes and qualifies it. ACK, GC, mutation
+COMMIT loss, unjoined-owner recovery and whole-task completion remain outside it.
+
 `portable-handoff-v2.json` is generated independently from the field tables in
 [the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 at revision `12c3534c6c970839a4371fc00b4ac3eac6730cb0`. The generator uses Python

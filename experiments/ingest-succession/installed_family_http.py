@@ -13,8 +13,11 @@ SELECTOR = b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral
 ACTIONS = ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
 
 
-def add_http(wanted, observed, original, result, phase, window, control):
+def add_http(wanted, observed, original, result, phase, window, control, *, status_observed=True):
     """Append the exact visible HTTP effects to a independently built SQL state."""
+    assert type(status_observed) is bool
+    if not status_observed:
+        assert phase in ('prepared', 'submitted') and result['job_status'] is result['logout'] is None
     ds = only(original['datasets'])['dataset_id']
     prior_sessions = {r['session_id'] for r in original['browser_sessions']}
     session, = [r for r in observed['browser_sessions'] if r['session_id'] not in prior_sessions]
@@ -184,11 +187,12 @@ def add_http(wanted, observed, original, result, phase, window, control):
         assert result['observations'][3]['body'] == dict(format='bigbrotr-job-acceptance/1', job_id=job['job_id'][2:],
             command_key='e4' * 16, accepted_at_us=str(at), created=True, execution='unobserved', authority='acceptance-only')
         status = result['job_status']
-        if logged_out:
-            clock(int(status['observed_at_us']), window)
-        assert int(status['observed_at_us']) >= at
-        assert status == dict(format='bigbrotr-job-status/1', job_id=job['job_id'][2:],
-            kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
-            created_at_us=str(at), completed_at_us=None, observed_at_us=status['observed_at_us'],
-            reason_code=None, authority='observation-only')
+        if status_observed:
+            if logged_out:
+                clock(int(status['observed_at_us']), window)
+            assert int(status['observed_at_us']) >= at
+            assert status == dict(format='bigbrotr-job-status/1', job_id=job['job_id'][2:],
+                kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
+                created_at_us=str(at), completed_at_us=None, observed_at_us=status['observed_at_us'],
+                reason_code=None, authority='observation-only')
     return scope, enrollment

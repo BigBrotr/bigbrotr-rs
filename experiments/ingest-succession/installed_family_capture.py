@@ -182,15 +182,22 @@ def origin_checked(root, folder, name, declaration, raw, read):
     return rows,native,inputs
 
 
-def clone_checked(folder, clone, origin, report, raw, read, *, progress=None):
+def clone_checked(folder, clone, origin, report, raw, read, *, progress=None, commit_loss=False):
     name = clone['name']
-    assert clone['origin'] == name and clone['directory'] == name and clone['status'] == 'PASS'
+    assert type(commit_loss) is bool and (not commit_loss or progress == 'split')
+    original_name = 'activated' if commit_loss else name
+    assert clone['origin'] == original_name and clone['directory'] == name and clone['status'] == 'PASS'
     prefix = 'bb_installed_successor_' if progress is None else 'bb_installed_progress_' + progress + '_'
-    assert clone['database'] == prefix+report['source'][:7]+'_'+name
+    if commit_loss:
+        from installed_progress_commit_oracle import PREFIX, MODES
+        assert name in MODES
+        prefix = PREFIX
+    assert clone['database'] == prefix+report['source'][:7]+'_'+name.replace('-','_')
     assert clone['config'] == '/lab/'+clone['database']+'.toml'
-    assert clone['final_case'] == CASES[CLONES.index(name)] and clone['final_backends'] == []
+    assert clone['final_case'] == (name+'-retry' if commit_loss else CASES[CLONES.index(name)])
+    assert clone['final_backends'] == []
     same(origin[0],read(folder/(name+'-copy-before.json')))
-    floor = {'activated':37,'empty':31,'later':38}[name]
+    floor = {'activated':37,'empty':31,'later':38}[original_name]
     steps = [dict(name=f'{v:04d}_{history.MIGRATIONS[v][0]}.sql',sha256=history.MIGRATIONS[v][1],version=str(v)) for v in range(floor+1,39)]
     target = '38'
     if progress is not None:
@@ -208,13 +215,17 @@ def clone_checked(folder, clone, origin, report, raw, read, *, progress=None):
             applied_count=str(len(steps)) if index==1 else '0',steps=steps if index<2 else [],
             dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
     grants = clone['grants']
-    assert len(grants) == (3 if progress is not None else 2)
+    assert len(grants) == (5 if commit_loss else 3 if progress is not None else 2)
     assert all(set(g)=={'statement','stdout'} and not g['stdout'].strip() for g in grants)
     assert sha(grants[0]['statement'].encode()) == '36a16062c994adfe1ba7ace4c5e56d2ed942277b0e227ddd048e320939f0e588'
     assert grants[1]['statement'] == 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;'
     if progress is not None:
         from installed_progress_replay import PROGRESS_GRANTS
-        assert grants[2]['statement'] == PROGRESS_GRANTS
+        assert grants[-1]['statement'] == PROGRESS_GRANTS
+        if commit_loss:
+            assert [g['statement'] for g in grants[2:4]] == [
+                'GRANT UPDATE ON control.producer_epochs TO bigbrotr_control;',
+                'GRANT INSERT ON control.producer_outcomes TO bigbrotr_control;']
     assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
     config = tomllib.loads(raw(folder/Path(clone['config']).name).decode())
     ds = only(origin[0]['datasets'])
@@ -245,7 +256,7 @@ def clone_checked(folder, clone, origin, report, raw, read, *, progress=None):
     if floor==38:
         same(origin[0],baseline)
     else:
-        history.baseline(baseline,origin[1],origin[2],name,read(folder/(clone['final_case']+'-clock.json')))
+        history.baseline(baseline,origin[1],origin[2],original_name,read(folder/(clone['final_case']+'-clock.json')))
     return migrated
 
 
@@ -298,7 +309,7 @@ def backend_checked(value, database, before, after):
     number(absence['seconds'],elapsed,6)
 
 
-def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False):
+def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False, commit_loss=False):
     """Bind separated wire/capture phases; never certify a typed checkpoint.
 
     This is preparation for the opt-in profile. The default replay below does
@@ -306,6 +317,7 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
     """
     from live_replay import OLD_EVENT, NEW_EVENT
     assert type(hole) is bool
+    assert type(commit_loss) is bool and not (hole and commit_loss)
     assert read(directory/'events.json') == [OLD_EVENT, NEW_EVENT]
     result = journey['result']
     assert result == read(directory/'client-result.json')
@@ -320,7 +332,7 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
     assert journey['stdout'] == raw(directory/'client.stdout').decode() == ''
     assert journey['stderr'] == raw(directory/'client.stderr').decode() == ''
     opened, closed = journey['opened'], journey['closed']
-    assert 3 <= len(opened) == len(closed) <= 128
+    assert (2 if commit_loss else 3) <= len(opened) == len(closed) <= 128
     assert [p.name for p in sorted(directory.glob('relay-open-*.json'))] == [
         f'relay-open-{n:03}.json' for n in range(1, len(opened)+1)]
     assert [p.name for p in sorted(directory.glob('relay-closed-*.json'))] == [
@@ -373,11 +385,16 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
         number(last['sent_at_us'], first['request_at_us'], last['closed_at_us'], integer=True)
     assert list(phases) == ['mutation', 'proof-only']
     mutation, proof = phases['mutation'], phases['proof-only']
-    assert mutation['number'] == 1 < proof['number'] < len(closed)
+    assert mutation['number'] == 1 < proof['number'] <= len(closed)
+    if not commit_loss:
+        assert proof['number'] < len(closed)
     assert mutation['request'][1] != proof['request'][1]
     assert mutation['closed_monotonic_ns'] < proof['request_monotonic_ns']
     observations = {}
     for phase, wire in phases.items():
+        if commit_loss and phase == 'proof-only':
+            assert not (directory/'progress-proof-only-observation.json').exists()
+            continue
         path = directory/f'progress-{phase}-observation.json'
         value = read(path)
         assert set(value) == {'format', 'phase', 'observation', 'wire'}
@@ -392,7 +409,8 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
         assert isinstance(observation['control'], dict) and isinstance(observation['inputs'], dict)
         observations[phase] = observation
     assert observations['mutation']['observed_by_us'] <= proof['sent_at_us']
-    assert observations['mutation']['inputs'] == observations['proof-only']['inputs']
+    if not commit_loss:
+        assert observations['mutation']['inputs'] == observations['proof-only']['inputs']
     gate = read(directory/'progress-release.json')
     assert gate == dict(format='bigbrotr-progress-transport-release/1',
         mutation_request=mutation['request'][1],
@@ -402,11 +420,12 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
     assert not (directory/'relay-error.json').exists()
     return dict(status='CAPTURED_SPLIT_RELAY', mutation_request=mutation['request'][1],
         proof_only_request=proof['request'][1], quanta=len(closed),
-        captured_input_census_equal=True, checkpoint_validation='NOT_RUN',
+        captured_input_census_equal=None if commit_loss else True, checkpoint_validation='NOT_RUN',
         native_proof_validation='NOT_RUN', sql_semantics='NOT_RUN')
 
 
-def journey_checked(directory, context, identity, window, raw, read, *, progress=False):
+def journey_checked(directory, context, identity, window, raw, read, *, progress=False, commit_loss=False):
+    assert type(commit_loss) is bool and (not commit_loss or progress)
     journey=context['journey']; fixture=context['fixture']
     assert set(journey)=={'result','terminal','stdout','stderr','opened','closed'}
     assert journey['result']==read(directory/'client-result.json') and journey['terminal']==read(directory/'client-exit.json')
@@ -439,6 +458,11 @@ def journey_checked(directory, context, identity, window, raw, read, *, progress
         number(closed['closed_at_us'],opened['request_at_us'],window['after_us'],integer=True)
         number(opened['request_monotonic_ns'],1,integer=True)
         number(closed['closed_monotonic_ns'],opened['request_monotonic_ns'],integer=True)
+    if commit_loss:
+        assert result['job_status'] is result['logout'] is None
+        assert not (directory/'signal-observation.json').exists()
+        assert not (directory/'relay-error.json').exists()
+        return
     signal=read(directory/'signal-observation.json')
     assert signal==fixture['signal'] and signal['identity']==identity and signal['kind']=='SIGTERM'
     assert signal['closed_before_signal'] is False and signal['opened']==fixture['quiet']
