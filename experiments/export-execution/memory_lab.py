@@ -133,8 +133,13 @@ class Laboratory:
             self.application_qualification = dict(root=str(application_build), source=source, tree=tree,
                 resources=pin(resources_path), qualification=pin(qualification_path),
                 source_manifest=pin(manifest_path), status=qualification['status'], build_info=info)
+        # As in event_lab.py, compare installed build inputs, not unrelated
+        # research examples. The retained acceptance probe has its own exact pin.
         require(not git('diff', '--name-only', self.application_source, 'HEAD', '--',
-            'apps', 'crates', 'Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml',
+            'apps/bigbrotr/src', 'apps/bigbrotr/build.rs', 'apps/bigbrotr/Cargo.toml',
+            'apps/bigbrotr-archive-worker/src', 'apps/bigbrotr-archive-worker/build.rs',
+            'apps/bigbrotr-archive-worker/Cargo.toml',
+            'crates', 'Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml',
             'tools/build.py', 'tools/archive_bundle.py', 'contracts', 'migrations'), 'unchanged qualified product inputs')
         if manager_build is not None:
             require(self.application_qualification is not None

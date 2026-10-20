@@ -66196,6 +66196,32 @@
         },
         "source_state": "Integrated e3c712c and exact remote verified after push90923; all three author worktrees/evidence retained; refs pending retirement.",
         "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-214764e",
+          "source": "214764ee5c0305d717f7b63ea719fb1f871c540e",
+          "tree": "ee48cc99681da8801f546645696d7a622229df64",
+          "owner": "6278c6c354903bfcdb1315d3ab07997f",
+          "owner_label": "org.bigbrotr.network-transport",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "59d131dd9b7cfeb8c91d1167e3accd6df90bc885cf26c124952e4b9b03914a56"
+            },
+            {
+              "name": "native",
+              "id": "b8f266aedb913bb1379e3e741137dd89d43345b0e589cef2fc96cb96837936ca"
+            }
+          ],
+          "session": "3979 joined0",
+          "status": "PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY",
+          "free_bytes_after": 313205510144,
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-build-root-v1.json",
+            "bytes": 3836,
+            "sha256": "00f06650711d20298159406c68d870dafd1562f27d679a65d467e18d1f065f01"
+          }
+        },
+        "failed_build_e3c712c": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c",
           "source": "e3c712c3064a766bf60f14af1e4d913baf11fb62",
           "tree": "45d36483ac73f5dd8dfecca7fe47c6a8b2554c01",
@@ -66221,6 +66247,15 @@
             "bytes": 1017,
             "sha256": "7f6784a64c1572f979711fa93817e0f73009ccde650d0566bb2af49db25ad8a6"
           }
+        },
+        "runtime_preflight": {
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-runtime-preflight-failure-v1.json",
+            "bytes": 1313,
+            "sha256": "0bdce0a6c575bea87972a937363e1bbb061064909a1037dd08e7870753a9b1b4"
+          },
+          "root_created": false,
+          "engines_started": false
         }
       }
     },

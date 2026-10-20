@@ -1,79 +1,62 @@
 # Current execution checkpoint
 
-Observed 2026-10-20 on Tux. Goal **ACTIVE**; selected M1–M5 product remains
-incomplete. Existing task plan, Q37 model allocation and Q38 evidence reuse apply.
+Observed 2026-10-20 on Tux. Goal **ACTIVE**; selected M1–M5 product incomplete.
+Existing task plan, Q37 model allocation and Q38 evidence reuse apply.
 
-## Current objective and repository
+## Objective and current revision
 
 P08-T04 Step 3 / P01-T05 Step 2: qualify export ownership and memory without
-reducing fidelity or widening deadlines. Root owns `main` in
-`/home/tux/bigbrotr-rs`. Integrated source and exact verified remote are
-`e3c712c3064a766bf60f14af1e4d913baf11fb62`, tree
-`45d36483ac73f5dd8dfecca7fe47c6a8b2554c01` (push90923 joined0).
-Local report/checkpoint/inventory edits record its in-flight build. No production
-code or Cargo manifests changed.
+reducing fidelity or widening deadlines. Root owns `/home/tux/bigbrotr-rs`, `main`.
+HEAD and exact verified remote: `214764ee5c0305d717f7b63ea719fb1f871c540e`, tree
+`ee48cc99681da8801f546645696d7a622229df64` (push52856 joined0).
+Local changes: one runtime compatibility-guard correction in `memory_lab.py` plus
+this checkpoint/report/inventory. No product or Cargo-manifest change.
 
-Both exact native row cases PASS: the escape-heavy 1,048,576-byte NativeFact
-returns the complete signed event in 442 ms; one byte beyond returns exactly
-`ResourceLimit` in 367 ms. Current 64+96 MiB grants/five-second deadline, original
-science/catalog/Parquet/policy/inputs and terminal custody pass. Build/Clippy and
-critical source/outcome reviews pass. This is not installed job authority or an
-empirical process-memory result. Prior five-export sample and two supported-input
-256 MiB captures remain qualified within their original limits; reuse them.
+New observation build PASS: ordinary Cargo build/Clippy, standalone wrapper/test
+compilation and seven deterministic allocator tests. The 22 new offline verifier
+controls and 17 retained controls PASS; critical counter/verifier/builder and
+runtime source reviews are recorded. Original e3c712c module-resolution failure
+remains preserved; one redundant path attribute was removed before214764e.
+
+Runtime preflight refused before creating its root or any engine: the retained
+application check included four unrelated native-row research examples. Root
+limited that check to the established installed-input scope (both app src,
+build.rs and Cargo.toml plus dependencies/tools/contracts/migrations). The targeted
+Astra/xhigh review of that guard change passed. The built wrapper and its
+inputs are unchanged; no new compile or counter test is needed for this Python fix.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), node
-`initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source`,
-owns detailed receipts in `native_row_boundary_20261020`, `supported_boundaries_20261020`
-and `installed_five_20261020`; `manager_observation_20261020` owns the current
-source assessment. No whole task or product completion is claimed.
-
-## Problems and preserved state
-
-Ordinary initial Sync still refuses input caps above 256 KiB; the larger native
-row uses a separately accepted fresh typed fixture policy. Internal-owner peak
-attribution, manager/driver overlap and TLS remain unqualified. Whole-service
-configured grants exceed 256 MiB; native mTLS exceeds that operation admission.
-The earlier a99 initial Sync timeout remains unexplained: identify its pending
-await before another trial. Preserve all earlier setup/oracle failures and the
-supplementary JSON-member-order comparison correction in their original evidence.
+`initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.manager_observation_20261020`,
+owns source reviews, original failures and current build receipt. Earlier native
+1MiB boundary, installed five-export and supported-input results remain qualified
+within their original scopes; reuse their linked evidence.
 
 ## Processes and resources
 
-Build session `57448` joined1 under
-`runs/export-manager-memory-probe-e3c712c` in the existing external laboratory.
-Owner `65c93d19c322e6a2fd97106efd2821a7`, label
-`org.bigbrotr.network-transport`; existing outer runner owns finite containers
-and exclusive compiler-cache reuse. Both actual containers are exited0/1, PID0,
-noOOM. No compiler, measurement engine or cleanup is active.
-Previous native containers remain stopped/retained as recorded in the inventory.
+No compiler, engine or cleanup process is active. Build3979 joined0; both actual
+owned containers exited0/PID0/noOOM. Failed build57448 also stopped/retained.
+The [inventory](../research/laboratory-inventory.json) records both build roots
+under `/home/tux/bigbrotr-implementation-20260917/runs`, owners and retained
+artifacts. Corrected build root: `export-manager-memory-probe-214764e`;
+owner `6278c6c354903bfcdb1315d3ab07997f`. Free after build:313,205,510,144 bytes.
+All author worktrees and ignored artifacts remain preserved; three integrated
+source branch refs await clean/ancestry-checked retirement. No cleanup is due.
 
-This source commit integrates observation `65d2642`, builder `2e8e329` and the
-existing-lab parameter `6302ccd`. Root reviewed their integrated identities; the
-critical counter/verifier/builder review found no blocker. The 22 new offline
-verifier controls and 17 retained controls PASS. Seven Rust counter tests,
-ordinary Cargo build/Clippy PASS, but direct-wrapper compilation failed on module
-resolution. Runtime critical review also found no blocker. Root removed one
-redundant path attribute; seven Rust counter tests and new runtime remain NOT_RUN.
-Root alone owns builds and engines. All author worktrees
-and ignored evidence remain inventoried. Build headroom was checked:
-314,764,083,200 bytes free; no cleanup needed.
+## Next bounded action and open limits
 
-## Next bounded action
+Commit/push this reviewed runtime guard, then use the existing
+lab `--manager-build` with qualified214764e artifacts/f1e application/6c worker.
+Select one fresh tag-heavy Accepted job under actual256MiB export policy; the
+standalone diagnostic uses the separately declared1536MiB cgroup. Preserve the
+original acceptance descriptor; audit complete before/after SQL, scientific files,
+destination, drivers/backends/processes and exact signed output. Whole-parent
+Rust requested-live peak at most17,301,512 supports only that observed bound;
+above it is INCONCLUSIVE for manager ownership, not a product defect. No reset,
+baseline subtraction, native/RSS attribution or new installed256MiB claim.
 
-Build the one-line module-path correction from this exact commit using profile
-`export-manager-memory-probe`; require actual Cargo build/Clippy, direct linking
-and seven deterministic Rust counter tests. The wrapper's always-on counter
-covers whole-parent Rust requested-live allocation, with no reset/baseline
-subtraction or physical/RSS/native attribution. Reduced catalog reservation uses
-actual credential bounds and a two-second driver drain. A peak above that
-allowance is inconclusive for owner sufficiency, not proof of a product defect.
-
-After build qualification, use the critically reviewed existing
-lab's `--manager-build` for one fresh genuine Accepted job. Preserve original
-acceptance and before/after SQL/files; independently audit custody and9table
-completion delta. New observation and layout-refusal/drain remain NOT_RUN.
-Keep a99 pending-await diagnosis open; do not widen deadlines or blindly retry.
-
-ACK/GC, import/restore, capacity/aged-state and complete M1–M5 delivery remain open.
+Actual reduced capture and layout-refusal/drain remain NOT_RUN. TLS, internal
+owner attribution and whole-service sizing remain open. Keep the earlier a99
+initial Sync pending-await timeout diagnosis open; no blind retry/deadline widening.
+ACK/GC, import/restore, capacity/aged state and full M1–M5 remain incomplete.
 Q33 hosted CI billing, native arm64 and signing/registry are separate gates.
 No public release authorized.

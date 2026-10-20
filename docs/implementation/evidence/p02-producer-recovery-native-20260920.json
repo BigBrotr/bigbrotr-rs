@@ -37909,7 +37909,7 @@
             "outcome": "Ordinary Cargo example build and Clippy PASS; locked metadata and Cargo library PASS. Direct wrapper rustc E0583: explicit path attribute redirects child module resolution. Seven counter tests and live capture NOT_RUN. Both actual owned containers exited0/1 PID0 noOOM; no process active; original raw evidence retained."
           },
           "module_path_correction": {
-            "status": "ONE_LINE_CORRECTION_BUILD_NOT_RUN",
+            "status": "QUALIFIED_BY_214764E_BUILD",
             "change": "Remove redundant #[path = \"memory.rs\"] on sibling mod memory; use the same module declaration as the already compiling ordinary probe. Safe-module forbid remains; no counter, verifier, builder, product, deadline or Cargo change.",
             "review": "Root reviewed complete original compiler stderr and exact one-line diff; prior critical semantic reviews and offline controls remain applicable. New exact build required to verify import and seven counter tests.",
             "wrapper": {
@@ -37917,6 +37917,35 @@
               "bytes": 12581,
               "sha256": "98545764b373f70131bff5e35f4a39a5d29cb960df9fa5fd52d678b721f66947"
             }
+          },
+          "qualified_build_214764e": {
+            "status": "PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY",
+            "source": "214764ee5c0305d717f7b63ea719fb1f871c540e",
+            "tree": "ee48cc99681da8801f546645696d7a622229df64",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-214764e",
+            "session": "3979 joined0",
+            "root_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-build-root-v1.json",
+              "bytes": 3836,
+              "sha256": "00f06650711d20298159406c68d870dafd1562f27d679a65d467e18d1f065f01"
+            },
+            "remote": "Exact refs/heads/main214764e after push52856 joined0",
+            "checks": "Cargo example and Clippy; locked metadata/library; direct wrapper and test compilation;7countertests PASS. All2014source and214artifact identities verified; actual2containers exited0/PID0/noOOM.",
+            "runtime": "NOT_RUN"
+          },
+          "runtime_preflight": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-runtime-preflight-failure-v1.json",
+            "bytes": 1313,
+            "sha256": "0bdce0a6c575bea87972a937363e1bbb061064909a1037dd08e7870753a9b1b4"
+          },
+          "runtime_guard_correction": {
+            "status": "PASS_TARGETED_CRITICAL_SOURCE_REVIEW_RUNTIME_NOT_RUN",
+            "review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-runtime-review-v2.json",
+              "bytes": 3695,
+              "sha256": "a1321c0fba8013f0489ac6975c9bc6b3a35d3f11cdb54e0a120f078c44eebe32"
+            },
+            "build_reuse": "Qualified214764e source/artifacts and seven tests unchanged; Python runtime guard only, no rebuild required."
           }
         }
       },
