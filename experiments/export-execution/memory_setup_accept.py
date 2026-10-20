@@ -20,6 +20,23 @@ from memory_setup_io import IO, pinned, regular, require, sha, write
 from memory_setup_oracle import acceptance
 
 
+def wait_login_window(io, before, output):
+    """Wait on actual server time; never reset the account bucket or retry login."""
+    buckets = [row for row in before['control']['login_buckets'] if row['kind'] == 'account']
+    require(len(buckets) == 1 and 1 <= buckets[0]['attempts'] <= 5, 'actual finite login bucket')
+    target = buckets[0]['window_started_at_us'] + 60_000_000
+    observations = []
+    while True:
+        now = int(io.sql(io.config['postgres']['control']['database'],
+            "SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint;"))
+        observations.append(dict(server_now_us=now, window_ends_us=target))
+        if now >= target:
+            break
+        require(len(observations) <= 61 and io.remaining() > 5, 'bounded natural login-window observation')
+        time.sleep(min(1, (target-now)/1_000_000))
+    write(output / 'login-window.json', observations)
+
+
 def run(root, group):
     os.umask(0o077)
     require(root.is_absolute() and root.resolve() == root and group.is_absolute(), 'explicit root/cgroup paths')
@@ -57,19 +74,7 @@ def run(root, group):
         require(immutable(root) == prepared['files'], 'same physical native/data/state/destination')
         # Five real password operations may have filled the account bucket. Wait
         # only on database time; no sixth denial, bucket rewrite or policy change.
-        buckets = [row for row in before['control']['login_buckets'] if row['kind'] == 'account']
-        require(len(buckets) == 1 and 1 <= buckets[0]['attempts'] <= 5, 'actual finite login bucket')
-        target = buckets[0]['window_started_at_us'] + 60_000_000
-        observations = []
-        while True:
-            now = int(io.sql(config['postgres']['control']['database'],
-                "SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint;"))
-            observations.append(dict(server_now_us=now, window_ends_us=target))
-            if now >= target:
-                break
-            require(len(observations) <= 61 and io.remaining() > 5, 'bounded natural login-window observation')
-            time.sleep(min(1, (target-now)/1_000_000))
-        write(output / 'login-window.json', observations)
+        wait_login_window(io, before, output)
         # Pin life remains clamped by Control's 5s lease inside this operation.
         # No refresher here can extend a pin or modify that production deadline.
         raw = io.run('accept', [spec['probe']['path'], 'accept', str(case_path)], seconds=120)

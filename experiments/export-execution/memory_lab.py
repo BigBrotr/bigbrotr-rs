@@ -504,6 +504,103 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
             measurement='NOT_RUN', qualification_256mib=False, five_exports_acceptance=False)
         self.save()
 
+    def installed_five(self):
+        """Use the prepared genuine256MiB policy; never accept a setup-only job."""
+        require(self.export_memory_mib == 256 and self.application_qualification is not None
+                and self.state['outcome'] == 'PREPARED_FOR_ROOT_ACCEPTANCE', 'prepared installed profile')
+        descriptor = dict(format='bigbrotr-installed-export-memory-run/1',
+            prepared_root='/lab/fresh-root', cgroup='/sys/fs/cgroup',
+            keys=[secrets.token_hex(16) for _ in range(5)])
+        write(self.out / 'installed-run.json', descriptor)
+        self.state['installed_descriptor'] = pin(self.out / 'installed-run.json')
+        self.save()
+        # No strace process inside this empirical memory boundary. The existing
+        # observer samples real processes; positive process/group joins, actual
+        # container termination and backend exclusion establish outer custody.
+        self.run('installed-five', ['python3', '-B', '/source/experiments/export-execution/memory_run.py',
+            '/lab/installed-run.json', '/lab/installed-five', '--installed'], memory_mib=256)
+        self.exclusion('installed-five')
+        capture_root = self.out / 'installed-five'
+        initial = json.loads((capture_root / 'input.json').read_text())
+        captured = json.loads((capture_root / 'result.json').read_text())
+        require(captured['status'] == 'CAPTURED_INSTALLED_FIVE' and captured['error'] is None
+                and captured['sampler_joined'] and not captured['sampler_errors']
+                and len(captured['commands']) == len(captured['statuses']) == 5
+                and captured['worker_sha256_after'] == initial['source']['worker']['sha256']
+                and captured['descriptor_sha256_after'] == initial['descriptor_sha256']
+                    == sha(self.out / 'installed-run.json'), 'complete installed capture with unchanged inputs')
+        before, after = initial['cgroup_before'], captured['cgroup_after']
+        require(before['limit'] == after['limit'] == '268435456'
+                and before['peak'] <= after['peak'] <= 268435456
+                and after['pids'] == [initial['observer']['pid']]
+                and all(after['events'].get(key, 0) == before['events'].get(key, 0)
+                        for key in ('oom', 'oom_kill', 'oom_group_kill')), 'actual cgroup limit/terminal outcome')
+        samples = []
+        with (capture_root / 'samples.jsonl').open() as stream:
+            for line in stream:
+                require(len(line) <= 65536 and len(samples) < 14000, 'bounded raw installed samples')
+                samples.append(json.loads(line))
+        require(samples and all(row['cgroup']['limit'] == '268435456' for row in samples)
+                and [row['elapsed_ns'] for row in samples] == sorted(row['elapsed_ns'] for row in samples),
+                'observed constant physical cap and sample chronology')
+        workers = [p for row in samples for p in row['processes']
+                   if p['executable'] == '/build/archive-worker/bigbrotr-archive-worker']
+        parents = [p for row in samples for p in row['processes'] if p['pid'] == captured['server_pid']]
+        require(workers and parents and all(p['ppid'] == captured['server_pid'] for p in workers)
+                and len({(p['pid'], p['start_ticks']) for p in workers}) >= 5, 'actual repeated native workers')
+        memory = dict(cgroup_lifetime_peak=after['peak'], cgroup_before_peak=before['peak'],
+            cgroup_event_changes={key: value-before['events'].get(key, 0) for key, value in after['events'].items()},
+            parent_rss_sample_max=max(p['memory'].get('VmRSS', 0) for p in parents),
+            worker_rss_sample_max=max(p['memory'].get('VmRSS', 0) for p in workers),
+            observed_worker_identities=len({(p['pid'], p['start_ticks']) for p in workers}),
+            samples=len(samples), operation_cap_bytes=268435456,
+            configured_application_envelope=initial['configured_application_envelope'],
+            configured_native_envelope=initial['configured_native_envelope'],
+            http_acceptance_native_reservation_bytes=initial['http_acceptance_native_reservation_bytes'],
+            http_acceptance_reservation_bytes=initial['http_acceptance_reservation_bytes'],
+            shared_control_reservation_bytes=initial['shared_control_reservation_bytes'],
+            export_reservation_bytes=initial['plaintext_export_reservation_bytes'],
+            limits='Warm-cache empirical observer+Serve+CLI+native cgroup, PostgreSQL outside. '
+                   'Whole-service configured grants exceed256MiB. No baseline subtraction, live ledger, '
+                   'complete worker trace, internal-phase or maximum-event claim.')
+        write(capture_root / 'memory-summary.json', memory)
+        # Offline oracle runs only after the measured container has naturally
+        # terminated and this root has authenticated backend/credential exclusion.
+        script = """import json,sys
+from pathlib import Path
+sys.path.insert(0,'/source/experiments/export-execution')
+import memory_setup
+from test_memory_oracle import installed
+p=Path('/lab/installed-five')
+inputs=json.loads((p/'audit-input.json').read_text())
+payload=dict(before_capture=json.loads((p/'before.json').read_text()),
+ after_capture=json.loads((p/'after.json').read_text()),**inputs)
+with (p/'oracle-input.json').open('x') as stream:
+ json.dump(payload,stream,indent=2);stream.write('\\n')
+result=installed(payload)
+with (p/'science-result.json').open('x') as stream:
+ json.dump(result['baseline'],stream,indent=2);stream.write('\\n')
+with (p/'oracle-regression.json').open('x') as stream:
+ json.dump(result,stream,indent=2);stream.write('\\n')
+"""
+        self.run('installed-oracle', ['python3', '-B', '-c', script])
+        science = json.loads((capture_root / 'science-result.json').read_text())
+        regression = json.loads((capture_root / 'oracle-regression.json').read_text())
+        require(science['status'] == 'PASS_INSTALLED_FIVE_SQL_AND_SIGNED_FILES'
+                and regression['status'] == 'PASS_OFFLINE_INSTALLED_ORACLE_REGRESSION'
+                and regression['baseline'] == science
+                and all(row['status'] == 'REJECTED' for row in regression['controls']),
+                'positive independent science and rejected negative controls')
+        self.state.update(outcome='INSTALLED_FIVE_CAPTURE_AND_OFFLINE_SCIENCE_COMPLETE',
+            installed_capture=pin(capture_root / 'result.json'),
+            memory_observation=pin(capture_root / 'memory-summary.json'),
+            science_result=pin(capture_root / 'science-result.json'),
+            oracle_regression=pin(capture_root / 'oracle-regression.json'),
+            qualification_256mib=False, five_exports_acceptance=False,
+            review_required='Capture and independent offline result retained; root must review scope '
+                            'before qualification. No whole-service256MiB deployment sizing claim.')
+        self.save()
+
     def close(self):
         """Stop only this invocation's authenticated containers; retain all data."""
         errors = []
@@ -530,16 +627,22 @@ def main():
         help='qualified export-admission build root; --build retains the unchanged ingest dump probe')
     parser.add_argument('--export-memory-mib', type=int, choices=(256, 1024), default=1024)
     parser.add_argument('--prepare-only', action='store_true', help='stop before root Export acceptance')
+    parser.add_argument('--installed-five', action='store_true',
+        help='prepare genuine256MiB policy and observe five ordinary Serve exports')
     args = parser.parse_args()
     require(all(p.is_absolute() and p.resolve() == p for p in
                 (args.root, args.build, args.probe, args.instrument,
                  *([args.application_build] if args.application_build is not None else []))),
             'canonical absolute laboratory inputs')
     os.umask(0o077)
+    require(not args.installed_five or (args.application_build is not None
+            and args.export_memory_mib == 256 and not args.prepare_only), 'explicit installed five profile')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
         application_build=args.application_build, export_memory_mib=args.export_memory_mib)
     try:
-        lab.acceptance(prepare_only=args.prepare_only)
+        lab.acceptance(prepare_only=args.prepare_only or args.installed_five)
+        if args.installed_five:
+            lab.installed_five()
     except BaseException as error:
         lab.state.update(outcome='UNKNOWN_PRESERVED', error=type(error).__name__,
             next='Authenticate retained outcome; never replay this root or repair authority automatically')

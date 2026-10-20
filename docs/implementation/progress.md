@@ -9,15 +9,24 @@ remain authoritative. No separate plan or process-optimization project.
 P08-T04 Step3 / P01-T05 Step2: reduce installed export admission costs after
 qualifying bounded, streamed catalog inspection. Root owns integration/runtime in
 `/home/tux/bigbrotr-rs`, branch `main`. Last verified pushed revision:
-`a9d2ccb77578c581e724e2f199f1cd207e54610c` (push87547 joined0, exact remote equal).
+`1ef48f3a85caf5f3956dda034239c322ba8c4e4d` (push47979 joined0, exact remote equal).
 The guard qualification at48299b2 is complete. Sourcef1e726f78d7f925cf84cec19117fee5d607773c5
 implements export-only admission and three boundary tests in the existing owners,
 extends the existing build runner, and updates operator documentation. All three
 tests, installed parent build and Clippy PASS; runtime NOT_RUN for this admission
-candidate. Critical source/build review has no unresolved blocker. Current local
-changes record that qualification; no unverified product edits.
-Astra/xhigh continuity retained; new bounded fixture author Sol/xhigh verified
-from actual turn metadata at2026-10-20T13:21:31.722Z.
+candidate. Critical source/build review has no unresolved blocker.
+HEADa8d57b4 integrates Sol8135853 fixture parameters and Astra9efe79b independent
+five-job oracle. Root changes in `memory_lab.py`, `memory_run.py` and
+`memory_setup_accept.py` add ordinary Serve capture, original-file preservation,
+post-custody offline verification and the shared natural login-window wait.
+No product change after the qualified f1e726f build. New runtime and17 installed
+negative controls remain NOT_RUN. Existing17 offline controls PASS unchanged.
+Root integration review:
+`.research/export-memory-phases-review-20261020/installed-five-root-integration-review-v1.json`
+(SHA256 `9e2a5012719d364a5bfe7c57ff07f140a3c510ccc627f8eb7501bbf4a41507d6`).
+Critical capture review v1 resolved sampling/input-bound issues; a narrow final
+review covers destination preservation and invoking the existing negative controls.
+AST and embedded offline-script parse PASS. Q37 verified agent continuity retained.
 
 The previous installed export required at least705.125MiB. The measured160MiB native
 profile still totaled306.625MiB per job with its old catalog/parent grants.
@@ -59,10 +68,12 @@ No root engine/compiler/cleanup process is active. New build2382 joined0 at
 `runs/export-admission-f1e726f`: both containers exited0/PID0/noOOM; prior
 guard build79187 and runtime61508 remain completed. Source, data and logs are
 retained through the [inventory](../research/laboratory-inventory.json).
-Astra is finishing bounded runtime-design guidance; source review is complete.
-The Sol author's clean worktree `.research/catalog-layout-fixture-20261020`
-retains integratedd7a34c2 detached; its redundant branch ref was retired after
-integration/push and actual clean/ancestor checks. Preserve every worktree, ignored file and external
+Independent oracle author is complete. The same Astra reviewer is reviewing only
+final capture deltas. No new engine/compiler process started. Integrated branches
+`work/export-installed-fixture` and `work/export-installed-oracle` retain clean
+worktrees `.research/catalog-layout-fixture-20261020` and
+`.research/export-installed-oracle-20261020`; retire refs only after final push and
+actual clean/ancestor checks. Preserve every worktree, ignored file and external
 lab under `/home/tux/bigbrotr-implementation-20260917/runs`.
 Space after build:318,319,792,128B available.
 No cleanup is due; unrelated workloads remain untouched. Verify actual ownership
@@ -70,15 +81,18 @@ before using the retained compiler cache or creating/reusing runtime resources.
 
 ## Next bounded action
 
-Commit/push the coherent admission and qualification. Parameterize the existing
-memory setup runner for the qualified new parent and a genuinely accepted256MiB
-export cap; preserve old6fe data and reuse unchanged worker/probes/oracles.
-Prepare fresh science and grants, then use ordinary Serve for five genuine
-export commands and their complete lifecycle/bytes/memory observation. Keep
-operation allowance, whole-process/shared Control accounting and actual cgroup
-limit distinct; no arbitrary baseline subtraction. Reduced catalog preparation,
-both inspections, refusals/driver joins and full-row cases remain qualification
-boundaries. Arithmetic and one prior capture do not satisfy the256MiB gate.
+Finish the narrow critical capture review, commit the integrated fixture source,
+then run `memory_lab.py` with `--installed-five`,
+`--export-memory-mib 256`, the qualified application build
+`runs/export-admission-f1e726f`, preserved6c build, e4f probe and qualified tracer.
+This starts a NEW inventoried
+root, genuine publication/grants and five sequential HTTP exports; old6fe stays
+untouched. The measured observer+Serve+CLI/native cgroup is256MiB/no-swap,
+PostgreSQL outside. Configured whole-service grants exceed256MiB and must remain
+disclosed; operation admission is separately254,541,832B. No baseline subtraction.
+Measured phase has no strace/precise driver or live-ledger claim; existing setup
+traces stay. Preserve all failures and inspect real outcomes before any retry.
+Reduced manager/TLS/driver high-water and full-row/tag-heavy cases remain gates.
 
 Continue dependency-ready M1–M5 work. ACK/GC, import/restore, capacity/aged-state
 and complete product/release journeys remain open; Q33 hosted CI billing,
