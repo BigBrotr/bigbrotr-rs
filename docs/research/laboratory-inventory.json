@@ -64837,7 +64837,7 @@
       }
     },
     "archive_attempt_limits_source": {
-      "status": "REVIEWED_SOURCE_ONLY_NOT_INTEGRATED_BUILD_ENGINE_NOT_RUN",
+      "status": "INTEGRATED_SOURCE_VERIFIED_BUILD_ENGINE_NOT_RUN",
       "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018",
       "branch": "qualification/archive-catch-up-attempt-limits",
       "base": "d910233ad0a593d08e571955dde51873d947c616",
@@ -64956,6 +64956,31 @@
         "scope": "Explicit future clean-main revision/tree; exact seven acc9bea fixture blobs; unchanged9a build runner and41-test selection; preserve190 prior ELFs and ten native assets; six future build ELFs extend custody to196. Engine retains64GiB+577MiB reserve. No helper import or runtime execution.",
         "finding": "v1 omitted interrupted out/build-checks/result.tmp from recursive pins; v2 adds only that directory. Original source and checker-only failure retained.",
         "limits": "Build, engine, strict replay and custody remain NOT_RUN. Failed future build requires explicit preserved-artifact reconciliation before another preparation. Cooperative root/compiler lock and observed stopped consumers are the existing cache exclusion boundary, not arbitrary host-writer exclusion."
+      },
+      "integration_20261020": {
+        "status": "INTEGRATED_SOURCE_VERIFIED_BUILD_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-20T09:58:36.830304+00:00",
+        "base": "ef70b59816cad8412b2da19e769ce510436b15af",
+        "head": "c18bc2c50d3a35862b069233348bbfc85eba8acf",
+        "tree": "0e761ef32c3a968ad96341b3796d7d42ccb8f63d",
+        "commit_mapping": [
+          {
+            "original": "bfe1b14c0b04f4194e09c1fafc6447d9cdd514e6",
+            "integrated": "11397d09917e5b605ea1d4f463af162120350a2a",
+            "patch_id": "d672105536eeef0414562ab1285009fd6044d4b2"
+          },
+          {
+            "original": "acc9bea67d5380f35c2fbf8d69ceed4539925133",
+            "integrated": "c18bc2c50d3a35862b069233348bbfc85eba8acf",
+            "patch_id": "f8030047871df5c06ecf08d51ed9607480c191a3"
+          }
+        ],
+        "exact_source_files": 7,
+        "frozen_manifest_sha256": "07fb13513ab8d1609cdf22a26665eb233345cdd281eb367be4acdc49e56b46eb",
+        "review_reuse": "All seven integrated source blobs exactly match the already complete root/independent reviewed packet. Shared dispatch delta read against current main; no merge conflict or extra source change. Prior pure checks reused; compilation/Clippy/connected runtime remain NOT_RUN.",
+        "old_9a_refusals": "All six separately qualified before integration; no old run repeated.",
+        "branches": "Original worktree, qualification branch and ignored evidence retained until final reconciliation.",
+        "previous_status": "REVIEWED_SOURCE_ONLY_NOT_INTEGRATED_BUILD_ENGINE_NOT_RUN"
       }
     },
     "archive_download_headroom": {
