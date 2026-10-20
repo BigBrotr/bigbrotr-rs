@@ -9,22 +9,23 @@ reuse/checkpoint rules are in the [execution guide](agent-handoff.md) and
 
 P02-T04/P01-T09: qualify genuine full signed export acceptance and the memory gate.
 Root owns integration/runtime in `/home/tux/bigbrotr-rs`, branch `main`.
-Last verified pushed revision is `763182f255047da35a2ed178e7b71834d7213589`
-(push90508 joined0; exact remote verified). Phase split, complete worker trace
+Last verified pushed revision is `6fe52661e942817ed53d686d4ecc4fcd03f4a963`
+(push25524 joined0; exact remote verified). Phase split, complete worker trace
 parser, root orchestrator and SQL framing correction are integrated with original
 source ancestry. Prior source reviews are linked in the owning report.
 
-Actual setup41884 joined1 after publication and grants succeeded. Acceptance
-probe4 refused `InvalidInput`: the fixture descriptor omitted the terminal `/`
-required by `CatalogIdentity::local`, before catalog connection. Read-only actual
-SQL recovery confirms no Export job; jobs/commands/grants/catalog are unchanged,
-with only Control epoch/role registration added. Original overall FAIL/UNKNOWN
-remains preserved. Root/independent author confirmed the exact source cause.
+Actual setup76876 joined1 after successful publication. Docker returned identical
+complete mount records in a different array order; the outer comparator refused
+before native observers, grants or acceptance. Root actual audit authenticates
+the known publication, complete trace, unchanged physical roots and stopped
+resources. Original FAIL/UNKNOWN is preserved.
 
-Root-owned local edits add the terminal slash to `memory_setup.py`'s shared
-acceptance/measurement descriptor, clarify the existing MEMORY.md contract and
-record actual evidence/resources. AST and targeted source review PASS; this
-correction has not executed. No Rust/product/probe/budget/deadline change.
+Root-owned local edits sort complete mount records for comparison, retaining all
+fields and exact physical checks, and record this result. AST, whitespace and
+targeted independent review PASS. The original clean6fe source and dataset can
+proceed to their first continuation after renewed custody; the recorded one-off
+root invocation reuses existing executor methods and writes separate recovery
+resources/evidence. It has not executed. No product/probe/budget/deadline change.
 Verified Astra/xhigh continuity is retained under Q38.
 
 ## Evidence and open problems
@@ -43,6 +44,11 @@ node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence there.
   mismatch is proven by retained bytes; diagnosisd56fa0e0 records the correction.
   Acceptance remains FAIL; measurement and five exports/256MiB remain NOT_RUN.
   Full1MiB event envelope and first1GiB export policy cap remain unchanged.
+- Fresh6fe publication passed with the same complete worker/process/thread
+  counts; pre-continuation custodya57305c1 authenticates4385original output files.
+  Native observers/grants/acceptance/measurement remain NOT_RUN for this root.
+  Mount-order review8eef295a identifies a bookkeeping failure; it authorizes no
+  blind retry or replacement baseline.
 - Original6f3 setup failed before migration on missing SQL statement termination;
   corrected763 passes that boundary. Both original roots and outcomes survive.
 - Earlier a99 initial Sync timeout remains unexplained. A repeated timeout needs
@@ -53,8 +59,10 @@ node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence there.
 
 ## Processes and resources
 
-No root engine/compiler/cleanup process or subagent is active. Both actual setup
-roots are stopped-retained. For `runs/export-memory-setup-763182f`, original
+No root engine/compiler/cleanup process is active. One existing reviewer is
+checking the concrete first-continuation invocation without runtime actions.
+All three actual setup roots are stopped-retained. For
+`runs/export-memory-setup-763182f`, original
 five-container custody79c04877 preserves4677files and complete traces. Only its
 owned PG was subsequently restarted for six read-only outcome queries; it stopped
 exit0/PID0/noOOM again at12:29:23Z. That separate recovery receipt owns the new
@@ -70,11 +78,13 @@ actual ownership/isolation before mutation. Unrelated workloads remain untouched
 
 ## Next bounded action
 
-Commit/push the reviewed descriptor-prefix correction and original result, then
-run the same existing executor once from that clean revision in a new fresh root.
-Do not edit/replay either failed root or fabricate acceptance. Reuse unchanged
-compiler/component/source evidence. After known acceptance, proceed to the
-separate fresh-cgroup measurement and independent science/SQL/custody audit.
+Commit/push the reviewed mount comparator and original result. Execute the reviewed
+`export-memory-setup-6fe5266/root-audit/first-continuation.py` once: authenticate
+actual original resources, restart only owned PG, renew custody under fresh
+evidence filenames, then run first continuation and first acceptance using the
+original clean source. Preserve original UNKNOWN records; do not republish.
+After known acceptance, proceed to separate fresh-cgroup measurement and
+independent science/SQL/custody audit. Reuse unchanged component/source evidence.
 
 Continue the existing dependency-ready plan. M1–M5, ACK/GC, import/restore,
 capacity/aged-state/RSS and complete product/release journeys remain open;

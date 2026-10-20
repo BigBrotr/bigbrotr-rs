@@ -348,7 +348,9 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
 
     def custody(self, start, terminal, group):
         self.exclusion('publish')
-        require(terminal['Mounts'] == start['container']['Mounts'], 'unchanged original publisher mounts')
+        order = lambda mount: mount['Destination']
+        require(sorted(terminal['Mounts'], key=order) == sorted(start['container']['Mounts'], key=order),
+                'unchanged original publisher mounts')
         expected = {'/lab': (self.out, True), '/build': (self.build, False), '/probe': (self.probe, False),
                     '/source': (SOURCE, False), '/instrument': (self.instrument, False)}
         for target, (source, writable) in expected.items():

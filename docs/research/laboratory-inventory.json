@@ -65913,6 +65913,33 @@
             "finished_at": "2026-10-20T12:29:23.902096+00:00"
           },
           "preservation": "4677original output files, complete traces, scientific native roots, all SQL captures, originalfailed descriptor, credentials and PG data retained. Recovery touched only ownedPG; no native root reopened or acceptance replayed."
+        },
+        {
+          "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+          "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.fresh_setup_attempts_20261020",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266",
+          "preparation": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266-preparation",
+          "source": "6fe52661e942817ed53d686d4ecc4fcd03f4a963",
+          "owner": "bbe2deea17e5648bed7cd8f8dcbd4f39",
+          "owner_label": "org.bigbrotr.export-memory-lab",
+          "state": "stopped-retained",
+          "outcome": "UNKNOWN_PRESERVED",
+          "containers": [
+            {
+              "id": "e8fbb3ab2c4c994cfc54beaa44a27518524a100182912f152db39eb2f2c5e9e4",
+              "name": "bigbrotr-export-memory-bbe2deea17-postgres"
+            },
+            {
+              "id": "7fe2e74d715d3bbadd61b6d420a66a105e414c3af95ab8a759e4cc7b3e70c72d",
+              "name": "bigbrotr-export-memory-bbe2deea17-configure"
+            },
+            {
+              "id": "1ca864ea0a5c5d31a4d1364a4c39e46bd41fc04216df1df6a406608eab2be4bd",
+              "name": "bigbrotr-export-memory-bbe2deea17-publish"
+            }
+          ],
+          "terminal": "All3stopped0/PID0/noOOM at original close; reauthenticated12:39:49Z before any continuation. See root-audit/pre-continuation-v1.json.",
+          "preservation": "4385original output files, complete traces, publication/native roots, SQL captures, credentials and PG data retained. First continuation still NOT_RUN."
         }
       ]
     },

@@ -37209,6 +37209,24 @@
             },
             "scope": "Real publication frontier4/snapshot5,12 scientific facts across5families,4receipts,49 native rows independently checked; three real grants prepared. Complete publisher10worker/707process/975thread and continuation3worker/26process/435thread traces passed with terminal/backend/mount/physical custody. Accept probe refused InvalidInput before catalog connection; no Export created. Original overall FAIL/UNKNOWN preserved; measurement NOT_RUN.",
             "recovery_scope": "After all5owned containers terminal and full failed-accept21process/2thread/0worker audit, only owned PG restarted for6read-only queries capturing75tables/catalog. Same jobs/commands/grants/catalog; only owner_epochs and role_instances differ. PG stopped0/PID0/noOOM again; no compensation or replay."
+          },
+          {
+            "source": "6fe52661e942817ed53d686d4ecc4fcd03f4a963",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266",
+            "status": "PUBLICATION_PASS_OUTER_MOUNT_ORDER_COMPARISON_FAIL",
+            "session": "76876 joined1",
+            "custody": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/pre-continuation-v1.json",
+              "bytes": 1091502,
+              "sha256": "a57305c1732149d1dea5ab3cd6c4c2299c72f168562ca3e81c3fc860fa1a8ee5"
+            },
+            "publication": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/out/fresh-root/publication.json",
+              "bytes": 827055,
+              "sha256": "8a4f0d56b8456ab975fe81132bd7eb0e624b2d11323b94e4f8a0bdae410339c7"
+            },
+            "scope": "Original publication naturally completed; 10 worker lifetimes,707 processes,975 threads authenticated. Docker returned identical complete Mounts records in another array order. No native observers, grants, acceptance or measurement started. All3containers stopped0/PID0/noOOM. Original UNKNOWN and all4385 output files retained.",
+            "next": "Renew actual custody with fresh outer evidence labels, then first continuation on the same original source/dataset. Do not replay publication."
           }
         ],
         "sql_framing_correction_20261020": {
@@ -37230,6 +37248,31 @@
             "sha256": "d56fa0e0d6b088a1d3e81266089639abd5f7ae560a943829e807a1a847dceca1"
           },
           "scope": "Correct exact catalog prefix in fixture; inherited acceptance/measurement descriptor. Product/probe unchanged; existing build qualification reused. Fresh run after coherent commit/push."
+        },
+        "mount_order_correction_20261020": {
+          "status": "TARGETED_SOURCE_REVIEW_PASS_RUNTIME_CONTINUATION_NOT_RUN",
+          "source": {
+            "path": "/home/tux/bigbrotr-rs/experiments/export-execution/memory_lab.py",
+            "bytes": 26420,
+            "sha256": "70f982042a47bbe6f5554bfa0907cabb0606d9e9de537b4e2cd377c4cdbf4d88"
+          },
+          "review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/mount-order-review-v1.json",
+            "bytes": 7590,
+            "sha256": "8eef295ab8a035bfbebbd71f9d0a9ea07dcbb686bf872dac8466877d7dad8775"
+          },
+          "checks": [
+            "AST PASS",
+            "git diff --check PASS",
+            "Complete sorted records identical in retained actual start/terminal evidence; exact singleton source/RW checks remain"
+          ],
+          "change": "Compare full mount records sorted by Destination, preserving every field and cardinality. No product/probe/input/budget/deadline change.",
+          "recovery_invocation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6fe5266/root-audit/first-continuation.py",
+            "bytes": 8783,
+            "sha256": "3c0dbb6fc9631a5f1f0d38cecfcdee7d53b597ed637274d76832f5d97c5b09d1"
+          },
+          "limits": "The recorded one-off root composition reuses original executor run/exclusion/close and inner source; original failed resources are preserved separately. Actual execution NOT_RUN."
         }
       },
       "archive_refusal_journey_attempts": [
