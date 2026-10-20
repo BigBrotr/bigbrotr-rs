@@ -66331,6 +66331,177 @@
           ],
           "next": "Never replay completed custody after borrowed PG reuse. Preserve original interrupted FAIL; next fresh missing-input run uses qualified unchanged9a product and a new exact-revision root."
         }
+      },
+      {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+        "case": "missing-input",
+        "source": "fd009b6aa9916e0ab4b64211f4766fb8d56d04b2",
+        "tree": "2ae2cdc918067a8e7e267fbad0095768281c1bd4",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6",
+        "prepare_session": 23219,
+        "prepare_joined_exit_code": 0,
+        "engine_session": 2957,
+        "engine_joined_exit_code": 0,
+        "replay_session": 17097,
+        "replay_joined_exit_code": 0,
+        "custody_session": 8521,
+        "custody_joined_exit_code": 0,
+        "engine_wrapper": {
+          "started": "2026-10-20T09:35:54.281408+00:00",
+          "command": [
+            "python3",
+            "-B",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/source/experiments/acquisition-scope/bindings.py",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6",
+            "--installed-archive-catch-up-refusal-missing-input",
+            "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+          ],
+          "source": "fd009b6aa9916e0ab4b64211f4766fb8d56d04b2",
+          "actual_joins": {
+            "prepare23219": 0
+          },
+          "helper_sha256": "42ebdfef3c9160224feafa80a59c34499ee68e2d296d96cc9457dd673c3ccc90",
+          "finished": "2026-10-20T09:37:34.963699+00:00",
+          "exit_code": 0
+        },
+        "oracle": {
+          "case": "missing-input",
+          "control_released": false,
+          "control_tables": 75,
+          "exit_code": 4,
+          "expected_refusal": true,
+          "installed_processes": 11,
+          "new_archive_attempts": 0,
+          "new_frontier_revisions": 0,
+          "original_frontier_revision": 4,
+          "same_physical_roots": true,
+          "snapshots": 31,
+          "source_scope": "independent whole-state reducer; wait timing is observed, no internal timer claim",
+          "status": "PASS"
+        },
+        "negative_controls": {
+          "rejected": [
+            "forced-process",
+            "unknown-process",
+            "wrong-error",
+            "unrelated-SQL",
+            "native-write",
+            "backend-live",
+            "Control-normalized",
+            "old-frontier-rewritten",
+            "scope-obligation-added",
+            "lost-original"
+          ],
+          "scope": "assembled-context mutations, not independent engine or isolated-predicate coverage",
+          "status": "PASS"
+        },
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/audit-root/audit-v1.json",
+          "bytes": 367286,
+          "sha256": "3832f22633b8346a0bdf57c976e8605456d7bc3517224437f794569a06f7d235"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/root-independent-replay.json",
+          "bytes": 136032,
+          "sha256": "7421e94aff32d195e590cac3f042785db4c272f78c3c2fea55d964282f6f7103"
+        },
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/root-preparation.json",
+          "bytes": 29816,
+          "sha256": "c02b65bffee94276044f8fe7f0fc268a19e8663e6e07b410d4b6069888bcfad2"
+        },
+        "source_files": 1981,
+        "protected_elfs": 190,
+        "raw_bound_files": 511,
+        "unchanged_nonborrowed_containers": 1407,
+        "custody_observed_at": "2026-10-20T09:44:24.486027+00:00",
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-20T09:35:55.194553657Z",
+              "FinishedAt": "2026-10-20T09:37:34.067262482Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "381daa1afc9017650db6a5c1f5fb2a1b1c32836e0b06d68dc7e102cd36351231",
+            "Name": "/bigbrotr-acquisition-binding-fd009b6",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-20T09:35:56.251192023Z",
+              "FinishedAt": "2026-10-20T09:37:33.386287949Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "free_bytes_after": 329365479424,
+        "limits": "Only missing-input refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures and the interrupted missing-input2426646 remain unchanged; no resolution of the initial Sync timeout is inferred. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
       }
     ],
     "archive_refusal_qualification": {
@@ -66378,6 +66549,21 @@
           "sha256": "349869a82eded8ab0a72d634d58253590d5900ce6282c1919b493f78408159cb"
         },
         "scope": "Only family-counts refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures remain FAIL. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
+      },
+      "missing-input": {
+        "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+        "source": "fd009b6aa9916e0ab4b64211f4766fb8d56d04b2",
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/audit-root/audit-v1.json",
+          "bytes": 367286,
+          "sha256": "3832f22633b8346a0bdf57c976e8605456d7bc3517224437f794569a06f7d235"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6/root-independent-replay.json",
+          "bytes": 136032,
+          "sha256": "7421e94aff32d195e590cac3f042785db4c272f78c3c2fea55d964282f6f7103"
+        },
+        "scope": "Only missing-input refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures and the interrupted missing-input2426646 remain unchanged; no resolution of the initial Sync timeout is inferred. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
       }
     },
     "archive_package_cache_headroom": {

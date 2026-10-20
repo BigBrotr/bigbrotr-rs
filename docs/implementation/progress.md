@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T09:43Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T09:46Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,10 +9,10 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`fd009b6aa9916e0ab4b64211f4766fb8d56d04b2`, already pushed and verified remotely.
+`a12d45e16eccdafb40802fa4f997f5692d21bac0`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Current documentation edits record Q37 and the completed
-engine boundary below. Product source is unchanged. The
+No merge/rebase pending. Current documentation/evidence edits record the qualified
+missing-input refusal below. Product source is unchanged. The
 attempt-limit and export-memory worktrees are clean on their preserved commits;
 their reviewed source is not integrated or runtime-qualified.
 
@@ -155,18 +155,20 @@ PID0/noOOM. Root read the complete115-line helper and delta; independent review
 FAIL/-2, interrupted negative controls and strict replay NOT_RUN remain unchanged.
 Never rerun this custody check after borrowed-PG reuse or replay the old engine.
 
-Fresh **missing-input fd009b6 engine completed**, preparation23219 and engine2957
-joined0; engine09:35:55Z–09:37:34Z. Run
+Fresh **missing-input fd009b6 PASS**, preparation23219/engine2957/replay17097/
+custody8521 all joined0; engine09:35:55Z–09:37:34Z. Run
 `runs/ingest-succession-archive-catch-up-refusal-missing-input-engine-fd009b6`
 uses sourcefd009b6/tree2ae2cdc918067a8e7e267fbad0095768281c1bd4 and unchanged9a
-product. Its result reports11installed processes,31states/75tables and10negative
-controls PASS, refusal exit4, no new Archive attempt/frontier. Terminal PG/client
+product. Independent replay verifies11installed processes,31states/75tables and
+10negative controls, refusal exit4 unforced/reaped, no new Archive attempt/frontier.
+Strict replay7421e94a binds511files; custody3832f226 at09:44:24Z binds1981source
+files/190ELFs and1407unchanged nonborrowed containers. Terminal PG/client
 stopped0/143, PID0/noOOM; cleanup/missing/unrelated arrays empty.
-**Independent strict replay and custody are NOT_RUN; qualification remains open.**
+The original interrupted2426646 result remains FAIL; this does not resolve the
+earlier initial Sync timeout. Never replay custody after borrowed-PG reuse.
 
-**Next action:** perform that completed run's independent strict replay and custody
-before borrowed-PG reuse; inspect both results and record qualified status only
-after actual completion.
+**Next action:** prepare a fresh frontier-cancel run from clean main using unchanged
+qualified9a product, then run its engine, independent strict replay and custody.
 Frontier-cancel and frontier-control-loss remain NOT_RUN.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
@@ -184,9 +186,10 @@ is not solely attributed to the selected9009500160B. All source/data/log evidenc
 worktrees and original failures remain preserved. Detailed pins and limitations
 are in `archive_package_cache_headroom` in the existing report/inventory.
 
-After this checkpoint commit/push, run strict
-`installed_archive_catch_up_refusal_capture.py` replay for fd009b6
-and latest custody templatec023b95d under journeyWT's
+After this checkpoint commit/push, use existing preparation5b61ccf3 under
+`.research/archive-renewal-dispatch-20261018`, case frontier-cancel. Run the actual
+engine, strict `installed_archive_catch_up_refusal_capture.py` replay and latest
+custody templatec023b95d under journeyWT's
 `.research/archive-catch-up-client-name-audit-20261018` before borrowed-PG reuse.
 Each case needs its own genuine initial→terminal3 setup, unique clean revision/root
 and coherent checkpoint; client names include source7. Preserve every failure.
@@ -259,7 +262,7 @@ runtime are NOT_RUN. The reviewed
 c68ac35 baseline and all original artifacts remain intact.
 No session runtime is active. Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
-The673/e919/be181 refusal custody checks are complete and must not be rerun after
+The673/e919/be181/fd009b6 refusal custody checks are complete and must not be rerun after
 borrowed-PG reuse. The interrupted2426646 limited custody observation is complete; its scientific
 qualification and strict independent replay remain NOT_RUN.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner

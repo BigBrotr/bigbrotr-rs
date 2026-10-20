@@ -678,7 +678,10 @@ a preserved failure. The orphan-history refusal also passes at fixture`e919097`:
 eleven actual processes,31states/75tables,511raw-bound files and10negative controls,
 with no new Archive attempt/frontier. The family-counts refusal passes at
 fixture`be181ce`: eleven actual processes,31states/75tables,509raw-bound files and
-10negative controls, preserving the prior frontier. Three other refusals/cancellation, held-attempt custody and
+10negative controls, preserving the prior frontier. Missing-input passes at
+fixture`fd009b6`: eleven actual processes,31states/75tables,511raw-bound files and
+10negative controls; its original interrupted2426646 run remains FAIL. Two other
+refusals/cancellation, held-attempt custody and
 total-cap qualification remain open. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix
