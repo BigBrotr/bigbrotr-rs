@@ -35,9 +35,31 @@ from memory_setup_oracle import grants, one, publication
 KEYS = {'activate', 'owner', 'endpoint', 'enrollment', 'scope', 'acquisition', 'accept-export', *ACTIONS}
 
 
+def credentials(spec, config):
+    """Keep the optional exact boundary bound to this catalog manager only."""
+    refs = [spec['password_ref'], spec['operator']['password_ref'], spec['migrator']['password_ref'],
+            config['postgres']['control']['password_ref'], config['postgres']['catalog']['password_ref'],
+            config['postgres']['catalog']['read_password_ref']]
+    manager = None
+    if 'catalog_manager_password_bytes' in spec:
+        require(type(spec['catalog_manager_password_bytes']) is int
+                and spec['catalog_manager_password_bytes'] == 65536
+                and spec['application_source'] == 'f1e726f78d7f925cf84cec19117fee5d607773c5'
+                and spec.get('event_kind', 'frozen-archive-recipe') == 'frozen-archive-recipe',
+                'explicit retained-application sample manager credential boundary')
+        manager = config['postgres']['catalog']['password_ref']
+        require(manager not in refs[:4] + refs[5:], 'boundary manager credential is not another role credential')
+    for reference in refs:
+        require(reference.startswith('file:'), 'explicit local credential file')
+        raw = regular(reference[5:], 65536 if reference == manager else 4096)
+        if reference == manager:
+            require(len(raw) == spec['catalog_manager_password_bytes'], 'exact selected manager credential bytes')
+        require(Path(reference[5:]).stat().st_mode & 0o077 == 0, 'private credential permissions')
+
+
 def read_spec(path, *, fresh=True):
     spec = json.loads(regular(path, 65536))
-    require(set(spec) - {'event_kind'} == {'format', 'name', 'root', 'config', 'application', 'application_source',
+    require(set(spec) - {'event_kind', 'catalog_manager_password_bytes'} == {'format', 'name', 'root', 'config', 'application', 'application_source',
         'probe', 'ingest_probe', 'psql', 'worker', 'recipe', 'inventory', 'source_manifest',
         'operator', 'migrator', 'username', 'password_ref', 'keys', 'limits'},
         'closed fresh setup descriptor')
@@ -93,13 +115,7 @@ def read_spec(path, *, fresh=True):
                 and re.fullmatch('[a-z][a-z0-9_]{0,62}', entry['database'])
                 and re.fullmatch('[a-z][a-z0-9_]{0,62}', entry['user']), 'explicit loopback database binding')
     require(config['postgres']['control']['database'] != config['postgres']['catalog']['database'], 'separate databases')
-    refs = [spec['password_ref'], spec['operator']['password_ref'], spec['migrator']['password_ref'],
-            config['postgres']['control']['password_ref'], config['postgres']['catalog']['password_ref'],
-            config['postgres']['catalog']['read_password_ref']]
-    for reference in refs:
-        require(reference.startswith('file:'), 'explicit local credential file')
-        regular(reference[5:], 4096)
-        require(Path(reference[5:]).stat().st_mode & 0o077 == 0, 'private credential permissions')
+    credentials(spec, config)
     require(set(spec['limits']) == {'memory_max_bytes', 'baseline_bytes', 'data_bytes', 'native_bytes',
         'control_bytes', 'engine_memory_bytes', 'native_reserve_bytes', 'row_bytes', 'scan_bytes',
         'temp_bytes', 'export_bytes', 'disk_reserve_bytes', 'query_ms'}

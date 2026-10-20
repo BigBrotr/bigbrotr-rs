@@ -176,6 +176,7 @@ custody and the fresh measurement cgroup remain root-owned prerequisites.
 | `config` | `{path,bytes,sha256}` for the explicit root-prepared destination-bearing TOML recipe, with a separate `[export.destination]` section containing exactly `id` and `root` |
 | `recipe` | `{path,bytes,sha256}` for the selected frozen input. Default `archive-event-response.json` SHA256 is `815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963`; supported boundary literals are listed below. |
 | `event_kind` | Optional; omission preserves `frozen-archive-recipe`. Explicit `frozen-signed-event` selects a complete pinned boundary literal, never a newly signed runtime value. |
+| `catalog_manager_password_bytes` | Optional; only `65536` selects the exact catalog manager credential boundary. Omission preserves the original descriptor and 4096-byte credential ceiling. |
 | `worker` | `{root,bytes,sha256}` for the unchanged qualified worker executable; root must be the application's adjacent `archive-worker` directory, which ordinary Serve actually selects |
 | `inventory`, `source_manifest` | Each `{path,bytes,sha256}` for root's authenticated environment/build/source evidence; pinning the receipt alone does not validate its contents |
 | `operator`, `migrator` | Each `{user,password_ref}` for distinct responsibilities provisioned outside this script |
@@ -188,6 +189,12 @@ future ELF hashes or job IDs. Protected input files are regular, canonical,
 single-link and not group/world writable. Credential files must additionally be
 private. Secret-bearing raw CLI, SQL, session and token evidence stays under the
 fresh mode-0700 root; do not publish that directory or commit its contents.
+The optional credential boundary binds only the pinned configuration's
+`postgres.catalog.password_ref`, refuses sharing that file with any other role,
+and requires exactly 65,536 bytes. All other credentials remain at most 4096
+bytes, with the same canonical-file and private-permission checks. Acceptance and
+the manager's before/after captures recheck the binding; Rust case/run packets
+remain unchanged.
 
 The configuration is generated with the real existing recipe owner and frozen
 before initialization. It must select managed authority; local roles
@@ -204,6 +211,16 @@ names, narrow application/manager roles and a SELECT-only reader. The reader
 password is the existing census's 64-character lowercase hexadecimal profile.
 The three profiles above are frozen before initialization; selecting the existing
 ordinary-reader path later does not edit any file or accepted policy document.
+
+`memory_lab.py --catalog-manager-password-bytes 65536` requires `--manager-build`
+and `archive-sample`; it excludes layout refusal, prepare-only and installed-five.
+The default remains 64 bytes for every generated credential, including the
+unchanged native reader. The maximum manager credential is installed during fresh
+PostgreSQL provisioning and stays in use throughout setup/publication. No
+credential rotation or deadline increase hides a setup failure. Resources retain
+its nonsecret size and the setup/measurement stage. This source candidate reuses
+the retained f1e application/214 diagnostic graph described in [MEMORY.md](MEMORY.md),
+not newer initial Sync code; the maximum-password runtime remains **NOT_RUN**.
 
 ## Root prerequisites and retained limits
 

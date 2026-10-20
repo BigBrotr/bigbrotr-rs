@@ -15,7 +15,7 @@ import time
 import tomllib
 
 # This import sets the explicit inert oracle paths; its main guard stays false.
-from memory_setup import immutable
+from memory_setup import credentials, immutable
 from memory_setup_io import IO, pinned, regular, require, sha, write
 from memory_setup_oracle import acceptance
 
@@ -61,6 +61,8 @@ def run(root, group):
     destination = pinned(profiles['destination'])
     require(destination == pinned(spec['config']), 'destination profile is the original supplied recipe')
     config = tomllib.loads(destination.decode())
+    if 'catalog_manager_password_bytes' in spec:
+        credentials(spec, config)
     output = root / 'accept-run'
     output.mkdir(mode=0o700)
     io = IO(output, spec, config)
