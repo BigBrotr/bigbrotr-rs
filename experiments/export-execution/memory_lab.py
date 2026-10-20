@@ -843,6 +843,8 @@ def main():
     os.umask(0o077)
     require(not args.installed_five or (args.application_build is not None
             and args.export_memory_mib == 256 and not args.prepare_only), 'explicit installed five profile')
+    require(args.prepare_only or args.installed_five or args.signed_input == 'archive-sample',
+            'pinned single-job acceptance probe supports only archive-sample')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
         application_build=args.application_build, export_memory_mib=args.export_memory_mib,
         signed_input=args.signed_input, manager_build=args.manager_build)
