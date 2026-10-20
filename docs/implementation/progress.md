@@ -9,12 +9,13 @@ P02-T02 Steps4/5/7: durable classified producer checkpoint → synchronized nati
 ACK → restart. Current increment implements typed PG progress with native ACK0,
 retaining every request/receipt/input (noGC); it grants no new credit.
 
-Main `dd571101d5ad3568a17248f18e056fc4e17b09d9` was pushed and verified equal
+Main `c89b9e2052cd291640cdabfdf6905ed0be6853f9` was pushed and verified equal
 to remote. It integrates candidate `75df76037cb5c60458165414f133d9deafcc4112`.
 Five reconciled original source/integration branch refs were retired; all their
 clean worktrees remain detached at their original commits, including
 `.research/producer-progress-integration-20261020`. Ignored evidence is preserved.
-Only this custody/checkpoint update awaits its coherent commit.
+The reviewed `738637f1c7154f2199eddecf86c83cdd5252bbdb` recovery fixture and its
+qualification are now staged for one coherent integration commit.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -25,24 +26,29 @@ Clippy selections. Fixture 75df760 passes three real successor Sync lifetimes,
 Raw replay binds 1013 files and repeats science/controls. Earlier failures remain
 FAIL, including migration syntax, historical xmin rewrite and the overbroad
 historical-jobs checkpoint0 assertion; their corrections are recorded separately.
+Fixture738637f additionally passes typed epoch3 recovery, exact retry and two
+corrupted-copy refusals, with60 negative controls and raw replay binding856 files.
+Full state/xmin/native/input preservation and exact refusal diagnostics pass.
 
 ## Processes and resources
 
-Build 87204, installed 67301 and raw replay 95690 joined with exit 0. Exact owned
-build/client containers and borrowed PG were observed exited, PID 0, no OOM; final 75df760 cgroups
-absent, no cleanup errors or unrelated changes. No build/runtime active.
-Source-only agents `export_setup_review` and `producer_recovery_review` now own
-separate initial/activated and historical-recovery fixture extensions based on
-75df760. Their unpublished edits remain outside main until reviewed.
+Recovery driver61121 and raw replay35387 joined0. Exact owned client and borrowed
+PG were freshly observed exited/PID0/noOOM/cgroups absent; no cleanup errors or
+unrelated changes. Prior build/successor runs remain joined. No engine/build active.
+`export_setup_review` owns the initial/activated fixture in its separate worktree.
+Proxy88a926 is frozen in `.research/producer-progress-fault-20261020`, with root
+and independent Astra source review,20 discriminator/wire tests and5 existing
+proxy testsPASS. It is not integrated or connected product evidence yet.
 The [inventory](../research/laboratory-inventory.json) owns paths and custody.
 No cleanup; original datasets, failed runs, logs and worktrees remain intact.
 
 ## Next action and open limits
 
-Review and run the bounded fixture extensions on qualified d4e1b85 binaries: actual initial and activated-epoch2 Sync,
-and fresh config-only typed successor recovery/retry with preserved origins and
-specific corrupted-copy refusals. Reuse the existing runners and independent
-oracles; do not repeat unchanged component builds for fixture-only changes.
+Finish this integration/push, then review/run the initial and activated-epoch2
+Sync fixture on qualified d4e1b85 binaries. Integrate the reviewed narrow proxy
+and add the agreed proof-only COMMIT-loss scenario using existing collectors and
+oracles; active old-Control recovery requires its explicit lifecycle profile.
+Reuse unchanged component builds.
 
 The new job keeps jobs.checkpoint_revision=0; historical jobs retain their actual
 values. Classified local positions are not remote cursor/coverage. Post-hole

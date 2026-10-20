@@ -40981,14 +40981,14 @@
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       },
       "producer_checkpoint_ack_preparation_20261020": {
-        "status": "COMPONENTS76_PASS_AT_d4e1b85; THREE_SUCCESSOR_CONTEXTS_AND_RAW_REPLAY_PASS_AT_75df760; INITIAL_ACTIVATED_ENTRYPOINT_AND_RECOVERY_GATES_OPEN",
+        "status": "COMPONENTS76_PASS_AT_d4e1b85; THREE_SUCCESSOR_SYNC_CONTEXTS_PASS_AT_75df760; EPOCH3_TYPED_RECOVERY_RETRY_AND_TWO_REFUSALS_PASS_AT_738637f; REMAINING_GATES_OPEN",
         "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
         "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
         "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Qualify actual initial and activated-epoch2 Sync entrypoints, and fresh config-only recovery/retry on retained typed successor state using existing fixtures. Keep ACK0/noGC and all original failures; native ACK, credit, COMMIT-loss and remaining discriminators stay open.",
+        "next": "Qualify actual initial and activated-epoch2 Sync entrypoints, then proof-only COMMIT reply-loss and actual fresh recovery with active old-Control fencing. Reuse qualified d4e1b85 artifacts; retain ACK0/noGC and all original failures. Other historical recovery/refusal/resource gates remain open.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41437,7 +41437,161 @@
             "custody": "Exact owned client/borrowedPG observed exitedPID0/noOOM/cgroups absent; no cleanup errors or unrelated/unexpected/missing container.",
             "scope": "Three successor entrypoints at epochs3/3/4, not initial or activated-epoch2 Sync. No actual COMMIT-fault injection, historical typed recovery, native ACK, credit, GC, indefinite traffic or whole-task completion."
           }
-        ]
+        ],
+        "installed_progress_recovery_runs": [
+          {
+            "source": "738637f1c7154f2199eddecf86c83cdd5252bbdb",
+            "tree": "9877ab52a0664541d12d7beec948343a0081bd2c",
+            "product_source": "d4e1b85566dee30994017834b763fe04396bcf1c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-recovery-738637f",
+            "driver_session": 61121,
+            "driver_exit": 0,
+            "status": "PASS_INSTALLED_PRODUCER_PROGRESS_RECOVERY",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-recovery-738637f/installed-progress-recovery/result.json",
+              "bytes": 12363562,
+              "sha256": "fa12ebcdf38ecb9bb6f10289f62f275671a275e46397ff0799e3e5990161c0ed"
+            },
+            "capture_replay": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-recovery-738637f/installed-progress-recovery-capture-replay.json",
+              "bytes": 191541,
+              "sha256": "bea3f2bf1e767c0442d9859ffb2a2fc19b695841764f42622d018796329f6523"
+            },
+            "capture_driver_session": 35387,
+            "capture_driver_exit": 0,
+            "bound_file_count": 856,
+            "source_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/historical-recovery-fixture-source-v1.json",
+              "bytes": 11722,
+              "sha256": "c1f1bcc6fc131c785a9666c83b0b76b9b2a245776d3cfcc6edd166c853bd41d1"
+            },
+            "critical_ai_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/historical-recovery-fixture-critical-review-v1.json",
+              "bytes": 7105,
+              "sha256": "ec1701c1c4efc127dc1ec44ae6ab0c2d7cdf1ae90978cb50f8a28aae78323b09"
+            },
+            "root_review": "Complete changed owners and relevant unchanged cycle/model/client boundaries read; all24 author source/control/prior-review pins authenticated, clean exact source and qualified product equality verified. Independent Astra review found no source blocker. Root executed actual four cases and raw replay.",
+            "cases": [
+              {
+                "name": "positive-recover",
+                "status": "PASS",
+                "returncode": 0,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "positive-recover",
+                  "tables": 77,
+                  "producer_epoch": "3",
+                  "native_rows": 91,
+                  "native_sequence": 112,
+                  "input_files": 8,
+                  "product_native_writes": 1,
+                  "native_acknowledged": "0",
+                  "native_retired": "0",
+                  "typed_head_and_closure_preserved": true,
+                  "queued_job_uncertainty_preserved": true,
+                  "result": "RECOVERED"
+                },
+                "negative_controls": 14
+              },
+              {
+                "name": "positive-retry",
+                "status": "PASS",
+                "returncode": 0,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "positive-retry",
+                  "tables": 77,
+                  "producer_epoch": "3",
+                  "native_rows": 91,
+                  "native_sequence": 112,
+                  "input_files": 8,
+                  "product_native_writes": 0,
+                  "native_acknowledged": "0",
+                  "native_retired": "0",
+                  "typed_head_and_closure_preserved": true,
+                  "queued_job_uncertainty_preserved": true,
+                  "result": "RECOVERED"
+                },
+                "negative_controls": 14
+              },
+              {
+                "name": "missing-closure-refuse",
+                "status": "PASS",
+                "returncode": 4,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "missing-closure-refuse",
+                  "tables": 77,
+                  "producer_epoch": "3",
+                  "native_rows": 91,
+                  "native_sequence": 111,
+                  "input_files": 8,
+                  "product_native_writes": 0,
+                  "native_acknowledged": "0",
+                  "native_retired": "0",
+                  "typed_head_and_closure_preserved": true,
+                  "queued_job_uncertainty_preserved": true,
+                  "result": "REFUSED_AT_RETAINED_HEAD_VALIDATION"
+                },
+                "negative_controls": 16
+              },
+              {
+                "name": "foreign-issuer-refuse",
+                "status": "PASS",
+                "returncode": 4,
+                "custody": "OBSERVED_CLOSED_AND_JOINED",
+                "oracle": {
+                  "status": "PASS",
+                  "case": "foreign-issuer-refuse",
+                  "tables": 77,
+                  "producer_epoch": "3",
+                  "native_rows": 91,
+                  "native_sequence": 111,
+                  "input_files": 8,
+                  "product_native_writes": 0,
+                  "native_acknowledged": "0",
+                  "native_retired": "0",
+                  "typed_head_and_closure_preserved": true,
+                  "queued_job_uncertainty_preserved": true,
+                  "result": "REFUSED_AT_RETAINED_HEAD_VALIDATION"
+                },
+                "negative_controls": 16
+              }
+            ],
+            "scope": "Fresh typed epoch3 graceful-origin recovery and exact retry; separate privileged missing-closure and foreign-issuer copies refuse at the named same-backend retained-head validator. All77table values/xmins, full native/input and historical issuer/typed heads checked. First positive closes producer/native once; exact retry makes no native write. Original preserved.",
+            "not_run": [
+              "Initial and activated-epoch2 recovery; other historical contexts and separate no-checkpoint legacy origin",
+              "Active-Control COMMIT loss/recovery, native-fact deletion fixture",
+              "ACK above0, new credit, GC, source closure, workflow completion, near-cap resource/cancellation qualification"
+            ],
+            "custody": "Root freshly inspected exact owned client and borrowed PG exited/PID0/noOOM/cgroups absent. No cleanup errors, unrelated changes, unexpected or missing owned containers. Inventory owns resource identities."
+          }
+        ],
+        "fault_proxy_preparation": {
+          "source": "88a926aa47c1aed2bd831ef9ea3042bd33843143",
+          "status": "SOURCE_REVIEW_AND25_SYNTHETIC_TESTS_PASS; CONNECTED_FAULT_SCENARIO_NOT_RUN",
+          "author_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fault-20261020/.research/progress-fault-source-receipt.json",
+            "bytes": 1651,
+            "sha256": "01bba37e634dd8e32f71c1d15ce83728a360c86d4437bab718cf0ce6985d8e01"
+          },
+          "critical_ai_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/progress-fault-proxy-review-v1.json",
+            "bytes": 5453,
+            "sha256": "699c1f860dd892b75651ad09ce51fcb9021efafb107e416a2a8f6364493a4d62"
+          },
+          "root_validation": "Changed proxy and test owners reviewed; exact source pins/clean HEAD authenticated before execution.20 target/wire tests and5 original proxy tests ran through root, both exit0. Loopback peers explicitly closed/joined by existing harness; no engines or product processes.",
+          "tests": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fault-20261020/.research/progress-fault-targeted-tests.log",
+            "bytes": 3202,
+            "sha256": "d615857cc7e729aea014e950e4b4ccf95bf2ea78c4e21ae913e36170feef6fd4"
+          },
+          "outer_contract": "Independent mutation SQL/science gate plus first UPDATE completion before proof release; second successful UPDATE selects only its COMMIT on same actual Control backend. Bind PID/start and exact natural failed Serve/proxy/relay join. Reuse full native/input oracle; extend recovery explicitly for active old Control.",
+          "scope": "Tool qualification only. Actual before-forward/after-complete CommitUnknown, authoritative readback and fresh recovery/retry remain NOT_RUN."
+        }
       }
     }
   }

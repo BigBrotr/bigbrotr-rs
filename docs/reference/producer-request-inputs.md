@@ -657,9 +657,14 @@ epochs 3/3/4, full 77-table and independent signed native/input checks, and 63
 corrupted-capture controls. Raw replay binds 1013 retained files and repeats the
 science/controls. The [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
 preserves all original failures and exact build/source/artifact identities.
-Actual initial and activated-epoch2 Sync, typed historical recovery/retry,
-COMMIT-loss and remaining refusal/resource cases still require qualification;
-these three successor contexts do not cover those distinct entrypoints.
+Fixture `738637f` additionally passes fresh config-only recovery and exact retry
+of the retained epoch3 typed state, plus missing-closure and foreign-issuer
+refusals on separate privileged corruption copies. All77 tables/xmins, native
+bytes and inputs match independent expectations; 60 corrupted-capture controls
+and raw replay binding856 files pass. First recovery changes only the explicit
+closing state and Control lifecycle; retry adds no native write. Actual initial
+and activated-epoch2 Sync/recovery, active-Control recovery after COMMIT loss and
+remaining refusal/resource cases still require qualification.
 
 `CapturedEventInput` decodes the actual retained correlated EVENT, checks the
 accepted collection and actual REQ filters, and derives observation from that

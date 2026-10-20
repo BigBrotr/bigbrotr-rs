@@ -455,9 +455,10 @@ One owner serializes exact identity decisions for each writable directory.
   The [typed local progress increment](../reference/producer-request-inputs.md#typed-local-classified-progress-0039-partial-qualification)
   adds 0039 and opaque native-bound classification in the real Sync consumer.
   Three successor lifetimes pass; the linked reference and existing recovery
-  report own qualification and original failures. Initial/activated entrypoints,
-  typed recovery/retry and COMMIT-loss remain open. ACK, new credit, GC, coverage
-  and whole-step completion are not qualified.
+  report own qualification and original failures. Typed epoch3 recovery/retry
+  and two corrupted-copy refusals also pass. Initial/activated entrypoints and
+  recovery, active-Control COMMIT-loss recovery and remaining discriminators
+  stay open. ACK, new credit, GC, coverage and whole-step completion are not qualified.
   The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
   adds native-witness closure and a contiguous logical shard head in that same
   outcome transaction. [Native evidence](evidence/p03-import-checkpoints-native-20260919.json)

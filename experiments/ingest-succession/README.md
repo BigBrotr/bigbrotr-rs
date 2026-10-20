@@ -68,6 +68,18 @@ provenance on). Initial and activated Sync entrypoint qualification, historical
 recovery, COMMIT reply loss, ACK/GC and workflow completion remain separate work;
 this fixture does not claim them.
 
+`installed_progress_recovery.py ROOT BUILD` reuses the transition resource owner
+and cycle command collector for four actual config-only recovery processes on
+three fresh derivatives of the pinned typed epoch3 origin. It checks first
+recovery, exact retry and separate privileged missing-closure/foreign-issuer
+corruptions. The independent oracle preserves every table/xmin, native byte and
+input except explicitly modeled closing and Control lifecycle effects; refusal
+requires the named SQL validator on the actual excluded backend.
+`installed_progress_recovery_replay.py ROOT --output NEW_JSON` binds raw captures
+and repeats all controls. This graceful origin requires its old Control released;
+active-Control COMMIT-loss recovery and native-fact injection remain separate.
+Exact executed qualification belongs to the existing recovery evidence report.
+
 `portable-handoff-v2.json` is generated independently from the field tables in
 [the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 at revision `12c3534c6c970839a4371fc00b4ac3eac6730cb0`. The generator uses Python

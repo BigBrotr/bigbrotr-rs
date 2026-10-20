@@ -61109,8 +61109,20 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-fixture-20261020",
           "branch": "work/producer-progress-recovery-fixture",
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Created, source-only author active; unpublished edits under named owner, review/runtime pending",
-          "head": "75df76037cb5c60458165414f133d9deafcc4112"
+          "state": "Frozen, root and independent Astra reviewed; four cases/60controls and raw replayPASS; being integrated with evidence",
+          "head": "738637f1c7154f2199eddecf86c83cdd5252bbdb"
+        },
+        {
+          "owner": "progress_fault_proxy",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fault-20261020",
+          "branch": "work/producer-progress-fault",
+          "base": "c89b9e2052cd291640cdabfdf6905ed0be6853f9",
+          "head": "88a926aa47c1aed2bd831ef9ea3042bd33843143",
+          "state": "Frozen tracked clean; root/independent Astra review and25 synthetic testsPASS; connected product fault/runtimeNOT_RUN",
+          "model": "gpt-6.1-sol",
+          "effort": "xhigh",
+          "configuration_basis": "Actual session_meta agent_path and first turn_context model/effort/collaboration settings directly verified at creation: 01a15ae5-6eb4-7a22-b1f0-77b5db016b11",
+          "receipt": "/home/tux/bigbrotr-rs/.research/producer-progress-fault-20261020/.research/progress-fault-source-receipt.json"
         }
       ],
       "branch_retirement_20261020": {
@@ -61166,7 +61178,32 @@
           }
         ]
       },
-      "branch_state": "Original producer-checkpoint-ack ref retired; original worktree detached at recorded head"
+      "branch_state": "Original producer-checkpoint-ack ref retired; original worktree detached at recorded head",
+      "installed_progress_recovery_runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-recovery-738637f",
+          "source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-recovery-738637f/source",
+          "source_commit": "738637f1c7154f2199eddecf86c83cdd5252bbdb",
+          "state": "Four-case runtime and raw replay PASS; both root drivers joined0; retained exact source and artifacts",
+          "client": "abf45370bf4f544a2075c1413612415f497648a13ebf63369bfdab6ff17c342f",
+          "label": "org.bigbrotr.installed-progress-recovery",
+          "owner": "8824ab3653da47f21bc746cd09ad3570",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_progress_recovery_738637f_positive",
+            "bb_progress_recovery_738637f_missing_closure",
+            "bb_progress_recovery_738637f_foreign_issuer"
+          ],
+          "terminal_observation": "Root observed both exact containers exited/PID0/noOOM and matching owner labels; cgroups absent after drivers joined",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "unexpected_containers": [],
+          "missing_owned": [],
+          "free_bytes_after": 303140311040,
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: producer_checkpoint_ack_preparation_20261020.installed_progress_recovery_runs"
+        }
+      ]
     }
   },
   "tux_intermediate_retirement_20261018": {
