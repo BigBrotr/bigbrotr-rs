@@ -35829,7 +35829,7 @@
         }
       },
       "archive_attempt_limits_source": {
-        "status": "INTEGRATED_BUILD_PASS_ENGINE_FAIL_PAYLOAD_GRANT",
+        "status": "BUILD_PASS_PAYLOAD_FIX_SOURCE_REVIEWED_ENGINE_PENDING",
         "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018",
         "branch": "qualification/archive-catch-up-attempt-limits",
         "base": "d910233ad0a593d08e571955dde51873d947c616",
@@ -35888,7 +35888,7 @@
         "root_review": "Complete4 new owners, full changed3hook delta, complete existing history helper/lifetime/inputs/archive_coordinator/inventory/plan and finite contracts read. Final keepalive delta read. All7 source blobs and28 final manifest artifacts authenticated; compiler/runtime not run.",
         "author_checks": "Source-only AST/scoped rustfmt/three exact inverse paths PASS; artificial45snapshots16context mutations,8finish+3holder-finally mocks,4raw helpers20mutations+2name/Id controls PASS. These are author pure evidence, not executed engine qualification.",
         "finding": "Independent review found600s client keepalive shorter than admitted setup1800/cap4200. acc9bea selects10800s only for new profile; old600s and product deadlines unchanged. No remaining concrete source blocker in stated review scope.",
-        "limits": "Corrected build6c42a41/41 tests/Clippy/custody PASS. Fresh enginec5431fd failed on payload-grant preflight before expected126+3 cap refusal; source diagnosis required. No whole-fixture scientific PASS or strict raw replay. Historical failures preserved.",
+        "limits": "Originalc543 FAIL and missing final native capture remain. New runtime/replay/custody NOT_RUN. Expected126issued+3planned versus128 and no127/receipt/frontier remains required. No RSS/capacity qualification or originala99 Sync-timeout closure.",
         "custody_template": {
           "status": "ROOT_SOURCE_REVIEWED_RUNTIME_NOT_RUN",
           "template": {
@@ -36034,6 +36034,133 @@
               "turn_context_timestamp": "2026-10-20T10:19:26.090Z",
               "basis": "Read actual turn_context model, effort and collaboration settings; session_meta identifies this exact agent path and parent. Neither prompt text nor global defaults was treated as model evidence."
             }
+          }
+        },
+        "payload_profile_correction_20261020": {
+          "status": "SOURCE_REVIEW_CLOSED_FRESH_ENGINE_NOT_RUN",
+          "observed_at": "2026-10-20T11:01:26.750699+00:00",
+          "manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/manifest-v1.json",
+            "bytes": 5278,
+            "sha256": "c69d0a270ea9749ea8a3733871b46162779a336996d51f3f4789abf397464955"
+          },
+          "root_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/root-review-v1.json",
+            "bytes": 2079,
+            "sha256": "9609eff232e3279ea6f4a504dfc89fd1a8b1ec9293a97531a3a73d5c502c8019"
+          },
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/review-v1.json",
+            "bytes": 8651,
+            "sha256": "f492ba21efe3d07c0c4e568cc6a9f7a234fa7ede37e3d869a2cfd17a8049ff24"
+          },
+          "diagnosis": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-cap-diagnosis-20261020/source-note-v1.json",
+            "bytes": 14985,
+            "sha256": "bac15cc382645dddbf6046cd6a8f84a525f3bc41fdc4f703f8bf7e9d9dfda687"
+          },
+          "source_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-cap-diagnosis-20261020/candidate-review-v1.json",
+            "bytes": 3945,
+            "sha256": "65f909ec419fee3b370f58e3dc920d47e73fc1ae4b0d24a98f061aa9215c51b8"
+          },
+          "source_fix": [
+            {
+              "path": "experiments/ingest-bootstrap/installed_archive.py",
+              "original_sha256": "bf133028257f2cff6e0bfd404c31ebe22ddb12bb2a22ca2c3e1505936bffd808",
+              "candidate": {
+                "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive.py",
+                "bytes": 20238,
+                "sha256": "b963647ca664bed3d2fe0bbe7526dfda2af833c2c75e5bd1d7bf0e4b3aebd28e"
+              }
+            },
+            {
+              "path": "experiments/ingest-bootstrap/installed_archive_attempt_limits.py",
+              "original_sha256": "3f2c1aa2fc68b456284f1b7ca127feb280d18a6b90f181c19bc0bfd14e3d4b9e",
+              "candidate": {
+                "path": "/home/tux/bigbrotr-rs/experiments/ingest-bootstrap/installed_archive_attempt_limits.py",
+                "bytes": 13562,
+                "sha256": "e78446155407aea15185ebad54b9a1a5340b084fe0b3ec5bcce1e67bae786367"
+              }
+            }
+          ],
+          "source_diff": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/source.diff",
+            "bytes": 2640,
+            "sha256": "a058d5df2410ab7ba1283f6c92c09cff5224dfec2a86fdf986b1e15554ccc760"
+          },
+          "helpers": {
+            "prepare-engine.py": {
+              "original": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-clippy-correction-20261020/prepare-engine.py",
+                "bytes": 7861,
+                "sha256": "e14327fed269ee40038dade5dfa70309e1a01e24bc32e7df32b5ae6d6d6b2d1c"
+              },
+              "candidate": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/prepare-engine.py",
+                "bytes": 9216,
+                "sha256": "5c2379816fb7834a31a6101e19186e3d9f8edb15024452457b2df0842aa29f80"
+              },
+              "diff": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/prepare-engine.py.diff",
+                "bytes": 6726,
+                "sha256": "ba5c632cc41520a00347878a18f0eed6f573451d98f4de3e9a9710e175b7bc12"
+              }
+            },
+            "audit-engine.py": {
+              "original": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-clippy-correction-20261020/audit-engine.py",
+                "bytes": 47358,
+                "sha256": "aaf9ff1ca040ad4cec5f3f92df43f3cd4d7ea16bf984eb4a4b19a69aacead714"
+              },
+              "candidate": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/audit-engine.py",
+                "bytes": 49432,
+                "sha256": "1cb2986e21ed59091f4d80597a305e7deddbc42cb87763f3fe9e3b6970cdbfdf"
+              },
+              "diff": {
+                "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/audit-engine.py.diff",
+                "bytes": 6301,
+                "sha256": "5d115cb3b7306c7dcb0e7240e49322653a33e4f5f5dd353eb2c76c649e61d672"
+              }
+            }
+          },
+          "phase_wrapper": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/run-phase.py",
+            "bytes": 4267,
+            "sha256": "c1e90e72260669c329ca301920c389cb11026ad4ea9ff2c7f117c12cd9081fa8"
+          },
+          "qualified_build": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/audit-root/audit-v1.json",
+            "bytes": 853384,
+            "sha256": "bcf1b7e21d673cc70328a09b20c73ae5223231d0eb4874ec441d321d8dbf3dc2"
+          },
+          "original_failure": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/audit-root/audit-failed-cap-v1.json",
+            "bytes": 558112,
+            "sha256": "092cb3c8cfef14b63993c3002ba74c386e85dc91fb05b8cba8f418d3e50662fa"
+          },
+          "cause": "First catalog preparation needs772341776B while declared application payload is738197504B. Reader peak773390352B exceeds704MiB. This source-derived fixture shortfall precedes the attempt-cap predicate; no production ordering defect established.",
+          "profile": {
+            "application_payload": "768MiB",
+            "application_maximum": "1088MiB",
+            "native_maximum": "1984MiB",
+            "combined_maximum": "3GiB",
+            "component_allowances": "Unchanged baseline/native/completion lanes and native payload; native sum1920MiB remains below1984MiB."
+          },
+          "checks": {
+            "AST_ONLY": "PASS",
+            "new_compilation": "NOT_REQUIRED_PYTHON_ONLY",
+            "helper_execution": "NOT_RUN",
+            "engine": "NOT_RUN"
+          },
+          "scope": "Two Python-only orchestration changes; explicit default-false profile selected only by dedicated attempt-limits driver. No product/dependency/oracle/error-expectation change. Qualified6c42 build reused with historical7-source map, current8-source map separate. No compiler required.",
+          "limits": "Originalc543 FAIL and missing final native capture remain. New runtime/replay/custody NOT_RUN. Expected126issued+3planned versus128 and no127/receipt/frontier remains required. No RSS/capacity qualification or originala99 Sync-timeout closure.",
+          "preparation_note": "First inline packet assembly refused a mistyped expected digest of the failure audit; actual audit and helpers already held correct digest. It created source.diff only; no manifest/helper/runtime result. This corrected assembly authenticates the original audit without changing it.",
+          "independent_wrapper_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-payload-profile-20261020/review-addendum-v1.json",
+            "bytes": 3910,
+            "sha256": "9ba9c2a3d0bac9bdfc74bb40c273fb04d649405edfb2c22c4db39259ff062673"
           }
         }
       },
@@ -36559,6 +36686,29 @@
             "limits": "Source-only: no compilation, helper execution, SQL/native runtime, genuine setup or memory gate qualification. Old independent reviewer effective model/effort unverified; already-started review completed under Q37.",
             "next": "Compose fresh setup and independent raw-state oracle in isolated qualification/export-memory-setup; sole root owns all runtime."
           }
+        },
+        "fresh_setup_source_20261020": {
+          "status": "SOURCE_REVIEW_BLOCKED_CORRECTION_IN_PROGRESS_RUNTIME_NOT_RUN",
+          "observed_at": "2026-10-20T11:01:26.750699+00:00",
+          "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-setup-20261020",
+          "branch": "qualification/export-memory-setup",
+          "base": "370cf79288cbc121582f342dd96cb4b95d7de91f",
+          "source": "292b3c9b24d7de99d83783b5225a782f4f2b7d56",
+          "manifest": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-20261020/.research/export-memory-setup-source-20261020/manifest.json",
+            "bytes": 7035,
+            "sha256": "003dcf53cfa14a12214178b8c36d63e84b707cfdbe4e45ff9c329e38bfdc71a3"
+          },
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-setup-review-20261020/review-v1.json",
+            "bytes": 16899,
+            "sha256": "7d0caba99fd7df30ccab57082753858dd5d5a0f1b5f6a713ec2538d6e50e8dd9"
+          },
+          "root_review_boundary": "Manifest12 source/4 evidence/3 inherited packet pins authenticated; independent report fully read. Full12-owner root source review remains pending and is not inferred from hashes.",
+          "finding": "SETUP-INITIAL-DESTINATION-PROFILE: accepted setup config contains export.destination.root but Initial Serve unconditionally forbids it. No successful initial publication possible in292. Preserve production guard, remove both destination keys from initial publisher, retain explicit destination-bearing profile for genuine destination initialization/ordinary grants.",
+          "disposition": "One coherent source-only correction assigned to original isolated author; preserve292 and all original manifests/reviews. Critical initial-authority/configuration boundary keeps verified Astra/xhigh. Root alone owns integration/runtime.",
+          "checks": "Author9 AST/whitespace checks only; helper execution/compiler/SQL/native/runtime/custody/measurement NOT_RUN.",
+          "limits": "No export packet integrated. Five exports/256MiB gate and transient worker/container/cgroup custody remain unqualified. Direct PID/group checks do not prove escaped-descendant exclusion."
         }
       },
       "archive_refusal_journey_attempts": [

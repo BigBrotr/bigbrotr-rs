@@ -145,7 +145,8 @@ def finish(pg,client,output,database,rows,setup,mode,before,window,*,prefix=None
 
 
 def run(pg,client,output,database,name,rows,**context):
-    return normal.run(pg,client,output,database,name,rows,continuation=continuation,**context)
+    return normal.run(pg,client,output,database,name,rows,continuation=continuation,
+        attempt_limits_profile=True,**context)
 
 
 def continuation(pg,client,output,database,rows,setup,initialized,initial_after,wanted,initial_result):

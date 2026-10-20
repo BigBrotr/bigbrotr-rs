@@ -159,7 +159,9 @@ def global_roles(pg):
 
 
 def prepare(pg, client, output, database, name, rows, resources, save, build, built,
-            setup_upgrade=None):
+            setup_upgrade=None, attempt_limits_profile=False):
+    assert type(attempt_limits_profile) is bool
+    assert not attempt_limits_profile or name == 'archive-export'
     verified = artifacts(build, built)
     info = invoke(client, output, name + '-build-info', 'build-info')
     assert info['archive_worker'] == verified['worker']
@@ -203,6 +205,15 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     config = lab.config(output, dict(pg, client=client), database, endpoint='127.0.0.1:5432', boundary='loopback')
     path = output / Path(config).name
     text = configuration(path.read_text(), before, name)
+    if attempt_limits_profile:
+        # 126 retained input grants must coexist with Control/catalog preparation.
+        # Preserve every component allowance and the 3 GiB aggregate envelope.
+        for section, key, value in [
+            ('runtime.processes.application', 'payload_bytes', '768MiB'),
+            ('runtime.processes.application', 'memory_max_bytes', '1088MiB'),
+            ('runtime.processes.native', 'memory_max_bytes', '1984MiB'),
+        ]:
+            text = set_value(text, section, key, value)
     for section, key, value in [
         ('topology', 'local_roles', ['control', 'ingest', 'sync', 'archive']),
         ('archive', 'catalog_id', catalog), ('archive', 'worker_memory_bytes', '512MiB'),

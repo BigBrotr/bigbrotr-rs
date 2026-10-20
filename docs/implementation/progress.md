@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T10:42Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T11:01Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,21 +9,21 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`c5431fd4d219f09694011f25e48ed082af599f11`, pushed and verified remotely.
-Its tree is `bf62eb775411d9f2c3c8d94fb41c095d535be4df`.
+`626ad1c54439c9967ff0648b483a106aad67dc85`, pushed and verified remotely.
+Its tree is `40496c453ebe58c2a05b5c5590c89f089eb35e28`.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. The one-expression probe correction and failed-build
-checkpoint are committed. Current edits preserve the failed connected attempt-limit engine and its limited custody. The attempt-limit and
-export-memory worktrees are clean on their preserved commits. Attempt-limit
-source is integrated, with original build FAIL preserved and corrected build PASS; export source is
-not integrated.
+No merge/rebase pending. Failed c543 engine/custody is committed and preserved.
+Root owns the two Python payload-profile edits plus report/inventory/checkpoint
+updates; no Rust/dependency/oracle change. Original attempt-limit worktree remains
+retained. Export setup author owns the separate correction after frozen292b3c9;
+that source is not integrated or executed.
 
 Q37 is recorded in the existing guide and decision register. Root session
 `01a12f2c-849d-7d20-9523-dcce1021b0c6` has actual turn-context metadata at
-2026-10-20T10:03:22.315Z reporting `gpt-6-astra` / `xhigh`; the available-model
+2026-10-20T10:56:32.966Z reporting `gpt-6-astra` / `xhigh`; the available-model
 catalog separately lists both allowed configurations. Global defaults are not
-proof of this session's settings. The existing review was allowed to finish;
-its effective model/effort is unverified and must be checked before reuse.
+proof of this session's settings. Historical review metadata remains unverified;
+current critical reviewers below have verified actual controls.
 New critical source-only author `/root/export_setup_fixture` was spawned through
 explicit Astra/xhigh controls. Root verified its session
 `01a158ca-8570-7041-9778-89e46f56320e` turn-context at2026-10-20T10:10:31.012Z:
@@ -208,8 +208,21 @@ nonborrowed containers. PG/client stopped0/143, PID0/noOOM; cleanup/missing/
 unrelated arrays empty. Never rerun custody after borrowed-PG reuse.
 
 All six ordinary refusal selectors now have their own qualified fresh roots.
-**Next action:** finish the exact source/admission diagnosis of the unexpected
-cap-preflight payload refusal before changing any fixture or starting a new trial.
+**Next action:** commit/push the reviewed payload-profile correction and use its
+frozen prepare/engine/replay/custody
+helpers for one fresh exact-revision attempt-limit run with qualified6c42 binaries.
+Stop and diagnose any new failure; do not repeat completed or failed roots.
+Source diagnosisbac15cc3 and two-file review65f909ec establish a fixture shortfall:
+first catalog preparation needs736.5625MiB+16B against704MiB; reader peak is
+737.5625MiB+16B. Dedicated opt-in selects application payload768/max1088 and
+native max1984MiB, preserving all component grants and the3GiB outer envelope.
+Manifestc69d0a27/root review9609eff2/helper reviewf492ba21 are under canonical
+`.research/archive-attempt-payload-profile-20261020`. Full106/789-line helpers
+and exact deltas are reviewed; historical7-source build map is separate from
+current8-source fixture map. Wrapper addendum9ba9c2a3 is authenticated with no
+concrete blocker. Fresh runtime/replay/custody remain NOT_RUN; new
+compilation is unnecessary for Python-only changes. Original failures remain.
+
 Fresh enginec5431fd preparation39090 joined0; engine84028 joined1 at10:38:33Z.
 Nine prefix steps and held-refusal/capsetup captures completed;126 issued attempts
 and4 frontiers were observed across75 Control tables. The final installed command
@@ -335,9 +348,17 @@ actual readback,0501,selection and operational owners, retained parent cleanup/
 connection accounting and relay framing. Original partial review5f78be68 remains.
 Compilation and runtime are NOT_RUN. The reviewed
 c68ac35 baseline and all original artifacts remain intact.
-The new Astra/xhigh author works only on the fresh export setup in isolated
+The Astra/xhigh author works only on the fresh export setup correction in isolated
 `.research/export-memory-setup-20261020`, branch `qualification/export-memory-setup`,
-base370cf792. It may not run compiler/helpers/engines/SQL/Docker/cache operations.
+base370cf792; frozen292b3c9 is preserved with manifest003dcf53. Independent
+review7d0caba9 found one high source blocker: destination-bearing config is passed
+to Initial Serve, which forbids it. One explicit staged-profile correction is
+authorized; remove both destination keys from the initial publisher while keeping
+genuine destination initialization and ordinary grants. Preserve product guards,
+strict physical census and original292. Reviewer session01a158eb-701d-7ec1-90ae-4141d909ea22
+has verified Astra/xhigh at10:46:29.329Z. Root full12-owner source review and
+correction review remain pending. No compiler/helpers/engines/SQL/Docker/cache
+operations are permitted to source-only agents.
 The old setup's replica-role policy and direct-grant mutations cannot supply the
 required genuine authority; the new fixture must use existing real initialization,
 activation/enrollment and authenticated grants, with no Export acceptance in Serve.
@@ -348,7 +369,9 @@ have joined. The corrected build is preserved at
 PID0/noOOM. Existing report/inventory binds all actual source/artifact identities.
 Connected attempt engine84028 and limited custody81982 have joined. Exact
 client5a44389a/owner60f2908f and borrowed PG71775507 are stopped0/143, PID0/noOOM.
-No session engine/compiler is active; both agents are source-only.
+No root engine/compiler is active. Last owned-container observation remains the
+10:40:43Z limited custody; it is not a newly repeated status claim. Active agents
+perform only source correction/review.
 The failed build is retained under
 `runs/ingest-succession-archive-installed-58aca32`;10:05:04Z–10:15:19Z.
 Owner6906757f69728137ea193cd2679d316e, labelorg.bigbrotr.network-transport,
@@ -357,10 +380,10 @@ nativec2bc41dd01d7d6bab0146a6452147d36e4b1a77123c5f19adc21e28e9cfdc48f.
 Both owned containers are stopped and every build artifact/log is retained.
 Existing report/inventory node `archive_attempt_limits_build_58aca32` records
 the original running observation separately from the terminal FAIL/custody PASS.
-The correction reviewer is now performing the critical cap-admission diagnosis,
-with actual Astra/xhigh turn-context2026-10-20T10:39:15.311Z verified. The export
-setup author remains source-only active. Neither may execute helpers/compiler/
-engines/SQL/Docker/cache operations.
+The cap diagnosis and source/helper reviews are complete with no concrete
+blocker, including wrapper addendum9ba9c2a3. Reviewer actual Astra/xhigh turn-context
+2026-10-20T10:57:26.281Z is verified. The export setup author is correcting the
+frozen-source blocker only; no helper/runtime actions are delegated.
 Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 All six refusal custody checks are complete and must not be rerun after
