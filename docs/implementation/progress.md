@@ -263,3 +263,11 @@ below256MiB and release acceptance remain incomplete. Existing task contracts ow
 these gates. GitHub billing/Q33, nativearm64, signing, registry and public promotion
 remain separate gates. Push protects committed source; raw artifacts stay on Tux.
 No public release is authorized.
+
+The isolated `qualification/export-memory-setup` source candidate composes the
+fresh signed publication, real enrollment/three HTTP grants and separate
+accept-only follow-up described in `experiments/export-execution/FRESH_SETUP.md`.
+It starts from reviewed370cf and preserves prior modes/defaults. AST/diff checks
+are source-only; compilation, helper execution, engines, acceptance and measurement
+remain NOT_RUN. Root owns artifact qualification, complete worker/cgroup custody,
+integration and the subsequent runtime decision. No task or memory gate closes.

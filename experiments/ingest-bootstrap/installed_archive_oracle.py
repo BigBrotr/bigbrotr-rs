@@ -31,9 +31,11 @@ def clock(value):
     return dict(clock_id=reference(identity), resolution_us=resolution, uncertainty_us=uncertainty, anomaly_flags=flags)
 
 
-def expected(state, report, event, dictionary_time, received, recorded, resolution=1):
+def expected(state, report, event, dictionary_time, received, recorded, resolution=1,
+             *, native_options=None, fact_bytes=65536):
     assert received is not None and recorded is not None
-    native, inputs, receipts = native_expected(state, report, event, dictionary_time, received, recorded, resolution)
+    native, inputs, receipts = native_expected(state, report, event, dictionary_time, received, recorded,
+        resolution, **(native_options or {}))
     assert len(native) == 49 and len(inputs) == len(receipts) == 4
     facts = []
     tables = {name: [] for name in TABLES}
@@ -44,7 +46,8 @@ def expected(state, report, event, dictionary_time, received, recorded, resoluti
         assert preimage.startswith(b'bigbrotr/fact/1\0')
         fact_digest = hashlib.sha256(preimage).digest()
         assert value[:34] == b'\x01\x20' + fact_digest
-        identity, family, version, visibility, at, payload = decode(preimage[len(b'bigbrotr/fact/1\0'):])
+        identity, family, version, visibility, at, payload = decode(
+            preimage[len(b'bigbrotr/fact/1\0'):], maximum=fact_bytes)
         facts.append(dict(sequence=identity[3], digest=fact_digest.hex(), preimage_hex=preimage.hex()))
         row = dict(source_record_id=source(identity), record_schema_version=version,
             record_kind=family, visibility_scope_id=reference(visibility), payload_digest=fact_digest.hex().upper(), recorded_at=at)

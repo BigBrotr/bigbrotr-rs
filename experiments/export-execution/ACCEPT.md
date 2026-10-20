@@ -73,8 +73,9 @@ that fact independently to the genuine ingestion/publication and final output.
    `memory_run.py` and the independent `memory_oracle.py` as documented in
    `MEMORY.md`. No setup RSS is relabelled as measurement RSS.
 
-The surrounding root fixture must add that explicit relay callback and compose
-the real setup above; this packet is not a new general orchestration runner.
+The additive [fresh setup composition](FRESH_SETUP.md) supplies that explicit relay
+callback, genuine initialization/grants and separate accept-only follow-up.
+It remains source-only and requires root's exact artifact/resource/custody inputs.
 All commands above are proposed runtime commands, not executed evidence.
 
 ## Closed acceptance descriptor

@@ -5,6 +5,7 @@ Uses the already authenticated/pinned library and extensions, not product codecs
 or queries. No expected rows are passed to this reader. Secret-bearing errors are
 withheld; output consists only of explicit scientific columns and commit rows.
 """
+import argparse
 import ctypes as C
 import json
 from pathlib import Path
@@ -19,8 +20,11 @@ class Result(C.Structure):
         ('deprecated_error_message', C.c_void_p), ('internal_data', C.c_void_p)]
 
 
-def read(config, temporary, *, full_stream_order=False):
-    bundle = Path('/build/archive-worker')
+def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
+         bundle_root=Path('/build/archive-worker')):
+    assert row_bytes in (65536, 262144)
+    bundle = Path(bundle_root)
+    assert bundle.is_absolute()
     header = (bundle / 'lib/duckdb.h').read_text()
     declaration = re.search(r'typedef struct \{([^{}]+)\}\s*duckdb_result;', header)
     assert declaration is not None
@@ -72,7 +76,7 @@ def read(config, temporary, *, full_stream_order=False):
                     assert value
                     try:
                         raw = C.string_at(value)
-                        assert len(raw) < 65536
+                        assert len(raw) < row_bytes
                         values.append(json.loads(raw))
                     finally:
                         free(value)
@@ -126,10 +130,15 @@ def read(config, temporary, *, full_stream_order=False):
 
 
 if __name__ == '__main__':
-    assert len(sys.argv) in (3, 4)
-    full_stream_order = len(sys.argv) == 4
-    assert not full_stream_order or sys.argv[3] == '--full-stream-order'
-    config, temporary = map(Path, sys.argv[1:3])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('config', type=Path)
+    parser.add_argument('temporary', type=Path)
+    parser.add_argument('--full-stream-order', action='store_true')
+    parser.add_argument('--large-signed-row', action='store_true')
+    parser.add_argument('--worker-root', type=Path, default=Path('/build/archive-worker'))
+    args = parser.parse_args()
+    config, temporary = args.config, args.temporary
     assert config.is_absolute() and temporary.is_absolute()
     temporary.mkdir(mode=0o700)
-    print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=full_stream_order)))
+    print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=args.full_stream_order,
+        row_bytes=262144 if args.large_signed_row else 65536, bundle_root=args.worker_root)))
