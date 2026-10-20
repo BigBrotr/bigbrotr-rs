@@ -26,6 +26,7 @@ pub(super) async fn collect<T>(
 ) -> Collected<T> {
     tokio::pin!(stop);
     let mut reported = false;
+    let mut deadline_diagnostic = None;
     let (terminal, interrupted) = loop {
         let current = observed.borrow_and_update().clone();
         if !reported && let Some(report) = current.initialized {
@@ -38,7 +39,15 @@ pub(super) async fn collect<T>(
             _ = tokio::time::sleep_until(current.deadline) => {
                 // A new phase can be published after our snapshot. Its already
                 // ready watch notification must not lose to this cached timer.
-                (Instant::now() >= observed.borrow().deadline).then_some("owner deadline")
+                let latest = observed.borrow();
+                if Instant::now() >= latest.deadline {
+                    // Freeze before cancellation/grace lets cleanup advance
+                    // the caller. This is a Copy snapshot, not a report clone.
+                    deadline_diagnostic = super::sync_diagnostic::capture(&latest);
+                    Some("owner deadline")
+                } else {
+                    None
+                }
             },
             result = &mut *worker => break (result, false),
             result = observed.changed() => {
@@ -53,6 +62,11 @@ pub(super) async fn collect<T>(
             // publishes first, then checks that same atomic flag before dispatch.
             if let Some(shutdown) = &observed.borrow().shutdown {
                 shutdown.stop_admission();
+            }
+            if let Some(snapshot) = deadline_diagnostic.take() {
+                // Safety actions precede formatting/output. The retained
+                // snapshot still describes the original deadline observation.
+                emit(snapshot.report("parent-watchdog"));
             }
             match tokio::time::timeout(grace, &mut *worker).await {
                 Ok(terminal) => break (terminal, reason != "stop" && reason != "owner ended"),
@@ -110,7 +124,7 @@ where
         let mut stop = Stop::new()?;
         let cancellation = Arc::new(Cancellation::new());
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None,
+            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None, sync: None,
         });
         let (send_driver, receive_driver) = tokio::sync::oneshot::channel();
         let worker_cancel = cancellation.clone();
@@ -153,6 +167,77 @@ mod tests {
     };
 
     #[tokio::test]
+    async fn parent_watchdog_freezes_sync_stage_before_grace() {
+        use super::super::sync_diagnostic::{Stage, Trace, Window};
+        let now = Instant::now();
+        let expired = now - Duration::from_secs(1);
+        let (progress, mut observed) = watch::channel(Progress {
+            deadline: expired,
+            phase: None,
+            initialized: None,
+            shutdown: None,
+            sync: None,
+        });
+        let trace = Trace::new(&progress);
+        trace.begin(Window {
+            selected: expired,
+            authority_checked: expired,
+            renewal_timeout: Duration::from_secs(1),
+            authority_remaining: Duration::from_secs(4),
+            due_remaining: Duration::from_secs(1),
+            maximum: Duration::from_secs(1),
+            renewal_due: now,
+            parent_deadline: expired,
+            dispatch_deadline: now,
+            outer_deadline: now,
+        });
+        trace.enter(Stage::Admission, Some(0), Some(4));
+        let cancel = Arc::new(Cancellation::new());
+        let child_cancel = cancel.clone();
+        let child_progress = progress.clone();
+        let mut worker = tokio::spawn(async move {
+            child_cancel.wait().await;
+            let trace = Trace::new(&child_progress);
+            trace.returned();
+            trace.delivered_admission(4);
+            trace.enter(Stage::Certification, Some(2), None);
+            Ok(json!({"state":"closed"}))
+        });
+        let mut reports = Vec::new();
+        let result = collect(
+            &mut worker,
+            &mut observed,
+            &cancel,
+            std::future::pending(),
+            Duration::from_secs(1),
+            |report| {
+                assert!(cancel.requested.load(Ordering::Acquire));
+                reports.push(report);
+            },
+        )
+        .await;
+        assert!(matches!(
+            result,
+            Collected::Joined {
+                terminal: Ok(Ok(_)),
+                interrupted: true
+            }
+        ));
+        assert_eq!(reports.len(), 1);
+        assert_eq!(reports[0]["reason"], "parent-watchdog");
+        assert_eq!(reports[0]["stage"], "admission");
+        assert_eq!(reports[0]["request_sequence"], 4);
+        assert_eq!(reports[0]["returned_us"], Value::Null);
+        assert_eq!(reports[0]["last_delivered_admission_sequence"], Value::Null);
+        let later = super::super::sync_diagnostic::capture(&progress.borrow())
+            .unwrap()
+            .report("test");
+        assert_eq!(later["stage"], "certification");
+        assert_eq!(later["last_delivered_admission_sequence"], 4);
+        assert_eq!(progress.borrow().deadline, expired);
+    }
+
+    #[tokio::test]
     async fn a_stopped_preparer_returns_owned_state_only_after_join() {
         struct Prepared(Arc<AtomicBool>);
         impl Drop for Prepared {
@@ -176,6 +261,7 @@ mod tests {
             phase: None,
             initialized: None,
             shutdown: None,
+            sync: None,
         });
         let result = collect(
             &mut worker,
@@ -208,6 +294,7 @@ mod tests {
             phase: None,
             initialized: Some(json!({"state":"initialized"})),
             shutdown: None,
+            sync: None,
         });
         let mut worker = tokio::spawn(async { Ok(json!({"state":"closed"})) });
         tokio::task::yield_now().await;
@@ -251,6 +338,7 @@ mod tests {
             phase: None,
             initialized: None,
             shutdown: None,
+            sync: None,
         });
         let result = collect(
             &mut worker,
@@ -284,6 +372,7 @@ mod tests {
             phase: None,
             initialized: None,
             shutdown: None,
+            sync: None,
         });
         let result = collect(
             &mut worker,
@@ -383,6 +472,7 @@ mod tests {
             phase: None,
             initialized: Some(json!({"state":"initialized"})),
             shutdown: None,
+            sync: None,
         });
         let result = collect(
             &mut worker,
