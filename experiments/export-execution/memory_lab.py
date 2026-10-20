@@ -66,16 +66,71 @@ def inspect(ident):
 
 
 class Laboratory:
-    def __init__(self, root, build, probe, instrument):
+    def __init__(self, root, build, probe, instrument, *, application_build=None, export_memory_mib=1024):
         require(root.is_absolute() and root.resolve() == root and not root.exists(), 'fresh canonical root')
         require(not git('status', '--porcelain', '--untracked-files=all'), 'clean committed source')
         require(shutil.disk_usage(root.parent).free >= 69324505088, 'completion reserve plus headroom')
-        require(not git('diff', '--name-only', APPLICATION_SOURCE, 'HEAD', '--',
-            'apps', 'crates', 'Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml',
-            'tools/build.py', 'tools/archive_bundle.py', 'contracts', 'migrations'), 'unchanged qualified product inputs')
+        require(export_memory_mib in (256, 1024), 'selected finite export cap')
+        self.application_source = APPLICATION_SOURCE
+        self.artifacts = ARTIFACTS
+        self.application_qualification = None
+        self.reference_build = build if application_build is not None else None
+        self.ingest_build = build
+        self.ingest_visible = ('/reference-build' if self.reference_build is not None else '/build') + '/ingest_bootstrap_probe'
+        self.export_memory_mib = export_memory_mib
         for path, expected in ARTIFACTS.items():
             require((build / path).is_file() and not (build / path).is_symlink()
                     and sha(build / path) == expected, 'qualified artifact: ' + path)
+        if application_build is not None:
+            require(application_build.is_absolute() and application_build.resolve() == application_build,
+                    'canonical application build root')
+            resources_path = application_build / 'resources.json'
+            qualification_path = application_build / 'out/qualification.json'
+            manifest_path = application_build / 'out/build/source-manifest.json'
+            for path in (resources_path, qualification_path, manifest_path):
+                require(path.is_file() and path.resolve() == path, 'regular application build receipt')
+            resources = json.loads(resources_path.read_text())
+            qualification = json.loads(qualification_path.read_text())
+            manifest = json.loads(manifest_path.read_text())
+            source, tree = qualification['source'], qualification['tree']
+            require(re.fullmatch('[0-9a-f]{40}', source) and re.fullmatch('[0-9a-f]{40}', tree)
+                    and git('rev-parse', source + '^{tree}') == tree, 'actual application source tree')
+            require(resources['root'] == str(application_build) and resources['source'] == source
+                    and resources['tree'] == tree and resources['state'] == 'stopped-retained'
+                    and resources['qualification'] == qualification['status'] == 'PASS_EXPORT_ADMISSION_BUILD_ONLY',
+                    'qualified application build only; no runtime qualification inferred')
+            require(sha(manifest_path) == qualification['source_manifest_sha256']
+                    and manifest['revision'] == source and manifest['tree'] == tree,
+                    'exact application source manifest')
+            info = qualification['build_info']
+            require(info['source'] == dict(state='builder-supplied', revision=source, tree=tree,
+                        dirty=False, manifest_sha256=qualification['source_manifest_sha256'])
+                    and info['profile_assertion'] == 'release' and info['target'] == 'x86_64-unknown-linux-gnu'
+                    and qualification['worker_source'] == APPLICATION_SOURCE,
+                    'qualified embedded application build identity')
+            require(info['archive_worker'] == qualification['artifacts']['archive-worker/bigbrotr-archive-worker']
+                    == dict(bytes=(build / 'archive-worker/bigbrotr-archive-worker').stat().st_size,
+                            sha256=ARTIFACTS['archive-worker/bigbrotr-archive-worker']),
+                    'unchanged qualified adjacent worker pin')
+            build = application_build / 'out/artifacts'
+            require(build.is_dir() and build.resolve() == build, 'canonical application artifacts')
+            paths = list(build.rglob('*'))
+            require(all(not path.is_symlink() and (path.is_file() or path.is_dir()) for path in paths),
+                    'regular application artifact tree')
+            actual = {str(path.relative_to(build)): dict(bytes=path.stat().st_size, sha256=sha(path))
+                      for path in paths if path.is_file()}
+            require(actual == qualification['artifacts'], 'exact qualified parent and complete worker bundle')
+            require(qualification['lockfile_sha256'] == info['inputs_sha256']['Cargo.lock'] == sha(SOURCE / 'Cargo.lock')
+                    and all(sha(SOURCE / name) == expected for name, expected in info['inputs_sha256'].items()),
+                    'current embedded build inputs')
+            self.application_source = source
+            self.artifacts = {name: item['sha256'] for name, item in actual.items()}
+            self.application_qualification = dict(root=str(application_build), source=source, tree=tree,
+                resources=pin(resources_path), qualification=pin(qualification_path),
+                source_manifest=pin(manifest_path), status=qualification['status'], build_info=info)
+        require(not git('diff', '--name-only', self.application_source, 'HEAD', '--',
+            'apps', 'crates', 'Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml',
+            'tools/build.py', 'tools/archive_bundle.py', 'contracts', 'migrations'), 'unchanged qualified product inputs')
         require(sha(probe / 'export-execution-probe') == PROBE_SHA, 'qualified new export probe')
         require(sha(instrument / 'strace-exit-fixed') == TRACER_SHA, 'qualified process tracer')
         require(inspect(CLIENT)['Id'] == CLIENT, 'exact client image')
@@ -87,8 +142,28 @@ class Laboratory:
             root=str(root), source=git('rev-parse', 'HEAD'), tree=git('rev-parse', 'HEAD^{tree}'),
             source_root=str(SOURCE), image=CLIENT, postgres_image=PG_IMAGE,
             state='preparing', containers=[], started_at=datetime.datetime.now(datetime.timezone.utc).isoformat())
+        if self.application_qualification is not None:
+            self.state.update(application_source=self.application_source,
+                application_build=self.application_qualification,
+                ingest_probe_source=APPLICATION_SOURCE, reference_build=str(self.reference_build))
+        if export_memory_mib != 1024:
+            self.state['export_memory_mib'] = export_memory_mib
         self.save()
         self.pg = None
+        if self.application_qualification is not None:
+            # Retain the supplied receipts as this lab's frozen inputs. The
+            # original qualified build and its artifacts remain read-only.
+            for key in ('resources', 'qualification', 'source_manifest'):
+                original = self.application_qualification[key]
+                raw = Path(original['path']).read_bytes()
+                require(len(raw) == original['bytes'] and hashlib.sha256(raw).hexdigest() == original['sha256'],
+                        'unchanged supplied application receipt')
+                path = self.out / ('application-build-' + key + '.json')
+                with path.open('xb') as stream:
+                    stream.write(raw)
+                path.chmod(0o400)
+                self.application_qualification[key] = pin(path, '/lab/' + path.name)
+            self.save()
 
     def save(self):
         temporary = self.root / 'resources.tmp'
@@ -175,6 +250,8 @@ class Laboratory:
             '--network', 'container:' + self.pg, '--cgroupns', 'private',
             '--mount', f'type=bind,src={self.out},dst=/lab',
             '--mount', f'type=bind,src={self.build},dst=/build,readonly',
+            *(['--mount', f'type=bind,src={self.reference_build},dst=/reference-build,readonly']
+              if self.reference_build is not None else []),
             '--mount', f'type=bind,src={self.probe},dst=/probe,readonly',
             '--mount', f'type=bind,src={self.instrument},dst=/instrument,readonly',
             '--mount', f'type=bind,src={SOURCE},dst=/source,readonly',
@@ -235,10 +312,19 @@ p=Path('/usr/lib/postgresql/15/bin/psql')
 assert p.resolve()==p and p.is_file() and p.stat().st_nlink==1
 v=dict(path=str(p),bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest())
 Path('/lab/psql.json').write_text(json.dumps(v)+'\\n')
+"""
+        if self.application_qualification is not None:
+            script += """with Path('/lab/application-build-info.json').open('x') as output:
+ subprocess.run(['/build/bigbrotr','build-info'],check=True,stdout=output,env={})
+"""
+        script += """
 subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--output','/lab/template.toml'],check=True,env={})
 """
         self.run('configure', ['python3', '-c', script])
         require(json.loads((self.out / 'psql.json').read_text()) == PSQL_PIN, 'actual canonical client executable')
+        if self.application_qualification is not None:
+            require(json.loads((self.out / 'application-build-info.json').read_text())
+                    == self.application_qualification['build_info'], 'actual installed parent embedded build info')
         text = (self.out / 'template.toml').read_text()
         values = [
             ('config', 'authority_mode', 'managed'),
@@ -258,7 +344,7 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
             ('runtime.processes.application', 'completion_reserve_bytes', '64MiB'),
             ('runtime.processes.native', 'memory_max_bytes', '1984MiB'),
             ('read.execution', 'max_memory_bytes', '1GiB'),
-            ('export.memory', 'max_bytes', '1GiB'),
+            ('export.memory', 'max_bytes', '1GiB' if self.export_memory_mib == 1024 else '256MiB'),
             ('export.destination', 'id', secrets.token_hex(16)),
             ('export.destination', 'root', '/lab/fresh-root/destination'),
             ('network.dns', 'resolver', '127.0.0.1:9'), ('network.tls', 'extra_roots', []),
@@ -292,16 +378,16 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         keys = ['activate', 'owner', 'endpoint', 'enrollment', 'scope', 'acquisition',
                 'accept-export', 'history.read', 'export', 'private-export']
         self.spec = dict(format='bigbrotr-export-fresh-setup/1', name='signed-memory',
-            root='/lab/fresh-root', application_source=APPLICATION_SOURCE,
+            root='/lab/fresh-root', application_source=self.application_source,
             application=pin(self.build / 'bigbrotr', '/build/bigbrotr'),
-            ingest_probe=pin(self.build / 'ingest_bootstrap_probe', '/build/ingest_bootstrap_probe'),
+            ingest_probe=pin(self.ingest_build / 'ingest_bootstrap_probe', self.ingest_visible),
             probe=pin(self.probe / 'export-execution-probe', '/probe/export-execution-probe'),
             psql=PSQL_PIN, config=pin(recipe, '/lab/recipe.toml'),
             recipe=pin(SOURCE / 'tests/fixtures/protocol/archive-event-response.json',
                 '/source/tests/fixtures/protocol/archive-event-response.json'),
             worker=dict(root='/build/archive-worker',
                 bytes=(self.build / 'archive-worker/bigbrotr-archive-worker').stat().st_size,
-                sha256=ARTIFACTS['archive-worker/bigbrotr-archive-worker']),
+                sha256=self.artifacts['archive-worker/bigbrotr-archive-worker']),
             source_manifest=pin(self.out / 'source-manifest.json', '/lab/source-manifest.json'),
             operator=dict(user='postgres', password_ref='file:/lab/secrets/bootstrap'),
             migrator=dict(user='bb_migrator', password_ref='file:/lab/secrets/migrator'),
@@ -317,9 +403,16 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         def inputs(start):
             inventory = dict(format='bigbrotr-export-environment/1', source=self.state['source'],
                 tree=self.state['tree'], postgres=self.owned(self.pg), phase=start,
-                application_source=APPLICATION_SOURCE, build_root=str(self.build),
-                artifacts=ARTIFACTS, probe_sha256=PROBE_SHA, tracer_sha256=TRACER_SHA,
+                application_source=self.application_source, build_root=str(self.build),
+                artifacts=self.artifacts, probe_sha256=PROBE_SHA, tracer_sha256=TRACER_SHA,
                 scope='Fresh isolated PostgreSQL and publisher container; no accepted export or measurement')
+            if self.application_qualification is not None:
+                inventory.update(application_build=self.application_qualification,
+                    ingest_probe_source=APPLICATION_SOURCE,
+                    ingest_probe=pin(self.ingest_build / 'ingest_bootstrap_probe', self.ingest_visible),
+                    reference_build=str(self.reference_build))
+            if self.export_memory_mib != 1024:
+                inventory['export_memory_mib'] = self.export_memory_mib
             write(self.out / 'input-inventory.json', inventory)
             self.spec['inventory'] = pin(self.out / 'input-inventory.json', '/lab/input-inventory.json')
             write(self.out / 'setup-input.json', self.spec)
@@ -353,6 +446,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                 'unchanged original publisher mounts')
         expected = {'/lab': (self.out, True), '/build': (self.build, False), '/probe': (self.probe, False),
                     '/source': (SOURCE, False), '/instrument': (self.instrument, False)}
+        if self.reference_build is not None:
+            expected['/reference-build'] = (self.reference_build, False)
         for target, (source, writable) in expected.items():
             mount, = [row for row in terminal['Mounts'] if row['Destination'] == target]
             require(Path(mount['Source']) == source and mount['RW'] == writable, 'exact original physical mount')
@@ -383,7 +478,7 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         write(path, receipt)
         return sha(path)
 
-    def acceptance(self):
+    def acceptance(self, *, prepare_only=False):
         self.postgres()
         self.prepare()
         receipt = self.custody(*self.publish())
@@ -393,6 +488,12 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         self.exclusion('continue')
         prepared = json.loads((self.out / 'fresh-root/result.json').read_text())
         require(prepared['status'] == 'PREPARED_FOR_ROOT_ACCEPTANCE', 'known real grant preparation')
+        if prepare_only:
+            self.state.update(outcome='PREPARED_FOR_ROOT_ACCEPTANCE',
+                preparation_result=pin(self.out / 'fresh-root/result.json'), acceptance='NOT_RUN',
+                measurement='NOT_RUN', qualification_256mib=False, five_exports_acceptance=False)
+            self.save()
+            return
         self.run('accept', ['python3', '-B', '/source/experiments/export-execution/memory_setup_accept.py',
             '/lab/fresh-root', '/sys/fs/cgroup'], trace=True, minimum_workers=0)
         self.exclusion('accept')
@@ -425,13 +526,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('root', 'build', 'probe', 'instrument'):
         parser.add_argument('--' + name, required=True, type=Path)
+    parser.add_argument('--application-build', type=Path,
+        help='qualified export-admission build root; --build retains the unchanged ingest dump probe')
+    parser.add_argument('--export-memory-mib', type=int, choices=(256, 1024), default=1024)
+    parser.add_argument('--prepare-only', action='store_true', help='stop before root Export acceptance')
     args = parser.parse_args()
     require(all(p.is_absolute() and p.resolve() == p for p in
-                (args.root, args.build, args.probe, args.instrument)), 'canonical absolute laboratory inputs')
+                (args.root, args.build, args.probe, args.instrument,
+                 *([args.application_build] if args.application_build is not None else []))),
+            'canonical absolute laboratory inputs')
     os.umask(0o077)
-    lab = Laboratory(args.root, args.build, args.probe, args.instrument)
+    lab = Laboratory(args.root, args.build, args.probe, args.instrument,
+        application_build=args.application_build, export_memory_mib=args.export_memory_mib)
     try:
-        lab.acceptance()
+        lab.acceptance(prepare_only=args.prepare_only)
     except BaseException as error:
         lab.state.update(outcome='UNKNOWN_PRESERVED', error=type(error).__name__,
             next='Authenticate retained outcome; never replay this root or repair authority automatically')
