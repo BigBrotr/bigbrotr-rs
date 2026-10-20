@@ -40988,7 +40988,7 @@
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Implement accepted checkpoint-to-native-ACK increment with all affected closing/recovery/frontier consumers reconciled. Existing design and P02-T02 Steps4/5/7 own ordering and gates; preparation-hole, further recovery/refusal/resource scenarios remain required. No new master plan.",
+        "next": "Finish storage source and review; integrate with pinned consumer; reconcile changed component selections in existing build profile; build exact source before activating real window2 initial/activated/successor fixtures. No old ACK0 artifact qualifies new product.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -42151,7 +42151,34 @@
             ],
             "custody": "Bothrootdrivers joined0. Root exact ownedclient/borrowedPG freshly observed exited/PID0/noOOM/matchinglabels/cgroupsabsent. Outer cleanup/missing/unexpected/unrelated all empty. Originalfailedca77 preserved."
           }
-        ]
+        ],
+        "native_ack_source_preparation": {
+          "status": "SOURCE_ONLY; paired storage, integrated compile and real-engine qualification NOT_RUN",
+          "root_consumer": {
+            "commit": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
+            "tree": "765233f165cfe590eb3399f085306aff32f661dd",
+            "scope": "Installed actual native credit and grants; initial/activated/successor recovery ACK; additive migration40 and catalog/compatibility tests; reference contract. Storage APIs remain separately authored.",
+            "checks": "rustfmt parse and git diff --check PASS; not compiled",
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-root-consumer-review-v1.json",
+              "sha256": "47efc48bb34c959d1ff97b741d78ef2d311d048ecfb3f8b9d90101183a6b1426",
+              "root": "Complete receipt read; all19 frozen source pins, clean checkout, commit and tree authenticated. No remaining root source blocker; conditional on paired storage and runtime."
+            }
+          },
+          "fixture_preparation": {
+            "commit": "4b8f88bee14ab81f373dea3e10383c05e2442738",
+            "manifest": ".research/producer-ack-fixture-20261020/.research/producer-ack-fixture-source-20261020/manifest-v1.json",
+            "sha256": "90ae7366cfc5ee052af405b7a139aa3b71b1ae493159b87465eae9e8abc6115c",
+            "state": "Frozen default-preserving three-event source seams; follow-up schema40/window2 profile under authoring. No new qualification predicate executed."
+          },
+          "review_findings": [
+            "Initial recovery closing/replay grant overlap corrected and reviewed in ba3dab0.",
+            "Epoch2 target-only replay cannot establish retained ancestor originals; storage author adding ordered predecessor prefix and existing-only epoch1 SQL replay. Root CLI wired; storage freeze/review pending.",
+            "Unexpected sequence after a successful native ACK write must poison the actual initial/recovery owner too; correction requested using existing write_uncertain field. Frozen review pending."
+          ],
+          "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
+          "next": "Finish storage source and review; integrate with pinned consumer; reconcile changed component selections in existing build profile; build exact source before activating real window2 initial/activated/successor fixtures. No old ACK0 artifact qualifies new product."
+        }
       }
     }
   }

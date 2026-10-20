@@ -61364,15 +61364,17 @@
           "branch": "work/producer-ack-storage",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Native/PG/model ACK plus all storage recovery/closing/frontier consumers",
-          "state": "Isolated source-only work; no runtime/build started"
+          "state": "Uncommitted isolated source work; epoch2 predecessor-original and native sequence-poisoning corrections in progress; no runtime/build"
         },
         {
           "owner": "root",
           "path": "/home/tux/bigbrotr-rs/.research/producer-ack-sync-20261020",
           "branch": "work/producer-ack-sync",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
-          "scope": "Installed Sync credit/setup/ACK consumer and recovery CLI",
-          "state": "Isolated source-only work; no runtime/build started"
+          "scope": "Installed Sync credit/setup/ACK and all recovery CLI; additive migration40/registry and contract",
+          "state": "Frozen clean source-only packet reviewed; paired storage integration/compiler/engines pending",
+          "head": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
+          "tree": "765233f165cfe590eb3399f085306aff32f661dd"
         },
         {
           "owner": "export_setup_review",
@@ -61380,12 +61382,15 @@
           "branch": "work/producer-ack-fixture",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Independent existing-harness ACK qualification",
-          "state": "Isolated source-only work; no runtime/build started"
+          "state": "Frozen first source preparation retained; schema40/window2 fixture extension actively authored, not qualified",
+          "head": "4b8f88bee14ab81f373dea3e10383c05e2442738"
         }
       ],
       "ack_critical_review": {
         "owner": "producer_recovery_review",
-        "state": "Source-only critical review; previously verified Astra/xhigh continuity"
+        "state": "Pinned root review complete; frozen storage/combined source review pending",
+        "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-root-consumer-review-v1.json",
+        "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json native_ack_source_preparation"
       }
     }
   },
