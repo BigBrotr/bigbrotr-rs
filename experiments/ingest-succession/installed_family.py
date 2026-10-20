@@ -5,6 +5,7 @@ Only the actual Serve process owns native state. HTTP creates the job and Sync
 claims it; the fixture never writes a claim, producer input or scientific row.
 Unknown process custody preserves SQL/input evidence without reopening native.
 """
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -140,6 +141,57 @@ def process_closed(response, case):
         'producer_slot_id', 'producer_epoch')} | dict(state='stopped', native='closed',
         owner_release='committed', source_closure='not-performed', ready=False)
     return activated, stopped
+
+
+def capture_progress_observation(directory, phase, observation, wire):
+    """Retain a phase cut; this does not validate any checkpoint or native proof.
+
+    The installed owner must supply its complete existing SQL/input snapshot.
+    Only the final independent progress oracle can establish durable progress.
+    Never open native state while Serve is alive to obtain this observation.
+    """
+    assert phase in ('mutation', 'proof-only')
+    assert observation['stage'] == 'progress-' + phase
+    assert set(observation) == {'stage', 'server_us', 'observed_by_us', 'control', 'inputs'}
+    assert wire['progress_phase'] == phase and wire['completion'] == 'request-and-websocket-close'
+    assert wire['closed_at_us'] <= observation['server_us'] <= observation['observed_by_us']
+    assert isinstance(observation['control'], dict) and isinstance(observation['inputs'], dict)
+    value = dict(format='bigbrotr-progress-transport-observation/1',
+        phase=phase, observation=observation, wire=wire)
+    path = directory / ('progress-' + phase + '-observation.json')
+    raw = (json.dumps(value, indent=2) + '\n').encode()
+    with path.open('xb') as stream:
+        stream.write(raw)
+    return dict(phase=phase, request_id=wire['request'][1],
+        observation_sha256=hashlib.sha256(raw).hexdigest())
+
+
+def release_progress_transport(directory, captured):
+    """Release a later real REQ after a retained cut, without claiming its meaning.
+
+    This transport preparation is deliberately not called by the qualified
+    default runner. The new profile still needs the frozen typed checkpoint
+    predicate before release and the complete independent final oracle.
+    """
+    assert set(captured) == {'phase', 'request_id', 'observation_sha256'}
+    assert captured['phase'] == 'mutation'
+    path = directory / 'progress-mutation-observation.json'
+    raw = path.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == captured['observation_sha256']
+    observation = json.loads(raw)
+    assert observation['phase'] == 'mutation'
+    assert observation['wire']['request'][1] == captured['request_id']
+    gate = dict(format='bigbrotr-progress-transport-release/1',
+        mutation_request=captured['request_id'],
+        observation_sha256=captured['observation_sha256'])
+    target = directory / 'progress-release.json'
+    assert not target.exists() and not target.is_symlink()
+    partial = directory / 'progress-release.json.partial'
+    with partial.open('x') as stream:
+        json.dump(gate, stream, indent=2)
+        stream.write('\n')
+    partial.rename(target)
+    return gate
 
 
 def execute(pg, client, output, case, directory, expected, catalog):

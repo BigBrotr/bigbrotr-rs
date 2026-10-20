@@ -281,6 +281,111 @@ def backend_checked(value, database, before, after):
     number(absence['seconds'],elapsed,6)
 
 
+def progress_transport_checked(directory, journey, snapshots, window, raw, read):
+    """Bind separated wire/capture phases; never certify a typed checkpoint.
+
+    This is preparation for the opt-in profile. The default replay below does
+    not call it and retains its original closed PASS predicate.
+    """
+    from live_replay import OLD_EVENT, NEW_EVENT
+    assert read(directory/'events.json') == [OLD_EVENT, NEW_EVENT]
+    result = journey['result']
+    assert result == read(directory/'client-result.json')
+    assert set(result) == {'status', 'login', 'logout', 'me', 'digests', 'observations',
+        'job_status', 'relay_joined', 'unauthenticated', 'checkpoint_validation', 'native_proof_validation'}
+    assert result['status'] == 'CAPTURED_PROGRESS_TRANSPORT_ONLY'
+    assert result['checkpoint_validation'] == result['native_proof_validation'] == 'NOT_RUN'
+    assert result['relay_joined'] is True
+    assert journey['terminal'] == read(directory/'client-exit.json') == dict(
+        exit_code=0, reaped=True, outcome='PROCESS_EXITED')
+    assert type(journey['terminal']['exit_code']) is int
+    assert journey['stdout'] == raw(directory/'client.stdout').decode() == ''
+    assert journey['stderr'] == raw(directory/'client.stderr').decode() == ''
+    opened, closed = journey['opened'], journey['closed']
+    assert 3 <= len(opened) == len(closed) <= 128
+    assert [p.name for p in sorted(directory.glob('relay-open-*.json'))] == [
+        f'relay-open-{n:03}.json' for n in range(1, len(opened)+1)]
+    assert [p.name for p in sorted(directory.glob('relay-closed-*.json'))] == [
+        f'relay-closed-{n:03}.json' for n in range(1, len(closed)+1)]
+    nonces, phases = set(), {}
+    first_fields = {'number', 'connected_at_us', 'clock_resolution_us', 'request',
+        'request_at_us', 'request_monotonic_ns'}
+    for n, (first, last) in enumerate(zip(opened, closed, strict=True), 1):
+        assert first == read(directory/f'relay-open-{n:03}.json')
+        assert last == read(directory/f'relay-closed-{n:03}.json')
+        assert set(first) == first_fields
+        assert first['number'] == n and type(first['number']) is int
+        assert all(last[k] == v for k,v in first.items())
+        request = first['request']
+        assert isinstance(request, list) and len(request) == 3
+        assert request[0] == 'REQ' and request[2] == {'kinds':[1], 'limit':3}
+        ident = request[1]
+        assert re.fullmatch('[0-9a-f]{48}', ident) and int(ident[:32], 16)
+        assert ident[:32] not in nonces
+        nonces.add(ident[:32])
+        number(first['connected_at_us'], window['before_us'], window['after_us'], integer=True)
+        number(first['request_at_us'], first['connected_at_us'], window['after_us'], integer=True)
+        number(last['closed_at_us'], first['request_at_us'], window['after_us'], integer=True)
+        assert last['closed_at_us']-first['request_at_us'] < 3_000_000
+        number(first['request_monotonic_ns'], 1, integer=True)
+        number(last['closed_monotonic_ns'], first['request_monotonic_ns'], integer=True)
+        assert last['closed_monotonic_ns']-first['request_monotonic_ns'] < 3_000_000_000
+        number(first['clock_resolution_us'], 1, 1_000_000, integer=True)
+        extra = {'frames', 'completion', 'closed_at_us', 'closed_monotonic_ns'}
+        if 'progress_phase' not in last:
+            assert set(last) == first_fields | extra
+            assert last['frames'] == [] and last['completion'] == 'quiet-eof'
+            continue
+        phase = last['progress_phase']
+        assert phase in ('mutation', 'proof-only') and phase not in phases
+        phases[phase] = last
+        extra |= {'progress_phase', 'event_ids', 'event_json_sha256', 'sent_at_us'}
+        values = [NEW_EVENT, OLD_EVENT] if phase == 'mutation' else [NEW_EVENT]
+        labels = ['distinct', 'predecessor'] if phase == 'mutation' else ['distinct-resend']
+        if phase == 'proof-only':
+            extra.add('progress_release')
+        assert set(last) == first_fields | extra
+        assert last['event_ids'] == [value['id'] for value in values]
+        assert last['event_json_sha256'] == [sha(json.dumps(value, ensure_ascii=False,
+            separators=(',', ':')).encode()) for value in values]
+        assert last['frames'] == labels + ['EOSE']
+        assert last['completion'] == 'request-and-websocket-close'
+        number(last['sent_at_us'], first['request_at_us'], last['closed_at_us'], integer=True)
+    assert list(phases) == ['mutation', 'proof-only']
+    mutation, proof = phases['mutation'], phases['proof-only']
+    assert mutation['number'] == 1 < proof['number'] < len(closed)
+    assert mutation['request'][1] != proof['request'][1]
+    assert mutation['closed_monotonic_ns'] < proof['request_monotonic_ns']
+    observations = {}
+    for phase, wire in phases.items():
+        path = directory/f'progress-{phase}-observation.json'
+        value = read(path)
+        assert set(value) == {'format', 'phase', 'observation', 'wire'}
+        assert value['format'] == 'bigbrotr-progress-transport-observation/1'
+        assert value['phase'] == phase and value['wire'] == wire
+        observation = value['observation']
+        assert set(observation) == {'stage', 'server_us', 'observed_by_us', 'control', 'inputs'}
+        assert observation['stage'] == 'progress-' + phase
+        assert [s for s in snapshots if s['stage'] == observation['stage']] == [observation]
+        number(observation['server_us'], wire['closed_at_us'], window['after_us'], integer=True)
+        number(observation['observed_by_us'], observation['server_us'], window['after_us'], integer=True)
+        assert isinstance(observation['control'], dict) and isinstance(observation['inputs'], dict)
+        observations[phase] = observation
+    assert observations['mutation']['observed_by_us'] <= proof['sent_at_us']
+    assert observations['mutation']['inputs'] == observations['proof-only']['inputs']
+    gate = read(directory/'progress-release.json')
+    assert gate == dict(format='bigbrotr-progress-transport-release/1',
+        mutation_request=mutation['request'][1],
+        observation_sha256=sha(raw(directory/'progress-mutation-observation.json')))
+    assert proof['progress_release'] == dict(gate,
+        release_sha256=sha(raw(directory/'progress-release.json')))
+    assert not (directory/'relay-error.json').exists()
+    return dict(status='CAPTURED_SPLIT_RELAY', mutation_request=mutation['request'][1],
+        proof_only_request=proof['request'][1], quanta=len(closed),
+        captured_input_census_equal=True, checkpoint_validation='NOT_RUN',
+        native_proof_validation='NOT_RUN', sql_semantics='NOT_RUN')
+
+
 def journey_checked(directory, context, identity, window, raw, read):
     journey=context['journey']; fixture=context['fixture']
     assert set(journey)=={'result','terminal','stdout','stderr','opened','closed'}

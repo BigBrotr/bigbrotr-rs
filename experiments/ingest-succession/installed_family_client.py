@@ -1,7 +1,9 @@
 """Installed repeatable successor process and authenticated finite wire client.
 
-The relay sends a distinct signed event, the retained predecessor event, then
-the distinct event again. It never reads SQL or supplies product receipts.
+The default relay sends a distinct signed event, the retained predecessor event,
+then the distinct event again. The opt-in progress transport sends the resend in
+a later real REQ, after a host capture gate. Neither mode reads SQL or supplies
+product receipts; the gate is fixture coordination, not checkpoint authority.
 """
 import base64
 import hashlib
@@ -12,6 +14,7 @@ import os
 from pathlib import Path
 import re
 import socket
+import stat
 import subprocess
 import sys
 import threading
@@ -69,7 +72,30 @@ def access(*arguments):
     return json.loads(result.stdout)
 
 
-def relay(directory, listener, finished, errors):
+def progress_release(directory, mutation_request):
+    """Read only the bounded host gate; the offline reader binds its capture."""
+    path = directory / 'progress-release.json'
+    if not path.exists():
+        return None
+    assert stat.S_ISREG(path.lstat().st_mode) and path.stat().st_size <= 1024
+    raw = path.read_bytes()
+    assert len(raw) <= 1024
+    def unique(pairs):
+        value = {}
+        for key, item in pairs:
+            assert key not in value, 'duplicate progress gate key'
+            value[key] = item
+        return value
+    gate = json.loads(raw, object_pairs_hook=unique)
+    assert set(gate) == {'format', 'mutation_request', 'observation_sha256'}
+    assert gate['format'] == 'bigbrotr-progress-transport-release/1'
+    assert gate['mutation_request'] == mutation_request
+    assert re.fullmatch('[0-9a-f]{64}', gate['observation_sha256'])
+    return dict(gate, release_sha256=hashlib.sha256(raw).hexdigest())
+
+
+def relay(directory, listener, finished, errors, progress=False):
+    assert type(progress) is bool
     old, new = json.loads((directory / 'events.json').read_text())
     assert (old['id'], new['id']) == EVENT_IDS
     for event in (old, new):
@@ -78,6 +104,7 @@ def relay(directory, listener, finished, errors):
         assert hashlib.sha256(canonical).hexdigest() == event['id']
         assert event['kind'] == 1 and len(bytes.fromhex(event['sig'])) == 64
     nonces = set()
+    mutation_request, proof_sent = None, False
     try:
         number = 0
         while not finished.is_set():
@@ -124,7 +151,37 @@ def relay(directory, listener, finished, errors):
                 trace.update(request=command, request_at_us=time.time_ns() // 1000,
                     request_monotonic_ns=time.monotonic_ns())
                 publish(directory, f'relay-open-{number:03}.json', trace)
-                if number == 1:
+                release = (progress_release(directory, mutation_request)
+                    if progress and number > 1 and not proof_sent else None)
+                if progress and (number == 1 or release is not None):
+                    if number == 1:
+                        mutation_request = ident
+                        phase, values, labels = 'mutation', (new, old), ['distinct', 'predecessor']
+                    else:
+                        # Select once before sending. A partial write/refused
+                        # close cannot silently retry this phase on another REQ.
+                        proof_sent = True
+                        phase, values, labels = 'proof-only', (new,), ['distinct-resend']
+                    trace.update(progress_phase=phase, frames=labels + ['EOSE'],
+                        event_ids=[value['id'] for value in values],
+                        event_json_sha256=[hashlib.sha256(json.dumps(value,
+                            ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
+                            for value in values],
+                        sent_at_us=time.time_ns() // 1000)
+                    if release is not None:
+                        trace['progress_release'] = release
+                    for value in values:
+                        send_frame(connection, ['EVENT', ident, value])
+                    send_frame(connection, ['EOSE', ident])
+                    opcode, raw = read_frame(connection)
+                    assert opcode == 1 and json.loads(raw) == ['CLOSE', ident]
+                    opcode, raw = read_frame(connection)
+                    assert opcode == 8 and raw == b''
+                    connection.sendall(b'\x88\x00')
+                    connection.shutdown(socket.SHUT_WR)
+                    assert connection.recv(1) == b''
+                    trace['completion'] = 'request-and-websocket-close'
+                elif number == 1:
                     trace.update(frames=['distinct', 'predecessor', 'distinct-resend', 'EOSE'],
                         event_ids=[new['id'], old['id'], new['id']], sent_at_us=time.time_ns() // 1000)
                     for value in (new, old, new):
@@ -153,7 +210,12 @@ def relay(directory, listener, finished, errors):
         listener.close()
 
 
-def journey(directory):
+def journey(directory, progress=False):
+    assert type(progress) is bool
+    if progress:
+        assert not any((directory / name).exists() or (directory / name).is_symlink() for name in (
+            'progress-release.json', 'progress-mutation-observation.json',
+            'progress-proof-only-observation.json')), 'progress transport requires fresh capture paths'
     fixture = json.loads((directory / 'fixture.json').read_text())
     assert set(fixture) == {'config_revision', 'policy_revision', 'visibility'}
     password = 'Independent owner password 2026'
@@ -200,7 +262,7 @@ def journey(directory):
         selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
         **revisions), 'e3' * 16)
     worker = threading.Thread(target=relay,
-        args=(directory, relay_listener(), finished, errors))
+        args=(directory, relay_listener(), finished, errors, progress))
     worker.start()
 
     def barrier(name):
@@ -237,6 +299,12 @@ def journey(directory):
             ('csrf', b'bigbrotr/browser-csrf/1\0')]}
     result = dict(status='PASS', login=logged_in, logout=logged_out, me=me, digests=digests,
         observations=observations, job_status=observed, relay_joined=True, unauthenticated=401)
+    if progress:
+        closed = [json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
+        phases = [value['progress_phase'] for value in closed if 'progress_phase' in value]
+        assert phases == ['mutation', 'proof-only'], 'both separate transport phases must complete'
+        result.update(status='CAPTURED_PROGRESS_TRANSPORT_ONLY',
+            checkpoint_validation='NOT_RUN', native_proof_validation='NOT_RUN')
     assert all(secret not in json.dumps(result) for secret in (saved['session'], saved['csrf'], password))
     publish(directory, 'client-result.json', result)
     return result
@@ -248,5 +316,5 @@ if __name__ == '__main__':
         assert len(sys.argv) == 4
         serve(Path(sys.argv[2]), Path(sys.argv[3]))
     else:
-        assert sys.argv[1] == 'journey' and len(sys.argv) == 3
-        journey(Path(sys.argv[2]))
+        assert sys.argv[1] in ('journey', 'journey-progress') and len(sys.argv) == 3
+        journey(Path(sys.argv[2]), progress=sys.argv[1] == 'journey-progress')

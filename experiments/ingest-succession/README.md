@@ -8,6 +8,28 @@ This profile alone does not exercise connected PostgreSQL progress, installed
 acquisition/recovery or native ACK. The existing progress checkpoint owns actual
 execution status; the profile is prepared before the new product tests are frozen.
 
+`installed_family_client.py journey-progress` prepares a separate transport
+scenario using the existing authenticated journey. The first real REQ receives
+NEW and OLD; a later REQ receives only NEW after an atomic host observation gate.
+Intervening requests stay quiet under the original socket deadline. The gate
+binds the first captured SQL/input observation and request identity; it does not
+certify a checkpoint. A failed send or close is not retried on another request.
+The default `journey` and qualified family replay are unchanged.
+
+`capture_progress_observation` and `release_progress_transport` in
+`installed_family.py` retain and release this cut without opening native state.
+`progress_transport_checked` in the existing raw capture reader independently
+binds both phase files, literal event hashes, actual distinct REQ identities,
+the release digest and unchanged input census. Its result is
+`CAPTURED_SPLIT_RELAY`, with SQL/checkpoint/native-proof validation `NOT_RUN`.
+These helpers are not yet called by the qualified runner. The opt-in profile
+still needs the frozen migration, complete independent typed head/closure
+encoding, durable-head polling, final native/SQL oracle and negative controls.
+In particular, existing migration38/75-table assertions must not be weakened
+to accept an unknown schema. The same transport cut can be reused for initial,
+activated and successor Sync, but only the successor client is parameterized
+here; no connected scenario or other entrypoint is qualified by this preparation.
+
 `portable-handoff-v2.json` is generated independently from the field tables in
 [the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 at revision `12c3534c6c970839a4371fc00b4ac3eac6730cb0`. The generator uses Python
