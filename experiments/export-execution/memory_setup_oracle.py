@@ -90,8 +90,11 @@ def publication(io, initial, published, initialized, native, readback, transcrip
     for table in ('bigbrotr_archive.installation', 'bigbrotr_archive.scientific_schema',
                   'public.ducklake_schema', 'public.ducklake_table', 'public.ducklake_column'):
         require(catalog[table] == initial['catalog'][table], 'original native schema preserved: ' + table)
-    event = event_expected(dict(kind='frozen-archive-recipe', path=io.spec['recipe']['path'],
+    kind = io.spec.get('event_kind', 'frozen-archive-recipe')
+    event = event_expected(dict(kind=kind, path=io.spec['recipe']['path'],
                                sha256=io.spec['recipe']['sha256']))
+    fact_bytes = 524288 if kind == 'frozen-signed-event' else 262144
+    decoder_options = dict(collection_items=65536, max_nodes=131072) if kind == 'frozen-signed-event' else {}
     actual = [(row['cf'], bytes.fromhex(row['key']), bytes.fromhex(row['value'])) for row in native['rows']]
     facts = {int.from_bytes(key[-8:], 'big'): value for family, key, value in actual
              if family == 'facts' and key[:2] == b'\x01\x20'}
@@ -100,7 +103,7 @@ def publication(io, initial, published, initialized, native, readback, transcrip
     def fact(sequence):
         raw = facts[sequence][34:]
         require(raw.startswith(fact_prefix), 'native fact domain')
-        return decode(raw[len(fact_prefix):], maximum=262144)
+        return decode(raw[len(fact_prefix):], maximum=fact_bytes, **decoder_options)
 
     dictionary_time, recorded = fact(4)[4], fact(8)[4]
     paths = sorted((io.root / 'store/producer-inputs-v1').glob('*.cbor'))
@@ -108,7 +111,7 @@ def publication(io, initial, published, initialized, native, readback, transcrip
     require(len(inputs) == 4, 'independent initial request cardinality')
     prefix = b'bigbrotr/producer-request/1\0'
     require(inputs[-1].startswith(prefix), 'native event request domain')
-    received = decode(inputs[-1][len(prefix):], maximum=262144)[3][5][0]
+    received = decode(inputs[-1][len(prefix):], maximum=fact_bytes, **decoder_options)[3][5][0]
     first = transcript[0]
     require(first['frames'] == ['signed', 'duplicate', 'EOSE']
             and first['completion'] == 'request-and-websocket-close', 'actual complete large relay round')
@@ -119,7 +122,7 @@ def publication(io, initial, published, initialized, native, readback, transcrip
             event['kind'], event['tags'], event['content']]
     wanted = archive_expected(state, initialized, event, dictionary_time, received, recorded,
         first['clock_resolution_us'], native_options=dict(expected_body_digest=sha(b'bigbrotr/body/1\0' + cbor(body))),
-        fact_bytes=262144)
+        fact_bytes=fact_bytes, decoder_options=decoder_options)
     require(actual == wanted['native'] and inputs == wanted['inputs'], 'entire independently encoded native/input bytes')
     requests = sorted(state['producer_requests'], key=lambda row: row['request_sequence'])
     outcomes = sorted(state['producer_outcomes'], key=lambda row: row['request_sequence'])

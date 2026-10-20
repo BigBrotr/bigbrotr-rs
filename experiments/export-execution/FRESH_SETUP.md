@@ -39,8 +39,8 @@ mode immediately before launching and retains `<call>.profile.json`; the
 positional scientific-census call does the same. No live configuration is edited.
 The acceptance follow-up reauthenticates all three pins and the original recipe.
 
-The `publish` phase owns actual Sync/Ingest/Archive publication of the frozen
-94,577-byte signed event. Its relay supplies a narrowly selected callback:
+The `publish` phase owns actual Sync/Ingest/Archive publication of the selected
+frozen signed event (94,577 bytes by default). Its relay supplies a narrowly selected callback:
 the existing handshake, masked REQ/CLOSE checks, three-second socket and small
 EOSE encoder stay intact. Each large transmitted frame and its metadata are
 retained. Independent event reconstruction, native facts, complete producer
@@ -173,7 +173,8 @@ custody and the fresh measurement cgroup remain root-owned prerequisites.
 | `application_source` | Actual 40-character source revision from the passed application's clean `build-info` |
 | `application`, `probe`, `ingest_probe`, `psql` | Each `{path,bytes,sha256}` naming the actual executable; the probes include this fixture's required modes |
 | `config` | `{path,bytes,sha256}` for the explicit root-prepared destination-bearing TOML recipe, with a separate `[export.destination]` section containing exactly `id` and `root` |
-| `recipe` | `{path,bytes,sha256}` for the frozen `archive-event-response.json`; SHA256 `815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963` |
+| `recipe` | `{path,bytes,sha256}` for the selected frozen input. Default `archive-event-response.json` SHA256 is `815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963`; supported boundary literals are listed below. |
+| `event_kind` | Optional; omission preserves `frozen-archive-recipe`. Explicit `frozen-signed-event` selects a complete pinned boundary literal, never a newly signed runtime value. |
 | `worker` | `{root,bytes,sha256}` for the unchanged qualified worker executable; root must be the application's adjacent `archive-worker` directory, which ordinary Serve actually selects |
 | `inventory`, `source_manifest` | Each `{path,bytes,sha256}` for root's authenticated environment/build/source evidence; pinning the receipt alone does not validate its contents |
 | `operator`, `migrator` | Each `{user,password_ref}` for distinct responsibilities provisioned outside this script |
@@ -214,9 +215,11 @@ extensions. Authenticate every Python dependency against the source manifest;
 the wrapper hashes that manifest but does not replace root's source review.
 
 This is one known initial single-stream publication, not a general setup runner.
-The independent census keeps its existing row/count/native budgets. Only explicit
-large-event invocation permits 262,144 bytes for the test CBOR decoder and one
-scientific JSON row; their old defaults remain 65,536. The unchanged native dump
+The independent census keeps its existing count/native budgets. The original
+large-event invocation permits 262,144 bytes for the test CBOR decoder and a
+scientific JSON row strictly below that size; their old defaults remain 65,536.
+The explicit supported-boundary selection below uses larger observation bounds.
+The unchanged native dump
 allows fewer than 2,048 records and values below 1 MiB. Root-file census permits
 8,192 entries, 64 MiB per file and 256 MiB total per root. Child stdout is capped
 at 16 MiB, stderr at 1 MiB and SQL input at 64 KiB. These are fixture bounds,
@@ -243,3 +246,57 @@ Even a failed accept probe may have committed its job and retention pin: retain
 the original command key and resolve actual outcome under root custody. The
 presence of prepared files, an `Accepted` telemetry marker or AST validity is
 not runtime qualification.
+
+## Supported signed-input boundary cases
+
+Use the existing `memory_lab.py` arguments with `--signed-input content-heavy`
+or `--signed-input tag-heavy`; omit this option to preserve `archive-sample`.
+Each case needs a new inventoried root and genuine publication. For five ordinary
+Serve exports, retain `--installed-five --export-memory-mib 256` and the same
+qualified application/build/probe/tracer inputs. No application or probe rebuild,
+policy change, deadline change, custody shortcut or smaller export row profile is
+part of this selection.
+
+Both new inputs are compact 262,144-byte complete signed JSON objects, without
+newline. Public test key 3, created_at 1 and kind 1 are fixed:
+
+| Input under `tests/fixtures/protocol/` | Shape | SHA256 |
+|---|---|---|
+| `archive-event-content-heavy.json` | Empty tags; 261,811 ASCII content bytes; 18 whole-envelope lexical nodes | `b156a704a9d57837b1a49f272b646cb1e2a68d9d826ba10077769f260bb37b0e` |
+| `archive-event-tag-heavy.json` | 32,756 `["x"]` tags, then `["x",""]`, then `["t","é"]`; 65,256 ASCII content bytes; 65,536 whole-envelope lexical nodes | `d3f4116349d7166d4e380bd015a59a46f8887c0f30a51599a443daaccfb8acb9` |
+
+The relay accepts only these frozen hashes for `frozen-signed-event`. It retains
+the original event field order and sends 262,215-byte frames: 262,144 signed bytes,
+61 bytes of EVENT/subscription framing and 10 WebSocket header bytes. The original
+128 KiB text-frame default stays unchanged; the new mode explicitly selects a
+262,205-byte text payload bound. No shared small-frame encoder changes.
+
+After external publication custody, this mode invokes the existing independent
+C-API census with `--row-bytes 1048576`. The bound is exclusive and includes
+scientific metadata; a 262,144-byte signed event cannot fit the old 262,144-byte
+census row. Its engine memory, counts and other settings stay unchanged. The
+existing independent CBOR decoder receives explicit 524,288 encoded bytes,
+65,536 entries per collection and 131,072 total nodes, retaining depth 16.
+Old callers retain their byte/count defaults and the same acceptance domain.
+Both observation bounds are test-only, separate from production admission.
+
+`write_archive_event_response.py --case CASE --check` reconstructs and verifies
+the selected frozen file using the existing python-secp256k1 signer and separate
+BIP340 equation checker. Omit `--check` to author a new boundary file exclusively;
+`--output` selects an isolated authoring path. Its original no-argument recipe
+generation remains byte-identical. Signing dependencies are required only for
+explicit offline author/check work, never for setup or measurement.
+
+`python3 -B experiments/export-execution/test_memory_oracle.py --boundaries`
+adds offline positive and overbound controls to the existing test entrypoint.
+It rechecks independent signatures, Node canonical IDs/byte counts, complete
+relay frames, recursive envelope node counts and decoder/census boundaries.
+The byte+1 control is validly signed and stays below the node limit; node+1
+is validly signed and keeps normalized bytes at 262,144. Their rejection is by
+the independent fixture constraints, **not** an executed product-parser result.
+
+These inputs reach the installed Sync normalized-byte and lexical-node limits.
+They do not reach a 1 MiB scientific native row: ordinary Sync still rejects an
+accepted `ingest.max_event_bytes` above 256 KiB, while export retains its full 1 MiB
+row allowance. New publication, five-job execution, memory and the separate
+full 1 MiB native-row gate remain **NOT_RUN** until root qualifies actual cases.

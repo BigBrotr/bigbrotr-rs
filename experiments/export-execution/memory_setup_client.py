@@ -103,7 +103,7 @@ class Client:
 
 
 class Peer:
-    def __init__(self, root, body):
+    def __init__(self, root, body, *, kind='frozen-archive-recipe'):
         self.root = Path(root) / 'relay'
         self.root.mkdir(mode=0o700)
         # Existing handshake/REQ/CLOSE/3s socket owns the lifetime. The callback
@@ -114,11 +114,11 @@ class Peer:
         def send(connection, subscription, number):
             trace = []
             for index, label in enumerate(('signed', 'duplicate')):
-                frame = event_frame(subscription, body)
+                frame = event_frame(subscription, body, kind=kind)
                 path = self.root / f'frame-{number:03}-{index}.bin'
                 with path.open('xb') as stream:
                     stream.write(frame)
-                receipt = send_event(connection, subscription, body)
+                receipt = send_event(connection, subscription, body, kind=kind)
                 require(receipt['frame_bytes'] == len(frame) and receipt['frame_sha256'] == sha(frame),
                         'complete transmitted frame binding')
                 write(path.with_suffix('.json'), dict(subscription=subscription, label=label, **receipt))

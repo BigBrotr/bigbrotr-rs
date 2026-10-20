@@ -27,7 +27,7 @@ sys.modules['bootstrap_oracle'] = bootstrap
 module.loader.exec_module(bootstrap)
 
 from installed import set_value
-from memory_relay import signed_event, EVENT_ID, RECIPE_SHA256
+from memory_relay import signed_event, RECIPE_SHA256
 from memory_setup_io import IO, census, pinned, publication_evidence, regular, require, sha, write
 from memory_setup_client import ACTIONS, Client, Peer
 from memory_setup_oracle import grants, one, publication
@@ -37,7 +37,7 @@ KEYS = {'activate', 'owner', 'endpoint', 'enrollment', 'scope', 'acquisition', '
 
 def read_spec(path, *, fresh=True):
     spec = json.loads(regular(path, 65536))
-    require(set(spec) == {'format', 'name', 'root', 'config', 'application', 'application_source',
+    require(set(spec) - {'event_kind'} == {'format', 'name', 'root', 'config', 'application', 'application_source',
         'probe', 'ingest_probe', 'psql', 'worker', 'recipe', 'inventory', 'source_manifest',
         'operator', 'migrator', 'username', 'password_ref', 'keys', 'limits'},
         'closed fresh setup descriptor')
@@ -52,8 +52,12 @@ def read_spec(path, *, fresh=True):
     config = tomllib.loads(pinned(spec['config']).decode())
     pinned(spec['inventory'])
     pinned(spec['source_manifest'])
-    require(spec['recipe']['sha256'] == RECIPE_SHA256, 'frozen independent signed recipe')
+    kind = spec.get('event_kind', 'frozen-archive-recipe')
+    require(kind in ('frozen-archive-recipe', 'frozen-signed-event'), 'explicit frozen input kind')
+    require(kind != 'frozen-archive-recipe' or spec['recipe']['sha256'] == RECIPE_SHA256,
+            'frozen independent signed recipe')
     pinned(spec['recipe'])
+    signed_event(spec['recipe']['path'], kind=kind)
     require(set(spec['worker']) == {'root', 'bytes', 'sha256'}, 'explicit packaged worker')
     require(Path(spec['worker']['root']) == Path(spec['application']['path']).parent / 'archive-worker',
             'ordinary Serve selects the exact application-adjacent packaged worker')
@@ -222,10 +226,11 @@ def publish(io):
     config_path = Path(io.profiles['destination']['path'])
     before = initialize(io, config_path)
     principal = one(before['control']['local_accounts'])['principal_id'][2:]
-    body = signed_event(io.spec['recipe']['path'])
+    kind = io.spec.get('event_kind', 'frozen-archive-recipe')
+    body = signed_event(io.spec['recipe']['path'], kind=kind)
     with (io.root / 'event.json').open('xb') as stream:
         stream.write(body)
-    peer = Peer(io.root, body)
+    peer = Peer(io.root, body, kind=kind)
     publisher = None
     try:
         publisher, initialized = start_serve(io, Path(io.profiles['publisher']['path']), True)
@@ -292,9 +297,11 @@ def prepare(io, checkpoint):
     native = json.loads(io.run('native-dump', [io.spec['ingest_probe']['path'], 'dump', str(io.root / 'store')]))
     io.backends('native-dump', absent=True)
     io.bind_profile('scientific-census', config_path)
+    row_option = ['--row-bytes', '1048576'] if io.spec.get('event_kind') == 'frozen-signed-event' \
+        else ['--large-signed-row']
     readback = json.loads(io.run('scientific-census', [sys.executable, '-B',
         str(SOURCE / 'experiments/ingest-bootstrap/installed_archive_read.py'), str(config_path),
-        str(io.root / 'census-scratch'), '--large-signed-row', '--worker-root', io.spec['worker']['root']]))
+        str(io.root / 'census-scratch'), *row_option, '--worker-root', io.spec['worker']['root']]))
     io.backends('scientific-census', absent=True)
     require(io.capture('publication-readback') == published, 'read-only native census preserved whole SQL/catalog')
     require(immutable(io.root) == fixed, 'native observers preserved original physical science')
@@ -326,7 +333,7 @@ def prepare(io, checkpoint):
         write(path, stored['document'])
         common[name] = dict(path=str(path), sha256=sha(path.read_bytes()), stored_digest=stored['document_digest'][2:])
     query = dict(version=1, resource='event_history', mode='snapshot', scope=initialized['private_scope'],
-                 filters=[dict(ids=[EVENT_ID])])
+                 filters=[dict(ids=[selection['query']['event_id']])])
     marker = io.root / 'destination/destination.json'
     command = dict(format='signed-events-jsonl', query=query, allocation=allocation,
         destination=dict(id=io.config['export']['destination']['id'], binding_sha256=sha(marker.read_bytes())), **revisions)

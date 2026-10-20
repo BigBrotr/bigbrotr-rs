@@ -66,7 +66,8 @@ def inspect(ident):
 
 
 class Laboratory:
-    def __init__(self, root, build, probe, instrument, *, application_build=None, export_memory_mib=1024):
+    def __init__(self, root, build, probe, instrument, *, application_build=None, export_memory_mib=1024,
+                 signed_input='archive-sample'):
         require(root.is_absolute() and root.resolve() == root and not root.exists(), 'fresh canonical root')
         require(not git('status', '--porcelain', '--untracked-files=all'), 'clean committed source')
         require(shutil.disk_usage(root.parent).free >= 69324505088, 'completion reserve plus headroom')
@@ -78,6 +79,8 @@ class Laboratory:
         self.ingest_build = build
         self.ingest_visible = ('/reference-build' if self.reference_build is not None else '/build') + '/ingest_bootstrap_probe'
         self.export_memory_mib = export_memory_mib
+        require(signed_input in ('archive-sample', 'content-heavy', 'tag-heavy'), 'selected frozen input')
+        self.signed_input = signed_input
         for path, expected in ARTIFACTS.items():
             require((build / path).is_file() and not (build / path).is_symlink()
                     and sha(build / path) == expected, 'qualified artifact: ' + path)
@@ -148,6 +151,8 @@ class Laboratory:
                 ingest_probe_source=APPLICATION_SOURCE, reference_build=str(self.reference_build))
         if export_memory_mib != 1024:
             self.state['export_memory_mib'] = export_memory_mib
+        if signed_input != 'archive-sample':
+            self.state['signed_input'] = signed_input
         self.save()
         self.pg = None
         if self.application_qualification is not None:
@@ -377,14 +382,15 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         write(self.out / 'source-manifest.json', manifest)
         keys = ['activate', 'owner', 'endpoint', 'enrollment', 'scope', 'acquisition',
                 'accept-export', 'history.read', 'export', 'private-export']
+        fixture = 'tests/fixtures/protocol/' + ('archive-event-response.json'
+            if self.signed_input == 'archive-sample' else 'archive-event-' + self.signed_input + '.json')
         self.spec = dict(format='bigbrotr-export-fresh-setup/1', name='signed-memory',
             root='/lab/fresh-root', application_source=self.application_source,
             application=pin(self.build / 'bigbrotr', '/build/bigbrotr'),
             ingest_probe=pin(self.ingest_build / 'ingest_bootstrap_probe', self.ingest_visible),
             probe=pin(self.probe / 'export-execution-probe', '/probe/export-execution-probe'),
             psql=PSQL_PIN, config=pin(recipe, '/lab/recipe.toml'),
-            recipe=pin(SOURCE / 'tests/fixtures/protocol/archive-event-response.json',
-                '/source/tests/fixtures/protocol/archive-event-response.json'),
+            recipe=pin(SOURCE / fixture, '/source/' + fixture),
             worker=dict(root='/build/archive-worker',
                 bytes=(self.build / 'archive-worker/bigbrotr-archive-worker').stat().st_size,
                 sha256=self.artifacts['archive-worker/bigbrotr-archive-worker']),
@@ -398,6 +404,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                 engine_memory_bytes=64*MIB, native_reserve_bytes=96*MIB,
                 row_bytes=MIB, scan_bytes=256*MIB, temp_bytes=64*MIB, export_bytes=MIB,
                 disk_reserve_bytes=65536*MIB, query_ms=4000))
+        if self.signed_input != 'archive-sample':
+            self.spec['event_kind'] = 'frozen-signed-event'
 
     def publish(self):
         def inputs(start):
@@ -626,6 +634,8 @@ def main():
     parser.add_argument('--application-build', type=Path,
         help='qualified export-admission build root; --build retains the unchanged ingest dump probe')
     parser.add_argument('--export-memory-mib', type=int, choices=(256, 1024), default=1024)
+    parser.add_argument('--signed-input', choices=('archive-sample', 'content-heavy', 'tag-heavy'),
+        default='archive-sample', help='frozen supported Sync boundary; export row profile remains1MiB')
     parser.add_argument('--prepare-only', action='store_true', help='stop before root Export acceptance')
     parser.add_argument('--installed-five', action='store_true',
         help='prepare genuine256MiB policy and observe five ordinary Serve exports')
@@ -638,7 +648,8 @@ def main():
     require(not args.installed_five or (args.application_build is not None
             and args.export_memory_mib == 256 and not args.prepare_only), 'explicit installed five profile')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
-        application_build=args.application_build, export_memory_mib=args.export_memory_mib)
+        application_build=args.application_build, export_memory_mib=args.export_memory_mib,
+        signed_input=args.signed_input)
     try:
         lab.acceptance(prepare_only=args.prepare_only or args.installed_five)
         if args.installed_five:

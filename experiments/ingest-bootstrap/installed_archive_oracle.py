@@ -32,7 +32,7 @@ def clock(value):
 
 
 def expected(state, report, event, dictionary_time, received, recorded, resolution=1,
-             *, native_options=None, fact_bytes=65536):
+             *, native_options=None, fact_bytes=65536, decoder_options=None):
     assert received is not None and recorded is not None
     native, inputs, receipts = native_expected(state, report, event, dictionary_time, received, recorded,
         resolution, **(native_options or {}))
@@ -47,7 +47,7 @@ def expected(state, report, event, dictionary_time, received, recorded, resoluti
         fact_digest = hashlib.sha256(preimage).digest()
         assert value[:34] == b'\x01\x20' + fact_digest
         identity, family, version, visibility, at, payload = decode(
-            preimage[len(b'bigbrotr/fact/1\0'):], maximum=fact_bytes)
+            preimage[len(b'bigbrotr/fact/1\0'):], maximum=fact_bytes, **(decoder_options or {}))
         facts.append(dict(sequence=identity[3], digest=fact_digest.hex(), preimage_hex=preimage.hex()))
         row = dict(source_record_id=source(identity), record_schema_version=version,
             record_kind=family, visibility_scope_id=reference(visibility), payload_digest=fact_digest.hex().upper(), recorded_at=at)

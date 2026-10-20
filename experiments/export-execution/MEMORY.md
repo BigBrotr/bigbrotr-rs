@@ -72,8 +72,11 @@ The event descriptor is `{kind,path,sha256}`. Initially use
 `815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963`.
 The oracle reconstructs its signed literal, independently hashes the Nostr ID,
 and compares complete JSONL and manifest bytes. It does not generate signatures.
-`frozen-signed-event` admits a future independently signed/pinned literal; this
-packet creates no near1MiB or many-tag seed and makes no claim about them.
+`frozen-signed-event` accepts an independently signed/pinned literal. The
+[fresh setup](FRESH_SETUP.md#supported-signed-input-boundary-cases) now has two
+offline-verified 262,144-byte literals, including the 65,536-node tag-heavy input.
+Their production publication/execution and memory remain separate qualification
+work; neither is a near-1-MiB native-row seed.
 
 Resource accounting follows actual owners: Control uses credential copies plus
 16MiB+512MiB (`postgres_command::prepare_control_shared`); catalog uses copies

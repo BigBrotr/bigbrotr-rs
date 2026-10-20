@@ -143,8 +143,131 @@ def installed(payload):
                 scope='Virtual mutations of caller-pinned retained captures only; no database, file or runtime changes')
 
 
+def boundaries():
+    """Offline signed-input/decoder/census controls; no product parser or engines."""
+    import importlib.util
+    import subprocess
+    import memory_setup  # Establish the existing inert oracle imports only.
+    from bootstrap_oracle import cbor
+    from installed_sync_oracle import decode
+    from installed_archive_read import decode_row
+    import memory_relay as relay
+
+    root = Path(__file__).resolve().parents[2]
+    path = root / 'tests/fixtures/protocol/write_archive_event_response.py'
+    spec = importlib.util.spec_from_file_location('boundary_author', path)
+    author = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(author)
+    sys.path.insert(0, str(root / 'experiments/identity-contract'))
+    from signed_fixture import sign, verified
+
+    controls = []
+
+    def reject(name, call, reason=None):
+        try:
+            call()
+        except (AssertionError, ValueError) as error:
+            if reason is not None:
+                assert str(error) == reason, (name, str(error))
+            controls.append(dict(name=name, status='REJECTED', reason=str(error)))
+        else:
+            raise AssertionError('unexpected offline boundary acceptance: ' + name)
+
+    subscription = '01' * 16 + '00' * 8
+    events, metrics = {}, {}
+    for case in author.CASES:
+        raw, expected = author.build(case)
+        name = 'archive-event-response.json' if case == 'archive-sample' else 'archive-event-' + case + '.json'
+        path = root / 'tests/fixtures/protocol' / name
+        assert path.read_bytes() == raw, 'unchanged independently reauthored fixture bytes'
+        kind = 'frozen-archive-recipe' if case == 'archive-sample' else 'frozen-signed-event'
+        event = oracle.event_expected(dict(kind=kind, path=str(path), sha256=oracle.digest(raw)))
+        assert verified(event)
+        body = relay.signed_event(path, kind=kind)
+        frame = relay.event_frame(subscription, body, kind=kind)
+        assert frame[:2] == b'\x81\x7f' and int.from_bytes(frame[2:10], 'big') == len(body) + 61
+        assert frame[10:] == b'["EVENT","' + subscription.encode() + b'",' + body + b']'
+        assert len(frame) == len(body) + 71 and oracle.digest(body) == expected['signed_event_sha256']
+        # Count keys and containers recursively with a JSON parse tree, separately
+        # from the author's closed-shape formula and the product's lexical scanner.
+        def nodes(value):
+            if isinstance(value, dict):
+                return 1 + len(value) + sum(nodes(item) for item in value.values())
+            if isinstance(value, list):
+                return 1 + sum(map(nodes, value))
+            return 1
+        assert nodes(json.loads(frame[10:])) == expected['envelope_nodes']
+        if case == 'archive-sample':
+            assert relay.signed_event(path) == body and relay.event_frame(subscription, body) == frame
+        else:
+            reject(case + '-old-frame-default', lambda: relay.event_frame(subscription, body))
+            reject(case + '-old-census-envelope', lambda: decode_row(oracle.encoded(event), 262144),
+                   'native-reader-row-byte-bound')
+            assert decode_row(oracle.encoded(event), 1048576) == event
+        event_body = [bytes.fromhex(event['id']), bytes.fromhex(event['pubkey']),
+                      event['created_at'], event['kind'], event['tags'], event['content']]
+        encoded_body = cbor(event_body)
+        assert decode(encoded_body, maximum=524288, collection_items=65536, max_nodes=131072) == event_body
+        assert len(encoded_body) + 4096 < 524288 < 1048576, 'body plus finite metadata headroom'
+        metrics[case] = dict(**expected, frame_bytes=len(frame), body_cbor_bytes=len(encoded_body))
+        events[case] = event
+    script = ("const fs=require('fs'),c=require('crypto');const events=JSON.parse(fs.readFileSync(0,'utf8'));"
+              "console.log(JSON.stringify(Object.fromEntries(Object.entries(events).map(([k,e])=>"
+              "[k,{id:c.createHash('sha256').update(JSON.stringify([0,e.pubkey,e.created_at,e.kind,e.tags,e.content])).digest('hex'),"
+              "bytes:Buffer.byteLength(JSON.stringify(e))}]))));")
+    crosscheck = json.loads(subprocess.check_output(['node', '-e', script], input=oracle.encoded(events)))
+    assert all(crosscheck[name] == dict(id=event['id'], bytes=metrics[name]['signed_event_bytes'])
+               for name, event in events.items()), 'independent Node canonical ID and normalized bytes'
+
+    # Both overbounds remain valid signatures; each isolates exactly one limit.
+    value = events['content-heavy']
+    extra_byte = sign(3, 1, 1, value['tags'], value['content'] + 'a')
+    assert verified(extra_byte) and len(oracle.encoded(extra_byte)) == 262145
+    reject('valid-signed-byte-plus-one', lambda: author.supported(extra_byte),
+           'installed normalized event byte bound')
+    value = events['tag-heavy']
+    tags = copy.deepcopy(value['tags'])
+    tags[0].append('')  # Adds one node and three encoded bytes.
+    extra_node = sign(3, 1, 1, tags, value['content'][:-3])
+    assert verified(extra_node) and len(oracle.encoded(extra_node)) == 262144
+    assert 18 + sum(1 + len(tag) for tag in tags) == 65537
+    reject('valid-signed-node-plus-one', lambda: author.supported(extra_node),
+           'whole EVENT envelope node bound')
+    for size in (relay.MAX_TEXT_BYTES, relay.BOUNDARY_TEXT_BYTES):
+        assert relay.server_text_frame(b'x' * size, maximum=size)
+        reject('relay-byte-plus-one-' + str(size),
+               lambda: relay.server_text_frame(b'x' * (size + 1), maximum=size), 'finite text bound')
+    assert decode(cbor([''] * 1024)) == [''] * 1024
+    reject('unchanged-default-collection-bound', lambda: decode(cbor([''] * 1025)),
+           'fixture CBOR collection bound')
+    options = dict(maximum=524288, collection_items=65536, max_nodes=131072)
+    assert decode(cbor([''] * 65536), **options) == [''] * 65536
+    reject('explicit-collection-plus-one', lambda: decode(cbor([''] * 65537), **options),
+           'fixture CBOR collection bound')
+    dense = [[''] * 65535, [''] * 65534]  # Three containers +131069 scalar nodes.
+    assert decode(cbor(dense), **options) == dense
+    dense[1].append('')
+    reject('explicit-total-nodes-plus-one', lambda: decode(cbor(dense), **options),
+           'fixture CBOR node bound')
+    for maximum, header in ((65536, 3), (262144, 5), (524288, 5)):
+        exact = 'x' * (maximum - header)
+        assert len(cbor(exact)) == maximum and decode(cbor(exact), maximum=maximum) == exact
+        reject('CBOR-byte-plus-one-' + str(maximum), lambda: decode(cbor(exact + 'x'), maximum=maximum))
+    for maximum in (65536, 262144, 1048576):
+        exact = b'"' + b'x' * (maximum - 3) + b'"'
+        assert len(exact) == maximum - 1 and len(decode_row(exact, maximum)) == maximum - 3
+        reject('census-exact-exclusive-bound-' + str(maximum),
+               lambda: decode_row(b' ' + exact, maximum), 'native-reader-row-byte-bound')
+    return dict(status='PASS_OFFLINE_SUPPORTED_INPUT_BOUNDARIES', inputs=metrics,
+        independent_node_crosscheck=crosscheck, controls=controls,
+        scope='Frozen signing/ID/byte/node, relay and independent decoder/census helper checks only. '
+              'No production parser refusal, publication, native reader or memory/runtime qualification.')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 3 and sys.argv[1] == '--installed':
+    if len(sys.argv) == 2 and sys.argv[1] == '--boundaries':
+        print(json.dumps(boundaries(), indent=2))
+    elif len(sys.argv) == 3 and sys.argv[1] == '--installed':
         print(json.dumps(installed(oracle.load(sys.argv[2])), indent=2))
     else:
         print(json.dumps(run(Path(sys.argv[1])), indent=2))

@@ -265,7 +265,8 @@ def installed(spec_path, output):
     io = IO(output, inputs, config)
     io.profiles = profiles
     science = dict(format='bigbrotr-export-memory-science/1',
-        event=dict(kind='frozen-archive-recipe', **{key: inputs['recipe'][key] for key in ('path', 'sha256')}),
+        event=dict(kind=inputs.get('event_kind', 'frozen-archive-recipe'),
+                   **{key: inputs['recipe'][key] for key in ('path', 'sha256')}),
         query=prepared['selection']['query'], catalog=prepared['selection']['catalog'],
         frontier_revision=prepared['selection']['frontier_revision'],
         accepted_revisions=dict(configuration=case['command']['expected_config_revision'],

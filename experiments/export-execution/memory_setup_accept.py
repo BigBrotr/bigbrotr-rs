@@ -94,7 +94,8 @@ def run(root, group):
         measure_path = root / 'case.json'
         write(measure_path, measure)
         science = dict(format='bigbrotr-export-memory-science/1',
-            event=dict(kind='frozen-archive-recipe', path=spec['recipe']['path'], sha256=spec['recipe']['sha256']),
+            event=dict(kind=spec.get('event_kind', 'frozen-archive-recipe'),
+                       path=spec['recipe']['path'], sha256=spec['recipe']['sha256']),
             query=prepared['selection']['query'], catalog=prepared['selection']['catalog'],
             frontier_revision=prepared['selection']['frontier_revision'],
             accepted_revisions=dict(configuration=case['command']['expected_config_revision'],

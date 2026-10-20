@@ -12,13 +12,21 @@ ENDPOINT = 'ws://127.0.0.1:7447/installed-fixture'
 SIGNED_SHA256 = 'c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae'
 
 
-def decode(data, maximum=65536):
-    assert maximum in (65536, 262144) and len(data) <= maximum
-    offset = 0
+def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
+    """Explicit larger fixture bounds leave all prior call defaults unchanged."""
+    assert maximum in (65536, 262144, 524288) and len(data) <= maximum
+    assert collection_items in (1024, 65536)
+    # Every original CBOR item consumes at least one encoded byte. The default
+    # therefore preserves the old accepted domain while making work finite.
+    max_nodes = maximum if max_nodes is None else max_nodes
+    assert type(max_nodes) is int and 0 < max_nodes <= maximum
+    offset, nodes = 0, 0
 
     def item(depth=0):
-        nonlocal offset
+        nonlocal offset, nodes
         assert depth <= 16 and offset < len(data)
+        nodes += 1
+        assert nodes <= max_nodes, 'fixture CBOR node bound'
         tag = data[offset]; offset += 1
         if tag == 246:
             return None
@@ -34,7 +42,7 @@ def decode(data, maximum=65536):
             assert offset + size <= len(data)
             value = data[offset:offset+size]; offset += size
             return value if major == 2 else value.decode('utf8')
-        assert size <= 1024
+        assert size <= collection_items and size <= len(data) - offset, 'fixture CBOR collection bound'
         if major == 4:
             return [item(depth+1) for _ in range(size)]
         if major == 5:

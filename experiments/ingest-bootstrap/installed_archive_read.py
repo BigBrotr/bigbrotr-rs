@@ -20,9 +20,16 @@ class Result(C.Structure):
         ('deprecated_error_message', C.c_void_p), ('internal_data', C.c_void_p)]
 
 
+def decode_row(raw, row_bytes):
+    """Same strict census byte check, independently exercisable without an engine."""
+    assert row_bytes in (65536, 262144, 1048576)
+    assert len(raw) < row_bytes, 'native-reader-row-byte-bound'
+    return json.loads(raw)
+
+
 def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
          bundle_root=Path('/build/archive-worker')):
-    assert row_bytes in (65536, 262144)
+    assert row_bytes in (65536, 262144, 1048576)
     bundle = Path(bundle_root)
     assert bundle.is_absolute()
     header = (bundle / 'lib/duckdb.h').read_text()
@@ -76,8 +83,7 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
                     assert value
                     try:
                         raw = C.string_at(value)
-                        assert len(raw) < row_bytes
-                        values.append(json.loads(raw))
+                        values.append(decode_row(raw, row_bytes))
                     finally:
                         free(value)
                 return values
@@ -134,11 +140,14 @@ if __name__ == '__main__':
     parser.add_argument('config', type=Path)
     parser.add_argument('temporary', type=Path)
     parser.add_argument('--full-stream-order', action='store_true')
-    parser.add_argument('--large-signed-row', action='store_true')
+    row_limit = parser.add_mutually_exclusive_group()
+    row_limit.add_argument('--large-signed-row', action='store_true')
+    row_limit.add_argument('--row-bytes', type=int, choices=(65536, 262144, 1048576),
+        help='explicit independent census envelope; no production row-limit change')
     parser.add_argument('--worker-root', type=Path, default=Path('/build/archive-worker'))
     args = parser.parse_args()
     config, temporary = args.config, args.temporary
     assert config.is_absolute() and temporary.is_absolute()
     temporary.mkdir(mode=0o700)
     print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=args.full_stream_order,
-        row_bytes=262144 if args.large_signed_row else 65536, bundle_root=args.worker_root)))
+        row_bytes=args.row_bytes or (262144 if args.large_signed_row else 65536), bundle_root=args.worker_root)))
