@@ -357,8 +357,69 @@ def native_rows():
         scope='Signed literals and constructed verifier unit inputs only. No observed publication, native row, refusal, custody or memory/runtime result.')
 
 
+
+def allocations():
+    """Pure counter-verifier units; no claimed process, allocator or SQL execution."""
+    def snap(live, peak):
+        return dict(scope=oracle.ALLOCATION_SCOPE, live_bytes=live, peak_bytes=peak,
+                    accounting_valid=True)
+    # Separate serialized streams deliberately interleave in peak magnitude.
+    # A nonzero first/final live value is valid; neither reset nor finalzero exists.
+    markers = [dict(rust_allocations=snap(3, 3)), dict(rust_allocations=snap(2, 9))]
+    ledger = [dict(rust_allocations=snap(1, 4)), dict(rust_allocations=snap(1, 8))]
+    terminal = dict(event='export-allocation-terminal', profile=oracle.ALLOCATION_PROFILE,
+        cut='after-runtime-drop-before-terminal-format',
+        status='OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET',
+        catalog_manager_bytes=oracle.MANAGER_BYTES, rust_allocations=snap(2, 9),
+        operation_error=None, exclusions=oracle.ALLOCATION_EXCLUSIONS.copy())
+    baseline = oracle.allocation_observation(markers, ledger, terminal)
+    assert baseline['live_bytes_at_cut'] == 2 and baseline['whole_parent_peak_bytes'] == 9
+    controls = [dict(name='interleaved-streams-and-nonzero-live', status='ACCEPTED_OFFLINE_UNIT')]
+
+    def reject(name, mutate):
+        m, l, t = copy.deepcopy((markers, ledger, terminal))
+        mutate(m, l, t)
+        try:
+            oracle.allocation_observation(m, l, t)
+        except (ValueError, KeyError):
+            controls.append(dict(name=name, status='REJECTED_OFFLINE_UNIT'))
+        else:
+            raise AssertionError('incorrect allocation verifier acceptance: ' + name)
+
+    reject('invalid-marker-counter', lambda m, l, t: m[0]['rust_allocations'].update(accounting_valid=False))
+    reject('invalid-ledger-counter', lambda m, l, t: l[0]['rust_allocations'].update(accounting_valid=False))
+    reject('invalid-final-counter', lambda m, l, t: t['rust_allocations'].update(accounting_valid=False))
+    reject('peak-below-live', lambda m, l, t: m[0]['rust_allocations'].update(live_bytes=4))
+    reject('negative-count', lambda m, l, t: t['rust_allocations'].update(live_bytes=-1))
+    reject('bool-is-not-count', lambda m, l, t: t['rust_allocations'].update(live_bytes=True))
+    reject('overflow-count', lambda m, l, t: t['rust_allocations'].update(peak_bytes=2**64))
+    reject('marker-peak-regression', lambda m, l, t: m.reverse())
+    reject('ledger-peak-regression', lambda m, l, t: l.reverse())
+    reject('terminal-below-marker-peak', lambda m, l, t: t['rust_allocations'].update(peak_bytes=8))
+    reject('terminal-below-ledger-peak', lambda m, l, t: l[-1]['rust_allocations'].update(peak_bytes=10))
+    reject('wrong-scope', lambda m, l, t: t['rust_allocations'].update(scope='manager-only'))
+    reject('undeclared-counter', lambda m, l, t: t['rust_allocations'].update(usable_bytes=9))
+    reject('wrong-cut', lambda m, l, t: t.update(cut='before-runtime-drop'))
+    reject('wrong-budget', lambda m, l, t: t.update(catalog_manager_bytes=oracle.MANAGER_BYTES + 1))
+    reject('missing-exclusion', lambda m, l, t: t['exclusions'].pop())
+    reject('false-success', lambda m, l, t: t['rust_allocations'].update(peak_bytes=oracle.MANAGER_BYTES + 1))
+    reject('operation-failed', lambda m, l, t: t.update(operation_error='ResourceLimit'))
+    reject('missing-ledger', lambda m, l, t: l.clear())
+    for peak, status in ((oracle.MANAGER_BYTES, 'OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET'),
+                         (oracle.MANAGER_BYTES + 1, 'INCONCLUSIVE_WHOLE_PARENT_EXCEEDS_MANAGER')):
+        changed = copy.deepcopy(terminal)
+        changed['rust_allocations']['peak_bytes'] = peak
+        changed['status'] = status
+        assert oracle.allocation_observation(markers, ledger, changed)['status'] == status
+        controls.append(dict(name='threshold-' + str(peak), status='ACCEPTED_OFFLINE_UNIT'))
+    return dict(status='PASS_OFFLINE_ALLOCATION_VERIFIER_UNITS', controls=controls,
+        scope='Constructed counter records only. Rust allocator tests, real capture, drivers and memory remain NOT_RUN.')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] == '--native-row':
+    if len(sys.argv) == 2 and sys.argv[1] == '--allocations':
+        print(json.dumps(allocations(), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--native-row':
         print(json.dumps(native_rows(), indent=2))
     elif len(sys.argv) == 2 and sys.argv[1] == '--boundaries':
         print(json.dumps(boundaries(), indent=2))
