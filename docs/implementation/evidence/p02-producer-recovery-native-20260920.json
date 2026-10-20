@@ -37773,6 +37773,249 @@
               "elapsed_seconds": 10.17238073144108
             }
           }
+        },
+        {
+          "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+          "case": "frontier-control-loss",
+          "source": "c950e7c04cdfeaefbbcace0c5d1a1cb2dda23536",
+          "tree": "3a27da7743d9a287f9b76a488d465d9c9143286a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c",
+          "prepare_session": 35975,
+          "prepare_joined_exit_code": 0,
+          "engine_session": 84402,
+          "engine_joined_exit_code": 0,
+          "replay_session": 6280,
+          "replay_joined_exit_code": 0,
+          "custody_session": 46132,
+          "custody_joined_exit_code": 0,
+          "engine_wrapper": {
+            "started": "2026-10-20T09:53:56.266833+00:00",
+            "command": [
+              "python3",
+              "-B",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/source/experiments/acquisition-scope/bindings.py",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c",
+              "--installed-archive-catch-up-refusal-frontier-control-loss",
+              "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts"
+            ],
+            "source": "c950e7c04cdfeaefbbcace0c5d1a1cb2dda23536",
+            "actual_joins": {
+              "prepare35975": 0
+            },
+            "helper_sha256": "42ebdfef3c9160224feafa80a59c34499ee68e2d296d96cc9457dd673c3ccc90",
+            "finished": "2026-10-20T09:55:49.532399+00:00",
+            "exit_code": 0
+          },
+          "oracle": {
+            "case": "frontier-control-loss",
+            "control_released": false,
+            "control_tables": 75,
+            "exit_code": 4,
+            "expected_refusal": true,
+            "installed_processes": 11,
+            "new_archive_attempts": 3,
+            "new_frontier_revisions": 0,
+            "original_frontier_revision": 4,
+            "same_physical_roots": true,
+            "snapshots": 31,
+            "source_scope": "independent whole-state reducer; wait timing is observed, no internal timer claim",
+            "status": "PASS"
+          },
+          "negative_controls": {
+            "rejected": [
+              "forced-process",
+              "unknown-process",
+              "wrong-error",
+              "unrelated-SQL",
+              "native-write",
+              "backend-live",
+              "Control-normalized",
+              "old-frontier-rewritten",
+              "scope-obligation-added",
+              "foreign-waiter",
+              "wrong-wait-query",
+              "holder-unjoined",
+              "no-real-action",
+              "late-action",
+              "release-before-terminal",
+              "retained-intent-lost"
+            ],
+            "scope": "assembled-context mutations, not independent engine or isolated-predicate coverage",
+            "status": "PASS"
+          },
+          "custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/audit-root/audit-v1.json",
+            "bytes": 370993,
+            "sha256": "5e3610fdeb0ba6c374c597496128a633969421d05dc6de27973bbc469c130df6"
+          },
+          "raw_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/root-independent-replay.json",
+            "bytes": 146759,
+            "sha256": "fa68b817d7c40471cba99f8b76df38ae24a154abfa6af714789479383b6fcf6c"
+          },
+          "preparation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/root-preparation.json",
+            "bytes": 29918,
+            "sha256": "8fda6a68d763a6403fb0d6068a4d28ba8d0edfbee546967860271c76e60636d4"
+          },
+          "source_files": 1981,
+          "protected_elfs": 190,
+          "raw_bound_files": 531,
+          "unchanged_nonborrowed_containers": 1409,
+          "custody_observed_at": "2026-10-20T09:56:45.233862+00:00",
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "terminal": [
+            {
+              "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-20T09:53:57.128352896Z",
+                "FinishedAt": "2026-10-20T09:55:48.644487587Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                  "Destination": "/var/lib/postgresql/data",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ]
+            },
+            {
+              "Id": "e105b28ade73309867fff7df7a267014a7e8e69736b610adaf68d0bccd556a0d",
+              "Name": "/bigbrotr-acquisition-binding-c950e7c",
+              "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-20T09:53:58.098615736Z",
+                "FinishedAt": "2026-10-20T09:55:47.951568227Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-9a7fd81/out/artifacts",
+                  "Destination": "/build",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/bindings",
+                  "Destination": "/lab",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                }
+              ]
+            }
+          ],
+          "free_bytes_after": 328720633856,
+          "limits": "Only frontier-control-loss refusal on its fresh genuine initial+9prefix path. Three Archive publications precede the real blocked frontier INSERT; original frontier4 remains unchanged, local uncommitted intent retained, Control not normalized. Actual process terminal precedes holder release; holder joined0 and backend absent. Original failures and the interrupted missing-input2426646 remain unchanged; no resolution of the initial Sync timeout is inferred. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse.",
+          "wait_schedule": {
+            "artifact": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/bindings/catch-up-refusal-frontier-control-loss-schedule.json",
+              "bytes": 3359,
+              "sha256": "2357eddce938edde066b9d12b1c595887445e8d68d844427b7555ab22504e3b3"
+            },
+            "holder": {
+              "identity": {
+                "pid": 4851,
+                "backend_start": "2026-10-20 09:55:32.743662+00",
+                "database": "bb_scope_bind_c950e7c_archive_export",
+                "user": "bigbrotr_migrator",
+                "application": "bb_catchup_refusal_holder",
+                "isolation": "read committed",
+                "synchronous_commit": "on"
+              },
+              "begin": {
+                "sqlstate": "00000",
+                "rows": 0,
+                "lines": []
+              },
+              "held": {
+                "sqlstate": "00000",
+                "rows": 0,
+                "lines": []
+              },
+              "rollback": {
+                "sqlstate": "00000",
+                "rows": 0,
+                "lines": []
+              },
+              "exit": 0,
+              "absence": [
+                {
+                  "pid": 4851,
+                  "backend_start": "2026-10-20 09:55:32.743662+00",
+                  "database": "bb_scope_bind_c950e7c_archive_export",
+                  "present": false
+                }
+              ]
+            },
+            "action_response": "t",
+            "action_before_us": 1792490140877025,
+            "action_after_us": 1792490141035364,
+            "terminal_observed_us": 1792490141110119,
+            "release_before_us": 1792490141182553,
+            "release_after_us": 1792490141227800,
+            "process_terminal": {
+              "pid": 2525,
+              "config": "/lab/bb_scope_bind_c950e7c_archive_export.toml",
+              "prefix": "/lab/catch-up-refusal-frontier-control-loss",
+              "command": [
+                "/build/bigbrotr",
+                "archive",
+                "catch-up",
+                "--file",
+                "/lab/bb_scope_bind_c950e7c_archive_export.toml"
+              ],
+              "start_ticks": 587238696,
+              "reaped": true,
+              "exit_code": 4,
+              "forced": false,
+              "error": null,
+              "elapsed_seconds": 8.164773089811206
+            }
+          }
         }
       ],
       "archive_refusal_qualification": {
@@ -37850,6 +38093,21 @@
             "sha256": "e10a661eea2d86a407c3617ef65ce5e22aa7a50739540b3466352579f374702a"
           },
           "scope": "Only frontier-cancel refusal on its fresh genuine initial+9prefix path. Three Archive publications precede the real blocked frontier INSERT; original frontier4 remains unchanged, local uncommitted intent retained, Control not normalized. Actual process terminal precedes holder release; holder joined0 and backend absent. Original failures and the interrupted missing-input2426646 remain unchanged; no resolution of the initial Sync timeout is inferred. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
+        },
+        "frontier-control-loss": {
+          "status": "PASS_INSTALLED_ARCHIVE_CATCH_UP_REFUSAL",
+          "source": "c950e7c04cdfeaefbbcace0c5d1a1cb2dda23536",
+          "custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/audit-root/audit-v1.json",
+            "bytes": 370993,
+            "sha256": "5e3610fdeb0ba6c374c597496128a633969421d05dc6de27973bbc469c130df6"
+          },
+          "raw_replay": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-control-loss-engine-c950e7c/root-independent-replay.json",
+            "bytes": 146759,
+            "sha256": "fa68b817d7c40471cba99f8b76df38ae24a154abfa6af714789479383b6fcf6c"
+          },
+          "scope": "Only frontier-control-loss refusal on its fresh genuine initial+9prefix path. Three Archive publications precede the real blocked frontier INSERT; original frontier4 remains unchanged, local uncommitted intent retained, Control not normalized. Actual process terminal precedes holder release; holder joined0 and backend absent. Original failures and the interrupted missing-input2426646 remain unchanged; no resolution of the initial Sync timeout is inferred. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
         }
       },
       "archive_package_cache_headroom": {

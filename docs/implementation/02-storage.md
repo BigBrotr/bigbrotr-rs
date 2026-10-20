@@ -685,7 +685,11 @@ Frontier-cancel passes at fixture`bd27000`: eleven processes,31states/75tables,
 531raw-bound files and16negative controls. After three Archive publications,
 SIGTERM during the actual blocked frontier INSERT leaves frontier4 unchanged
 and retains the local uncommitted intent; process exit precedes holder release.
-Frontier-control-loss, held-attempt custody and
+Frontier-control-loss also passes at fixture`c950e7c`: eleven processes,
+31states/75tables,531raw-bound files and16negative controls. Exact Control-backend
+termination during the blocked INSERT preserves frontier4 and the local intent
+after three Archive publications; process exit precedes holder release.
+All six ordinary refusal selectors are qualified; held-attempt custody and
 total-cap qualification remain open. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix
