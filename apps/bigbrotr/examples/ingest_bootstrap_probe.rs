@@ -1064,7 +1064,7 @@ fn main() {
                     config,
                     Path::new(&args[4]),
                     args[5].parse().unwrap(),
-                    args.get(6).map(|v| Path::new(v)),
+                    args.get(6).map(Path::new),
                 )
                 .await;
             } else if args[1] == "successor-lineage-history" {

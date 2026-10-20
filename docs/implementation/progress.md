@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T10:12Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T10:20Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,13 +9,13 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`58aca32fcdbac7ed857f96e1d1cd008603b9b371`, pushed and verified remotely.
-Its tree is `62abbbf49523b1469a63582d0008f888b351159a`.
+`90da89e8c913121116a4bb88fc149bf89b023d9c`, pushed and verified remotely.
+Its tree is `a4b9802642b099df5eed20732798cc3919e829f3`.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Current documentation/evidence edits record the active
-build and export source review closure; no production source changed. The attempt-limit and
+No merge/rebase pending. Current edits are one Clippy correction in the
+qualification probe plus its failed-build checkpoint; no production source changed. The attempt-limit and
 export-memory worktrees are clean on their preserved commits. Attempt-limit
-source is integrated with compilation in progress, not runtime-qualified; export source is
+source is integrated, with original build FAIL and correction not yet rebuilt; export source is
 not integrated.
 
 Q37 is recorded in the existing guide and decision register. Root session
@@ -28,6 +28,9 @@ New critical source-only author `/root/export_setup_fixture` was spawned through
 explicit Astra/xhigh controls. Root verified its session
 `01a158ca-8570-7041-9778-89e46f56320e` turn-context at2026-10-20T10:10:31.012Z:
 `gpt-6-astra` / `xhigh`, with this root's parent ID and exact agent path.
+The critical correction reviewer `/root/attempt_correction_review` also has
+verified Astra/xhigh turn-context2026-10-20T10:19:26.090Z in session
+`01a158d2-af13-7a40-8cb6-f55f93db7b12`; actual spawn controls match.
 
 Active task: P02-T04 Steps 3/4/5, enabling P01-T09 Step 4/M1 through
 [finite retained Archive catch-up](../specification/archive-storage-contract.md#finite-retained-archive-catch-up-selected-under-implementation)
@@ -205,12 +208,18 @@ nonborrowed containers. PG/client stopped0/143, PID0/noOOM; cleanup/missing/
 unrelated arrays empty. Never rerun custody after borrowed-PG reuse.
 
 All six ordinary refusal selectors now have their own qualified fresh roots.
-**Next action:** join actual build60879 of clean58aca32, inspect its real outcome,
-then run the reviewed v2 build custody audit before preparing any engine. Preparation5110
-joined0. The integrated seven blobs and both stable patch IDs match the reviewed
-bfe1b14/acc9bea packet. Worker compilation PASS; probe compilation RUNNING,
-41 selected tests/Clippy NOT_RUN at this observation. Actual typed-holder/cap
-engine remains NOT_RUN; this does not close P02-T04 or M1.
+**Next action:** reconcile the independent review of the corrected preparation/
+custody helpers, commit and push the one-expression probe fix with this checkpoint,
+then prepare a new exact clean build. Original preparation5110 joined0,
+build60879 joined1 at10:15:19Z and custody35295 joined0. Build58aca32 remains
+**FAIL**: probe/worker compilation,41 tests and packaged postchecks PASS; Clippy
+refused `args.get(6).map(|v| Path::new(v))` at probe1067. The correction is
+`map(Path::new)`, exact one-expression inverse verified; new probe SHA
+d1b463adfdefc22fdba6534b463d593679ec93fe3ff7b5bbe66c349d1db13365.
+Audit40592dd5 binds1985source files,190prior+6new ELFs and1411unchanged containers.
+Fetch/native stopped0/1, PID0/noOOM. Original FAIL and all logs remain preserved.
+Corrected build/Clippy and actual typed-holder/cap engine remain NOT_RUN.
+No P02-T04 or M1 checkbox closes.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
@@ -242,7 +251,8 @@ acc9bea67d5380f35c2fbf8d69ceed4539925133. Seven exact source blobs and manifest
 It holds a real LocalAttempt through installed Occupied refusal, then genuinely
 issues122additional attempts and verifies126issued+3planned refuses before127.
 Only its new fixture profile gets10800s client lifetime; product limits unchanged.
-Pure/static checks PASS; compilation is now running, actual engine/full replay NOT_RUN.
+Original source compiled and41 tests PASS; original Clippy FAIL and corrected
+build/actual engine/full replay NOT_RUN.
 The unchanged9a refusal sequence completed before integration on 2026-10-20:
 bfe1b14 maps to11397d09917e5b605ea1d4f463af162120350a2a and acc9bea maps to
 c18bc2c50d3a35862b069233348bbfc85eba8acf, both with matching stable patch IDs.
@@ -258,9 +268,12 @@ Original manifest a6b624b4; v2 manifest57c84692; independent reviewa9e0bf96 unde
 `.research/archive-attempt-build-review-20261018`. Root read all134+629+91lines
 and the exact v2 delta. V2 includes interrupted component result.tmp in recursive
 pins; original helper and checker-only failure remain. Explicit future clean
-revision/tree and sevenacc9bea hashes are mandatory; unchanged41tests,
-190prior→196ELFs and64GiB+577MiB engine reserve. Build58aca32 is now running;
-custody and engine preparation/execution remain NOT_RUN.
+revision/tree and sevenacc9bea hashes defined build58aca32; its FAIL is now frozen.
+Corrected helpers are in canonical `.research/archive-attempt-clippy-correction-20261020`,
+manifest8957a761/root reviewcb146b5a; independent review is running.
+They bind the one corrected probe hash, preserve failed58 and196priorELFs,
+retain the unchanged41tests and require202ELFs for a future qualified engine.
+The64GiB+577MiB engine reserve is unchanged. No corrected helper executed yet.
 
 Export memory fixture: recovery_review owns the new isolated worktree
 `.research/export-memory-probe-20261018`, branch `qualification/export-memory-probe`,
@@ -311,14 +324,17 @@ The old setup's replica-role policy and direct-grant mutations cannot supply the
 required genuine authority; the new fixture must use existing real initialization,
 activation/enrollment and authenticated grants, with no Export acceptance in Serve.
 
-Build60879 is active under
-`runs/ingest-succession-archive-installed-58aca32`; started10:05:04Z.
+Build60879 and custody35295 have joined; no session runtime is active.
+The failed build is retained under
+`runs/ingest-succession-archive-installed-58aca32`;10:05:04Z–10:15:19Z.
 Owner6906757f69728137ea193cd2679d316e, labelorg.bigbrotr.network-transport,
 fetchbcda8bc36fc5eb859e41dd6dd295626a57ab7a13a0225c7e38152f3e05f3c83d,
 nativec2bc41dd01d7d6bab0146a6452147d36e4b1a77123c5f19adc21e28e9cfdc48f.
-Native C++ compilation was observed active; no connected engine started.
-Current mutable resources/logs are in that root; existing report/inventory node
-`archive_attempt_limits_build_58aca32` records the observation and wrapper.
+Both owned containers are stopped and every build artifact/log is retained.
+Existing report/inventory node `archive_attempt_limits_build_58aca32` records
+the original running observation separately from the terminal FAIL/custody PASS.
+The export setup author and correction reviewer are source-only active agents;
+neither may run compiler/helpers/engines/SQL/Docker/cache operations.
 Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 All six refusal custody checks are complete and must not be rerun after
