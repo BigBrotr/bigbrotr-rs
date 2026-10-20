@@ -5,6 +5,7 @@ The minimal decoder only extracts unpredictable clock parameters, subsequently
 bounded by the independent peer and compared inside a complete literal encoding.
 """
 import hashlib
+import json
 from bootstrap_oracle import cbor, expected as bootstrap
 from installed import append_private_expected
 
@@ -60,7 +61,15 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
 
 
 def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1,
-             *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb'):
+             *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb',
+             additional_events=(), acknowledge=False):
+    assert type(acknowledge) is bool
+    # Optional two additional distinct events, each with independent clock and
+    # body-digest inputs. This remains an effect encoder: no ACK is inferred.
+    if additional_events:
+        assert isinstance(additional_events,(tuple,list)) and len(additional_events)==2
+        assert received is not None
+        assert len({event['id'],*(item[0]['id'] for item in additional_events)})==3
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'ingest']
     domains = {r['dictionary_kind']: bytes.fromhex(r['allocation_domain'][2:])
@@ -89,6 +98,10 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         recovery, owner['acquired_at_us'], topology)
     inputs, receipts = [first_input, private_input], [first_receipt, private_receipt]
     rows = {(cf, k): v for cf, k, v in rows}
+    if acknowledge:
+        # The two bootstrap dictionary operations each confirm a checkpoint
+        # and ACK before returning. No receipt/input/detail is collected.
+        rows['receipts', b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(2)+be(2)+be(0)
     # References below come only from independently constructed bootstrap bytes.
     refs = {int.from_bytes(k[-8:], 'big'): [src(int.from_bytes(k[-8:], 'big')), v[2:34]]
             for (cf, k), v in rows.items() if cf == 'facts' and k[:2] == b'\x01\x20'}
@@ -102,14 +115,15 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         prefix = bytes([1, domain])
         rows['default', prefix+key] = prefix+src_key(n)+refs[n][1]
 
-    def dictionary(n, kind, schema, value, at):
+    def dictionary(n, kind, schema, value, at, *, ordinal=1):
+        assert type(ordinal) is int and 1<=ordinal<=3
         descriptor = [1, schema, 1, value]
-        mapping = [ref(kind), *descriptor]
+        mapping = [ref(kind,ordinal), *descriptor]
         fact(n, 'dictionary', mapping, at)
-        index(4, ref_key(kind), n)
+        index(4, ref_key(kind,ordinal), n)
         canonical = cbor(descriptor)
-        rows['default', b'\x01\x05'+dataset+be(kind, 2)+sha(canonical)+ref_key(kind)] = b'\x01\x05'+canonical
-        rows['default', b'\x01\x03'+dataset+be(kind, 2)+domains[kind]] = b'\x01\x03'+be(1)
+        rows['default', b'\x01\x05'+dataset+be(kind, 2)+sha(canonical)+ref_key(kind,ordinal)] = b'\x01\x05'+canonical
+        rows['default', b'\x01\x03'+dataset+be(kind, 2)+domains[kind]] = b'\x01\x03'+be(ordinal)
         return ['dictionary', 1, mapping]
 
     def commit(sequence, first, last, original, dependencies):
@@ -120,7 +134,7 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         rows['facts', b'\x01\x21'+src_key(first)] = b'\x01\x21'+be(last)+sha(
             b'bigbrotr/admission-batch/1\0'+cbor([dataset, 0, 1, first, last, batch]))
         rows['receipts', b'\x01\x30'+slot+be(1)+be(sequence)] = receipt
-        rows['receipts', b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(sequence)+be(0)+be(0)
+        rows['receipts', b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(sequence)+be(sequence if acknowledge else 0)+be(0)
         inputs.append(original); receipts.append(receipt)
 
     definitions = [(2, 'observer', dict(clock='system-utc', vantage=None, software=None,
@@ -156,5 +170,29 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         original = b'bigbrotr/producer-request/1\0'+cbor([[slot, 1, 4], 'admit', 1,
             [1, scope, [*body, signature], 'network', None, [received, ref(2), clock, [ref(1), ref(3), ref(5)]]]])
         commit(4, 8, 12, original, range(3, 13))
-    assert len(rows) == (49 if received is not None else 35)
+    for ordinal,(extra,at,committed,quality,digest) in enumerate(additional_events,2):
+        assert extra['kind']==1
+        canonical=json.dumps([0,extra['pubkey'],extra['created_at'],extra['kind'],extra['tags'],extra['content']],
+            ensure_ascii=False,separators=(',',':')).encode()
+        assert sha(canonical).hex()==extra['id']
+        body=[bytes.fromhex(extra['id']),bytes.fromhex(extra['pubkey']),extra['created_at'],
+            extra['kind'],extra['tags'],extra['content']]
+        signature=bytes.fromhex(extra['sig']); assert len(signature)==64
+        body_digest=sha(b'bigbrotr/body/1\0'+cbor(body)); assert body_digest.hex()==digest
+        assert ('default',b'\x01\x06'+dataset+body[0]) not in rows
+        first=8+(ordinal-1)*5
+        dictionary(first,8,'event',dict(event_id=body[0]),committed,ordinal=ordinal)
+        fact(first+1,'event-payload',[*body,ref(8,ordinal)],committed)
+        index(6,dataset+body[0],first+1)
+        fact(first+2,'event-eligibility',[body[0],body_digest,signature,committed,'network',None],committed)
+        index(7,dataset+body[0]+ref_key(4,3),first+2)
+        clock=[ref(2),quality,None,4 if quality>1 else 0]
+        fact(first+3,'event-receive',[body[0],at,ref(2),clock,None],committed)
+        index(8,dataset+body[0]+ref_key(4,3),first+3)
+        fact(first+4,'provenance',[body[0],ref(1),ref(2),ref(3),at,clock,ref(5),None],committed)
+        index(9,dataset+body[0]+ref_key(1)+ref_key(2)+ref_key(3)+ref_key(4,3),first+4)
+        original=b'bigbrotr/producer-request/1\0'+cbor([[slot,1,ordinal+3],'admit',1,
+            [1,scope,[*body,signature],'network',None,[at,ref(2),clock,[ref(1),ref(3),ref(5)]]]])
+        commit(ordinal+3,first,first+4,original,[*range(3,8),*range(first,first+5)])
+    assert len(rows) == (49+13*len(additional_events) if received is not None else 35)
     return sorted((cf, k, v) for (cf, k), v in rows.items()), inputs, receipts

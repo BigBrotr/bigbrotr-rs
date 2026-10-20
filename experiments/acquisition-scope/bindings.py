@@ -58,7 +58,8 @@ sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.ar
 installed_sync_visibility = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-visibility'
 installed_sync_expiry = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-expiry'
 installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-window'
-installed_sync_progress = len(sys.argv) == 4 and sys.argv[2] == '--installed-sync-progress'
+installed_sync_ack = len(sys.argv) == 4 and sys.argv[2] == '--installed-sync-ack'
+installed_sync_progress = installed_sync_ack or len(sys.argv) == 4 and sys.argv[2] == '--installed-sync-progress'
 installed_sync = installed_sync_progress or installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
 installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-signed'
@@ -98,7 +99,8 @@ ingest_activated_refusals = len(sys.argv) == 4 and sys.argv[2] == '--ingest-acti
 ingest_activated_zero = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-zero'
 ingest_activated_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-faults'
 ingest_activated_recovery = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-recovery'
-ingest_installed_live_progress = len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live-progress'
+ingest_installed_live_ack = len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live-ack'
+ingest_installed_live_progress = ingest_installed_live_ack or len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live-progress'
 ingest_installed_live = ingest_installed_live_progress or len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live'
 ingest_live_refusals = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-refusals'
 ingest_live_routes = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-routes'
@@ -146,7 +148,7 @@ built = json.loads((build / 'build-result.json').read_text())
 if installed_sync_progress or ingest_installed_live_progress:
     sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
     from installed_progress_context import qualified_build
-    built = qualified_build(build, built)
+    built = qualified_build(build, built, ack=installed_sync_ack or ingest_installed_live_ack)
 if installed_archive_catch_up:
     component = json.loads((build / 'component-result.json').read_text())
     qualification = json.loads((build.parent / 'qualification.json').read_text())
@@ -206,6 +208,8 @@ client = ('bigbrotr-scope-command-binding-' if scope_command_faults or scope_htt
           else 'bigbrotr-acquisition-binding-') + revision[:7]
 if installed_sync_progress or ingest_installed_live_progress:
     client += '-progress-initial' if installed_sync_progress else '-progress-activated'
+    if installed_sync_ack or ingest_installed_live_ack:
+        client += '-ack'
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
     status='RUNNING', wave='installed-session-hash' if session_hash else 'installed-sessions' if sessions else 'socket' if socket else 'observation' if observation else 'execution' if execution else 'installed-commits' if commits else 'installed-interruptions' if interruptions else 'installed-ingest' if installed else 'ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],
@@ -771,6 +775,8 @@ def physical(db):
 
 def clone(name, template):
     db = 'bb_scope_bind_' + revision[:7] + '_' + name.replace('-', '_')
+    if installed_sync_ack or ingest_installed_live_ack:
+        db += '_ack'
     require(re.fullmatch('[a-z0-9_]{1,63}', db), 'database-name')
     lab.sql(pg, 'postgres', f'CREATE DATABASE {db} OWNER bigbrotr_migrator TEMPLATE {template}')
     report['databases'].append(db)
@@ -1243,6 +1249,14 @@ if installed_sync_progress or ingest_installed_live_progress:
         'Hole/refusal, lost COMMIT and validated restart are separate scenarios',
         'Native ACK, GC, job completion, durable EOSE/coverage and full M1',
         'Capacity/RSS, blocked native syscall, arm64/release']
+    if installed_sync_ack or ingest_installed_live_ack:
+        # The pre-engine gate binds the reviewed0040 source and all eight
+        # qualified component ELFs; the installed outcome remains unqualified.
+        success_status = 'PASS_INSTALLED_' + context_name.upper() + '_PRODUCER_ACK'
+        report['wave'] = context_name + '-producer-ack'
+        report['not_run'] = ['Other entrypoints and epoch4 require separate qualification',
+            'Full-window proof-only component and lost-completion recovery are separate gates',
+            'GC, job completion, durable EOSE/coverage, capacity/RSS and full M1']
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -1673,7 +1687,7 @@ try:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
             from installed_live import run_all as run_installed_live
             report['cases'].append(run_installed_live(pg, client, output, rows, clone,
-                **({'progress':True} if ingest_installed_live_progress else {})))
+                **({'progress':True, 'ack':ingest_installed_live_ack} if ingest_installed_live_progress else {})))
             save()
         elif ingest_live_refusals:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1791,7 +1805,7 @@ try:
             completed = clone(name, template_name)
             archive_context = dict(resources=report, save=save, build=build, built=built) if installed_archive else {}
             if installed_sync_progress:
-                archive_context = dict(progress=True)
+                archive_context = dict(progress=True, ack=installed_sync_ack)
             if job_gap and name.startswith('sync-'):
                 archive_context = dict(gap_schema=27 if name == 'sync-gap-uncorrected' else 28)
             report['cases'].append(run_installed(pg,client,output,completed,name,rows,**archive_context))

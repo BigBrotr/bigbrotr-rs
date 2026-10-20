@@ -139,6 +139,11 @@ def native_plan(seed, state, report):
 
 
 class NetworkScience(Science):
+    def __init__(self, plan, prepared_rows, inputs, *, acknowledge=False):
+        assert type(acknowledge) is bool
+        super().__init__(plan, prepared_rows, inputs)
+        self.acknowledge = acknowledge
+
     def commit(self, n, original, members, dependencies):
         batch = [self.refs[2, k] for k in members]
         receipt = b'bigbrotr/receipt/1\0' + cbor([1, [self.slot, 2, n], sha(original),
@@ -149,14 +154,29 @@ class NetworkScience(Science):
         pending = sha(b'bigbrotr/admission-batch/1\0' + cbor([self.ds, 0, 2, first, last, batch]))
         self.put('facts', b'\x01\x21' + self.src_key(first), b'\x01\x21' + be(last) + pending)
         self.put('receipts', b'\x01\x30' + self.slot + be(2) + be(n), receipt)
-        self.put('receipts', b'\x01\x31' + self.slot + be(2), b'\x01\x31' + be(n) + be(0) * 2)
+        self.put('receipts', b'\x01\x31' + self.slot + be(2), b'\x01\x31' + be(n)
+            + (be(n-1)+be(0) if self.acknowledge else be(0)*2))
+        if self.acknowledge:
+            self.put('receipts', b'\x01\x31' + self.slot + be(2), b'\x01\x31'+be(n)+be(n)+be(0))
         name = self.slot.hex() + '-0000000000000002-' + f'{n:016x}.cbor'
         self.inputs[name] = dict(bytes=len(original), sha256=digest(original))
         self.requests[n], self.receipts[n] = original, receipt
         self.sequence += self.writes
         self.writes = 0
 
-    def network(self, provenance, dictionary_at, received, recorded, resolution):
+    def network(self, provenance, dictionary_at, received, recorded, resolution,
+                *, event=None, additional_events=()):
+        # The optional three-event recipe uses the same epoch2 layout, not the
+        # later successor manifest. It does not infer an ACK or qualify a run.
+        if event is None:
+            event_id, event_body, signature = EVENT_ID, BODY, SIGNATURE
+        else:
+            event_id, event_body, signature = self.event_body(event)
+            assert ('default', b'\x01\x06' + self.ds + event_id) not in self.rows
+        if additional_events:
+            assert event is not None and isinstance(additional_events, (tuple, list))
+            assert len(additional_events) == 2
+            assert len({event['id'], *(extra['id'] for extra, _, _, _ in additional_events)}) == 3
         definitions = [(2, 'observer', dict(clock='system-utc', vantage=None, software=None,
             method_id=None, public_key=None, route_class=None, software_version=None))]
         if provenance:
@@ -172,29 +192,94 @@ class NetworkScience(Science):
         original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, 2, 1], 'admit-evidence', 1,
             [1, self.scope, entries]])
         self.commit(1, original, list(range(1, n + 1)), [(1, 3)] + [(2, k) for k in range(1, n + 1)])
-        self.dictionary(n + 1, 8, 'event', dict(event_id=EVENT_ID), recorded)
-        self.fact(n + 2, 'event-payload', [*BODY, self.ref(8)], recorded)
-        self.index(6, self.ds + EVENT_ID, n + 2)
-        self.fact(n + 3, 'event-eligibility', [EVENT_ID, sha(b'bigbrotr/body/1\0' + cbor(BODY)),
-            SIGNATURE, recorded, 'network', None], recorded)
-        self.index(7, self.ds + EVENT_ID + self.ref_key(self.scope), n + 3)
+        self.dictionary(n + 1, 8, 'event', dict(event_id=event_id), recorded)
+        self.fact(n + 2, 'event-payload', [*event_body, self.ref(8)], recorded)
+        self.index(6, self.ds + event_id, n + 2)
+        self.fact(n + 3, 'event-eligibility', [event_id, sha(b'bigbrotr/body/1\0' + cbor(event_body)),
+            signature, recorded, 'network', None], recorded)
+        self.index(7, self.ds + event_id + self.ref_key(self.scope), n + 3)
         observation_clock = [self.ref(2), resolution, None, 4 if resolution > 1 else 0]
-        self.fact(n + 4, 'event-receive', [EVENT_ID, received, self.ref(2), observation_clock, None], recorded)
-        self.index(8, self.ds + EVENT_ID + self.ref_key(self.scope), n + 4)
+        self.fact(n + 4, 'event-receive', [event_id, received, self.ref(2), observation_clock, None], recorded)
+        self.index(8, self.ds + event_id + self.ref_key(self.scope), n + 4)
         last = n + 4
         witness = None
         if provenance:
             last += 1
             witness = [self.ref(1), self.ref(3), self.ref(5)]
-            self.fact(last, 'provenance', [EVENT_ID, self.ref(1), self.ref(2), self.ref(3), received,
+            self.fact(last, 'provenance', [event_id, self.ref(1), self.ref(2), self.ref(3), received,
                 observation_clock, self.ref(5), None], recorded)
-            self.index(9, self.ds + EVENT_ID + self.ref_key(self.ref(1)) + self.ref_key(self.ref(2))
+            self.index(9, self.ds + event_id + self.ref_key(self.ref(1)) + self.ref_key(self.ref(2))
                 + self.ref_key(self.ref(3)) + self.ref_key(self.scope), last)
         original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, 2, 2], 'admit', 1,
-            [1, self.scope, [*BODY, SIGNATURE], 'network', None,
+            [1, self.scope, [*event_body, signature], 'network', None,
                 [received, self.ref(2), observation_clock, witness]]])
         self.commit(2, original, list(range(n + 1, last + 1)), [(1, 3)] + [(2, k) for k in range(1, last + 1)])
-        assert (len(self.rows), self.sequence) == ((84, 98) if provenance else (70, 84))
+        assert (len(self.rows), self.sequence) == ((84, 98+2*self.acknowledge) if provenance else (70, 84+2*self.acknowledge))
+        for ordinal, (extra, at, committed, quality) in enumerate(additional_events, 2):
+            last = self.append_network_event(extra, ordinal, last + 1, at, committed, quality, provenance, n)
+
+    @staticmethod
+    def event_body(event):
+        assert set(event) == {'id', 'pubkey', 'created_at', 'kind', 'tags', 'content', 'sig'}
+        assert event['kind'] == 1
+        canonical = json.dumps([0, event['pubkey'], event['created_at'], event['kind'],
+            event['tags'], event['content']], ensure_ascii=False, separators=(',', ':')).encode()
+        event_id, signature = bytes.fromhex(event['id']), bytes.fromhex(event['sig'])
+        assert sha(canonical) == event_id and len(signature) == 64
+        return event_id, [event_id, bytes.fromhex(event['pubkey']), event['created_at'],
+            event['kind'], event['tags'], event['content']], signature
+
+    def append_network_event(self, event, ordinal, first, received, recorded,
+                             resolution, provenance, dictionary_count):
+        assert ordinal in (2, 3) and dictionary_count == (4 if provenance else 1)
+        event_id, event_body, signature = self.event_body(event)
+        assert ('default', b'\x01\x06' + self.ds + event_id) not in self.rows
+        self.dictionary(first, 8, 'event', dict(event_id=event_id), recorded, ordinal=ordinal)
+        self.fact(first + 1, 'event-payload', [*event_body, self.ref(8, ordinal)], recorded)
+        self.index(6, self.ds + event_id, first + 1)
+        self.fact(first + 2, 'event-eligibility', [event_id, sha(b'bigbrotr/body/1\0' + cbor(event_body)),
+            signature, recorded, 'network', None], recorded)
+        self.index(7, self.ds + event_id + self.ref_key(self.scope), first + 2)
+        quality = [self.ref(2), resolution, None, 4 if resolution > 1 else 0]
+        self.fact(first + 3, 'event-receive', [event_id, received, self.ref(2), quality, None], recorded)
+        self.index(8, self.ds + event_id + self.ref_key(self.scope), first + 3)
+        last, witness = first + 3, None
+        if provenance:
+            last += 1
+            witness = [self.ref(1), self.ref(3), self.ref(5)]
+            self.fact(last, 'provenance', [event_id, self.ref(1), self.ref(2), self.ref(3), received,
+                quality, self.ref(5), None], recorded)
+            self.index(9, self.ds + event_id + self.ref_key(self.ref(1)) + self.ref_key(self.ref(2))
+                + self.ref_key(self.ref(3)) + self.ref_key(self.scope), last)
+        original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, 2, ordinal + 1], 'admit', 1,
+            [1, self.scope, [*event_body, signature], 'network', None,
+                [received, self.ref(2), quality, witness]]])
+        dependencies = [(1, 3)] + [(2, k) for k in range(1, dictionary_count + 1)] + [
+            (2, k) for k in range(first, last + 1)]
+        self.commit(ordinal + 1, original, list(range(first, last + 1)), dependencies)
+        return last
+
+
+
+def ack_observations(science, rows, wire, window):
+    """Only bounded clock scalars come from native output; all event bytes are frozen."""
+    from installed_progress_replay import ack_event_sequence
+    events=ack_event_sequence()
+    def fact(n):
+        raw=rows['facts',b'\x01\x20'+science.src_key(n)]
+        assert raw[:2]==b'\x01\x20' and raw[34:].startswith(b'bigbrotr/fact/1\0')
+        return decode(raw[34:].split(b'\0',1)[1])
+    extras=[]
+    for event, first in zip(events[1:],(10,15)):
+        recorded, receive=fact(first)[4],fact(first+3)
+        received,resolution=receive[5][1],receive[5][3][1]
+        assert type(resolution) is int and resolution==wire['clock_resolution_us']
+        assert 0<resolution<=1_000_000
+        assert wire['sent_at_us']-resolution<=received<=wire['closed_at_us']+resolution
+        assert received<=recorded
+        clock(received,window); clock(recorded,window)
+        extras.append((event,received,recorded,resolution))
+    return events[0],extras
 
 
 def startup(original, observed, report, window):
@@ -331,9 +416,9 @@ def renewed(wanted, observed, previous, window, *, stopped=False):
             role_row.update(retired_at_us=ended['retired_at_us'], xmin=tx)
 
 
-def admission_rows(wanted, observed, science, scope, enrollment, control, window):
+def admission_rows(wanted, observed, science, scope, enrollment, control, window, *, ack=False):
     previous_at = only(wanted[ACTIVATIONS])['activated_at_us']
-    for n in (1, 2):
+    for n in (range(1,5) if ack else (1,2)):
         request = only(observed['producer_requests'], producer_epoch=2, request_sequence=n)
         outcome = only(observed['producer_outcomes'], producer_epoch=2, request_sequence=n)
         raw, receipt = science.requests[n], science.receipts[n]
@@ -348,7 +433,7 @@ def admission_rows(wanted, observed, science, scope, enrollment, control, window
         manifest = bytea(sha(bytes.fromhex(science.plan['target_manifest'])))
         source = dict(relay_endpoint_id=None, relay_access_scope_id=None, relay_enrollment_generation=None,
             relay_route_id=None, acquisition_scope_id=None, acquisition_job_id=None)
-        if n == 2:
+        if n >= 2:
             job = only(observed['jobs'], request_key='\\x' + 'f4' * 16)
             source = dict(relay_endpoint_id=scope['endpoint_id'], relay_access_scope_id=scope['access_scope_id'],
                 relay_enrollment_generation=1, relay_route_id=enrollment['route_id'],
@@ -365,8 +450,9 @@ def admission_rows(wanted, observed, science, scope, enrollment, control, window
             recorder_role='control', recorder_incarnation=control['process_incarnation'],
             recorded_at_us=outcome['recorded_at_us'], xmin=outcome['xmin']))
     producer = only(wanted['producer_epochs'], producer_epoch=2)
-    producer.update(reserved_through_request=2,
-        xmin=only(observed['producer_requests'], producer_epoch=2, request_sequence=2)['xmin'])
+    last=4 if ack else 2
+    producer.update(reserved_through_request=last,
+        xmin=only(observed['producer_requests'], producer_epoch=2, request_sequence=last)['xmin'])
 
 
 def backend_checked(value, control, database, window):
@@ -397,7 +483,7 @@ def backend_checked(value, control, database, window):
     assert samples[-1]['count'] == 0 and samples[-1]['seconds'] <= absence['seconds']
 
 
-def wire_checked(journey, fixture, report, initial, window, *, split=False):
+def wire_checked(journey, fixture, report, initial, window, *, split=False, ack=False):
     assert journey['terminal'] == dict(exit_code=0, reaped=True, outcome='PROCESS_EXITED')
     assert journey['stdout'] == journey['stderr'] == ''
     result = journey['result']
@@ -435,7 +521,12 @@ def wire_checked(journey, fixture, report, initial, window, *, split=False):
         nonces.add(request[1][:32])
         if split and 'progress_phase' in last:
             assert last['progress_phase'] in ('mutation', 'proof-only')
-            assert last['frames'] == ['signed', 'EOSE'] and last['event_ids'] == [EVENT_ID.hex()]
+            if ack:
+                from installed_progress_replay import ack_event_sequence
+                assert last['frames']==['signed']*3+['EOSE']
+                assert last['event_ids']==[e['id'] for e in ack_event_sequence()]
+            else:
+                assert last['frames'] == ['signed', 'EOSE'] and last['event_ids'] == [EVENT_ID.hex()]
             assert last['completion'] == 'request-and-websocket-close'
             assert first['request_at_us'] <= last['sent_at_us'] <= last['closed_at_us']
         elif not split and number == 1:
@@ -465,8 +556,9 @@ def wire_checked(journey, fixture, report, initial, window, *, split=False):
 
 def verify(mode, original, after, native_before, native_after, inputs_before, inputs_after,
         input_contents, snapshots, response, journey, fixture, server_window, backend,
-        catalog_before, catalog_after, seed, setup, predecessor=None, *, split=False):
+        catalog_before, catalog_after, seed, setup, predecessor=None, *, split=False, ack=False):
     assert type(split) is bool and (not split or mode == 'installed-live-on')
+    assert type(ack) is bool and (not ack or split)
     assert mode in CASES
     check_window(server_window)
     assert len(original) == len(after) == 72
@@ -565,8 +657,8 @@ def verify(mode, original, after, native_before, native_after, inputs_before, in
                 last_complete_sequence='12', sha256=plan['closure_digest']),
             native_profile=1, native_allowance_bytes=134217728, acquisition='finite-initial-successor', ready=False,
             listeners=[dict(kind='private-session-http', host='127.0.0.1', port=18081, profile='initial-source-commands')])
-        first = wire_checked(journey, fixture, report, snapshots[1]['control'], server_window, split=split)
-        science = NetworkScience(plan, prepared_rows, seed['inputs'])
+        first = wire_checked(journey, fixture, report, snapshots[1]['control'], server_window, split=split,ack=ack)
+        science = NetworkScience(plan, prepared_rows, seed['inputs'],acknowledge=ack)
         final_rows = native_rows(native_after['rows'])
         n = 4 if mode == 'installed-live-on' else 1
         def fact_scalar(number):
@@ -585,7 +677,14 @@ def verify(mode, original, after, native_before, native_after, inputs_before, in
         for timestamp in (dictionary_at, recorded, received):
             clock(timestamp, server_window)
         assert activation['activated_at_us'] <= dictionary_at <= first['request_at_us'] <= recorded
-        science.network(mode == 'installed-live-on', dictionary_at, received, recorded, resolution)
+        if ack:
+            event, extras=ack_observations(science,final_rows,first,server_window)
+            science.network(True,dictionary_at,received,recorded,resolution,event=event,additional_events=extras)
+        else:
+            science.network(mode == 'installed-live-on', dictionary_at, received, recorded, resolution)
+        if ack:
+            assert native_after['sequence']==science.sequence, 'ACK native write count differs'
+            assert final_rows==science.rows, 'complete ACK native bytes differ'
         assert final_rows == science.rows and native_after['event'] == 'dump-state'
         assert native_after['sequence'] == science.sequence
         assert inputs_after == science.inputs
@@ -600,7 +699,7 @@ def verify(mode, original, after, native_before, native_after, inputs_before, in
             renewed(wanted, state, previous, window, stopped=phase == 'final')
             scope, enrollment = add_http(wanted, state, original, journey['result'], phase, window, control)
             if phase != 'prepared':
-                admission_rows(wanted, state, science, scope, enrollment, control, window)
+                admission_rows(wanted, state, science, scope, enrollment, control, window,ack=ack)
             same(wanted, state)
             if previous is not active:
                 mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'producer_epochs'}

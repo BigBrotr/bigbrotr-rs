@@ -76,8 +76,9 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
     split = None
     if (directory / 'progress-context.json').exists():
         assert signed and not refusals and not window and event_sender is None
-        from installed_progress_transport import SplitEvents
-        split = SplitEvents(directory, json.loads((directory / 'event.jsonl').read_bytes()), 'initial')
+        from installed_progress_transport import SplitEvents, ack_events
+        split = SplitEvents(directory, json.loads((directory / 'event.jsonl').read_bytes()), 'initial',
+            event_sequence=ack_events(directory))
     request_ids = set()
     try:
         number = 0
