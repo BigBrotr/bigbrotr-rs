@@ -7,6 +7,8 @@ use sha2::{Digest, Sha256};
 
 #[path = "producer_progress_commit.rs"]
 mod commit;
+#[path = "producer_progress_recovery.rs"]
+pub(super) mod recovery;
 #[path = "producer_progress_rows.rs"]
 mod rows;
 pub(super) use commit::{prepare, recheck, record};

@@ -80,6 +80,9 @@ pub use certification::{
 mod producer_checkpoint;
 pub(in crate::storage) use producer_checkpoint::{CheckpointKind, NativeCheckpointBasis};
 
+#[path = "producer_progress_recovery.rs"]
+mod producer_progress_recovery;
+
 #[path = "visibility.rs"]
 mod visibility;
 pub use visibility::StoredVisibility;
