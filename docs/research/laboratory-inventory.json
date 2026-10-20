@@ -68917,22 +68917,103 @@
       "limits": "Dated custody observation; never replay after borrowed PG reuse. Runtime failure/diagnosis details and initial observation belong to the linked report. No whole-host process exclusion."
     },
     "initial_sync_diagnostics_20261020": {
-      "state": "frozen source and critical review complete; build/runtime NOT_RUN",
+      "state": "build/runtime stopped-retained; scoped root and critical outcome PASS; no active resource",
       "base": "a10cab94eaa6745e7457566cb7bd422f6359d397",
       "product": {
         "worktree": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-20261020",
         "branch": "work/initial-sync-diagnostics",
         "owner": "export_setup_fixture gpt-6-astra/xhigh",
-        "commit": "346723302ea1384220f5285c052d10ec2283e6e6"
+        "commit": "346723302ea1384220f5285c052d10ec2283e6e6",
+        "branch_retired": "Integrated in b2e3194; exact remote main verified, source clean and ancestor. Worktree detached at original commit; ignored evidence preserved."
       },
       "build_parameterization": {
         "worktree": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostic-build-20261020",
         "branch": "work/initial-sync-diagnostic-build",
         "owner": "catalog_layout_fixture gpt-6.1-sol/xhigh",
-        "commit": "81d1bdef239d2f88162777388fd3a891744aad9a"
+        "commit": "81d1bdef239d2f88162777388fd3a891744aad9a",
+        "branch_retired": "Integrated in b2e3194; exact remote main verified, source clean and ancestor. Worktree detached at original commit; ignored evidence preserved."
       },
-      "runtime_owner": "root; NOT_RUN",
-      "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.initial_sync_diagnostics_20261020"
+      "runtime_owner": "root; no runtime/compiler/cleanup active",
+      "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.initial_sync_diagnostics_20261020",
+      "build": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194",
+        "source": "b2e3194c50c6496cb5ff822a2090b7b6df747a34",
+        "tree": "905e85dcfc0ea54e490ef1db076a175b3c62c9b4",
+        "owner": "1de3de2abd2984cf753ffe1d8ccd712e",
+        "owner_label": "org.bigbrotr.network-transport",
+        "session": "6339 joined0",
+        "state": "stopped-retained",
+        "resource_record": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/resources.json",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/resources.json",
+          "bytes": 1077,
+          "sha256": "b78751aefbfcdae51701c1c99a9278ecf1316a4f49de41049aed4eeacca17ddd"
+        },
+        "terminal": [
+          {
+            "id": "f34bf6640e5f73ecae5d05e31c202740042121ecab8c71fdf1d9dad164f5c688",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-20T17:21:53.115586367Z",
+              "FinishedAt": "2026-10-20T17:21:53.413637484Z"
+            },
+            "cgroup_absent": true,
+            "memory": 6442450944,
+            "swap": 6442450944
+          },
+          {
+            "id": "00067d5a2c4ce933fffdc248a166e8d30c7dfd3d9e597e3fcf183e2b5a71ca2f",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-20T17:21:53.777363198Z",
+              "FinishedAt": "2026-10-20T17:23:37.056728597Z"
+            },
+            "cgroup_absent": true,
+            "memory": 6442450944,
+            "swap": 6442450944
+          }
+        ],
+        "free_bytes_after": 309224341504
+      },
+      "compatibility": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostic-compatibility-b2e3194",
+        "source_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/source",
+        "source": "b2e3194c50c6496cb5ff822a2090b7b6df747a34",
+        "tree": "905e85dcfc0ea54e490ef1db076a175b3c62c9b4",
+        "owner": "c3f393b148330b296fdedbcb3c67fbaf",
+        "owner_label": "org.bigbrotr.export-memory-lab",
+        "session": "64130 joined0",
+        "state": "stopped-retained",
+        "resource_record": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostic-compatibility-b2e3194/resources.json",
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostic-compatibility-b2e3194/resources.json",
+          "bytes": 7062,
+          "sha256": "90ea228cb2c6953766c5b9607b78e3ee31288406070c1e6d76386e069595eeae"
+        },
+        "root_custody": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-review-20261020/root-outcome-v1.json",
+          "bytes": 9905,
+          "sha256": "5f2af71438b08fe61df7d102f08539dd54bc753c5774850bd01b287770f64bd5"
+        },
+        "terminal_summary": "Four exact owned containers exit0/PID0/noOOM, cgroups absent; no running mount holder. Original physical roots unchanged; no cleanup deletion."
+      }
     }
   }
 }

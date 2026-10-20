@@ -277,6 +277,12 @@ or principal is retained in the diagnostic record. It does not renew authority,
 retry an uncertain effect or widen any deadline. Preserve ambiguous state under
 the existing recovery contract.
 
+At `b2e3194`, the [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+records 28 focused tests, build/Clippy and one real signed-sample preparation
+journey with unchanged success output, complete independent readback and joined
+custody. The six new controls exercise diagnostic distinctions; no real timeout
+was induced. The earlier a99 timeout cause remains unresolved.
+
 The [nine-case native first wave](../implementation/evidence/p03-initial-sync-native-20261002.json)
 qualifies signed admission, duplicate/refusal behavior, quiet renewal/shutdown,
 public-envelope isolation and headless missing-prerequisite refusal. Two focused

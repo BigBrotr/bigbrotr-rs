@@ -40795,7 +40795,7 @@
         }
       },
       "initial_sync_diagnostics_20261020": {
-        "status": "SOURCE_REVIEW_PASS_BUILD_RUNTIME_NOT_RUN",
+        "status": "PASS_SCOPED_DIAGNOSTICS_AND_INSTALLED_SAMPLE_COMPATIBILITY",
         "base": "a10cab94eaa6745e7457566cb7bd422f6359d397",
         "task": "P01-T05 Steps5/6; existing initial Sync failure in archive_refusal_journey_attempts[0]",
         "diagnosis": "Existing a99 source note retained. Relevant initial-ingest/policy/Control/native dispatch owners unchanged through current; no demonstrated ownership or COMMIT-safety defect. Outer whole-dispatch deadline can interrupt a multi-transaction up-to3frame quantum after100ms admission floor; uncertain effects poison owner and retain custody through actual cleanup. Original request4 SQL commit does not distinguish awaiting admission delivery from subsequent certification.",
@@ -40803,7 +40803,7 @@
         "source_owner": "export_setup_fixture gpt-6-astra/xhigh; existing verified configuration",
         "build_tool_owner": "catalog_layout_fixture gpt-6.1-sol/xhigh; existing verified configuration",
         "validation": "Discriminating pending-admission versus next-certification, drop leaves unfinished, deadlines/sequence unchanged; exact installed-parent build/tests/Clippy with unchanged qualified6cworker. Then one fresh installed compatibility run under original timing; success cannot resolve originala99cause. Critical review before integration/runtime.",
-        "limits": "Deep native internals and OS scheduling not newly inspected; no inferred original latency cause. No engines/builds/tests executed for this slice.",
+        "limits": "Originala99cause unresolved; scoped diagnostic tests/build/compatibility pass, no timeout-resolution claim. Worst-case manager inputs/TLS and broader M1\u2013M5 gates remain separate.",
         "source_commits": {
           "product": "346723302ea1384220f5285c052d10ec2283e6e6",
           "build_parameterization": "81d1bdef239d2f88162777388fd3a891744aad9a"
@@ -40831,7 +40831,77 @@
           }
         },
         "root_review": "Complete current affected owners/deltas read; frozen six product files, two builder files and root prepare-only guard authenticated. No concrete source finding. Reused unchanged custody/lease/native/runtime baseline. No compiler/test execution inferred from source controls.",
-        "timing_spelling": "Explicit timeout_at records the actual outer Instant, constructed after Dispatch deadline with the same maximum and pinned Tokio ordering; no configured authority/deadline/grace change. Additional clock/lock work has overhead."
+        "timing_spelling": "Explicit timeout_at records the actual outer Instant, constructed after Dispatch deadline with the same maximum and pinned Tokio ordering; no configured authority/deadline/grace change. Additional clock/lock work has overhead.",
+        "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194",
+          "source": "b2e3194c50c6496cb5ff822a2090b7b6df747a34",
+          "tree": "905e85dcfc0ea54e490ef1db076a175b3c62c9b4",
+          "session": "6339 joined0",
+          "status": "PASS_INITIAL_SYNC_DIAGNOSTICS_BUILD_ONLY",
+          "tests": "28 PASS/0 FAIL/0 ignored, including all six named controls; three commands exit0",
+          "parent": {
+            "sha256": "3adaa3fdbd8f65b125316b67b6a76061916ef534ce543d152c6e1a18bdae78cf",
+            "bytes": 33704448
+          },
+          "worker": {
+            "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1",
+            "bytes": 14421792
+          },
+          "receipts": {
+            "qualification": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/out/qualification.json",
+              "bytes": 7122,
+              "sha256": "c796d4c264fecf1aa0342e01e812f6611af0b483eadf2cb9803f15cb7ae81883"
+            },
+            "commands": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/out/adapter-checks/result.json",
+              "bytes": 3864,
+              "sha256": "1d04e8b062565e3d16f4a4799e27a2c6f731eca5205d3560e86ec642d34d49be"
+            },
+            "source_manifest": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/out/build/source-manifest.json",
+              "bytes": 256450,
+              "sha256": "7f25c9690d707902638a5e1f13227a01cec3c5cba7ee058db32372b595e710db"
+            },
+            "tests": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/out/adapter-checks/initial-sync.log",
+              "bytes": 4013,
+              "sha256": "0d3efa24dadfd31b5ca1e58f8d32f194c40d8d155c7331bbd0898ee27c4ea3a1"
+            },
+            "build": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/out/adapter-checks/build.log",
+              "bytes": 130,
+              "sha256": "262ed861f4977ecd83dbfb4997efe9e98e8b7923b4f6fff834b492e47cbb25a6"
+            },
+            "clippy": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostics-b2e3194/out/adapter-checks/clippy.log",
+              "bytes": 297,
+              "sha256": "c94e9c771cbe4eed737f2dee4130564e793578eea76e0208cea8f4b4cb5f3678"
+            }
+          },
+          "root_audit": "Exact exported source manifest and all retained executable/bundle bytes authenticated. Unchanged compiled worker/crates/Cargo/build inputs against6c verified; only unrelated example differs. Actual owned containers exited0/PID0/noOOM, cgroups absent. Runtime NOT_RUN."
+        },
+        "compatibility": {
+          "status": "PASS_SCOPED_INITIAL_SYNC_DIAGNOSTIC_COMPATIBILITY",
+          "source": "b2e3194c50c6496cb5ff822a2090b7b6df747a34",
+          "tree": "905e85dcfc0ea54e490ef1db076a175b3c62c9b4",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sync-diagnostic-compatibility-b2e3194",
+          "session": "64130 joined0",
+          "root_audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-review-20261020/root-outcome-v1.json",
+            "bytes": 9905,
+            "sha256": "5f2af71438b08fe61df7d102f08539dd54bc753c5774850bd01b287770f64bd5"
+          },
+          "scope": "One genuine archive-sample publication under original timing; prepare-only stops before Export acceptance. Two ordinary JSON output lines and empty stderr.49 native rows/four producer inputs/four publication receipts/frontier4snapshot5through12; complete signed science,75Control/32catalog comparisons and three genuine grants match existing independent expectations. Original physical roots and scratch retained.",
+          "resource_scope": "Accepted export allowance256MiB, actual publication/continuation cgroups3GiB/no-swap; no memory qualification. Four owned containers exited0/PID0/noOOM/cgroups absent; no running root mount holders.",
+          "limits": "Export acceptance/measurement and real timeout injection NOT_RUN. This successful sample and six deterministic controls cannot identify originala99cause.",
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-review-20261020/outcome-review-v1.json",
+            "bytes": 11380,
+            "sha256": "34d83f9034c2d13fffda468b13a24872e48c221f694ff92bdba816529093bc2c"
+          }
+        },
+        "next": "Existing bounded reduced-manager maximum accepted layout/credential or TLS boundary: source-only reconciliation of current owners and reusable fixtures. No scheduling change or blind repeat of originala99timeout."
       }
     }
   }

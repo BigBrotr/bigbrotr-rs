@@ -6,10 +6,12 @@ Q37 models and Q38 evidence reuse apply. Sole integration/runtime owner: root.
 ## Objective and revision
 
 P01-T05 Steps 5/6: bounded diagnostics for the unresolved initial Sync timeout.
-Main HEAD/exact verified remote `a10cab94eaa6745e7457566cb7bd422f6359d397`
-(push65572 joined0). The pending integration combines product3467233 and builder81d1bde with the
-root prepare-only guard and documentation. Source/critical review PASS;
-compilation, executable tests and installed runtime NOT_RUN.
+Main HEAD/exact verified remote `b2e3194c50c6496cb5ff822a2090b7b6df747a34`
+(push32402 joined0). Product3467233, builder81d1bde and root prepare-only guard
+are integrated. Source/critical review PASS. Root-owned local documentation
+records build6339 and compatibility64130 joined0. Actual28 tests, parent
+build/Clippy, scientific/SQL/physical/custody and critical outcome review PASS.
+Source-only next-boundary diagnosis is listed below.
 
 Reduced-manager sample and oversized-layout refusal qualifications are committed/
 pushed: complete root SQL/physical/custody audits and critical reviews PASS.
@@ -20,26 +22,25 @@ The new sibling `initial_sync_diagnostics_20261020` records the bounded diagnosi
 
 ## Processes and resources
 
-No engine, compiler or cleanup is active. Refusal67977 joined0; all eight owned
-containers stopped/PID0/noOOM, cgroups absent and no running holder. The
-[inventory](../research/laboratory-inventory.json) owns resource paths/custody.
-All failed/current roots, ignored data, detached author and exact runtime worktrees
-remain; the redundant integrated refusal branch is retired.
+No runtime/compiler/cleanup is active. Compatibility64130 and build6339 joined0;
+all six owned containers stopped/PID0/noOOM, cgroups absent and no running runtime
+mount holder. The [inventory](../research/laboratory-inventory.json) owns paths
+and dated custody; all original data/logs/worktrees are retained.
 
 Completed/frozen source-only agents based on a10cab9:
 - Astra/xhigh `export_setup_fixture`: `.research/initial-sync-diagnostics-20261020`,
-  branch `work/initial-sync-diagnostics`, product/targeted tests.
+  detached3467233, product/targeted tests; integrated branch retired.
 - Sol/xhigh `catalog_layout_fixture`: `.research/initial-sync-diagnostic-build-20261020`,
-  branch `work/initial-sync-diagnostic-build`, existing build-tool parameterization.
+  detached81d1bde, build-tool parameterization; integrated branch retired.
 Root owns documentation, integration and all future build/runtime actions.
 
 ## Next action and open limits
 
-Finish the coherent source integration/push, then run the existing
-`initial-sync-diagnostics` build profile on that exact revision (28 tests, parent
-build/Clippy, unchanged qualified6cworker). Follow with one fresh existing
-`memory_lab.py --prepare-only` archive-sample compatibility run at256MiB.
-The frozen critical source review and source controls are linked in the report.
+Commit/push the scoped qualification. Astra/xhigh export_setup_fixture is
+source-only reconciling the next
+existing maximum catalog/credential or TLS boundary with available fixtures;
+no new implementation or engine run assigned. Continue that concrete useful
+resource-accounting slice after the diagnostic outcome is recorded.
 No scheduling/deadline/authority/retry changes. Original a99 outer-dispatch timeout
 remains unresolved; request4 committed SQL cannot identify its pending caller await.
 A later successful run is compatibility evidence, not original-cause resolution.
