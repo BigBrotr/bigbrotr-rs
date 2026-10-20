@@ -114,8 +114,8 @@ BEGIN
     END IF;
     IF TG_OP = 'INSERT' THEN
         IF NEW.progress_revision <> 1 OR NEW.event_ordinal <> 1
-            OR NEW.successful_events <> CASE WHEN NEW.classification IN (2,3,5) THEN 1 ELSE 0 END
-            OR NEW.rejected_events <> CASE WHEN NEW.classification IN (4,6) THEN 1 ELSE 0 END THEN
+            OR NEW.successful_events <> (CASE WHEN NEW.classification IN (2,3,5) THEN 1 ELSE 0 END)
+            OR NEW.rejected_events <> (CASE WHEN NEW.classification IN (4,6) THEN 1 ELSE 0 END) THEN
             RAISE EXCEPTION 'classified progress starts at the first retained event' USING ERRCODE='23514';
         END IF;
     ELSE
@@ -123,8 +123,8 @@ BEGIN
             IS DISTINCT FROM ROW(OLD.dataset_id,OLD.producer_slot_id,OLD.producer_epoch,OLD.job_id,OLD.scope_id)
             OR NEW.progress_revision <> OLD.progress_revision + 1
             OR NEW.classified_events <> OLD.classified_events + 1
-            OR NEW.successful_events <> OLD.successful_events + CASE WHEN NEW.classification IN (2,3,5) THEN 1 ELSE 0 END
-            OR NEW.rejected_events <> OLD.rejected_events + CASE WHEN NEW.classification IN (4,6) THEN 1 ELSE 0 END
+            OR NEW.successful_events <> OLD.successful_events + (CASE WHEN NEW.classification IN (2,3,5) THEN 1 ELSE 0 END)
+            OR NEW.rejected_events <> OLD.rejected_events + (CASE WHEN NEW.classification IN (4,6) THEN 1 ELSE 0 END)
             OR (NEW.request_id=OLD.request_id AND
                 (NEW.event_ordinal<>OLD.event_ordinal+1 OR NEW.wire_sequence<=OLD.wire_sequence))
             OR (NEW.request_id<>OLD.request_id AND NEW.event_ordinal<>1) THEN
