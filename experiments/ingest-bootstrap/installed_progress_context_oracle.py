@@ -614,7 +614,7 @@ def rebind_gates(context):
                 release_sha256=sha(gates['progress-release.json'].encode()))
 
 
-def replay(root, kind):
+def replay(root, kind, *, retained_initial_capture=False):
     """Read original files only; retained custody is not a current resource audit.
 
     Reuse the family reader's strict JSON and physical-file checks. No SQL,
@@ -624,6 +624,7 @@ def replay(root, kind):
     from installed_family_capture import loads, physical
     from inventory import projection
     assert kind in ('initial','activated')
+    assert type(retained_initial_capture) is bool and (not retained_initial_capture or kind=='initial')
     root=Path(root).resolve(strict=True); folder=root/'bindings'
     bound={}
     def raw(path):
@@ -632,7 +633,14 @@ def replay(root, kind):
         value=path.read_bytes(); bound[str(path)]=sha(value); return value
     def read(path): return loads(raw(path))
     report=read(folder/'result.json')
-    assert report['status']=='PASS_INSTALLED_'+kind.upper()+'_TYPED_PROGRESS'
+    if retained_initial_capture:
+        # Only the complete7239 capture whose original verifier rejected the
+        # established client completion line. Never adopt another failed run.
+        assert report['status']=='FAIL' and report['cases']==[]
+        assert sha(raw(folder/'result.json'))=='cee2afb1c1170a0fec63cbad5c5c32ef33142f960c1dfd3e4520ac21b5adeba8'
+        assert sha(raw(root/'driver.log'))=='49670a7daed23aa50554b7581a215e56b854c6cd2359e716c43eff20a1fd7db2'
+    else:
+        assert report['status']=='PASS_INSTALLED_'+kind.upper()+'_TYPED_PROGRESS'
     assert report['wave']==kind+'-typed-progress' and report['label']=='org.bigbrotr.acquisition-binding'
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{32}',report['owner'])
     assert all(report[key]==[] for key in ('cleanup_errors','missing_owned','unrelated_changed'))
@@ -640,9 +648,16 @@ def replay(root, kind):
     assert set(provenance)=={'source','revision','tree','build','files_sha256'}
     assert Path(provenance['source'])==root/'source' and provenance['revision']==report['source']
     assert re.fullmatch('[0-9a-f]{40}',provenance['tree'])
+    if retained_initial_capture:
+        assert (provenance['revision'],provenance['tree'])==(
+            '7239c7885c732298839504f013a7b3a7e832d300','e6423360e8be6e3c351861d8d5031d473c5b0ce5')
     for name,digest in provenance['files_sha256'].items():
         assert not Path(name).is_absolute() and '..' not in Path(name).parts
         assert sha(raw(root/'source'/name))==digest
+        if retained_initial_capture and name!='experiments/ingest-bootstrap/installed_progress_context_oracle.py':
+            # Run the corrected reader from its own checkout. Every other
+            # tracked input/helper must still match the actual capture source.
+            assert sha(raw(SOURCE/name))==digest, 'retained replay helper/source changed'
     build=Path(provenance['build']); assert build.is_absolute()
     built,component=read(build/'build-result.json'),read(build/'component-result.json')
     qualification=read(build.parent/'qualification.json')
@@ -707,6 +722,8 @@ def replay(root, kind):
     assert not any(c['State']['Running'] and any(m.get('Source','')==str(folder) for m in c['Mounts']) for c in inventory)
     context_file=folder/(label+('-progress-verification.json' if initial else '-verification.json'))
     context=read(context_file)
+    if retained_initial_capture:
+        assert sha(raw(context_file))=='9758b6bf4b96ef4e5ae0d88336ef354cbb50711b519ce91c29d9d2980271a5c3'
     setup=context['setup'] if initial else context['progress_setup']
     assert setup==read(folder/(label+'-progress-upgrade.json'))
     assert setup['acl']==read(folder/(label+'-progress-acl.json'))
@@ -763,8 +780,9 @@ def replay(root, kind):
         assert typed.legacy_state(context['before'])==read(folder/(label+'-before.json'))
         assert typed.legacy_state(context['after'])==read(folder/(label+'-after.json'))
         answer=verify_initial(context); negative=controls(context,verify_initial)
-        case,=report['cases']
-        assert case['verification_sha256']==sha(raw(context_file))
+        if not retained_initial_capture:
+            case,=report['cases']
+            assert case['verification_sha256']==sha(raw(context_file))
     else:
         import initial_succession as seed_owner
         basis=root.parent/seed_owner.SEED/'bindings'
@@ -809,6 +827,31 @@ def replay(root, kind):
         assert group['source_lab']==str(basis.parent) and group['source_revision']==seed_owner.SOURCE
         assert group['source_owner']==seed_owner.OWNER and group['source_artifacts']==seed_owner.FROZEN
         assert read(folder/'installed-live-cases.json')==group['cases']
+    if retained_initial_capture:
+        verifier=Path(__file__).resolve(strict=True)
+        verifier_sha=sha(raw(verifier))
+        assert verifier==SOURCE/'experiments/ingest-bootstrap/installed_progress_context_oracle.py'
+        # Imported fixture modules must come from the compared checkout; a
+        # foreign PYTHONPATH module cannot borrow the checked on-disk identity.
+        stdlib=Path(stat.__file__).resolve().parent
+        for module in tuple(sys.modules.values()):
+            path=getattr(module,'__file__',None)
+            if path is None:
+                continue
+            path=Path(path).resolve()
+            if path.is_relative_to(stdlib):
+                continue
+            assert path.is_relative_to(SOURCE), 'foreign retained replay module'
+            name=path.relative_to(SOURCE).as_posix()
+            assert name in provenance['files_sha256'], 'unbound retained replay module'
+            assert path==verifier or sha(raw(path))==provenance['files_sha256'][name]
+        return dict(status='PASS_RETAINED_INITIAL_CAPTURE_REPLAY',kind=kind,
+            original_report_status=report['status'],original_source=provenance['revision'],
+            original_tree=provenance['tree'],original_capture_sha256=dict(
+                driver_log=bound[str(root/'driver.log')],report=bound[str(folder/'result.json')],
+                context=bound[str(context_file)]),
+            verifier=dict(path=str(verifier),sha256=verifier_sha),oracle=answer,negative_controls=negative,
+            raw_files_sha256=bound,custody='RETAINED_OBSERVATIONS_ONLY_ROOT_CURRENT_AUDIT_SEPARATE')
     assert case['status']=='PASS' and case['oracle']==answer and case['negative_controls']==negative
     return dict(status='PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
         raw_files_sha256=bound,custody='RETAINED_OBSERVATIONS_ONLY_ROOT_CURRENT_AUDIT_SEPARATE')
@@ -819,5 +862,8 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path)
     parser.add_argument('--kind',choices=('initial','activated'),required=True)
+    parser.add_argument('--retained-initial-capture',action='store_true',
+        help='Verify only the pinned complete7239 initial capture; preserve its original FAIL report.')
     arguments=parser.parse_args()
-    print(json.dumps(replay(arguments.root,arguments.kind),sort_keys=True))
+    print(json.dumps(replay(arguments.root,arguments.kind,
+        retained_initial_capture=arguments.retained_initial_capture),sort_keys=True))
