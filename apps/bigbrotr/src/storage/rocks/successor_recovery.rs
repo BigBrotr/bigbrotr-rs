@@ -212,7 +212,7 @@ impl NativeSuccessorRecovery {
             authority()?;
             let old = ProducerState {
                 issued: self.issued_through(),
-                acknowledged: 0,
+                acknowledged: self.head().acknowledged_through(),
                 retired: 0,
                 closing: self.is_closing(),
             };
@@ -231,7 +231,11 @@ impl NativeSuccessorRecovery {
                     authority()
                 },
             )?;
-            if !state.closing || state.issued != old.issued {
+            if !state.closing
+                || state.issued != old.issued
+                || state.acknowledged != old.acknowledged
+                || state.retired != old.retired
+            {
                 return Err(BootstrapError::StateMismatch);
             }
             // This private owner alone consumes the exact permitted +1/+0
@@ -427,6 +431,18 @@ impl Drop for PendingSuccessorRequest<'_, '_> {
     }
 }
 impl ResolvedSuccessorRecovery<'_> {
+    pub(in crate::storage) fn recovery_acknowledgement(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<super::super::RecoveryAcknowledgement, BootstrapError> {
+        self.validate(cancelled)?;
+        super::super::RecoveryAcknowledgement::from_replay(
+            self.recovery,
+            *self.owner.head().manifest(),
+            self.owner.producer_slot_id(),
+            self.owner.issued_through(),
+        )
+    }
     pub(in crate::storage) fn validate(
         &self,
         cancelled: &AtomicBool,

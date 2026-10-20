@@ -562,7 +562,11 @@ fn closing_refuses_missing_or_excess_boundary_and_unsupported_ack_without_writes
             .encode()
             .unwrap();
             let mut value = vec![1, 0x31];
-            for n in [1u64, 1, u64::from(case == "retired")] {
+            for n in [
+                1u64,
+                if case == "acknowledged" { 2 } else { 1 },
+                u64::from(case == "retired"),
+            ] {
                 value.extend_from_slice(&n.to_be_bytes());
             }
             store.db.put_cf(cf, key.as_bytes(), value).unwrap();

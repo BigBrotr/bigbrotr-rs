@@ -6,49 +6,50 @@ Q37 model allocation and Q38 evidence reuse apply. Root owns integration/runtime
 ## Objective and revision
 
 P02-T02 Steps4/5/7: classified producer checkpoint → synchronized native ACK →
-restart. Current product d4e1b85 implements typed PG progress with ACK0, retaining
-all requests/receipts/inputs and granting no new credit. Qualified build, three
-successor Sync contexts and historical epoch3 recovery/refusals remain reusable.
-
-Main parented6a87bb383ea845a52b17065eb39394434f4f0f integrates qualified
-COMMIT-loss fixture ecedbcaf and was pushed/verified equal to remote. This merge
-integrates reviewed context source50316df exactly; product code is unchanged.
-Root-owned report/inventory/checkpoint changes record qualification and integration.
-Original worktrees and ignored artifacts remain.
+restart. Integrated product d4e1b85 still implements typed PG progress with ACK0.
+Main b0dd08137705c1d26229f48acf2315fee0635d0e was clean/pushed/verified before
+this evidence/checkpoint update. New ACK source remains isolated and unqualified.
 
 The [owning recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
-producer_checkpoint_ack_preparation_20261020`, owns exact source/build/review pins,
-original failures, PASS controls and raw replays. The [inventory](../research/laboratory-inventory.json)
-owns laboratory paths, branch custody and resources; no cleanup was performed.
+producer_checkpoint_ack_preparation_20261020`, owns all previous qualification,
+original failures and exact artifacts. Its `native_ack_source_preparation` now
+owns current source/review pins and open findings. The
+[inventory](../research/laboratory-inventory.json) owns worktree/resource custody.
+No worktrees, ignored artifacts, datasets or caches were removed.
 
 ## Current work and processes
 
-Activated epoch2 actual Sync/raw replay passed at9653725. Initial7239 completed
-Serve naturally; its original run remains FAIL for an incorrect client-stdout
-assertion. Corrected50316df independently reviewed reader passed full retained
-raw binding (4,156 files) and38 controls. Its first read rejected implicit system
-sitecustomize; unchanged reader passed with Python -S. All failures are preserved.
-Exact50316df source remains in `.research/producer-progress-contexts-20261020`,
-branch `work/producer-progress-contexts`, now integrated by this merge.
+Three isolated source worktrees under `.research/` start from2b00569:
 
-COMMIT-loss ecedbcaf passed six real loss/recover/retry processes,82 controls and
-raw binding of2,310 files. Both ambiguous errors remain exact; recovery closes
-native once and retry writes0. Shared-verifier regression passed original three
-positive contexts/63 controls. The initial ca77 frame-cap failure remains FAIL.
-All drivers joined. Exact owned clients/borrowed PG were last observed exited,
-PID0/noOOM/cgroups absent; inventory owns custody. Authors/reviewer finished;
-no engine/build active. No cleanup or worktree removal.
+- `producer-ack-sync-20261020`, root branch `work/producer-ack-sync`: clean at
+  ba3dab06810c72a4a5a92bc0c5da83484f008d24. Native-credit consumer, all recovery
+  CLI, migration40/catalog and reference contract. Formatting/diff checks PASS;
+  independent review has no remaining root blocker, conditional on storage.
+- `producer-ack-storage-20261020`, `export_setup_fixture`: active uncommitted
+  storage/model/recovery implementation. Completing mandatory epoch1-original
+  replay before epoch2 proof/ACK and native sequence-mismatch poisoning.
+- `producer-ack-fixture-20261020`, `export_setup_review`: first source seams
+  frozen at4b8f88b; schema40/window2 actual-client profile extension active.
+  Defaults preserved; new oracle/runtime qualification remains NOT_RUN.
+
+`producer_recovery_review` owns frozen storage/combined critical review. Q37
+Astra/xhigh continuity is unchanged. No engines/builds started for this increment;
+prior drivers joined and owned clients/borrowed PG were last observed stopped
+with PID0/noOOM/cgroups absent. Those dated resource observations are not a fresh
+mutation authorization. No cleanup is running.
 
 ## Next action and open limits
 
-Push this coherent merge and retire only the two redundant integrated branch refs;
-preserve their exact original worktrees and all evidence. Then resume the accepted
-checkpoint→ACK design, reconciling closing/recovery/frontier consumers before
-introducing nonzero ACK. Existing P02-T02 Steps4/5/7 and the report own the gates.
+Freeze/review storage, integrate with ba3dab0 in the isolated root worktree,
+reconcile changed test selections in the existing build profile, then build the
+exact combined source. Only afterward qualify actual window2 initial, activated2
+and successor3 traffic/recovery with independent expectations and retained raw
+captures. Preserve pre40 A0 recovery and unchanged closed ancestor A<C during
+preparation; no scalar reconstruction or re-stamping of an old proof.
 
-ACK/credit/GC, preparation-hole and further recovery/refusal/resource gates remain
-open in the report. Job checkpoint0 and retained historical values do not imply
-workflow completion, remote cursor or coverage. Original a99 Sync timeout cause
-remains unresolved. NoGC64/32MiB is temporary, not capacity qualification. Q33 CI
-billing, arm64 and signing/registry remain separate gates. No public release.
+Current source is not compiled or engine-tested. ACK/credit/GC, preparation-hole,
+further recovery/refusal/resource gates remain open in the report. Original a99
+Sync timeout cause is unresolved. NoGC64/32MiB is temporary, not capacity
+qualification. Q33 CI billing, arm64 and signing/registry remain separate gates.
+No public release or overall-completion claim.

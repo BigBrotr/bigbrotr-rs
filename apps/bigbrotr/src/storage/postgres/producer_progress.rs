@@ -1,5 +1,5 @@
 //! Typed incremental responsibility, separate from relay traversal and job completion.
-//! Native ACK and receipt reclamation are not effects of this module.
+//! Confirmed mutation progress can authorize native ACK; no detail is reclaimed.
 use super::super::ingest_registry::ControlOwner;
 use crate::{acquisition::session::RetainedRelayEvent, runtime::OwnedPermit};
 use bigbrotr_model::{AcquisitionScopeId, DatasetId, FactRef, JobId, ProducerSlotId};
@@ -60,14 +60,78 @@ impl ProgressGrant {
     // Bounded SQL parameters/rows and the streaming closure reducer. Native
     // decoded facts and the retained result use their separate existing grants.
     pub const REQUIRED_DATA_BYTES: u64 = 2 * 1024 * 1024;
+    /// One bounded synced producer-state write after confirmed checkpoint COMMIT.
+    pub const REQUIRED_NATIVE_BYTES: u64 = 4096;
 
     pub fn new(permit: OwnedPermit) -> Result<Self, ProducerProgressError> {
         if permit.request().units().data_bytes() < Self::REQUIRED_DATA_BYTES
+            || permit.request().units().native_bytes() < Self::REQUIRED_NATIVE_BYTES
             || permit.request().units().items() == 0
         {
             return Err(ProducerProgressError::InsufficientReservation);
         }
         Ok(Self { _permit: permit })
+    }
+}
+
+impl ProgressGrant {
+    pub(super) fn permit(&self) -> &OwnedPermit {
+        &self._permit
+    }
+}
+impl SyncProgress {
+    pub(super) fn grant(&self) -> &ProgressGrant {
+        &self._grant
+    }
+}
+
+pub(super) struct PendingAcknowledgement(crate::storage::rocks::store::AckTarget);
+pub(in crate::storage) struct ConfirmedAcknowledgement(crate::storage::rocks::store::AckTarget);
+
+impl Snapshot {
+    pub(super) fn pending_acknowledgement(
+        &self,
+        context: Context,
+        basis: &crate::storage::rocks::store::NativeCheckpointBasis<'_>,
+    ) -> Result<PendingAcknowledgement, ProducerProgressError> {
+        if self.revision == 0 || self.complete > self.reserved {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        let epoch = bigbrotr_model::ProducerEpoch::new(context.epoch)
+            .map_err(|_| ProducerProgressError::InvalidContext)?;
+        if basis.manifest_sha256() != context.manifest {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        basis
+            .acknowledgement_target(context.slot, epoch, self.complete)
+            .map(PendingAcknowledgement)
+            .map_err(ProducerProgressError::Native)
+    }
+}
+impl PendingAcknowledgement {
+    pub(super) fn recovered(
+        replay: crate::storage::rocks::store::RecoveryAcknowledgement,
+        complete: u64,
+    ) -> Result<Self, ProducerProgressError> {
+        replay
+            .target(complete)
+            .map(Self)
+            .map_err(ProducerProgressError::Native)
+    }
+    /// The only constructor of the live ACK capability consumes the actual
+    /// transaction and requires its successful COMMIT response. Lost responses
+    /// cannot mint permission, even if the server persisted the checkpoint.
+    pub(super) async fn commit(
+        self,
+        tx: tokio_postgres::Transaction<'_>,
+    ) -> Result<ConfirmedAcknowledgement, tokio_postgres::Error> {
+        tx.commit().await?;
+        Ok(ConfirmedAcknowledgement(self.0))
+    }
+}
+impl ConfirmedAcknowledgement {
+    pub(in crate::storage) fn into_target(self) -> crate::storage::rocks::store::AckTarget {
+        self.0
     }
 }
 impl SyncProgress {
@@ -318,6 +382,32 @@ fn retained_charge(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn progress_grant_reserves_native_ack_before_any_dispatch() {
+        use crate::runtime::{
+            ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+        };
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                8 * 1024 * 1024,
+                0,
+                ResourceLimits::new(4 * 1024 * 1024, 4, 8192, 0),
+                WaiterLimits::new(1, 1),
+            )
+            .unwrap(),
+        );
+        for (data, native, accepted) in [
+            (ProgressGrant::REQUIRED_DATA_BYTES, 4096, true),
+            (ProgressGrant::REQUIRED_DATA_BYTES - 1, 4096, false),
+            (ProgressGrant::REQUIRED_DATA_BYTES, 4095, false),
+        ] {
+            let permit = budget
+                .try_acquire(ResourceRequest::data(data, 1, native).unwrap())
+                .unwrap();
+            assert_eq!(ProgressGrant::new(permit).is_ok(), accepted);
+        }
+    }
 
     fn position(attempt: u8, ordinal: u16, sequence: u64) -> Position {
         Position {

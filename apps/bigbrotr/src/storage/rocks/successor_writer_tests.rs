@@ -975,3 +975,62 @@ fn successor_writer_borrowed_preparation_rechecks_same_sequence_input_content() 
         Err(AdmissionError::AuthorityUnavailable)
     );
 }
+
+#[test]
+fn successor_ack_updates_only_exact_admitted_frontier_and_keeps_replay() {
+    use crate::storage::rocks::store::{
+        producer_ack::AckTarget, producer_checkpoint::CheckpointStamp,
+    };
+    let f = prepared_fixture();
+    let mut writer = active(&f, false);
+    drop(
+        writer
+            .admit_event(
+                event(&f, 3, 1, false),
+                ObservedTime::new(77),
+                false,
+                AdmissionLimits::default(),
+                grant(&f.budget, 40 * MIB, 10 * MIB),
+                &NOT_CANCELLED,
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    let before = snapshot(&f, writer.store());
+    let target = AckTarget::new(
+        CheckpointStamp::capture(writer.store()).unwrap(),
+        at(3, 1).producer_slot_id,
+        ProducerEpoch::new(3).unwrap(),
+        1,
+    );
+    writer
+        .test_acknowledge_target(target, &grant(&f.budget, 4096, 4096), || Ok(()))
+        .unwrap();
+    writer.validate(&NOT_CANCELLED).unwrap();
+    let key = producer_key(3).encode().unwrap();
+    for row in before.0.iter().filter(|row| row.1 != key.as_bytes()) {
+        assert!(kv(writer.store()).contains(row));
+    }
+    let mut expected = open_marker(1);
+    expected[10..18].copy_from_slice(&1_u64.to_be_bytes());
+    assert_eq!(value(writer.store(), producer_key(3)), expected);
+    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 1);
+    assert_eq!(inputs(&f.path()), before.2);
+    assert_eq!(writer.producer_credit().unwrap().outstanding_requests(), 0);
+    // Retained replay must not alter I, A, source, input census or Rocks sequence.
+    drop(
+        writer
+            .admit_event(
+                event(&f, 3, 1, false),
+                ObservedTime::new(77),
+                false,
+                AdmissionLimits::default(),
+                grant(&f.budget, 40 * MIB, 10 * MIB),
+                &NOT_CANCELLED,
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    writer.validate(&NOT_CANCELLED).unwrap();
+    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 1);
+}

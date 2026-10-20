@@ -172,6 +172,9 @@ pub struct ActiveInitialWriter {
     role: [u8; 16],
 }
 impl ActiveInitialWriter {
+    pub fn producer_credit(&self) -> Result<super::ProducerCredit, AdmissionError> {
+        self.store.producer_credit(self.producer_slot_id())
+    }
     pub fn manifest(&self) -> &IngestManifest {
         self.store.manifest()
     }

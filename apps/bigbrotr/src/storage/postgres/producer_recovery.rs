@@ -73,6 +73,15 @@ impl ControlSession {
                 ingest_registry::RegistryError::InvalidMetadata,
             ));
         }
+        producer_progress::recovery::require(
+            &tx,
+            recovery,
+            recovery.manifest(),
+            input.request.producer_slot_id,
+            &input_permit,
+            || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
+        )
+        .await?;
         let reservation =
             producer_requests::read(&tx, input.registration.dataset_id, input.request)
                 .await

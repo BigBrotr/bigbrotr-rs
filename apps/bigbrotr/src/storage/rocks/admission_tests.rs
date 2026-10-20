@@ -1346,3 +1346,6 @@ mod observation_tests;
 
 #[path = "producer_checkpoint_tests.rs"]
 mod producer_checkpoint_tests;
+
+#[path = "producer_ack_tests.rs"]
+mod producer_ack_tests;

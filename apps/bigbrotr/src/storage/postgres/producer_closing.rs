@@ -65,6 +65,17 @@ pub struct InitialProducerClosing {
     pub(super) reserved_through: u64,
 }
 impl InitialProducerClosing {
+    pub fn acknowledged_through(&self) -> u64 {
+        self.native.acknowledged_through()
+    }
+    pub fn acknowledgement_resolution(
+        self,
+        recovery: &IngestRecovery,
+    ) -> Result<crate::storage::rocks::store::RecoveryAcknowledgementResolution<'_>, BootstrapError>
+    {
+        self.source_resolution(recovery)
+            .map(crate::storage::rocks::store::RecoveryAcknowledgementResolution::initial)
+    }
     pub fn native(&self) -> &ProducerClosing {
         &self.native
     }
@@ -126,7 +137,7 @@ impl ControlSession {
             .try_get::<_, &str>(0)
             .ok()
             .and_then(|s| s.parse::<u64>().ok())
-            .filter(|n| *n <= u64::from(spec.outstanding_request_limit))
+            .filter(|n| *n <= crate::storage::rocks::store::RETAINED_PRODUCER_REQUEST_LIMIT)
             .ok_or(OwnerError::InvalidMetadata)?;
         producer_progress::recovery::require(
             &tx,

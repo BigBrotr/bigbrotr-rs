@@ -75,7 +75,7 @@ pub(super) fn require_head(
         || head.source_digest.is_some()
         || !matches!(head.producer, ProducerState::Open | ProducerState::Closing)
         || issued > head.reserved
-        || head.reserved > u64::from(limit)
+        || head.reserved > crate::storage::rocks::store::RETAINED_PRODUCER_REQUEST_LIMIT
         || (head.producer == ProducerState::Closing && !native_closing)
     {
         return Err(OwnerError::InvalidMetadata);

@@ -251,7 +251,7 @@ impl IngestRecovery {
         if !state.closing {
             return Err(ProducerRecoveryError::ProducerOpen);
         }
-        if state.acknowledged != 0 || state.retired != 0 {
+        if state.retired != 0 || state.issued > super::RETAINED_PRODUCER_REQUEST_LIMIT {
             return Err(AdmissionError::StateMismatch.into());
         }
         if request.request_sequence.get() > state.issued {

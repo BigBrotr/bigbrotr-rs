@@ -64,7 +64,7 @@ fn activated_retirement_observes_only_existing_closing_and_preserves_event_class
         let another = view
             .observe_closed_producer(&recovery, grant(&fixture.budget, 4096, 4096), || Ok(()))
             .unwrap();
-        let mut prefix = closed.source_resolution(&recovery, count).unwrap();
+        let mut prefix = full_prefix(&fixture, &recovery, &closed, count);
         for sequence in 1..=count {
             prefix
                 .record(&resolve(&fixture, &recovery, &closed, sequence).unwrap())
@@ -134,9 +134,7 @@ fn activated_retirement_observation_checks_grants_and_authority_without_writes()
         let closed = view
             .observe_closed_producer(&recovery, grant(&fixture.budget, 4096, 4096), || Ok(()))
             .unwrap();
-        let source = closed
-            .source_resolution(&recovery, 0)
-            .unwrap()
+        let source = full_prefix(&fixture, &recovery, &closed, 0)
             .finish()
             .unwrap();
         assert_eq!(source.event_request_mask(), 0);
@@ -227,7 +225,7 @@ fn activated_retirement_observation_binds_root_sequence_and_final_authority_chec
     let fresh = inspect(&recovery)
         .observe_closed_producer(&recovery, grant(&fixture.budget, 4096, 4096), || Ok(()))
         .unwrap();
-    let mut prefix = fresh.source_resolution(&recovery, 1).unwrap();
+    let mut prefix = full_prefix(&fixture, &recovery, &fresh, 1);
     prefix
         .record(&resolve(&fixture, &recovery, &fresh, 1).unwrap())
         .unwrap();

@@ -636,7 +636,7 @@ impl IngestStore {
                 [1, 1] => value.as_ref() == current_manifest.encode().as_bytes(),
                 // Later admissions may advance source, allocation and issued counters.
                 // This verifies the retained bootstrap, not a complete later cut
-                // or a contiguous producer checkpoint. No ACK/GC exists yet.
+                // or a contiguous producer checkpoint. ACK retains all detail.
                 [1, 2] | [1, 3] => {
                     value.len() == 10
                         && value[..2] == entry.value[..2]
@@ -644,7 +644,9 @@ impl IngestStore {
                 }
                 [1, 0x31] => {
                     let state = super::producer_closing::ProducerState::decode(&value)?;
-                    state.issued >= 1 && state.acknowledged == 0 && state.retired == 0
+                    state.issued >= 1
+                        && state.issued <= super::RETAINED_PRODUCER_REQUEST_LIMIT
+                        && state.retired == 0
                 }
                 _ => value.as_ref() == entry.value.as_slice(),
             };

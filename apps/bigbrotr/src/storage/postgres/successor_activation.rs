@@ -81,6 +81,11 @@ pub(in crate::storage::postgres::control_owner) struct LiveSuccessorBinding {
     transaction: u64,
 }
 impl LiveSuccessorWriter {
+    pub fn producer_credit(
+        &self,
+    ) -> Result<crate::storage::rocks::store::ProducerCredit, AdmissionError> {
+        self.native.producer_credit()
+    }
     pub fn manifest(&self) -> &IngestManifest {
         self.native.manifest()
     }

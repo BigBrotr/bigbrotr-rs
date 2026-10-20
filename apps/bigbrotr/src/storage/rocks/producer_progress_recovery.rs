@@ -40,8 +40,8 @@ impl IngestRecovery {
 }
 
 impl ProgressRead<'_> {
-    /// This increment deliberately supports only retained ACK0 history. A PG
-    /// checkpoint cannot manufacture native issue, acknowledgement or credit.
+    /// A native ACK requires covering retained typed progress. No head/legacy
+    /// progress has C=0 and therefore still requires A=0. No detail is reclaimed.
     pub(in crate::storage) fn require_frontier(
         &self,
         slot: ProducerSlotId,
@@ -52,7 +52,11 @@ impl ProgressRead<'_> {
         self.validate()?;
         let store = &self.recovery.store;
         let state = store.producer_state(slot, epoch)?.unwrap_or_default();
-        if complete > state.issued || state.issued > reserved || reserved > 64 {
+        if state.acknowledged > complete
+            || complete > state.issued
+            || state.issued > reserved
+            || reserved > super::RETAINED_PRODUCER_REQUEST_LIMIT
+        {
             return Err(AdmissionError::StateMismatch);
         }
         store.require_producer_boundary(slot, epoch, state)?;

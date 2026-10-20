@@ -49,6 +49,123 @@ fn expected_closure(
     (Sha256::digest(bytes).into(), records)
 }
 
+// Reuse exact native replay for the mandatory epoch1 prefix. Its expected
+// complete digest/cut comes from the retained handoff, not these test inputs.
+fn full_prefix<'a>(
+    fixture: &Fixture,
+    recovery: &'a IngestRecovery,
+    closed: &'a ActivatedProducerClosing,
+    count: u64,
+) -> crate::storage::rocks::store::ActivatedSourceResolution<'a> {
+    let mut prefix = closed.source_resolution(recovery, count).unwrap();
+    for sequence in 1..=closed.predecessor_issued_through() {
+        let bytes = std::fs::read(
+            fixture
+                .path()
+                .join("producer-inputs-v1")
+                .join(input_name(1, sequence)),
+        )
+        .unwrap();
+        let resolved = closed
+            .resolve_predecessor_request(
+                recovery,
+                request(7, sequence),
+                Digest256::from_bytes(Sha256::digest(bytes).into()),
+                recovery_limits(),
+                grant(&fixture.budget, 3 * MIB, 0),
+                grant(&fixture.budget, 40 * MIB, 0),
+                || Ok(()),
+            )
+            .unwrap();
+        prefix.record(&resolved).unwrap();
+    }
+    prefix
+}
+
+#[test]
+fn activated_ack_handoff_requires_all_predecessor_originals_before_target() {
+    let fixture = closed_fixture();
+    let mut writer = active(&fixture);
+    assert_append(&fixture, &mut writer, 1);
+    // Privileged test setup: historical nonzero ACK alone cannot attest its
+    // original input prefix. All semantic rows and receipts stay retained.
+    let mut previous = value(writer.store(), producer_key(1));
+    previous[10..18].copy_from_slice(&4_u64.to_be_bytes());
+    put(writer.store(), producer_key(1), &previous);
+    drop(writer);
+    let mut recovery = fixture.reopen();
+    let closed = close(&fixture, &mut recovery);
+    let result = resolve(&fixture, &recovery, &closed, 1).unwrap();
+    let mut target_only = closed.source_resolution(&recovery, 1).unwrap();
+    assert_eq!(
+        target_only.record(&result),
+        Err(BootstrapError::StateMismatch)
+    );
+    assert!(target_only.finish().is_err());
+    let mut prefix = full_prefix(&fixture, &recovery, &closed, 1);
+    prefix.record(&result).unwrap();
+    let source = prefix.finish().unwrap();
+    let token = source.recovery_acknowledgement().unwrap();
+    assert_eq!((token.issued(), token.acknowledged()), (1, 0));
+    token.validate(&recovery).unwrap();
+    let stale = source.recovery_acknowledgement().unwrap();
+    drop(source);
+    drop(result);
+    drop(closed);
+    let before = capture(&fixture, &recovery.store);
+    // Native-only mechanics after an explicitly synthetic PG confirmation.
+    recovery
+        .store
+        .test_acknowledge_target(
+            token.target(1).unwrap(),
+            &grant(&fixture.budget, 4096, 4096),
+            || Ok(()),
+        )
+        .unwrap();
+    assert_eq!(recovery.store.db.latest_sequence_number(), before.1 + 1);
+    assert_eq!(inputs(&fixture.path()), before.2);
+    let target_key = producer_key(2).encode().unwrap();
+    for row in before.0.iter().filter(|row| row.1 != target_key.as_bytes()) {
+        assert!(kv(&recovery.store).contains(row));
+    }
+    assert!(stale.validate(&recovery).is_err());
+    let closed = close(&fixture, &mut recovery);
+    assert_eq!(closed.acknowledged_through(), 1);
+    let mut fresh = full_prefix(&fixture, &recovery, &closed, 1);
+    fresh
+        .record(&resolve(&fixture, &recovery, &closed, 1).unwrap())
+        .unwrap();
+    assert_eq!(fresh.finish().unwrap().acknowledged_through(), 1);
+    let original = &fixture.originals[0];
+    std::fs::remove_file(
+        fixture
+            .path()
+            .join("producer-inputs-v1")
+            .join(input_name(1, 1)),
+    )
+    .unwrap();
+    assert!(
+        closed
+            .resolve_predecessor_request(
+                &recovery,
+                request(7, 1),
+                input_digest(original),
+                recovery_limits(),
+                grant(&fixture.budget, 3 * MIB, 0),
+                grant(&fixture.budget, 40 * MIB, 0),
+                || Ok(())
+            )
+            .is_err()
+    );
+    assert!(
+        closed
+            .source_resolution(&recovery, 1)
+            .unwrap()
+            .finish()
+            .is_err()
+    );
+}
+
 #[test]
 fn activated_source_closure_covers_the_complete_two_stream_prefix_and_exact_digest() {
     let fixture = closed_fixture();
@@ -82,7 +199,7 @@ fn activated_source_closure_covers_the_complete_two_stream_prefix_and_exact_dige
     let closed = close(&fixture, &mut recovery);
     let before = capture(&fixture, &recovery.store);
     let (expected, records) = expected_closure(&fixture, &recovery, 3, 5);
-    let mut prefix = closed.source_resolution(&recovery, 3).unwrap();
+    let mut prefix = full_prefix(&fixture, &recovery, &closed, 3);
     for sequence in 1..=3 {
         let resolved = resolve(&fixture, &recovery, &closed, sequence).unwrap();
         prefix.record(&resolved).unwrap();
@@ -120,7 +237,7 @@ fn activated_source_closure_covers_the_complete_two_stream_prefix_and_exact_dige
     drop(recovery);
     let mut recovery = fixture.reopen();
     let closed = close(&fixture, &mut recovery);
-    let mut prefix = closed.source_resolution(&recovery, 3).unwrap();
+    let mut prefix = full_prefix(&fixture, &recovery, &closed, 3);
     for sequence in 1..=3 {
         prefix
             .record(&resolve(&fixture, &recovery, &closed, sequence).unwrap())
@@ -171,7 +288,7 @@ fn activated_source_closure_distinguishes_zero_rejected_and_old_durable_prefixes
         let cut = u64::from(append);
         let before = capture(&fixture, &recovery.store);
         let (expected, records) = expected_closure(&fixture, &recovery, count, cut);
-        let mut prefix = closed.source_resolution(&recovery, count).unwrap();
+        let mut prefix = full_prefix(&fixture, &recovery, &closed, count);
         for sequence in 1..=count {
             prefix
                 .record(&resolve(&fixture, &recovery, &closed, sequence).unwrap())
@@ -214,15 +331,16 @@ fn activated_source_closure_refuses_omissions_duplicates_order_and_reserved_tail
         closed.source_resolution(&recovery, 2).unwrap().finish(),
         Err(BootstrapError::StateMismatch)
     ));
+    // Finish both ancestor scans before retaining the two heavy target results.
+    let mut incomplete = full_prefix(&fixture, &recovery, &closed, 2);
+    let mut prefix = full_prefix(&fixture, &recovery, &closed, 2);
     let one = resolve(&fixture, &recovery, &closed, 1).unwrap();
     let two = resolve(&fixture, &recovery, &closed, 2).unwrap();
-    let mut incomplete = closed.source_resolution(&recovery, 2).unwrap();
     incomplete.record(&one).unwrap();
     assert!(matches!(
         incomplete.finish(),
         Err(BootstrapError::StateMismatch)
     ));
-    let mut prefix = closed.source_resolution(&recovery, 2).unwrap();
     assert_eq!(prefix.record(&two), Err(BootstrapError::StateMismatch));
     prefix.record(&one).unwrap();
     assert_eq!(prefix.record(&one), Err(BootstrapError::StateMismatch));
@@ -246,11 +364,11 @@ fn activated_source_closure_refuses_omissions_duplicates_order_and_reserved_tail
     // explicit selected source-proof bound before attempting any request read.
     let fixture = closed_fixture();
     let writer = active(&fixture);
-    put(writer.store(), producer_key(2), &marker(65));
+    put(writer.store(), producer_key(2), &marker(63));
     put(
         writer.store(),
         IngestKey::Request {
-            request_id: next_request(65),
+            request_id: next_request(63),
         },
         b"unvalidated-tail",
     );
@@ -259,7 +377,7 @@ fn activated_source_closure_refuses_omissions_duplicates_order_and_reserved_tail
     let closed = close(&fixture, &mut recovery);
     let before = capture(&fixture, &recovery.store);
     assert!(matches!(
-        closed.source_resolution(&recovery, 65),
+        closed.source_resolution(&recovery, 63),
         Err(BootstrapError::InsufficientReservation)
     ));
     unchanged(&fixture, &recovery.store, &before);
@@ -311,7 +429,7 @@ fn activated_source_closure_binds_root_sequence_and_the_exact_closed_owner() {
         Err(BootstrapError::StateMismatch)
     ));
     let result = resolve(&fixture, &recovery, &closed, 1).unwrap();
-    let mut foreign_prefix = foreign_closed.source_resolution(&foreign, 1).unwrap();
+    let mut foreign_prefix = full_prefix(&fixture, &foreign, &foreign_closed, 1);
     assert_eq!(
         foreign_prefix.record(&result),
         Err(BootstrapError::StateMismatch)
@@ -320,14 +438,14 @@ fn activated_source_closure_binds_root_sequence_and_the_exact_closed_owner() {
         .record(&resolve(&fixture, &foreign, &foreign_closed, 1).unwrap())
         .unwrap();
     let foreign_source = foreign_prefix.finish().unwrap();
-    let mut prefix = closed.source_resolution(&recovery, 1).unwrap();
+    let mut prefix = full_prefix(&fixture, &recovery, &closed, 1);
     prefix.record(&result).unwrap();
     let source = prefix.finish().unwrap();
     assert!(source.matches_closed(&closed));
     assert!(!source.matches_closed(&another));
     assert!(!source.matches_closed(&foreign_closed));
     assert_eq!(source.digest(), foreign_source.digest());
-    let mut stale = closed.source_resolution(&recovery, 1).unwrap();
+    let mut stale = full_prefix(&fixture, &recovery, &closed, 1);
     stale.record(&result).unwrap();
     // A privileged identical-value rewrite changes only the native sequence.
     let bytes = value(&recovery.store, handoff_key());
@@ -342,7 +460,7 @@ fn activated_source_closure_binds_root_sequence_and_the_exact_closed_owner() {
     drop(another);
     drop(closed);
     let closed = close(&fixture, &mut recovery);
-    let mut fresh = closed.source_resolution(&recovery, 1).unwrap();
+    let mut fresh = full_prefix(&fixture, &recovery, &closed, 1);
     fresh
         .record(&resolve(&fixture, &recovery, &closed, 1).unwrap())
         .unwrap();
@@ -386,7 +504,7 @@ fn activated_source_closure_refuses_a_retained_source_tail_beyond_the_request_pr
     let mut recovery = fixture.reopen();
     let closed = close(&fixture, &mut recovery);
     let before = capture(&fixture, &recovery.store);
-    let mut prefix = closed.source_resolution(&recovery, 2).unwrap();
+    let mut prefix = full_prefix(&fixture, &recovery, &closed, 2);
     for sequence in 1..=2 {
         prefix
             .record(&resolve(&fixture, &recovery, &closed, sequence).unwrap())
@@ -461,7 +579,7 @@ fn activated_source_closure_refuses_future_dependencies_and_noncontiguous_new_ba
         let closed = close(&fixture, &mut recovery);
         let before = capture(&fixture, &recovery.store);
         let result = resolve(&fixture, &recovery, &closed, 1).unwrap();
-        let mut prefix = closed.source_resolution(&recovery, 2).unwrap();
+        let mut prefix = full_prefix(&fixture, &recovery, &closed, 2);
         assert_eq!(prefix.record(&result), Err(BootstrapError::StateMismatch));
         assert!(matches!(
             prefix.finish(),

@@ -282,7 +282,7 @@ fn retained_progress_reader_checks_exact_key_full_hash_and_original_frontier() {
             1,
             1,
         );
-        if matches!(case, "acknowledged" | "retired") {
+        if case == "retired" {
             assert!(
                 matches!(frontier, Err(AdmissionError::StateMismatch)),
                 "{case}"
@@ -290,7 +290,7 @@ fn retained_progress_reader_checks_exact_key_full_hash_and_original_frontier() {
         } else {
             frontier.unwrap();
             let check = view.require_fact(reference, || Ok(()));
-            if case == "valid" {
+            if matches!(case, "valid" | "acknowledged") {
                 check.unwrap();
             } else {
                 assert!(
@@ -298,6 +298,17 @@ fn retained_progress_reader_checks_exact_key_full_hash_and_original_frontier() {
                     "{case}"
                 );
             }
+        }
+        if case == "acknowledged" {
+            assert!(matches!(
+                view.require_frontier(
+                    request(5, 1).producer_slot_id,
+                    ProducerEpoch::new(1).unwrap(),
+                    0,
+                    1
+                ),
+                Err(AdmissionError::StateMismatch)
+            ));
         }
         assert_eq!(kv(&recovery.store), before, "{case}");
     }

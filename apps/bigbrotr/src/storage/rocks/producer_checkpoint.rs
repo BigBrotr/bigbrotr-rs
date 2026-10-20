@@ -31,7 +31,7 @@ impl CheckpointStamp {
         })
     }
 
-    fn require(self, store: &IngestStore) -> Result<(), AdmissionError> {
+    pub(super) fn require(self, store: &IngestStore) -> Result<(), AdmissionError> {
         if Self::capture(store)? != self {
             return Err(AdmissionError::StateMismatch);
         }
@@ -71,6 +71,24 @@ pub(in crate::storage) struct NativeCheckpointBasis<'a> {
     captured: Option<crate::acquisition::preparation::CapturedBinding>,
 }
 impl NativeCheckpointBasis<'_> {
+    pub(in crate::storage) fn acknowledgement_target(
+        &self,
+        slot: bigbrotr_model::ProducerSlotId,
+        epoch: bigbrotr_model::ProducerEpoch,
+        complete: u64,
+    ) -> Result<super::producer_ack::AckTarget, AdmissionError> {
+        let request = self.request.ok_or(AdmissionError::InvalidInput)?.request();
+        if request.producer_slot_id != slot
+            || request.producer_epoch != epoch
+            || request.request_sequence.get() > complete
+            || complete > super::RETAINED_PRODUCER_REQUEST_LIMIT
+        {
+            return Err(AdmissionError::InvalidInput);
+        }
+        Ok(super::producer_ack::AckTarget::new(
+            self.stamp, slot, epoch, complete,
+        ))
+    }
     pub(in crate::storage) fn kind(&self) -> CheckpointKind {
         self.kind
     }

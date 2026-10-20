@@ -13,6 +13,7 @@ pub(in crate::storage::rocks::store) struct AdmittedFrontier {
     sequence: u64,
     inputs: [u8; 32],
     issued: u64,
+    acknowledged: u64,
     staged: u64,
     source: u64,
     poisoned: AtomicBool,
@@ -43,6 +44,7 @@ impl RetainedLineage {
             sequence,
             inputs: self.inputs,
             issued: 0,
+            acknowledged: 0,
             staged: 0,
             source: 0,
             poisoned: AtomicBool::new(false),
@@ -98,7 +100,7 @@ impl AdmittedFrontier {
             if producer
                 != (ProducerState {
                     issued: self.issued,
-                    acknowledged: 0,
+                    acknowledged: self.acknowledged,
                     retired: 0,
                     closing: false,
                 })
@@ -277,5 +279,31 @@ impl AdmittedFrontier {
         self.issued = self.staged;
         self.sequence = sequence;
         self.source = source;
+    }
+
+    pub(in crate::storage::rocks::store) fn require_acknowledgement(
+        &self,
+        store: &IngestStore,
+        acknowledged: u64,
+        sequence: u64,
+    ) -> Result<(), AdmissionError> {
+        self.require_identity(store, None)?;
+        if acknowledged <= self.acknowledged
+            || acknowledged > self.issued
+            || self.sequence.checked_add(1) != Some(sequence)
+        {
+            self.poison();
+            return Err(AdmissionError::StateMismatch);
+        }
+        Ok(())
+    }
+
+    pub(in crate::storage::rocks::store) fn acknowledged(
+        &mut self,
+        acknowledged: u64,
+        sequence: u64,
+    ) {
+        self.acknowledged = acknowledged;
+        self.sequence = sequence;
     }
 }

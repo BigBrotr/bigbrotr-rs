@@ -159,6 +159,7 @@ impl PreparedEvent {
         }
         store.require_admission_owner(Some(self.request))?;
         store.require_open_producer(self.request)?;
+        store.require_request_capacity(self.request, limits.max_outstanding_requests)?;
         store.stage_admission_input(self.request, self.digest, &self.request_preimage, cancelled)
     }
 
@@ -495,6 +496,9 @@ impl IngestStore {
         }
         let (issued, ack, retired) = (producer.issued, producer.acknowledged, producer.retired);
         let sequence = input.request.request_sequence.get();
+        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT {
+            return Err(AdmissionError::Limit);
+        }
         let request_key = IngestKey::Request {
             request_id: input.request,
         };

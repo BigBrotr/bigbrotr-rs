@@ -866,7 +866,7 @@ impl ControlSession {
         )
         .await
         .map_err(InitialBatchError::Outcome)?;
-        if let Some(state) = &mut progress_state {
+        let pending_ack = if let Some(state) = &mut progress_state {
             let basis = store
                 .checkpoint_evidence(&receipt)
                 .map_err(|_| InitialBatchError::Progress(ProducerProgressError::InvalidContext))?;
@@ -883,19 +883,54 @@ impl ControlSession {
             store
                 .require_checkpoint_basis(&basis)
                 .map_err(|_| InitialBatchError::Progress(ProducerProgressError::InvalidContext))?;
-        }
+            Some(
+                state
+                    .pending_acknowledgement(progress_context.expect("progress context"), &basis)
+                    .map_err(InitialBatchError::Progress)?,
+            )
+        } else {
+            None
+        };
         if input.cancelled.load(Ordering::Relaxed)
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialBatchError::DeliveryUnknown);
         }
-        tx.commit()
-            .await
-            .map_err(|_| InitialBatchError::Outcome(OutcomeError::CommitUnknown))?;
+        let confirmed = match pending_ack {
+            Some(pending) => Some(
+                pending
+                    .commit(tx)
+                    .await
+                    .map_err(|_| InitialBatchError::Outcome(OutcomeError::CommitUnknown))?,
+            ),
+            None => {
+                tx.commit()
+                    .await
+                    .map_err(|_| InitialBatchError::Outcome(OutcomeError::CommitUnknown))?;
+                None
+            }
+        };
         if input.cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
+            return Err(InitialBatchError::DeliveryUnknown);
+        }
+        if let Some(confirmed) = confirmed {
+            store
+                .acknowledge_checkpoint(confirmed, progress.expect("ACK grant").permit(), || {
+                    if input.cancelled.load(Ordering::Relaxed) {
+                        return Err(AdmissionError::AuthorityUnavailable);
+                    }
+                    lease
+                        .check_delivery(identity.policy_epoch)
+                        .map_err(|_| AdmissionError::AuthorityUnavailable)
+                })
+                .map_err(|error| {
+                    InitialBatchError::Progress(ProducerProgressError::Native(error))
+                })?;
+        }
+        if self.client.is_closed() {
             return Err(InitialBatchError::DeliveryUnknown);
         }
         self.available = true;
@@ -1091,7 +1126,7 @@ impl ControlSession {
         )
         .await
         .map_err(InitialEventError::Outcome)?;
-        if let Some(state) = &mut progress_state {
+        let pending_ack = if let Some(state) = &mut progress_state {
             let basis = store
                 .checkpoint_evidence(&receipt)
                 .map_err(InitialEventError::Native)?;
@@ -1108,19 +1143,52 @@ impl ControlSession {
             store
                 .require_checkpoint_basis(&basis)
                 .map_err(InitialEventError::Native)?;
-        }
+            Some(
+                state
+                    .pending_acknowledgement(progress_context.expect("progress context"), &basis)
+                    .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
         if input.cancelled.load(Ordering::Relaxed)
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
-        tx.commit()
-            .await
-            .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+        let confirmed = match pending_ack {
+            Some(pending) => Some(
+                pending
+                    .commit(tx)
+                    .await
+                    .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?,
+            ),
+            None => {
+                tx.commit()
+                    .await
+                    .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+                None
+            }
+        };
         if input.cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if let Some(confirmed) = confirmed {
+            store
+                .acknowledge_checkpoint(confirmed, progress.expect("ACK grant").permit(), || {
+                    if input.cancelled.load(Ordering::Relaxed) {
+                        return Err(AdmissionError::AuthorityUnavailable);
+                    }
+                    lease
+                        .check_delivery(identity.policy_epoch)
+                        .map_err(|_| AdmissionError::AuthorityUnavailable)
+                })
+                .map_err(InitialEventError::Native)?;
+        }
+        if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
         }
         self.available = true;
@@ -1341,7 +1409,7 @@ impl ControlSession {
         import_checkpoints::close_record(&tx, outcome.native_outcome(), control)
             .await
             .map_err(InitialEventError::ImportCheckpoint)?;
-        if let Some(state) = &mut progress_state {
+        let pending_ack = if let Some(state) = &mut progress_state {
             let basis = store
                 .checkpoint_event(&outcome)
                 .map_err(InitialEventError::Native)?;
@@ -1358,20 +1426,57 @@ impl ControlSession {
             store
                 .require_checkpoint_basis(&basis)
                 .map_err(InitialEventError::Native)?;
-        }
+            Some(
+                state
+                    .pending_acknowledgement(progress_context.expect("progress context"), &basis)
+                    .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
         // SQL awaits can consume the lease or observe cancellation after native
         // completion. Do not publish its copy/progress with expired authority.
         if cancelled.load(Ordering::Relaxed) || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
-        tx.commit()
-            .await
-            .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+        let confirmed = match pending_ack {
+            Some(pending) => Some(
+                pending
+                    .commit(tx)
+                    .await
+                    .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?,
+            ),
+            None => {
+                tx.commit()
+                    .await
+                    .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+                None
+            }
+        };
         if cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if let Some(confirmed) = confirmed {
+            store
+                .acknowledge_checkpoint(
+                    confirmed,
+                    progress.expect("ACK grant").grant().permit(),
+                    || {
+                        if cancelled.load(Ordering::Relaxed) {
+                            return Err(AdmissionError::AuthorityUnavailable);
+                        }
+                        lease
+                            .check_delivery(identity.policy_epoch)
+                            .map_err(|_| AdmissionError::AuthorityUnavailable)
+                    },
+                )
+                .map_err(InitialEventError::Native)?;
+        }
+        if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
         }
         self.available = true;
@@ -1540,7 +1645,7 @@ impl ControlSession {
         let tx = application_transaction(
             &mut self.client,
             if input.progress {
-                39
+                40
             } else {
                 authority.schema()
             },
