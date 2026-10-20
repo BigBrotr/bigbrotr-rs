@@ -35829,7 +35829,7 @@
         }
       },
       "archive_attempt_limits_source": {
-        "status": "INTEGRATED_CLIPPY_CORRECTION_AWAITING_BUILD",
+        "status": "INTEGRATED_CORRECTED_BUILD_PASS_ENGINE_NOT_RUN",
         "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018",
         "branch": "qualification/archive-catch-up-attempt-limits",
         "base": "d910233ad0a593d08e571955dde51873d947c616",
@@ -35888,7 +35888,7 @@
         "root_review": "Complete4 new owners, full changed3hook delta, complete existing history helper/lifetime/inputs/archive_coordinator/inventory/plan and finite contracts read. Final keepalive delta read. All7 source blobs and28 final manifest artifacts authenticated; compiler/runtime not run.",
         "author_checks": "Source-only AST/scoped rustfmt/three exact inverse paths PASS; artificial45snapshots16context mutations,8finish+3holder-finally mocks,4raw helpers20mutations+2name/Id controls PASS. These are author pure evidence, not executed engine qualification.",
         "finding": "Independent review found600s client keepalive shorter than admitted setup1800/cap4200. acc9bea selects10800s only for new profile; old600s and product deadlines unchanged. No remaining concrete source blocker in stated review scope.",
-        "limits": "Actual compilation/Clippy, engine resource/runtime envelope and full raw replay NOT_RUN. Typed holder does not substitute for queued-COMMIT/live-writer evidence. Integrate/build after current unchanged9a fault/refusal sequence. Original69a branch and all ignored artifacts preserved.",
+        "limits": "Corrected build6c42a41/41 selected tests/Clippy and custody PASS. Actual held LocalAttempt/126+3 engine and strict raw replay remain NOT_RUN. Scope is the finite installed qualification fixture; no full concurrency/capacity or product completion follows.",
         "custody_template": {
           "status": "ROOT_SOURCE_REVIEWED_RUNTIME_NOT_RUN",
           "template": {
@@ -35975,7 +35975,7 @@
           "previous_status": "REVIEWED_SOURCE_ONLY_NOT_INTEGRATED_BUILD_ENGINE_NOT_RUN"
         },
         "clippy_correction_helpers_20261020": {
-          "status": "SOURCE_REVIEW_CLOSED_RUNTIME_NOT_RUN",
+          "status": "SOURCE_REVIEW_CLOSED_BUILD_PASS_ENGINE_NOT_RUN",
           "manifest": {
             "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-clippy-correction-20261020/manifest-v1.json",
             "bytes": 4374,
@@ -36016,7 +36016,7 @@
             "new_sha256": "d1b463adfdefc22fdba6534b463d593679ec93fe3ff7b5bbe66c349d1db13365",
             "delta": "map(|v| Path::new(v)) -> map(Path::new)"
           },
-          "limits": "Root and independent source reviews closed; compiler/Clippy after correction, helper execution, new build custody and connected attempt limits remain NOT_RUN. Historical failed build remains FAIL.",
+          "limits": "Root and independent source reviews closed. Corrected preparation84489/build27863/custody73640 joined0 at source6c42a41; actual connected engine and strict replay remain NOT_RUN. Historical58 remains FAIL.",
           "independent_review": {
             "path": "/home/tux/bigbrotr-rs/.research/archive-attempt-clippy-correction-20261020/review/review-v1.json",
             "bytes": 14150,
@@ -38622,6 +38622,218 @@
             "No compiler or retained ELF is executed; no native/SQL engine or mutable compiler cache is opened by this auditor."
           ]
         }
+      },
+      "archive_attempt_limits_build_6c42a41": {
+        "status": "BUILD_PASS_CUSTODY_PASS_ENGINE_NOT_RUN",
+        "observed_at": "2026-10-20T10:36:00.730087+00:00",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41",
+        "source": "6c42a41534a0d7ec3e425fa34b1b3c88bdceab79",
+        "tree": "1fbc429150a47b3896c04b453cbe814c0d602926",
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/root-preparation.json",
+          "bytes": 32939,
+          "sha256": "373a4b98000d43739734450ba8c1949b9c4ca1e230e15d17c7fd58aa2c5e0013"
+        },
+        "invocation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/root-build-invocation.json",
+          "bytes": 625,
+          "sha256": "48c6ee7c982d4c2a9fbc5da87da1ec3f4c492be799edd593719623d77ec6970a"
+        },
+        "actual_joins": {
+          "prepare84489": 0,
+          "build27863": 0,
+          "custody73640": 0
+        },
+        "active_session": null,
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/resources.json",
+          "owner": "07e578eaef4fa77f153a4900409c98f2",
+          "owner_label": "org.bigbrotr.network-transport",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "37c03c5fb961641e2cce64292bac3bdac85c97bcd9d55076f6ecd986f207073c"
+            },
+            {
+              "name": "native",
+              "id": "927f5a3ba863ce421c7f16bc189e9047de85574a7cda16db9104d0e00e0fd5aa"
+            }
+          ]
+        },
+        "limits": "Exact corrected build,41 selected tests, Clippy and packaged worker/postchecks PASS. Audit preserves196 prior+6 new ELFs and original58 FAIL. Connected typed-holder/cap engine and strict raw replay remain NOT_RUN.",
+        "initial_observation": {
+          "status": "RUNNING_NOT_QUALIFIED",
+          "observed_at": "2026-10-20T10:32:03.112927+00:00",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41",
+          "source": "6c42a41534a0d7ec3e425fa34b1b3c88bdceab79",
+          "tree": "1fbc429150a47b3896c04b453cbe814c0d602926",
+          "preparation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/root-preparation.json",
+            "bytes": 32939,
+            "sha256": "373a4b98000d43739734450ba8c1949b9c4ca1e230e15d17c7fd58aa2c5e0013"
+          },
+          "invocation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/root-build-invocation.json",
+            "bytes": 625,
+            "sha256": "48c6ee7c982d4c2a9fbc5da87da1ec3f4c492be799edd593719623d77ec6970a"
+          },
+          "actual_joins": {
+            "prepare84489": 0
+          },
+          "active_session": 27863,
+          "resources": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/resources.json",
+            "owner": "07e578eaef4fa77f153a4900409c98f2",
+            "owner_label": "org.bigbrotr.network-transport",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "37c03c5fb961641e2cce64292bac3bdac85c97bcd9d55076f6ecd986f207073c"
+              },
+              {
+                "name": "native",
+                "id": "927f5a3ba863ce421c7f16bc189e9047de85574a7cda16db9104d0e00e0fd5aa"
+              }
+            ]
+          },
+          "limits": "Corrected exact source build active; tests, Clippy, worker/postchecks and custody not yet terminal. Historical58 FAIL preserved. Connected attempt engine and raw replay NOT_RUN."
+        },
+        "terminal_20261020": {
+          "status": "BUILD_PASS_CUSTODY_PASS_ENGINE_NOT_RUN",
+          "observed_at": "2026-10-20T10:36:00.730087+00:00",
+          "actual_joins": {
+            "prepare84489": 0,
+            "build27863": 0,
+            "custody73640": 0
+          },
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/audit-root/audit-v1.json",
+            "bytes": 853384,
+            "sha256": "bcf1b7e21d673cc70328a09b20c73ae5223231d0eb4874ec441d321d8dbf3dc2"
+          },
+          "build_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/root-build-result.json",
+            "bytes": 74,
+            "sha256": "121fb5c16bbd43b45299f310fcfe49b6b6b300c0afe73a5dbb223c36d4da5a48"
+          },
+          "checks": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/out/build-checks/result.json",
+            "bytes": 7662,
+            "sha256": "693e998ea988104db9c6c36f8b9dc16affa0efed55809e64c3b48745fa72b097"
+          },
+          "clippy_log": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41/out/build-checks/clippy.log",
+            "bytes": 297,
+            "sha256": "df33b9932ba454ecd603f69aa10bf28b5fd4fb2c462e5046e26e71579f1ff8d4"
+          },
+          "source_files": 1985,
+          "protected_elfs": 196,
+          "new_elfs": {
+            "ingest_bootstrap_probe": "e2e134045cb45d6c1d4f6e2c36716fc9476e7abc854dcfd5e935ce65f5b5f849",
+            "bigbrotr": "60f70d1b9dffb133807fb9d43e6b142f3a8784c98e91bffab4de244279573572",
+            "native_components": "8e70da2178257c9c39667e06afcd914c2e2f6b654eef86cecac75dc9559f9000",
+            "serve_owner": "226d77ad6520114f123678b65d3554307d309f87528edae92cb1f69524ea3d56",
+            "control_runtime_entrypoint": "867450381cc492962af27b00007c52e2d3deca33444e24079b3ade8e9bd8cc1e",
+            "archive-worker/bigbrotr-archive-worker": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+          },
+          "actual_test_counts": {
+            "frontier_intents": {
+              "status": "ok",
+              "passed": 6,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 332
+            },
+            "serve_owner": {
+              "status": "ok",
+              "passed": 27,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 79
+            },
+            "control_runtime_entrypoint": {
+              "status": "ok",
+              "passed": 8,
+              "failed": 0,
+              "ignored": 0,
+              "measured": 0,
+              "filtered_out": 0
+            }
+          },
+          "compiler_diagnostics": [
+            {
+              "check": "frontier_intents",
+              "line": 289,
+              "encoding": "cargo-json",
+              "level": "warning",
+              "code": {
+                "code": "dropping_copy_types",
+                "explanation": null
+              },
+              "message": "calls to `std::mem::drop` with a value that implements `Copy` does nothing"
+            }
+          ],
+          "worker_status": "PASS",
+          "postcheck_status": "PASS",
+          "qualification": "PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS",
+          "not_run": [
+            "connected attempt engine",
+            "strict engine replay"
+          ],
+          "owned_terminal": {
+            "fetch": {
+              "Status": "exited",
+              "ExitCode": 0,
+              "Running": false,
+              "Pid": 0,
+              "OOMKilled": false
+            },
+            "native": {
+              "Status": "exited",
+              "ExitCode": 0,
+              "Running": false,
+              "Pid": 0,
+              "OOMKilled": false
+            }
+          },
+          "unchanged_containers": 1413,
+          "prior_audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-58aca32/audit-root/audit-v1.json",
+            "sha256": "40592dd5f72445651bcd1eeedf533c08cf12b7504cbfc8902d131b2c9f9dd1bf"
+          },
+          "custody_limits": [
+            "Custody PASS preserves actual build FAIL/NOT_RUN and never substitutes for qualification.",
+            "New test counts/names come from actual logs; no legacy test campaign is claimed to have been rerun.",
+            "Root custody audit authenticates source, artifacts and raw logs; it is not independent semantic proof.",
+            "The unchanged41-test selection, new finite attempt probe compilation/Clippy and packaged worker identity are build checks; held LocalAttempt/126+3 and all connected journeys remain NOT_RUN.",
+            "No compiler or retained ELF is executed; no native/SQL engine or mutable compiler cache is opened by this auditor."
+          ]
+        },
+        "observed_checks": [
+          {
+            "name": "probe_build",
+            "status": "PASS"
+          },
+          {
+            "name": "frontier_intents",
+            "status": "PASS"
+          },
+          {
+            "name": "serve_owner",
+            "status": "PASS"
+          },
+          {
+            "name": "control_runtime_entrypoint",
+            "status": "PASS"
+          },
+          {
+            "name": "clippy",
+            "status": "PASS"
+          }
+        ],
+        "worker_status": "PASS"
       }
     }
   }

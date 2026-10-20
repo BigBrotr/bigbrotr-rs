@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T10:32Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T10:36Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,13 +9,13 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`c760787e1bbaef0bf25a2a2272e5b50195ed08e1`, pushed and verified remotely.
-Its tree is `a3b3d1f52058b837f98a0f9b87aa20154de0740d`.
+`6c42a41534a0d7ec3e425fa34b1b3c88bdceab79`, pushed and verified remotely.
+Its tree is `1fbc429150a47b3896c04b453cbe814c0d602926`.
 Root is the sole integrating owner; Tux handles development, Git and tests.
 No merge/rebase pending. The one-expression probe correction and failed-build
-checkpoint are committed. Current edits only record the completed independent review. The attempt-limit and
+checkpoint are committed. Current edits record the completed corrected build and custody. The attempt-limit and
 export-memory worktrees are clean on their preserved commits. Attempt-limit
-source is integrated, with original build FAIL and correction not yet rebuilt; export source is
+source is integrated, with original build FAIL preserved and corrected build PASS; export source is
 not integrated.
 
 Q37 is recorded in the existing guide and decision register. Root session
@@ -208,9 +208,12 @@ nonborrowed containers. PG/client stopped0/143, PID0/noOOM; cleanup/missing/
 unrelated arrays empty. Never rerun custody after borrowed-PG reuse.
 
 All six ordinary refusal selectors now have their own qualified fresh roots.
-**Next action:** commit and push this source-review closure, then prepare and run
-the corrected exact clean build using the frozen helpers below; join the actual
-command and record its real outcome and custody before any attempt-limit engine. Original preparation5110 joined0,
+**Next action:** commit and push the corrected-build result, then prepare and run
+the reviewed fresh attempt-limit engine against qualified build6c42a41 and
+auditbcf1b7e2. Preparation84489/build27863/custody73640 all joined0. The build
+passes compilation,41 tests, Clippy and packaged worker/postchecks; audit preserves
+1985sources,196prior+6new ELFs and1413unchanged containers. Both owned containers
+are stopped0/PID0/noOOM. Original58 remains FAIL. Original preparation5110 joined0,
 build60879 joined1 at10:15:19Z and custody35295 joined0. Build58aca32 remains
 **FAIL**: probe/worker compilation,41 tests and packaged postchecks PASS; Clippy
 refused `args.get(6).map(|v| Path::new(v))` at probe1067. The correction is
@@ -218,7 +221,7 @@ refused `args.get(6).map(|v| Path::new(v))` at probe1067. The correction is
 d1b463adfdefc22fdba6534b463d593679ec93fe3ff7b5bbe66c349d1db13365.
 Audit40592dd5 binds1985source files,190prior+6new ELFs and1411unchanged containers.
 Fetch/native stopped0/1, PID0/noOOM. Original FAIL and all logs remain preserved.
-Corrected build/Clippy and actual typed-holder/cap engine remain NOT_RUN.
+Corrected build/Clippy now PASS; actual typed-holder/cap engine remains NOT_RUN.
 No P02-T04 or M1 checkbox closes.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
@@ -251,8 +254,8 @@ acc9bea67d5380f35c2fbf8d69ceed4539925133. Seven exact source blobs and manifest
 It holds a real LocalAttempt through installed Occupied refusal, then genuinely
 issues122additional attempts and verifies126issued+3planned refuses before127.
 Only its new fixture profile gets10800s client lifetime; product limits unchanged.
-Original source compiled and41 tests PASS; original Clippy FAIL and corrected
-build/actual engine/full replay NOT_RUN.
+Original Clippy FAIL is preserved. Corrected build6c42a41 and41 tests/Clippy PASS;
+actual engine/full replay remain NOT_RUN.
 The unchanged9a refusal sequence completed before integration on 2026-10-20:
 bfe1b14 maps to11397d09917e5b605ea1d4f463af162120350a2a and acc9bea maps to
 c18bc2c50d3a35862b069233348bbfc85eba8acf, both with matching stable patch IDs.
@@ -275,7 +278,10 @@ with no concrete blocker, verified Astra/xhigh. All four helpers and exact diffs
 were read; historical failed58 remains FAIL and the original review limits remain.
 They bind the one corrected probe hash, preserve failed58 and196priorELFs,
 retain the unchanged41tests and require202ELFs for a future qualified engine.
-The64GiB+577MiB engine reserve is unchanged. No corrected helper executed yet.
+The64GiB+577MiB engine reserve is unchanged. Corrected preparation84489/
+build27863/custody73640 joined0. Build auditbcf1b7e2 is frozen; connected engine
+and raw replay remain NOT_RUN. The pre-existing frontier test warning
+`dropping_copy_types` is retained in compiler diagnostics; Clippy passes.
 
 Export memory fixture: recovery_review owns the new isolated worktree
 `.research/export-memory-probe-20261018`, branch `qualification/export-memory-probe`,
@@ -326,7 +332,11 @@ The old setup's replica-role policy and direct-grant mutations cannot supply the
 required genuine authority; the new fixture must use existing real initialization,
 activation/enrollment and authenticated grants, with no Export acceptance in Serve.
 
-Build60879 and custody35295 have joined; no session runtime is active.
+Build60879/custody35295 and corrected preparation84489/build27863/custody73640
+have joined. The corrected build is preserved at
+`runs/ingest-succession-archive-installed-6c42a41`, both owned containers stopped0,
+PID0/noOOM. Existing report/inventory binds all actual source/artifact identities.
+No session runtime or connected attempt engine is active.
 The failed build is retained under
 `runs/ingest-succession-archive-installed-58aca32`;10:05:04Z–10:15:19Z.
 Owner6906757f69728137ea193cd2679d316e, labelorg.bigbrotr.network-transport,
