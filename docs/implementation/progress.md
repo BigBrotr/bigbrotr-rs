@@ -1,19 +1,18 @@
 # Current execution checkpoint
 
-Observed 2026-10-18T19:56Z on Tux. **Owner-requested pause; safe shutdown complete.**
-The owner explicitly stopped further implementation, tests, builds, cleanup and
-delegation. After saving/pushing this checkpoint, root must set the actual goal
-control to **PAUSED**, without marking it complete. Resume only on a new explicit
-owner request; verify the goal control then. M1–M5 remain INCOMPLETE. Existing task files
+Observed 2026-10-20T09:34Z on Tux. Goal **ACTIVE**, verified after the owner
+explicitly resumed the same goal. The previous pause was completed and preserved
+in Git/evidence; its stop instruction no longer prevents authorized development.
+M1–M5 remain INCOMPLETE. Existing task files
 own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`2426646776f5ce3c0250a3366b559e96a0e00a1a`, already pushed and verified remotely.
+`4989945ba59f627c1c00fff00837edb60b36ac7f`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Root's current documentation edits save the owner-requested
-pause and the interrupted missing-input run. Product source is unchanged. The
+No merge/rebase pending. Root's current documentation edits record resumption
+and completed limited custody of the interrupted missing-input run. Product source is unchanged. The
 attempt-limit and export-memory worktrees are clean on their preserved commits;
 their reviewed source is not integrated or runtime-qualified.
 
@@ -140,11 +139,18 @@ The existing report/inventory records `pause_checkpoint_20261018_1956` and the
 interrupted attempt. The earlier a99 initial Sync timeout remains unresolved;
 later successful trials do not establish its cause or fix.
 
-**First action after explicit resume:** reconcile exact main/remote and the
-interrupted missing-input artifact identities, then freeze its preservation/custody
-before borrowed-PG reuse. Never replay its engine in the existing root or normalize
-its FAIL. Only then prepare a fresh missing-input run; frontier-cancel and
-frontier-control-loss remain NOT_RUN. No further work is authorized while paused.
+Resumption custody68738 joined0 at2026-10-20T09:26:01Z. Read-only report
+`audit-root/audit-interrupted-v1.json` SHA757e9a0a binds2524retained files,
+190ELFs and1406unchanged nonborrowed containers; original SQLbasis captures and
+quarantined input bytes/inode are preserved. Exact PG/client remain stopped0/143,
+PID0/noOOM. Root read the complete115-line helper and delta; independent review
+2cd68b4e found no concrete blocker. This is custody observation only: original
+FAIL/-2, interrupted negative controls and strict replay NOT_RUN remain unchanged.
+Never rerun this custody check after borrowed-PG reuse or replay the old engine.
+
+**Next action:** prepare a fresh missing-input run from clean main with unchanged
+qualified9a product, then execute its engine, independent replay and custody.
+Frontier-cancel and frontier-control-loss remain NOT_RUN.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.
@@ -161,7 +167,7 @@ is not solely attributed to the selected9009500160B. All source/data/log evidenc
 worktrees and original failures remain preserved. Detailed pins and limitations
 are in `archive_package_cache_headroom` in the existing report/inventory.
 
-Only after explicit resume and the interrupted-run reconciliation above, use the existing
+After this checkpoint commit/push, use the existing
 `.research/archive-renewal-dispatch-20261018/prepare-refusal-journey.py`
 (SHA5b61ccf3), build9a/audit1164, case missing-input from clean main.
 Run actual engine, strict `installed_archive_catch_up_refusal_capture.py` replay
@@ -223,18 +229,22 @@ No remote branch or external lab was changed.
 ## Resource custody and remaining scope
 
 All fault/refusal-prefix/replay/audit/maintenance processes above have joined.
-All child agents are stopped/completed; the pause was communicated to them.
-recovery_review performed only static reads for the large signed export setup and
-made zero file changes. It found two setup gaps: the relay encoder accepts frames
+cleanup_review completed the interrupted-custody source review. recovery_review
+froze the qualification-only export setup at370cf792 in its dedicated worktree;
+root remains sole runtime/compiler/SQL/Docker/cache owner. Before the pause it
+performed only static reads for the large signed export setup and made zero file changes. It found two setup gaps: the relay encoder accepts frames
 below65536B, while the frozen event is94577B; ordinary Serve can reserve a job
 immediately after HTTP acceptance, while Initial cannot accept Export. Minimal
 bounded relay framing and a genuine typed acceptance-only fixture consumer were
-authorized for later work, but implementation is NOT_STARTED. The reviewed
-c68ac35 packet and all source-only artifacts remain intact.
+implemented only as a source candidate, not integrated or compiled. Manifest
+75b8f6a7 under exportWT `.research/export-accept-setup-source-20261020` is
+authenticated; root/independent full source reviews are pending. The reviewed
+c68ac35 baseline and all original artifacts remain intact.
 No session runtime is active. Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 The673/e919/be181 refusal custody checks are complete and must not be rerun after
-borrowed-PG reuse. The interrupted2426646 full custody check remains NOT_RUN.
+borrowed-PG reuse. The interrupted2426646 limited custody observation is complete; its scientific
+qualification and strict independent replay remain NOT_RUN.
 Compiler cache: `runs/network-1154757/out/build/{target,cargo-home}`, owner
 8b21a13162699a6038154874c2ac89da, exclusive`.compiler-cache.lock`.
 Rust1.98.1 Linuxamd64 image7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d.
