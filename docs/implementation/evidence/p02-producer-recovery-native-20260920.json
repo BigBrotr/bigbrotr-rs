@@ -38025,7 +38025,7 @@
             }
           },
           "layout_refusal": {
-            "status": "SOURCE_CRITICAL_REVIEW_PASS_RUNTIME_NOT_RUN",
+            "status": "PASS_SPECIFIED_REFUSAL_AND_NATURAL_DRAIN",
             "owner": "catalog_layout_fixture gpt-6.1-sol/xhigh",
             "base": "14fba1537866570235ee68846636cbc81dbbc8b6",
             "worktree": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020",
@@ -38059,6 +38059,36 @@
               "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-layout-refusal-source-review-v1.json",
               "bytes": 9531,
               "sha256": "34f1c54424ef3037773b48be58208aecdeadacc783b4f9cbc958f3645eb5130e"
+            },
+            "runtime": {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-layout-refusal-37033e4",
+              "source": "37033e418d860e2338bbae06059ac1ed7a82b18c",
+              "tree": "6a5e87918485764f0c14a117370d0c6e687b48cb",
+              "session": "67977 joined0",
+              "status": "PASS_ROOT_REFUSAL_SQL_PHYSICAL_AND_CUSTODY",
+              "raw_operation": "Diagnostic exit4/observer1 UNKNOWN_OR_FAILED preserved; operation_error ResourceLimit, terminal budget null. External refusal result is not successful Export. Original resources measurement=NOT_RUN is the earlier generic field; actual manager capture and separate refusal evidence below establish execution.",
+              "allocation": {
+                "whole_parent_requested_live_peak": 334812,
+                "live_at_cut": 53433,
+                "comparison_budget": 17301512,
+                "per_owner_attribution": false
+              },
+              "sql": "All original rows and xmins unchanged; exactly one active Control owner and unretired role in same1492 transaction. Job Accepted1/checkpoint0 unreserved. No artifacts/files/units; existing pins/claims unchanged.",
+              "layout": "One isolated100-argument function; raw identity19333B; product wire name/definition8193B. Independent checksum changes from stored original; full injected catalog dump unchanged through refused probe. Fault retained.",
+              "physical": "Fresh post-run full census matches before/after for all six roots; no output or scratch change.",
+              "custody": "Eight actual owner-labeled containers exited/PID0/noOOM; only observer exit1; all cgroups absent;10 backend exclusions empty; no running container holds root.",
+              "limits": "One oversized-layout early refusal and natural drain, plaintext. Not timed cancellation/TLS/per-owner/RSS/universal worst-case or whole-service256MiB qualification. All original raw statuses and prior failures remain.",
+              "root_receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-layout-refusal-root-outcome-v1.json",
+                "bytes": 9527,
+                "sha256": "0750aa08018f9fa3328e30c12f8ef77cacead38280351d0fb6cb754a2d44a20d"
+              },
+              "critical_outcome_review": {
+                "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-layout-refusal-outcome-review-v1.json",
+                "bytes": 12984,
+                "sha256": "92b8a3a2ea81dc8ecba3c13d8a21a9b133133a8fedfa5d4f1c059a2b108308fb"
+              },
+              "review": "Independent Astra review PASS; root read complete receipt and authenticated13 associated evidence pins. Original raw failure/preliminary pending statuses remain unchanged. Qualified only the specified early refusal, natural drain and bounded requested allocation observation."
             }
           }
         }

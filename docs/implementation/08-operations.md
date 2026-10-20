@@ -528,6 +528,13 @@ in 442 ms; the overbound query returns exactly `ResourceLimit` in 367 ms under
 `native_row_boundary_20261020` in the same report. This qualifies that native row
 boundary only; installed authority, empirical process memory, TLS and internal
 owner high-water are separate claims. Step 3 remains incomplete.
+The reduced plaintext manager diagnostic now qualifies one complete signed sample
+and one oversized-layout refusal with natural driver drain (`manager_observation_20261020`).
+Conservative whole-parent Rust requested-live peaks are 1,472,461 B and 334,812 B,
+within the 17,301,512 B manager allowance. Root SQL/physical/resource audits and
+independent critical reviews pass. The refusal leaves the job Accepted/unreserved
+and preserves raw failure and active SQL ownership. This is neither per-owner
+physical accounting nor worst-case/TLS/whole-service sizing.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 

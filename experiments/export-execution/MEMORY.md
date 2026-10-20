@@ -220,3 +220,8 @@ sample capture and its independent SQL/physical qualification are recorded under
 `manager_observation_20261020` in the existing
 [recovery evidence](../../docs/implementation/evidence/p02-producer-recovery-native-20260920.json).
 Its scope does not qualify oversized-layout refusal or worst-case manager sizing.
+The separate `layout_refusal` record now retains the real oversized-layout run,
+its raw diagnostic failure and the external refusal/drain audit. Root verification
+found the job still Accepted and unreserved, unchanged scientific/physical state,
+natural driver closure and no live resources. This narrow refusal evidence does
+not extend the successful sample's scope or establish a universal memory bound.
