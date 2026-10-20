@@ -42153,7 +42153,7 @@
           }
         ],
         "native_ack_source_preparation": {
-          "status": "SOURCE_ONLY; paired storage, integrated compile and real-engine qualification NOT_RUN",
+          "status": "SOURCE_REVIEW_AND_COMPONENTS_PASS; connected PG ACK/credit/loss/recovery qualification NOT_RUN",
           "root_consumer": {
             "commit": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
             "tree": "765233f165cfe590eb3399f085306aff32f661dd",
@@ -42163,6 +42163,14 @@
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-root-consumer-review-v1.json",
               "sha256": "47efc48bb34c959d1ff97b741d78ef2d311d048ecfb3f8b9d90101183a6b1426",
               "root": "Complete receipt read; all19 frozen source pins, clean checkout, commit and tree authenticated. No remaining root source blocker; conditional on paired storage and runtime."
+            },
+            "followup": {
+              "commit": "d8be0442bb67e399bbd580b59fad3091338f4640",
+              "scope": "Recovery grant constants and overlapping successor preflight; additive existing producer-ack build profile.",
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-root-followup-review-v1.json",
+                "sha256": "61c0b1eb7b287b2b496c883a73c285ac5cf8840ca977c496447fec72d710e4cc"
+              }
             }
           },
           "fixture_preparation": {
@@ -42172,12 +42180,59 @@
             "state": "Frozen default-preserving three-event source seams; follow-up schema40/window2 profile under authoring. No new qualification predicate executed."
           },
           "review_findings": [
-            "Initial recovery closing/replay grant overlap corrected and reviewed in ba3dab0.",
-            "Epoch2 target-only replay cannot establish retained ancestor originals; storage author adding ordered predecessor prefix and existing-only epoch1 SQL replay. Root CLI wired; storage freeze/review pending.",
-            "Unexpected sequence after a successful native ACK write must poison the actual initial/recovery owner too; correction requested using existing write_uncertain field. Frozen review pending."
+            "Initial closing/replay and successor metadata/closing/ACK grants overlap correctly in reviewed preflight.",
+            "Mandatory ordered epoch1-original replay before epoch2 proof/ACK implemented and source-reviewed; target-only proof cannot finish.",
+            "Successful native ACK write with unexpected sequence poisons the actual initial/recovery owner as well as successor. Native component refusal exercised."
           ],
           "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
-          "next": "Finish storage source and review; integrate with pinned consumer; reconcile changed component selections in existing build profile; build exact source before activating real window2 initial/activated/successor fixtures. No old ACK0 artifact qualifies new product."
+          "next": "Freeze and critically review independent schema40/window2 installed fixtures, bind to qualified fcad4c9 ELFs, then execute actual initial/activated2/successor3 traffic and recovery with retained raw captures. Reuse this component build while compiled source and dependencies remain identical.",
+          "storage": {
+            "commit": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
+            "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-storage-source-review-v1.json",
+              "sha256": "5d0999fedd664a60eabf26c569971fd0f876b8e98e4bebeecc19c3457cd50dc1"
+            },
+            "scope": "41 storage/test owners; mandatory epoch1 original replay before epoch2 proof; actual owner poisoning after native sequence mismatch; no remaining source review blocker."
+          },
+          "integrated": {
+            "commit": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
+            "tree": "05159c1ed7bd690c4920ede1439a64d0a6be7cfa",
+            "source_authentication": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-integrated-source-v1.json",
+              "sha256": "f56f74edb1c554b0ef17e89d6d9b28863b0216bca334a57e1bf59b929ba9f2e3"
+            },
+            "result": "All62 reviewed owner hashes match; clean combined source; fast-forwarded to main. Review receipt read and hash authenticated. Component build is a separate subsequent result."
+          },
+          "component_build": {
+            "run": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9",
+            "source": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
+            "tree": "05159c1ed7bd690c4920ede1439a64d0a6be7cfa",
+            "status": "PASS_PRODUCER_ACK_COMPONENTS",
+            "driver_exit_code": 0,
+            "receipts": {
+              "out/qualification.json": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9/out/qualification.json",
+                "sha256": "44d5aae5668474b2ac3252e9c6e9e900974c4e5a3c4df6a12e788a3a3f7d159a"
+              },
+              "out/artifacts/component-result.json": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9/out/artifacts/component-result.json",
+                "sha256": "2eab021a1d37df29b3a216a9888585c36992241a13c63b3d8477e2c4f67cf36f"
+              },
+              "out/artifacts/build-result.json": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9/out/artifacts/build-result.json",
+                "sha256": "82902689ad8eb0f27775868530a846ef84f4f4db19614d31a5057be67fde008e"
+              }
+            },
+            "observed": "258 tests across19 nonempty groups; all30 literal required controls in actual PASS logs;22 checks including build and both Clippy selections PASS. Root authenticated exact8 ELF bytes against component receipt. No failed/ignored tests in selected groups.",
+            "scope": "Native ACK/noGC/credit mechanics and affected recovery/closing/legacy/activated/lineage/dictionary/input and installed consumer components; schema40 catalog and CLI/probe compilation.",
+            "not_run": [
+              "Connected PostgreSQL confirmation/native ACK and returned slot",
+              "Installed initial/activated/successor window2 traffic",
+              "COMMIT/native ACK loss, full original replay and refused mixed restores",
+              "Resource capacity, Archive worker and GC qualification"
+            ]
+          }
         }
       }
     }

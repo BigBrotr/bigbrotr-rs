@@ -61364,7 +61364,9 @@
           "branch": "work/producer-ack-storage",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Native/PG/model ACK plus all storage recovery/closing/frontier consumers",
-          "state": "Uncommitted isolated source work; epoch2 predecessor-original and native sequence-poisoning corrections in progress; no runtime/build"
+          "state": "Clean frozen source, critically reviewed and integrated; author idle",
+          "head": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
+          "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1"
         },
         {
           "owner": "root",
@@ -61372,9 +61374,9 @@
           "branch": "work/producer-ack-sync",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Installed Sync credit/setup/ACK and all recovery CLI; additive migration40/registry and contract",
-          "state": "Frozen clean source-only packet reviewed; paired storage integration/compiler/engines pending",
-          "head": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
-          "tree": "765233f165cfe590eb3399f085306aff32f661dd"
+          "state": "Clean integrated source, component qualification PASS; fast-forwarded to main, installed engines pending",
+          "head": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
+          "tree": "05159c1ed7bd690c4920ede1439a64d0a6be7cfa"
         },
         {
           "owner": "export_setup_review",
@@ -61388,9 +61390,37 @@
       ],
       "ack_critical_review": {
         "owner": "producer_recovery_review",
-        "state": "Pinned root review complete; frozen storage/combined source review pending",
-        "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-root-consumer-review-v1.json",
+        "state": "Root followup and storage/integrated source review complete; no remaining source blocker; runtime qualification separate",
+        "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-storage-source-review-v1.json",
         "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json native_ack_source_preparation"
+      },
+      "ack_component_build": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9",
+        "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9/source",
+        "source": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
+        "state": "Driver joined exit0; retained fetch/native containers independently observed exited, PID0, no OOM, exit0; no cleanup",
+        "observed_at": "2026-10-20T21:29:28.092059+00:00",
+        "resource_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9/resources.json",
+          "sha256": "be0f8370263e2a3ea3878c50d52373f68255f8dbc40376f7fbe936065d32be1b"
+        },
+        "owner": "4b5bbf7ddfdc5e62fe9da06acc0ea689",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "e7209dfc7774fd196e1744aac55de1d8cee518c0d36e892931c123a9764fd106"
+          },
+          {
+            "name": "native",
+            "id": "8914a735f9a0c03ff4ab6a76f950b42c15cf4039fc8547fbbd1735842764a1ac"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "free_bytes_after": 301113614336,
+        "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.component_build"
       }
     }
   },
