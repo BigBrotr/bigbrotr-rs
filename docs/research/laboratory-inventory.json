@@ -66064,6 +66064,48 @@
         "free_bytes": 318319792128,
         "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.export_admission_20261020",
         "policy": "Preserve exact source, immutable copied artifacts and logs; retained worker reused from6c42a41; compiler cache remains exclusive mutable acceleration. No cleanup due."
+      },
+      "installed_five_20261020": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private",
+        "source": "1841d7949e97b4b822a66ac1c81b74025e54d5d3",
+        "owner": "4b38b595572fc6115de819cbc9c4f41d",
+        "owner_label": "org.bigbrotr.export-memory-lab",
+        "state": "stopped-retained",
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/resources.json",
+        "root_session": "60469 joined0",
+        "containers": [
+          {
+            "id": "6aac1a6b08f9374e472447146a9b06e6b0b60b39c0561cfb158c96ab784b5311",
+            "name": "bigbrotr-export-memory-4b38b59557-postgres"
+          },
+          {
+            "id": "a1c8a3b64a1d47ee7f667de06253aa02fa401fc284d87aa0616f775bd0ce3a68",
+            "name": "bigbrotr-export-memory-4b38b59557-configure"
+          },
+          {
+            "id": "f3babc1394ac2479bc966254168771725eb61612efb953cb042fd70c9b1ddeef",
+            "name": "bigbrotr-export-memory-4b38b59557-publish"
+          },
+          {
+            "id": "6f0b3b2e611662eff04663a5b647119500f768216d65d664675a56a29ec614b9",
+            "name": "bigbrotr-export-memory-4b38b59557-continue"
+          },
+          {
+            "id": "e5cbffbfb086b6e2353c1ce2261bf32102746fbf14bcccda727d8e9db071b161",
+            "name": "bigbrotr-export-memory-4b38b59557-installed-five"
+          },
+          {
+            "id": "4695a99086592e972db8f95ae4aa38946425e2bc035aece38bb73100c43a8990",
+            "name": "bigbrotr-export-memory-4b38b59557-installed-oracle"
+          }
+        ],
+        "last_terminal_observation": "All six authenticated owned containers exited0/PID0/noOOM; no runtime process active.",
+        "source_worktree": "/home/tux/bigbrotr-rs/.research/export-installed-memory-source-1841d79",
+        "retained_failed_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79",
+        "retained_failed_resources": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79/resources.json",
+        "failed_root_outcome": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79/root-outcome-v1.json",
+        "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.installed_five_20261020",
+        "preserve": "All data, output artifacts, traces, raw captures, logs, secrets, source worktrees and prior failures remain retained. No cleanup."
       }
     },
     "archive_refusal_journey_attempts": [

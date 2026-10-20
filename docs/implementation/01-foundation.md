@@ -475,8 +475,13 @@ and queryable with truthful role readiness, without implicit public publishing.
   of that signed event under product `3a7f884`/fixture `640897e`. Fixture `b7b60f9` now
   extends the same product through ordinary Control restart, explicit scope grants,
   private history and a 353-byte signed JSONL export with independently verified
-  manifest/inventory. This uses documented 1 GiB read/export operation caps; five
-  exports under 256 MiB remain unqualified. Indexing and Ingest restart/resend remain open;
+  manifest/inventory. That run uses documented 1 GiB read/export operation caps.
+  The later fixture `1841d79` completes five installed exports with accepted 256 MiB
+  export policy and a fresh 256 MiB/no-swap observer+Serve+CLI/native cgroup
+  (peak 103,530,496 B, PostgreSQL outside, warm-cache scope). Configured whole-service
+  grants exceed 256 MiB; maximum-row/tag-heavy and internal-owner high-water remain
+  unqualified. See the recovery report's `installed_five_20261020` evidence.
+  Indexing and Ingest restart/resend remain open;
   complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.

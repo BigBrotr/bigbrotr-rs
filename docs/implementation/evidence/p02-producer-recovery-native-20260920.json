@@ -37541,6 +37541,181 @@
             "No five-export256MiB, max-event/tag-heavy, TLS runtime or new cancellation claim.",
             "No deadline/fidelity relaxation and no shared service cost subtraction."
           ]
+        },
+        "installed_five_20261020": {
+          "status": "PASS_LIMITED_INSTALLED_FIVE_SIGNED_EXPORTS",
+          "fixture_source": "1841d7949e97b4b822a66ac1c81b74025e54d5d3",
+          "fixture_tree": "67ba7967c9c984d97844030dff058644111ded0e",
+          "application_source": "f1e726f78d7f925cf84cec19117fee5d607773c5",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private",
+          "root_session": "60469 joined0",
+          "evidence": {
+            "resources.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/resources.json",
+              "bytes": 9585,
+              "sha256": "900659b2b7b07aeb535abcb141e7b2ac81ccf2d4ee307b8e31b89c14d47731b3"
+            },
+            "root-terminal-observation-v1.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/root-terminal-observation-v1.json",
+              "bytes": 3133,
+              "sha256": "140d40612a114a321c3bf7393c65d2f4bf5884ededd5dea85ba94bdffcdb293d"
+            },
+            "out/source-manifest.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/source-manifest.json",
+              "bytes": 255199,
+              "sha256": "9f9f892ad7ac902651f72b523aa9d21591d8bac4f2df190a7a07a3936d959ff5"
+            },
+            "out/installed-five/input.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/input.json",
+              "bytes": 7416,
+              "sha256": "73a38ca80b8a4aef1d6659ea9636fc5c13ad53bb0e075876ce09082fdef29ed5"
+            },
+            "out/installed-five/result.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/result.json",
+              "bytes": 24426,
+              "sha256": "88e9b72c32c249e5c72a194283934e38401704d5a7f95594b557ef5e6d44de9d"
+            },
+            "out/installed-five/memory-summary.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/memory-summary.json",
+              "bytes": 1243,
+              "sha256": "e8f8515cf092d3daae9cbde0d8c3ede346de88e0eea94d7b1e582b3c9e2f43b0"
+            },
+            "out/installed-five/science-result.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/science-result.json",
+              "bytes": 1975,
+              "sha256": "a04526d6b81b4323fd7daf918f7e3d4864ebb28491f4cf57cb7332b31c745653"
+            },
+            "out/installed-five/oracle-regression.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/oracle-regression.json",
+              "bytes": 3600,
+              "sha256": "c225a631597ae92283a098dd5ba29f11cd2c2cf749412be0f5948089ab4dae01"
+            },
+            "out/installed-five/before.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/before.json",
+              "bytes": 447961,
+              "sha256": "6bb5e73d882761319ed1b6b67c7a48f40813c61e89687ee23eafb9b328492e0c"
+            },
+            "out/installed-five/after.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/after.json",
+              "bytes": 505953,
+              "sha256": "adf43b0f76b770b7e7763e985b82d144caf1c2010742e806c3791b106c6c5747"
+            },
+            "out/installed-five/destination-after.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five/destination-after.json",
+              "bytes": 4667,
+              "sha256": "748da5e2e9fc50054b3dae04487c962d76ff0d877e20cad06cd5602e4e29d4d9"
+            },
+            "out/installed-five-start.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five-start.json",
+              "bytes": 9476,
+              "sha256": "d5af612136a1baa57d87f06de75e8b69c39e7cfa48fe9fef28ca97b03da3e9ab"
+            },
+            "out/installed-five-terminal.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five-terminal.json",
+              "bytes": 9455,
+              "sha256": "7715344c1287b9148d79fc6ac0e82904f4685e324f077fe20c790fc69fea5c4b"
+            },
+            "out/installed-five-backends.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five-backends.json",
+              "bytes": 3,
+              "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+            },
+            "out/installed-five-holders.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/out/installed-five-holders.json",
+              "bytes": 945,
+              "sha256": "a8e9f3d00d9c5f77079e708f392a1809f7fbcfc7200624548d893f2c86463530"
+            }
+          },
+          "source_reviews": [
+            {
+              "path": ".research/export-memory-phases-review-20261020/installed-five-capture-review-v1.json",
+              "bytes": 8124,
+              "sha256": "ad1b86d76d3a6ac3c15f01f2d003374619038275122868e52f349280345243b2"
+            },
+            {
+              "path": ".research/export-memory-phases-review-20261020/installed-five-capture-review-v2.json",
+              "bytes": 5523,
+              "sha256": "b7fdf2ef7f42f9f22467867190d423550e07b538c194ce4570c455d2d8b21ae2"
+            },
+            {
+              "path": ".research/export-memory-phases-review-20261020/installed-five-root-integration-review-v1.json",
+              "bytes": 2307,
+              "sha256": "9e2a5012719d364a5bfe7c57ff07f140a3c510ccc627f8eb7501bbf4a41507d6"
+            }
+          ],
+          "independent_oracle_source": "9efe79b872c8e587b92224fdf166e27371a18037",
+          "checks": {
+            "five_distinct_sequential_HTTP_exports": "PASS",
+            "independent_complete_signed_files_and_75_table_xmin_catalog_audit": "PASS",
+            "installed_negative_controls": "17/17 REJECTED as required",
+            "prior_destination_and_scientific_roots_preserved": "PASS",
+            "process_backend_and_private_credential_exclusion": "PASS",
+            "all_six_containers_terminal": "exited0/PID0/noOOM, root actual observation"
+          },
+          "memory": {
+            "cgroup_lifetime_peak": 103530496,
+            "cgroup_before_peak": 50581504,
+            "cgroup_event_changes": {
+              "low": 0,
+              "high": 0,
+              "max": 0,
+              "oom": 0,
+              "oom_kill": 0,
+              "oom_group_kill": 0
+            },
+            "parent_rss_sample_max": 88031232,
+            "worker_rss_sample_max": 95571968,
+            "observed_worker_identities": 10,
+            "samples": 1823,
+            "operation_cap_bytes": 268435456,
+            "configured_application_envelope": {
+              "baseline_bytes": "64MiB",
+              "completion_reserve_bytes": "64MiB",
+              "memory_max_bytes": "1088MiB",
+              "native_bytes": "192MiB",
+              "payload_bytes": "768MiB"
+            },
+            "configured_native_envelope": {
+              "baseline_bytes": "128MiB",
+              "completion_reserve_bytes": "512MiB",
+              "enabled": true,
+              "memory_max_bytes": "1984MiB",
+              "native_bytes": "1GiB",
+              "payload_bytes": "256MiB"
+            },
+            "http_acceptance_native_reservation_bytes": 536870912,
+            "http_acceptance_reservation_bytes": 622723080,
+            "shared_control_reservation_bytes": 554172424,
+            "export_reservation_bytes": 254541832,
+            "limits": "Warm-cache empirical observer+Serve+CLI+native cgroup, PostgreSQL outside. Whole-service configured grants exceed256MiB. No baseline subtraction, live ledger, complete worker trace, internal-phase or maximum-event claim."
+          },
+          "retained_failure": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79/root-outcome-v1.json",
+              "bytes": 1705,
+              "sha256": "b7a4146f07209f7ff7740e9d677cba95fc2269277bf0a5fa60924baf4597321a"
+            },
+            "root_session": "59789 joined1",
+            "cause": "Canonical fixture mode0664 rejected by unchanged protected-input check before product operations. Retried exact1841d79 from new private clean worktree, no verifier relaxation. Three failed-root containers stopped, publisher exit1. Original argument-parse exit2 invocation/logs also retained beside root."
+          },
+          "limits": [
+            "One original independently frozen94,577-byte event per job,94,578-byte output. No maximum-event/tag-heavy case.",
+            "Actual accepted export cap256MiB; empirical fresh no-swap256MiB observer+Serve+CLI/native cgroup includes the larger HTTP acceptance profile. PostgreSQL outside; warm worker/library/cache scope.",
+            "Configured whole-service logical grants exceed physical stress cap; no deployment sizing, baseline subtraction, new live ledger/internal driver high-water, cold-cache or TLS claim.",
+            "No change to fidelity, deadlines, parent64x charge, publisher profile or durable over-cap deferred behavior."
+          ],
+          "next": "Qualify maximum supported content/tag shapes and reduced-manager/driver/TLS high-water; separate full1MiB export-row capacity from currently reachable initial-Sync input. Preserve unexplained a99 initial Sync timeout.",
+          "qualification": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-installed-memory-1841d79-private/root-qualification-v1.json",
+            "bytes": 2182,
+            "sha256": "a633e6b91ded0b7e1c776bd361c3f5b7fe660b5ad645f30c5871460c961b5778"
+          },
+          "outcome_review": {
+            "path": ".research/export-memory-phases-review-20261020/installed-five-outcome-review-v1.json",
+            "bytes": 16084,
+            "sha256": "31586ae0423bbf5769dc6d9fdf32f5e550c20c5393c1c296282e4a9fdfba1a5f"
+          }
         }
       },
       "archive_refusal_journey_attempts": [

@@ -1,99 +1,76 @@
 # Current execution checkpoint
 
 Observed 2026-10-20 on Tux. Goal **ACTIVE**; selected M1–M5 product remains
-incomplete. The existing task plan, Q37 model allocation and Q38 reuse rules
-remain authoritative. No separate plan or process-optimization project.
+incomplete. Existing task plan, Q37 model allocation and Q38 evidence reuse apply.
 
 ## Current objective and repository
 
-P08-T04 Step3 / P01-T05 Step2: reduce installed export admission costs after
-qualifying bounded, streamed catalog inspection. Root owns integration/runtime in
-`/home/tux/bigbrotr-rs`, branch `main`. Last verified pushed revision:
-`1ef48f3a85caf5f3956dda034239c322ba8c4e4d` (push47979 joined0, exact remote equal).
-The guard qualification at48299b2 is complete. Sourcef1e726f78d7f925cf84cec19117fee5d607773c5
-implements export-only admission and three boundary tests in the existing owners,
-extends the existing build runner, and updates operator documentation. All three
-tests, installed parent build and Clippy PASS; runtime NOT_RUN for this admission
-candidate. Critical source/build review has no unresolved blocker.
-HEADa8d57b4 integrates Sol8135853 fixture parameters and Astra9efe79b independent
-five-job oracle. Root changes in `memory_lab.py`, `memory_run.py` and
-`memory_setup_accept.py` add ordinary Serve capture, original-file preservation,
-post-custody offline verification and the shared natural login-window wait.
-No product change after the qualified f1e726f build. New runtime and17 installed
-negative controls remain NOT_RUN. Existing17 offline controls PASS unchanged.
-Root integration review:
-`.research/export-memory-phases-review-20261020/installed-five-root-integration-review-v1.json`
-(SHA256 `9e2a5012719d364a5bfe7c57ff07f140a3c510ccc627f8eb7501bbf4a41507d6`).
-Critical capture review v1 resolved sampling/input-bound issues; a narrow final
-review covers destination preservation and invoking the existing negative controls.
-AST and embedded offline-script parse PASS. Q37 verified agent continuity retained.
+P08-T04 Step 3 / P01-T05 Step 2: qualify installed export ownership and memory
+without reducing fidelity or widening deadlines. Root owns `main` in
+`/home/tux/bigbrotr-rs`. HEAD `1841d7949e97b4b822a66ac1c81b74025e54d5d3` integrates
+the fresh-policy fixture, five-job capture and independent oracle. Last verified
+push `1ef48f3a85caf5f3956dda034239c322ba8c4e4d`; final qualification documentation
+is local pending coherent commit/push. No dirty product implementation.
 
-The previous installed export required at least705.125MiB. The measured160MiB native
-profile still totaled306.625MiB per job with its old catalog/parent grants.
-Inspection collected up to1025 rows and bounded definitions before transfer,
-but function identity names could exceed the allowance before rejection.
-The correction caps transferred names and streams the unchanged ordered hash,
-retaining the1024-object ceiling and full driver/grant custody. The new admission
-candidate uses the64+96MiB export reader and reduced bounded catalog allowance,
-charging TLS before dispatch. Publisher/history grants, fidelity, parent64× and
-deadlines remain unchanged. Over-cap jobs retain the existing deferred behavior.
+Application `f1e726f` and unchanged packaged worker are qualified by the existing
+build/unit/Clippy evidence. The exact fixture now completes five distinct HTTP
+exports under an actually accepted 256 MiB export policy. Independent full signed
+files, all 75 Control tables/xmin, catalog, prior scientific roots and pin/claim
+lifecycles PASS; 17 negative controls reject their corruptions. Fresh no-swap
+observer+Serve+CLI/native cgroup peak: 103,530,496 B, no OOM/max events. PostgreSQL
+is outside; warm-cache scope. Whole-service logical grants and HTTP acceptance
+remain larger than 256 MiB. This does not qualify deployment sizing, maximum-event,
+TLS or reduced-manager/driver internal high-water. Final bounded outcome review
+has no blocker; the linked report pins its receipt and root qualification. No
+whole-task completion claimed.
 
-## Evidence and open problems
+The [recovery report](evidence/p02-producer-recovery-native-20260920.json), node
+`initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source`,
+owns exact evidence: `installed_five_20261020`, `export_admission_20261020`,
+`catalog_layout_boundary_20261020` and prior `finite_measurement_20261020`.
+Reuse unchanged qualified results and source reviews.
 
-The [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
-node `initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source`,
-owns details. `catalog_layout_boundary_20261020` links the source investigation;
-`export_admission_20261020` owns the new admission source/build qualification;
-`finite_measurement_20261020` owns the earlier successful single signed capture,
-complete SQL/physical audit and corrected offline oracle. Reuse those unchanged
-results; no five-export/256MiB, maximum-event or installed scheduling claim.
+## Problems and preserved state
 
-Root rustfmt, Python AST and diff checks PASS. Critical review has no blocker.
-Exact-source two-probe build/Clippy and all6 real-PG cases PASS at48299b2.
-The339-object valid hash matches the independent original oracle. A19333-byte
-function identity transfers as8193 bytes and refuses;1024 objects yieldWrongCatalog,
-1025 ResourceLimit. All readonly snapshots are unchanged and probe backends gone.
-Full native mTLS includes additional retained reservations and therefore
-does not dispatch under256MiB; actual TLS runtime qualification remains open.
-The prior managed seed's accepted policy sets the export cap to1GiB. It is not
-deployment-only: changing TOML to256MiB cannot change that restored policy.
-No supported policy-replacement consumer is implemented yet. Use a fresh
-256MiB-policy fixture via the existing setup runner; leave the old seed intact.
-Earlier a99 initial Sync timeout remains unexplained; diagnose its pending await
-before another trial. Preserve every original failure and raw artifact.
+The first invocation failed argument parsing before resources; the first actual
+root failed input protection on a canonical-checkout fixture with mode 0664 before
+product operations. Both failures are retained. Exact same source succeeded from
+a private clean detached worktree; the verifier was not relaxed.
+
+Ordinary initial Sync currently refuses input limits above its default 256 KiB;
+the 1 MiB export-row reservation does not establish that this installed journey
+can acquire a 1 MiB signed event. Astra is tracing this boundary and existing
+fixture seams before the next maximum-content/tag-heavy case. The earlier a99
+initial Sync timeout remains unexplained; diagnose its pending await before
+another trial. Full native mTLS exceeds 256 MiB admission; no runtime TLS claim.
 
 ## Processes and resources
 
-No root engine/compiler/cleanup process is active. New build2382 joined0 at
-`runs/export-admission-f1e726f`: both containers exited0/PID0/noOOM; prior
-guard build79187 and runtime61508 remain completed. Source, data and logs are
-retained through the [inventory](../research/laboratory-inventory.json).
-Independent oracle author is complete. The same Astra reviewer is reviewing only
-final capture deltas. No new engine/compiler process started. Integrated branches
-`work/export-installed-fixture` and `work/export-installed-oracle` retain clean
-worktrees `.research/catalog-layout-fixture-20261020` and
-`.research/export-installed-oracle-20261020`; retire refs only after final push and
-actual clean/ancestor checks. Preserve every worktree, ignored file and external
-lab under `/home/tux/bigbrotr-implementation-20260917/runs`.
-Space after build:318,319,792,128B available.
-No cleanup is due; unrelated workloads remain untouched. Verify actual ownership
-before using the retained compiler cache or creating/reusing runtime resources.
+No engine/compiler/cleanup process is active. Runtime session `60469` joined0 at
+`runs/export-installed-memory-1841d79-private`; six actual owned containers are
+exited0/PID0/noOOM, cleanup errors empty. Failed-root session `59789` joined1 at
+`runs/export-installed-memory-1841d79`; three containers stopped, publish exit1.
+The [inventory](../research/laboratory-inventory.json) owns resource locations.
+Preserve all data, logs, failures, `.research` and external laboratories.
+
+Exact runtime source worktree: `.research/export-installed-memory-source-1841d79`.
+Integrated branches `work/export-installed-fixture` and `work/export-installed-oracle`
+retain worktrees `.research/catalog-layout-fixture-20261020` and
+`.research/export-installed-oracle-20261020`. Retire refs only after final push and
+actual clean/ancestor checks; retain worktrees. No cleanup due; last preallocation
+free space was 317,785,006,080 B. Bounded outcome review and maximum-input source inspection are complete. No
+agent or runtime process is currently active apart from root.
 
 ## Next bounded action
 
-Finish the narrow critical capture review, commit the integrated fixture source,
-then run `memory_lab.py` with `--installed-five`,
-`--export-memory-mib 256`, the qualified application build
-`runs/export-admission-f1e726f`, preserved6c build, e4f probe and qualified tracer.
-This starts a NEW inventoried
-root, genuine publication/grants and five sequential HTTP exports; old6fe stays
-untouched. The measured observer+Serve+CLI/native cgroup is256MiB/no-swap,
-PostgreSQL outside. Configured whole-service grants exceed256MiB and must remain
-disclosed; operation admission is separately254,541,832B. No baseline subtraction.
-Measured phase has no strace/precise driver or live-ledger claim; existing setup
-traces stay. Preserve all failures and inspect real outcomes before any retry.
-Reduced manager/TLS/driver high-water and full-row/tag-heavy cases remain gates.
+Commit/push coherent evidence and retire redundant integrated refs. Then
+parameterize the existing fixture for two independently signed 262,144-byte
+events: content-heavy and tag-heavy (the latter also at the 65,536 lexical-node
+envelope limit). Keep existing decoder/census defaults; add explicit finite
+bounds for the new cases. Reuse the qualified binaries; no rebuild is needed. Keep the full
+1 MiB native-row gate distinct if ordinary acquisition cannot reach it. Do not
+repeat unchanged build/catalog-layout/previous single-event qualification.
 
-Continue dependency-ready M1–M5 work. ACK/GC, import/restore, capacity/aged-state
-and complete product/release journeys remain open; Q33 hosted CI billing,
-nativearm64 and signing/registry are separate gates. No public release authorized.
+ACK/GC, import/restore, capacity/aged-state and complete M1–M5 delivery remain open.
+Q33 hosted CI billing, native arm64 and signing/registry are separate gates.
+No public release authorized.

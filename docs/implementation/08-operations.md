@@ -502,7 +502,16 @@ reader, full-row parent, output, native control and configured TLS owners before
 dispatch, using a64+96MiB native read profile. Three independent boundary cases,
 the installed parent build and Clippy pass; critical source review is complete.
 The same recovery report's `export_admission_20261020` owns exact evidence.
-Actual reduced-profile five-export memory qualification is still NOT_RUN.
+The same installed application now completes five distinct sequential HTTP exports
+with a genuinely accepted 256 MiB operation policy (fixture `1841d79`). Each artifact
+contains the independently checked 94,577-byte signed event plus newline; all 75
+Control tables, catalog, prior scientific files and pin/claim lifecycles pass.
+The fresh observer+Serve+CLI/native cgroup is 256 MiB/no-swap, peak 103,530,496 B,
+with no OOM/max events. PostgreSQL is outside and the worker libraries/cache are
+warm: configured whole-service grants and HTTP acceptance still exceed 256 MiB.
+This is the limited installed five-job gate, not whole-service deployment sizing,
+maximum-row/tag-heavy, TLS or reduced-manager internal high-water qualification.
+See `installed_five_20261020` in the same report; broader Step 3 remains open.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 
