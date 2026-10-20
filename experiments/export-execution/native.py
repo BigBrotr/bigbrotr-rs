@@ -17,7 +17,8 @@ runtime = job_pages or sys.argv[1:] == ['--runtime']
 memory_probe = sys.argv[1:] == ['--memory-probe']
 admission = sys.argv[1:] == ['--admission']
 native_row = sys.argv[1:] == ['--native-row']
-assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'], ['--native-row'])
+manager_memory_probe = sys.argv[1:] == ['--manager-memory-probe']
+assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'], ['--native-row'], ['--manager-memory-probe'])
 if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
@@ -161,6 +162,43 @@ elif memory_probe:
     assert file_hash(executable) == file_hash(original)
     identity['artifacts'] = {executable.name: dict(sha256=file_hash(executable), bytes=executable.stat().st_size)}
     (checks / 'artifacts.json').write_text(json.dumps(identity, indent=2) + '\n')
+elif manager_memory_probe:
+    artifacts = Path('/out/artifacts')
+    artifacts.mkdir()
+    bundle = artifacts / 'archive-worker'
+    bundle.mkdir()
+    install_bundle(Path('/archive-inputs'), bundle, 'x86_64-unknown-linux-gnu')
+    worker_identity = dict(bytes=14421792,
+        sha256='0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1')
+    retained_worker = Path('/archive-inputs/bigbrotr-archive-worker')
+    verify_file(retained_worker, worker_identity)
+    worker = bundle / 'bigbrotr-archive-worker'
+    shutil.copy2(retained_worker, worker)
+    verify_file(worker, worker_identity)
+    worker.chmod(0o500)
+    env.update(build_environment(bundle))
+    env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker_identity['bytes']),
+               BIGBROTR_ARCHIVE_WORKER_SHA256=worker_identity['sha256'])
+    identity.update(scope='Manager memory diagnostic build and deterministic allocator checks only; runtime/memory qualification NOT_RUN',
+                    worker_source='6c42a41534a0d7ec3e425fa34b1b3c88bdceab79')
+    assert execute([
+        ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--example', 'export-execution-probe']),
+        ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--example', 'export-execution-probe', '--', '-D', 'warnings']),
+        ('manager-memory', [sys.executable, '-B', str(SOURCE / 'experiments/export-execution/manager_memory_build.py')]),
+    ], checks, SOURCE, env, identity, 1800)['status'] == 'PASS'
+    diagnostic = json.loads(Path('/out/manager-memory-checks/result.json').read_text())
+    assert diagnostic['status'] == 'PASS' and diagnostic['source'] == identity['source'] \
+        and diagnostic['tree'] == identity['tree'] \
+        and diagnostic['source_manifest']['sha256'] == identity['source_manifest_sha256']
+    original = build / 'target/release/examples/export-execution-probe'
+    assert original.is_file() and not original.is_symlink()
+    shutil.copy2(original, artifacts / 'export-execution-probe')
+    (artifacts / 'export-execution-probe').chmod(0o500)
+    assert file_hash(original) == file_hash(artifacts / 'export-execution-probe')
+    identity.update(manager_memory=diagnostic, artifacts={
+        str(path.relative_to(artifacts)): dict(sha256=file_hash(path), bytes=path.stat().st_size)
+        for path in sorted(artifacts.rglob('*')) if path.is_file()})
+    (checks / 'artifacts.json').write_text(json.dumps(identity, indent=2) + '\n')
 elif runtime:
     env.update(build_environment(Path('/out/archive-worker')))
     identity['scope']='Current installed executable and worker; practical profile recorded by the outer laboratory'
@@ -208,6 +246,9 @@ else:
     identity.update(build_info=info,artifacts={p.name:file_hash(p) for p in artifacts.iterdir()})
     (checks/'artifacts.json').write_text(json.dumps(identity,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
+if manager_memory_probe:
+    Path('/out/qualification.json').write_text(json.dumps(
+        dict(identity, status='PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY'), indent=2) + '\n')
 if native_row:
     Path('/out/qualification.json').write_text(json.dumps(
         dict(identity, status='PASS_EXPORT_NATIVE_ROW_BUILD_ONLY'), indent=2) + '\n')
