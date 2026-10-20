@@ -1,21 +1,41 @@
 #!/usr/bin/env python3
-"""Actual scientific installation, malformed metadata, atomicity and lock cases."""
+"""Actual scientific guard cases; --profile layout selects bounded layout checks."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
 import subprocess
 import sys
 import time
+import traceback
 
 sys.dont_write_bytecode=True
 SOURCE=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(SOURCE/'experiments/control-migrations'))
 from fault_cases import Process
-root=Path(sys.argv[1]).resolve()
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('root',type=Path)
+parser.add_argument('--profile',choices=['full','layout'],default='full')
+args=parser.parse_args()
+root=args.root.resolve()
 state=json.loads((root/'resources.json').read_text())
 runner,pg=state['container_id'],state['postgres_id']
+path=root/('guard-layout-cases.json' if args.profile=='layout' else 'guard-cases.json')
+assert not path.exists()
+raw_path=root/'guard-layout-commands.jsonl' if args.profile=='layout' else None
+if raw_path is not None: raw_path.touch(mode=0o600,exist_ok=False)
+def capture_command(argv,input,**result):
+    if raw_path is not None:
+        with raw_path.open('a') as output:
+            output.write(json.dumps({'argv':argv,'stdin':input,**result})+'\n')
 def cmd(*args,input=None):
-    result=subprocess.run(args,input=input,text=True,capture_output=True,timeout=60)
+    try:
+        result=subprocess.run(args,input=input,text=True,capture_output=True,timeout=60)
+    except BaseException as error:
+        def text(value): return value.decode(errors='replace') if isinstance(value,bytes) else value
+        capture_command(args,input,error=repr(error),stdout=text(getattr(error,'stdout',None)),stderr=text(getattr(error,'stderr',None)))
+        raise
+    capture_command(args,input,returncode=result.returncode,stdout=result.stdout,stderr=result.stderr)
     assert result.returncode==0, (args[-3:],result.stdout[-2000:],result.stderr[-2000:])
     assert len(result.stdout)<2*1024*1024
     return result.stdout.strip()
@@ -27,7 +47,7 @@ for key in ['container_id','postgres_id']:
     assert c['State']['Running'] and c['Config']['Labels']['org.bigbrotr.scientific-guard']==state['owner']
 ready=json.loads((root/'out/native-tests/ready.json').read_text());assert ready['source']==state['source']
 report={'source':state['source'],'artifacts':ready,'status':'RUNNING','cases':[]}
-path=root/'guard-cases.json';assert not path.exists()
+if args.profile=='layout': report.update(profile='layout',raw_commands=raw_path.name)
 def save():path.write_text(json.dumps(report,indent=2)+'\n')
 def record(name,**details):
     report['cases'].append({'case':name,**details});save();print(name,flush=True)
@@ -70,8 +90,111 @@ def installed_effects(db):
     assert actual=={'native_tables':28,'native_guards':28,'bootstrap_writable':0,'bootstrap_create':False,'guard_owner':'postgres','binding_rows':1,'attempts':0,'owner':{'singleton':True,'ordinal':0,'enabled':False}},actual
     return actual
 children=[]
-try:
+def layout_cases():
+    # Frozen raw structural query/order from 91af8a9. This independent oracle
+    # deliberately has neither the product's wire projection nor its row limit.
+    raw_layout_sql='''WITH objects(kind,ns,name,definition) AS (
+SELECT 'table',n.nspname::text,c.relname::text,ROW(c.relkind,c.relpersistence,c.relrowsecurity,c.relforcerowsecurity,c.relispartition,c.reloptions)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind<>'i'
+UNION ALL SELECT 'column',n.nspname,c.relname||'.'||a.attnum,ROW(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attisdropped,a.attidentity,a.attgenerated,a.attcollation::regcollation::text,a.attstorage,a.attcompression,pg_get_expr(d.adbin,d.adrelid))::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attnum>0
+UNION ALL SELECT 'constraint',n.nspname,c.relname||'.'||p.conname,pg_get_constraintdef(p.oid,false) FROM pg_constraint p JOIN pg_class c ON c.oid=p.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'index',n.nspname,c.relname,ROW(pg_get_indexdef(i.indexrelid),i.indisvalid,i.indisready,i.indislive)::text FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'trigger',n.nspname,c.relname||'.'||t.tgname,ROW(pg_get_triggerdef(t.oid,false),t.tgenabled,t.tgisinternal)::text FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'function',n.nspname,p.proname||'('||pg_get_function_identity_arguments(p.oid)||')',pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.prokind IN ('f','p')
+UNION ALL SELECT 'rule',n.nspname,c.relname||'.'||r.rulename,pg_get_ruledef(r.oid,false) FROM pg_rewrite r JOIN pg_class c ON c.oid=r.ev_class JOIN pg_namespace n ON n.oid=c.relnamespace
+) SELECT kind,ns,name,definition FROM objects WHERE ns IN ('public','bigbrotr_archive') ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C"'''
+    # Read the actual product SQL only to observe its projected wire field sizes.
+    # It is never an oracle for the expected layout hash or object count.
+    inspection=(SOURCE/'apps/bigbrotr/src/storage/postgres/catalog_guard/inspection.rs').read_text()
+    layout_source=inspection.split('pub(super) async fn layout(',1)[1]
+    projection_sql=layout_source.split('let sql = r#"',1)[1].split('"#;',1)[0]
+    assert projection_sql.startswith('WITH objects(')
+    report['layout_queries']={'independent_raw_sha256':hashlib.sha256(raw_layout_sql.encode()).hexdigest(),
+        'product_projection_sha256':hashlib.sha256(projection_sql.encode()).hexdigest()}
     save()
+    def query(db,statement):
+        # Match the guard's formatting context without calling its hash code.
+        return sql(db,'SET search_path=pg_catalog; '+statement)
+    def rows(db):
+        result=query(db,'SELECT json_build_array(kind,ns,name,definition) FROM ('+raw_layout_sql+') AS frozen_layout ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C"')
+        result=[json.loads(line) for line in result.splitlines()]
+        assert all(len(row)==4 and all(isinstance(field,str) for field in row) for row in result)
+        return result
+    def checksum(raw):
+        digest=hashlib.sha256(b'bigbrotr/catalog-guard-layout/1\0')
+        for row in raw:
+            for field in row:
+                encoded=field.encode('utf-8')
+                digest.update(len(encoded).to_bytes(8,'big'));digest.update(encoded)
+        return digest.hexdigest()
+    def closed(db):
+        # A zero probe exit includes drop(client), driver.await and grant release.
+        # Independently require that its real PostgreSQL backend has also left.
+        end=time.monotonic()+5
+        while True:
+            backends=json.loads(sql(db,"SELECT coalesce(json_agg(json_build_object('pid',pid,'state',state,'xact_start',xact_start)), '[]'::json) FROM pg_stat_activity WHERE datname=current_database() AND application_name='bigbrotr-catalog-recovery-probe'"))
+            if not backends: return backends
+            assert time.monotonic()<end,backends
+            time.sleep(.02)
+    def inspect_unchanged(db,expected):
+        before=snapshot(db)
+        outcome=probe('inspect',db,expected)
+        assert outcome=={'outcome':expected,'commit_started':False},outcome
+        backends=closed(db)
+        after=snapshot(db);assert after==before,(before,after)
+        return {'probe':outcome,'remaining_probe_backends':backends,'before':before,'after':after}
+
+    db=create('layout');initialize(db)
+    assert probe('install',db,'installed')=={'outcome':'installed','commit_started':True}
+    closed(db)
+    stored=query(db,"SELECT encode(layout_checksum,'hex') FROM bigbrotr_archive.installation WHERE singleton")
+    assert len(stored)==64 and bytes.fromhex(stored)
+    record('layout-fresh-install-and-readonly-inspection',stored_layout_checksum=stored,**inspect_unchanged(db,'inspected'))
+    base=snapshot(db);raw=rows(db);base_count=len(raw)
+    assert 0<base_count<1024
+    assert all(len(field.encode('utf-8'))<=8192 for row in raw for field in row)
+    independent=checksum(raw);assert independent==stored,(independent,stored)
+    assert snapshot(db)==base
+    record('layout-original-ordered-length-framed-checksum',objects=base_count,independent_checksum=independent,stored_layout_checksum=stored,snapshot=base)
+
+    # 100 named arguments are legal PG16 arity. Long type/schema identifiers
+    # outside both inspected namespaces force qualified identity argument types.
+    type_schema=('layout_fixture_types_'+'s'*63)[:63]
+    type_name=('layout_fixture_domain_'+'t'*63)[:63]
+    qualified_type=type_schema+'.'+type_name
+    argument_names=[('argument_'+str(i).zfill(3)+'_'+'a'*63)[:63] for i in range(100)]
+    assert len(set(argument_names))==100 and all(len(name)==63 for name in argument_names)
+    function_name='layout_fixture_oversized_identity'
+    arguments=','.join(name+' '+qualified_type for name in argument_names)
+    sql(db,'BEGIN; CREATE SCHEMA '+type_schema+'; CREATE DOMAIN '+qualified_type+' AS integer; CREATE FUNCTION public.'+function_name+'('+arguments+") RETURNS integer LANGUAGE sql AS 'SELECT 1'; COMMIT;")
+    try:
+        invalid=rows(db)
+        functions=[row for row in invalid if row[0:2]==['function','public'] and row[2].startswith(function_name+'(')]
+        assert len(invalid)==base_count+1 and len(functions)==1
+        raw_identity=functions[0][2];identity_bytes=len(raw_identity.encode('utf-8'))
+        assert identity_bytes>8193 and all(name+' '+qualified_type in raw_identity for name in argument_names)
+        wire=json.loads(query(db,"SELECT json_build_object('rows',count(*),'max_name_bytes',max(octet_length(name)),'max_definition_bytes',max(octet_length(definition))) FROM ("+projection_sql+') AS wire(kind,ns,name,definition)'))
+        # Literal independent expectation: the old unbounded-name projection
+        # returns identity_bytes here and fails this control even if it refuses.
+        assert wire=={'rows':base_count+1,'max_name_bytes':8193,'max_definition_bytes':8193},wire
+        record('layout-oversized-function-identity',raw_identity_bytes=identity_bytes,expected_wire_name_max=8193,wire=wire,**inspect_unchanged(db,'ResourceLimit'))
+    finally:
+        sql(db,'BEGIN; DROP FUNCTION public.'+function_name+'('+','.join([qualified_type]*100)+'); DROP DOMAIN '+qualified_type+'; DROP SCHEMA '+type_schema+'; COMMIT;')
+    assert snapshot(db)==base
+
+    for target,expected in [(1024,'WrongCatalog'),(1025,'ResourceLimit')]:
+        count=target-base_count
+        names=['layout_fixture_count_'+str(i).zfill(4) for i in range(count)]
+        sql(db,'BEGIN; '+''.join('CREATE FUNCTION public.'+name+"() RETURNS integer LANGUAGE sql IMMUTABLE AS 'SELECT 1';" for name in names)+' COMMIT;')
+        try:
+            boundary=rows(db)
+            assert len(boundary)==target and all(len(field.encode('utf-8'))<=8192 for row in boundary for field in row)
+            record('layout-object-count-'+str(target),base_objects=base_count,added_functions=count,actual_objects=len(boundary),**inspect_unchanged(db,expected))
+        finally:
+            sql(db,'BEGIN; DROP FUNCTION '+','.join('public.'+name+'()' for name in names)+'; COMMIT;')
+        assert snapshot(db)==base
+    record('layout-owned-ddl-cleaned',snapshot=base,**inspect_unchanged(db,'inspected'))
+
+def full_cases():
     for mode in ['add','drop','rollback']:
         db=create('native_'+mode);initialize(db);before=snapshot(db);native(db,mode)
         if mode=='rollback':
@@ -210,8 +333,13 @@ try:
     probe('inspect',db,'inspected')
     assert probe('seal',db,'sealed-history')['commit_started']
     record('seal-and-idempotent-resolution-after-shared-owner-lock')
+try:
+    save()
+    if args.profile=='layout': layout_cases()
+    else: full_cases()
     report['status']='PASS';save();print(json.dumps({'status':'PASS','cases':len(report['cases'])}))
 except BaseException:
+    if args.profile=='layout': report['error']=traceback.format_exc()
     report['status']='FAIL';save();raise
 finally:
     for child in children:
