@@ -275,3 +275,22 @@ already underway. The [existing execution guide](../implementation/agent-handoff
 owns the operational allocation; the same plan, checkpoint, quality requirements
 and autonomous full-product goal remain in force. Earlier decisions remain
 historical records.
+
+Q38 (2026-10-20): The owner refines execution efficiency without reducing selected
+scope, correctness, robustness or code quality. Reuse verified reads, reviews,
+tools and results while relevant code, dependencies, configuration, inputs and
+artifacts remain unchanged; repeat affected checks on change, anomaly or lost
+certainty. Q37 remains unchanged; verify effective model/effort at creation,
+after a change or uncertain continuity, not merely because of compaction.
+Keep the current checkpoint concise and link detailed evidence; reconcile its
+objective, revision/local changes, open problems, active processes and next step
+on resumption. Preserve resource ownership/isolation checks before mutation and
+space checks before significant allocation, low headroom or changed conditions;
+avoid unrelated complete inventories. Retain real-engine evidence, independent
+expectations and critical review, with targeted checks for mechanical/documentary
+fixes and particular scrutiny for verifier changes affecting PASS/FAIL. Prefer
+parameterized verified tools; preserve original outcomes and artifact identities
+in their owning records without copying them across checkpoint/report/inventory.
+Group recording, commits and pushes around coherent outcomes. Apply through the
+existing execution guide and continue the same goal; no separate optimization
+project or historical rewrite.

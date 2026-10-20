@@ -61,6 +61,26 @@ and experiment/acceptance reports own detailed evidence. Replace the checkpoint'
 current record as work advances; Git history preserves earlier records. Do not
 append a conversation transcript or create competing per-session plans.
 
+Under Q38, keep the checkpoint to the current objective, revision/local changes,
+open problems, active processes and next action, linking existing detailed reports.
+After compaction, reconcile those facts and investigate actual discrepancies;
+do not reread unchanged documents or copy the history of completed runs.
+Reuse verified reads, reviews, tools and results while their relevant code,
+dependencies, configuration, inputs and artifacts remain unchanged. Repeat affected
+checks for changed assumptions, new anomalies or lost certainty. Verify actual
+resource ownership and isolation before mutation/destruction; check space before
+significant allocation, low headroom or changed conditions. Unrelated edits do not
+require another complete laboratory inventory.
+
+Keep real-engine evidence, independent expectations and critical review. Mechanical
+and documentation fixes need targeted checks; verifier changes affecting PASS/FAIL
+meaning need particular scrutiny. Prefer parameterizing already verified tools to
+creating a new reviewed script set for every attempt. Preserve original failures
+and artifact identities in their owning reports, resource custody in the inventory,
+and link between them instead of duplicating detail. Group recording, commits and
+pushes around coherent outcomes; these rules preserve all product/quality gates
+and do not create a separate process-optimization project.
+
 Record enough to resume safely:
 
 | Field | Minimum useful content |
@@ -258,8 +278,10 @@ Use actual session/subagent controls for both model and reasoning. With the
 current collaboration tool, set `model` and `reasoning_effort` explicitly and use
 `fork_turns="none"` for overrides, supplying the bounded task and relevant context.
 Reuse an agent only when its effective configuration fits the assignment. Verify
-the effective settings through session status or recorded runtime metadata;
+the effective settings at creation, after a change or when continuity is uncertain,
+through session status or recorded runtime metadata;
 a prompt, available-model catalog or global default alone is not that evidence.
+Compaction alone does not require repeating model/documentation/configuration research.
 Report any configuration that cannot be set or verified. This allocation preserves
 all existing plan, review and verification requirements and the priority of a
 complete, correct, clean, minimal, maintainable and efficient product.
