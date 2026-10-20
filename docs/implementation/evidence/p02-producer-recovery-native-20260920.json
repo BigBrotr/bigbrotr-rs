@@ -37834,7 +37834,7 @@
           "assessment": "Current plaintext manager charge17301512B includes credential copies and remains held through both inspections, native/output overlap, rollback, client drop and driver join; unknown completion retains output through outer Control driver join. No source early-release/reservation defect found in inspected path.",
           "remaining": "Worst-case layouts/credentials, refusal/drain, TLS and per-owner physical memory remain outside this qualified single-sample requested-allocation observation.",
           "reuse": "Existing memory.rs/observe.rs and capture/science/guard fixtures. Old measurement profile still reserves catalog80MiB plus credentials and allows5s driver cleanup; cannot qualify reduced f1e path unchanged.",
-          "next": "Reconcile the bounded reduced-manager layout-refusal/drain design with existing tools, implement only required parameterization, then critical source review and one fresh isolated real-PG case.",
+          "next": "Finish/review exact64KiB manager credential fixture parameterization, then one fresh root-owned run with retained exact compatible assets and unchanged guards.",
           "review_scope": "Astra/xhigh complete current dispatch, transport/preparation, catalog inspection/capture and measurement owners; targeted Serve join and guard/custody fixtures; prior pinned upstream buffer review reused. No new allocator/TLS internals or runtime audit.",
           "design": "Standalone memory_measure.rs imports safe memory.rs, always-on whole-parent requested-live/peak counter fromstartup, permanent invalid arithmetic flag, no baseline subtraction; safe optional observer callback. Exact credential-derived reduced manager charge and2s drain, old80MiB/5s defaults unchanged. Conservative observed peak<=actualmanager charge may bound requested Rust bytes for this run; excess is inconclusive for owner attribution. Product unsafe lint/Cargo manifests unchanged.",
           "source_candidates": {
@@ -38089,6 +38089,59 @@
                 "sha256": "92b8a3a2ea81dc8ecba3c13d8a21a9b133133a8fedfa5d4f1c059a2b108308fb"
               },
               "review": "Independent Astra review PASS; root read complete receipt and authenticated13 associated evidence pins. Original raw failure/preliminary pending statuses remain unchanged. Qualified only the specified early refusal, natural drain and bounded requested allocation observation."
+            }
+          },
+          "credential_boundary_20261020": {
+            "status": "SOURCE_REVIEWED_AND_INTEGRATED_RUNTIME_RUNNING",
+            "task": "Existing P01-T05/P08-T05 reduced-manager supported-input accounting boundary",
+            "basis": "Astra/xhigh export_setup_fixture source diagnosis; root read complete postgres_command, connection_settings, transport and catalog inspection. No product accounting defect established. Existing server256MiB memory observation is not a universal grant or credential-shape proof.",
+            "selected_case": "One fresh archive-sample plaintext manager capture with exact65536-byte hexadecimal manager password; default64 unchanged, every other credential/native reader stays<=4096. Existing17,301,512B manager charge, deadlines,2sdriverdrain,independent science and custody remain. Larger whole-parent peak remains INCONCLUSIVE.",
+            "source_identity": "Fixture-only branch at a10cab94eaa6745e7457566cb7bd422f6359d397 preserves every f1e application/214 manager/046b acceptance/6cworker guard. Current73b binary differs in six initial-ingest diagnostic files and is not claimed by this retained-application case. Main will integrate only experiment/docs changes.",
+            "required_delta": "Implemented six-file experiment/docs parameterization, reviewed source and integrated with current Sync preparation-only guard. No compiled inputs or PASS/FAIL predicate changes.",
+            "scope_limits": "One maximum-byte hexadecimal credential, not arbitrary Unicode normalization, TLS, physical memory or whole-service qualification. Installed layout remains constrained by exact schema/checksum;1024objects/8192-byte decode caps are not a valid arbitrary-layout promise.",
+            "source_owner": "catalog_layout_fixture gpt-6.1-sol/xhigh; existing verified configuration; isolated worktree",
+            "runtime": {
+              "state": "RUNNING_SETUP",
+              "session": 77164,
+              "owner": "f6b67bcda476c2272d9972e6d1038a6f",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-credential-boundary-b364611",
+              "source": "b3646115e80fbe82a0a1970e2e6b3beafac76817",
+              "console": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/runtime-console.log",
+              "qualification": "NOT_ASSERTED"
+            },
+            "upstream_authentication_read": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/postgres-protocol-0.6.12/src/authentication/sasl.rs",
+              "sha256": "c379ec7d65bcd4248020b381f538d0942e2055edb9f26b51db63c23be2438f9d",
+              "version": "postgres-protocol0.6.12, locked checksum08808e3c483c46e999108051c78334f473d5adb59d78bb80a1268c7e6aa6c514",
+              "root_read": "1\u2013265: normalization, SCRAM construction/update and complete hi() loop; parser/final authentication tail not newly reviewed",
+              "consequence": "hi() creates Hmac from the complete normalized password for each iteration; maximum byte input may increase setup/measurement CPU time. Preserve original deadlines and maximum credential from fresh provisioning. A setup/Sync failure is not a manager-measurement result and must remain unqualified, without blind retry, deadline widening or late secret rotation."
+            },
+            "source_commit": "b3646115e80fbe82a0a1970e2e6b3beafac76817",
+            "source_tree": "c32274f300ede99bf7602f7876237de758ecb43f",
+            "source_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/source-review-v1.json",
+              "bytes": 7973,
+              "sha256": "e36967a707a6b1564baa6e2dd7fa6da224026d41a3188f7fae221587cb9fdeb1"
+            },
+            "integration_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/integration-review-v1.json",
+              "bytes": 3492,
+              "sha256": "d3f75421bf5c00199c5abc55c12cbc8312b70a8ad90cd2e44d4c77b3a0e83964"
+            },
+            "source_controls": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-boundary-20261020/.research/manager-credential-boundary-source-20261020/receipt.json",
+              "bytes": 2252,
+              "sha256": "b15b371f92d3459a2e038424589a79356aab11ad6d56717931b36680c84cff4e"
+            },
+            "integration_controls": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/root-integration-controls-v1.json",
+              "bytes": 503,
+              "sha256": "8498ab887cf0ff6261a9f86c561ec1033639b62f1426024fd2d31699852db2f9"
+            },
+            "runtime_preflight": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/runtime-preflight-v1.json",
+              "bytes": 1760,
+              "sha256": "401843843a0cf19ca5de19f10a1142b2780032f50958043d2590d29bd09ad107"
             }
           }
         }
@@ -40901,7 +40954,7 @@
             "sha256": "34d83f9034c2d13fffda468b13a24872e48c221f694ff92bdba816529093bc2c"
           }
         },
-        "next": "Existing bounded reduced-manager maximum accepted layout/credential or TLS boundary: source-only reconciliation of current owners and reusable fixtures. No scheduling change or blind repeat of originala99timeout."
+        "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       }
     }
   }

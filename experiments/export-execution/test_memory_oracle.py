@@ -573,8 +573,103 @@ def manager_layout_refusal():
         scope='Constructed records in owned temporary files only. Real refusal, allocation, SQL/physical custody and runtime remain NOT_RUN.')
 
 
+def manager_credentials():
+    """Public constant files and a stub launcher; no secrets, engines or probes."""
+    import tempfile
+    import memory_setup as setup
+    import memory_lab
+
+    controls = []
+    with tempfile.TemporaryDirectory(prefix='manager-credential-unit-') as temporary:
+        root = Path(temporary)
+        names = ('owner','operator','migrator','control','manager','reader')
+        paths = {name:root/name for name in names}
+        def put(name, size):
+            if paths[name].exists():paths[name].chmod(0o600)
+            paths[name].write_bytes(b'a'*size)  # Public unit bytes, never runtime credentials.
+            paths[name].chmod(0o400)
+        def reset():
+            for name in names:put(name,64)
+            spec = dict(password_ref='file:'+str(paths['owner']), application_source='f1e726f78d7f925cf84cec19117fee5d607773c5',
+                operator=dict(password_ref='file:'+str(paths['operator'])), migrator=dict(password_ref='file:'+str(paths['migrator'])))
+            config = dict(postgres=dict(control=dict(password_ref='file:'+str(paths['control'])),
+                catalog=dict(password_ref='file:'+str(paths['manager']),read_password_ref='file:'+str(paths['reader']))))
+            return spec,config
+        spec,config = reset();setup.credentials(spec,config)
+        controls.append(dict(name='default64-old-packet',status='ACCEPTED_OFFLINE_UNIT'))
+        put('manager',4096);setup.credentials(spec,config)
+        controls.append(dict(name='old-packet4096-ceiling',status='ACCEPTED_OFFLINE_UNIT'))
+        spec,config = reset();spec['catalog_manager_password_bytes']=65536;put('manager',65536)
+        setup.credentials(spec,config)
+        controls.append(dict(name='exact65536-manager-only',status='ACCEPTED_OFFLINE_UNIT'))
+        def reject(name, mutate, reason, *, boundary=True):
+            s,c=reset()
+            if boundary:s['catalog_manager_password_bytes']=65536;put('manager',65536)
+            mutate(s,c)
+            try:setup.credentials(s,c)
+            except ValueError as error:
+                assert str(error)==reason,(name,str(error),reason)
+                controls.append(dict(name=name,status='REJECTED_OFFLINE_UNIT',reason=str(error)))
+            else:raise AssertionError('incorrect credential verifier acceptance: '+name)
+        reject('old-packet-over4096',lambda s,c:put('manager',4097),'protected finite input',boundary=False)
+        reject('short-manager',lambda s,c:put('manager',65535),'exact selected manager credential bytes')
+        reject('overbound-manager',lambda s,c:put('manager',65537),'protected finite input')
+        for value in (64,True,'65536'):
+            reject('invalid-selected-size-'+str(value),lambda s,c,x=value:s.update(catalog_manager_password_bytes=x),
+                   'explicit retained-application sample manager credential boundary')
+        reject('foreign-application',lambda s,c:s.update(application_source='00'*20),
+               'explicit retained-application sample manager credential boundary')
+        reject('boundary-signed-input',lambda s,c:s.update(event_kind='frozen-signed-event'),
+               'explicit retained-application sample manager credential boundary')
+        reject('control-alias',lambda s,c:c['postgres']['control'].update(password_ref=c['postgres']['catalog']['password_ref']),
+               'boundary manager credential is not another role credential')
+        reject('reader-alias',lambda s,c:c['postgres']['catalog'].update(read_password_ref=c['postgres']['catalog']['password_ref']),
+               'boundary manager credential is not another role credential')
+        for name in names:
+            if name!='manager':reject('other-over4096-'+name,lambda s,c,n=name:put(n,4097),'protected finite input')
+        reject('public-manager-mode',lambda s,c:paths['manager'].chmod(0o444),'private credential permissions')
+        reject('writable-manager-mode',lambda s,c:paths['manager'].chmod(0o620),'protected finite input')
+        alias=root/'manager-alias';alias.symlink_to(paths['manager'])
+        reject('manager-symlink',lambda s,c:c['postgres']['catalog'].update(password_ref='file:'+str(alias)),
+               'absolute nonsymlink input')
+
+        # Exercise only parser/selection code; the stub cannot create a resource.
+        calls=[]
+        class Stub:
+            def __init__(self,*args,**kwargs):
+                calls.append(kwargs);self.state=dict(cleanup_errors=[])
+            def acceptance(self,**kwargs):pass
+            def installed_five(self):pass
+            def manager_measure(self,**kwargs):pass
+            def close(self):pass
+        arguments=[part for name in ('root','build','probe','instrument') for part in ('--'+name,str(root/name))]
+        def cli(extra):
+            with patch.object(sys,'argv',['memory_lab.py',*arguments,*extra]),patch.object(memory_lab,'Laboratory',Stub):
+                memory_lab.main()
+        cli([]);assert calls[-1]['catalog_manager_password_bytes']==64
+        controls.append(dict(name='cli-default64',status='ACCEPTED_OFFLINE_UNIT'))
+        selected=['--catalog-manager-password-bytes','65536','--application-build',str(root/'application-build')]
+        cli([*selected,'--manager-build',str(root/'manager-build')])
+        assert calls[-1]['catalog_manager_password_bytes']==65536
+        controls.append(dict(name='cli-qualified-manager-selection',status='ACCEPTED_OFFLINE_UNIT'))
+        for name,extra in [
+            ('without-manager',[]),('layout-refusal',['--manager-build',str(root/'manager-build'),'--manager-layout-refusal']),
+            ('prepare-only',['--prepare-only']),('installed-five',['--installed-five','--export-memory-mib','256'])]:
+            before=len(calls)
+            try:cli([*selected,*extra])
+            except ValueError as error:
+                assert str(error)=='maximum manager credential requires only the positive sample measurement'
+                assert len(calls)==before
+                controls.append(dict(name='cli-reject-'+name,status='REJECTED_OFFLINE_UNIT'))
+            else:raise AssertionError('invalid manager boundary mode reached laboratory: '+name)
+    return dict(status='PASS_OFFLINE_MANAGER_CREDENTIAL_UNITS',controls=controls,
+        scope='Public constructed files and stubbed CLI only; real secret generation, setup, SCRAM, allocation and runtime NOT_RUN.')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] == '--manager-layout-refusal':
+    if len(sys.argv) == 2 and sys.argv[1] == '--manager-credentials':
+        print(json.dumps(manager_credentials(), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--manager-layout-refusal':
         print(json.dumps(manager_layout_refusal(), indent=2))
     elif len(sys.argv) == 2 and sys.argv[1] == '--allocations':
         print(json.dumps(allocations(), indent=2))

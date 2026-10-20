@@ -69014,6 +69014,20 @@
         },
         "terminal_summary": "Four exact owned containers exit0/PID0/noOOM, cgroups absent; no running mount holder. Original physical roots unchanged; no cleanup deletion."
       }
+    },
+    "manager_credential_boundary_20261020": {
+      "state": "runtime active; root owns isolated fresh PostgreSQL/setup",
+      "worktree": "/home/tux/bigbrotr-rs/.research/export-manager-credential-boundary-20261020",
+      "branch": "work/export-manager-credential-boundary",
+      "base": "a10cab94eaa6745e7457566cb7bd422f6359d397",
+      "owner": "root; source author completed",
+      "runtime_owner": "root session77164",
+      "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.manager_observation_20261020.credential_boundary_20261020",
+      "commit": "b3646115e80fbe82a0a1970e2e6b3beafac76817",
+      "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-credential-boundary-b364611",
+      "resource_owner": "f6b67bcda476c2272d9972e6d1038a6f",
+      "resource_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-credential-boundary-b364611/resources.json",
+      "preservation": "All source/evidence/data/logs retained; no cache/build/cleanup. Six unrelated running containers observed untouched at preflight; no project container active before launch."
     }
   }
 }

@@ -144,6 +144,26 @@ and one-byte overbound sentinel, **17,301,512 bytes**. The independent oracle
 checks that arithmetic. This is configured bounded-input accounting, not eight
 copies of the observed secret length. TLS/mTLS are outside this profile.
 
+The explicit `memory_lab.py --catalog-manager-password-bytes 65536 --manager-build BUILD`
+case supplies that exact password size for the catalog manager from fresh engine
+provisioning. Omission preserves the 64-byte default; other credentials retain
+their 4096-byte ceiling and the native reader retains its 64-byte profile. The
+optional setup-descriptor size is checked against the pinned configuration's
+manager reference at publication/continuation, acceptance and both measurement
+captures. It cannot alias another credential. Only the positive `archive-sample`
+manager mode supports this selection. SCRAM work can also increase during setup
+and Sync; failures stay preserved at their actual stage with unchanged deadlines.
+
+This experiment intentionally starts from compatible source `a10cab9` to reuse
+the qualified f1e installed parent, 214 manager diagnostic, 046b acceptance probe
+and 6c worker. Existing source/tree/receipt/ELF guards remain in force. It makes
+no claim for newer initial Sync diagnostic source. No ELF, product, grant,
+17,301,512-byte bound or cgroup cap changes. The maximum-password runtime is
+**NOT_RUN** pending root execution and critical review; the historical sample
+and layout-refusal results do not qualify this credential boundary.
+Constructed file/CLI controls use `test_memory_oracle.py --manager-credentials`;
+they generate no runtime secret and execute no database or probe.
+
 The allocator counts successful `alloc`/`alloc_zeroed`, successful realloc size
 deltas and matching deallocations from process startup. Failure preserves the
 prior charge. Checked arithmetic sets a permanent invalid flag on underflow or

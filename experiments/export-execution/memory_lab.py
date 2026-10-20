@@ -67,7 +67,12 @@ def inspect(ident):
 
 class Laboratory:
     def __init__(self, root, build, probe, instrument, *, application_build=None, export_memory_mib=1024,
-                 signed_input='archive-sample', manager_build=None, prepare_only=False):
+                 signed_input='archive-sample', manager_build=None, prepare_only=False,
+                 catalog_manager_password_bytes=64):
+        require(type(catalog_manager_password_bytes) is int and catalog_manager_password_bytes in (64, 65536)
+                and (catalog_manager_password_bytes == 64 or (manager_build is not None and signed_input == 'archive-sample')),
+                'finite manager credential selection requires the qualified sample measurement')
+        self.catalog_manager_password_bytes = catalog_manager_password_bytes
         require(root.is_absolute() and root.resolve() == root and not root.exists(), 'fresh canonical root')
         require(not git('status', '--porcelain', '--untracked-files=all'), 'clean committed source')
         require(shutil.disk_usage(root.parent).free >= 69324505088, 'completion reserve plus headroom')
@@ -230,6 +235,9 @@ class Laboratory:
                 ingest_probe_source=APPLICATION_SOURCE, reference_build=str(self.reference_build))
         if self.manager_qualification is not None:
             self.state['manager_build'] = self.manager_qualification
+        if self.catalog_manager_password_bytes != 64:
+            self.state.update(catalog_manager_password_bytes=self.catalog_manager_password_bytes,
+                manager_credential_boundary_stage='setup')
         if export_memory_mib != 1024:
             self.state['export_memory_mib'] = export_memory_mib
         if signed_input != 'archive-sample':
@@ -289,7 +297,7 @@ class Laboratory:
         for name in ('bootstrap', 'migrator', 'application', 'manager', 'reader', 'owner'):
             path = protected / name
             with path.open('x') as stream:
-                stream.write(secrets.token_hex(32))
+                stream.write(secrets.token_hex(self.catalog_manager_password_bytes // 2 if name == 'manager' else 32))
             path.chmod(0o400)
         data = self.root / 'pg-data'
         data.mkdir(mode=0o700)
@@ -503,6 +511,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                 disk_reserve_bytes=65536*MIB, query_ms=4000))
         if self.signed_input != 'archive-sample':
             self.spec['event_kind'] = 'frozen-signed-event'
+        if self.catalog_manager_password_bytes != 64:
+            self.spec['catalog_manager_password_bytes'] = self.catalog_manager_password_bytes
 
     def publish(self):
         def inputs(start):
@@ -520,6 +530,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                 inventory['export_memory_mib'] = self.export_memory_mib
             if self.manager_qualification is not None:
                 inventory['manager_build'] = self.manager_qualification
+            if self.catalog_manager_password_bytes != 64:
+                inventory['catalog_manager_password_bytes'] = self.catalog_manager_password_bytes
             write(self.out / 'input-inventory.json', inventory)
             self.spec['inventory'] = pin(self.out / 'input-inventory.json', '/lab/input-inventory.json')
             write(self.out / 'setup-input.json', self.spec)
@@ -632,6 +644,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                           probe_sha256=self.manager_qualification['executable']['sha256'])
         write(fresh / 'manager-run.json', descriptor)
         self.state.update(manager_descriptor=pin(fresh / 'manager-run.json'), original_accepted_run=original)
+        if self.catalog_manager_password_bytes != 64:
+            self.state['manager_credential_boundary_stage'] = 'measurement-preparation'
         if layout_refusal:
             self.state['manager_mode'] = 'layout-refusal'
         self.save()
@@ -664,7 +678,7 @@ from pathlib import Path
 sys.dont_write_bytecode=True
 sys.path.insert(0,'/source/experiments/export-execution')
 from memory_setup_io import IO,write,require,census
-from memory_setup import immutable
+from memory_setup import credentials,immutable
 from memory_oracle import verify
 from memory_setup_oracle import manager_layout_ddl,manager_layout_observation,manager_layout_refusal
 os.umask(0o077)
@@ -676,6 +690,8 @@ output=Path('/lab')/('manager-'+phase)
 output.mkdir(mode=0o700)
 spec=json.loads((fresh/'input.json').read_text())
 config=tomllib.loads((fresh/'destination.toml').read_text())
+if 'catalog_manager_password_bytes' in spec:
+ credentials(spec,config)
 io=IO(output,spec,config)
 try:
  io.backends('before',absent=True)
@@ -744,6 +760,8 @@ except BaseException:
         if layout_refusal:
             layout_dump('manager-layout-before')
         self.state.update(state='manager-measuring', outcome='MANAGER_MEASUREMENT_RUNNING')
+        if self.catalog_manager_password_bytes != 64:
+            self.state['manager_credential_boundary_stage'] = 'measurement'
         self.save()
         self.run('manager-measure', ['python3', '-B', '/source/experiments/export-execution/memory_run.py',
             '/lab/fresh-root/manager-run.json', '/lab/fresh-root/manager-measure-run'],
@@ -770,6 +788,8 @@ except BaseException:
             qualification_256mib=False, five_exports_acceptance=False,
             review_required='Root and critical review must audit nine-table delta, physical output and outcome; '
                             'this1536MiB diagnostic is separate from installed256MiB qualification.')
+        if self.catalog_manager_password_bytes != 64:
+            self.state['manager_credential_boundary_stage'] = 'captured-root-audit-pending'
         self.save()
 
     def installed_five(self):
@@ -904,6 +924,8 @@ def main():
         help='qualified manager diagnostic build root; accept and measure one fresh job')
     parser.add_argument('--manager-layout-refusal', action='store_true',
         help='one fresh oversized-layout refusal/drain with the qualified manager build')
+    parser.add_argument('--catalog-manager-password-bytes', type=int, choices=(64, 65536), default=64,
+        help='exact fresh catalog manager credential size; 65536 requires the positive manager sample')
     args = parser.parse_args()
     require(all(p.is_absolute() and p.resolve() == p for p in
                 (args.root, args.build, args.probe, args.instrument,
@@ -919,9 +941,13 @@ def main():
             'pinned single-job acceptance probe supports only archive-sample')
     require(not args.manager_layout_refusal or (args.manager_build is not None and args.signed_input == 'archive-sample'),
             'manager layout refusal requires the qualified manager build and archive-sample')
+    require(args.catalog_manager_password_bytes == 64 or (args.manager_build is not None
+            and args.signed_input == 'archive-sample' and not args.manager_layout_refusal
+            and not args.prepare_only and not args.installed_five), 'maximum manager credential requires only the positive sample measurement')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
         application_build=args.application_build, export_memory_mib=args.export_memory_mib,
-        signed_input=args.signed_input, manager_build=args.manager_build, prepare_only=args.prepare_only)
+        signed_input=args.signed_input, manager_build=args.manager_build, prepare_only=args.prepare_only,
+        catalog_manager_password_bytes=args.catalog_manager_password_bytes)
     try:
         lab.acceptance(prepare_only=args.prepare_only or args.installed_five)
         if args.installed_five:
