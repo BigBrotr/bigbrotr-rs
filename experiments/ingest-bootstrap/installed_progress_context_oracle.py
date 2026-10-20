@@ -334,7 +334,8 @@ def verify_initial(context):
     assert 0 < terminal['elapsed_seconds'] < 45 and terminal['pid'] > 0
     assert str(terminal['start_ticks']).isdecimal() and int(terminal['start_ticks']) > 0
     assert terminal['prefix'] == '/lab/sync-signed'
-    assert context['stderr'] == context['client_stdout'] == context['client_stderr'] == ''
+    assert context['stderr'] == context['client_stderr'] == ''
+    assert context['client_stdout'] == '{"status": "PASS", "mode": "installed-sync"}\n', 'exact installed-sync client completion'
     assert context['client_terminal'] == {'exit_code':0}
     reports = [json.loads(line) for line in context['stdout'].splitlines()]
     assert reports == [context['report'], dict(format='bigbrotr-initial-ingest/1',state='stopped',
@@ -580,6 +581,11 @@ def controls(context, verify):
         reject('coherent-producer-closing',closing_producer,'producer lifecycle changed')
         reject('coherent-source-closed',closed_source,'source lifecycle changed')
         reject('coherent-bootstrap-xmin-rewrite',bootstrap_rewrite,'retained bootstrap originals changed')
+        reject('missing-client-completion',lambda c:c.update(client_stdout=''),'exact installed-sync client completion')
+        reject('foreign-client-completion',lambda c:c.update(
+            client_stdout='{"status": "PASS", "mode": "journey"}\n'),'exact installed-sync client completion')
+        reject('extra-client-output',lambda c:c.update(client_stdout=c['client_stdout']+'unexpected\n'),
+            'exact installed-sync client completion')
         reject('native-before-backend-exclusion',lambda c:c['native_readback'].update(started_monotonic_ns=1))
         reject('unjoined-cli',lambda c:c['terminal'].update(reaped=False))
         reject('backend-not-absent',lambda c:c.update(backend_count=1))
