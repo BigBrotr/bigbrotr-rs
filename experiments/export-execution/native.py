@@ -16,7 +16,8 @@ job_pages = job_pages_cli or sys.argv[1:] == ['--runtime','--job-pages']
 runtime = job_pages or sys.argv[1:] == ['--runtime']
 memory_probe = sys.argv[1:] == ['--memory-probe']
 admission = sys.argv[1:] == ['--admission']
-assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'])
+native_row = sys.argv[1:] == ['--native-row']
+assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'], ['--native-row'])
 if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
@@ -83,6 +84,65 @@ if admission:
         str(p.relative_to(artifacts)): dict(sha256=file_hash(p), bytes=p.stat().st_size)
         for p in sorted(artifacts.rglob('*')) if p.is_file()})
     (checks / 'artifacts.json').write_text(json.dumps(identity, indent=2) + '\n')
+elif native_row:
+    artifacts = Path('/out/artifacts')
+    artifacts.mkdir()
+    bundle = artifacts / 'archive-worker'
+    bundle.mkdir()
+    install_bundle(Path('/archive-inputs'), bundle, 'x86_64-unknown-linux-gnu')
+    worker_identity = dict(bytes=14421792,
+        sha256='0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1')
+    retained_worker = Path('/archive-inputs/bigbrotr-archive-worker')
+    verify_file(retained_worker, worker_identity)
+    worker = bundle / 'bigbrotr-archive-worker'
+    shutil.copy2(retained_worker, worker)
+    verify_file(worker, worker_identity)
+    worker.chmod(0o500)
+    env.update(build_environment(bundle))
+    env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker_identity['bytes']),
+               BIGBROTR_ARCHIVE_WORKER_SHA256=worker_identity['sha256'])
+    identity.update(scope='Native-row fixture example builds and Clippy only; runtime/memory qualification NOT_RUN',
+                    worker_source='6c42a41534a0d7ec3e425fa34b1b3c88bdceab79')
+    assert execute([
+        ('build-parent-probes', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                                '--example', 'archive_publication_probe', '--example', 'archive_event_probe']),
+        ('build-reader-probe', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr-archive-worker',
+                               '--example', 'archive_read_probe']),
+        ('clippy-parent-probes', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                                 '--example', 'archive_publication_probe', '--example', 'archive_event_probe',
+                                 '--', '-D', 'warnings']),
+        ('clippy-reader-probe', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr-archive-worker',
+                                '--example', 'archive_read_probe', '--', '-D', 'warnings']),
+    ], checks, SOURCE, env, identity, 1800)['status'] == 'PASS'
+    probes = artifacts / 'native-tests'
+    probes.mkdir()
+    ready = dict(source=manifest['revision'], tree=manifest['tree'],
+        source_manifest_sha256=identity['source_manifest_sha256'], native_toolchain=native,
+        worker_source=identity['worker_source'], worker=file_hash(worker))
+    layout = dict(worker='archive-worker/bigbrotr-archive-worker')
+    for name, destination, label in [
+        ('archive_publication_probe', 'archive-publication-probe', 'publisher'),
+        ('archive_event_probe', 'archive-event-probe', 'event_reader'),
+        ('archive_read_probe', 'archive-read-probe', 'reader'),
+    ]:
+        original = build / 'target/release/examples' / name
+        executable = probes / destination
+        assert original.is_file() and not original.is_symlink()
+        shutil.copy2(original, executable)
+        executable.chmod(0o500)
+        with executable.open('rb') as stream:
+            assert stream.read(4) == b'\x7fELF'
+        assert file_hash(executable) == file_hash(original)
+        ready[label] = file_hash(executable)
+        layout[label] = str(executable.relative_to(artifacts))
+    (probes / 'ready.json').write_text(json.dumps(ready, indent=2) + '\n')
+    identity.update(ready=ready, runtime_layout=layout,
+        runtime_prerequisites=dict(control=dict(path='/out/native-tests/bigbrotr', ready_key='control',
+            requirement='Root-supplied qualified installed application with actual source and executable hash binding')),
+        artifacts={
+            str(path.relative_to(artifacts)): dict(sha256=file_hash(path), bytes=path.stat().st_size)
+            for path in sorted(artifacts.rglob('*')) if path.is_file()})
+    (checks / 'artifacts.json').write_text(json.dumps(identity, indent=2) + '\n')
 elif memory_probe:
     identity['scope'] = 'Export memory probe compilation and Clippy only; no runtime or memory qualification'
     assert execute([
@@ -148,6 +208,9 @@ else:
     identity.update(build_info=info,artifacts={p.name:file_hash(p) for p in artifacts.iterdir()})
     (checks/'artifacts.json').write_text(json.dumps(identity,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
+if native_row:
+    Path('/out/qualification.json').write_text(json.dumps(
+        dict(identity, status='PASS_EXPORT_NATIVE_ROW_BUILD_ONLY'), indent=2) + '\n')
 if memory_probe or admission:
     Path('/out/qualification.json').write_text(json.dumps(
         dict(identity, status='PASS_EXPORT_ADMISSION_BUILD_ONLY' if admission else 'PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY'), indent=2) + '\n')
