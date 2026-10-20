@@ -237,7 +237,7 @@ class IO:
                   "SET idle_in_transaction_session_timeout='5s';\n")
         if not mutation:
             script += 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY;\n'
-        script += statement + ('\n' if mutation else '\nCOMMIT;\n')
+        script += statement + '\n;\n' + ('' if mutation else 'COMMIT;\n')
         write(self.root / (label + '.query.json'), dict(database=database, mutation=mutation, sql=script))
         raw = self.run(label, [self.spec['psql']['path'], '-X', '-A', '-t', '-q', '-w',
             '-v', 'ON_ERROR_STOP=1', '-h', '127.0.0.1', '-p', '5432', '-U', user, '-d', database],

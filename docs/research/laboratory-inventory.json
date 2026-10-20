@@ -65793,9 +65793,76 @@
         "trace_worktree": "/home/tux/bigbrotr-rs/.research/export-memory-trace-20261020",
         "trace_branch": "qualification/export-memory-trace",
         "trace_head": "f179030c7f7e3b0fb163ab64e8298d0f4c0d34b1",
-        "state": "source-only-integration-in-progress",
+        "state": "merged-6f3a9dd-original-worktree-and-evidence-retained",
         "preservation": "Original parser555 and correctedf179, both source manifests and all pure test logs retained. No engine setup resources yet."
-      }
+      },
+      "fresh_setup_attempts_20261020": [
+        {
+          "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+          "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.fresh_setup_attempts_20261020",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6f3a9dd",
+          "preparation": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6f3a9dd-preparation",
+          "source": "6f3a9dd5e5bcd02c5256be3fbd66c55802f0d9e7",
+          "owner": "eaff42d47ed90f1f5c44bce7a723b78c",
+          "owner_label": "org.bigbrotr.export-memory-lab",
+          "state": "stopped-retained",
+          "outcome": "UNKNOWN_PRESERVED",
+          "containers": [
+            {
+              "id": "03a0d250127dbc03f0f029ce02bdd2a869ca2ab4ddb2e5c69f369f1c044c7b6d",
+              "name": "bigbrotr-export-memory-eaff42d47e-postgres",
+              "terminal": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-20T12:21:38.415673598Z",
+                "FinishedAt": "2026-10-20T12:21:41.745337425Z"
+              }
+            },
+            {
+              "id": "c2b1f7ce8de7862165b7a0d8a52d3fa39811189072cac5ece900666877928dcc",
+              "name": "bigbrotr-export-memory-eaff42d47e-configure",
+              "terminal": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-20T12:21:40.576569094Z",
+                "FinishedAt": "2026-10-20T12:21:40.718706492Z"
+              }
+            },
+            {
+              "id": "1a1b4e446e16c0c1a6e91ce1954f63c9af2acdf98e33ea4490f162c47384bd68",
+              "name": "bigbrotr-export-memory-eaff42d47e-publish",
+              "terminal": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 1,
+                "Error": "",
+                "StartedAt": "2026-10-20T12:21:40.95780001Z",
+                "FinishedAt": "2026-10-20T12:21:41.292195383Z"
+              }
+            }
+          ],
+          "preservation": "Private credentials, PG data, all47output evidence files, original failed trace/SQL and exact clean source retained; no cleanup or replay."
+        }
+      ]
     },
     "archive_refusal_journey_attempts": [
       {

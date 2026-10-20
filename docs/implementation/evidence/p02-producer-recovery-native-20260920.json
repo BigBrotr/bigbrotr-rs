@@ -37161,7 +37161,38 @@
             "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/outer-runner-review-v1.json",
             "bytes": 28517,
             "sha256": "6a380beae006869ba6dd3b05a5e5ccdab86022e4148e5a8f9f622b36d3534d10"
+          },
+          "integration": {
+            "source": "6f3a9dd5e5bcd02c5256be3fbd66c55802f0d9e7",
+            "tree": "bfd62c32228ad2e5978afd7f7afe9d33ed9a0124",
+            "push": "46090 joined0; exact remote main verified"
           }
+        },
+        "fresh_setup_attempts_20261020": [
+          {
+            "source": "6f3a9dd5e5bcd02c5256be3fbd66c55802f0d9e7",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6f3a9dd",
+            "status": "FAIL_SQL_FRAMING_BEFORE_MIGRATION",
+            "session": "95861 joined1",
+            "audit": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-memory-setup-6f3a9dd/root-audit/failure-v1.json",
+              "bytes": 42101,
+              "sha256": "a9168c94b0aae47725ad3f89ab65174b1fad2b4700dcc2ef79738a58664368c4"
+            },
+            "scope": "Config init and all three profile validations PASS. First actual readonly SQL failed because caller statement lacked a terminator before COMMIT. No migration/authority initialization/publication/acceptance; original UNKNOWN_PRESERVED remains. All three owned containers stopped0/0/1 PID0noOOM; full initial trace5processes/0workers authenticated;47evidence files retained. No memory qualification.",
+            "next": "One-line SQL framing correction under targeted review; new source and root required. Never replay this root."
+          }
+        ],
+        "sql_framing_correction_20261020": {
+          "status": "SOURCE_REVIEW_CLOSED_RUNTIME_NOT_RUN",
+          "source_sha256": "b300d79e2da2016ab494ffe9e123dd1f868c80e89d1846c9dca45647a7bf817d",
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/sql-framing-review-v1.json",
+            "bytes": 4324,
+            "sha256": "68adcb371cb563e41d3c907cc3fcb742c1ff97bf9eb502fe3a2b0b65f2ba2d72"
+          },
+          "root_review": "Exact one-line framing and original failed stdin/stderr/process result reviewed. Standalone semicolon closes internal SQL before COMMIT; existing terminators/comments remain safe. Same read-only transaction, timeout, process/observer and oracle semantics.",
+          "checks": "AST and whitespace PASS; next fresh actual setup is the relevant execution check."
         }
       },
       "archive_refusal_journey_attempts": [

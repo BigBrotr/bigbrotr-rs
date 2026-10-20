@@ -9,19 +9,19 @@ reuse/checkpoint rules are in the [execution guide](agent-handoff.md) and
 
 P02-T04/P01-T09: qualify the genuine full signed export path and memory gate.
 Root owns integration/runtime in `/home/tux/bigbrotr-rs`, branch `main`.
-Last verified pushed revision is `9a4509688ff45051d9b684378130de25d8c9812c`
-(push25403 joined0, exact remote verified). Current local HEAD `afa57a5` merges
-reviewed publication/continuation split `de79f94` with original ancestry.
+Last verified pushed revision is `6f3a9dd5e5bcd02c5256be3fbd66c55802f0d9e7`,
+tree`bfd62c32228ad2e5978afd7f7afe9d33ed9a0124` (push46090 joined0, exact remote
+verified). Reviewed phase split, complete worker trace parser and root orchestrator
+are integrated with original source ancestry. Root2671cf03 and independent6a380bea
+source reviews are recorded in the linked report.
 
-Root-owned local work adds `memory_lab.py` and the built research client
-`client.Dockerfile`, clarifies the deferred measurement cgroup descriptor, and
-records evidence/resources. The outer runner has not executed. Root2671cf03 and independent6a380bea source reviews are closed. Independent review
-found and root fixed the acceptance result path and cleanup-error exit status;
-readiness now targets the final PostgreSQL TCP listener. Corrected parser `f179030`
-retains original `555f3ae` and passes11 pure textual tests; root has reviewed the
-full parser/tests and correction. It is staged in the current merge, with the
-original worktree/evidence retained. No real trace acquisition is qualified.
-Root/agents retain verified Astra/xhigh continuity under Q38.
+Fresh setup95861 joined1 before migration: the initial readonly `pg_tables` query
+lacked a terminator before COMMIT. Config init and all three profile validations
+PASS; publication/acceptance never started. Original FAIL/UNKNOWN remains preserved.
+Root-owned local changes terminate each SQL statement explicitly and record this
+first actual result. The one-line correction has AST PASS and targeted review68adcb37 is
+closed; no product or expectation semantics change. Root/agents retain verified
+Astra/xhigh continuity under Q38.
 
 ## Evidence and open problems
 
@@ -37,7 +37,8 @@ node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence there.
   again for this new consumer; the fresh setup also verifies the full bundle.
 - Publication now stops before native observers. Independent phase review is
   closed; actual trace, terminal container/cgroup/backend/mount exclusion must
-  authorize continuation. Genuine setup, acceptance and measurement are NOT_RUN.
+  authorize continuation. First setup failed before migration; publication, acceptance
+  and measurement are NOT_RUN.
   The first candidate retains the full1MiB row envelope and1GiB export policy cap;
   five exports/256MiB remain unqualified.
 - Original d775 attempt engine is FAIL at the independent input oracle. Its
@@ -51,16 +52,18 @@ node `implementation_archive_catch_up_20261018`. Reuse unchanged evidence there.
 
 ## Processes and resources
 
-No root engine/compiler/cleanup process or subagent is active. Parser author and
-independent outer reviewer have completed their bounded source work. Completed phase
-worktree `.research/export-memory-phases-20261020` and all earlier worktrees,
-ignored `.research` artifacts and external laboratories remain preserved.
+No root engine/compiler/cleanup process or subagent is active. Targeted SQL
+framing review is complete. All original worktrees/ignored evidence
+remain preserved. Actual setup root `runs/export-memory-setup-6f3a9dd` is
+stopped-retained: owned PostgreSQL/configure/publish exit0/0/1, PID0/noOOM; root
+custodya9168c94 authenticates47files and the full initial trace5processes/0workers.
+Private credentials and PG data are retained; do not restart or replay this root.
+Exact source/invocation/output live in the paired `-preparation` directory.
 
-New research client image720f24ff contains authenticated psql15.19; image build50775
-joined0. Its inspection container2b3d0149 remains never-started/created/PID0 at the
-recorded observation. No fresh PostgreSQL/setup resources have been created.
-Targeted actual inspections authenticate stopped6c build and tracer containers;
-older custody observations are dated evidence, not live state assertions.
+Research client image720f24ff contains authenticated psql15.19; its image build and
+never-started inspection container remain retained. Original6c build and tracer
+artifact authentication remains valid; older terminal observations are dated
+records, not inferred live state.
 
 External roots are under `/home/tux/bigbrotr-implementation-20260917/runs`.
 Compiler cache remains `runs/network-1154757/out/build/{target,cargo-home}` under
@@ -71,12 +74,11 @@ Unrelated workloads remain untouched.
 
 ## Next bounded action
 
-Finish the current coherent source merge and verified private main push.
-From a clean exact-revision external clone, run fresh isolated setup/acceptance
-once with qualified retained artifacts. Authenticate each phase before reopening
-native data; preserve any unknown committed result instead of replaying it.
-Measurement is a subsequent bounded action with a fresh dedicated cgroup and
-independent science/SQL/custody checks. Update this checkpoint at that boundary.
+Commit/push the reviewed correction and original failure record, then run the same existing executor once from the new clean revision into
+a new fresh root. No repeated compiler/component tests or new script suite is
+needed. Authenticate each completed phase before native reopening and preserve
+any unknown committed outcome. Measurement remains a later bounded action with a
+fresh dedicated cgroup and independent science/SQL/custody checks.
 
 Continue the existing dependency-ready plan. M1–M5, ACK/GC, import/restore,
 capacity/aged-state/RSS and complete product/release journeys remain open;
