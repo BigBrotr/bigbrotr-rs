@@ -36740,7 +36740,7 @@
         }
       },
       "archive_export_memory_source": {
-        "status": "SOURCE_REVIEW_FINDINGS_CLOSED_NOT_INTEGRATED_RUNTIME_NOT_RUN",
+        "status": "INTEGRATED_SOURCE_BUILD_AND_RUNTIME_PENDING",
         "observed_at": "2026-10-18T19:14:59.531905+00:00",
         "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
         "branch": "qualification/export-memory-probe",
@@ -36894,7 +36894,7 @@
           }
         },
         "integration_20261020": {
-          "status": "MERGE_PREPARED_EXACT_SOURCE_REVIEW_REUSED_BUILD_RUNTIME_NOT_RUN",
+          "status": "MERGED_AND_PUSHED_EXACT_SOURCE_REVIEW_REUSED_BUILD_RUNTIME_NOT_RUN",
           "base": "69352c75e1f7a63f9fb4853b48ea507736a467c1",
           "merge_parent": "130a85010d5d91c863680af20f55d68dc14c68d7",
           "original_commits": [
@@ -37013,7 +37013,28 @@
           ],
           "checkpoint_resolution": "Only conflict was branch progress.md. Canonical current checkpoint retained and advanced; historical branch checkpoint remains in original commit. No source conflict.",
           "review_reuse": "Pinned baseline/custody correction/acceptance setup/fresh setup/profile correction root and independent reviews in this existing report. All21 integrated source blobs exactly equal frozen130a850; prior author source AST/rustfmt checks reused. No new implementation delta.",
-          "limits": "Source integration only. Build/Clippy, genuine setup/acceptance, complete runtime worker custody and256MiB/five-export memory qualification remain NOT_RUN; all original branches/worktrees and ignored evidence preserved."
+          "limits": "Source integration only. Build/Clippy, genuine setup/acceptance, complete runtime worker custody and256MiB/five-export memory qualification remain NOT_RUN; all original branches/worktrees and ignored evidence preserved.",
+          "merge_commit": "f85c556c85bb3595bb73568b5bdb7fac130a67b0",
+          "tree": "73bd2b9c08a4a623ec76eccfa8ec33a81f9beb21",
+          "push": "64433 joined0; exact remote refs/heads/main verified"
+        },
+        "build_profile_20261020": {
+          "observed_at": "2026-10-20T11:41:21.802623+00:00",
+          "status": "SOURCE_REVIEW_CLOSED_BUILD_NOT_RUN",
+          "base": "f85c556c85bb3595bb73568b5bdb7fac130a67b0",
+          "source_files": {
+            "experiments/export-execution/native.py": "8c16155293dfd1d7884cd9eeaa58f95888f673309ed59b23b7bd2100d53b20b5",
+            "experiments/network-transport/lab.py": "d310c75026ead157f716678eed3d2c4b5b1257d5214b0fda0f102cc3d9291999"
+          },
+          "diff_sha256": "b353b494ff41df2fd64430e4105637723e0c7189a0547dbe3d114f717c82f246",
+          "independent_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-build-review-20261020/review-v1.json",
+            "bytes": 4746,
+            "sha256": "21b0c590ef124d6e8edf85daaf199680fc976f199bfe4f645bc300c8e6756c14"
+          },
+          "root_review": "Complete changed native owner and exact diff, existing full runner review reused with changed routing checked; execute/write_report and native environment/toolchain owners read. No concrete blocker. AST and diff --check PASS.",
+          "scope": "Existing isolated exact-revision/cache-lock runner, export-memory-probe profile; only example cargo build and Clippy. ELF preserved outside mutable cache. No engine/test/memory PASS.",
+          "qualified_component_reuse": "git diff 6c42a41..f85c556 is empty for apps/, crates/, Cargo.toml/lock, rust-toolchain.toml, tools/build.py, tools/archive_bundle.py and contracts/. Actual retained artifact/bundle verification remains required before runtime."
         }
       },
       "archive_refusal_journey_attempts": [

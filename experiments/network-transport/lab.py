@@ -18,6 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
+    'export-memory-probe',
     'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed',
     'ingest-activated-retirement', 'ingest-activated-durable', 'ingest-activated-source', 'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
@@ -158,6 +159,7 @@ try:
     write(root / 'resources.json', state)
     native_path = 'network-transport' if profile in ('network', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport') else 'relay-registry'
     native_args = {
+        'export-memory-probe': ['--memory-probe'],
         'ingest-succession-lineage': ['lineage'],
         'ingest-succession-schema': ['schema'],
         'ingest-succession-replay': ['replay'],
@@ -223,11 +225,13 @@ try:
     }.get(profile, [])
     native_script = ('ingest-succession/native.py' if profile in ('ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
                      else 'archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
+                     else 'export-execution/native.py' if profile == 'export-memory-probe'
                      else native_path + '/native.py')
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
     expected = {'ingest-activated-retirement':'PASS_ACTIVATED_RETIREMENT_BUILD_ONLY', 'ingest-activated-durable':'PASS_ACTIVATED_DURABLE_PROBE_BUILD_ONLY', 'ingest-activated-source':'PASS_ACTIVATED_SOURCE_CLOSURE_BUILD_ONLY', 'ingest-activated-refusals':'PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY', 'ingest-activated-installed':'PASS_ACTIVATED_INSTALLED_BUILD_ONLY', 'ingest-activated-recovery':'PASS_ACTIVATED_INITIAL_RECOVERY_BUILD_ONLY', 'ingest-installed-live':'PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY', 'ingest-live-refusals':'PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY', 'ingest-live-guards':'PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY', 'ingest-live':'PASS_LIVE_INITIAL_BUILD_ONLY', 'ingest-empty-installed':'PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY', 'ingest-empty-preparer':'PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY', 'ingest-empty-locks':'PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY', 'ingest-empty-faults':'PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY', 'ingest-gap-faults':'PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY', 'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery': 'PASS_INGEST_RECOVERY_INSPECTION', 'archive-worker-budgets': 'PASS_ARCHIVE_WORKER_BUDGETS', 'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
                 'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
+                'export-memory-probe': 'PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY',
                 'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
                 'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',
                 'request-session': 'PASS_SCOPED_REQUEST_SESSION_COMPONENTS',

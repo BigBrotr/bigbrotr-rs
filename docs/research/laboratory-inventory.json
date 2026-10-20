@@ -65594,7 +65594,7 @@
       }
     },
     "archive_export_memory_source": {
-      "status": "SOURCE_REVIEW_FINDINGS_CLOSED_NOT_INTEGRATED_RUNTIME_NOT_RUN",
+      "status": "INTEGRATED_SOURCE_BUILD_AND_RUNTIME_PENDING",
       "observed_at": "2026-10-18T19:14:59.531905+00:00",
       "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
       "branch": "qualification/export-memory-probe",
@@ -65737,7 +65737,14 @@
         "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-setup-20261020",
         "source": "130a85010d5d91c863680af20f55d68dc14c68d7",
         "runtime": "NOT_RUN",
-        "retained": "All worktrees, original commits and ignored source review evidence preserved."
+        "retained": "All worktrees, original commits and ignored source review evidence preserved.",
+        "merge_commit": "f85c556c85bb3595bb73568b5bdb7fac130a67b0"
+      },
+      "build_profile_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.build_profile_20261020",
+        "runtime": "NOT_RUN",
+        "allocation": "Existing compiler cache with exclusive lock; new exact-revision build root is pending. No runtime/cleanup resources created."
       }
     },
     "archive_refusal_journey_attempts": [

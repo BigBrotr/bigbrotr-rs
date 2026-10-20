@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile the current Rust consumer; retained4e only supplies native assets/seed."""
+"""Compile export consumers; the memory probe needs no retained runtime seed."""
 import json
 import shutil
 import subprocess
@@ -14,7 +14,8 @@ from tools.ci import execute
 job_pages_cli = sys.argv[1:] == ['--runtime','--job-pages-cli']
 job_pages = job_pages_cli or sys.argv[1:] == ['--runtime','--job-pages']
 runtime = job_pages or sys.argv[1:] == ['--runtime']
-assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'])
+memory_probe = sys.argv[1:] == ['--memory-probe']
+assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'])
 if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
@@ -42,7 +43,25 @@ identity = dict(source=manifest['revision'],tree=manifest['tree'],lockfile_sha25
     source_manifest_sha256=file_hash(build/'source-manifest.json'),native_toolchain=native,
     scope='Current typed SQL/native/files consumer research driver; no installed automatic scheduler or signal/recovery qualification')
 checks = Path('/out/adapter-checks')
-if runtime:
+if memory_probe:
+    identity['scope'] = 'Export memory probe compilation and Clippy only; no runtime or memory qualification'
+    assert execute([
+        ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--example', 'export-execution-probe']),
+        ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--example', 'export-execution-probe', '--', '-D', 'warnings']),
+    ], checks, SOURCE, env, identity, 1800)['status'] == 'PASS'
+    artifacts = Path('/out/artifacts')
+    artifacts.mkdir()
+    executable = artifacts / 'export-execution-probe'
+    original = build / 'target/release/examples/export-execution-probe'
+    assert original.is_file() and not original.is_symlink()
+    shutil.copy2(original, executable)
+    executable.chmod(0o500)
+    with executable.open('rb') as stream:
+        assert stream.read(4) == b'\x7fELF'
+    assert file_hash(executable) == file_hash(original)
+    identity['artifacts'] = {executable.name: dict(sha256=file_hash(executable), bytes=executable.stat().st_size)}
+    (checks / 'artifacts.json').write_text(json.dumps(identity, indent=2) + '\n')
+elif runtime:
     env.update(build_environment(Path('/out/archive-worker')))
     identity['scope']='Current installed executable and worker; practical profile recorded by the outer laboratory'
     assert execute([
@@ -89,3 +108,6 @@ else:
     identity.update(build_info=info,artifacts={p.name:file_hash(p) for p in artifacts.iterdir()})
     (checks/'artifacts.json').write_text(json.dumps(identity,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
+if memory_probe:
+    Path('/out/qualification.json').write_text(json.dumps(
+        dict(identity, status='PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY'), indent=2) + '\n')
