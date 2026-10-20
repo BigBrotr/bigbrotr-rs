@@ -1,0 +1,161 @@
+# Fresh signed-event setup composition
+
+Source candidate only. Helper execution, compilation, PostgreSQL/native work,
+acceptance and measurement are **NOT_RUN**. This composes the existing
+[accept-only probe](ACCEPT.md) without adding a scheduler mode or changing
+production policy, migration bytes, deadlines or the packaged worker.
+
+Root invokes two finite commands in its separately inventoried setup environment:
+
+```text
+python3 -B experiments/export-execution/memory_setup.py /lab/setup-input.json
+python3 -B experiments/export-execution/memory_setup_accept.py /lab/fresh-root /sys/fs/cgroup/ROOT_RESERVED_MEASUREMENT_GROUP
+```
+
+The first command requires a nonexistent fresh root and empty Control/catalog
+databases. It applies current migrations, grants operator-provisioned application
+privileges, then calls real configuration initialization, initial activation,
+owner-token enrollment, Archive/state/coordinator and destination initialization.
+There is no SQL authority seed or `session_replication_role` bypass. Every
+principal grant comes from enrollment; each visibility grant uses real HTTP
+reauthentication and the scope-grant consumer.
+
+Before initialization, the fixture exclusively creates three mode-0400 TOML
+profiles and records their sizes and SHA256 hashes in `profiles.json`:
+
+| Profile | Actual consumers | Selection |
+|---|---|---|
+| `destination.toml` | Migration, configuration/authority initialization, enrollment, Archive/state/coordinator/destination initialization and scientific census | Exact supplied recipe, including both destination fields; reader disabled |
+| `publisher.toml` | Initial `serve --initialize-ingest` | Omits both `export.destination.id` and `export.destination.root`; all other parsed values equal the supplied recipe |
+| `ordinary.toml` | Ordinary Control for the three authenticated grants | Supplied destination-bearing recipe with `archive.reader.enabled=true` |
+
+All three files undergo real `config validate` before initialization. Their
+reported document hashes must match the frozen files, and their complete
+`initial_policy` candidate reports must agree. These deployment-root selections
+are excluded from persisted policy; real initialization and activation still
+establish authority. Every `--file` call checks its profile's bytes and read-only
+mode immediately before launching and retains `<call>.profile.json`; the
+positional scientific-census call does the same. No live configuration is edited.
+The acceptance follow-up reauthenticates all three pins and the original recipe.
+
+The initial Serve owns actual Sync/Ingest/Archive publication of the frozen
+94,577-byte signed event. Its relay supplies a narrowly selected callback:
+the existing handshake, masked REQ/CLOSE checks, three-second socket and small
+EOSE encoder stay intact. Each large transmitted frame and its metadata are
+retained. Independent event reconstruction, native facts, complete producer
+inputs/outcomes, scientific families, native receipts and frontier digests are
+checked after actual publisher termination. The final frontier and snapshot
+come from this fresh publication and its independently expected batches.
+The old small event's fixed frontier/snapshot are not inputs.
+
+Ordinary Control then receives only the three scope-grant requests. The complete
+published files, native catalog and original Control rows/xmin survive that
+stage. The scheduler is joined before `accept.json` is written. A successful
+first command emits `PREPARED_FOR_ROOT_ACCEPTANCE`; it has accepted no Export.
+
+The second command authenticates the prepared state, waits for the observed
+account login bucket's natural 60-second expiry using PostgreSQL time, and invokes
+the exact accept-only probe once. Two logins plus three reauthentications can fill
+the five-attempt bucket. It does not edit the bucket, retry a denial, renew a pin
+or change any deadline. Each invocation has a 120-second wrapper budget; individual
+CLI operations default to 30 seconds, SQL to eight seconds, publication observation
+to 50 seconds, and normal Serve joining to eight seconds. Root must impose its
+own outer process/container deadline and retain unresolved descendants.
+
+The acceptance oracle checks full captures of all 75 Control tables, including
+xmin, and the complete catalog. It expects one new command/audit, one Accepted
+revision-1 unreserved job, its next admission ordinal, exact complete input bounds
+and distinct reader/Export leases and claims. Existing publication, source,
+scope-grant history and physical files remain exact. The temporary reader is
+released; the Export retention obligation remains active. Requested pin TTL is
+30 seconds, clamped by the actual five-second Control lease. Control refresh does
+not extend a pin. An active retained row is not current execution permission.
+
+Only a known, independently checked acceptance prepares `case.json`,
+`science.json` and `run.json` for the unchanged [measurement runner](MEMORY.md).
+The second command never enters, creates or measures the supplied cgroup.
+Root must supply a genuinely fresh dedicated cgroup and run the original runner
+and oracle there. This packet makes no memory, five-export or 256 MiB claim.
+
+## Closed setup descriptor
+
+`setup-input.json` is a protected absolute JSON file with precisely these fields:
+
+| Field | Required value |
+|---|---|
+| `format` | `bigbrotr-export-fresh-setup/1` |
+| `name` | 1–64 ASCII letters, digits or hyphens |
+| `root` | Canonical absolute nonexistent root under an existing owned parent |
+| `application_source` | Actual 40-character source revision from the passed application's clean `build-info` |
+| `application`, `probe`, `ingest_probe`, `psql` | Each `{path,bytes,sha256}` naming the actual executable; the probes include this fixture's required modes |
+| `config` | `{path,bytes,sha256}` for the explicit root-prepared destination-bearing TOML recipe, with a separate `[export.destination]` section containing exactly `id` and `root` |
+| `recipe` | `{path,bytes,sha256}` for the frozen `archive-event-response.json`; SHA256 `815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963` |
+| `worker` | `{root,bytes,sha256}` for the unchanged qualified worker executable; root must be the application's adjacent `archive-worker` directory, which ordinary Serve actually selects |
+| `inventory`, `source_manifest` | Each `{path,bytes,sha256}` for root's authenticated environment/build/source evidence; pinning the receipt alone does not validate its contents |
+| `operator`, `migrator` | Each `{user,password_ref}` for distinct responsibilities provisioned outside this script |
+| `username`, `password_ref` | Actual fresh owner username and protected `file:/absolute/path` password |
+| `keys` | Ten distinct nonzero 16-byte lowercase hexadecimal command keys: `activate`, `owner`, `endpoint`, `enrollment`, `scope`, `acquisition`, `accept-export`, `history.read`, `export`, `private-export` |
+| `limits` | The exact closed [measurement limits](MEMORY.md), all positive integers; retain `row_bytes=1048576` and `disk_reserve_bytes=68719476736` |
+
+All artifact sizes and hashes are supplied from real files. There are no default
+future ELF hashes or job IDs. Protected input files are regular, canonical,
+single-link and not group/world writable. Credential files must additionally be
+private. Secret-bearing raw CLI, SQL, session and token evidence stays under the
+fresh mode-0700 root; do not publish that directory or commit its contents.
+
+The configuration is generated with the real existing recipe owner and frozen
+before initialization. It must select managed authority; local roles
+`control,ingest,sync,archive`; administration on private port 18081; the initial
+publisher enabled and reader disabled; and the existing signed Sync profile
+whose request is `{"kinds":[1],"limit":3}`, provenance enabled, history floor zero
+and ephemeral retention. Retain the qualified native/resource/reader profiles
+and the full event envelope. It must bind `storage.ingest_root=root/store`,
+`archive_root=root/data`, `archive_state_root=root/state`,
+`scratch_root=root/scratch` and `export.destination.root=root/destination`.
+Both PostgreSQL connections use the explicitly isolated loopback
+`127.0.0.1:5432`, local-plaintext/loopback TLS boundary, distinct new database
+names, narrow application/manager roles and a SELECT-only reader. The reader
+password is the existing census's 64-character lowercase hexadecimal profile.
+The three profiles above are frozen before initialization; selecting the existing
+ordinary-reader path later does not edit any file or accepted policy document.
+
+## Root prerequisites and retained limits
+
+Root owns engine/container/network creation, exact PostgreSQL 16.15 configuration,
+role/credential/ACL provisioning, operator authorization, complete native bundle
+verification and clean build provenance. The inventory must bind their actual
+identities, physical mounts, cgroups and filesystem ownership. Supply the
+application-adjacent unchanged worker bundle with the pinned library, header and
+extensions. Authenticate every Python dependency against the source manifest;
+the wrapper hashes that manifest but does not replace root's source review.
+
+This is one known initial single-stream publication, not a general setup runner.
+The independent census keeps its existing row/count/native budgets. Only explicit
+large-event invocation permits 262,144 bytes for the test CBOR decoder and one
+scientific JSON row; their old defaults remain 65,536. The unchanged native dump
+allows fewer than 2,048 records and values below 1 MiB. Root-file census permits
+8,192 entries, 64 MiB per file and 256 MiB total per root. Child stdout is capped
+at 16 MiB, stderr at 1 MiB and SQL input at 64 KiB. These are fixture bounds,
+not new product limits or measured reservations.
+
+The wrapper retains direct-child PID/start/executable, process-group exclusion,
+return status and fresh Control/catalog backend absence before subsequent opens.
+Root must separately retain complete transient native-worker PID/start/exit and
+cgroup custody; process-group absence does not establish that no descendant
+escaped. External custody is required before invocation and again before
+reopening after any uncertainty. Direct SQL observations cannot exclude an
+invisible startup-capable credential holder on their own.
+
+The strict physical comparison starts before either native observer. The existing
+RocksDB dump uses default read-only options; any incidental diagnostic-file change
+will therefore refuse this candidate. Whether that consumer needs a separately
+reviewed diagnostic allowance remains unexecuted. Do not silently move the
+baseline after readback or normalize such differences.
+
+Any timeout, forced exit, missing identity, failed join, changed bytes, unknown
+COMMIT or oracle refusal preserves `UNKNOWN_PRESERVED`. No source-root cleanup,
+replacement owner, copied native root, automatic retry or compensating SQL follows.
+Even a failed accept probe may have committed its job and retention pin: retain
+the original command key and resolve actual outcome under root custody. The
+presence of prepared files, an `Accepted` telemetry marker or AST validity is
+not runtime qualification.

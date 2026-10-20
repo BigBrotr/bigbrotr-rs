@@ -36892,6 +36892,128 @@
             },
             "limits": "Original292 source finding preserved, closed in corrected source only. No integration, generation, CLI validation, build/runtime/custody/measurement. Root must qualify actual artifacts and transient worker/cgroup exclusion before opens."
           }
+        },
+        "integration_20261020": {
+          "status": "MERGE_PREPARED_EXACT_SOURCE_REVIEW_REUSED_BUILD_RUNTIME_NOT_RUN",
+          "base": "69352c75e1f7a63f9fb4853b48ea507736a467c1",
+          "merge_parent": "130a85010d5d91c863680af20f55d68dc14c68d7",
+          "original_commits": [
+            "a0f604a5b951dc95668bc130de4d8a789e16cfa0",
+            "c68ac35c3ec87e764fbef85e7a2eddaaadec5b6c",
+            "370cf79288cbc121582f342dd96cb4b95d7de91f",
+            "292b3c9b24d7de99d83783b5225a782f4f2b7d56",
+            "130a85010d5d91c863680af20f55d68dc14c68d7"
+          ],
+          "source_files": [
+            {
+              "path": "experiments/export-execution/ACCEPT.md",
+              "sha256": "a983235b0a16337de12f0c266a1eb31a15fc10efca9496c49163bde7b29becb5",
+              "bytes": 8747
+            },
+            {
+              "path": "experiments/export-execution/FRESH_SETUP.md",
+              "sha256": "ffb848c25160d99ef05e4c6f8d47ba2485d9fde30ef326698b6b99be04dca971",
+              "bytes": 11236
+            },
+            {
+              "path": "experiments/export-execution/MEMORY.md",
+              "sha256": "e0128f064589aca6abe78aaae0cf9d6963ebf39d9c1ac4149a4018c0fa778a8a",
+              "bytes": 6632
+            },
+            {
+              "path": "experiments/export-execution/memory.rs",
+              "sha256": "7b37a7cc234695476c891844ed4c4e18a6c5547de64f187e3974aea7b96fc97c",
+              "bytes": 21434
+            },
+            {
+              "path": "experiments/export-execution/memory/accept.rs",
+              "sha256": "2fae256c3862429e266c0f97106d36d1d7cdf45f98d0ae821d34f46aae8ba797",
+              "bytes": 16224
+            },
+            {
+              "path": "experiments/export-execution/memory/accept/descriptor.rs",
+              "sha256": "c0e73667cdcb7ec606cd3be65d27c9215fcf028a0b53f2139cb4775b413a7b0c",
+              "bytes": 2489
+            },
+            {
+              "path": "experiments/export-execution/memory/descriptor.rs",
+              "sha256": "db34af77d527732202ffc54c4a13d9cfa85599a3b566f3538a1dd3af80287b6b",
+              "bytes": 6881
+            },
+            {
+              "path": "experiments/export-execution/memory/observe.rs",
+              "sha256": "ab9ea7cbf87e95153de70448fd6aac2876e031052561b83ce1cf137659701395",
+              "bytes": 3339
+            },
+            {
+              "path": "experiments/export-execution/memory_oracle.py",
+              "sha256": "09653521122d4cd049783a1e0e48c43b81abfe17cdd02f929563c301efa98823",
+              "bytes": 12973
+            },
+            {
+              "path": "experiments/export-execution/memory_relay.py",
+              "sha256": "bc4ace505d27c167c9147813dd886d7a09bc29fd0958f36bba556933e9ba06cd",
+              "bytes": 4005
+            },
+            {
+              "path": "experiments/export-execution/memory_run.py",
+              "sha256": "c3cf7404c991c60c8977382cfff364314283a4f4111a83aea19dce00ca3c2f4e",
+              "bytes": 10543
+            },
+            {
+              "path": "experiments/export-execution/memory_setup.py",
+              "sha256": "ee7c6a9d769f38c62a01e9bf451a3b09008f624de46d0bf63c3eb4232d3803fb",
+              "bytes": 21452
+            },
+            {
+              "path": "experiments/export-execution/memory_setup_accept.py",
+              "sha256": "9abf26efe0e9d96447a061350489394d08e2a54b23000cee6bb3464e9fe6613c",
+              "bytes": 6923
+            },
+            {
+              "path": "experiments/export-execution/memory_setup_client.py",
+              "sha256": "6764c1466e46cd881556d7bafb2142d06b3140bdb34b0f302048f844dc00a429",
+              "bytes": 7758
+            },
+            {
+              "path": "experiments/export-execution/memory_setup_io.py",
+              "sha256": "77d2b9c417bc91aea86730eb4e0f54eeaa8b909f7be36290c8b88144ba4aecf8",
+              "bytes": 12268
+            },
+            {
+              "path": "experiments/export-execution/memory_setup_oracle.py",
+              "sha256": "982c6f6ba4fd9fab209cfa223fb0cb7bfb85b679970bf5115c77f855862c804c",
+              "bytes": 28797
+            },
+            {
+              "path": "experiments/export-execution/probe.rs",
+              "sha256": "cf584bd0e8d39553a7a9ce3e7815bcb7ed7e606217e78798044b2a9734f4ac0b",
+              "bytes": 18430
+            },
+            {
+              "path": "experiments/ingest-bootstrap/installed_archive_oracle.py",
+              "sha256": "3b512d9a04ba3d33ecc6ef7408366698927b25b6389b580aaea67e580f3a214b",
+              "bytes": 6079
+            },
+            {
+              "path": "experiments/ingest-bootstrap/installed_archive_read.py",
+              "sha256": "006ea9147945d6e10cf413716ffa4f073ef66cf004c1b616b9fcf65d25de2092",
+              "bytes": 10172
+            },
+            {
+              "path": "experiments/ingest-bootstrap/installed_sync_client.py",
+              "sha256": "013e0c14c8a5859555d63a433666445604733ae72c58726ff2427c9070b2dd5f",
+              "bytes": 16857
+            },
+            {
+              "path": "experiments/ingest-bootstrap/installed_sync_oracle.py",
+              "sha256": "da560cdcfeabe2080131f81bbceee244d0bfcb5ddc34191a780959064d0f62ca",
+              "bytes": 8599
+            }
+          ],
+          "checkpoint_resolution": "Only conflict was branch progress.md. Canonical current checkpoint retained and advanced; historical branch checkpoint remains in original commit. No source conflict.",
+          "review_reuse": "Pinned baseline/custody correction/acceptance setup/fresh setup/profile correction root and independent reviews in this existing report. All21 integrated source blobs exactly equal frozen130a850; prior author source AST/rustfmt checks reused. No new implementation delta.",
+          "limits": "Source integration only. Build/Clippy, genuine setup/acceptance, complete runtime worker custody and256MiB/five-export memory qualification remain NOT_RUN; all original branches/worktrees and ignored evidence preserved."
         }
       },
       "archive_refusal_journey_attempts": [

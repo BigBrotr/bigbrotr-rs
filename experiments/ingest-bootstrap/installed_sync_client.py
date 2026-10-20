@@ -70,7 +70,9 @@ def send_frame(connection, value):
     connection.sendall(header+body)
 
 
-def relay(directory, listener, finished, errors, signed, refusals=False, window=False):
+def relay(directory, listener, finished, errors, signed, refusals=False, window=False,
+          event_sender=None):
+    assert event_sender is None or (signed and not refusals and not window)
     request_ids = set()
     try:
         number = 0
@@ -118,7 +120,11 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 window_ready = window and (directory/'window-release').exists() and window_rounds < 2
                 if signed and (number <= 2 or window_ready):
                     event = json.loads((directory/'event.jsonl').read_bytes())
-                    if window_ready and number > 2:
+                    if event_sender is not None:
+                        trace['sent_at_us'] = time.time_ns()//1000
+                        trace['frames'] = event_sender(connection, ident, number)
+                        values = ()
+                    elif window_ready and number > 2:
                         from installed_sync_window import window_frames
                         window_rounds += 1
                         values, labels = window_frames(event, (directory/'selector-events.json').read_bytes(),
@@ -133,7 +139,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                     else:
                         values = (event, dict(event, sig='00'*64), event)
                         trace['frames'] = ['signed', 'forged-signature', 'duplicate', 'EOSE']
-                    trace['sent_at_us'] = time.time_ns()//1000
+                    if event_sender is None:
+                        trace['sent_at_us'] = time.time_ns()//1000
                     for value in values:
                         send_frame(connection, ['EVENT', ident, value])
                     send_frame(connection, ['EOSE', ident])

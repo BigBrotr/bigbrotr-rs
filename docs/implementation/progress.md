@@ -1,26 +1,24 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T11:30:11.645445+00:00 on Tux. Goal **ACTIVE**; selected M1–M5 product remains
+Observed 2026-10-20T11:32:02.013680+00:00 on Tux. Goal **ACTIVE**; selected M1–M5 product remains
 incomplete. This checkpoint is navigation; the existing task plan owns the work.
 Q37 model allocation and Q38 evidence-reuse rules are in the
 [execution guide](agent-handoff.md) and [decisions](../planning/questions.md).
 
 ## Current objective and repository
 
-P02-T04 Steps 3/4/5: qualify finite retained Archive catch-up, enabling
-P01-T09 Step 4/M1. Root is the sole integrating and runtime owner in
-`/home/tux/bigbrotr-rs`, branch `main`; no merge/rebase is pending.
-Observed HEAD is `1b980ade1df664bba5e2b5e609f2b313eca58304`, tree
-`fdd01e3a2e1be56c5e64c5f250c9fd297119c0bf`. Q38 guide/decision commit is local;
-last verified remote main remains d77519f. Private push follows the coherent
-verifier/evidence result.
+P02-T04/P01-T09: qualify the full signed export path and its memory gate after
+finite retained Archive catch-up. Root is the sole integrating/runtime owner in
+`/home/tux/bigbrotr-rs`, branch `main`. Verified pushed HEAD is
+`69352c75e1f7a63f9fb4853b48ea507736a467c1`, tree`b566c2b948e6b92e69bafbed10c07e4f8c978cc1`.
+Q38 and corrected retained-attempt analysis are committed and pushed (36475 joined0).
 
-Uncommitted root work: reviewed initialization-hash and historical-manifest
-corrections in the attempt oracle/shared model; reviewed extraction of the existing raw
-capture binder and successful separate corrected analysis;
-current report/inventory and this concise checkpoint. No Rust/dependency change.
-Export130a850 has root/independent source review and remains unintegrated/unexecuted.
-Root's verified Astra/xhigh continuity is reused under Q38.
+Merge of reviewed export130a850 is prepared; only progress.md conflicted and the
+canonical checkpoint was retained. All21 source files equal the reviewed branch
+blobs. Original five commits are merge ancestry; no Rust product/dependency change.
+Root also updates report/inventory/checkpoint for this integration. Export probe
+and setup remain uncompiled/unexecuted. Root's verified Astra/xhigh continuity is
+reused under Q38.
 
 ## Verified evidence and open problems
 
@@ -81,12 +79,14 @@ remain untouched; no complete inventory is needed for current Python/docs edits.
 
 ## Next bounded action
 
-Commit/push the coherent corrected analysis and compact checkpoint. Then integrate
-reviewed export commits a0f604a/c68ac35/370cf79/292b3c9/130a850 into main,
-reconciling their branch checkpoint with this current record and preserving all
-worktrees/evidence. Verify the exact source delta, reuse prior source reviews,
-then qualify the new export probe with targeted build/Clippy and real setup,
-acceptance and measured export using the existing tools. No new attempt engine
+Commit the prepared export merge, then qualify its new probe with targeted
+build/Clippy using the existing isolated compiler tools and cache lock. Reuse
+unchanged qualified application/ingest-probe/worker artifacts only with exact
+identity and source reconciliation. Before significant allocation check headroom
+and actual owned cache/container state; no unrelated whole-host inventory.
+After the build, exercise genuine fresh setup, acceptance and measured exports,
+retaining worker/container/cgroup custody and independent raw-state expectations.
+Preserve the full1MiB row envelope and256MiB export gate. No extra attempt engine
 is needed solely for the corrected verifier.
 
 Continue the existing dependency-ready plan. M1–M5, ACK/GC, import/restore,

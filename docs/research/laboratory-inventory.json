@@ -65730,6 +65730,14 @@
           "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
           "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.fresh_setup_source_20261020.profile_correction_20261020"
         }
+      },
+      "integration_20261020": {
+        "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+        "node": "initial_successor_preparation_20261012.repeatable_succession_20261015.archive_export_memory_source.integration_20261020",
+        "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-setup-20261020",
+        "source": "130a85010d5d91c863680af20f55d68dc14c68d7",
+        "runtime": "NOT_RUN",
+        "retained": "All worktrees, original commits and ignored source review evidence preserved."
       }
     },
     "archive_refusal_journey_attempts": [

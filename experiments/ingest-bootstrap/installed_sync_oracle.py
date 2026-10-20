@@ -12,8 +12,8 @@ ENDPOINT = 'ws://127.0.0.1:7447/installed-fixture'
 SIGNED_SHA256 = 'c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae'
 
 
-def decode(data):
-    assert len(data) <= 65536
+def decode(data, maximum=65536):
+    assert maximum in (65536, 262144) and len(data) <= maximum
     offset = 0
 
     def item(depth=0):
@@ -51,7 +51,8 @@ def decode(data):
     return value
 
 
-def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1):
+def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1,
+             *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb'):
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'ingest']
     domains = {r['dictionary_kind']: bytes.fromhex(r['allocation_domain'][2:])
@@ -133,7 +134,7 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
                 event['kind'], event['tags'], event['content']]
         signature = bytes.fromhex(event['sig'])
         body_digest = sha(b'bigbrotr/body/1\0'+cbor(body))
-        assert body_digest.hex() == '1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb'
+        assert body_digest.hex() == expected_body_digest
         dictionary(8, 8, 'event', dict(event_id=body[0]), recorded)
         fact(9, 'event-payload', [*body, ref(8)], recorded)
         index(6, dataset+body[0], 9)
