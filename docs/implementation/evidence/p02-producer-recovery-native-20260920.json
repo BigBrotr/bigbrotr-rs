@@ -41030,7 +41030,7 @@
             "sha256": "8028209e9dc71c489d389e6289a8b650f434363b6930b79c6778419d4d3df343"
           }
         },
-        "local_source_observation": "Main d75306534d273866dbd278d4b283bb527de0c3bf verified equal to remote; clean candidate75df76037cb5c60458165414f133d9deafcc4112 is being merged coherently with this report. No product differences from qualified d4e1b85; subsequent fixture-only corrections/binding are explicit.",
+        "local_source_observation": "Main dd571101d5ad3568a17248f18e056fc4e17b09d9 integrated75df760, push49510joined0, exact remote equality checked. Five reconciled local refs retired under Q36; original clean worktrees detached at their exact original HEADs. Inventory owns custody record; all source/evidence preserved.",
         "implementation_split": {
           "storage": "export_setup_fixture owns native/PG/schema/captured-input handoff and source controls. Root owns historical recovery callers/model header helper. Historical SQL packet independently reviewed and included unchanged in unpublished0039; no migration40.",
           "cli": "Root: cdd5e676600463ff4db0fed48864a954d80ed53c on work/producer-progress-sync, base4f20300; five CLI owners changed. Setup/dictionary progress grants; per-event borrowed progress through certification/admission; opaque CapturedEventInput; preparation holes retain subsequent admission but disable local progress for the rest of that REQ. Rustfmt parse and diff check PASS; new two targeted Sync unit cases NOT_RUN.",
@@ -41154,7 +41154,9 @@
             "bytes": 20888,
             "sha256": "5c1620a64ccc9c2b3f221e881345237b2aa2111e34daced939509a60e4898e3c",
             "root": "Full receipt read and30 exact Git source pins authenticated. Allocation correction resolved. Receipt compile-fix-pending text predates0bd27ff, which reviewer subsequently inspected as appropriate mechanical correction. Rerun result remains pending."
-          }
+          },
+          "integration_commit": "dd571101d5ad3568a17248f18e056fc4e17b09d9",
+          "branch_state": "retired local ref after verified integration; original worktree clean/detached at75df760"
         },
         "component_builds": [
           {

@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "Qualified d4e1b85 components and75df760 three successor Sync contexts/raw replay retained. All runtime drivers joined; root integrating coherent source/evidence on main. Initial/activated and historical recovery fixture source work continues; no cleanup.",
+      "state": "Qualified source/evidence integrated and pushed at main dd57110; five reconciled local branch refs retired, original detached worktrees preserved. Initial/activated and historical-recovery source fixtures active; no runtime/build/data cleanup.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -60922,7 +60922,8 @@
         "scope": "Reuse installed Sync/family driver and independent captures for separate mutation/proof-only quanta; no runtime/build/cleanup authorization.",
         "head": "fc11ba78e25c1175f459109313c8983e7d8309dd",
         "integrated_as": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
-        "state": "Frozen corrected typed oracle composed in root candidate; FROZEN_PROFILE=None;21controls/runtime NOT_RUN; all ignored evidence preserved."
+        "state": "Frozen corrected typed oracle composed in root candidate; FROZEN_PROFILE=None;21controls/runtime NOT_RUN; all ignored evidence preserved.",
+        "branch_state": "retired ref; preserved detached worktree at recorded head"
       },
       "sync_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-sync-20261020",
@@ -60930,7 +60931,8 @@
         "base": "4f20300b6218acf326d9159b78f14fd0f6b1fa12",
         "head": "cdd5e676600463ff4db0fed48864a954d80ed53c",
         "owner": "root",
-        "state": "Frozen/reviewed CLI composed in root candidate; original worktree retained."
+        "state": "Frozen/reviewed CLI composed in root candidate; original worktree retained.",
+        "branch_state": "retired ref; preserved detached worktree at recorded head"
       },
       "recovery_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-20261020",
@@ -60938,7 +60940,8 @@
         "base": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
         "owner": "root",
         "state": "Frozen/reviewed recovery composed in root candidate with explicit module wiring; original worktree retained.",
-        "head": "93c45c16c4771108f456ae1cae5c465b8589079d"
+        "head": "93c45c16c4771108f456ae1cae5c465b8589079d",
+        "branch_state": "retired ref; preserved detached worktree at recorded head"
       },
       "review_agent": "/root/producer_recovery_review; effective gpt-6-astra/xhigh verified from actual creation metadata; source-only",
       "head": "6a5e02296fe960de54baaa32513395ebaf559109",
@@ -60947,7 +60950,8 @@
         "branch": "work/producer-progress-integration",
         "head": "75df76037cb5c60458165414f133d9deafcc4112",
         "owner": "root",
-        "state": "Clean reviewed source; three successor contexts and raw replayPASS; coherent main integration in progress"
+        "state": "Integrated in verified pushed main dd57110; original75df760 detached clean and retained",
+        "branch_state": "retired ref; preserved detached worktree at recorded head"
       },
       "build_runs": [
         {
@@ -61097,16 +61101,72 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020",
           "branch": "work/producer-progress-contexts",
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Assigned source-only initial/activated entrypoint fixtures; creation/HEAD pending owner report"
+          "state": "Created, source-only author active; unpublished edits under named owner, review/runtime pending",
+          "head": "75df76037cb5c60458165414f133d9deafcc4112"
         },
         {
           "owner": "producer_recovery_review",
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-fixture-20261020",
           "branch": "work/producer-progress-recovery-fixture",
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Assigned source-only typed successor recovery/retry fixture; creation/HEAD pending owner report"
+          "state": "Created, source-only author active; unpublished edits under named owner, review/runtime pending",
+          "head": "75df76037cb5c60458165414f133d9deafcc4112"
         }
-      ]
+      ],
+      "branch_retirement_20261020": {
+        "observed_at": "2026-10-20T19:50:17.960391+00:00",
+        "integrated_main": "dd571101d5ad3568a17248f18e056fc4e17b09d9",
+        "authority": "Q36 owner-authorized redundant branch retirement; root sole integrator",
+        "scope": "Five local branch refs only. Each clean original worktree retained at detached exact HEAD; original source commits and ignored artifacts remain reachable/preserved. No worktree/data/cache cleanup; active fixture author branches untouched.",
+        "worktrees": [
+          {
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
+            "retired_branch": "work/producer-checkpoint-ack",
+            "retained_detached_head": "6a5e02296fe960de54baaa32513395ebaf559109",
+            "patch_equivalence": [
+              "- 6a5e02296fe960de54baaa32513395ebaf559109"
+            ],
+            "source_state": "clean"
+          },
+          {
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-progress-sync-20261020",
+            "retired_branch": "work/producer-progress-sync",
+            "retained_detached_head": "cdd5e676600463ff4db0fed48864a954d80ed53c",
+            "patch_equivalence": [
+              "- cdd5e676600463ff4db0fed48864a954d80ed53c"
+            ],
+            "source_state": "clean"
+          },
+          {
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-20261020",
+            "retired_branch": "work/producer-progress-recovery",
+            "retained_detached_head": "93c45c16c4771108f456ae1cae5c465b8589079d",
+            "patch_equivalence": [
+              "- 93c45c16c4771108f456ae1cae5c465b8589079d"
+            ],
+            "source_state": "clean"
+          },
+          {
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-progress-fixture-20261020",
+            "retired_branch": "work/producer-progress-fixture",
+            "retained_detached_head": "fc11ba78e25c1175f459109313c8983e7d8309dd",
+            "patch_equivalence": [
+              "- 0f4682925c8a9139a3ac38627de850382dd2b671",
+              "- c66875fc61cc68754e7b200a5ef2a28958844661",
+              "- fc11ba78e25c1175f459109313c8983e7d8309dd"
+            ],
+            "source_state": "clean"
+          },
+          {
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-progress-integration-20261020",
+            "retired_branch": "work/producer-progress-integration",
+            "retained_detached_head": "75df76037cb5c60458165414f133d9deafcc4112",
+            "patch_equivalence": [],
+            "source_state": "clean"
+          }
+        ]
+      },
+      "branch_state": "Original producer-checkpoint-ack ref retired; original worktree detached at recorded head"
     }
   },
   "tux_intermediate_retirement_20261018": {

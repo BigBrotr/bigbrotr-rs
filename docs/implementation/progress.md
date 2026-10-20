@@ -9,11 +9,12 @@ P02-T02 Steps4/5/7: durable classified producer checkpoint → synchronized nati
 ACK → restart. Current increment implements typed PG progress with native ACK0,
 retaining every request/receipt/input (noGC); it grants no new credit.
 
-Main `d75306534d273866dbd278d4b283bb527de0c3bf` was verified equal to remote.
-The merge carrying this checkpoint integrates clean candidate
-`75df76037cb5c60458165414f133d9deafcc4112` from
-`work/producer-progress-integration` in `.research/producer-progress-integration-20261020`.
-Original author worktrees and ignored evidence remain preserved.
+Main `dd571101d5ad3568a17248f18e056fc4e17b09d9` was pushed and verified equal
+to remote. It integrates candidate `75df76037cb5c60458165414f133d9deafcc4112`.
+Five reconciled original source/integration branch refs were retired; all their
+clean worktrees remain detached at their original commits, including
+`.research/producer-progress-integration-20261020`. Ignored evidence is preserved.
+Only this custody/checkpoint update awaits its coherent commit.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -38,8 +39,7 @@ No cleanup; original datasets, failed runs, logs and worktrees remain intact.
 
 ## Next action and open limits
 
-Finish this coherent main commit/push, then review and run the bounded fixture
-extensions on qualified d4e1b85 binaries: actual initial and activated-epoch2 Sync,
+Review and run the bounded fixture extensions on qualified d4e1b85 binaries: actual initial and activated-epoch2 Sync,
 and fresh config-only typed successor recovery/retry with preserved origins and
 specific corrupted-copy refusals. Reuse the existing runners and independent
 oracles; do not repeat unchanged component builds for fixture-only changes.
