@@ -9,11 +9,11 @@ P02-T02 Steps4/5/7: durable classified producer checkpoint → synchronized nati
 ACK → restart. Current increment implements typed PG progress with native ACK0,
 retaining every request/receipt/input (noGC); it grants no new credit.
 
-Main parent `c420c66` integrates reviewed recovery738637f and its qualification.
-This checkpoint accompanies integration of reviewed/tested proxy88a926; product
-source remains exactly qualified d4e1b85. Last verified remote is c89b9e2; push of
-these coherent results is next. Retired source refs retain their detached original
-worktrees and ignored evidence; the inventory owns their exact identities.
+Main integration `45cedcf3d5d4f0bbed650e7bcefdb0b12b5b43e3` was pushed and
+verified equal to remote. It includes recovery738637f and proxy88a926; product
+source remains exactly qualified d4e1b85. The two integrated local fixture refs
+were retired after clean/ancestor/remote-ref checks. Their exact original
+worktrees and ignored evidence remain; this checkpoint records custody only.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -33,20 +33,26 @@ Full state/xmin/native/input preservation and exact refusal diagnostics pass.
 Recovery driver61121 and raw replay35387 joined0. Exact owned client and borrowed
 PG were freshly observed exited/PID0/noOOM/cgroups absent; no cleanup errors or
 unrelated changes. Prior build/successor runs remain joined. No engine/build active.
-`export_setup_review` owns the initial/activated fixture in its separate worktree.
+`export_setup_review` owns the initial/activated fixture in its separate worktree;
+`producer_recovery_review` reviews it. Before runtime, correct list-vs-table
+comparison, strengthen initial lifecycle checks, move backend exclusion before
+native reopen and finish raw-file binding. These source findings are not product
+failures or passing runtime evidence.
 Proxy88a926 is frozen in `.research/producer-progress-fault-20261020`, with root
 and independent Astra source review,20 discriminator/wire tests and5 existing
 proxy testsPASS. Its integration supplies a tool, not connected product evidence.
+`export_setup_fixture` now owns source-only COMMIT-loss/recovery work in
+`.research/producer-progress-commit-loss-20261020` on its matching work branch,
+base45cedcf. The other source worktree is `.research/producer-progress-contexts-20261020`.
 The [inventory](../research/laboratory-inventory.json) owns paths and custody.
 No cleanup; original datasets, failed runs, logs and worktrees remain intact.
 
 ## Next action and open limits
 
-Push this integration, then review/run the initial and activated-epoch2
-Sync fixture on qualified d4e1b85 binaries. Add the agreed proof-only
-COMMIT-loss scenario using existing collectors and
-oracles; active old-Control recovery requires its explicit lifecycle profile.
-Reuse unchanged component builds.
+Finish critical source review and raw binding of the initial/activated-epoch2
+fixture, then run each actual entrypoint on qualified d4e1b85 binaries in separate
+owned roots. The parallel COMMIT-loss source must model active old-Control
+recovery explicitly before its own review/runtime. Reuse unchanged component builds.
 
 The new job keeps jobs.checkpoint_revision=0; historical jobs retain their actual
 values. Classified local positions are not remote cursor/coverage. Post-hole
