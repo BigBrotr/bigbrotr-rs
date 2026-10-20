@@ -430,8 +430,15 @@ still apply. The flag adds no producer ledger, ACK or successor-owner authority.
 `event_cases.py ROOT --native-row-boundary` selects two new fresh typed
 publication cases, `row_exact` and `row_over`. It is exclusive with the older
 case selectors and runs neither their fault campaigns nor PostgreSQL restarts.
-This candidate is source/offline checked only: native publication, exact-limit
-success, one-byte-over refusal, custody and resource observations are **NOT_RUN**.
+Integrated source `1250f0a` now has qualified example builds/Clippy and both real
+native cases. The complete 1 MiB row returns the original signed event in 442 ms;
+the one-byte-over row returns exactly `ResourceLimit` in 367 ms. Both use the
+profile below, release their permits and preserve the checked catalog, Parquet,
+policy and retained inputs. All owned build/runtime containers exit0/PID0/noOOM.
+The [recovery report](../../docs/implementation/evidence/p02-producer-recovery-native-20260920.json),
+node `archive_export_memory_source.native_row_boundary_20261020`, owns exact
+source, build, outcome and review receipts. This is native-only qualification,
+not an empirical 256 MiB or installed Export authorization result.
 
 The required current examples are `archive_publication_probe`,
 `archive_event_probe` and `archive_read_probe`; the production worker package

@@ -66148,14 +66148,34 @@
         "preserve": "All source worktrees, signing distributions, inputs, datasets, raw captures, logs, traces and original failures retained; no cleanup."
       },
       "native_row_boundary_20261020": {
-        "state": "source-only; no build/runtime resources created",
+        "state": "build and runtime stopped-retained; native-only qualification complete",
         "fixture_worktree": "/home/tux/bigbrotr-rs/.research/export-installed-oracle-20261020",
         "fixture_branch": "work/export-native-row-boundary",
         "build_worktree": "/home/tux/bigbrotr-rs/.research/catalog-layout-fixture-20261020",
         "build_branch": "work/export-native-row-build",
         "reviews": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020",
         "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: archive_export_memory_source.native_row_boundary_20261020",
-        "preserve": "All prior and new ignored source/evidence/signing material; no cleanup."
+        "preserve": "All prior and new ignored source/evidence/signing material; no cleanup.",
+        "branch_retirement": "Both integrated refs retired after exact1250f0a push/ancestry and clean-worktree checks; detached worktrees/evidence preserved",
+        "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-native-row-1250f0a",
+          "source": "1250f0a105a15612064bb4b4d7463a037f9654a5",
+          "session": "78551 joined0",
+          "owner": "640691b1af0dea086d015c5ac92bb6df",
+          "owner_label": "org.bigbrotr.network-transport",
+          "state": "stopped-retained"
+        },
+        "runtime": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-native-row-runtime-1250f0a",
+          "source": "1250f0a105a15612064bb4b4d7463a037f9654a5",
+          "session": "21808 joined0",
+          "owner": "35e857a72c93df5b06b60393174a0290",
+          "owner_label": "org.bigbrotr.native-row-lab",
+          "state": "stopped-retained",
+          "network": "removed after owner/no-endpoint audit"
+        },
+        "terminal_observation": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-runtime-root-v1.json",
+        "qualification": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-root-qualification-v1.json"
       }
     },
     "archive_refusal_journey_attempts": [

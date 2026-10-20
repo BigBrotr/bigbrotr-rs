@@ -485,8 +485,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   content-heavy and tag-heavy 262,144-byte events, the latter at the 65,536-node
   envelope limit. Independent files/75-table audits pass; fresh cgroup peaks are
   103,550,976 B and 105,959,424 B with no OOM/max events. The same warm-cache,
-  PostgreSQL-external limits apply; full 1 MiB native-row and internal-owner
-  high-water qualification remain open.
+  PostgreSQL-external limits apply. The separate typed `native_row_boundary_20261020`
+  fixture at `1250f0a` now verifies an escape-heavy 1 MiB native row and exact
+  `ResourceLimit` refusal one byte beyond, under 64+96 MiB/five-second query
+  limits with preserved science and terminal custody. It is not an installed
+  job or empirical process-memory result; internal-owner high-water remains open.
   Indexing and Ingest restart/resend remain open;
   complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event

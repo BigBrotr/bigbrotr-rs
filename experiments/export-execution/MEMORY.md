@@ -79,6 +79,11 @@ Their real publication and five installed exports each are recorded in the
 recovery report's `supported_boundaries_20261020`, with separate source and outcome
 reviews. Neither is a near-1-MiB native-row seed; the empirical 256 MiB cgroup
 scope does not qualify whole-service sizing or internal-owner high-water.
+The separate typed [native-row fixture](../archive-engine/README.md#explicit-native-row-boundary-fixture)
+at `1250f0a` now qualifies an escape-heavy complete 1 MiB NativeFact query and
+exact `ResourceLimit` refusal one byte beyond, under 64+96 MiB grants/five-second
+deadline. Its real publication/custody evidence is in `native_row_boundary_20261020`;
+it supplies no installed-job or empirical whole-process memory claim.
 
 Resource accounting follows actual owners: Control uses credential copies plus
 16MiB+512MiB (`postgres_command::prepare_control_shared`); catalog uses copies

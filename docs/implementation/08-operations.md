@@ -517,8 +517,17 @@ each of content-heavy and tag-heavy 262,144-byte signed events; the latter also
 reaches the 65,536-node envelope limit. Both complete-file/75-table audits pass.
 Fresh 256 MiB/no-swap cgroup peaks are 103,550,976 B and 105,959,424 B, with no
 OOM/max events. The same warm-cache/PostgreSQL-external limits apply. This closes
-those supported-input cases only; full 1 MiB native-row, TLS and internal-owner
-high-water qualification remain open.
+those supported-input cases only; it does not cover full 1 MiB native-row, TLS or
+internal-owner high-water qualification.
+The separate typed fixture `1250f0a` now covers an escape-heavy 1 MiB NativeFact
+row and one byte beyond. Real fresh publication, complete independent science
+and native bytes, unchanged catalog/Parquet/policy/inputs, backend closure and
+owned container terminals pass. The exact query returns the full signed event
+in 442 ms; the overbound query returns exactly `ResourceLimit` in 367 ms under
+64+96 MiB grants and the unchanged five-second deadline. See
+`native_row_boundary_20261020` in the same report. This qualifies that native row
+boundary only; installed authority, empirical process memory, TLS and internal
+owner high-water are separate claims. Step 3 remains incomplete.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 

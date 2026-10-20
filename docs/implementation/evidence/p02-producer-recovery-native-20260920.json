@@ -37755,7 +37755,7 @@
           "next": "Qualify the separate native1MiB row boundary via existing typed fixtures with explicit matching accepted input policy; preserve separate installed authority and reduced-manager/driver/TLS gates."
         },
         "native_row_boundary_20261020": {
-          "status": "SOURCE_REVIEWED_BUILD_AND_RUNTIME_NOT_RUN",
+          "status": "PASS_TWO_NATIVE_ROW_BOUNDARY_CASES",
           "fixture_source": "c9ca467cbd57c4f200499f9e5a9c2e6f579a0607",
           "build_profile_source": "7789c5208f6284e72a68aef9fedad46863b82ee7",
           "author": {
@@ -37787,12 +37787,45 @@
           },
           "checks": {
             "offline": "PASS;22negative controls, independent signature/Node checks and7old-mode equivalence; pinned author packet",
-            "build": "NOT_RUN",
-            "native": "NOT_RUN",
-            "critical_review": "PASS; no concrete blocker in inspected native-only scope; all four outer findings resolved"
+            "build": "PASS_EXPORT_NATIVE_ROW_BUILD_ONLY",
+            "native": "Two real cases PASS; exact1MiB observed442ms, one-byte-over ResourceLimit367ms;21808 joined0",
+            "critical_review": "PASS; no concrete blocker in inspected native-only scope; all four outer findings resolved",
+            "critical_outcome_review": "PASS; no blocker within two native-only boundary captures"
           },
-          "scope": "Two signed inputs yielding complete NativeFact rows1048576/1048577B. Selected fresh typed1MiB input policy, actual query64+96MiB grants and5000ms deadline; exact row succeeds, overbound must return ResourceLimit.",
-          "limits": "Offline source preparation only; actual native serialization/publication/refusal/custody unobserved. No installed Export authorization/pins, full-service256MiB, TLS or internal-owner high-water claim."
+          "scope": "Real typed fresh publication of two independently signed inputs. Complete unclamped NativeFact1048576B returns fullsigned event442ms;1048577B returns exactlyResourceLimit367ms. Current64+96MiB/five-second query profile, zero remaining permits, checked original science/catalog/Parquet/policy/inputs, joined owners and actual exited0PID0noOOM resources.",
+          "limits": "Two exact escape-heavy native query cases only. No installed Export auth/job/pins, empirical256MiB/process-RSS, whole75-table audit, cold/concurrent/TLS/internal-owner high-water or whole-task/product completion.",
+          "execution_source": "1250f0a105a15612064bb4b4d7463a037f9654a5",
+          "execution_tree": "2bba565dbd49a69fd317e538edc07e1cb2cd9b25",
+          "build": {
+            "qualification": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-native-row-1250f0a/out/qualification.json",
+              "bytes": 7573,
+              "sha256": "d8108abe65da2bca3c68e4c5e44818135e7a58b206078f1f14a6c26c66cc31aa"
+            },
+            "source_manifest": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-native-row-1250f0a/out/build/source-manifest.json",
+              "bytes": 256056,
+              "sha256": "c237b2c335901eddb621e317c396bc204577065d7d809e6aa3e2e71e35011932"
+            },
+            "session": "78551 joined0",
+            "terminal": "Root actual-label/exit0/PID0/noOOM inspection of both containers PASS; all10qualified artifact pins match",
+            "checks": "Three example builds plus both focused Clippy invocations PASS"
+          },
+          "runtime_root_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-runtime-root-v1.json",
+            "bytes": 4959,
+            "sha256": "e7c495c142641bde698e021e070fc0cea97e9833a0c7619d83aef50fdb02e1b4"
+          },
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-root-qualification-v1.json",
+            "bytes": 1421,
+            "sha256": "bb45062257d805040ed2a1ae255868c01e07eb95ba4a18ec5004d5304fa510c7"
+          },
+          "outcome_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/native-row-outcome-review-v1.json",
+            "bytes": 10649,
+            "sha256": "7fd28ea4f66f22ca84e5fd01f4363d65ffcefa81a75617c04ac914c68b128908"
+          }
         }
       },
       "archive_refusal_journey_attempts": [
