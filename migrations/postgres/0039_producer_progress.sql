@@ -1,14 +1,19 @@
 -- Typed cumulative responsibility. No native ACK, credit, reclamation or job
 -- completion is an effect of this migration. Legacy opaque heads remain
 -- readable as legacy; they cannot be upgraded by supplying a new digest.
+-- PostgreSQL16 rewrites existing rows when ADD COLUMN uses a constrained
+-- domain, even with a NULL default. Nullable extensions use equivalent base
+-- types/CHECKs to preserve history; CHECK validation still scans under DDL locks.
 ALTER TABLE control.producer_checkpoints
     ADD COLUMN progress_format smallint CHECK (progress_format = 1),
-    ADD COLUMN manifest_sha256 control.digest32,
+    ADD COLUMN manifest_sha256 bytea CHECK (octet_length(manifest_sha256) = 32),
     ADD COLUMN progress_jobs integer,
     ADD COLUMN dependency_count integer,
-    ADD COLUMN issuer_resource control.id16,
-    ADD COLUMN issuer_epoch control.u64,
-    ADD COLUMN issuer_incarnation control.id16,
+    ADD COLUMN issuer_resource bytea CHECK (octet_length(issuer_resource) = 16
+        AND issuer_resource <> decode('00000000000000000000000000000000', 'hex')),
+    ADD COLUMN issuer_epoch numeric(20, 0) CHECK (issuer_epoch BETWEEN 0 AND 18446744073709551615),
+    ADD COLUMN issuer_incarnation bytea CHECK (octet_length(issuer_incarnation) = 16
+        AND issuer_incarnation <> decode('00000000000000000000000000000000', 'hex')),
     ADD CONSTRAINT producer_progress_shape CHECK (
         (progress_format IS NULL AND num_nonnulls(manifest_sha256, progress_jobs,
             dependency_count, issuer_resource, issuer_epoch, issuer_incarnation) = 0)
@@ -80,8 +85,9 @@ CREATE TRIGGER acquisition_progress_no_truncate BEFORE TRUNCATE
 ALTER TABLE control.producer_requests
     ADD COLUMN progress_request_id bytea,
     ADD COLUMN progress_event_ordinal smallint,
-    ADD COLUMN progress_wire_sequence control.u64,
-    ADD COLUMN progress_input_sha256 control.digest32,
+    ADD COLUMN progress_wire_sequence numeric(20, 0)
+        CHECK (progress_wire_sequence BETWEEN 0 AND 18446744073709551615),
+    ADD COLUMN progress_input_sha256 bytea CHECK (octet_length(progress_input_sha256) = 32),
     ADD CONSTRAINT producer_request_progress_shape CHECK (
         num_nonnulls(progress_request_id, progress_event_ordinal,
             progress_wire_sequence, progress_input_sha256) = 0

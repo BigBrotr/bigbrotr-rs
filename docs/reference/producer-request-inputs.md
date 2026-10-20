@@ -699,7 +699,11 @@ goldens. Physical row metadata and checkpoint commit timestamps are not digested
 
 The mutable head has nullable format/context/count/issuer extensions; all are
 NULL for historical opaque heads. No migration adopts or rewrites an old head
-as typed progress. No-head legacy history remains readable through old recovery;
+as typed progress. Nullable additions to existing tables use the domains' base
+types and equivalent checks: PostgreSQL16 would otherwise rewrite retained rows
+when adding a constrained-domain column. Constraint validation still scans under
+DDL locks; this is not an online or constant-time migration guarantee.
+No-head legacy history remains readable through old recovery;
 the new dispatch refuses to synthesize completed setup from old reservations.
 Historical retirement validators accept only a structurally valid typed head and
 retain all existing workflow/import/gap checks and unactivated-target vetoes.
