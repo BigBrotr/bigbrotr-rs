@@ -75,13 +75,23 @@ pub(super) fn prepare_catalog_as(
     password_reference: &str,
     budget: &ResourceBudget,
 ) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    prepare_catalog_as_with_extra(config, user, password_reference, budget, 64 * 1024 * 1024)
+}
+
+pub(super) fn prepare_catalog_as_with_extra(
+    config: &crate::config::Resolved,
+    user: &str,
+    password_reference: &str,
+    budget: &ResourceBudget,
+    extra_reservation: u64,
+) -> CliResult<(PreparedConnection, OwnedPermit)> {
     prepare_database(
         config,
         "postgres.catalog",
         "Archive catalog",
         user,
         password_reference,
-        64 * 1024 * 1024,
+        extra_reservation,
         Some(budget),
     )
 }
@@ -95,6 +105,63 @@ fn prepare_database(
     extra_reservation: u64,
     shared_budget: Option<&ResourceBudget>,
 ) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    let settings = settings(config, prefix, label, user, password_reference)?;
+    let reservation = reservation(&settings, extra_reservation)?;
+    let number = |name: &str| config.number(&format!("runtime.processes.application.{name}"));
+    let envelope = ProcessEnvelope::new(
+        number("memory_max_bytes"),
+        number("baseline_bytes"),
+        ResourceLimits::new(
+            number("payload_bytes"),
+            1,
+            number("native_bytes"),
+            number("completion_reserve_bytes"),
+        ),
+        WaiterLimits::new(0, 0),
+    )
+    .map_err(|_| (3, "invalid application memory envelope".into()))?;
+    let own_budget = ResourceBudget::new(envelope);
+    let budget = shared_budget.unwrap_or(&own_budget);
+    let grant = budget
+        .try_acquire(ResourceRequest::data(reservation, 1, 0).expect("positive reservation"))
+        .map_err(|_| {
+            (
+                3,
+                format!("{label} preparation does not fit the declared payload grant"),
+            )
+        })?;
+    let prepared = settings.prepare().map_err(|error| (3, error.to_string()))?;
+    Ok((prepared, grant))
+}
+
+/// The same conservative credential/transport charge used before preparation,
+/// without opening secret files. Callers add their operation-specific overlap.
+pub(super) fn catalog_reservation(
+    config: &crate::config::Resolved,
+    extra_reservation: u64,
+) -> CliResult<u64> {
+    let required = |key: &str| {
+        config
+            .text(key)
+            .ok_or_else(|| (3, format!("{key}: required for catalog preparation")))
+    };
+    let settings = settings(
+        config,
+        "postgres.catalog",
+        "Archive catalog",
+        required("postgres.catalog.user")?,
+        required("postgres.catalog.password_ref")?,
+    )?;
+    reservation(&settings, extra_reservation)
+}
+
+fn settings<'a>(
+    config: &'a crate::config::Resolved,
+    prefix: &str,
+    label: &str,
+    user: &'a str,
+    password_reference: &'a str,
+) -> CliResult<ConnectionSettings<'a>> {
     let password = secret(password_reference)?;
     let present = |field: &str| {
         let key = format!("{prefix}.{field}");
@@ -124,48 +191,26 @@ fn prepare_database(
         },
         _ => return Err((3, format!("invalid {label} database TLS mode"))),
     };
-    let settings = ConnectionSettings {
+    Ok(ConnectionSettings {
         endpoint: present("endpoint")?,
         database: present("database")?,
         user,
         password,
         connect_timeout: Duration::from_secs(5),
         tls,
-    };
+    })
+}
+
+fn reservation(settings: &ConnectionSettings<'_>, extra_reservation: u64) -> CliResult<u64> {
     // Conservative initial per-command allowance, not a measured RSS ceiling.
     // This finite command admits one connection and one transaction at a time.
     let input_bytes = u64::try_from(settings.preparation_input_reservation_bytes())
         .map_err(|_| (3, "credential reservation exceeds platform range".into()))?;
-    let reservation = input_bytes
+    input_bytes
         .checked_mul(8)
         .and_then(|n| n.checked_add(16 * 1024 * 1024))
         .and_then(|n| n.checked_add(extra_reservation))
-        .ok_or_else(|| (3, format!("{label} command memory reservation overflow")))?;
-    let number = |name: &str| config.number(&format!("runtime.processes.application.{name}"));
-    let envelope = ProcessEnvelope::new(
-        number("memory_max_bytes"),
-        number("baseline_bytes"),
-        ResourceLimits::new(
-            number("payload_bytes"),
-            1,
-            number("native_bytes"),
-            number("completion_reserve_bytes"),
-        ),
-        WaiterLimits::new(0, 0),
-    )
-    .map_err(|_| (3, "invalid application memory envelope".into()))?;
-    let own_budget = ResourceBudget::new(envelope);
-    let budget = shared_budget.unwrap_or(&own_budget);
-    let grant = budget
-        .try_acquire(ResourceRequest::data(reservation, 1, 0).expect("positive reservation"))
-        .map_err(|_| {
-            (
-                3,
-                format!("{label} preparation does not fit the declared payload grant"),
-            )
-        })?;
-    let prepared = settings.prepare().map_err(|error| (3, error.to_string()))?;
-    Ok((prepared, grant))
+        .ok_or_else(|| (3, "PostgreSQL command memory reservation overflow".into()))
 }
 
 fn secret(reference: &str) -> CliResult<SecretFile<'_>> {

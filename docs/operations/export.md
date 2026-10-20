@@ -298,8 +298,18 @@ Each attempt has a five-second deadline for native work and a nonrenewable
 action window. Control collection, positive joins and cleanup have their own
 finite allowances and can extend total elapsed time. It shares the runtime's
 application/native ledger; `export.memory.max_bytes` must fit the complete worker,
-parent decode and credential/output overlap. The default256MiB is insufficient
-for this native profile and causes deferred work. Disk preflight checks complete
+parent decode and credential/output overlap. The export-only profile now reserves
+64MiB for the engine and96MiB for native overhead, retaining the full1MiB signed-row
+envelope. Admission also charges catalog transport/credentials, reader input,
+parent decoding, output and native completion control before secret I/O. Its
+logical minimum is254,541,832 bytes with plaintext catalog transport,
+262,930,448 with server TLS, and290,193,440 with mutual TLS. The default256MiB
+therefore admits the first two profiles and defers mutual TLS; insufficient
+admission does not create a durable pause or a new refusal reason. Shared Control
+service costs remain charged separately. These are reservation arithmetic,
+not measured RSS ceilings: reduced-profile execution and the five-export memory
+gate remain under qualification. Publication and other native consumers retain
+their existing profiles. Disk preflight checks complete
 additional logical copies,64MiB native scratch and1MiB metadata headroom against
 available space while preserving `runtime.disk_completion_reserve_bytes` on both
 output and scratch filesystems. Existing bytes already reduce observed free

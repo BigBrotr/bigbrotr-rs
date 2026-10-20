@@ -9,13 +9,14 @@ sys.dont_write_bytecode = True
 SOURCE = Path('/out/build/source')
 sys.path.insert(0, str(SOURCE))
 from tools.build import clean_environment, file_hash, native_toolchain, build_binaries
-from tools.archive_bundle import build_environment
+from tools.archive_bundle import build_environment, install_bundle, verify_file
 from tools.ci import execute
 job_pages_cli = sys.argv[1:] == ['--runtime','--job-pages-cli']
 job_pages = job_pages_cli or sys.argv[1:] == ['--runtime','--job-pages']
 runtime = job_pages or sys.argv[1:] == ['--runtime']
 memory_probe = sys.argv[1:] == ['--memory-probe']
-assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'])
+admission = sys.argv[1:] == ['--admission']
+assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'])
 if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
@@ -43,7 +44,46 @@ identity = dict(source=manifest['revision'],tree=manifest['tree'],lockfile_sha25
     source_manifest_sha256=file_hash(build/'source-manifest.json'),native_toolchain=native,
     scope='Current typed SQL/native/files consumer research driver; no installed automatic scheduler or signal/recovery qualification')
 checks = Path('/out/adapter-checks')
-if memory_probe:
+if admission:
+    artifacts = Path('/out/artifacts')
+    artifacts.mkdir()
+    bundle = artifacts / 'archive-worker'
+    bundle.mkdir()
+    install_bundle(Path('/archive-inputs'), bundle, 'x86_64-unknown-linux-gnu')
+    worker_identity = dict(bytes=14421792,
+        sha256='0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1')
+    retained_worker = Path('/archive-inputs/bigbrotr-archive-worker')
+    verify_file(retained_worker, worker_identity)
+    worker = bundle / 'bigbrotr-archive-worker'
+    shutil.copy2(retained_worker, worker)
+    verify_file(worker, worker_identity)
+    worker.chmod(0o500)
+    env.update(build_environment(bundle))
+    env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker_identity['bytes']),
+               BIGBROTR_ARCHIVE_WORKER_SHA256=worker_identity['sha256'])
+    identity.update(scope='Installed export admission unit boundaries and build only; runtime/memory qualification NOT_RUN',
+                    worker_source='6c42a41534a0d7ec3e425fa34b1b3c88bdceab79')
+    assert execute([
+        ('admission', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                       '--bin', 'bigbrotr', 'interfaces::serve::export_jobs::tests::']),
+        ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr']),
+        ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                    '--bin', 'bigbrotr', '--', '-D', 'warnings']),
+    ], checks, SOURCE, env, identity, 1800)['status'] == 'PASS'
+    assert '3 passed; 0 failed; 0 ignored' in (checks / 'admission.log').read_text()
+    executable = artifacts / 'bigbrotr'
+    shutil.copy2(build / 'target/release/bigbrotr', executable)
+    executable.chmod(0o500)
+    info = json.loads(subprocess.check_output([str(executable), 'build-info'], env={}))
+    assert info['archive_worker'] == worker_identity
+    assert info['source'] == dict(state='builder-supplied', revision=manifest['revision'],
+        tree=manifest['tree'], dirty=False, manifest_sha256=identity['source_manifest_sha256'])
+    assert info['target'] == 'x86_64-unknown-linux-gnu'
+    identity.update(build_info=info, artifacts={
+        str(p.relative_to(artifacts)): dict(sha256=file_hash(p), bytes=p.stat().st_size)
+        for p in sorted(artifacts.rglob('*')) if p.is_file()})
+    (checks / 'artifacts.json').write_text(json.dumps(identity, indent=2) + '\n')
+elif memory_probe:
     identity['scope'] = 'Export memory probe compilation and Clippy only; no runtime or memory qualification'
     assert execute([
         ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--example', 'export-execution-probe']),
@@ -108,6 +148,6 @@ else:
     identity.update(build_info=info,artifacts={p.name:file_hash(p) for p in artifacts.iterdir()})
     (checks/'artifacts.json').write_text(json.dumps(identity,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
-if memory_probe:
+if memory_probe or admission:
     Path('/out/qualification.json').write_text(json.dumps(
-        dict(identity, status='PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY'), indent=2) + '\n')
+        dict(identity, status='PASS_EXPORT_ADMISSION_BUILD_ONLY' if admission else 'PASS_EXPORT_MEMORY_PROBE_BUILD_ONLY'), indent=2) + '\n')

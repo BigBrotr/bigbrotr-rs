@@ -18,7 +18,7 @@ use bigbrotr::{
     storage::{
         archive::{
             ArchiveEventError, CatalogReaderCredentials, LocalCoordinator, Preparation,
-            PreparationError, ProcessError,
+            PreparationError, PreparationLimits, ProcessError,
         },
         postgres::{
             catalog_guard::{self, CatalogCapture},
@@ -68,10 +68,28 @@ fn pause_reason(error: SessionError) -> ExportPauseReason {
         _ => ExportPauseReason::ExecutionRefused,
     }
 }
-fn limits(config: &Resolved) -> std::result::Result<ExportLimits, SessionError> {
-    let required = config
-        .number("archive.worker_memory_bytes")
-        .checked_add(64 * (ROW_BYTES as u64 + 2048) + 128 * 1024 * 1024 + OUTPUT_MEMORY)
+fn limits(
+    config: &Resolved,
+) -> std::result::Result<(ExportLimits, PreparationLimits), SessionError> {
+    // Exact-ID reads have a separate profile from catalog initialization and
+    // publication. Keep the complete signed row envelope and native decode floor.
+    let reader = PreparationLimits {
+        memory_bytes: 64 * 1024 * 1024,
+        native_reserve_bytes: 96 * 1024 * 1024,
+        temp_bytes: SCRATCH_BYTES,
+        threads: 1,
+        max_records: 2,
+        max_encoded_bytes: ROW_BYTES,
+    };
+    let native = reader.memory_bytes + reader.native_reserve_bytes;
+    if native > config.number("archive.worker_memory_bytes") {
+        return Err(SessionError::Capacity);
+    }
+    // Charge the same catalog credentials/transport, native TLS source, reader,
+    // parent response, output and native-control owners that remain live below.
+    // Shared Control service memory stays charged separately in the shared budget.
+    let required = native_grants::export_preparation_memory(config)?
+        .checked_add(native + 64 * (ROW_BYTES as u64 + 2048) + OUTPUT_MEMORY + 128 * 1024)
         .ok_or(SessionError::Capacity)?;
     if required > config.number("export.memory.max_bytes") {
         return Err(SessionError::Capacity);
@@ -84,7 +102,10 @@ fn limits(config: &Resolved) -> std::result::Result<ExportLimits, SessionError> 
     {
         return Err(SessionError::Capacity);
     }
-    ExportLimits::new(maximum, temporary).map_err(|_| SessionError::Capacity)
+    Ok((
+        ExportLimits::new(maximum, temporary).map_err(|_| SessionError::Capacity)?,
+        reader,
+    ))
 }
 
 /// A completed refusal advances the queue cursor. Unknown SQL/worker outcomes
@@ -99,7 +120,7 @@ pub(super) async fn execute(
     retained: &Custody,
     authority: &mut Supervisor<'_>,
 ) -> Result<()> {
-    let limits = match limits(&config) {
+    let (limits, reader_limits) = match limits(&config) {
         Ok(value) => value,
         Err(_) => return Ok(()),
     };
@@ -162,7 +183,7 @@ pub(super) async fn execute(
     let prepare_budget = budget.clone();
     let prepared = match authority
         .blocking(deadline, move |_| {
-            native_grants::prepare(&prepare_config, &prepare_budget)
+            native_grants::prepare_export(&prepare_config, &prepare_budget)
         })
         .await?
     {
@@ -299,9 +320,7 @@ pub(super) async fn execute(
                     window.check().map_err(unavailable)?;
                     let route = preflight::NativeRoute::new(&config, &route, prepared.reader.tls)
                         .map_err(unavailable)?;
-                    let mut limits = preflight::limits(&config).map_err(unavailable)?;
-                    limits.max_records = 2;
-                    limits.max_encoded_bytes = ROW_BYTES;
+                    let limits = reader_limits;
                     // An opaque preparation failure may already have created scratch.
                     // Fail-stop instead of multiplying unknown directories on retry.
                     let (installation, scratch, _) = preflight::worker(
@@ -421,4 +440,121 @@ pub(super) async fn execute(
     }
     drop(output_grant);
     outcome
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+    use std::path::Path;
+
+    fn config() -> Resolved {
+        let mut config = crate::config::load(Path::new(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../config/recipes/archive-only.toml"
+        )))
+        .unwrap();
+        // Admission must inspect references without opening these absent files.
+        config.values.insert(
+            "postgres.catalog.password_ref".into(),
+            json!("file:/nonexistent-export-admission/password"),
+        );
+        config
+    }
+
+    #[test]
+    fn catalog_tls_costs_gate_admission_before_secret_io() {
+        let mut config = config();
+        for (transport, threshold) in [
+            ("plaintext", 254_541_832_u64),
+            ("server-tls", 262_930_448),
+            ("mutual-tls", 290_193_440),
+        ] {
+            if transport != "plaintext" {
+                for (key, value) in [
+                    ("mode", "verify-full"),
+                    ("ca_file", "/nonexistent-export-admission/ca.pem"),
+                    ("server_name", "catalog.example"),
+                ] {
+                    config
+                        .values
+                        .insert(format!("postgres.catalog.tls.{key}"), json!(value));
+                }
+            }
+            if transport == "mutual-tls" {
+                for (key, value) in [
+                    ("client_cert_ref", "file:/nonexistent-export-admission/cert"),
+                    ("client_key_ref", "file:/nonexistent-export-admission/key"),
+                ] {
+                    config
+                        .values
+                        .insert(format!("postgres.catalog.tls.{key}"), json!(value));
+                }
+            }
+            config
+                .values
+                .insert("export.memory.max_bytes".into(), json!(threshold - 1));
+            assert!(matches!(limits(&config), Err(SessionError::Capacity)));
+            config
+                .values
+                .insert("export.memory.max_bytes".into(), json!(threshold));
+            assert!(limits(&config).is_ok(), "{transport}");
+            config
+                .values
+                .insert("export.memory.max_bytes".into(), json!(268_435_456));
+            assert_eq!(limits(&config).is_ok(), transport != "mutual-tls");
+        }
+    }
+
+    #[test]
+    fn export_reader_preserves_rows_and_the_publisher_profile() {
+        let mut config = config();
+        let (_, reader) = limits(&config).unwrap();
+        assert_eq!(
+            (
+                reader.memory_bytes,
+                reader.native_reserve_bytes,
+                reader.temp_bytes,
+                reader.threads,
+                reader.max_records,
+                reader.max_encoded_bytes,
+            ),
+            (67_108_864, 100_663_296, 67_108_864, 1, 2, 1_048_576),
+        );
+        let publisher = preflight::limits(&config).unwrap();
+        assert_eq!(publisher.memory_bytes, 134_217_728);
+        assert_eq!(publisher.native_reserve_bytes, 402_653_184);
+        config
+            .values
+            .insert("archive.worker_memory_bytes".into(), json!(167_772_159));
+        assert!(matches!(limits(&config), Err(SessionError::Capacity)));
+        config
+            .values
+            .insert("archive.worker_memory_bytes".into(), json!(167_772_160));
+        assert!(limits(&config).is_ok());
+        assert!(preflight::limits(&config).is_err());
+    }
+
+    #[test]
+    fn output_growth_and_overflow_still_refuse() {
+        let mut config = config();
+        config
+            .values
+            .insert("export.artifact.max_bytes".into(), json!(1_048_576));
+        config
+            .values
+            .insert("export.spill.max_bytes".into(), json!(70_254_592));
+        assert!(limits(&config).is_ok());
+        config
+            .values
+            .insert("export.spill.max_bytes".into(), json!(70_254_591));
+        assert!(matches!(limits(&config), Err(SessionError::Capacity)));
+        config
+            .values
+            .insert("export.artifact.max_bytes".into(), json!(u64::MAX));
+        config
+            .values
+            .insert("export.spill.max_bytes".into(), json!(u64::MAX));
+        assert!(matches!(limits(&config), Err(SessionError::Capacity)));
+    }
 }

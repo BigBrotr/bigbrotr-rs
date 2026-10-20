@@ -9,20 +9,23 @@ remain authoritative. No separate plan or process-optimization project.
 P08-T04 Step3 / P01-T05 Step2: reduce installed export admission costs after
 qualifying bounded, streamed catalog inspection. Root owns integration/runtime in
 `/home/tux/bigbrotr-rs`, branch `main`. Last verified pushed revision:
-`91af8a9fa8bb6ebf5a34a9c30131da06c57d55d8` (push93832 joined0, exact remote equal).
-Source `48299b240f4329ee7dc006ba51e696562c4ba64d` includes fixture commit
-`d7a34c24de4bfbd16b86431ed66dddf431a7ce8d`, the guard correction and focused build.
-Local root changes record the completed qualification; no unverified product edits.
+`a9d2ccb77578c581e724e2f199f1cd207e54610c` (push87547 joined0, exact remote equal).
+The guard qualification at48299b2 is complete. Current root changes implement
+export-only admission and three boundary tests in the existing owners, extend the
+existing build runner, and update operator documentation. Build/runtime NOT_RUN
+for this admission candidate; critical review is in progress.
 Astra/xhigh continuity retained; new bounded fixture author Sol/xhigh verified
 from actual turn metadata at2026-10-20T13:21:31.722Z.
 
-The installed export requires at least705.125MiB. The measured160MiB native
-profile still totals306.625MiB per job with current catalog/parent grants.
+The previous installed export required at least705.125MiB. The measured160MiB native
+profile still totaled306.625MiB per job with its old catalog/parent grants.
 Inspection collected up to1025 rows and bounded definitions before transfer,
 but function identity names could exceed the allowance before rejection.
 The correction caps transferred names and streams the unchanged ordered hash,
-retaining the1024-object ceiling and full driver/grant custody. No memory grant,
-publisher/native profile, event fidelity or deadline has changed.
+retaining the1024-object ceiling and full driver/grant custody. The new admission
+candidate uses the64+96MiB export reader and reduced bounded catalog allowance,
+charging TLS before dispatch. Publisher/history grants, fidelity, parent64× and
+deadlines remain unchanged. Over-cap jobs retain the existing deferred behavior.
 
 ## Evidence and open problems
 
@@ -48,9 +51,10 @@ before another trial. Preserve every original failure and raw artifact.
 No root engine/compiler/cleanup process is active. Build session79187 and runtime
 61508 both joined0. Both build and both runtime containers exited0/PID0/noOOM
 under `runs/catalog-layout-48299b2`; source, data and logs are retained through
-the [inventory](../research/laboratory-inventory.json). Subagents are idle.
+the [inventory](../research/laboratory-inventory.json). Astra critical review is active.
 The Sol author's clean worktree `.research/catalog-layout-fixture-20261020`
-retains its integrated commit. Preserve every worktree, ignored file and external
+retains integratedd7a34c2 detached; its redundant branch ref was retired after
+integration/push and actual clean/ancestor checks. Preserve every worktree, ignored file and external
 lab under `/home/tux/bigbrotr-implementation-20260917/runs`.
 Space after build:319,590,359,040B available.
 No cleanup is due; unrelated workloads remain untouched. Verify actual ownership
@@ -58,15 +62,13 @@ before using the retained compiler cache or creating/reusing runtime resources.
 
 ## Next bounded action
 
-Commit/push this coherent source and qualification. Then implement the bounded
-export-only admission slice: retain16MiB plus configured credential copies for
-the catalog driver, use the separately measured64+96MiB read profile, preserve
-the512MiB publisher profile and full1MiB signed-row envelope, and charge all actual
-per-job grants including TLS and128KiB completion. Plaintext arithmetic242.750008MiB
-and serverTLS250.750015MiB are proposals, not runtime qualification; mTLS276.750031MiB
-must refuse under256MiB. Keep shared Control cost disclosed separately. Reuse the
-existing tools and raw single-capture evidence; installed five-export qualification
-still requires actual new jobs/scenarios. Do not reduce the parent64× multiplier.
+Finish critical source review, commit the exact admission candidate, then run the
+existing isolated runner's `export-admission` profile (three boundary tests,
+installed parent build and Clippy, reusing the verified unchanged6c42a41 worker).
+Record actual outcomes in the existing recovery report and inventory. Then qualify
+actual reduced-profile execution/cancellation and five new installed exports,
+including disclosed shared Control costs; arithmetic and one prior capture do
+not satisfy the256MiB gate. Preserve current parent64× and full signed rows.
 
 Continue dependency-ready M1–M5 work. ACK/GC, import/restore, capacity/aged-state
 and complete product/release journeys remain open; Q33 hosted CI billing,

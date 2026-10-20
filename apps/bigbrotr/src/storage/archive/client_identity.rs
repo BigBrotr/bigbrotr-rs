@@ -43,6 +43,12 @@ impl fmt::Debug for NativeClientIdentity {
     }
 }
 impl NativeClientIdentity {
+    /// Logical preparation and retained-source charge, including sealed files.
+    /// Native TLS allocations also consume the worker's separate allowance.
+    pub const fn reservation_bytes() -> u64 {
+        RESERVATION
+    }
+
     /// Load once using protected descriptors, validate PEM and the matching key,
     /// and freeze exact bytes before any permanent bootstrap reservation.
     pub fn load(

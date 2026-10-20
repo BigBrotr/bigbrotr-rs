@@ -278,6 +278,7 @@ pub(super) struct ReaderInput {
     pub(super) tls: Option<NativeClientIdentity>,
     _permit: OwnedPermit,
 }
+const READER_MEMORY: u64 = 1024 * 1024;
 pub(super) fn required<'a>(
     config: &'a Resolved,
     key: &str,
@@ -288,14 +289,52 @@ pub(super) fn prepare(
     config: &Resolved,
     budget: &ResourceBudget,
 ) -> std::result::Result<Prepared, WorkerError> {
+    prepare_with_catalog_extra(config, budget, 64 * 1024 * 1024)
+}
+
+/// Streamed, bounded read-only catalog inspection fits the existing transport
+/// allowance. Retain that complete grant through the actual catalog driver join.
+pub(super) fn prepare_export(
+    config: &Resolved,
+    budget: &ResourceBudget,
+) -> std::result::Result<Prepared, WorkerError> {
+    prepare_with_catalog_extra(config, budget, 0)
+}
+
+pub(super) fn export_preparation_memory(
+    config: &Resolved,
+) -> std::result::Result<u64, SessionError> {
+    let catalog =
+        postgres_command::catalog_reservation(config, 0).map_err(|_| SessionError::Capacity)?;
+    let native_tls = if config
+        .text("postgres.catalog.tls.client_cert_ref")
+        .is_some()
+        || config.text("postgres.catalog.tls.client_key_ref").is_some()
+    {
+        NativeClientIdentity::reservation_bytes()
+    } else {
+        0
+    };
+    catalog
+        .checked_add(READER_MEMORY)
+        .and_then(|bytes| bytes.checked_add(native_tls))
+        .ok_or(SessionError::Capacity)
+}
+
+fn prepare_with_catalog_extra(
+    config: &Resolved,
+    budget: &ResourceBudget,
+    catalog_extra: u64,
+) -> std::result::Result<Prepared, WorkerError> {
     let permit = budget
-        .try_acquire(ResourceRequest::data(1024 * 1024, 1, 0).unwrap())
+        .try_acquire(ResourceRequest::data(READER_MEMORY, 1, 0).unwrap())
         .map_err(|_| WorkerError::Refused(SessionError::Capacity))?;
-    let (manager, manager_grant) = postgres_command::prepare_catalog_as(
+    let (manager, manager_grant) = postgres_command::prepare_catalog_as_with_extra(
         config,
         required(config, "postgres.catalog.user")?,
         required(config, "postgres.catalog.password_ref")?,
         budget,
+        catalog_extra,
     )
     .map_err(unavailable)?;
     let password = SecretFile::parse(required(config, "postgres.catalog.read_password_ref")?)
