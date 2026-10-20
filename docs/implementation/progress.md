@@ -9,13 +9,11 @@ P02-T02 Steps4/5/7: durable classified producer checkpoint → synchronized nati
 ACK → restart. Current increment implements typed PG progress with native ACK0,
 retaining every request/receipt/input (noGC); it grants no new credit.
 
-Main `c89b9e2052cd291640cdabfdf6905ed0be6853f9` was pushed and verified equal
-to remote. It integrates candidate `75df76037cb5c60458165414f133d9deafcc4112`.
-Five reconciled original source/integration branch refs were retired; all their
-clean worktrees remain detached at their original commits, including
-`.research/producer-progress-integration-20261020`. Ignored evidence is preserved.
-The reviewed `738637f1c7154f2199eddecf86c83cdd5252bbdb` recovery fixture and its
-qualification are now staged for one coherent integration commit.
+Main parent `c420c66` integrates reviewed recovery738637f and its qualification.
+This checkpoint accompanies integration of reviewed/tested proxy88a926; product
+source remains exactly qualified d4e1b85. Last verified remote is c89b9e2; push of
+these coherent results is next. Retired source refs retain their detached original
+worktrees and ignored evidence; the inventory owns their exact identities.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -38,15 +36,15 @@ unrelated changes. Prior build/successor runs remain joined. No engine/build act
 `export_setup_review` owns the initial/activated fixture in its separate worktree.
 Proxy88a926 is frozen in `.research/producer-progress-fault-20261020`, with root
 and independent Astra source review,20 discriminator/wire tests and5 existing
-proxy testsPASS. It is not integrated or connected product evidence yet.
+proxy testsPASS. Its integration supplies a tool, not connected product evidence.
 The [inventory](../research/laboratory-inventory.json) owns paths and custody.
 No cleanup; original datasets, failed runs, logs and worktrees remain intact.
 
 ## Next action and open limits
 
-Finish this integration/push, then review/run the initial and activated-epoch2
-Sync fixture on qualified d4e1b85 binaries. Integrate the reviewed narrow proxy
-and add the agreed proof-only COMMIT-loss scenario using existing collectors and
+Push this integration, then review/run the initial and activated-epoch2
+Sync fixture on qualified d4e1b85 binaries. Add the agreed proof-only
+COMMIT-loss scenario using existing collectors and
 oracles; active old-Control recovery requires its explicit lifecycle profile.
 Reuse unchanged component builds.
 

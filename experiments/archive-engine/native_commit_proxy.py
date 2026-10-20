@@ -31,6 +31,7 @@ CONTROL_TARGETS = {
     'control-export-complete': b'INSERT INTO CONTROL.ARTIFACTS(',
     'control-export-pause': b"UPDATE CONTROL.JOBS SET STATE='PAUSED',",
     'control-cursor-retention': b'UPDATE CONTROL.CURSOR_KEY_LIFECYCLE SET DECRYPT_UNTIL_US=',
+    'control-producer-progress': b'UPDATE CONTROL.ACQUISITION_PROGRESS SET SCOPE_ID=$5::BYTEA,',
 }
 
 
@@ -132,6 +133,8 @@ class Proxy:
     def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default'):
         self.mode = mode
         self.target = target
+        if target == 'control-producer-progress' and mode not in ('pass', 'before-forward', 'after-complete'):
+            raise ValueError('producer-progress-mode')
         # Retained reconciliation opens several real readers before the selected
         # publication. Its explicit fixture profile keeps byte/time/frame bounds;
         # old callers retain their original traffic admission and event shape.
@@ -155,8 +158,14 @@ class Proxy:
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
+        if self.target == 'control-producer-progress':
+            self.progress_backend_pid = None
+            self.progress_backend_session = None
+            self.report.update(progress_updates_complete=0, target_occurrence=2)
 
     def emit(self, event, **extra):
+        if self.target == 'control-producer-progress':
+            extra.setdefault('backend_pid', self.progress_backend_pid)
         if self.profile != 'default':
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit)
@@ -216,12 +225,16 @@ class Proxy:
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None,
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
+        progress_target = self.target == 'control-producer-progress'
+        progress_session = object() if progress_target else None
+        progress_transaction = False
         session_commands = SessionCommandObserver(self.target) if self.target in (
-            'control-session-issue', 'control-session-revoke') else None
+            'control-session-issue', 'control-session-revoke', 'control-producer-progress') else None
         resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
         manager_committed = asyncio.Event()
 
         async def pump(source, destination, frontend):
+            nonlocal progress_transaction
             while True:
                 try:
                     frame = await self.frame(source)
@@ -246,7 +259,30 @@ class Proxy:
                     if frontend:
                         session_commands.frontend(tag, body)
                     elif session_commands.backend(tag, body):
-                        self.report['session_mutations_complete'] += 1
+                        if progress_target:
+                            # Closed fixture: NEW first inserts; OLD completes
+                            # UPDATE1; the gated repeat completes UPDATE2 on this
+                            # same actual Control backend. Preparation cannot arm
+                            # its COMMIT, including a cached prepared statement.
+                            pid = state['backend_pid']
+                            if (parameters.get(b'user') != b'bigbrotr_control' or pid is None
+                                    or self.progress_backend_pid not in (None, pid)
+                                    or (self.progress_backend_session is not None
+                                        and self.progress_backend_session is not progress_session)):
+                                raise ValueError('producer-progress-backend')
+                            if not progress_transaction:
+                                raise ValueError('producer-progress-transaction')
+                            if self.report['progress_updates_complete'] >= 2:
+                                raise ValueError('producer-progress-target-budget')
+                            self.progress_backend_pid = pid
+                            self.progress_backend_session = progress_session
+                            self.report['progress_updates_complete'] += 1
+                            if self.report['progress_updates_complete'] == 2:
+                                state['data'] = True
+                                self.report['data_queries'] += 1
+                            self.emit('progress-update-complete')
+                        else:
+                            self.report['session_mutations_complete'] += 1
                 if not frontend and self.mode == 'omit-auth-final' and tag == b'R' and body[:4] == struct.pack('!I', 12):
                     # Real server authentication succeeds, but the client must
                     # refuse the following AuthenticationOk without its verifier.
@@ -284,7 +320,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS:
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not progress_target:
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -378,6 +414,13 @@ class Proxy:
                     assert len(body) == 8
                     # Retain the public backend PID only, never the cancel key.
                     state['backend_pid'] = struct.unpack('!I', body[:4])[0]
+                if not frontend and progress_target:
+                    if tag == b'E':
+                        state['data'] = state['commit'] = False
+                    elif tag == b'Z':
+                        progress_transaction = body == b'T'
+                        if not progress_transaction:
+                            state['data'] = state['commit'] = False
                 if not frontend and tag == b'E' and state['data']:
                     fields = body.split(b'\0')
                     if (self.target == 'control-export-resume' and state['commit']

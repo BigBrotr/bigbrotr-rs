@@ -1,5 +1,8 @@
 """Discriminate fixture targets without SQL values or credentials in receipts."""
 import importlib.util
+from contextlib import redirect_stdout
+import io
+import json
 from pathlib import Path
 import unittest
 
@@ -9,6 +12,35 @@ proxy = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(proxy)
 
 class Targets(unittest.TestCase):
+    def test_progress_targets_only_exact_update_prefix(self):
+        target = 'control-producer-progress'
+        query = b'UPDATE control.acquisition_progress SET scope_id=$5::bytea, progress_revision=$6::text::numeric'
+        self.assertTrue(proxy.control_target_query(target, query))
+        self.assertTrue(proxy.control_target_query(target, query.lower()))
+        for other in [b'INSERT INTO control.acquisition_progress(dataset_id) VALUES($1)',
+                      b'UPDATE control.acquisition_progress SET progress_revision=$6::text::numeric',
+                      b'UPDATE control.acquisition_progress SET scope_id=$5::bytea_extra,',
+                      b'UPDATE control.producer_checkpoints SET scope_id=$5::bytea,',
+                      b'SELECT scope_id FROM control.acquisition_progress',
+                      b"SELECT 'UPDATE control.acquisition_progress SET scope_id=$5::bytea,'"]:
+            self.assertFalse(proxy.control_target_query(target, other))
+
+    def test_progress_mode_guard_and_target_only_receipt_fields(self):
+        for mode in ['pass', 'before-forward', 'after-complete']:
+            observer = proxy.Proxy(mode, 'control-producer-progress')
+            stream = io.StringIO()
+            with redirect_stdout(stream):
+                observer.emit('ready')
+            event = json.loads(stream.getvalue())
+            self.assertEqual(event['target_occurrence'], 2)
+            self.assertEqual(event['progress_updates_complete'], 0)
+            self.assertIsNone(event['backend_pid'])
+        for mode in ['hold-data', 'hold-commit', 'hold-reply', 'omit-auth-final']:
+            with self.assertRaisesRegex(ValueError, '^producer-progress-mode$'):
+                proxy.Proxy(mode, 'control-producer-progress')
+        original = proxy.Proxy('pass')
+        self.assertFalse({'target_occurrence', 'progress_updates_complete', 'backend_pid'} & original.report.keys())
+
     def test_cursor_retention_does_not_target_lifecycle_or_session(self):
         target = 'control-cursor-retention'
         self.assertIn(target, proxy.CONTROL_TARGETS)
@@ -73,6 +105,34 @@ class Targets(unittest.TestCase):
 
 
 class SessionCompletions(unittest.TestCase):
+    def test_progress_cached_execute_excludes_other_update_and_failed_commands(self):
+        observer = proxy.SessionCommandObserver('control-producer-progress')
+        for name, query in [(b'progress', b'UPDATE control.acquisition_progress SET scope_id=$5::bytea, progress_revision=$6'),
+                            (b'other', b'UPDATE control.jobs SET state=$1')]:
+            observer.frontend(b'P', name + b'\0' + query + b'\0\0\0')
+            observer.frontend(b'S', b'')
+            observer.backend(b'1', b'')
+            observer.backend(b'Z', b'T')
+        self.execute(observer, b'other')
+        self.execute(observer, b'progress')
+        observer.frontend(b'S', b'')
+        self.assertFalse(observer.backend(b'C', b'UPDATE 1\0'))
+        self.assertFalse(observer.backend(b'C', b'UPDATE 0\0'))
+        observer.backend(b'Z', b'T')
+        self.execute(observer, b'progress')
+        observer.frontend(b'S', b'')
+        self.assertFalse(observer.backend(b'E', b'C23514\0\0'))
+        observer.backend(b'Z', b'E')
+        # The cached statement survives transaction boundaries and an error.
+        observer.frontend(b'Q', b'ROLLBACK\0')
+        observer.backend(b'C', b'ROLLBACK\0')
+        observer.backend(b'Z', b'I')
+        self.execute(observer, b'progress')
+        observer.frontend(b'S', b'')
+        self.assertTrue(observer.backend(b'C', b'UPDATE 1\0'))
+        observer.backend(b'Z', b'T')
+        self.assertFalse(observer.pending)
+
     def observer(self):
         return proxy.SessionCommandObserver('control-session-issue')
 
