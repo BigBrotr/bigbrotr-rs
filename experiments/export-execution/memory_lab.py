@@ -67,7 +67,7 @@ def inspect(ident):
 
 class Laboratory:
     def __init__(self, root, build, probe, instrument, *, application_build=None, export_memory_mib=1024,
-                 signed_input='archive-sample', manager_build=None):
+                 signed_input='archive-sample', manager_build=None, prepare_only=False):
         require(root.is_absolute() and root.resolve() == root and not root.exists(), 'fresh canonical root')
         require(not git('status', '--porcelain', '--untracked-files=all'), 'clean committed source')
         require(shutil.disk_usage(root.parent).free >= 69324505088, 'completion reserve plus headroom')
@@ -75,6 +75,7 @@ class Laboratory:
         self.application_source = APPLICATION_SOURCE
         self.artifacts = ARTIFACTS
         self.application_qualification = None
+        self.application_preparation_only = False
         self.manager_build = None
         self.manager_qualification = None
         self.reference_build = build if application_build is not None else None
@@ -98,11 +99,14 @@ class Laboratory:
             qualification = json.loads(qualification_path.read_text())
             manifest = json.loads(manifest_path.read_text())
             source, tree = qualification['source'], qualification['tree']
+            self.application_preparation_only = qualification['status'] == 'PASS_INITIAL_SYNC_DIAGNOSTICS_BUILD_ONLY'
             require(re.fullmatch('[0-9a-f]{40}', source) and re.fullmatch('[0-9a-f]{40}', tree)
                     and git('rev-parse', source + '^{tree}') == tree, 'actual application source tree')
             require(resources['root'] == str(application_build) and resources['source'] == source
                     and resources['tree'] == tree and resources['state'] == 'stopped-retained'
-                    and resources['qualification'] == qualification['status'] == 'PASS_EXPORT_ADMISSION_BUILD_ONLY',
+                    and resources['qualification'] == qualification['status']
+                    and (qualification['status'] == 'PASS_EXPORT_ADMISSION_BUILD_ONLY'
+                         or (prepare_only and self.application_preparation_only)),
                     'qualified application build only; no runtime qualification inferred')
             require(sha(manifest_path) == qualification['source_manifest_sha256']
                     and manifest['revision'] == source and manifest['tree'] == tree,
@@ -584,6 +588,8 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
         return sha(path)
 
     def acceptance(self, *, prepare_only=False):
+        require(not self.application_preparation_only or prepare_only,
+                'Sync diagnostic build supports preparation only')
         self.postgres()
         self.prepare()
         receipt = self.custody(*self.publish())
@@ -886,7 +892,7 @@ def main():
     for name in ('root', 'build', 'probe', 'instrument'):
         parser.add_argument('--' + name, required=True, type=Path)
     parser.add_argument('--application-build', type=Path,
-        help='qualified export-admission build root; --build retains the unchanged ingest dump probe')
+        help='qualified application build; Sync diagnostic builds require --prepare-only; --build retains the ingest dump probe')
     parser.add_argument('--export-memory-mib', type=int, choices=(256, 1024), default=1024)
     parser.add_argument('--signed-input', choices=('archive-sample', 'content-heavy', 'tag-heavy'),
         default='archive-sample', help='frozen supported Sync boundary; export row profile remains1MiB')
@@ -915,7 +921,7 @@ def main():
             'manager layout refusal requires the qualified manager build and archive-sample')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
         application_build=args.application_build, export_memory_mib=args.export_memory_mib,
-        signed_input=args.signed_input, manager_build=args.manager_build)
+        signed_input=args.signed_input, manager_build=args.manager_build, prepare_only=args.prepare_only)
     try:
         lab.acceptance(prepare_only=args.prepare_only or args.installed_five)
         if args.installed_five:

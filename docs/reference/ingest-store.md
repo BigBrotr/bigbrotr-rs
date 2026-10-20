@@ -262,6 +262,21 @@ Each quantum retains at most three events and examines at most 32 frames; idle
 receive has a soft cutoff at most 500 ms. DNS/connect/TLS and native work retain
 the independent hard deadline. A stall can stop this initial process.
 
+Failed Sync dispatches append `sync_dispatch` JSON with format
+`bigbrotr-initial-sync-diagnostic/1`; the parent watchdog emits the same format
+through the bounded lifecycle channel. Ordinary success output is unchanged.
+The record contains the selected renewal/authority/due window, actual parent,
+dispatch and outer deadlines, last caller stage, zero-based frame ordinal,
+request sequence and last locally delivered Durable admission sequence.
+Times are saturating monotonic microsecond offsets from dispatch selection.
+`returned_us=null` means completion was not observed; a returned error has a
+return marker. Neither a stage nor a missing marker proves SQL/native noncommit.
+The watchdog freezes its observation before cancellation/grace cleanup; output
+is best-effort after cancellation and admission stop. No event, URL, credential
+or principal is retained in the diagnostic record. It does not renew authority,
+retry an uncertain effect or widen any deadline. Preserve ambiguous state under
+the existing recovery contract.
+
 The [nine-case native first wave](../implementation/evidence/p03-initial-sync-native-20261002.json)
 qualifies signed admission, duplicate/refusal behavior, quiet renewal/shutdown,
 public-envelope isolation and headless missing-prerequisite refusal. Two focused

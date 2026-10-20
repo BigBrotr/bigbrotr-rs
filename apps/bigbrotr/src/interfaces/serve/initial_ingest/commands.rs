@@ -696,18 +696,40 @@ async fn maintain_context(
                     if admission(Instant::now(), due, None) == Admission::Renew {
                         continue;
                     }
-                    let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
+                    // Capture the inputs to the same lease check/minimum that
+                    // maximum() uses. Diagnostic reads never refresh authority.
+                    let selected = Instant::now();
+                    let renewal_timeout = duration(root, "renewal_timeout");
+                    let authority_remaining = state.lease.remaining_validity().map_err(authority)?;
+                    let authority_checked = Instant::now();
+                    let due_remaining = due.saturating_duration_since(Instant::now());
+                    let maximum = renewal_timeout.min(authority_remaining / 2).min(due_remaining);
                     phase(progress, maximum)?;
+                    let parent_deadline = progress.borrow().deadline;
                     // A signal asks this serial consumer to finish its current
                     // SQL rollback/commit. Cancelling the whole future here
                     // would poison an otherwise healthy quiet source owner.
                     // The hard deadline and independent parent watchdog remain.
-                    tokio::time::timeout(maximum,
+                    let trace = sync_diagnostic::Trace::new(progress);
+                    let dispatch_deadline = Instant::now() + maximum;
+                    let dispatch =
                         state.sync.as_deref_mut().expect("selected Sync").dispatch(sync::Dispatch {
                             owner: state.owner, writer: store, context, root, budget, cancel: cancellation,
-                            deadline: Instant::now() + maximum,
-                        }),
-                    ).await.map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))??;
+                            deadline: dispatch_deadline, trace,
+                        });
+                    // timeout(duration, future) samples this same deadline
+                    // after constructing future. Its deadline is private in
+                    // Tokio; spell it explicitly to record the actual timer.
+                    let outer_deadline = Instant::now() + maximum;
+                    trace.begin(sync_diagnostic::Window {
+                        selected, authority_checked, renewal_timeout, authority_remaining,
+                        due_remaining, maximum, renewal_due: due, parent_deadline,
+                        dispatch_deadline, outer_deadline,
+                    });
+                    let result = tokio::time::timeout_at(outer_deadline, dispatch).await
+                        .map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))
+                        .and_then(|result| result);
+                    trace.finish(result)?;
                     // A timed gap lets HTTP run even under continuous work;
                     // the priority timer prevents continuous HTTP starving Sync.
                     dispatch_due = Instant::now() + sync::INTERVAL;
@@ -871,6 +893,7 @@ mod tests {
             phase: None,
             initialized: None,
             shutdown: None,
+            sync: None,
         });
         let end = Instant::now() + Duration::from_secs(1);
         phase_capped(&progress, Duration::from_secs(5), Some(end)).unwrap();

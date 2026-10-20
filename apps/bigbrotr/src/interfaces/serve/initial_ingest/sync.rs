@@ -3,6 +3,7 @@
 mod observation;
 mod receive;
 use super::owner::RuntimeContext;
+use super::sync_diagnostic::{Stage, Trace};
 use super::*;
 use crate::config::acquisition::{SyncArrivalPolicy, authorize_sync_collection};
 use bigbrotr::{
@@ -166,10 +167,15 @@ impl Sync {
 
     pub(super) async fn dispatch(&mut self, mut work: Dispatch<'_>) -> Result<()> {
         let candidate = work
-            .owner
-            .nominate_acquisition(
-                self.scan,
-                grant(work.budget, AcquisitionScan::REQUIRED_BYTES, 0)?,
+            .trace
+            .wait(
+                Stage::Nominate,
+                None,
+                None,
+                work.owner.nominate_acquisition(
+                    self.scan,
+                    grant(work.budget, AcquisitionScan::REQUIRED_BYTES, 0)?,
+                ),
             )
             .await
             .map_err(error)?;
@@ -180,7 +186,16 @@ impl Sync {
         let Some(job) = candidate.job else {
             return Ok(());
         };
-        let job = match work.owner.claim_acquisition(job, &Cell::new(false)).await {
+        let job = match work
+            .trace
+            .wait(
+                Stage::Claim,
+                None,
+                None,
+                work.owner.claim_acquisition(job, &Cell::new(false)),
+            )
+            .await
+        {
             Ok(job) => job,
             // These completed rollbacks/explicit COMMIT rejections leave the
             // owner reusable. Unknown outcomes never advance to a new effect.
@@ -191,10 +206,15 @@ impl Sync {
             return Ok(());
         }
         let Some(scope) = work
-            .owner
-            .read_acquisition_scope(
-                job.scope,
-                grant(work.budget, EventLimits::default().parse_bytes as u64, 0)?,
+            .trace
+            .wait(
+                Stage::Scope,
+                None,
+                None,
+                work.owner.read_acquisition_scope(
+                    job.scope,
+                    grant(work.budget, EventLimits::default().parse_bytes as u64, 0)?,
+                ),
             )
             .await
             .map_err(error)?
@@ -205,10 +225,15 @@ impl Sync {
             return Ok(());
         }
         let Some(source) = work
-            .owner
-            .read_acquisition_source(
-                &scope,
-                grant(work.budget, StoredRelaySource::REQUIRED_BYTES, 0)?,
+            .trace
+            .wait(
+                Stage::Source,
+                None,
+                None,
+                work.owner.read_acquisition_source(
+                    &scope,
+                    grant(work.budget, StoredRelaySource::REQUIRED_BYTES, 0)?,
+                ),
             )
             .await
             .map_err(error)?
@@ -226,19 +251,24 @@ impl Sync {
         );
         let ttl = work.remaining()?;
         let Some(visible) = work
-            .writer
-            .visibility(
-                work.owner,
-                work.context,
-                LiveSuccessorVisibilityRequest {
-                    ingest_root: path,
-                    reference: scope.scope().visibility(),
-                    limits,
-                    policy_ttl: ttl,
-                    cancelled: &work.cancel.requested,
-                },
-                grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate_sync(work.root, self.lifecycle, d, h),
+            .trace
+            .wait(
+                Stage::Visibility,
+                None,
+                None,
+                work.writer.visibility(
+                    work.owner,
+                    work.context,
+                    LiveSuccessorVisibilityRequest {
+                        ingest_root: path,
+                        reference: scope.scope().visibility(),
+                        limits,
+                        policy_ttl: ttl,
+                        cancelled: &work.cancel.requested,
+                    },
+                    grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
+                    |d, h| validate_sync(work.root, self.lifecycle, d, h),
+                ),
             )
             .await
             .map_err(error)?
@@ -272,38 +302,50 @@ impl Sync {
         let soft = Instant::now() + (work.remaining()? / 2).min(Duration::from_millis(500));
         let ttl = work.remaining()?;
         let arrivals = work
-            .owner
-            .run_relay_source(
-                RelaySourceRequest {
-                    source: source.binding(),
-                    acquisition: Some(AcquisitionJobBinding {
-                        job: job.id,
-                        scope: scope.identity(),
-                    }),
-                    visibility: &visible,
-                    policy_ttl: ttl,
-                    deadline: hard,
-                },
-                &self.connector,
-                |d, h, endpoint, route| {
-                    if endpoint != source.endpoint() || route != source.route() {
-                        return Err(OwnerError::InvalidMetadata);
-                    }
-                    authorize_sync_collection(work.root, d, h, endpoint, route, scope.selector())
-                },
-                async |stream| {
-                    receive::collect(
-                        stream,
-                        work.budget,
-                        &scope,
-                        &attribution,
-                        source.route(),
-                        max_event_bytes,
-                        soft,
-                        work.cancel,
-                    )
-                    .await
-                },
+            .trace
+            .wait(
+                Stage::RelayCollection,
+                None,
+                None,
+                work.owner.run_relay_source(
+                    RelaySourceRequest {
+                        source: source.binding(),
+                        acquisition: Some(AcquisitionJobBinding {
+                            job: job.id,
+                            scope: scope.identity(),
+                        }),
+                        visibility: &visible,
+                        policy_ttl: ttl,
+                        deadline: hard,
+                    },
+                    &self.connector,
+                    |d, h, endpoint, route| {
+                        if endpoint != source.endpoint() || route != source.route() {
+                            return Err(OwnerError::InvalidMetadata);
+                        }
+                        authorize_sync_collection(
+                            work.root,
+                            d,
+                            h,
+                            endpoint,
+                            route,
+                            scope.selector(),
+                        )
+                    },
+                    async |stream| {
+                        receive::collect(
+                            stream,
+                            work.budget,
+                            &scope,
+                            &attribution,
+                            source.route(),
+                            max_event_bytes,
+                            soft,
+                            work.cancel,
+                        )
+                        .await
+                    },
+                ),
             )
             .await;
         let arrivals = match arrivals {
@@ -333,10 +375,11 @@ impl Sync {
         if work.stopped() {
             return Ok(());
         }
-        for (captured, observation) in &arrivals.events {
+        for (frame, (captured, observation)) in arrivals.events.iter().enumerate() {
             if work.stopped() {
                 return Ok(());
             }
+            let frame = Some(u8::try_from(frame).expect("at most three retained frames"));
             let context =
                 AcquisitionEventContext::for_job(job.id, &scope, captured.request().filters())
                     .map_err(error)?;
@@ -371,29 +414,42 @@ impl Sync {
                         .map_err(error)?;
                 Ok(Some((intent, permit)))
             };
-            let Some((intent, permit)) = prepare()? else {
+            let prepared =
+                work.trace
+                    .run(Stage::EventPreparation, frame, None, || -> Result<_> {
+                        let Some((intent, permit)) = prepare()? else {
+                            return Ok(None);
+                        };
+                        PreparedCertification::new(intent, max_event_bytes, permit)
+                            .map(Some)
+                            .map_err(error)
+                    })?;
+            let Some(prepared) = prepared else {
                 continue;
             };
-            let prepared =
-                PreparedCertification::new(intent, max_event_bytes, permit).map_err(error)?;
             let ttl = work.remaining()?;
             let certified = work
-                .writer
-                .certify(
-                    work.owner,
-                    work.context,
-                    LiveSuccessorCertificationRequest {
-                        ingest_root: path,
-                        event: prepared,
-                        relay_source: Some(source.binding()),
-                        acquisition: Some(context),
-                        provenance_enabled: provenance,
-                        limits,
-                        policy_ttl: ttl,
-                        cancelled: &work.cancel.requested,
-                    },
-                    grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
-                    |d, h, e| policy.certification(d, h, e),
+                .trace
+                .wait(
+                    Stage::Certification,
+                    frame,
+                    None,
+                    work.writer.certify(
+                        work.owner,
+                        work.context,
+                        LiveSuccessorCertificationRequest {
+                            ingest_root: path,
+                            event: prepared,
+                            relay_source: Some(source.binding()),
+                            acquisition: Some(context),
+                            provenance_enabled: provenance,
+                            limits,
+                            policy_ttl: ttl,
+                            cancelled: &work.cancel.requested,
+                        },
+                        grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
+                        |d, h, e| policy.certification(d, h, e),
+                    ),
                 )
                 .await
                 .map_err(error)?;
@@ -408,48 +464,64 @@ impl Sync {
                 // This owner can keep serving/certifying without new mutations.
                 return Ok(());
             }
-            let (intent, permit) = prepare()?.ok_or_else(|| error("retained input changed"))?;
-            let event = PreparedEvent::new(
-                ProducerRequestId {
-                    producer_slot_id: work.writer.slot(work.context)?,
-                    producer_epoch: ProducerEpoch::new(work.writer.epoch()?).map_err(error)?,
-                    request_sequence: RequestSequence::new(self.next_request).map_err(error)?,
+            let event = work.trace.run(
+                Stage::AdmissionPreparation,
+                frame,
+                Some(self.next_request),
+                || -> Result<_> {
+                    let (intent, permit) =
+                        prepare()?.ok_or_else(|| error("retained input changed"))?;
+                    PreparedEvent::new(
+                        ProducerRequestId {
+                            producer_slot_id: work.writer.slot(work.context)?,
+                            producer_epoch: ProducerEpoch::new(work.writer.epoch()?)
+                                .map_err(error)?,
+                            request_sequence: RequestSequence::new(self.next_request)
+                                .map_err(error)?,
+                        },
+                        intent,
+                        max_event_bytes,
+                        permit,
+                    )
+                    .map_err(error)
                 },
-                intent,
-                max_event_bytes,
-                permit,
-            )
-            .map_err(error)?;
+            )?;
             let admission = work.admission_limits()?;
             let ttl = work.remaining()?;
             let outcome = work
-                .writer
-                .admit(
-                    work.owner,
-                    work.context,
-                    LiveSuccessorEventRequest {
-                        ingest_root: path,
-                        event,
-                        relay_source: Some(source.binding()),
-                        acquisition: Some(context),
-                        provenance_enabled: provenance,
-                        recorded_at: recorded()?,
-                        limits: admission,
-                        policy_ttl: ttl,
-                        cancelled: &work.cancel.requested,
-                    },
-                    grant(
-                        work.budget,
-                        admission.required_data_bytes().map_err(error)?,
-                        admission.required_native_bytes().map_err(error)?,
-                    )?,
-                    |d, h, e| policy.admission(d, h, e),
+                .trace
+                .wait(
+                    Stage::Admission,
+                    frame,
+                    Some(self.next_request),
+                    work.writer.admit(
+                        work.owner,
+                        work.context,
+                        LiveSuccessorEventRequest {
+                            ingest_root: path,
+                            event,
+                            relay_source: Some(source.binding()),
+                            acquisition: Some(context),
+                            provenance_enabled: provenance,
+                            recorded_at: recorded()?,
+                            limits: admission,
+                            policy_ttl: ttl,
+                            cancelled: &work.cancel.requested,
+                        },
+                        grant(
+                            work.budget,
+                            admission.required_data_bytes().map_err(error)?,
+                            admission.required_native_bytes().map_err(error)?,
+                        )?,
+                        |d, h, e| policy.admission(d, h, e),
+                    ),
                 )
                 .await
                 .map_err(error)?;
             if !matches!(outcome.outcome(), AdmissionOutcome::Durable(_)) {
                 return Err(error("certified event changed before admission"));
             }
+            work.trace.delivered_admission(self.next_request);
             self.next_request += 1;
         }
         Ok(())
@@ -464,6 +536,7 @@ pub(super) struct Dispatch<'a> {
     pub budget: &'a ResourceBudget,
     pub cancel: &'a Cancellation,
     pub deadline: Instant,
+    pub trace: Trace<'a>,
 }
 impl Dispatch<'_> {
     fn stopped(&self) -> bool {

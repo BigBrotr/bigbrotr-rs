@@ -31,60 +31,71 @@ impl Dispatch<'_> {
             max_outstanding_requests: u64::from(self.writer.limit(self.context)?),
         };
         let visible = scope.scope().visibility();
-        let mut prepared = match self.writer.prepare_dictionaries(
-            visible,
-            limits,
-            grant(
-                self.budget,
-                limits
-                    .required_dictionary_preparation_data_bytes()
-                    .map_err(error)?,
-                0,
-            )?,
-            &self.cancel.requested,
-        ) {
-            Ok(prepared) => prepared,
-            // Some valid descriptors have a different fact envelope (the
-            // original private2 bootstrap is in public1). This initial
-            // preparation cannot use their closure. Yield without changing
-            // it; corruption, uncertain writes and resource errors stay fatal.
-            Err(AdmissionError::InvalidInput) => return Ok(None),
-            Err(e) => return Err(error(e)),
-        };
-        let observer = prepared
-            .intern(DictionaryDescriptor::Observer(ObserverDescriptor {
-                clock: Some(ClockSource::SystemUtc),
-                vantage: None,
-                software: None,
-                method_id: None,
-                public_key: None,
-                route_class: None,
-                software_version: None,
-            }))
-            .map_err(error)?;
-        let witness = if provenance {
-            Some(WitnessContext {
-                endpoint_id: prepared
-                    .intern(DictionaryDescriptor::Endpoint(
-                        EndpointDescriptor::new(source.endpoint().as_str().into())
+        let prepared = self.trace.run(
+            Stage::ObservationPreparation,
+            None,
+            None,
+            || -> Result<_> {
+                let mut prepared = match self.writer.prepare_dictionaries(
+                    visible,
+                    limits,
+                    grant(
+                        self.budget,
+                        limits
+                            .required_dictionary_preparation_data_bytes()
                             .map_err(error)?,
-                    ))
-                    .map_err(error)?,
-                access_scope_id: prepared
-                    .intern(DictionaryDescriptor::AccessScope(AccessScopeDescriptor {
-                        class: AccessClass::Public,
-                        label: None,
-                        visibility_scope_id: visible,
+                        0,
+                    )?,
+                    &self.cancel.requested,
+                ) {
+                    Ok(prepared) => prepared,
+                    // Some valid descriptors have a different fact envelope (the
+                    // original private2 bootstrap is in public1). This initial
+                    // preparation cannot use their closure. Yield without changing
+                    // it; corruption, uncertain writes and resource errors stay fatal.
+                    Err(AdmissionError::InvalidInput) => return Ok(None),
+                    Err(e) => return Err(error(e)),
+                };
+                let observer = prepared
+                    .intern(DictionaryDescriptor::Observer(ObserverDescriptor {
+                        clock: Some(ClockSource::SystemUtc),
+                        vantage: None,
+                        software: None,
+                        method_id: None,
+                        public_key: None,
+                        route_class: None,
+                        software_version: None,
                     }))
-                    .map_err(error)?,
-                verification_method_id: prepared
-                    .intern(DictionaryDescriptor::EventVerification)
-                    .map_err(error)?,
-            })
-        } else {
-            None
+                    .map_err(error)?;
+                let witness = if provenance {
+                    Some(WitnessContext {
+                        endpoint_id: prepared
+                            .intern(DictionaryDescriptor::Endpoint(
+                                EndpointDescriptor::new(source.endpoint().as_str().into())
+                                    .map_err(error)?,
+                            ))
+                            .map_err(error)?,
+                        access_scope_id: prepared
+                            .intern(DictionaryDescriptor::AccessScope(AccessScopeDescriptor {
+                                class: AccessClass::Public,
+                                label: None,
+                                visibility_scope_id: visible,
+                            }))
+                            .map_err(error)?,
+                        verification_method_id: prepared
+                            .intern(DictionaryDescriptor::EventVerification)
+                            .map_err(error)?,
+                    })
+                } else {
+                    None
+                };
+                let prepared = prepared.finish().map_err(error)?;
+                Ok(Some((prepared, observer, witness)))
+            },
+        )?;
+        let Some((prepared, observer, witness)) = prepared else {
+            return Ok(None);
         };
-        let prepared = prepared.finish().map_err(error)?;
         let observer = prepared
             .intent()
             .dictionaries()
@@ -109,19 +120,24 @@ impl Dispatch<'_> {
         let lifecycle = self.writer.profile()?;
         let ttl = self.remaining()?;
         let existing = self
-            .writer
-            .observation(
-                self.owner,
-                self.context,
-                LiveSuccessorObservationRequest {
-                    ingest_root: path,
-                    bindings,
-                    limits: reads,
-                    policy_ttl: ttl,
-                    cancelled: &self.cancel.requested,
-                },
-                grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate_sync(self.root, lifecycle, d, h),
+            .trace
+            .wait(
+                Stage::ObservationLookup,
+                None,
+                None,
+                self.writer.observation(
+                    self.owner,
+                    self.context,
+                    LiveSuccessorObservationRequest {
+                        ingest_root: path,
+                        bindings,
+                        limits: reads,
+                        policy_ttl: ttl,
+                        cancelled: &self.cancel.requested,
+                    },
+                    grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
+                    |d, h| validate_sync(self.root, lifecycle, d, h),
+                ),
             )
             .await
             .map_err(error)?;
@@ -135,44 +151,54 @@ impl Dispatch<'_> {
         }
         let ttl = self.remaining()?;
         let appended = self
-            .writer
-            .append(
-                self.owner,
-                self.context,
-                LiveSuccessorDictionaryAppendRequest {
-                    ingest_root: path,
-                    request_sequence: RequestSequence::new(*next_request).map_err(error)?,
-                    intent: prepared.intent(),
-                    recorded_at: recorded()?,
-                    limits,
-                    policy_ttl: ttl,
-                    cancelled: &self.cancel.requested,
-                },
-                grant(
-                    self.budget,
-                    limits.required_dictionary_data_bytes().map_err(error)?,
-                    limits.required_native_bytes().map_err(error)?,
-                )?,
-                |d, h| validate_sync(self.root, lifecycle, d, h),
+            .trace
+            .wait(
+                Stage::ObservationAppend,
+                None,
+                Some(*next_request),
+                self.writer.append(
+                    self.owner,
+                    self.context,
+                    LiveSuccessorDictionaryAppendRequest {
+                        ingest_root: path,
+                        request_sequence: RequestSequence::new(*next_request).map_err(error)?,
+                        intent: prepared.intent(),
+                        recorded_at: recorded()?,
+                        limits,
+                        policy_ttl: ttl,
+                        cancelled: &self.cancel.requested,
+                    },
+                    grant(
+                        self.budget,
+                        limits.required_dictionary_data_bytes().map_err(error)?,
+                        limits.required_native_bytes().map_err(error)?,
+                    )?,
+                    |d, h| validate_sync(self.root, lifecycle, d, h),
+                ),
             )
             .await
             .map_err(error)?;
         drop(appended);
         *next_request += 1;
         let ttl = self.remaining()?;
-        self.writer
-            .observation(
-                self.owner,
-                self.context,
-                LiveSuccessorObservationRequest {
-                    ingest_root: path,
-                    bindings,
-                    limits: reads,
-                    policy_ttl: ttl,
-                    cancelled: &self.cancel.requested,
-                },
-                grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate_sync(self.root, lifecycle, d, h),
+        self.trace
+            .wait(
+                Stage::ObservationRelookup,
+                None,
+                None,
+                self.writer.observation(
+                    self.owner,
+                    self.context,
+                    LiveSuccessorObservationRequest {
+                        ingest_root: path,
+                        bindings,
+                        limits: reads,
+                        policy_ttl: ttl,
+                        cancelled: &self.cancel.requested,
+                    },
+                    grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
+                    |d, h| validate_sync(self.root, lifecycle, d, h),
+                ),
             )
             .await
             .map_err(error)?

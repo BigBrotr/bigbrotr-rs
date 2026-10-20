@@ -40793,6 +40793,45 @@
             "sha256": "1a8d447e1a45c684321e7e860276daba71ab28e449e0963d5cdbe734bddabeb4"
           }
         }
+      },
+      "initial_sync_diagnostics_20261020": {
+        "status": "SOURCE_REVIEW_PASS_BUILD_RUNTIME_NOT_RUN",
+        "base": "a10cab94eaa6745e7457566cb7bd422f6359d397",
+        "task": "P01-T05 Steps5/6; existing initial Sync failure in archive_refusal_journey_attempts[0]",
+        "diagnosis": "Existing a99 source note retained. Relevant initial-ingest/policy/Control/native dispatch owners unchanged through current; no demonstrated ownership or COMMIT-safety defect. Outer whole-dispatch deadline can interrupt a multi-transaction up-to3frame quantum after100ms admission floor; uncertain effects poison owner and retain custody through actual cleanup. Original request4 SQL commit does not distinguish awaiting admission delivery from subsequent certification.",
+        "design": "Fixed-size Copy diagnostic in existing Progress/Dispatch; actual selected renewal/authority/due window and watchdog/dispatch deadlines; caller stage entry/completion/frame/request/last delivered sequence. Silent watch updates with no per-await allocation/notifications; timeout/error and parent watchdog retain bounded safe fields. No timer/authority/sequence/scheduling/retry change; freeze watchdog observation before grace cleanup.",
+        "source_owner": "export_setup_fixture gpt-6-astra/xhigh; existing verified configuration",
+        "build_tool_owner": "catalog_layout_fixture gpt-6.1-sol/xhigh; existing verified configuration",
+        "validation": "Discriminating pending-admission versus next-certification, drop leaves unfinished, deadlines/sequence unchanged; exact installed-parent build/tests/Clippy with unchanged qualified6cworker. Then one fresh installed compatibility run under original timing; success cannot resolve originala99cause. Critical review before integration/runtime.",
+        "limits": "Deep native internals and OS scheduling not newly inspected; no inferred original latency cause. No engines/builds/tests executed for this slice.",
+        "source_commits": {
+          "product": "346723302ea1384220f5285c052d10ec2283e6e6",
+          "build_parameterization": "81d1bdef239d2f88162777388fd3a891744aad9a"
+        },
+        "source_evidence": {
+          "product": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-20261020/.research/initial-sync-diagnostics-source-20261020/manifest.json",
+            "bytes": 7556,
+            "sha256": "52f25468470d85082c1e69427cd62d4a8ddfc5aac48a27c9961370ae58c51289"
+          },
+          "builder": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostic-build-20261020/.research/initial-sync-diagnostic-build-source-20261020/receipt.json",
+            "bytes": 3335,
+            "sha256": "83cfeff525a376f1f289c49b8d0bfe33940b3246888ff6f86f4436ff0d9850f6"
+          },
+          "prepare_only_controls": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-review-20261020/prepare-only-source-controls-v1.json",
+            "bytes": 1181,
+            "sha256": "fc581cc68e8053f8a96cf76e57a2a55b1f39b270befa2812a00aa1124de10623"
+          },
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-review-20261020/source-review-v1.json",
+            "bytes": 10463,
+            "sha256": "4373f73c6935b810dd8417de4443ce13b9080a45347ea0ffaa7a6eaf26dc76b1"
+          }
+        },
+        "root_review": "Complete current affected owners/deltas read; frozen six product files, two builder files and root prepare-only guard authenticated. No concrete source finding. Reused unchanged custody/lease/native/runtime baseline. No compiler/test execution inferred from source controls.",
+        "timing_spelling": "Explicit timeout_at records the actual outer Instant, constructed after Dispatch deadline with the same maximum and pinned Tokio ordering; no configured authority/deadline/grace change. Additional clock/lock work has overhead."
       }
     }
   }

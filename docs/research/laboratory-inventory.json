@@ -68915,6 +68915,24 @@
       "protected_elfs": 202,
       "unchanged_nonborrowed_containers": 1415,
       "limits": "Dated custody observation; never replay after borrowed PG reuse. Runtime failure/diagnosis details and initial observation belong to the linked report. No whole-host process exclusion."
+    },
+    "initial_sync_diagnostics_20261020": {
+      "state": "frozen source and critical review complete; build/runtime NOT_RUN",
+      "base": "a10cab94eaa6745e7457566cb7bd422f6359d397",
+      "product": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostics-20261020",
+        "branch": "work/initial-sync-diagnostics",
+        "owner": "export_setup_fixture gpt-6-astra/xhigh",
+        "commit": "346723302ea1384220f5285c052d10ec2283e6e6"
+      },
+      "build_parameterization": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/initial-sync-diagnostic-build-20261020",
+        "branch": "work/initial-sync-diagnostic-build",
+        "owner": "catalog_layout_fixture gpt-6.1-sol/xhigh",
+        "commit": "81d1bdef239d2f88162777388fd3a891744aad9a"
+      },
+      "runtime_owner": "root; NOT_RUN",
+      "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.initial_sync_diagnostics_20261020"
     }
   }
 }

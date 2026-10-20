@@ -10,6 +10,7 @@ use owner::{NativeOwner, Profile};
 pub(super) mod recovery;
 mod supervision;
 mod sync;
+mod sync_diagnostic;
 use super::{Result, Stop, duration, owner_error};
 use crate::{
     config::Resolved,
@@ -83,6 +84,7 @@ struct Progress {
     phase: Option<&'static std::panic::Location<'static>>,
     initialized: Option<Value>,
     shutdown: Option<management::Shutdown>,
+    sync: Option<sync_diagnostic::Record>,
 }
 struct Cancellation {
     requested: AtomicBool,
@@ -233,7 +235,7 @@ pub(super) fn run(
         // Keep the sender across both phases. Closing it after preparation can
         // otherwise look like terminal owner loss before its JoinHandle is ready.
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None,
+            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None, sync: None,
         });
         let prepare_root = root.clone();
         let prepare_budget = budget.clone();
@@ -638,6 +640,7 @@ mod tests {
             phase: None,
             initialized: None,
             shutdown: None,
+            sync: None,
         });
         let error = phase(&progress, std::time::Duration::from_secs(5)).unwrap_err();
         assert_eq!(error.0, 4);
@@ -662,6 +665,7 @@ mod tests {
             phase: None,
             initialized: None,
             shutdown: None,
+            sync: None,
         });
         phase(&progress, std::time::Duration::from_secs(5)).unwrap();
         let prior = progress.borrow().phase.unwrap();
