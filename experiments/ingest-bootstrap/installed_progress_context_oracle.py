@@ -42,6 +42,10 @@ MIGRATIONS = {
     39: ('0039_producer_progress.sql', '267045f6f5c9ee44c1a9dc3335c7092c056606662bd4016cb7c2a81b19c421f0'),
 }
 EXTRA32 = {'ingest_successions', 'ingest_activations', 'ingest_terminal_transactions'}
+# These are the exact IDs already applied at catalog target26. Reserved
+# management/artifact/cursor IDs are not later application chronology.
+CORE26 = {1,2,3,4,*range(7,27)}
+SUPPORT26 = {501,601,602,604,801,802,*range(805,817)}
 PROFILES = {
     'initial': dict(epoch=1, request=4, mutation_revision=4, dependencies=tuple((1,n) for n in range(1,13)), key='b1'),
     'activated': dict(epoch=2, request=2, mutation_revision=2, dependencies=((1,3), *tuple((2,n) for n in range(1,10))), key='f4'),
@@ -59,13 +63,15 @@ def check_upgrade(context):
     before, after = context['before'], context['after']
     assert len(after) == 77 and not any(after[t] for t in (*typed.TABLES, 'producer_checkpoints'))
     old = typed.legacy_state(after)
-    version = max(row['migration'] for row in before['schema_versions'])
-    assert version in (26, 32)
     previous = {row['migration']:row for row in before['schema_versions']}
     current = {row['migration']:row for row in after['schema_versions']}
-    assert len(current) == len(after['schema_versions'])
-    assert set(current) == set(previous) | set(range(version + 1, 40))
-    assert all(current[n] == row for n, row in previous.items())
+    assert len(previous)==len(before['schema_versions']) and len(current)==len(after['schema_versions']), 'duplicate migration receipt'
+    core = set(previous)-SUPPORT26
+    assert core in (CORE26, CORE26|set(range(27,33))), 'closed migration catalog prefix'
+    version = 26 if core==CORE26 else 32
+    assert set(previous)==core|SUPPORT26, 'closed migration catalog prefix'
+    assert set(current) == set(previous) | set(range(version + 1, 40)), 'migration extension set'
+    assert all(current[n] == row for n, row in previous.items()), 'retained migration changed'
     transactions = set()
     for n in range(version + 1, 40):
         row = current[n]
@@ -91,7 +97,9 @@ def project32(state):
     value = typed.legacy_state(state)
     for table in EXTRA32:
         assert value.pop(table) == [], 'unmodeled later lifecycle row'
-    value['schema_versions'] = [r for r in value['schema_versions'] if r['migration'] <= 32]
+    # Project only the six new core receipts; retain unrelated higher IDs and
+    # all their original metadata/xmins for the established schema32 model.
+    value['schema_versions'] = [r for r in value['schema_versions'] if not 33 <= r['migration'] <= 38]
     assert len(value) == 72
     return value
 
@@ -498,6 +506,18 @@ def controls(context, verify):
             raise AssertionError('progress context accepted counterexample: '+name)
     phase = lambda c:next(s for s in c['snapshots'] if s['stage']=='progress-proof-only')['control']
     after = lambda c:c['after']
+    upgrade = lambda c:c['setup'] if 'kind' in c else c['progress_setup']
+    ledger = lambda c,stage:upgrade(c)[stage]['schema_versions']
+    reject('duplicate-prior-migration',lambda c:ledger(c,'before').append(copy.deepcopy(
+        only(ledger(c,'before'),migration=501))),'duplicate migration receipt')
+    reject('missing-core-prefix-migration',lambda c:ledger(c,'before').remove(
+        only(ledger(c,'before'),migration=25)),'closed migration catalog prefix')
+    reject('missing-unrelated-migration',lambda c:ledger(c,'after').remove(
+        only(ledger(c,'after'),migration=501)),'migration extension set')
+    reject('rewritten-unrelated-migration',lambda c:only(ledger(c,'after'),migration=501).update(
+        xmin='4294967294'),'retained migration changed')
+    reject('foreign-migration-receipt',lambda c:ledger(c,'after').append(dict(
+        only(ledger(c,'after'),migration=501),migration=900)),'migration extension set')
     reject('unrelated-sql-row',lambda c:after(c)['network_routes'].append(copy.deepcopy(after(c)['network_routes'][0])))
     reject('missing-dependency',lambda c:after(c)['producer_checkpoint_dependencies'].pop())
     reject('changed-native-value',lambda c:(c['native'] if 'native' in c else c['native_after'])['rows'][0].update(value='00'))
