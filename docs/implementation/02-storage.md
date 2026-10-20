@@ -680,8 +680,12 @@ with no new Archive attempt/frontier. The family-counts refusal passes at
 fixture`be181ce`: eleven actual processes,31states/75tables,509raw-bound files and
 10negative controls, preserving the prior frontier. Missing-input passes at
 fixture`fd009b6`: eleven actual processes,31states/75tables,511raw-bound files and
-10negative controls; its original interrupted2426646 run remains FAIL. Two other
-refusals/cancellation, held-attempt custody and
+10negative controls; its original interrupted2426646 run remains FAIL.
+Frontier-cancel passes at fixture`bd27000`: eleven processes,31states/75tables,
+531raw-bound files and16negative controls. After three Archive publications,
+SIGTERM during the actual blocked frontier INSERT leaves frontier4 unchanged
+and retains the local uncommitted intent; process exit precedes holder release.
+Frontier-control-loss, held-attempt custody and
 total-cap qualification remain open. Initial-only consumers and initialization
 recovery stay unchanged. Existing
 frontiers traverse immediate sealed topologies by preserving their exact prefix
