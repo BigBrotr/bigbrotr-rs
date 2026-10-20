@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T09:46Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T09:49Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,10 +9,10 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`a12d45e16eccdafb40802fa4f997f5692d21bac0`, already pushed and verified remotely.
+`756b14929afc54763e2cf9931a97338c802b1ee4`, already pushed and verified remotely.
 Root is the sole integrating owner; Tux handles development, Git and tests.
-No merge/rebase pending. Current documentation/evidence edits record the qualified
-missing-input refusal below. Product source is unchanged. The
+No merge/rebase pending. Current documentation/evidence edits reconcile the
+frontier-cancel preparation refusal below. Product source is unchanged. The
 attempt-limit and export-memory worktrees are clean on their preserved commits;
 their reviewed source is not integrated or runtime-qualified.
 
@@ -170,6 +170,14 @@ earlier initial Sync timeout. Never replay custody after borrowed-PG reuse.
 **Next action:** prepare a fresh frontier-cancel run from clean main using unchanged
 qualified9a product, then run its engine, independent strict replay and custody.
 Frontier-cancel and frontier-control-loss remain NOT_RUN.
+Preparation98234 at756b149 joined1 before creating its root or starting runtime:
+the unchanged-product guard rejected the redundant Q37 link added to AGENTS.md.
+The existing entrypoint already makes the guide authoritative; remove only that
+duplicate link, preserving Q37 in the guide/decisions and the original guards.
+Four preparation artifacts under `.research/archive-renewal-dispatch-20261018`,
+stem `prepare-frontier-cancel-756b149`, are bound in the existing report/inventory.
+Retry uses a new clean revision and exclusive wrapper paths; the failed result
+remains unchanged.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
 helper f37f584b; preparation72510 and manifest reviews70453/41961 joined0.

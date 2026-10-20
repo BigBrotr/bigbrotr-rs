@@ -37494,6 +37494,42 @@
           ],
           "free_bytes_after": 329365479424,
           "limits": "Only missing-input refusal on its fresh genuine initial+9prefix path. No new Archive attempt/frontier from refused process. Original failures and the interrupted missing-input2426646 remain unchanged; no resolution of the initial Sync timeout is inferred. Other pending refusals and attempt-cap/capacity/RSS are not inferred. Never replay custody after borrowed-PG reuse."
+        },
+        {
+          "status": "PREPARATION_REFUSED_SOURCE_SCOPE",
+          "case": "frontier-cancel",
+          "source": "756b14929afc54763e2cf9931a97338c802b1ee4",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-refusal-frontier-cancel-engine-756b149",
+          "root_created": false,
+          "prepare_session": 98234,
+          "prepare_joined_exit_code": 1,
+          "engine": "NOT_RUN",
+          "replay": "NOT_RUN",
+          "custody": "NOT_RUN",
+          "reason": "The existing unchanged-product guard permits docs/ and experiments/ deltas only; Q37 added a redundant AGENTS.md guide link. Preparation refused before mkdir or runtime. The link is removed because AGENTS.md already makes that same guide authoritative; the full Q37 guide/decision remains. No helper guard, product or evidence outcome is weakened.",
+          "artifacts": {
+            "-invocation.json": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-renewal-dispatch-20261018/prepare-frontier-cancel-756b149-invocation.json",
+              "bytes": 504,
+              "sha256": "4342bab518bf4d90b7e307cf6838b1ea9687e919bf3e303474d9d62b9e61cd1f"
+            },
+            "-result.json": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-renewal-dispatch-20261018/prepare-frontier-cancel-756b149-result.json",
+              "bytes": 71,
+              "sha256": "c34380c28c73abb620942b6706b40a80d7ba94865485cda0a4a21f4f2a618f0d"
+            },
+            ".stdout": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-renewal-dispatch-20261018/prepare-frontier-cancel-756b149.stdout",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            ".stderr": {
+              "path": "/home/tux/bigbrotr-rs/.research/archive-renewal-dispatch-20261018/prepare-frontier-cancel-756b149.stderr",
+              "bytes": 1487,
+              "sha256": "8dc9dbf6068611bb76ddebd04c0d18f1ccb7ed477e2dfe218e870415a835fc5e"
+            }
+          },
+          "next": "After coherent commit, prepare frontier-cancel at the new clean revision; preserve this failed preparation and do not reuse its wrapper paths."
         }
       ],
       "archive_refusal_qualification": {

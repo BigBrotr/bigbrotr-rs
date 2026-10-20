@@ -51,9 +51,6 @@ single pipeline for task selection, dependency research, independent fixtures,
 practical execution, review, documentation and coherent commits. Root AGENTS.md
 is the agent entrypoint; do not maintain a competing agent.txt instruction set.
 The current specification is authoritative over historical review suggestions.
-Apply the guide's [Q37 model and reasoning allocation](docs/implementation/agent-handoff.md#starting-the-continuing-goal-on-tux)
-through effective session/subagent controls; verify settings rather than assuming
-that prompt text configures them.
 
 Follow the [development and delivery contract](docs/engineering/development-and-delivery.md):
 Tux as the sole editing/Git, development and test host under the owner's
