@@ -73,6 +73,11 @@ def send_frame(connection, value):
 def relay(directory, listener, finished, errors, signed, refusals=False, window=False,
           event_sender=None):
     assert event_sender is None or (signed and not refusals and not window)
+    split = None
+    if (directory / 'progress-context.json').exists():
+        assert signed and not refusals and not window and event_sender is None
+        from installed_progress_transport import SplitEvents
+        split = SplitEvents(directory, json.loads((directory / 'event.jsonl').read_bytes()), 'initial')
     request_ids = set()
     try:
         number = 0
@@ -116,11 +121,16 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 request_ids.add(ident[:32])
                 assert command[2] == {'kinds': [1], 'limit': 3}
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
+                if split is not None:
+                    trace['request_monotonic_ns'] = time.monotonic_ns()
                 publish(directory, f'relay-open-{number:03}.json', trace)
                 window_ready = window and (directory/'window-release').exists() and window_rounds < 2
-                if signed and (number <= 2 or window_ready):
+                selected = split.select(ident, number) if split is not None else None
+                if (selected is not None if split is not None else signed and (number <= 2 or window_ready)):
                     event = json.loads((directory/'event.jsonl').read_bytes())
-                    if event_sender is not None:
+                    if split is not None:
+                        values = split.describe(trace, selected)
+                    elif event_sender is not None:
                         trace['sent_at_us'] = time.time_ns()//1000
                         trace['frames'] = event_sender(connection, ident, number)
                         values = ()
@@ -139,7 +149,7 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                     else:
                         values = (event, dict(event, sig='00'*64), event)
                         trace['frames'] = ['signed', 'forged-signature', 'duplicate', 'EOSE']
-                    if event_sender is None:
+                    if event_sender is None and split is None:
                         trace['sent_at_us'] = time.time_ns()//1000
                     for value in values:
                         send_frame(connection, ['EVENT', ident, value])
@@ -159,6 +169,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                     assert connection.recv(1) == b'', 'quiet quantum did not destroy socket'
                     trace['completion'] = 'quiet-eof'
                 trace['closed_at_us'] = time.time_ns()//1000
+                if split is not None:
+                    trace['closed_monotonic_ns'] = time.monotonic_ns()
                 assert trace['closed_at_us']-trace['request_at_us'] < 3_000_000
                 publish(directory, f'relay-closed-{number:03}.json', trace)
     except EOFError as error:

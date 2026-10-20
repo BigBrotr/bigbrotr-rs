@@ -78,6 +78,10 @@ def relay(directory, listener, finished, errors):
         ensure_ascii=False, separators=(',', ':')).encode()
     assert canonical.hex() == selected['canonical_hex']
     assert hashlib.sha256(canonical).hexdigest() == new['id'] != old['id']
+    split = None
+    if (directory / 'progress-context.json').exists():
+        from installed_progress_transport import SplitEvents
+        split = SplitEvents(directory, new, 'activated')
     nonces = set()
     try:
         number = 0
@@ -125,7 +129,21 @@ def relay(directory, listener, finished, errors):
                 trace.update(request=command, request_at_us=time.time_ns() // 1000,
                     request_monotonic_ns=time.monotonic_ns())
                 publish(directory, f'relay-open-{number:03}.json', trace)
-                if number == 1:
+                selected = split.select(ident, number) if split is not None else None
+                if selected is not None:
+                    values = split.describe(trace, selected)
+                    for value in values:
+                        send_frame(connection, ['EVENT', ident, value])
+                    send_frame(connection, ['EOSE', ident])
+                    opcode, raw = read_frame(connection)
+                    assert opcode == 1 and json.loads(raw) == ['CLOSE', ident]
+                    opcode, raw = read_frame(connection)
+                    assert opcode == 8 and raw == b''
+                    connection.sendall(b'\x88\x00')
+                    connection.shutdown(socket.SHUT_WR)
+                    assert connection.recv(1) == b''
+                    trace['completion'] = 'request-and-websocket-close'
+                elif split is None and number == 1:
                     trace.update(frames=['distinct', 'predecessor', 'distinct-resend', 'EOSE'],
                         event_ids=[new['id'], old['id'], new['id']], sent_at_us=time.time_ns() // 1000)
                     for value in (new, old, new):

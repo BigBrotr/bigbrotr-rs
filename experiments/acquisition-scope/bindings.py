@@ -58,7 +58,8 @@ sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.ar
 installed_sync_visibility = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-visibility'
 installed_sync_expiry = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-expiry'
 installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-window'
-installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
+installed_sync_progress = len(sys.argv) == 4 and sys.argv[2] == '--installed-sync-progress'
+installed_sync = installed_sync_progress or installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
 installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-signed'
 installed_archive_attempt_limits = len(sys.argv) == 4 and sys.argv[2] == '--installed-archive-attempt-limits'
@@ -97,7 +98,8 @@ ingest_activated_refusals = len(sys.argv) == 4 and sys.argv[2] == '--ingest-acti
 ingest_activated_zero = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-zero'
 ingest_activated_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-faults'
 ingest_activated_recovery = len(sys.argv) == 4 and sys.argv[2] == '--ingest-activated-recovery'
-ingest_installed_live = len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live'
+ingest_installed_live_progress = len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live-progress'
+ingest_installed_live = ingest_installed_live_progress or len(sys.argv) == 4 and sys.argv[2] == '--ingest-installed-live'
 ingest_live_refusals = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-refusals'
 ingest_live_routes = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-routes'
 ingest_live_guards = len(sys.argv) == 4 and sys.argv[2] == '--ingest-live-guards'
@@ -141,6 +143,10 @@ assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--un
 reuse_build = registration_faults or guards or interruptions or commits or ((installed_archive or installed_sync or initial_ingest or observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
+if installed_sync_progress or ingest_installed_live_progress:
+    sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+    from installed_progress_context import qualified_build
+    built = qualified_build(build, built)
 if installed_archive_catch_up:
     component = json.loads((build / 'component-result.json').read_text())
     qualification = json.loads((build.parent / 'qualification.json').read_text())
@@ -198,6 +204,8 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = ('bigbrotr-scope-command-binding-' if scope_command_faults or scope_http_faults
           else 'bigbrotr-acquisition-binding-') + revision[:7]
+if installed_sync_progress or ingest_installed_live_progress:
+    client += '-progress-initial' if installed_sync_progress else '-progress-activated'
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
     status='RUNNING', wave='installed-session-hash' if session_hash else 'installed-sessions' if sessions else 'socket' if socket else 'observation' if observation else 'execution' if execution else 'installed-commits' if commits else 'installed-interruptions' if interruptions else 'installed-ingest' if installed else 'ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],
@@ -740,7 +748,10 @@ def containers():
 def rows(db):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in ((64, 66, 67, 68, 69, 70, 71, 72, 75) if installed_archive_catch_up else (64, 66, 67, 68, 69, 70, 71, 72)) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in ((64, 66, 67, 68, 69, 70, 71, 72, 75, 77)
+        if installed_sync_progress or ingest_installed_live_progress else
+        (64, 66, 67, 68, 69, 70, 71, 72, 75) if installed_archive_catch_up else
+        (64, 66, 67, 68, 69, 70, 71, 72)) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     # This finite observer can otherwise launch parallel aggregate workers for
@@ -1222,6 +1233,17 @@ if ingest_live_refusals:
 if ingest_live_routes:
     success_status = 'PASS_LIVE_INITIAL_ROUTES'
 
+if installed_sync_progress or ingest_installed_live_progress:
+    from installed_progress_context import record_source
+    record_source(output, build, revision)
+    context_name = 'initial' if installed_sync_progress else 'activated'
+    success_status = 'PASS_INSTALLED_' + context_name.upper() + '_TYPED_PROGRESS'
+    report['wave'] = context_name + '-typed-progress'
+    report['not_run'] = ['Other Sync entrypoints require separate owned invocations',
+        'Hole/refusal, lost COMMIT and validated restart are separate scenarios',
+        'Native ACK, GC, job completion, durable EOSE/coverage and full M1',
+        'Capacity/RSS, blocked native syscall, arm64/release']
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -1255,6 +1277,8 @@ try:
         time.sleep(.1)
     basic = rows('bb_scope_54d1a18_basic')
     template = rows('bb_source_template')
+    if installed_sync_progress or ingest_installed_live_progress:
+        lab.write_json(output/'progress-originals-before.json',dict(bb_scope_54d1a18_basic=basic,bb_source_template=template))
     if installed_archive_catch_up:
         lab.write_json(output/'catch-up-originals-before.json',dict(bb_scope_54d1a18_basic=basic,bb_source_template=template))
     require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
@@ -1368,7 +1392,7 @@ try:
     elif installed_sync:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from installed_sync import CASES, EXPIRY_CASES, VISIBILITY_CASES, WINDOW_CASES
-        selected_sync_cases = (VISIBILITY_CASES if installed_sync_visibility
+        selected_sync_cases = (('sync-signed',) if installed_sync_progress else VISIBILITY_CASES if installed_sync_visibility
             else EXPIRY_CASES if installed_sync_expiry
             else WINDOW_CASES if installed_sync_window else CASES)
         cases = list(selected_sync_cases)
@@ -1648,7 +1672,8 @@ try:
         elif ingest_installed_live:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
             from installed_live import run_all as run_installed_live
-            report['cases'].append(run_installed_live(pg, client, output, rows, clone))
+            report['cases'].append(run_installed_live(pg, client, output, rows, clone,
+                **({'progress':True} if ingest_installed_live_progress else {})))
             save()
         elif ingest_live_refusals:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1765,6 +1790,8 @@ try:
                 else installed_basis if name == 'registered-only' else 'bb_source_template')
             completed = clone(name, template_name)
             archive_context = dict(resources=report, save=save, build=build, built=built) if installed_archive else {}
+            if installed_sync_progress:
+                archive_context = dict(progress=True)
             if job_gap and name.startswith('sync-'):
                 archive_context = dict(gap_schema=27 if name == 'sync-gap-uncorrected' else 28)
             report['cases'].append(run_installed(pg,client,output,completed,name,rows,**archive_context))
@@ -2100,10 +2127,11 @@ try:
                 for r in report['cases'][0]['cases']), 'installed-activated-recovery-case-set')
     if ingest_installed_live:
         from installed_live import CASES as INSTALLED_LIVE_CASES
+        selected_live_cases = ('installed-live-on',) if ingest_installed_live_progress else INSTALLED_LIVE_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
             and report['cases'][0]['name'] == 'installed-live-initial-successor'
-            and report['cases'][0]['cli_invocations'] == 5
-            and [r['name'] for r in report['cases'][0]['cases']] == list(INSTALLED_LIVE_CASES)
+            and report['cases'][0]['cli_invocations'] == (1 if ingest_installed_live_progress else 5)
+            and [r['name'] for r in report['cases'][0]['cases']] == list(selected_live_cases)
             and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']),
             'installed-live-initial-successor-case-set')
     if ingest_live_refusals:
@@ -2199,6 +2227,13 @@ except BaseException as error:
     raise
 finally:
     errors = []
+    if (installed_sync_progress or ingest_installed_live_progress) and (output/'progress-originals-before.json').exists():
+        try:
+            original_after=dict(bb_scope_54d1a18_basic=rows('bb_scope_54d1a18_basic'),bb_source_template=rows('bb_source_template'))
+            lab.write_json(output/'progress-originals-after.json',original_after)
+            require(original_after==json.loads((output/'progress-originals-before.json').read_text()),'progress-retained-original-changed')
+        except BaseException as error:
+            errors.append('progress-original-capture-'+type(error).__name__)
     if installed_archive_catch_up and (output/'catch-up-originals-before.json').exists() and not (output/'catch-up-originals-after.json').exists():
         try:
             original_after=dict(bb_scope_54d1a18_basic=rows('bb_scope_54d1a18_basic'),bb_source_template=rows('bb_source_template'))
@@ -2217,7 +2252,10 @@ finally:
         except BaseException as error:
             errors.append('stop-' + type(error).__name__)
     try:
-        current = {c['Id']: projection(c) for c in containers()}
+        observed_containers = containers()
+        current = {c['Id']: projection(c) for c in observed_containers}
+        if installed_sync_progress or ingest_installed_live_progress:
+            lab.write_json(output/'progress-container-inventory.json',observed_containers)
     except BaseException as error:
         current = {}
         errors.append('inventory-' + type(error).__name__)

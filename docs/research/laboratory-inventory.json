@@ -61101,7 +61101,7 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-contexts-20261020",
           "branch": "work/producer-progress-contexts",
           "base": "75df76037cb5c60458165414f133d9deafcc4112",
-          "state": "Frozen source critically reviewed; activated965 runtime/raw and retained initial7239 raw with corrected503 PASS. Original failures preserved. Awaiting integration; author finished.",
+          "state": "Qualified reviewed503 context source integrated by current merge; original exact worktree and evidence retained. Await branch-ref retirement after push.",
           "head": "50316df971d460b8f1123e2255d646bba9be29ed"
         },
         {
@@ -61131,7 +61131,7 @@
           "path": "/home/tux/bigbrotr-rs/.research/producer-progress-commit-loss-20261020",
           "branch": "work/producer-progress-commit-loss",
           "base": "45cedcf3d5d4f0bbed650e7bcefdb0b12b5b43e3",
-          "state": "Six real cases/82controls/raw2310files PASS; critical review and changed shared verifier regression PASS. Main merge in progress; author finished.",
+          "state": "Qualified eced source integrated and pushed in ed6a87bb383ea845a52b17065eb39394434f4f0f; original exact worktree/evidence retained. Await branch-ref retirement.",
           "head": "ecedbcaf0e416f5be957c46fe14acbaf5fe8860f"
         }
       ],

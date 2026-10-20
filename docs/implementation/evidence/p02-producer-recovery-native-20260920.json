@@ -40981,14 +40981,14 @@
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       },
       "producer_checkpoint_ack_preparation_20261020": {
-        "status": "COMPONENTS76_PASS_AT_d4e1b85; THREE_SUCCESSOR_SYNC_CONTEXTS_PASS_AT_75df760; EPOCH3_TYPED_RECOVERY_RETRY_AND_TWO_REFUSALS_PASS_AT_738637f; REMAINING_GATES_OPEN",
+        "status": "Typed progress components76, successor Sync3, activated2 Sync, retained initial1 raw science, historical recovery/refusals and actual two-mode COMMIT loss/recovery/retry qualified. ACK/credit and remaining gates open; original failed attempts preserved.",
         "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
         "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
         "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Qualify actual initial and activated-epoch2 Sync entrypoints, then proof-only COMMIT reply-loss and actual fresh recovery with active old-Control fencing. Reuse qualified d4e1b85 artifacts; retain ACK0/noGC and all original failures. Other historical recovery/refusal/resource gates remain open.",
+        "next": "Implement accepted checkpoint-to-native-ACK increment with all affected closing/recovery/frontier consumers reconciled. Existing design and P02-T02 Steps4/5/7 own ordering and gates; preparation-hole, further recovery/refusal/resource scenarios remain required. No new master plan.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41001,7 +41001,7 @@
           "sha256": "5606cdbfbd3917fa4b923337cb44618179e3415d5179b74deeebf8c203f94224"
         },
         "decision": "Reuse one typed cumulative producer head with retained deduplicated dependency closure and actual local acquisition attempt/ordinal. No immutable checkpoint history or native head digest. Required noGC invariant retired=0 and nativeACK<=validated head<=native issued<=PG reserved; credit follows positively observed nativeACK, never head alone. Proof-only progress changes no mutation sequence. Empty/unactivated target vetoes and whole-job uncertainty remain.",
-        "first_increment": "Typed PG progress, opaque context-bound native result and actual Sync consumer with ACK0 historical recovery validation implemented. Only the new acquisition job retains jobs.checkpoint_revision=0; historical jobs retain their original values. No native ACK write, new credit, remote cursor/coverage or whole-job completion. Current qualification covers three successor Sync lifetimes; other entrypoints, recovery/fault gates remain open.",
+        "first_increment": "Typed PG progress, opaque context-bound native result and actual Sync consumer with ACK0 historical recovery validation implemented. Entry contexts1/2/3/4 and actual proof-only COMMIT-loss recovery now have separately attributed evidence below. Only the new acquisition job retains jobs.checkpoint_revision=0; historical jobs retain original values. No native ACK write, returned credit, remote cursor/coverage or whole-job completion.",
         "capacity": "Initial noGC history64/32MiB remains distinct from active window. Exact finite progress/closure reservation must be fixed before code admits it. This slice cannot qualify indefinite traffic, request65 at default64, GC or mixed-cut restore.",
         "scenario_preparation": {
           "path": ".research/producer-checkpoint-ack-review-20261020/scenarios-v1.json",
@@ -41877,7 +41877,8 @@
           ],
           "status": "Activated965 runtime/raw PASS; original initial7239 FAIL preserved with separate corrected503 retained raw PASS. Product/build unchanged.",
           "root_review": "Complete new owners and affected existing capture/client/science/raw-binding boundaries read, frozen deltas reconciled and source pins authenticated; unchanged owning source/custody/codec contracts reused underQ38. Whole unrelated bindings case tree not reread; actual relevant dispatch/cleanup/source/build boundaries reviewed.",
-          "tree": "2f114884d7855e7ff96241314462674b9bdd6f19"
+          "tree": "2f114884d7855e7ff96241314462674b9bdd6f19",
+          "integration": "All ten staged files exactly equal reviewed503 source. Main typed verifier delta extracts verify_records; every other AST node unchanged and context oracle calls neither changed entrypoint. Existing raw/source/science evidence reused; no extra engine run."
         },
         "fault_fixture_preparation": {
           "source": "ca77ca09a898a3ff323c7fdbef94ac2a462b53cb",
