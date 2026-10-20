@@ -31,8 +31,13 @@ SUITE = transition.Suite(directory='installed-cycle',label='org.bigbrotr.install
              'Import closure, Archive, acknowledgement/GC, injected faults and capacity/RSS qualification'))
 
 
-def execute(pg, client, output, case, directory, expected, catalog, seed):
-    from installed_cycle_replay import verify, negative_controls
+def execute(pg, client, output, case, directory, expected, catalog, seed, *, checks=None):
+    if checks is None:
+        from installed_cycle_replay import verify, negative_controls, process_closed
+    else:
+        # An explicit bounded profile may change semantic expectations while
+        # retaining this exact process/backend/native capture and join path.
+        verify, negative_controls, process_closed = checks
     name,database=case['name'],case['database']; prefix=output/name
     before=schema.rows(pg,database)
     native=history.dump(client,output,name+'-before',directory)
