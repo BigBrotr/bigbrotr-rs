@@ -105,6 +105,15 @@ impl ControlSession {
             _permit: permit,
         };
         require_intent(&tx, &history.registration, &history.intent, current, epoch).await?;
+        producer_progress::recovery::require(
+            &tx,
+            recovery,
+            history.native.manifest(),
+            history.registration.producer_slot_id,
+            &history._permit,
+            || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
+        )
+        .await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);
@@ -470,6 +479,7 @@ pub(super) fn history_resolve_error(error: InitialSuccessionError) -> ProducerRe
         }
         ProducerOperationError::Reservation(e) => ProducerOperationError::Reservation(e),
         ProducerOperationError::Outcome(e) => ProducerOperationError::Outcome(e),
+        ProducerOperationError::Progress(e) => ProducerOperationError::Progress(e),
         ProducerOperationError::CommitUnknown => ProducerOperationError::CommitUnknown,
         ProducerOperationError::DeliveryUnknown => ProducerOperationError::DeliveryUnknown,
     }

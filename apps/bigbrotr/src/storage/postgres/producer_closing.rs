@@ -35,6 +35,7 @@ pub enum ProducerOperationError<E> {
     Native(E),
     Reservation(super::super::producer_requests::ReservationError),
     Outcome(super::super::producer_outcomes::OutcomeError),
+    Progress(producer_progress::ProducerProgressError),
     CommitUnknown,
     DeliveryUnknown,
 }
@@ -47,6 +48,11 @@ impl<E: fmt::Debug> std::error::Error for ProducerOperationError<E> {}
 impl<E> From<OwnerError> for ProducerOperationError<E> {
     fn from(value: OwnerError) -> Self {
         Self::Control(value)
+    }
+}
+impl<E> From<producer_progress::ProducerProgressError> for ProducerOperationError<E> {
+    fn from(value: producer_progress::ProducerProgressError) -> Self {
+        Self::Progress(value)
     }
 }
 
@@ -122,6 +128,15 @@ impl ControlSession {
             .and_then(|s| s.parse::<u64>().ok())
             .filter(|n| *n <= u64::from(spec.outstanding_request_limit))
             .ok_or(OwnerError::InvalidMetadata)?;
+        producer_progress::recovery::require(
+            &tx,
+            recovery,
+            recovery.manifest(),
+            spec.producer_slot_id,
+            &permit,
+            || producer_progress::recovery::authority(&mut lease, current_epoch, input.cancelled),
+        )
+        .await?;
         let closed = recovery
             .close_producer(
                 spec.producer_slot_id,

@@ -52,6 +52,15 @@ impl ControlSession {
             ));
         }
         check_delivery(&mut lease, epoch, input.cancelled)?;
+        producer_progress::recovery::require(
+            &tx,
+            recovery,
+            recovery.manifest(),
+            spec.producer_slot_id,
+            &permit,
+            || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
+        )
+        .await?;
         let native = recovery
             .observe_closed_producer(
                 spec.producer_slot_id,
@@ -173,6 +182,15 @@ impl ControlSession {
             )
             .await?;
         source_closure::require_recorded_outcomes(&tx, source, spec).await?;
+        producer_progress::recovery::require(
+            &tx,
+            source.recovery(),
+            source.producer().manifest(),
+            spec.producer_slot_id,
+            &_reservation,
+            || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
+        )
+        .await?;
         let slot = &spec.producer_slot_id.as_bytes().as_slice();
         let dataset = &spec.dataset_id.as_bytes().as_slice();
         let resource = &spec.ingest_resource_id.as_bytes().as_slice();

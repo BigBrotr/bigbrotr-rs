@@ -1,0 +1,284 @@
+//! Validate a retained typed closure under the caller's existing custody.
+//! No ACK, admission capability, decoded Fact or collection of rows is returned.
+use super::*;
+use crate::storage::rocks::{manifest::IngestManifest, store::IngestRecovery};
+use bigbrotr_model::{ProducerEpoch, SourceRecordId};
+use futures_util::TryStreamExt;
+use tokio_postgres::{Transaction, types::ToSql};
+
+pub(in crate::storage::postgres::control_owner) fn authority(
+    lease: &mut crate::runtime::policy_authority::PolicyLeaseTracker,
+    policy: bigbrotr_model::PolicyEpoch,
+    cancelled: &std::sync::atomic::AtomicBool,
+) -> Result<(), crate::storage::rocks::store::AdmissionError> {
+    use crate::storage::rocks::store::AdmissionError;
+    if cancelled.load(std::sync::atomic::Ordering::Relaxed) {
+        return Err(AdmissionError::AuthorityUnavailable);
+    }
+    lease
+        .check_delivery(policy)
+        .map_err(|_| AdmissionError::AuthorityUnavailable)
+}
+
+// Incremental local scratch, used before the factory moves its permit into a
+// native result. Fixed row bodies and queued response chunks remain in the
+// separately retained Control/driver allocation; native pins in the store's.
+// Neither allowance claims to bound process RSS or PostgreSQL server memory.
+const SCRATCH_BYTES: u64 = 4096;
+const _: () = assert!(
+    2 * std::mem::size_of::<JobHead>()
+        + 2 * std::mem::size_of::<FactRef>()
+        + 2 * std::mem::size_of::<Sha256>()
+        + 2 * std::mem::size_of::<Context>()
+        + JOB_BYTES
+        + DEPENDENCY_BYTES
+        + 2048 // fixed query parameters, row/stream headers and native reader/key
+        < SCRATCH_BYTES as usize
+);
+
+fn backend(_: tokio_postgres::Error) -> ProducerProgressError {
+    ProducerProgressError::Backend
+}
+
+/// Called only inside an authenticated historical factory. Its native context
+/// must be positively checked by that factory before returning a result. All
+/// progress writers and this reader take the same producer UPDATE lock before
+/// any head/child read, including across READ COMMITTED statements.
+#[allow(
+    clippy::too_many_arguments,
+    reason = "locked SQL, native context, retained grant and original deadline are distinct"
+)]
+pub(in crate::storage::postgres::control_owner) async fn require(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    manifest: &IngestManifest,
+    slot: ProducerSlotId,
+    scratch: &OwnedPermit,
+    mut authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<(), ProducerProgressError> {
+    let native_error = ProducerProgressError::Native;
+    authority().map_err(native_error)?;
+    let id = manifest.identity();
+    let actual = recovery.manifest().identity();
+    if id.dataset_id != actual.dataset_id
+        || id.owner_resource_id != actual.owner_resource_id
+        || id.shard_id != actual.shard_id
+        || id.owner_epoch > actual.owner_epoch
+    {
+        return Err(ProducerProgressError::InvalidContext);
+    }
+    if scratch.request().units().data_bytes() < SCRATCH_BYTES
+        || scratch.request().units().items() == 0
+    {
+        return Err(ProducerProgressError::InsufficientReservation);
+    }
+    let context = Context {
+        dataset: id.dataset_id,
+        slot,
+        epoch: id.owner_epoch.get(),
+        manifest: Sha256::digest(manifest.encode().as_bytes()).into(),
+    };
+    let epoch = context.epoch.to_string();
+    let params: &[&(dyn ToSql + Sync)] = &[&&slot.as_bytes()[..], &epoch];
+    let native = recovery.progress_read(scratch).map_err(native_error)?;
+    let producer = tx
+        .query_one(
+            "SELECT substring(dataset_id FROM 1 FOR 17),
+                left(reserved_through_request::text,21),
+                EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=39)
+             FROM control.producer_epochs
+             WHERE producer_slot_id=$1::bytea AND producer_epoch=$2::text::numeric
+             FOR UPDATE",
+            params,
+        )
+        .await
+        .map_err(backend)?;
+    authority().map_err(native_error)?;
+    if producer.try_get::<_, &[u8]>(0).map_err(backend)? != context.dataset.as_bytes() {
+        return Err(ProducerProgressError::InvalidContext);
+    }
+    let reserved = rows::number(&producer, 1)?;
+    let typed: bool = producer.try_get(2).map_err(backend)?;
+    drop(producer);
+    if !typed {
+        // application_transaction already authenticated the complete migration
+        // ledger under the migration lock. Old profiles can only have no head;
+        // an opaque legacy head never becomes accepted typed progress.
+        let present: bool = tx
+            .query_one(
+                "SELECT EXISTS(SELECT 1 FROM control.producer_checkpoints
+                 WHERE producer_slot_id=$1::bytea AND producer_epoch=$2::text::numeric)",
+                params,
+            )
+            .await
+            .map_err(backend)?
+            .try_get(0)
+            .map_err(backend)?;
+        authority().map_err(native_error)?;
+        if present {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        return native
+            .require_frontier(
+                slot,
+                ProducerEpoch::new(context.epoch)
+                    .map_err(|_| ProducerProgressError::InvalidContext)?,
+                0,
+                reserved,
+            )
+            .map_err(native_error);
+    }
+    // SQL checks original reservation/outcome closure, historical attribution,
+    // capacity and orphan absence. Client hashing and native reads below are
+    // independent of this server-side digest comparison.
+    tx.query_one(
+        "SELECT control.require_retained_producer_progress($1::bytea,$2::text::numeric)",
+        params,
+    )
+    .await
+    .map_err(backend)?;
+    authority().map_err(native_error)?;
+    let row = tx
+        .query_opt(
+            "SELECT progress_format,substring(dataset_id FROM 1 FOR 17),
+                substring(manifest_sha256 FROM 1 FOR 33),
+                left(checkpoint_revision::text,21),left(complete_through_request::text,21),
+                progress_jobs,dependency_count,substring(checkpoint_digest FROM 1 FOR 33)
+             FROM control.producer_checkpoints
+             WHERE producer_slot_id=$1::bytea AND producer_epoch=$2::text::numeric",
+            params,
+        )
+        .await
+        .map_err(backend)?;
+    authority().map_err(native_error)?;
+    let (revision, complete, jobs, dependencies, expected) = if let Some(row) = row {
+        if row.try_get::<_, Option<i16>>(0).map_err(backend)? != Some(1)
+            || row.try_get::<_, &[u8]>(1).map_err(backend)? != context.dataset.as_bytes()
+            || row.try_get::<_, &[u8]>(2).map_err(backend)? != context.manifest
+        {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        let revision = rows::number(&row, 3)?;
+        let complete = rows::number(&row, 4)?;
+        let jobs: i32 = row.try_get(5).map_err(backend)?;
+        let dependencies: i32 = row.try_get(6).map_err(backend)?;
+        let expected: [u8; 32] = row
+            .try_get::<_, &[u8]>(7)
+            .map_err(backend)?
+            .try_into()
+            .map_err(|_| ProducerProgressError::InvalidContext)?;
+        if revision == 0
+            || complete > reserved
+            || !(0..=MAX_PROGRESS_JOBS as i32).contains(&jobs)
+            || !(0..=MAX_DEPENDENCIES as i32).contains(&dependencies)
+        {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        (
+            revision,
+            complete,
+            jobs as usize,
+            dependencies as usize,
+            Some(expected),
+        )
+    } else {
+        (0, 0, 0, 0, None)
+    };
+    native
+        .require_frontier(
+            slot,
+            ProducerEpoch::new(context.epoch).map_err(|_| ProducerProgressError::InvalidContext)?,
+            complete,
+            reserved,
+        )
+        .map_err(native_error)?;
+    let mut hash = Sha256::new();
+    hash.update(DIGEST_DOMAIN);
+    hash.update(context.dataset.as_bytes());
+    hash.update(context.slot.as_bytes());
+    hash.update(context.epoch.to_be_bytes());
+    hash.update(context.manifest);
+    hash.update(revision.to_be_bytes());
+    hash.update(complete.to_be_bytes());
+    hash.update((jobs as u64).to_be_bytes());
+    hash.update((dependencies as u64).to_be_bytes());
+    {
+        let stream = tx
+            .query_raw(
+                "SELECT substring(control.acquisition_progress_bytes(p) FROM 1 FOR 217)
+                 FROM control.acquisition_progress p
+                 WHERE producer_slot_id=$1::bytea AND producer_epoch=$2::text::numeric
+                 ORDER BY job_id LIMIT 65",
+                params.iter().copied(),
+            )
+            .await
+            .map_err(backend)?;
+        futures_util::pin_mut!(stream);
+        let mut previous = None;
+        let mut count = 0;
+        while let Some(row) = stream.try_next().await.map_err(backend)? {
+            authority().map_err(native_error)?;
+            if count >= jobs {
+                return Err(ProducerProgressError::InvalidContext);
+            }
+            let bytes: &[u8] = row.try_get(0).map_err(backend)?;
+            let head = rows::decode_job(bytes)?;
+            if previous.is_some_and(|previous| previous >= head.job) || head.mutation > complete {
+                return Err(ProducerProgressError::InvalidContext);
+            }
+            previous = Some(head.job);
+            hash.update(bytes);
+            count += 1;
+        }
+        if count != jobs {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+    }
+    {
+        let stream = tx
+            .query_raw(
+                "SELECT substring(dataset_id || control.command_u64_bytes(source_shard)
+                    || control.command_u64_bytes(source_epoch)
+                    || control.command_u64_bytes(source_sequence) || payload_digest FROM 1 FOR 73)
+                 FROM control.producer_checkpoint_dependencies
+                 WHERE producer_slot_id=$1::bytea AND producer_epoch=$2::text::numeric
+                 ORDER BY source_shard,source_epoch,source_sequence LIMIT 16385",
+                params.iter().copied(),
+            )
+            .await
+            .map_err(backend)?;
+        futures_util::pin_mut!(stream);
+        let mut previous: Option<SourceRecordId> = None;
+        let mut count = 0;
+        while let Some(row) = stream.try_next().await.map_err(backend)? {
+            authority().map_err(native_error)?;
+            if count >= dependencies {
+                return Err(ProducerProgressError::InvalidContext);
+            }
+            let bytes: &[u8] = row.try_get(0).map_err(backend)?;
+            let reference = rows::decode_dependency(bytes)?;
+            if reference.source_record_id.dataset_id != context.dataset
+                || previous.is_some_and(|previous| previous >= reference.source_record_id)
+            {
+                return Err(ProducerProgressError::InvalidContext);
+            }
+            previous = Some(reference.source_record_id);
+            hash.update(bytes);
+            // This owns at most one native pin; it is dropped before the next
+            // SQL await. Hash checks retain the original caller deadline.
+            native
+                .require_fact(reference, &mut authority)
+                .map_err(native_error)?;
+            count += 1;
+        }
+        if count != dependencies {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+    }
+    let actual: [u8; 32] = hash.finalize().into();
+    if expected.is_some_and(|expected| actual != expected) {
+        return Err(ProducerProgressError::InvalidContext);
+    }
+    authority().map_err(native_error)?;
+    native.validate().map_err(native_error)
+}
