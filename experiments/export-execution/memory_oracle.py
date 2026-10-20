@@ -50,6 +50,44 @@ def event_expected(spec):
     return {key: event[key] for key in FIELDS}
 
 
+def verify_signed_files(destination, artifact, job, science):
+    """Compare one complete signed file/manifest with independent frozen science.
+
+    This checks bytes only. The caller owns SQL, physical custody, process joins
+    and memory evidence; no successful runtime is inferred from existing files.
+    """
+    require(set(science) == {'format', 'event', 'query', 'catalog', 'frontier_revision', 'accepted_revisions'}
+            and science['format'] == 'bigbrotr-export-memory-science/1', 'independent science descriptor')
+    for value in (artifact, job):
+        require(isinstance(value, str) and len(value) == 32
+                and bytes.fromhex(value).hex() == value and int(value, 16) > 0,
+                'actual generated artifact/job ID')
+    expected = event_expected(science['event'])
+    require(expected['id'] == science['query']['event_id'], 'selected signed ID')
+    directory = Path(destination) / artifact
+    raw = (directory / 'events.jsonl').read_bytes()
+    expected_bytes = encoded(expected) + b'\n'
+    require(raw == expected_bytes, 'full independent signed JSONL: content/tags/order/duplicates/signature')
+    manifest_raw = (directory / 'manifest.json').read_bytes()
+    query = science['query']
+    scope_fields = ('dataset_id', 'dictionary_kind', 'allocation_domain', 'ordinal')
+    require(set(query['scope']) == set(scope_fields), 'closed qualified scope')
+    scope = {key: query['scope'][key] for key in scope_fields}
+    manifest = dict(format='bigbrotr-signed-events-export/1', artifact_id=artifact, job_id=job,
+        visibility='private', fidelity='full-signed-events', origin='retained-scoped-archive',
+        source=dict(cut=dict(dataset_id=query['dataset'], topology_generation=query['topology_generation'],
+            bounds=[dict(stream=dict(shard_id=b['shard_id'], owner_epoch=str(b['owner_epoch'])),
+                         last_complete_sequence=str(b['complete_through'])) for b in query['bounds']]),
+            catalog_id=science['catalog'], frontier_revision=str(science['frontier_revision']), snapshot_id=str(query['snapshot_id'])),
+        selection=dict(event_id=expected['id'], scope=scope), accepted_revisions=science['accepted_revisions'],
+        included_families=['signed-events'], excluded_families=['internal-payload-envelopes', 'eligibility-facts',
+        'first-local-receive', 'relay-provenance', 'imported-claims', 'measurements', 'documents', 'dictionaries',
+        'coverage', 'derived-results', 'deployment-state'],
+        files=[dict(file_id='events', path='events.jsonl', format='nostr-jsonl/1', bytes=str(len(raw)), rows='1', sha256=digest(raw))])
+    require(manifest_raw == encoded(manifest) + b'\n', 'literal complete manifest bytes')
+    return dict(rows=1, bytes=len(raw), sha256=digest(raw), manifest_sha256=digest(manifest_raw))
+
+
 def verify(root):
     initial, result = load(root / 'input.json'), load(root / 'result.json')
     spec, case = initial['spec'], initial['case']
@@ -117,31 +155,11 @@ def verify(root):
     require(expected['id'] == case['event_id'] == science['query']['event_id'], 'selected signed ID')
     artifact = reserved['artifact']
     require(len(artifact) == 32 and len(bytes.fromhex(artifact)) == 16, 'actual generated artifact ID')
-    directory = Path(case['destination']) / artifact
-    raw = (directory / 'events.jsonl').read_bytes()
-    expected_bytes = encoded(expected) + b'\n'
-    require(raw == expected_bytes, 'full independent signed JSONL: content/tags/order/duplicates/signature')
-    manifest_raw = (directory / 'manifest.json').read_bytes()
-    query = science['query']
-    scope_fields = ('dataset_id', 'dictionary_kind', 'allocation_domain', 'ordinal')
-    require(set(query['scope']) == set(scope_fields), 'closed qualified scope')
-    scope = {key: query['scope'][key] for key in scope_fields}
-    manifest = dict(format='bigbrotr-signed-events-export/1', artifact_id=artifact, job_id=case['job'],
-        visibility='private', fidelity='full-signed-events', origin='retained-scoped-archive',
-        source=dict(cut=dict(dataset_id=query['dataset'], topology_generation=query['topology_generation'],
-            bounds=[dict(stream=dict(shard_id=b['shard_id'], owner_epoch=str(b['owner_epoch'])),
-                         last_complete_sequence=str(b['complete_through'])) for b in query['bounds']]),
-            catalog_id=science['catalog'], frontier_revision=str(science['frontier_revision']), snapshot_id=str(query['snapshot_id'])),
-        selection=dict(event_id=expected['id'], scope=scope), accepted_revisions=science['accepted_revisions'],
-        included_families=['signed-events'], excluded_families=['internal-payload-envelopes', 'eligibility-facts',
-        'first-local-receive', 'relay-provenance', 'imported-claims', 'measurements', 'documents', 'dictionaries',
-        'coverage', 'derived-results', 'deployment-state'],
-        files=[dict(file_id='events', path='events.jsonl', format='nostr-jsonl/1', bytes=str(len(raw)), rows='1', sha256=digest(raw))])
-    require(manifest_raw == encoded(manifest) + b'\n', 'literal complete manifest bytes')
-    require(by_name['output-written'] == dict(rows=1, bytes=len(raw), sha256=digest(raw), manifest_sha256=digest(manifest_raw)), 'caller actual file result')
+    files = verify_signed_files(case['destination'], artifact, case['job'], science)
+    require(by_name['output-written'] == files, 'caller actual file result')
     require(by_name['sql-completed']['job'] == case['job'] and by_name['sql-completed']['artifact'] == artifact
-            and by_name['sql-completed']['manifest'] == digest(manifest_raw), 'known SQL completion binds output')
-    require(by_name['native-query-returned'] == dict(present=True, normalized_bytes=len(raw)-1,
+            and by_name['sql-completed']['manifest'] == files['manifest_sha256'], 'known SQL completion binds output')
+    require(by_name['native-query-returned'] == dict(present=True, normalized_bytes=files['bytes']-1,
             worker='reaped-by-real-reader', includes_parent_decode=True), 'returned event science')
     samples = []
     with (root / 'samples.jsonl').open() as stream:
@@ -163,7 +181,7 @@ def verify(root):
             require(0 <= row[key] <= case['limits'][key], 'real grant ceiling')
     native_phases = [r for r in ledger if r['phase'] == names.index('native-query-call') + 1]
     require(native_phases, 'actual whole-call ledger samples; no inferred internal phase')
-    return dict(status='PASS_SCIENCE_AND_CAPTURE', rows=1, bytes=len(raw), samples=len(samples), ledger_samples=len(ledger),
+    return dict(status='PASS_SCIENCE_AND_CAPTURE', rows=1, bytes=files['bytes'], samples=len(samples), ledger_samples=len(ledger),
         parent_rss_sample_max=max(p['memory'].get('VmRSS', 0) for p in parent_samples),
         worker_rss_sample_max=max(p['memory'].get('VmRSS', 0) for p in worker_samples),
         worker_hwm_observed_max=max(p['memory'].get('VmHWM', 0) for p in worker_samples),

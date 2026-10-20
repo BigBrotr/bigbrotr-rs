@@ -88,5 +88,63 @@ def run(root):
                 scope='Read-only retained capture; virtual semantic/byte mutations, no engine or file changes')
 
 
+def installed(payload):
+    """Negative controls over an actual retained installed_five call payload."""
+    # Resolve the same inert oracle dependencies as the setup owner. This import
+    # performs no setup: all executable phases remain behind its main guard.
+    import memory_setup
+    from memory_setup_oracle import installed_five
+    del memory_setup
+
+    require_keys = {'before_capture', 'after_capture', 'selection', 'principal',
+                    'commands', 'statuses', 'destination', 'science'}
+    oracle.require(set(payload) == require_keys, 'closed installed oracle test payload')
+    baseline = installed_five(**payload)
+    controls = []
+    new_jobs = {row['receipt']['job_id'] for row in payload['commands']}
+
+    def row(changed, table, predicate=lambda value: True):
+        before = changed['before_capture']['control'][table]
+        return next(value for value in changed['after_capture']['control'][table]
+                    if value not in before and predicate(value))
+
+    def check(name, mutate):
+        changed = copy.deepcopy(payload)
+        mutate(changed)
+        try:
+            installed_five(**changed)
+        except (ValueError, KeyError, StopIteration):
+            controls.append(dict(name=name, status='REJECTED'))
+        else:
+            raise AssertionError('incorrect installed oracle acceptance: ' + name)
+
+    check('missing-fifth-status', lambda value: value['statuses'].pop())
+    check('changed-catalog', lambda value: value['after_capture']['catalog'].clear())
+    check('missing-Control-table', lambda value: value['after_capture']['control'].pop('schema_versions'))
+    check('duplicate-command-key', lambda value: value['commands'][1].update(key=value['commands'][0]['key']))
+    check('historical-receipt', lambda value: value['commands'][0]['receipt'].update(created=False))
+    check('false-terminal-status', lambda value: value['statuses'][0].update(state='running'))
+    check('wrong-checkpoint', lambda value: row(value, 'jobs').update(checkpoint_revision=0))
+    check('wrong-reservation-cap', lambda value: row(value, 'export_execution_units').update(max_output_bytes=1))
+    check('wrong-artifact-digest', lambda value: row(value, 'artifacts').update(manifest_sha256='\\x' + 'aa' * 32))
+    check('wrong-file-row-count', lambda value: row(value, 'artifact_files').update(row_count=0))
+    check('missing-reader-release', lambda value: row(value, 'snapshot_leases',
+        lambda item: item['state'] == 'released').update(state='active'))
+    check('released-export-retention', lambda value: row(value, 'snapshot_leases',
+        lambda item: item['state'] == 'active').update(state='released'))
+    check('changed-retention-cut', lambda value: row(value, 'retention_claims').update(last_sequence=0))
+    check('unrelated-audit-action', lambda value: row(value, 'management_audit').update(action='unrelated'))
+    check('unreleased-Control', lambda value: row(value, 'owner_epochs').update(state='active'))
+    check('rewritten-old-job', lambda value: next(item for item in value['after_capture']['control']['jobs']
+        if item['job_id'][2:] not in new_jobs).update(xmin='999999999'))
+    check('renewed-export-pin', lambda value: row(value, 'snapshot_leases',
+        lambda item: item['state'] == 'active').update(lease_revision=2))
+    return dict(status='PASS_OFFLINE_INSTALLED_ORACLE_REGRESSION', baseline=baseline, controls=controls,
+                scope='Virtual mutations of caller-pinned retained captures only; no database, file or runtime changes')
+
+
 if __name__ == '__main__':
-    print(json.dumps(run(Path(sys.argv[1])), indent=2))
+    if len(sys.argv) == 3 and sys.argv[1] == '--installed':
+        print(json.dumps(installed(oracle.load(sys.argv[2])), indent=2))
+    else:
+        print(json.dumps(run(Path(sys.argv[1])), indent=2))
