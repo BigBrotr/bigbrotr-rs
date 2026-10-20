@@ -7,8 +7,9 @@ Existing task plan, Q37 model allocation and Q38 evidence reuse apply.
 
 P08-T04 Step 3 / P01-T05 Step 2: qualify export ownership and memory without
 reducing fidelity or widening deadlines. Root owns `/home/tux/bigbrotr-rs`, `main`.
-HEAD/exact verified remote: `b90b678` (push68804 joined0). Local root-owned changes:
-this checkpoint, recovery report, inventory and the existing memory guide.
+HEAD/exact verified remote: `14fba1537866570235ee68846636cbc81dbbc8b6`
+(push22226 joined0). The next coherent merge includes ce6df2e source plus root-owned checkpoint/report/
+inventory and the existing memory guide. The successful sample is committed/pushed.
 No product or Cargo-manifest change.
 
 Runtime86241 joined0. Actual source is private `fde2509`, build `214764e`; the
@@ -39,15 +40,21 @@ All eight actual containers exited0/PID0/noOOM; no running container holds this
 root. The [inventory](../research/laboratory-inventory.json) owns resource records.
 All failed/current roots, worktrees, datasets and logs remain. Three integrated
 branch refs are retired; their clean detached worktrees and ignored evidence remain.
-Bounded Astra layout-refusal design is source-only.
+Sol/xhigh `catalog_layout_fixture` froze the bounded reviewed refusal design
+in `.research/export-manager-refusal-20261020`, branch `work/export-manager-refusal`
+atce6df2e (base14fba15), clean.2positive/38negative offline controls PASS; original
+39 controls preserved. Astra critical source review is complete: items<=16 finding
+fixed, no remaining source blocker. Root authenticated all seven review pins.
+No engine/build active. Failure status and active SQL owner rows remain intact.
 
 ## Next bounded action and open limits
 
-Implement only the necessary parameterization for the existing oversized-layout
-refusal/drain case after reconciling its bounded design with existing tools. Reuse
-the qualified214764e wrapper; preserve positive/failure predicates separately.
-Critical source review precedes one fresh isolated run. Layout-refusal/drain is
-NOT_RUN; no rebuild or new fault-injection campaign is currently required.
+Commit/push this reviewed merge, then create a fresh private checkout of that
+exact integrated revision (umask077, explicit cwd and checked preflight). Run one
+isolated oversized-layout refusal/drain using the qualified214764e wrapper and
+genuine sample acceptance. Preserve raw probe4/observer1/UNKNOWN_OR_FAILED; root
+SQL/dump/physical/resource audit and critical outcome review qualify the separate
+refusal predicate. Runtime NOT_RUN; no rebuild or expanded campaign required.
 
 TLS, worst-case layouts/credentials, internal-owner attribution and whole-service
 sizing remain open. Preserve the earlier a99 initial Sync pending-await timeout;

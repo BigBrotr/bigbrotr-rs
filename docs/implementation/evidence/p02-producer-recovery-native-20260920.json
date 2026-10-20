@@ -38023,6 +38023,43 @@
               "bytes": 16606,
               "sha256": "a9e76bb9615555e224d5288b3cbfcf8b2633143b2845ec5168de8adf2481ed8e"
             }
+          },
+          "layout_refusal": {
+            "status": "SOURCE_CRITICAL_REVIEW_PASS_RUNTIME_NOT_RUN",
+            "owner": "catalog_layout_fixture gpt-6.1-sol/xhigh",
+            "base": "14fba1537866570235ee68846636cbc81dbbc8b6",
+            "worktree": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020",
+            "critical_design": "export_setup_fixture gpt-6-astra/xhigh; existing scientific_guard_cases.py93-195, catalog inspection/reader, memory.rs cleanup and Control acquisition reviewed/reused.",
+            "contract": "Fresh genuine sample Accepted job; inject existing100argument oversized function as isolated operator fault; retain raw identity/projection and structural/table/physical baseline. Reuse214ELF, memory_run and positiveoracle unchanged. Expected inspect ResourceLimit before reservation/native; retain probe4/observer1/UNKNOWN_OR_FAILED, classify external refusal/drain only. Natural driver joins/zero final grants/valid counters; only new active owner_epoch and unretired role_instance persist, all old rows incl job Accepted1/checkpoint0 and all scientific files unchanged; actual backend/cgroup absence required.",
+            "scope": "Named reduced-manager early-return gap only; no new timed-cancellation/TLS/worst-case campaign; no product changes or rebuild required.",
+            "commit": "ce6df2e5796733b4a9e4ad10a2161981b56dcb2d",
+            "source_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020/.research/manager-layout-refusal-source-20261020/receipt.json",
+              "bytes": 1677,
+              "sha256": "9938dcb7364e01e2cf899b3d104dd4a261ce59a069335c1f4727c7e564b84447"
+            },
+            "offline_controls": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020/.research/manager-layout-refusal-source-20261020/offline-controls.json",
+              "bytes": 6264,
+              "sha256": "3ee80b50ca79eb94394392fdf2bd2cce1fec9825f84e118771e099220369932c"
+            },
+            "root_review": "Prior full new launcher/oracle/unit delta review reused; final two-line items<=16 and rejection delta inspected. All seven review source/evidence pins authenticated.2positive/38negative controls PASS, original39 retained. No remaining critical source finding; protected compiled/positive/default paths unchanged. Runtime NOT_RUN; reuse qualified214 build.",
+            "initial_commit": "92428b5a60badc3895793cf95898a78b216d0c5b",
+            "source_receipt_v2": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020/.research/manager-layout-refusal-source-20261020/receipt-v2.json",
+              "bytes": 1162,
+              "sha256": "13464a9371ade3c9c4cb324d209c36ad8ba4472568f9c03200337763dbda367a"
+            },
+            "offline_controls_v2": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020/.research/manager-layout-refusal-source-20261020/offline-controls-v2.json",
+              "bytes": 6413,
+              "sha256": "4229527db0f4620dc1acfaea5980ca95690f7f469bc24ffffbca949c79ce5afb"
+            },
+            "critical_source_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-layout-refusal-source-review-v1.json",
+              "bytes": 9531,
+              "sha256": "34f1c54424ef3037773b48be58208aecdeadacc783b4f9cbc958f3645eb5130e"
+            }
           }
         }
       },

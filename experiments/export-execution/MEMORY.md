@@ -201,8 +201,14 @@ inspection refusal input. The wrapper already records cleanup joins and the
 operation error on this path, then emits `UNKNOWN_OR_FAILED` after runtime drop;
 this is not a successful export/capture predicate. A compatible fresh layout
 case, independent refusal/drain/SQL/backend audit and real execution remain root
-prerequisites. No timed fault injection, proxy adaptation or refusal PASS oracle
-is introduced here. A positive run needs a genuinely new Accepted job and pin;
+prerequisites. `memory_lab.py --manager-layout-refusal --manager-build BUILD`
+selects this separate fresh-sample case. The unchanged probe/observer retain
+exit 4/1 and `UNKNOWN_OR_FAILED`; `memory_setup_oracle.py` independently checks
+the expected refusal, natural drain, unchanged scientific state and actual owner
+rows. Its `PASS_REFUSAL_DRAIN` never reclassifies the raw operation as a completed
+export. Constructed controls use `test_memory_oracle.py --manager-layout-refusal`;
+they provide no real-engine qualification. No timed fault injection or proxy
+adaptation is introduced. A positive run needs a genuinely new Accepted job and pin;
 completed jobs cannot be replayed. Previously qualified application/worker assets
 may be reused with their original source identity, while this new wrapper must be
 built and pinned separately.

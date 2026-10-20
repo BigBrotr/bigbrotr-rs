@@ -66316,6 +66316,26 @@
             "bytes": 9376,
             "sha256": "ba43afdca745e54f09aab88d5faa4117e72a2bf6fff84183ca48502753afc6eb"
           }
+        },
+        "refusal_source": {
+          "state": "clean frozen source; critical review complete; integration pending; no engine/build",
+          "base": "14fba1537866570235ee68846636cbc81dbbc8b6",
+          "worktree": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020",
+          "branch": "work/export-manager-refusal",
+          "scope": "Existing-lab parameter and independent refusal/drain verifier under bounded Astra design; root owns execution.",
+          "owner": "catalog_layout_fixture gpt-6.1-sol/xhigh, same verified configuration",
+          "commit": "ce6df2e5796733b4a9e4ad10a2161981b56dcb2d",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020/.research/manager-layout-refusal-source-20261020/receipt.json",
+            "bytes": 1677,
+            "sha256": "9938dcb7364e01e2cf899b3d104dd4a261ce59a069335c1f4727c7e564b84447"
+          },
+          "initial_commit": "92428b5a60badc3895793cf95898a78b216d0c5b",
+          "receipt_v2": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-manager-refusal-20261020/.research/manager-layout-refusal-source-20261020/receipt-v2.json",
+            "bytes": 1162,
+            "sha256": "13464a9371ade3c9c4cb324d209c36ad8ba4472568f9c03200337763dbda367a"
+          }
         }
       }
     },

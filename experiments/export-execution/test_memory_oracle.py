@@ -416,8 +416,167 @@ def allocations():
         scope='Constructed counter records only. Rust allocator tests, real capture, drivers and memory remain NOT_RUN.')
 
 
+def manager_layout_refusal():
+    """Constructed refusal captures only; no engine, probe, SQL or runtime."""
+    import tempfile
+    import memory_setup  # Resolve the existing inert oracle dependency paths.
+    from memory_setup_oracle import BX, manager_layout_refusal as verify
+    del memory_setup
+
+    controls = []
+    with tempfile.TemporaryDirectory(prefix='manager-layout-refusal-unit-') as temporary:
+        root = Path(temporary)
+        for name in ('probe', 'bigbrotr-archive-worker', 'science.json'):
+            (root / name).write_bytes(('constructed offline unit ' + name).encode())
+        mib = 1048576
+        case = dict(job='11'*16, event_id='22'*32, dataset='33'*16,
+            control=dict(database='control', user='control_reader'), catalog=dict(database='catalog', user='catalog_reader'),
+            worker_root=str(root), worker_bytes=(root/'bigbrotr-archive-worker').stat().st_size,
+            worker_sha256=oracle.digest((root/'bigbrotr-archive-worker').read_bytes()), ledger=str(root/'ledger.jsonl'),
+            limits=dict(row_bytes=mib, engine_memory_bytes=64*mib, native_reserve_bytes=96*mib,
+                        data_bytes=768*mib, native_bytes=192*mib, control_bytes=32*mib))
+        (root/'case.json').write_text(json.dumps(case))
+        spec = dict(probe=str(root/'probe'), case=str(root/'case.json'), science=str(root/'science.json'))
+        for key in ('probe', 'case', 'science'):
+            spec[key+'_sha256'] = oracle.digest(Path(spec[key]).read_bytes())
+        observer = dict(pid=1, start_ticks=10, ppid=0, executable='/usr/bin/python3.11', memory={})
+        diagnostic = dict(pid=2, start_ticks=20, ppid=1, executable=spec['probe'], memory={})
+        group = dict(current=100, peak=100, limit=str(1536*mib), events=dict(oom=0, oom_kill=0, high=0, max=0), pids=[1])
+        initial = dict(spec=spec, case=case, observer=observer, cgroup_before=group)
+        result = dict(status='UNKNOWN_OR_FAILED', returncode=4, reaped=True, forced=False, cleanup_errors=[], error=None,
+            descendants_absent=True, command=[spec['probe'], 'measure', spec['case']], environment={'LC_ALL':'C'},
+            case_sha256_after=spec['case_sha256'], worker_sha256_after=case['worker_sha256'],
+            cgroup_after=copy.deepcopy(group), pid=2, elapsed_ns=1000, seen_processes=[observer, diagnostic])
+        fields = [
+            ('allocation-profile', dict(profile=oracle.ALLOCATION_PROFILE, catalog_manager_bytes=oracle.MANAGER_BYTES,
+                catalog_extra_bytes=0, driver_drain_ms=2000, scope=oracle.ALLOCATION_SCOPE, reset=False, baseline_subtraction=False)),
+            ('preflight', {key:case[key] for key in ('job','event_id','worker_bytes','worker_sha256')}),
+            ('whole-call-admitted', dict(control_service_bytes=528*mib+8*65537, catalog_manager_bytes=oracle.MANAGER_BYTES,
+                reader_bytes=mib, output_bytes=mib, query_parent_bytes=64*(mib+2048), native_bytes=160*mib,
+                native_control_bytes=131072, fixture_bytes=16*mib, job_cap_qualification=False)),
+            ('control-connected', dict(pid=41, start='2026-10-20 16:26:56.193553+00', **case['control'])),
+            ('control-acquired', dict(epoch=2, incarnation='44'*16, commit_started=True)),
+            ('catalog-preparation-start', {}),
+            ('catalog-preparation-complete', dict(grant_bytes=oracle.MANAGER_BYTES, grant_held=True)),
+            ('catalog-connected', dict(pid=42, start='2026-10-20 16:26:56.193554+00', **case['catalog'])),
+            ('catalog-inspection-start', {}),
+            ('catalog-driver-join-start', dict(grant_held=True, driver_present=True, drain_ms=2000)),
+            ('catalog-driver-joined', dict(natural=True, failed=False)),
+            ('catalog-grant-release-start', dict(grant_held=True, driver_present=False)),
+            ('catalog-grant-released', dict(grant_held=False)),
+            ('control-driver-joined', dict(natural=True, failed=False)),
+            ('operation-returned', dict(error='ResourceLimit', cleanup_error=None)),
+            ('grants-released', dict(all_released=True))]
+        def counter(peak, live=2):
+            return dict(scope=oracle.ALLOCATION_SCOPE, live_bytes=live, peak_bytes=peak, accounting_valid=True)
+        events = [dict(event='export-measure', name=name, phase=i, elapsed_us=i,
+                       fields=value, rust_allocations=counter(i+2)) for i,(name,value) in enumerate(fields,1)]
+        events.append(dict(event='export-allocation-terminal', profile=oracle.ALLOCATION_PROFILE,
+            cut='after-runtime-drop-before-terminal-format', status='UNKNOWN_OR_FAILED', catalog_manager_bytes=None,
+            operation_error='ResourceLimit', exclusions=oracle.ALLOCATION_EXCLUSIONS.copy(), rust_allocations=counter(25)))
+        # Preliminary native admission is valid even though native is never called.
+        ledger = [dict(index=0, elapsed_us=1, phase=3, data_bytes=528*mib, native_bytes=160*mib, control_bytes=131072,
+                       items=0, permits=2, rust_allocations=counter(8)),
+                  dict(index=1, elapsed_us=17, phase=16, data_bytes=0, native_bytes=0, control_bytes=0,
+                       items=0, permits=0, rust_allocations=counter(24))]
+        samples = [dict(elapsed_ns=100, processes=[observer, diagnostic], cgroup=dict(group,pids=[1,2])),
+                   dict(elapsed_ns=200, processes=[observer], cgroup=copy.deepcopy(group))]
+        before = {name:[] for name in ['owner_epochs','role_instances','jobs', *('unchanged_'+str(i) for i in range(72))]}
+        before['owner_epochs'] = [dict(role='control', resource_id=BX+'55'*16, epoch=1, state='released', released_at_us=10, xmin='10')]
+        before['role_instances'] = [dict(role_instance_id=BX+'66'*16, retired_at_us=10, xmin='10')]
+        before['jobs'] = [dict(job_id=BX+case['job'], state='accepted', job_revision=1, checkpoint_revision=0,
+            owner_resource_id=None, owner_epoch=None, owner_incarnation=None, completed_at_us=None, xmin='11')]
+        after = copy.deepcopy(before)
+        role = dict(role_instance_id=BX+'77'*16, dataset_id=BX+case['dataset'], role='control',
+                    created_at_us=100, retired_at_us=None, xmin='12')
+        owner = dict(dataset_id=BX+case['dataset'], role='control', resource_id=BX+'55'*16, epoch=2,
+            role_instance_id=role['role_instance_id'], process_incarnation=BX+'44'*16, state='active',
+            acquired_at_us=101, lease_expires_at_us=5_000_101, released_at_us=None, exclusion_method=None,
+            exclusion_digest=None, archive_frontier_protocol=None, control_backend_pid=41,
+            control_backend_start='2026-10-20T16:26:56.193553+00:00', control_fence_version=1, xmin='12')
+        after['owner_epochs'].append(owner);after['role_instances'].append(role)
+        catalog = {'catalog_table_'+str(i):[] for i in range(32)}
+        files = {name:{'.':dict(inode=1, sha256=None)} for name in ('store','data','state','destination','scratch','measure_scratch')}
+        original = dict(objects=339, checksum='aa'*32, stored_checksum='aa'*32, identity_bytes=[], wire={})
+        fault = dict(objects=340, checksum='bb'*32, stored_checksum='aa'*32, identity_bytes=[19333],
+                     wire=dict(rows=340, max_name_bytes=8193, max_definition_bytes=8193))
+        payload = dict(root=str(root), before=dict(control=before,catalog=catalog), after=dict(control=after,catalog=copy.deepcopy(catalog)),
+            files_before=files, files_after=copy.deepcopy(files), layout_original=original, layout_before=fault,
+            layout_after=copy.deepcopy(fault), dump_original='aa'*32, dump_before='bb'*32, dump_after='bb'*32,
+            terminal=dict(forced=False,container=dict(State=dict(Status='exited',ExitCode=1,Pid=0,OOMKilled=False)),cgroup=dict(processes=[])),
+            backends=[])
+        # Independently serialized captures cannot share Python object aliases.
+        baseline = json.loads(json.dumps(dict(initial=initial,result=result,events=events,
+                                               ledger=ledger,samples=samples,payload=payload)))
+        def check(value):
+            for name,key in [('input.json','initial'),('result.json','result')]:
+                (root/name).write_text(json.dumps(value[key]))
+            for name,key in [('stdout','events'),('ledger.jsonl','ledger'),('samples.jsonl','samples')]:
+                (root/name).write_text(''.join(json.dumps(row)+'\n' for row in value[key]))
+            (root/'stderr').write_bytes(b'')
+            return verify(value['payload'])
+        answer = check(baseline)
+        assert answer['status'] == 'PASS_REFUSAL_DRAIN' and answer['raw_status'] == 'UNKNOWN_OR_FAILED'
+        assert answer['live_bytes_at_cut'] == 2 and answer['final_root_audit'] == 'PENDING'
+        controls.append(dict(name='natural-refusal-preliminary-native-grant-nonzero-live',status='ACCEPTED_OFFLINE_UNIT'))
+        changed = copy.deepcopy(baseline)
+        changed['events'][-1]['rust_allocations']['peak_bytes'] = oracle.MANAGER_BYTES+1
+        assert check(changed)['allocation_status'] == 'INCONCLUSIVE_WHOLE_PARENT_EXCEEDS_MANAGER'
+        controls.append(dict(name='allocation-over-manager-is-inconclusive',status='ACCEPTED_OFFLINE_UNIT'))
+        def reject(name, mutate, reason):
+            value = copy.deepcopy(baseline)
+            mutate(value)
+            try:
+                check(value)
+            except (ValueError, KeyError) as error:
+                assert str(error) == reason, (name,str(error),reason)
+                controls.append(dict(name=name,status='REJECTED_OFFLINE_UNIT',reason=str(error)))
+            else:
+                raise AssertionError('incorrect refusal verifier acceptance: '+name)
+        reject('raw-status-rewritten',lambda v:v['result'].update(status='CAPTURED'),'natural refused diagnostic and no descendants')
+        reject('outer-exit0',lambda v:v['payload']['terminal']['container']['State'].update(ExitCode=0),'observer exit1 and external exclusion')
+        reject('backend-residue',lambda v:v['payload']['backends'].append(dict(pid=41)),'observer exit1 and external exclusion')
+        reject('extra-reservation-marker',lambda v:v['events'].insert(9,dict(name='reserved')),'exact refusal marker grammar')
+        reject('wrong-operation-error',lambda v:v['events'][14]['fields'].update(error='WrongCatalog'),'natural refused drain and grant lifetime')
+        reject('driver-forced',lambda v:v['events'][10]['fields'].update(natural=False),'natural refused drain and grant lifetime')
+        reject('grant-released-before-join',lambda v:v['events'][9]['fields'].update(grant_held=False),'natural refused drain and grant lifetime')
+        reject('terminal-budget-fabricated',lambda v:v['events'][-1].update(catalog_manager_bytes=oracle.MANAGER_BYTES),'raw unknown terminal retained')
+        for key,value in [('index',False),('elapsed_us',-1),('items',True),('permits',-1)]:
+            reject('invalid-ledger-'+key,lambda v,k=key,x=value:v['ledger'][0].update({k:x}),'closed refusal ledger attribution')
+        reject('ledger-items-over-ceiling',lambda v:v['ledger'][0].update(items=17),'closed refusal ledger attribution')
+        reject('ledger-clock-regression',lambda v:v['ledger'][1].update(elapsed_us=0),'refusal ledger chronology')
+        reject('ledger-phase-regression',lambda v:v['ledger'][1].update(phase=2),'refusal ledger chronology')
+        reject('retained-permit',lambda v:v['ledger'][-1].update(permits=1),'all refused grants drained')
+        reject('invalid-counter',lambda v:v['events'][0]['rust_allocations'].update(accounting_valid=False),'valid refused requested-live counter')
+        reject('marker-counter-regression',lambda v:v['events'][1]['rust_allocations'].update(peak_bytes=2),'refusal counter stream monotonicity')
+        reject('final-counter-below-ledger',lambda v:v['events'][-1]['rust_allocations'].update(peak_bytes=23),'refusal final counter covers both streams')
+        reject('initial-extra-pid',lambda v:v['initial']['cgroup_before']['pids'].append(9),'initial sole observer and zero OOM; final descendants absent')
+        reject('initial-oom',lambda v:v['initial']['cgroup_before']['events'].update(oom=1),'initial sole observer and zero OOM; final descendants absent')
+        reject('foreign-executable',lambda v:v['samples'][1]['processes'][0].update(executable='/foreign'),'only exact observer and diagnostic observed; no worker or foreign process')
+        reject('foreign-pid',lambda v:v['samples'][1]['processes'].append(dict(observer,pid=9)),'only exact observer and diagnostic observed; no worker or foreign process')
+        reject('diagnostic-parent-changed',lambda v:v['samples'][0]['processes'][1].update(ppid=9),'observed one exact refusal diagnostic identity')
+        reject('unbound-seen-identity',lambda v:v['result']['seen_processes'].append(dict(observer,pid=9)),'retained seen-process identities exactly bind sampled identities')
+        reject('sample-event-change',lambda v:v['samples'][0]['cgroup']['events'].update(max=1),'finite refusal cgroup samples and unchanged events')
+        reject('sample-over-cap',lambda v:v['samples'][0]['cgroup'].update(peak=1536*mib+1),'finite refusal cgroup samples and unchanged events')
+        reject('unknown-unsampled-pid',lambda v:v['samples'][0]['cgroup']['pids'].append(9),'finite refusal cgroup samples and unchanged events')
+        reject('job-mutated',lambda v:v['payload']['after']['control']['jobs'][0].update(state='running'),'unexpected complete-table/xmin change: jobs')
+        reject('prior-owner-xmin-rewritten',lambda v:v['payload']['after']['control']['owner_epochs'][0].update(xmin='99'),'old row/xmin rewritten: owner_epochs')
+        reject('extra-owner-row',lambda v:v['payload']['after']['control']['owner_epochs'].append(dict(owner)),'exactly one appended refused owner and role row')
+        reject('new-owner-falsely-released',lambda v:v['payload']['after']['control']['owner_epochs'][-1].update(state='released'),'closed active/unretired refused owner rows; no SQL release fabricated')
+        reject('new-role-falsely-retired',lambda v:v['payload']['after']['control']['role_instances'][-1].update(retired_at_us=102),'closed active/unretired refused owner rows; no SQL release fabricated')
+        reject('catalog-mutated',lambda v:v['payload']['after']['catalog'].update(new=[]),'refused catalog userdata and physical roots unchanged')
+        reject('physical-file-mutated',lambda v:v['payload']['files_after']['destination'].update(output=dict(bytes=1)),'refused catalog userdata and physical roots unchanged')
+        reject('wire-query-unbounded',lambda v:v['payload']['layout_before']['wire'].update(max_name_bytes=19333),'independent oversized structural fault and unchanged injected baseline')
+        reject('wrong-identity',lambda v:v['payload']['layout_before'].update(identity_bytes=[8193]),'independent oversized structural fault and unchanged injected baseline')
+        reject('injected-dump-mutated',lambda v:v['payload'].update(dump_after='cc'*32),'independent oversized structural fault and unchanged injected baseline')
+    return dict(status='PASS_OFFLINE_MANAGER_LAYOUT_REFUSAL_UNITS',controls=controls,
+        scope='Constructed records in owned temporary files only. Real refusal, allocation, SQL/physical custody and runtime remain NOT_RUN.')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] == '--allocations':
+    if len(sys.argv) == 2 and sys.argv[1] == '--manager-layout-refusal':
+        print(json.dumps(manager_layout_refusal(), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--allocations':
         print(json.dumps(allocations(), indent=2))
     elif len(sys.argv) == 2 and sys.argv[1] == '--native-row':
         print(json.dumps(native_rows(), indent=2))

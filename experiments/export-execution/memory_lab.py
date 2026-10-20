@@ -325,9 +325,11 @@ class Laboratory:
         self.owned(self.pg)
         return sql(dict(postgres=self.pg), database, statement)
 
-    def run(self, name, command, *, trace=False, minimum_workers=1, memory_mib=3072, before_release=None):
+    def run(self, name, command, *, trace=False, minimum_workers=1, memory_mib=3072, before_release=None,
+            expected_exit=0):
         """A fresh cgroup and exec-only start gate preserve initial PID identity."""
         require(re.fullmatch('[a-z-]+', name), 'finite phase name')
+        require(type(expected_exit) is int and expected_exit in (0, 1), 'explicit finite expected container exit')
         gate = '/lab/start-' + name
         require(not (self.out / ('start-' + name)).exists(), 'fresh phase invocation')
         if trace:
@@ -392,7 +394,7 @@ class Laboratory:
                 require(group.stat().st_ino == start['inode'], 'original cgroup identity')
                 current_group['processes'] = (group / 'cgroup.procs').read_text().split()
             write(self.out / (name + '-terminal.json'), dict(container=final, forced=forced, cgroup=current_group))
-        require(not forced and final['State']['Status'] == 'exited' and final['State']['ExitCode'] == 0
+        require(not forced and final['State']['Status'] == 'exited' and final['State']['ExitCode'] == expected_exit
             and final['State']['Pid'] == 0 and not final['State']['OOMKilled']
             and not current_group['processes'], 'natural terminal container and empty cgroup')
         if trace:
@@ -607,7 +609,7 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
             measurement='NOT_RUN', qualification_256mib=False, five_exports_acceptance=False)
         self.save()
 
-    def manager_measure(self):
+    def manager_measure(self, *, layout_refusal=False):
         """Measure one accepted job; preserve the original accepted descriptor."""
         require(self.manager_qualification is not None and self.state['outcome'] == 'ACCEPTED_INPUTS_PREPARED',
                 'fresh manager diagnostic after genuine single acceptance')
@@ -624,9 +626,33 @@ subprocess.run(['/build/bigbrotr','config','init','--recipe','archive-only','--o
                           probe_sha256=self.manager_qualification['executable']['sha256'])
         write(fresh / 'manager-run.json', descriptor)
         self.state.update(manager_descriptor=pin(fresh / 'manager-run.json'), original_accepted_run=original)
+        if layout_refusal:
+            self.state['manager_mode'] = 'layout-refusal'
         self.save()
-        # A short file command keeps strace's exec arguments complete. SQL is
-        # read-only through IO; the original captures and science remain intact.
+        def layout_dump(label):
+            self.owned(self.pg)
+            result = docker('exec', self.pg, 'pg_dump', '-U', 'postgres', 'bb_export_catalog', check=False)
+            (self.out / (label + '.pgdump')).write_text(result.stdout)
+            (self.out / (label + '.stderr')).write_text(result.stderr)
+            require(result.returncode == 0 and not result.stderr, 'complete catalog pg_dump')
+            lines, copying = [], None
+            for line in result.stdout.splitlines():
+                if line.startswith(('\\restrict ', '\\unrestrict ')): continue
+                if copying is not None:
+                    if line == '\\.':
+                        lines.extend(sorted(copying));lines.append(line);copying = None
+                    else: copying.append(line)
+                else:
+                    lines.append(line)
+                    if line.startswith('COPY ') and line.endswith(' FROM stdin;'): copying = []
+            require(copying is None, 'complete catalog COPY data')
+            normalized = '\n'.join(lines) + '\n'
+            (self.out / (label + '.normalized')).write_text(normalized)
+            write(self.out / (label + '.json'), dict(sha256=hashlib.sha256(normalized.encode()).hexdigest()))
+        if layout_refusal:
+            layout_dump('manager-layout-original')
+        # A short file command keeps strace's exec arguments complete. The
+        # refusal mode adds only its isolated operator DDL through retained IO.
         script = """import json,os,sys,tomllib
 from pathlib import Path
 sys.dont_write_bytecode=True
@@ -634,8 +660,10 @@ sys.path.insert(0,'/source/experiments/export-execution')
 from memory_setup_io import IO,write,require,census
 from memory_setup import immutable
 from memory_oracle import verify
+from memory_setup_oracle import manager_layout_ddl,manager_layout_observation,manager_layout_refusal
 os.umask(0o077)
 phase=sys.argv[1]
+refusal=sys.argv[2]=='layout-refusal'
 require(phase in ('before','after'),'explicit capture phase')
 fresh=Path('/lab/fresh-root')
 output=Path('/lab')/('manager-'+phase)
@@ -652,12 +680,35 @@ try:
  if phase=='before':
   require(state==json.loads((fresh/'accept-run/after.json').read_text()),'same entire accepted SQL state')
   require(files==json.loads((fresh/'prepared.json').read_text())['files'],'same original physical roots')
+  if refusal:
+   write(output/'layout-original.json',manager_layout_observation(io))
+   io.sql(config['postgres']['catalog']['database'],manager_layout_ddl(),mutation=True)
+   fault=io.capture('fault-state')
+   require(fault==state and immutable(fresh)==files,'owned DDL preserves original scientific rows/roots')
+   write(output/'layout.json',manager_layout_observation(io))
+   write(output/'measure-scratch.json',census(fresh/'measure-scratch'))
  else:
   before=json.loads(Path('/lab/manager-before/state.json').read_text())
   require(state['catalog']==before['catalog'],'complete catalog unchanged')
   original=json.loads(Path('/lab/manager-before/files.json').read_text())
   require(all(files[name]==original[name] for name in ('store','data','state')),'scientific roots unchanged')
-  write(output/'science.json',verify(fresh/'manager-measure-run'))
+  if refusal:
+   write(output/'layout.json',manager_layout_observation(io))
+   write(output/'measure-scratch.json',census(fresh/'measure-scratch'))
+   before=Path('/lab/manager-before')
+   load=lambda path:json.loads(path.read_text())
+   before_files={**load(before/'files.json'), 'scratch':load(before/'scratch.json'),'measure_scratch':load(before/'measure-scratch.json')}
+   after_files={**files,'scratch':load(output/'scratch.json'),'measure_scratch':load(output/'measure-scratch.json')}
+   payload=dict(root=str(fresh/'manager-measure-run'),before=load(before/'fault-state.json'),after=state,
+    files_before=before_files,files_after=after_files,layout_original=load(before/'layout-original.json'),
+    layout_before=load(before/'layout.json'),layout_after=load(output/'layout.json'),
+    terminal=load(Path('/lab/manager-measure-terminal.json')),backends=load(Path('/lab/manager-measure-backends.json')),
+    **{key:load(Path('/lab')/('manager-layout-'+phase+'.json'))['sha256'] for key,phase in
+       [('dump_original','original'),('dump_before','before'),('dump_after','after')]})
+   write(output/'refusal-input.json',payload)
+   write(output/'refusal.json',manager_layout_refusal(payload))
+  else:
+   write(output/'science.json',verify(fresh/'manager-measure-run'))
  io.backends('after',absent=True)
 except BaseException:
  io.failure_custody()
@@ -681,17 +732,30 @@ except BaseException:
                 science_source=pin(SOURCE / 'experiments/export-execution/memory_oracle.py'),
                 manager=self.manager_qualification,
                 scope='Fresh sole gated observer; observer+diagnostic+worker, no tracer or peak reset/subtraction'))
-        self.run('manager-before', ['python3', '-B', '/lab/manager-capture.py', 'before'], trace=True, minimum_workers=0)
+        mode = 'layout-refusal' if layout_refusal else 'positive'
+        self.run('manager-before', ['python3', '-B', '/lab/manager-capture.py', 'before', mode], trace=True, minimum_workers=0)
         self.exclusion('manager-before')
+        if layout_refusal:
+            layout_dump('manager-layout-before')
         self.state.update(state='manager-measuring', outcome='MANAGER_MEASUREMENT_RUNNING')
         self.save()
         self.run('manager-measure', ['python3', '-B', '/source/experiments/export-execution/memory_run.py',
             '/lab/fresh-root/manager-run.json', '/lab/fresh-root/manager-measure-run'],
-            memory_mib=1536, before_release=freshness)
+            memory_mib=1536, before_release=freshness, expected_exit=1 if layout_refusal else 0)
         self.exclusion('manager-measure')
         require(pin(fresh / 'run.json') == original, 'original accepted run descriptor preserved')
-        self.run('manager-after', ['python3', '-B', '/lab/manager-capture.py', 'after'], trace=True, minimum_workers=0)
+        if layout_refusal:
+            layout_dump('manager-layout-after')
+        self.run('manager-after', ['python3', '-B', '/lab/manager-capture.py', 'after', mode], trace=True, minimum_workers=0)
         self.exclusion('manager-after')
+        if layout_refusal:
+            self.state.update(outcome='MANAGER_LAYOUT_REFUSAL_DRAIN_CAPTURED_ROOT_AUDIT_PENDING',
+                manager_capture=pin(fresh / 'manager-measure-run/result.json'),
+                refusal_audit=pin(self.out / 'manager-after/refusal.json'),
+                qualification_256mib=False, five_exports_acceptance=False,
+                review_required='Raw UNKNOWN_OR_FAILED and injected layout retained; root must authenticate final SQL/physical/outcome custody.')
+            self.save()
+            return
         self.state.update(outcome='CAPTURED_MANAGER_SCIENCE_SQL_AUDIT_PENDING',
             manager_capture=pin(fresh / 'manager-measure-run/result.json'),
             manager_science=pin(self.out / 'manager-after/science.json'),
@@ -832,6 +896,8 @@ def main():
         help='prepare genuine256MiB policy and observe five ordinary Serve exports')
     modes.add_argument('--manager-build', type=Path,
         help='qualified manager diagnostic build root; accept and measure one fresh job')
+    parser.add_argument('--manager-layout-refusal', action='store_true',
+        help='one fresh oversized-layout refusal/drain with the qualified manager build')
     args = parser.parse_args()
     require(all(p.is_absolute() and p.resolve() == p for p in
                 (args.root, args.build, args.probe, args.instrument,
@@ -845,6 +911,8 @@ def main():
             and args.export_memory_mib == 256 and not args.prepare_only), 'explicit installed five profile')
     require(args.prepare_only or args.installed_five or args.signed_input == 'archive-sample',
             'pinned single-job acceptance probe supports only archive-sample')
+    require(not args.manager_layout_refusal or (args.manager_build is not None and args.signed_input == 'archive-sample'),
+            'manager layout refusal requires the qualified manager build and archive-sample')
     lab = Laboratory(args.root, args.build, args.probe, args.instrument,
         application_build=args.application_build, export_memory_mib=args.export_memory_mib,
         signed_input=args.signed_input, manager_build=args.manager_build)
@@ -853,7 +921,7 @@ def main():
         if args.installed_five:
             lab.installed_five()
         if args.manager_build is not None:
-            lab.manager_measure()
+            lab.manager_measure(layout_refusal=args.manager_layout_refusal)
     except BaseException as error:
         lab.state.update(outcome='UNKNOWN_PRESERVED', error=type(error).__name__,
             next='Authenticate retained outcome; never replay this root or repair authority automatically')

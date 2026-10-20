@@ -4,6 +4,8 @@ Only unpredictable identities/times are observed. Signed fields, native records,
 receipts, batch digests, command digest and selected cuts are reconstructed.
 No production codec, query or SQL authority function computes an expectation.
 """
+import datetime
+import hashlib
 import json
 from pathlib import Path
 
@@ -14,6 +16,240 @@ from installed_archive_frontier import cut_digest, retained_inputs
 from memory_oracle import event_expected, verify_signed_files
 from memory_setup_io import require, sha, write
 from memory_setup_client import ACTIONS
+
+# Frozen independent raw query from scientific_guard_cases.py / 91af8a9;
+# product SQL is consulted only for its actual wire projection below.
+LAYOUT_SQL = '''WITH objects(kind,ns,name,definition) AS (
+SELECT 'table',n.nspname::text,c.relname::text,ROW(c.relkind,c.relpersistence,c.relrowsecurity,c.relforcerowsecurity,c.relispartition,c.reloptions)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind<>'i'
+UNION ALL SELECT 'column',n.nspname,c.relname||'.'||a.attnum,ROW(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attisdropped,a.attidentity,a.attgenerated,a.attcollation::regcollation::text,a.attstorage,a.attcompression,pg_get_expr(d.adbin,d.adrelid))::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attnum>0
+UNION ALL SELECT 'constraint',n.nspname,c.relname||'.'||p.conname,pg_get_constraintdef(p.oid,false) FROM pg_constraint p JOIN pg_class c ON c.oid=p.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'index',n.nspname,c.relname,ROW(pg_get_indexdef(i.indexrelid),i.indisvalid,i.indisready,i.indislive)::text FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'trigger',n.nspname,c.relname||'.'||t.tgname,ROW(pg_get_triggerdef(t.oid,false),t.tgenabled,t.tgisinternal)::text FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'function',n.nspname,p.proname||'('||pg_get_function_identity_arguments(p.oid)||')',pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.prokind IN ('f','p')
+UNION ALL SELECT 'rule',n.nspname,c.relname||'.'||r.rulename,pg_get_ruledef(r.oid,false) FROM pg_rewrite r JOIN pg_class c ON c.oid=r.ev_class JOIN pg_namespace n ON n.oid=c.relnamespace
+) SELECT kind,ns,name,definition FROM objects WHERE ns IN ('public','bigbrotr_archive') ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C"'''
+
+
+def manager_layout_ddl():
+    schema = ('layout_fixture_types_' + 's'*63)[:63]
+    domain = schema + '.' + ('layout_fixture_domain_' + 't'*63)[:63]
+    arguments = ','.join(('argument_' + str(i).zfill(3) + '_' + 'a'*63)[:63] + ' ' + domain for i in range(100))
+    return ('BEGIN; CREATE SCHEMA ' + schema + '; CREATE DOMAIN ' + domain + ' AS integer; '
+            'CREATE FUNCTION public.layout_fixture_oversized_identity(' + arguments
+            + ") RETURNS integer LANGUAGE sql AS 'SELECT 1'; COMMIT;")
+
+
+def manager_layout_observation(io):
+    """Independent raw/hash observer; the caller owns privileged isolated DDL."""
+    db = io.config['postgres']['catalog']['database']
+    raw = io.sql(db, 'SET LOCAL search_path=pg_catalog; SELECT json_build_array(kind,ns,name,definition) FROM ('
+        + LAYOUT_SQL + ') AS raw_layout ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C"')
+    rows = [json.loads(line) for line in raw.splitlines()]
+    digest = hashlib.sha256(b'bigbrotr/catalog-guard-layout/1\0')
+    for row in rows:
+        require(len(row) == 4 and all(isinstance(field, str) for field in row), 'raw structural fields')
+        for field in row:
+            encoded = field.encode()
+            digest.update(len(encoded).to_bytes(8, 'big'));digest.update(encoded)
+    source = Path(__file__).resolve().parents[2] / 'apps/bigbrotr/src/storage/postgres/catalog_guard/inspection.rs'
+    projection = source.read_text().split('pub(super) async fn layout(', 1)[1].split('let sql = r#"', 1)[1].split('"#;', 1)[0]
+    wire = json.loads(io.sql(db, "SET LOCAL search_path=pg_catalog; SELECT json_build_object('rows',count(*),"
+        "'max_name_bytes',max(octet_length(name)),'max_definition_bytes',max(octet_length(definition))) FROM ("
+        + projection + ') AS wire(kind,ns,name,definition)'))
+    identities = [row[2] for row in rows if row[:2] == ['function', 'public']
+                  and row[2].startswith('layout_fixture_oversized_identity(')]
+    return dict(objects=len(rows), checksum=digest.hexdigest(),
+        stored_checksum=io.sql(db, "SELECT encode(layout_checksum,'hex') FROM bigbrotr_archive.installation WHERE singleton"),
+        identity_bytes=[len(value.encode()) for value in identities], wire=wire)
+
+
+def manager_layout_refusal(payload):
+    """Strict external refusal/drain audit; UNKNOWN and active SQL owner stay raw."""
+    import memory_oracle as measured
+    root = Path(payload['root'])
+    initial, result = measured.load(root / 'input.json'), measured.load(root / 'result.json')
+    spec, case = initial['spec'], initial['case']
+    require(result['status'] == 'UNKNOWN_OR_FAILED' and result['returncode'] == 4 and result['reaped'] is True
+            and result['forced'] is False and not result['cleanup_errors'] and result['error'] is None
+            and result['descendants_absent'] is True, 'natural refused diagnostic and no descendants')
+    require(result['command'] == [spec['probe'], 'measure', spec['case']]
+            and result['environment'] == {'LC_ALL': 'C'} and (root / 'stderr').read_bytes() == b'', 'exact refused caller')
+    require(measured.digest(Path(spec['probe']).read_bytes()) == spec['probe_sha256']
+            and measured.digest(Path(spec['case']).read_bytes()) == spec['case_sha256'] == result['case_sha256_after']
+            and measured.load(spec['case']) == case
+            and measured.digest(Path(spec['science']).read_bytes()) == spec['science_sha256'], 'refused inputs unchanged')
+    worker = Path(case['worker_root']) / 'bigbrotr-archive-worker'
+    require(worker.stat().st_size == case['worker_bytes'] and measured.digest(worker.read_bytes())
+            == case['worker_sha256'] == result['worker_sha256_after'], 'refused packaged worker unchanged')
+    outer = payload['terminal']
+    require(outer['forced'] is False and outer['container']['State']['Status'] == 'exited'
+            and outer['container']['State']['ExitCode'] == 1 and outer['container']['State']['Pid'] == 0
+            and outer['container']['State']['OOMKilled'] is False and outer['cgroup']['processes'] == []
+            and payload['backends'] == [], 'observer exit1 and external exclusion')
+    names = ['allocation-profile', 'preflight', 'whole-call-admitted', 'control-connected', 'control-acquired',
+        'catalog-preparation-start', 'catalog-preparation-complete', 'catalog-connected', 'catalog-inspection-start',
+        'catalog-driver-join-start', 'catalog-driver-joined', 'catalog-grant-release-start', 'catalog-grant-released',
+        'control-driver-joined', 'operation-returned', 'grants-released']
+    events = [json.loads(line) for line in (root / 'stdout').read_text().splitlines()]
+    require(len(events) == 17 and [row.get('name') for row in events[:-1]] == names, 'exact refusal marker grammar')
+    markers, terminal = events[:-1], events[-1]
+    for index, row in enumerate(markers, 1):
+        require(set(row) == {'event', 'name', 'phase', 'elapsed_us', 'fields', 'rust_allocations'}
+                and row['event'] == 'export-measure' and type(row['phase']) is int and row['phase'] == index
+                and type(row['elapsed_us']) is int and row['elapsed_us'] >= 0, 'closed ordered refusal marker')
+    require([row['elapsed_us'] for row in markers] == sorted(row['elapsed_us'] for row in markers), 'refusal marker clock')
+    fields = {row['name']: row['fields'] for row in markers}
+    manager = 16*1048576 + 8*65537
+    require(fields['allocation-profile'] == dict(profile=measured.ALLOCATION_PROFILE, catalog_manager_bytes=manager,
+        catalog_extra_bytes=0, driver_drain_ms=2000, scope=measured.ALLOCATION_SCOPE, reset=False,
+        baseline_subtraction=False) and fields['catalog-preparation-complete'] == dict(grant_bytes=manager, grant_held=True),
+        'actual independent manager allocation profile')
+    require(fields['preflight'] == dict(job=case['job'], event_id=case['event_id'],
+        worker_bytes=case['worker_bytes'], worker_sha256=case['worker_sha256']), 'selected accepted refusal inputs')
+    mib, limits = 1048576, case['limits']
+    require(limits['row_bytes'] == mib and limits['engine_memory_bytes'] == 64*mib
+            and limits['native_reserve_bytes'] == 96*mib, 'unchanged refusal row/native profile')
+    require(fields['whole-call-admitted'] == dict(control_service_bytes=528*mib+8*65537,
+        catalog_manager_bytes=manager, reader_bytes=mib, output_bytes=mib,
+        query_parent_bytes=64*(mib+2048), native_bytes=160*mib, native_control_bytes=131072,
+        fixture_bytes=16*mib, job_cap_qualification=False), 'closed preliminary admission')
+    for name in ('catalog-preparation-start', 'catalog-inspection-start'):
+        require(fields[name] == {}, 'closed refused boundary')
+    require(fields['catalog-driver-join-start'] == dict(grant_held=True, driver_present=True, drain_ms=2000)
+            and fields['catalog-driver-joined'] == fields['control-driver-joined'] == dict(natural=True, failed=False)
+            and fields['catalog-grant-release-start'] == dict(grant_held=True, driver_present=False)
+            and fields['catalog-grant-released'] == dict(grant_held=False)
+            and fields['operation-returned'] == dict(error='ResourceLimit', cleanup_error=None)
+            and fields['grants-released'] == dict(all_released=True), 'natural refused drain and grant lifetime')
+    require(set(terminal) == {'event', 'profile', 'cut', 'status', 'catalog_manager_bytes', 'rust_allocations',
+        'operation_error', 'exclusions'} and terminal['event'] == 'export-allocation-terminal'
+        and terminal['profile'] == measured.ALLOCATION_PROFILE and terminal['cut'] == 'after-runtime-drop-before-terminal-format'
+        and terminal['status'] == 'UNKNOWN_OR_FAILED' and terminal['catalog_manager_bytes'] is None
+        and terminal['operation_error'] == 'ResourceLimit' and terminal['exclusions'] == measured.ALLOCATION_EXCLUSIONS,
+        'raw unknown terminal retained')
+    ledger = [json.loads(line) for line in Path(case['ledger']).read_text().splitlines()]
+    require(0 < len(ledger) <= 24001, 'finite refused ledger')
+    for index, row in enumerate(ledger):
+        require(set(row) == {'index', 'elapsed_us', 'phase', 'data_bytes', 'native_bytes', 'control_bytes', 'items', 'permits', 'rust_allocations'}
+                and type(row['index']) is int and row['index'] == index
+                and type(row['phase']) is int and 0 <= row['phase'] <= 16
+                and all(type(row[key]) is int and 0 <= row[key] < 2**64
+                        for key in ('elapsed_us', 'items', 'permits')) and row['items'] <= 16,
+                'closed refusal ledger attribution')
+        for key in ('data_bytes', 'native_bytes', 'control_bytes'):
+            require(type(row[key]) is int and 0 <= row[key] <= limits[key], 'refusal logical grant ceiling')
+    require(all([row[key] for row in ledger] == sorted(row[key] for row in ledger)
+                for key in ('elapsed_us', 'phase')), 'refusal ledger chronology')
+    require(all(ledger[-1][key] == 0 for key in ('data_bytes', 'native_bytes', 'control_bytes', 'items', 'permits')),
+            'all refused grants drained')
+    def counter(value):
+        require(set(value) == {'scope', 'live_bytes', 'peak_bytes', 'accounting_valid'}
+                and value['scope'] == measured.ALLOCATION_SCOPE and value['accounting_valid'] is True
+                and all(type(value[key]) is int and 0 <= value[key] < 2**64 for key in ('live_bytes', 'peak_bytes'))
+                and value['live_bytes'] <= value['peak_bytes'], 'valid refused requested-live counter')
+        return value['peak_bytes']
+    maxima = []
+    for stream in (markers, ledger):
+        peaks = [counter(row['rust_allocations']) for row in stream]
+        require(peaks == sorted(peaks), 'refusal counter stream monotonicity');maxima.append(max(peaks))
+    peak = counter(terminal['rust_allocations'])
+    require(peak >= max(maxima), 'refusal final counter covers both streams')
+    before_group, after_group = initial['cgroup_before'], result['cgroup_after']
+    observer = initial['observer']
+    require(type(observer['pid']) is int and observer['pid'] > 0 and type(result['pid']) is int
+            and result['pid'] > 0 and observer['pid'] != result['pid']
+            and before_group['pids'] == after_group['pids'] == [observer['pid']]
+            and before_group['events'].get('oom') == before_group['events'].get('oom_kill') == 0,
+            'initial sole observer and zero OOM; final descendants absent')
+    samples = []
+    with (root / 'samples.jsonl').open() as stream:
+        for line in stream:
+            require(len(samples) < 14000 and len(line) <= 65536, 'bounded refused raw memory samples')
+            samples.append(json.loads(line))
+    require(samples and type(result['elapsed_ns']) is int and result['elapsed_ns'] >= 0
+            and all(type(row['elapsed_ns']) is int and 0 <= row['elapsed_ns'] <= result['elapsed_ns'] for row in samples)
+            and [row['elapsed_ns'] for row in samples] == sorted(row['elapsed_ns'] for row in samples), 'refusal sample chronology')
+    def process_identity(process):
+        require(all(type(process[key]) is int and process[key] > 0 for key in ('pid', 'start_ticks'))
+                and type(process['ppid']) is int and process['ppid'] >= 0
+                and isinstance(process['executable'], str), 'typed refusal process identity')
+        return tuple(process[key] for key in ('pid', 'start_ticks', 'executable', 'ppid'))
+    observer_identity = process_identity(observer)
+    parents = [p for row in samples for p in row['processes'] if p['pid'] == result['pid']]
+    require(parents and len({process_identity(p) for p in parents}) == 1
+            and parents[0]['executable'] == spec['probe'] and parents[0]['ppid'] == observer['pid'],
+            'observed one exact refusal diagnostic identity')
+    allowed = {observer_identity, process_identity(parents[0])}
+    observed = set()
+    for row in samples:
+        identities = [process_identity(p) for p in row['processes']]
+        require(len(identities) == len(set(identities)) and set(identities) <= allowed
+                and {p['pid'] for p in row['processes']} <= set(row['cgroup']['pids']),
+                'only exact observer and diagnostic observed; no worker or foreign process')
+        observed.update(identities)
+    seen = [process_identity(p) for p in result['seen_processes']]
+    require(observed == allowed and len(seen) == len(set(seen)) and set(seen) == observed,
+            'retained seen-process identities exactly bind sampled identities')
+    groups = [before_group, *(row['cgroup'] for row in samples), after_group]
+    for group in groups:
+        require(group['limit'] == str(1536*mib)
+                and all(type(group[key]) is int and 0 <= group[key] <= 1536*mib for key in ('current', 'peak'))
+                and group['current'] <= group['peak']
+                and group['events'] == before_group['events']
+                and all(type(value) is int and value >= 0 for value in group['events'].values())
+                and all(type(pid) is int and pid in (observer['pid'], result['pid']) for pid in group['pids'])
+                and group['pids'] == sorted(set(group['pids'])), 'finite refusal cgroup samples and unchanged events')
+    require([group['peak'] for group in groups] == sorted(group['peak'] for group in groups),
+            'refusal lifetime cgroup peak chronology')
+    before, after = payload['before']['control'], payload['after']['control']
+    unchanged(before, after, {'owner_epochs', 'role_instances'})
+    append_only(before, after, {'owner_epochs', 'role_instances'})
+    require(all(len(after[table]) == len(before[table]) + 1 for table in ('owner_epochs', 'role_instances')),
+            'exactly one appended refused owner and role row')
+    require(payload['before']['catalog'] == payload['after']['catalog']
+            and set(payload['files_before']) == {'store', 'data', 'state', 'destination', 'scratch', 'measure_scratch'}
+            and payload['files_before'] == payload['files_after'], 'refused catalog userdata and physical roots unchanged')
+    owner = one([row for row in after['owner_epochs'] if row not in before['owner_epochs']])
+    role = one([row for row in after['role_instances'] if row not in before['role_instances']])
+    prior = [row for row in before['owner_epochs'] if row['role'] == 'control']
+    connected, acquired = fields['control-connected'], fields['control-acquired']
+    require(set(connected) == set(fields['catalog-connected']) == {'pid', 'start', 'database', 'user'}
+            and all(fields[name]['database'] == case[key]['database'] and fields[name]['user'] == case[key]['user']
+                    and type(fields[name]['pid']) is int and fields[name]['pid'] > 0 and fields[name]['start']
+                    for name, key in [('control-connected', 'control'), ('catalog-connected', 'catalog')]), 'actual refusal backend binding')
+    require(set(acquired) == {'epoch', 'incarnation', 'commit_started'} and acquired['commit_started'] is True
+            and prior and all(row['state'] == 'released' and row['released_at_us'] is not None for row in prior)
+            and owner['epoch'] == acquired['epoch'] == max(row['epoch'] for row in prior) + 1
+            and owner['process_incarnation'] == BX + acquired['incarnation']
+            and {row['resource_id'] for row in prior} == {owner['resource_id']}, 'new actual refused Control acquire')
+    expected_owner = dict(dataset_id=BX+case['dataset'], role='control', resource_id=owner['resource_id'],
+        epoch=owner['epoch'], role_instance_id=role['role_instance_id'], process_incarnation=BX+acquired['incarnation'],
+        state='active', acquired_at_us=owner['acquired_at_us'], lease_expires_at_us=owner['lease_expires_at_us'],
+        released_at_us=None, exclusion_method=None, exclusion_digest=None, archive_frontier_protocol=None,
+        control_backend_pid=connected['pid'], control_backend_start=owner['control_backend_start'], control_fence_version=1)
+    require(clean(owner) == expected_owner and clean(role) == dict(role_instance_id=owner['role_instance_id'],
+        dataset_id=BX+case['dataset'], role='control', created_at_us=role['created_at_us'], retired_at_us=None)
+        and owner['xmin'] == role['xmin'] and type(role['created_at_us']) is int
+        and 0 < role['created_at_us'] <= owner['acquired_at_us'] < owner['lease_expires_at_us']
+        and owner['lease_expires_at_us'] - owner['acquired_at_us'] <= 5_000_000
+        and datetime.datetime.fromisoformat(owner['control_backend_start']) == datetime.datetime.fromisoformat(connected['start']),
+        'closed active/unretired refused owner rows; no SQL release fabricated')
+    job = one([row for row in before['jobs'] if row['job_id'] == BX+case['job']])
+    require(job['state'] == 'accepted' and job['job_revision'] == 1 and job['checkpoint_revision'] == 0
+            and all(job[key] is None for key in ('owner_resource_id', 'owner_epoch', 'owner_incarnation', 'completed_at_us')),
+            'selected job remains unreserved Accepted revision1')
+    original, fault = payload['layout_original'], payload['layout_before']
+    require(original['checksum'] == original['stored_checksum'] and fault['stored_checksum'] == original['stored_checksum']
+            and fault['checksum'] != original['checksum'] and fault['objects'] == original['objects'] + 1
+            and original['identity_bytes'] == [] and fault['identity_bytes'] == [19333]
+            and fault['wire'] == dict(rows=fault['objects'], max_name_bytes=8193, max_definition_bytes=8193)
+            and fault == payload['layout_after'] and payload['dump_original'] != payload['dump_before'] == payload['dump_after'],
+            'independent oversized structural fault and unchanged injected baseline')
+    return dict(status='PASS_REFUSAL_DRAIN', operation_error='ResourceLimit', raw_status='UNKNOWN_OR_FAILED',
+        allocation_status='OBSERVED_WITHIN_MANAGER_REQUEST_BUDGET' if peak <= manager else 'INCONCLUSIVE_WHOLE_PARENT_EXCEEDS_MANAGER',
+        catalog_manager_bytes=manager, whole_parent_peak_bytes=peak, live_bytes_at_cut=terminal['rust_allocations']['live_bytes'],
+        sql_owner_state='active', role_retired=False, worker_observation='none; compiled refused path never reaches native call',
+        qualification_256mib=False, five_exports_acceptance=False, final_root_audit='PENDING')
 
 BX = '\\x'
 SESSION_TABLES = {'owner_epochs', 'role_instances', 'browser_sessions', 'login_buckets', 'management_audit'}
