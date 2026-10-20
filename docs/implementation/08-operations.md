@@ -491,8 +491,10 @@ The 2026-10-20 admission investigation in the existing
 [recovery report](evidence/p02-producer-recovery-native-20260920.json)
 (`archive_export_memory_source.catalog_layout_boundary_20261020`) finds an
 installed 705.125 MiB minimum and an oversized catalog function-identity response
-before rejection. The bounded/streamed layout correction preserves accepted
-checksums, grants and driver custody; focused real-PG qualification is pending.
+before rejection. The bounded/streamed layout correction at `48299b2` preserves
+accepted checksums, grants and driver custody. Its build/Clippy and six focused
+real-PG cases pass: original hash, bounded oversized identity, exact 1024/1025
+object refusal, unchanged snapshots and backend closure.
 The prior single signed capture remains reusable, but does not qualify five
 exports or 256 MiB admission.
 

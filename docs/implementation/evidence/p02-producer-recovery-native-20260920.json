@@ -37343,7 +37343,7 @@
           "limits": "Five exports and256MiB per-export gate, near-maximum/many-tag envelopes, cold/aged/mixed/failure performance, installed scheduler and complete product remain unqualified. Warm shared product/worker files from prior publication/acceptance; no cache reset. Cgroup charged memory and per-process RSS are distinct; samples can miss peaks."
         },
         "catalog_layout_boundary_20261020": {
-          "status": "SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+          "status": "PASS_FOCUSED_CATALOG_LAYOUT",
           "source_base": "91af8a9fa8bb6ebf5a34a9c30131da06c57d55d8",
           "fixture_commit": "d7a34c24de4bfbd16b86431ed66dddf431a7ce8d",
           "owner": "P08-T04 Step3 / P01-T05 Step2; prerequisite to installed per-export admission",
@@ -37353,8 +37353,63 @@
           },
           "finding": "Installed minimum is705.125MiB. Even the measured160MiB native profile retains306.625MiB per-job grants excluding shared Control and fixture. Catalog layout collected up to1025 rows and bounded definitions before transfer, but not potentially oversized function identities.",
           "correction": "Bound returned names before transfer and stream the same ordered length-framed layout hash with1024-object ceiling. Preserve accepted bytes, grant and driver-custody lifetime; no grant reduction or native profile change.",
-          "verification": "Root rustfmt, Python AST and diff checks PASS; independent Astra source review found no blocker. Focused actual PostgreSQL original-hash/name-wire-bound/1024-versus1025 cases NOT_RUN. Build reuses the unchanged qualified6c42 worker and retained compiler cache.",
-          "limits": "No16MiB catalog or256MiB/five-export qualification. Full native mutual TLS needs additional retained credentials and must fit its actual job cap. Original initialSync timeout and all previous failures remain open/preserved."
+          "verification": "PASS: exact-source two-probe build and Clippy; all6 focused real-PG cases. Genuine initialization/install retains independent original339-object checksum e0e2cc2a5fa616e769ba44ffa91e39a4c098b52accb5e3f198d8ce512f61d9c1. Actual19333-byte function identity is projected to8193 before transfer and rejected;1024 objects yield WrongCatalog,1025 ResourceLimit. Readonly snapshots unchanged, all named probe backends gone, fixture stderr empty. Both builder containers and both runtime containers exited0/PID0/noOOM; no extra timed cancellation campaign.",
+          "limits": "No16MiB catalog or256MiB/five-export qualification. Full native mutual TLS needs additional retained credentials and must fit its actual job cap. Original initialSync timeout and all previous failures remain open/preserved.",
+          "source": "48299b240f4329ee7dc006ba51e696562c4ba64d",
+          "tree": "bf64acfa2ee61afe58c6038d9c9fde1f44d16017",
+          "review": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/catalog-layout-review-v1.json",
+            "bytes": 7532,
+            "sha256": "110384ab9e964bd5eefbe825fc20cd9ed2a07d2679aa80e508dc62aa4ab2a8ba"
+          },
+          "build": {
+            "session": 79187,
+            "exit": 0,
+            "qualification": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/out/qualification.json",
+              "bytes": 2757,
+              "sha256": "90d37c1f7e66116eb86c4d88afc325a3eb516af3fc3f62d5b6356463f8eda8e7"
+            },
+            "source_manifest": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/out/build/source-manifest.json",
+              "bytes": 255287,
+              "sha256": "e4f74f312db3f4078c05cb660eeb8e29e59a09f0a78d35e83351c149df61c6e4"
+            },
+            "resources": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/resources.json",
+              "bytes": 1057,
+              "sha256": "088b68e4ee54d767287409596999dd45ffe66d4e110fa46ea986762ef0b74f47"
+            }
+          },
+          "runtime": {
+            "session": 61508,
+            "exit": 0,
+            "report": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/runtime/guard-layout-cases.json",
+              "bytes": 5996,
+              "sha256": "6f2b9ebf84678b5d6328757b2e398ea57745d102b477a766df22629439c4d003"
+            },
+            "raw_commands": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/runtime/guard-layout-commands.jsonl",
+              "bytes": 2532648,
+              "sha256": "bae38e324ded18d2d9b35043e3b811faf79d7a9f2c1d6033e118f412bee8cb26"
+            },
+            "resources": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/runtime/resources.json",
+              "bytes": 4236,
+              "sha256": "1ad7e7d5dce428c11c7236cc6b65d393cd430817f7beb28468d05be83b804916"
+            },
+            "invocation": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/runtime/invocation.json",
+              "bytes": 3150,
+              "sha256": "71b12230f84baf571a7594f5fd59390d1492d891a07078fa3184a6ef1c073d16"
+            },
+            "root_script": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/catalog-layout-runtime.py",
+              "bytes": 8747,
+              "sha256": "2db66e93e63f1a10af43d1f81a642f9c095ac43fe249cc94250cdf0c7267db3d"
+            }
+          }
         }
       },
       "archive_refusal_journey_attempts": [

@@ -66024,6 +66024,22 @@
           "mounts": "all inputs read-only; no PG/native engine reopened"
         },
         "preservation": "Original source clones, PG/native data, all original failed/unknown records and traces, signed output, memory samples/ledger, before/afterSQL, corrected offline output and ignored reviews retained. No measurement replay, authority repair, cleanup or branch retirement."
+      },
+      "catalog_layout_20261020": {
+        "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2",
+        "source": "48299b240f4329ee7dc006ba51e696562c4ba64d",
+        "build_state": "stopped-retained",
+        "build_resources": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/resources.json",
+        "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/runtime",
+        "runtime_resources": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-layout-48299b2/runtime/resources.json",
+        "runtime_owner": "e3cb8ffc8e89880d82f4915e694f163a",
+        "last_observed_runtime_state": "stopped-retained",
+        "root_session": "61508 joined0",
+        "policy": "Preserve all source, outputs, raw commands, PG data, protected credentials and worktrees; no cleanup due.",
+        "build_session": "79187 joined0",
+        "observed_terminal": "Both build and both runtime containers exited0/PID0/noOOM; no active engine/compiler process from this slice.",
+        "fixture_worktree": "/home/tux/bigbrotr-rs/.research/catalog-layout-fixture-20261020",
+        "fixture_commit": "d7a34c24de4bfbd16b86431ed66dddf431a7ce8d"
       }
     },
     "archive_refusal_journey_attempts": [

@@ -6,12 +6,13 @@ remain authoritative. No separate plan or process-optimization project.
 
 ## Current objective and repository
 
-P08-T04 Step3 / P01-T05 Step2: bound and stream catalog layout inspection before
-reducing installed export admission costs. Root owns integration/runtime in
+P08-T04 Step3 / P01-T05 Step2: reduce installed export admission costs after
+qualifying bounded, streamed catalog inspection. Root owns integration/runtime in
 `/home/tux/bigbrotr-rs`, branch `main`. Last verified pushed revision:
 `91af8a9fa8bb6ebf5a34a9c30131da06c57d55d8` (push93832 joined0, exact remote equal).
-The fixture commit `d7a34c24de4bfbd16b86431ed66dddf431a7ce8d` is integrated locally.
-Root changes add the catalog guard correction, a focused build profile and docs.
+Source `48299b240f4329ee7dc006ba51e696562c4ba64d` includes fixture commit
+`d7a34c24de4bfbd16b86431ed66dddf431a7ce8d`, the guard correction and focused build.
+Local root changes record the completed qualification; no unverified product edits.
 Astra/xhigh continuity retained; new bounded fixture author Sol/xhigh verified
 from actual turn metadata at2026-10-20T13:21:31.722Z.
 
@@ -32,36 +33,40 @@ owns details. `catalog_layout_boundary_20261020` links the source investigation;
 complete SQL/physical audit and corrected offline oracle. Reuse those unchanged
 results; no five-export/256MiB, maximum-event or installed scheduling claim.
 
-Root rustfmt, Python AST and diff checks PASS. Critical source/build review has
-no current blocker; focused fixture review pending. Compilation and real-PG
-checks are NOT_RUN for this correction. The independent fixture checks original
-valid hash, actual bounded wire fields,1024/1025-object refusal and unchanged
-state/backend closure. Full native mTLS needs additional retained reservations;
+Root rustfmt, Python AST and diff checks PASS. Critical review has no blocker.
+Exact-source two-probe build/Clippy and all6 real-PG cases PASS at48299b2.
+The339-object valid hash matches the independent original oracle. A19333-byte
+function identity transfers as8193 bytes and refuses;1024 objects yieldWrongCatalog,
+1025 ResourceLimit. All readonly snapshots are unchanged and probe backends gone.
+Full native mTLS needs additional retained reservations;
 future job admission must charge them rather than silently exceed256MiB.
 Earlier a99 initial Sync timeout remains unexplained; diagnose its pending await
 before another trial. Preserve every original failure and raw artifact.
 
 ## Processes and resources
 
-No root engine/compiler/cleanup process is active. The previous single-export
-lab remains stopped as linked in the [inventory](../research/laboratory-inventory.json).
-One Astra reviewer is checking the focused fixture; no subagent runtime work.
+No root engine/compiler/cleanup process is active. Build session79187 and runtime
+61508 both joined0. Both build and both runtime containers exited0/PID0/noOOM
+under `runs/catalog-layout-48299b2`; source, data and logs are retained through
+the [inventory](../research/laboratory-inventory.json). Subagents are idle.
 The Sol author's clean worktree `.research/catalog-layout-fixture-20261020`
 retains its integrated commit. Preserve every worktree, ignored file and external
 lab under `/home/tux/bigbrotr-implementation-20260917/runs`.
-Space checked before planned allocation:320,012,906,496B available.
+Space after build:319,590,359,040B available.
 No cleanup is due; unrelated workloads remain untouched. Verify actual ownership
 before using the retained compiler cache or creating/reusing runtime resources.
 
 ## Next bounded action
 
-Finish focused fixture review, commit the coherent correction/build/tests with
-runtime explicitly NOT_RUN, then run the existing exact-source compiler runner's
-`catalog-layout` profile. Reuse the unchanged qualified6c42 worker. In a fresh
-owned PG16 lab, run `scientific_guard_cases.py ROOT --profile layout`, recording
-results in the existing report and inventory. No broad suite or native publication
-replay is required for this change. After qualification, derive actual export
-preparation/native costs and enforce the selected256MiB job cap.
+Commit/push this coherent source and qualification. Then implement the bounded
+export-only admission slice: retain16MiB plus configured credential copies for
+the catalog driver, use the separately measured64+96MiB read profile, preserve
+the512MiB publisher profile and full1MiB signed-row envelope, and charge all actual
+per-job grants including TLS and128KiB completion. Plaintext arithmetic242.750008MiB
+and serverTLS250.750015MiB are proposals, not runtime qualification; mTLS276.750031MiB
+must refuse under256MiB. Keep shared Control cost disclosed separately. Reuse the
+existing tools and raw single-capture evidence; installed five-export qualification
+still requires actual new jobs/scenarios. Do not reduce the parent64× multiplier.
 
 Continue dependency-ready M1–M5 work. ACK/GC, import/restore, capacity/aged-state
 and complete product/release journeys remain open; Q33 hosted CI billing,
