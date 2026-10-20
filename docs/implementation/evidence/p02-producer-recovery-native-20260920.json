@@ -35829,7 +35829,7 @@
         }
       },
       "archive_attempt_limits_source": {
-        "status": "INTEGRATED_CORRECTED_BUILD_PASS_ENGINE_NOT_RUN",
+        "status": "INTEGRATED_BUILD_PASS_ENGINE_FAIL_PAYLOAD_GRANT",
         "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018",
         "branch": "qualification/archive-catch-up-attempt-limits",
         "base": "d910233ad0a593d08e571955dde51873d947c616",
@@ -35888,7 +35888,7 @@
         "root_review": "Complete4 new owners, full changed3hook delta, complete existing history helper/lifetime/inputs/archive_coordinator/inventory/plan and finite contracts read. Final keepalive delta read. All7 source blobs and28 final manifest artifacts authenticated; compiler/runtime not run.",
         "author_checks": "Source-only AST/scoped rustfmt/three exact inverse paths PASS; artificial45snapshots16context mutations,8finish+3holder-finally mocks,4raw helpers20mutations+2name/Id controls PASS. These are author pure evidence, not executed engine qualification.",
         "finding": "Independent review found600s client keepalive shorter than admitted setup1800/cap4200. acc9bea selects10800s only for new profile; old600s and product deadlines unchanged. No remaining concrete source blocker in stated review scope.",
-        "limits": "Corrected build6c42a41/41 selected tests/Clippy and custody PASS. Actual held LocalAttempt/126+3 engine and strict raw replay remain NOT_RUN. Scope is the finite installed qualification fixture; no full concurrency/capacity or product completion follows.",
+        "limits": "Corrected build6c42a41/41 tests/Clippy/custody PASS. Fresh enginec5431fd failed on payload-grant preflight before expected126+3 cap refusal; source diagnosis required. No whole-fixture scientific PASS or strict raw replay. Historical failures preserved.",
         "custody_template": {
           "status": "ROOT_SOURCE_REVIEWED_RUNTIME_NOT_RUN",
           "template": {
@@ -38834,6 +38834,219 @@
           }
         ],
         "worker_status": "PASS"
+      },
+      "archive_attempt_limits_engine_c5431fd": {
+        "status": "FAIL_UNEXPECTED_PAYLOAD_GRANT_REFUSAL_CUSTODY_OBSERVED",
+        "observed_at": "2026-10-20T10:42:30.764044+00:00",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd",
+        "source": "c5431fd4d219f09694011f25e48ed082af599f11",
+        "tree": "bf62eb775411d9f2c3c8d94fb41c095d535be4df",
+        "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41",
+        "build_audit_sha256": "bcf1b7e21d673cc70328a09b20c73ae5223231d0eb4874ec441d321d8dbf3dc2",
+        "preparation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/root-preparation.json",
+          "bytes": 31768,
+          "sha256": "39f29e71300db205659d6be6dd4be6555f2289d4a1d3312dbb3a69c54b2678e6"
+        },
+        "invocation": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/root-engine-invocation.json",
+          "bytes": 878,
+          "sha256": "bbdf10fac2b1163189b710513ed50a5a8ed41fcd17dfe486775a7e7f1885956c"
+        },
+        "actual_joins": {
+          "prepare39090": 0,
+          "engine84028": 1,
+          "limited_custody81982": 0
+        },
+        "active_session": null,
+        "resources": {
+          "owner": "60f2908f44e2d3a9f28c78f8462e438e",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "5a44389a7471415c970dedbb76c9f363c97ddc2ae7b626bd45073e282bf3438e",
+            "name": "bigbrotr-acquisition-binding-c5431fd"
+          },
+          "databases": [
+            "bb_scope_bind_c5431fd_archive_export",
+            "bb_scope_bind_c5431fd_archive_export_cat"
+          ],
+          "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "started_at": "2026-10-20T10:36:44.065613+00:00"
+        },
+        "protected_elfs": 202,
+        "limits": "Original engine FAIL preserved. Expected cap refusal not reached: actual installed exit3/unforced/reaped reports Archive catalog preparation payload-grant failure. Nine prefix steps, held refusal and capsetup observations are retained without full independent qualification; final native-after absent. No engine retry, strict replay or full PASS custody. Source-only diagnosis active; original a99 initial Sync timeout remains separate/unresolved.",
+        "initial_observation": {
+          "status": "RUNNING_NOT_QUALIFIED",
+          "observed_at": "2026-10-20T10:37:51.683396+00:00",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd",
+          "source": "c5431fd4d219f09694011f25e48ed082af599f11",
+          "tree": "bf62eb775411d9f2c3c8d94fb41c095d535be4df",
+          "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-6c42a41",
+          "build_audit_sha256": "bcf1b7e21d673cc70328a09b20c73ae5223231d0eb4874ec441d321d8dbf3dc2",
+          "preparation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/root-preparation.json",
+            "bytes": 31768,
+            "sha256": "39f29e71300db205659d6be6dd4be6555f2289d4a1d3312dbb3a69c54b2678e6"
+          },
+          "invocation": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/root-engine-invocation.json",
+            "bytes": 878,
+            "sha256": "bbdf10fac2b1163189b710513ed50a5a8ed41fcd17dfe486775a7e7f1885956c"
+          },
+          "actual_joins": {
+            "prepare39090": 0,
+            "build_custody73640": 0
+          },
+          "active_session": 84028,
+          "resources": {
+            "owner": "60f2908f44e2d3a9f28c78f8462e438e",
+            "label": "org.bigbrotr.acquisition-binding",
+            "client": {
+              "id": "5a44389a7471415c970dedbb76c9f363c97ddc2ae7b626bd45073e282bf3438e",
+              "name": "bigbrotr-acquisition-binding-c5431fd"
+            },
+            "databases": [
+              "bb_scope_bind_c5431fd_archive_export",
+              "bb_scope_bind_c5431fd_archive_export_cat"
+            ],
+            "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "started_at": "2026-10-20T10:36:44.065613+00:00"
+          },
+          "protected_elfs": 202,
+          "limits": "Actual connected attempt-limit engine active. No terminal outcome or strict independent replay/custody yet. Original failed build and initial Sync timeout preserved."
+        },
+        "terminal_20261020": {
+          "original_engine_status": "FAIL",
+          "original_engine_exit": 1,
+          "engine_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/root-engine-result.json",
+            "bytes": 74,
+            "sha256": "e6ab816387dfc1ca31df0a82cfd2e2a15f5216a857efcc54c01eb5d56cbcbc84"
+          },
+          "binding_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/bindings/result.json",
+            "bytes": 13643,
+            "sha256": "c1c1e73501f0819155b4ccb05e668240e4bb1122a88d5afb39abc103e8f11334"
+          },
+          "fixture_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/bindings/archive-attempt-limits.json",
+            "bytes": 31755220,
+            "sha256": "a0e36a9dd8c3caf352b0c08b86c1b9bf5aa2549d029ca6ef61fbb7f85cbe2036"
+          },
+          "cap_verification": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/bindings/attempt-cap-refusal-verification.json",
+            "bytes": 1315808,
+            "sha256": "8d2da1d280646a0b6ee539d3b89c8d909463e032f9a6afbc25c71e87aec716d9"
+          },
+          "cap_stdout": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/bindings/attempt-cap-refusal.stdout",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "cap_stderr": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/bindings/attempt-cap-refusal.stderr",
+            "bytes": 75,
+            "sha256": "8bb3cb5fa3e21230d53ec5dbe1e796733c0c41fc084eb664ad07639aeb853521"
+          },
+          "audit": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/audit-root/audit-failed-cap-v1.json",
+            "bytes": 558112,
+            "sha256": "092cb3c8cfef14b63993c3002ba74c386e85dc91fb05b8cba8f418d3e50662fa"
+          },
+          "auditor": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-catch-up-attempt-limits-engine-c5431fd/audit-root/audit-failed-cap-v1.py",
+            "bytes": 7108,
+            "sha256": "2413ecdf7e62d0b76a52f74d3a0eb12b46975306fbe86c1b6830e05a6f34e029"
+          },
+          "auditor_review": "Root read complete original97 and adapted120 lines; the retained invocation note miscounted the original as85. This clerical correction does not change helper bytes or results. Read-only custody observation, not independently reviewed scientific qualification.",
+          "cap_process": {
+            "pid": 6062,
+            "config": "/lab/bb_scope_bind_c5431fd_archive_export.toml",
+            "prefix": "/lab/attempt-cap-refusal",
+            "command": [
+              "/build/bigbrotr",
+              "archive",
+              "catch-up",
+              "--file",
+              "/lab/bb_scope_bind_c5431fd_archive_export.toml"
+            ],
+            "start_ticks": 587496234,
+            "reaped": true,
+            "exit_code": 3,
+            "forced": false,
+            "error": null,
+            "elapsed_seconds": 2.0663790917024016
+          },
+          "selected_refusal": "ATTEMPT_CAP_NOT_REACHED_PAYLOAD_GRANT_REFUSAL",
+          "strict_replay": "NOT_RUN",
+          "full_engine_custody": "NOT_RUN",
+          "prefix_steps": 9,
+          "completed_attempt_modes": [
+            "held-refusal",
+            "cap-setup"
+          ],
+          "observed_archive_attempts": 126,
+          "observed_frontiers": 4,
+          "control_tables": 75,
+          "final_native_after": "NOT_CAPTURED",
+          "final_backend_absence": {
+            "exact": [
+              {
+                "pid": 5326,
+                "backend_start": "2026-10-20T10:38:28.254946+00:00",
+                "database": "bb_scope_bind_c5431fd_archive_export",
+                "present": false
+              }
+            ],
+            "all": {
+              "bb_scope_bind_c5431fd_archive_export": "0",
+              "bb_scope_bind_c5431fd_archive_export_cat": "0"
+            }
+          },
+          "protected_elfs": 202,
+          "retained_files": 2935,
+          "unchanged_nonborrowed_containers": 1414,
+          "owned_terminal": {
+            "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-20T10:36:44.149720365Z",
+              "FinishedAt": "2026-10-20T10:38:33.027633613Z"
+            },
+            "5a44389a7471415c970dedbb76c9f363c97ddc2ae7b626bd45073e282bf3438e": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-20T10:36:45.138028963Z",
+              "FinishedAt": "2026-10-20T10:38:32.341395409Z"
+            }
+          },
+          "limits": [
+            "No scientific refusal PASS or failure-cause attribution; expected cap boundary was not reached.",
+            "Prefix/held/capsetup observations are preserved without independent whole-fixture qualification.",
+            "File census preserves bytes; it does not interpret every file or establish a completed native cut.",
+            "No SQL/native/worker/compiler execution; stopped containers exclude their processes at this observation.",
+            "No complete native interior recapture or whole-host process exclusion. Other historical SQL interiors not queried.",
+            "Root attests actual wrapper join separately. Never rerun after intentional borrowed-PG reuse."
+          ]
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-20T10:36Z on Tux. Goal **ACTIVE**, verified after the owner
+Observed 2026-10-20T10:42Z on Tux. Goal **ACTIVE**, verified after the owner
 explicitly resumed the same goal. The previous pause was completed and preserved
 in Git/evidence; its stop instruction no longer prevents authorized development.
 M1–M5 remain INCOMPLETE. Existing task files
@@ -9,11 +9,11 @@ own the plan; follow the [resumption procedure](agent-handoff.md#resume-from-one
 ## Repository and responsibility
 
 Canonical `/home/tux/bigbrotr-rs`, branch `main`, HEAD
-`6c42a41534a0d7ec3e425fa34b1b3c88bdceab79`, pushed and verified remotely.
-Its tree is `1fbc429150a47b3896c04b453cbe814c0d602926`.
+`c5431fd4d219f09694011f25e48ed082af599f11`, pushed and verified remotely.
+Its tree is `bf62eb775411d9f2c3c8d94fb41c095d535be4df`.
 Root is the sole integrating owner; Tux handles development, Git and tests.
 No merge/rebase pending. The one-expression probe correction and failed-build
-checkpoint are committed. Current edits record the completed corrected build and custody. The attempt-limit and
+checkpoint are committed. Current edits preserve the failed connected attempt-limit engine and its limited custody. The attempt-limit and
 export-memory worktrees are clean on their preserved commits. Attempt-limit
 source is integrated, with original build FAIL preserved and corrected build PASS; export source is
 not integrated.
@@ -208,9 +208,19 @@ nonborrowed containers. PG/client stopped0/143, PID0/noOOM; cleanup/missing/
 unrelated arrays empty. Never rerun custody after borrowed-PG reuse.
 
 All six ordinary refusal selectors now have their own qualified fresh roots.
-**Next action:** commit and push the corrected-build result, then prepare and run
-the reviewed fresh attempt-limit engine against qualified build6c42a41 and
-auditbcf1b7e2. Preparation84489/build27863/custody73640 all joined0. The build
+**Next action:** finish the exact source/admission diagnosis of the unexpected
+cap-preflight payload refusal before changing any fixture or starting a new trial.
+Fresh enginec5431fd preparation39090 joined0; engine84028 joined1 at10:38:33Z.
+Nine prefix steps and held-refusal/capsetup captures completed;126 issued attempts
+and4 frontiers were observed across75 Control tables. The final installed command
+exited3 unforced/reaped2.066s with `Archive catalog preparation does not fit the
+declared payload grant`, before the expected cap refusal. Full native-after was
+not captured because the expected-exit assertion failed. Strict replay/full engine
+qualification remain NOT_RUN. Limited read-only custody81982 joined0 at10:40:43Z,
+audit092cb3c8, preserves2935files/202ELFs and1414unchanged nonborrowed containers;
+PG/client stopped0/143, PID0/noOOM and cleanup/missing/unrelated arrays empty.
+Never replay this custody check after borrowed-PG reuse. Original a99 Sync timeout
+remains separate and unresolved. Preparation84489/build27863/custody73640 all joined0. The build
 passes compilation,41 tests, Clippy and packaged worker/postchecks; audit preserves
 1985sources,196prior+6new ELFs and1413unchanged containers. Both owned containers
 are stopped0/PID0/noOOM. Original58 remains FAIL. Original preparation5110 joined0,
@@ -221,7 +231,7 @@ refused `args.get(6).map(|v| Path::new(v))` at probe1067. The correction is
 d1b463adfdefc22fdba6534b463d593679ec93fe3ff7b5bbe66c349d1db13365.
 Audit40592dd5 binds1985source files,190prior+6new ELFs and1411unchanged containers.
 Fetch/native stopped0/1, PID0/noOOM. Original FAIL and all logs remain preserved.
-Corrected build/Clippy now PASS; actual typed-holder/cap engine remains NOT_RUN.
+Corrected build/Clippy PASS; actual typed-holder/cap engine FAIL remains unqualified.
 No P02-T04 or M1 checkbox closes.
 The headroom prerequisite is now satisfied. Package retirement19616 joined0 at
 19:45:04Z, status **RETIRED_VERIFIED**. Root/independent source reviews authenticated
@@ -255,7 +265,7 @@ It holds a real LocalAttempt through installed Occupied refusal, then genuinely
 issues122additional attempts and verifies126issued+3planned refuses before127.
 Only its new fixture profile gets10800s client lifetime; product limits unchanged.
 Original Clippy FAIL is preserved. Corrected build6c42a41 and41 tests/Clippy PASS;
-actual engine/full replay remain NOT_RUN.
+actual enginec5431fd FAIL and full replay NOT_RUN.
 The unchanged9a refusal sequence completed before integration on 2026-10-20:
 bfe1b14 maps to11397d09917e5b605ea1d4f463af162120350a2a and acc9bea maps to
 c18bc2c50d3a35862b069233348bbfc85eba8acf, both with matching stable patch IDs.
@@ -280,7 +290,7 @@ They bind the one corrected probe hash, preserve failed58 and196priorELFs,
 retain the unchanged41tests and require202ELFs for a future qualified engine.
 The64GiB+577MiB engine reserve is unchanged. Corrected preparation84489/
 build27863/custody73640 joined0. Build auditbcf1b7e2 is frozen; connected engine
-and raw replay remain NOT_RUN. The pre-existing frontier test warning
+c5431fd FAIL is preserved and raw replay remains NOT_RUN. The pre-existing frontier test warning
 `dropping_copy_types` is retained in compiler diagnostics; Clippy passes.
 
 Export memory fixture: recovery_review owns the new isolated worktree
@@ -336,7 +346,9 @@ Build60879/custody35295 and corrected preparation84489/build27863/custody73640
 have joined. The corrected build is preserved at
 `runs/ingest-succession-archive-installed-6c42a41`, both owned containers stopped0,
 PID0/noOOM. Existing report/inventory binds all actual source/artifact identities.
-No session runtime or connected attempt engine is active.
+Connected attempt engine84028 and limited custody81982 have joined. Exact
+client5a44389a/owner60f2908f and borrowed PG71775507 are stopped0/143, PID0/noOOM.
+No session engine/compiler is active; both agents are source-only.
 The failed build is retained under
 `runs/ingest-succession-archive-installed-58aca32`;10:05:04Z–10:15:19Z.
 Owner6906757f69728137ea193cd2679d316e, labelorg.bigbrotr.network-transport,
@@ -345,8 +357,10 @@ nativec2bc41dd01d7d6bab0146a6452147d36e4b1a77123c5f19adc21e28e9cfdc48f.
 Both owned containers are stopped and every build artifact/log is retained.
 Existing report/inventory node `archive_attempt_limits_build_58aca32` records
 the original running observation separately from the terminal FAIL/custody PASS.
-The correction reviewer has completed. The export setup author remains source-only
-active and may not run compiler/helpers/engines/SQL/Docker/cache operations.
+The correction reviewer is now performing the critical cap-admission diagnosis,
+with actual Astra/xhigh turn-context2026-10-20T10:39:15.311Z verified. The export
+setup author remains source-only active. Neither may execute helpers/compiler/
+engines/SQL/Docker/cache operations.
 Both old nine-root
 and new37-root cache retirements are complete; neither executor may be replayed.
 All six refusal custody checks are complete and must not be rerun after
