@@ -16,8 +16,9 @@ from tools.archive_bundle import build_environment, install_bundle, native_targe
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'])
-producer_progress = sys.argv[1:] == ['producer-progress']
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'])
+producer_ack = sys.argv[1:] == ['producer-ack']
+producer_progress = sys.argv[1:] in (['producer-progress'], ['producer-ack'])
 archive_installed = sys.argv[1:] == ['archive-installed']
 archive_components = sys.argv[1:] == ['archive-components']
 installed = sys.argv[1:] == ['installed']
@@ -102,6 +103,12 @@ if producer_progress:
                          'retained fact codec, captured-input/Sync prefix and schema/CLI components, '
                          'CLI/probe compilation and Clippy. '
                          'Connected PostgreSQL progress, installed Sync/recovery and ACK NOT_RUN.')
+if producer_ack:
+    identity['scope'] = ('Native ACK/noGC/credit mechanics and affected closing, original recovery, '
+                         'legacy/activated/lineage, dictionary/input and installed consumer components; '
+                         'schema40 catalog and CLI/probe compilation plus both Clippy selections. '
+                         'Connected PG confirmation/ACK, installed two-slot traffic/loss/recovery, '
+                         'resource capacity and Archive worker qualification NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
 if archive_installed:
@@ -234,6 +241,25 @@ if producer_progress:
         ('control_schema', ['--test', 'control_schema']),
         ('migrate_entrypoint', ['--test', 'migrate_entrypoint']),
     ]
+if producer_ack:
+    # Acknowledged state changes every retained recovery boundary. The initial
+    # reconstruction group includes activated/lineage/writer/recovery children;
+    # select it once instead of overlapping those nested filters.
+    tests += [(name, ['--lib', selection]) for name, selection in [
+        ('producer_ack', 'producer_ack_tests'),
+        ('producer_closing', 'producer_closing_tests'),
+        ('producer_recovery', 'producer_recovery_tests'),
+        ('source_closure', 'source_closure_tests'),
+        ('initial_handoff', 'initial_handoff_tests'),
+        ('initial_reconstruction', 'initial_reconstruction_tests'),
+        ('dictionary_append', 'dictionary_append_tests'),
+        ('bootstrap', 'bootstrap_tests'),
+        ('request_inputs', 'request_input_tests'),
+    ]]
+    # Reuse the same retained CLI-test ELF; include changed Archive retention
+    # and the existing Sync controls in one non-overlapping consumer selection.
+    tests = [(name, ['--bin', 'bigbrotr', 'interfaces::serve::initial_ingest::']
+              if name == 'sync_progress' else selection) for name, selection in tests]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [] if archive_components else
@@ -382,6 +408,25 @@ if producer_progress:
             'exact_dictionary_request_matches_independent_literal_bytes_and_digest',
             'every_count_byte_and_scratch_allocation_is_caller_bounded'],
     }
+if producer_ack:
+    required_controls['producer_progress'].append(
+        'storage::postgres::control_owner::producer_progress::tests::progress_grant_reserves_native_ack_before_any_dispatch')
+    required_controls['producer_ack'] = [
+        'storage::rocks::store::admission_tests::producer_ack_tests::' + name for name in [
+            'acknowledgement_writes_only_watermark_once_and_retains_every_original',
+            'bootstrap_ack_releases_its_actual_slot_without_removing_dictionary_receipt',
+            'two_slot_credit_comes_only_from_actual_ack_and_proof_only_does_not_ack',
+            'acknowledgement_refuses_foreign_stale_overissued_and_unreserved_targets',
+            'acknowledgement_postwrite_authority_loss_preserves_ack_and_sequence_mismatch_poison']]
+    required_controls['sync_progress'].append(
+        'interfaces::serve::initial_ingest::archive::tests::active_request_window_does_not_define_archive_retention')
+    required_controls['control_schema'] = [
+        'initial_preparation_retirement_activation_and_recovery_are_distinct_additive_protocols',
+        'producer_progress_and_ack_preserve_old_floors_but_never_ignore_changed_protocols']
+    required_controls['initial_reconstruction'] = [
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::' + name for name in [
+            'initial_writer_tests::activated_recovery_tests::activated_source_tests::activated_ack_handoff_requires_all_predecessor_originals_before_target',
+            'lineage_tests::lineage_replay_tests::successor_handoff_tests::successor_writer_tests::successor_ack_updates_only_exact_admitted_frontier_and_keeps_replay']]
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}
@@ -407,6 +452,7 @@ if archive_installed:
     assert archive_postcheck is not None and archive_postcheck['status'] == 'PASS'
 qualification = dict(identity, status='PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS' if archive_installed
                      else 'PASS_ARCHIVE_CATCH_UP_COMPONENTS' if archive_components
+                     else 'PASS_PRODUCER_ACK_COMPONENTS' if producer_ack
                      else 'PASS_PRODUCER_PROGRESS_COMPONENTS' if producer_progress
                      else 'PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed
                      else 'PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery

@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'export-memory-probe', 'catalog-layout', 'export-admission', 'export-native-row', 'export-manager-memory-probe', 'initial-sync-diagnostics', 'producer-progress',
+    'export-memory-probe', 'catalog-layout', 'export-admission', 'export-native-row', 'export-manager-memory-probe', 'initial-sync-diagnostics', 'producer-progress', 'producer-ack',
     'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed',
     'ingest-activated-retirement', 'ingest-activated-durable', 'ingest-activated-source', 'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
@@ -167,6 +167,7 @@ try:
         'export-admission': ['--admission'],
         'initial-sync-diagnostics': ['--initial-sync-diagnostics'],
         'producer-progress': ['producer-progress'],
+        'producer-ack': ['producer-ack'],
         'export-native-row': ['--native-row'],
         'export-manager-memory-probe': ['--manager-memory-probe'],
         'catalog-layout': ['--layout'],
@@ -233,7 +234,7 @@ try:
         'acquisition-jobs-faults': ['acquisition-jobs-faults'],
         'acquisition-claims': ['acquisition-claims'],
     }.get(profile, [])
-    native_script = ('ingest-succession/native.py' if profile in ('producer-progress', 'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
+    native_script = ('ingest-succession/native.py' if profile in ('producer-progress', 'producer-ack', 'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
                      else 'archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
                      else 'export-execution/native.py' if profile in ('export-memory-probe', 'export-admission', 'export-native-row', 'export-manager-memory-probe', 'initial-sync-diagnostics')
                      else 'archive-engine/native_scientific_guard.py' if profile == 'catalog-layout'
@@ -246,6 +247,7 @@ try:
                 'export-admission': 'PASS_EXPORT_ADMISSION_BUILD_ONLY',
                 'initial-sync-diagnostics': 'PASS_INITIAL_SYNC_DIAGNOSTICS_BUILD_ONLY',
                 'producer-progress': 'PASS_PRODUCER_PROGRESS_COMPONENTS',
+                'producer-ack': 'PASS_PRODUCER_ACK_COMPONENTS',
                 'export-native-row': 'PASS_EXPORT_NATIVE_ROW_BUILD_ONLY',
                 'export-manager-memory-probe': 'PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY',
                 'catalog-layout': 'PASS_CATALOG_LAYOUT_BUILD_ONLY',
