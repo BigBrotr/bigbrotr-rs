@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "Component0bd27ffPASS; connected9fb4050 failed migration with clean custody; corrected78744d4 isolated build running. All worktrees/evidence retained; no cleanup.",
+      "state": "Component78744d4PASS; connected242116dFAIL historical xmin preservation after natural Sync close. Correctedd4e1b85 isolated build active; all failed data/evidence preserved; no cleanup.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -60913,7 +60913,7 @@
       "runtime_owner": "root only",
       "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020",
       "review_root": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020",
-      "observation": "Root freshly checked0bd27ff build and9fb4050 connected terminal identities/PID0/noOOM/cgroups absent. New78744d4 build owns exclusive existing cache; final observation pending.",
+      "observation": "Root freshly checked78744d4 build and242116d installed terminal PID0/noOOM/cgroups absent. Newd4e1b85 run owns exclusive existing cache; final observation pending. All source agents idle/completed.",
       "fixture_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fixture-20261020",
         "branch": "work/producer-progress-fixture",
@@ -60945,9 +60945,9 @@
       "integration_worktree": {
         "path": "/home/tux/bigbrotr-rs/.research/producer-progress-integration-20261020",
         "branch": "work/producer-progress-integration",
-        "head": "78744d4708bc16204fe55ab5263bcc89bed95e5a",
+        "head": "d4e1b85566dee30994017834b763fe04396bcf1c",
         "owner": "root",
-        "state": "Clean candidate with four-parentheses migration correction; awaiting focused build and real SQL rerun"
+        "state": "Clean six-column migration correction with equivalent checks; focused build active, strict preservation rerun pending"
       },
       "build_runs": [
         {
@@ -60994,7 +60994,7 @@
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-78744d4",
           "source": "78744d4708bc16204fe55ab5263bcc89bed95e5a",
           "owner": "bb46ba5052974579e121570627660a56",
-          "state": "running",
+          "state": "stopped-retained",
           "containers": [
             {
               "name": "fetch",
@@ -61006,6 +61006,26 @@
             }
           ],
           "driver_session": 26282,
+          "driver_status": "joined0; componentPASS76; exact containersPID0/noOOM/cgroups absent",
+          "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "preserve": "detached source worktree and full run artifacts"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-d4e1b85",
+          "source": "d4e1b85566dee30994017834b763fe04396bcf1c",
+          "owner": "bde781a9b7cae1ec768607556a70cdff",
+          "state": "running",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "60beab217c937b39fe956593e61ed70571a773bd84a779795827d0f70878633b"
+            },
+            {
+              "name": "native",
+              "id": "34a9b8fc4da320bacf119a9bf3b395031a73b0bd3c027f9027db94682fd90080"
+            }
+          ],
+          "driver_session": 87204,
           "driver_status": "active at last observation",
           "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
           "preserve": "detached source worktree and full run artifacts"
@@ -61025,6 +61045,20 @@
           ],
           "state": "stopped-retained; driver62007joined1; migrationFAIL before Sync; no cleanup errors or unrelated changes",
           "preserve": "source worktree, original and clone snapshots/native stores, migration stderr/server log and terminal custody; no data cleanup"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-242116d",
+          "source": "242116d3d5de2c9ead545ab4a8a80ff98c94db8d",
+          "owner": "f4dcfef5d9318a5102d432340950b17f",
+          "owner_label": "org.bigbrotr.installed-progress-split",
+          "client": "9286e89f684a1ec602bbd10bacd54ef20ce40dbf6a0264b8f615dfdf1bea4609",
+          "borrowed_postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_installed_progress_split_242116d_activated"
+          ],
+          "state": "stopped-retained; driver71464joined1; full original-row oracleFAIL after natural successful Serve close; no cleanup errors or unrelated changes",
+          "preserve": "source, original and clone snapshots/native stores, full actual mutation/proof-only cuts and terminal custody"
         }
       ]
     }

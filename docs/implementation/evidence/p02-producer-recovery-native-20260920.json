@@ -40981,14 +40981,14 @@
         "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
       },
       "producer_checkpoint_ack_preparation_20261020": {
-        "status": "COMPONENTS76_PASS_AT0bd27ff; CONNECTED_MIGRATION_FAIL; CORRECTED_BUILD_RUNNING",
+        "status": "COMPONENTS76_PASS_AT78744d4; CONNECTED_HISTORICAL_XMIN_FAIL; NO_REWRITE_CORRECTION_BUILD_RUNNING",
         "task": "P02-T02 Steps4/5/7; P02-T08 Step1 causal backup consumer",
         "basis": "Existing P01-T09 permits useful functional slices before adjacent empirical gates complete. TLS manager qualification remains open but is not a prerequisite to this checkpoint/ACK path. No second plan or scope reduction.",
         "objective": "Typed durable producer checkpoint -> synchronized native owner ACK -> restart resolution; retain all request/input/receipt detail initially, noGC. ACK only contiguous resolved mutation slots; ExistingProof-only progress allocates no mutation ACK. Raw PG outcome copies/archive progress cannot substitute for durable classified producer checkpoint.",
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Collect corrected78744d4 focused build. After success, rebind fixture source and migration hash, then rerun connected suite on a fresh owned clone; preserve failed9fb4050. NoACK credit/GC or recovery completion inferred.",
+        "next": "Collect d4e1b85 focused build, rebind exact fixture source/migration after qualification, then rerun unchanged strict whole-state/science oracle on fresh original clones. Preserve242116d failure and all old xmins; do not project away migration rewrites.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41030,7 +41030,7 @@
             "sha256": "8028209e9dc71c489d389e6289a8b650f434363b6930b79c6778419d4d3df343"
           }
         },
-        "local_source_observation": "Mainba325d2 verified equal to remote after push83090 joined0. Isolated integration candidate78744d4 clean. Build0bd27ffPASS76; connected9fb4050FAIL before Sync; new embedded migration build78744d4 active.",
+        "local_source_observation": "Main0521d3e verified equal to remote after push51565joined0. Isolated candidated4e1b85clean; focused build87204active. Prior component78744d4PASS76 and connected242116dFAIL preservation after successful observed Sync lifecycle.",
         "implementation_split": {
           "storage": "export_setup_fixture owns native/PG/schema/captured-input handoff and source controls. Root owns historical recovery callers/model header helper. Historical SQL packet independently reviewed and included unchanged in unpublished0039; no migration40.",
           "cli": "Root: cdd5e676600463ff4db0fed48864a954d80ed53c on work/producer-progress-sync, base4f20300; five CLI owners changed. Setup/dictionary progress grants; per-event borrowed progress through certification/admission; opaque CapturedEventInput; preparation holes retain subsequent admission but disable local progress for the rest of that REQ. Rustfmt parse and diff check PASS; new two targeted Sync unit cases NOT_RUN.",
@@ -41109,7 +41109,7 @@
             "sha256": "626a3942abef97d970a4f394435ac0bfb24beebe580614de4fd86002d4e767d5"
           },
           "root": "Both manifests and all source/evidence pins authenticated, full review/correction receipt read. FIXTURE-1 exact built/component/qualification source binding corrected before resource loading and in offline replay. Original c668 and v1 evidence preserved.",
-          "gate": "Profile bound to qualified0bd27ff at6296f2e, README9fb4050; root AST projection proved only literal binding changed. Current78744d4 migration hash differs, so guard still refuses before resources until a new qualified source/migration binding.21controls and actual installed casesNOT_RUN."
+          "gate": "Current profile remains bound to qualified78744d4 by242116d. It rejects the changed d4e1b85 migration hash before resources until new build qualification/binding. Independent scientific/original-row preservation expectations unchanged;21controls not reached."
         },
         "review_agent_configuration": {
           "agent": "/root/producer_recovery_review",
@@ -41122,8 +41122,8 @@
           "worktree": ".research/producer-progress-integration-20261020",
           "branch": "work/producer-progress-integration",
           "base": "e40e6e9cb5722282c5a1b88eb2fd42e6222743ac",
-          "head": "78744d4708bc16204fe55ab5263bcc89bed95e5a",
-          "tree": "dc3257754c7b68249215b3ef9c7513e77aea156c",
+          "head": "d4e1b85566dee30994017834b763fe04396bcf1c",
+          "tree": "8d106bc6b7244f202fcc0dcbda3fb6692f9fdac0",
           "tracked_state": "clean",
           "composed": {
             "storage6a5e022": "d2ebaa3",
@@ -41148,7 +41148,7 @@
             "commit": "0bd27ff16b62bd4aa26b27a674f5c5af24b2a238",
             "change": "Narrow prepare/recheck/record visibility to connected control_owner; make load import private. Four declarations only; root targeted review/rustfmt/diffcheckPASS."
           },
-          "qualification": "Component build0bd27ffPASS76 and19required names; connected fixture failed0039 syntax before any case. Corrected78744d4 now building; linked attempts retain original results.",
+          "qualification": "Current correction compiling. All prior source/build/runtime results stay bound to their exact inputs; no whole installed/recovery orACK claim.",
           "storage_review": {
             "path": ".research/producer-checkpoint-ack-review-20261020/storage-source-review-v1.json",
             "bytes": 20888,
@@ -41217,8 +41217,51 @@
             "source": "78744d4708bc16204fe55ab5263bcc89bed95e5a",
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-78744d4",
             "driver_session": 26282,
+            "status": "PASS_PRODUCER_PROGRESS_COMPONENTS",
+            "scope": "Same existing profile on changed embedded migration; prior successful evidence remains original and exact.",
+            "driver_exit": 0,
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-78744d4/out/build-checks/result.json",
+              "bytes": 8954,
+              "sha256": "253f223414f5249583a0e4b1f5be07ed27d5c7f330b4c5f8454c0a2b02d66aab"
+            },
+            "qualification": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-78744d4/out/qualification.json",
+              "bytes": 3216,
+              "sha256": "506c87a66c7ac35768b5c997ca5231cf94eda654c2fd19f5dd681137af99e566"
+            },
+            "component": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-78744d4/out/artifacts/component-result.json",
+              "bytes": 13965,
+              "sha256": "3d829871e0689487b3569b9c29728e3fc90bf801e3ad0d35e2d9bd5ba92294d1"
+            },
+            "build": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-78744d4/out/artifacts/build-result.json",
+              "bytes": 5306,
+              "sha256": "5c7a2eb170a075131c59a6a382072b5dbf814c707ec67441fbf5aebb19201df5"
+            },
+            "test_counts": {
+              "producer_progress": 5,
+              "producer_checkpoint": 6,
+              "certification": 6,
+              "captured_input": 1,
+              "captured_binding": 1,
+              "sync_progress": 2,
+              "fact_codec": 8,
+              "evidence_intent": 5,
+              "control_schema": 39,
+              "migrate_entrypoint": 3
+            },
+            "critical_controls": 19,
+            "retained_executables": 8,
+            "root_validation": "76tests and both Clippy selectionsPASS; exact19 names/eightELFs authenticated; owned containers stoppedPID0/noOOM/cgroups absent; no unrelated changes."
+          },
+          {
+            "source": "d4e1b85566dee30994017834b763fe04396bcf1c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-progress-d4e1b85",
+            "driver_session": 87204,
             "status": "RUNNING",
-            "scope": "Same existing profile on changed embedded migration; prior successful evidence remains original and exact."
+            "scope": "Same existing profile after changed embedded migration. Previous exact results preserved."
           }
         ],
         "installed_progress_runs": [
@@ -41241,6 +41284,32 @@
               "change": "Parenthesize four scalar CASE expressions inside trigger IF conditions; no selected classification/digest/authority semantics changed. Preserve failed original migration/source and clone. Root narrow source/diff review; execution pending."
             },
             "custody": "Driver joined1; client and borrowed PG freshly stoppedPID0/noOOM/cgroups absent; no backend, cleanup error or unrelated/unexpected/missing container. Original SQL/catalog/native/input preservation observations retained by runner."
+          },
+          {
+            "source": "242116d3d5de2c9ead545ab4a8a80ff98c94db8d",
+            "product_source": "78744d4708bc16204fe55ab5263bcc89bed95e5a",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-242116d",
+            "driver_session": 71464,
+            "driver_exit": 1,
+            "status": "FAIL_HISTORICAL_ROW_PRESERVATION",
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-progress-242116d/installed-progress-split/result.json",
+              "bytes": 4700555,
+              "sha256": "8300b11a9884251a7bf7f5b985d9056aafc44b5af6c6ec191b38203333c78ac8"
+            },
+            "failure": "Migration plan/apply/reapplyPASS. First activated-live3 Serve completed mutation/proof-only phase captures and natural successful close7.1258s. Full oracle then refused original rows/xmin differ; no positive installed qualification or21controls. Other two contextsNOT_RUN.",
+            "diagnosis": "Read-only existing legacy_state projection compared full original semantic row sets with migrated-before. Only6 historical producer_requests rows changed; all values equal except xmin22584/22586/22612/22617/27888/27893 became56938, exactly migration39xmin. No other original table differed.",
+            "correction": {
+              "commit": "d4e1b85566dee30994017834b763fe04396bcf1c",
+              "migration_sha256": "267045f6f5c9ee44c1a9dc3335c7092c056606662bd4016cb7c2a81b19c421f0",
+              "change": "Six nullable constrained-domain additions on existing tables become bytea/numeric(20,0) with equivalent length/nonzero/range CHECKs. Keep all-null/all-present and positive-value conditions and domains on newly created tables. No verifier relaxation or new digest/API semantics.",
+              "review": "Independent Astra/xhigh export_setup_fixture recommendation reused verified session configuration. Exact domain definitions/type consumers/contracts inspected; root applied/reviewed narrow delta and documented remaining scans/DDL locks. Execution pending.",
+              "primary_basis": [
+                "https://github.com/postgres/postgres/blob/REL_16_15/src/backend/commands/tablecmds.c#L6752",
+                "https://www.postgresql.org/docs/16/sql-altertable.html"
+              ]
+            },
+            "custody": "Driver71464joined1; exact owned client and borrowed PG stoppedPID0/noOOM/cgroups absent; no cleanup errors, unrelated/unexpected/missing container. Successful Serve close and backend absence retained. Original and failed clone captures untouched."
           }
         ]
       }
