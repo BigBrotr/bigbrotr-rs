@@ -113,8 +113,9 @@ class Science:
         assert ('default', (b'\x01\x06' + self.ds + bytes.fromhex(NEW_EVENT['id'])).hex()) not in self.values
         assert [json.loads(corpus)[i] for i in range(2)] == [OLD_EVENT, NEW_EVENT]
 
-    def ref(self, kind):
-        return [self.ds, kind, self.domains[kind], 1]
+    def ref(self, kind, ordinal=1):
+        assert type(ordinal) is int and 1<=ordinal<=3
+        return [self.ds, kind, self.domains[kind], ordinal]
 
     @staticmethod
     def ref_key(reference):
@@ -138,8 +139,8 @@ class Science:
         prefix = bytes([1, domain])
         self.put('default', prefix + key, prefix + self.source(self.epoch, n) + self.refs[self.epoch, n][1])
 
-    def dictionary(self, n, kind, schema, value, timestamp):
-        reference = self.ref(kind)
+    def dictionary(self, n, kind, schema, value, timestamp, *, ordinal=1):
+        reference = self.ref(kind, ordinal)
         descriptor = [1, schema, 1, value]
         payload = [reference, *descriptor]
         self.fact(n, 'dictionary', payload, timestamp)
@@ -147,7 +148,7 @@ class Science:
         canonical = cbor(descriptor)
         self.put('default', b'\x01\x05' + self.ds + be(kind, 2) + bytes.fromhex(sha(canonical))
                  + self.ref_key(reference), b'\x01\x05' + canonical)
-        self.put('default', b'\x01\x03' + self.ds + be(kind, 2) + self.domains[kind], b'\x01\x03' + be(1))
+        self.put('default', b'\x01\x03' + self.ds + be(kind, 2) + self.domains[kind], b'\x01\x03' + be(ordinal))
         return ['dictionary', 1, payload]
 
     def context(self):
