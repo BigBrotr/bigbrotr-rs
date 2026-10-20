@@ -58,8 +58,7 @@ struct InitialGrants {
     sync: Option<sync::Sync>,
     archive: Option<archive::Archive>,
     native: OwnedPermit,
-    bootstrap: OwnedPermit,
-    private_scope: OwnedPermit,
+    dictionaries: dictionaries::SetupGrants,
 }
 
 struct PreparedInitial {
@@ -164,7 +163,7 @@ fn owner_budget(
     retained: u64,
 ) -> Result<ResourceBudget> {
     let n = |field: &str| root.number(&format!("runtime.processes.application.{field}"));
-    let items = (3 + retained + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 })
+    let items = (4 + retained + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 })
         .checked_add(if archive { archive::ITEMS } else { 0 })
         .and_then(|items| {
             items.checked_add(if archive {
@@ -179,7 +178,7 @@ fn owner_budget(
         n("baseline_bytes"),
         ResourceLimits::new(
             n("payload_bytes"),
-            // Native, retained producer inputs and Control coexist with the
+            // Native, retained inputs, setup progress and Control coexist with
             // bounded session connections, queued requests and one hash worker.
             items,
             n("native_bytes"),
@@ -217,8 +216,7 @@ pub(super) fn run(
         sync: None,
         archive: None,
         native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
-        bootstrap: grant(&budget, 8 * MIB, 4 * MIB)?,
-        private_scope: dictionaries::reserve_private(&budget)?,
+        dictionaries: dictionaries::SetupGrants::reserve(&budget)?,
     };
     let inputs = grant(&budget, 24 * MIB, 0)?;
     let timeout = duration(&root, "renewal_timeout");
@@ -594,8 +592,7 @@ async fn own(
         &root,
         &progress,
         &cancellation,
-        initial.bootstrap,
-        initial.private_scope,
+        initial.dictionaries,
     )
     .await?;
     let report = json!({"format":"bigbrotr-initial-ingest/1","state":"initialized",
