@@ -139,7 +139,11 @@ async fn own(
     drop(replay_grants(&budget)?);
     drop(effect_grant(&budget)?);
     if mode != Mode::RetireEmpty {
-        drop(grant(&budget, 4096, 4096)?);
+        drop(grant(
+            &budget,
+            RecoveryAcknowledgement::REQUIRED_DATA_BYTES,
+            RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
+        )?);
     }
     if matches!(mode, Mode::AbandonAcquisition | Mode::Retire) {
         drop(grant(&budget, FINAL_JOB_BYTES, 0)?);

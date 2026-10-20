@@ -108,7 +108,11 @@ pub(super) async fn acknowledge(
                     policy_ttl: duration(root, "authorization_ttl"),
                     cancelled: &cancellation.requested,
                 },
-                grant(budget, 4096, 4096)?,
+                grant(
+                    budget,
+                    RecoveryAcknowledgement::REQUIRED_DATA_BYTES,
+                    RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
+                )?,
                 validate,
             )
             .await
