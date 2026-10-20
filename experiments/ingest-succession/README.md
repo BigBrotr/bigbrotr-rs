@@ -25,7 +25,7 @@ the release digest and unchanged input census. Its result is
 The opt-in `installed_family.py ROOT BUILD --progress` path connects these cuts
 to the existing runner and complete raw capture reader. The reviewed
 `installed_progress_replay.FROZEN_PROFILE` now binds migration0039 to the
-qualified component source `0bd27ff16b62bd4aa26b27a674f5c5af24b2a238` and the
+qualified component source `78744d4708bc16204fe55ab5263bcc89bed95e5a` and the
 independently fixed head/count/dependency expectations. This enables the
 connected fixture; its actual execution and offline-control status remain in
 the existing checkpoint and evidence report.

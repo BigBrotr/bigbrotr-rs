@@ -98,8 +98,8 @@ CASE_EXPECTATIONS = {
 # names that exact build, not an isolated author packet or a later fixture-only
 # runner revision. No caller can replace the golden or turn a valid digest into PASS.
 FROZEN_PROFILE = {
-    'migration_sha256': '0b79b58fbe49d0603999af74d04f7794ae0390e8c2bb4407b52f49203f9f8bce',
-    'product_source': '0bd27ff16b62bd4aa26b27a674f5c5af24b2a238',
+    'migration_sha256': '21850c9107031eadb94b9a098527ade6ebca889d45dcf3bd24906c2557d0ac0f',
+    'product_source': '78744d4708bc16204fe55ab5263bcc89bed95e5a',
     'cases': CASE_EXPECTATIONS,
 }
 
