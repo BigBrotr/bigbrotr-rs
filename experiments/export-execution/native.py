@@ -16,9 +16,10 @@ job_pages = job_pages_cli or sys.argv[1:] == ['--runtime','--job-pages']
 runtime = job_pages or sys.argv[1:] == ['--runtime']
 memory_probe = sys.argv[1:] == ['--memory-probe']
 admission = sys.argv[1:] == ['--admission']
+initial_sync_diagnostics = sys.argv[1:] == ['--initial-sync-diagnostics']
 native_row = sys.argv[1:] == ['--native-row']
 manager_memory_probe = sys.argv[1:] == ['--manager-memory-probe']
-assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'], ['--native-row'], ['--manager-memory-probe'])
+assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages-cli'], ['--runtime','--job-pages'], ['--build-runtime'], ['--memory-probe'], ['--admission'], ['--initial-sync-diagnostics'], ['--native-row'], ['--manager-memory-probe'])
 if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
@@ -46,7 +47,7 @@ identity = dict(source=manifest['revision'],tree=manifest['tree'],lockfile_sha25
     source_manifest_sha256=file_hash(build/'source-manifest.json'),native_toolchain=native,
     scope='Current typed SQL/native/files consumer research driver; no installed automatic scheduler or signal/recovery qualification')
 checks = Path('/out/adapter-checks')
-if admission:
+if admission or initial_sync_diagnostics:
     artifacts = Path('/out/artifacts')
     artifacts.mkdir()
     bundle = artifacts / 'archive-worker'
@@ -63,16 +64,34 @@ if admission:
     env.update(build_environment(bundle))
     env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker_identity['bytes']),
                BIGBROTR_ARCHIVE_WORKER_SHA256=worker_identity['sha256'])
-    identity.update(scope='Installed export admission unit boundaries and build only; runtime/memory qualification NOT_RUN',
+    identity.update(scope=('Initial Sync diagnostic unit boundaries and installed parent build only; runtime/memory qualification NOT_RUN'
+                           if initial_sync_diagnostics else 'Installed export admission unit boundaries and build only; runtime/memory qualification NOT_RUN'),
                     worker_source='6c42a41534a0d7ec3e425fa34b1b3c88bdceab79')
     assert execute([
-        ('admission', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
-                       '--bin', 'bigbrotr', 'interfaces::serve::export_jobs::tests::']),
+        ('initial-sync' if initial_sync_diagnostics else 'admission',
+            ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr',
+             'interfaces::serve::initial_ingest::' if initial_sync_diagnostics else 'interfaces::serve::export_jobs::tests::']),
         ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr']),
         ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                     '--bin', 'bigbrotr', '--', '-D', 'warnings']),
     ], checks, SOURCE, env, identity, 1800)['status'] == 'PASS'
-    assert '3 passed; 0 failed; 0 ignored' in (checks / 'admission.log').read_text()
+    if initial_sync_diagnostics:
+        diagnostic_tests = [
+            'interfaces::serve::initial_ingest::sync_diagnostic::tests::' + name for name in (
+                'pending_admission_and_following_certification_are_distinct',
+                'dropping_a_pending_stage_never_marks_it_returned',
+                'silent_updates_preserve_deadlines_and_do_not_notify',
+                'returned_error_is_distinct_from_pending',
+                'completed_dispatch_does_not_leak_into_later_watchdogs',
+            )
+        ] + ['interfaces::serve::initial_ingest::supervision::tests::parent_watchdog_freezes_sync_stage_before_grace']
+        lines = (checks / 'initial-sync.log').read_text().splitlines()
+        assert any(line.startswith('test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; ') for line in lines)
+        assert all('test ' + name + ' ... ok' in lines for name in diagnostic_tests)
+        identity.update(initial_sync_diagnostics=dict(test_filter='interfaces::serve::initial_ingest::',
+            required_tests=diagnostic_tests, passed_tests=28), runtime='NOT_RUN')
+    else:
+        assert '3 passed; 0 failed; 0 ignored' in (checks / 'admission.log').read_text()
     executable = artifacts / 'bigbrotr'
     shutil.copy2(build / 'target/release/bigbrotr', executable)
     executable.chmod(0o500)
@@ -246,6 +265,9 @@ else:
     identity.update(build_info=info,artifacts={p.name:file_hash(p) for p in artifacts.iterdir()})
     (checks/'artifacts.json').write_text(json.dumps(identity,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
+if initial_sync_diagnostics:
+    Path('/out/qualification.json').write_text(json.dumps(
+        dict(identity, status='PASS_INITIAL_SYNC_DIAGNOSTICS_BUILD_ONLY'), indent=2) + '\n')
 if manager_memory_probe:
     Path('/out/qualification.json').write_text(json.dumps(
         dict(identity, status='PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY'), indent=2) + '\n')
