@@ -37855,7 +37855,7 @@
               "bytes": 2335,
               "sha256": "0458d7f4f57f159bcca014aea3869dd880b3928e17106b9e254ee266cc64ae4f"
             },
-            "status": "INTEGRATING_SOURCE_BUILD_READY_RUNTIME_REVIEW_PENDING",
+            "status": "INTEGRATED_SOURCE_WITH_SEPARATE_CRITICAL_REVIEWS",
             "build": "NOT_RUN",
             "runtime": "NOT_RUN",
             "critical_review": {
@@ -37869,7 +37869,54 @@
               "bytes": 736,
               "sha256": "59e0e5b8fa3353e9395ebce5971032be687ca73d1d4ac7bb2ecf0f0a4be286d1"
             },
-            "root_runtime_review": "Complete existing memory_lab.py plus frozen delta and old first-measurement protocol read. One optional new profile; old probe/acceptance preserved; new diagnostic alone changes its separate descriptor. Actual SQL9table and physical outcome qualification remains required. Critical runtime review pending."
+            "root_runtime_review": "Complete existing memory_lab.py plus frozen delta and old first-measurement protocol read. One optional new profile; old probe/acceptance preserved; new diagnostic alone changes its separate descriptor. Actual SQL9table and physical outcome qualification remains required. Critical runtime review pending.",
+            "runtime_critical_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/manager-memory-runtime-review-v1.json",
+              "bytes": 7573,
+              "sha256": "c666b1448beaf8e6c7754434434287faa177e51f1318c961d4417f76dd7d63b3"
+            }
+          },
+          "integration_build": {
+            "source": "e3c712c3064a766bf60f14af1e4d913baf11fb62",
+            "tree": "45d36483ac73f5dd8dfecca7fe47c6a8b2554c01",
+            "remote": "Exact refs/heads/main e3c712c verified after push90923 joined0",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c",
+            "session": "57448 joined1",
+            "status": "FAIL_STANDALONE_MODULE_RESOLUTION",
+            "profile": "export-manager-memory-probe",
+            "owner": "65c93d19c322e6a2fd97106efd2821a7",
+            "scope": "Root-owned compile/Clippy/direct-link/seven-counter-test build; no runtime measurement",
+            "resources": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c/resources.json",
+              "bytes": 1017,
+              "sha256": "7f6784a64c1572f979711fa93817e0f73009ccde650d0566bb2af49db25ad8a6"
+            },
+            "checks": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c/out/adapter-checks/result.json",
+              "bytes": 3813,
+              "sha256": "aeb41c043e6842ac13ed59a5b1e0b7541211018c18985582abfa1ae20b855561"
+            },
+            "diagnostic": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c/out/manager-memory-checks/result.json",
+              "bytes": 113839,
+              "sha256": "b4fe220d9d3ae0872b5f71146bee3cd253d773d92dc83a8d1dca43b199466db8"
+            },
+            "failure": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c/out/manager-memory-checks/rustc-diagnostic.stderr",
+              "bytes": 3885,
+              "sha256": "03416f0bba93bd97c894d3dfb37408d81ef4b6d4d20cd92dcb5d209425661082"
+            },
+            "outcome": "Ordinary Cargo example build and Clippy PASS; locked metadata and Cargo library PASS. Direct wrapper rustc E0583: explicit path attribute redirects child module resolution. Seven counter tests and live capture NOT_RUN. Both actual owned containers exited0/1 PID0 noOOM; no process active; original raw evidence retained."
+          },
+          "module_path_correction": {
+            "status": "ONE_LINE_CORRECTION_BUILD_NOT_RUN",
+            "change": "Remove redundant #[path = \"memory.rs\"] on sibling mod memory; use the same module declaration as the already compiling ordinary probe. Safe-module forbid remains; no counter, verifier, builder, product, deadline or Cargo change.",
+            "review": "Root reviewed complete original compiler stderr and exact one-line diff; prior critical semantic reviews and offline controls remain applicable. New exact build required to verify import and seven counter tests.",
+            "wrapper": {
+              "path": "/home/tux/bigbrotr-rs/experiments/export-execution/memory_measure.rs",
+              "bytes": 12581,
+              "sha256": "98545764b373f70131bff5e35f4a39a5d29cb960df9fa5fd52d678b721f66947"
+            }
           }
         }
       },

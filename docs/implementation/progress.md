@@ -7,11 +7,11 @@ incomplete. Existing task plan, Q37 model allocation and Q38 evidence reuse appl
 
 P08-T04 Step 3 / P01-T05 Step 2: qualify export ownership and memory without
 reducing fidelity or widening deadlines. Root owns `main` in
-`/home/tux/bigbrotr-rs`. Execution source is `1250f0a105a15612064bb4b4d7463a037f9654a5`; qualification
-and last exact verified remote are `c50eb8c016eafd3ee29a678a02e4784c2f8493e0`
-(push45148 joined0; clean main observed). This commit adds the reviewed manager observation source and builder plus the
-root-reviewed runtime parameter, whose critical review remains pending. No
-production code or Cargo manifests changed.
+`/home/tux/bigbrotr-rs`. Integrated source and exact verified remote are
+`e3c712c3064a766bf60f14af1e4d913baf11fb62`, tree
+`45d36483ac73f5dd8dfecca7fe47c6a8b2554c01` (push90923 joined0).
+Local report/checkpoint/inventory edits record its in-flight build. No production
+code or Cargo manifests changed.
 
 Both exact native row cases PASS: the escape-heavy 1,048,576-byte NativeFact
 returns the complete signed event in 442 ms; one byte beyond returns exactly
@@ -39,28 +39,28 @@ supplementary JSON-member-order comparison correction in their original evidence
 
 ## Processes and resources
 
-No engine/compiler/cleanup process is active. Build `78551` and native trial
-`21808` joined0. Their four actual containers are exited0/PID0/noOOM; all four
-runtime database backend counts are zero and the owned network is absent.
-The [inventory](../research/laboratory-inventory.json) records retained roots
-`runs/export-native-row-1250f0a` and `runs/export-native-row-runtime-1250f0a` under
-`/home/tux/bigbrotr-implementation-20260917`, source/artifact identities and owners.
-Both integrated branch refs were retired after exact push/ancestry/clean-worktree
-checks; detached author/build worktrees and all ignored evidence remain preserved.
-No data/cache cleanup is due.
+Build session `57448` joined1 under
+`runs/export-manager-memory-probe-e3c712c` in the existing external laboratory.
+Owner `65c93d19c322e6a2fd97106efd2821a7`, label
+`org.bigbrotr.network-transport`; existing outer runner owns finite containers
+and exclusive compiler-cache reuse. Both actual containers are exited0/1, PID0,
+noOOM. No compiler, measurement engine or cleanup is active.
+Previous native containers remain stopped/retained as recorded in the inventory.
 
 This source commit integrates observation `65d2642`, builder `2e8e329` and the
 existing-lab parameter `6302ccd`. Root reviewed their integrated identities; the
 critical counter/verifier/builder review found no blocker. The 22 new offline
 verifier controls and 17 retained controls PASS. Seven Rust counter tests,
-compilation and new runtime remain NOT_RUN. Astra/xhigh is separately reviewing
-the runtime parameter; root alone owns builds and engines. All author worktrees
+ordinary Cargo build/Clippy PASS, but direct-wrapper compilation failed on module
+resolution. Runtime critical review also found no blocker. Root removed one
+redundant path attribute; seven Rust counter tests and new runtime remain NOT_RUN.
+Root alone owns builds and engines. All author worktrees
 and ignored evidence remain inventoried. Build headroom was checked:
 314,764,083,200 bytes free; no cleanup needed.
 
 ## Next bounded action
 
-Build this exact integrated source using the existing outer profile
+Build the one-line module-path correction from this exact commit using profile
 `export-manager-memory-probe`; require actual Cargo build/Clippy, direct linking
 and seven deterministic Rust counter tests. The wrapper's always-on counter
 covers whole-parent Rust requested-live allocation, with no reset/baseline
@@ -68,7 +68,7 @@ subtraction or physical/RSS/native attribution. Reduced catalog reservation uses
 actual credential bounds and a two-second driver drain. A peak above that
 allowance is inconclusive for owner sufficiency, not proof of a product defect.
 
-After build qualification and separate critical runtime review, use the existing
+After build qualification, use the critically reviewed existing
 lab's `--manager-build` for one fresh genuine Accepted job. Preserve original
 acceptance and before/after SQL/files; independently audit custody and9table
 completion delta. New observation and layout-refusal/drain remain NOT_RUN.

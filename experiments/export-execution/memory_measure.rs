@@ -6,7 +6,6 @@ compile_error!("this finite measurement is qualified only for 64-bit targets");
 
 #[allow(dead_code)]
 #[forbid(unsafe_code)]
-#[path = "memory.rs"]
 mod memory;
 
 use std::{

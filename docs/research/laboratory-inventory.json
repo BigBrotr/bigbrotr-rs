@@ -66194,7 +66194,34 @@
           "scope": "Frozen source-only existing-lab parameter; critical runtime review active; root alone owns execution",
           "commit": "6302ccdf7746617daa1b33de99c3209066ae874e"
         },
-        "source_state": "Three clean author branches integrated in current source commit; build/runtime NOT_RUN, no engine/compiler active. No cleanup."
+        "source_state": "Integrated e3c712c and exact remote verified after push90923; all three author worktrees/evidence retained; refs pending retirement.",
+        "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c",
+          "source": "e3c712c3064a766bf60f14af1e4d913baf11fb62",
+          "tree": "45d36483ac73f5dd8dfecca7fe47c6a8b2554c01",
+          "owner": "65c93d19c322e6a2fd97106efd2821a7",
+          "owner_label": "org.bigbrotr.network-transport",
+          "session": "57448 joined1",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "fb40847a63892c5e7be231717783c94aff836565ece5e9d73bb7a3ea2f72c1d6"
+            },
+            {
+              "name": "native",
+              "id": "8d00234dbe40cfe404e2ea6d9bece4eca27f7b7a05cad67512f3f6e04760c915"
+            }
+          ],
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "scope": "Exclusive owned compiler cache; original evidence retained; no runtime engine",
+          "outcome": "Ordinary build/Clippy PASS; standalone module resolution FAIL, logs and staged artifacts retained. Actual owned fetch/native exited0/1 PID0noOOM.",
+          "resources": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-manager-memory-probe-e3c712c/resources.json",
+            "bytes": 1017,
+            "sha256": "7f6784a64c1572f979711fa93817e0f73009ccde650d0566bb2af49db25ad8a6"
+          }
+        }
       }
     },
     "archive_refusal_journey_attempts": [
