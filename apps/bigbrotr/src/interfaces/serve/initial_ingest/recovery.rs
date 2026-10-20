@@ -208,8 +208,9 @@ async fn own(
     if action == Action::RetireEmptyAttempt {
         empty::preflight(&budget)?;
     } else {
+        let closing = grant(&budget, 4096, 4096)?;
         drop(replay_grants(&budget)?);
-        drop(grant(&budget, 4096, 4096)?);
+        drop(closing);
     }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
