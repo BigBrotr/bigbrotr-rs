@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "source implementation in progress; no runtime/build/cache/cleanup started",
+      "state": "Storage/schema implementation active; frozen CLI source reviewed; fixture transport preparation integrated; historical SQL packet pending inclusion; no runtime/build/cache/cleanup started.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -60913,7 +60913,32 @@
       "runtime_owner": "root only",
       "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: initial_successor_preparation_20261012.repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020",
       "review_root": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020",
-      "observation": "2026-10-20: prepared worktree clean at base before author edits; no BigBrotr container running, six unrelated container IDs unchanged. Preserve prior worktrees and external/ignored artifacts."
+      "observation": "2026-10-20: prepared worktree clean at base before author edits; no BigBrotr container running, six unrelated container IDs unchanged. Preserve prior worktrees and external/ignored artifacts.",
+      "fixture_worktree": {
+        "path": "/home/tux/bigbrotr-rs/.research/producer-progress-fixture-20261020",
+        "branch": "work/producer-progress-fixture",
+        "base": "4f20300b6218acf326d9159b78f14fd0f6b1fa12",
+        "owner": "export_setup_review; verified Astra/xhigh continuity, experiments-only source work",
+        "scope": "Reuse installed Sync/family driver and independent captures for separate mutation/proof-only quanta; no runtime/build/cleanup authorization.",
+        "head": "0f4682925c8a9139a3ac38627de850382dd2b671",
+        "integrated_as": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
+        "state": "Transport preparation source-reviewed and integrated; typed oracle/runner incomplete, runtime NOT_RUN; worktree and ignored source evidence preserved."
+      },
+      "sync_worktree": {
+        "path": "/home/tux/bigbrotr-rs/.research/producer-progress-sync-20261020",
+        "branch": "work/producer-progress-sync",
+        "base": "4f20300b6218acf326d9159b78f14fd0f6b1fa12",
+        "head": "cdd5e676600463ff4db0fed48864a954d80ed53c",
+        "owner": "root",
+        "state": "Frozen CLI source critically reviewed with no concrete blocker; not integrated because storage/schema dependencies are incomplete; compilation/tests/runtime NOT_RUN."
+      },
+      "recovery_worktree": {
+        "path": "/home/tux/bigbrotr-rs/.research/producer-progress-recovery-20261020",
+        "branch": "work/producer-progress-recovery",
+        "base": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
+        "owner": "root",
+        "state": "Created clean; new PG/native producer_progress_recovery.rs helpers reserved for root. Existing callsite/model helper ownership to be declared before edits. No build/runtime."
+      }
     }
   },
   "tux_intermediate_retirement_20261018": {

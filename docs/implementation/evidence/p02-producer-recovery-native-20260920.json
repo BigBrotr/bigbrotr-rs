@@ -40988,7 +40988,7 @@
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Implement and review the first usable typed-progress increment on work/producer-checkpoint-ack; reuse installed Sync/producer recovery fixtures with an explicit proof-only durable-progress discriminator. Then add synced nativeACK/frontier transition and all nonzeroACK recovery consumers; two-slot-window/reply-loss/restart real-engine qualification remains NOT_RUN.",
+        "next": "Finish storage/schema contract and recovery compatibility, obtain frozen CLI source review, and complete independent typed fixture oracle. Combine coherent source and reconcile exact named controls before the prepared focused build; then real-engine initial/activated/successor progress/recovery qualification. NoACK/credit/GC in this increment.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41020,7 +41020,45 @@
           "checks": "Root Python AST parse/diff check PASS; independent critical source review found no blocker. Existing nonempty groups, exact artifacts/source/tool and final qualification checks retained. Reconcile actual named controls at product source freeze; this profile does not embed Archive worker.",
           "scope": "Six targeted component/schema/CLI groups, CLI/probe and Clippy. No connected PostgreSQL progress/installed Sync/recovery or nativeACK claim."
         },
-        "local_source_observation": "2026-10-20: author worktree has untracked postgres/producer_progress.rs and rocks/producer_checkpoint.rs; source incomplete/unverified, no product commit or integration."
+        "local_source_observation": "2026-10-20: storage/schema implementation remains incomplete and isolated. Root CLI cdd5e67 is frozen for independent source review; transport fixture0f46829 is source-reviewed and integrated as7b0d44c. No build/runtime qualification.",
+        "implementation_split": {
+          "storage": "export_setup_fixture: native/PG/schema/captured-input handoff and Rust recovery remain author-owned until bounded streaming interface/callsite handoff. Root supplied historical SQL replacements for author review/inclusion into unpublished0039; no separate migration40.",
+          "cli": "Root: cdd5e676600463ff4db0fed48864a954d80ed53c on work/producer-progress-sync, base4f20300; five CLI owners changed. Setup/dictionary progress grants; per-event borrowed progress through certification/admission; opaque CapturedEventInput; preparation holes retain subsequent admission but disable local progress for the rest of that REQ. Rustfmt parse and diff check PASS; new two targeted Sync unit cases NOT_RUN.",
+          "critical_review": "Frozen CLI review complete; see cli_source_review. Same Astra/xhigh reviewer now counterchecks streaming recovery/native-pin/PG-row buffering under existing factory grants; no runtime.",
+          "integration_gates": [
+            "Native operation results must carry their original root/sequence stamp; cannot mint authority by combining a foreign unstamped outcome with the current root.",
+            "CLI review owns input-pairing, intervening mutation-hole, cancellation/driver-buffer and actual entrypoint gates.",
+            "Historical recovery grant design is under critical countercheck: bounded streaming jobs/dependencies and exact pinned native payload hashing may avoid materialized union/decoded Facts, but128KiB adequacy is not yet claimed."
+          ],
+          "recovery": "Root owns new postgres/producer_progress_recovery.rs and rocks/producer_progress_recovery.rs in clean work/producer-progress-recovery, base7b0d44c. Author removes unused vector/decoded-Fact prototype and makes no historical caller edits. Streaming design countercheck requires exact native frame/hash/embedded identity and stable sequence, bounded fixed SQL projections/order/count/digest under the same producer lock, cancellation/deadline across hashing, and separate lifetime accounting for factory scratch, retained Control transport and native pins. No128KiB total-memory claim. Existing caller/model file ownership will be declared before edits."
+        },
+        "transport_preparation": {
+          "commit": "0f4682925c8a9139a3ac38627de850382dd2b671",
+          "main_commit": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
+          "manifest": {
+            "path": ".research/producer-progress-fixture-20261020/.research/producer-progress-transport-source-20261020/manifest-v1.json",
+            "sha256": "f564711a6dddb1c80cdc2b613b0771add9a2347dfce13da2ec701c10fb9e2a52"
+          },
+          "root_review": "Complete frozen installed_family.py427, installed_family_capture.py568, installed_family_client.py320 read; changed README section and actual publish/send_frame/framing helper bodies checked. Full saved AST-check script read; manifest and all7 source/evidence pins authenticated. No concrete source blocker in transport-only preparation; unchanged-default AST results reused.",
+          "status": "SOURCE_PREPARATION_REVIEWED; helper execution and runtime NOT_RUN",
+          "scope": "Distinct actual REQs separate NEW+OLD mutation quantum and gated NEW proof-only quantum, retaining original wire/SQL/input captures. New helper emits CAPTURED only. Typed schema/digest oracle, runner integration, negative controls and initial/activated cases remain incomplete."
+        },
+        "cli_source_review": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/cli-source-review-v1.json",
+          "bytes": 8657,
+          "sha256": "088aefaf3df91bcd8a07f272ab107256fef96b03358f2d746040a3e7242f8ec1",
+          "root": "Full receipt read; all5 changed-owner and exact diff pins authenticated. No concrete CLI source blocker; product integration/build/tests/runtime NOT_RUN."
+        },
+        "historical_sql_preparation": {
+          "sql": ".research/producer-checkpoint-ack-review-20261020/historical-progress-guards-v1.sql",
+          "bytes": 32725,
+          "sha256": "392861e05c3d2902aab2aa62e75e1242b54ce7261b9b7721a78d211e9754f0ff",
+          "diff": ".research/producer-checkpoint-ack-review-20261020/historical-progress-guards-v1.diff",
+          "diff_sha256": "ed84319f73d2e860a796c9f5f5dd254334b520e01c1d9f369c87445c16a4c11c",
+          "basis": ".research/producer-checkpoint-ack-review-20261020/historical-progress-guards-v1.json",
+          "status": "ROOT_AUTHORED_PENDING_AUTHOR_REVIEW_AND0039_INCLUSION; execution NOT_RUN",
+          "scope": "Three fully read historical functions from0029/0037/0038 call the new bounded retained-progress structural validator. Other workflow checks and all target-unactivated vetoes retained. Native validation remains separate."
+        }
       }
     }
   }
