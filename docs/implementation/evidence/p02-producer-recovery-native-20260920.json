@@ -40988,7 +40988,7 @@
         "source_owner": "export_setup_fixture, verified Astra/xhigh continuity; isolated source implementation. Root sole integrating/runtime owner.",
         "root_read": "Previous complete reads retained under Q38. Additional complete current reads: admission.rs1446, owner.rs368, source_closure.rs539, successor_frontier.rs, certification.rs329, outcome_copy.rs87, PGproducer_requests.rs219/successor_recovery_rows.rs/import_checkpoints.rs94, modeleffect.rs254, Sync577/receive127 and acquisitionobservation96;0011/0012/0004/0024 migrations. Checkpoint/0038 excerpts are focused functions, not full migration review. Entire existing network-transport/lab.py and ingest-succession/native.py read for reuse. Design receipt lists author read gaps; root authenticated its complete-owner pins. Complete initial_batch.rs read during implementation preparation; no changed-owner review yet.",
         "known_gap": "No ACK adapter; closing/recovery reject nonzeroACK/retired state. Implementing only a watermark writer would break existing restart paths. Reconcile all such consumers and existing checkpoint schema/triggers before mutation.",
-        "next": "Finish storage/schema contract and recovery compatibility, obtain frozen CLI source review, and complete independent typed fixture oracle. Combine coherent source and reconcile exact named controls before the prepared focused build; then real-engine initial/activated/successor progress/recovery qualification. NoACK/credit/GC in this increment.",
+        "next": "Finish/freeze storage and typed oracle, resolve independent root recovery review, then combine source once and wire modules. Reconcile exact named controls (including model fact_codec and native recovery cases) before focused compilation and real-engine qualification. NoACK/credit/GC in this increment.",
         "source_base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
         "design": {
           "path": ".research/export-memory-phases-review-20261020/producer-checkpoint-ack-design-v1.json",
@@ -41020,17 +41020,17 @@
           "checks": "Root Python AST parse/diff check PASS; independent critical source review found no blocker. Existing nonempty groups, exact artifacts/source/tool and final qualification checks retained. Reconcile actual named controls at product source freeze; this profile does not embed Archive worker.",
           "scope": "Six targeted component/schema/CLI groups, CLI/probe and Clippy. No connected PostgreSQL progress/installed Sync/recovery or nativeACK claim."
         },
-        "local_source_observation": "2026-10-20: storage/schema implementation remains incomplete and isolated. Root CLI cdd5e67 is frozen for independent source review; transport fixture0f46829 is source-reviewed and integrated as7b0d44c. No build/runtime qualification.",
+        "local_source_observation": "2026-10-20: main c8d33ff exact remote verified after push23090 joined0; CLI cdd5e67 frozen/reviewed; root recovery93c45c1 frozen for critical review; storage/schema and independent oracle source controls nearing freeze. No build/runtime in this interval.",
         "implementation_split": {
-          "storage": "export_setup_fixture: native/PG/schema/captured-input handoff and Rust recovery remain author-owned until bounded streaming interface/callsite handoff. Root supplied historical SQL replacements for author review/inclusion into unpublished0039; no separate migration40.",
+          "storage": "export_setup_fixture owns native/PG/schema/captured-input handoff and source controls. Root owns historical recovery callers/model header helper. Historical SQL packet independently reviewed and included unchanged in unpublished0039; no migration40.",
           "cli": "Root: cdd5e676600463ff4db0fed48864a954d80ed53c on work/producer-progress-sync, base4f20300; five CLI owners changed. Setup/dictionary progress grants; per-event borrowed progress through certification/admission; opaque CapturedEventInput; preparation holes retain subsequent admission but disable local progress for the rest of that REQ. Rustfmt parse and diff check PASS; new two targeted Sync unit cases NOT_RUN.",
-          "critical_review": "Frozen CLI review complete; see cli_source_review. Same Astra/xhigh reviewer now counterchecks streaming recovery/native-pin/PG-row buffering under existing factory grants; no runtime.",
+          "critical_review": "CLI review complete; streaming design countercheck conditionally viable, receipt below. New producer_recovery_review Astra/xhigh reviews frozen root recovery93c45c1. export_setup_review now authors independent typed oracle/runner.",
           "integration_gates": [
             "Native operation results must carry their original root/sequence stamp; cannot mint authority by combining a foreign unstamped outcome with the current root.",
             "CLI review owns input-pairing, intervening mutation-hole, cancellation/driver-buffer and actual entrypoint gates.",
-            "Historical recovery grant design is under critical countercheck: bounded streaming jobs/dependencies and exact pinned native payload hashing may avoid materialized union/decoded Facts, but128KiB adequacy is not yet claimed."
+            "Resolve frozen recovery review, including exact fixed scratch overlap, admitted native fact-size envelope and factory coverage. Build/tests/runtime NOT_RUN; no128KiB total-memory claim."
           ],
-          "recovery": "Root owns new postgres/producer_progress_recovery.rs and rocks/producer_progress_recovery.rs in clean work/producer-progress-recovery, base7b0d44c. Author removes unused vector/decoded-Fact prototype and makes no historical caller edits. Streaming design countercheck requires exact native frame/hash/embedded identity and stable sequence, bounded fixed SQL projections/order/count/digest under the same producer lock, cancellation/deadline across hashing, and separate lifetime accounting for factory scratch, retained Control transport and native pins. No128KiB total-memory claim. Existing caller/model file ownership will be declared before edits."
+          "recovery": "Root recovery93c45c1 changes13 files: bounded PG/native readers, shared model profile header parser, generic error conversion, initial/activated/successor factory wiring and private lineage scratch borrow. Module declarations depend on storage packet and are deferred to sequential integration. Existing parent lock order, original lease and nativeACK0 retained; no scientific authority from hash-only readback."
         },
         "transport_preparation": {
           "commit": "0f4682925c8a9139a3ac38627de850382dd2b671",
@@ -41056,8 +41056,36 @@
           "diff": ".research/producer-checkpoint-ack-review-20261020/historical-progress-guards-v1.diff",
           "diff_sha256": "ed84319f73d2e860a796c9f5f5dd254334b520e01c1d9f369c87445c16a4c11c",
           "basis": ".research/producer-checkpoint-ack-review-20261020/historical-progress-guards-v1.json",
-          "status": "ROOT_AUTHORED_PENDING_AUTHOR_REVIEW_AND0039_INCLUSION; execution NOT_RUN",
+          "status": "AUTHOR_INDEPENDENTLY_REVIEWED_AND_INCLUDED_UNCHANGED_IN_UNPUBLISHED0039; execution NOT_RUN",
           "scope": "Three fully read historical functions from0029/0037/0038 call the new bounded retained-progress structural validator. Other workflow checks and all target-unactivated vetoes retained. Native validation remains separate."
+        },
+        "streaming_recovery_design_review": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/streaming-recovery-design-review-v1.json",
+          "sha256": "d2b82cd8fadd92da67e541ca818f9cbb59e70bc2953cb65623ccbce9d0a92929",
+          "root": "Full receipt read and22 local/upstream pins authenticated. Conditional source design only; preserve exact native identity/hash, SQL row ordering/count/digest/lock, original cancellation deadline and separate driver/native grants."
+        },
+        "root_recovery_packet": {
+          "commit": "93c45c16c4771108f456ae1cae5c465b8589079d",
+          "base": "7b0d44c0b7b350624e1582bbdffe3c90aaf17f76",
+          "branch": "work/producer-progress-recovery",
+          "worktree": ".research/producer-progress-recovery-20261020",
+          "status": "FROZEN_CLEAN_CRITICAL_REVIEW_IN_PROGRESS_NOT_INTEGRATED",
+          "checks": {
+            "rustfmt_parse": "PASS",
+            "diff_check": "PASS",
+            "compile": "NOT_RUN",
+            "tests": "NOT_RUN",
+            "runtime": "NOT_RUN"
+          },
+          "scope": "Stream jobs216/deps72 without materialized closure; native exact key/frame/hash/embedded identity and stable root/sequence, ACK0 frontier. Pre39 authenticated ledger allows only absent head. Local incremental scratch4KiB with static layout allowance; native and SQL driver allocations retain their existing grants. Successor factories reuse input grant before decode or existing lineage scratch. Detailed review gate retains2MiB native fact cap compatibility."
+        },
+        "typed_fixture_preparation": "Draft independent216/72 encoders/digest and proof-only intent reconstruction now include actual observed_at_us/resolution/anomaly fields in mutable job head. Existing runner stays default38/75; explicit progress mode39/77 blocked before resources until frozen profile agreed. Hole mode preserves later ordinary admissions then refuses crossing unclassified mutations; raw failure/custody remains OUTCOME_UNKNOWN, not positive qualification.",
+        "review_agent_configuration": {
+          "agent": "/root/producer_recovery_review",
+          "session": "01a15aae-e043-7a53-9982-1e5ee49794ac",
+          "effective_model": "gpt-6-astra",
+          "effective_effort": "xhigh",
+          "verified_from": "session_meta agent_path and first turn_context in local rollout2026-10-20T20-59-32; requested settings alone were not used as evidence"
         }
       }
     }
