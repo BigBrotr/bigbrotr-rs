@@ -410,7 +410,12 @@ the added relations/columns and migration ledger checked separately. The
 initial projection retains the established initial-owner/source/job checks and
 complete75-table preservation between observed cuts. Actual schema39 definitions
 and ACLs are retained as full before/after dumps; the old schema32 catalog pin
-applies only to its explicitly identified reference snapshot. Unknown process
+applies only to its explicitly identified reference snapshot. The opt-in upgrade
+adds the established family SELECT grant on `initial_ingest_activations`, needed
+by0032's invoker guard during ordinary initial dataset/Control updates. Epoch2
+retains its existing SELECT/INSERT rights. A separate raw ACL receipt binds both
+exact grant statements, their outputs and all seven effective privileges plus
+grant options before/after; broader activation authority is rejected. Unknown process
 outcomes and initialization/phase failures remain unqualified. Controls include
 extra SQL/native writes, changed original bytes/inodes, missing closure,
 unbound request/intent, foreign issuer, false job completion and failed custody.

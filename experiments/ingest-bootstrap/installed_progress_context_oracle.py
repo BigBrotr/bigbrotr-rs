@@ -58,8 +58,8 @@ def sha(value):
 
 def check_upgrade(context):
     assert set(context) in ({'before','after','physical_before','physical_after','status','responses',
-        'catalog_before','catalog_after'}, {'before','after','physical_before','physical_after','status','responses',
-        'catalog_before','catalog_after','reference_catalog32'})
+        'catalog_before','catalog_after','acl'}, {'before','after','physical_before','physical_after','status','responses',
+        'catalog_before','catalog_after','acl','reference_catalog32'})
     before, after = context['before'], context['after']
     assert len(after) == 77 and not any(after[t] for t in (*typed.TABLES, 'producer_checkpoints'))
     old = typed.legacy_state(after)
@@ -69,6 +69,21 @@ def check_upgrade(context):
     core = set(previous)-SUPPORT26
     assert core in (CORE26, CORE26|set(range(27,33))), 'closed migration catalog prefix'
     version = 26 if core==CORE26 else 32
+    acl = context['acl']
+    assert set(acl)=={'role','relation','before_stdout','after_stdout','grants'}, 'closed activation ACL receipt'
+    assert (acl['role'],acl['relation'])==('bigbrotr_control','control.initial_ingest_activations'), 'activation ACL subject'
+    privileges = ('SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER')
+    expected = {p+suffix:False for p in privileges for suffix in ('',' WITH GRANT OPTION')}
+    if version==32:
+        expected.update(SELECT=True,INSERT=True)
+    from installed_family_capture import loads
+    prior, current_acl = loads(acl['before_stdout']), loads(acl['after_stdout'])
+    assert prior==expected and all(type(v) is bool for v in prior.values()), 'activation ACL baseline'
+    expected['SELECT']=True
+    assert current_acl==expected and all(type(v) is bool for v in current_acl.values()), 'activation ACL exact read grant'
+    assert acl['grants']==[
+        dict(statement='GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;',stdout=''),
+        dict(statement=typed.PROGRESS_GRANTS,stdout='')], 'exact fixture grant statements'
     assert set(previous)==core|SUPPORT26, 'closed migration catalog prefix'
     assert set(current) == set(previous) | set(range(version + 1, 40)), 'migration extension set'
     assert all(current[n] == row for n, row in previous.items()), 'retained migration changed'
@@ -508,6 +523,18 @@ def controls(context, verify):
     after = lambda c:c['after']
     upgrade = lambda c:c['setup'] if 'kind' in c else c['progress_setup']
     ledger = lambda c,stage:upgrade(c)[stage]['schema_versions']
+    def change_acl(c, stage, **values):
+        acl=upgrade(c)['acl']
+        observed=json.loads(acl[stage+'_stdout']); observed.update(values)
+        acl[stage+'_stdout']=json.dumps(observed)
+    reject('activation-read-missing',lambda c:change_acl(c,'after',SELECT=False),'activation ACL exact read grant')
+    reject('activation-write-overgrant',lambda c:change_acl(c,'after',UPDATE=True),'activation ACL exact read grant')
+    reject('activation-grant-option',lambda c:change_acl(c,'after',**{'SELECT WITH GRANT OPTION':True}),
+        'activation ACL exact read grant')
+    reject('activation-baseline-overgrant',lambda c:change_acl(c,'before',DELETE=True),'activation ACL baseline')
+    reject('activation-wrong-subject',lambda c:upgrade(c)['acl'].update(role='postgres'),'activation ACL subject')
+    reject('activation-wide-grant-statement',lambda c:upgrade(c)['acl']['grants'][0].update(
+        statement='GRANT ALL ON control.initial_ingest_activations TO bigbrotr_control;'),'exact fixture grant statements')
     reject('duplicate-prior-migration',lambda c:ledger(c,'before').append(copy.deepcopy(
         only(ledger(c,'before'),migration=501))),'duplicate migration receipt')
     reject('missing-core-prefix-migration',lambda c:ledger(c,'before').remove(
@@ -676,6 +703,7 @@ def replay(root, kind):
     context=read(context_file)
     setup=context['setup'] if initial else context['progress_setup']
     assert setup==read(folder/(label+'-progress-upgrade.json'))
+    assert setup['acl']==read(folder/(label+'-progress-acl.json'))
     assert read(folder/(label+'-progress-catalog.json'))==context['catalog_after' if initial else 'progress_catalog_after']
     identity=read(Path(str(prefix)+'.pid.json')); terminal=read(Path(str(prefix)+'.terminal.json'))
     assert set(terminal)==set(identity)|{'exit_code','reaped','forced','elapsed_seconds'}

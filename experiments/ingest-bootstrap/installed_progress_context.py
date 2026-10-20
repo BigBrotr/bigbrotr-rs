@@ -61,6 +61,19 @@ def catalog(pg, database):
     return complete_catalog(pg, database)
 
 
+def activation_acl(pg, database):
+    # The invoker guard installed by0032 reads this table even for ordinary
+    # epoch1 dataset/Control updates. Observe effective rights, not just ACL text.
+    privileges = ('SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER')
+    fields = []
+    for privilege in privileges:
+        for suffix in ('', ' WITH GRANT OPTION'):
+            name = privilege + suffix
+            fields.append("'" + name + "',has_table_privilege('bigbrotr_control',"
+                "'control.initial_ingest_activations','" + name + "')")
+    return lab.sql(pg, database, 'SELECT json_build_object(' + ','.join(fields) + ');')
+
+
 def upgrade(pg, client, output, database, config, label, rows, *, reference_catalog=None):
     from initial_succession import physical
     from installed_progress_context_oracle import check_upgrade
@@ -82,13 +95,24 @@ def upgrade(pg, client, output, database, config, label, rows, *, reference_cata
                 assert state == context['after'] and physical(pg, database) == context['physical_after']
             else:
                 context.update(after=state, physical_after=physical(pg, database))
-        lab.sql(pg, database, typed.PROGRESS_GRANTS)
+        context['acl'] = dict(role='bigbrotr_control', relation='control.initial_ingest_activations',
+            before_stdout=activation_acl(pg, database), grants=[])
+        # Reuse the exact narrow read grant from the installed family owner.
+        # Epoch2 already has SELECT/INSERT from initial_live.upgrade; no broader
+        # activation/succession authority is needed by the initial entrypoint.
+        for statement in ('GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;',
+                typed.PROGRESS_GRANTS):
+            context['acl']['grants'].append(dict(statement=statement,
+                stdout=lab.sql(pg, database, statement)))
+        context['acl']['after_stdout'] = activation_acl(pg, database)
         assert rows(database) == context['after'] and physical(pg, database) == context['physical_after']
         context['catalog_after'] = catalog(pg, database)
         check_upgrade(context)
         context['status'] = 'APPLIED_EXACT39'
     finally:
         # Exceptions retain incomplete/unknown setup; there is no retry or adoption.
+        if 'acl' in context:
+            lab.write_json(output / (label + '-progress-acl.json'), context['acl'])
         lab.write_json(output / (label + '-progress-upgrade.json'), context)
     return context
 
