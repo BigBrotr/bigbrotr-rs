@@ -37341,6 +37341,20 @@
             "limits": "Sampling can miss peaks; cgroup lifetime includes observer and cache; external fresh-container/SQL audit still required."
           },
           "limits": "Five exports and256MiB per-export gate, near-maximum/many-tag envelopes, cold/aged/mixed/failure performance, installed scheduler and complete product remain unqualified. Warm shared product/worker files from prior publication/acceptance; no cache reset. Cgroup charged memory and per-process RSS are distinct; samples can miss peaks."
+        },
+        "catalog_layout_boundary_20261020": {
+          "status": "SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+          "source_base": "91af8a9fa8bb6ebf5a34a9c30131da06c57d55d8",
+          "fixture_commit": "d7a34c24de4bfbd16b86431ed66dddf431a7ce8d",
+          "owner": "P08-T04 Step3 / P01-T05 Step2; prerequisite to installed per-export admission",
+          "investigation": {
+            "path": "/home/tux/bigbrotr-rs/.research/export-memory-phases-review-20261020/admission-inspection-v1.json",
+            "sha256": "11c6248cf149106f64ea15bccefb0f0982be0f52e64c7629f9d1b84e800efce3"
+          },
+          "finding": "Installed minimum is705.125MiB. Even the measured160MiB native profile retains306.625MiB per-job grants excluding shared Control and fixture. Catalog layout collected up to1025 rows and bounded definitions before transfer, but not potentially oversized function identities.",
+          "correction": "Bound returned names before transfer and stream the same ordered length-framed layout hash with1024-object ceiling. Preserve accepted bytes, grant and driver-custody lifetime; no grant reduction or native profile change.",
+          "verification": "Root rustfmt, Python AST and diff checks PASS; independent Astra source review found no blocker. Focused actual PostgreSQL original-hash/name-wire-bound/1024-versus1025 cases NOT_RUN. Build reuses the unchanged qualified6c42 worker and retained compiler cache.",
+          "limits": "No16MiB catalog or256MiB/five-export qualification. Full native mutual TLS needs additional retained credentials and must fit its actual job cap. Original initialSync timeout and all previous failures remain open/preserved."
         }
       },
       "archive_refusal_journey_attempts": [

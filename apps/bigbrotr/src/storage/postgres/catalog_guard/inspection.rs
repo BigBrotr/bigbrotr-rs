@@ -2,6 +2,7 @@
 //! Every returned definition is bounded; structural hashes exclude data, ACLs
 //! and cluster-specific OIDs so ordinary DML/grants do not invalidate the guard.
 use super::{CatalogIdentity, GuardError, backend, body, checksum};
+use futures_util::TryStreamExt;
 use sha2::{Digest, Sha256};
 use tokio_postgres::{Transaction, types::ToSql};
 
@@ -137,8 +138,9 @@ pub(super) async fn writer(tx: &Transaction<'_>, login: &str) -> Result<(), Guar
 }
 
 /// Hash length-framed, ordered structural definitions. Each SQL arm returns a
-/// closed class of objects and truncates before network transfer; overflow is a
-/// refusal, never a hash of a silently truncated definition. Privileged external
+/// closed class of objects and bounds names and definitions before network
+/// transfer; overflow is a refusal, never a hash of a truncated value. Stream
+/// rows instead of retaining the complete response. Privileged external
 /// DDL remains an operator boundary; runtime logins cannot perform such changes.
 pub(super) async fn layout(tx: &Transaction<'_>) -> Result<[u8; 32], GuardError> {
     let sql = r#"WITH objects(kind,ns,name,definition) AS (
@@ -149,14 +151,22 @@ UNION ALL SELECT 'index',n.nspname,c.relname,ROW(pg_get_indexdef(i.indexrelid),i
 UNION ALL SELECT 'trigger',n.nspname,c.relname||'.'||t.tgname,ROW(pg_get_triggerdef(t.oid,false),t.tgenabled,t.tgisinternal)::text FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace
 UNION ALL SELECT 'function',n.nspname,p.proname||'('||pg_get_function_identity_arguments(p.oid)||')',pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.prokind IN ('f','p')
 UNION ALL SELECT 'rule',n.nspname,c.relname||'.'||r.rulename,pg_get_ruledef(r.oid,false) FROM pg_rewrite r JOIN pg_class c ON c.oid=r.ev_class JOIN pg_namespace n ON n.oid=c.relnamespace
-) SELECT kind,ns,name,CASE WHEN octet_length(definition)<=8192 THEN definition ELSE repeat('x',8193) END FROM objects WHERE ns IN ('public','bigbrotr_archive') ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C" LIMIT 1025"#;
-    let rows = tx.query(sql, &[]).await.map_err(backend)?;
-    if rows.len() > MAX_OBJECTS {
-        return Err(GuardError::ResourceLimit);
-    }
+) SELECT kind,ns,CASE WHEN octet_length(name)<=8192 THEN name ELSE repeat('x',8193) END,CASE WHEN octet_length(definition)<=8192 THEN definition ELSE repeat('x',8193) END FROM objects WHERE ns IN ('public','bigbrotr_archive') ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C" LIMIT 1025"#;
+    // Function identities include argument/type names and can exceed a PG name
+    // limit. Sort by the original identity; only the transferred field is capped.
+    let rows = tx
+        .query_raw(sql, std::iter::empty::<&(dyn ToSql + Sync)>())
+        .await
+        .map_err(backend)?;
+    let mut rows = std::pin::pin!(rows);
+    let mut count = 0;
     let mut hash = Sha256::new();
     hash.update(b"bigbrotr/catalog-guard-layout/1\0");
-    for row in rows {
+    while let Some(row) = rows.try_next().await.map_err(backend)? {
+        count += 1;
+        if count > MAX_OBJECTS {
+            return Err(GuardError::ResourceLimit);
+        }
         for column in 0..4 {
             let text: &str = row.try_get(column).map_err(backend)?;
             if text.len() > MAX_DEFINITION {

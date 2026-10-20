@@ -487,6 +487,15 @@ It uses documented 1 GiB read/export operation caps; five signed exports under 2
 broader formats/filters and retention/recovery remain required. Original setup and
 oracle failures stay recorded. This is scoped Step 3 evidence, not task completion.
 
+The 2026-10-20 admission investigation in the existing
+[recovery report](evidence/p02-producer-recovery-native-20260920.json)
+(`archive_export_memory_source.catalog_layout_boundary_20261020`) finds an
+installed 705.125 MiB minimum and an oversized catalog function-identity response
+before rejection. The bounded/streamed layout correction preserves accepted
+checksums, grants and driver custody; focused real-PG qualification is pending.
+The prior single signed capture remains reusable, but does not qualify five
+exports or 256 MiB admission.
+
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 
 The current bounded destination prerequisite has explicit finite
