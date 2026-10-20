@@ -1,5 +1,13 @@
 # Repeatable succession portable fixtures
 
+The `producer-progress` build profile reuses `native.py` for typed producer
+progress reducers, native checkpoint witness/certification tests, Sync prefix
+tests and migration/CLI checks. It retains the exact CLI, finite probe and test
+executables and runs Clippy. A selected group with no passing tests cannot qualify.
+This profile alone does not exercise connected PostgreSQL progress, installed
+acquisition/recovery or native ACK. The existing progress checkpoint owns actual
+execution status; the profile is prepared before the new product tests are frozen.
+
 `portable-handoff-v2.json` is generated independently from the field tables in
 [the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 at revision `12c3534c6c970839a4371fc00b4ac3eac6730cb0`. The generator uses Python

@@ -16,7 +16,8 @@ from tools.archive_bundle import build_environment, install_bundle, native_targe
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'])
+producer_progress = sys.argv[1:] == ['producer-progress']
 archive_installed = sys.argv[1:] == ['archive-installed']
 archive_components = sys.argv[1:] == ['archive-components']
 installed = sys.argv[1:] == ['installed']
@@ -28,7 +29,7 @@ history = sys.argv[1:] == ['history']
 transition_probe = sys.argv[1:] == ['transition-probe']
 probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
-build_probe = probe or transition or writer or recovery or installed or archive_installed
+build_probe = probe or transition or writer or recovery or installed or archive_installed or producer_progress
 lineage = sys.argv[1:] == ['lineage']
 schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
@@ -96,6 +97,10 @@ if archive_installed:
     identity['scope'] = ('Exact packaged Archive worker and embedded CLI identity; retained frontier journal, '
                          'installed Serve composition and early CLI components plus Clippy. '
                          'Connected SQL/native Archive catch-up, read/export and restart NOT_RUN.')
+if producer_progress:
+    identity['scope'] = ('Typed producer progress reducers, native checkpoint witness/certification, '
+                         'Sync attempt/prefix and schema/CLI components, CLI/probe compilation and Clippy. '
+                         'Connected PostgreSQL progress, installed Sync/recovery and ACK NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
 if archive_installed:
@@ -215,6 +220,15 @@ if archive_components:
         ('archive_receipts', 'storage::archive::receipts::tests'),
         ('archive_membership', 'storage::archive::membership::tests'),
         ('archive_custody', 'storage::archive::initialization::tests')]]
+if producer_progress:
+    tests = [
+        ('producer_progress', ['--lib', 'storage::postgres::control_owner::producer_progress::tests::']),
+        ('producer_checkpoint', ['--lib', 'storage::rocks::store::producer_checkpoint::tests::']),
+        ('certification', ['--lib', 'certification_tests']),
+        ('sync_progress', ['--bin', 'bigbrotr', 'interfaces::serve::initial_ingest::sync::']),
+        ('control_schema', ['--test', 'control_schema']),
+        ('migrate_entrypoint', ['--test', 'migrate_entrypoint']),
+    ]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [] if archive_components else
@@ -229,6 +243,8 @@ clippy_targets = (['--lib', '--bin', 'bigbrotr', '--test', 'control_schema', '--
                                   '--test', 'rocks_keys', '--test', 'rocks_store'])
 if build_probe:
     clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
+if producer_progress:
+    clippy_targets += ['--test', 'control_schema', '--test', 'migrate_entrypoint']
 if installed or archive_installed:
     clippy_targets += ['--test', 'control_runtime_entrypoint']
 if archive_components:
@@ -338,6 +354,7 @@ if archive_installed:
     assert archive_postcheck is not None and archive_postcheck['status'] == 'PASS'
 qualification = dict(identity, status='PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS' if archive_installed
                      else 'PASS_ARCHIVE_CATCH_UP_COMPONENTS' if archive_components
+                     else 'PASS_PRODUCER_PROGRESS_COMPONENTS' if producer_progress
                      else 'PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed
                      else 'PASS_SUCCESSION_RECOVERY_COMPONENTS' if recovery
                      else 'PASS_SUCCESSION_WRITER_FOLLOWUP_COMPONENTS' if writer_followup
