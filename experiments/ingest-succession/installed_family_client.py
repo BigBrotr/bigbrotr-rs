@@ -94,8 +94,8 @@ def progress_release(directory, mutation_request):
     return dict(gate, release_sha256=hashlib.sha256(raw).hexdigest())
 
 
-def relay(directory, listener, finished, errors, progress=False):
-    assert type(progress) is bool
+def relay(directory, listener, finished, errors, progress=False, hole=False):
+    assert type(progress) is type(hole) is bool and (not hole or progress)
     old, new = json.loads((directory / 'events.json').read_text())
     assert (old['id'], new['id']) == EVENT_IDS
     for event in (old, new):
@@ -157,13 +157,18 @@ def relay(directory, listener, finished, errors, progress=False):
                     if number == 1:
                         mutation_request = ident
                         phase, values, labels = 'mutation', (new, old), ['distinct', 'predecessor']
+                        if hole:
+                            # Correlated valid JSON that cannot decode as an
+                            # EventIntent. Later real signed frames must still
+                            # reach ordinary admission, without prefix progress.
+                            values, labels = ({}, new, old), ['preparation-hole', *labels]
                     else:
                         # Select once before sending. A partial write/refused
                         # close cannot silently retry this phase on another REQ.
                         proof_sent = True
                         phase, values, labels = 'proof-only', (new,), ['distinct-resend']
                     trace.update(progress_phase=phase, frames=labels + ['EOSE'],
-                        event_ids=[value['id'] for value in values],
+                        event_ids=[value.get('id') for value in values],
                         event_json_sha256=[hashlib.sha256(json.dumps(value,
                             ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
                             for value in values],
@@ -210,8 +215,8 @@ def relay(directory, listener, finished, errors, progress=False):
         listener.close()
 
 
-def journey(directory, progress=False):
-    assert type(progress) is bool
+def journey(directory, progress=False, hole=False):
+    assert type(progress) is type(hole) is bool and (not hole or progress)
     if progress:
         assert not any((directory / name).exists() or (directory / name).is_symlink() for name in (
             'progress-release.json', 'progress-mutation-observation.json',
@@ -262,7 +267,7 @@ def journey(directory, progress=False):
         selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
         **revisions), 'e3' * 16)
     worker = threading.Thread(target=relay,
-        args=(directory, relay_listener(), finished, errors, progress))
+        args=(directory, relay_listener(), finished, errors, progress, hole))
     worker.start()
 
     def barrier(name):
@@ -316,5 +321,6 @@ if __name__ == '__main__':
         assert len(sys.argv) == 4
         serve(Path(sys.argv[2]), Path(sys.argv[3]))
     else:
-        assert sys.argv[1] in ('journey', 'journey-progress') and len(sys.argv) == 3
-        journey(Path(sys.argv[2]), progress=sys.argv[1] == 'journey-progress')
+        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole') and len(sys.argv) == 3
+        journey(Path(sys.argv[2]), progress=sys.argv[1] != 'journey',
+            hole=sys.argv[1] == 'journey-progress-hole')
