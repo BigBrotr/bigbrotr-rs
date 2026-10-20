@@ -28,14 +28,14 @@ module.loader.exec_module(bootstrap)
 
 from installed import set_value
 from memory_relay import signed_event, EVENT_ID, RECIPE_SHA256
-from memory_setup_io import IO, census, pinned, regular, require, sha, write
+from memory_setup_io import IO, census, pinned, publication_evidence, regular, require, sha, write
 from memory_setup_client import ACTIONS, Client, Peer
 from memory_setup_oracle import grants, one, publication
 
 KEYS = {'activate', 'owner', 'endpoint', 'enrollment', 'scope', 'acquisition', 'accept-export', *ACTIONS}
 
 
-def read_spec(path):
+def read_spec(path, *, fresh=True):
     spec = json.loads(regular(path, 65536))
     require(set(spec) == {'format', 'name', 'root', 'config', 'application', 'application_source',
         'probe', 'ingest_probe', 'psql', 'worker', 'recipe', 'inventory', 'source_manifest',
@@ -68,7 +68,9 @@ def read_spec(path):
             'actual enrollment credential reference')
     regular(spec['password_ref'][5:], 4096)
     root = Path(spec['root'])
-    require(root.is_absolute() and root.resolve() == root and not root.exists(), 'fresh root only')
+    require(root.is_absolute() and root.resolve() == root, 'canonical setup root')
+    require(not root.exists() if fresh else root.is_dir() and root.stat().st_mode & 0o777 == 0o700,
+            'fresh root or original private continuation root')
     require(config['config']['authority_mode'] == 'managed', 'accept probe managed authority')
     require(config['topology']['local_roles'] == ['control', 'ingest', 'sync', 'archive'], 'explicit initial role profile')
     require(config['archive']['publisher']['enabled'] and not config['archive']['reader']['enabled'],
@@ -216,7 +218,7 @@ def immutable(root):
     return {name: census(root / name) for name in ('store', 'data', 'state', 'destination')}
 
 
-def prepare(io):
+def publish(io):
     config_path = Path(io.profiles['destination']['path'])
     before = initialize(io, config_path)
     principal = one(before['control']['local_accounts'])['principal_id'][2:]
@@ -258,6 +260,35 @@ def prepare(io):
     fixed = immutable(io.root)
     write(io.root / 'published-files.json', fixed)
     write(io.root / 'publisher-scratch.json', census(io.root / 'scratch'))
+    # No native observer or ordinary reader can run in this invocation. Root
+    # must first join the entire outer container/tracer and authenticate custody.
+    write(io.root / 'publication.json', dict(format='bigbrotr-export-publication/1',
+        status='PUBLISHED_AWAITING_ROOT_CUSTODY', root=str(io.root), profiles=io.profiles,
+        sql_serial=io.serial, files=fixed, evidence=publication_evidence(io.root),
+        native_observers='NOT_RUN', grants='NOT_RUN', acceptance='NOT_RUN', measurement='NOT_RUN'))
+
+
+def prepare(io, checkpoint):
+    """Continue only after the caller-authenticated outer custody boundary."""
+    config_path = Path(io.profiles['destination']['path'])
+    before = json.loads(regular(io.root / 'initialized.json'))
+    published = json.loads(regular(io.root / 'published.json'))
+    initialized = json.loads(regular(io.root / 'publisher.stdout').splitlines()[0])
+    receipts = json.loads(regular(io.root / 'acquisition-receipts.json'))
+    transcript = [json.loads(regular(path)) for path in sorted((io.root / 'relay').glob('relay-closed-*.json'))]
+    require(json.loads(regular(io.root / 'relay/thread-join.json')) == dict(alive=False, errors=[]),
+            'original relay joined without error')
+    principal = one(before['control']['local_accounts'])['principal_id'][2:]
+    dataset = one(before['control']['datasets'])
+    revisions = dict(expected_config_revision=str(dataset['config_revision']),
+                     expected_policy_revision=str(dataset['policy_revision']))
+    fixed = checkpoint['files']
+    require(fixed == json.loads(regular(io.root / 'published-files.json'))
+            and immutable(io.root) == fixed, 'original preobserver physical baseline after root custody')
+    require(census(io.root / 'scratch') == json.loads(regular(io.root / 'publisher-scratch.json')),
+            'original publication scratch after root custody')
+    io.backends('continuation-before', absent=True)
+    require(io.capture('continuation-before') == published, 'all original 75 tables/xmin and catalog after root custody')
     native = json.loads(io.run('native-dump', [io.spec['ingest_probe']['path'], 'dump', str(io.root / 'store')]))
     io.backends('native-dump', absent=True)
     io.bind_profile('scientific-census', config_path)
@@ -267,7 +298,7 @@ def prepare(io):
     io.backends('scientific-census', absent=True)
     require(io.capture('publication-readback') == published, 'read-only native census preserved whole SQL/catalog')
     require(immutable(io.root) == fixed, 'native observers preserved original physical science')
-    selection = publication(io, before, published, initialized, native, readback, peer.transcript(), receipts)
+    selection = publication(io, before, published, initialized, native, readback, transcript, receipts)
     # Select the previously frozen ordinary profile; no live file or policy edit.
     ordinary = Path(io.profiles['ordinary']['path'])
     child, _ = start_serve(io, ordinary, False)
@@ -314,7 +345,7 @@ def prepare(io):
     return case, selection, after, fixed
 
 
-def run(spec, config):
+def run_publish(spec, config):
     os.umask(0o077)
     def interrupted(_signal, _frame):
         raise InterruptedError('owned setup signal')
@@ -327,14 +358,7 @@ def run(spec, config):
     io = IO(root, spec, config)
     try:
         stage_profiles(io)
-        case, selection, after, fixed = prepare(io)
-        # Deliberate boundary: the finite accept-only process and fresh measurement
-        # cgroup are root-owned follow-ups. No accepted job is guessed here.
-        write(root / 'result.json', dict(status='PREPARED_FOR_ROOT_ACCEPTANCE',
-            accept=str(root / 'accept.json'), accept_sha256=sha((root / 'accept.json').read_bytes()),
-            command=[spec['probe']['path'], 'accept', str(root / 'accept.json')],
-            qualification='source candidate; execution outcome must be audited',
-            acceptance='NOT_RUN', measurement='NOT_RUN', seconds=120-io.remaining()))
+        publish(io)
     except BaseException as error:
         io.failure_custody()
         write(root / 'failure.json', dict(status='UNKNOWN_PRESERVED', error=type(error).__name__,
@@ -342,8 +366,104 @@ def run(spec, config):
         raise
 
 
+def root_custody(root, path, expected_sha256):
+    """Authenticate root's explicit receipt; its raw-evidence audit is external."""
+    require(path.is_absolute() and root not in path.parents
+            and re.fullmatch('[0-9a-f]{64}', expected_sha256), 'external explicit root custody receipt')
+    raw = regular(path, 65536)
+    require(sha(raw) == expected_sha256, 'caller-pinned root custody receipt bytes')
+    receipt = json.loads(raw)
+    require(set(receipt) == {'format', 'status', 'root', 'publication', 'source_manifest', 'inventory',
+        'container_id', 'cgroup_path', 'tracer', 'identity', 'evidence', 'checks'}, 'closed root custody receipt')
+    require(receipt['format'] == 'bigbrotr-export-publication-custody/1'
+            and receipt['status'] == 'VERIFIED_FOR_NATIVE_REOPEN' and receipt['root'] == str(root)
+            and re.fullmatch('[0-9a-f]{64}', receipt['container_id'])
+            and Path(receipt['cgroup_path']).is_absolute()
+            and receipt['identity'] == 'trace-birth-exec-lineage', 'explicit outer custody identity')
+    checks = {'natural_exit', 'empty_cgroup', 'backends_absent', 'physical_roots_unchanged',
+              'complete_worker_lifetimes', 'no_other_credential_holders'}
+    require(set(receipt['checks']) == checks and all(value is True for value in receipt['checks'].values()),
+            'root verified every required custody boundary')
+    require(set(receipt['evidence']) == {'trace', 'trace_audit', 'container', 'cgroup', 'backends', 'mounts'},
+            'complete root evidence pins')
+    pinned(receipt['tracer'], executable=True)
+    for pin in receipt['evidence'].values():
+        require(0 < pin['bytes'] <= 16 * 1024 * 1024, 'bounded nonempty outer custody evidence')
+        pinned(pin)
+    require(receipt['publication']['path'] == str(root / 'publication.json')
+            and 0 < receipt['publication']['bytes'] <= 16 * 1024 * 1024, 'same bounded publication checkpoint')
+    checkpoint = json.loads(pinned(receipt['publication']))
+    require(set(checkpoint) == {'format', 'status', 'root', 'profiles', 'sql_serial', 'files', 'evidence',
+        'native_observers', 'grants', 'acceptance', 'measurement'}
+        and checkpoint['format'] == 'bigbrotr-export-publication/1'
+        and checkpoint['status'] == 'PUBLISHED_AWAITING_ROOT_CUSTODY'
+        and checkpoint['root'] == str(root)
+        and all(checkpoint[key] == 'NOT_RUN' for key in ('native_observers', 'grants', 'acceptance', 'measurement')),
+        'known original publication before any observer')
+    require(publication_evidence(root, {'publication.json', 'continuation-started.json'}) == checkpoint['evidence'],
+            'all original publication inputs/profiles/PID/terminal/relay/raw evidence unchanged')
+    spec, config = read_spec(root / 'input.json', fresh=False)
+    require(spec['root'] == str(root)
+            and all(receipt[key] == spec[key] for key in ('source_manifest', 'inventory')),
+            'same original setup source and root inventory')
+    profiles = checkpoint['profiles']
+    require(set(profiles) == {'destination', 'publisher', 'ordinary'}
+            and profiles == json.loads(regular(root / 'profiles.json')), 'same frozen profile inventory')
+    for name, pin in profiles.items():
+        require(pin['path'] == str(root / (name + '.toml'))
+                and Path(pin['path']).stat().st_mode & 0o777 == 0o400, 'original frozen profile selection')
+        pinned(pin)
+    require(pinned(profiles['destination']) == pinned(spec['config']), 'original supplied recipe')
+    serials = [int(Path(name).name[4:-11]) for name in checkpoint['evidence']
+               if re.fullmatch(r'sql-[0-9]+\.query\.json', name)]
+    require(type(checkpoint['sql_serial']) is int and 1 <= checkpoint['sql_serial'] <= 8192
+            and sorted(serials) == list(range(1, checkpoint['sql_serial'] + 1)), 'complete prior SQL evidence serial')
+    return receipt, checkpoint, spec, config
+
+
+def run_continue(root, receipt_path, expected_sha256):
+    os.umask(0o077)
+    require(root.is_absolute() and root.resolve() == root and root.is_dir()
+            and root.stat().st_mode & 0o777 == 0o700, 'original private root')
+    require(not (root / 'failure.json').exists() and not (root / 'continuation-failure.json').exists()
+            and not (root / 'result.json').exists(), 'no failed or previously completed continuation')
+    # The marker is never removed. Even validation failure requires root recovery,
+    # not a second continuation or a new receipt hiding the original attempt.
+    write(root / 'continuation-started.json', dict(receipt=str(receipt_path), sha256=expected_sha256))
+    io = IO(root, {}, {})
+    def interrupted(_signal, _frame):
+        raise InterruptedError('owned continuation signal')
+    signal.signal(signal.SIGTERM, interrupted)
+    try:
+        receipt, checkpoint, spec, config = root_custody(root, receipt_path, expected_sha256)
+        io.spec, io.config = spec, config
+        io.profiles, io.serial = checkpoint['profiles'], checkpoint['sql_serial']
+        write(root / 'authenticated-custody.json', receipt)
+        prepare(io, checkpoint)
+        write(root / 'result.json', dict(status='PREPARED_FOR_ROOT_ACCEPTANCE',
+            accept=str(root / 'accept.json'), accept_sha256=sha((root / 'accept.json').read_bytes()),
+            command=[spec['probe']['path'], 'accept', str(root / 'accept.json')],
+            publication_sha256=receipt['publication']['sha256'], root_custody_sha256=expected_sha256,
+            qualification='source candidate; execution outcome must be audited',
+            acceptance='NOT_RUN', measurement='NOT_RUN', seconds=120-io.remaining()))
+    except BaseException as error:
+        io.failure_custody()
+        write(root / 'continuation-failure.json', dict(status='UNKNOWN_PRESERVED', error=type(error).__name__,
+            acceptance='NOT_RUN', measurement='NOT_RUN', retry='forbidden until root resolves actual custody/outcome'))
+        raise
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('descriptor', type=Path)
+    commands = parser.add_subparsers(dest='phase', required=True)
+    publisher = commands.add_parser('publish')
+    publisher.add_argument('descriptor', type=Path)
+    continuation = commands.add_parser('continue')
+    continuation.add_argument('root', type=Path)
+    continuation.add_argument('custody_receipt', type=Path)
+    continuation.add_argument('custody_sha256')
     args = parser.parse_args()
-    run(*read_spec(args.descriptor))
+    if args.phase == 'publish':
+        run_publish(*read_spec(args.descriptor))
+    else:
+        run_continue(args.root, args.custody_receipt, args.custody_sha256)
