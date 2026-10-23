@@ -48,6 +48,7 @@ impl std::error::Error for ProducerProgressError {}
 /// The operation grant lives through certification/admission and SQL completion.
 pub struct SyncProgress {
     position: Position,
+    classify_prefix: bool,
     _grant: ProgressGrant,
 }
 
@@ -82,6 +83,18 @@ impl ProgressGrant {
 impl SyncProgress {
     pub(super) fn grant(&self) -> &ProgressGrant {
         &self._grant
+    }
+
+    /// Preserve this actual frame's mutation handoff without claiming a
+    /// classified prefix across an earlier preparation hole in the same REQ.
+    /// Certification using this capture remains an ordinary nonmutating read.
+    pub fn mutation_only(mut self) -> Self {
+        self.classify_prefix = false;
+        self
+    }
+
+    pub(super) fn classifies_prefix(&self) -> bool {
+        self.classify_prefix
     }
 }
 
@@ -156,6 +169,7 @@ impl SyncProgress {
                 wire_sequence: event.sequence(),
                 input_digest: Sha256::digest(event.json()).into(),
             },
+            classify_prefix: true,
             _grant: grant,
         })
     }
@@ -211,6 +225,9 @@ impl BoundEvent<'_> {
             id: self.captured.job,
             scope: self.captured.scope,
         }
+    }
+    fn classifies_prefix(self) -> bool {
+        self.progress.classifies_prefix()
     }
 }
 
@@ -489,6 +506,247 @@ mod tests {
             clock_anomaly_flags: 0,
         }
     }
+
+    fn progress_at(position: Position) -> SyncProgress {
+        use crate::runtime::{
+            ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+        };
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                8 * 1024 * 1024,
+                0,
+                ResourceLimits::new(4 * 1024 * 1024, 4, 8192, 0),
+                WaiterLimits::new(1, 1),
+            )
+            .unwrap(),
+        );
+        SyncProgress {
+            position,
+            classify_prefix: true,
+            _grant: ProgressGrant::new(
+                budget
+                    .try_acquire(
+                        ResourceRequest::data(
+                            ProgressGrant::REQUIRED_DATA_BYTES,
+                            1,
+                            ProgressGrant::REQUIRED_NATIVE_BYTES,
+                        )
+                        .unwrap(),
+                    )
+                    .unwrap(),
+            )
+            .unwrap(),
+        }
+    }
+
+    // Deliberately synthetic inputs to the pure head reducer; these do not
+    // manufacture a native witness or establish connected SQL/ACK authority.
+    fn bound(progress: &SyncProgress) -> BoundEvent<'_> {
+        let head = golden_head();
+        BoundEvent {
+            progress,
+            captured: crate::acquisition::preparation::CapturedBinding {
+                request: progress.position.request,
+                wire_sequence: progress.position.wire_sequence,
+                input_sha256: progress.position.input_digest,
+                job: head.job,
+                scope: head.scope,
+                source: crate::acquisition::relay_source::RelaySourceBinding {
+                    endpoint_id: [1; 16].try_into().unwrap(),
+                    access_scope_id: [2; 16].try_into().unwrap(),
+                    enrollment_generation: 1.try_into().unwrap(),
+                    route_id: [3; 16].try_into().unwrap(),
+                },
+                certification_digest: bigbrotr_model::Digest256::from_bytes(head.intent),
+                observed_at_us: head.observed_at_us,
+                clock_resolution_us: head.clock_resolution_us,
+                clock_anomaly_flags: head.clock_anomaly_flags,
+            },
+        }
+    }
+
+    fn classified_snapshot() -> Snapshot {
+        Snapshot {
+            revision: 6,
+            complete: 6,
+            reserved: 7,
+            input_completion_bytes: 0,
+            jobs: vec![golden_head()],
+            dependencies: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn mutation_handoff_after_a_hole_preserves_classified_prefix() {
+        use crate::storage::rocks::store::CheckpointKind;
+        let snapshot = classified_snapshot();
+        let old = snapshot.jobs[0];
+        let capture = progress_at(position(b'a', 3, 9));
+        assert_eq!(
+            commit::job_replacement(
+                &snapshot,
+                Some(bound(&capture)),
+                CheckpointKind::EventNewFacts,
+                [15; 32],
+                Some(7),
+            ),
+            Err(ProducerProgressError::Conflict),
+        );
+        let capture = capture.mutation_only();
+        for kind in [
+            CheckpointKind::EventNewFacts,
+            CheckpointKind::EventAlreadyDurable,
+            CheckpointKind::EventRejected,
+        ] {
+            assert_eq!(
+                commit::job_replacement(&snapshot, Some(bound(&capture)), kind, [15; 32], Some(7)),
+                Ok(None),
+            );
+        }
+        assert_eq!(snapshot.jobs, [old]);
+        assert_eq!(capture.position, position(b'a', 3, 9));
+        assert!(!capture.classifies_prefix());
+        let mut foreign_scope = bound(&capture);
+        foreign_scope.captured.scope = [99; 16].try_into().unwrap();
+        assert_eq!(
+            commit::job_replacement(
+                &snapshot,
+                Some(foreign_scope),
+                CheckpointKind::EventNewFacts,
+                [15; 32],
+                Some(7),
+            ),
+            Err(ProducerProgressError::InvalidContext),
+        );
+        assert_eq!(
+            capture.grant().permit().request().units().native_bytes(),
+            4096
+        );
+    }
+
+    #[test]
+    fn mutation_handoff_without_a_classified_head_does_not_create_one() {
+        use crate::storage::rocks::store::CheckpointKind;
+        let mut snapshot = classified_snapshot();
+        snapshot.jobs.clear();
+        let capture = progress_at(position(b'a', 2, 8)).mutation_only();
+        assert_eq!(
+            commit::job_replacement(
+                &snapshot,
+                Some(bound(&capture)),
+                CheckpointKind::EventNewFacts,
+                [15; 32],
+                Some(7)
+            ),
+            Ok(None),
+        );
+        let next = progress_at(position(b'b', 1, 2));
+        let head = commit::job_replacement(
+            &snapshot,
+            Some(bound(&next)),
+            CheckpointKind::EventNewFacts,
+            [16; 32],
+            Some(8),
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(
+            (
+                head.revision,
+                head.classified,
+                head.successful,
+                head.rejected
+            ),
+            (1, 1, 1, 0)
+        );
+        assert_eq!(head.position, position(b'b', 1, 2));
+        assert_eq!(head.mutation, 8);
+    }
+
+    #[test]
+    fn mutation_only_capture_cannot_checkpoint_proof_or_rejection_reads() {
+        use crate::storage::rocks::store::CheckpointKind;
+        let snapshot = classified_snapshot();
+        let capture = progress_at(position(b'a', 3, 9)).mutation_only();
+        for kind in [
+            CheckpointKind::ExistingProof,
+            CheckpointKind::CertificationRejected,
+            CheckpointKind::InternalEvidence,
+        ] {
+            for mutation in [None, Some(7)] {
+                assert_eq!(
+                    commit::job_replacement(
+                        &snapshot,
+                        Some(bound(&capture)),
+                        kind,
+                        [15; 32],
+                        mutation
+                    ),
+                    Err(ProducerProgressError::InvalidContext),
+                );
+            }
+        }
+        assert_eq!(
+            commit::job_replacement(
+                &snapshot,
+                Some(bound(&capture)),
+                CheckpointKind::EventNewFacts,
+                [15; 32],
+                None
+            ),
+            Err(ProducerProgressError::InvalidContext)
+        );
+    }
+
+    #[test]
+    fn next_req_classification_keeps_pre_hole_counts_and_exact_replay() {
+        use crate::storage::rocks::store::CheckpointKind;
+        let snapshot = classified_snapshot();
+        let old = snapshot.jobs[0];
+        let replay = progress_at(old.position);
+        assert_eq!(
+            commit::job_replacement(
+                &snapshot,
+                Some(bound(&replay)),
+                CheckpointKind::ExistingProof,
+                old.intent,
+                None
+            ),
+            Ok(Some(old))
+        );
+        assert_eq!(
+            commit::job_replacement(
+                &snapshot,
+                Some(bound(&replay)),
+                CheckpointKind::ExistingProof,
+                [99; 32],
+                None
+            ),
+            Err(ProducerProgressError::Conflict)
+        );
+        let next = progress_at(position(b'b', 1, 2));
+        let head = commit::job_replacement(
+            &snapshot,
+            Some(bound(&next)),
+            CheckpointKind::EventNewFacts,
+            [16; 32],
+            Some(8),
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(
+            (
+                head.revision,
+                head.classified,
+                head.successful,
+                head.rejected
+            ),
+            (3, 3, 3, 0)
+        );
+        assert_eq!(head.position, position(b'b', 1, 2));
+        assert_eq!(snapshot.jobs, [old]);
+    }
+
     #[test]
     fn current_head_encoding_matches_independent_fixed_width_golden() {
         // Independently frozen with Python struct.pack big-endian fields, not
