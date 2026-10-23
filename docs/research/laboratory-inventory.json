@@ -62036,21 +62036,41 @@
       ],
       "closed_reclamation_source_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/producer-reclamation-native-20261023",
-        "branch": "work/producer-reclamation-native",
         "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
         "owner": "ack_remaining_boundary",
-        "state": "Source complete, clean original worktrees retained; root integrated candidate pending build/review; no engine allocated",
+        "state": "Both original author worktrees clean and detached at recorded commits; redundant source branches retired only after exact changed-blob comparison with integrated10a5430",
         "contract": "Q39 / docs/reference/producer-request-inputs.md",
         "space_observed": "268GiB available before candidate build allocation; no cleanup",
         "commit": "584bad39d193fd2476f168acade723a5ca24c78b",
         "pg": {
           "worktree": "/home/tux/bigbrotr-rs/.research/producer-reclamation-pg-20261023",
-          "branch": "work/producer-reclamation-pg",
           "commit": "4662b96ed59063572dad22aaa6b7d15f0ddee577",
           "owner": "progress_hole_critical",
-          "state": "clean; author finished"
+          "state": "clean detached; original commit preserved",
+          "retired_branch": "work/producer-reclamation-pg"
         },
-        "root": "Main source integration includes three author commits and existing recovery CLI consumer; no active subagents at last inspection"
+        "root": "Main3a97312 source correction after independent COMMIT mismatch; no engine/build active",
+        "installed_fixture": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-installed-reader-20261023",
+          "branch": "work/compacted-installed-reader",
+          "base": "10a5430ec2b8cb4a4f8289b1b8902f54be7a47ab",
+          "owner": "compacted_reader_fixture",
+          "state": "Active source-only author; no runtime assigned",
+          "model": "gpt-6-astra/xhigh verified actual turn_context at creation"
+        },
+        "retired_branch": "work/producer-reclamation-native",
+        "branch_reconciliation": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/closed-reader-author-branch-reconciliation-v1.json",
+          "sha256": "8733332f1c22b4ca7b74564033452af8887d0148fb8d4c8e2c581a5637fe7952"
+        }
+      },
+      "closed_reclamation_reader_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430",
+        "source": "10a5430ec2b8cb4a4f8289b1b8902f54be7a47ab",
+        "state": "stopped-retained; fetched/native exited0/PID0/noOOM freshly checked after driver5927 joined0",
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430/resources.json",
+        "qualification": "PASS_COMPACTED_PREFIX_COMPONENTS",
+        "preservation": "All3ELFs, source export, raw logs/results and original authorworktrees retained. No cache/data cleanup."
       }
     }
   },

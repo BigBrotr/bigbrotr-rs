@@ -298,7 +298,7 @@ project or historical rewrite.
 Q39 (implementation decision, 2026-10-23): Begin acknowledged-detail reclamation
 with a completely retired nonempty initial producer. Reuse immutable PostgreSQL
 outcomes, the existing source closure and typed checkpoint; do not introduce a
-second per-request proof ledger. The [selected native floor](../reference/producer-request-inputs.md#closed-producer-reclamation-selected-not-yet-implemented)
+second per-request proof ledger. The [selected native floor](../reference/producer-request-inputs.md#closed-producer-reclamation-reader-under-qualification-deletion-unavailable)
 binds those records in a versioned ProducerState value. Install the floor and
 remove exact native receipt keys atomically, then unlink authenticated original
 inputs only after observed synchronization success. Preserve all scientific and

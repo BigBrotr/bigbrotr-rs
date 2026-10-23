@@ -43384,14 +43384,14 @@
           }
         },
         "closed_producer_reclamation_preparation_20261023": {
-          "status": "NON_DESTRUCTIVE_SOURCE_INTEGRATED; independent review/build/runtime NOT_RUN",
+          "status": "READER_COMPONENTS_PASS_AT_10a5430; COMMIT_SOURCE_CORRECTED_3a97312; installed/GC NOT_RUN",
           "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
           "task": "P02-T02 Steps4/5/7",
           "purpose": "Reclaim acknowledged receipt/input operational detail for one completely closed and fully resolved producer while preserving all scientific facts, pending batches and causal recovery/backup closure.",
           "selection": "Native ACK EIO, connected COMMIT-loss recovery and fail-closed callers permit progressing to this real NoGC limitation. Installed PG-to-ACK-EIO remains unqualified, not silently claimed or made a prerequisite for every other implementation.",
           "boundaries": "Select exact eligible lifecycle, minimal versioned checkpoint/replay floor and deletion ordering before source changes. Missing or incompatible history must refuse; no bare ACK or untrusted PG row permits loss. No negative noncommit resolver, limit bump or second per-delivery proof ledger.",
           "owners": "Native author ack_remaining_boundary and PG author progress_hole_critical completed separate clean worktrees; root CLI/build-profile integration/runtime",
-          "next": "Freeze integrated source, obtain independent critical review and run exact producer-floor native/affected component tests, CLI build and Clippy; then qualify installed PG/native compacted reader before successor adaptation and deletion.",
+          "next": "Build corrected product with test-only fixture helper, review independent installed verifier, run authentic abandonment/retirement on excluded dfbb8dc derivatives then synthetic-floor reader positive/retry/refusals. No product GC yet.",
           "contract": "docs/reference/producer-request-inputs.md#closed-producer-reclamation-reader-under-qualification-deletion-unavailable",
           "decision": "Q39;139-byte version3 producer floor binds unchanged source closure plus typed checkpoint. One synced floor/exact-receipt-delete batch precedes authenticated input unlink/directory sync. No deletion exposed until compacted recovery and existing succession consumers preserve guarantees.",
           "design_receipts": [
@@ -43415,7 +43415,7 @@
             "root_changes": "Existing RetireInitial CLI explicit compacted branch, grant preflight, truthful no-original-replay report; focused producer-floor build profile; minimum column ACL documented. No reclamation writer or live grant.",
             "finding": "Original native author version incorrectly equated historical outcome policy with manifest; corrective child preserves full-u64 original decision and adds seventh literal control. Original source and receipts preserved.",
             "checks": {
-              "source_review": "Root read new production owners, complete recovery caller and changed tests/shared-owner diffs; author full PG parent-owner read retained in receipt. Independent review pending.",
+              "source_review": "Independent3a97312 review has no remaining product source blocker; exact inspected owner hashes verified by root. Corrected executable/installed boundary NOT_RUN.",
               "format_and_syntax": "PASS: author targeted rustfmt, root helper rustfmt, Python AST, staged and unstaged diff --check",
               "compile_tests_clippy": "NOT_RUN",
               "connected_pg_and_installed": "NOT_RUN"
@@ -43433,7 +43433,97 @@
                 "path": ".research/producer-checkpoint-ack-review-20261020/closed-producer-pg-source-v1.json",
                 "sha256": "d3fc9f395cfd46d4b915fa26f2c15188fe9dafb05c6e3eaa79f53f5c083e9e62"
               }
-            ]
+            ],
+            "commit": "10a5430ec2b8cb4a4f8289b1b8902f54be7a47ab",
+            "commit_confirmation_correction": {
+              "finding": "Independent reviewer found new PG factory claimed confirmed COMMIT but reused initial_history::finish, which rolls back. Original10a source and original author receipt remain preserved; its component PASS does not test that SQL boundary.",
+              "commit": "3a9731283b09c5c2529dc201750f02fa41af9ffc",
+              "change": "Reuse existing producer_retirement::finish via sibling visibility; validates policy/cancellation before and after actual COMMIT, maps failure CommitUnknown, retains client/native/final lease checks. Legacy rollback helper untouched.",
+              "verification": "Independent source delta review PASS; targeted all changed Rust rustfmt --check PASS; executable/installed check of correction NOT_RUN."
+            }
+          },
+          "reader_component_qualification": {
+            "status": "PASS_COMPACTED_PREFIX_COMPONENTS",
+            "source": "10a5430ec2b8cb4a4f8289b1b8902f54be7a47ab",
+            "tree": "b74a4b5e2a4ba8b38239f20932882b56e1d58536",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430",
+            "test_counts": {
+              "compacted_prefix": 7,
+              "compacted_progress": 1,
+              "initial_reconstruction": 90,
+              "request_inputs": 8
+            },
+            "literal_controls": 8,
+            "missing_controls": {},
+            "checks": [
+              {
+                "name": "probe_build",
+                "status": "PASS",
+                "seconds": 114.44100168347359
+              },
+              {
+                "name": "compacted_prefix",
+                "status": "PASS",
+                "seconds": 30.81779629085213
+              },
+              {
+                "name": "compacted_progress",
+                "status": "PASS",
+                "seconds": 0.1654239408671856
+              },
+              {
+                "name": "initial_reconstruction",
+                "status": "PASS",
+                "seconds": 4.922432110644877
+              },
+              {
+                "name": "request_inputs",
+                "status": "PASS",
+                "seconds": 0.22425128240138292
+              },
+              {
+                "name": "clippy",
+                "status": "PASS",
+                "seconds": 7.62748977728188
+              }
+            ],
+            "executables_sha256": {
+              "native_components": "1863f281c0c4b2a7e9ee4e0f1d47cd7f0aaa0c45bd08b3662d9997aa22665add",
+              "ingest_bootstrap_probe": "a7fa1b2bfd55f16e6f9df707067099ca6e102ca2c2bb4f5f4f986b47173bb9b7",
+              "bigbrotr": "1660ca5c43bde25ed8df4fa697b9853d241c0c4517a2c78b287e1b488dc1205b"
+            },
+            "receipts": [
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430/resources.json",
+                "sha256": "2d9cce06800f839f158bd4d598ce4cacf8d0d3eabca2eba8f08fc624b8591383"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430/out/artifacts/component-result.json",
+                "sha256": "566391390ef2a9d8fb62ba657bb2e0a3bd77cd3a2f0038fa3d56dcf6f325ed41"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430/out/build-checks/result.json",
+                "sha256": "a58f9ffb32ab70132fda428293845c5626f34aa90ffcd0ff60be31720ad0bb7c"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430/out/build/source-manifest.json",
+                "sha256": "f04fc9d01532f77a9059355104a332630fb4de842d5ba3761c2f32f98901f950"
+              }
+            ],
+            "scope": "Non-destructive native compacted-prefix codec, outcome and scientific census with affected lineage/input components; CLI/probe compilation and Clippy. Connected PostgreSQL, installed compacted recovery, reclamation, compacted successor compatibility and crash/restore qualification NOT_RUN.",
+            "custody": "Driver5927 joined0. Exact owned fetch/native containers freshly observed exited0/PID0/noOOM; inventory_changed empty. All artifacts retained outside mutable compiler caches.",
+            "not_proven": "Actual SQL closure and corrected3a97312 COMMIT path; installed compacted recovery, successor compatibility, deletion, crash/restore and capacity."
+          },
+          "independent_source_review": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/compacted-reader-independent-review-v1.json",
+            "sha256": "4662cff089553c14bf44e5698d507b210ace4427bd708ccd2c2c4054e57989b5",
+            "source": "3a9731283b09c5c2529dc201750f02fa41af9ffc",
+            "status": "NO_REMAINING_PRODUCT_SOURCE_BLOCKER_AFTER_CORRECTION; CORRECTED_BUILD_AND_CONNECTED_RUNTIME_REQUIRE_SEPARATE_EVIDENCE",
+            "resolved_findings": [
+              "CR1 incorrect rollback helper corrected3a97312; original source/receipt preserved",
+              "CR2 stale Q39 anchor corrected in this documentation update"
+            ],
+            "resource_gate": "Successful current CLI path performs3N+9 full residual-spool content scans:201 atN64. Per-scan32MiB cap yields conservative6.28125GiB logical-read/hash upper bound; not physical disk traffic, RSS, duration, or a claim that maximum SQL/spool envelopes coexist. Capacity/deadline effects remain unmeasured."
           }
         }
       }
