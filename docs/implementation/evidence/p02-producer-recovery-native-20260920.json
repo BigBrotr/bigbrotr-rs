@@ -44591,7 +44591,7 @@
               }
             },
             "installed_initial_preparation": {
-              "status": "BUILD1c7c332_FAIL_COMPILE; mechanical import fixed; corrected build and connected NOT_RUN",
+              "status": "BUILD_a0e914e_PASS163/54; connected fixture authoring/runtime NOT_RUN",
               "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
               "scope": "Explicit ingest recover --complete-initial-preparation: authentic existing native1 gap or empty OPEN2 retry, original or compacted predecessor, no new intent/activation/retirement/ACK",
               "implementation": "Dedicated supervised native-first custody and pinned acquisition using shared existing ClaimExit; owned plan retained through teardown; report after native close, Control release and driver join. Explicit sealed native2 structural selector chooses original/compacted without failed-proof fallback. Existing PG/native positive factories, immutable intent/typed closure and deadlines unchanged. Original prepared retry reconstructs without mutable dispatch.",
@@ -44605,7 +44605,7 @@
               },
               "probe_author_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
               "static_checks": "Changed Rust rustfmt, Python runner AST and staged/unstaged diff check PASS; exact ten-file critical snapshot and two probe blobs reconciled",
-              "required_new_controls": "Three native selector controls, two existing shared ClaimExit tests, two entrypoint matrices mandatory; full selected native/CLI components still NOT_RUN",
+              "required_new_controls": "PASS163 selected components/54 mandatory controls, including three new structural selector cases, two shared ClaimExit tests and two extended CLI entrypoint matrices. CLI/probe compilation and Clippy PASS.",
               "fixture": "Authoring --initial-preparation using modern original7/compacted7 origins, genuine post-COMMIT gap gate, fixed synthetic closing refusal; full original/compacted reports and raw binding still NOT_RUN",
               "remaining": "Exact source build/Clippy/components, independent connected whole-state and raw replay, refusal/delivery scope qualification, fixture review. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate.",
               "build_attempts": [
@@ -44617,6 +44617,10 @@
               "import_addendum": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-import-addendum-v1.json",
                 "sha256": "de1978539ade66a0dcf61f668d52bee761dc09e1007b00c0b87d94628fd8061c"
+              },
+              "qualified_build": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-a0e914e/verified-build.json",
+                "sha256": "7694c0c4f8a20ffcd9d4e84a31d9f9242eb87faa5b92c82b3aa01b75c1a040ff"
               }
             }
           }

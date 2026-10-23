@@ -6,11 +6,12 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main is `1c7c332a191cd87e3915b089e129c915f0659c59`,
-tree `f2fb9cb164b055617a2f3c78d7dbe9997c41ebdf`;
+Current main is `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
+tree `e94652a5f2b68ac002487f728d073a8194120a1f`;
 qualified harness is f51a8a3 and product is unchanged
 `9bea0ff71c5573f3d470ed7ab8a27e827bac2743`. Qualification and all five source commits are pushed on main. Push driver5730
-joined0; remote main equality verified at fc523ab3. The new source commit1c7c332 is local/unpushed pending qualification.
+joined0; remote main equality verified at fc523ab3. The two source/correction commits and this build qualification await a coherent
+commit/push; connected qualification is still NOT_RUN.
 No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -39,7 +40,9 @@ stopped/PID0/noOOM. All five original-preservation checks passed; cleanup arrays
 are empty. Build driver73364 joined1, FAIL E0425 missing Duration import before tests, at
 `/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332`;
 fetch0/native1 stopped/PID0/noOOM; all build/test drivers joined. The original
-failure is retained; a one-import correction is locally ready for rebuild. No cache/dataset cleanup occurred.
+failure is retained; a one-import correction is committed in a0e914e. Corrected build driver18296
+joined0 under runs/producer-floor-a0e914e: build/Clippy/163components and54
+mandatory controls PASS; exact fetch/native stopped0/PID0/noOOM, inventory_changed[]. No cache/dataset cleanup occurred.
 Sources, ELFs, clones, quarantines, failures, .research and worktrees are retained.
 
 Both author worktrees are clean and detached at original7824749/a7dd148 under
@@ -55,14 +58,13 @@ The fixture contributor implements in isolated
 `.research/installed-initial-preparation-20261024` on
 `work/installed-initial-preparation`, basefc523ab3. Root froze product, dispatch, runner, native/CLI controls and exact396fb511
 author probe blobs in1c7c332. Critical review reports no source
-blocker; formatting/AST/diff checks PASS. First build failed before tests; corrected build and connected checks remain NOT_RUN.
+blocker; formatting/AST/diff checks PASS. First build failed before tests; corrected build PASS163/54. Connected checks remain NOT_RUN.
 Python fixture work continues separately; no connected engine run is active. Initial qualified
 scope is explicit PG prepared gap/history and continuous activation, plus installed
 `serve --activate-initial-successor`; it does not include general installed
 prepared/activated recovery or later consumers.
 
-Build the corrected import-only revision, inspect all mandatory controls and
-owned-resource closure; then integrate/review the
+Commit/push the coherent build result; then integrate/review the
 independent fixture and qualify original/compacted real-engine journeys.
 The implementation uses existing positive original/compacted gap and history APIs. A dedicated
 supervised owner retains native-before-Control teardown and grants through failures.

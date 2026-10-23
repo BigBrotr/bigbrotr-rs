@@ -62618,9 +62618,9 @@
         }
       },
       "installed_initial_preparation_work_20261024": {
-        "state": "SOURCE_REVIEWED_READY_FOR_EXACT_BUILD; static checks PASS; build/connected NOT_RUN",
+        "state": "SOURCE_AND_BUILD_PASS163/54; independent connected fixture authoring, runtime NOT_RUN",
         "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
-        "runtime_owner": "/root; no build or engine active",
+        "runtime_owner": "/root; build drivers73364 joined1 and18296 joined0; exact owned resources stopped; no connected engine run active",
         "root_source": "This commit freezes reviewed product, native/CLI controls and exact author396fb511 probe blobs. No runtime qualification yet.",
         "critical_reviewer": {
           "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-critical-review-v1.json",
@@ -62662,6 +62662,32 @@
         "verified_failure": {
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332/verified-build-failure.json",
           "sha256": "a27c7f8be3d740045194c3cc4f85667d12d8265bbba4fcdf790b9625b2c1435e"
+        }
+      },
+      "installed_initial_preparation_corrected_build_20261024": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-a0e914e",
+        "source": "a0e914e8b58650d94dec60c0b5d3c08a02e5e248",
+        "tree": "e94652a5f2b68ac002487f728d073a8194120a1f",
+        "profile": "producer-floor",
+        "driver_session": 18296,
+        "state": "PASS163/54; driver18296 joined0; exact fetch/native stopped0/PID0/noOOM; inventory_changed[]",
+        "owner": "4ec818ee79aa8c6ac42fa6ea00bee1cf",
+        "label": "org.bigbrotr.network-transport",
+        "observed_containers": [
+          {
+            "name": "fetch",
+            "id": "96e3fee3f19155f444513e5665e1cebe91d17ab3f87bdaa726663d277ddc1c4c"
+          },
+          {
+            "name": "native",
+            "id": "6c053c9bb357a763df3ab5bdac387f8d08b343c5ff9b3fa0c2823bb455a381a9"
+          }
+        ],
+        "preflight_free_bytes": 274018881536,
+        "preservation": "New exact source and output; original1c7 compile failure and all earlier evidence retained; only missing Duration import corrected",
+        "verified_build": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-a0e914e/verified-build.json",
+          "sha256": "7694c0c4f8a20ffcd9d4e84a31d9f9242eb87faa5b92c82b3aa01b75c1a040ff"
         }
       }
     }
