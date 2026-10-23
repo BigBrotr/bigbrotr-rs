@@ -16,7 +16,8 @@ from tools.archive_bundle import build_environment, install_bundle, native_targe
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'], ['producer-ack-fault'])
+producer_ack_fault = sys.argv[1:] == ['producer-ack-fault']
 producer_ack = sys.argv[1:] == ['producer-ack']
 producer_progress = sys.argv[1:] in (['producer-progress'], ['producer-ack'])
 archive_installed = sys.argv[1:] == ['archive-installed']
@@ -111,6 +112,73 @@ if producer_ack:
                          'resource capacity and Archive worker qualification NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
+if producer_ack_fault:
+    # A new private test fixture needs only this ELF. Keep the installed product
+    # artifacts and their qualification independent of this native fault case.
+    identity['scope'] = ('Native ACK test-target compilation and library Clippy, then '
+                         'one traced ACK fsync EIO and fresh-process replay. '
+                         'No connected PG authority, media failure or power-loss qualification.')
+    artifacts.mkdir()
+    checks = Path('/out/build-checks')
+    result = execute([
+        ('compile', ['cargo', 'test', '--locked', '--offline', '--release', '-p',
+                     'bigbrotr', '--lib', '--no-run', '--message-format=json']),
+        ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p',
+                    'bigbrotr', '--lib', '--', '-D', 'warnings']),
+    ], checks, SOURCE, env, identity, 1800)
+    paths = set()
+    log = checks / 'compile.log'
+    for line in log.read_text().splitlines() if log.exists() else []:
+        if not line.startswith('{'):
+            continue
+        message = json.loads(line)
+        if (message.get('reason') == 'compiler-artifact' and message.get('executable')
+                and message['target']['name'] == 'bigbrotr'
+                and message['target']['kind'] == ['lib'] and message['profile']['test']):
+            assert Path(message['target']['src_path']) == SOURCE / 'apps/bigbrotr/src/lib.rs'
+            paths.add(message['executable'])
+    executables = {}
+    if paths:
+        assert len(paths) == 1
+        executable = Path(paths.pop())
+        assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
+        with executable.open('rb') as stream:
+            assert stream.read(4) == b'\x7fELF'
+        retained = artifacts / 'native_components'
+        shutil.copy2(executable, retained)
+        assert file_hash(retained) == file_hash(executable)
+        executables['native_components'] = file_hash(retained)
+    assert sources() == manifest['files_sha256']
+    assert all(file_hash(Path(tool['path'])) == tool['sha256'] for tool in native['tools'].values())
+    built = result['status'] == 'PASS' and set(executables) == {'native_components'}
+    receipt = dict(identity, executables_sha256=executables,
+                   status='PASS_PRODUCER_ACK_FAULT_BUILD_ONLY' if built else 'FAIL',
+                   tests_executed=0, clippy_scope='library; cfg(test) fixture compiled, not linted')
+    (artifacts / 'ack-fault-build.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    qualification = dict(receipt, status='INCOMPLETE' if built else 'FAIL',
+                         runtime_status='NOT_RUN')
+    qualification_path = Path('/out/qualification.json')
+    qualification_path.write_text(json.dumps(qualification, indent=2) + '\n')
+    assert built
+    try:
+        runtime = execute([('ack-fsync', [sys.executable, '-B',
+            str(SOURCE / 'experiments/archive-engine/publication_sync_cases.py'),
+            '--native-ack', '/out'])], Path('/out/fault-checks'), SOURCE, env, identity, 120)
+        qualification['runtime_status'] = runtime['status']
+        assert runtime['status'] == 'PASS'
+        evidence = Path('/out/ack-sync-cases/result.json')
+        assert json.loads(evidence.read_text())['status'] == 'PASS_NATIVE_ACK_FSYNC_EIO'
+        assert file_hash(artifacts / 'native_components') == executables['native_components']
+        assert sources() == manifest['files_sha256']
+        qualification.update(status='PASS_PRODUCER_ACK_FAULT',
+                             runtime_result_sha256=file_hash(evidence))
+    except BaseException:
+        qualification['status'] = 'FAIL'
+        raise
+    finally:
+        qualification_path.write_text(json.dumps(qualification, indent=2) + '\n')
+    print(json.dumps(qualification))
+    sys.exit(0)
 if archive_installed:
     artifacts.mkdir()
     bundle = artifacts / 'archive-worker'
@@ -267,6 +335,8 @@ steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release
 steps += [(name, ['cargo', 'test', '--locked', '--offline', '--release', '-p',
                   'bigbrotr-model' if producer_progress and name in {'fact_codec', 'evidence_intent'} else 'bigbrotr',
                   *selection, '--message-format=json', '--', '--test-threads=1',
+                  *(['--skip', 'storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary']
+                    if name in ('producer_ack', 'admission_tests') else []),
                   *(['--skip', 'signed_pending_reopens_and_reaches_the_supervised_native_worker_without_acknowledgement']
                     if writer and name == 'admission_tests' else [])])
           for name, selection in tests]

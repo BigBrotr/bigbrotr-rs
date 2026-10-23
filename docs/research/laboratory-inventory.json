@@ -61548,25 +61548,27 @@
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
         },
         "ack_remaining_boundary": {
-          "scope": "Source-only reconciliation of remaining native ACK ambiguity/post-ACK loss gates against existing evidence/tooling",
+          "scope": "Bounded native ACK fsync error fixture and build-only profile; source-only in isolated worktree",
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Active source assessment only; no implementation or engine/build authorized"
+          "state": "Completed sourcec8d6737 and receipts; no active assignment"
         },
         "progress_hole_fixture": {
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-57-47-01a16944-9ea6-75d2-8a3a-17f2103a80ca.jsonl session_meta/turn_context; root verified",
-          "state": "Completed frozen039772d; no active assignment",
-          "scope": "Same-REQ post-hole proof-only additive existing fixture"
+          "state": "Completed retained a99 source/evidence reconciliation; no active assignment",
+          "scope": "Source/evidence-only diagnosis of preserved a99 initial Sync timeout and existing diagnostics profile; no implementation or runtime",
+          "receipt": ".research/producer-checkpoint-ack-review-20261020/a99-sync-timeout-retained-reconciliation-20261023.json"
         },
         "progress_hole_critical": {
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
-          "state": "Completed source review039772d and preflightbbfd392; no active assignment",
-          "scope": "Independent critical review of same-REQ post-hole proof fixture"
+          "state": "Completed exact four-owner review; no active assignment",
+          "scope": "Independent critical review of native ACK fsync fault selector, poison and fresh-process replay expectations",
+          "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json"
         }
       },
       "pause_resource_observation_20261023": {
@@ -61923,6 +61925,22 @@
             "state": "Integrated local ref retired; exact detached worktree/ignored evidence preserved"
           }
         ]
+      },
+      "ack_fsync_source_work_20261023": {
+        "path": "/home/tux/bigbrotr-rs/.research/producer-ack-fsync-20261023",
+        "branch": "work/producer-ack-fsync",
+        "base": "332f7a3514cc8c9ec27315a7294739bd55c45bb8",
+        "owner": "ack_remaining_boundary",
+        "runtime_owner": "root",
+        "state": "Frozen clean author worktree; combined four-owner source reviewed, exact candidate build/runtime pending",
+        "scope": "One positive trace and one substituted fsync EIO on exact ACK WAL record; native private test target only, not PG authority or device/power-loss",
+        "assessment": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-boundary-review-v1.json",
+        "file_ownership": {
+          "root": "experiments/ingest-succession/native.py in canonical checkout",
+          "ack_remaining_boundary": "producer_ack_tests.rs, publication_sync_cases.py and network-transport/lab.py in isolated worktree"
+        },
+        "head": "c8d6737fc026c5be14901ef37f9f8343a6779e70",
+        "integrated_as": "3a99d1278a68beb4ab1d5063cb0bb846786ced37"
       }
     }
   },

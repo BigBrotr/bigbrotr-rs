@@ -7,17 +7,19 @@ root and the current source assessor have verified Astra/xhigh session continuit
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: durable producer progress, native ACK and recovery.
-Main HEAD is `8470860b312c97f48447e613992d2312aa397dfe`; the unchanged qualified
-product/build is `9cef25f13db44cac1cdd55e1862229ba7298f3b0`. Last verified remote
-push was `f7fad80`. Root-owned local documentation records the following coherent
-result and resource reconciliation. No product or experiment source is dirty.
+Main HEAD is `3a99d1278a68beb4ab1d5063cb0bb846786ced37`; last verified push is332f7a3.
+The unchanged qualified product/build is `9cef25f13db44cac1cdd55e1862229ba7298f3b0`.
+Root-owned local documentation records the current source assignment.
+Canonical native.py has the root-owned new build-only profile, pending the
+containing commit with these docs. The other three fixture files are integrated
+fromc8d6737. No product behavior is changed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.native_ack_source_preparation`,
 owns exact receipts, controls, failures and invocation premises. Current entries
-are `preparation_hole_continuity_20261023`, `ack_refusal_qualification_20261023`
-and `post_hole_proof_qualification_20261023`. The
+include the latest qualified refusal/proof cases and
+`native_ack_fsync_qualification_20261023` source preparation. The
 [inventory](../research/laboratory-inventory.json) owns resource/worktree custody.
 
 ## Latest completed evidence
@@ -46,22 +48,30 @@ owned client and borrowed PG exited, PID0, no OOM and no cgroup; completed runs
 report no cleanup or unrelated-resource changes. All databases, stores, logs,
 original failures, `.research`, external labs, worktrees and quarantined input are
 preserved. Every redundant local branch ref has been reconciled, including exact
-patch-ID mappings for old cherry-picks. Only main remains; original source
-worktrees are retained detached, including bbfd392 and039772d.
+patch-ID mappings for old cherry-picks. Original source worktrees remain detached,
+including bbfd392 and039772d.
+A new `work/producer-ack-fsync` branch/worktree is based on332f7a3.
 
-`ack_remaining_boundary` assesses the remaining native ACK ambiguity/post-ACK
-loss gates from existing exact source/evidence/tooling. This is source-only;
-no new implementation, build, engine or delegation is authorized to that agent.
-`progress_hole_fixture` and `progress_hole_critical` completed; all their source
-is integrated and qualified. No unintegrated contributor changes are known.
+`ack_remaining_boundary` completed the native ACK fsync-error source inc8d6737;
+its isolated worktree is clean and retained. `progress_hole_critical` completed
+the source review; no subagent is active. Root remains sole runtime owner. The existing report binds source,
+18 pure counterexamples, unchanged publication controls and review findings.
+`progress_hole_fixture` completed retained a99 diagnosis reconciliation; no active
+assignment. The existing report links its receipt: cause remains unknown, existing
+diagnostics are already in9cef25f, and no dedicated rerun is warranted.
+New build/runtime checks are **NOT_RUN**. No earlier qualification is invalidated by this test work.
 
 ## Precise next step and open boundaries
 
-Collect the active source assessment and compare its smallest proposed failure
-case/product gap with P02-T02 Steps4/5/7 and existing fault tooling. Reuse qualified
-native full-window and recovery results; only implement/run a materially missing
-boundary after its exact source/expected outcomes are reviewed. Keep one existing
-plan/report/checkpoint, with root as sole runtime owner.
+Export the exact containing commit, then compile only the integrated fixture
+native test target using the new `producer-ack-fault` profile. Qualify its
+one positive trace and one substituted fsync EIO on the actual one-key ACK WAL
+record; require unusable same-owner credit, preserved
+original science/input, abrupt exit and separate-process exact A1/sequence10 replay
+when the complete ACK record survives. Authenticate the syscall selector against
+actual descriptor/record observations; setup faults must fail the fixture. Preserve
+9cef25f production ELFs unchanged. This does not exercise real device loss or
+connected PostgreSQL authority. Record in the existing recovery report/inventory.
 
 Native ACK ambiguity/post-ACK durability loss, remaining mixed-restore/resource
 gates, GC and capacity/backup remain open. Current healthy serial typed Sync cannot

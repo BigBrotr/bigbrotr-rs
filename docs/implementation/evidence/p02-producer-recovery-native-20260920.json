@@ -40978,7 +40978,17 @@
             "sha256": "34d83f9034c2d13fffda468b13a24872e48c221f694ff92bdba816529093bc2c"
           }
         },
-        "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved."
+        "next": "Completed scoped qualification pushed73b7e2f. Continue manager_observation_20261020.credential_boundary_20261020; originala99 remains unresolved.",
+        "retained_reconciliation_20261023": {
+          "status": "SOURCE_AND_RETAINED_ARTIFACTS_ONLY; historical cause unresolved",
+          "receipt": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/a99-sync-timeout-retained-reconciliation-20261023.json",
+            "sha256": "0a75947e51e3bb1c039f6ef5605adc1afd0dcf69fcb29ef983cdfb3d595b822b"
+          },
+          "conclusion": "The500ms ceiling is relay collection only, not whole-dispatch deadline. Original a99 remains a real failed journey with cause unknown; neither current product defect nor fixture-only cause is proved. Existing diagnostic source and all6controls are already in qualified9cef25f.",
+          "next": "No dedicated rerun. Preserve existing diagnostic on a natural timeout during an independently required journey; discriminate pending admission from later certification before retry.",
+          "runtime": "NOT_RUN; previous diagnostics build/sample remain valid"
+        }
       },
       "producer_checkpoint_ack_preparation_20261020": {
         "status": "Typed progress qualification retained. Native ACK consumer/storage/recovery source now integrated; 258 component tests and required controls PASS. Connected ACK/credit/loss/recovery and remaining gates open; original failures preserved.",
@@ -43143,6 +43153,35 @@
               "sha256": "f0909211fb375066bbe889d27c15c0724e95792691069872d0fb251420d8f457"
             },
             "custody": "Runtime83263 and strict standalone raw command joined0. Root fresh exact client/borrowed PG IDs/labels exited/PID0/noOOM/cgroups absent; cleanup_errors/missing_owned/unrelated_changed empty. All stores, originals and failures preserved."
+          },
+          "native_ack_fsync_qualification_20261023": {
+            "status": "SOURCE_REVIEWED; build/runtime NOT_RUN",
+            "assessment": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-boundary-review-v1.json",
+              "sha256": "005a5c8e10f094297412fc814227e20dae07faeffbe422e98d1d7d2baac3e1aa"
+            },
+            "scope": "Private native ACK error propagation with one control/EIO and two fresh opens; exact WAL/input/science oracle. No installed PG authority or device/power-loss.",
+            "source_worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-fsync-20261023",
+            "base": "332f7a3514cc8c9ec27315a7294739bd55c45bb8",
+            "qualified_product_unchanged": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
+            "expected": "CommitUnknown and same-owner poison; exact original9rows except A1 plus sequence10 on fresh reopen under the explicit intact ACK WAL premise",
+            "next": "Root exports exact containing commit and runs producer-ack-fault once; record both build and native fault outcomes.",
+            "source_commit": "c8d6737fc026c5be14901ef37f9f8343a6779e70",
+            "integrated_fixture": "3a99d1278a68beb4ab1d5063cb0bb846786ced37",
+            "source_receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-source-v1.json",
+              "sha256": "0beec6d7a9d5b760fc00b71c9a3cba5002ffb421f7bca674941985a5971209d3"
+            },
+            "source_checks": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-source-checks-v1.json",
+              "sha256": "557475f996d22a70ae1cf93c8d6600a49fe4ae051704e9e2a1d058ce09336f7c"
+            },
+            "builder_sha256": "dfe97e1dfb7ab7bc7600caab27a9dc27752cb93f4ca856bb94979821d9a8c9b6",
+            "root_review": "Complete four changed owners/deltas, ACK test baseline, native build/lab baseline, shared execute/process helpers and exact fixture read. Reused unchanged ACK/commit product reviews; final lifecycle/partial-line/copy/legacy-selector findings resolved. Source-only; no engine evidence.",
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json",
+              "sha256": "211729e032e44956ac268c1d76508c2827508f9a22fceecf42a64feb16a2b592"
+            }
           }
         }
       }
