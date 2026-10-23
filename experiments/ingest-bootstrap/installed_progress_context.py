@@ -27,20 +27,20 @@ def record_source(output, build, revision):
             for name in files}))
 
 
-def qualified_build(build, built, *, ack=False, preparation_hole=False):
-    profile = typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole)
+def qualified_build(build, built, *, ack=False, preparation_hole=False, post_hole_proof=False):
+    profile = typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     assert built['source'] == profile['product_source']
     component = json.loads((build / 'component-result.json').read_text())
     qualification = json.loads((build.parent / 'qualification.json').read_text())
-    if preparation_hole:
-        typed.preparation_hole_qualification(built,component,qualification)
+    if preparation_hole or post_hole_proof:
+        typed.preparation_hole_qualification(built,component,qualification,post_hole_proof=post_hole_proof)
     assert qualification['status'] == ('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
     assert component['status'] == 'PASS'
     for field in ('source', 'tree', 'source_manifest_sha256', 'lockfile_sha256'):
         assert component[field] == qualification[field] == built[field]
     binaries = component['executables_sha256']
     if ack:
-        assert binaries==typed.ack_executables(preparation_hole=preparation_hole)
+        assert binaries==typed.ack_executables(preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     assert set(binaries) == {'bigbrotr', 'ingest_bootstrap_probe', 'native_components',
         'sync_progress', 'fact_codec', 'evidence_intent', 'control_schema', 'migrate_entrypoint'}
     assert all(hashlib.sha256((build / name).read_bytes()).hexdigest() == sha
@@ -125,9 +125,10 @@ def upgrade(pg, client, output, database, config, label, rows, *, reference_cata
     return context
 
 
-def helpers(output, directory, kind, *, ack=False, preparation_hole=False):
+def helpers(output, directory, kind, *, ack=False, preparation_hole=False, post_hole_proof=False):
     assert type(ack) is bool and kind in (('initial', 'activated', 'successor') if ack else ('initial', 'activated'))
     assert type(preparation_hole) is bool and (not preparation_hole or ack and kind=='initial')
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and kind=='initial' and not preparation_hole)
     for source in (Path(__file__).with_name('installed_progress_transport.py'),
             SOURCE / 'experiments/ingest-succession/installed_family_client.py'):
         target = output / source.name
@@ -141,15 +142,17 @@ def helpers(output, directory, kind, *, ack=False, preparation_hole=False):
             preparation_hole=preparation_hole)
         target = directory/'progress-ack-events.json'
         with target.open('x') as stream:
-            json.dump(dict(format='bigbrotr-ack-preparation-hole-events/1' if preparation_hole
+            json.dump(dict(format='bigbrotr-ack-post-hole-proof-events/1' if post_hole_proof
+                else 'bigbrotr-ack-preparation-hole-events/1' if preparation_hole
                 else 'bigbrotr-ack-events/1',events=events),stream)
         target.chmod(0o600)
     lab.write_json(directory / 'progress-context.json', dict(
-        format='bigbrotr-ack-preparation-hole-context/1' if preparation_hole
+        format='bigbrotr-ack-post-hole-proof-context/1' if post_hole_proof
+        else 'bigbrotr-ack-preparation-hole-context/1' if preparation_hole
         else 'bigbrotr-ack-context/1' if ack else 'bigbrotr-progress-context/1', kind=kind))
 
 
-def phases(pg, database, directory, rows, snapshot, kind, prefix, *, ack=False, preparation_hole=False):
+def phases(pg, database, directory, rows, snapshot, kind, prefix, *, ack=False, preparation_hole=False, post_hole_proof=False):
     assert type(ack) is bool
     from installed_family import capture_progress_observation, release_progress_transport
     from installed_progress_context_oracle import ready
@@ -161,7 +164,7 @@ def phases(pg, database, directory, rows, snapshot, kind, prefix, *, ack=False, 
             matches = [wire for wire in wires if wire.get('progress_phase') == phase]
             assert len(matches) <= 1, 'replayed typed phase'
             return matches[0] if matches and ready(rows(database), kind, phase, matches[0],ack=ack,
-                preparation_hole=preparation_hole) else None
+                preparation_hole=preparation_hole,post_hole_proof=post_hole_proof) else None
         try:
             wire = wait_for(observed, 'typed ' + kind + ' ' + phase, 10)
         except BaseException as error:
@@ -175,7 +178,7 @@ def phases(pg, database, directory, rows, snapshot, kind, prefix, *, ack=False, 
             lab.write_json(directory / ('progress-'+phase+'-failure.json'),failure)
             raise
         cut = snapshot('progress-' + phase)
-        assert ready(cut['control'], kind, phase, wire,ack=ack,preparation_hole=preparation_hole)
+        assert ready(cut['control'], kind, phase, wire,ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
         captured = capture_progress_observation(directory, phase, cut, wire,preparation_hole=preparation_hole)
         from initial_succession import census
         lab.write_json(directory / ('progress-'+phase+'-input-files.json'), census(directory / 'store/producer-inputs-v1'))
@@ -184,9 +187,10 @@ def phases(pg, database, directory, rows, snapshot, kind, prefix, *, ack=False, 
 
 
 class InitialCapture:
-    def __init__(self, pg, database, output, name, rows, setup, *, ack=False, preparation_hole=False):
+    def __init__(self, pg, database, output, name, rows, setup, *, ack=False, preparation_hole=False, post_hole_proof=False):
         self.ack=ack
         self.preparation_hole=preparation_hole
+        self.post_hole_proof=post_hole_proof
         self.pg, self.database, self.output, self.name = pg, database, output, name
         self.directory, self.raw_rows, self.setup = output / name, rows, setup
         self.snapshots = []
@@ -248,12 +252,13 @@ class InitialCapture:
                 'progress-release.json')})
         path = self.output / (self.name + '-progress-verification.json')
         if self.ack:
-            context.update(producer_ack_profile='two-slot-preparation-hole/1' if self.preparation_hole
+            context.update(producer_ack_profile='two-slot-post-hole-proof/1' if self.post_hole_proof
+                else 'two-slot-preparation-hole/1' if self.preparation_hole
                 else 'two-slot-three-events/1',
                 ack_event_recipe=(self.directory/'progress-ack-events.json').read_text())
         lab.write_json(self.output/(self.name+'-progress-catalog.json'),context['catalog_after'])
         lab.write_json(path, context)  # Raw context survives verifier failure.
-        checker=(lambda value:verify_initial(value,ack=True,preparation_hole=self.preparation_hole)) if self.ack else verify_initial
+        checker=(lambda value:verify_initial(value,ack=True,preparation_hole=self.preparation_hole,post_hole_proof=self.post_hole_proof)) if self.ack else verify_initial
         answer = checker(context)
         negative = controls(context, checker)
         return dict(oracle=answer, negative_controls=negative,

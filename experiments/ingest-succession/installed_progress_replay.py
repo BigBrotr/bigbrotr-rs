@@ -151,9 +151,18 @@ PREPARATION_HOLE_EXECUTABLES_SHA256 = {
     'bigbrotr':'2398dfc457f643de16ee8e6e73171eef9efaf2c31c0b5ce7e028b1d195a6bc6c',
 }
 
+# A distinct recipe on the same measured product. Historical recipe/build
+# profiles retain their exact meaning; this is not an alias for an old capture.
+POST_HOLE_PROOF_EXPECTATIONS = {
+    'initial': dict(epoch=1,request=6,mutation_revision=6,proof_revision=7,
+        dependencies=tuple((1,n) for n in range(1,23)),key='b1'),
+}
+POST_HOLE_PROOF_PROFILE = dict(migration_sha256=ACK_MIGRATION_SHA256,
+    product_source='9cef25f13db44cac1cdd55e1862229ba7298f3b0',cases=POST_HOLE_PROOF_EXPECTATIONS)
 
-def preparation_hole_qualification(built, component, qualification):
-    profile=require_frozen_profile(ack=True,preparation_hole=True)
+
+def preparation_hole_qualification(built, component, qualification, *, post_hole_proof=False):
+    profile=require_frozen_profile(ack=True,preparation_hole=not post_hole_proof,post_hole_proof=post_hole_proof)
     assert component['status']=='PASS' and qualification['status']=='PASS_PRODUCER_ACK_COMPONENTS'
     assert built['source']==component['source']==qualification['source']==profile['product_source']
     assert all({key:value[key] for key in PREPARATION_HOLE_BUILD}==PREPARATION_HOLE_BUILD
@@ -170,8 +179,9 @@ def phase_names(preparation_hole=False):
     return ('mutation','continuation' if preparation_hole else 'proof-only')
 
 
-def ack_executables(*, preparation_hole=False):
-    if not preparation_hole:
+def ack_executables(*, preparation_hole=False, post_hole_proof=False):
+    assert type(post_hole_proof) is bool and not (preparation_hole and post_hole_proof)
+    if not (preparation_hole or post_hole_proof):
         return ACK_EXECUTABLES_SHA256
     pins=PREPARATION_HOLE_EXECUTABLES_SHA256
     assert pins is not None, 'preparation-hole fixture NOT_READY: measured executable pins pending'
@@ -193,9 +203,16 @@ GRANT EXECUTE ON FUNCTION
 """
 
 
-def require_frozen_profile(*, ack=False, preparation_hole=False):
+def require_frozen_profile(*, ack=False, preparation_hole=False, post_hole_proof=False):
     assert type(ack) is bool
     assert type(preparation_hole) is bool and (not preparation_hole or ack)
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and not preparation_hole)
+    if post_hole_proof:
+        assert POST_HOLE_PROOF_PROFILE==dict(migration_sha256=ACK_MIGRATION_SHA256,
+            product_source='9cef25f13db44cac1cdd55e1862229ba7298f3b0',cases=POST_HOLE_PROOF_EXPECTATIONS)
+        assert POST_HOLE_PROOF_PROFILE['product_source']==PREPARATION_HOLE_PROFILE['product_source']
+        ack_executables(post_hole_proof=True)
+        return POST_HOLE_PROOF_PROFILE
     if preparation_hole:
         profile=PREPARATION_HOLE_PROFILE
         assert profile is not None, 'preparation-hole fixture NOT_READY: reviewed source/build pins pending'
@@ -253,8 +270,12 @@ def preparation_hole_recipe():
     return dict(format='bigbrotr-ack-preparation-hole-events/1',events=preparation_hole_events())
 
 
-def phase_events(phase, *, preparation_hole=False, successor=False):
+def phase_events(phase, *, preparation_hole=False, successor=False, post_hole_proof=False):
     assert phase in phase_names(preparation_hole)
+    assert type(post_hole_proof) is bool and not (post_hole_proof and (preparation_hole or successor))
+    if post_hole_proof:
+        a,b,c=ack_event_sequence()
+        return [a,b,c] if phase=='mutation' else [a,{'id':a['id']},a]
     if not preparation_hole:
         return ack_event_sequence(successor=successor)
     assert not successor
@@ -839,9 +860,9 @@ def verify_ack(context):
         scope='Three mutations through actual window2 then a distinct three-proof REQ; retained originals, noGC')
 
 
-def ack_counterexamples(context, checker, kind, *, preparation_hole=False):
+def ack_counterexamples(context, checker, kind, *, preparation_hole=False, post_hole_proof=False):
     """Exact native state/write accounting and three-frame/window discriminators."""
-    spec=PREPARATION_HOLE_EXPECTATIONS[kind] if preparation_hole else ACK_EXPECTATIONS[kind]
+    spec=POST_HOLE_PROOF_EXPECTATIONS[kind] if post_hole_proof else PREPARATION_HOLE_EXPECTATIONS[kind] if preparation_hole else ACK_EXPECTATIONS[kind]
     checks=[]
     def reject(name,change,reason=None):
         value=copy.deepcopy(context);change(value)
@@ -874,7 +895,8 @@ def ack_counterexamples(context, checker, kind, *, preparation_hole=False):
     reject('proof-native-extra-write',lambda c:native(c).update(sequence=native(c)['sequence']+1),'ACK native write count differs')
     reject('missing-synced-ack-writes',lambda c:native(c).update(sequence=native(c)['sequence']-spec['request']),'ACK native write count differs')
     reject('wrong-three-event-order',lambda c:c.update(ack_event_recipe=json.dumps(dict(
-        format='bigbrotr-ack-events/1',events=list(reversed(ack_event_sequence(successor=kind=='successor')))))))
+        format='bigbrotr-ack-post-hole-proof-events/1' if post_hole_proof else 'bigbrotr-ack-events/1',
+        events=list(reversed(ack_event_sequence(successor=kind=='successor')))))))
     def full_window(c):
         for snapshot in c['snapshots']:
             for row in snapshot['control']['producer_epochs']:

@@ -279,13 +279,14 @@ while True:
     return selected
 
 
-def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False, preparation_hole=False):
+def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False, preparation_hole=False, post_hole_proof=False):
     assert type(progress) is bool and (not progress or (name == 'sync-signed' and gap_schema is None))
     assert type(ack) is bool and (not ack or progress)
     assert type(preparation_hole) is bool and (not preparation_hole or ack)
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and not preparation_hole)
     if ack:
         from installed_progress_replay import require_frozen_profile
-        require_frozen_profile(ack=True,preparation_hole=preparation_hole)
+        require_frozen_profile(ack=True,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES + ['sync-gap-uncorrected']
     expiry = name in EXPIRY_CASES
     full_window = name in WINDOW_CASES
@@ -331,7 +332,7 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
             endpoint='127.0.0.1:5432', boundary='loopback')
         setup = progress_upgrade(pg, client, output, database, migration_config, name, rows, ack=ack)
         progress_capture = InitialCapture(pg, database, output, name, rows, setup,ack=ack,
-            preparation_hole=preparation_hole)
+            preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
         rows = progress_capture.rows
     before = rows(database)
     assert {23, 24, 26} <= {r['migration'] for r in before['schema_versions']}
@@ -376,7 +377,7 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
     shutil.copy2(SOURCE/'tests/fixtures/ingest/import-event.jsonl', directory/'event.jsonl')
     if progress:
         from installed_progress_context import helpers
-        helpers(output, directory, 'initial', ack=ack,preparation_hole=preparation_hole)
+        helpers(output, directory, 'initial', ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     if name == 'sync-peer-refusals' or full_window:
         from installed_sync_client import REFUSAL_SHA256
         artifact = SOURCE/'tests/fixtures/acquisition/selector-events.json'
@@ -492,7 +493,7 @@ finally:
     if progress:
         from installed_progress_context import phases
         phases(pg, database, directory, progress_capture.raw_rows,
-            progress_capture.snapshot, 'initial', prefix, ack=ack,preparation_hole=preparation_hole)
+            progress_capture.snapshot, 'initial', prefix, ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     wanted_count = 7 if preparation_hole else 6 if ack else 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
     def completed():
         assert not (directory/'relay-error.json').exists(), 'independent relay failed'
