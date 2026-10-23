@@ -188,10 +188,15 @@ def ack_trace(lines, wal, descriptor, before, after, fault):
         assert not re.match(r'(close_range|dup|dup2|dup3)\(', b)
         if wal in b and re.match(r'(open|rename|unlink|link|symlink|truncate)', b):
             raise AssertionError('ACK WAL path changed during interval')
-        if wal in b and re.match(r'(writev|pwritev|pwritev2|fdatasync)', b):
+        # A native LOG write can mention the failed WAL in its diagnostic
+        # payload. Only the syscall's leading descriptor identifies its target.
+        target = re.match(r'([a-z0-9_]+)\(\d+<([^>]+)>(?:,|\))', b)
+        operation, target_path = target.groups() if target else (None, None)
+        if target_path == wal and operation in ('writev', 'pwritev', 'pwritev2', 'fdatasync'):
             raise AssertionError('unselected ACK WAL operation')
-        if re.search(re.escape(str(Path(wal).parent))+r'/[0-9]+\.log', b) and c.entered > sync.entered:
-            assert not re.match(r'(write|pwrite64|writev|pwritev|pwritev2|fsync|fdatasync)\(', b), 'later ACK WAL write/sync'
+        if (target_path is not None and c.entered > sync.entered
+                and re.fullmatch(re.escape(str(Path(wal).parent))+r'/[0-9]+\.log(?: \(deleted\))?', target_path)):
+            assert operation not in ('write', 'pwrite64', 'writev', 'pwritev', 'pwritev2', 'fsync', 'fdatasync'), 'later ACK WAL write/sync'
     index = len([c for c in lines if c.pid == sync.pid and c.entered <= sync.entered
                  and c.body.startswith('fsync(')])
     assert index > 1, 'selector must discriminate earlier setup syncs'
@@ -221,6 +226,16 @@ def ack_oracle_controls():
     verify = lambda r, after=prefix+suffix: ack_trace(decoded_lines('\n'.join(r)), wal, fd, prefix, after, True)
     assert verify(raw)['fsync_index'] == 2
     controls = {}
+    diagnostic = 'While fsync: '+wal+': Input/output error\n'
+    # Keep the literal path in the trace string: hex-escaping every payload byte
+    # would not reproduce the old substring false refusal.
+    log_write = f'12 1.35 write(3</case/db/LOG>, {json.dumps(diagnostic)}, {len(diagnostic)}) = {len(diagnostic)}'
+    assert wal in log_write
+    assert verify([*raw[:5], log_write, *raw[5:]])['fsync_index'] == 2
+    controls['log_diagnostic_mentions_wal'] = 'ACCEPTED'
+    log_vector = f'12 1.35 writev(3</case/db/LOG>, [{{iov_base={json.dumps(diagnostic)}, iov_len={len(diagnostic)}}}], 1) = {len(diagnostic)}'
+    assert verify([*raw[:5], log_vector, *raw[5:]])['fsync_index'] == 2
+    controls['log_vector_mentions_wal'] = 'ACCEPTED'
     mutations = {
         'setup_sync': [raw[0], raw[1].replace('= 0', '= -1 EIO (INJECTED)'), *raw[2:4],
                        raw[4].replace('-1 EIO (Input/output error) (INJECTED)', '0'), *raw[5:]],
@@ -229,6 +244,7 @@ def ack_oracle_controls():
         'dup_replacement': [*raw[:4], f'12 1.25 dup2(8</other>, {fd}<{wal}>) = {fd}<{wal}>', *raw[4:]],
         'later_sync': [*raw[:5], f'12 1.35 fsync({fd}<{wal}>) = 0', *raw[5:]],
         'later_append': [*raw[:5], raw[3].replace('11 1.2', '12 1.35'), *raw[5:]],
+        'later_vector_append': [*raw[:5], log_vector.replace('3</case/db/LOG>', f'{fd}<{wal}>'), *raw[5:]],
         'ordinary_error': [s.replace(' (INJECTED)', '') for s in raw],
         'different_tid': [s.replace('11 1.3', '12 1.3') for s in raw],
     }
