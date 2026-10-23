@@ -516,6 +516,13 @@ remain in force. Only this exact gap authorizes transferring the terminal write
 to current Control. It grants no new execution. Deferred checks refuse incomplete
 transitions. Gaps, original inputs/outcomes and scientific records are retained.
 
+The qualified recovery setup grants `SELECT, INSERT` on `control.acquisition_gaps`
+and `EXECUTE` on `control.guard_acquisition_gap()` and
+`control.require_acquisition_gap_complete()`, alongside its existing job/source
+read/update privileges. Initial retirement also needs the function privilege
+specified below. A login prepared only for positive outcome recovery does not
+implicitly receive these terminal-operation permissions.
+
 Select all typed jobs claimed by the original Control, including jobs with no
 mutation request. Unclaimed accepted jobs belong to no old execution and remain
 unchanged. The first consumer handles at most64 queued jobs with checkpoint zero;

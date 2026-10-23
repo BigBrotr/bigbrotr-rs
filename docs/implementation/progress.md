@@ -6,10 +6,10 @@ M1–M5 remain incomplete. Root owns integration/runtime. Q37/Q38 apply.
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Main source HEAD is `3a9731283b09c5c2529dc201750f02fa41af9ffc`, after integrated
-reader candidate10a5430. Last verified remote base is98f6d85; source and this
-coherent evidence update are pending push. The commit containing this checkpoint
-adds only evidence/navigation. No floor writer or GC is exposed.
+Main source HEAD is `98f80b121b6e8b3501240284fcc5cf6f192a00d0`: corrected3a97312
+product plus integrated fixture dc980a53 with mechanical helper rustfmt. Last
+verified pushed/equal remote is2c2a1ff. This commit adds only the reviewed fixture ACL correction and evidence/docs;
+root owns runtime. No floor writer or GC is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -21,23 +21,30 @@ valid and linked in the same report; the qualified installed product remains9cef
 
 ## Latest outcome and unresolved verification
 
-**PASS at10a5430:** external `runs/producer-floor-10a5430`; CLI/probe compilation,
-Clippy and106 tests (7 compacted native,1 exact PG head,90 affected lineage,
-8 shared input). All eight literal controls present, three ELFs hashed/preserved.
-Driver5927 joined0; no installed PostgreSQL or reclaimed recovery journey ran.
+**PASS:** exact product/helper98f80b1, external `runs/producer-floor-98f80b1`;
+CLI/probe compilation, Clippy and106 tests (7 compacted native,1 exact PG head,
+90 affected lineage,8 shared input), all eight literal controls. Driver34357
+joined0, all three ELFs hashed/preserved. The corrected COMMIT path compiles;
+actual installed compacted transaction remains NOT_RUN.
 
-Independent source review found the new factory promised COMMIT but reused a
-ROLLBACK helper. Corrective3a97312 uses existing producer_retirement::finish,
-retaining cancellation/lease/client/native checks and unknown-result refusal.
-The reviewer approved this source delta; its executable and installed COMMIT
-boundary remain **NOT_RUN**. Root all-changed-Rust rustfmt check passes.
-The original native historical-policy restriction was corrected before10a5430;
-all author originals and findings remain in linked receipts.
+**FAIL preserved:** `runs/installed-compacted-reader-98f80b1` stopped at its first
+positive-abandon, before synthetic floor creation. The ACK origin lacked existing
+abandonment permissions: new Control4/PID134 reported permission denied for
+acquisition_gaps. Source closure had committed; no gap was created. Driver43345
+joined1; the original fixture retains OUTCOME_UNKNOWN/nativeNOT_RUN after its
+expected-success assertion, and all partial SQL/files/logs remain preserved.
+
+This commit corrects only isolated fixture setup and its exact catalog allowlist:
+existing gap SELECT/INSERT and three function grants already used by qualified
+initial-retirement fixtures, plus the three selected reader column reads.
+Independent review approved the correction, explicitly recording the prior ACL
+review miss. Product and98f80b1 build artifacts are unchanged and reusable.
 
 ## Active work and preserved resources
 
-No engine/build is active: exact10a fetch/native containers freshly observed
-exited0/PID0/noOOM, unrelated inventory unchanged. All raw logs, ELFs, exports,
+No engine/build remains. Both98f80b1 build containers exited0/PID0/noOOM; failed
+installed client exited143 and borrowed PG exited0, bothPID0/noOOM freshly checked.
+Outer cleanup/missing/unrelated/unexpected inventories are empty. All raw logs, ELFs, exports,
 original failures, ignored `.research`, native/input data and worktrees remain.
 No cache or dataset cleanup occurred.
 
@@ -47,19 +54,20 @@ at584bad3 (including d224a8d); PG author worktree
 refs were retired and both original worktrees remain clean/detached.
 `compacted_reader_review` completed independent3a97312 review with no remaining
 product source blocker; receipt is linked in the recovery report.
-`compacted_reader_fixture` authors the installed reader scenario in
+`compacted_reader_fixture` completed dc980a53 in clean
 `.research/compacted-installed-reader-20261023`, branch
-`work/compacted-installed-reader`, base10a5430; source only, no runtime assigned.
+`work/compacted-installed-reader`, base10a5430; integrated98f80b1. The independent
+reviewer is finalizing this fixture review; no remaining source blocker reported.
 Both new agents' actual Astra/xhigh turn_context was verified at creation.
 
 ## Precise next step and open boundaries
 
-Finish/review the existing-runner installed fixture, build the corrected product
-and its test-only helper at an exact revision, then run fresh excluded derivatives
-of dfbb8dc. Each must first execute authentic abandonment and initial retirement.
-Only then install a clearly labeled synthetic post-GC floor for full-original and
-quarantined-original retry, plus incompatible-head/closure/native-state refusals.
-Keep all originals; this demonstrates the reader, not product reclamation.
+Run a fresh excluded dfbb8dc derivative with this corrected fixture source,
+reusing exact98f80b1 product/helper build. Each clone first executes authentic
+abandonment/retirement; only then use the synthetic floor for full-original and
+quarantined-original retry plus incompatible-head/closure/pending refusals.
+Join the driver and run exact-source raw replay before recording qualification.
+Preserve failed98f80b1 and all originals; this demonstrates the reader, not GC.
 
 Adapt remaining successor consumers before implementing deletion. NoGC64/32MiB,
 connected ACK error delivery, physical loss, mixed restore, capacity and backup

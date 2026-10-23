@@ -23,8 +23,15 @@ STATUS = 'PASS_SYNTHETIC_POST_GC_INITIAL_READER'
 CLONES = ('positive','incompatible-head','floor-digest','missing-pending')
 STEPS = {name:('abandon','retire',*(('residual','absent') if name == 'positive' else ('refuse',))) for name in CLONES}
 CASES = tuple(name+'-'+step for name in CLONES for step in STEPS[name])
-GRANTS = ('GRANT SELECT(owner_resource_id) ON control.initial_ingest_successions, '
-          'control.ingest_successions, control.ingest_activations TO bigbrotr_control;',)
+# The retained ACK origin has recovery grants, but never exercised abandonment
+# or retirement. Provision their existing prerequisites before the new reader's
+# three column reads; these are fixture setup, not product privilege changes.
+GRANTS = ('GRANT SELECT,INSERT ON control.acquisition_gaps TO bigbrotr_control;',
+          'GRANT EXECUTE ON FUNCTION control.guard_acquisition_gap(), '
+          'control.require_acquisition_gap_complete(), '
+          'control.require_initial_retirement(bytea,numeric,bytea) TO bigbrotr_control;',
+          'GRANT SELECT(owner_resource_id) ON control.initial_ingest_successions, '
+          'control.ingest_successions, control.ingest_activations TO bigbrotr_control;')
 NOT_RUN = ('Actual product reclamation/GC and unlink', 'Compacted successor preparation/activation/recovery',
            'Crash/unknown-commit and interrupted unlink', 'Mixed restore/backup and capacity')
 MANIFEST = '4d6754fa296d44b3b140da79b6829cf1b7f777ff109c30170db473ce124bb042'
@@ -40,10 +47,17 @@ def catalog_checked(original, current):
     before,after = statements(original),statements(current)
     added = [line for line in after if line not in before]
     tables = ('initial_ingest_successions','ingest_successions','ingest_activations')
-    assert len(added) == 3
+    assert len(added) == 7
     for table in tables:
         assert len([line for line in added if re.fullmatch(
             r'GRANT SELECT\s*\(owner_resource_id\) ON (?:TABLE )?control\.'+table+r' TO bigbrotr_control;',line)]) == 1
+    assert 'GRANT SELECT,INSERT ON TABLE control.acquisition_gaps TO bigbrotr_control;' in added
+    # PostgreSQL dumps the sole function privilege EXECUTE as ALL. This does
+    # not allow ALL table rights or any function outside these exact signatures.
+    for function in ('guard_acquisition_gap()', 'require_acquisition_gap_complete()',
+            'require_initial_retirement(wanted_slot bytea, wanted_epoch numeric, wanted_digest bytea)'):
+        assert len([line for line in added if re.fullmatch(
+            r'GRANT (?:ALL|EXECUTE) ON FUNCTION control\.'+re.escape(function)+r' TO bigbrotr_control;',line)]) == 1
     assert [line for line in after if line not in added] == before
 
 

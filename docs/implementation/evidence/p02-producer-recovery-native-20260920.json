@@ -43384,7 +43384,7 @@
           }
         },
         "closed_producer_reclamation_preparation_20261023": {
-          "status": "READER_COMPONENTS_PASS_AT_10a5430; COMMIT_SOURCE_CORRECTED_3a97312; installed/GC NOT_RUN",
+          "status": "CORRECTED_READER_COMPONENTS_PASS_98f80b1; installed first attempt FAIL_PREPARATION_ACL; GC NOT_RUN",
           "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
           "task": "P02-T02 Steps4/5/7",
           "purpose": "Reclaim acknowledged receipt/input operational detail for one completely closed and fully resolved producer while preserving all scientific facts, pending batches and causal recovery/backup closure.",
@@ -43524,7 +43524,121 @@
               "CR2 stale Q39 anchor corrected in this documentation update"
             ],
             "resource_gate": "Successful current CLI path performs3N+9 full residual-spool content scans:201 atN64. Per-scan32MiB cap yields conservative6.28125GiB logical-read/hash upper bound; not physical disk traffic, RSS, duration, or a claim that maximum SQL/spool envelopes coexist. Capacity/deadline effects remain unmeasured."
-          }
+          },
+          "corrected_reader_component_qualification": {
+            "source": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+            "tree": "e043ab1784df5e064a4c434522bb748c647a35b5",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1",
+            "status": "PASS_COMPACTED_PREFIX_COMPONENTS",
+            "test_counts": {
+              "compacted_prefix": 7,
+              "compacted_progress": 1,
+              "initial_reconstruction": 90,
+              "request_inputs": 8
+            },
+            "literal_controls": 8,
+            "checks": [
+              [
+                "probe_build",
+                "PASS"
+              ],
+              [
+                "compacted_prefix",
+                "PASS"
+              ],
+              [
+                "compacted_progress",
+                "PASS"
+              ],
+              [
+                "initial_reconstruction",
+                "PASS"
+              ],
+              [
+                "request_inputs",
+                "PASS"
+              ],
+              [
+                "clippy",
+                "PASS"
+              ]
+            ],
+            "executables_sha256": {
+              "native_components": "e246b9c6257219036ddd40e10b773b78679b08d0ed8c2fcef49d20eb97e96910",
+              "ingest_bootstrap_probe": "a54c9d507de7ffe152b4e6dd740e84934e71caf3b30a9e8e6daa21e59f6b20fa",
+              "bigbrotr": "519e14b868a8a6c26a67d370e811a92fe379cb31bc2e3765d81710e45961929f"
+            },
+            "receipts": [
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1/resources.json",
+                "sha256": "5564b7418a0a7c9206c0f6264de362b46f0ebb815fb52e16eeac038e9d3bf405"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1/out/artifacts/component-result.json",
+                "sha256": "abf631dfae41af4adba2a0f0c1dcfc0c9fa89197bd1e710b896e7c62a12a3ed2"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1/out/build-checks/result.json",
+                "sha256": "fd46ce241a89a78fbeca02d3d2ed87a9f757c6cffe21dd0de4430f6bcae7b765"
+              },
+              {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1/out/build/source-manifest.json",
+                "sha256": "481f551a68908e21abb4cf2a0795e01602db26ada57f211700515979f49aca12"
+              }
+            ],
+            "custody": "Driver34357 joined0; root freshly verified both exact labelled containers exited0/PID0/noOOM and retained ELF hashes; inventory_changed empty.",
+            "scope": "Non-destructive native compacted-prefix codec, outcome and scientific census with affected lineage/input components; CLI/probe compilation and Clippy. Connected PostgreSQL, installed compacted recovery, reclamation, compacted successor compatibility and crash/restore qualification NOT_RUN."
+          },
+          "installed_fixture_preparation": {
+            "original_author_commit": "dc980a53a9a80269b53b9f1a48fa2971fdac596b",
+            "integrated_commit": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+            "root_delta": "Only rustfmt whitespace in test-only helper; original format check failed before mechanical correction. No product changes beyond reviewed3a.",
+            "author_receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-reader-fixture-source-v1.json",
+              "sha256": "df3ae3c2723671837affc32fd53786743b8de6d7c093258488d26baa55c6ee0b"
+            },
+            "scope": "4 excluded clones/13installedcommands; actual abandonment/retirement before synthetic139B floor+7exactreceiptdeletes; full/absentoriginalread and3refusals;131definednegativecapturecontrols",
+            "runtime": "NOT_RUN; independent fixture review finalizing",
+            "independent_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-reader-fixture-independent-review-v1.json",
+              "sha256": "d08b1f8a45d14562f7d5c12595b330eab518b44b53dff319c774cee46f32732c",
+              "status": "NO_SOURCE_BLOCKER; terminalization ACL omission subsequently found at runtime, preserved as review miss"
+            }
+          },
+          "installed_reader_attempts": [
+            {
+              "source": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1",
+              "result": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/result.json",
+              "status": "FAIL_PREPARATION_ACL",
+              "driver": "43345 joined1",
+              "observed": "Firstpositive-abandon exit4, unforced/reaped; Control(Backend). Exact newControl4pid134 reported permission denied for table acquisition_gaps within captured operationwindow. Source closure committed before refusal; no gap created; activeControl retained. No synthetic floor/mutator/compacted reader ran.",
+              "custody": "Fixture preserves OUTCOME_UNKNOWN/nativeNOT_RUN after expected-success assertion failed. Outer root driver joined1 and exactclient exited143/PG exited0, bothPID0/noOOM freshly verified; cleanup/missing/unrelated/unexpected lists empty. Do not relabel original failure as PASS.",
+              "correction": "Only fresh fixture setup adds existing initial-abandonment/retirement grants already used in qualified initial_retirement.py128-133; preserve three newreader columnSELECTs. Narrow independentcatalogallowlist permits exact additionalgap-table and threefunctionACLlines. Product/compiled artifacts unchanged, so reuse98f80b1 exactbuild.",
+              "receipts": [
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/result.json",
+                  "sha256": "0e12f6386ec079907542116a7dca164da0c58ce80b29b863381587a36a82f55e"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/positive-abandon-response.json",
+                  "sha256": "91ed5fa8c21497c38860662e3884e77810494457453fca330e699af8be2c84d4"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/positive-abandon-custody.json",
+                  "sha256": "40c88a0bbdb7e813a0221d3043eea4f30c410c7405d261a70f01322b45d8a2e8"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/positive-abandon-after.json",
+                  "sha256": "68c612f38553b7e7567a4536d443d1b9b674dcfeb49eec77fbce78ac6f6b2510"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/postgres.log",
+                  "sha256": "a73dc2bfcccd37e548dc328da234692d7eaf33099be8f2d3cb5da6940d8e0132"
+                }
+              ]
+            }
+          ]
         }
       }
     }

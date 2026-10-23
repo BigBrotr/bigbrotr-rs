@@ -62055,8 +62055,10 @@
           "branch": "work/compacted-installed-reader",
           "base": "10a5430ec2b8cb4a4f8289b1b8902f54be7a47ab",
           "owner": "compacted_reader_fixture",
-          "state": "Active source-only author; no runtime assigned",
-          "model": "gpt-6-astra/xhigh verified actual turn_context at creation"
+          "state": "Clean author branch sourcecomplete; integrated with mechanical rustfmt; runtime NOT_RUN",
+          "model": "gpt-6-astra/xhigh verified actual turn_context at creation",
+          "commit": "dc980a53a9a80269b53b9f1a48fa2971fdac596b",
+          "integrated": "98f80b121b6e8b3501240284fcc5cf6f192a00d0"
         },
         "retired_branch": "work/producer-reclamation-native",
         "branch_reconciliation": {
@@ -62071,6 +62073,22 @@
         "resources": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-10a5430/resources.json",
         "qualification": "PASS_COMPACTED_PREFIX_COMPONENTS",
         "preservation": "All3ELFs, source export, raw logs/results and original authorworktrees retained. No cache/data cleanup."
+      },
+      "closed_reclamation_corrected_reader_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1",
+        "source": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+        "state": "stopped-retained; driver34357joined0; fetch/native fresh exited0/PID0/noOOM",
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-98f80b1/resources.json",
+        "qualification": "PASS_COMPACTED_PREFIX_COMPONENTS",
+        "preservation": "All exact3ELFs, source export, logs/results retained; original10a also retained; no cleanup"
+      },
+      "closed_reclamation_installed_reader_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1",
+        "source": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+        "state": "stopped-retained FAIL at firstabandon beforefloor; exactclient143/PG0 PID0/noOOM, rootdriver43345joined1",
+        "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/result.json",
+        "preserved": "Originaldfbb unchanged; failedpositiveclone sourceclosure/activeControl partialSQL, nativeoriginalfiles, logs, snapshots retained. No postfailure nativeopen; no source artifact rewritten.",
+        "next": "Fresh source-bound derivative with existing terminalization privileges; reuse product98f80b1build after independent corrective review"
       }
     }
   },
