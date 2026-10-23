@@ -49,6 +49,24 @@ def replay(root, *, ack_refusals=False):
     assert previous['client'] == declaration['previous_client']
     if ack_refusals:
         assert oracle.initial_ack_origin_report(basis,pin,previous,raw) == pin['client_id']
+        absence = read(folder/(origin_name+'-origin-backends.json'))
+        assert set(absence) == {'database','scope','limit_seconds','status','attempts','seconds'}
+        assert absence['database'] == pin['database'] and absence['scope'] == 'all-database-sessions'
+        assert type(absence['limit_seconds']) is int and absence['limit_seconds'] == 5
+        assert absence['status'] == 'OBSERVED_ABSENT' and absence['attempts']
+        elapsed = 0
+        for index,attempt in enumerate(absence['attempts']):
+            assert set(attempt) == {'seconds','sessions'}
+            elapsed = number(attempt['seconds'],elapsed,5)
+            sessions = attempt['sessions']; assert type(sessions) is list
+            assert (sessions == []) == (index == len(absence['attempts'])-1)
+            for session in sessions:
+                assert set(session) == {'pid','backend_start','backend_type','usename','state'}
+                number(session['pid'],1,integer=True)
+                assert all(session[k] is None or type(session[k]) is str
+                    for k in ('backend_start','backend_type','usename','state'))
+            assert [s['pid'] for s in sessions] == sorted({s['pid'] for s in sessions})
+        number(absence['seconds'],elapsed,6)
     else:
         assert previous['client'] == pin['client_id']
         assert all(previous[k] == [] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
