@@ -684,12 +684,16 @@ not acquire this authority.
 `acquisition_progress` retains one current local prefix per producer/job, not one
 row per delivery. Ordinals 1..3 count retained correlated EVENTs in one actual
 REQ; a different REQ starts at ordinal1. Parse/size/membership preparation holes
-stop progress for the remainder of that REQ while preserving ordinary admission
-of later valid events. If those admissions leave the typed cut behind reserved
-mutations, a later progress call refuses rather than silently backfilling them.
-This conservative first-slice limitation needs explicit recovery; it is not live
-continuity or completion of the ACK gate. Native rejection is a classified
-failure, distinct from an unclassified preparation hole.
+freeze that REQ's classified prefix. Later valid mutations retain their captured
+frame binding, original reservation/outcome and complete dependency union; the
+producer mutation cut and native ACK advance without replacing the job head or
+its physical xmin. This returns credit without classifying skipped input. A
+certification after the hole remains an ordinary read with no progress or ACK;
+a later genuine REQ may start a new classified prefix at ordinal1. Existing
+untyped or incomplete history is never silently adopted or backfilled. Native
+rejection is a classified failure only within a continuous prefix, distinct from
+an unclassified preparation hole. The preparation-hole source increment's build
+and installed qualification are tracked separately in the recovery report.
 
 Classifications 2/3/4 are actual native NewFacts/AlreadyDurable/Rejected, and
 5/6 are ExistingProof/certification rejection. Each new classified position

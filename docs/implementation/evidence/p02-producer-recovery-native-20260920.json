@@ -42747,7 +42747,71 @@
                 "GC, whole-job/source completion, unlimited retained capacity"
               ]
             }
-          ]
+          ],
+          "preparation_hole_continuity_20261023": {
+            "status": "SOURCE_REVIEW_AND_COMPONENT_BUILD_PASS; installed preparation-hole and its recovery/retry NOT_RUN",
+            "product_source": "87011a3e4331a09b7fbfa11c61ed69434e1cba6e",
+            "build_candidate": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
+            "candidate_tree": "a473399f2eca0c953af9a2d61abfb4efb4434924",
+            "contract_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-remaining-boundary-review-v1.json",
+              "sha256": "bb64420795af33e6f998b845b7951b9ffa5e451fe2508859dcdd4c2a024676d4"
+            },
+            "author_receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/preparation-hole-source-v1.json",
+              "sha256": "0ae785be08d248a774f3331ba53f4a5d8d14e0d113fcf0c1f6904a47f9075873"
+            },
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/preparation-hole-product-critical-review-v1.json",
+              "sha256": "1ef9d5a9ca1d806a73137b14fb4468059a04a775930dda861a479a008b1ec083"
+            },
+            "semantics": "Preserve actual captured frame and native mutation witness/outcome/COMMIT/ACK while freezing only the affected REQ JobHead. No proof-only ACK, fabricated skipped-input classification, changed migration/native format or adoption of historical C<R gaps.",
+            "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f",
+            "driver_session": 4103,
+            "profile": "Existing producer-ack19-group profile, four additional literal required controls; no measured result yet",
+            "root_review": "Read complete frozen four-file delta and changed reducers/call boundaries; independent reviewer full current owners/linked recovery read reused. Root authenticated all18 reviewed product/caller hashes and exact six-line builder hash before candidate commit.",
+            "next": "Finish critical review of existing-harness initial preparation-hole fixture and two config-only recovery/retry processes, pin measured9cef25f profile, integrate fixture without changing product bytes, then run it with strict raw replay in a fresh exact-source lab.",
+            "integrated_main": "1c6afe32a27f06e7e33b277ab9fb84fc6c58cc0a",
+            "integration": "Clean merge tree exactly equals candidate build tree; no source/manual conflict changes",
+            "component_build": {
+              "status": "PASS_PRODUCER_ACK_COMPONENTS",
+              "driver_exit": 0,
+              "qualification": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/qualification.json",
+                "sha256": "37cb748763e7786d6b7393714572fa090b0a0d51653917396a1fab236b0546fc"
+              },
+              "component_result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts/component-result.json",
+                "sha256": "c76f71b75c4b58cf0565d1cf20404f8922afd56e3952ac7389e498735260d566"
+              },
+              "build_result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts/build-result.json",
+                "sha256": "4b1cba1270986d140bac6bc6d8ee986c05350a6c77cd98657dfe8fd0c9e9512a"
+              },
+              "resources": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/resources.json",
+                "sha256": "fa63ac466a678f709a0790f36cb33f260a50129546364e2572b58ea5dbb5abac"
+              },
+              "source_manifest_sha256": "6b173bd0e36b12d0a7d23510c710d8dae2bf345dae42100d666c43e59a23cc57",
+              "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+              "tests": 262,
+              "groups": 19,
+              "required_controls": 34,
+              "checks": "All22 PASS: CLI/probe build,19 nonempty selected groups,both Clippy; four new literal semantic controls present",
+              "executables_sha256": {
+                "native_components": "e5401bf206fab743bf859a626d70b332f254bb891673b944c2a84c6c6fbc69de",
+                "sync_progress": "fac5b64eabeeee26d8c0da23a53a27f9fadbb36e772bf130e29fb5901ad227d0",
+                "fact_codec": "11458f28cbbf95a3e942f2a629666d4de62ff58245cf8784269d7c4158db9c07",
+                "evidence_intent": "9f50cfe4d853f113d3e6b445ed72b98d9e371c174883a24223e6a58ec1634cdf",
+                "control_schema": "3299f5197abf2fc4e3b397ee1dc10157faec4eccb6e2d9060c16447a4657d9ee",
+                "migrate_entrypoint": "82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57",
+                "ingest_bootstrap_probe": "654d33a8a2ee26b8be221df31ad60ab66fc815dcae3f093788b9f3b855a37f34",
+                "bigbrotr": "2398dfc457f643de16ee8e6e73171eef9efaf2c31c0b5ce7e028b1d195a6bc6c"
+              },
+              "custody": "Outer driver joined0; root authenticated exact fetch/native labels/IDs exited0,PID0,noOOM,cgroups absent. Inventory unchanged; all original evidence and exclusive compiler cache preserved.",
+              "scope": "Native ACK/noGC/credit mechanics and affected closing, original recovery, legacy/activated/lineage, dictionary/input and installed consumer components; schema40 catalog and CLI/probe compilation plus both Clippy selections. Connected PG confirmation/ACK, installed two-slot traffic/loss/recovery, resource capacity and Archive worker qualification NOT_RUN."
+            }
+          }
         }
       }
     }

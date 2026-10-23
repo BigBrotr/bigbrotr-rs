@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "ACTIVE: main70bb00f exact-source ACK mutation-COMMIT-loss/recovery/retry and strict raw replay PASS; both drivers joined, owned resources stopped. Remaining ACK boundary review active; root sole runtime/integration owner.",
+      "state": "ACTIVE: reviewed preparation-hole product/build integrated main1c6afe3 after262 component tests/34controls/bothClippy; component driver joined and containers stopped. Independent installed fixture/recovery source review active; no engine/build running.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -61544,11 +61544,25 @@
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
         },
         "ack_remaining_boundary": {
-          "scope": "Source-only assessment of remaining required ACK/checkpoint boundaries; no implementation or engines authorized",
+          "scope": "Implement genuine mutation-only checkpoint/ACK after a preparation hole, retaining frozen classified prefix; source-only in assigned worktree",
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Active"
+          "state": "Completed87011a3; root assumed branch ownership and added reviewed builder controls as9cef25f"
+        },
+        "progress_hole_fixture": {
+          "model": "gpt-6-astra",
+          "effort": "xhigh",
+          "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-57-47-01a16944-9ea6-75d2-8a3a-17f2103a80ca.jsonl session_meta/turn_context; root verified",
+          "state": "Active source-only",
+          "scope": "Independent actual installed hole-continuity fixture"
+        },
+        "progress_hole_critical": {
+          "model": "gpt-6-astra",
+          "effort": "xhigh",
+          "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
+          "state": "Active source-only",
+          "scope": "Independent critical review of hole-continuity product/fixture authority and replay"
         }
       },
       "pause_resource_observation_20261023": {
@@ -61597,7 +61611,49 @@
             "bb_producer_ack_commit_70bb00f_after_complete"
           ]
         }
-      ]
+      ],
+      "preparation_hole_source_work_20261023": [
+        {
+          "owner": "ack_remaining_boundary",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-progress-hole-20261023",
+          "branch": "work/producer-progress-hole",
+          "base": "2f5198b82ac9027b83ea0cc37c8006d15f4c74dd",
+          "scope": "Rust producer progress and installed Sync plus discriminating existing component tests",
+          "state": "Clean root candidate9cef25f, critically reviewed, component-qualified and integrated main1c6afe3; original source receipt87011a3 preserved",
+          "head": "9cef25f13db44cac1cdd55e1862229ba7298f3b0"
+        },
+        {
+          "owner": "progress_hole_fixture",
+          "path": "/home/tux/bigbrotr-rs/.research/producer-progress-hole-fixture-20261023",
+          "branch": "work/producer-progress-hole-fixture",
+          "base": "2f5198b82ac9027b83ea0cc37c8006d15f4c74dd",
+          "scope": "Additive existing initial ACK harness, complete independent science and raw replay; historical profile retained",
+          "state": "Source active; future product build pins unavailable until measured"
+        }
+      ],
+      "preparation_hole_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f",
+        "source": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
+        "tree": "a473399f2eca0c953af9a2d61abfb4efb4434924",
+        "driver_session": 4103,
+        "status": "PASS_PRODUCER_ACK_COMPONENTS",
+        "resource_owner": "Existing exact-source network-transport/lab.py checks exclusive owned compiler cache and preserves original artifacts; resources.json holds actual container IDs/owner",
+        "space": "276GiB free before allocation; driver repeats12GiB floor and ownership/isolation checks",
+        "driver_exit": 0,
+        "owner": "9ab5ca9a79b178221c6c2d11e6cc331a",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "bc93795619317e645f5cff1c1e27a358fdb42078e102fc6c8005330e3e04286d"
+          },
+          {
+            "name": "native",
+            "id": "a207b66517a36ed847131e9cd01ad9f75de66ae67c4d96856c39adefb2df5a1a"
+          }
+        ],
+        "custody": "Fresh root exact labels/IDs and both states exited0,PID0,noOOM,cgroups absent; driver4103 joined0, no changed unrelated resource"
+      }
     }
   },
   "tux_intermediate_retirement_20261018": {

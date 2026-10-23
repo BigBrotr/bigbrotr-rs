@@ -7,12 +7,13 @@ current root and new reviewer runtime metadata confirm Astra/xhigh.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: classified producer checkpoint, synchronized native ACK and
-restart. Main `70bb00f56ddcf19ccf538000ac9764c72b1568f7` was clean and remote-equal
-at resume. Product/build `fcad4c9` and reviewed ACK-loss fixture `70fd750` remain
-unchanged. Current local changes only record completed qualification in this
-checkpoint, recovery report, task note, reference and inventory; no unfinished
-source edit or merge/rebase exists. The containing documentation commit saves
-those records; inspect actual HEAD/remote on resume.
+restart. Integrated main `1c6afe32a27f06e7e33b277ab9fb84fc6c58cc0a` has the exact
+qualified product/build tree `a473399f2eca0c953af9a2d61abfb4efb4434924` from
+candidate9cef25f. Source87011a3 plus six reviewed builder lines preserve mutation
+handoff after preparation holes without advancing that REQ's classified prefix.
+No migration/native format changed. Current local changes record this source,
+qualification, contracts and fixture status in existing documents. Last verified
+remote main was2f5198b; the containing documentation commit saves these records.
 
 The [owning recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -37,15 +38,24 @@ owns exact receipts, invocation premises, failures and remaining gates. The
   reader import, historical missing-ACL aggregate and offline wrapper presentation
   error all remain in the owning report with separate corrected/narrower evidence.
   No original failure has been overwritten or turned into PASS.
-- **NOT_RUN/open:** actual native ACK ambiguity/post-ACK durability loss,
-  full-window proof-only, preparation-hole continuity, remaining refusal/resource
+- **PASS:** candidate9cef25f build:262 tests in19 groups,34 literal controls,
+  all22 checks including both Clippy, eight authenticated ELFs. Driver4103 joined0.
+  Artifacts: external `runs/producer-ack-9cef25f/out/artifacts`.
+- **NOT_RUN/open:** installed preparation-hole continuity and its recovery/retry,
+  actual native ACK ambiguity/post-ACK durability loss, full-window proof-only,
+  remaining refusal/resource
   cases, GC and capacity/backup. The loss suite does not qualify these boundaries.
 
 ## Active work and preserved resources
 
-`ack_remaining_boundary` is performing source-only contract/caller assessment of
-these remaining gates; its effective Astra/xhigh metadata is recorded in the
-inventory. No engine/build or root runtime driver is active. The earlier ACK-loss
+`ack_remaining_boundary` implements the narrow preparation-hole continuity fix
+in `.research/producer-progress-hole-20261023`; `progress_hole_fixture` owns its
+independent installed fixture in `.research/producer-progress-hole-fixture-20261023`.
+`progress_hole_critical` reviews authority/replay/resource boundaries independently.
+All three are verified Astra/xhigh. Product author completed87011a3; root added
+reviewed builder controls at candidate9cef25f, qualified and merged main1c6afe3.
+Build4103 joined0; exact owned build containers are exited0/PID0/noOOM/cgroups
+absent. Fixture source/review continue; worktree/base identities are inventoried. The earlier ACK-loss
 source author and critical reviewer completed; their work is integrated.
 
 The new loss client's exact ID and borrowed PG were freshly observed exited,
@@ -57,14 +67,20 @@ No cleanup was performed. Recheck ownership/state before the next resource use.
 
 ## Precise next step
 
-Finish the active source assessment of the preparation-hole/live-continuity
-boundary, then assign its concrete implementation in an isolated worktree.
-Current observed limitation: a preparation hole freezes classified progress for
-that REQ, later ordinary admissions can fill the native window without ACK, and
-the next REQ refuses a typed cut behind reserved mutations. Preserve the frozen
-classified prefix and original outcomes; do not invent skipped-input authority
-or completion to make the fixture pass. The source review must settle the narrow
-product change before a new exact-source build/real-engine qualification.
+Complete/freeze and critically review the existing-harness preparation-hole
+fixture, including fresh initial config-only recovery and retry. Bind its additive
+profile to actual9cef25f component/build receipts and eight ELFs, preserve old
+profiles, integrate only experiments/docs, then run a new detached exact-source
+lab with `bindings.py LAB --installed-sync-ack-preparation-hole BUILD` followed by
+strict raw replay `--kind initial --producer-ack --preparation-hole`.
+
+Expected wire: REQ1[A,malformed,B], REQ2[C,D,B-proof] within the existing3-frame
+bound/window2. First JobHead stays A ordinal1/xmin outcome4 while B advances only
+mutation cut/ACK; new REQ resumes classification. Final I=A=C7/head8/classified4;
+proof adds no native write/original/ACK. Recovery must preserve that shape and all
+originals, adding only closing/native+1 and current Control lifecycle, then retry
+native+0. These installed outcomes are still NOT_RUN; no rebuild is needed for
+fixture/documentation-only edits.
 
 GC, mixed-restore/refusal/resource gates and original a99 Sync timeout cause remain
 open. NoGC64/32MiB is temporary, not capacity qualification. Q33 CI billing, arm64
