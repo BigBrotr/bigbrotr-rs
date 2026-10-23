@@ -20,7 +20,7 @@ use bigbrotr_model::{
 use tokio::sync::oneshot;
 
 mod activated;
-mod compacted;
+pub(super) mod compacted;
 mod empty;
 pub(super) mod replay;
 mod successor_family;

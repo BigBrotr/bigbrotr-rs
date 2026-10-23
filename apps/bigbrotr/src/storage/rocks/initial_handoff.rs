@@ -17,6 +17,10 @@ use bigbrotr_model::{
 
 use std::os::unix::fs::MetadataExt;
 
+#[path = "compacted_handoff.rs"]
+mod compacted_handoff;
+pub use compacted_handoff::{COMPACTED_HANDOFF_DATA_BYTES, CompactedInitialPredecessor};
+
 const MAX_HANDOFF_BYTES: usize = 78 + 2 * MAX_MANIFEST_BYTES;
 
 #[path = "initial_empty.rs"]
@@ -36,17 +40,30 @@ enum EmptyTargetState {
     Closing,
 }
 
-/// A positive, bounded initial source proof and exact proposed target. This is
-/// data, not authority. No external decoder can fabricate its native witness.
+/// A bounded original or compacted initial proof and exact proposed target.
+/// This is data, not authority. No external decoder can fabricate its native witness.
 #[derive(Clone, Debug)]
 pub struct InitialHandoff {
     record: InitialHandoffRecord,
     native_sequence: u64,
     native_root: (u64, u64),
+    basis: InitialPredecessorBasis,
+}
+
+// The compacted basis is minted only from an ordered verified native cursor.
+// It does not invent an original replay count or change portable handoff bytes.
+#[derive(Clone, Debug)]
+enum InitialPredecessorBasis {
+    Original,
+    Compacted {
+        floor: crate::storage::rocks::producer_floor::ClosedProducerFloor,
+        inputs: [u8; 32],
+    },
 }
 
 /// Bounded portable metadata only. Its decoder cannot create a positive local
-/// witness or authorize application; that still requires every original input.
+/// witness or authorize application; an explicit original or compacted proof
+/// is required.
 #[derive(Clone, Copy, Debug)]
 pub(in crate::storage) struct InitialHandoffRecord {
     previous: IngestManifest,
@@ -79,6 +96,7 @@ impl InitialHandoff {
             },
             native_sequence: source.recovery().store.db.latest_sequence_number(),
             native_root: source.recovery().store.handoff_root_identity()?,
+            basis: InitialPredecessorBasis::Original,
         })
     }
     pub fn previous_manifest(&self) -> &IngestManifest {
@@ -398,6 +416,7 @@ impl<'a> HistoricalInitial<'a> {
                 .checked_sub(4)
                 .ok_or(BootstrapError::StateMismatch)?,
             native_root: self.root,
+            basis: InitialPredecessorBasis::Original,
         };
         self.recovery.validate_initial_handoff(&handoff)?;
         Ok(handoff)
@@ -482,6 +501,16 @@ impl IngestRecovery {
         }
         authority()?;
         self.validate_initial_handoff(handoff)?;
+        self.apply_checked_initial_handoff(handoff, permit, authority)
+    }
+
+    // Both proof paths perform their own preflight before this exact batch.
+    fn apply_checked_initial_handoff(
+        &mut self,
+        handoff: &InitialHandoff,
+        permit: OwnedPermit,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ObservedHandoff, BootstrapError> {
         let completed = self.manifest() == &handoff.record.next;
         let encoded = handoff.encode();
         let source_zero = [1, 2, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -513,6 +542,16 @@ impl IngestRecovery {
     }
     /// Read-only local preflight before coordination or native handoff dispatch.
     pub(in crate::storage) fn validate_initial_handoff(
+        &self,
+        handoff: &InitialHandoff,
+    ) -> Result<(), BootstrapError> {
+        if !matches!(handoff.basis, InitialPredecessorBasis::Original) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        self.validate_initial_handoff_snapshot(handoff)
+    }
+
+    fn validate_initial_handoff_snapshot(
         &self,
         handoff: &InitialHandoff,
     ) -> Result<(), BootstrapError> {

@@ -175,6 +175,36 @@ impl ControlSession {
             .await
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "separate retained metadata and outcome grants"
+    )]
+    pub async fn prepare_live_compacted_initial_successor(
+        &mut self,
+        candidate: &mut InitialWriterCandidate,
+        input: InitialSuccessionRequest<'_>,
+        limits: AdmissionLimits,
+        metadata: OwnedPermit,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedHandoff, InitialSuccessionError> {
+        if candidate.role_instance_id() != input.role_instance_id {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        candidate
+            .require_compacted_handoff(input.handoff, &metadata, input.cancelled)
+            .map_err(InitialSuccessionError::Native)?;
+        self.prepare_compacted_initial_successor(
+            candidate.recovery_mut(),
+            input,
+            limits,
+            metadata,
+            outcomes,
+            validate,
+        )
+        .await
+    }
+
     /// Consumes the only local candidate, including every failure path. A lost
     /// COMMIT returns no writer and poisons Control. Recovery observes durable
     /// metadata; it cannot adopt the attempted incarnation.
@@ -184,6 +214,42 @@ impl ControlSession {
         handoff: InitialHandoff,
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<LiveInitialWriter, InitialSuccessionError> {
+        self.activate_initial_writer_in(candidate, handoff, input, permit, None, validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "candidate custody and separate metadata/outcome grants"
+    )]
+    pub async fn activate_compacted_initial_writer(
+        &mut self,
+        candidate: InitialWriterCandidate,
+        handoff: InitialHandoff,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        metadata: OwnedPermit,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<LiveInitialWriter, InitialSuccessionError> {
+        let check = initial_compaction::Check::new(limits, outcomes)?;
+        self.activate_initial_writer_in(candidate, handoff, input, metadata, Some(check), validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared protocol retains explicit native and grant ownership"
+    )]
+    async fn activate_initial_writer_in(
+        &mut self,
+        candidate: InitialWriterCandidate,
+        handoff: InitialHandoff,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        compacted: Option<initial_compaction::Check>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<LiveInitialWriter, InitialSuccessionError> {
         if permit.request().units().data_bytes() < 128 * 1024
@@ -199,9 +265,14 @@ impl ControlSession {
                 BootstrapError::AuthorityUnavailable,
             ));
         }
-        candidate
-            .require_prepared_handoff(&handoff)
-            .map_err(InitialSuccessionError::Native)?;
+        initial_compaction::require_candidate(
+            compacted.as_ref(),
+            &candidate,
+            &handoff,
+            &permit,
+            input.cancelled,
+        )
+        .map_err(InitialSuccessionError::Native)?;
         let target = *handoff.next_manifest().identity();
         if !candidate
             .recovery()
@@ -263,10 +334,29 @@ impl ControlSession {
                 },
             )
             .map_err(|_| OwnerError::Unavailable)?;
-        candidate
-            .require_prepared_handoff(&handoff)
-            .map_err(InitialSuccessionError::Native)?;
+        initial_compaction::require_candidate(
+            compacted.as_ref(),
+            &candidate,
+            &handoff,
+            &permit,
+            input.cancelled,
+        )
+        .map_err(InitialSuccessionError::Native)?;
         check(&mut lease, target.policy_epoch, input.cancelled)?;
+        if let Some(compacted) = &compacted {
+            compacted
+                .require(
+                    &tx,
+                    candidate.recovery(),
+                    &handoff,
+                    &previous,
+                    &permit,
+                    &mut lease,
+                    target.policy_epoch,
+                    input.cancelled,
+                )
+                .await?;
+        }
         let activated_at_us: i64=tx.query_one(
             "INSERT INTO control.initial_ingest_activations(dataset_id,owner_resource_id,target_epoch,target_incarnation,
                 target_role_instance_id,producer_slot_id,producer_epoch,previous_manifest_sha256,target_manifest_sha256,handoff_sha256,
@@ -298,14 +388,43 @@ impl ControlSession {
         if snapshot(&tx, &self.request, &mut validate).await? != policy {
             return Err(OwnerError::InvalidPolicy.into());
         }
+        if compacted.is_some() {
+            ingest_registry::require_retirement_registration(&tx, &binding.previous)
+                .await
+                .map_err(InitialSuccessionError::Registry)?;
+        }
         binding.require(&tx).await?;
-        candidate
-            .require_prepared_handoff(&handoff)
-            .map_err(InitialSuccessionError::Native)?;
+        initial_compaction::require_candidate(
+            compacted.as_ref(),
+            &candidate,
+            &handoff,
+            &permit,
+            input.cancelled,
+        )
+        .map_err(InitialSuccessionError::Native)?;
+        if let Some(compacted) = &compacted {
+            compacted
+                .require(
+                    &tx,
+                    candidate.recovery(),
+                    &handoff,
+                    &binding.previous,
+                    &permit,
+                    &mut lease,
+                    target.policy_epoch,
+                    input.cancelled,
+                )
+                .await?;
+        }
         check(&mut lease, target.policy_epoch, input.cancelled)?;
-        let native = candidate
-            .activate(handoff)
-            .map_err(InitialSuccessionError::Native)?;
+        let native = initial_compaction::activate(
+            compacted.as_ref(),
+            candidate,
+            handoff,
+            &permit,
+            input.cancelled,
+        )
+        .map_err(InitialSuccessionError::Native)?;
         tx.rollback()
             .await
             .map_err(|_| InitialSuccessionError::DeliveryUnknown)?;

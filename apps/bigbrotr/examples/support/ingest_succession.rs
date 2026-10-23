@@ -4,14 +4,15 @@ use super::*;
 use bigbrotr::storage::{
     postgres::{
         control_owner::{
-            InitialSuccessionError, InitialSuccessionRequest, ProducerCloseRequest,
+            InitialSuccessionError, InitialSuccessionRequest, PolicySnapshot, ProducerCloseRequest,
             ProducerResolveRequest,
         },
         ingest_registry,
     },
     rocks::store::{
-        AdmissionLimits, IngestRecovery, InitialHandoff, InitialWriterCandidate,
-        ProducerRecoveryLimits, RetainedRequestInput,
+        AdmissionLimits, COMPACTED_PREFIX_METADATA_BYTES, IngestRecovery, InitialHandoff,
+        InitialWriterCandidate, ProducerRecoveryLimits, RetainedCompactedPrefix,
+        RetainedRequestInput, compacted_outcome_data_bytes,
     },
 };
 use bigbrotr_model::{
@@ -39,6 +40,8 @@ struct Probe {
     observer: tokio_postgres::Client,
     cancelled: AtomicBool,
     compacted_history_seed: bool,
+    compacted_initial: bool,
+    gap_prefix: Option<PathBuf>,
 }
 
 struct Attempt {
@@ -90,6 +93,8 @@ pub async fn run(
             || matches!(
                 mode,
                 "successor-normal"
+                    | "successor-compacted-normal"
+                    | "successor-compacted-gap-only"
                     | "successor-preparer-claim"
                     | "successor-gap"
                     | "successor-gap-only"
@@ -114,6 +119,7 @@ pub async fn run(
         gate_prefix.is_some(),
         mode == activated_acquisition::MODE
             || mode == activated_retirement::MODE
+            || mode == "successor-compacted-gap-only"
             || matches!(
                 mode,
                 "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
@@ -173,6 +179,8 @@ pub async fn run(
                 observer,
                 cancelled: AtomicBool::new(false),
                 compacted_history_seed: false,
+                compacted_initial: false,
+                gap_prefix: None,
             },
             recovery,
             observer_driver,
@@ -193,6 +201,8 @@ pub async fn run(
                 observer,
                 cancelled: AtomicBool::new(false),
                 compacted_history_seed: false,
+                compacted_initial: false,
+                gap_prefix: None,
             },
             recovery,
             observer_driver,
@@ -218,6 +228,10 @@ pub async fn run(
         observer,
         cancelled: AtomicBool::new(false),
         compacted_history_seed: mode == "successor-live-compacted-history-seed",
+        compacted_initial: mode.contains("compacted")
+            && mode != "successor-live-compacted-history-seed",
+        gap_prefix: (mode == "successor-compacted-gap-only")
+            .then(|| gate_prefix.unwrap().to_path_buf()),
     };
     // Reserve the same worst-case decode/replay envelope as installed recovery
     // before the first claim. Resolve one original at a time, never a vector.
@@ -273,7 +287,7 @@ pub async fn run(
                 .unwrap();
             probe.snapshot("completed").await;
         }
-        "successor-normal" | "successor-preparer-claim" => {
+        "successor-normal" | "successor-preparer-claim" | "successor-compacted-normal" => {
             probe
                 .prepare(
                     &mut owner,
@@ -321,7 +335,7 @@ pub async fn run(
                 probe.snapshot("fresh-control-retry").await;
             }
         }
-        "successor-gap" | "successor-gap-only" => {
+        "successor-gap" | "successor-gap-only" | "successor-compacted-gap-only" => {
             let error = probe
                 .prepare(
                     &mut owner,
@@ -340,7 +354,7 @@ pub async fn run(
             );
             probe.check_poisoned(&mut owner).await;
             probe.snapshot("prepared-native-old").await;
-            if mode == "successor-gap-only" {
+            if matches!(mode, "successor-gap-only" | "successor-compacted-gap-only") {
                 // End this real preparation process with the confirmed SQL
                 // intent and old native store. A later process receives only
                 // their durable state, never this retained local plan.
@@ -442,6 +456,45 @@ pub async fn run(
         "native":"closed","control":"released-and-joined","admission":false}));
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
+}
+
+pub async fn run_compacted_gap(config: Config, config_file: &Path, prefix: &Path) {
+    run(
+        config,
+        "successor-compacted-gap-only",
+        config_file,
+        None,
+        Some(prefix),
+    )
+    .await;
+}
+
+// The synchronous validation callback is the existing post-COMMIT boundary.
+// A finite external observer captures the committed SQL and old native state;
+// this test gate returns the original typed refusal before any native dispatch.
+fn compacted_gap_gate(prefix: &Path, store: &Path) {
+    let (rows, sequence) = raw_state(store);
+    emit(serde_json::json!({"event":"successor-compacted-gap-native",
+        "native":{"event":"dump-state","rows":rows,"sequence":sequence}}));
+    let path = prefix.with_extension("go");
+    emit(
+        serde_json::json!({"event":"successor-compacted-gap-gate","phase":"ready",
+        "path":path,"timeout_ms":10000,"poll_ms":5}),
+    );
+    let started = std::time::Instant::now();
+    while !path.try_exists().unwrap() {
+        assert!(
+            started.elapsed() < Duration::from_secs(10),
+            "compacted gap gate expired"
+        );
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    let metadata = std::fs::symlink_metadata(&path).unwrap();
+    assert!(metadata.file_type().is_file() && metadata.len() == 0);
+    emit(
+        serde_json::json!({"event":"successor-compacted-gap-gate","phase":"released",
+        "path":path,"timeout_ms":10000,"poll_ms":5}),
+    );
 }
 
 async fn wait_preparer_claim(prefix: &Path) {
@@ -662,6 +715,11 @@ impl Probe {
         ingest_ttl: Duration,
     ) -> Attempt {
         assert!(matches!(ingest_ttl.as_secs(), 5 | 60));
+        if self.compacted_initial {
+            return self
+                .plan_compacted(owner, recovery, spec, candidate, ingest_ttl)
+                .await;
+        }
         let closed = bounded(owner.observe_initial_retirement(
             recovery,
             ProducerCloseRequest {
@@ -761,6 +819,124 @@ impl Probe {
             InitialHandoff::from_source(&source, next).unwrap()
         };
         drop(source);
+        self.finish_plan(handoff, spec, candidate, ingest_ttl, previous, policy)
+            .await
+    }
+
+    async fn plan_compacted(
+        &self,
+        owner: &mut ControlSession,
+        recovery: &IngestRecovery,
+        spec: &InitialRegistration,
+        candidate: Option<&InitialWriterCandidate>,
+        ingest_ttl: Duration,
+    ) -> Attempt {
+        assert_eq!(
+            hex(spec.dataset_id.as_bytes()),
+            "309d9507c5b5c39e9947e1406482d519"
+        );
+        assert_eq!(
+            hex(spec.producer_slot_id.as_bytes()),
+            "36a0253e6d94c18099f6c4dae9b7e040"
+        );
+        assert_eq!(spec.outstanding_request_limit, 2);
+        let limits = recovery_limits().event;
+        let prefix = RetainedCompactedPrefix::inspect_initial(
+            recovery,
+            spec.producer_slot_id,
+            limits,
+            grant(&self.budget, COMPACTED_PREFIX_METADATA_BYTES, 0),
+            grant(
+                &self.budget,
+                compacted_outcome_data_bytes(limits).unwrap(),
+                0,
+            ),
+            &self.cancelled,
+        )
+        .unwrap();
+        let source = bounded(owner.inspect_initial_compacted_retirement(
+            recovery,
+            &prefix,
+            ProducerCloseRequest {
+                ingest_root: &self.path,
+                registration: spec,
+                policy_ttl: self.policy_ttl(),
+                cancelled: &self.cancelled,
+            },
+            limits,
+            grant(&self.budget, 128 * 1024, 0),
+            grant(
+                &self.budget,
+                compacted_outcome_data_bytes(limits).unwrap(),
+                0,
+            ),
+            |doc, digest| self.validate(doc, digest),
+        ))
+        .await
+        .unwrap();
+        assert_eq!(source.issued_through(), 7);
+        assert_eq!(source.last_complete_sequence(), 27);
+        emit(
+            serde_json::json!({"event":"successor-compacted-proof","compacted_requests":7,
+            "original_requests_replayed":0,"last_complete_sequence":27,"closure_digest":hex(&source.digest())}),
+        );
+        let policy = bounded(owner.refresh(|doc, digest| self.validate(doc, digest)))
+            .await
+            .unwrap();
+        let previous = recovery.manifest();
+        let handoff = if let Some(candidate) = candidate {
+            assert!(std::ptr::eq(candidate.recovery(), recovery));
+            source
+                .handoff_candidate(
+                    candidate,
+                    PolicyEpoch::new(policy.policy_revision),
+                    &self.cancelled,
+                )
+                .unwrap()
+        } else {
+            let domains: Vec<_> = spec
+                .allocation_domains
+                .iter()
+                .map(|(kind, _)| (*kind, [160 + *kind as u8; 16].try_into().unwrap()))
+                .collect();
+            let next = IngestManifest::for_successor(
+                ManifestIdentity {
+                    owner_epoch: OwnerEpoch::new(2).unwrap(),
+                    topology_generation: TopologyGeneration::new(
+                        previous
+                            .identity()
+                            .topology_generation
+                            .get()
+                            .checked_add(1)
+                            .unwrap(),
+                    ),
+                    process_incarnation: [202; 16].try_into().unwrap(),
+                    policy_epoch: PolicyEpoch::new(policy.policy_revision),
+                    ..*previous.identity()
+                },
+                AllocationNamespaces::from_entries(&domains).unwrap(),
+            );
+            source.handoff(next, &self.cancelled).unwrap()
+        };
+        drop(source);
+        drop(prefix);
+        self.finish_plan(handoff, spec, candidate, ingest_ttl, previous, policy)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared finite plan telemetry for separate original and compacted proofs"
+    )]
+    async fn finish_plan(
+        &self,
+        handoff: InitialHandoff,
+        spec: &InitialRegistration,
+        candidate: Option<&InitialWriterCandidate>,
+        ingest_ttl: Duration,
+        previous: &IngestManifest,
+        policy: PolicySnapshot,
+    ) -> Attempt {
         let next = *handoff.next_manifest();
         let domains: Vec<_> = spec
             .allocation_domains
@@ -825,32 +1001,54 @@ impl Probe {
             "role":hex(&role),"control_epoch":owner.identity().epoch.get()}),
         );
         let mut validations = 0;
-        let result = bounded(owner.prepare_initial_successor(
-            recovery,
-            InitialSuccessionRequest {
-                ingest_root: &self.path,
-                previous_registration: spec,
-                handoff: &attempt.handoff,
-                role_instance_id: role,
-                created_at_us: attempt.created_at_us,
-                lease_expires_at_us: attempt.lease_expires_at_us,
-                outstanding_request_limit: attempt.window,
-                policy_ttl: self.policy_ttl(),
-                cancelled: &self.cancelled,
-            },
-            grant(&self.budget, 128 * 1024, 8192),
-            |document, digest| {
-                self.validate(document, digest)?;
-                validations += 1;
-                if gap && validations == 3 {
-                    // Both first-transaction documents were really validated.
-                    // This callback runs after its confirmed preparation COMMIT.
-                    return Err(OwnerError::InvalidPolicy);
+        let input = InitialSuccessionRequest {
+            ingest_root: &self.path,
+            previous_registration: spec,
+            handoff: &attempt.handoff,
+            role_instance_id: role,
+            created_at_us: attempt.created_at_us,
+            lease_expires_at_us: attempt.lease_expires_at_us,
+            outstanding_request_limit: attempt.window,
+            policy_ttl: self.policy_ttl(),
+            cancelled: &self.cancelled,
+        };
+        let validate = |document: &str, digest: [u8; 32]| {
+            self.validate(document, digest)?;
+            validations += 1;
+            if gap && validations == 3 {
+                // Both first-transaction documents were really validated.
+                // This callback runs after its confirmed preparation COMMIT.
+                if let Some(prefix) = &self.gap_prefix {
+                    compacted_gap_gate(prefix, &self.path);
                 }
-                Ok(())
-            },
-        ))
-        .await;
+                return Err(OwnerError::InvalidPolicy);
+            }
+            Ok(())
+        };
+        let result = if self.compacted_initial {
+            let limits = recovery_limits().event;
+            bounded(owner.prepare_compacted_initial_successor(
+                recovery,
+                input,
+                limits,
+                grant(&self.budget, 128 * 1024, 8192),
+                grant(
+                    &self.budget,
+                    compacted_outcome_data_bytes(limits).unwrap(),
+                    0,
+                ),
+                validate,
+            ))
+            .await
+        } else {
+            bounded(owner.prepare_initial_successor(
+                recovery,
+                input,
+                grant(&self.budget, 128 * 1024, 8192),
+                validate,
+            ))
+            .await
+        };
         emit(serde_json::json!({"event":"successor-result","stage":stage,
             "control_epoch":owner.identity().epoch.get(),"validations":validations,
             "error":result.as_ref().err().map(|error|format!("{error:?}"))}));

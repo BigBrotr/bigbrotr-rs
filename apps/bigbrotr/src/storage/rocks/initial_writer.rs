@@ -1,7 +1,9 @@
 //! Local custody for one live initial successor. Portable history is not a writer.
 use super::{
     AdmissionError, BootstrapError, IngestRecovery, IngestStore, InitialHandoff, ResolvedSource,
+    VerifiedCompactedPrefix,
 };
+use crate::runtime::OwnedPermit;
 use crate::{
     runtime::ownership::fresh_process_incarnation,
     storage::rocks::manifest::{AllocationNamespaces, IngestManifest},
@@ -10,6 +12,7 @@ use bigbrotr_model::{
     AllocationDomainId, DictionaryKind, OwnerEpoch, PolicyEpoch, ProcessIncarnation,
     ProducerRequestId, ProducerSlotId, TopologyGeneration,
 };
+use std::sync::atomic::AtomicBool;
 
 /// Owns the exclusive native handle and identities minted in this process.
 /// There is no caller-supplied identity, Clone, Deserialize or writer conversion.
@@ -23,7 +26,7 @@ pub struct InitialWriterCandidate {
 
 impl InitialWriterCandidate {
     /// Retained epoch2 state is never adopted. The old epoch1 producer still
-    /// requires complete positive replay and relational retirement validation.
+    /// requires an explicit original or compacted proof and relational retirement.
     pub fn new(recovery: IngestRecovery) -> Result<Self, BootstrapError> {
         let previous = *recovery.manifest();
         if recovery.store.write_uncertain {
@@ -99,6 +102,26 @@ impl InitialWriterCandidate {
         {
             return Err(BootstrapError::StateMismatch);
         }
+        InitialHandoff::from_source(source, self.target_manifest(policy)?)
+    }
+
+    /// The compacted proof must borrow this actual candidate's excluded owner.
+    /// It cannot select caller-supplied incarnation or allocation namespaces.
+    pub fn handoff_compacted(
+        &self,
+        source: &VerifiedCompactedPrefix<'_>,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+    ) -> Result<InitialHandoff, AdmissionError> {
+        if !std::ptr::eq(source.recovery(), &self.recovery)
+            || self.recovery.manifest() != &self.previous
+        {
+            return Err(AdmissionError::StateMismatch);
+        }
+        InitialHandoff::from_compacted(source, self.target_manifest(policy)?, cancelled)
+    }
+
+    fn target_manifest(&self, policy: PolicyEpoch) -> Result<IngestManifest, BootstrapError> {
         let mut identity = *self.previous.identity();
         identity.owner_epoch = OwnerEpoch::new(2).expect("initial successor");
         identity.topology_generation = TopologyGeneration::new(
@@ -110,10 +133,7 @@ impl InitialWriterCandidate {
         );
         identity.process_incarnation = self.incarnation;
         identity.policy_epoch = policy;
-        InitialHandoff::from_source(
-            source,
-            IngestManifest::for_successor(identity, self.namespaces),
-        )
+        Ok(IngestManifest::for_successor(identity, self.namespaces))
     }
 
     pub(in crate::storage) fn recovery_mut(&mut self) -> &mut IngestRecovery {
@@ -124,13 +144,42 @@ impl InitialWriterCandidate {
         &self,
         handoff: &InitialHandoff,
     ) -> Result<(), BootstrapError> {
+        self.require_target(handoff)?;
+        self.recovery.validate_initial_handoff(handoff)
+    }
+
+    fn require_target(&self, handoff: &InitialHandoff) -> Result<(), BootstrapError> {
         if handoff.previous_manifest() != &self.previous
             || handoff.next_manifest().identity().process_incarnation != self.incarnation
             || handoff.next_manifest().allocation_namespaces() != &self.namespaces
         {
             return Err(BootstrapError::StateMismatch);
         }
-        self.recovery.validate_initial_handoff(handoff)
+        Ok(())
+    }
+
+    pub(in crate::storage) fn require_compacted_handoff(
+        &self,
+        handoff: &InitialHandoff,
+        scratch: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.require_target(handoff)?;
+        self.recovery
+            .validate_compacted_initial_handoff(handoff, scratch, cancelled)
+    }
+
+    pub(in crate::storage) fn require_prepared_compacted_handoff(
+        &self,
+        handoff: &InitialHandoff,
+        scratch: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.require_compacted_handoff(handoff, scratch, cancelled)?;
+        if self.recovery.manifest() != handoff.next_manifest() {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
     }
 
     pub(in crate::storage) fn require_prepared_handoff(
@@ -151,16 +200,32 @@ impl InitialWriterCandidate {
         handoff: InitialHandoff,
     ) -> Result<ActiveInitialWriter, BootstrapError> {
         self.require_prepared_handoff(&handoff)?;
+        Ok(self.activate_checked(handoff))
+    }
+
+    /// Same local custody transition, explicitly after compacted PG checks and
+    /// confirmed activation COMMIT. Recovery/live frontier remain separate.
+    pub(in crate::storage) fn activate_compacted(
+        self,
+        handoff: InitialHandoff,
+        scratch: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<ActiveInitialWriter, BootstrapError> {
+        self.require_prepared_compacted_handoff(&handoff, scratch, cancelled)?;
+        Ok(self.activate_checked(handoff))
+    }
+
+    fn activate_checked(self, handoff: InitialHandoff) -> ActiveInitialWriter {
         let mut store = self.recovery.store;
         store.live_initial = Some(LiveInitialBinding {
             manifest: *handoff.next_manifest(),
             slot: handoff.producer_slot_id(),
         });
-        Ok(ActiveInitialWriter {
+        ActiveInitialWriter {
             store,
             handoff,
             role: self.role,
-        })
+        }
     }
 }
 

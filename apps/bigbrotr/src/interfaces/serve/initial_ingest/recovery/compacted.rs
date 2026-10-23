@@ -8,7 +8,7 @@ use bigbrotr::storage::{
     },
 };
 
-pub(super) fn inspect(
+pub(in crate::interfaces::serve::initial_ingest) fn inspect(
     budget: &ResourceBudget,
     recovery: &IngestRecovery,
     spec: &ingest_registry::InitialRegistration,

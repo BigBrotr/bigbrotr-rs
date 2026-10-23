@@ -43830,7 +43830,7 @@
               "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
               "checks": "Independent source review, formatting, exact5be8449 build/Clippy/components and installed13commands/rawreplay PASS"
             },
-            "next": "Qualify real connected typed-head changes and rollback/cancellation/lease/client delivery boundaries using existing rollback proxy and current history harness; then adapt initial handoff/prepared retry/native gap and continuous-candidate epoch2 activation before remaining recovery/frontier/Archive consumers and any GC.",
+            "next": "Complete compacted initial handoff/prepared retry/native gap and continuous-candidate epoch2 activation qualification, then remaining activated/later recovery, live/Archive frontier and empty retirement before GC.",
             "input_scanner": {
               "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
               "source_review": {
@@ -44356,6 +44356,43 @@
                   "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-branch-reconciliation-v1.json",
                   "sha256": "828c8b8ceee5518ba2d552b93fab1d4765745aa31204f4e9d097da06148853ba"
                 }
+              }
+            },
+            "initial_handoff_preparation": {
+              "status": "SOURCE_REVIEWED_NATIVE_PG_PROBE; ready for exact build; connected Python fixture review in progress",
+              "native_author_commit": "7824749369df3751850ae10912b37f7e18ad8167",
+              "native_root_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json",
+                "sha256": "4fa8a30d09922ac618d93fb4b3fdd864c4b9654b39ab386222d7d9d1a0ecf694"
+              },
+              "pg_source_snapshot": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-pg-source-work-v1.json",
+                "sha256": "9843ebd33397f375fdc64af634bbd3b5537c2a619394517949025e4f93a281db"
+              },
+              "pg_independent_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-pg-independent-review-v1.json",
+                "sha256": "d7f8595d3482f37e751cade953e1362cb248da277aa9b01518f9c41106ed896a"
+              },
+              "contract": "Exact Original/Compacted sealed basis; unchanged portable intent and existing four-write transition; complete typed/canonical/epoch1-retired checks before prepare COMMIT and post-COMMIT dispatch, same authority deadline; historical gap/prepared factory confirms ROLLBACK; exact no-write retry; continuous candidate-only activation.",
+              "installed_scope": "Existing serve --activate-initial-successor from current initial floor; resolved_requests0/compacted_requestsN. General installed compacted prepared/activated recovery not included.",
+              "fixture_scope": "Seven separately excluded copies of qualified initial81rows/sequence121/zero originals; prepared retries, authentic post-COMMIT/native-old gap, continuous first dictionary, exact head/nonempty/staged-input/original-reader refusals and actual installed initial startup/shutdown. Independent whole-state expectations and raw replay; original never native-opened.",
+              "physical_origin": "Fresh complete physical census pinned separately; old6ece raw qualified logical endpoint, not original positive/store physical files. Recheck source census before/after cloning and verify first excluded native dump matches prior81/121/0 before mutation.",
+              "required_controls": {
+                "new_native_controls": 8,
+                "expected_component_total": 150,
+                "expected_required_total": 47,
+                "measurement": "NOT_RUN; expectations only"
+              },
+              "reviews_open": "Python fixture whole-state oracle/replay: deadline equality and renewal-causality findings being corrected. No product runtime claim.",
+              "remaining": "Activated/later recovery, live frontier, retained Archive frontier and empty retirement before floor writer/unlink; physical loss, interrupted synchronization/unlink, mixed restore/backup and capacity.",
+              "probe_author_commit": "873ad26e768f9a266e4371ef8a44b0862c60597d",
+              "probe_root_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-probe-root-review-v1.json",
+                "sha256": "b54d40514e4ca7da3097e49fe0e948b3f3c56d04ecc33b50fa10199aadcf04e0"
+              },
+              "final_format_addendum": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-format-addendum-v1.json",
+                "sha256": "9b230cf3afe56ceba3f790eae3cc467a9fb7d0bb23a607897635db650f89b231"
               }
             }
           }

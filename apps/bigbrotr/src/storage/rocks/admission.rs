@@ -54,6 +54,7 @@ impl From<BootstrapError> for AdmissionError {
             BootstrapError::AuthorityUnavailable => Self::AuthorityUnavailable,
             BootstrapError::CommitUnknown => Self::CommitUnknown,
             BootstrapError::RequestInput(error) => Self::RequestInput(error),
+            BootstrapError::Compacted(error) => error,
         }
     }
 }

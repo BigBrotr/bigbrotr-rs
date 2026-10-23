@@ -518,3 +518,16 @@ fn compacted_ancestor_requires_grants_cancellation_and_complete_ordered_rows() {
     }
     cursor.finish(&NOT_CANCELLED).unwrap();
 }
+
+#[test]
+fn compacted_later_ancestor_cannot_mint_initial_handoff() {
+    let (f, r) = fixture();
+    let lineage = inspect_compacted(&f, &r).unwrap();
+    let view = ancestor(&f, &r, &lineage).unwrap();
+    let verified = resolve(&f, &view).unwrap();
+    let before = kv(&r.store);
+    let sequence = r.store.db.latest_sequence_number();
+    assert!(InitialHandoff::from_compacted(&verified, f.next, &NOT_CANCELLED).is_err());
+    assert_eq!(kv(&r.store), before);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence);
+}

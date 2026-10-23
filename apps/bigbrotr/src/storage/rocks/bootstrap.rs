@@ -29,6 +29,8 @@ pub enum BootstrapError {
     ProducerClosing,
     AuthorityUnavailable,
     RequestInput(super::RequestInputError),
+    /// Exact retained-effect refusal while validating a compacted handoff.
+    Compacted(super::AdmissionError),
     /// No negative outcome is implied. Close/join and resolve the exact request.
     CommitUnknown,
 }

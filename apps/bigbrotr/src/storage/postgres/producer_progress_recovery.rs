@@ -4,7 +4,10 @@ use super::*;
 use crate::storage::rocks::{
     manifest::IngestManifest,
     producer_floor::ClosedProducerFloor,
-    store::{CompactedInitialAncestor, IngestRecovery, RetainedCompactedPrefix},
+    store::{
+        CompactedInitialAncestor, CompactedInitialPredecessor, IngestRecovery,
+        RetainedCompactedPrefix,
+    },
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
 use futures_util::TryStreamExt;
@@ -119,6 +122,36 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_ances
     ancestor
         .validate(recovery, cancelled)
         .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
+/// The fixed handoff seal was minted from canonical native completion. It
+/// binds the exact initial floor and complete input stamp on either side of
+/// the single four-write transition; portable handoff bytes cannot select it.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_handoff(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    predecessor: &CompactedInitialPredecessor<'_>,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(|error| ProducerProgressError::Native(error.into()))?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        predecessor.manifest(),
+        predecessor.producer_slot_id(),
+        scratch,
+        Some(predecessor.floor()),
+        authority,
+    )
+    .await?;
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(|error| ProducerProgressError::Native(error.into()))?;
     Ok(complete)
 }
 

@@ -4,7 +4,8 @@ use super::*;
 use crate::{
     runtime::OwnedPermit,
     storage::rocks::store::{
-        BootstrapError, IngestRecovery, InitialHandoff, ObservedHandoff, ResolvedSource,
+        AdmissionLimits, BootstrapError, IngestRecovery, InitialHandoff, ObservedHandoff,
+        ResolvedSource,
     },
 };
 use std::sync::atomic::Ordering;
@@ -54,10 +55,10 @@ impl PreparedInitialGap<'_> {
 /// Exact existing intent plus a positive local proof; never admission authority.
 /// The metadata grant stays owned across native dispatch and any exact retry.
 pub struct InitialGapPlan {
-    registration: ingest_registry::InitialRegistration,
-    intent: initial_history::Intent,
-    handoff: InitialHandoff,
-    _permit: OwnedPermit,
+    pub(super) registration: ingest_registry::InitialRegistration,
+    pub(super) intent: initial_history::Intent,
+    pub(super) handoff: InitialHandoff,
+    pub(super) _permit: OwnedPermit,
 }
 impl InitialGapPlan {
     pub fn handoff(&self) -> &InitialHandoff {
@@ -130,6 +131,51 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ObservedHandoff, InitialSuccessionError> {
+        self.complete_prepared_initial_gap_in(recovery, plan, input, permit, None, validate)
+            .await
+    }
+
+    /// Complete only an existing intent with a separately sealed compacted
+    /// predecessor. Exact completed retries retain the same zero-write path.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "native plan and separate metadata/outcome grants"
+    )]
+    pub async fn complete_prepared_compacted_initial_gap(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        plan: &InitialGapPlan,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        metadata: OwnedPermit,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedHandoff, InitialSuccessionError> {
+        let check = initial_compaction::Check::new(limits, outcomes)?;
+        self.complete_prepared_initial_gap_in(
+            recovery,
+            plan,
+            input,
+            metadata,
+            Some(check),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared existing-intent protocol with explicit native grants"
+    )]
+    async fn complete_prepared_initial_gap_in(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        plan: &InitialGapPlan,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        compacted: Option<initial_compaction::Check>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedHandoff, InitialSuccessionError> {
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(InitialSuccessionError::Native(
                 BootstrapError::AuthorityUnavailable,
@@ -149,9 +195,14 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
-        recovery
-            .validate_initial_handoff(&plan.handoff)
-            .map_err(InitialSuccessionError::Native)?;
+        initial_compaction::validate(
+            compacted.as_ref(),
+            recovery,
+            &plan.handoff,
+            &permit,
+            input.cancelled,
+        )
+        .map_err(InitialSuccessionError::Native)?;
         let current = self.identity;
         let owner_epoch = recovery.manifest().identity().owner_epoch.get();
         let (tx, mut lease, epoch) = self
@@ -159,17 +210,37 @@ impl ControlSession {
             .await?;
         initial_history::require_intent(&tx, &plan.registration, &plan.intent, current, epoch)
             .await?;
+        if let Some(check) = &compacted {
+            check
+                .require(
+                    &tx,
+                    recovery,
+                    &plan.handoff,
+                    &plan.registration,
+                    &permit,
+                    &mut lease,
+                    epoch,
+                    input.cancelled,
+                )
+                .await?;
+        }
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
-        let observed = recovery
-            .apply_initial_handoff(&plan.handoff, permit, || {
+        let observed = initial_compaction::apply(
+            compacted.as_ref(),
+            recovery,
+            &plan.handoff,
+            permit,
+            input.cancelled,
+            || {
                 if input.cancelled.load(Ordering::Relaxed) {
                     return Err(BootstrapError::AuthorityUnavailable);
                 }
                 lease
                     .check_delivery(epoch)
                     .map_err(|_| BootstrapError::AuthorityUnavailable)
-            })
-            .map_err(InitialSuccessionError::Native)?;
+            },
+        )
+        .map_err(InitialSuccessionError::Native)?;
         initial_history::finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);

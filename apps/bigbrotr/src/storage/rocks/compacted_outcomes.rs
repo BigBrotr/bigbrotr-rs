@@ -34,8 +34,10 @@ pub struct CompactedPrefixResolution<'a> {
 }
 
 /// Native consistency only. It cannot be converted to original-input replay,
-/// ACK credit, a writer or reclamation permission. The PG owner wraps it only
-/// after authenticating the exact retained history and confirming transaction
+/// ACK credit, a writer or reclamation permission. A bounded native handoff
+/// may retain its compacted basis; SQL preparation/activation remain separate.
+/// The PG owner wraps it only after authenticating the exact retained history
+/// and confirming transaction
 /// completion: COMMIT for current initial retirement, ROLLBACK for history reads.
 pub struct VerifiedCompactedPrefix<'a> {
     prefix: PrefixOwner<'a>,
@@ -53,6 +55,14 @@ impl RetainedCompactedPrefix {
 }
 
 impl<'a> CompactedPrefixResolution<'a> {
+    pub(in crate::storage::rocks::store) fn from_handoff(
+        view: CompactedInitialPredecessor<'a>,
+        recovery: &'a IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new(PrefixOwner::Handoff(view), recovery, cancelled)
+    }
+
     pub(super) fn new(
         prefix: PrefixOwner<'a>,
         recovery: &'a IngestRecovery,
@@ -243,6 +253,42 @@ impl<'a> CompactedPrefixResolution<'a> {
 }
 
 impl VerifiedCompactedPrefix<'_> {
+    pub(in crate::storage::rocks::store) fn recovery(&self) -> &IngestRecovery {
+        self.recovery
+    }
+
+    // A handoff can retain only current epoch1 or a genuinely empty two-entry
+    // Prepared2 observation. Later history and plan-derived rechecks cannot mint
+    // a fresh handoff basis or silently renew a stored sequence/input stamp.
+    pub(in crate::storage::rocks::store) fn handoff_context(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<(&IngestRecovery, [u8; 32]), AdmissionError> {
+        self.prefix.validate(self.recovery, cancelled)?;
+        let inputs = match self.prefix {
+            PrefixOwner::Initial(prefix) => prefix.inputs,
+            PrefixOwner::Ancestor(lineage) => {
+                let head = lineage.native_head();
+                if lineage.entries.len() != 2
+                    || lineage.pending_target().is_some()
+                    || head.manifest.key_schema() != 2
+                    || head.manifest.identity().owner_epoch.get() != 2
+                    || head.issued != 0
+                    || head.acknowledged != 0
+                    || head.source_through != 0
+                    || !head.source_present
+                    || head.closing
+                    || head.allocations != [0; 9]
+                {
+                    return Err(AdmissionError::StateMismatch);
+                }
+                lineage.inputs
+            }
+            PrefixOwner::Handoff(_) => return Err(AdmissionError::StateMismatch),
+        };
+        Ok((self.recovery, inputs))
+    }
+
     pub(in crate::storage::rocks::store) fn matches_lineage(
         &self,
         lineage: &RetainedLineage,

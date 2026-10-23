@@ -1,7 +1,7 @@
 //! Read-only native observation of one compacted initial producer. No PG
 //! retirement, checkpoint authority, writer or reclamation capability is minted.
 use super::*;
-use crate::storage::rocks::store::{AdmissionError, AdmissionLimits};
+use crate::storage::rocks::store::{AdmissionError, AdmissionLimits, CompactedInitialPredecessor};
 
 #[path = "compacted_outcomes.rs"]
 mod outcomes;
@@ -38,6 +38,7 @@ pub struct CompactedInitialAncestor<'a> {
 enum PrefixOwner<'a> {
     Initial(&'a RetainedCompactedPrefix),
     Ancestor(&'a RetainedLineage),
+    Handoff(CompactedInitialPredecessor<'a>),
 }
 // The optional floor and all simultaneous borrowed cursor headers use the
 // existing metadata scratch, separately from the one capacity-charged Vec.
@@ -53,18 +54,21 @@ impl PrefixOwner<'_> {
         match self {
             Self::Initial(prefix) => prefix.manifest(),
             Self::Ancestor(lineage) => lineage.entry(1).expect("inspected ancestor").manifest(),
+            Self::Handoff(view) => view.manifest(),
         }
     }
     fn floor(&self) -> &ClosedProducerFloor {
         match self {
             Self::Initial(prefix) => prefix.floor(),
             Self::Ancestor(lineage) => lineage.compacted.as_ref().expect("sealed floor view"),
+            Self::Handoff(view) => view.floor(),
         }
     }
     fn slot(&self) -> ProducerSlotId {
         match self {
             Self::Initial(prefix) => prefix.slot,
             Self::Ancestor(lineage) => lineage.slot,
+            Self::Handoff(view) => view.producer_slot_id(),
         }
     }
     fn validate(
@@ -75,6 +79,7 @@ impl PrefixOwner<'_> {
         match self {
             Self::Initial(prefix) => prefix.validate(recovery, cancelled),
             Self::Ancestor(lineage) => lineage.validate(recovery, cancelled).map_err(Into::into),
+            Self::Handoff(view) => view.validate(recovery, cancelled).map_err(Into::into),
         }
     }
     fn require_input(
@@ -102,6 +107,16 @@ impl PrefixOwner<'_> {
                     cancelled,
                 )?,
                 lineage.inputs,
+            ),
+            Self::Handoff(view) => (
+                recovery.store.require_compacted_input(
+                    view.floor().fields().issued_through,
+                    checked.0,
+                    checked.1,
+                    checked.2,
+                    cancelled,
+                )?,
+                view.input_stamp(),
             ),
         };
         if actual != expected {

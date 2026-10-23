@@ -571,6 +571,17 @@ if producer_floor:
             'compacted_history_cannot_mint_handoff_gap_empty_or_activation_capabilities',
             'compacted_history_reuses_one_permit_for_full_census_and_canonical_rows',
             'compacted_history_correction_census_counts_reclaimed_requests_beyond_spool_cap'])
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::' + name for name in [
+            'compacted_handoff_exact_four_writes_and_zero_write_prepared_retry',
+            'compacted_handoff_refuses_stale_custody_inputs_and_dispatch_without_writes',
+            'compacted_handoff_requires_full_census_original_manifest_cut_and_digest',
+            'compacted_handoff_wrong_owner_and_prepared_pending_context_refuse',
+            'compacted_handoff_prepared_target_must_be_empty_open_and_census_complete',
+            'compacted_candidate_binds_fresh_target_and_explicit_activation_only',
+            'compacted_handoff_postwrite_authority_refusal_retains_exact_retry'])
+    required_controls['initial_reconstruction'].append(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

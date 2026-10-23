@@ -276,3 +276,6 @@ fn initial_gap_preflight_and_dispatch_refuse_target_inputs_even_without_native_s
         assert_eq!(inputs(&fixture.path()), original_inputs, "{schedule}");
     }
 }
+
+#[path = "compacted_handoff_tests.rs"]
+mod compacted_handoff_tests;

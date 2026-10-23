@@ -2,10 +2,13 @@
 use super::*;
 use bigbrotr::storage::{
     postgres::{
-        control_owner::{InitialHistoryRequest, InitialSuccessionRequest, ProducerCloseRequest},
+        control_owner::{
+            CompactedInitialRetirement, InitialHistoryRequest, InitialSuccessionRequest,
+            ProducerCloseRequest,
+        },
         ingest_registry,
     },
-    rocks::store::{IngestRecovery, InitialWriterCandidate},
+    rocks::store::{IngestRecovery, InitialWriterCandidate, compacted_outcome_data_bytes},
 };
 
 pub(in crate::interfaces::serve) fn run(
@@ -87,13 +90,6 @@ async fn own(
     let mut sync = selected_sync
         .then(|| sync::Sync::prepare(&root, &budget, Profile::Successor))
         .transpose()?;
-    // Native, retained inputs, Control and activation all coexist already. The
-    // source accumulator and one replay pair must fit before any Control claim.
-    {
-        let _source = grant(&budget, 4096, 4096)?;
-        let _preparation = grant(&budget, 128 * 1024, 8192)?;
-        drop(recovery::replay_grants(&budget)?);
-    }
     if selected_sync {
         sync::preflight(&budget)?;
     }
@@ -126,6 +122,30 @@ async fn own(
         .map_err(|e| (4, e.to_string()))
     })
     .await?;
+    // Select only the actually inspected floor. Reserve its complete native
+    // census/SQL outcome overlap before claiming Control, without reserving an
+    // original-input replay that this branch cannot perform.
+    let compacted_prefix = recovery::compacted::inspect(
+        &budget,
+        candidate.recovery(),
+        &spec,
+        &cancellation.requested,
+    )?;
+    let compacted = compacted_prefix.is_some();
+    {
+        let _preparation = grant(&budget, 128 * 1024, 8192)?;
+        if compacted {
+            drop(grant(
+                &budget,
+                compacted_outcome_data_bytes(recovery::limits().event)
+                    .map_err(|e| (3, e.to_string()))?,
+                0,
+            )?);
+        } else {
+            let _source = grant(&budget, 4096, 4096)?;
+            drop(recovery::replay_grants(&budget)?);
+        }
+    }
     let fresh = || super::super::fresh_process_incarnation().map_err(|e| (1, e.to_string()));
     let claim = ClaimRequest {
         dataset,
@@ -169,71 +189,125 @@ async fn own(
     let NativeOwner::Candidate(candidate) = custody.store.as_ref().expect("native owner") else {
         unreachable!("candidate retained before preparation")
     };
-    phase(&progress, timeout)?;
-    let closed = bounded(timeout, &cancellation, async {
-        custody
-            .owner
-            .observe_initial_retirement(
-                candidate.recovery(),
-                ProducerCloseRequest {
-                    ingest_root: path,
-                    registration: &spec,
-                    policy_ttl: ttl,
-                    cancelled: &cancellation.requested,
-                },
-                grant(&budget, 4096, 4096)?,
-                validate,
+    let (handoff, predecessor, basis) = if let Some(prefix) = &compacted_prefix {
+        phase(&progress, timeout)?;
+        let limits = recovery::limits().event;
+        let outcome_bytes = compacted_outcome_data_bytes(limits).map_err(|e| (3, e.to_string()))?;
+        let retired = bounded(timeout, &cancellation, async {
+            custody
+                .owner
+                .inspect_initial_compacted_retirement(
+                    candidate.recovery(),
+                    prefix,
+                    ProducerCloseRequest {
+                        ingest_root: path,
+                        registration: &spec,
+                        policy_ttl: ttl,
+                        cancelled: &cancellation.requested,
+                    },
+                    limits,
+                    grant(&budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
+                    grant(&budget, outcome_bytes, 0)?,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?;
+        phase(&progress, timeout)?;
+        let basis = bounded(timeout, &cancellation, async {
+            custody
+                .owner
+                .initial_successor_basis(&spec, validate)
+                .await
+                .map_err(owner_error)
+        })
+        .await?;
+        if basis.policy != accepted {
+            return Err((4, "accepted policy changed during successor startup".into()));
+        }
+        let handoff = retired
+            .handoff_candidate(
+                candidate,
+                PolicyEpoch::new(basis.policy.policy_revision),
+                &cancellation.requested,
             )
-            .await
-            .map_err(|e| (4, e.to_string()))
-    })
-    .await?;
-    let issued = closed.issued_through();
-    let reserved = closed.reserved_through();
-    if issued != reserved {
-        return Err((
-            4,
-            "successor predecessor has unresolved reserved requests".into(),
-        ));
-    }
-    let mut prefix = closed
-        .source_resolution(candidate.recovery())
-        .map_err(|e| (4, e.to_string()))?;
-    let resolved = recovery::replay::originals(
-        &root,
-        &budget,
-        &progress,
-        &cancellation,
-        &mut custody.owner,
-        candidate.recovery(),
-        &spec,
-        reserved,
-        Some(recovery::replay::Prefix::Source(&mut prefix)),
-        recovery::replay::Mode::InspectRetirement,
-        validate,
-    )
-    .await?;
-    let source = prefix.finish().map_err(|e| (4, e.to_string()))?;
-    phase(&progress, timeout)?;
-    let basis = bounded(timeout, &cancellation, async {
-        custody
-            .owner
-            .initial_successor_basis(&spec, validate)
-            .await
-            .map_err(owner_error)
-    })
-    .await?;
-    if basis.policy != accepted {
-        return Err((4, "accepted policy changed during successor startup".into()));
-    }
-    let predecessor = json!({"producer_epoch":"1", "issued_through":issued.to_string(),
+            .map_err(|e| (4, e.to_string()))?;
+        let predecessor = json!({"producer_epoch":"1", "issued_through":retired.issued_through().to_string(),
+            "reserved_through":retired.issued_through().to_string(), "resolved_requests":"0",
+            "compacted_requests":retired.retired_through().to_string(), "recovery_basis":"closed-producer-floor-v3",
+            "last_complete_sequence":retired.last_complete_sequence().to_string(),
+            "sha256":Digest256::from_bytes(retired.digest()).to_string()});
+        (handoff, predecessor, basis)
+    } else {
+        phase(&progress, timeout)?;
+        let closed = bounded(timeout, &cancellation, async {
+            custody
+                .owner
+                .observe_initial_retirement(
+                    candidate.recovery(),
+                    ProducerCloseRequest {
+                        ingest_root: path,
+                        registration: &spec,
+                        policy_ttl: ttl,
+                        cancelled: &cancellation.requested,
+                    },
+                    grant(&budget, 4096, 4096)?,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?;
+        let issued = closed.issued_through();
+        let reserved = closed.reserved_through();
+        if issued != reserved {
+            return Err((
+                4,
+                "successor predecessor has unresolved reserved requests".into(),
+            ));
+        }
+        let mut prefix = closed
+            .source_resolution(candidate.recovery())
+            .map_err(|e| (4, e.to_string()))?;
+        let resolved = recovery::replay::originals(
+            &root,
+            &budget,
+            &progress,
+            &cancellation,
+            &mut custody.owner,
+            candidate.recovery(),
+            &spec,
+            reserved,
+            Some(recovery::replay::Prefix::Source(&mut prefix)),
+            recovery::replay::Mode::InspectRetirement,
+            validate,
+        )
+        .await?;
+        let source = prefix.finish().map_err(|e| (4, e.to_string()))?;
+        phase(&progress, timeout)?;
+        let basis = bounded(timeout, &cancellation, async {
+            custody
+                .owner
+                .initial_successor_basis(&spec, validate)
+                .await
+                .map_err(owner_error)
+        })
+        .await?;
+        if basis.policy != accepted {
+            return Err((4, "accepted policy changed during successor startup".into()));
+        }
+        let predecessor = json!({"producer_epoch":"1", "issued_through":issued.to_string(),
         "reserved_through":reserved.to_string(), "resolved_requests":resolved.to_string(),
         "last_complete_sequence":source.last_complete_sequence().to_string(),
         "sha256":Digest256::from_bytes(source.digest()).to_string()});
-    let handoff = candidate
-        .handoff(&source, PolicyEpoch::new(basis.policy.policy_revision))
-        .map_err(|e| (4, e.to_string()))?;
-    drop(source);
+        let handoff = candidate
+            .handoff(&source, PolicyEpoch::new(basis.policy.policy_revision))
+            .map_err(|e| (4, e.to_string()))?;
+        drop(source);
+        (handoff, predecessor, basis)
+    };
+    drop(compacted_prefix);
     let NativeOwner::Candidate(candidate) = custody.store.as_mut().expect("native owner") else {
         unreachable!("candidate retained before preparation")
     };
@@ -241,26 +315,39 @@ async fn own(
     phase(&progress, timeout)?;
     drop(
         bounded(timeout, &cancellation, async {
-            custody
-                .owner
-                .prepare_live_initial_successor(
-                    candidate,
-                    InitialSuccessionRequest {
-                        ingest_root: path,
-                        previous_registration: &spec,
-                        handoff: &handoff,
-                        role_instance_id,
-                        created_at_us: basis.created_at_us,
-                        lease_expires_at_us: basis.lease_expires_at_us,
-                        outstanding_request_limit: window,
-                        policy_ttl: ttl,
-                        cancelled: &cancellation.requested,
-                    },
-                    grant(&budget, 128 * 1024, 8192)?,
-                    validate,
-                )
-                .await
-                .map_err(|e| (4, e.to_string()))
+            let input = InitialSuccessionRequest {
+                ingest_root: path,
+                previous_registration: &spec,
+                handoff: &handoff,
+                role_instance_id,
+                created_at_us: basis.created_at_us,
+                lease_expires_at_us: basis.lease_expires_at_us,
+                outstanding_request_limit: window,
+                policy_ttl: ttl,
+                cancelled: &cancellation.requested,
+            };
+            let metadata = grant(&budget, 128 * 1024, 8192)?;
+            let result = if compacted {
+                let limits = recovery::limits().event;
+                let bytes = compacted_outcome_data_bytes(limits).map_err(|e| (3, e.to_string()))?;
+                custody
+                    .owner
+                    .prepare_live_compacted_initial_successor(
+                        candidate,
+                        input,
+                        limits,
+                        metadata,
+                        grant(&budget, bytes, 0)?,
+                        validate,
+                    )
+                    .await
+            } else {
+                custody
+                    .owner
+                    .prepare_live_initial_successor(candidate, input, metadata, validate)
+                    .await
+            };
+            result.map_err(|e| (4, e.to_string()))
         })
         .await?,
     );
@@ -269,21 +356,33 @@ async fn own(
         unreachable!("activation consumes candidate")
     };
     let writer = bounded(timeout, &cancellation, async {
-        custody
-            .owner
-            .activate_initial_writer(
-                *candidate,
-                handoff,
-                InitialHistoryRequest {
-                    ingest_root: path,
-                    policy_ttl: ttl,
-                    cancelled: &cancellation.requested,
-                },
-                activation,
-                validate,
-            )
-            .await
-            .map_err(|e| (4, e.to_string()))
+        let input = InitialHistoryRequest {
+            ingest_root: path,
+            policy_ttl: ttl,
+            cancelled: &cancellation.requested,
+        };
+        let result = if compacted {
+            let limits = recovery::limits().event;
+            let bytes = compacted_outcome_data_bytes(limits).map_err(|e| (3, e.to_string()))?;
+            custody
+                .owner
+                .activate_compacted_initial_writer(
+                    *candidate,
+                    handoff,
+                    input,
+                    limits,
+                    activation,
+                    grant(&budget, bytes, 0)?,
+                    validate,
+                )
+                .await
+        } else {
+            custody
+                .owner
+                .activate_initial_writer(*candidate, handoff, input, activation, validate)
+                .await
+        };
+        result.map_err(|e| (4, e.to_string()))
     })
     .await?;
     custody.store = Some(NativeOwner::Live(Box::new(writer)));

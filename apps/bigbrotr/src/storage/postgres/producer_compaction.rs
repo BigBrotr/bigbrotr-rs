@@ -27,6 +27,10 @@ pub struct CompactedInitialRetirement<'a> {
     _metadata: OwnedPermit,
 }
 impl CompactedInitialRetirement<'_> {
+    pub(super) fn native(&self) -> &VerifiedCompactedPrefix<'_> {
+        &self.native
+    }
+
     /// One bounded SQL outcome row, fixed parameters, typed-head hash scratch
     /// and the confirmed wrapper. Native decoded effects have a separate grant.
     pub const REQUIRED_DATA_BYTES: u64 = 128 * 1024;

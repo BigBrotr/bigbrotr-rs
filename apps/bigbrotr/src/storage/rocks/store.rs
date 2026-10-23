@@ -125,8 +125,8 @@ pub(in crate::storage) use initial_handoff::{
     InitialHandoffRecord,
 };
 pub use initial_handoff::{
-    EmptyInitialRetirement, EncodedHandoff, InitialHandoff, ObservedEmptyInitialRetirement,
-    ObservedHandoff,
+    COMPACTED_HANDOFF_DATA_BYTES, CompactedInitialPredecessor, EmptyInitialRetirement,
+    EncodedHandoff, InitialHandoff, ObservedEmptyInitialRetirement, ObservedHandoff,
 };
 
 #[path = "initial_writer.rs"]

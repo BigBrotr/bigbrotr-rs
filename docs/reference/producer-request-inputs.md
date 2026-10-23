@@ -967,6 +967,26 @@ using this branch; the command does not grant itself privileges. No mutation
 privilege is added, and ordinary original-input recovery keeps its existing ACL.
 An absent permission refuses the compacted operation.
 
+The explicit compacted initial-succession implementation is under qualification.
+Its sealed handoff binds the verified floor, native root/sequence and complete
+input census while preserving the existing portable intent bytes. Preparation
+checks the exact typed checkpoint, canonical outcomes and historical epoch1
+retirement before confirmed PostgreSQL COMMIT and again before the same four
+native writes. Exact prepared retries write nothing. Historical gap/completed
+preparation readers require the existing intent, an empty open epoch2 target and
+confirmed ROLLBACK before returning a reusable plan. They cannot activate a writer.
+Historical retirement checks cover epoch1 allocation domains; the existing
+prepared-target validator separately requires all epoch2 domains to be active.
+
+Only the retained continuous candidate can use this basis for initial activation.
+The existing `serve --activate-initial-successor` entrypoint selects the compacted
+current-initial reader before claiming Control and reserves both census and
+canonical-outcome work. Its predecessor report separates zero original replays
+from N compacted requests. The current `--retire-initial` reader keeps its strict
+no-successor guards and confirmed COMMIT. General installed prepared/activated
+recovery, later live and Archive consumers retain their separate qualification
+gates; this source integration is not their acceptance evidence.
+
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
 witness without weakening their guarantees. Fresh-process replay, exact retry,

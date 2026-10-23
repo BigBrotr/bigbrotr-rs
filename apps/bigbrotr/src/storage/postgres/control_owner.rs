@@ -111,6 +111,8 @@ pub use producer_progress::{ProducerProgressError, ProgressGrant, SyncProgress};
 #[path = "producer_ack.rs"]
 mod producer_ack;
 pub use producer_ack::{ProducerAcknowledgementError, ProducerAcknowledgementReceipt};
+#[path = "initial_compaction.rs"]
+mod initial_compaction;
 #[path = "initial_empty.rs"]
 mod initial_empty;
 #[path = "initial_gap.rs"]

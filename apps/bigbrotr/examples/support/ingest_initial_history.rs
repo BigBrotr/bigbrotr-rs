@@ -7,8 +7,9 @@ use bigbrotr::storage::{
         ProducerResolveRequest,
     },
     rocks::store::{
-        AdmissionLimits, AdmissionOutcome, IngestRecovery, InitialHandoff, ProducerRecoveryLimits,
-        ResolvedSource, RetainedRequestInput, SourceResolution,
+        AdmissionLimits, AdmissionOutcome, COMPACTED_PREFIX_METADATA_BYTES, IngestRecovery,
+        InitialHandoff, ProducerRecoveryLimits, ResolvedSource, RetainedCompactedPrefix,
+        RetainedLineage, RetainedRequestInput, SourceResolution, compacted_outcome_data_bytes,
     },
 };
 use bigbrotr_model::{
@@ -46,6 +47,7 @@ enum Loss {
 #[derive(Clone, Copy)]
 struct Qualification {
     select_route: bool,
+    compacted: bool,
     loss: Option<Loss>,
     proxy_port: Option<u16>,
 }
@@ -473,8 +475,25 @@ pub async fn run_qualification(
         },
         Some(Qualification {
             select_route: command == "successor-prepared-recover",
+            compacted: false,
             loss,
             proxy_port,
+        }),
+    )
+    .await;
+}
+
+/// Explicit compacted existing-intent reconstruction; never a writer factory.
+pub async fn run_compacted(config: Config, config_file: &Path) {
+    run_mode(
+        config,
+        config_file,
+        Mode::History,
+        Some(Qualification {
+            select_route: true,
+            compacted: true,
+            loss: None,
+            proxy_port: None,
         }),
     )
     .await;
@@ -591,14 +610,18 @@ async fn run_mode(
     };
     probe.snapshot("after-claim").await;
     probe.snapshot("before-read").await;
-    let result = match mode {
-        Mode::History => probe.read(&mut owner, &recovery).await,
-        Mode::Gap {
-            cancel_before_completion,
-        } => {
-            probe
-                .complete_gap(&mut owner, &mut recovery, cancel_before_completion)
-                .await
+    let result = if qualification.is_some_and(|q| q.compacted) {
+        probe.complete_compacted(&mut owner, &mut recovery).await
+    } else {
+        match mode {
+            Mode::History => probe.read(&mut owner, &recovery).await,
+            Mode::Gap {
+                cancel_before_completion,
+            } => {
+                probe
+                    .complete_gap(&mut owner, &mut recovery, cancel_before_completion)
+                    .await
+            }
         }
     };
     match &result {
@@ -786,6 +809,109 @@ impl Probe {
         );
         self.snapshot("after-control-end").await;
     }
+    async fn complete_compacted(
+        &self,
+        owner: &mut ControlSession,
+        recovery: &mut IngestRecovery,
+    ) -> Result<(), Refusal> {
+        let limits = recovery_limits().event;
+        let request = || InitialHistoryRequest {
+            ingest_root: &self.path,
+            policy_ttl: self.policy_ttl(),
+            cancelled: &self.cancelled,
+        };
+        let effect = || {
+            grant(
+                &self.budget,
+                compacted_outcome_data_bytes(limits).unwrap(),
+                0,
+            )
+        };
+        let metadata = || grant(&self.budget, 128 * 1024, 8192);
+        let plan = if matches!(self.mode, Mode::Gap { .. }) {
+            let slot = [
+                0x36_u8, 0xa0, 0x25, 0x3e, 0x6d, 0x94, 0xc1, 0x80, 0x99, 0xf6, 0xc4, 0xda, 0xe9,
+                0xb7, 0xe0, 0x40,
+            ]
+            .try_into()
+            .unwrap();
+            let prefix = RetainedCompactedPrefix::inspect_initial(
+                recovery,
+                slot,
+                limits,
+                grant(&self.budget, COMPACTED_PREFIX_METADATA_BYTES, 0),
+                effect(),
+                &self.cancelled,
+            )
+            .map_err(|error| Refusal::at("compacted-native", None, error))?;
+            bounded(owner.inspect_prepared_compacted_initial_gap(
+                recovery,
+                &prefix,
+                request(),
+                limits,
+                metadata(),
+                effect(),
+                |doc, digest| self.validate(doc, digest),
+            ))
+            .await
+        } else {
+            let lineage = RetainedLineage::inspect_compacted_initial(
+                recovery,
+                None,
+                grant(&self.budget, 262144, 0),
+                &self.cancelled,
+            )
+            .map_err(|error| Refusal::at("compacted-native", None, error))?;
+            bounded(owner.inspect_prepared_compacted_initial_history(
+                recovery,
+                &lineage,
+                request(),
+                limits,
+                metadata(),
+                effect(),
+                |doc, digest| self.validate(doc, digest),
+            ))
+            .await
+        }
+        .map_err(|error| Refusal::at("compacted-load", None, error))?;
+        let handoff = plan.handoff();
+        assert_eq!(handoff.issued_through(), 7);
+        assert_eq!(handoff.last_complete_sequence(), 27);
+        emit(
+            serde_json::json!({"event":self.mode.event("compacted-proof"),
+            "compacted_requests":7,"original_requests_replayed":0,"last_complete_sequence":27,
+            "closure_digest":hex(&handoff.closure_digest()),
+            "previous_manifest":hex(handoff.previous_manifest().encode().as_bytes()),
+            "target_manifest":hex(handoff.next_manifest().encode().as_bytes()),
+            "handoff":hex(handoff.encode().as_bytes())}),
+        );
+        self.snapshot("compacted-loaded").await;
+        for stage in ["completed", "exact-retry"] {
+            let observed = bounded(owner.complete_prepared_compacted_initial_gap(
+                recovery,
+                &plan,
+                request(),
+                limits,
+                metadata(),
+                effect(),
+                |doc, digest| self.validate(doc, digest),
+            ))
+            .await
+            .map_err(|error| Refusal::at("compacted-completion", None, error))?;
+            assert_eq!(
+                observed.handoff().encode().as_bytes(),
+                plan.handoff().encode().as_bytes()
+            );
+            emit(
+                serde_json::json!({"event":self.mode.event("compacted-completion"),"stage":stage,
+                "handoff":hex(observed.handoff().encode().as_bytes()),"admission":false}),
+            );
+            drop(observed);
+            self.snapshot(stage).await;
+        }
+        Ok(())
+    }
+
     async fn read(
         &self,
         owner: &mut ControlSession,

@@ -62473,6 +62473,42 @@
         "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
         "raw_replay_driver": "65884 joined0",
         "raw_replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-faults-077dc3c/raw-replay.json"
+      },
+      "compacted_initial_handoff_work_20261024": {
+        "state": "SOURCE_IN_PROGRESS; build/runtime NOT_RUN",
+        "canonical_head": "7bea8e3881776f385fb019bd0549e8925dfa45c7",
+        "native_author": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-initial-handoff-20261024",
+          "branch": "work/compacted-initial-handoff",
+          "commit": "7824749369df3751850ae10912b37f7e18ad8167",
+          "observed": "clean; exact nine-file delta staged in canonical main; independent root source review complete",
+          "receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json"
+        },
+        "root_source": {
+          "owner": "/root",
+          "state": "twelve-file snapshot independently reviewed with no remaining source blocker; build/runtime NOT_RUN",
+          "snapshot": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-pg-source-work-v1.json",
+          "sha256": "9843ebd33397f375fdc64af634bbd3b5537c2a619394517949025e4f93a281db",
+          "independent_review": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-pg-independent-review-v1.json",
+            "sha256": "d7f8595d3482f37e751cade953e1362cb248da277aa9b01518f9c41106ed896a"
+          }
+        },
+        "fixture_author": {
+          "owner": "/root/compacted_reader_fixture",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-initial-journey-20261024",
+          "branch": "work/compacted-initial-journey",
+          "base": "077dc3cfe56b4bffcce84e8f00d56bb545fe5c36",
+          "state": "three Rust example files frozen at873ad26 and integrated exactly; seven Python files remain isolated dirty; no engine/build by agent",
+          "head": "873ad26e768f9a266e4371ef8a44b0862c60597d"
+        },
+        "runtime_owner": "/root only; no new engine/build launched",
+        "preservation": "Both worktrees, ignored receipts and qualified original/clones preserved; no cleanup",
+        "origin": "installed-compacted-reader-6ece98c/installed-compacted-reader/positive; fresh physical census ef0beb7c32a1d712d99f7a854674a7b5a4d51502987420fb765597d69fa037b0 is a new observation, not an old raw physical binding",
+        "probe_review": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-probe-root-review-v1.json",
+          "sha256": "b54d40514e4ca7da3097e49fe0e948b3f3c56d04ecc33b50fa10199aadcf04e0"
+        }
       }
     }
   },

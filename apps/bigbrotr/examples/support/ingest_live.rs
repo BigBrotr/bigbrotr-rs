@@ -22,6 +22,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
             mode,
             "successor-live-zero"
                 | "successor-live-compacted-history-seed"
+                | "successor-live-compacted-initial-seed"
                 | "successor-live-rejected"
                 | "successor-live-guards"
                 | "successor-live-normal"
@@ -62,23 +63,41 @@ pub(super) async fn run(
         )
         .await;
     probe.snapshot("before-prepare").await;
-    let observed = bounded(owner.prepare_live_initial_successor(
-        &mut candidate,
-        InitialSuccessionRequest {
-            ingest_root: &probe.path,
-            previous_registration: &spec,
-            handoff: &attempt.handoff,
-            role_instance_id: attempt.role,
-            created_at_us: attempt.created_at_us,
-            lease_expires_at_us: attempt.lease_expires_at_us,
-            outstanding_request_limit: attempt.window,
-            policy_ttl: probe.policy_ttl(),
-            cancelled: &probe.cancelled,
-        },
-        grant(&probe.budget, 128 * 1024, 8192),
-        |doc, digest| probe.validate(doc, digest),
-    ))
-    .await
+    let input = InitialSuccessionRequest {
+        ingest_root: &probe.path,
+        previous_registration: &spec,
+        handoff: &attempt.handoff,
+        role_instance_id: attempt.role,
+        created_at_us: attempt.created_at_us,
+        lease_expires_at_us: attempt.lease_expires_at_us,
+        outstanding_request_limit: attempt.window,
+        policy_ttl: probe.policy_ttl(),
+        cancelled: &probe.cancelled,
+    };
+    let observed = if probe.compacted_initial {
+        let limits = recovery_limits().event;
+        bounded(owner.prepare_live_compacted_initial_successor(
+            &mut candidate,
+            input,
+            limits,
+            grant(&probe.budget, 128 * 1024, 8192),
+            grant(
+                &probe.budget,
+                compacted_outcome_data_bytes(limits).unwrap(),
+                0,
+            ),
+            |doc, digest| probe.validate(doc, digest),
+        ))
+        .await
+    } else {
+        bounded(owner.prepare_live_initial_successor(
+            &mut candidate,
+            input,
+            grant(&probe.budget, 128 * 1024, 8192),
+            |doc, digest| probe.validate(doc, digest),
+        ))
+        .await
+    }
     .unwrap();
     assert_eq!(
         observed.handoff().encode().as_bytes(),
@@ -96,18 +115,37 @@ pub(super) async fn run(
         serde_json::json!({"event":"live-activation-start","mode":mode,
         "control_epoch":owner.identity().epoch.get()}),
     );
-    let activation = bounded(owner.activate_initial_writer(
-        candidate,
-        attempt.handoff,
-        InitialHistoryRequest {
-            ingest_root: &probe.path,
-            policy_ttl: probe.policy_ttl(),
-            cancelled: &probe.cancelled,
-        },
-        grant(&probe.budget, 128 * 1024, 8192),
-        |doc, digest| probe.validate(doc, digest),
-    ))
-    .await;
+    let input = InitialHistoryRequest {
+        ingest_root: &probe.path,
+        policy_ttl: probe.policy_ttl(),
+        cancelled: &probe.cancelled,
+    };
+    let activation = if probe.compacted_initial {
+        let limits = recovery_limits().event;
+        bounded(owner.activate_compacted_initial_writer(
+            candidate,
+            attempt.handoff,
+            input,
+            limits,
+            grant(&probe.budget, 128 * 1024, 8192),
+            grant(
+                &probe.budget,
+                compacted_outcome_data_bytes(limits).unwrap(),
+                0,
+            ),
+            |doc, digest| probe.validate(doc, digest),
+        ))
+        .await
+    } else {
+        bounded(owner.activate_initial_writer(
+            candidate,
+            attempt.handoff,
+            input,
+            grant(&probe.budget, 128 * 1024, 8192),
+            |doc, digest| probe.validate(doc, digest),
+        ))
+        .await
+    };
     let mut writer = match activation {
         Ok(writer) => {
             assert!(
@@ -210,13 +248,17 @@ pub(super) async fn run(
             "commit_started":true,"error":null}));
         probe.snapshot("live-ingest-renewed").await;
     }
-    if mode == "successor-live-compacted-history-seed" {
+    if matches!(
+        mode,
+        "successor-live-compacted-history-seed" | "successor-live-compacted-initial-seed"
+    ) {
         compacted_history_dictionary(&probe, &mut owner, &mut writer, &spec).await;
     }
     if !matches!(
         mode,
         "successor-live-zero"
             | "successor-live-compacted-history-seed"
+            | "successor-live-compacted-initial-seed"
             | "successor-live-rejected"
             | "successor-live-already-durable"
             | "successor-live-acquisition-claims"
@@ -237,11 +279,15 @@ pub(super) async fn run(
     emit(serde_json::json!({"event":"live-complete","mode":mode,
         "native":"closed","control":"released-and-joined",
         "writer":false,"admission":mode != "successor-live-zero"}));
+    let probe_compacted = probe.compacted_initial;
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
-    if mode == "successor-live-compacted-history-seed" {
+    if matches!(
+        mode,
+        "successor-live-compacted-history-seed" | "successor-live-compacted-initial-seed"
+    ) {
         emit(
-            serde_json::json!({"event":"compacted-history-seed-complete",
+            serde_json::json!({"event":if probe_compacted {"compacted-initial-seed-complete"} else {"compacted-history-seed-complete"},
             "native":"closed","control":"released-and-joined","observer":"joined",
             "requests":1,"events":0}),
         );
@@ -644,7 +690,7 @@ async fn compacted_history_dictionary(
     writer: &mut LiveInitialWriter,
     previous: &InitialRegistration,
 ) {
-    assert!(probe.compacted_history_seed);
+    assert!(probe.compacted_history_seed || probe.compacted_initial);
     let mut scope = public_scope(previous);
     assert_eq!(
         hex(scope.dataset_id.as_bytes()),
@@ -659,7 +705,14 @@ async fn compacted_history_dictionary(
     // coordinate is private here. Bind the frozen source/index bytes before
     // appending, independently of what this new admission returns.
     let (rows, sequence) = raw_state(&probe.path);
-    assert_eq!((rows.len(), sequence), (91, 117));
+    assert_eq!(
+        (rows.len(), sequence),
+        if probe.compacted_initial {
+            (84, 125)
+        } else {
+            (91, 117)
+        }
+    );
     let fact_key = "0120309d9507c5b5c39e9947e1406482d5190000000000000000000000010000000000000001";
     let fact = rows
         .iter()

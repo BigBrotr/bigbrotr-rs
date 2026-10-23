@@ -8,7 +8,7 @@ use crate::{
     },
     storage::rocks::{
         manifest::AllocationNamespaces,
-        store::{BootstrapError, IngestRecovery, InitialHandoff, ObservedHandoff},
+        store::{AdmissionLimits, BootstrapError, IngestRecovery, InitialHandoff, ObservedHandoff},
     },
 };
 use bigbrotr_model::{AllocationDomainId, DictionaryKind, PolicyEpoch};
@@ -52,6 +52,38 @@ impl ControlSession {
         recovery: &mut IngestRecovery,
         input: InitialSuccessionRequest<'_>,
         permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedHandoff, InitialSuccessionError> {
+        self.prepare_initial_successor_in(recovery, input, permit, None, validate)
+            .await
+    }
+
+    /// Prepare from a sealed compacted predecessor. Canonical outcomes and the
+    /// exact typed head are checked before COMMIT and again before native work.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "separate metadata and outcome grants"
+    )]
+    pub async fn prepare_compacted_initial_successor(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        input: InitialSuccessionRequest<'_>,
+        limits: AdmissionLimits,
+        metadata: OwnedPermit,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedHandoff, InitialSuccessionError> {
+        let check = initial_compaction::Check::new(limits, outcomes)?;
+        self.prepare_initial_successor_in(recovery, input, metadata, Some(check), validate)
+            .await
+    }
+
+    async fn prepare_initial_successor_in(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        input: InitialSuccessionRequest<'_>,
+        permit: OwnedPermit,
+        compacted: Option<initial_compaction::Check>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ObservedHandoff, InitialSuccessionError> {
         if input.cancelled.load(Ordering::Relaxed) {
@@ -79,9 +111,14 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
-        recovery
-            .validate_initial_handoff(input.handoff)
-            .map_err(InitialSuccessionError::Native)?;
+        initial_compaction::validate(
+            compacted.as_ref(),
+            recovery,
+            input.handoff,
+            &permit,
+            input.cancelled,
+        )
+        .map_err(InitialSuccessionError::Native)?;
         let mut lease = PolicyLeaseTracker::new(
             self.request.dataset,
             self.identity.process_incarnation,
@@ -141,15 +178,36 @@ impl ControlSession {
             )
             .map_err(|_| OwnerError::Unavailable)?;
         check_delivery(&mut lease, current_epoch, input.cancelled)?;
-        producer_progress::recovery::require(
-            &tx,
-            recovery,
-            previous,
-            input.previous_registration.producer_slot_id,
-            &permit,
-            || producer_progress::recovery::authority(&mut lease, current_epoch, input.cancelled),
-        )
-        .await?;
+        if let Some(check) = &compacted {
+            check
+                .require(
+                    &tx,
+                    recovery,
+                    input.handoff,
+                    input.previous_registration,
+                    &permit,
+                    &mut lease,
+                    current_epoch,
+                    input.cancelled,
+                )
+                .await?;
+        } else {
+            producer_progress::recovery::require(
+                &tx,
+                recovery,
+                previous,
+                input.previous_registration.producer_slot_id,
+                &permit,
+                || {
+                    producer_progress::recovery::authority(
+                        &mut lease,
+                        current_epoch,
+                        input.cancelled,
+                    )
+                },
+            )
+            .await?;
+        }
         tx.commit()
             .await
             .map_err(|_| InitialSuccessionError::CommitUnknown)?;
@@ -176,16 +234,36 @@ impl ControlSession {
         )
         .await?;
         check_delivery(&mut lease, current_epoch, input.cancelled)?;
-        let observed = recovery
-            .apply_initial_handoff(input.handoff, permit, || {
+        if let Some(check) = &compacted {
+            check
+                .require(
+                    &tx,
+                    recovery,
+                    input.handoff,
+                    input.previous_registration,
+                    &permit,
+                    &mut lease,
+                    current_epoch,
+                    input.cancelled,
+                )
+                .await?;
+        }
+        let observed = initial_compaction::apply(
+            compacted.as_ref(),
+            recovery,
+            input.handoff,
+            permit,
+            input.cancelled,
+            || {
                 if input.cancelled.load(Ordering::Relaxed) {
                     return Err(BootstrapError::AuthorityUnavailable);
                 }
                 lease
                     .check_delivery(current_epoch)
                     .map_err(|_| BootstrapError::AuthorityUnavailable)
-            })
-            .map_err(InitialSuccessionError::Native)?;
+            },
+        )
+        .map_err(InitialSuccessionError::Native)?;
         tx.rollback()
             .await
             .map_err(|_| InitialSuccessionError::DeliveryUnknown)?;
