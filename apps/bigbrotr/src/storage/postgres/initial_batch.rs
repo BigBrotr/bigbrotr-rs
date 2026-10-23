@@ -600,6 +600,10 @@ impl ControlSession {
         progress: Option<&SyncProgress>,
         mut validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
+        // After a preparation hole only an authentic mutation may advance the
+        // producer cut. A proof/rejection read cannot fill the missing prefix,
+        // checkpoint dependencies for unclassified positions, or send an ACK.
+        let progress = progress.filter(|p| p.classifies_prefix());
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(InitialEventError::Native(
                 AdmissionError::AuthorityUnavailable,

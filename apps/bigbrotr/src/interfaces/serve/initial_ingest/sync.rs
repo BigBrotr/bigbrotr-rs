@@ -111,8 +111,8 @@ fn error(error: impl std::fmt::Debug) -> (u8, String) {
 }
 
 /// Preparation refusals have no durable classification in this first slice.
-/// Later valid events still follow the ordinary certification/admission path,
-/// but cannot advance a checkpoint past that hole in this actual REQ.
+/// Later valid events retain mutation handoff and credit, but cannot advance
+/// the classified acquisition prefix past that hole in this actual REQ.
 struct ClassifiedPrefix {
     continuous: bool,
 }
@@ -458,22 +458,21 @@ impl Sync {
             let Some(prepared) = prepared else {
                 continue;
             };
+            let checkpoint = SyncProgress::capture(
+                captured,
+                ordinal,
+                ProgressGrant::new(grant(
+                    work.budget,
+                    ProgressGrant::REQUIRED_DATA_BYTES,
+                    ProgressGrant::REQUIRED_NATIVE_BYTES,
+                )?)
+                .map_err(error)?,
+            )
+            .map_err(error)?;
             let checkpoint = if prefix.continuous {
-                Some(
-                    SyncProgress::capture(
-                        captured,
-                        ordinal,
-                        ProgressGrant::new(grant(
-                            work.budget,
-                            ProgressGrant::REQUIRED_DATA_BYTES,
-                            ProgressGrant::REQUIRED_NATIVE_BYTES,
-                        )?)
-                        .map_err(error)?,
-                    )
-                    .map_err(error)?,
-                )
+                checkpoint
             } else {
-                None
+                checkpoint.mutation_only()
             };
             let ttl = work.remaining()?;
             let certified = work
@@ -496,7 +495,7 @@ impl Sync {
                             cancelled: &work.cancel.requested,
                         },
                         grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
-                        checkpoint.as_ref(),
+                        Some(&checkpoint),
                         |d, h, e| policy.certification(d, h, e),
                     ),
                 )
@@ -562,7 +561,7 @@ impl Sync {
                             admission.required_data_bytes().map_err(error)?,
                             admission.required_native_bytes().map_err(error)?,
                         )?,
-                        checkpoint.as_ref(),
+                        Some(&checkpoint),
                         |d, h, e| policy.admission(d, h, e),
                     ),
                 )

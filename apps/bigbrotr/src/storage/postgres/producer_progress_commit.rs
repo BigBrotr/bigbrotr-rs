@@ -29,14 +29,15 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
                 if head.scope != job.scope {
                     return Err(ProducerProgressError::InvalidContext);
                 }
-                if head.position != event.position() {
+                if event.classifies_prefix() && head.position != event.position() {
                     event.position().require_next(Some(head.position))?;
                 }
             }
-            Err(_) => {
+            Err(_) if event.classifies_prefix() => {
                 event.position().require_next(None)?;
                 jobs += 1;
             }
+            Err(_) => {}
         }
     }
     if let Some((sequence, bytes)) = request {
@@ -145,7 +146,7 @@ pub(in crate::storage::postgres::control_owner) async fn record(
         })
         .transpose()?;
     let kind = basis.kind();
-    let replacement = if let Some(event) = event {
+    if let Some(event) = event {
         if basis.captured() != Some(event.captured) || kind == CheckpointKind::InternalEvidence {
             return Err(ProducerProgressError::InvalidContext);
         }
@@ -156,74 +157,25 @@ pub(in crate::storage::postgres::control_owner) async fn record(
         {
             return Err(ProducerProgressError::InvalidContext);
         }
-        let job = event.job();
-        let old = snapshot
+    } else if kind != CheckpointKind::InternalEvidence || basis.captured().is_some() {
+        return Err(ProducerProgressError::InvalidContext);
+    }
+    let replacement = job_replacement(
+        snapshot,
+        event,
+        kind,
+        *basis.intent_digest().as_bytes(),
+        mutation,
+    )?;
+    if replacement.is_some_and(|head| {
+        snapshot
             .jobs
-            .binary_search_by_key(&job.id, |head| head.job)
-            .ok()
-            .map(|index| snapshot.jobs[index]);
-        let head = JobHead {
-            job: job.id,
-            scope: job.scope,
-            revision: old.map_or(Ok(1), |h| {
-                h.revision
-                    .checked_add(1)
-                    .ok_or(ProducerProgressError::Limit)
-            })?,
-            position: event.position(),
-            intent: *basis.intent_digest().as_bytes(),
-            kind: kind as u16,
-            mutation: mutation.unwrap_or(0),
-            classified: old.map_or(Ok(1), |h| {
-                h.classified
-                    .checked_add(1)
-                    .ok_or(ProducerProgressError::Limit)
-            })?,
-            successful: old.map_or(0, |h| h.successful),
-            rejected: old.map_or(0, |h| h.rejected),
-            observed_at_us: event.captured.observed_at_us,
-            clock_resolution_us: event.captured.clock_resolution_us,
-            clock_anomaly_flags: event.captured.clock_anomaly_flags,
-        };
-        if let Some(old) = old.filter(|h| h.position == head.position) {
-            if old.scope != head.scope
-                || old.intent != head.intent
-                || old.kind != head.kind
-                || old.mutation != head.mutation
-                || old.observed_at_us != head.observed_at_us
-                || old.clock_resolution_us != head.clock_resolution_us
-                || old.clock_anomaly_flags != head.clock_anomaly_flags
-            {
-                return Err(ProducerProgressError::Conflict);
-            }
-            require_subset(snapshot, basis)?;
-            return Ok(());
-        }
-        head.position.require_next(old.map(|h| h.position))?;
-        let mut head = head;
-        if matches!(
-            kind,
-            CheckpointKind::EventNewFacts
-                | CheckpointKind::EventAlreadyDurable
-                | CheckpointKind::ExistingProof
-        ) {
-            head.successful = head
-                .successful
-                .checked_add(1)
-                .ok_or(ProducerProgressError::Limit)?;
-        } else {
-            head.rejected = head
-                .rejected
-                .checked_add(1)
-                .ok_or(ProducerProgressError::Limit)?;
-        }
-        Some(head)
-    } else {
-        if kind != CheckpointKind::InternalEvidence || basis.captured().is_some() {
-            return Err(ProducerProgressError::InvalidContext);
-        }
-        None
-    };
+            .binary_search_by_key(&head.job, |h| h.job)
+            .is_ok_and(|index| snapshot.jobs[index] == head)
+    }) {
+        require_subset(snapshot, basis)?;
+        return Ok(());
+    }
     if let Some(sequence) = mutation {
         if sequence <= snapshot.complete {
             if replacement.is_some() {
@@ -338,6 +290,98 @@ pub(in crate::storage::postgres::control_owner) async fn record(
         return Err(ProducerProgressError::Conflict);
     }
     Ok(())
+}
+
+// Pure job-head reduction. Native authority/binding and the mutation frontier
+// remain checked by record(); omitting a head never supplies an outcome witness.
+pub(super) fn job_replacement(
+    snapshot: &Snapshot,
+    event: Option<BoundEvent<'_>>,
+    kind: CheckpointKind,
+    intent: [u8; 32],
+    mutation: Option<u64>,
+) -> Result<Option<JobHead>, ProducerProgressError> {
+    Ok(if let Some(event) = event {
+        let job = event.job();
+        let old = snapshot
+            .jobs
+            .binary_search_by_key(&job.id, |head| head.job)
+            .ok()
+            .map(|index| snapshot.jobs[index]);
+        if old.is_some_and(|head| head.scope != job.scope) {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        if !event.classifies_prefix() {
+            if mutation.is_none()
+                || !matches!(
+                    kind,
+                    CheckpointKind::EventNewFacts
+                        | CheckpointKind::EventAlreadyDurable
+                        | CheckpointKind::EventRejected
+                )
+            {
+                return Err(ProducerProgressError::InvalidContext);
+            }
+            return Ok(None);
+        }
+        let head = JobHead {
+            job: job.id,
+            scope: job.scope,
+            revision: old.map_or(Ok(1), |h| {
+                h.revision
+                    .checked_add(1)
+                    .ok_or(ProducerProgressError::Limit)
+            })?,
+            position: event.position(),
+            intent,
+            kind: kind as u16,
+            mutation: mutation.unwrap_or(0),
+            classified: old.map_or(Ok(1), |h| {
+                h.classified
+                    .checked_add(1)
+                    .ok_or(ProducerProgressError::Limit)
+            })?,
+            successful: old.map_or(0, |h| h.successful),
+            rejected: old.map_or(0, |h| h.rejected),
+            observed_at_us: event.captured.observed_at_us,
+            clock_resolution_us: event.captured.clock_resolution_us,
+            clock_anomaly_flags: event.captured.clock_anomaly_flags,
+        };
+        if let Some(old) = old.filter(|h| h.position == head.position) {
+            if old.scope != head.scope
+                || old.intent != head.intent
+                || old.kind != head.kind
+                || old.mutation != head.mutation
+                || old.observed_at_us != head.observed_at_us
+                || old.clock_resolution_us != head.clock_resolution_us
+                || old.clock_anomaly_flags != head.clock_anomaly_flags
+            {
+                return Err(ProducerProgressError::Conflict);
+            }
+            return Ok(Some(old));
+        }
+        head.position.require_next(old.map(|h| h.position))?;
+        let mut head = head;
+        if matches!(
+            kind,
+            CheckpointKind::EventNewFacts
+                | CheckpointKind::EventAlreadyDurable
+                | CheckpointKind::ExistingProof
+        ) {
+            head.successful = head
+                .successful
+                .checked_add(1)
+                .ok_or(ProducerProgressError::Limit)?;
+        } else {
+            head.rejected = head
+                .rejected
+                .checked_add(1)
+                .ok_or(ProducerProgressError::Limit)?;
+        }
+        Some(head)
+    } else {
+        None
+    })
 }
 
 fn require_subset(
