@@ -43735,10 +43735,55 @@
                 "Crash/unknown-commit and interrupted unlink",
                 "Mixed restore/backup and capacity"
               ]
+            },
+            {
+              "source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+              "tree": "32071f7cc724c5651bdbb1397e662ddbc2686837",
+              "product_source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066",
+              "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER",
+              "driver": "11828 joined exit0",
+              "cases": 13,
+              "negative_capture_controls": 131,
+              "scope": "Current-reader regression after shared sealed native Initial/Ancestor outcome owner. Authentic abandonment/retirement on4freshclones, full/quarantined originals and incompatible-head/closure/pending refusals. Synthetic floor is fixture-only; positive compacted successor history and product GC NOT_RUN.",
+              "preservation": {
+                "rows_unchanged": true,
+                "catalog_unchanged": true,
+                "native_unchanged": true,
+                "inputs_unchanged": true,
+                "physical_unchanged": true
+              },
+              "custody": "Owned client exited143 and borrowed PostgreSQL exited0, both PID0/noOOM freshly inspected; cleanup/missing/unrelated/unexpected lists empty. All originals and derived artifacts retained.",
+              "receipts": [
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/installed-compacted-reader/result.json",
+                  "sha256": "0a7dc5feef8450db9f201abba18a275fb79ae23cd8a940e736cef7a0c6a3127e"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/installed-compacted-reader/progress-source.json",
+                  "sha256": "2ee0bcfc4060f71236911c83525e0f933875096f4d5ca73ea567f56abfa54b56"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/raw-replay.json",
+                  "sha256": "4d2653e02805b4a00853476bbc844a04f4d7c89f50737dc42a49cb21f7e4d9a9"
+                }
+              ],
+              "raw_replay": {
+                "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER_CAPTURE_REPLAY",
+                "driver": "92534 joined exit0",
+                "invocation": "python3 -E -S exact frozen source/experiments/ingest-succession/installed_compacted_reader_replay.py with root/product-source/output bound to7de7066",
+                "bound_files": 4628
+              },
+              "not_run": [
+                "Actual product reclamation/GC and unlink",
+                "Compacted successor preparation/activation/recovery",
+                "Crash/unknown-commit and interrupted unlink",
+                "Mixed restore/backup and capacity"
+              ]
             }
           ],
           "compacted_successor_preparation": {
-            "status": "SCANNER_AND_SHARED_PG_STREAM_QUALIFIED_5be8449; native ancestor context integrated source-only; new tests NOT_RUN",
+            "status": "NATIVE_ANCESTOR_PRIMITIVE_QUALIFIED_7de7066; installed current-reader regression PASS; positive successors/GC NOT_RUN",
             "architecture_review": {
               "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-boundaries-v1.json",
               "sha256": "4f1481c547b3faaa85525a5f8c95424bcae9f48408f63e87c1728ebb807f0065"
@@ -43749,7 +43794,7 @@
               "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
               "checks": "Independent source review, formatting, exact5be8449 build/Clippy/components and installed13commands/rawreplay PASS"
             },
-            "next": "Qualify native ancestor primitive with existing producer-floor runner and installed current-reader regression; then connect sealed PG/positive successor consumers before any GC",
+            "next": "Implement explicit connected SuccessorHistory compacted-initial completion and shared retained PG stream with exact compacted/original counts and strict guards at all unadapted capability constructors; then initial handoff, activated recovery and live frontier before any GC",
             "input_scanner": {
               "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
               "source_review": {
@@ -43803,7 +43848,7 @@
                   "sha256": "cbce96d5ba0becd226c70e96a9f24ad17e1864af53b4742fe2fe0cda265a463e"
                 }
               ],
-              "scope": "CLI/probe compile, Clippy and118components; all20mandatorynames present. Exact required/optional file census and unchanged original/compacted native readers exercised. Installed reader qualification pending; later compacted successor contexts/GC/restore/capacity NOT_RUN.",
+              "scope": "CLI/probe compile, Clippy and118components; all20mandatorynames present. Exact required/optional file census and unchanged original/compacted native readers exercised. Installed reader13commands/raw replay separately PASS; later compacted successor contexts/GC/restore/capacity NOT_RUN.",
               "custody": "Bothownedfetch/nativebuildcontainers freshlyverified exited0/PID0/noOOM; inventory_changed empty"
             },
             "installed_qualification": "See installed_reader_attempts source5be8449 above; all original failures retained at original revisions",
@@ -43820,7 +43865,52 @@
               },
               "integration": "Exact seven author blobs; existing producer-floor runner requires six new named controls",
               "scope": "Native-only structural/input inspection and sealed borrowed compacted epoch1 ancestor consistency. No product floor installation/deletion, PG/CLI wiring, positive later-lineage cursor, handoff, activation, recovery or writer enablement.",
-              "checks": "Source review/blob reconciliation and runner AST/name checks PASS; new compilation/components/Clippy/installed regression NOT_RUN"
+              "checks": "Independent source review, exact integration, CLI/probe compilation, Clippy and124components PASS; installed current-reader13commands/131negative controls and isolated raw replay PASS",
+              "component_qualification": {
+                "source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+                "tree": "32071f7cc724c5651bdbb1397e662ddbc2686837",
+                "status": "PASS_COMPACTED_PREFIX_COMPONENTS",
+                "driver": "85584 joined exit0",
+                "counts": {
+                  "compacted_prefix": 7,
+                  "compacted_progress": 1,
+                  "initial_reconstruction": 96,
+                  "request_inputs": 20
+                },
+                "required_controls": {
+                  "compacted_progress": 1,
+                  "compacted_prefix": 7,
+                  "request_inputs": 12,
+                  "initial_reconstruction": 6
+                },
+                "executables_sha256": {
+                  "native_components": "c950ba34e8372561ca41c524da75387ca0714565c1019fedf7cc6eac199b776d",
+                  "ingest_bootstrap_probe": "b66bf554316b63b5d55a006aa5a2345b0fa8dd10e7d28d1064de9834dcda2914",
+                  "bigbrotr": "351908785f0d1f93a17f477d35801978955e4ed386e913c29232cd360ae6d7f9"
+                },
+                "source_manifest_sha256": "d31a167dd42f8cda74e8af2976a9c18b538f6276b1af1a24513f0e1aa260415c",
+                "receipts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7de7066/resources.json",
+                    "sha256": "94e7558b201f493ec83a6952cc4c3b78eac114affec3c251b4bc90b4fb9e898b"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7de7066/out/build-checks/result.json",
+                    "sha256": "63651c5fd8cbb25f56b332b2b25e1c4e75244dd1a8aeac0c11eb46d76a78cd7a"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7de7066/out/artifacts/component-result.json",
+                    "sha256": "69f9a8dc220b01baf7e4b342558d4dda7033a8db6fe35f8377bef0f2f95235de"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7de7066/out/qualification.json",
+                    "sha256": "3e145afc1222de3ed88852d7209972234327b9dace97b66d887ed00d33e7f3da"
+                  }
+                ],
+                "scope": "CLI/probe compile, Clippy and124components including six new ancestor controls; all26mandatory names present. Full mixed-input/current-head native census and strict unadapted-consumer refusal exercised. Connected positive compacted successor history, GC, restore and capacity NOT_RUN. Installed current-reader regression separately PASS; see installed_reader_attempts7de7066.",
+                "custody": "Both owned containers freshly verified exited0/PID0/noOOM; inventory_changed empty"
+              },
+              "installed_qualification": "See installed_reader_attempts source7de7066 above"
             }
           }
         }

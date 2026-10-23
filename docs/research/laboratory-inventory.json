@@ -62134,11 +62134,10 @@
       },
       "compacted_ancestor_context_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-ancestor-context-20261023",
-        "branch": "work/compacted-ancestor-context",
         "base": "64150eae0d7c918d0700c562a61883d97d73c216",
         "owner": "compacted_reader_review",
         "scope": "Native sealed compacted initial ancestor observation under full retained lineage; no new GC, handoff, activation or positive lineage completion",
-        "state": "Author frozen clean727f9a0; exact seven blobs integrated on main for qualification; all new runtime NOT_RUN",
+        "state": "Original727f9a0 clean detached; exact source integrated7de7066 and124component/CLI/probe/Clippy checks PASS",
         "space_observed": "same265GiB observation before second small worktree; no large allocation or cleanup",
         "model": "gpt-6-astra/xhigh; verified existing session continuity",
         "prerequisite_commit": "7636d2966b265a28e3653a9b345f757e35d723d9",
@@ -62148,6 +62147,12 @@
         "root_review": {
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-ancestor-context-root-review-v1.json",
           "sha256": "539ee78bdc2804ccf9cbc3814661fc6d5a6a2bfff707bdc1c6938067ceb63b83"
+        },
+        "retired_branch": "work/compacted-ancestor-context",
+        "integrated": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+        "reconciliation": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-ancestor-branch-reconciliation-v1.json",
+          "sha256": "f159944f8329921464c91d23c9027ddc16abc3d5566150981cb115d667da388d"
         }
       },
       "compacted_inputs_build_20261023": {
@@ -62189,6 +62194,47 @@
         "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/installed-compacted-reader/result.json",
         "replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/raw-replay.json",
         "preserved": "Allfiveoriginalflags true,4clones/sevenquarantinedoriginals/source/ELFs/logs/snapshots retained"
+      },
+      "compacted_ancestor_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7de7066",
+        "source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+        "tree": "32071f7cc724c5651bdbb1397e662ddbc2686837",
+        "owner": "7ed6a7eb2c6f73165657b23157837bd8",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "4c8c15821f544b3aca2f5b1a7eddac1824caaf3cf3e072dd5efe5ad921b2efe3"
+          },
+          {
+            "name": "native",
+            "id": "2fd837ed77e68e68936a42e1003bae5dac171e96aedf38559c9a65c4b816fdf7"
+          }
+        ],
+        "state": "stopped-retained PASS124components/CLI/probe/Clippy; both owned containers exited0/PID0/noOOM freshly verified",
+        "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "artifacts": "resources.json, source snapshot, driver.log, out/build-checks and out/artifacts retained; no cleanup",
+        "driver": "85584 joined exit0"
+      },
+      "compacted_ancestor_installed_reader_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066",
+        "source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+        "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7de7066/out/artifacts",
+        "driver": "11828 joined exit0; isolated replay92534 joined exit0",
+        "state": "stopped-retained PASS synthetic current-reader13commands/131controls and rawreplay; no GC",
+        "client": {
+          "id": "f81584fbd59e3bee1679833f9939af52be077b7e8ef16911b7793c3794cf1f29",
+          "owner": "c1db0dae8fa74b1b361cc6fdf3412cae",
+          "state": "exited143/PID0/noOOM freshly inspected"
+        },
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "state": "exited0/PID0/noOOM freshly inspected"
+        },
+        "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/installed-compacted-reader/result.json",
+        "replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/raw-replay.json",
+        "preserved": "All five original flags true;4clones/seven quarantined original inputs/source/ELFs/logs/snapshots retained"
       }
     }
   },
