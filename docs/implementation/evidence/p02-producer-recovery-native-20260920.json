@@ -43384,7 +43384,7 @@
           }
         },
         "closed_producer_reclamation_preparation_20261023": {
-          "status": "PASS_INSTALLED_SYNTHETIC_INITIAL_READER_61b15e4_PRODUCT_98f80b1; compacted successors and actual GC NOT_RUN",
+          "status": "PASS_INSTALLED_SYNTHETIC_INITIAL_READER_5be8449_AND118COMPONENTS; positive compacted successors and actual GC NOT_RUN",
           "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
           "task": "P02-T02 Steps4/5/7",
           "purpose": "Reclaim acknowledged receipt/input operational detail for one completely closed and fully resolved producer while preserving all scientific facts, pending batches and causal recovery/backup closure.",
@@ -43690,10 +43690,55 @@
                 "Crash/unknown-commit and interrupted unlink",
                 "Mixed restore/backup and capacity"
               ]
+            },
+            {
+              "source": "5be8449828f52a5fa96dc06312ec9490ffca13ba",
+              "tree": "eefa9cdc575c72ad4a9f19527bed8be48d4f480d",
+              "product_source": "5be8449828f52a5fa96dc06312ec9490ffca13ba",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449",
+              "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER",
+              "driver": "11269 joined exit0",
+              "cases": 13,
+              "negative_capture_controls": 131,
+              "scope": "Regression qualification after shared required/optional scanner and extracted PG outcome stream. Authentic abandonment/retirement on4freshclones, full/quarantined originals and incompatible-head/closure/pending refusals. Synthetic floor remains fixture-only; no product GC.",
+              "preservation": {
+                "rows_unchanged": true,
+                "catalog_unchanged": true,
+                "native_unchanged": true,
+                "inputs_unchanged": true,
+                "physical_unchanged": true
+              },
+              "custody": "Owned client exited143 and borrowed PostgreSQL exited0, both PID0/noOOM freshlyinspected; cleanup/missing/unrelated/unexpected lists empty. All originals and derived artifacts retained.",
+              "receipts": [
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/installed-compacted-reader/result.json",
+                  "sha256": "d890d29d99feb8fae2a9266e37e7af1afde845d250af32211ecf3c163b124f41"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/installed-compacted-reader/progress-source.json",
+                  "sha256": "2ea0a4e111a1dc74d8613080d20080d8c06f755c71dbff0b7f3ff4ed01735975"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/raw-replay.json",
+                  "sha256": "7825bebf7315214a29719c6d1e458ee69853a01b680d3684b135afde1e35184b"
+                }
+              ],
+              "raw_replay": {
+                "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER_CAPTURE_REPLAY",
+                "driver": "30509 joined exit0",
+                "invocation": "python3 -E -S exact frozen source/experiments/ingest-succession/installed_compacted_reader_replay.py with root/product-source/output bound to5be8449",
+                "bound_files": 4627
+              },
+              "not_run": [
+                "Actual product reclamation/GC and unlink",
+                "Compacted successor preparation/activation/recovery",
+                "Crash/unknown-commit and interrupted unlink",
+                "Mixed restore/backup and capacity"
+              ]
             }
           ],
           "compacted_successor_preparation": {
-            "status": "SOURCE_PREPARATION; all successor compatibility and GC remain NOT_RUN",
+            "status": "SCANNER_AND_SHARED_PG_STREAM_QUALIFIED_5be8449; native ancestor context source work active; positive successors/GC NOT_RUN",
             "architecture_review": {
               "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-boundaries-v1.json",
               "sha256": "4f1481c547b3faaa85525a5f8c95424bcae9f48408f63e87c1728ebb807f0065"
@@ -43702,22 +43747,66 @@
               "path": "apps/bigbrotr/src/storage/postgres/producer_compaction.rs",
               "sha256": "d2cea997c0efd7a2577ec6376af69035fe54bf49daee9d582832c3b6333a92f0",
               "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
-              "checks": "rustfmt/diff PASS; compile/runtime NOT_RUN for this edit"
+              "checks": "Independent source review, formatting, exact5be8449 build/Clippy/components and installed13commands/rawreplay PASS"
             },
-            "next": "Exact required/optional scanner support and sealed native ancestor observation in inventoried isolated worktrees; explicit positive successor consumers follow separately, before any GC",
+            "next": "Review/integrate sealed native ancestor observation and focused tests, preserving strict positive-consumer refusal; then wire initial handoff/activated/later recovery and live frontier before any GC",
             "input_scanner": {
               "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
               "source_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-lineage-inputs-root-review-v1.json",
                 "sha256": "d2f78900ca44979ccc0bd946d6e603635878739cb30676c0afa2be1b70282816"
               },
-              "status": "SOURCE_INTEGRATED; build/runtime NOT_RUN",
+              "status": "INTEGRATED5be8449;118components including12newscannercontrols and installed13commands/rawreplay PASS",
               "scope": "Exact required later inputs versus optional initial residuals, shared physical64files/32MiB;12new actualfile/native-owner tests included in existing request_input_tests selector and mandatory runner names",
               "author_receipt": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-lineage-inputs-source-v1.json",
                 "sha256": "e55930d6ca3df827a1d90504898a3affb976bf8aaa00ad7dbff6173a6f8d647c"
               }
-            }
+            },
+            "component_qualification": {
+              "source": "5be8449828f52a5fa96dc06312ec9490ffca13ba",
+              "tree": "eefa9cdc575c72ad4a9f19527bed8be48d4f480d",
+              "status": "PASS_COMPACTED_PREFIX_COMPONENTS",
+              "driver": "91147 joined exit0",
+              "counts": {
+                "compacted_prefix": 7,
+                "compacted_progress": 1,
+                "initial_reconstruction": 90,
+                "request_inputs": 20
+              },
+              "required_controls": {
+                "compacted_progress": 1,
+                "compacted_prefix": 7,
+                "request_inputs": 12
+              },
+              "executables_sha256": {
+                "native_components": "fe461eb3ac0d5dd6623ab19d73ef13658ddae1664b1082cefd9f3e26638f6d7b",
+                "ingest_bootstrap_probe": "45f7ccf21b13a0c927ca4154d44bd02ac2441583e2971dd464822cb52c55991a",
+                "bigbrotr": "a2ab5e7ff35a7fbadc621532aa85082fd97295224aab2da6bb1b3b07a04bcb62"
+              },
+              "source_manifest_sha256": "8e0b408750bc08fd1d1fca50852cea456836366504ddcaa75e1788249a4c220a",
+              "receipts": [
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5be8449/resources.json",
+                  "sha256": "70ff639d0760ef04ec5df5766dbf55cfbd06fbe956e7aa4c1f7d14b42c6b40ea"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5be8449/out/build-checks/result.json",
+                  "sha256": "30585e51454a825314b1b89ba1a46c1d99afe634b393b34b34258f290f620d8c"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5be8449/out/artifacts/component-result.json",
+                  "sha256": "5cdf995f81eeceb910773dac93bb75593fd81239560c8ed042203dfacf088e4f"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5be8449/out/qualification.json",
+                  "sha256": "cbce96d5ba0becd226c70e96a9f24ad17e1864af53b4742fe2fe0cda265a463e"
+                }
+              ],
+              "scope": "CLI/probe compile, Clippy and118components; all20mandatorynames present. Exact required/optional file census and unchanged original/compacted native readers exercised. Installed reader qualification pending; later compacted successor contexts/GC/restore/capacity NOT_RUN.",
+              "custody": "Bothownedfetch/nativebuildcontainers freshlyverified exited0/PID0/noOOM; inventory_changed empty"
+            },
+            "installed_qualification": "See installed_reader_attempts source5be8449 above; all original failures retained at original revisions"
           }
         }
       }

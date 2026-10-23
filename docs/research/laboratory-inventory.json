@@ -62118,14 +62118,19 @@
       },
       "compacted_lineage_inputs_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-lineage-inputs-20261023",
-        "branch": "work/compacted-lineage-inputs",
         "base": "64150eae0d7c918d0700c562a61883d97d73c216",
         "owner": "compacted_reader_fixture",
         "model": "gpt-6-astra/xhigh; existing verified session continuity",
         "scope": "Shared scanner exact required later originals versus optional compacted initial residuals; focused tests, no GC or later recovery integration",
-        "state": "Author sourcecomplete clean; exact changed files integrated into root pending coherent source commit/build; tests NOT_RUN",
+        "state": "Original538fc3a clean detached; integrated5be8449 components and installed/rawreplay PASS",
         "space_observed": "265GiB available before small isolated worktree allocation; no cleanup",
-        "commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f"
+        "commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
+        "retired_branch": "work/compacted-lineage-inputs",
+        "integrated": "5be8449828f52a5fa96dc06312ec9490ffca13ba",
+        "reconciliation": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-inputs-branch-reconciliation-v1.json",
+          "sha256": "e5c3f05458292758d4f389e185a799d65936778049676cf5d201767a8f864035"
+        }
       },
       "compacted_ancestor_context_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-ancestor-context-20261023",
@@ -62133,9 +62138,51 @@
         "base": "64150eae0d7c918d0700c562a61883d97d73c216",
         "owner": "compacted_reader_review",
         "scope": "Native sealed compacted initial ancestor observation under full retained lineage; no new GC, handoff, activation or positive lineage completion",
-        "state": "Native source work assigned/active; root owns integration/build/runtime; tests NOT_RUN",
+        "state": "Native source work active/final static review; dirty assigned native files and newcompacted_ancestor_tests.rs preserved; allnewruntime NOT_RUN",
         "space_observed": "same265GiB observation before second small worktree; no large allocation or cleanup",
-        "model": "gpt-6-astra/xhigh; verified existing session continuity"
+        "model": "gpt-6-astra/xhigh; verified existing session continuity",
+        "prerequisite_commit": "7636d2966b265a28e3653a9b345f757e35d723d9",
+        "prerequisite": "Exact scanner538fc3a cherry-pick on base64150ea; agent owns only subsequent ancestor diff"
+      },
+      "compacted_inputs_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5be8449",
+        "source": "5be8449828f52a5fa96dc06312ec9490ffca13ba",
+        "tree": "eefa9cdc575c72ad4a9f19527bed8be48d4f480d",
+        "state": "stopped-retained PASS;118tests/CLI/probe/Clippy; bothownedcontainers exited0/PID0/noOOM freshlyverified",
+        "driver": "91147 joined exit0",
+        "cache": "existing owned exclusive compiler cache network-1154757; runner validates ownership/preserved original ELFs and space before use",
+        "artifacts": "out/artifacts, out/build-checks, out/qualification.json and driver.log retained; exact PASS receipt hashes in recovery report",
+        "owner": "b428ccec7a617e615de4f948df26c6fe",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "9a8082077a7899c755cef2d745f65cd5f8d5c03213c3d22aac14427db686baf2"
+          },
+          {
+            "name": "native",
+            "id": "07a74b4e53f5727f0ade0b27bfa4ec38844592a6f265285942bcea26c0d6d410"
+          }
+        ]
+      },
+      "compacted_inputs_installed_reader_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449",
+        "source": "5be8449828f52a5fa96dc06312ec9490ffca13ba",
+        "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5be8449/out/artifacts",
+        "driver": "11269 joined exit0; isolated replay30509 joined exit0",
+        "state": "stopped-retained PASS synthetic reader and rawreplay; no actualGC",
+        "client": {
+          "id": "dc3ca9b6ef871b8cea6698e353927535b40bf624de42f744a0892ebea3096628",
+          "owner": "815bd9710b2a3e0635588e4d7a60cb88",
+          "state": "exited143/PID0/noOOM freshlyinspected"
+        },
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "state": "exited0/PID0/noOOM freshlyinspected"
+        },
+        "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/installed-compacted-reader/result.json",
+        "replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-5be8449/raw-replay.json",
+        "preserved": "Allfiveoriginalflags true,4clones/sevenquarantinedoriginals/source/ELFs/logs/snapshots retained"
       }
     }
   },
