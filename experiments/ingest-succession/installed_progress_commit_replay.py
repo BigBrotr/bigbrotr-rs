@@ -15,20 +15,23 @@ import installed_family_capture as capture
 sha, loads, only, same, number = capture.sha, capture.loads, capture.only, capture.same, capture.number
 
 
-def replay(root):
-    root = Path(root).resolve(strict=True); folder = root/oracle.DIRECTORY; bound = {}
+def replay(root, *, ack=False):
+    names = oracle.profile_names(ack=ack)
+    root = Path(root).resolve(strict=True); folder = root/names['directory']; bound = {}
     def raw(path):
         path = Path(path); assert stat.S_ISREG(path.lstat().st_mode)
         value = path.read_bytes(); bound[str(path)] = sha(value); return value
     def read(path): return loads(raw(path))
     report = read(folder/'result.json')
-    assert report['status'] == oracle.STATUS and report['label'] == oracle.LABEL
+    assert report['status'] == names['status'] and report['label'] == names['label']
     for key,count in [('source',40),('tree',40),('owner',32),('client',64)]:
         assert re.fullmatch('[0-9a-f]{'+str(count)+'}',report[key])
     provenance = read(root/'progress-source.json')
     assert set(provenance) == {'source','revision','tree','build','files_sha256'}
     assert provenance['source'] == str(root/'source') and provenance['revision'] == report['source']
     assert provenance['tree'] == report['tree'] and provenance['files_sha256']
+    if ack:
+        assert read(folder/'progress-source.json') == provenance
     for name,digest in provenance['files_sha256'].items():
         assert not Path(name).is_absolute() and '..' not in Path(name).parts
         assert sha(raw(root/'source'/name)) == digest
@@ -52,16 +55,16 @@ def replay(root):
         assert all(state[k] is False for k in ('Running','Paused','Restarting','OOMKilled','Dead')) and not state['Error']
         assert type(state['ExitCode']) is int and state['ExitCode'] == code
     client = terminal[report['client']]
-    assert client['Name'] == '/'+oracle.CLIENT_PREFIX+report['source'][:7]
+    assert client['Name'] == '/'+names['client_prefix']+report['source'][:7]
     mount = only(client['Mounts'],Destination='/lab'); assert mount['RW'] is True and mount['Source'] == str(folder)
     mount = only(client['Mounts'],Destination='/build'); assert mount['RW'] is False
     build = Path(mount['Source']); assert build.is_absolute()
     assert provenance['build'] == str(build)
     built,component,qualification = read(build/'build-result.json'),read(build/'component-result.json'),read(build.parent/'qualification.json')
-    assert qualification['status'] == 'PASS_PRODUCER_PROGRESS_COMPONENTS'
+    assert qualification['status'] == ('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
     assert report['build'] == built and report['component'] == component and component['status'] == 'PASS'
-    oracle.qualification_checked(built,component,qualification)
-    assert component['source'] == built['source'] == qualification['source'] == oracle.progress.require_frozen_profile()['product_source']
+    oracle.qualification_checked(built,component,qualification,ack=ack)
+    assert component['source'] == built['source'] == qualification['source'] == oracle.progress.require_frozen_profile(ack=ack)['product_source']
     for field in ('tree','source_manifest_sha256','lockfile_sha256'):
         assert component[field] == built[field] == qualification[field]
     data = raw(build.parent/'build/source-manifest.json'); assert sha(data) == built['source_manifest_sha256']
@@ -70,6 +73,8 @@ def replay(root):
     assert all(name.startswith(('docs/','experiments/')) or actual.get(name)==compiled.get(name)
         for name in set(actual)|set(compiled)), 'unqualified product/source delta'
     assert actual['migrations/postgres/0039_producer_progress.sql'] == oracle.progress.FROZEN_PROFILE['migration_sha256']
+    if ack:
+        assert actual['migrations/postgres/0040_producer_ack.sql'] == oracle.progress.ACK_MIGRATION_SHA256
     for name,digest in component['executables_sha256'].items():
         assert Path(name).name == name and re.fullmatch('[a-z_]+',name) and sha(raw(build/name)) == digest
     assert component['executables_sha256']['bigbrotr'] == built['binary_sha256']
@@ -80,6 +85,9 @@ def replay(root):
     for name,relative in [('installed_family_client.py','ingest-succession'),
             ('installed_cycle_client.py','ingest-succession'),('installed_sync_client.py','ingest-bootstrap')]:
         assert raw(folder/name) == raw(root/'source/experiments'/relative/name)
+    if ack:
+        assert raw(folder/'installed_progress_transport.py') == raw(root/'source/experiments/ingest-bootstrap/installed_progress_transport.py')
+        raw(root/'source/tests/fixtures/acquisition/selector-events.json')
     assert sha(raw(folder/'progress-commit-proxy.py')) == oracle.PROXY_SHA256
     assert raw(folder/'progress-commit-proxy.py') == raw(root/'source/experiments/archive-engine/native_commit_proxy.py')
     for name in ('installed_family','installed_family_replay','installed_family_capture','installed_family_http',
@@ -91,7 +99,7 @@ def replay(root):
     results = []; previous_time = started
     for clone in report['clones']:
         mode = clone['name']; directory = folder/mode
-        migrated = capture.clone_checked(folder,clone,origin,report,raw,read,progress='split',commit_loss=True)
+        migrated = capture.clone_checked(folder,clone,origin,report,raw,read,progress='ack' if ack else 'split',commit_loss=True)
         expected = migrated,origin[1],origin[2]
         direct_raw = raw(folder/(mode+'-direct-config.toml'))
         assert direct_raw == raw(folder/Path(clone['config']).name)
@@ -148,31 +156,42 @@ def replay(root):
                 for cut in context['snapshots']:
                     same(cut['control'],item(cut['stage']))
                     capture.spool_checked(directory/'store/producer-inputs-v1',cut['inputs'],raw,complete=False)
-                capture.journey_checked(directory,context,identity,window,raw,read,progress=True,commit_loss=True)
+                capture.journey_checked(directory,context,identity,window,raw,read,
+                    progress=True,commit_loss=True,mutation_loss=ack)
                 transport = capture.progress_transport_checked(directory,context['journey'],context['snapshots'],
-                    window,raw,read,commit_loss=True)
+                    window,raw,read,commit_loss=True,ack=ack,mutation_loss=ack)
                 assert case['progress_transport'] == transport
-                gate = fault['gate']['captured']
-                assert gate == dict(phase='mutation',request_id=transport['mutation_request'],
-                    observation_sha256=sha(raw(directory/'progress-mutation-observation.json')))
-                result,controls = oracle.verify(context),oracle.controls(context)
+                if ack:
+                    assert fault['gate'] is None and context['progress_gates'] == {}
+                    assert context['ack_event_recipe'] == raw(directory/'progress-ack-events.json').decode()
+                else:
+                    gate = fault['gate']['captured']
+                    assert gate == dict(phase='mutation',request_id=transport['mutation_request'],
+                        observation_sha256=sha(raw(directory/'progress-mutation-observation.json')))
+                result,controls = oracle.verify(context,ack=ack),oracle.controls(context,ack=ack)
                 seed = after,after_native,after_inputs
             else:
                 assert context['snapshots'] == [] and item('provisional-inputs') == inputs
-                result,controls = oracle.verify_recovery(context,seed),oracle.controls(context,seed)
+                result,controls = oracle.verify_recovery(context,seed,ack=ack),oracle.controls(context,seed,ack=ack)
             assert case['oracle'] == result and case['negative_controls'] == controls
             results.append(dict(name=label,oracle=result,negative_controls=controls))
             expected = after,after_native,after_inputs
         same(expected[0],read(folder/(mode+'-final-sql.json')))
-    return dict(status=oracle.STATUS+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
+    if ack:
+        from installed_progress_context_oracle import bind_ack_modules
+        bind_ack_modules(provenance,raw)
+    return dict(status=names['status']+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
         original_preservation='Physical/input files reread; SQL/catalog preservation is captured-run evidence',
-        scope='Proof-only COMMIT reply loss, original error, failed-Control fencing, recovery/retry; ACK0, all details retained')
+        scope=('Third-mutation COMMIT loss I4/A3 vs C3/C4, full-original recovery and exact retry; '
+            'no observed intermediate cut or injected post-ACK durability loss' if ack else
+            'Proof-only COMMIT reply loss, original error, failed-Control fencing, recovery/retry; ACK0, all details retained'))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path); parser.add_argument('--output',type=Path)
-    args = parser.parse_args(); result = replay(args.root); text = json.dumps(result,indent=2)+'\n'
+    parser.add_argument('--producer-ack',action='store_true')
+    args = parser.parse_args(); result = replay(args.root,ack=args.producer_ack); text = json.dumps(result,indent=2)+'\n'
     if args.output:
         with args.output.open('x') as stream: stream.write(text)
     else: print(text,end='')

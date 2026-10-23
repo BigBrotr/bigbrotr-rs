@@ -1,9 +1,10 @@
-"""Proof-only COMMIT ambiguity: independent state, wire and recovery predicates.
+"""Proof-only or opt-in mutation COMMIT ambiguity and recovery predicates.
 
 No engine or product codec is used. Existing signed science and literal typed
 record encoders are shared; error custody never becomes a successful Serve.
 """
 import copy
+import json
 import re
 
 import installed_family_replay as family
@@ -26,19 +27,40 @@ ARTIFACTS = {'bigbrotr','ingest_bootstrap_probe','native_components','sync_progr
     'fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
 GROUPS = {'producer_progress','producer_checkpoint','certification','captured_input','captured_binding',
     'sync_progress','fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
+ACK_BUILD = dict(tree='05159c1ed7bd690c4920ede1439a64d0a6be7cfa',
+    source_manifest_sha256='153edf8fc5dd9c244f0baf10fe1ed106ecde037f750b8b2b41f71dd163cb2251',
+    lockfile_sha256='5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9')
+# Exact qualified258-test/19-group/30-control selection, separate from ELF pins.
+ACK_COMPONENT_CHECKS_SHA256 = '279621926512d211a09ef2d178a7c9650225f6baba1a2e98e7326a2970348d79'
 
 
-def qualification_checked(built, component, qualification):
-    assert component['status'] == 'PASS' and qualification['status'] == 'PASS_PRODUCER_PROGRESS_COMPONENTS'
-    assert built['source'] == component['source'] == qualification['source'] == progress.require_frozen_profile()['product_source']
+def profile_names(*, ack=False):
+    assert type(ack) is bool
+    return dict(directory='installed-producer-ack-commit-loss' if ack else DIRECTORY,
+        label='org.bigbrotr.installed-producer-ack-commit-loss' if ack else LABEL,
+        status='PASS_INSTALLED_PRODUCER_ACK_COMMIT_LOSS' if ack else STATUS,
+        client_prefix='bigbrotr-producer-ack-commit-' if ack else CLIENT_PREFIX,
+        database_prefix='bb_producer_ack_commit_' if ack else PREFIX)
+
+
+def qualification_checked(built, component, qualification, *, ack=False):
+    if ack:
+        assert component['executables_sha256']==progress.ACK_EXECUTABLES_SHA256
+        assert {key:built[key] for key in ACK_BUILD} == ACK_BUILD
+        assert sha(family.encoded({key:component[key] for key in (
+            'test_counts','test_names','required_controls','missing_controls')})) == ACK_COMPONENT_CHECKS_SHA256
+    groups=GROUPS | ({'producer_ack','producer_closing','producer_recovery','source_closure',
+        'initial_handoff','initial_reconstruction','dictionary_append','bootstrap','request_inputs'} if ack else set())
+    assert component['status'] == 'PASS' and qualification['status'] == ('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
+    assert built['source'] == component['source'] == qualification['source'] == progress.require_frozen_profile(ack=ack)['product_source']
     for field in ('tree','source_manifest_sha256','lockfile_sha256'):
         assert component[field] == built[field] == qualification[field]
     assert set(component['executables_sha256']) == ARTIFACTS
     assert component['executables_sha256']['bigbrotr'] == built['binary_sha256']
     assert component['test_counts'] == qualification['test_counts']
-    assert set(component['test_counts']) == set(component['test_names']) == GROUPS
+    assert set(component['test_counts']) == set(component['test_names']) == groups
     assert component['missing_controls'] == {}
-    assert set(component['required_controls']) == GROUPS-{'certification','control_schema','migrate_entrypoint'}
+    assert set(component['required_controls']) == ((GROUPS-{'certification','migrate_entrypoint'})|{'producer_ack','initial_reconstruction'} if ack else GROUPS-{'certification','control_schema','migrate_entrypoint'})
     for group,count in component['test_counts'].items():
         assert type(count) is int and count > 0
         names = component['test_names'][group]
@@ -46,7 +68,7 @@ def qualification_checked(built, component, qualification):
         assert set(component['required_controls'].get(group,[])) <= set(names)
 
 
-def process_closed(response, case):
+def process_closed(response, case, *, ack=False):
     assert set(response) == {'returncode', 'stdout', 'stderr', 'outcome', 'terminal'}
     assert response['outcome'] == 'PROCESS_EXITED' and type(response['returncode']) is int
     assert response['returncode'] == 4
@@ -62,7 +84,7 @@ def process_closed(response, case):
     assert terminal['reaped'] is True and terminal['forced'] is False
     report, = [loads(line) for line in response['stdout'].splitlines()]
     assert report['format'] == 'bigbrotr-ingest-successor/1' and report['state'] == 'activated'
-    prefix = 'error: initial Sync unavailable: Progress(CommitUnknown); sync_dispatch='
+    prefix = 'error: initial Sync unavailable: '+('Outcome' if ack else 'Progress')+'(CommitUnknown); sync_dispatch='
     assert response['stderr'].startswith(prefix) and response['stderr'].endswith('\n')
     diagnostic = loads(response['stderr'][len(prefix):])
     fields = {'format','reason','scope','timing','captured_us','authority_checked_us',
@@ -73,8 +95,10 @@ def process_closed(response, case):
     assert diagnostic['format'] == 'bigbrotr-initial-sync-diagnostic/1'
     assert diagnostic['reason'] == 'operation-error' and diagnostic['scope'] == 'caller-progress-not-commit-outcome'
     assert diagnostic['timing'] == 'monotonic-offset-microseconds-saturating'
-    assert diagnostic['stage'] == 'certification' and diagnostic['frame_ordinal'] == 0
-    assert diagnostic['request_sequence'] is None and diagnostic['last_delivered_admission_sequence'] == 2
+    assert diagnostic['stage'] == ('admission' if ack else 'certification')
+    assert diagnostic['frame_ordinal'] == (2 if ack else 0)
+    assert diagnostic['request_sequence'] == (4 if ack else None)
+    assert diagnostic['last_delivered_admission_sequence'] == (3 if ack else 2)
     for key in fields - {'format','reason','scope','timing','stage','request_sequence'}:
         assert type(diagnostic[key]) is int and 0 <= diagnostic[key] < 1 << 63
     assert diagnostic['entered_us'] <= diagnostic['returned_us'] <= diagnostic['captured_us']
@@ -83,7 +107,8 @@ def process_closed(response, case):
     return report
 
 
-def wire_checked(value, current, *, gate_only=False):
+def wire_checked(value, current, *, gate_only=False, ack=False):
+    assert not ack or not gate_only
     assert set(value) == {'format','mode','proxy_sha256','command','ready','gate','process','closed'}
     assert value['format'] == 'bigbrotr-progress-commit-fault/1' and value['mode'] in MODES
     assert value['proxy_sha256'] == PROXY_SHA256
@@ -135,8 +160,11 @@ def wire_checked(value, current, *, gate_only=False):
     assert value['closed'] is True and type(process['exit']) is int and process['exit'] == 0
     assert process['readers_joined'] is True
     assert [event['event'] for event in events] == ['ready','progress-update-complete','progress-update-complete','fault','terminal']
-    assert set(value['gate']) == {'captured','event'}
-    assert value['gate']['event'] == first
+    if ack:
+        assert value['gate'] is None, 'no intermediate SQL/ACK cut was observed'
+    else:
+        assert set(value['gate']) == {'captured','event'}
+        assert value['gate']['event'] == first
     assert updates[1]['data_queries'] == 1
     assert all(updates[1][key] == 0 for key in ('data_commits','faults','server_complete','client_complete'))
     for key in counters:
@@ -160,7 +188,9 @@ def specification(case):
     return mode
 
 
-def verify(context):
+def verify(context, *, ack=False):
+    if ack:
+        return verify_ack_loss(context)
     mode = specification(context['case'])
     assert set(context) == {'case','before','after','native_before','native_after','inputs_before','inputs_after',
         'input_contents','snapshots','response','journey','fixture','server_window','backend',
@@ -256,7 +286,9 @@ def verify(context):
         native_sequence=model.native['sequence'],native_ack=0,native_retired=0)
 
 
-def verify_recovery(context, seed):
+def verify_recovery(context, seed, *, ack=False):
+    if ack:
+        return verify_ack_recovery(context,seed)
     assert set(context) == CONTEXT_FIELDS
     case = context['case']; mode = case['clone']; assert mode in MODES and case['origin'] == 'activated'
     assert set(case) == {'name','clone','origin','operation','predecessor','database','config','status','custody'}
@@ -317,8 +349,256 @@ def verify_recovery(context, seed):
         native_writes=0 if retry else 1,typed_issuer_xmin_preserved=True,native_ack=0,native_retired=0)
 
 
-def controls(context, seed=None):
-    check = verify if seed is None else lambda c:verify_recovery(c,seed)
+def ack_records(context, science, control, complete, wire):
+    """Literal first-two/three-event head; no observed digest supplies semantics."""
+    assert complete in (3,4) and science.epoch == 3
+    before, after = context['before'], context['after']
+    events = progress.ack_event_sequence(successor=True)
+    states = [before, *(cut['control'] for cut in context['snapshots']), after]
+    for state in states:
+        assert len(state) == 77 and set(state) == set(before)
+        assert state['schema_versions'] == before['schema_versions']
+        for request in state['producer_requests']:
+            expected = dict.fromkeys(progress.REQUEST_ADDITIONS)
+            if request['producer_epoch'] == 3 and request['request_sequence'] > 1:
+                ordinal = request['request_sequence'] - 1
+                assert ordinal in (1,2,3)
+                expected = dict(progress_request_id='\\x'+wire['request'][1].encode().hex(),
+                    progress_event_ordinal=ordinal, progress_wire_sequence=ordinal,
+                    progress_input_sha256='\\x'+sha(json.dumps(events[ordinal-1],
+                        ensure_ascii=False,separators=(',',':')).encode()))
+            assert {key:request[key] for key in progress.REQUEST_ADDITIONS} == expected
+    for state in states[:-1]:
+        assert all(state[table] == [] for table in (*progress.TABLES,'producer_checkpoints'))
+    common = dict(dataset_id='\\x'+science.ds.hex(),producer_slot_id='\\x'+science.slot.hex(),producer_epoch=3)
+    ordinal = complete-1
+    job = only(after['jobs'],request_key='\\x'+'e4'*16)
+    assert job['state'] == 'queued' and job['checkpoint_revision'] == 0
+    scope = only(after['acquisition_jobs'],job_id=job['job_id'])
+    outcome = only(after['producer_outcomes'],producer_epoch=3,request_sequence=complete)
+    original = science.inputs[complete]
+    observation = family.decode(original.split(b'\0',1)[1])[3][5]
+    expected_job = dict(common,job_id=job['job_id'],scope_id=scope['scope_id'],
+        progress_revision=ordinal,request_id='\\x'+wire['request'][1].encode().hex(),
+        event_ordinal=ordinal,wire_sequence=ordinal,
+        input_sha256='\\x'+sha(json.dumps(events[ordinal-1],ensure_ascii=False,separators=(',',':')).encode()),
+        intent_digest='\\x'+sha(original),classification=2,mutation_request=complete,
+        classified_events=ordinal,successful_events=ordinal,rejected_events=0,
+        observed_at_us=observation[0],clock_resolution_us=observation[2][1],
+        clock_anomaly_flags=observation[2][3],xmin=outcome['xmin'])
+    head = only(after['producer_checkpoints'])
+    family.clock(head['committed_at_us'],context['server_window'])
+    assert max(control['acquired_at_us'],wire['sent_at_us'],outcome['recorded_at_us']) <= head['committed_at_us']
+    assert head['committed_at_us'] < control['lease_expires_at_us']
+    # Request1 defines observer1; each real event adds four facts. The union
+    # has exactly10 references after request3,14 after request4.
+    coordinates = ((1,3), *tuple((3,n) for n in range(1,10 if complete==3 else 14)))
+    dependencies = []
+    for epoch, sequence in coordinates:
+        reference = science.refs[epoch,sequence]
+        first = next(n for n in range(1,complete+1)
+            if reference in family.decode(science.receipts[n].split(b'\0',1)[1])[5])
+        tx = only(after['producer_outcomes'],producer_epoch=3,request_sequence=first)['xmin']
+        dependencies.append(dict(common,source_shard=0,source_epoch=epoch,source_sequence=sequence,
+            payload_digest='\\x'+reference[1].hex(),xmin=tx))
+    wanted = dict(common,progress_format=1,manifest_sha256='\\x'+sha(science.manifest),
+        checkpoint_revision=complete,complete_through_request=complete,progress_jobs=1,
+        dependency_count=len(dependencies),issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],
+        issuer_incarnation=control['process_incarnation'],committed_at_us=head['committed_at_us'],xmin=outcome['xmin'])
+    wanted['checkpoint_digest'] = '\\x'+progress.head_digest(dict(wanted,checkpoint_digest='\\x'+'00'*32),
+        [expected_job],dependencies,lambda row:progress.native_reference(row,science.values)).hex()
+    actual = sorted(after['producer_checkpoint_dependencies'],key=lambda r:(r['source_shard'],r['source_epoch'],r['source_sequence']))
+    return progress.exact_snapshot(head,after['acquisition_progress'],actual,wanted,[expected_job],dependencies,science.values)
+
+
+def verify_ack_loss(context):
+    progress.require_frozen_profile(ack=True)
+    mode = specification(context['case'])
+    assert set(context) == CONTEXT_FIELDS | {'journey','fixture_input','progress_profile','fault','ack_event_recipe','progress_gates'}
+    assert context['progress_profile'] == 'ack-commit-loss' and context['fault']['mode'] == mode
+    events = progress.ack_event_sequence(successor=True)
+    assert loads(context['ack_event_recipe']) == dict(format='bigbrotr-ack-events/1',events=events)
+    assert context['progress_gates'] == {}, 'no intermediate SQL/ACK observation'
+    report = process_closed(context['response'],context['case'],ack=True)
+    window = context['server_window']; assert set(window) == {'before_us','after_us'}
+    number(window['before_us'],1,integer=True)
+    number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    before, after = (progress.legacy_state(context[k],ack=True) for k in ('before','after'))
+    family.baseline(dict(context,before=before))
+    cuts = context['snapshots']; assert [cut['stage'] for cut in cuts] == ['activated','prepared']
+    last = window['before_us']
+    for cut in cuts:
+        assert set(cut) == {'stage','server_us','observed_by_us','control','inputs'}
+        number(cut['server_us'],last,window['after_us'],integer=True)
+        last = number(cut['observed_by_us'],cut['server_us'],window['after_us'],integer=True)
+        assert cut['inputs'] == context['inputs_before']
+    active = progress.legacy_state(cuts[0]['control'],ack=True)
+    model = family.Model(before,context['native_before'],context['inputs_before'],
+        dict(before_us=window['before_us'],after_us=cuts[0]['observed_by_us']))
+    model.startup(active,report)
+    assert model.plan['epoch'] == 3 and model.plan['limit'] == 2
+    assert model.ds['policy_revision'] == model.ds['config_revision'] == 3
+    for table in ('config_revisions','policy_revisions'):
+        assert only(before[table],revision=3)['document']['settings']['ingest.producer_outstanding_requests'] == 2
+    assert only(before['policy_revisions'],revision=3)['document']['settings']['sync.provenance'] == 'off'
+    scope = only(before['allocation_domains'],owner_epoch=1,dictionary_kind=4)
+    assert context['fixture_input'] == dict(config_revision='3',policy_revision='3',visibility=dict(
+        dataset_id=model.ds['dataset_id'][2:],dictionary_kind=4,allocation_domain=scope['allocation_domain'][2:],ordinal='3'))
+    assert context['fixture'] == dict(cleanup_errors=[],client_terminal=context['journey']['terminal'])
+    first = family.wire_checked(context['journey'],context['fixture'],report,before,
+        progress.legacy_state(cuts[1]['control'],ack=True),window,progress='ack',commit_loss=True,mutation_loss=True)
+    science = family.NetworkScience(model,model.plan,acknowledge=True)
+    values = family.native_map(context['native_after'])
+    def fact(n):
+        raw = bytes.fromhex(values['facts',(b'\x01\x20'+science.source(3,n)).hex()])
+        assert raw[:2] == b'\x01\x20' and raw[34:].startswith(b'bigbrotr/fact/1\0')
+        return family.decode(raw[34:].split(b'\0',1)[1])
+    dictionary_at = fact(1)[4]
+    family.clock(dictionary_at,window)
+    assert only(active['ingest_activations'],target_epoch=3)['activated_at_us'] <= dictionary_at <= first['request_at_us']
+    observations = []
+    for event, n in zip(events,(2,6,10),strict=True):
+        recorded, receive = fact(n)[4], fact(n+3)
+        received, resolution = receive[5][1], receive[5][3][1]
+        assert type(resolution) is int and resolution == first['clock_resolution_us']
+        assert first['sent_at_us']-resolution <= received <= first['closed_at_us']+resolution
+        assert first['request_at_us'] <= recorded and received <= recorded
+        family.clock(received,window); family.clock(recorded,window)
+        observations.append((event,received,recorded,resolution))
+    _,received,recorded,resolution = observations[0]
+    science.network(False,dictionary_at,received,recorded,resolution,additional_events=observations[1:])
+    # The shared encoder models all four confirmed ACKs. The selected failed
+    # COMMIT never delivered ACK4, so remove exactly that final state write.
+    key = ('receipts',(b'\x01\x31'+science.slot+be(3)).hex())
+    assert science.values[key] == (b'\x01\x31'+be(4)+be(4)+be(0)).hex()
+    science.values[key] = (b'\x01\x31'+be(4)+be(3)+be(0)).hex()
+    model.native.update(rows=family.native_rows(science.values),sequence=model.native['sequence']-1)
+    assert model.native == context['native_after'], 'complete loss native bytes/write count'
+    assert model.inputs == context['inputs_after']
+    complete = 3 if mode=='before-forward' else 4
+    previous = active
+    for cut in [cuts[1],dict(stage='readback',control=context['after'],observed_by_us=window['after_us'])]:
+        observed = progress.legacy_state(cut['control'],ack=True); wanted = copy.deepcopy(active)
+        bound = dict(before_us=window['before_us'],after_us=cut['observed_by_us'])
+        family.leases(wanted,observed,previous,bound,model.control['epoch'],3)
+        phase = 'prepared' if cut['stage']=='prepared' else 'submitted'
+        acquisition,enrollment = add_http(wanted,observed,before,context['journey']['result'],
+            phase,bound,model.control,status_observed=False)
+        if phase == 'submitted':
+            family.admissions(wanted,observed,science,acquisition,enrollment,model.control,bound,completed_through=complete)
+        same(wanted,observed); previous = observed
+    current = only(after['owner_epochs'],role='control',epoch=model.control['epoch'])
+    assert current['state'] == 'active' and current['released_at_us'] is None
+    typed = ack_records(context,science,current,complete,first)
+    wire_checked(context['fault'],current,ack=True)
+    backend_checked(context['backend'],context['case']['database'],context['before'],context['after'])
+    assert context['catalog_before'] == context['catalog_after']
+    assert set(context['input_contents']) == set(model.inputs)
+    for name,value in context['input_contents'].items():
+        raw = bytes.fromhex(value); assert model.inputs[name] == dict(bytes=len(raw),sha256=sha(raw))
+        if '-0000000000000003-' in name: assert raw == science.inputs[int(name[-21:-5],16)]
+    return dict(status='PASS',mode=mode,caller='Outcome(CommitUnknown)',tables=77,typed=typed,
+        head_revision=complete,complete_through_request=complete,acquisition_revision=complete-1,
+        dependencies=10 if complete==3 else 14,native_rows=len(model.native['rows']),
+        native_sequence=model.native['sequence'],native_issued=4,native_ack=3,native_retired=0,
+        outcome4_sql_copy=mode=='after-complete',intermediate_cut='NOT_OBSERVED',post_ack_durability_loss='NOT_INJECTED')
+
+
+def verify_ack_recovery(context, seed):
+    """Full original replay may repair a copy; typed progress remains unchanged."""
+    progress.require_frozen_profile(ack=True)
+    assert set(context) == CONTEXT_FIELDS
+    case = context['case']; mode = case['clone']; assert mode in MODES and case['origin'] == 'activated'
+    assert set(case) == {'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert re.fullmatch('[a-z][a-z0-9_]{0,62}',case['database']) and case['config'] == '/lab/'+case['database']+'.toml'
+    assert case['operation'] == 'recover' and case['status'] == 'RUNNING' and case['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
+    retry = case['name'] == mode+'-retry'
+    assert case['name'] == mode+('-retry' if retry else '-recover')
+    assert case['predecessor'] == mode+('-recover' if retry else '-loss')
+    reports = recovery_closed(context['response'],case)
+    before,after,native,inputs,window = [context[k] for k in ('before','after','native_before','inputs_before','server_window')]
+    assert len(before) == 77 and set(before) == set(after) == set(seed[0])
+    assert inputs == context['inputs_after'] == seed[2]
+    assert context['fixture'] == dict(cleanup_errors=[]) and context['snapshots'] == []
+    assert context['catalog_before'] == context['catalog_after']
+    assert set(window) == {'before_us','after_us'}
+    number(window['before_us'],1,integer=True)
+    number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    complete = 3 if mode=='before-forward' else 4
+    assert only(seed[0]['producer_checkpoints'])['complete_through_request'] == complete
+    assert sorted(r['request_sequence'] for r in seed[0]['producer_outcomes'] if r['producer_epoch']==3) == list(range(1,complete+1))
+    slot = only(seed[0]['initial_ingest_successions'])['producer_slot_id']
+    key = ('receipts',(b'\x01\x31'+binary(slot)+be(3)).hex())
+    expected_native = copy.deepcopy(seed[1]); values = family.native_map(expected_native)
+    assert values[key] == (b'\x01\x31'+be(4)+be(3)+be(0)).hex()
+    values[key] = (b'\x02\x31'+be(4)+be(complete)+be(0)+b'\x01').hex()
+    expected_native.update(rows=family.native_rows(values),sequence=expected_native['sequence']+1+int(complete==4))
+    if retry:
+        assert native == expected_native
+    else:
+        same(before,seed[0]); assert native == seed[1]
+    m = cycle.Model(before,native,inputs,window)
+    if not retry:
+        old = max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        assert old['state'] == 'active' and old['released_at_us'] is None
+        observed = only(after['owner_epochs'],role='control',epoch=old['epoch'])
+        fresh = only(after['owner_epochs'],role='control',epoch=old['epoch']+1)
+        oldrole = only(m.pg['role_instances'],role_instance_id=old['role_instance_id'])
+        role = only(after['role_instances'],role_instance_id=old['role_instance_id'])
+        newrole = only(after['role_instances'],role_instance_id=fresh['role_instance_id'])
+        family.fresh_xmin(observed['xmin'],before)
+        for at in (observed['released_at_us'],role['retired_at_us']): family.clock(at,window)
+        assert observed['released_at_us'] <= role['retired_at_us'] <= newrole['created_at_us'] <= fresh['acquired_at_us']
+        exclusion='\\x'+sha(b'bigbrotr/control-exclusion/1\0'+binary(old['dataset_id'])+binary(old['resource_id'])+
+            be(old['epoch'])+binary(old['process_incarnation'])+binary(fresh['process_incarnation']))
+        old.update(state='released',released_at_us=observed['released_at_us'],exclusion_method='storage_fenced',
+            exclusion_digest=exclusion,xmin=observed['xmin'])
+        oldrole.update(retired_at_us=role['retired_at_us'],xmin=observed['xmin'])
+        assert observed == old and role == oldrole and observed['xmin'] != fresh['xmin']
+    m.completed_control(after)
+    producer = only(m.pg['producer_epochs'],producer_epoch=3)
+    assert producer['state'] == ('closing' if retry else 'open') and producer['reserved_through_request'] == 4
+    if not retry:
+        closing = only(after['producer_epochs'],producer_epoch=3)
+        family.fresh_xmin(closing['xmin'],m.pg)
+        producer.update(state='closing',xmin=closing['xmin'])
+        if complete == 3:
+            request = only(seed[0]['producer_requests'],producer_epoch=3,request_sequence=4)
+            outcome = only(after['producer_outcomes'],producer_epoch=3,request_sequence=4)
+            receipt = bytes.fromhex(values['receipts',(b'\x01\x30'+binary(slot)+be(3)+be(4)).hex()])
+            raw = bytes.fromhex(context['input_contents'][slot[2:]+'-0000000000000003-0000000000000004.cbor'])
+            assert request['request_digest'] == '\\x'+sha(raw)
+            family.fresh_xmin(outcome['xmin'],m.pg); family.clock(outcome['recorded_at_us'],window)
+            assert m.control['acquired_at_us'] <= outcome['recorded_at_us'] <= m.control['released_at_us']
+            assert 0 < (int(outcome['xmin'])-int(closing['xmin']))%2**32 < 2**31
+            m.pg['producer_outcomes'].append(dict({k:request[k] for k in ('producer_slot_id','producer_epoch',
+                'request_sequence','dataset_id','request_digest','manifest_sha256')},outcome_kind=1,policy_epoch=3,
+                outcome_bytes='\\x'+receipt.hex(),outcome_sha256='\\x'+sha(receipt),
+                recorder_resource=m.control['resource_id'],recorder_epoch=m.control['epoch'],recorder_role='control',
+                recorder_incarnation=m.control['process_incarnation'],recorded_at_us=outcome['recorded_at_us'],xmin=outcome['xmin']))
+    same(m.pg,after)
+    assert context['native_after'] == expected_native, 'exact recovery ACK and closing writes'
+    for table in (*progress.TABLES,'producer_checkpoints','jobs','producer_requests'):
+        same({table:seed[0][table]},{table:after[table]})
+    for row in seed[0]['producer_outcomes']:
+        assert row in after['producer_outcomes'], 'historical outcome copy rewritten'
+    assert reports == [dict(format='bigbrotr-ingest-recovery/1',state='successor-positive-outcomes-resolved',
+        dataset_id=m.ds['dataset_id'][2:],owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],
+        producer_epoch='3',issued_through='4',reserved_through='4',resolved_requests='4',verified_through='3',
+        native='closed',owner_release='committed',ready=False,source_closure='not-performed')]
+    backend_checked(context['backend'],case['database'],before,after)
+    assert set(context['input_contents']) == set(inputs)
+    for name,value in context['input_contents'].items():
+        raw=bytes.fromhex(value); assert inputs[name] == dict(bytes=len(raw),sha256=sha(raw))
+    return dict(status='PASS',case=case['name'],tables=77,old_failed_control_fenced=not retry,
+        native_writes=0 if retry else 1+int(complete==4),ack_writes=int(not retry and complete==4),
+        closing_writes=int(not retry),typed_issuer_xmin_preserved=True,complete_through_request=complete,
+        native_issued=4,native_ack=complete,native_retired=0,
+        outcome4_copy_inserted=not retry and complete==3,post_ack_durability_loss='NOT_INJECTED')
+
+
+def controls(context, seed=None, *, ack=False):
+    check = (lambda c:verify(c,ack=ack)) if seed is None else lambda c:verify_recovery(c,seed,ack=ack)
     check(context)
     changes = [
         ('unjoined',lambda c:c['response']['terminal'].update(reaped=False)),
@@ -337,7 +617,7 @@ def controls(context, seed=None):
         changes += [('lost-original-error',lambda c:c['response'].update(stderr='error: unavailable\n')),
             ('wrong-fault-mode',lambda c:c['fault'].update(mode=MODES[1-MODES.index(c['fault']['mode'])])),
             ('proxy-unjoined',lambda c:c['fault']['process'].update(readers_joined=False)),
-            ('wrong-gate',lambda c:c['fault']['gate']['event'].update(progress_updates_complete=2)),
+            ('wrong-gate',lambda c:c['fault'].update(gate={}) if ack else c['fault']['gate']['event'].update(progress_updates_complete=2)),
             ('wrong-selected-backend',lambda c:max((r for r in c['after']['owner_epochs']
                 if r['role']=='control'),key=lambda r:r['epoch']).update(control_backend_pid=1))]
     else:
@@ -346,6 +626,52 @@ def controls(context, seed=None):
             ('old-control-unreleased',lambda c:only(c['after']['owner_epochs'],role='control',
                 epoch=max(r['epoch'] for r in seed[0]['owner_epochs'] if r['role']=='control')).update(state='active',released_at_us=None)),
             ('historical-head-xmin',lambda c:c['after']['producer_checkpoints'][0].update(xmin='4294967001'))]
+    if ack:
+        def state(c, field, value):
+            slot = only(c['after']['producer_epochs'],producer_epoch=3)['producer_slot_id']
+            key = (b'\x01\x31'+binary(slot)+be(3)).hex()
+            row = only(c['native_after']['rows'],cf='receipts',key=key)
+            raw = bytearray.fromhex(row['value'])
+            assert raw[:2] in (b'\x01\x31',b'\x02\x31')
+            at = {'issued':2,'ack':10,'retired':18}[field]
+            raw[at:at+8] = be(value); row['value'] = raw.hex()
+        def rehash(c):
+            state = c['after']; head = only(state['producer_checkpoints'])
+            deps = sorted(state['producer_checkpoint_dependencies'],key=lambda r:(r['source_shard'],r['source_epoch'],r['source_sequence']))
+            native = family.native_map(c['native_after'])
+            head['checkpoint_digest'] = '\\x'+progress.head_digest(head,state['acquisition_progress'],deps,
+                lambda row:progress.native_reference(row,native)).hex()
+        def forged_intent(c):
+            only(c['after']['acquisition_progress'])['intent_digest'] = '\\x'+'00'*32
+            rehash(c)
+        def incomplete_closure(c):
+            c['after']['producer_checkpoint_dependencies'].pop()
+            only(c['after']['producer_checkpoints'])['dependency_count'] -= 1
+            rehash(c)
+        def wrong_event(c):
+            job = only(c['after']['acquisition_progress'])
+            job['input_sha256'] = '\\x'+sha(json.dumps(progress.ack_event_sequence(successor=True)[0],
+                ensure_ascii=False,separators=(',',':')).encode())
+            rehash(c)
+        changes += [('coherent-forged-intent',forged_intent),
+            ('coherent-incomplete-closure',incomplete_closure),('coherent-wrong-event',wrong_event),
+            ('ack-beyond-issue',lambda c:state(c,'ack',5)),
+            ('retained-details-reclaimed',lambda c:state(c,'retired',1)),
+            ('extra-issued-request',lambda c:state(c,'issued',5)),
+            ('native-original-rewritten',lambda c:c['input_contents'].update({
+                next(n for n in c['input_contents'] if n.endswith('-0000000000000004.cbor')):'00'}))]
+        if seed is None:
+            changes += [('caller-lost-confirmation-ack4',lambda c:state(c,'ack',4)),
+                ('lost-earlier-ack',lambda c:state(c,'ack',2)),
+                ('wrong-signed-event-order',lambda c:c.update(ack_event_recipe=json.dumps(dict(
+                    format='bigbrotr-ack-events/1',events=list(reversed(progress.ack_event_sequence(successor=True))))))),
+                ('request4-frame-rebound',lambda c:only(c['after']['producer_requests'],
+                    producer_epoch=3,request_sequence=4).update(progress_event_ordinal=2))]
+        else:
+            changes += [('missing-or-invented-recovery-ack',lambda c:state(c,'ack',
+                4 if c['case']['clone']=='before-forward' else 3)),
+                ('recovered-copy-recorder-rewritten',lambda c:only(c['after']['producer_outcomes'],
+                    producer_epoch=3,request_sequence=4).update(recorder_epoch=1))]
     rejected=[]
     for name,change in changes:
         value=copy.deepcopy(context); change(value)

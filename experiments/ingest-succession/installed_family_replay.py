@@ -244,21 +244,31 @@ def leases(wanted, observed, previous, window, control_epoch, epoch, *, stopped=
                 retired_at_us=ended['retired_at_us'], xmin=tx)
 
 
-def admissions(wanted, observed, science, scope, enrollment, control, window):
+def admissions(wanted, observed, science, scope, enrollment, control, window, *, completed_through=None):
     epoch = science.epoch
+    if completed_through is None:
+        completed_through = len(science.inputs)
+    assert type(completed_through) is int and 0 <= completed_through <= len(science.inputs)
     previous_at = only(wanted['ingest_activations'], target_epoch=epoch)['activated_at_us']
     prior_tx = only(wanted['ingest_activations'], target_epoch=epoch)['xmin']
     for n in range(1, len(science.inputs) + 1):
         request = only(observed['producer_requests'], producer_epoch=epoch, request_sequence=n)
-        outcome = only(observed['producer_outcomes'], producer_epoch=epoch, request_sequence=n)
+        outcome = (only(observed['producer_outcomes'], producer_epoch=epoch, request_sequence=n)
+            if n <= completed_through else None)
         raw, receipt = science.inputs[n], science.receipts[n]
-        for row, field in ((request, 'reserved_at_us'), (outcome, 'recorded_at_us')):
+        coordinates = [(request, 'reserved_at_us')]
+        if outcome is not None:
+            coordinates.append((outcome, 'recorded_at_us'))
+        for row, field in coordinates:
             clock(row[field], window); fresh_xmin(row['xmin'], wanted)
             assert 0 < (int(row['xmin']) - int(prior_tx)) % 2**32 < 2**31
             prior_tx = row['xmin']
-        assert request['xmin'] != outcome['xmin']
-        assert previous_at <= request['reserved_at_us'] <= outcome['recorded_at_us']
-        previous_at = outcome['recorded_at_us']
+        assert previous_at <= request['reserved_at_us']
+        previous_at = request['reserved_at_us']
+        if outcome is not None:
+            assert request['xmin'] != outcome['xmin']
+            assert previous_at <= outcome['recorded_at_us']
+            previous_at = outcome['recorded_at_us']
         assert previous_at < min(only(observed['owner_epochs'], role='control', epoch=control['epoch'])['lease_expires_at_us'],
             only(observed['owner_epochs'], role='ingest', epoch=epoch)['lease_expires_at_us'])
         source = dict(relay_endpoint_id=None, relay_access_scope_id=None, relay_enrollment_generation=None,
@@ -273,10 +283,11 @@ def admissions(wanted, observed, science, scope, enrollment, control, window):
         wanted['producer_requests'].append(dict(common, input_bytes=len(raw), input_profile=1,
             issuer_resource=control['resource_id'], issuer_epoch=control['epoch'], issuer_role='control',
             issuer_incarnation=control['process_incarnation'], reserved_at_us=request['reserved_at_us'], xmin=request['xmin'], **source))
-        wanted['producer_outcomes'].append(dict(common, outcome_kind=1, policy_epoch=science.m.ds['policy_revision'],
-            outcome_bytes=bx(receipt), outcome_sha256=bx(digest_bytes(receipt)), recorder_resource=control['resource_id'],
-            recorder_epoch=control['epoch'], recorder_role='control', recorder_incarnation=control['process_incarnation'],
-            recorded_at_us=outcome['recorded_at_us'], xmin=outcome['xmin']))
+        if outcome is not None:
+            wanted['producer_outcomes'].append(dict(common, outcome_kind=1, policy_epoch=science.m.ds['policy_revision'],
+                outcome_bytes=bx(receipt), outcome_sha256=bx(digest_bytes(receipt)), recorder_resource=control['resource_id'],
+                recorder_epoch=control['epoch'], recorder_role='control', recorder_incarnation=control['process_incarnation'],
+                recorded_at_us=outcome['recorded_at_us'], xmin=outcome['xmin']))
     only(wanted['producer_epochs'], producer_epoch=epoch).update(reserved_through_request=len(science.inputs),
         xmin=only(observed['producer_requests'], producer_epoch=epoch, request_sequence=len(science.inputs))['xmin'])
 
@@ -304,9 +315,10 @@ def backend_checked(value, control, database, window):
     assert absence['attempts'][-1]['backends'] == []
 
 
-def wire_checked(journey, fixture, report, before, initial, window, *, progress=None, commit_loss=False):
+def wire_checked(journey, fixture, report, before, initial, window, *, progress=None, commit_loss=False, mutation_loss=False):
     from installed_family_http import ACTIONS
-    assert type(commit_loss) is bool and (not commit_loss or progress == 'split')
+    assert type(mutation_loss) is bool and (not mutation_loss or (commit_loss and progress=='ack'))
+    assert type(commit_loss) is bool and (not commit_loss or progress == 'split' or mutation_loss)
     assert journey['terminal'] == dict(exit_code=0, reaped=True, outcome='PROCESS_EXITED')
     assert journey['stdout'] == journey['stderr'] == ''
     result = journey['result']
@@ -336,7 +348,7 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
         stored_actions=ACTIONS, authority='observation-only')
     assert len(result['observations']) == 4
     opened, closed = journey['opened'], journey['closed']
-    assert 2 <= len(opened) == len(closed) <= 128
+    assert (1 if mutation_loss else 2) <= len(opened) == len(closed) <= 128
     nonces = set()
     for number, (first, last) in enumerate(zip(opened, closed), 1):
         assert first['number'] == last['number'] == number
@@ -396,8 +408,11 @@ def wire_checked(journey, fixture, report, before, initial, window, *, progress=
         assert signal['signal_monotonic_ns'] <= selected['closed_monotonic_ns']
     if progress is not None:
         phases = [r for r in closed if 'progress_phase' in r]
-        assert [r['progress_phase'] for r in phases] == ['mutation', 'proof-only']
-        assert phases[0]['number'] == 1 < phases[1]['number']
+        assert [r['progress_phase'] for r in phases] == (['mutation'] if mutation_loss else ['mutation', 'proof-only'])
+        assert phases[0]['number'] == 1
+        if mutation_loss:
+            return closed[0]
+        assert phases[0]['number'] < phases[1]['number']
         if not commit_loss:
             assert phases[1]['number'] < quiet['number']
         assert phases[0]['request'][1] != phases[1]['request'][1]
