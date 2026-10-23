@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "Owner-requested safe pause on 2026-10-23: integrated source main25cf6cf; positive initial/activated2/successor3 ACK and raw replay PASS. ACK-loss source reviewed/integrated, real fault/recovery runtime NOT_RUN. No active project driver or cleanup.",
+      "state": "ACTIVE: main70bb00f exact-source ACK mutation-COMMIT-loss/recovery/retry and strict raw replay PASS; both drivers joined, owned resources stopped. Remaining ACK boundary review active; root sole runtime/integration owner.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -61542,6 +61542,13 @@
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T09-36-53-01a167b0-f8c7-7082-b662-a89a3dbf651c.jsonl session_meta/turn_context",
           "state": "Completed; no remaining source blocker; no active work; explicit pause communicated.",
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
+        },
+        "ack_remaining_boundary": {
+          "scope": "Source-only assessment of remaining required ACK/checkpoint boundaries; no implementation or engines authorized",
+          "model": "gpt-6-astra",
+          "effort": "xhigh",
+          "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
+          "state": "Active"
         }
       },
       "pause_resource_observation_20261023": {
@@ -61565,7 +61572,32 @@
         "project_processes": "Fresh /proc command/cwd scan found no process under repository or external implementation lab, excluding the checkpoint inspection ancestry. Running Docker list contains no project-owned container; unrelated workloads left intact.",
         "preservation": "All .research, historical partial diffs, worktrees, original failures, data/logs and external /home/tux/bigbrotr-implementation-20260917/runs artifacts retained. No cleanup, branch deletion or new run during suspension.",
         "next_runtime": "NOT_RUN: installed-producer-ack-commit-loss new lab, after explicit resume only. Detailed source and reused verifier receipts live in evidence_owner native_ack_source_preparation."
-      }
+      },
+      "installed_ack_commit_loss_runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f",
+          "source": "70bb00f56ddcf19ccf538000ac9764c72b1568f7",
+          "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fcad4c9/out/artifacts",
+          "driver_session": 47564,
+          "status": "PASS_INSTALLED_PRODUCER_ACK_COMMIT_LOSS",
+          "output": "installed-producer-ack-commit-loss",
+          "log": "driver.log",
+          "custody": "Fresh root exact-ID inspection after runtime: owned client exited/PID0/noOOM/exit143 and borrowed PG exited/PID0/noOOM/exit0. Report cleanup_errors,missing_owned,unexpected_containers,unrelated_changed all empty. Raw replay subsequently joined0; all artifacts retained.",
+          "driver_exit": 0,
+          "raw_driver_session": 98070,
+          "raw_driver_exit": 0,
+          "raw_status": "PASS_INSTALLED_PRODUCER_ACK_COMMIT_LOSS_CAPTURE_REPLAY",
+          "client": "5983699b3dc011946fa308752eb94ae3abad910af81e7ae5856ab600cfd7956c",
+          "owner": "26863d5f8f10f8c836a19551b069f770",
+          "label": "org.bigbrotr.installed-producer-ack-commit-loss",
+          "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_producer_ack_commit_70bb00f_before_forward",
+            "bb_producer_ack_commit_70bb00f_after_complete"
+          ]
+        }
+      ]
     }
   },
   "tux_intermediate_retirement_20261018": {

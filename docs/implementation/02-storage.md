@@ -459,6 +459,13 @@ One owner serializes exact identity decisions for each writable directory.
   and two corrupted-copy refusals also pass. Initial/activated entrypoints and
   recovery, active-Control COMMIT-loss recovery and remaining discriminators
   stay open. ACK, new credit, GC, coverage and whole-step completion are not qualified.
+  The later [native ACK increment](../reference/producer-request-inputs.md#native-ack-and-returned-credit-partial-qualification)
+  qualifies actual initial/activated/successor two-slot progress and distinct
+  proof-only resend, plus both third-mutation COMMIT-loss outcomes and linked
+  full-original recovery/retry. Source70bb00f fault evidence passes six processes,
+  140 controls and strict raw replay; the recovery report retains exact identities
+  and original failures. Native ACK ambiguity, full-window proof-only, remaining
+  refusals/resources, GC and complete live continuity still prevent step closure.
   The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
   adds native-witness closure and a contiguous logical shard head in that same
   outcome transaction. [Native evidence](evidence/p03-import-checkpoints-native-20260919.json)

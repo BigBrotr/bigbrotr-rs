@@ -783,9 +783,16 @@ epoch2/epoch3 I=A=C4; proof-only adds no native writes or request originals.
 The original result-packing, quiet-wire selection and standalone reader import
 failures remain recorded. The owning
 [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-pins exact fixture/build identities and invocation premises. Connected ambiguous
-completion/recovery, full-window proof-only and remaining refusal/resource gates
-are still open; the earlier ACK0 results do not qualify those new paths.
+pins exact fixture/build identities and invocation premises. Fixture `70bb00f`
+also passes two real third-mutation COMMIT losses and four fresh recovery/retry
+invocations, 140 negative controls and strict raw replay binding 2,313 files.
+Before-forward leaves I4/A3/C3 and no SQL outcome4; recovery copies outcome4
+without inventing checkpoint progress or ACK4. After-complete leaves I4/A3/C4;
+recovery validates the retained originals/closure and synchronizes ACK4. Both
+recoveries close native ownership; exact retries add no native write. Historical
+typed issuer/xmins, scientific facts and original inputs remain preserved.
+No intermediate cut or post-ACK durability loss was injected. Full-window
+proof-only, native ACK uncertainty and remaining refusal/resource gates stay open.
 
 Additive migration `0040_producer_ack.sql` separates the absolute retained limit
 from the coordination window: the next reservation is at most validated typed

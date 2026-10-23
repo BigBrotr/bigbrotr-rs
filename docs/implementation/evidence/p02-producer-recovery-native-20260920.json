@@ -42153,7 +42153,7 @@
           }
         ],
         "native_ack_source_preparation": {
-          "status": "SOURCE_AND_COMPONENTS_PASS; real initial/activated2/successor3 window2 ACK and raw science PASS. Original fixture failures preserved; connected loss/recovery and remaining gates open.",
+          "status": "SOURCE_AND_COMPONENTS_PASS; real initial/activated2/successor3 window2 ACK and both mutation COMMIT-loss/recovery/retry modes PASS, including strict raw replay. Original failures preserved; remaining refusal/full-window/native-ambiguity/resource/GC gates open.",
           "root_consumer": {
             "commit": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
             "tree": "765233f165cfe590eb3399f085306aff32f661dd",
@@ -42202,7 +42202,7 @@
             "Successful native ACK write with unexpected sequence poisons the actual initial/recovery owner as well as successor. Native component refusal exercised."
           ],
           "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
-          "next": "PAUSE requested by owner: do not execute until explicit resume. Then create a new detached exact-source lab, reuse qualified producer-ack-fcad4c9/out/artifacts and run installed_progress_commit_loss.py LAB BUILD --producer-ack followed by strict installed_progress_commit_replay.py LAB --producer-ack. Two faults plus four recovery/retry processes and 140 controls remain NOT_RUN; preserve sequential full-state binding.",
+          "next": "Complete remaining ACK/checkpoint boundaries without repeating unchanged qualification: source assessment of actual full-window proof-only, preparation holes, native ACK ambiguity and recovery refusals is active; then implement the dependency-ready product/fixture slice in the existing plan. No GC/capacity or overall completion claim.",
           "storage": {
             "commit": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
             "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
@@ -42530,7 +42530,224 @@
             "driver_exit": 1,
             "driver_failure": "After saving the complete PASS receipt, the final presentation loop raised KeyError: controls because loss control summaries use count. Wrapper exit1 is preserved as FAIL; root read every saved case/status/count after the error. No scientific cases rerun and no new campaign required for this presentation error.",
             "pause": "Driver already joined; no active process and no new ACK-loss laboratory created."
-          }
+          },
+          "installed_ack_commit_loss_runs": [
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f",
+              "source": "70bb00f56ddcf19ccf538000ac9764c72b1568f7",
+              "tree": "1cd8887cc2c953734b2ec692358a07b37a08015e",
+              "build_source": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
+              "status": "PASS_INSTALLED_PRODUCER_ACK_COMMIT_LOSS",
+              "driver_session": 47564,
+              "driver_exit": 0,
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/result.json",
+                "sha256": "6d189b60b216f40b3ee641e9f282e06a7409698af54d808ed5650c75bb84e540"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/driver.log",
+                "sha256": "1459da786434cf81ebf8a1c2d3bf58c94c1f8f55be302bc39279f696834c34c4"
+              },
+              "raw_replay": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/raw-replay.json",
+                "sha256": "9ee42de22ada2bbf8ecacfb0bbac95c992399fd0be9726609fbb39c6a5da816a"
+              },
+              "raw_driver_session": 98070,
+              "raw_driver_exit": 0,
+              "raw_status": "PASS_INSTALLED_PRODUCER_ACK_COMMIT_LOSS_CAPTURE_REPLAY",
+              "raw_bound_files": 2313,
+              "cases": [
+                {
+                  "name": "before-forward-loss",
+                  "status": "PASS",
+                  "process_returncode": 4,
+                  "custody": "OBSERVED_CLOSED_AND_JOINED",
+                  "oracle": {
+                    "status": "PASS",
+                    "mode": "before-forward",
+                    "caller": "Outcome(CommitUnknown)",
+                    "tables": 77,
+                    "typed": {
+                      "status": "VERIFIED_TYPED_RECORDS",
+                      "jobs": 1,
+                      "dependencies": 10,
+                      "checkpoint_sha256": "b330624322085041d7683fe027f322c7c0bd20e1dc896bf36f3b5833c9035ae3",
+                      "qualification": "NOT_RUN"
+                    },
+                    "head_revision": 3,
+                    "complete_through_request": 3,
+                    "acquisition_revision": 2,
+                    "dependencies": 10,
+                    "native_rows": 113,
+                    "native_sequence": 142,
+                    "native_issued": 4,
+                    "native_ack": 3,
+                    "native_retired": 0,
+                    "outcome4_sql_copy": false,
+                    "intermediate_cut": "NOT_OBSERVED",
+                    "post_ack_durability_loss": "NOT_INJECTED"
+                  },
+                  "negative_control_count": 26,
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/before-forward-loss-verification.json",
+                    "sha256": "37393c49ff4a0f191edd303cb462fe3df84e84be70273275414b251a3fd7080e"
+                  }
+                },
+                {
+                  "name": "before-forward-recover",
+                  "status": "PASS",
+                  "process_returncode": 0,
+                  "custody": "OBSERVED_CLOSED_AND_JOINED",
+                  "oracle": {
+                    "status": "PASS",
+                    "case": "before-forward-recover",
+                    "tables": 77,
+                    "old_failed_control_fenced": true,
+                    "native_writes": 1,
+                    "ack_writes": 0,
+                    "closing_writes": 1,
+                    "typed_issuer_xmin_preserved": true,
+                    "complete_through_request": 3,
+                    "native_issued": 4,
+                    "native_ack": 3,
+                    "native_retired": 0,
+                    "outcome4_copy_inserted": true,
+                    "post_ack_durability_loss": "NOT_INJECTED"
+                  },
+                  "negative_control_count": 22,
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/before-forward-recover-verification.json",
+                    "sha256": "3695d9c198c627bbe0d60ee5ad501ff71e1aa8eb35771f019ba32bc5502ed040"
+                  }
+                },
+                {
+                  "name": "before-forward-retry",
+                  "status": "PASS",
+                  "process_returncode": 0,
+                  "custody": "OBSERVED_CLOSED_AND_JOINED",
+                  "oracle": {
+                    "status": "PASS",
+                    "case": "before-forward-retry",
+                    "tables": 77,
+                    "old_failed_control_fenced": false,
+                    "native_writes": 0,
+                    "ack_writes": 0,
+                    "closing_writes": 0,
+                    "typed_issuer_xmin_preserved": true,
+                    "complete_through_request": 3,
+                    "native_issued": 4,
+                    "native_ack": 3,
+                    "native_retired": 0,
+                    "outcome4_copy_inserted": false,
+                    "post_ack_durability_loss": "NOT_INJECTED"
+                  },
+                  "negative_control_count": 22,
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/before-forward-retry-verification.json",
+                    "sha256": "9304392caab0c7eea3f3cf7c29e31f11c443636d25ae80a0d690b812190b7b23"
+                  }
+                },
+                {
+                  "name": "after-complete-loss",
+                  "status": "PASS",
+                  "process_returncode": 4,
+                  "custody": "OBSERVED_CLOSED_AND_JOINED",
+                  "oracle": {
+                    "status": "PASS",
+                    "mode": "after-complete",
+                    "caller": "Outcome(CommitUnknown)",
+                    "tables": 77,
+                    "typed": {
+                      "status": "VERIFIED_TYPED_RECORDS",
+                      "jobs": 1,
+                      "dependencies": 14,
+                      "checkpoint_sha256": "d1c5d201a5407e38232389c7e4f941294f17550dbc52ebc1a333df00a3c0ba99",
+                      "qualification": "NOT_RUN"
+                    },
+                    "head_revision": 4,
+                    "complete_through_request": 4,
+                    "acquisition_revision": 3,
+                    "dependencies": 14,
+                    "native_rows": 113,
+                    "native_sequence": 142,
+                    "native_issued": 4,
+                    "native_ack": 3,
+                    "native_retired": 0,
+                    "outcome4_sql_copy": true,
+                    "intermediate_cut": "NOT_OBSERVED",
+                    "post_ack_durability_loss": "NOT_INJECTED"
+                  },
+                  "negative_control_count": 26,
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/after-complete-loss-verification.json",
+                    "sha256": "bbfb3590a560c5b5ddcb43806bf26b65e7481d0043cbf4ac83e530649b026deb"
+                  }
+                },
+                {
+                  "name": "after-complete-recover",
+                  "status": "PASS",
+                  "process_returncode": 0,
+                  "custody": "OBSERVED_CLOSED_AND_JOINED",
+                  "oracle": {
+                    "status": "PASS",
+                    "case": "after-complete-recover",
+                    "tables": 77,
+                    "old_failed_control_fenced": true,
+                    "native_writes": 2,
+                    "ack_writes": 1,
+                    "closing_writes": 1,
+                    "typed_issuer_xmin_preserved": true,
+                    "complete_through_request": 4,
+                    "native_issued": 4,
+                    "native_ack": 4,
+                    "native_retired": 0,
+                    "outcome4_copy_inserted": false,
+                    "post_ack_durability_loss": "NOT_INJECTED"
+                  },
+                  "negative_control_count": 22,
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/after-complete-recover-verification.json",
+                    "sha256": "f978206a13401f054a5aadea60c41c10fc5c828eaca0246f21b1f0ce6ec4b542"
+                  }
+                },
+                {
+                  "name": "after-complete-retry",
+                  "status": "PASS",
+                  "process_returncode": 0,
+                  "custody": "OBSERVED_CLOSED_AND_JOINED",
+                  "oracle": {
+                    "status": "PASS",
+                    "case": "after-complete-retry",
+                    "tables": 77,
+                    "old_failed_control_fenced": false,
+                    "native_writes": 0,
+                    "ack_writes": 0,
+                    "closing_writes": 0,
+                    "typed_issuer_xmin_preserved": true,
+                    "complete_through_request": 4,
+                    "native_issued": 4,
+                    "native_ack": 4,
+                    "native_retired": 0,
+                    "outcome4_copy_inserted": false,
+                    "post_ack_durability_loss": "NOT_INJECTED"
+                  },
+                  "negative_control_count": 22,
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-commit-loss-70bb00f/installed-producer-ack-commit-loss/after-complete-retry-verification.json",
+                    "sha256": "cc1a9d6ea3ac2dbfde49eb01f49987180d76609a0fb5077e0ed5908b45a1128d"
+                  }
+                }
+              ],
+              "negative_controls": 140,
+              "scope": "Third-mutation COMMIT loss I4/A3 vs C3/C4, full-original recovery and exact retry; no observed intermediate cut or injected post-ACK durability loss",
+              "custody": "Both root drivers joined0; no cleanup errors,missing owned,unexpected containers or unrelated changes. Root independently inspected exact owned client and borrowed PG exited/PID0/noOOM after runtime.",
+              "preservation": "Physical/input files reread; SQL/catalog preservation is captured-run evidence",
+              "not_run": [
+                "Actual post-ACK durability loss; A>C or missing-original engine corruption",
+                "GC, whole-job/source completion, unlimited retained capacity"
+              ]
+            }
+          ]
         }
       }
     }
