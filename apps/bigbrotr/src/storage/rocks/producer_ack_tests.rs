@@ -4,6 +4,126 @@ use super::super::{producer_ack::AckTarget, producer_checkpoint::CheckpointStamp
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
 
+// Opt-in child of the external syscall oracle. It exits without Drop so a
+// failed sync cannot be hidden by an orderly native close. No SQL is involved.
+#[test]
+#[ignore = "requires the bounded external ACK syscall driver"]
+fn native_ack_fsync_boundary() {
+    use super::super::bootstrap_tests as fixture;
+    use std::io::Write;
+    use std::time::{Duration, Instant};
+
+    fn emit(value: serde_json::Value) {
+        let bytes = format!("\n{value}\n");
+        let mut output = std::io::stdout().lock();
+        output.write_all(bytes.as_bytes()).unwrap();
+        output.flush().unwrap();
+    }
+    fn observation(store: &IngestStore) -> serde_json::Value {
+        let hex =
+            |bytes: &[u8]| -> String { bytes.iter().map(|byte| format!("{byte:02x}")).collect() };
+        serde_json::json!({
+            "sequence": store.db.latest_sequence_number(),
+            "rows": kv(store).iter().map(|(cf, key, value)|
+                serde_json::json!([cf, hex(key), hex(value)])).collect::<Vec<_>>()
+        })
+    }
+
+    let home = std::path::PathBuf::from(std::env::var_os("BIGBROTR_ACK_FAULT_HOME").unwrap());
+    let mode = std::env::var("BIGBROTR_ACK_FAULT_MODE").unwrap();
+    assert!(matches!(mode.as_str(), "control" | "eio" | "reopen"));
+    let path = home.join("db");
+    let budget = fixture::budget();
+    if mode == "reopen" {
+        let recovery = IngestRecovery::open(
+            &path,
+            fixture::manifest(),
+            fixture::native(),
+            fixture::grant(&budget, 0, 128 * MIB),
+        )
+        .unwrap();
+        emit(
+            serde_json::json!({"event":"ACK_REOPEN", "pid":std::process::id(),
+            "native":observation(&recovery.store)}),
+        );
+        std::process::exit(0);
+    }
+    let mut store = IngestStore::initialize(
+        &path,
+        fixture::manifest(),
+        fixture::native(),
+        fixture::grant(&budget, 0, 128 * MIB),
+    )
+    .unwrap();
+    drop(
+        store
+            .bootstrap_dictionaries(
+                fixture::request(),
+                &fixture::intent("public"),
+                ObservedTime::new(123),
+                BootstrapLimits {
+                    max_mappings: 8,
+                    max_batch_bytes: MIB as usize,
+                },
+                fixture::grant(&budget, 8 * MIB, 4 * MIB),
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    let next = ProducerRequestId {
+        request_sequence: RequestSequence::new(2).unwrap(),
+        ..fixture::request()
+    };
+    // This is valid before poisoning, so a later InvalidInput is not a control.
+    assert_eq!(store.require_request_capacity(next, 2), Ok(()));
+    emit(
+        serde_json::json!({"event":"ACK_READY", "pid":std::process::id(),
+        "native":observation(&store)}),
+    );
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !home.join("continue").exists() {
+        assert!(
+            Instant::now() < deadline,
+            "external ACK observer did not release child"
+        );
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    let target = target(&store, 5, 1);
+    emit(serde_json::json!({"event":"ACK_BEGIN"}));
+    let result =
+        store.test_acknowledge_target(target, &fixture::grant(&budget, 4096, 4096), || Ok(()));
+    if mode == "eio" {
+        assert_eq!(result, Err(AdmissionError::CommitUnknown));
+        assert!(matches!(
+            store.producer_credit(fixture::request().producer_slot_id),
+            Err(AdmissionError::CommitUnknown)
+        ));
+        assert_eq!(
+            store.require_request_capacity(next, 2),
+            Err(AdmissionError::CommitUnknown)
+        );
+        emit(
+            serde_json::json!({"event":"ACK_RESULT", "result":"CommitUnknown",
+            "credit":"CommitUnknown", "capacity":"CommitUnknown"}),
+        );
+    } else {
+        assert_eq!(result, Ok(()));
+        let credit = store
+            .producer_credit(fixture::request().producer_slot_id)
+            .unwrap();
+        assert_eq!(
+            (credit.issued_through(), credit.acknowledged_through()),
+            (1, 1)
+        );
+        assert_eq!(store.require_request_capacity(next, 2), Ok(()));
+        emit(serde_json::json!({"event":"ACK_RESULT", "result":"Ok",
+            "native":observation(&store)}));
+    }
+    // Never drop/flush the store, including after the injected EIO. The parent
+    // must join this child and retain physical bytes before a fresh reader.
+    std::process::exit(0);
+}
+
 fn target(store: &IngestStore, slot: u8, complete: u64) -> AckTarget {
     AckTarget::new(
         CheckpointStamp::capture(store).unwrap(),

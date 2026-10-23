@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'export-memory-probe', 'catalog-layout', 'export-admission', 'export-native-row', 'export-manager-memory-probe', 'initial-sync-diagnostics', 'producer-progress', 'producer-ack',
+    'export-memory-probe', 'catalog-layout', 'export-admission', 'export-native-row', 'export-manager-memory-probe', 'initial-sync-diagnostics', 'producer-progress', 'producer-ack', 'producer-ack-fault',
     'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed',
     'ingest-activated-retirement', 'ingest-activated-durable', 'ingest-activated-source', 'ingest-activated-refusals', 'ingest-activated-installed', 'ingest-activated-recovery', 'ingest-installed-live', 'ingest-live-refusals', 'ingest-live-guards', 'ingest-live', 'ingest-empty-installed', 'ingest-empty-preparer', 'ingest-empty-locks', 'ingest-empty-faults', 'ingest-gap-faults', 'ingest-history', 'ingest-recovery', 'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
@@ -117,6 +117,8 @@ for name in ['target', 'cargo-home']:
 
 def run_container(name, network, argv, seconds):
     archive_mount = []
+    if profile == 'producer-ack-fault' and name == 'native':
+        archive_mount = ['--mount', f'type=bind,src={root}/instrument,dst=/instrument,readonly']
     if profile in ('archive-worker-budgets', 'ingest-succession-archive-installed') and name == 'native':
         # Retained assets are read-only build inputs. The old executable is not
         # reused: the exact source builds a worker before binding its parent.
@@ -156,6 +158,19 @@ def run_container(name, network, argv, seconds):
 
 
 try:
+    if profile == 'producer-ack-fault':
+        # Reuse the qualified tracer and existing custody checks. These imports
+        # define helpers only; no installed/PG journey runs in this profile.
+        import importlib.util
+        for directory in ['control-migrations', 'ingest-bootstrap']:
+            sys.path.insert(0, str(source / 'experiments' / directory))
+        spec = importlib.util.spec_from_file_location(
+            'bootstrap_oracle', source / 'experiments/ingest-bootstrap/oracle.py')
+        oracle = importlib.util.module_from_spec(spec)
+        sys.modules['bootstrap_oracle'] = oracle
+        spec.loader.exec_module(oracle)
+        from interruptions import prepare_instrument
+        prepare_instrument(root, prior, source)
     run_container('fetch', 'bridge', ['cargo', 'fetch', '--locked', '--target', 'x86_64-unknown-linux-gnu',
                   '--manifest-path', '/out/build/source/Cargo.toml'], 180)
     assert shutil.disk_usage(base).free > 8 * 1024**3
@@ -168,6 +183,7 @@ try:
         'initial-sync-diagnostics': ['--initial-sync-diagnostics'],
         'producer-progress': ['producer-progress'],
         'producer-ack': ['producer-ack'],
+        'producer-ack-fault': ['producer-ack-fault'],
         'export-native-row': ['--native-row'],
         'export-manager-memory-probe': ['--manager-memory-probe'],
         'catalog-layout': ['--layout'],
@@ -234,12 +250,13 @@ try:
         'acquisition-jobs-faults': ['acquisition-jobs-faults'],
         'acquisition-claims': ['acquisition-claims'],
     }.get(profile, [])
-    native_script = ('ingest-succession/native.py' if profile in ('producer-progress', 'producer-ack', 'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
+    native_script = ('ingest-succession/native.py' if profile in ('producer-progress', 'producer-ack', 'producer-ack-fault', 'ingest-succession-archive-installed', 'ingest-succession-archive-components', 'ingest-succession-codec', 'ingest-succession-lineage', 'ingest-succession-schema', 'ingest-succession-replay', 'ingest-succession-history', 'ingest-succession-history-probe', 'ingest-succession-transition', 'ingest-succession-transition-probe', 'ingest-succession-writer', 'ingest-succession-writer-followup', 'ingest-succession-recovery', 'ingest-succession-installed')
                      else 'archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
                      else 'export-execution/native.py' if profile in ('export-memory-probe', 'export-admission', 'export-native-row', 'export-manager-memory-probe', 'initial-sync-diagnostics')
                      else 'archive-engine/native_scientific_guard.py' if profile == 'catalog-layout'
                      else native_path + '/native.py')
-    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
+    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args],
+                  1980 if profile == 'producer-ack-fault' else 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
     expected = {'ingest-activated-retirement':'PASS_ACTIVATED_RETIREMENT_BUILD_ONLY', 'ingest-activated-durable':'PASS_ACTIVATED_DURABLE_PROBE_BUILD_ONLY', 'ingest-activated-source':'PASS_ACTIVATED_SOURCE_CLOSURE_BUILD_ONLY', 'ingest-activated-refusals':'PASS_ACTIVATED_REFUSALS_PROBE_BUILD_ONLY', 'ingest-activated-installed':'PASS_ACTIVATED_INSTALLED_BUILD_ONLY', 'ingest-activated-recovery':'PASS_ACTIVATED_INITIAL_RECOVERY_BUILD_ONLY', 'ingest-installed-live':'PASS_INSTALLED_LIVE_SUCCESSOR_BUILD_ONLY', 'ingest-live-refusals':'PASS_LIVE_INITIAL_REFUSALS_PROBE_BUILD_ONLY', 'ingest-live-guards':'PASS_LIVE_INITIAL_GUARDS_PROBE_BUILD_ONLY', 'ingest-live':'PASS_LIVE_INITIAL_BUILD_ONLY', 'ingest-empty-installed':'PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY', 'ingest-empty-preparer':'PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY', 'ingest-empty-locks':'PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY', 'ingest-empty-faults':'PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY', 'ingest-gap-faults':'PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY', 'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery': 'PASS_INGEST_RECOVERY_INSPECTION', 'archive-worker-budgets': 'PASS_ARCHIVE_WORKER_BUDGETS', 'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
                 'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
@@ -248,6 +265,7 @@ try:
                 'initial-sync-diagnostics': 'PASS_INITIAL_SYNC_DIAGNOSTICS_BUILD_ONLY',
                 'producer-progress': 'PASS_PRODUCER_PROGRESS_COMPONENTS',
                 'producer-ack': 'PASS_PRODUCER_ACK_COMPONENTS',
+                'producer-ack-fault': 'PASS_PRODUCER_ACK_FAULT',
                 'export-native-row': 'PASS_EXPORT_NATIVE_ROW_BUILD_ONLY',
                 'export-manager-memory-probe': 'PASS_EXPORT_MANAGER_MEMORY_BUILD_ONLY',
                 'catalog-layout': 'PASS_CATALOG_LAYOUT_BUILD_ONLY',
