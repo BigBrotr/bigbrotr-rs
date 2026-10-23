@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Two actual proof-only COMMIT losses, each followed by config-only recovery/retry.
+"""Two COMMIT losses followed by config-only recovery/retry.
 
 The existing transition owner excludes, copies and preserves both origins. The
 proxy selects successful acquisition UPDATE occurrence two, never a COMMIT index.
 An error remains an error; only the separate external predicates qualify it.
+Default0039 loses proof-only confirmation; --producer-ack selects the third
+real mutation in the first REQ, with I4/A3 and PostgreSQL C3 or C4.
 """
 from pathlib import Path
 import shutil
@@ -30,7 +32,9 @@ SUITE = transition.Suite(directory=oracle.DIRECTORY, label=oracle.LABEL, status=
 
 
 class Fault:
-    def __init__(self, pg, client, output, case):
+    def __init__(self, pg, client, output, case, *, ack=False):
+        assert type(ack) is bool
+        self.ack = ack
         self.pg, self.client, self.output, self.case = pg, client, output, case
         self.proxy = self.current = None
         self.evidence = dict(format='bigbrotr-progress-commit-fault/1', mode=case['clone'],
@@ -101,7 +105,7 @@ class Fault:
             assert self.proxy.wait(5) == 0
             self.capture()
             self.evidence['closed'] = True
-            oracle.wire_checked(self.evidence,self.current)
+            oracle.wire_checked(self.evidence,self.current,ack=self.ack)
         except BaseException:
             self.evidence['closed'] = False
             raise
@@ -112,27 +116,30 @@ class Fault:
             self.capture()
 
     def process_closed(self, response, case):
-        oracle.process_closed(response,case)
-        oracle.wire_checked(self.evidence,self.current)
+        oracle.process_closed(response,case,ack=self.ack)
+        oracle.wire_checked(self.evidence,self.current,ack=self.ack)
 
-    def verify(self, context): return oracle.verify(context)
-    def controls(self, context): return oracle.controls(context)
+    def verify(self, context): return oracle.verify(context,ack=self.ack)
+    def controls(self, context): return oracle.controls(context,ack=self.ack)
 
 
-def run_sequence(pg, client, output, clone, directory, expected, report):
+def run_sequence(pg, client, output, clone, directory, expected, report, *, ack=False):
     for name in (*family.HELPERS,'installed_cycle_client.py'):
         source = (transition.SOURCE/'experiments/ingest-bootstrap'/name if name=='installed_sync_client.py'
             else Path(__file__).with_name(name))
         target = output/name
         if not target.exists(): shutil.copy2(source,target)
         assert history.digest(target) == history.digest(source)
-    family.configure(pg,client,output,clone['config'])
+    if ack:
+        from installed_progress_context import helpers
+        helpers(output,directory,'successor',ack=True)
+    family.configure(pg,client,output,clone['config'],ack=ack)
     mode = clone['name']; assert mode in oracle.MODES and clone['origin']=='activated'
     case = dict(name=mode+'-loss',clone=mode,origin='activated',operation='installed-live',
         predecessor=None,database=clone['database'],config=clone['config'],status='RUNNING')
     report['cases'].append(case); lab.write_json(output/'result.json',report)
     expected = family.execute(pg,client,output,case,directory,expected,clone['catalog_before'],
-        progress=True,fault=Fault(pg,client,output,case))
+        progress=True,fault=Fault(pg,client,output,case,ack=ack),ack=ack)
     case['catalog_after'] = history.catalog(pg,clone['database'])
     assert case['catalog_after'] == clone['catalog_before']
     seed, predecessor = expected, case['name']
@@ -145,21 +152,21 @@ def run_sequence(pg, client, output, clone, directory, expected, report):
             predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case); lab.write_json(output/'result.json',report)
         expected = installed_cycle.execute(pg,client,output,case,directory,expected,
-            clone['catalog_before'],seed,checks=(oracle.verify_recovery,
-                lambda context,original:oracle.controls(context,original),oracle.recovery_closed))
+            clone['catalog_before'],seed,checks=(lambda context,original:oracle.verify_recovery(context,original,ack=ack),
+                lambda context,original:oracle.controls(context,original,ack=ack),oracle.recovery_closed))
         case['catalog_after'] = history.catalog(pg,clone['database'])
         assert case['catalog_after'] == clone['catalog_before']
         predecessor = case['name']; lab.write_json(output/'result.json',report)
     return predecessor
 
 
-def run(root, build):
+def run(root, build, *, ack=False):
     # Same full tracked-source receipt used by the initial/activated progress
     # fixture. Capture before any engine action; never overwrite an earlier run.
     built = loads((build/'build-result.json').read_bytes())
     component = loads((build/'component-result.json').read_bytes())
     qualification = loads((build.parent/'qualification.json').read_bytes())
-    oracle.qualification_checked(built,component,qualification)
+    oracle.qualification_checked(built,component,qualification,ack=ack)
     assert all(history.digest(build/name)==digest for name,digest in component['executables_sha256'].items())
     source = transition.SOURCE
     assert source == root/'source'
@@ -171,11 +178,18 @@ def run(root, build):
     lab.write_json(path,dict(source=str(source),revision=revision,
         tree=lab.command(['git','-C',str(source),'rev-parse','HEAD^{tree}']).stdout.strip(),
         build=str(build),files_sha256={name:history.digest(source/name) for name in files}))
-    return transition.run(root,build,suite=SUITE,sequence=run_sequence,
+    suite=SUITE
+    if ack:
+        from dataclasses import replace
+        suite=replace(SUITE,**oracle.profile_names(ack=True),
+            scope='Third real mutation COMMIT loss before-forward/after-complete; native I4/A3; authoritative recovery/retry',
+            not_run=('Actual post-ACK durability loss; A>C or missing-original engine corruption',
+                'GC, whole-job/source completion, unlimited retained capacity'))
+    return transition.run(root,build,suite=suite,sequence=lambda *args:run_sequence(*args,ack=ack),
         origin_specs=(family.ORIGINS[0],),origin_for_clone={m:'activated' for m in oracle.MODES},
-        extra_grants=(*installed_cycle.GRANTS,PROGRESS_GRANTS),producer_progress=True)
+        extra_grants=(*installed_cycle.GRANTS,PROGRESS_GRANTS),producer_progress=True,producer_ack=ack)
 
 
 if __name__ == '__main__':
-    assert len(sys.argv)==3
-    run(Path(sys.argv[1]).resolve(strict=True),Path(sys.argv[2]).resolve(strict=True))
+    assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3]=='--producer-ack')
+    run(Path(sys.argv[1]).resolve(strict=True),Path(sys.argv[2]).resolve(strict=True),ack=len(sys.argv)==4)

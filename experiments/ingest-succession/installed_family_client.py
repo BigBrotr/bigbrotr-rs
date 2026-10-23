@@ -227,7 +227,7 @@ def relay(directory, listener, finished, errors, progress=False, hole=False, ack
 def journey(directory, progress=False, hole=False, commit_loss=False, ack=False):
     assert type(progress) is type(hole) is bool and (not hole or progress)
     assert type(commit_loss) is bool and (not commit_loss or (progress and not hole))
-    assert type(ack) is bool and (not ack or (progress and not hole and not commit_loss))
+    assert type(ack) is bool and (not ack or (progress and not hole))
     if progress:
         assert not any((directory / name).exists() or (directory / name).is_symlink() for name in (
             'progress-release.json', 'progress-mutation-observation.json',
@@ -320,7 +320,7 @@ def journey(directory, progress=False, hole=False, commit_loss=False, ack=False)
     if progress:
         closed = [json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
         phases = [value['progress_phase'] for value in closed if 'progress_phase' in value]
-        assert phases == ['mutation', 'proof-only'], 'both separate transport phases must complete'
+        assert phases == (['mutation'] if ack and commit_loss else ['mutation', 'proof-only']), 'exact selected transport phases must complete'
         result.update(status='CAPTURED_PROGRESS_TRANSPORT_ONLY',
             checkpoint_validation='NOT_RUN', native_proof_validation='NOT_RUN')
         if ack:
@@ -336,7 +336,7 @@ if __name__ == '__main__':
         assert len(sys.argv) == 4
         serve(Path(sys.argv[2]), Path(sys.argv[3]))
     else:
-        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole', 'journey-progress-loss', 'journey-progress-ack') and len(sys.argv) == 3
+        assert sys.argv[1] in ('journey', 'journey-progress', 'journey-progress-hole', 'journey-progress-loss', 'journey-progress-ack', 'journey-progress-ack-loss') and len(sys.argv) == 3
         journey(Path(sys.argv[2]), progress=sys.argv[1] != 'journey',
-            hole=sys.argv[1] == 'journey-progress-hole', commit_loss=sys.argv[1] == 'journey-progress-loss',
-            ack=sys.argv[1] == 'journey-progress-ack')
+            hole=sys.argv[1] == 'journey-progress-hole', commit_loss=sys.argv[1] in ('journey-progress-loss','journey-progress-ack-loss'),
+            ack=sys.argv[1] in ('journey-progress-ack','journey-progress-ack-loss'))

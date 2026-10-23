@@ -184,14 +184,14 @@ def origin_checked(root, folder, name, declaration, raw, read):
 
 def clone_checked(folder, clone, origin, report, raw, read, *, progress=None, commit_loss=False):
     name = clone['name']
-    assert type(commit_loss) is bool and (not commit_loss or progress == 'split')
+    assert type(commit_loss) is bool and (not commit_loss or progress in ('split','ack'))
     original_name = 'activated' if commit_loss else name
     assert clone['origin'] == original_name and clone['directory'] == name and clone['status'] == 'PASS'
     prefix = 'bb_installed_successor_' if progress is None else 'bb_installed_progress_' + progress + '_'
     if commit_loss:
-        from installed_progress_commit_oracle import PREFIX, MODES
+        from installed_progress_commit_oracle import profile_names, MODES
         assert name in MODES
-        prefix = PREFIX
+        prefix = profile_names(ack=progress=='ack')['database_prefix']
     assert clone['database'] == prefix+report['source'][:7]+'_'+name.replace('-','_')
     assert clone['config'] == '/lab/'+clone['database']+'.toml'
     assert clone['final_case'] == (name+'-retry' if commit_loss else CASES[CLONES.index(name)])
@@ -313,7 +313,7 @@ def backend_checked(value, database, before, after):
     number(absence['seconds'],elapsed,6)
 
 
-def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False, commit_loss=False, ack=False):
+def progress_transport_checked(directory, journey, snapshots, window, raw, read, *, hole=False, commit_loss=False, ack=False, mutation_loss=False):
     """Bind separated wire/capture phases; never certify a typed checkpoint.
 
     This is preparation for the opt-in profile. The default replay below does
@@ -322,7 +322,8 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
     from live_replay import OLD_EVENT, NEW_EVENT
     assert type(hole) is bool
     assert type(commit_loss) is bool and not (hole and commit_loss)
-    assert type(ack) is bool and (not ack or (not hole and not commit_loss))
+    assert type(mutation_loss) is bool and (not mutation_loss or (ack and commit_loss))
+    assert type(ack) is bool and (not ack or (not hole and (not commit_loss or mutation_loss)))
     assert read(directory/'events.json') == [OLD_EVENT, NEW_EVENT]
     result = journey['result']
     assert result == read(directory/'client-result.json')
@@ -342,7 +343,7 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
     assert journey['stdout'] == raw(directory/'client.stdout').decode() == ''
     assert journey['stderr'] == raw(directory/'client.stderr').decode() == ''
     opened, closed = journey['opened'], journey['closed']
-    assert (2 if commit_loss else 3) <= len(opened) == len(closed) <= 128
+    assert (1 if mutation_loss else 2 if commit_loss else 3) <= len(opened) == len(closed) <= 128
     assert [p.name for p in sorted(directory.glob('relay-open-*.json'))] == [
         f'relay-open-{n:03}.json' for n in range(1, len(opened)+1)]
     assert [p.name for p in sorted(directory.glob('relay-closed-*.json'))] == [
@@ -395,6 +396,16 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
         assert last['frames'] == labels + ['EOSE']
         assert last['completion'] == 'request-and-websocket-close'
         number(last['sent_at_us'], first['request_at_us'], last['closed_at_us'], integer=True)
+    if mutation_loss:
+        assert list(phases)==['mutation'] and phases['mutation']['number']==1
+        assert [s['stage'] for s in snapshots]==['activated','prepared']
+        for name in ('progress-mutation-observation.json','progress-proof-only-observation.json','progress-release.json'):
+            assert not (directory/name).exists() and not (directory/name).is_symlink()
+        assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-context/1',kind='successor')
+        assert not (directory/'relay-error.json').exists()
+        return dict(status='CAPTURED_MUTATION_LOSS_RELAY',mutation_request=phases['mutation']['request'][1],
+            quanta=len(closed),checkpoint_validation='NOT_RUN',native_proof_validation='NOT_RUN',
+            sql_semantics='NOT_RUN',intermediate_cut='NOT_OBSERVED')
     assert list(phases) == ['mutation', 'proof-only']
     mutation, proof = phases['mutation'], phases['proof-only']
     assert mutation['number'] == 1 < proof['number'] <= len(closed)
@@ -436,8 +447,9 @@ def progress_transport_checked(directory, journey, snapshots, window, raw, read,
         native_proof_validation='NOT_RUN', sql_semantics='NOT_RUN')
 
 
-def journey_checked(directory, context, identity, window, raw, read, *, progress=False, commit_loss=False):
+def journey_checked(directory, context, identity, window, raw, read, *, progress=False, commit_loss=False, mutation_loss=False):
     assert type(commit_loss) is bool and (not commit_loss or progress)
+    assert type(mutation_loss) is bool and (not mutation_loss or commit_loss)
     journey=context['journey']; fixture=context['fixture']
     assert set(journey)=={'result','terminal','stdout','stderr','opened','closed'}
     assert journey['result']==read(directory/'client-result.json') and journey['terminal']==read(directory/'client-exit.json')
@@ -459,7 +471,7 @@ def journey_checked(directory, context, identity, window, raw, read, *, progress
     from live_replay import OLD_EVENT, NEW_EVENT
     assert read(directory/'events.json')==[OLD_EVENT,NEW_EVENT]
     opens=sorted(directory.glob('relay-open-*.json')); closes=sorted(directory.glob('relay-closed-*.json'))
-    assert 2<=len(opens)==len(closes)<=128
+    assert (1 if mutation_loss else 2)<=len(opens)==len(closes)<=128
     assert [p.name for p in opens]==[f'relay-open-{n:03d}.json' for n in range(1,len(opens)+1)]
     assert [p.name for p in closes]==[f'relay-closed-{n:03d}.json' for n in range(1,len(closes)+1)]
     assert journey['opened']==[read(p) for p in opens] and journey['closed']==[read(p) for p in closes]
@@ -509,6 +521,10 @@ def replay(root, *, progress=None):
     from installed_family_replay import verify, negative_controls
     assert progress in (None, 'split', 'hole', 'ack')
     ack=progress=='ack'
+    if ack:
+        # Standalone replay does not inherit transition's sibling module path.
+        # bind_ack_modules still authenticates every loaded source file.
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'ingest-bootstrap'))
     selected_clones,selected_cases=(CLONES[:1],CASES[:1]) if ack else (CLONES,CASES)
     if progress is not None:
         import installed_progress_replay as progress_replay

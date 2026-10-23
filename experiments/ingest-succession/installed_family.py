@@ -199,7 +199,7 @@ def execute(pg, client, output, case, directory, expected, catalog, *, progress=
     from installed_family_replay import verify, negative_controls
     assert type(progress) is type(hole) is bool and (not hole or progress)
     assert fault is None or (progress and not hole)
-    assert type(ack) is bool and (not ack or (progress and not hole and fault is None and case['origin']=='activated'))
+    assert type(ack) is bool and (not ack or (progress and not hole and case['origin']=='activated'))
     if progress:
         import installed_progress_replay as progress_replay
         progress_replay.require_frozen_profile(ack=ack)
@@ -276,7 +276,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
 '''
         if progress:
             wrapper = wrapper.replace("'journey'", 'sys.argv[2]')
-            journey_mode = ('journey-progress-ack' if ack else 'journey-progress-loss' if fault is not None else
+            journey_mode = ('journey-progress-ack-loss' if ack and fault is not None else 'journey-progress-ack' if ack else 'journey-progress-loss' if fault is not None else
                 'journey-progress-hole' if hole else 'journey-progress')
             lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/' + directory.name, journey_mode)
         else:
@@ -286,7 +286,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
             wait_for(lambda: (directory / (stage + '.json')).exists() or (directory / 'client-exit.json').exists(),
                 'successor HTTP ' + stage, 15)
             assert (directory / (stage + '.json')).exists(), 'HTTP client exited before ' + stage
-            if stage == 'submitted':
+            if stage == 'submitted' and not (ack and fault is not None):
                 expected_count = 4 if ack else 2 if case['origin'] == 'activated' else 3
                 def durable():
                     actual = schema.rows(pg, database)
@@ -323,6 +323,11 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
             if stage == 'submitted' and fault is not None:
                 wait_for(Path(str(prefix) + '.terminal.json').exists, 'COMMIT-loss Serve natural join', 10)
                 terminal = read(Path(str(prefix) + '.terminal.json'))
+                if ack:
+                    # Positive custody is checked below; this only binds the
+                    # exact Control backend for the proxy's selected session.
+                    fault.current = max((r for r in schema.rows(pg,database)['owner_epochs']
+                        if r['role']=='control'),key=lambda r:r['epoch'])
             else:
                 snapshot(stage)
             advance(stage)
@@ -459,18 +464,19 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         response=response, journey=journey, fixture=fixture, server_window=window, backend=backend,
         catalog_before=catalog, catalog_after=after_catalog, fixture_input=fixture_input)
     if progress:
-        context['progress_profile'] = 'ack' if ack else 'commit-loss' if fault is not None else 'hole' if hole else 'split'
+        context['progress_profile'] = 'ack-commit-loss' if ack and fault is not None else 'ack' if ack else 'commit-loss' if fault is not None else 'hole' if hole else 'split'
         if ack:
             context['ack_event_recipe']=(directory/'progress-ack-events.json').read_text()
-            context['progress_gates']={name:(directory/name).read_text() for name in (
-                'progress-mutation-observation.json','progress-release.json','progress-proof-only-observation.json')}
+            context['progress_gates']=({} if fault is not None else {name:(directory/name).read_text() for name in (
+                'progress-mutation-observation.json','progress-release.json','progress-proof-only-observation.json')})
     if fault is not None:
         context['fault'] = fault.evidence
     lab.write_json(output / (name + '-verification.json'), context)
     if fault is not None:
         from installed_family_capture import progress_transport_checked
         transport = progress_transport_checked(directory, journey, snapshots, window,
-            lambda path: path.read_bytes(), lambda path: json.loads(path.read_bytes()), commit_loss=True)
+            lambda path: path.read_bytes(), lambda path: json.loads(path.read_bytes()), commit_loss=True,
+            ack=ack,mutation_loss=ack)
         result, controls = fault.verify(context), fault.controls(context)
         case['progress_transport'] = transport
     elif progress:
