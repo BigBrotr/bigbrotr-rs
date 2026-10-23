@@ -808,7 +808,28 @@ all seven originals and scientific history, adding one closing write; exact retr
 adds none. The live/recovery/retry controls total95, and strict raw replay binds
 2,185 files. The first `6065977` fixture failure remains recorded separately from
 its corrected offline context and this successful fresh run. Same-REQ proof-only
-after a hole, full-window proof-only and the other listed gates remain open.
+after a hole is qualified by the later fixture below; full-window typed proof
+and the other listed gates remain open.
+
+Fixture `9f859ba` also qualifies two fresh initial recovery refusals derived from
+that complete recovered state: native A7 with a valid typed C6 head, and missing
+original request5 despite its retained outcome and ACK. Both exit at the expected
+distinct boundary, preserve all scientific rows/xmins and native bytes, and add
+no native write. The missing original is quarantined intact on the isolated copy.
+Forty-six controls and strict raw replay binding 4,329 files pass. The earlier
+origin-session preflight failure remains recorded with its cause unknown.
+
+Fixture `8470860` exercises REQ1 `[A,B,C]`, then actual REQ2 `[A,malformed,A]`.
+Only REQ2's first proof advances the typed heads: revision7, classified4, ordinal1;
+C=I=A6, all 22 dependencies, six originals and native 75 rows/sequence95 remain
+exact. A later healthy REQ supplies the serial-dispatch observation; the
+third proof's no-op interpretation also depends on the reviewed caller path,
+since no per-proof success response exists. All 52 controls and strict raw replay
+binding 2,136 files pass. Recovery reuses the separately qualified ordinary proof
+head evidence; no new persistent form is introduced. The existing real native
+full-window proof component remains valid. Current healthy serial typed Sync
+ACKs each mutation before the next event, so it cannot exercise a full-window
+typed PostgreSQL proof transaction; that broader consumer gate remains deferred.
 
 Additive migration `0040_producer_ack.sql` separates the absolute retained limit
 from the coordination window: the next reservation is at most validated typed

@@ -467,7 +467,10 @@ One owner serializes exact identity decisions for each writable directory.
   and original failures. The `9cef25f` product and `dfbb8dc` installed fixture also
   qualify mutation/ACK continuity after a preparation hole, later-REQ classified
   progress and config-only recovery/retry:95 controls and strict raw replay.
-  Native ACK ambiguity, full-window/same-REQ post-hole proof-only, remaining
+  Actual A>C/missing-original recovery refusals and same-REQ post-hole proof
+  preservation also pass at 9f859ba/8470860, with strict raw replay. The reference
+  distinguishes observed no-effects/serial dispatch from per-proof success.
+  Native ACK ambiguity, full-window typed proof-only, remaining
   refusals/resources, GC and complete live continuity still prevent step closure.
   The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
   adds native-witness closure and a contiguous logical shard head in that same

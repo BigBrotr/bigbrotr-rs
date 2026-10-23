@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "ACTIVE: preparation-hole dfbb8dc live/recovery/retry/raw PASS; owned runtime and PG stopped. Existing-harness refusal source/review active in isolated worktree; root owns future runtime.",
+      "state": "ACTIVE: ACK refusals and post-hole proof installed/raw qualified; engines/builds stopped. Root recording/pushing coherent result; native ACK ambiguity/loss source assessment active.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -61548,25 +61548,25 @@
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
         },
         "ack_remaining_boundary": {
-          "scope": "Additive existing-harness A>C/missing post-hole original refusal qualification",
+          "scope": "Source-only reconciliation of remaining native ACK ambiguity/post-ACK loss gates against existing evidence/tooling",
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Implementing in separate worktree; no engines/build/runtime authorized"
+          "state": "Active source assessment only; no implementation or engine/build authorized"
         },
         "progress_hole_fixture": {
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-57-47-01a16944-9ea6-75d2-8a3a-17f2103a80ca.jsonl session_meta/turn_context; root verified",
-          "state": "Source-only assessment active; completed frozen worktree remains detachedbb02c96. No implementation or runtime authorized.",
-          "scope": "Determine minimal same-REQ post-hole and full-window proof-only qualification without duplicating valid evidence"
+          "state": "Completed frozen039772d; no active assignment",
+          "scope": "Same-REQ post-hole proof-only additive existing fixture"
         },
         "progress_hole_critical": {
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
-          "state": "Active source-only review; root owns runtime",
-          "scope": "Independent critical review of two-case ACK refusal extension"
+          "state": "Completed source review039772d and preflightbbfd392; no active assignment",
+          "scope": "Independent critical review of same-REQ post-hole proof fixture"
         }
       },
       "pause_resource_observation_20261023": {
@@ -61750,10 +61750,12 @@
         "path": "/home/tux/bigbrotr-rs/.research/producer-ack-refusals-20261023",
         "branch": "work/producer-ack-refusals",
         "base": "dfbb8dc2d542e99726b19c162161d5fa7e136bbc",
-        "state": "Source implementation and critical review active; runtime NOT_RUN",
+        "state": "Reviewedbbfd392 integrated9f859ba; actual2refusals46controls/raw4329files PASS",
         "qualified_origin": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc",
         "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
-        "reviewer": "progress_hole_critical"
+        "reviewer": "progress_hole_critical",
+        "head": "bbfd3926b4d7c5c0bdbe98a4fbdbd1959dfd108c",
+        "branch_state": "Retired integrated ref; exact detachedbbfd392 and ignored evidence preserved"
       },
       "remaining_integrated_branch_retirement_20261023": {
         "observed_at": "2026-10-23T15:37:44.978455+00:00",
@@ -61825,6 +61827,102 @@
           "preserved_head": "acc9bea67d5380f35c2fbf8d69ceed4539925133",
           "state": "All five original patches exactly match reachable main commits. Both redundant local qualification refs retired; detached exact original worktree and ignored evidence preserved."
         }
+      },
+      "post_hole_proof_source_work_20261023": {
+        "owner": "progress_hole_fixture",
+        "path": "/home/tux/bigbrotr-rs/.research/producer-post-hole-proof-20261023",
+        "branch": "work/producer-post-hole-proof",
+        "base": "f7fad80df625880c51ed834cf5dc250e4f2965c9",
+        "scope": "Additive same-REQ post-hole proof-only installed fixture and strict raw verification; REQ1[A,B,C],REQ2[A,malformed,A]",
+        "state": "Reviewed039772d integrated8470860; actual same-REQ proof52controls/raw2136files PASS",
+        "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+        "head": "039772db672a257c33e520d13367eec5666ad037",
+        "branch_state": "Retired integrated ref; exact detached039772d and ignored evidence preserved"
+      },
+      "ack_refusal_installed_runs_20261023": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-5156f10",
+          "source": "5156f10079844c3d8eb0608c6bc31ebdb022561f",
+          "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+          "driver_session": 3011,
+          "state": "INCOMPLETE_CUSTODY",
+          "output": "installed-ack-refusals",
+          "log": "driver.log",
+          "driver_exit": 1,
+          "client": null,
+          "databases": [],
+          "owner": "71907fc46b9b67d04b987cfd8ed5b640",
+          "label": "org.bigbrotr.installed-ack-refusals",
+          "custody": "No client or clones created. Exact borrowed PG freshly exited0/PID0/noOOM; original SQL/native/input/physical unchanged. Catalog verification unavailable because preflight did not reach it.",
+          "finding": "Initial origin one-shot all-session absence check failed; observed rows were not saved, so backend identity/cause is unknown. Failure precedes client/createDB/clones/cases. Catalog preservation was not reached and no baseline catalog was stored; catalog_unchanged=false is unavailable evidence, not an observed catalog difference. Original SQL/native/input/physical preservation true; no filtered/terminated session or successful refusal claim."
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-9f859ba",
+          "source": "9f859ba0484919d63fbaa81ede48cd6e1dac3039",
+          "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+          "driver_session": 78271,
+          "state": "PASS_INSTALLED_PRODUCER_ACK_REFUSALS",
+          "output": "installed-ack-refusals",
+          "log": "driver.log",
+          "driver_exit": 0,
+          "raw_session": 31389,
+          "raw_exit": 0,
+          "raw": "raw-replay.json",
+          "client": "6a617da60aeabd63e4111e9e90fffb23725f959f5a28089943fea07ec46c28d6",
+          "owner": "2c92eea289ff53ef8899c90f6c146d4a",
+          "label": "org.bigbrotr.installed-ack-refusals",
+          "databases": [
+            "bb_ack_refusals_9f859ba_ack_ahead",
+            "bb_ack_refusals_9f859ba_missing_original"
+          ],
+          "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "custody": "Fresh exact client/PG exited/PID0/noOOM/cgroups absent; original preservation alltrue, no cleanup/inventory errors. Both derived stores/DBs and exact quarantined request5 retained."
+        }
+      ],
+      "post_hole_proof_installed_runs_20261023": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-post-hole-proof-8470860",
+          "source": "8470860b312c97f48447e613992d2312aa397dfe",
+          "driver_session": 83263,
+          "state": "PASS_INSTALLED_INITIAL_PRODUCER_ACK_POST_HOLE_PROOF",
+          "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+          "output": "bindings",
+          "log": "driver.log",
+          "driver_exit": 0,
+          "raw_exit": 0,
+          "raw": "raw-replay.json",
+          "client": {
+            "id": "ee8bd4b696c9f2b2c14261ede29b0d70945c4c9e1f6246528331caa3da6d9c87",
+            "name": "bigbrotr-acquisition-binding-8470860-progress-initial-ack-post-hole-proof"
+          },
+          "owner": "018c791c5beffcfbd5af595c0832764d",
+          "label": "org.bigbrotr.acquisition-binding",
+          "databases": [
+            "bb_scope_bind_8470860_sync_signed_ack"
+          ],
+          "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "custody": "Fresh exact client/PG exited/PID0/noOOM/cgroups absent; no cleanup/inventory errors. Original inputs/native store/raw logs retained."
+        }
+      ],
+      "qualified_refusal_proof_branch_retirement_20261023": {
+        "observed_at": "2026-10-23T16:02:45.349354+00:00",
+        "main": "8470860b312c97f48447e613992d2312aa397dfe",
+        "entries": [
+          {
+            "branch": "work/producer-ack-refusals",
+            "original_head": "bbfd3926b4d7c5c0bdbe98a4fbdbd1959dfd108c",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-refusals-20261023",
+            "state": "Integrated local ref retired; exact detached worktree/ignored evidence preserved"
+          },
+          {
+            "branch": "work/producer-post-hole-proof",
+            "original_head": "039772db672a257c33e520d13367eec5666ad037",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-post-hole-proof-20261023",
+            "state": "Integrated local ref retired; exact detached worktree/ignored evidence preserved"
+          }
+        ]
       }
     }
   },

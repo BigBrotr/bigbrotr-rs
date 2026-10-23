@@ -42965,6 +42965,184 @@
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-refusal-extension-review-v1.json",
               "sha256": "225e8d571068a34b37d5d47ad402c5fe7aade783c4ccb33df47c05f8a5397478"
             }
+          },
+          "ack_refusal_qualification_20261023": {
+            "status": "PASS_ACTUAL_INITIAL_ACK_REFUSALS_AND_RAW; original5156 preflight failure preserved",
+            "source": "211094c14546ff4063456c64fcf0ee9cef1bff40",
+            "integrated_main": "5156f10079844c3d8eb0608c6bc31ebdb022561f",
+            "author_receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-refusal-source-v1.json",
+              "sha256": "96b620da663fc67e3277355d4caeaf72f40c43c4fe127b6602b2d4010cf6eaad"
+            },
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-refusal-extension-critical-review-v1.json",
+              "sha256": "cb76e7c59990a533a46f2d6193febab78e805cc27bf5675a4f340136be3133e1"
+            },
+            "root_review": "Complete baseline owners and four-file delta reviewed; integrated4hashes equal frozen source/independent receipt. Pure artifact hashes verified and existing30 retained default controls reused;46 synthetic controls do not claim runtime outcomes.",
+            "lab": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-5156f10",
+            "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+            "driver_session": 3011,
+            "expected": "Two isolated config-only initial refusals with exact distinct errors: A7>C6 valid canonical head, exact post-hole input5 quarantined. Preserve77tables/native88rows/sequence113/all originals; Control4 claim-only versus renewed.",
+            "next": "Qualify same-REQ post-hole ordinary proof with reviewed039772d fixture; native ACK ambiguity/post-ACK loss and remaining resource/GC gates stay open.",
+            "driver_exit": 1,
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-5156f10/installed-ack-refusals/result.json",
+              "sha256": "13d04e8a3760e11821145e01cd871dfc299c9ed02b4e1035b49753ab685674d2"
+            },
+            "log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-5156f10/driver.log",
+              "sha256": "4b300de7b14301134627081ded4afc62afcbd3bb77dc409c5d3b322a35937f18"
+            },
+            "finding": "Initial origin one-shot all-session absence check failed; observed rows were not saved, so backend identity/cause is unknown. Failure precedes client/createDB/clones/cases. Catalog preservation was not reached and no baseline catalog was stored; catalog_unchanged=false is unavailable evidence, not an observed catalog difference. Original SQL/native/input/physical preservation true; no filtered/terminated session or successful refusal claim.",
+            "custody": "Root freshly inspected exact borrowed PG exited0/PID0/noOOM; no client created or database clone. Original failed result/log retained. No raw replay attempted.",
+            "followup": {
+              "status": "PASS_INSTALLED_PRODUCER_ACK_REFUSALS",
+              "source": "bbfd3926b4d7c5c0bdbe98a4fbdbd1959dfd108c",
+              "integrated_main": "9f859ba0484919d63fbaa81ede48cd6e1dac3039",
+              "author_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-refusal-source-v2.json",
+                "sha256": "adc958d895a46ff0d0cbc0b312c5cdbf700c1317e3f10f6913891e9901b345ba"
+              },
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-refusal-preflight-critical-review-v2.json",
+                "sha256": "5613e5d0f57041188ce5205cf9f119643ee08f9f90168c7679725306c9c4385c"
+              },
+              "root_review": "Read full62-line two-file delta and actual lab.docker data/timeout forwarding; integrated hashes equal reviewedsource. Legacy path unchanged; all session types remain in set; only empty within5s proceeds. No repeated science/component/build campaign.",
+              "lab": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-9f859ba",
+              "driver_session": 78271,
+              "driver_exit": 0,
+              "raw_session": 31389,
+              "raw_exit": 0,
+              "raw_status": "PASS_INSTALLED_PRODUCER_ACK_REFUSALS_CAPTURE_REPLAY",
+              "raw_bound_files": 4329,
+              "negative_controls": 46,
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-9f859ba/installed-ack-refusals/result.json",
+                "sha256": "0a8ceae4933074456c51a566c16100fd18f866e2e8d5da3eaac2c69fa78c4a9f"
+              },
+              "raw": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-9f859ba/raw-replay.json",
+                "sha256": "fb7d89acb71505d0609979bb865c32a061af65190353ae2254c14d2476dbfa15"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-refusals-9f859ba/driver.log",
+                "sha256": "55346e2db5eb9f943d7f8a0b5d587f8d4a61d056461e62bd749081d6880b2caa"
+              },
+              "cases": [
+                {
+                  "name": "ack-ahead-refuse",
+                  "oracle": {
+                    "status": "PASS",
+                    "case": "ack-ahead-refuse",
+                    "tables": 77,
+                    "producer_epoch": "1",
+                    "native_rows": 88,
+                    "native_sequence": 113,
+                    "input_files": 7,
+                    "product_native_writes": 0,
+                    "native_acknowledged": 7,
+                    "native_retired": 0,
+                    "complete_through_request": 6,
+                    "typed_jobs_dependencies_original_xmins_preserved": true,
+                    "source_and_job_completion": false,
+                    "control": "ACTIVE_CLAIM_ONLY",
+                    "result": "REFUSED_AT_NATIVE_FRONTIER"
+                  }
+                },
+                {
+                  "name": "missing-original-refuse",
+                  "oracle": {
+                    "status": "PASS",
+                    "case": "missing-original-refuse",
+                    "tables": 77,
+                    "producer_epoch": "1",
+                    "native_rows": 88,
+                    "native_sequence": 113,
+                    "input_files": 6,
+                    "product_native_writes": 0,
+                    "native_acknowledged": 7,
+                    "native_retired": 0,
+                    "complete_through_request": 7,
+                    "typed_jobs_dependencies_original_xmins_preserved": true,
+                    "source_and_job_completion": false,
+                    "control": "ACTIVE_RENEWED",
+                    "result": "REFUSED_AT_ORIGINAL_REQUEST5"
+                  }
+                }
+              ],
+              "origin_absence": "One actual sample, empty at0.0459s. Does not identify or fix unrecorded first-run session cause.",
+              "preservation": "All original rows/catalog/native/input/physical preservation true; isolated missingoriginal quarantine retains exact bytes/inode. No product native writes or scientific history rewrites.",
+              "custody": "Runtime78271 and raw31389 joined0. Fresh exact client/borrowed PG IDs/labels exitedPID0/noOOM/cgroups absent; cleanup_errors,missing_owned,unrelated_changed,unexpected_containers empty."
+            }
+          },
+          "proof_only_source_assessment_20261023": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/proof-only-boundaries-source-assessment-20261023.json",
+            "sha256": "de78605cf92cd3d894fc4c67198216528cacf1de47511f9d47afac6a02091e06"
+          },
+          "post_hole_proof_qualification_20261023": {
+            "status": "PASS_INSTALLED_INITIAL_PRODUCER_ACK_POST_HOLE_PROOF",
+            "source": "039772db672a257c33e520d13367eec5666ad037",
+            "integrated_main": "8470860b312c97f48447e613992d2312aa397dfe",
+            "author_receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/post-hole-proof-fixture-source-039772d.json",
+              "sha256": "1635c84c65486ed31530d218c7ee89443951f7f8cad925a7674d6e77af1eb45f"
+            },
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/post-hole-proof-fixture-critical-review-v1.json",
+              "sha256": "880741e70f21327ba04aef1dc6203764ca973d999deba93dec0e0cd01011d1c9"
+            },
+            "root_review": "Read six-owner delta/changed callers with reused complete baseline review; integrated hashes equal frozen packet. Historical initial941/preparation-hole dfbb pure contexts PASS104 controls; no repeated engine/build/recovery campaign.",
+            "default_regression": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/post-hole-proof-default-regression-039772d.json",
+              "sha256": "59462a06c4ab57bc4f12bc85aaf66fbd916ea98243ce4448ed6472be7046fb0d"
+            },
+            "regression_session": 19556,
+            "regression_exit": 0,
+            "lab": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-post-hole-proof-8470860",
+            "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+            "driver_session": 83263,
+            "expected": "REQ1[A,B,C],REQ2[A,malformed,A]; C=I=A6,head6->7,class3->4,ordinal1 frozen,22deps,6inputs,native75rows/95writes. Later quietREQ serial barrier; no independent per-proof response or typed-fullwindow claim.",
+            "next": "Reconcile remaining native ACK ambiguity/post-ACK durability-loss gates against existing exact evidence/tooling; implement only the smallest justified missing responsibility. No repeated build/recovery/full-window campaign.",
+            "driver_exit": 0,
+            "raw_exit": 0,
+            "raw_status": "PASS_RAW_ACK_POST_HOLE_PROOF_REPLAY",
+            "raw_bound_files": 2136,
+            "negative_controls": 52,
+            "oracle": {
+              "status": "PASS_TYPED_POST_HOLE_PROOF",
+              "kind": "initial",
+              "producer_epoch": 1,
+              "mutation_revision": 6,
+              "proof_revision": 7,
+              "complete_through_request": 6,
+              "dependencies": 22,
+              "acquisition_revision": 4,
+              "job_checkpoint_revision": 0,
+              "ack": 6,
+              "preparation_refusals": 1,
+              "frozen_prefix_ordinal": 1,
+              "post_hole_proofs": 1,
+              "window": 2,
+              "proof_observation": "Exact wire and source path plus later serial REQ and unchanged effects; no per-proof success response",
+              "scope": "Initial A/B/C then actual A/hole/A REQ; no extra typed/native mutation or ACK; no full-window or EOSE/workflow claim"
+            },
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-post-hole-proof-8470860/bindings/result.json",
+              "sha256": "f9cda3ec1338944dd629bf1be25f693c3c9e7bfb8f9ccc9669004555c0865e83"
+            },
+            "context": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-post-hole-proof-8470860/bindings/sync-signed-progress-verification.json",
+              "sha256": "3dc672ff39a93c27a13ef0a20c78de9eef7171a337394cdcf8d94755357372d3"
+            },
+            "log": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-post-hole-proof-8470860/driver.log",
+              "sha256": "db804d0586daaae6d4f87c270702f14210575f5be4046b47bd487156ba689d07"
+            },
+            "raw": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-post-hole-proof-8470860/raw-replay.json",
+              "sha256": "f0909211fb375066bbe889d27c15c0724e95792691069872d0fb251420d8f457"
+            },
+            "custody": "Runtime83263 and strict standalone raw command joined0. Root fresh exact client/borrowed PG IDs/labels exited/PID0/noOOM/cgroups absent; cleanup_errors/missing_owned/unrelated_changed empty. All stores, originals and failures preserved."
           }
         }
       }
