@@ -44359,7 +44359,7 @@
               }
             },
             "initial_handoff_preparation": {
-              "status": "PRODUCT9bea0ff_BUILD_PASS150/47; first connected525468d FAIL_FIXTURE_SNAPSHOT_ACL; narrow read-only grant correction ready",
+              "status": "BUILD_PASS150/47; first two connected FAILs preserved; corrected saved prepared/retry capture PASS with9negative controls; fresh complete journey pending",
               "native_author_commit": "7824749369df3751850ae10912b37f7e18ad8167",
               "native_root_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json",
@@ -44383,7 +44383,7 @@
                 "expected_required_total": 47,
                 "measurement": "PASS150 components/47 required, including eight new native controls"
               },
-              "reviews_open": "Corrected connected execution and raw replay NOT_RUN; product build remains exact unchanged9bea0ff. No new build needed for fixture SELECT only.",
+              "reviews_open": "No remaining source blocker in reviewed correction; next fresh exact-source connected run and raw replay. Product9bea0ff unchanged.",
               "remaining": "Activated/later recovery, live frontier, retained Archive frontier and empty retirement before floor writer/unlink; physical loss, interrupted synchronization/unlink, mixed restore/backup and capacity.",
               "probe_author_commit": "873ad26e768f9a266e4371ef8a44b0862c60597d",
               "probe_root_review": {
@@ -44459,6 +44459,48 @@
                     "native_unchanged": true,
                     "inputs_unchanged": true,
                     "physical_unchanged": true
+                  }
+                },
+                {
+                  "source": "48fbb400df3d705ed0d6311a4ec3ef8e30da2ee6",
+                  "tree": "6e5a3aca79b3bc5ca42f61c7aedddde4ac9e72f1",
+                  "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+                  "status": "FAIL",
+                  "driver": "45342 joined1",
+                  "completed_cases": 0,
+                  "failed_case": "prepared-prepare expected namespace construction",
+                  "result": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40/installed-compacted-initial-journey/result.json",
+                    "sha256": "5e926aab47db525e6ec447e3aa9e5a084b9b32a679e3e142399f7ab2f01b6cc0"
+                  },
+                  "response": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40/installed-compacted-initial-journey/prepared-prepare-response.json",
+                    "sha256": "fe1f6276929139e7587820f96ff562656bc43f6cbddb86d9349752255b079284"
+                  },
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40/installed-compacted-initial-journey/prepared-prepare-verification.json",
+                    "sha256": "9e97ccc64c49946624d711a84316e884b946eb112d1691debfbe4358ffafc6f8"
+                  },
+                  "terminal": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40/verified-terminal.json",
+                    "sha256": "1ede5983d4e258c7eb704f07ed2254e274a606d3e0ebb653e35f6f07a9877d32"
+                  },
+                  "observed": "Probe exit0/empty stderr, prepared/same-control/fresh-control retry result events all error:null; complete closure telemetry and external state retained. These observations do not relabel full oracle FAIL.",
+                  "cause": "Fixed allocation domain a1x16 equals prior command request_key/audit subject_id. Global Model.ids rejects across namespaces; critical reviewer checks actual native/PG freshness contract before correction.",
+                  "preserved": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
+                  },
+                  "correction": {
+                    "scope": "Explicit fixed_initial_target only for deterministic normal/gap probes. Exact c9/ca/a1..a9, nine unique domains disjoint from all existing allocation_domains. Random live/installed global checks unchanged; no shared Model.ids relaxation or actual capture rewriting.",
+                    "critical_review": "compacted_reader_review independently confirmed cross-namespace collision and approved narrow correction. Native validate_transition/PG validate_input/DDL require domain namespace uniqueness, no command-ID exclusion.",
+                    "diagnostic": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-fixed-domain-diagnostic-v1.json",
+                      "sha256": "c42e3dd2a9484e53bb8e91a1931e64a844c505dcbcf830bfa968ebb2860a74c2"
+                    }
                   }
                 }
               ]

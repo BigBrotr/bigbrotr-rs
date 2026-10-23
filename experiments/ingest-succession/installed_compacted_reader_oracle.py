@@ -514,10 +514,12 @@ def history_catalog_checked(original, current, *, grants=HISTORY_GRANTS):
     assert normalize(after) == normalize(wanted)
 
 
-def history_seed_plan(pg, native, inputs, observed, seed, *, compacted_initial=False, installed_deadline=None):
+def history_seed_plan(pg, native, inputs, observed, seed, *, compacted_initial=False, installed_deadline=None, fixed_initial_target=False):
     """Fresh identity/time coordinates only; complete portable bytes are ours."""
     terminal_checked(pg,seed)
     assert type(compacted_initial) is bool
+    assert type(fixed_initial_target) is bool
+    assert not fixed_initial_target or (compacted_initial and installed_deadline is None)
     assert installed_deadline is None or compacted_initial
     assert native == (compacted_native(seed,'positive') if compacted_initial else seed[1])
     assert inputs == ({} if compacted_initial else seed[2])
@@ -527,7 +529,17 @@ def history_seed_plan(pg, native, inputs, observed, seed, *, compacted_initial=F
     m = model.Model(pg,native,inputs,dict(before_us=observed['created_at_us'],after_us=observed['created_at_us']),initial=True)
     role,inc = (m.identity(observed[k]) for k in ('target_role','target_incarnation'))
     assert [r[0] for r in observed['domains']] == list(range(1,10))
-    domains = [(k,m.identity(v)) for k,v in observed['domains']]
+    if fixed_initial_target:
+        # The finite preparation probe uses literal domains, not a fresh writer
+        # candidate. Allocation-domain freshness is independent of command IDs.
+        assert observed['target_role']=='c9'*16 and observed['target_incarnation']=='ca'*16
+        expected_domains=[[k,f'{160+k:02x}'*16] for k in range(1,10)]
+        assert observed['domains']==expected_domains
+        domains=[(k,'\\x'+v) for k,v in expected_domains]
+        values={v for _,v in domains}
+        assert len(values)==9 and values.isdisjoint(r['allocation_domain'] for r in pg['allocation_domains'])
+    else:
+        domains = [(k,m.identity(v)) for k,v in observed['domains']]
     old = bytes.fromhex(model.native_map(native)['default','0101'])
     target = bytearray(old); target[2:4]=be(2,2); target[26:34]=be(1); target[54:62]=be(2)
     target[62:78]=binary(inc)
@@ -1527,7 +1539,7 @@ def journey_dump(rows,sequence):
 def verify_journey_prepare(events,expected,initial,case,window,gate):
     import initial_succession_oracle as preparation
     pg,native,inputs=copy.deepcopy(expected); gap=case['operation']==JOURNEY_GAP_MODE
-    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True)
+    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True,fixed_initial_target=True)
     assert plan['target_role']=='c9'*16 and plan['target_incarnation']=='ca'*16
     assert plan['domains']==[[k,f'{160+k:02x}'*16] for k in range(1,10)]
     model.clock(plan['created_at_us'],window)

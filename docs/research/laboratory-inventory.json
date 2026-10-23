@@ -62550,6 +62550,24 @@
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-snapshot-acl-correction-v1.json",
           "sha256": "7a3128bdf29a71ff947052bb21b3de4cb61050c842b910bd2ca570b1c1204c57"
         }
+      },
+      "compacted_initial_handoff_corrected_installed_20261024": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40",
+        "source": "48fbb400df3d705ed0d6311a4ec3ef8e30da2ee6",
+        "tree": "6e5a3aca79b3bc5ca42f61c7aedddde4ac9e72f1",
+        "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+        "driver_session": 45342,
+        "observed_report_status": "FAIL",
+        "state": "FAIL_ORACLE_IDENTITY; driver45342 joined1, exact client143/PG0 stopped/PID0/noOOM, original5preservationtrue; no process active",
+        "owner": "c399483b7950670913f5efda20af4094",
+        "label": "org.bigbrotr.installed-compacted-initial-journey",
+        "client": "3c6f1e6295757fa085d1d70147d05470db763d5b32c6356291768ea7575f7fd9",
+        "preflight_free_bytes": 276970758144,
+        "preservation": "Fresh source and copies; prior525468d failure and all originals retained; no product rebuild",
+        "verified_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40/verified-terminal.json",
+          "sha256": "1ede5983d4e258c7eb704f07ed2254e274a606d3e0ebb653e35f6f07a9877d32"
+        }
       }
     }
   },
