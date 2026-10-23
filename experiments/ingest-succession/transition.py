@@ -245,6 +245,46 @@ def legacy_installed_origin(basis, origin, retained):
     return origin['client_id']
 
 
+def observe_origin_absence(pg, database, output, name):
+    """Bounded all-session observation; no user/type exclusions or termination."""
+    assert re.fullmatch(r'[a-z0-9_]+',database) and re.fullmatch(r'[a-z0-9-]+',name)
+    started = time.monotonic()
+    observation = dict(database=database,scope='all-database-sessions',limit_seconds=5,
+        status='INCOMPLETE',attempts=[])
+    path = output/(name+'-origin-backends.json')
+    statement = "SELECT coalesce(json_agg(row_to_json(t) ORDER BY pid),'[]') FROM " \
+        "(SELECT pid,backend_start,backend_type,usename,state FROM pg_catalog.pg_stat_activity " \
+        "WHERE datname='"+database+"')t;"
+    lab.write_json(path,observation)
+    try:
+        while True:
+            remaining = 5-(time.monotonic()-started)
+            if remaining <= 0:
+                raise TimeoutError('All origin sessions absent was not observed within five seconds')
+            # Connect to postgres so this observer is not itself in the target
+            # set. lab.sql's default timeout exceeds this finite deadline.
+            response = lab.docker('exec','-i',pg['postgres'],'psql','-X','-A','-t','-q',
+                '--no-password','-v','ON_ERROR_STOP=1','-U','postgres','-d','postgres',
+                data=statement,timeout=remaining)
+            sample = json.loads(response.stdout)
+            elapsed = time.monotonic()-started
+            observation['attempts'].append(dict(seconds=elapsed,sessions=sample))
+            lab.write_json(path,observation)
+            assert type(sample) is list
+            if sample == [] and elapsed <= 5:
+                observation['status'] = 'OBSERVED_ABSENT'
+                return observation
+            remaining = 5-(time.monotonic()-started)
+            if remaining > 0:
+                time.sleep(min(.05,remaining))
+    except BaseException as error:
+        observation['error'] = type(error).__name__
+        raise
+    finally:
+        observation['seconds'] = time.monotonic()-started
+        lab.write_json(path,observation)
+
+
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False):
@@ -424,7 +464,10 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         report['database_names_before'] = lab.sql(pg, 'postgres', 'SELECT datname FROM pg_database ORDER BY datname;').splitlines()
         for origin in origin_specs:
             name, database = origin['name'], origin['database']
-            assert schema.absence(pg, database) == []
+            if preparation_hole:
+                observe_origin_absence(pg,database,output,name)
+            else:
+                assert schema.absence(pg, database) == []
             observed = schema.rows(pg, database)
             assert normalized(observed) == normalized(origins[name]['rows'])
             origins[name]['catalog'] = catalog(pg, database)
