@@ -42749,7 +42749,7 @@
             }
           ],
           "preparation_hole_continuity_20261023": {
-            "status": "SOURCE_REVIEW_AND_COMPONENT_BUILD_PASS; installed preparation-hole and its recovery/retry NOT_RUN",
+            "status": "PASS_PRODUCT_COMPONENTS_AND_INSTALLED_INITIAL_HOLE_RECOVERY_RETRY_RAW; first606 fixture FAIL retained",
             "product_source": "87011a3e4331a09b7fbfa11c61ed69434e1cba6e",
             "build_candidate": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
             "candidate_tree": "a473399f2eca0c953af9a2d61abfb4efb4434924",
@@ -42768,9 +42768,9 @@
             "semantics": "Preserve actual captured frame and native mutation witness/outcome/COMMIT/ACK while freezing only the affected REQ JobHead. No proof-only ACK, fabricated skipped-input classification, changed migration/native format or adoption of historical C<R gaps.",
             "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f",
             "driver_session": 4103,
-            "profile": "Existing producer-ack19-group profile, four additional literal required controls; no measured result yet",
+            "profile": "Existing producer-ack19-group profile with four additional literal required controls; measured build and installed outcomes below",
             "root_review": "Read complete frozen four-file delta and changed reducers/call boundaries; independent reviewer full current owners/linked recovery read reused. Root authenticated all18 reviewed product/caller hashes and exact six-line builder hash before candidate commit.",
-            "next": "Finish critical review of existing-harness initial preparation-hole fixture and two config-only recovery/retry processes, pin measured9cef25f profile, integrate fixture without changing product bytes, then run it with strict raw replay in a fresh exact-source lab.",
+            "next": "Qualify two existing-owner refusal derivatives from dfbb8dc final retry: native A>C and missing authentic post-hole original, using existing transition/cycle/oracle/raw tools and unchanged9cef25f build. Other open gates remain in the owning task/reference.",
             "integrated_main": "1c6afe32a27f06e7e33b277ab9fb84fc6c58cc0a",
             "integration": "Clean merge tree exactly equals candidate build tree; no source/manual conflict changes",
             "component_build": {
@@ -42810,6 +42810,160 @@
               },
               "custody": "Outer driver joined0; root authenticated exact fetch/native labels/IDs exited0,PID0,noOOM,cgroups absent. Inventory unchanged; all original evidence and exclusive compiler cache preserved.",
               "scope": "Native ACK/noGC/credit mechanics and affected closing, original recovery, legacy/activated/lineage, dictionary/input and installed consumer components; schema40 catalog and CLI/probe compilation plus both Clippy selections. Connected PG confirmation/ACK, installed two-slot traffic/loss/recovery, resource capacity and Archive worker qualification NOT_RUN."
+            },
+            "fixture": {
+              "source": "443e8ab9917e540dc791445640f650ea23807821",
+              "integrated_main": "6065977954949a94bea3f457193878839863196a",
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/preparation-hole-fixture-critical-review-v1.json",
+                "sha256": "7aa8e85b6a59b03f71b79e306d6d1d0be7a6b9157a2345a7a386ca38bb15de2d"
+              },
+              "default_regression": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/preparation-hole-default-regression-6065977.json",
+                "sha256": "639ace7954265d0413f97a04ce87b1c56dfa7ce58bb7a504a52f655b5c087c46"
+              },
+              "regression_result": "PASS:9 retained initial/activated/successor and linked ACK-loss/recovery/retry contexts,260 controls; pure verifiers only, no engine rerun or new raw-source qualification",
+              "driver_session": 58335,
+              "driver_exit": 0,
+              "corrections": {
+                "source": [
+                  "99d458644b03ba59235d92f0cc28a99a01cf04cc",
+                  "bb02c96c0d006004a507d86653c6a8da9fed2e2c"
+                ],
+                "integrated_main": "dfbb8dc2d542e99726b19c162161d5fa7e136bbc",
+                "finding": "Negative-control constructors only: canonical counts3=2+1 for ordinal3 and optional phase filter before selecting mutation wire. No encoder/checker/product relaxation.",
+                "critical_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/preparation-hole-counterexample-critical-review-v2.json",
+                  "sha256": "2e1de646dc67be2e48cf44aae5dd4701d3ba22c45cb2eea33a37b3a85e08b772"
+                },
+                "retained606_context": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/preparation-hole606-corrected-context-v1.json",
+                  "sha256": "2f205af6d5a2ff7c6871d7ea3a5536ef1f4a1855465df694eaedc50dd9d64f12"
+                },
+                "result": "PASS_CONTEXT_ONLY,56 controls; original606 FAIL remains; no recovery/raw claim for606"
+              }
+            },
+            "installed_runs": [
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-6065977",
+                "source": "6065977954949a94bea3f457193878839863196a",
+                "driver_session": 39623,
+                "status": "FAIL",
+                "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+                "driver_exit": 1,
+                "result": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-6065977/bindings/result.json",
+                  "sha256": "b9100d7326d6bd363d315d78e7af19c9c86872e790e868e2b2b42d6f042baa92"
+                },
+                "log": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-6065977/driver.log",
+                  "sha256": "d8b9238856dc043b74e713756174fd1bd843328b63c32400f59a0538b6ac1a88"
+                },
+                "context": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-6065977/bindings/sync-signed-progress-verification.json",
+                  "sha256": "bacf4b9faf1adff3a4df2ea59ae33d728aa42e141f02d744898e955e6f290464"
+                },
+                "finding": "Live verify_initial returned; advance_prefix negative-control construction then raises before checking: classified2/progress_revision2 with ordinal3 violates canonical encoder classified>=ordinal. Original FAIL retained; no recovery or raw qualification executed.",
+                "custody": "Driver39623 joined1; outer cleanup_errors/missing_owned/unrelated_changed empty. Fresh exact client/borrowed PG inspection exited/PID0/noOOM/cgroups absent.",
+                "next": "Correct forged control counts without relaxing encoder/checker; root verify retained context then run corrected exact-source fixture with the unchanged qualified build.",
+                "disposition": "Corrected constructors integrated dfbb8dc; original context passes56 controls offline, and separate fresh dfbb8dc run qualifies complete runtime/recovery/raw. Original FAIL unchanged."
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc",
+                "source": "dfbb8dc2d542e99726b19c162161d5fa7e136bbc",
+                "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+                "driver_session": 67744,
+                "driver_exit": 0,
+                "raw_session": 52598,
+                "raw_exit": 0,
+                "status": "PASS_INSTALLED_INITIAL_PRODUCER_ACK_PREPARATION_HOLE",
+                "result": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc/bindings/result.json",
+                  "sha256": "74a57bd2c9cf7c878ea7ac48dc22368ae790baba315dc07e33bfd1908cbe9d18"
+                },
+                "log": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc/driver.log",
+                  "sha256": "ccb3d849362103311f5e8337e54a2fe3256163728dca00af6db56ddeacc3d348"
+                },
+                "context": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc/bindings/sync-signed-progress-verification.json",
+                  "sha256": "775e114456e439c1e7bc3f61a28945b420b758d645fd35827b9e5c142e410d87"
+                },
+                "raw": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc/raw-replay.json",
+                  "sha256": "124dac4b22a0c30c172ba300d4ffaff26749d1b4d862f67d2f13968d3d0fec53"
+                },
+                "raw_status": "PASS_RAW_ACK_PREPARATION_HOLE_REPLAY",
+                "raw_bound_files": 2185,
+                "negative_controls": {
+                  "live": 56,
+                  "recovery": 19,
+                  "retry": 20,
+                  "total": 95
+                },
+                "oracle": {
+                  "status": "PASS_TYPED_PREPARATION_HOLE",
+                  "kind": "initial",
+                  "producer_epoch": 1,
+                  "mutation_revision": 5,
+                  "continuation_revision": 8,
+                  "complete_through_request": 7,
+                  "dependencies": 27,
+                  "acquisition_revision": 4,
+                  "job_checkpoint_revision": 0,
+                  "ack": 7,
+                  "preparation_refusals": 1,
+                  "frozen_prefix_ordinal": 1,
+                  "post_hole_mutations": 3,
+                  "window": 2,
+                  "scope": "Initial A/hole/B then genuine C/D/B-proof REQ; no EOSE/workflow completion or full-window proof"
+                },
+                "recovery": [
+                  {
+                    "name": "sync-signed-recover",
+                    "oracle": {
+                      "status": "PASS",
+                      "case": "sync-signed-recover",
+                      "tables": 77,
+                      "input_files": 7,
+                      "native_rows": 88,
+                      "native_sequence": 113,
+                      "product_native_writes": 1,
+                      "native_acknowledged": 7,
+                      "native_retired": 0,
+                      "typed_heads_dependencies_original_xmins_preserved": true,
+                      "source_and_job_completion": false
+                    }
+                  },
+                  {
+                    "name": "sync-signed-retry",
+                    "oracle": {
+                      "status": "PASS",
+                      "case": "sync-signed-retry",
+                      "tables": 77,
+                      "input_files": 7,
+                      "native_rows": 88,
+                      "native_sequence": 113,
+                      "product_native_writes": 0,
+                      "native_acknowledged": 7,
+                      "native_retired": 0,
+                      "typed_heads_dependencies_original_xmins_preserved": true,
+                      "source_and_job_completion": false
+                    }
+                  }
+                ],
+                "custody": "Runtime67744/raw52598 joined0. Root freshly inspected exact client and borrowed PG labels/IDs: exited,PID0,noOOM,cgroups absent. Outer cleanup_errors/missing_owned/unrelated_changed empty. No cleanup; retained stores, DB, logs and original failures preserved.",
+                "not_run": [
+                  "Other entrypoints and epoch4 require separate qualification",
+                  "Full-window proof-only component and lost-completion recovery are separate gates",
+                  "GC, job completion, durable EOSE/coverage, capacity/RSS and full M1",
+                  "Proof-only after a hole within the same REQ, native ACK ambiguity and old C<R recovery"
+                ]
+              }
+            ],
+            "next_refusal_source_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-refusal-extension-review-v1.json",
+              "sha256": "225e8d571068a34b37d5d47ad402c5fe7aade783c4ccb33df47c05f8a5397478"
             }
           }
         }

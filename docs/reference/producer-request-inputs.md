@@ -798,6 +798,18 @@ typed issuer/xmins, scientific facts and original inputs remain preserved.
 No intermediate cut or post-ACK durability loss was injected. Full-window
 proof-only, native ACK uncertainty and remaining refusal/resource gates stay open.
 
+Product `9cef25f` additionally passes 262 component tests and both Clippy
+selections. Installed fixture `dfbb8dc` exercises actual REQ1 `[A, malformed, B]`
+then a distinct REQ2 `[C, D, B-proof]` within the two-slot window. B advances only
+the mutation cut/ACK while the first classified prefix and its xmin stay frozen;
+REQ2 resumes classification. Final I=A=C7, revision8, classified4 and all27
+dependencies match the independent oracle. Fresh config-only recovery preserves
+all seven originals and scientific history, adding one closing write; exact retry
+adds none. The live/recovery/retry controls total95, and strict raw replay binds
+2,185 files. The first `6065977` fixture failure remains recorded separately from
+its corrected offline context and this successful fresh run. Same-REQ proof-only
+after a hole, full-window proof-only and the other listed gates remain open.
+
 Additive migration `0040_producer_ack.sql` separates the absolute retained limit
 from the coordination window: the next reservation is at most validated typed
 C plus the registered window, and never exceeds64. An absent or opaque legacy

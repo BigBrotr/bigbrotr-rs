@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "ACTIVE: reviewed preparation-hole product/build integrated main1c6afe3 after262 component tests/34controls/bothClippy; component driver joined and containers stopped. Independent installed fixture/recovery source review active; no engine/build running.",
+      "state": "ACTIVE: preparation-hole dfbb8dc live/recovery/retry/raw PASS; owned runtime and PG stopped. Existing-harness refusal source/review active in isolated worktree; root owns future runtime.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -61366,7 +61366,8 @@
           "scope": "Native/PG/model ACK plus all storage recovery/closing/frontier consumers",
           "state": "Clean frozen source, critically reviewed and integrated; author idle",
           "head": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
-          "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1"
+          "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
+          "branch_state": "Retired local ref on2026-10-23; detached worktree retained at recorded HEAD"
         },
         {
           "owner": "root",
@@ -61376,7 +61377,8 @@
           "scope": "Installed Sync credit/setup/ACK and all recovery CLI; additive migration40/registry and contract",
           "state": "Clean integrated source, component qualification and actual initial/activated2/successor3 ACK PASS; fault/recovery qualification remains open.",
           "head": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
-          "tree": "05159c1ed7bd690c4920ede1439a64d0a6be7cfa"
+          "tree": "05159c1ed7bd690c4920ede1439a64d0a6be7cfa",
+          "branch_state": "Retired local ref on2026-10-23; detached worktree retained at recorded HEAD"
         },
         {
           "owner": "export_setup_review",
@@ -61386,7 +61388,8 @@
           "scope": "Independent existing-harness ACK qualification",
           "state": "Clean reviewed fixture integrated; subsequent packaging/phase fixes and positive installed qualification recorded in evidence owner; author completed.",
           "head": "f5cd4e9d49c80bf212daf3000a82b3ac12b2e091",
-          "tree": "eea639f8f8f75fb99abfacce0b00ae3bbdbced84"
+          "tree": "eea639f8f8f75fb99abfacce0b00ae3bbdbced84",
+          "branch_state": "Retired local ref on2026-10-23; detached worktree retained at recorded HEAD"
         },
         {
           "owner": "producer_ack_loss_resume",
@@ -61397,7 +61400,8 @@
           "state": "Clean completed source at70fd750, critically reviewed and integrated main25cf6cf; real ACK-loss qualification NOT_RUN. Earlier partial receipt/diff preserved.",
           "head": "70fd75011cc5d7a8925aa038d63cd5aeaca4d2ff",
           "tree": "f49343c031f25de153883c20a5d735430277fafe",
-          "pause_receipt": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/paused-partial-v1.json"
+          "pause_receipt": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/paused-partial-v1.json",
+          "branch_state": "Retired local ref on2026-10-23; detached worktree retained at recorded HEAD"
         }
       ],
       "ack_critical_review": {
@@ -61544,25 +61548,25 @@
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
         },
         "ack_remaining_boundary": {
-          "scope": "Implement genuine mutation-only checkpoint/ACK after a preparation hole, retaining frozen classified prefix; source-only in assigned worktree",
+          "scope": "Additive existing-harness A>C/missing post-hole original refusal qualification",
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Completed87011a3; root assumed branch ownership and added reviewed builder controls as9cef25f"
+          "state": "Implementing in separate worktree; no engines/build/runtime authorized"
         },
         "progress_hole_fixture": {
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-57-47-01a16944-9ea6-75d2-8a3a-17f2103a80ca.jsonl session_meta/turn_context; root verified",
-          "state": "Active source-only",
+          "state": "Completed atbb02c96, source integrated and runtime qualified; no active assignment",
           "scope": "Independent actual installed hole-continuity fixture"
         },
         "progress_hole_critical": {
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
-          "state": "Active source-only",
-          "scope": "Independent critical review of hole-continuity product/fixture authority and replay"
+          "state": "Active source-only review; root owns runtime",
+          "scope": "Independent critical review of two-case ACK refusal extension"
         }
       },
       "pause_resource_observation_20261023": {
@@ -61620,7 +61624,8 @@
           "base": "2f5198b82ac9027b83ea0cc37c8006d15f4c74dd",
           "scope": "Rust producer progress and installed Sync plus discriminating existing component tests",
           "state": "Clean root candidate9cef25f, critically reviewed, component-qualified and integrated main1c6afe3; original source receipt87011a3 preserved",
-          "head": "9cef25f13db44cac1cdd55e1862229ba7298f3b0"
+          "head": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
+          "branch_state": "Retired integrated local ref; source worktree retained detached at9cef25f"
         },
         {
           "owner": "progress_hole_fixture",
@@ -61628,7 +61633,8 @@
           "branch": "work/producer-progress-hole-fixture",
           "base": "2f5198b82ac9027b83ea0cc37c8006d15f4c74dd",
           "scope": "Additive existing initial ACK harness, complete independent science and raw replay; historical profile retained",
-          "state": "Source active; future product build pins unavailable until measured"
+          "state": "Completed, critically reviewed, integrated dfbb8dc; full fresh live/recovery/retry/raw PASS; source/ignored receipts preserved",
+          "head": "bb02c96c0d006004a507d86653c6a8da9fed2e2c"
         }
       ],
       "preparation_hole_build_20261023": {
@@ -61653,6 +61659,100 @@
           }
         ],
         "custody": "Fresh root exact labels/IDs and both states exited0,PID0,noOOM,cgroups absent; driver4103 joined0, no changed unrelated resource"
+      },
+      "ack_integrated_branch_retirement_20261023": {
+        "observed_at": "2026-10-23T15:15:57.477628+00:00",
+        "main": "03008f3ec55a60257b97e0632e6232af7e406a1c",
+        "authority": "Q36 and owner authorization to retire redundant integrated branches; no file, worktree or artifact deletion",
+        "entries": [
+          {
+            "branch": "work/producer-ack-fixture",
+            "original_head": "f5cd4e9d49c80bf212daf3000a82b3ac12b2e091",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-fixture-20261020",
+            "state": "Local branch retired; original detached worktree, ignored data and receipts preserved"
+          },
+          {
+            "branch": "work/producer-ack-loss",
+            "original_head": "70fd75011cc5d7a8925aa038d63cd5aeaca4d2ff",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020",
+            "state": "Local branch retired; original detached worktree, ignored data and receipts preserved"
+          },
+          {
+            "branch": "work/producer-ack-storage",
+            "original_head": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-storage-20261020",
+            "state": "Local branch retired; original detached worktree, ignored data and receipts preserved"
+          },
+          {
+            "branch": "work/producer-ack-sync",
+            "original_head": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-sync-20261020",
+            "state": "Local branch retired; original detached worktree, ignored data and receipts preserved"
+          },
+          {
+            "branch": "work/producer-progress-hole",
+            "original_head": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-progress-hole-20261023",
+            "state": "Local branch retired; original detached worktree, ignored data and receipts preserved"
+          }
+        ]
+      },
+      "preparation_hole_installed_runs_20261023": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-6065977",
+          "source": "6065977954949a94bea3f457193878839863196a",
+          "driver_session": 39623,
+          "status": "FAIL",
+          "output": "bindings",
+          "log": "driver.log",
+          "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+          "driver_exit": 1,
+          "client": {
+            "id": "c92018d64cd90d736ef7cf6c8197737f25b78698d8f469c29aa37a5edc010067",
+            "name": "bigbrotr-acquisition-binding-6065977-progress-initial-ack-preparation-hole"
+          },
+          "owner": "54a9b5f4c51fd8e69071c3451e4f52f2",
+          "label": "org.bigbrotr.acquisition-binding",
+          "databases": [
+            "bb_scope_bind_6065977_sync_signed_ack"
+          ],
+          "custody": "Fresh root exact client/PG exited/PID0/noOOM/cgroups absent; no cleanup_errors,missing_owned or unrelated_changed. Recovery never started; full original context/log retained."
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc",
+          "source": "dfbb8dc2d542e99726b19c162161d5fa7e136bbc",
+          "driver_session": 67744,
+          "driver_exit": 0,
+          "raw_session": 52598,
+          "raw_exit": 0,
+          "status": "PASS_INSTALLED_INITIAL_PRODUCER_ACK_PREPARATION_HOLE",
+          "output": "bindings",
+          "log": "driver.log",
+          "raw": "raw-replay.json",
+          "client": {
+            "id": "1a95a403ec9f5266275ed0b4bff72e405fc245da60ed501998426382f4d477bd",
+            "name": "bigbrotr-acquisition-binding-dfbb8dc-progress-initial-ack-preparation-hole"
+          },
+          "owner": "55c7780aee15072598b7d38bc3417a44",
+          "label": "org.bigbrotr.acquisition-binding",
+          "databases": [
+            "bb_scope_bind_dfbb8dc_sync_signed_ack"
+          ],
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "custody": "Runtime67744/raw52598 joined0. Root freshly inspected exact client and borrowed PG labels/IDs: exited,PID0,noOOM,cgroups absent. Outer cleanup_errors/missing_owned/unrelated_changed empty. No cleanup; retained stores, DB, logs and original failures preserved.",
+          "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: preparation_hole_continuity_20261023.installed_runs"
+        }
+      ],
+      "ack_refusal_source_work_20261023": {
+        "owner": "ack_remaining_boundary",
+        "path": "/home/tux/bigbrotr-rs/.research/producer-ack-refusals-20261023",
+        "branch": "work/producer-ack-refusals",
+        "base": "dfbb8dc2d542e99726b19c162161d5fa7e136bbc",
+        "state": "Source implementation and critical review active; runtime NOT_RUN",
+        "qualified_origin": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc",
+        "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
+        "reviewer": "progress_hole_critical"
       }
     }
   },

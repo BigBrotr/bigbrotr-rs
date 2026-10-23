@@ -464,7 +464,10 @@ One owner serializes exact identity decisions for each writable directory.
   proof-only resend, plus both third-mutation COMMIT-loss outcomes and linked
   full-original recovery/retry. Source70bb00f fault evidence passes six processes,
   140 controls and strict raw replay; the recovery report retains exact identities
-  and original failures. Native ACK ambiguity, full-window proof-only, remaining
+  and original failures. The `9cef25f` product and `dfbb8dc` installed fixture also
+  qualify mutation/ACK continuity after a preparation hole, later-REQ classified
+  progress and config-only recovery/retry:95 controls and strict raw replay.
+  Native ACK ambiguity, full-window/same-REQ post-hole proof-only, remaining
   refusals/resources, GC and complete live continuity still prevent step closure.
   The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
   adds native-witness closure and a contiguous logical shard head in that same
