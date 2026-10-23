@@ -287,10 +287,17 @@ def observe_origin_absence(pg, database, output, name):
 
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
-        preparation_hole=False):
+        preparation_hole=False, compacted_reader=False, product_source=None):
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
     assert type(preparation_hole) is bool and (not preparation_hole or producer_ack)
+    assert type(compacted_reader) is bool
+    if compacted_reader:
+        from installed_compacted_reader_oracle import GRANTS, qualification_checked
+        assert preparation_hole and extra_grants == GRANTS
+        assert re.fullmatch(r'[0-9a-f]{40}', product_source or '')
+    else:
+        assert product_source is None
     if producer_progress:
         from installed_progress_replay import require_frozen_profile
         progress_profile = require_frozen_profile(ack=producer_ack,preparation_hole=preparation_hole)
@@ -339,7 +346,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_specs, pins = schema.ORIGINS, PINS
         origin_for_clone = {mode: 'empty' if mode == 'empty' else 'activated' for mode in suite.clones}
     assert isinstance(extra_grants, tuple) and all(isinstance(s, str) and s for s in extra_grants)
-    if preparation_hole:
+    if preparation_hole and not compacted_reader:
         assert not extra_grants, 'qualified initial recovery already has its exact authority'
     assert SOURCE == root / 'source'
     revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
@@ -347,23 +354,25 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     built = read(build / 'build-result.json')
     component = read(build / 'component-result.json')
     qualification = read(build.parent / 'qualification.json')
-    if preparation_hole:
+    if compacted_reader:
+        qualification_checked(built,component,qualification,product_source)
+    elif preparation_hole:
         from installed_progress_replay import preparation_hole_qualification
         preparation_hole_qualification(built,component,qualification)
     allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
-    assert qualification['status'] in (('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
+    assert qualification['status'] in (('PASS_COMPACTED_PREFIX_COMPONENTS',) if compacted_reader else ('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
         if producer_progress else allowed)
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
-    if producer_progress:
+    if producer_progress and not compacted_reader:
         assert built['source'] == progress_profile['product_source'], 'unreviewed progress build source'
     for field in ('tree', 'source_manifest_sha256', 'lockfile_sha256'):
         assert component[field] == qualification[field] == built[field], field
     binaries = component['executables_sha256']
     assert {'bigbrotr', 'ingest_bootstrap_probe'} <= set(binaries)
-    if producer_ack:
+    if producer_ack and not compacted_reader:
         from installed_progress_replay import ack_executables
         assert binaries==ack_executables(preparation_hole=preparation_hole)
         assert set(binaries)=={'bigbrotr','ingest_bootstrap_probe','native_components','sync_progress',
@@ -528,7 +537,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
             lab.write_json(output / (mode + '-migrated.json'), migrated)
             # The qualified initial origin already grants exact recovery rights;
             # successor setup would broaden its authority and change its catalog.
-            statements = [] if preparation_hole else [
+            statements = list(extra_grants) if compacted_reader else [] if preparation_hole else [
                 (SOURCE / 'experiments/ingest-succession/schema_grants.sql').read_text(),
                 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;', *extra_grants]
             clone['grants'] = []

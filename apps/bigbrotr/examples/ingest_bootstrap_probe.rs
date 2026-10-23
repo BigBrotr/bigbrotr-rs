@@ -30,6 +30,8 @@ use tokio_postgres::{Config, NoTls};
 mod config;
 #[path = "support/ingest_closing.rs"]
 mod ingest_closing;
+#[path = "support/ingest_compacted_fixture.rs"]
+mod ingest_compacted_fixture;
 #[path = "support/ingest_dictionary_append.rs"]
 mod ingest_dictionary_append;
 #[path = "support/ingest_dictionary_faults.rs"]
@@ -881,6 +883,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
+    if args.len() == 5 && args[1] == "compacted-reader-fixture" {
+        ingest_compacted_fixture::mutate(Path::new(&args[2]), &args[3], &args[4]);
+        return;
+    }
     if args.len() == 3 && args[1] == "dump-state" {
         let (rows, sequence) = raw_state(Path::new(&args[2]));
         emit(serde_json::json!({"event":"dump-state","rows":rows,"sequence":sequence}));
