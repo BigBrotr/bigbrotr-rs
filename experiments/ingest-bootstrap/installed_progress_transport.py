@@ -53,7 +53,9 @@ def ack_events(directory, *, successor=False):
         return value
     value = json.loads(path.read_text(), object_pairs_hook=closed)
     assert set(value) == {'format', 'events'}
-    assert value['format'] in ('bigbrotr-ack-events/1','bigbrotr-ack-preparation-hole-events/1')
+    assert value['format'] in ('bigbrotr-ack-events/1','bigbrotr-ack-preparation-hole-events/1',
+        'bigbrotr-ack-post-hole-proof-events/1')
+    assert value['format']!='bigbrotr-ack-post-hole-proof-events/1' or not successor
     return three_events(value['events'],successor=successor,
         preparation_hole=value['format']=='bigbrotr-ack-preparation-hole-events/1')
 
@@ -65,8 +67,11 @@ class SplitEvents:
         assert stat.S_ISREG(path.lstat().st_mode) and path.stat().st_size <= 256
         context=json.loads(path.read_text())
         self.preparation_hole=context.get('format')=='bigbrotr-ack-preparation-hole-context/1'
+        self.post_hole_proof=context.get('format')=='bigbrotr-ack-post-hole-proof-context/1'
         assert not self.preparation_hole or kind=='initial' and event_sequence is not None
-        assert context == dict(format='bigbrotr-ack-preparation-hole-context/1' if self.preparation_hole
+        assert not self.post_hole_proof or kind=='initial' and event_sequence is not None
+        assert context == dict(format='bigbrotr-ack-post-hole-proof-context/1' if self.post_hole_proof
+            else 'bigbrotr-ack-preparation-hole-context/1' if self.preparation_hole
             else 'bigbrotr-progress-context/1' if event_sequence is None else 'bigbrotr-ack-context/1',kind=kind)
         self.read_release = progress_release
         self.directory, self.event = directory, event
@@ -96,6 +101,11 @@ class SplitEvents:
                 a,b,c,d=values
                 values=(a,{'id':a['id']},b) if phase=='mutation' else (c,d,b)
                 labels=['signed','malformed-event','signed'] if phase=='mutation' else ['signed']*3
+            elif self.post_hole_proof and phase=='proof-only':
+                a=values[0]
+                values=(a,{'id':a['id']},a)
+                labels=['signed','malformed-event','signed']
+            if self.preparation_hole or self.post_hole_proof:
                 # Retain the exact rejected object, not just a hash or a claimed
                 # refusal label. EVENT envelope/correlation uses the actual REQ.
                 trace['event_json_hex']=[json.dumps(value,ensure_ascii=False,

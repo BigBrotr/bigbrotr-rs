@@ -143,7 +143,8 @@ def input_custody(cuts, after, inputs, *, preparation_hole=False):
             assert {key:metadata[key] for key in ('bytes','sha256')} == inputs[name]
 
 
-def ready(state, kind, phase, wire, *, ack=False, preparation_hole=False):
+def ready(state, kind, phase, wire, *, ack=False, preparation_hole=False, post_hole_proof=False):
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and kind=='initial' and not preparation_hole)
     if preparation_hole:
         assert ack and kind=='initial' and phase in typed.phase_names(True) and len(state)==77
         heads,jobs=state['producer_checkpoints'],state['acquisition_progress']
@@ -157,7 +158,7 @@ def ready(state, kind, phase, wire, *, ack=False, preparation_hole=False):
             and job['rejected_events']==0 and job['event_ordinal']==job['wire_sequence']==(3 if later else 1)
             and job['classification']==(5 if later else 2) and job['mutation_request']==(None if later else 4)
             and typed.bytea(job['request_id'],48)==wire['request'][1].encode())
-    spec = typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
+    spec = typed.POST_HOLE_PROOF_EXPECTATIONS[kind] if post_hole_proof else typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
     width=3 if ack else 1
     assert len(state) == 77 and phase in ('mutation', 'proof-only')
     head = [r for r in state['producer_checkpoints'] if r['producer_epoch'] == spec['epoch']]
@@ -166,19 +167,21 @@ def ready(state, kind, phase, wire, *, ack=False, preparation_hole=False):
         return False
     head, job = head[0], jobs[0]
     proof = phase == 'proof-only'
-    return (head['checkpoint_revision'] == spec['mutation_revision'] + width*proof
+    proof_width=1 if post_hole_proof else width
+    return (head['checkpoint_revision'] == spec['mutation_revision'] + proof_width*proof
         and head['complete_through_request'] == spec['request']
         and head['dependency_count'] == len(spec['dependencies']) and head['progress_jobs'] == 1
-        and job['progress_revision'] == job['classified_events'] == job['successful_events'] == width*(1 + proof)
-        and job['rejected_events'] == 0 and job['event_ordinal'] == job['wire_sequence'] == width
+        and job['progress_revision'] == job['classified_events'] == job['successful_events'] == width+proof_width*proof
+        and job['rejected_events'] == 0 and job['event_ordinal'] == job['wire_sequence'] == (proof_width if proof else width)
         and job['classification'] == (5 if proof else 2)
         and job['mutation_request'] == (None if proof else spec['request'])
         and typed.bytea(job['request_id'], 48) == wire['request'][1].encode())
 
 
-def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, successor=False, preparation_hole=False):
+def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, successor=False, preparation_hole=False, post_hole_proof=False):
     assert type(successor) is bool and (not successor or ack)
     assert type(preparation_hole) is bool and (not preparation_hole or ack and not successor)
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and not successor and not preparation_hole)
     names=typed.phase_names(preparation_hole)
     if ack:
         assert set(gates)=={*('progress-'+name+'-observation.json' for name in names),'progress-release.json'}
@@ -192,7 +195,7 @@ def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, success
         if 'progress_phase' in last:
             extra|={'progress_phase','event_ids','event_json_sha256','sent_at_us'}
             if last['progress_phase']==names[1]: extra.add('progress_release')
-            if preparation_hole: extra.add('event_json_hex')
+            if preparation_hole or post_hole_proof: extra.add('event_json_hex')
         assert set(last)==opened_fields|extra
         assert first['number'] == last['number'] == number
         assert all(last[k] == v for k,v in first.items())
@@ -208,10 +211,11 @@ def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, success
             continue
         phase = last['progress_phase']
         assert phase in names and phase not in phases
-        if preparation_hole:
-            events=typed.phase_events(phase,preparation_hole=True)
+        if preparation_hole or post_hole_proof:
+            events=typed.phase_events(phase,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
             assert last['event_json_hex']==[json.dumps(e,ensure_ascii=False,separators=(',',':')).encode().hex() for e in events]
-        labels=['signed','malformed-event','signed'] if preparation_hole and phase=='mutation' else ['signed']*len(events)
+        hole_phase=preparation_hole and phase=='mutation' or post_hole_proof and phase=='proof-only'
+        labels=['signed','malformed-event','signed'] if hole_phase else ['signed']*len(events)
         assert last['frames'] == labels+['EOSE'] and last['event_ids'] == [e['id'] for e in events]
         assert last['event_json_sha256'] == [sha(json.dumps(e,ensure_ascii=False,separators=(',',':')).encode()) for e in events]
         assert last['completion'] == 'request-and-websocket-close'
@@ -234,9 +238,10 @@ def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, success
 
 
 def typed_checked(kind, before, after, snapshots, phases, event, native, inputs, receipts,
-                  scope, observer, witness, control, *, ack=False, preparation_hole=False):
+                  scope, observer, witness, control, *, ack=False, preparation_hole=False, post_hole_proof=False):
     assert not preparation_hole or ack and kind=='initial'
-    spec = typed.PREPARATION_HOLE_EXPECTATIONS[kind] if preparation_hole else typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and kind=='initial' and not preparation_hole)
+    spec = typed.POST_HOLE_PROOF_EXPECTATIONS[kind] if post_hole_proof else typed.PREPARATION_HOLE_EXPECTATIONS[kind] if preparation_hole else typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
     events=typed.preparation_hole_events() if preparation_hole else typed.ack_event_sequence(successor=kind=='successor') if ack else [event]
     names=typed.phase_names(preparation_hole)
     width=len(events)
@@ -287,7 +292,7 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
         state = cut['control']
         if not setup:
             wire = phases[phase]
-            assert ready(state,kind,phase,wire,ack=ack,preparation_hole=preparation_hole)
+            assert ready(state,kind,phase,wire,ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
             actual = only(state['acquisition_progress'])
             accepted = only(state['jobs'], request_key='\\x'+spec['key']*16)
             assert accepted['checkpoint_revision'] == 0 and accepted['state'] == 'queued'
@@ -296,6 +301,8 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
             current_event=events[1 if is_proof else 0] if preparation_hole else event
             ordinal=(3 if is_proof else 1) if preparation_hole else width
             classified=(4 if is_proof else 1) if preparation_hole else width*(1+is_proof)
+            if post_hole_proof and is_proof:
+                current_event,ordinal,classified=events[0],1,4
             job_request=4 if preparation_hole else spec['request']
             job = dict(common, job_id=accepted['job_id'],scope_id=detail['scope_id'],
                 progress_revision=classified,request_id='\\x'+wire['request'][1].encode().hex(),
@@ -321,6 +328,8 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
             if preparation_hole:
                 revision,complete=(8,7) if is_proof else (5,5)
                 coordinates=tuple((1,n) for n in range(1,28 if is_proof else 18))
+            elif post_hole_proof and is_proof:
+                revision=7
         else:
             assert kind == 'initial' and not state['acquisition_progress']
             jobs, revision, complete = [], 2, 2
@@ -373,18 +382,26 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
             acquisition_revision=4,job_checkpoint_revision=0,ack=7,preparation_refusals=1,
             frozen_prefix_ordinal=1,post_hole_mutations=3,window=2,
             scope='Initial A/hole/B then genuine C/D/B-proof REQ; no EOSE/workflow completion or full-window proof')
+    if post_hole_proof:
+        return dict(status='PASS_TYPED_POST_HOLE_PROOF',kind=kind,producer_epoch=epoch,
+            mutation_revision=6,proof_revision=7,complete_through_request=6,dependencies=22,
+            acquisition_revision=4,job_checkpoint_revision=0,ack=6,preparation_refusals=1,
+            frozen_prefix_ordinal=1,post_hole_proofs=1,window=2,
+            proof_observation='Exact wire and source path plus later serial REQ and unchanged effects; no per-proof success response',
+            scope='Initial A/B/C then actual A/hole/A REQ; no extra typed/native mutation or ACK; no full-window or EOSE/workflow claim')
     return dict(status='PASS_TYPED_CONTEXT',kind=kind,producer_epoch=epoch,
         mutation_revision=spec['mutation_revision'],proof_revision=spec['mutation_revision']+width,
         complete_through_request=spec['request'],dependencies=len(spec['dependencies']),
         acquisition_revision=2*width,job_checkpoint_revision=0,ack=spec['request'] if ack else 0)
 
 
-def verify_initial(context, *, ack=False, preparation_hole=False):
+def verify_initial(context, *, ack=False, preparation_hole=False, post_hole_proof=False):
     from installed_sync import BOOTSTRAP, COMMANDS, validate_source, validate_queued
     from initial_jobs import unchanged, logged_out, released
     from live_replay import OLD_EVENT
     assert type(preparation_hole) is bool and (not preparation_hole or ack)
-    typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole)
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and not preparation_hole)
+    typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     names=typed.phase_names(preparation_hole)
     assert set(context) == {'kind','setup','before','after','snapshots','report','transcript','opened',
         'terminal','stdout','stderr','signal','client_terminal','client_stdout','client_stderr','observations',
@@ -424,18 +441,27 @@ def verify_initial(context, *, ack=False, preparation_hole=False):
     event = json.loads(event_raw)
     assert event == OLD_EVENT  # Preserve the frozen raw JSON member order too.
     if ack:
-        assert context['producer_ack_profile']==('two-slot-preparation-hole/1' if preparation_hole else 'two-slot-three-events/1')
+        assert context['producer_ack_profile']==('two-slot-post-hole-proof/1' if post_hole_proof
+            else 'two-slot-preparation-hole/1' if preparation_hole else 'two-slot-three-events/1')
         events=typed.preparation_hole_events() if preparation_hole else typed.ack_event_sequence()
         assert json.loads(context['ack_event_recipe'])==(typed.preparation_hole_recipe() if preparation_hole
-            else dict(format='bigbrotr-ack-events/1',events=events))
+            else dict(format='bigbrotr-ack-post-hole-proof-events/1' if post_hole_proof else 'bigbrotr-ack-events/1',events=events))
         event=events[0]
     phases = wires_checked(context['opened'],context['transcript'],snapshots,event,context['gates'],ack=ack,
-        preparation_hole=preparation_hole)
+        preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     signal = context['signal']
     quiet = only(context['transcript'],number=signal['round'])
     assert quiet['completion'] == 'quiet-eof' and not quiet['frames']
     assert signal['closed_before_signal'] is False and signal['request'] == quiet['request']
     assert quiet['request_at_us'] <= signal['signal_at_us'] <= quiet['closed_at_us']
+    if post_hole_proof:
+        # CLOSE completes collection before SQL dispatch. A later actual REQ
+        # requires that the serial owner returned successfully from dispatch.
+        # There is still no independent per-proof successful response on wire.
+        proof=phases['proof-only']
+        assert quiet['number']>proof['number']
+        assert quiet['request_at_us']>=proof['closed_at_us']
+        assert only(snapshots,stage='progress-proof-only')['observed_by_us']<=signal['signal_at_us']
     before, after = typed.legacy_state(context['before'],ack=ack), typed.legacy_state(context['after'],ack=ack)
     projected = [typed.legacy_state(s['control'],ack=ack) for s in snapshots]
     total=7 if preparation_hole else 6 if ack else 4
@@ -564,7 +590,7 @@ def verify_initial(context, *, ack=False, preparation_hole=False):
     observation = event_input[5]
     return typed_checked('initial',context['before'],context['after'],snapshots,phases,event,
         {(cf,key.hex()):value.hex() for cf,key,value in wanted},dict(enumerate(inputs,1)),dict(enumerate(receipts,1)),
-        event_input[1],observation[1],observation[3],control,ack=ack,preparation_hole=preparation_hole)
+        event_input[1],observation[1],observation[3],control,ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
 
 
 def verify_live(context, *, ack=False):
@@ -634,11 +660,12 @@ def verify_live(context, *, ack=False):
 def controls(context, verify):
     verify(context)
     preparation_hole=context.get('producer_ack_profile')=='two-slot-preparation-hole/1'
+    post_hole_proof=context.get('producer_ack_profile')=='two-slot-post-hole-proof/1'
     results = []
     def reject(name, change, reason=None):
         value = copy.deepcopy(context)
         change(value)
-        if context.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-preparation-hole/1'):
+        if context.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-preparation-hole/1','two-slot-post-hole-proof/1'):
             rebind_gates(value)
         try:
             verify(value)
@@ -681,7 +708,7 @@ def controls(context, verify):
     reject('foreign-progress-issuer',lambda c:after(c)['producer_checkpoints'][0].update(issuer_epoch=999))
     reject('head-complete-overadvance',lambda c:after(c)['producer_checkpoints'][0].update(complete_through_request=(8 if preparation_hole
             else typed.ACK_EXPECTATIONS['initial' if 'kind' in c else 'activated']['request']+1
-            if c.get('producer_ack_profile')=='two-slot-three-events/1' else 5)))
+            if c.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-post-hole-proof/1') else 5)))
     reject('proof-revision-missing',lambda c:phase(c)['acquisition_progress'][0].update(progress_revision=1))
     reject('proof-mutating-request',lambda c:phase(c)['acquisition_progress'][0].update(mutation_request=1))
     reject('proof-reused-request',lambda c:phase(c)['acquisition_progress'][0].update(request_id='\\x'+b'1'.hex()*48))
@@ -724,9 +751,9 @@ def controls(context, verify):
         reject('unjoined-cli',lambda c:c['response']['terminal'].update(reaped=False))
         reject('backend-not-absent',lambda c:c['backend']['absence']['attempts'][-1].update(count=1))
         reject('schema-drift',lambda c:c.update(progress_catalog_after=c['progress_catalog_after']+'changed'))
-    if context.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-preparation-hole/1'):
+    if context.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-preparation-hole/1','two-slot-post-hole-proof/1'):
         results.extend(typed.ack_counterexamples(context,verify,'initial' if 'kind' in context else 'activated',
-            preparation_hole=preparation_hole))
+            preparation_hole=preparation_hole,post_hole_proof=post_hole_proof))
     if preparation_hole:
         mutation=lambda c:only(c['snapshots'],stage='progress-mutation')['control']
         def rehash(c,state):
@@ -776,6 +803,33 @@ def controls(context, verify):
             progress_event_ordinal=4,progress_wire_sequence=4))
         reject('new-request-proof-counts-skipped-hole',lambda c:only(phase(c)['acquisition_progress']).update(
             classified_events=5,successful_events=5,progress_revision=5))
+    if post_hole_proof:
+        proof_wire=lambda c:next(r for r in c['transcript'] if r.get('progress_phase')=='proof-only')
+        def advance_post_hole_proof(c):
+            # All constructors run outside reject()'s verifier catch. This head
+            # is canonical but falsely checkpoints ordinal3 beyond the hole.
+            native={(r['cf'],r['key']):r['value'] for r in c['native']['rows']}
+            for state in [s['control'] for s in c['snapshots'][3:]]+[c['after']]:
+                job=only(state['acquisition_progress'])
+                job.update(progress_revision=5,classified_events=5,successful_events=5,
+                    event_ordinal=3,wire_sequence=3)
+                head=only(state['producer_checkpoints']);head['checkpoint_revision']=8
+                dependencies=sorted(state['producer_checkpoint_dependencies'],key=lambda r:(
+                    r['source_shard'],r['source_epoch'],r['source_sequence']))
+                head['checkpoint_digest']='\\x'+typed.head_digest(head,[job],dependencies,
+                    lambda row:typed.native_reference(row,native)).hex()
+        def replace_post_hole_input(c):
+            wire=proof_wire(c); forged=dict(typed.ack_event_sequence()[0],sig='00'*64)
+            raw=json.dumps(forged,ensure_ascii=False,separators=(',',':')).encode()
+            wire['event_json_hex'][1]=raw.hex();wire['event_json_sha256'][1]=sha(raw)
+            wire['frames'][1]='forged-signature'
+        reject('coherent-proof-head-skips-preparation-hole',advance_post_hole_proof)
+        reject('native-signature-rejection-substituted-for-proof-preparation-hole',replace_post_hole_input)
+        reject('post-hole-proof-input-spool-write',lambda c:c['input_files']['proof-only'].update(
+            {next(name for name in c['input_files']['proof-only'] if name!='.'):
+                dict(next(value for name,value in c['input_files']['proof-only'].items() if name!='.'),inode=1)}))
+        reject('post-hole-proof-dependency-xmin-rewrite',lambda c:phase(c)['producer_checkpoint_dependencies'][0].update(
+            xmin='4294967294'))
     return dict(status='PASS',rejected=len(results),cases=results)
 
 
@@ -969,7 +1023,7 @@ def bind_ack_modules(provenance, raw):
         assert sha(raw(path))==provenance['files_sha256'][name], 'ACK replay source changed'
 
 
-def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation_hole=False):
+def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation_hole=False, post_hole_proof=False):
     """Read original files only; retained custody is not a current resource audit.
 
     Reuse the family reader's strict JSON and physical-file checks. No SQL,
@@ -981,7 +1035,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
     assert kind in ('initial','activated')
     assert type(ack) is bool and not (ack and retained_initial_capture)
     assert type(preparation_hole) is bool and (not preparation_hole or ack and kind=='initial')
-    profile=typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole)
+    assert type(post_hole_proof) is bool and (not post_hole_proof or ack and kind=='initial' and not preparation_hole)
+    profile=typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     assert type(retained_initial_capture) is bool and (not retained_initial_capture or kind=='initial')
     root=Path(root).resolve(strict=True); folder=root/'bindings'
     bound={}
@@ -998,8 +1053,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
         assert sha(raw(folder/'result.json'))=='cee2afb1c1170a0fec63cbad5c5c32ef33142f960c1dfd3e4520ac21b5adeba8'
         assert sha(raw(root/'driver.log'))=='49670a7daed23aa50554b7581a215e56b854c6cd2359e716c43eff20a1fd7db2'
     else:
-        assert report['status']=='PASS_INSTALLED_'+kind.upper()+('_PRODUCER_ACK' if ack else '_TYPED_PROGRESS')+('_PREPARATION_HOLE' if preparation_hole else '')
-    assert report['wave']==kind+('-producer-ack' if ack else '-typed-progress')+('-preparation-hole' if preparation_hole else '') and report['label']=='org.bigbrotr.acquisition-binding'
+        assert report['status']=='PASS_INSTALLED_'+kind.upper()+('_PRODUCER_ACK' if ack else '_TYPED_PROGRESS')+('_POST_HOLE_PROOF' if post_hole_proof else '_PREPARATION_HOLE' if preparation_hole else '')
+    assert report['wave']==kind+('-producer-ack' if ack else '-typed-progress')+('-post-hole-proof' if post_hole_proof else '-preparation-hole' if preparation_hole else '') and report['label']=='org.bigbrotr.acquisition-binding'
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{32}',report['owner'])
     assert all(report[key]==[] for key in ('cleanup_errors','missing_owned','unrelated_changed'))
     provenance=read(folder/'progress-source.json')
@@ -1019,8 +1074,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
     build=Path(provenance['build']); assert build.is_absolute()
     built,component=read(build/'build-result.json'),read(build/'component-result.json')
     qualification=read(build.parent/'qualification.json')
-    if preparation_hole:
-        typed.preparation_hole_qualification(built,component,qualification)
+    if preparation_hole or post_hole_proof:
+        typed.preparation_hole_qualification(built,component,qualification,post_hole_proof=post_hole_proof)
     assert component['status']=='PASS' and qualification['status']==('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
     assert built['source']==component['source']==qualification['source']==profile['product_source']
     for key in ('tree','source_manifest_sha256','lockfile_sha256'):
@@ -1028,7 +1083,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
     assert set(component['executables_sha256'])=={'bigbrotr','ingest_bootstrap_probe','native_components',
         'sync_progress','fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
     if ack:
-        assert component['executables_sha256']==typed.ack_executables(preparation_hole=preparation_hole)
+        assert component['executables_sha256']==typed.ack_executables(preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
     for name,digest in component['executables_sha256'].items():
         assert sha(raw(build/name))==digest
     assert component['executables_sha256']['bigbrotr']==built['binary_sha256']
@@ -1053,7 +1108,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
     for name in (*expected_helpers,'installed_progress_transport.py','installed_family_client.py'):
         relative=('experiments/ingest-succession/' if name=='installed_family_client.py' else 'experiments/ingest-bootstrap/')+name
         assert raw(folder/name)==raw(root/'source'/relative)
-    assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-preparation-hole-context/1' if preparation_hole
+    assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-post-hole-proof-context/1' if post_hole_proof
+        else 'bigbrotr-ack-preparation-hole-context/1' if preparation_hole
         else 'bigbrotr-ack-context/1' if ack else 'bigbrotr-progress-context/1',kind=kind)
     originals=read(folder/'progress-originals-before.json')
     assert set(originals)=={'bb_scope_54d1a18_basic','bb_source_template'}
@@ -1080,7 +1136,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
         assert all(state[k] is False for k in ('Running','Paused','Restarting','OOMKilled','Dead'))
         assert state['ExitCode'] in ((0,) if ident==pg_id else (0,143))
     client=only(inventory,Id=client_id)
-    assert client['Name']=='/bigbrotr-acquisition-binding-'+report['source'][:7]+'-progress-'+kind+('-ack' if ack else '')+('-preparation-hole' if preparation_hole else '')
+    assert client['Name']=='/bigbrotr-acquisition-binding-'+report['source'][:7]+'-progress-'+kind+('-ack' if ack else '')+('-post-hole-proof' if post_hole_proof else '-preparation-hole' if preparation_hole else '')
     assert only(client['Mounts'],Destination='/lab')['Source']==str(folder)
     mount=only(client['Mounts'],Destination='/build')
     assert mount['Source']==str(build) and mount['RW'] is False
@@ -1092,7 +1148,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
     if ack:
         assert context['ack_event_recipe']==raw(directory/'progress-ack-events.json').decode()
         assert read(directory/'progress-ack-events.json')==(typed.preparation_hole_recipe() if preparation_hole
-            else dict(format='bigbrotr-ack-events/1',events=typed.ack_event_sequence()))
+            else dict(format='bigbrotr-ack-post-hole-proof-events/1' if post_hole_proof
+                else 'bigbrotr-ack-events/1',events=typed.ack_event_sequence()))
     setup=context['setup'] if initial else context['progress_setup']
     assert setup==read(folder/(label+'-progress-upgrade.json'))
     assert setup['acl']==read(folder/(label+'-progress-acl.json'))
@@ -1150,7 +1207,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
         assert context['backend']['absence']['database']==database
         assert typed.legacy_state(context['before'],ack=ack)==read(folder/(label+'-before.json'))
         assert typed.legacy_state(context['after'],ack=ack)==read(folder/(label+'-after.json'))
-        checker=lambda value:verify_initial(value,ack=ack,preparation_hole=preparation_hole)
+        checker=lambda value:verify_initial(value,ack=ack,preparation_hole=preparation_hole,post_hole_proof=post_hole_proof)
         answer=checker(context); negative=controls(context,checker)
         if not retained_initial_capture:
             case,=report['cases']
@@ -1232,7 +1289,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation
     if ack:
         bind_ack_modules(provenance,raw)
     assert case['status']=='PASS' and case['oracle']==answer and case['negative_controls']==negative
-    return dict(status='PASS_RAW_ACK_PREPARATION_HOLE_REPLAY' if preparation_hole else 'PASS_RAW_ACK_CONTEXT_REPLAY' if ack else 'PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
+    return dict(status='PASS_RAW_ACK_POST_HOLE_PROOF_REPLAY' if post_hole_proof else 'PASS_RAW_ACK_PREPARATION_HOLE_REPLAY' if preparation_hole else 'PASS_RAW_ACK_CONTEXT_REPLAY' if ack else 'PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
         **(dict(recovery=recovery) if preparation_hole else {}),
         raw_files_sha256=bound,custody='RETAINED_OBSERVATIONS_ONLY_ROOT_CURRENT_AUDIT_SEPARATE')
 
@@ -1243,10 +1300,11 @@ if __name__=='__main__':
     parser.add_argument('root',type=Path)
     parser.add_argument('--kind',choices=('initial','activated'),required=True)
     parser.add_argument('--producer-ack',action='store_true')
+    parser.add_argument('--post-hole-proof',action='store_true',help='Initial-only A/B/C then A/hole/A, exact measured9cef build.')
     parser.add_argument('--preparation-hole',action='store_true',help='Initial-only A/hole/B then C/D/B-proof, exact separately pinned build.')
     parser.add_argument('--retained-initial-capture',action='store_true',
         help='Verify only the pinned complete7239 initial capture; preserve its original FAIL report.')
     arguments=parser.parse_args()
     print(json.dumps(replay(arguments.root,arguments.kind,
         retained_initial_capture=arguments.retained_initial_capture,ack=arguments.producer_ack,
-        preparation_hole=arguments.preparation_hole),sort_keys=True))
+        preparation_hole=arguments.preparation_hole,post_hole_proof=arguments.post_hole_proof),sort_keys=True))
