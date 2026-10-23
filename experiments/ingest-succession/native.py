@@ -411,6 +411,12 @@ if producer_progress:
 if producer_ack:
     required_controls['producer_progress'].append(
         'storage::postgres::control_owner::producer_progress::tests::progress_grant_reserves_native_ack_before_any_dispatch')
+    required_controls['producer_progress'].extend(
+        'storage::postgres::control_owner::producer_progress::tests::' + name for name in [
+            'mutation_handoff_after_a_hole_preserves_classified_prefix',
+            'mutation_handoff_without_a_classified_head_does_not_create_one',
+            'mutation_only_capture_cannot_checkpoint_proof_or_rejection_reads',
+            'next_req_classification_keeps_pre_hole_counts_and_exact_replay'])
     required_controls['producer_ack'] = [
         'storage::rocks::store::admission_tests::producer_ack_tests::' + name for name in [
             'acknowledgement_writes_only_watermark_once_and_retains_every_original',
