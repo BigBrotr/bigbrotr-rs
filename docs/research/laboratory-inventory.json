@@ -62718,8 +62718,8 @@
         }
       },
       "installed_initial_preparation_delivery_20261024": {
-        "state": "SOURCE_INTEGRATED_NOT_RUN",
-        "runtime_owner": "/root; no runtime driver or new container yet",
+        "state": "FIRST_RUN_FAIL_CAPTURE_TIMESTAMP; source correction reviewed, rerun NOT_RUN",
+        "runtime_owner": "/root; driver1044 joined1; exact owned client143/borrowedPG0 freshly stopped/PID0/noOOM, no new run active",
         "author_worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
         "author_branch": "work/installed-initial-preparation",
         "author_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
@@ -62728,7 +62728,21 @@
         "critical_review": {
           "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-faults-critical-review-v1.json",
           "sha256": "94d7feaf3f2effb51f9f89af805c760f044e3f1ffde1fc20cac163896d96d81b"
-        }
+        },
+        "attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-573076f",
+            "source": "573076febecbde38a887c7676c9717afd0797a31",
+            "driver": 1044,
+            "driver_exit": 1,
+            "owner": "9e17d298453c11512bc622e5ddd727e6",
+            "label": "org.bigbrotr.installed-initial-preparation-faults",
+            "client": "6dbbf267df77c925c37112aff05edd7c898494c6484b566e80a622bc1e4e3cef",
+            "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "preservation": "All2 original preservation vectors true; cleanup/missing/unrelated/unexpected arrays empty; all artifacts retained"
+          }
+        ]
       }
     }
   },

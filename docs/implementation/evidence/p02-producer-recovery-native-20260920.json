@@ -44640,7 +44640,7 @@
                 "sha256": "e72b1cb05ccd2676329266829013b0326ff330cf0e519021ec353834a4de7786"
               },
               "delivery_qualification": {
-                "status": "SOURCE_INTEGRATED; real-engine runtime/raw replay NOT_RUN",
+                "status": "First connected573076f FAIL capture timestamp representation after4PASS/50controls; one-line capture correction reviewed, new runtime NOT_RUN",
                 "author_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
                 "source_receipt": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-delivery-fixture-source-v1.json",
@@ -44653,6 +44653,22 @@
                 "critical_review": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-faults-critical-review-v1.json",
                   "sha256": "94d7feaf3f2effb51f9f89af805c760f044e3f1ffde1fc20cac163896d96d81b"
+                },
+                "attempts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-573076f/verified-failure.json",
+                    "sha256": "4971772b978a5382adfb48855efc6f2ed8ba6e419ababd0f37eb078b61aebf76"
+                  }
+                ],
+                "capture_correction": "Remove only backend_start::text in the held-backend SQL capture, allowing json_build_object to use the same typed timestamptz representation as whole-row Control JSON. Exact oracle, expected phase/error/state and counts unchanged. Product remains a0e914e.",
+                "capture_correction_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-faults-critical-review-addendum-v1.json",
+                  "sha256": "2a042b47a6ca4462a1cb2426479067aa9c644df85266823342ec0bce5cef0b32"
+                },
+                "diagnostic_only": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-573076f/timestamp-diagnostic.json",
+                  "sha256": "f755d3a3e4f5ab7361ec4ae70fde1696ea0265576f88caa560013670f5ec172d",
+                  "claim": "Only in-memory timestamp rendering changed, same parsed instant; context verifier/15controls then PASS. Original context unmodified and original run remains FAIL."
                 }
               }
             },

@@ -813,7 +813,7 @@ def preparation_delivery_hook(pg,client,output,case,directory):
                     control=max((r for r in capture['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
                     pid=control['control_backend_pid']; assert type(pid) is int and pid>0
                     statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
-                        "'pid',pid,'backend_start',backend_start::text,'database',datname,'user',usename,'state',state," \
+                        "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
                         "'xact_start',xact_start::text,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(pid)+ \
                         " AND datname=current_database() AND usename='bigbrotr_control';"
                     capture['backend']=json.loads(lab.sql(pg,case['database'],statement))

@@ -6,14 +6,14 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main and verified remote: `70d3d1bd04f4d6aafcc3053b312233064d1202d1`;
-push driver23755 joined0. Installed harness is30d65540.
+Current main: `573076febecbde38a887c7676c9717afd0797a31`; verified remote remains
+70d3d1bd (push23755 joined0). Qualified basic installed harness is30d65540.
 Qualified product: `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
 tree `e94652a5f2b68ac002487f728d073a8194120a1f`.
 The integrated fixture includes author d80db733 and two reviewed corrections.
-Basic source/connected qualification is committed/pushed. Staged changes now
-integrate author afc80ad5 delivery fixture; local documentation records its source
-gate and the next consumer read-only audit. No product code changed
+Delivery fixture afc80ad5 is integrated in573076fe. One local capture-only SQL
+correction and evidence/checkpoint/inventory updates preserve its first failure;
+product bytes remain unchanged. No product code changed
 since the qualified build. No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -58,11 +58,14 @@ corrections preserved. Root owns all engines/runtime.
 Earlier handoff/journey author worktrees remain clean detached at7824749/a7dd148;
 only their reconciled redundant branch refs were retired.
 
-Freeze the reviewed integrated delivery fixture, create exact detached source and
-run existing reader with `--initial-preparation-faults` against a0e914e artifacts.
-Require actual positive wire baselines before native1/native2 pre-dispatch and
-post-dispatch loss, then fresh CLI retry and exact raw replay. Planned13 commands/
-164 controls remain NOT_RUN. Preserve any failure before correction.
+First fault run at `runs/installed-initial-preparation-faults-573076f` FAIL after
+4PASS/50controls: actual gap-before loss reached the expected boundary and left
+native unchanged, but held backend_start was captured as SQL text while Control
+uses typed JSON. Driver1044 joined1; exact client6dbbf267 stopped143/PG0, PID0/noOOM,
+all2 originals preserved and cleanup arrays empty. Original failure remains intact.
+The one-line capture correction is reviewed; exact oracle remains unchanged.
+Commit it, run a fresh exact detached source with `--initial-preparation-faults`
+and existing a0e914e artifacts, then exact raw replay. Full13/164 remains unqualified.
 The next activated positive-recovery/ACK consumer map is in the existing report;
 root complete owner reads are hash-bound there. No new product code is underway.
 
