@@ -948,7 +948,10 @@ changed digest. Missing detail without the matching floor, or post-GC native
 state paired with older/incompatible PG state, refuses recovery.
 
 The non-destructive codec, compacted-prefix witness and shared census are
-implemented, with runtime qualification pending. The existing `--retire-initial`
+implemented. The isolated installed reader passed with preserved originals,
+quarantined originals and incompatible-head/closure/pending refusals using a
+synthetically installed floor; this does not qualify product reclamation.
+The existing `--retire-initial`
 recovery action recognizes an already compacted initial producer. It checks the
 complete retained PostgreSQL closure and reports `resolved_requests = 0`,
 `compacted_requests = N` and `recovery_basis = closed-producer-floor-v3`; it does

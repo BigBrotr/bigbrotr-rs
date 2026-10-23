@@ -43384,7 +43384,7 @@
           }
         },
         "closed_producer_reclamation_preparation_20261023": {
-          "status": "CORRECTED_READER_COMPONENTS_PASS_98f80b1; installed first attempt FAIL_PREPARATION_ACL; GC NOT_RUN",
+          "status": "PASS_INSTALLED_SYNTHETIC_INITIAL_READER_61b15e4_PRODUCT_98f80b1; compacted successors and actual GC NOT_RUN",
           "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
           "task": "P02-T02 Steps4/5/7",
           "purpose": "Reclaim acknowledged receipt/input operational detail for one completely closed and fully resolved producer while preserving all scientific facts, pending batches and causal recovery/backup closure.",
@@ -43598,11 +43598,15 @@
               "sha256": "df3ae3c2723671837affc32fd53786743b8de6d7c093258488d26baa55c6ee0b"
             },
             "scope": "4 excluded clones/13installedcommands; actual abandonment/retirement before synthetic139B floor+7exactreceiptdeletes; full/absentoriginalread and3refusals;131definednegativecapturecontrols",
-            "runtime": "NOT_RUN; independent fixture review finalizing",
+            "runtime": "Completed corrected fresh attempt below; original ACL failure preserved",
             "independent_review": {
               "path": ".research/producer-checkpoint-ack-review-20261020/compacted-reader-fixture-independent-review-v1.json",
               "sha256": "d08b1f8a45d14562f7d5c12595b330eab518b44b53dff319c774cee46f32732c",
               "status": "NO_SOURCE_BLOCKER; terminalization ACL omission subsequently found at runtime, preserved as review miss"
+            },
+            "acl_correction_independent_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-reader-fixture-acl-independent-review-v1.json",
+              "sha256": "a862fb015da0c1bbdabc6b0583941b2cc7965ef67f4bee02953e9cf083c50051"
             }
           },
           "installed_reader_attempts": [
@@ -43636,6 +43640,55 @@
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/postgres.log",
                   "sha256": "a73dc2bfcccd37e548dc328da234692d7eaf33099be8f2d3cb5da6940d8e0132"
                 }
+              ]
+            },
+            {
+              "source": "61b15e4e68a910a3828359bae9bbd17259e8e36b",
+              "tree": "9b74ea78079237e4af67297282b713c386bcfe8a",
+              "product_source": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4",
+              "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER",
+              "driver": "20899 joined exit0",
+              "cases": 13,
+              "negative_capture_controls": 131,
+              "observed": "Four excluded fresh clones execute authentic initial abandonment/retirement before synthetic floor setup. Full-original and quarantined-original fresh reader retries pass; incompatible retained head, wrong source closure digest and missing pending marker refuse with exact expected state/custody. All77 PG tables/xmins, native rows, input bytes and process/backend closure checked.",
+              "preservation": {
+                "rows_unchanged": true,
+                "catalog_unchanged": true,
+                "native_unchanged": true,
+                "inputs_unchanged": true,
+                "physical_unchanged": true
+              },
+              "custody": "Owned client exited143 and borrowed PostgreSQL exited0; both PID0/noOOM freshly inspected. All cleanup/missing/unrelated/unexpected lists empty. All original and derived data/logs retained.",
+              "receipts": [
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/installed-compacted-reader/result.json",
+                  "sha256": "290e1c6ffac0c45f0fdc1d769eaddcab0509851a522cbfecdd92e86c90ec432f"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/installed-compacted-reader/progress-source.json",
+                  "sha256": "6f3592849902325f48320fd063d14789781ba9d60749d376a6d8d5ab7ecd42f7"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/raw-replay.json",
+                  "sha256": "784f8b631c95b4f2e5c6b83cd1b1233543d4607fa79db321d00953da2f065692"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/replay-invocation-record.json",
+                  "sha256": "50ad3eae9f155acf2d8f72a7659acc5f31b9b0617e2d56d622e93c860560b77b"
+                }
+              ],
+              "raw_replay": {
+                "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER_CAPTURE_REPLAY",
+                "driver": "17035 joined exit0",
+                "bound_files": 4626,
+                "note": "First ordinary-Python invocation failed final provenance due external host sitecustomize. Original FAIL recorded in invocation receipt; isolated -E -S invocation passes identical checker/captures. No engine rerun."
+              },
+              "not_run": [
+                "Actual product reclamation/GC and unlink",
+                "Compacted successor preparation/activation/recovery",
+                "Crash/unknown-commit and interrupted unlink",
+                "Mixed restore/backup and capacity"
               ]
             }
           ]

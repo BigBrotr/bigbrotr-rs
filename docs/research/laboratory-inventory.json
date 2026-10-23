@@ -62049,16 +62049,20 @@
           "state": "clean detached; original commit preserved",
           "retired_branch": "work/producer-reclamation-pg"
         },
-        "root": "Main3a97312 source correction after independent COMMIT mismatch; no engine/build active",
+        "root": "Main61b15e4 integrated source; corrected installed qualification recorded; critical successor compatibility inspection active, root owns integration/runtime",
         "installed_fixture": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-installed-reader-20261023",
-          "branch": "work/compacted-installed-reader",
           "base": "10a5430ec2b8cb4a4f8289b1b8902f54be7a47ab",
           "owner": "compacted_reader_fixture",
-          "state": "Clean author branch sourcecomplete; integrated with mechanical rustfmt; runtime NOT_RUN",
+          "state": "Clean detached original author commit preserved; integrated98f80b1, corrected61b15e4 installed reader and raw replay PASS; synthetic setup only",
           "model": "gpt-6-astra/xhigh verified actual turn_context at creation",
           "commit": "dc980a53a9a80269b53b9f1a48fa2971fdac596b",
-          "integrated": "98f80b121b6e8b3501240284fcc5cf6f192a00d0"
+          "integrated": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+          "retired_branch": "work/compacted-installed-reader",
+          "branch_reconciliation": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/compacted-fixture-author-branch-reconciliation-v1.json",
+            "sha256": "b9227faaeb5a14a8256da0f37164619be90cc3486b07ac4e8cc647ba904a267c"
+          }
         },
         "retired_branch": "work/producer-reclamation-native",
         "branch_reconciliation": {
@@ -62088,7 +62092,29 @@
         "state": "stopped-retained FAIL at firstabandon beforefloor; exactclient143/PG0 PID0/noOOM, rootdriver43345joined1",
         "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-98f80b1/installed-compacted-reader/result.json",
         "preserved": "Originaldfbb unchanged; failedpositiveclone sourceclosure/activeControl partialSQL, nativeoriginalfiles, logs, snapshots retained. No postfailure nativeopen; no source artifact rewritten.",
-        "next": "Fresh source-bound derivative with existing terminalization privileges; reuse product98f80b1build after independent corrective review"
+        "next": "Preserved original FAIL; corrected fresh61b15e4 result in separate inventory entry"
+      },
+      "closed_reclamation_corrected_installed_reader_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4",
+        "source": "61b15e4e68a910a3828359bae9bbd17259e8e36b",
+        "product_source": "98f80b121b6e8b3501240284fcc5cf6f192a00d0",
+        "state": "stopped-retained PASS synthetic initial reader and raw replay; actual GC NOT_RUN",
+        "driver": "20899 joined exit0; replay23673 joined exit1 preserved, replay17035 joined exit0",
+        "client": {
+          "id": "ddc85cf8e27191a7e0c83c85f7b9719f680bf7baea73a5d9478d4aa1748140a6",
+          "owner": "3dab31405e979421ce65cdeb48ee6b11",
+          "state": "exited143/PID0/noOOM freshly inspected"
+        },
+        "postgres": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "state": "exited0/PID0/noOOM freshly inspected"
+        },
+        "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/installed-compacted-reader/result.json",
+        "replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/raw-replay.json",
+        "invocation_record": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/replay-invocation-record.json",
+        "preserved": "All five original-preservation flags true; four clones, quarantined seven original inputs, native files, SQL snapshots, logs, frozen source, all result/failure receipts retained. No cache/dataset cleanup.",
+        "next": "Compacted successor compatibility before actual floor installation/deletion"
       }
     }
   },
