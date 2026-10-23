@@ -61552,7 +61552,7 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Completed numeric correction0c27a1c; no active assignment"
+          "state": "Completed source4626808; no active assignment"
         },
         "progress_hole_fixture": {
           "model": "gpt-6-astra",
@@ -61566,7 +61566,7 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
-          "state": "Active targeted numeric correction review; no runtime",
+          "state": "Completed targeted descriptor delta review; writing compact receipt; no runtime",
           "scope": "Independent critical review of native ACK fsync fault selector, poison and fresh-process replay expectations",
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json"
         }
@@ -61932,16 +61932,17 @@
         "base": "332f7a3514cc8c9ec27315a7294739bd55c45bb8",
         "owner": "ack_remaining_boundary",
         "runtime_owner": "root",
-        "state": "Frozen clean author worktree; combined four-owner source reviewed, exact candidate build/runtime pending",
+        "state": "Frozen clean source worktree; reviewed descriptor-only correction integrated; fresh runtime pending",
         "scope": "One positive trace and one substituted fsync EIO on exact ACK WAL record; native private test target only, not PG authority or device/power-loss",
         "assessment": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-boundary-review-v1.json",
         "file_ownership": {
           "root": "experiments/ingest-succession/native.py in canonical checkout",
           "ack_remaining_boundary": "producer_ack_tests.rs, publication_sync_cases.py and network-transport/lab.py in isolated worktree"
         },
-        "head": "0c27a1c5b54275f2e7f7b92282aad5d1665b8ba7",
+        "head": "4626808d47eb949dc44969d6a7f7c6b4fd5c20a0",
         "integrated_as": "3a99d1278a68beb4ab1d5063cb0bb846786ced37",
-        "correction_integrated_as": "0b902361771b3f08d94be2abaca3d4b04241a69d"
+        "correction_integrated_as": "0b902361771b3f08d94be2abaca3d4b04241a69d",
+        "descriptor_correction_integrated_as": "fc3603b4aad16e7f1dababd83b81e6578fe554e1"
       },
       "ack_fsync_runs_20261023": [
         {
@@ -61965,6 +61966,27 @@
           "resources_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/resources.json",
           "preservation": "All raw outputs, original fixtures and pre-reopen copies retained; no cleanup/deletion authorized by this run",
           "fresh_audit": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/root-terminal-audit.json"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed",
+          "source": "7d7daedb3869233375e6cd884fe2a214748d8e4d",
+          "tree": "c27d86e09bfe57fa0e7cae2bf823221d505db1ac",
+          "owner": "caa087fcda285529faded6b5f2d8cbc3",
+          "owner_label": "org.bigbrotr.network-transport",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "8ad0df65f591552b04df7461ac0cdd6b4cc1e31fbd654d42363f7002030a47dc"
+            },
+            {
+              "name": "native",
+              "id": "9d046161172d91a7383f5f4a4c32a1ea2906e9d5deabd1f6e391c065d9eef354"
+            }
+          ],
+          "session": "6738 joined1",
+          "state": "STOPPED_RETAINED; control/reopen PASS, EIO parser falseFAIL before reopen",
+          "resources_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/resources.json",
+          "fresh_audit": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/root-terminal-audit.json"
         }
       ]
     }

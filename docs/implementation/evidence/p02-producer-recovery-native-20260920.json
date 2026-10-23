@@ -43155,7 +43155,7 @@
             "custody": "Runtime83263 and strict standalone raw command joined0. Root fresh exact client/borrowed PG IDs/labels exited/PID0/noOOM/cgroups absent; cleanup_errors/missing_owned/unrelated_changed empty. All stores, originals and failures preserved."
           },
           "native_ack_fsync_qualification_20261023": {
-            "status": "FIRST_RUNTIME_FAIL_PRESERVED; sequence-oracle correction pending",
+            "status": "CORRECTED_SOURCE_REVIEWED; fresh runtime pending",
             "assessment": {
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-boundary-review-v1.json",
               "sha256": "005a5c8e10f094297412fc814227e20dae07faeffbe422e98d1d7d2baac3e1aa"
@@ -43165,7 +43165,7 @@
             "base": "332f7a3514cc8c9ec27315a7294739bd55c45bb8",
             "qualified_product_unchanged": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
             "expected": "Before sequence10, ACK sequence11 (1 initialize put +9bootstrap puts +1ACK), all9 independent rows unchanged except A1 and exact retained original",
-            "next": "Apply independently reviewed numeric-only oracle correction; run fresh candidate, preserving e06ed5e originals and build receipts.",
+            "next": "Run existing exact profile with corrected descriptor target predicate; original e06/7d failures remain.",
             "source_commit": "c8d6737fc026c5be14901ef37f9f8343a6779e70",
             "integrated_fixture": "3a99d1278a68beb4ab1d5063cb0bb846786ced37",
             "source_receipt": {
@@ -43226,6 +43226,59 @@
                   }
                 },
                 "scope": "Runtime original remains FAIL. Control observation/trace and seed preserved. ACK EIO and reopen NOT_RUN. Original per-case exclusion UNKNOWN remains; separate fresh enclosing-container audit proves no residual process."
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed",
+                "source": "7d7daedb3869233375e6cd884fe2a214748d8e4d",
+                "session": "6738 joined1",
+                "status": "FAIL_TRACE_TARGET_CLASSIFICATION_PRESERVED",
+                "build": "PASS: library test ELF compilation and library Clippy",
+                "control": "PASS: exact9rows/sequence10 beforeACK; exact75byte ACKrecord, fsync ordinal17, fullA1/sequence11 fresh reopen, original/copy preserved",
+                "eio": "Actual exact ACK append and ordinal17 substitutedEIO; ACK,credit,validcapacity report CommitUnknown; tracer+native pidfd exited before physical copy. Verifier fails before fresh EIO reopen.",
+                "cause": "Later-WAL predicate searches entire syscall text. A write to db/LOG includes the WAL path inside its diagnostic payload, causing a false later-WAL classification. Descriptor path must determine destination; original overall FAIL remains.",
+                "receipts": {
+                  "build": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/out/artifacts/ack-fault-build.json",
+                    "sha256": "5e02e1a6585da2eb6c5726b17cb696b20653c4bede6b38b641ac053837cd94c0",
+                    "bytes": 3074
+                  },
+                  "qualification": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/out/qualification.json",
+                    "sha256": "6df2201e341f9b9864b51b604c9bc027e3a4c183ae046cebf67fa14e0e483cd6",
+                    "bytes": 3072
+                  },
+                  "runtime": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/out/ack-sync-cases/result.json",
+                    "sha256": "0406584e230492b963eb06914d2a1b4899c2885ff9113d2cdd10967e19fe7a59",
+                    "bytes": 30778
+                  },
+                  "runtime_log": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/out/fault-checks/ack-fsync.log",
+                    "sha256": "66d6db1c5ee5dad35d926de3542395180a48c0d7be7b57267149690c449f2e2a",
+                    "bytes": 834
+                  },
+                  "control_trace": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/out/ack-sync-cases/control/native.trace",
+                    "sha256": "e9e30f0028aafc672ad5be8fe6da0952cbfcdb68215643ddf39b9310379c89d0",
+                    "bytes": 102165
+                  },
+                  "eio_trace": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/out/ack-sync-cases/eio/native.trace",
+                    "sha256": "33da7feb92b048ebe43057895bde7de14a3f4e859376b4aa36fdd6d0baa5942e",
+                    "bytes": 107961
+                  },
+                  "resources": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/resources.json",
+                    "sha256": "c2433232224804ebcb54b8919d051154398c2c6efcf99cf92e8fa7ce2e7031bf",
+                    "bytes": 1008
+                  },
+                  "terminal_audit": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-7d7daed/root-terminal-audit.json",
+                    "sha256": "c7f739da81a2d90c1a7486b2d0e8f4d2129b9087376adb8db20e30e50d475d08",
+                    "bytes": 1137
+                  }
+                },
+                "custody": "Both exact owned containers exited0/1, PID0/noOOM/cgroups absent; original stores and preserved-db copies intact; EIO reopen NOT_RUN."
               }
             ],
             "sequence_correction": {
@@ -43240,7 +43293,26 @@
                 "sha256": "6e15d384b4c196f498fc4d8589a24fb7728988ea7f144d610867ce4b5d221344"
               },
               "scope": "Constants10/11 and explanatory comment only; every other predicate and Rust source unchanged",
-              "checks": "Affected pure ACK controls PASS; prior publication/Rustfmt/source reviews reused"
+              "checks": "Affected pure ACK controls PASS; prior publication/Rustfmt/source reviews reused",
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-sequence-critical-review-v2.json",
+                "sha256": "236225077201c490d986f19e73fb00a4adc4a65040a02e4e0604a6f885e24106",
+                "bytes": 4060
+              }
+            },
+            "descriptor_correction": {
+              "source": "4626808d47eb949dc44969d6a7f7c6b4fd5c20a0",
+              "integrated_as": "fc3603b4aad16e7f1dababd83b81e6578fe554e1",
+              "source_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-source-v3.json",
+                "sha256": "26702a2d3e636fb401a55fa8305e35881debec82e73f7da837166f52e8607695"
+              },
+              "retained_trace_diagnosis": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-7d-log-diagnostic-v1.json",
+                "sha256": "9e376c80659f7ade9561b85a96ce1257f960139098f35892abd415123d53b980"
+              },
+              "review": "Root and critical reviewer read22line delta; no blocker; earlier unchanged review reused",
+              "checks": "Pure baseline,2positiveLOGcontrols and19negativecontrols PASS; retained7d predicate-only check PASS is separate from original runtimeFAIL"
             }
           }
         }

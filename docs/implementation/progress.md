@@ -7,7 +7,7 @@ root and the current source assessor have verified Astra/xhigh session continuit
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: durable producer progress, native ACK and recovery.
-Main HEAD is `0b902361771b3f08d94be2abaca3d4b04241a69d`; last verified push is332f7a3.
+Main HEAD is `fc3603b4aad16e7f1dababd83b81e6578fe554e1`; last verified push is332f7a3.
 The unchanged qualified product/build is `9cef25f13db44cac1cdd55e1862229ba7298f3b0`.
 Root-owned local documentation records the current source assignment.
 All four fixture/builder owners are committed and critically reviewed. Root-owned
@@ -64,12 +64,18 @@ Control **FAIL** before ACK because expected sequence9 should be10: initialize
 puts manifest, bootstrap puts it again plus8other keys. All9 rows match exactly.
 ACK must produce sequence11. Original trace/state/logs remain intact; ACK/EIO/reopen
 are **NOT_RUN**. Root freshly verified both owned containers exited/PID0/noOOM
-and absent cgroups; no engine/build remains.
+and absent cgroups. Fresh candidate7d7daed/driver6738 joined1: build and positive
+control/reopen PASS. Actual EIO gives CommitUnknown for ACK/credit/capacity and
+positive process exit, but verifier misclassifies a diagnostic LOG write whose
+payload mentions the WAL. EIO reopen NOT_RUN; original FAIL/trace/pre-reopen
+copies preserved. Its exact containers also freshly exited/PID0/noOOM/cgroups
+absent. No engine/build active.
 
 ## Precise next step and open boundaries
 
-Integrate reviewed numeric-only oracle correction and execute a fresh exact
-`producer-ack-fault` candidate. Require one positive trace and one substituted
+Descriptor-only correction4626808 is integrated and reviewed, with21pure controls.
+Run the existing exact profile afresh. Require one
+positive trace and one substituted
 fsync EIO on the actual one-key ACK WAL record; require unusable same-owner credit, preserved
 original science/input, abrupt exit and separate-process exact A1/sequence11 replay
 when the complete ACK record survives. Authenticate the syscall selector against
