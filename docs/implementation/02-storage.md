@@ -470,7 +470,11 @@ One owner serializes exact identity decisions for each writable directory.
   Actual A>C/missing-original recovery refusals and same-REQ post-hole proof
   preservation also pass at 9f859ba/8470860, with strict raw replay. The reference
   distinguishes observed no-effects/serial dispatch from per-proof success.
-  Native ACK ambiguity, full-window typed proof-only, remaining
+  The private native ACK kernel also passes an exact WAL-fsync EIO substitution
+  and distinct-process reopen at b005d91, with original data intact and21 controls;
+  the report preserves two earlier fixture failures. This is not connected PG
+  error delivery or physical-loss evidence. Those remaining ACK boundaries,
+  full-window typed proof-only, remaining
   refusals/resources, GC and complete live continuity still prevent step closure.
   The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
   adds native-witness closure and a contiguous logical shard head in that same

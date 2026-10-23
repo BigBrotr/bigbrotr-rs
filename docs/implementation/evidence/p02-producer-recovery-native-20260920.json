@@ -43155,7 +43155,7 @@
             "custody": "Runtime83263 and strict standalone raw command joined0. Root fresh exact client/borrowed PG IDs/labels exited/PID0/noOOM/cgroups absent; cleanup_errors/missing_owned/unrelated_changed empty. All stores, originals and failures preserved."
           },
           "native_ack_fsync_qualification_20261023": {
-            "status": "CORRECTED_SOURCE_REVIEWED; fresh runtime pending",
+            "status": "PASS_SCOPED_NATIVE_ACK_FSYNC_ERROR_AND_FRESH_REPLAY",
             "assessment": {
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-boundary-review-v1.json",
               "sha256": "005a5c8e10f094297412fc814227e20dae07faeffbe422e98d1d7d2baac3e1aa"
@@ -43165,7 +43165,7 @@
             "base": "332f7a3514cc8c9ec27315a7294739bd55c45bb8",
             "qualified_product_unchanged": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
             "expected": "Before sequence10, ACK sequence11 (1 initialize put +9bootstrap puts +1ACK), all9 independent rows unchanged except A1 and exact retained original",
-            "next": "Run existing exact profile with corrected descriptor target predicate; original e06/7d failures remain.",
+            "next": "Reconcile next dependency-ready P02 responsibility against these and existing connected tests; source assessment active. Do not repeat this native fault campaign absent changed premises.",
             "source_commit": "c8d6737fc026c5be14901ef37f9f8343a6779e70",
             "integrated_fixture": "3a99d1278a68beb4ab1d5063cb0bb846786ced37",
             "source_receipt": {
@@ -43182,8 +43182,8 @@
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json",
               "sha256": "211729e032e44956ac268c1d76508c2827508f9a22fceecf42a64feb16a2b592"
             },
-            "candidate": "e06ed5ebd7941ed114bf3746891da678dd11be2b",
-            "candidate_tree": "1671d9746d11a501841a4f8c97c3af34453f17cd",
+            "candidate": "b005d9193ee8fc24dcf5590411f4763da41cb13c",
+            "candidate_tree": "e23d4daec75f0c6a90f3a67560c78d78cd0102da",
             "runs": [
               {
                 "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e",
@@ -43279,6 +43279,68 @@
                   }
                 },
                 "custody": "Both exact owned containers exited0/1, PID0/noOOM/cgroups absent; original stores and preserved-db copies intact; EIO reopen NOT_RUN."
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91",
+                "source": "b005d9193ee8fc24dcf5590411f4763da41cb13c",
+                "tree": "e23d4daec75f0c6a90f3a67560c78d78cd0102da",
+                "session": "23606 joined0",
+                "status": "PASS_PRODUCER_ACK_FAULT",
+                "build": "PASS: single library libtest compilation and library Clippy; no broad component suite or CLI build",
+                "runtime": "PASS_NATIVE_ACK_FSYNC_EIO: control and substituted EIO, each with distinct fresh-process reopen; 2positive diagnostic controls and19negative controls",
+                "expected": "initialize1put plus bootstrap9puts -> sequence10. One exact75byte ACK record sequence11/count1/receiptsCF2; only A0->A1,9fixedrows and exact one original retained.",
+                "observed": "Both selectors independently bind WAL fd7 and same-owner fsync17. EIO returns CommitUnknown from ACK, credit and a pre-proven-valid capacity request. No later WAL append/sync before exit; native pidfd exit and joined tracer precede pre-reopen physical copy. Both fresh processes show exactA1/sequence11 and original rows/input.",
+                "native_elf_sha256": "938e53ff11c853a133d6fb36de1554939186703a0a8ffc312f9408a69f4015fc",
+                "same_native_elf_as_first_build": true,
+                "receipts": {
+                  "build": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/artifacts/ack-fault-build.json",
+                    "sha256": "59d16177a41961562bc5e5d9b93c6472049a64407a1579a57b15e626a0c4f4b4",
+                    "bytes": 3074
+                  },
+                  "qualification": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/qualification.json",
+                    "sha256": "fce447c1c35976bc1ab8f29d8e72c87c30872b5806fc73a534bf4cf4ae7a61ac",
+                    "bytes": 3186
+                  },
+                  "runtime": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/ack-sync-cases/result.json",
+                    "sha256": "19fea87554b278cabb57b4653d0f734f882f7e025164527243611a9a1c7dc854",
+                    "bytes": 34204
+                  },
+                  "checks": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/build-checks/result.json",
+                    "sha256": "17c86aaef34cac8e2eb0fca0f222bf9a4149f7410a007900bdec28344edfd8e6",
+                    "bytes": 3715
+                  },
+                  "source_manifest": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/build/source-manifest.json",
+                    "sha256": "a2d626adc3f8129b3b8c1007e089286795f8dffeb70206d70aedc35b88ac68e9",
+                    "bytes": 259779
+                  },
+                  "control_trace": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/ack-sync-cases/control/native.trace",
+                    "sha256": "a22a184720ab3688c4b1d5300ea050c2ecf9017f22a659cadb0c98cc95c56b00",
+                    "bytes": 102158
+                  },
+                  "eio_trace": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/out/ack-sync-cases/eio/native.trace",
+                    "sha256": "4836f483db9e619004a0cde813422647169eb4434b3eed3cd0bc37a24e384f63",
+                    "bytes": 107964
+                  },
+                  "resources": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/resources.json",
+                    "sha256": "3cb52ae273feae886879486403a3bd14b0affdf944670ca7e0e42860da9c65f0",
+                    "bytes": 1054
+                  },
+                  "terminal_audit": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/root-terminal-audit.json",
+                    "sha256": "7536d6b33a011f40ca4f35eec948a44ebbdabd7e199b3866f4266e093282f2c4",
+                    "bytes": 3170
+                  }
+                },
+                "custody": "Root freshly verified both owned containers exited0/PID0/noOOM/cgroups absent, no unrelated inventory changes; physical pre-reopen copies and original evidence authenticated. No engine/build remains.",
+                "limits": "Private cfg(test) target exercises unchanged native kernel, not typed PG authority. strace substitutes EIO, not actual media/writeback failure; kernel page cache remains. No successor-frontier error runtime, GC, capacity or whole-step claim."
               }
             ],
             "sequence_correction": {
@@ -43312,7 +43374,12 @@
                 "sha256": "9e376c80659f7ade9561b85a96ce1257f960139098f35892abd415123d53b980"
               },
               "review": "Root and critical reviewer read22line delta; no blocker; earlier unchanged review reused",
-              "checks": "Pure baseline,2positiveLOGcontrols and19negativecontrols PASS; retained7d predicate-only check PASS is separate from original runtimeFAIL"
+              "checks": "Pure baseline,2positiveLOGcontrols and19negativecontrols PASS; retained7d predicate-only check PASS is separate from original runtimeFAIL",
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-target-critical-review-v3.json",
+                "sha256": "9ad336347e49f6ff507ebbb356a0f7ec13cfc9658d8ea33c6455e343e4b115d7",
+                "bytes": 4198
+              }
             }
           }
         }

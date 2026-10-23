@@ -831,6 +831,17 @@ full-window proof component remains valid. Current healthy serial typed Sync
 ACKs each mutation before the next event, so it cannot exercise a full-window
 typed PostgreSQL proof transaction; that broader consumer gate remains deferred.
 
+The private native test target at `b005d91` also qualifies one actual ACK write
+whose WAL `fsync` result is replaced with EIO by the retained tracer. Exact trace
+and WAL bytes bind its single producer-state update; ACK, credit and a previously
+valid capacity request return CommitUnknown, with no later WAL write/sync before
+abrupt process exit. Both the positive control and fault reopen in distinct
+processes at A1/sequence11, preserving all nine frozen rows except the ACK and the
+original input. Nineteen negative and two positive diagnostic controls pass.
+The report retains two preceding fixture failures and their bounded corrections.
+This exercises the native kernel with a private test target: kernel page cache
+survives, and no connected PostgreSQL error delivery or physical loss is claimed.
+
 Additive migration `0040_producer_ack.sql` separates the absolute retained limit
 from the coordination window: the next reservation is at most validated typed
 C plus the registered window, and never exceeds64. An absent or opaque legacy
