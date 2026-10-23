@@ -743,7 +743,9 @@ def controls(context, verify):
             outcome=only(state['producer_outcomes'],request_sequence=5)
             original=bytes.fromhex(c['input_contents'][next(name for name in c['input_contents'] if name.endswith('0000000000000005.cbor'))])
             observation=decode(original.split(b'\0',1)[1])[3][5]
-            job.update(progress_revision=2,classified_events=2,successful_events=2,event_ordinal=3,
+            # Forge a structurally valid prefix by falsely classifying the
+            # preparation hole as rejected between the two successful events.
+            job.update(progress_revision=3,classified_events=3,successful_events=2,rejected_events=1,event_ordinal=3,
                 wire_sequence=3,input_sha256=request['progress_input_sha256'],intent_digest=request['request_digest'],
                 mutation_request=5,observed_at_us=observation[0],clock_resolution_us=observation[2][1],
                 clock_anomaly_flags=observation[2][3],xmin=outcome['xmin'])
