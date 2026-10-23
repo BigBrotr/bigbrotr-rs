@@ -1,6 +1,7 @@
 //! Finite recovery of a retained epoch3-or-later lifetime. Every mode retains
 //! the exclusive native handle and its opaque proof owner through teardown;
 //! none returns a writer, adopts an incarnation or resolves import obligations.
+use super::super::supervision::ClaimExit;
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
@@ -40,20 +41,6 @@ struct Custody {
     history: Option<SuccessorHistory>,
     owner: Option<ControlSession>,
     client: Option<tokio_postgres::Client>,
-}
-
-// Declare after the pinned acquisition future, so cancellation, an early return
-// or unwinding closes native before that future is destroyed. This controls
-// caller-driven destruction only: an adapter error or transport failure may
-// already have closed the client. The supervisor independently retains the
-// actual driver and its grant until this worker has completed native teardown.
-struct ClaimExit<'a, T>(Option<&'a mut Option<T>>);
-impl<T> Drop for ClaimExit<'_, T> {
-    fn drop(&mut self) {
-        if let Some(native) = self.0.take() {
-            drop(native.take());
-        }
-    }
 }
 
 pub(super) fn run(root: Resolved, mode: Mode, output: &mut LifecycleOutput) -> Result<()> {

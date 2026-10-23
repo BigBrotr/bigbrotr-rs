@@ -44589,6 +44589,25 @@
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-author-reconciliation-v1.json",
                 "sha256": "572d27390c80472691de162b946107e8b7fbdc622220778f56affb58bf513903"
               }
+            },
+            "installed_initial_preparation": {
+              "status": "SOURCE_REVIEWED_BUILD_AND_RUNTIME_NOT_RUN",
+              "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
+              "scope": "Explicit ingest recover --complete-initial-preparation: authentic existing native1 gap or empty OPEN2 retry, original or compacted predecessor, no new intent/activation/retirement/ACK",
+              "implementation": "Dedicated supervised native-first custody and pinned acquisition using shared existing ClaimExit; owned plan retained through teardown; report after native close, Control release and driver join. Explicit sealed native2 structural selector chooses original/compacted without failed-proof fallback. Existing PG/native positive factories, immutable intent/typed closure and deadlines unchanged. Original prepared retry reconstructs without mutable dispatch.",
+              "critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-critical-review-v1.json",
+                "sha256": "d8ee7e6ba249e6787c7958543eea0737c61f4a1a12bfde3e3f08c88dbb339261"
+              },
+              "probe_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-probe-review-v1.json",
+                "sha256": "4da061db399b11b58dc8c33fd48ba9afec46e45c8e9c4c62dfce01d898116495"
+              },
+              "probe_author_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
+              "static_checks": "Changed Rust rustfmt, Python runner AST and staged/unstaged diff check PASS; exact ten-file critical snapshot and two probe blobs reconciled",
+              "required_new_controls": "Three native selector controls, two existing shared ClaimExit tests, two entrypoint matrices mandatory; full selected native/CLI components still NOT_RUN",
+              "fixture": "Authoring --initial-preparation using modern original7/compacted7 origins, genuine post-COMMIT gap gate, fixed synthetic closing refusal; full original/compacted reports and raw binding still NOT_RUN",
+              "remaining": "Exact source build/Clippy/components, independent connected whole-state and raw replay, refusal/delivery scope qualification, fixture review. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate."
             }
           }
         }

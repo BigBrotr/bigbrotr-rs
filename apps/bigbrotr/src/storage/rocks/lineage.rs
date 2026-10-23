@@ -202,6 +202,36 @@ impl RetainedLineage {
         Ok(lineage)
     }
 
+    /// Select the original or compacted reader for an empty native epoch2.
+    /// This structural observation grants no positive predecessor proof or
+    /// activation authority. PostgreSQL must still authenticate the retained
+    /// preparation and exclude an activated or later pending lifetime.
+    pub fn inspect_initial_preparation(
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        if recovery.manifest().key_schema() != 2
+            || recovery.manifest().identity().owner_epoch.get() != 2
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let mut lineage = Self::inspect_structure_in(recovery, None, permit, cancelled, true)?;
+        let head = lineage.native_head();
+        if head.closing
+            || head.issued != 0
+            || head.acknowledged != 0
+            || head.source_through != 0
+            || !head.source_present
+            || head.allocations != [0; 9]
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        lineage.inputs = lineage.input_census(recovery, cancelled)?;
+        lineage.validate(recovery, cancelled)?;
+        Ok(lineage)
+    }
+
     // Private construction stage shared with recovery. It has not yet accepted
     // any sidecar census and is never returned through the public reader API.
     fn inspect_structure(
@@ -484,7 +514,9 @@ impl RetainedLineage {
                 .is_some_and(|entry| id.request_sequence.get() <= entry.issued)
     }
 
-    pub(in crate::storage) fn has_compacted_initial(&self) -> bool {
+    /// Structural reader selection only; this does not verify canonical
+    /// outcomes or authorize skipping the positive compacted-prefix proof.
+    pub fn has_compacted_initial(&self) -> bool {
         self.compacted.is_some()
     }
     fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {

@@ -22,6 +22,7 @@ use tokio::sync::oneshot;
 mod activated;
 pub(super) mod compacted;
 mod empty;
+mod prepared_initial;
 pub(super) mod replay;
 mod successor_family;
 
@@ -32,6 +33,7 @@ pub(in crate::interfaces::serve) enum Action {
     AbandonAcquisition,
     RetireInitial,
     RetireEmptyAttempt,
+    CompleteInitialPreparation,
     ActivatedSuccessor,
     CloseActivatedSource,
     AbandonActivatedAcquisition,
@@ -134,6 +136,9 @@ pub(in crate::interfaces::serve) fn run(
         ));
     }
     match action {
+        Action::CompleteInitialPreparation => {
+            return prepared_initial::run(root, output);
+        }
         Action::Successor => {
             return successor_family::run(root, successor_family::Mode::Resolve, output);
         }
@@ -466,6 +471,7 @@ async fn connected(
             Action::AbandonAcquisition => "acquisition-abandoned",
             Action::CloseSource | Action::Resolve => "source-closed",
             Action::RetireEmptyAttempt
+            | Action::CompleteInitialPreparation
             | Action::ActivatedSuccessor
             | Action::CloseActivatedSource
             | Action::AbandonActivatedAcquisition

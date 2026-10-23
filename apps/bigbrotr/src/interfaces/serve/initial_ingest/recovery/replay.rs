@@ -1,15 +1,16 @@
 //! Sequential original-request replay shared by explicit recovery and succession.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::ProducerResolveRequest,
+    postgres::control_owner::{PreparedInitialHistory, ProducerResolveRequest},
     rocks::store::{RecoveryAcknowledgementResolution, ResolvedProducerRequest, SourceResolution},
 };
 use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
 
 #[derive(Clone, Copy)]
-pub(in crate::interfaces::serve::initial_ingest) enum Mode {
+pub(in crate::interfaces::serve::initial_ingest) enum Mode<'a, 'native> {
     Resolve,
     InspectRetirement,
+    InspectPrepared(&'a PreparedInitialHistory<'native>),
 }
 
 /// The same positive replay feeds either source closure or ACK-only completion.
@@ -39,7 +40,7 @@ pub(in crate::interfaces::serve::initial_ingest) async fn originals(
     spec: &InitialRegistration,
     reserved: u64,
     mut prefix: Option<Prefix<'_, '_>>,
-    mode: Mode,
+    mode: Mode<'_, '_>,
     mut validate: impl FnMut(&str, [u8; 32]) -> std::result::Result<(), OwnerError>,
 ) -> Result<u64> {
     let timeout = duration(root, "renewal_timeout");
@@ -67,6 +68,17 @@ pub(in crate::interfaces::serve::initial_ingest) async fn originals(
                 cancelled: &cancellation.requested,
             };
             let result = match mode {
+                Mode::InspectPrepared(history) => {
+                    owner
+                        .inspect_prepared_initial_request(
+                            history,
+                            request,
+                            input,
+                            outcome,
+                            &mut validate,
+                        )
+                        .await
+                }
                 Mode::InspectRetirement => {
                     owner
                         .inspect_initial_retirement_request(

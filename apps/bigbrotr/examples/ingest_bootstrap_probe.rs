@@ -955,6 +955,7 @@ fn main() {
             || args[1] == "successor-lineage-history"
             || args[1] == "successor-lineage-compacted-history"
             || args[1] == "successor-compacted-gap-only"
+            || args[1] == "successor-original-gap-only"
             || args[1] == "successor-archive-attempt-cap"
             || matches!(
                 args[1].as_str(),
@@ -1046,6 +1047,13 @@ fn main() {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
             } else if args[1] == "successor-compacted-prepared-recover" {
                 ingest_initial_history::run_compacted(config, Path::new(&args[4])).await;
+            } else if args[1] == "successor-original-gap-only" {
+                ingest_succession::run_original_gap(
+                    config,
+                    Path::new(&args[4]),
+                    Path::new(&args[5]),
+                )
+                .await;
             } else if args[1] == "successor-compacted-gap-only" {
                 ingest_succession::run_compacted_gap(
                     config,

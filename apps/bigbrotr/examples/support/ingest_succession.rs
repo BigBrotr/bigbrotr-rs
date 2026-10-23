@@ -93,6 +93,8 @@ pub async fn run(
             || matches!(
                 mode,
                 "successor-normal"
+                    | "successor-original-normal"
+                    | "successor-original-gap-only"
                     | "successor-compacted-normal"
                     | "successor-compacted-gap-only"
                     | "successor-preparer-claim"
@@ -120,6 +122,7 @@ pub async fn run(
         mode == activated_acquisition::MODE
             || mode == activated_retirement::MODE
             || mode == "successor-compacted-gap-only"
+            || mode == "successor-original-gap-only"
             || matches!(
                 mode,
                 "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
@@ -227,11 +230,19 @@ pub async fn run(
         budget,
         observer,
         cancelled: AtomicBool::new(false),
-        compacted_history_seed: mode == "successor-live-compacted-history-seed",
+        compacted_history_seed: matches!(
+            mode,
+            "successor-live-compacted-history-seed"
+                | "successor-original-normal"
+                | "successor-original-gap-only"
+        ),
         compacted_initial: mode.contains("compacted")
             && mode != "successor-live-compacted-history-seed",
-        gap_prefix: (mode == "successor-compacted-gap-only")
-            .then(|| gate_prefix.unwrap().to_path_buf()),
+        gap_prefix: matches!(
+            mode,
+            "successor-compacted-gap-only" | "successor-original-gap-only"
+        )
+        .then(|| gate_prefix.unwrap().to_path_buf()),
     };
     // Reserve the same worst-case decode/replay envelope as installed recovery
     // before the first claim. Resolve one original at a time, never a vector.
@@ -287,7 +298,10 @@ pub async fn run(
                 .unwrap();
             probe.snapshot("completed").await;
         }
-        "successor-normal" | "successor-preparer-claim" | "successor-compacted-normal" => {
+        "successor-normal"
+        | "successor-original-normal"
+        | "successor-preparer-claim"
+        | "successor-compacted-normal" => {
             probe
                 .prepare(
                     &mut owner,
@@ -335,7 +349,10 @@ pub async fn run(
                 probe.snapshot("fresh-control-retry").await;
             }
         }
-        "successor-gap" | "successor-gap-only" | "successor-compacted-gap-only" => {
+        "successor-gap"
+        | "successor-gap-only"
+        | "successor-original-gap-only"
+        | "successor-compacted-gap-only" => {
             let error = probe
                 .prepare(
                     &mut owner,
@@ -354,7 +371,12 @@ pub async fn run(
             );
             probe.check_poisoned(&mut owner).await;
             probe.snapshot("prepared-native-old").await;
-            if matches!(mode, "successor-gap-only" | "successor-compacted-gap-only") {
+            if matches!(
+                mode,
+                "successor-gap-only"
+                    | "successor-original-gap-only"
+                    | "successor-compacted-gap-only"
+            ) {
                 // End this real preparation process with the confirmed SQL
                 // intent and old native store. A later process receives only
                 // their durable state, never this retained local plan.
@@ -469,30 +491,44 @@ pub async fn run_compacted_gap(config: Config, config_file: &Path, prefix: &Path
     .await;
 }
 
+pub async fn run_original_gap(config: Config, config_file: &Path, prefix: &Path) {
+    run(
+        config,
+        "successor-original-gap-only",
+        config_file,
+        None,
+        Some(prefix),
+    )
+    .await;
+}
+
 // The synchronous validation callback is the existing post-COMMIT boundary.
 // A finite external observer captures the committed SQL and old native state;
 // this test gate returns the original typed refusal before any native dispatch.
-fn compacted_gap_gate(prefix: &Path, store: &Path) {
+fn initial_gap_gate(prefix: &Path, store: &Path, compacted: bool) {
+    let basis = if compacted { "compacted" } else { "original" };
     let (rows, sequence) = raw_state(store);
-    emit(serde_json::json!({"event":"successor-compacted-gap-native",
-        "native":{"event":"dump-state","rows":rows,"sequence":sequence}}));
+    emit(
+        serde_json::json!({"event":format!("successor-{basis}-gap-native"),
+        "native":{"event":"dump-state","rows":rows,"sequence":sequence}}),
+    );
     let path = prefix.with_extension("go");
     emit(
-        serde_json::json!({"event":"successor-compacted-gap-gate","phase":"ready",
+        serde_json::json!({"event":format!("successor-{basis}-gap-gate"),"phase":"ready",
         "path":path,"timeout_ms":10000,"poll_ms":5}),
     );
     let started = std::time::Instant::now();
     while !path.try_exists().unwrap() {
         assert!(
             started.elapsed() < Duration::from_secs(10),
-            "compacted gap gate expired"
+            "initial gap gate expired"
         );
         std::thread::sleep(Duration::from_millis(5));
     }
     let metadata = std::fs::symlink_metadata(&path).unwrap();
     assert!(metadata.file_type().is_file() && metadata.len() == 0);
     emit(
-        serde_json::json!({"event":"successor-compacted-gap-gate","phase":"released",
+        serde_json::json!({"event":format!("successor-{basis}-gap-gate"),"phase":"released",
         "path":path,"timeout_ms":10000,"poll_ms":5}),
     );
 }
@@ -1019,7 +1055,7 @@ impl Probe {
                 // Both first-transaction documents were really validated.
                 // This callback runs after its confirmed preparation COMMIT.
                 if let Some(prefix) = &self.gap_prefix {
-                    compacted_gap_gate(prefix, &self.path);
+                    initial_gap_gate(prefix, &self.path, self.compacted_initial);
                 }
                 return Err(OwnerError::InvalidPolicy);
             }

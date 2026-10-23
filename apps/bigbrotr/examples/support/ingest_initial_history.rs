@@ -106,7 +106,10 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
 /// Deliberate corruption of an isolated prepared fixture before the reader
 /// starts. This raw engine path is never reachable from a product operation.
 pub fn corrupt(path: &Path, mutation: &str) {
-    assert!(matches!(mutation, "missing-handoff" | "target-nonzero"));
+    assert!(matches!(
+        mutation,
+        "missing-handoff" | "target-nonzero" | "target-closing"
+    ));
     corrupt_fixture(path, mutation, false);
 }
 
@@ -218,6 +221,27 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
             shard_id: id.shard_id,
             owner_epoch: id.owner_epoch,
         },
+        "target-closing" => {
+            // Synthetic refusal fixture, not a product closing operation. The
+            // exact empty OPEN2 value is checked below before this one write.
+            let handoff = db
+                .get_cf(cf, handoff_key.encode().unwrap().as_bytes())
+                .unwrap()
+                .unwrap();
+            assert_eq!(handoff.len(), 610);
+            assert_eq!(&handoff[..2], &[1, 10]);
+            assert_eq!(&handoff[18..26], &1_u64.to_be_bytes());
+            assert_eq!(&handoff[26..34], &7_u64.to_be_bytes());
+            assert_eq!(&handoff[34..42], &27_u64.to_be_bytes());
+            assert_eq!(&handoff[344..], manifest.encode().as_bytes());
+            IngestKey::ProducerState {
+                producer_slot_id: ProducerSlotId::try_from(
+                    <[u8; 16]>::try_from(&handoff[2..18]).unwrap(),
+                )
+                .unwrap(),
+                producer_epoch: ProducerEpoch::new(2).unwrap(),
+            }
+        }
         "missing-old-dependency" | "corrupt-old-dependency" => old_fact_key,
         "extra-producer" => IngestKey::ProducerState {
             producer_slot_id: slot.unwrap(),
@@ -239,6 +263,14 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
         "target-nonzero" => {
             assert_eq!(before.as_deref(), Some(&[1, 2, 0, 0, 0, 0, 0, 0, 0, 0][..]));
             Some(vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 1])
+        }
+        "target-closing" => {
+            let mut open = vec![0; 26];
+            open[..2].copy_from_slice(&[1, 0x31]);
+            assert_eq!(before.as_deref(), Some(open.as_slice()));
+            open[0] = 2;
+            open.push(1);
+            Some(open)
         }
         "missing-handoff" => {
             let before = before.as_ref().unwrap();

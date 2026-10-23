@@ -343,6 +343,9 @@ if producer_floor:
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
     ]]
+    tests += [('claim_custody', ['--bin', 'bigbrotr',
+               'interfaces::serve::initial_ingest::recovery::successor_family::tests::']),
+              ('control_runtime_entrypoint', ['--test', 'control_runtime_entrypoint'])]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [] if archive_components else
@@ -362,7 +365,7 @@ if build_probe:
     clippy_targets = ['--lib', '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe']
 if producer_progress:
     clippy_targets += ['--test', 'control_schema', '--test', 'migrate_entrypoint']
-if installed or archive_installed:
+if installed or archive_installed or producer_floor:
     clippy_targets += ['--test', 'control_runtime_entrypoint']
 if archive_components:
     clippy_targets = ['--lib']
@@ -579,7 +582,17 @@ if producer_floor:
             'compacted_handoff_wrong_owner_and_prepared_pending_context_refuse',
             'compacted_handoff_prepared_target_must_be_empty_open_and_census_complete',
             'compacted_candidate_binds_fresh_target_and_explicit_activation_only',
-            'compacted_handoff_postwrite_authority_refusal_retains_exact_retry'])
+            'compacted_handoff_postwrite_authority_refusal_retains_exact_retry',
+            'initial_preparation_selector_accepts_original_and_compacted_without_writes',
+            'initial_preparation_selector_refuses_incompatible_head_and_census',
+            'initial_preparation_selector_requires_epoch_two_budget_and_cancellation'])
+    required_controls['claim_custody'] = [
+        'interfaces::serve::initial_ingest::recovery::successor_family::tests::' + name for name in [
+            'interrupted_claim_closes_native_before_retained_future',
+            'claim_guard_covers_unwind_and_disarms_after_delivery']]
+    required_controls['control_runtime_entrypoint'] = [
+        'explicit_ingest_recovery_preserves_missing_store_before_credentials',
+        'explicit_recovery_modes_conflict_before_configuration_io']
     required_controls['initial_reconstruction'].append(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))

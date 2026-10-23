@@ -62616,6 +62616,27 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-f51a8a3/raw-replay.json",
           "sha256": "46b5ff1773a1bf1ea3d4ecf2fb025209d86698c890acc4acfd0f43ec55b879d7"
         }
+      },
+      "installed_initial_preparation_work_20261024": {
+        "state": "SOURCE_REVIEWED_READY_FOR_EXACT_BUILD; static checks PASS; build/connected NOT_RUN",
+        "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
+        "runtime_owner": "/root; no build or engine active",
+        "root_source": "This commit freezes reviewed product, native/CLI controls and exact author396fb511 probe blobs. No runtime qualification yet.",
+        "critical_reviewer": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-critical-review-v1.json",
+          "sha256": "d8ee7e6ba249e6787c7958543eea0737c61f4a1a12bfde3e3f08c88dbb339261"
+        },
+        "fixture_author": {
+          "agent": "/root/compacted_reader_fixture",
+          "model": "gpt-6-astra",
+          "reasoning": "xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
+          "branch": "work/installed-initial-preparation",
+          "scope": "Existing installed compacted reader/oracle/replay/client parameterized with initial-preparation; original7 real gated/normal setup and fixed synthetic target-closing refusal probe",
+          "state": "Rust2 integrated exactly; Python profile authoring, runtime NOT_RUN",
+          "rust_commit": "396fb5114bbae546494a769dd7c573d870c308d8"
+        },
+        "preservation": "All prior worktrees, datasets, original failures, captures and artifacts retained; no cleanup"
       }
     }
   },

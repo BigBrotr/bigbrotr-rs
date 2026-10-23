@@ -661,3 +661,152 @@ fn compacted_handoff_postwrite_authority_refusal_retains_exact_retry() {
     assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
     assert_eq!(kv(&r.store), expected_compacted_rows(&f));
 }
+
+#[test]
+fn initial_preparation_selector_accepts_original_and_compacted_without_writes() {
+    for compacted in [false, true] {
+        let f = prepared_fixture();
+        let r = f.reopen();
+        if compacted {
+            install(&f, &r, 0);
+        }
+        let before = kv(&r.store);
+        let sequence = r.store.db.latest_sequence_number();
+        let spool = inputs(&f.path());
+        let observed = RetainedLineage::inspect_initial_preparation(
+            &r,
+            grant(&f.budget, 128 * 1024 + 2 * 512, 0),
+            &READY,
+        )
+        .unwrap();
+        assert_eq!(observed.has_compacted_initial(), compacted);
+        assert_eq!(observed.entries().len(), 2);
+        assert_eq!(observed.pending_target(), None);
+        assert_eq!(observed.entry(1).unwrap().issued_through(), 4);
+        assert_eq!(observed.native_head().issued_through(), 0);
+        assert_eq!(observed.native_head().source_through(), 0);
+        assert!(!observed.native_head().is_closing());
+        if compacted {
+            // Selecting the structural reader cannot enable ordinary replay.
+            assert!(
+                RetainedLineage::inspect(&r, None, grant(&f.budget, 256 * 1024, 0), &READY,)
+                    .is_err()
+            );
+        }
+        assert_eq!(kv(&r.store), before);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence);
+        assert_eq!(inputs(&f.path()), spool);
+    }
+}
+
+#[test]
+fn initial_preparation_selector_refuses_incompatible_head_and_census() {
+    for (compacted, fault) in [
+        (false, "closing"),
+        (true, "closing"),
+        (false, "issued"),
+        (true, "issued"),
+        (false, "source"),
+        (true, "source"),
+        (false, "target-input"),
+        (true, "target-input"),
+        (false, "missing-original"),
+        (true, "malformed-floor"),
+    ] {
+        let f = prepared_fixture();
+        let r = f.reopen();
+        if compacted {
+            install(&f, &r, 0);
+        }
+        match fault {
+            "closing" | "issued" => {
+                let mut bytes = [0; 27];
+                bytes[..2].copy_from_slice(&[2, 0x31]);
+                if fault == "closing" {
+                    bytes[26] = 1;
+                } else {
+                    bytes[9] = 1;
+                }
+                r.store
+                    .db
+                    .put_cf(
+                        r.store.db.cf_handle("receipts").unwrap(),
+                        producer_key(2).encode().unwrap().as_bytes(),
+                        bytes,
+                    )
+                    .unwrap();
+            }
+            "source" => r
+                .store
+                .db
+                .put(
+                    source_key(2).encode().unwrap().as_bytes(),
+                    [1, 2, 0, 0, 0, 0, 0, 0, 0, 1],
+                )
+                .unwrap(),
+            "target-input" => {
+                let path = f.path().join("producer-inputs-v1").join(input_name(2, 1));
+                std::fs::write(&path, b"unexpected").unwrap();
+                std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600)).unwrap();
+            }
+            "missing-original" => {
+                std::fs::remove_file(f.path().join("producer-inputs-v1").join(input_name(1, 1)))
+                    .unwrap()
+            }
+            "malformed-floor" => {
+                let mut bytes = floor_bytes(&f);
+                bytes[25] = 3; // R differs from the closed acknowledged/issued cut.
+                r.store
+                    .db
+                    .put_cf(
+                        r.store.db.cf_handle("receipts").unwrap(),
+                        producer_key(1).encode().unwrap().as_bytes(),
+                        bytes,
+                    )
+                    .unwrap();
+            }
+            _ => unreachable!(),
+        }
+        let before = kv(&r.store);
+        let sequence = r.store.db.latest_sequence_number();
+        let spool = inputs(&f.path());
+        assert!(
+            RetainedLineage::inspect_initial_preparation(
+                &r,
+                grant(&f.budget, 256 * 1024, 0),
+                &READY,
+            )
+            .is_err(),
+            "{compacted}/{fault}"
+        );
+        assert_eq!(kv(&r.store), before);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence);
+        assert_eq!(inputs(&f.path()), spool);
+    }
+}
+
+#[test]
+fn initial_preparation_selector_requires_epoch_two_budget_and_cancellation() {
+    let old = closed_fixture();
+    let r = old.reopen();
+    assert!(RetainedLineage::inspect_initial_preparation(
+        &r, grant(&old.budget, 256 * 1024, 0), &READY,
+    ).is_err());
+    drop(r);
+    let f = prepared_fixture();
+    let r = f.reopen();
+    let before = kv(&r.store);
+    let sequence = r.store.db.latest_sequence_number();
+    for (bytes, cancelled) in [(128 * 1024 + 2 * 512 - 1, false), (256 * 1024, true)] {
+        assert!(
+            RetainedLineage::inspect_initial_preparation(
+                &r,
+                grant(&f.budget, bytes, 0),
+                &AtomicBool::new(cancelled),
+            )
+            .is_err()
+        );
+    }
+    assert_eq!(kv(&r.store), before);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence);
+}

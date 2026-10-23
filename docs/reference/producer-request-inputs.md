@@ -990,6 +990,27 @@ no-successor guards and confirmed COMMIT. General installed prepared/activated
 recovery, later live and Archive consumers retain their separate qualification
 gates; this source integration is not their acceptance evidence.
 
+The explicit `ingest recover --complete-initial-preparation --file ROOT` command
+is under qualification. It completes only an already recorded epoch1-to-2
+preparation, or verifies its exact empty OPEN epoch2 retry. It accepts complete
+original predecessor evidence or a verified closed-producer floor; it never
+selects a different basis after a failed proof. Current Control and accepted
+policy authenticate the original intent, preparing identity, predecessor closure
+and target state. A gap performs the existing four-write native transition;
+a prepared retry writes no native state. Activated or later attempts, nonempty
+or closing targets, missing original evidence and incompatible compacted closure
+refuse. Neither path adopts the attempted incarnation or activates a writer.
+
+Successful output reports `state=initial-preparation-completed`, the starting
+`from_owner_epoch`, exact target incarnation/handoff digest, predecessor cut and
+closure digest, and separate `resolved_original_requests` and
+`compacted_requests`. The target remains producer2 with zero issued/reserved
+requests. Output follows native teardown, confirmed Control release and driver
+join; an interrupted or unknown outcome requires inspection of the same retained
+root and intent. The command performs no ACK, retirement, floor installation or
+unlink. Original evidence remains required by recovery modes not explicitly
+adapted to a compacted predecessor.
+
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
 witness without weakening their guarantees. Fresh-process replay, exact retry,

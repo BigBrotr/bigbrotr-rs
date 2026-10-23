@@ -301,6 +301,7 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
         Some("--abandon-successor-acquisition"),
         Some("--retire-successor"),
         Some("--retire-empty-successor"),
+        Some("--complete-initial-preparation"),
     ] {
         let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
         command
@@ -340,6 +341,7 @@ fn explicit_recovery_modes_conflict_before_configuration_io() {
         "--abandon-successor-acquisition",
         "--retire-successor",
         "--retire-empty-successor",
+        "--complete-initial-preparation",
     ];
     for (index, &selected) in modes.iter().enumerate() {
         for &other in &modes[index + 1..] {

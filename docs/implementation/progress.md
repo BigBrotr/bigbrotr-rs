@@ -6,11 +6,11 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current committed source is main `f51a8a344907c259fd53320511aa552658ea45f6`,
-tree `8fbeee92eb760425471a932a4bd042303329c0cb`; product is unchanged
-`9bea0ff71c5573f3d470ed7ab8a27e827bac2743`. Local documentation records the
-completed bounded qualification. Last verified push is7bea8e3; the five source
-commits and this qualification record await the next coherent commit/push.
+Current main is `fc523ab3978fa52b2047cc046837831aa88c3a7b`;
+qualified harness is f51a8a3 and product is unchanged
+`9bea0ff71c5573f3d470ed7ab8a27e827bac2743`. Qualification and all five source commits are pushed on main. Push driver5730
+joined0; remote main equality verified at fc523ab3. Local work now implements
+the next installed preparation recovery consumer.
 No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -47,15 +47,25 @@ corrections identified. The report links the reconciliation receipt.
 
 ## Current work and precise next action
 
-The existing critical reviewer is reading the next recovery consumer; read-only,
-no engine/build or author edits. The fixture contributor is idle. Initial qualified
+The existing critical reviewer is checking root source and shared custody controls.
+The fixture contributor implements in isolated
+`.research/installed-initial-preparation-20261024` on
+`work/installed-initial-preparation`, basefc523ab3. Root freezes product, dispatch, runner, native/CLI controls and exact396fb511
+author probe blobs in the next coherent commit. Critical review reports no source
+blocker; formatting/AST/diff checks PASS. Build/connected checks remain NOT_RUN.
+Python fixture work continues separately; no engine/build is active. Initial qualified
 scope is explicit PG prepared gap/history and continuous activation, plus installed
 `serve --activate-initial-successor`; it does not include general installed
 prepared/activated recovery or later consumers.
 
-Commit/push this coherent qualification, verify remote main equality, then select
-and implement the next prepared/activated installed recovery consumer using the
-reviewed source map. Preserve compacted-versus-original replay accounting, actual
+Build the frozen explicit `ingest recover --complete-initial-preparation` source
+with the existing exact-revision producer-floor runner, then integrate/review the
+independent fixture and qualify original/compacted real-engine journeys.
+The implementation uses existing positive original/compacted gap and history APIs. A dedicated
+supervised owner retains native-before-Control teardown and grants through failures.
+Original native2 retry is a complete read-only reconstruction; compacted gap/retry
+uses the already-qualified owned plan. No new candidate, activation or retirement.
+Then qualify both bases with independent installed fixtures and critical review. Preserve compacted-versus-original replay accounting, actual
 custody, complete checkpoint/canonical closure and authority deadlines. Reuse
 unchanged evidence and fixtures; do not native-open the original dataset.
 
