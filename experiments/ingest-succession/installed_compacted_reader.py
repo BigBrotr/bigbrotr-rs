@@ -506,10 +506,12 @@ JOURNEY_SUITE = transition.Suite(directory=oracle.InitialJourneyProfile.DIRECTOR
     not_run=oracle.InitialJourneyProfile.NOT_RUN)
 
 
-def journey_gate_invoke(pg,client,output,case,directory):
+def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True):
     from initial_empty_locks import Probe
     from activated_retirement_expiry import wait_event
     from retirement_wait import open_gate
+    assert type(compacted) is bool
+    basis='compacted' if compacted else 'original'
     label=case['name']; prefix='/lab/'+label+'-gate'
     args=[case['operation'],case['database'],'/run/secrets/application',case['config'],prefix]
     command=['docker','exec',client,'/build/ingest_bootstrap_probe',*args]
@@ -520,15 +522,15 @@ def journey_gate_invoke(pg,client,output,case,directory):
     def save(): lab.write_json(output/(label+'-gate.json'),gate)
     try:
         save(); probe=Probe(command)
-        gate['ready']=wait_event(probe,'successor-compacted-gap-gate',phase='ready')
-        gate['native']=wait_event(probe,'successor-compacted-gap-native')['native']
+        gate['ready']=wait_event(probe,'successor-'+basis+'-gap-gate',phase='ready')
+        gate['native']=wait_event(probe,'successor-'+basis+'-gap-native')['native']
         gate['observed_before_us']=history.server_clock(pg,case['database'])
         gate['control']=schema.rows(pg,case['database']); gate['inputs']=history.inputs_at(directory/'store')
         gate['observed_after_us']=history.server_clock(pg,case['database']); save()
         path=output/(label+'-gate.go'); assert gate['ready']['path']==prefix+'.go'
         gate['go_before_us']=history.server_clock(pg,case['database']); open_gate(path)
         gate['go_after_us']=history.server_clock(pg,case['database']); save()
-        gate['released']=wait_event(probe,'successor-compacted-gap-gate',phase='released'); save()
+        gate['released']=wait_event(probe,'successor-'+basis+'-gap-gate',phase='released'); save()
         code=probe.wait(15); probe.observe()
         response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
     except BaseException as error:
@@ -542,7 +544,7 @@ def journey_gate_invoke(pg,client,output,case,directory):
     return args,gate
 
 
-def journey_probe(pg,client,output,case,directory,expected,catalog,initial):
+def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,preparation=False):
     label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
     native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store')
     assert (native,inputs)==expected[1:]
@@ -550,7 +552,8 @@ def journey_probe(pg,client,output,case,directory,expected,catalog,initial):
     args=[case['operation'],case['database'],'/run/secrets/application',case['config']]; gate=None
     window=dict(before_us=history.server_clock(pg,case['database'])); lab.write_json(output/(label+'-clock.json'),window)
     try:
-        if case['operation']==oracle.JOURNEY_GAP_MODE: args,gate=journey_gate_invoke(pg,client,output,case,directory)
+        if case['operation'] in (oracle.JOURNEY_GAP_MODE,oracle.PREPARATION_ORIGINAL_GAP):
+            args,gate=journey_gate_invoke(pg,client,output,case,directory,compacted=case['operation']==oracle.JOURNEY_GAP_MODE)
         else: history.capture(client,output,label,*args)
     finally:
         path=output/(label+'-response.json')
@@ -563,7 +566,8 @@ def journey_probe(pg,client,output,case,directory,expected,catalog,initial):
         backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),
         custody=transition.read(output/(label+'-custody.json')))
     lab.write_json(output/(label+'-verification.json'),context)
-    checked=oracle.verify_journey_context(context,initial,expected); controls=oracle.journey_controls(context,initial,expected)
+    check,control=(oracle.verify_preparation_context,oracle.preparation_controls) if preparation else (oracle.verify_journey_context,oracle.journey_controls)
+    checked=check(context,initial,expected); controls=control(context,initial,expected)
     case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
@@ -651,6 +655,103 @@ def run_initial_journey(root,build,product_source):
         assert oracle.journey_origin_checked(root)==(endpoint,initial)
 
 
+PREPARATION_SUITE = transition.Suite(directory=oracle.InitialPreparationProfile.DIRECTORY,label=oracle.InitialPreparationProfile.LABEL,
+    status=oracle.InitialPreparationProfile.STATUS,client_prefix='bigbrotr-initial-preparation-',database_prefix=oracle.InitialPreparationProfile.DATABASE_PREFIX,
+    clones=oracle.InitialPreparationProfile.CLONES,cases=oracle.InitialPreparationProfile.CASES,
+    scope='Installed completion of existing initial preparations: original and compacted native1 gaps/native2 retries; preserved intent and isolated refusals',
+    not_run=oracle.InitialPreparationProfile.NOT_RUN)
+
+
+def preparation_mutation(pg,client,output,clone,directory,expected,initial):
+    name=clone['name']
+    if name in ('head','target-nonzero','target-input'):
+        return journey_mutation(pg,client,output,clone,directory,expected,initial)
+    assert name in ('outcome','target-closing')
+    label=name+'-mutation'; transition.observe_origin_absence(pg,clone['database'],output,label)
+    oracle.same(schema.rows(pg,clone['database']),expected[0])
+    assert history.dump(client,output,label+'-before',directory)==expected[1] and history.inputs_at(directory/'store')==expected[2]
+    record=dict(kind='isolated-initial-preparation-'+name,before=dict(control=expected[0],native=expected[1],inputs=expected[2]),after=None)
+    lab.write_json(output/(label+'.json'),record)
+    if name=='outcome':
+        record.update(statement=oracle.preparation_outcome_statement(initial),sql_output=None)
+        (output/(label+'.sql')).write_text(record['statement']); lab.write_json(output/(label+'.json'),record)
+        record['sql_output']=lab.sql(pg,clone['database'],record['statement'])
+    else:
+        reply,_=history.capture(client,output,label,'history-corrupt','/lab/'+name+'/store','target-closing')
+        record['response']=dict(returncode=reply.returncode,stdout=reply.stdout,stderr=reply.stderr)
+        lab.write_json(output/(label+'.json'),record)
+        assert reply.returncode==0 and reply.stderr==''
+        events=[json.loads(v) for v in reply.stdout.splitlines()]; assert len(events)==2 and events[-1]['phase']=='after'
+    record['after']=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-after',directory),inputs=history.inputs_at(directory/'store'))
+    lab.write_json(output/(label+'.json'),record)
+    return oracle.preparation_mutation_checked(record,expected,initial,name)
+
+
+def preparation_quarantine(output,directory,expected,initial):
+    assert expected[2]==initial[2]
+    name=oracle.only(initial[0]['producer_epochs'])['producer_slot_id'][2:]+'-0000000000000001-0000000000000003.cbor'
+    spool=directory/'store/producer-inputs-v1'; target=directory/'quarantined-required'; target.mkdir(mode=0o700)
+    q=dict(kind='reversible-required-initial-original-quarantine',status='INCOMPLETE',path=str(target.relative_to(output)),
+        name=name,hex=oracle.retained.regular_read(spool/name).hex(),before=history.census(spool),after=None,quarantine_after=None)
+    path=output/(directory.name+'-required-quarantine.json'); lab.write_json(path,q)
+    (spool/name).rename(target/name)
+    for folder in (spool,target,directory):
+        fd=os.open(folder,os.O_RDONLY|os.O_DIRECTORY)
+        try: os.fsync(fd)
+        finally: os.close(fd)
+    q.update(status='RETAINED',after=history.census(spool),quarantine_after=history.census(target)); lab.write_json(path,q)
+    result=oracle.preparation_quarantine_checked(q,expected,initial)
+    assert history.inputs_at(directory/'store')==result[2]
+    return result
+
+
+def run_preparation_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial):
+    name=clone['name']; origin_name=oracle.PREPARATION_ORIGIN_NAMES[name]
+    assert clone['origin']==origin_name and expected==origins[origin_name]
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.JOURNEY_GRANTS]
+    oracle.history_catalog_checked(report['origins'][origin_name]['catalog'],clone['catalog_before'],grants=oracle.JOURNEY_GRANTS)
+    # Before any setup, bind the entire excluded clone to the qualified logical
+    # endpoint. Native originals are never opened by the fixture owner.
+    transition.observe_origin_absence(pg,clone['database'],output,name+'-logical-origin')
+    assert history.dump(client,output,name+'-logical-origin',directory)==expected[1]
+    assert history.inputs_at(directory/'store')==expected[2]
+    helper=Path(__file__).with_name('installed_cycle_client.py'); target=output/helper.name
+    if not target.exists(): shutil.copy2(helper,target)
+    assert history.digest(helper)==history.digest(target)
+    configure(pg,client,output,clone['config'],ack=True)
+    predecessor=None
+    for step in oracle.PREPARATION_STEPS[name]:
+        if step=='refuse' and name!='activated-zero': expected=preparation_mutation(pg,client,output,clone,directory,expected,initial)
+        elif step=='missing-original': expected=preparation_quarantine(output,directory,expected,initial)
+        if step in ('prepare','prepare-gap'):
+            basis='original' if name.startswith('original-') else 'compacted'
+            operation='successor-'+basis+('-normal' if step=='prepare' else '-gap-only')
+        else: operation={'abandon':'abandon-initial','retire':'retire-initial'}.get(step,'complete-initial')
+        case=dict(name=name+'-'+step,clone=name,origin=origin_name,operation=operation,predecessor=predecessor,
+            database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case); lab.write_json(output/'result.json',report)
+        if step in ('prepare','prepare-gap'):
+            expected=journey_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial,preparation=True)
+        else:
+            expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
+                checks=(lambda c,s:oracle.verify_preparation_context(c,s,expected),lambda c,s:oracle.preparation_controls(c,s,expected),oracle.preparation_closed))
+        case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==clone['catalog_before']
+        predecessor=case['name']; lab.write_json(output/'result.json',report)
+    return predecessor
+
+
+def run_initial_preparation(root,build,product_source):
+    oracle.preparation_qualification(transition.read(build/'component-result.json'))
+    origins,initial=oracle.preparation_origins_checked(root)
+    try:
+        return transition.run(root,build,suite=PREPARATION_SUITE,sequence=partial(run_preparation_sequence,origins=origins,initial=initial),
+            origin_specs=oracle.PREPARATION_ORIGINS,origin_for_clone=oracle.PREPARATION_ORIGIN_NAMES,
+            extra_grants=oracle.JOURNEY_GRANTS,producer_progress=True,producer_ack=True,preparation_hole=True,
+            compacted_reader=True,compacted_initial=True,initial_preparation=True,product_source=product_source)
+    finally:
+        assert oracle.preparation_origins_checked(root)==(origins,initial)
+
+
 ORIGIN = oracle.ORIGIN
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -660,5 +761,6 @@ if __name__ == '__main__':
     profile.add_argument("--history",action="store_true",help="Explicit connected Terminal2/PreparedOpen3 synthetic floor profile")
     profile.add_argument('--history-faults',action='store_true',help='Exact retained PreparedOpen3 delivery fault profile')
     profile.add_argument('--initial-journey',action='store_true',help='Explicit compacted initial prepare/gap/activation and installed startup profile')
+    profile.add_argument('--initial-preparation',action='store_true',help='Installed original/compacted existing initial preparation completion and exact retry')
     args = parser.parse_args()
-    (run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

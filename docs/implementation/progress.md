@@ -6,73 +6,56 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main is `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
-tree `e94652a5f2b68ac002487f728d073a8194120a1f`;
-qualified harness is f51a8a3 and product is unchanged
-`9bea0ff71c5573f3d470ed7ab8a27e827bac2743`. Qualification and all five source commits are pushed on main. Push driver5730
-joined0; remote main equality verified at fc523ab3. The two source/correction commits and this build qualification await a coherent
-commit/push; connected qualification is still NOT_RUN.
-No floor writer or unlink is exposed.
+Last observed main/pushed revision: `0d92afdbf47963264d8eb4d36855b52479ffe9d3`.
+Qualified product: `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
+tree `e94652a5f2b68ac002487f728d073a8194120a1f`.
+Current coherent changes integrate author d80db733 Python fixture and two narrow
+review corrections, plus this checkpoint/report/inventory. No product code changed
+since the qualified build. No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
-compacted_successor_preparation.initial_handoff_preparation`, owns exact
-source/review/build/run identities, original failures and remaining gates.
+compacted_successor_preparation.installed_initial_preparation`, owns exact source,
+review/build/run identities, original failures and remaining gates. Its sibling
+`initial_handoff_preparation` owns the previous qualified initial journey.
 The [inventory](../research/laboratory-inventory.json) owns resource custody.
 
 ## Verified result and resources
 
-Product9bea0ff: CLI/probe build, Clippy and150 components/47 mandatory controls
-PASS, including eight new native controls; driver54339 joined0. Harnessf51a8a3:
-16 connected cases/149 negative controls across seven excluded clones PASS;
-driver55549 joined0. Exact-source raw replay PASS16/149 with6114 file bindings;
-driver59019 joined0. The first three failed attempts retain their original FAIL
-and captures; narrow ACL/domain/listener oracle corrections are separately recorded.
+Product a0e914e: CLI/probe build, Clippy,163 components/54 mandatory controls PASS;
+driver18296 joined0. All exact build containers freshly stopped0/PID0/noOOM.
+Original1c7c332 missing-import build FAIL is retained separately, driver73364 joined1.
+Builds remain under `/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-*`.
+Prior initial journey harnessf51/product9bea remains PASS16 cases/149 checker
+controls; exact-source raw replay PASS with6114 file bindings. Its first three
+FAIL attempts remain preserved. No unchanged qualification was repeated.
 
-Build outputs are retained under
-`/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff`.
-Connected data, logs and raw replay are under
-`/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-f51a8a3`.
-Exact owned build containers stopped0; connected client143 and borrowed PG0 are
-stopped/PID0/noOOM. All five original-preservation checks passed; cleanup arrays
-are empty. Build driver73364 joined1, FAIL E0425 missing Duration import before tests, at
-`/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332`;
-fetch0/native1 stopped/PID0/noOOM; all build/test drivers joined. The original
-failure is retained; a one-import correction is committed in a0e914e. Corrected build driver18296
-joined0 under runs/producer-floor-a0e914e: build/Clippy/163components and54
-mandatory controls PASS; exact fetch/native stopped0/PID0/noOOM, inventory_changed[]. No cache/dataset cleanup occurred.
+Installed preparation fixture: source/static/pure checks PASS; four pinned origins,
+old/new qualification-profile separation and missing mandatory-test controls PASS.
+New23-command/232-control connected qualification and raw replay are NOT_RUN.
+Borrowed PostgreSQL71775507 is freshly stopped0; no connected lab driver is active.
 Sources, ELFs, clones, quarantines, failures, .research and worktrees are retained.
-
-Both author worktrees are clean and detached at original7824749/a7dd148 under
-`.research/compacted-initial-handoff-20261024` and
-`.research/compacted-initial-journey-20261024`. Their redundant branch refs were
-retired only after exact original-blob reconciliation, with reviewed later oracle
-corrections identified. The report links the reconciliation receipt.
+No cache or dataset cleanup occurred; unrelated running workloads are untouched.
 
 ## Current work and precise next action
 
-The existing critical reviewer is checking root source and shared custody controls.
-The fixture contributor implements in isolated
-`.research/installed-initial-preparation-20261024` on
-`work/installed-initial-preparation`, basefc523ab3. Root froze product, dispatch, runner, native/CLI controls and exact396fb511
-author probe blobs in1c7c332. Critical review reports no source
-blocker; formatting/AST/diff checks PASS. First build failed before tests; corrected build PASS163/54. Connected checks remain NOT_RUN.
-Python fixture work continues separately; no connected engine run is active. Initial qualified
-scope is explicit PG prepared gap/history and continuous activation, plus installed
-`serve --activate-initial-successor`; it does not include general installed
-prepared/activated recovery or later consumers.
+Critical reviewer found and resolved two fixture integration issues: new build
+selectors require an explicit preparation flag; exact pinned origin metadata is
+accepted only under that flag. Both original author commits remain preserved.
+Author works only in `.research/installed-initial-preparation-20261024`, branch
+`work/installed-initial-preparation`, frozen Rust396fb511/Pythond80db733; the next
+separate draft adds completion delivery faults. Root owns all engines/runtime.
+Earlier handoff/journey author worktrees remain clean detached at7824749/a7dd148;
+only their reconciled redundant branch refs were retired.
 
-Commit/push the coherent build result; then integrate/review the
-independent fixture and qualify original/compacted real-engine journeys.
-The implementation uses existing positive original/compacted gap and history APIs. A dedicated
-supervised owner retains native-before-Control teardown and grants through failures.
-Original native2 retry is a complete read-only reconstruction; compacted gap/retry
-uses the already-qualified owned plan. No new candidate, activation or retirement.
-Then qualify both bases with independent installed fixtures and critical review. Preserve compacted-versus-original replay accounting, actual
-custody, complete checkpoint/canonical closure and authority deadlines. Reuse
-unchanged evidence and fixtures; do not native-open the original dataset.
+Commit the reviewed fixture, create an exact detached laboratory source, then run
+`installed_compacted_reader.py RUN BUILD --product-source a0e914e8b58650d94dec60c0b5d3c08a02e5e248 --initial-preparation`.
+Use the retained a0e914e artifacts; no product rebuild is needed for Python changes.
+Verify actual driver exit and owned closure, then exact-source raw replay. Preserve
+any original failure before a narrow correction. Next qualify completion delivery
+faults with measured wire boundaries and fresh CLI retry, reusing existing custody.
 
 Activated/later recovery, live frontier, retained Archive frontier and empty
 retirement remain before GC. Physical64file/32MiB bounds remain; physical loss,

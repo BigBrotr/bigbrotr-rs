@@ -61,8 +61,9 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False):
     assert type(initial_journey) is bool
+    assert type(initial_preparation) is bool and (not initial_preparation or initial_journey)
     assert re.fullmatch(r'[0-9a-f]{40}',source)
     assert component['status'] == 'PASS' and qualification['status'] == 'PASS_COMPACTED_PREFIX_COMPONENTS'
     assert built['source'] == component['source'] == qualification['source'] == source
@@ -71,7 +72,10 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     assert component['missing_controls'] == {}
     counts = component['test_counts']
     assert counts == qualification['test_counts']
-    assert set(counts) == {'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
+    selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
+    if initial_preparation:
+        selectors |= {'claim_custody','control_runtime_entrypoint'}
+    assert set(counts) == selectors
     assert all(type(n) is int and n > 0 for n in counts.values())
     assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == 1
     assert set(component['test_names']) == set(counts)
@@ -120,7 +124,10 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
             'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
         required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
-    assert set(component['executables_sha256']) == {'bigbrotr','ingest_bootstrap_probe','native_components'}
+    if initial_preparation: preparation_qualification(component)
+    executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
+    if initial_preparation: executables |= {'claim_custody','control_runtime_entrypoint'}
+    assert set(component['executables_sha256']) == executables
     assert built['binary_sha256'] == component['executables_sha256']['bigbrotr']
     assert built['build_info']['source'] == dict(state='builder-supplied',revision=source,
         tree=built['tree'],dirty=False,manifest_sha256=built['source_manifest_sha256'])
@@ -293,7 +300,7 @@ def initial_mutation(m, after, step, seed):
 
 def specification(case):
     mode = case['clone']
-    selected = STEPS if mode in CLONES else {n:('abandon','retire') for n in HISTORY_CLONES}
+    selected = STEPS if mode in CLONES else {n:('abandon','retire') for n in (*HISTORY_CLONES,'original-gap','original-prepared')}
     assert mode in selected
     step = case['name'].removeprefix(mode+'-'); assert step in selected[mode]
     assert case['name'] == mode+'-'+step and case['origin'] == 'initial'
@@ -519,7 +526,7 @@ def history_seed_plan(pg, native, inputs, observed, seed, *, compacted_initial=F
     terminal_checked(pg,seed)
     assert type(compacted_initial) is bool
     assert type(fixed_initial_target) is bool
-    assert not fixed_initial_target or (compacted_initial and installed_deadline is None)
+    assert not fixed_initial_target or installed_deadline is None
     assert installed_deadline is None or compacted_initial
     assert native == (compacted_native(seed,'positive') if compacted_initial else seed[1])
     assert inputs == ({} if compacted_initial else seed[2])
@@ -1087,21 +1094,23 @@ def journey_origin_checked(root,raw=None):
     return qualified_endpoint(root,raw,initial_journey=True)
 
 
-def qualified_endpoint(root,raw,*,initial_journey):
+def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None):
     """Bind the prior exact-source receipt; never replay it through new imports."""
     from installed_family_capture import physical, spool_checked
     assert type(initial_journey) is bool
-    pin=JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN
+    assert prepared_origin is None or (not initial_journey and prepared_origin in PREPARATION_RETAINED_ORIGINS)
+    pin=prepared_origin or (JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN)
+    product=PREPARATION_PRODUCT if prepared_origin else FAULT_PRODUCT
     root=Path(root); raw=raw or retained.regular_read
     basis=root.parent/pin['run']/pin['subdirectory']
     receipt_path=basis.parent/'raw-replay.json'; data=raw(receipt_path)
-    assert sha(data)==(JOURNEY_REPLAY_SHA if initial_journey else FAULT_REPLAY_SHA)
+    assert sha(data)==(PREPARATION_REPLAY_SHA if prepared_origin else JOURNEY_REPLAY_SHA if initial_journey else FAULT_REPLAY_SHA)
     replay=loads(data)
-    assert replay['status']==(STATUS if initial_journey else HistoryProfile.STATUS)+'_CAPTURE_REPLAY'
-    assert replay['source']==pin['source'] and replay['product_source']==FAULT_PRODUCT
-    assert len(replay['cases'])==(13 if initial_journey else 50)
-    assert sum(v['negative_controls']['count'] for v in replay['cases'])==(131 if initial_journey else 454)
-    assert len(replay['bound_files'])==(4629 if initial_journey else 5482)
+    assert replay['status']==(InitialJourneyProfile.STATUS if prepared_origin else STATUS if initial_journey else HistoryProfile.STATUS)+'_CAPTURE_REPLAY'
+    assert replay['source']==pin['source'] and replay['product_source']==product
+    assert len(replay['cases'])==(16 if prepared_origin else 13 if initial_journey else 50)
+    assert sum(v['negative_controls']['count'] for v in replay['cases'])==(149 if prepared_origin else 131 if initial_journey else 454)
+    assert len(replay['bound_files'])==(6114 if prepared_origin else 4629 if initial_journey else 5482)
     def bound(path):
         path=Path(path); value=raw(path)
         assert sha(value)==replay['bound_files'][str(path)]
@@ -1120,17 +1129,17 @@ def qualified_endpoint(root,raw,*,initial_journey):
         path=basis/pin[file_key]; value=bound(path); assert sha(value)==pin[hash_key]; final.append(loads(value))
     endpoint=tuple(final)
     context=read(basis/(pin['final_case']+'-verification.json'))
-    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==('afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
+    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==(pin['verification_sha256'] if prepared_origin else 'afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
     assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
     assert context['response']==read(basis/(pin['final_case']+'-response.json'))
     custody=read(basis/(pin['final_case']+'-custody.json'))
-    if not initial_journey: assert context['custody']==custody
+    if not initial_journey and (not prepared_origin or pin['source_clone']=='gap'): assert context['custody']==custody
     assert custody['status']=='OBSERVED_CLOSED_AND_JOINED' and not custody['errors']
     terminal=read(basis/'client-terminal.json'); assert terminal['Id']==pin['client_id']
     assert terminal['State']['Status']=='exited' and terminal['State']['Pid']==0 and terminal['State']['ExitCode']==143
     build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
     built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
-    qualification_checked(built,component,qualification,FAULT_PRODUCT)
+    qualification_checked(built,component,qualification,product,initial_journey=prepared_origin is not None)
     assert report['build']==built and report['component']==component
     manifest=read(build.parent/'build/source-manifest.json')
     assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
@@ -1161,18 +1170,29 @@ def qualified_endpoint(root,raw,*,initial_journey):
         assert physical(basis/q['path'],bound)==q['quarantine_after']
         for name,value in q['files'].items(): assert bound(basis/q['path']/name).hex()==value['hex']
         return endpoint,initial
-    history_lineage(endpoint,initial,compacted=True)
-    assert len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
-    assert all('-0000000000000002-' in n for n in endpoint[2])
+    if prepared_origin:
+        assert len(endpoint[0])==77 and endpoint[2]=={}
+        assert endpoint[1]==preparation_native(compacted_native(initial,'positive'),endpoint[0],initial)
+        assert (len(endpoint[1]['rows']),endpoint[1]['sequence'])==(84,125)
+        if pin['source_clone']=='gap': assert endpoint[0]['initial_ingest_activations']==[]
+        else:
+            assert len(endpoint[0]['initial_ingest_activations'])==1
+            assert only(endpoint[0]['producer_epochs'],producer_epoch=2)['reserved_through_request']==0
+    else:
+        history_lineage(endpoint,initial,compacted=True)
+    assert prepared_origin or len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
+    assert prepared_origin or all('-0000000000000002-' in n for n in endpoint[2])
     store=basis/pin['store']
     spool_checked(store/'producer-inputs-v1',endpoint[2],bound,complete=True)
     files=physical(store,bound)
     prefix=str(store)+'/'
     qualified={name[len(prefix):]:digest for name,digest in replay['bound_files'].items() if name.startswith(prefix)}
-    assert len(qualified)==20
+    assert len(qualified)==(16 if prepared_origin else 20)
     assert {name:value['sha256'] for name,value in files.items() if stat.S_ISREG(value['mode'])}==qualified
     directories={str(parent) for name in qualified for parent in Path(name).parents}
+    if prepared_origin: directories.add('producer-inputs-v1')
     assert {name for name,value in files.items() if stat.S_ISDIR(value['mode'])}==directories
+    if prepared_origin: return endpoint,initial
     for step in ('partial','absent'):
         q=read(basis/('history-positive-'+step+'-quarantine.json'))
         assert physical(basis/q['path'],bound)==q['quarantine_after']
@@ -1536,10 +1556,14 @@ def journey_dump(rows,sequence):
     return dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in rows.items()}),sequence=sequence)
 
 
-def verify_journey_prepare(events,expected,initial,case,window,gate):
+def verify_journey_prepare(events,expected,initial,case,window,gate,*,compacted_initial=True):
     import initial_succession_oracle as preparation
-    pg,native,inputs=copy.deepcopy(expected); gap=case['operation']==JOURNEY_GAP_MODE
-    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True,fixed_initial_target=True)
+    assert type(compacted_initial) is bool
+    pg,native,inputs=copy.deepcopy(expected)
+    basis='compacted' if compacted_initial else 'original'
+    gap=case['operation']=='successor-'+basis+'-gap-only'
+    assert case['operation']=='successor-'+basis+('-gap-only' if gap else '-normal')
+    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=compacted_initial,fixed_initial_target=True)
     assert plan['target_role']=='c9'*16 and plan['target_incarnation']=='ca'*16
     assert plan['domains']==[[k,f'{160+k:02x}'*16] for k in range(1,10)]
     model.clock(plan['created_at_us'],window)
@@ -1573,11 +1597,11 @@ def verify_journey_prepare(events,expected,initial,case,window,gate):
         nonlocal pg,native
         assert take('successor-attempt',stage)==dict(event='successor-attempt',stage=stage,role=plan['target_role'],control_epoch=control['epoch'])
         if gap:
-            assert take('successor-compacted-gap-native')==dict(event='successor-compacted-gap-native',native=native)
+            assert take('successor-'+basis+'-gap-native')==dict(event='successor-'+basis+'-gap-native',native=native)
             assert gate is not None and gate['errors']==[]
             for phase in ('ready','released'):
-                wanted=dict(event='successor-compacted-gap-gate',phase=phase,path='/lab/'+case['name']+'-gate.go',timeout_ms=10000,poll_ms=5)
-                assert take('successor-compacted-gap-gate',phase=phase)==gate[phase]==wanted
+                wanted=dict(event='successor-'+basis+'-gap-gate',phase=phase,path='/lab/'+case['name']+'-gate.go',timeout_ms=10000,poll_ms=5)
+                assert take('successor-'+basis+'-gap-gate',phase=phase)==gate[phase]==wanted
             preparation.prepared(pg,gate['control'],plan,control,compacted_history=True)
             assert gate['native']==native and gate['inputs']==inputs
             for k in ('observed_before_us','observed_after_us','go_before_us','go_after_us'): model.clock(gate[k],window)
@@ -1585,14 +1609,14 @@ def verify_journey_prepare(events,expected,initial,case,window,gate):
         error='Control(InvalidPolicy)' if gap else None
         assert take('successor-result',stage)==dict(event='successor-result',stage=stage,control_epoch=control['epoch'],validations=3 if gap else 4,error=error)
         if gap: assert take('successor-session-poisoned')==dict(event='successor-session-poisoned',control_epoch=control['epoch'])
-        elif first: native=journey_dump(rows,125)
+        elif first: native=journey_dump(rows,125 if compacted_initial else 117)
         after=snap(stage)
         if first: preparation.prepared(pg,after,plan,control,compacted_history=True)
         else: same(pg,after)
         if gap: same(after,gate['control'])
         pg=after
     claim('initial',1)
-    assert take('successor-compacted-proof')==journey_proof(initial)
+    if compacted_initial: assert take('successor-compacted-proof')==journey_proof(initial)
     assert take('successor-plan')==plan
     after=snap('before-prepare'); control=preparation.renewed(pg,after,control,plan['created_at_us']); model.fresh_xmin(control['xmin'],pg); pg=after
     attempt('prepared-native-old' if gap else 'prepared',True)
@@ -1603,7 +1627,7 @@ def verify_journey_prepare(events,expected,initial,case,window,gate):
         control='dropped-and-joined' if gap else 'released-and-joined',admission=False)
     assert position==len(events)
     return (pg,native,inputs),dict(status='PASS',case=case['name'],result='PREPARED_NATIVE_GAP' if gap else 'PREPARED_WITH_EXACT_RETRIES',
-        native_rows=len(native['rows']),native_sequence=native['sequence'],compacted_requests=7,original_requests_replayed=0)
+        native_rows=len(native['rows']),native_sequence=native['sequence'],compacted_requests=7 if compacted_initial else 0,original_requests_replayed=0 if compacted_initial else 7)
 
 
 def journey_plan_from_intent(pg,initial):
@@ -1964,3 +1988,325 @@ def verify_journey_installed(context,initial,expected,report):
     assert context['native_after']==journey_dump(rows,125)
     return dict(status='PASS',case=case['name'],result='INSTALLED_ACTIVATED_RENEWED_STOPPED',native_rows=84,native_sequence=125,
         compacted_requests=7,original_requests_replayed=0,epoch2_originals=0,acquisition='NOT_RUN')
+
+
+# Explicit existing-intent installed completion. These routes never prepare a
+# target in the CLI, activate it, retire it, or reclaim an input/receipt.
+PREPARATION_ORIGINAL_GAP = 'successor-original-gap-only'
+PREPARATION_STEPS = {
+    'original-gap': ('abandon','retire','prepare-gap','complete','retry'),
+    'original-prepared': ('abandon','retire','prepare','complete','retry','missing-original'),
+    'compacted-gap': ('missing-intent','prepare-gap','complete','retry'),
+    'compacted-prepared': ('complete','retry'),
+    'head': ('refuse',), 'outcome': ('refuse',), 'target-nonzero': ('refuse',),
+    'target-closing': ('refuse',), 'target-input': ('refuse',), 'activated-zero': ('refuse',),
+}
+PREPARATION_ORIGIN_NAMES = {n:'initial' if n.startswith('original-') else 'compacted-initial' if n=='compacted-gap'
+    else 'activated-initial' if n=='activated-zero' else 'prepared-initial' for n in PREPARATION_STEPS}
+PREPARATION_PRODUCT = '9bea0ff71c5573f3d470ed7ab8a27e827bac2743'
+PREPARATION_REPLAY_SHA = '46b5ff1773a1bf1ea3d4ecf2fb025209d86698c890acc4acfd0f43ec55b879d7'
+PREPARATION_RETAINED_ORIGINS = tuple(dict(
+    name=name,run='installed-compacted-initial-journey-f51a8a3',subdirectory='installed-compacted-initial-journey',
+    database='bb_compacted_initial_f51a8a3_'+clone,status=InitialJourneyProfile.STATUS,
+    source='f51a8a344907c259fd53320511aa552658ea45f6',owner='322f878d86032d1ba2f0f5473214d906',label=InitialJourneyProfile.LABEL,
+    client_id='90222c7d5dc6253def5d7c6390a831764071bf409c15d5798567321b93c28018',source_clone=clone,final_case=case,
+    catalog_sha256='3c97ef7d8b0c915115f8d285387f0cf1bc08a852ce100e572f7d4b8de176b73c',
+    result_sha256='8eb90d549905667b1f683c7f57675f9d84bb0d5123c7381b2774462421908556',
+    snapshot=clone+'-final-sql.json',snapshot_sha256=sql_sha,native_file=case+'-after-native.json',native_sha256=native_sha,
+    inputs_file=case+'-after-inputs.json',inputs_sha256='ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356',
+    verification_sha256=context_sha,store=clone+'/store') for name,clone,case,sql_sha,native_sha,context_sha in (
+    ('prepared-initial','gap','gap-inspect','1da24330fb513c0d93a64b53aba69d2c344122af81e321e8c198f5c3dcb1ddbe',
+     'c1582e3425b4b1c8b6fa100919e3f6527993de2f004ed536a2d47a9217c52b70','94e3fc1427163787110da9a90bae0b75200aa8869061030607e268340c4651cd'),
+    ('activated-initial','installed','installed-serve','c1e57b4ec46fd42eb703664ab39c51a79dcd4f2c3acddc78c849cc9f8adb744e',
+     '46855de80b2cdcd1b818fce97dac7a5c6fd9139ee80c174f1049dcb6a84391f6','80775b8e49747a18298281e5b6fdaa7c2d01da4d2af9b5d7f3188580998de977')))
+PREPARATION_ORIGINS = (ORIGIN,JOURNEY_ORIGIN,*PREPARATION_RETAINED_ORIGINS)
+
+
+class InitialPreparationProfile:
+    DIRECTORY = 'installed-initial-preparation'
+    LABEL = 'org.bigbrotr.installed-initial-preparation'
+    STATUS = 'PASS_INSTALLED_INITIAL_PREPARATION_COMPLETION'
+    DATABASE_PREFIX = 'bb_initial_preparation_'
+    CLONES = tuple(PREPARATION_STEPS)
+    STEPS = PREPARATION_STEPS
+    CASES = tuple(n+'-'+s for n in CLONES for s in PREPARATION_STEPS[n])
+    GRANTS = JOURNEY_GRANTS
+    NOT_RUN = ('Actual product reclamation/GC and unlink',
+        'Genuine epoch2/SQL-pending3 gap; completed native3 is not that fixture',
+        'Initial completion rollback/commit delivery loss, cancellation and lease expiry',
+        'Activated replacement recovery, later live frontier, Archive and empty retirement',
+        'Mixed restore/backup and capacity; synthetic target-closing is not a product closing journey')
+
+
+def preparation_qualification(component):
+    names=component['test_names']
+    assert set(names)=={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
+        'archive_retained_frontier','claim_custody','control_runtime_entrypoint'}
+    prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'
+    assert {prefix+n for n in ('initial_preparation_selector_accepts_original_and_compacted_without_writes',
+        'initial_preparation_selector_refuses_incompatible_head_and_census',
+        'initial_preparation_selector_requires_epoch_two_budget_and_cancellation')} <= set(names['initial_reconstruction'])
+    assert set(names['claim_custody'])=={'interfaces::serve::initial_ingest::recovery::successor_family::tests::'+n
+        for n in ('interrupted_claim_closes_native_before_retained_future','claim_guard_covers_unwind_and_disarms_after_delivery')}
+    assert {'explicit_ingest_recovery_preserves_missing_store_before_credentials',
+        'explicit_recovery_modes_conflict_before_configuration_io'} <= set(names['control_runtime_entrypoint'])
+
+
+def preparation_origins_checked(root,raw=None):
+    endpoint,initial=journey_origin_checked(root,raw)
+    results={'initial':initial,'compacted-initial':endpoint}
+    for pin in PREPARATION_RETAINED_ORIGINS:
+        value,basis=qualified_endpoint(root,raw,initial_journey=False,prepared_origin=pin)
+        assert basis==initial
+        results[pin['name']]=value
+    return results,initial
+
+
+def preparation_specification(case):
+    name=case['clone']; assert name in PREPARATION_STEPS
+    step=case['name'].removeprefix(name+'-'); assert step in PREPARATION_STEPS[name]
+    assert case['name']==name+'-'+step and case['origin']==PREPARATION_ORIGIN_NAMES[name]
+    index=PREPARATION_STEPS[name].index(step)
+    assert case['predecessor']==(name+'-'+PREPARATION_STEPS[name][index-1] if index else None)
+    if step in ('prepare','prepare-gap'):
+        basis='original' if name.startswith('original-') else 'compacted'
+        operation='successor-'+basis+('-normal' if step=='prepare' else '-gap-only')
+    else: operation={'abandon':'abandon-initial','retire':'retire-initial'}.get(step,'complete-initial')
+    assert case['operation']==operation and re.fullmatch('[a-z0-9_]{1,63}',case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def preparation_native(native,pg,initial):
+    """Four literal handoff writes constructed from independently checked intent."""
+    intent,handoff=journey_plan_from_intent(pg,initial)
+    values=model.native_map(native).copy()
+    assert values['default','0101']==intent['previous_manifest'][2:]
+    additions={('default',(b'\x01\x0a'+binary(intent['dataset_id'])+binary(intent['owner_resource_id'])+be(1)).hex()):handoff.hex(),
+        ('default',(b'\x01\x02'+binary(intent['dataset_id'])+be(0,4)+be(2)).hex()):(b'\x01\x02'+be(0)).hex(),
+        ('receipts',(b'\x01\x31'+binary(intent['producer_slot_id'])+be(2)).hex()):(b'\x01\x31'+be(0)*3).hex()}
+    assert set(additions).isdisjoint(values)
+    values.update(additions); values['default','0101']=intent['target_manifest'][2:]
+    return dict(event='dump-state',rows=model.native_rows(values),sequence=native['sequence']+4)
+
+
+# The exact Display chains are source expectations, qualified only by the real
+# installed profile. No alternative error, stage or successful report is accepted.
+PREPARATION_ERRORS = {
+    'missing-intent': 'producer operation unavailable: Control(InvalidMetadata)',
+    'head': 'producer operation unavailable: Progress(InvalidContext)',
+    'outcome': 'producer operation unavailable: Control(Backend)',
+    'activated-zero': 'producer operation unavailable: Control(Backend)',
+    'target-nonzero': 'initial dictionary batch failed: StateMismatch',
+    'target-closing': 'initial dictionary batch failed: StateMismatch',
+    'target-input': 'initial dictionary batch failed: RequestInput(Identity)',
+    'missing-original': 'initial dictionary batch failed: RequestInput(Missing)',
+}
+PREPARATION_PRECLAIM = {'target-nonzero','target-closing','target-input','missing-original'}
+
+
+def preparation_failure(name,step):
+    return step if step in ('missing-intent','missing-original') else name if step=='refuse' else None
+
+
+def preparation_closed(response,case):
+    name,step=preparation_specification(case)
+    if step in ('abandon','retire'): return process_closed(response,case)
+    failure=preparation_failure(name,step); code=4 if failure else 0
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
+    t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True); number(t['start_ticks'],1,integer=True); number(t['elapsed_seconds'],0,60)
+    assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv(case['operation'],Path(case['config']))
+    assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    if failure:
+        assert response['stdout']=='' and response['stderr']=='error: '+PREPARATION_ERRORS[failure]+'\n'
+        return None
+    assert response['stderr']==''
+    report,=[loads(v) for v in response['stdout'].splitlines()]
+    return report
+
+
+def preparation_no_claim(backend,database):
+    assert set(backend)=={'absence','exact','all'} and backend['exact']==backend['all']==[]
+    a=backend['absence']; assert set(a)=={'database','user','limit_seconds','status','attempts','seconds'}
+    assert a['database']==database and a['user']=='bigbrotr_control' and a['status']=='OBSERVED_ABSENT' and a['limit_seconds']==5
+    assert a['attempts']
+    for v in a['attempts']:
+        assert set(v)=={'seconds','count','backends'}; number(v['seconds'],0,5)
+        assert type(v['count']) is int and v['count']==0 and v['backends']==[]
+    number(a['seconds'],a['attempts'][-1]['seconds'],6)
+
+
+def preparation_control(m,observed,*,success):
+    import initial_succession_oracle as original
+    previous=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    if previous['state']=='active':
+        # The genuine gap's preparer was joined, not released. The next real
+        # claim fences it in the same transaction that creates the new role.
+        current=only(observed['owner_epochs'],role='control',epoch=previous['epoch']+1)
+        released=only(observed['owner_epochs'],role='control',epoch=previous['epoch'])
+        retired=only(observed['role_instances'],role_instance_id=previous['role_instance_id'])
+        new_role=only(observed['role_instances'],role_instance_id=current['role_instance_id'])
+        model.clock(released['released_at_us'],m.window); model.clock(retired['retired_at_us'],m.window)
+        model.fresh_xmin(released['xmin'],m.pg)
+        assert previous['acquired_at_us']<=released['released_at_us']<=retired['retired_at_us']<=new_role['created_at_us']<=current['acquired_at_us']
+        old_role=only(m.pg['role_instances'],role_instance_id=previous['role_instance_id'])
+        assert retired==dict(old_role,retired_at_us=retired['retired_at_us'],xmin=released['xmin'])
+        assert released==dict(previous,state='released',released_at_us=released['released_at_us'],exclusion_method='storage_fenced',
+            exclusion_digest=original.exclusion(previous,current['process_incarnation']),xmin=released['xmin'])
+        previous.update(released); old_role.update(retired)
+        if success: assert int(current['xmin'])>int(released['xmin'])
+        else: assert current['xmin']==new_role['xmin']==released['xmin']
+    if success: m.completed_control(observed)
+    else: retained.failed_control(m,observed)
+
+
+def verify_preparation_context(context,initial,expected):
+    case=context['case']; name,step=preparation_specification(case)
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]); assert context['native_before']==expected[1] and context['inputs_before']==expected[2]
+    assert context['catalog_before']==context['catalog_after']
+    window=context['server_window']; assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True); number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    if step in ('abandon','retire'): return verify(context,initial,expected)
+    if step in ('prepare','prepare-gap'):
+        assert set(context)=={'case','before','native_before','inputs_before','after','native_after','inputs_after','response','server_window',
+            'catalog_before','catalog_after','backend_absence','backends','custody','arguments','gate'}
+        assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+        absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+        assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+        for v in absence['attempts']:
+            number(v['seconds'],0,5); assert type(v['count']) is int and v['count']==len(v['backends'])
+        assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
+        args=[case['operation'],case['database'],'/run/secrets/application',case['config']]
+        if step=='prepare-gap': args.append('/lab/'+case['name']+'-gate')
+        else: assert context['gate'] is None
+        assert context['arguments']==args; number(context['response']['seconds'],0,120)
+        events=journey_closed(context['response'],case['database'])
+        after,result=verify_journey_prepare(events,expected,initial,case,window,context['gate'],compacted_initial=not name.startswith('original-'))
+        same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
+        return result
+    assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
+    for filename,value in context['input_contents'].items():
+        data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
+    assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
+    report=preparation_closed(context['response'],case); failure=preparation_failure(name,step)
+    if failure in PREPARATION_PRECLAIM:
+        preparation_no_claim(context['backend'],case['database']); same(context['after'],expected[0])
+    else:
+        backend_checked(context['backend'],case['database'],expected[0],context['after'])
+        m=model.Model(*expected,window,initial=not expected[0]['initial_ingest_successions'])
+        preparation_control(m,context['after'],success=failure is None); same(m.pg,context['after'])
+    native=expected[1]; compacted=not name.startswith('original-')
+    manifest=bytes.fromhex(model.native_map(native)['default','0101']); epoch=int.from_bytes(manifest[54:62],'big')
+    assert epoch in (1,2)
+    if failure is None:
+        intent,handoff=journey_plan_from_intent(expected[0],initial)
+        assert not expected[0]['initial_ingest_activations']
+        if epoch==1: native=preparation_native(native,expected[0],initial)
+        count='7'; digest=known(initial)['digest']
+        assert report==dict(format='bigbrotr-ingest-recovery/1',state='initial-preparation-completed',dataset_id=intent['dataset_id'][2:],
+            owner_resource_id=intent['owner_resource_id'][2:],producer_slot_id=intent['producer_slot_id'][2:],producer_epoch='2',
+            from_owner_epoch=str(epoch),issued_through='0',reserved_through='0',resolved_original_requests='0' if compacted else count,
+            compacted_requests=count if compacted else '0',recovery_basis='closed-producer-floor-v3' if compacted else 'original-inputs',
+            original_source_closure=dict(producer_epoch='1',issued_through=count,last_complete_sequence='27',sha256=digest),
+            prepared_target=dict(owner_epoch='2',incarnation=intent['target_incarnation'][2:],handoff_sha256=sha(handoff)),
+            native='closed',owner_release='committed',ready=False)
+    assert context['native_after']==native
+    return dict(status='PASS',case=case['name'],result='REFUSED' if failure else 'COMPLETED_EXISTING_PREPARATION',
+        from_owner_epoch=epoch,product_native_writes=native['sequence']-expected[1]['sequence'],
+        native_rows=len(native['rows']),native_sequence=native['sequence'],input_files=len(expected[2]),
+        compacted_requests=7 if not failure and compacted else 0,resolved_original_requests=7 if not failure and not compacted else 0,tables=77)
+
+
+def preparation_controls(context,initial,expected):
+    import json
+    _,step=preparation_specification(context['case'])
+    changes=[('native-write-count',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
+        ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
+        ('historical-head-xmin',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(xmin='4294967000')),
+        ('catalog-change',lambda c:c.update(catalog_after='changed'))]
+    if context['after']['initial_ingest_successions']:
+        changes.append(('preparing-control-attribution',lambda c:only(c['after']['initial_ingest_successions']).update(prepared_by_epoch=999)))
+    if context['inputs_after']:
+        changes.append(('required-input-loss',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after'])))))
+    else: changes.append(('original-reappeared',lambda c:c['inputs_after'].update(initial[2])))
+    if step in ('prepare','prepare-gap'):
+        changes.extend([('unclosed-native',lambda c:c['custody'].update(status='UNKNOWN')),
+            ('wrong-arguments',lambda c:c['arguments'].append('wrong')),('live-backend',lambda c:c['backends'].append(dict(pid=1)))])
+        if step=='prepare-gap': changes.append(('gap-native-dispatched',lambda c:c['gate']['native'].update(sequence=c['gate']['native']['sequence']+4)))
+    else:
+        changes.extend([('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False)),
+            ('wrong-command',lambda c:c['response']['terminal']['command'].append('--successor')),
+            ('unknown-outcome',lambda c:c['response'].update(outcome='UNKNOWN')),
+            ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)]))])
+        if step in ('complete','retry'):
+            def wrong_count(c):
+                v=loads(c['response']['stdout']); v['resolved_original_requests'],v['compacted_requests']=v['compacted_requests'],v['resolved_original_requests']
+                c['response']['stdout']=json.dumps(v)+'\n'
+            changes.append(('swapped-original-compacted-counts',wrong_count))
+    rejected=[]
+    for name,change in changes:
+        c=copy.deepcopy(context); change(c)
+        try: verify_preparation_context(c,initial,expected)
+        except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(name)
+        else: raise AssertionError('accepted altered installed initial preparation evidence: '+name)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def preparation_outcome_statement(initial):
+    slot=only(initial[0]['producer_epochs'])['producer_slot_id'][2:]
+    return "BEGIN;\nSET LOCAL statement_timeout='10s';\nSET LOCAL lock_timeout='5s';\n" \
+        "SET LOCAL session_replication_role=replica;\n" \
+        "DELETE FROM control.producer_outcomes WHERE producer_slot_id=decode('"+slot+"','hex') " \
+        "AND producer_epoch=1 AND request_sequence=3\n" \
+        "RETURNING (to_jsonb(producer_outcomes)||jsonb_build_object('xmin',xmin::text))::text;\nCOMMIT;\n"
+
+
+def preparation_mutation_checked(record,expected,initial,name):
+    if name in ('head','target-nonzero','target-input'): return journey_mutation_checked(record,expected,initial,name)
+    pg,native,inputs=copy.deepcopy(expected)
+    assert record['kind']=='isolated-initial-preparation-'+name
+    assert record['before']==dict(control=pg,native=native,inputs=inputs)
+    if name=='outcome':
+        assert record['statement']==preparation_outcome_statement(initial)
+        removed=only(pg['producer_outcomes'],producer_epoch=1,request_sequence=3)
+        assert loads(record['sql_output'])==removed; pg['producer_outcomes'].remove(removed)
+    else:
+        assert name=='target-closing'
+        intent,_=journey_plan_from_intent(pg,initial)
+        key=(b'\x01\x31'+binary(intent['producer_slot_id'])+be(2)).hex()
+        old=b'\x01\x31'+be(0)*3; new=b'\x02\x31'+be(0)*3+b'\x01'
+        row=only(native['rows'],cf='receipts',key=key); assert row['value']==old.hex()
+        row['value']=new.hex(); native['sequence']+=1
+        response=record['response']; assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+        assert [loads(v) for v in response['stdout'].splitlines()]==[
+            dict(event='successor-history-corruption',phase=phase,mutation='target-closing',cf='receipts',key=key,
+                value=value.hex(),sequence=state['sequence'],rows=state['rows'])
+            for phase,value,state in [('before',old,expected[1]),('after',new,native)]]
+    result=pg,native,inputs
+    assert record['after']==dict(control=pg,native=native,inputs=inputs)
+    return result
+
+
+def preparation_quarantine_checked(q,expected,initial):
+    assert set(q)=={'kind','status','path','name','hex','before','after','quarantine_after'}
+    assert q['kind']=='reversible-required-initial-original-quarantine' and q['status']=='RETAINED'
+    assert q['path']=='original-prepared/quarantined-required'
+    name=only(initial[0]['producer_epochs'])['producer_slot_id'][2:]+'-0000000000000001-0000000000000003.cbor'
+    assert q['name']==name and expected[2]==initial[2]
+    data=bytes.fromhex(q['hex']); assert initial[2][name]==dict(bytes=len(data),sha256=sha(data))
+    before,after,saved=q['before'],q['after'],q['quarantine_after']
+    assert set(before)=={'.',*expected[2]} and set(after)==set(before)-{name} and set(saved)=={'.',name}
+    assert before[name]==saved[name]
+    for filename,identity in expected[2].items():
+        value=before[filename]
+        assert stat.S_ISREG(value['mode']) and stat.S_IMODE(value['mode'])==0o600 and value['links']==1
+        assert {k:value[k] for k in ('bytes','sha256')}==identity
+        if filename!=name: assert after[filename]==value
+    assert {k:v for k,v in before['.'].items() if k!='bytes'}=={k:v for k,v in after['.'].items() if k!='bytes'}
+    assert stat.S_ISDIR(saved['.']['mode']) and stat.S_IMODE(saved['.']['mode'])==0o700
+    inputs=copy.deepcopy(expected[2]); del inputs[name]
+    return expected[0],expected[1],inputs

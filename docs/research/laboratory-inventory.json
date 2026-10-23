@@ -62618,10 +62618,10 @@
         }
       },
       "installed_initial_preparation_work_20261024": {
-        "state": "SOURCE_AND_BUILD_PASS163/54; independent connected fixture authoring, runtime NOT_RUN",
+        "state": "SOURCE_AND_BUILD_PASS163/54; independent fixture integrated/static PASS; connected runtime NOT_RUN",
         "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
-        "runtime_owner": "/root; build drivers73364 joined1 and18296 joined0; exact owned resources stopped; no connected engine run active",
-        "root_source": "This commit freezes reviewed product, native/CLI controls and exact author396fb511 probe blobs. No runtime qualification yet.",
+        "runtime_owner": "/root; all build drivers joined, exact build containers freshly stopped0/PID0/noOOM; borrowed PG freshly stopped0 and no connected run active",
+        "root_source": "Product a0e914e qualified163/54. Frozen author d80 fixture integrated with reviewed explicit profile/origin-shape corrections; runtime remains NOT_RUN.",
         "critical_reviewer": {
           "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-critical-review-v1.json",
           "sha256": "d8ee7e6ba249e6787c7958543eea0737c61f4a1a12bfde3e3f08c88dbb339261"
@@ -62633,10 +62633,15 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
           "branch": "work/installed-initial-preparation",
           "scope": "Existing installed compacted reader/oracle/replay/client parameterized with initial-preparation; original7 real gated/normal setup and fixed synthetic target-closing refusal probe",
-          "state": "Rust2 integrated exactly; Python profile authoring, runtime NOT_RUN",
-          "rust_commit": "396fb5114bbae546494a769dd7c573d870c308d8"
+          "state": "Rust396 integrated; Python d80 integrated with reviewed root corrections. Author now prepares separate additive completion-delivery-fault profile, no runtime.",
+          "rust_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
+          "python_commit": "d80db7333d340d2c73c22771684a74664c37833a"
         },
-        "preservation": "All prior worktrees, datasets, original failures, captures and artifacts retained; no cleanup"
+        "preservation": "All prior worktrees, datasets, original failures, captures and artifacts retained; no cleanup",
+        "fixture_critical_review": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-fixture-critical-review-v1.json",
+          "sha256": "4f56e9e5eaa633febe4db5c37b47d20b1beff0674fdae83511ef22fb1342e566"
+        }
       },
       "installed_initial_preparation_build_20261024": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332",

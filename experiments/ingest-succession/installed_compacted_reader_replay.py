@@ -19,10 +19,10 @@ from installed_family_capture import inventory_checked, physical, spool_checked
 loads,sha,same,only,number = oracle.loads,oracle.sha,oracle.same,oracle.only,oracle.number
 
 
-def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False):
-    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey))
-    assert sum((history_profile,fault_profile,initial_journey))<=1
-    profile=oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
+def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False):
+    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation))
+    assert sum((history_profile,fault_profile,initial_journey,initial_preparation))<=1
+    profile=oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
     root = Path(root).resolve(strict=True); folder = root/profile.DIRECTORY; bound = {}
     def raw(path):
         path = Path(path); assert stat.S_ISREG(path.lstat().st_mode)
@@ -50,24 +50,33 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     assert set(report['database_names_after']) == set(report['database_names_before']) | set(report['databases'])
     started,finished = [oracle.retained.instant(report[k]) for k in ('started_at','finished_at')]
     assert started <= finished
-    pin = oracle.JOURNEY_ORIGIN if initial_journey else oracle.FAULT_ORIGIN if fault_profile else oracle.ORIGIN
-    origin_name=pin['name']; basis = root.parent/pin['run']/pin['subdirectory']; store = basis/pin['store']
-    if initial_journey: seed,initial=oracle.journey_origin_checked(root,raw)
-    elif fault_profile: seed,initial=oracle.fault_origin_checked(root,raw)
+    if initial_preparation:
+        seeds,initial=oracle.preparation_origins_checked(root,raw)
+        pins=oracle.PREPARATION_ORIGINS
     else:
-        seed = oracle.retained.origin_checked(basis,raw,ack_refusals=True); oracle.known(seed)
-    assert set(report['origins']) == {origin_name}; declaration = report['origins'][origin_name]
-    assert set(declaration) == set(pin) | {'pins','files','inputs','native','previous_client','rows','catalog','preserved'}
-    assert declaration['pins'] == pin and all(declaration[k] == v for k,v in pin.items() if k != 'store')
-    assert declaration['store'] == str(store)
-    same(declaration['rows'],seed[0]); same(read(folder/(origin_name+'-original.json')),seed[0])
-    assert declaration['native'] == seed[1] and declaration['inputs'] == seed[2]
-    assert declaration['previous_client'] == read(basis/'result.json')['client']
-    assert sha(declaration['catalog'].encode()) == pin['catalog_sha256']
-    assert physical(store,raw) == declaration['files']; spool_checked(store/'producer-inputs-v1',seed[2],raw,complete=True)
-    assert declaration['preserved'] == read(folder/(origin_name+'-preserved.json')) == dict(
-        rows_unchanged=True,catalog_unchanged=True,native_unchanged=True,inputs_unchanged=True,physical_unchanged=True)
-    absent(origin_name,pin['database'])
+        pin=oracle.JOURNEY_ORIGIN if initial_journey else oracle.FAULT_ORIGIN if fault_profile else oracle.ORIGIN
+        basis=root.parent/pin['run']/pin['subdirectory']
+        if initial_journey: seed,initial=oracle.journey_origin_checked(root,raw)
+        elif fault_profile: seed,initial=oracle.fault_origin_checked(root,raw)
+        else:
+            seed=oracle.retained.origin_checked(basis,raw,ack_refusals=True); oracle.known(seed)
+        seeds={pin['name']:seed}; pins=(pin,)
+    assert set(report['origins'])=={p['name'] for p in pins}
+    for pin in pins:
+        origin_name=pin['name']; seed=seeds[origin_name]
+        basis=root.parent/pin['run']/pin['subdirectory']; store=basis/pin['store']
+        declaration = report['origins'][origin_name]
+        assert set(declaration) == set(pin) | {'pins','files','inputs','native','previous_client','rows','catalog','preserved'}
+        assert declaration['pins'] == pin and all(declaration[k] == v for k,v in pin.items() if k != 'store')
+        assert declaration['store'] == str(store)
+        same(declaration['rows'],seed[0]); same(read(folder/(origin_name+'-original.json')),seed[0])
+        assert declaration['native'] == seed[1] and declaration['inputs'] == seed[2]
+        assert declaration['previous_client'] == read(basis/'result.json')['client']
+        assert sha(declaration['catalog'].encode()) == pin['catalog_sha256']
+        assert physical(store,raw) == declaration['files']; spool_checked(store/'producer-inputs-v1',seed[2],raw,complete=True)
+        assert declaration['preserved'] == read(folder/(origin_name+'-preserved.json')) == dict(
+            rows_unchanged=True,catalog_unchanged=True,native_unchanged=True,inputs_unchanged=True,physical_unchanged=True)
+        absent(origin_name,pin['database'])
     terminal = read(folder/'terminal-containers.json')
     inventory_checked(read(folder/'preflight-containers.json'),terminal,report['client'],report['postgres'])
     assert report['postgres'] == '7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec'
@@ -82,7 +91,9 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     mount = only(client['Mounts'],Destination='/build'); assert mount['RW'] is False
     build = Path(mount['Source']); assert build.is_absolute()
     built,component,qualification = [read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
-    oracle.qualification_checked(built,component,qualification,product_source,initial_journey=initial_journey)
+    oracle.qualification_checked(built,component,qualification,product_source,
+        initial_journey=initial_journey or initial_preparation,initial_preparation=initial_preparation)
+    if initial_preparation: oracle.preparation_qualification(component)
     assert report['build'] == built and report['component'] == component
     data = raw(build.parent/'build/source-manifest.json'); assert sha(data) == built['source_manifest_sha256']
     manifest = loads(data); assert manifest['revision'] == product_source and manifest['tree'] == built['tree']
@@ -100,8 +111,10 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     results = []; previous_time = started
     for clone in report['clones']:
         name = clone['name']; directory = folder/name
+        if initial_preparation:
+            origin_name=oracle.PREPARATION_ORIGIN_NAMES[name]; seed=seeds[origin_name]; declaration=report['origins'][origin_name]
         assert clone['origin'] == origin_name and clone['directory'] == name and clone['status'] == 'PASS'
-        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
+        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey or initial_preparation else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
         assert clone['config'] == '/lab/'+clone['database']+'.toml' and clone['final_backends'] == []
         assert clone['final_case'] == name+'-'+profile.STEPS[name][-1]
         same(read(folder/(name+'-copy-before.json')),seed[0]); same(read(folder/(name+'-migrated.json')),seed[0])
@@ -113,7 +126,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
                 dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
         assert clone['grants'] == [dict(statement=s,stdout='') for s in profile.GRANTS]
         assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
-        if initial_journey: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.JOURNEY_GRANTS)
+        if initial_journey or initial_preparation: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.JOURNEY_GRANTS)
         elif fault_profile: assert declaration['catalog']==clone['catalog_before']
         else: (oracle.history_catalog_checked if history_profile else oracle.catalog_checked)(declaration['catalog'],clone['catalog_before'])
         config = tomllib.loads(raw(folder/Path(clone['config']).name).decode()); ds = only(seed[0]['datasets'])
@@ -128,8 +141,8 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
             lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
         for filename in (name+'-config-validation.json',clone['database']+'-installed-config-validation.json'):
             v = read(folder/filename); assert type(v['returncode']) is int and v['returncode'] == 0 and v['stderr'] == ''; loads(v['stdout'])
-        if initial_journey:
-            checked,previous_time=journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished)
+        if initial_journey or initial_preparation:
+            checked,previous_time=journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,preparation=initial_preparation)
             results.extend(checked)
             continue
         if fault_profile:
@@ -204,7 +217,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     return dict(status=profile.STATUS+'_CAPTURE_REPLAY',source=report['source'],product_source=product_source,
         cases=results,bound_files=bound,not_run=list(profile.NOT_RUN),
         preservation='Original files reread; original SQL/catalog and engine/process closure are captured-run evidence',
-        scope=('Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
+        scope=('Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
 
 
 
@@ -339,31 +352,43 @@ def fault_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,f
     return dict(name=label,oracle=checked,negative_controls=controls),previous_time
 
 
-def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished):
+def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,preparation=False):
+    assert type(preparation) is bool
     name=clone['name']; directory=folder/name; expected=seed; results=[]
+    steps=oracle.PREPARATION_STEPS if preparation else oracle.JOURNEY_STEPS
+    check=oracle.verify_preparation_context if preparation else oracle.verify_journey_context
+    controls_check=oracle.preparation_controls if preparation else oracle.journey_controls
+    specification=oracle.preparation_specification if preparation else oracle.journey_specification
     label=name+'-logical-origin'; absent(label,clone['database'])
     assert read(folder/(label+'-native.json'))==seed[1]
     response=read(folder/(label+'-dump-response.json'))
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']=='' and loads(response['stdout'])==seed[1]
-    for step in oracle.JOURNEY_STEPS[name]:
-        if step=='refuse':
+    for step in steps[name]:
+        if preparation and step=='missing-original':
+            q=read(folder/(name+'-required-quarantine.json'))
+            expected=oracle.preparation_quarantine_checked(q,expected,initial)
+            assert physical(folder/q['path'],raw)==q['quarantine_after']
+            assert raw(folder/q['path']/q['name']).hex()==q['hex']
+            assert physical(directory/'store/producer-inputs-v1',raw)==q['after']
+        if step=='refuse' and not (preparation and name=='activated-zero'):
             label=name+'-mutation'; absent(label,clone['database']); mutation=read(folder/(label+'.json'))
             assert read(folder/(label+'-before-native.json'))==expected[1]
-            expected=oracle.journey_mutation_checked(mutation,expected,initial,name)
+            expected=(oracle.preparation_mutation_checked if preparation else oracle.journey_mutation_checked)(mutation,expected,initial,name)
             assert read(folder/(label+'-after-native.json'))==expected[1]
             for phase in ('before','after'):
                 dump=read(folder/(label+'-'+phase+'-dump-response.json'))
                 assert type(dump['returncode']) is int and dump['returncode']==0 and dump['stderr']==''
                 assert loads(dump['stdout'])==mutation[phase]['native']; number(dump['seconds'],0,120)
             if name=='head': assert raw(folder/(label+'.sql')).decode()==mutation['head']['statement']
-            elif name=='target-nonzero':
+            elif preparation and name=='outcome': assert raw(folder/(label+'.sql')).decode()==mutation['statement']
+            elif name in ('target-nonzero','target-closing'):
                 response=read(folder/(label+'-response.json'))
                 assert {k:response[k] for k in ('returncode','stdout','stderr')}==mutation['response']; number(response['seconds'],0,120)
             else:
                 path=directory/'store/producer-inputs-v1'/mutation['input']['target_name']
                 assert raw(path).hex()==mutation['input']['hex']
                 assert physical(path.parent,raw)==mutation['input']['after']
-        label=name+'-'+step; case=only(report['cases'],name=label); oracle.journey_specification(case)
+        label=name+'-'+step; case=only(report['cases'],name=label); specification(case)
         assert case['status']=='PASS' and case['custody']=='OBSERVED_CLOSED_AND_JOINED' and case['catalog_after']==clone['catalog_before']
         item=lambda suffix:read(folder/(label+'-'+suffix+'.json'))
         context=item('verification')
@@ -379,7 +404,8 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
         assert case['returncode']==context['response']['returncode']
         window=context['server_window']; assert window==case['server_window']
         number(window['before_us'],previous_time,finished,integer=True); previous_time=number(window['after_us'],window['before_us'],finished,integer=True)
-        if step in ('current-refuse','serve'):
+        installed=step not in ('prepare','prepare-gap') if preparation else step in ('current-refuse','serve')
+        if installed:
             assert item('fixture')==context['fixture'] and item('observations')==context['snapshots'] and item('backends')==context['backend']
             assert item('control-backends')==context['backend']['absence']
             identity=read(folder/(label+'.pid.json')); terminal=read(folder/(label+'.terminal.json'))
@@ -390,14 +416,22 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
             assert item('external')==dict(control=context['after'],native=context['native_after'],inputs=context['inputs_after'],backend=context['backend'],catalog=clone['catalog_before'])
             for snapshot in context['snapshots']: assert item(snapshot['stage'])==snapshot['control']
             if step=='serve': assert item('signal')==context['fixture']['signal']
-            assert context['input_contents']=={}
+            if preparation:
+                contents={}
+                for filename,identity in context['inputs_after'].items():
+                    candidates=[directory/'store/producer-inputs-v1'/filename,directory/'quarantined-required'/filename]
+                    values=[raw(p) for p in candidates if p.exists()]
+                    assert len(values)==1 and dict(bytes=len(values[0]),sha256=sha(values[0]))==identity
+                    contents[filename]=values[0].hex()
+                assert context['input_contents']==contents
+            else: assert context['input_contents']=={}
         else:
             assert item('custody')==context['custody'] and item('control-backends')==context['backend_absence'] and item('backends')==context['backends']
             if step=='prepare-gap':
                 assert item('gate')==context['gate']; path=folder/(label+'-gate.go'); meta=path.lstat()
                 assert stat.S_ISREG(meta.st_mode) and stat.S_IMODE(meta.st_mode)==0o600 and meta.st_nlink==1 and raw(path)==b''
-                assert context['response']['command']==['docker','exec','bigbrotr-compacted-initial-'+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
-        result=oracle.verify_journey_context(context,initial,expected); controls=oracle.journey_controls(context,initial,expected)
+                assert context['response']['command']==['docker','exec',('bigbrotr-initial-preparation-' if preparation else 'bigbrotr-compacted-initial-')+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
+        result=check(context,initial,expected); controls=controls_check(context,initial,expected)
         assert case['oracle']==result and case['negative_controls']==controls
         results.append(dict(name=label,oracle=result,negative_controls=controls))
         expected=context['after'],context['native_after'],context['inputs_after']
@@ -414,5 +448,6 @@ if __name__ == '__main__':
     profile.add_argument('--history',action='store_true')
     profile.add_argument('--history-faults',action='store_true')
     profile.add_argument('--initial-journey',action='store_true')
-    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey)
+    profile.add_argument('--initial-preparation',action='store_true')
+    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation)
     with args.output.open('x') as stream: json.dump(result,stream,indent=2); stream.write('\n')

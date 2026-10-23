@@ -44591,7 +44591,7 @@
               }
             },
             "installed_initial_preparation": {
-              "status": "BUILD_a0e914e_PASS163/54; connected fixture authoring/runtime NOT_RUN",
+              "status": "BUILD_a0e914e_PASS163/54; independent installed fixture integrated, connected/runtime NOT_RUN",
               "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
               "scope": "Explicit ingest recover --complete-initial-preparation: authentic existing native1 gap or empty OPEN2 retry, original or compacted predecessor, no new intent/activation/retirement/ACK",
               "implementation": "Dedicated supervised native-first custody and pinned acquisition using shared existing ClaimExit; owned plan retained through teardown; report after native close, Control release and driver join. Explicit sealed native2 structural selector chooses original/compacted without failed-proof fallback. Existing PG/native positive factories, immutable intent/typed closure and deadlines unchanged. Original prepared retry reconstructs without mutable dispatch.",
@@ -44606,8 +44606,8 @@
               "probe_author_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
               "static_checks": "Changed Rust rustfmt, Python runner AST and staged/unstaged diff check PASS; exact ten-file critical snapshot and two probe blobs reconciled",
               "required_new_controls": "PASS163 selected components/54 mandatory controls, including three new structural selector cases, two shared ClaimExit tests and two extended CLI entrypoint matrices. CLI/probe compilation and Clippy PASS.",
-              "fixture": "Authoring --initial-preparation using modern original7/compacted7 origins, genuine post-COMMIT gap gate, fixed synthetic closing refusal; full original/compacted reports and raw binding still NOT_RUN",
-              "remaining": "Exact source build/Clippy/components, independent connected whole-state and raw replay, refusal/delivery scope qualification, fixture review. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate.",
+              "fixture": "Frozen author d80db733 four-file Python profile plus two reviewed root qualification/origin-shape corrections;23 commands/232 planned checker controls/10 clones. Authentic original/compacted existing gaps and prepared retries, immutable intent preservation and isolated refusals. Connected/raw replay NOT_RUN.",
+              "remaining": "Independent installed whole-state connected run and exact raw replay; completion delivery faults/cancellation/lease scope. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate.",
               "build_attempts": [
                 {
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332/verified-build-failure.json",
@@ -44621,6 +44621,19 @@
               "qualified_build": {
                 "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-a0e914e/verified-build.json",
                 "sha256": "7694c0c4f8a20ffcd9d4e84a31d9f9242eb87faa5b92c82b3aa01b75c1a040ff"
+              },
+              "fixture_author_commit": "d80db7333d340d2c73c22771684a74664c37833a",
+              "fixture_author_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-fixture-source-v1.json",
+                "sha256": "f0c05889c1f3affdec6ef94c072920255f974ea5699943149aa11ceeb59c6459"
+              },
+              "fixture_integration_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-fixture-integration-v1.json",
+                "sha256": "c06fea02630b967ea1c58636dcbe46f2ce2fd445650b39b7c5daff0d70715291"
+              },
+              "fixture_critical_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-fixture-critical-review-v1.json",
+                "sha256": "4f56e9e5eaa633febe4db5c37b47d20b1beff0674fdae83511ef22fb1342e566"
               }
             }
           }

@@ -288,13 +288,16 @@ def observe_origin_absence(pg, database, output, name):
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False, compacted_reader=False, compacted_history=False,
-        compacted_initial=False, product_source=None):
+        compacted_initial=False, initial_preparation=False, product_source=None):
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
     assert type(preparation_hole) is bool and (not preparation_hole or producer_ack)
     assert type(compacted_reader) is bool
     assert type(compacted_history) is bool and (not compacted_history or compacted_reader)
     assert type(compacted_initial) is bool and (not compacted_initial or compacted_reader)
+    assert type(initial_preparation) is bool and (not initial_preparation or compacted_initial)
+    if initial_preparation:
+        from installed_compacted_reader_oracle import PREPARATION_RETAINED_ORIGINS
     assert not (compacted_initial and compacted_history)
     if compacted_reader:
         from installed_compacted_reader_oracle import GRANTS, HISTORY_GRANTS, JOURNEY_GRANTS, qualification_checked
@@ -329,6 +332,9 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 fields |= {'origin_format', 'verification_file', 'verification_sha256'}
                 assert origin['verification_file'] == origin['final_case'] + '-verification.json'
                 assert re.fullmatch(r'[0-9a-f]{64}', origin['verification_sha256'])
+            elif initial_preparation and origin in PREPARATION_RETAINED_ORIGINS:
+                fields.add('verification_sha256')
+                assert re.fullmatch(r'[0-9a-f]{64}', origin['verification_sha256'])
             assert set(origin) == fields
             assert all(type(value) is str and value for value in origin.values())
             for field in ('name', 'run', 'subdirectory', 'source_clone', 'final_case'):
@@ -359,7 +365,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     component = read(build / 'component-result.json')
     qualification = read(build.parent / 'qualification.json')
     if compacted_reader:
-        qualification_checked(built,component,qualification,product_source,initial_journey=compacted_initial)
+        qualification_checked(built,component,qualification,product_source,
+            initial_journey=compacted_initial,initial_preparation=initial_preparation)
     elif preparation_hole:
         from installed_progress_replay import preparation_hole_qualification
         preparation_hole_qualification(built,component,qualification)
