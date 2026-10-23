@@ -17,6 +17,10 @@ sha, loads, only, same, number = capture.sha, capture.loads, capture.only, captu
 
 def replay(root, *, ack=False):
     names = oracle.profile_names(ack=ack)
+    if ack:
+        # Use this reader's own pinned source, including under Python -S.
+        # The final bind_ack_modules check remains mandatory.
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'ingest-bootstrap'))
     root = Path(root).resolve(strict=True); folder = root/names['directory']; bound = {}
     def raw(path):
         path = Path(path); assert stat.S_ISREG(path.lstat().st_mode)

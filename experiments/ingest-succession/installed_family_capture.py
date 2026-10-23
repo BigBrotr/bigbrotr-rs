@@ -521,6 +521,10 @@ def replay(root, *, progress=None):
     from installed_family_replay import verify, negative_controls
     assert progress in (None, 'split', 'hole', 'ack')
     ack=progress=='ack'
+    if ack:
+        # Standalone replay does not inherit transition's sibling module path.
+        # bind_ack_modules still authenticates every loaded source file.
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'ingest-bootstrap'))
     selected_clones,selected_cases=(CLONES[:1],CASES[:1]) if ack else (CLONES,CASES)
     if progress is not None:
         import installed_progress_replay as progress_replay
