@@ -62407,7 +62407,7 @@
       },
       "compacted_history_fault_probe_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-history-fault-probe-20261023",
-        "branch": "work/compacted-history-fault-probe",
+        "branch": "DETACHED; prior ref retired",
         "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
         "owner": "compacted_reader_review",
         "model": "gpt-6-astra/xhigh; verified existing agent continuity",
@@ -62419,11 +62419,12 @@
         "author_receipt": {
           "path": ".research/compacted-history-fault-probe-20261023/.research/compacted-history-fault-probe-source-v1.json",
           "sha256": "8c3ab8158a8108c5ef48b4e738dcc89f95d659e60cc7f0694012ba3bac3671b1"
-        }
+        },
+        "status": "Clean detached originalworktree preserved; integrated/qualified; redundantbranchref retired after exact-file reconciliation"
       },
       "compacted_history_fault_fixture_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-history-fault-fixture-20261023",
-        "branch": "work/compacted-history-fault-fixture",
+        "branch": "DETACHED; prior ref retired",
         "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
         "owner": "compacted_reader_fixture",
         "model": "gpt-6-astra/xhigh; verified existing agent continuity",
@@ -62432,7 +62433,7 @@
         "preserved": "Originalc974/ba99 detached worktrees, both failed attempts and all qualified artifacts retained; no cleanup",
         "commit": "c0ec01dcb15bf91b46fb7cf27e67c23e1d28b459",
         "tree": "17c41b6805094eb225615d1aa59c73c35daf1691",
-        "status": "Frozen clean; exact3-file source integrated by root. Runtime NOT_RUN; independent origin review pending final receipt."
+        "status": "Clean detached originalworktree preserved; integrated/qualified; redundantbranchref retired after exact-file reconciliation"
       },
       "compacted_history_fault_probe_build_20261023": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-eec3bb0",
@@ -62456,6 +62457,22 @@
         "space_before_bytes": 278119002112,
         "preserved": "Qualifiedf4d1261 product/6ece history and initial runs, old failures and originalauthorworktrees",
         "free_bytes_after": 277905870848
+      },
+      "compacted_history_fault_installed_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-faults-077dc3c",
+        "source": "077dc3cfe56b4bffcce84e8f00d56bb545fe5c36",
+        "tree": "15339221ce159b2aa8793ea9b18e1aa7fa6e5a5d",
+        "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-eec3bb0",
+        "state": "PASS7connectedcases/87controls/raw5975files; stopped-retained; exact clientexited143/PGexited0/PID0/noOOM; alloriginalpreservationtrue, allcleanup/anomalyarraysempty",
+        "source_endpoint": "Exact qualified6ece history-positive PreparedOpen3; originals/quarantines preserved",
+        "driver": "50181 joined0",
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-faults-077dc3c/installed-compacted-history-faults/result.json",
+        "owner": "ae70e24a29420fd9dc1cbb67995bfc31",
+        "label": "org.bigbrotr.installed-compacted-history-faults",
+        "client": "1ee4118273cebd134b883a087815757251c16f4ef05d9c205e5443c6a0052790",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "raw_replay_driver": "65884 joined0",
+        "raw_replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-faults-077dc3c/raw-replay.json"
       }
     }
   },

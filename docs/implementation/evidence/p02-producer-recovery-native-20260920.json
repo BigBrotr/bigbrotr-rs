@@ -44201,7 +44201,7 @@
                 "initial_transition": "Keep portable handoff bytes; fixed sealed floor/original manifest/N/cut/D/root/sequence/input-stamp basis. Reuse existing compacted cursor for epoch1 or checked two-entry lineage at empty prepared2. Preserve exact+4/zero-write retry, initial NO_SUCCESSOR and each operation COMMIT/ROLLBACK contract. Never fabricate original count or through1 successor-history proof. Advice only; no new implementation/plan."
               },
               "delivery_fault_preparation": {
-                "status": "RUST TEST PROBE source review and exact eec3bb0 build/Clippy/components PASS; Python fixture review ongoing; connected fault runtime NOT_RUN",
+                "status": "PASS_BOUNDED_COMPACTED_HISTORY_DELIVERY_FAULTS;7 connected cases/87 negative controls/raw5975files; no whole-step completion",
                 "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
                 "probe_author_commit": "3d70898d04da963b080cbb790517718ae48fb845",
                 "probe_author_receipt": {
@@ -44213,9 +44213,9 @@
                   "sha256": "5d7e5d1adcd78d64c60d86fc3b71989da14bce14077297cee5a705d151782592"
                 },
                 "scope": "Only existing two Rust example files; explicit argc9 mode, Control-only proxy/direct observer, five targeted stage gates, same pinned cancellation future and real20s Control lease sampled-UTC preage. Actual product errors/cursor/driver outcomes preserved; product code and ordinary entrypoint semantics unchanged.",
-                "fixture": "Frozen c0ec01d three existing Python owners integrated; seven exact qualified-origin clones and87 discriminating controls planned. Ordinary profiles unchanged. Author static/pure checks PASS, connected runtime NOT_RUN; independent origin/copy review pending final receipt.",
-                "checks": "Author formatting/diff and independent probe review PASS; exact eec3bb0 build/Clippy and142 components/39 mandatory controls PASS. Wired baseline/faults NOT_RUN.",
-                "next": "Finish independently reviewed Python fault fixture; reuse protected eec3bb0 ELFs. Wire-observe targeted rollback counters/stages before selecting fault injection targets.",
+                "fixture": "Exact c0ec01d three-file fixture integrated077dc3cf; source review, independent origin/copy review, real-engine seven-clone profile and exact-source raw replay PASS. Ordinary50/454 and13/131 qualification reused where unchanged; no broad rerun.",
+                "checks": "Probe author/root review, fixture author/root and independent origin/copy review PASS. Exacteec3bb0 CLI/probe/Clippy142components39controls PASS. Exact077dc3cf connected7/87/raw5975 PASS. Original failures preserved.",
+                "next": "Smallest native compacted InitialHandoff/prepared-retry/gap bridge, unchanged portablebytes and exact+4/zero-write retry; align PG canonical digest/typedhead and installed consumer only after nativeAPI agreement. Activated/later recovery and other frontier consumers remain separate beforeGC.",
                 "component_qualification": {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-eec3bb0",
                   "source": "eec3bb0159a7a9c98cd5de21f5584504093c207b",
@@ -44253,6 +44253,108 @@
                 "fixture_root_review": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-fixture-root-review-v1.json",
                   "sha256": "12fc76bf82f46076d8c97662a1e8254697a35d7dcc1344c683a425fbe23e84e6"
+                },
+                "fixture_origin_independent_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-origin-independent-review-v1.json",
+                  "sha256": "6696d697ac075a7a1ff0cf5a55c480a01dc14c65ef1d8f81a749758bc1b8e134"
+                },
+                "installed_qualification": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-faults-077dc3c",
+                  "source": "077dc3cfe56b4bffcce84e8f00d56bb545fe5c36",
+                  "tree": "15339221ce159b2aa8793ea9b18e1aa7fa6e5a5d",
+                  "product_source": "eec3bb0159a7a9c98cd5de21f5584504093c207b",
+                  "status": "PASS_SYNTHETIC_COMPACTED_HISTORY_DELIVERY_FAULTS",
+                  "driver": {
+                    "session": 50181,
+                    "joined_exit_code": 0
+                  },
+                  "raw_replay_driver": {
+                    "session": 65884,
+                    "joined_exit_code": 0
+                  },
+                  "cases": [
+                    {
+                      "name": "baseline-read",
+                      "status": "PASS",
+                      "negative_controls": 12,
+                      "error": null,
+                      "positive_proof": true
+                    },
+                    {
+                      "name": "head-after-factory-read",
+                      "status": "PASS",
+                      "negative_controls": 13,
+                      "error": "Progress(InvalidContext)",
+                      "positive_proof": false
+                    },
+                    {
+                      "name": "head-before-final-read",
+                      "status": "PASS",
+                      "negative_controls": 13,
+                      "error": "Progress(InvalidContext)",
+                      "positive_proof": false
+                    },
+                    {
+                      "name": "rollback-before-read",
+                      "status": "PASS",
+                      "negative_controls": 12,
+                      "error": "DeliveryUnknown",
+                      "positive_proof": false
+                    },
+                    {
+                      "name": "rollback-after-read",
+                      "status": "PASS",
+                      "negative_controls": 12,
+                      "error": "DeliveryUnknown",
+                      "positive_proof": false
+                    },
+                    {
+                      "name": "cancel-read",
+                      "status": "PASS",
+                      "negative_controls": 12,
+                      "error": "DeliveryUnknown",
+                      "positive_proof": false
+                    },
+                    {
+                      "name": "expiry-read",
+                      "status": "PASS",
+                      "negative_controls": 13,
+                      "error": "DeliveryUnknown",
+                      "positive_proof": false
+                    }
+                  ],
+                  "raw_bound_files": 5975,
+                  "receipts": {
+                    "raw-replay.json": "553b6ec81170e23fa61bf3ee0176a01308c5fd8fda9aa801a98c625601c1b4c8",
+                    "installed-compacted-history-faults/result.json": "304c1c5aa1547ac9a7ad62db6cf701a779128b5c52e61b623c9cf3d6e124b8c5",
+                    "installed-compacted-history-faults/progress-source.json": "4e4247359d55db4711e6d438baf0bc69a1bc0edb5bca484d5b4967231b610558",
+                    "installed-compacted-history-faults/terminal-containers.json": "7a88d42710d05e50ac1f94206f80a6f0377649bf56d1dc22cf750ce27f46f480"
+                  },
+                  "preservation": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
+                  },
+                  "resources": "Fresh exact owner inspection: client exited143/PID0/noOOM; borrowedPG exited0/PID0/noOOM. cleanup/missing/unrelated/unexpected arrays empty. Details in inventory.",
+                  "measured_expiry": {
+                    "dispatch_remaining_us": 1997557,
+                    "final_hold_remaining_us": -66214,
+                    "returned_remaining_us": -161440
+                  },
+                  "measured_delivery": "Both rollback-before [2,1,1,1] and rollback-after [2,2,1,1] had exact held-close and Control driverfailed=true. Cancel/expiry released held rollback2 with driverfailed=false, unchanged initialcursor and exactDeliveryUnknown. Two typedhead mutations refusedProgress(InvalidContext); no finalproof. Baseline observedR1/R2/R4/R5;R3 not individually gated.",
+                  "not_run": [
+                    "Actual product reclamation/GC and unlink",
+                    "Post-confirmation client-is-closed instruction race",
+                    "Later-original rollback3 individually gated measurement",
+                    "Preparation/activation/recovery or writer publication after compaction",
+                    "Crash/unknown-commit, mixed restore/backup and capacity"
+                  ]
+                },
+                "branch_reconciliation": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-branch-reconciliation-v1.json",
+                  "sha256": "828c8b8ceee5518ba2d552b93fab1d4765745aa31204f4e9d097da06148853ba"
                 }
               }
             }
