@@ -409,6 +409,13 @@ HISTORY_SETUP = ('abandon','retire','dictionary2','source2','retire2','prepare3'
 HISTORY_STEPS = {n:(HISTORY_SETUP[:-1]+('full',) if n == 'history-terminal' else
     HISTORY_SETUP+(('full','partial','absent') if n == 'history-positive' else ('refuse',)))
     for n in HISTORY_CLONES}
+HISTORY_ERRORS = {
+    'history-strict':'Native(Native(StateMismatch))',
+    'history-missing-required':'Native(Native(RequestInput(Missing)))',
+    'history-incompatible-head':'Progress(InvalidContext)',
+    'history-corrupt-residual':'Native(Native(RequestInput(Conflict)))',
+    'history-missing-pending':'Native(Native(StateMismatch))',
+}
 HISTORY_FUNCTIONS = (
     'veto_unactivated_producer()', 'require_prepared_initial_successor(bytea)',
     'guard_initial_ingest_succession()',
@@ -826,7 +833,7 @@ def verify_history_probe(events,expected,seed,case,window):
             observation=dict(prepared=True,target_epoch=3,retired_at_us=None))
     else:
         stage='compacted-initial' if corrupt else 'inspect' if refusal else 'complete'
-        error='Progress(InvalidContext)' if clone=='history-incompatible-head' else 'Native(Native(StateMismatch))' if refusal else None
+        error=HISTORY_ERRORS[clone] if refusal else None
         assert t.take('result')==dict(event='lineage-history-result',stage=stage,epoch=1 if corrupt else None,sequence=None,error=error)
     history_end(t,backend,success=not refusal,transition=prepare)
     return (m.pg,m.native,m.inputs),dict(status='PASS',case=case['name'],snapshots=t.snapshots,tables=77,

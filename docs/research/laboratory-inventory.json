@@ -62292,6 +62292,53 @@
         "state": "STOPPED_RETAINED; CLI/probe and142components PASS; Clippy FAIL; no connected runtime",
         "space_before_allocation_bytes": 280224395264,
         "preserved": "Prior artifacts and exact author worktrees; no cleanup"
+      },
+      "compacted_successor_history_corrected_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261",
+        "source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+        "tree": "77116e5061243f1f7d124b52c75ef8da90dfadc2",
+        "driver": "3541 joined exit0",
+        "owner": "40eb87270a015f72c2ff9c7f7bf859dd",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "37f007492fa25aab627291920903306d2dabe293c0c9868e304e2dc094e6da55"
+          },
+          {
+            "name": "native",
+            "id": "0e6d3c43c624fd368b145690b222f281c08da6755b5075dec432e3004396bfe8"
+          }
+        ],
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/resources.json",
+          "sha256": "27d0d6d80803456f4045db546410de8600052a0d2dc253e2d4b6447bd349f1fa"
+        },
+        "state": "STOPPED_RETAINED; build/Clippy/142components PASS; all39mandatory controls"
+      },
+      "compacted_successor_history_installed_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261",
+        "source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+        "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/out/artifacts",
+        "driver": "72633 joined exit1",
+        "state": "STOPPED_RETAINED FAIL_ORACLE_ERROR_EXPECTATION;28commands/256controls passed;29th correct refusal had wrong expected literal; remaining cases NOT_RUN",
+        "owner": "88595a9a27b93d43d767243e23becc86",
+        "label": "org.bigbrotr.installed-compacted-history",
+        "client": "81c4611a2e727e64dedab2549eb77bab2c91d942be1d3473a2cac8de4325c4f0",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "preserved": "All exact-source worktrees, pinned ACK origin, new derivatives and original build failure remain",
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261/installed-compacted-history/result.json",
+          "sha256": "7f07d027b8488e840d3c6d98229ae26e3d0ba63a3d873dd4882c4663f95fc13c"
+        },
+        "preservation": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        }
       }
     }
   },

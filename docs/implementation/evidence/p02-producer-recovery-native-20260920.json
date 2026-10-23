@@ -43915,13 +43915,13 @@
                 "source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
                 "owner": "apps/bigbrotr/src/storage/rocks/lineage_effects.rs::require_correction_ancestor",
                 "finding": "Traversal has a literal64-iteration cap justified by original spool cardinality. Mixed compacted input accounting permits initial floor N<=64 plus up to64 required later originals independently, so a valid retained correction ancestry may exceed64. This is possible conservative refusal, not false acceptance. Existing124tests do not exercise the >64 mixed lineage boundary.",
-                "status": "CONFIRMED at7de7066; bounded correction independently source-reviewed in c97459b; focused native runtime NOT_RUN",
+                "status": "RESOLVED_IN_SOURCE_AND_FOCUSED_NATIVE_TEST atf4d1261; original7de7066 scope limitation preserved",
                 "required": "Prove an independent retained logical64 invariant or derive a finite bound from actual retained issued counts, retain admission read/cancellation budgets and physical64file/32MiB caps, add discriminating boundary coverage if changed.",
                 "proposed_disposition": "Checked retained issued-count sum capped at N+64, preserving physical/read/cancellation bounds; six new native compacted-history tests include68 logical requests/64 physical originals and65-vertex correction chain with disconnected-chain refusal. Exact source/review under connected_history; qualification pending."
               }
             },
             "connected_history": {
-              "status": "INTEGRATED SOURCE;142components PASS at1b399e9, Clippy correction awaiting new exact-source qualification",
+              "status": "f4d1261 product/build/Clippy/142components PASS; connected original attempt FAIL due verifier literal, corrected diagnostic PASS",
               "author_commit": "c97459b65ef1f3b96942e5a2adbde618e5b19a9b",
               "author_tree": "2d07e4b11e965ccd4ab12306bb46dec703620b33",
               "author_receipt": {
@@ -43939,7 +43939,7 @@
               "scope": "Explicit compacted initial history completion under existing historical SQL authority; separate compacted count and unchanged original replay for later epochs. Full current-head census and exact retained typed epoch1 head. Unadapted capability consumers refuse before exposing writer, frontier, handoff or Archive authority. No GC operation.",
               "integration_note": "Exact19 product-author files except two documented comment corrections; exact13 fixture-author files; root probe and runner identities match independent review. Both author worktrees clean and preserved.",
               "checks": "Independent source reviews, exact author reconciliation, Rustfmt25files, changed Python AST10files, artifact/handoff documentation and diff checks PASS; build/Clippy/components/connected runtime NOT_RUN",
-              "next": "Commit narrow Clippy/test warning correction, rerun existing producer-floor at its exact source, then connected50command history profile/raw replay.",
+              "next": "Commit Python-only expected-error correction, reuse exactf4d1261 ELFs with a fresh existing --history run and then raw replay. No native rebuild needed because product/probe/dependencies unchanged.",
               "fixture_author_commit": "ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f",
               "fixture_author_tree": "98e90934278c253ac7a238f06d78d90da667dd6a",
               "fixture_author_receipt": {
@@ -43992,6 +43992,96 @@
                   ],
                   "correction": "Keep inline bounded state with narrowly reasoned Clippy allowance, matching existing AckResolution; existing full wrapper/cursor scratch size assertions remain. Remove ineffective drop of Copy HistoricalInitial in one test; retain actual legacy permit drop. Independent product-author review confirms both narrow deltas; no semantic changes.",
                   "custody": "Both owned containers freshly stopped/PID0/noOOM; fetch exit0/native exit1; inventory_changed[]; all original artifacts retained."
+                }
+              ],
+              "component_qualification": {
+                "source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+                "tree": "77116e5061243f1f7d124b52c75ef8da90dfadc2",
+                "status": "PASS_COMPACTED_PREFIX_COMPONENTS",
+                "driver": "3541 joined exit0",
+                "counts": {
+                  "compacted_prefix": 7,
+                  "compacted_progress": 1,
+                  "successor_history": 5,
+                  "archive_retained_frontier": 7,
+                  "initial_reconstruction": 102,
+                  "request_inputs": 20
+                },
+                "mandatory_controls": {
+                  "archive_retained_frontier": 2,
+                  "successor_history": 5,
+                  "compacted_progress": 1,
+                  "compacted_prefix": 7,
+                  "request_inputs": 12,
+                  "initial_reconstruction": 12
+                },
+                "missing_controls": {},
+                "executables_sha256": {
+                  "native_components": "05c9286a4cd1f19e84ce64b7058aba93a7ade67370cd6bef5974a22805be9058",
+                  "ingest_bootstrap_probe": "d801509a2c52d7b4ba43c2e5af690f8a95c0731e67863de5fbbba71cbb39e337",
+                  "bigbrotr": "cdd34d7d16977d890f7b20b3e92fd891ba4b1176eceef97cf57578fe4c785963"
+                },
+                "source_manifest_sha256": "435b6986f211072c7dad8659bc0cad468b44fea44c67e1ada51f7d07966154c6",
+                "receipts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/resources.json",
+                    "sha256": "27d0d6d80803456f4045db546410de8600052a0d2dc253e2d4b6447bd349f1fa"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/out/build-checks/result.json",
+                    "sha256": "4419e1fabc54e5f42134942220563299ae110c249f251ce22b5395a36aabc9f3"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/out/artifacts/component-result.json",
+                    "sha256": "518c39d497da4f893d1aad9077ce55f26f42876e1adfe56fb293f7b3a91b00de"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/out/qualification.json",
+                    "sha256": "1fd25c849799a00e4c1e99215be81bec7c813bdd10946c206dc7eca6b4880303"
+                  }
+                ],
+                "custody": "Both owned containers freshly exited0/PID0/noOOM; inventory_changed[]",
+                "scope": "CLI/probe compilation, Clippy and142 tests PASS; all39 mandatory controls present. Connected history running separately; no GC/physical-loss/backup/capacity claim."
+              },
+              "installed_attempts": [
+                {
+                  "source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+                  "product_source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261",
+                  "status": "FAIL_ORACLE_ERROR_EXPECTATION",
+                  "driver": "72633 joined exit1",
+                  "completed_commands": 28,
+                  "completed_negative_capture_controls": 256,
+                  "failing_case": "history-missing-required-refuse",
+                  "actual": "Correct refusal at inspect: Native(Native(RequestInput(Missing))); no proof, native closed and both drivers joined. Oracle incorrectly predicted generic StateMismatch. Remaining clones NOT_RUN.",
+                  "preservation": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
+                  },
+                  "custody": "Client freshly exited143/PID0/noOOM; borrowedPG freshly exited0/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty. Captures, clones, quarantine and original failure preserved.",
+                  "receipts": [
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261/installed-compacted-history/result.json",
+                      "sha256": "7f07d027b8488e840d3c6d98229ae26e3d0ba63a3d873dd4882c4663f95fc13c"
+                    },
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261/installed-compacted-history/progress-source.json",
+                      "sha256": "c3603fab246757ad7d163a1144237a1bacf0e2c6c277dd20eed1c15cdf3b610c"
+                    },
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261/installed-compacted-history/history-missing-required-refuse-verification.json",
+                      "sha256": "bfe513db69a82ec3f738af205d5acc6099e29a0ae46b3a03f8ecfa5ca517fcee"
+                    }
+                  ],
+                  "correction": "Independently trace exact source errors: missing required input=>RequestInput(Missing) at inspect; corrupt optional residual=>RequestInput(Conflict) at compacted-initial epoch1; strict/pending StateMismatch and incompatible typed Progress(InvalidContext) unchanged. One exact literal per refusal, no broadened acceptance.",
+                  "diagnostic": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-input-error-diagnostic-v1.json",
+                    "sha256": "44bb265a528c63d1bd1a1ea972311bfd84c93775abe081ccea696cff125d2aa6"
+                  },
+                  "diagnostic_scope": "Corrected verifier accepts preserved failing case against prior independently PASS prepare3 and derived mutations; all9 capture controls plus wrong generic error refuse. Original full run remains FAIL; no retroactive qualification."
                 }
               ]
             }
