@@ -20,12 +20,15 @@ THREE_EVENTS = (
 )
 
 SUCCESSOR_EVENTS=(THREE_EVENTS[0],('7815649941b6434d7c525bb633ff461fb7ee341954f1bcb0bce2c9535c2bb7f7','228da010e18049c96e25f37ccb37c0704c174756d2110306a2734492270807ac'),THREE_EVENTS[2])
+HOLE_EVENTS=(*THREE_EVENTS,SUCCESSOR_EVENTS[1])
 
-def three_events(events, *, successor=False):
+def three_events(events, *, successor=False, preparation_hole=False):
     """Closed transport inputs only; no signature or checkpoint qualification."""
-    assert isinstance(events, (tuple, list)) and len(events)==3
+    assert isinstance(events, (tuple, list)) and len(events)==(4 if preparation_hole else 3)
     assert type(successor) is bool
-    for event, (ident, digest) in zip(events, SUCCESSOR_EVENTS if successor else THREE_EVENTS):
+    assert type(preparation_hole) is bool and not (successor and preparation_hole)
+    pins=HOLE_EVENTS if preparation_hole else SUCCESSOR_EVENTS if successor else THREE_EVENTS
+    for event, (ident, digest) in zip(events, pins):
         assert set(event)=={'id','pubkey','created_at','kind','tags','content','sig'}
         assert event['id']==ident and event['kind']==1
         raw=json.dumps(event,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()
@@ -49,8 +52,10 @@ def ack_events(directory, *, successor=False):
             value[key] = item
         return value
     value = json.loads(path.read_text(), object_pairs_hook=closed)
-    assert set(value) == {'format', 'events'} and value['format'] == 'bigbrotr-ack-events/1'
-    return three_events(value['events'],successor=successor)
+    assert set(value) == {'format', 'events'}
+    assert value['format'] in ('bigbrotr-ack-events/1','bigbrotr-ack-preparation-hole-events/1')
+    return three_events(value['events'],successor=successor,
+        preparation_hole=value['format']=='bigbrotr-ack-preparation-hole-events/1')
 
 
 class SplitEvents:
@@ -58,11 +63,15 @@ class SplitEvents:
         from installed_family_client import progress_release
         path = directory / 'progress-context.json'
         assert stat.S_ISREG(path.lstat().st_mode) and path.stat().st_size <= 256
-        assert json.loads(path.read_text()) == dict(
-            format='bigbrotr-progress-context/1' if event_sequence is None else 'bigbrotr-ack-context/1',kind=kind)
+        context=json.loads(path.read_text())
+        self.preparation_hole=context.get('format')=='bigbrotr-ack-preparation-hole-context/1'
+        assert not self.preparation_hole or kind=='initial' and event_sequence is not None
+        assert context == dict(format='bigbrotr-ack-preparation-hole-context/1' if self.preparation_hole
+            else 'bigbrotr-progress-context/1' if event_sequence is None else 'bigbrotr-ack-context/1',kind=kind)
         self.read_release = progress_release
         self.directory, self.event = directory, event
-        self.event_sequence = None if event_sequence is None else three_events(event_sequence)
+        self.event_sequence = None if event_sequence is None else three_events(event_sequence,
+            preparation_hole=self.preparation_hole)
         self.mutation, self.proof_sent = None, False
 
     def select(self, ident, number):
@@ -76,13 +85,22 @@ class SplitEvents:
         if release is None:
             return None
         self.proof_sent = True  # A partial send is never replayed on another REQ.
-        return 'proof-only', release
+        return 'continuation' if self.preparation_hole else 'proof-only', release
 
     def describe(self, trace, selected):
         phase, release = selected
         if self.event_sequence is not None:
-            values=three_events(self.event_sequence)
-            trace.update(progress_phase=phase, frames=['signed']*3+['EOSE'],
+            values=three_events(self.event_sequence,preparation_hole=self.preparation_hole)
+            labels=['signed']*3
+            if self.preparation_hole:
+                a,b,c,d=values
+                values=(a,{'id':a['id']},b) if phase=='mutation' else (c,d,b)
+                labels=['signed','malformed-event','signed'] if phase=='mutation' else ['signed']*3
+                # Retain the exact rejected object, not just a hash or a claimed
+                # refusal label. EVENT envelope/correlation uses the actual REQ.
+                trace['event_json_hex']=[json.dumps(value,ensure_ascii=False,
+                    separators=(',',':')).encode().hex() for value in values]
+            trace.update(progress_phase=phase, frames=labels+['EOSE'],
                 event_ids=[value['id'] for value in values], event_json_sha256=[hashlib.sha256(json.dumps(
                     value,ensure_ascii=False,separators=(',',':')).encode()).hexdigest() for value in values],
                 sent_at_us=time.time_ns()//1000)

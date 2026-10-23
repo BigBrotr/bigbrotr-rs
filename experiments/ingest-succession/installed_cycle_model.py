@@ -78,11 +78,18 @@ PINS = {'activated': {'name': 'activated',
            'store': 'later/store'}}
 
 class Model:
-    def __init__(self, before, native, inputs, window):
+    def __init__(self, before, native, inputs, window, *, initial=False):
         self.pg, self.native, self.inputs = copy.deepcopy((before, native, inputs))
         self.ds = only(self.pg['datasets'])
-        self.legacy = only(self.pg['initial_ingest_successions'])
-        self.resource, self.slot = (self.legacy[k] for k in ('owner_resource_id', 'producer_slot_id'))
+        assert type(initial) is bool
+        if initial:
+            assert not self.pg['initial_ingest_successions']
+            producer=only(self.pg['producer_epochs'],producer_epoch=1)
+            self.legacy=None
+            self.resource,self.slot=producer['owner_resource_id'],producer['producer_slot_id']
+        else:
+            self.legacy = only(self.pg['initial_ingest_successions'])
+            self.resource, self.slot = (self.legacy[k] for k in ('owner_resource_id', 'producer_slot_id'))
         self.window = window
         self.ids = set(re.findall(r'\\\\x([0-9a-f]{32})"', encoded(before).decode()))
 

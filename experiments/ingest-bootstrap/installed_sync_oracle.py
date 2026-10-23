@@ -62,14 +62,15 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
 
 def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1,
              *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb',
-             additional_events=(), acknowledge=False):
+             additional_events=(), acknowledge=False, preparation_hole=False):
     assert type(acknowledge) is bool
-    # Optional two additional distinct events, each with independent clock and
-    # body-digest inputs. This remains an effect encoder: no ACK is inferred.
+    assert type(preparation_hole) is bool and (not preparation_hole or acknowledge)
+    # Two additional distinct events, or three for the explicit preparation
+    # hole, each with independent clocks/digests. No ACK is inferred.
     if additional_events:
-        assert isinstance(additional_events,(tuple,list)) and len(additional_events)==2
+        assert isinstance(additional_events,(tuple,list)) and len(additional_events)==(3 if preparation_hole else 2)
         assert received is not None
-        assert len({event['id'],*(item[0]['id'] for item in additional_events)})==3
+        assert len({event['id'],*(item[0]['id'] for item in additional_events)})==(4 if preparation_hole else 3)
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'ingest']
     domains = {r['dictionary_kind']: bytes.fromhex(r['allocation_domain'][2:])
@@ -116,7 +117,7 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         rows['default', prefix+key] = prefix+src_key(n)+refs[n][1]
 
     def dictionary(n, kind, schema, value, at, *, ordinal=1):
-        assert type(ordinal) is int and 1<=ordinal<=3
+        assert type(ordinal) is int and 1<=ordinal<=(4 if preparation_hole else 3)
         descriptor = [1, schema, 1, value]
         mapping = [ref(kind,ordinal), *descriptor]
         fact(n, 'dictionary', mapping, at)

@@ -279,12 +279,13 @@ while True:
     return selected
 
 
-def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False):
+def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False, preparation_hole=False):
     assert type(progress) is bool and (not progress or (name == 'sync-signed' and gap_schema is None))
     assert type(ack) is bool and (not ack or progress)
+    assert type(preparation_hole) is bool and (not preparation_hole or ack)
     if ack:
         from installed_progress_replay import require_frozen_profile
-        require_frozen_profile(ack=True)
+        require_frozen_profile(ack=True,preparation_hole=preparation_hole)
     assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES + ['sync-gap-uncorrected']
     expiry = name in EXPIRY_CASES
     full_window = name in WINDOW_CASES
@@ -329,7 +330,8 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
         migration_config = lab.config(output, dict(pg, client=client), database,
             endpoint='127.0.0.1:5432', boundary='loopback')
         setup = progress_upgrade(pg, client, output, database, migration_config, name, rows, ack=ack)
-        progress_capture = InitialCapture(pg, database, output, name, rows, setup,ack=ack)
+        progress_capture = InitialCapture(pg, database, output, name, rows, setup,ack=ack,
+            preparation_hole=preparation_hole)
         rows = progress_capture.rows
     before = rows(database)
     assert {23, 24, 26} <= {r['migration'] for r in before['schema_versions']}
@@ -374,7 +376,7 @@ def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=F
     shutil.copy2(SOURCE/'tests/fixtures/ingest/import-event.jsonl', directory/'event.jsonl')
     if progress:
         from installed_progress_context import helpers
-        helpers(output, directory, 'initial', ack=ack)
+        helpers(output, directory, 'initial', ack=ack,preparation_hole=preparation_hole)
     if name == 'sync-peer-refusals' or full_window:
         from installed_sync_client import REFUSAL_SHA256
         artifact = SOURCE/'tests/fixtures/acquisition/selector-events.json'
@@ -490,8 +492,8 @@ finally:
     if progress:
         from installed_progress_context import phases
         phases(pg, database, directory, progress_capture.raw_rows,
-            progress_capture.snapshot, 'initial', prefix, ack=ack)
-    wanted_count = 6 if ack else 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
+            progress_capture.snapshot, 'initial', prefix, ack=ack,preparation_hole=preparation_hole)
+    wanted_count = 7 if preparation_hole else 6 if ack else 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
     def completed():
         assert not (directory/'relay-error.json').exists(), 'independent relay failed'
         assert not Path(str(prefix)+'.terminal.json').exists(), 'initial owner ended early'
@@ -615,6 +617,8 @@ finally:
     assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
     progress_result = (progress_capture.finish(initialized, transcript, ended, selected_quiet, native_result)
         if progress else {})
+    if preparation_hole:
+        progress_result['recovery']=progress_capture.recover(client,config)
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,
         websocket_rounds=len(transcript), same_owner_renewed=True, signal_seconds=signal_elapsed,
         selected_quiet_signal=selected_quiet,

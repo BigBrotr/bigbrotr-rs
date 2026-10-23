@@ -144,14 +144,15 @@ def process_closed(response, case):
     return activated, stopped
 
 
-def capture_progress_observation(directory, phase, observation, wire):
+def capture_progress_observation(directory, phase, observation, wire, *, preparation_hole=False):
     """Retain a phase cut; this does not validate any checkpoint or native proof.
 
     The installed owner must supply its complete existing SQL/input snapshot.
     Only the final independent progress oracle can establish durable progress.
     Never open native state while Serve is alive to obtain this observation.
     """
-    assert phase in ('mutation', 'proof-only')
+    assert type(preparation_hole) is bool
+    assert phase in ('mutation', 'continuation' if preparation_hole else 'proof-only')
     assert observation['stage'] == 'progress-' + phase
     assert set(observation) == {'stage', 'server_us', 'observed_by_us', 'control', 'inputs'}
     assert wire['progress_phase'] == phase and wire['completion'] == 'request-and-websocket-close'

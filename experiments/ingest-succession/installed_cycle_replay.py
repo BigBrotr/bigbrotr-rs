@@ -27,6 +27,7 @@ CASES = tuple(n + '-' + step for n in CLONES for step in STEPS)
 STATUS = 'PASS_INSTALLED_SUCCESSOR_CYCLE'
 STATES = dict(recover='successor-positive-outcomes-resolved', source='successor-source-closed',
     abandon='successor-acquisition-abandoned', retire='successor-retired')
+STATES['recover-initial']='positive-outcomes-resolved'
 CONTEXT_FIELDS = {'case','before','after','native_before','native_after','inputs_before','inputs_after',
     'input_contents','snapshots','response','fixture','server_window','backend','catalog_before','catalog_after'}
 
