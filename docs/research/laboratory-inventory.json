@@ -62404,6 +62404,32 @@
           "inputs_unchanged": true,
           "physical_unchanged": true
         }
+      },
+      "compacted_history_fault_probe_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-history-fault-probe-20261023",
+        "branch": "work/compacted-history-fault-probe",
+        "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
+        "owner": "compacted_reader_review",
+        "model": "gpt-6-astra/xhigh; verified existing agent continuity",
+        "state": "CLEAN author freeze; two-file delta independently reviewed and integrated; build/runtime NOT_RUN",
+        "scope": "Only existing bootstrap/history Rust test-probe seams for proxy, staged gates, cancellation and genuine lease preage; no product source/engines",
+        "preserved": "Originalc974/ba99 detached worktrees, both failed attempts and all qualified artifacts retained; no cleanup",
+        "commit": "3d70898d04da963b080cbb790517718ae48fb845",
+        "tree": "e25dd831f2ef4e5e9e6b00f4b77ada8f368e88f6",
+        "author_receipt": {
+          "path": ".research/compacted-history-fault-probe-20261023/.research/compacted-history-fault-probe-source-v1.json",
+          "sha256": "8c3ab8158a8108c5ef48b4e738dcc89f95d659e60cc7f0694012ba3bac3671b1"
+        }
+      },
+      "compacted_history_fault_fixture_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-history-fault-fixture-20261023",
+        "branch": "work/compacted-history-fault-fixture",
+        "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
+        "owner": "compacted_reader_fixture",
+        "model": "gpt-6-astra/xhigh; verified existing agent continuity",
+        "state": "ACTIVE bounded source work; no runtime/build delegated",
+        "scope": "Existing Python harness/oracle/raw replay explicit seven-clone fault profile; pinned qualified compacted endpoint reuse; no Rust/product/engines",
+        "preserved": "Originalc974/ba99 detached worktrees, both failed attempts and all qualified artifacts retained; no cleanup"
       }
     }
   },

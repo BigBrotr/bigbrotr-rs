@@ -9,8 +9,10 @@ P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed produ
 Main implementation/harness revision is `6ece98c868e842d46fc4e13a359d19dd9a924d76`;
 this record commit saves its completed qualification. Compiled product/probe is
 `f4d1261fe85d69cec003a5f4266fdf1025824485`; later changes are only Python/docs.
-All local work is root-owned; next push includes these coherent commits.
-Last verified remote before this record is5742726. No GC writer/unlink is exposed.
+Main/remote equality verified at `917d2e4928ca86a70c2cef4dc0708a67b18774c8`
+after push driver96458 joined0. Canonical source adds only the independently reviewed two-file fault probe
+(author3d70898), plus root report/checkpoint/inventory updates; Python fixture
+work remains isolated below. No GC writer/unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -46,16 +48,27 @@ No cache/dataset cleanup occurred.
 
 Product c97459b and fixture ba99b7a original worktrees are clean/detached after
 exact integration reconciliation; only their redundant branch refs were retired.
-Both agents completed their tasks. Further boundary advice was read-only, is in
-the report, and has no implementation/runtime claim. Original architecture
-receipt retains its exact hash. No autonomous writer/process is assigned.
+Both agents completed the qualified slice. The next task implements only the
+explicit fault profile in separate .research/compacted-history-fault-probe-20261023
+and .research/compacted-history-fault-fixture-20261023 worktrees, base917d2e4.
+Product/review agent froze3d70898 and root independently reviewed its exact two-file
+probe delta. Fixture agent continues existing Python helpers. No product source
+change, engines or builds delegated. Models reuse
+verified Astra/xhigh continuity. Original architecture receipt remains unchanged.
 
 ## Precise next action and open boundaries
 
-Verify/push this coherent qualification record to main, then qualify connected
-rollback/cancellation/lease/head-change delivery faults. Reuse the existing
-rollback proxy and history harness; establish one wired positive counter/stage
-baseline before fault selection. Preserve current successful source/evidence.
+Freeze/build the reviewed Rust probe through existing producer-floor while the
+Python fixture is authored/reviewed. Reuse those ELFs for Python-only corrections.
+Then qualify the coordinated test-only fault profile. Agreed argc9 mode is
+successor-lineage-compacted-fault with DB/SECRET/CONFIG/METADATA/PORT/MODE/PREFIX.
+Use seven fresh clones of the exact qualified6ece PreparedOpen3 endpoint: wired
+baseline, two between-transaction head mutations, before/after rollback delivery
+loss, cancellation and genuine Control expiry. Normal50/454 profile stays intact.
+First wire-observe targeted rollback counters/stages, then select faults; no
+source-predicted counter is already measured. Root owns integration and runtime.
+Unchanged proxy/base owner reads are bound in
+.research/producer-checkpoint-ack-review-20261020/compacted-history-fault-root-review-work-v1.json.
 
 Then adapt initial handoff/prepared retry/native gap and epoch2 activation,
 activated/later recovery, live frontier, retained Archive frontier and empty

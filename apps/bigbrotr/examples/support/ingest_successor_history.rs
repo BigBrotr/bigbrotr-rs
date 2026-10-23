@@ -3,8 +3,8 @@
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
-        InitialHistoryRequest, PolicySnapshot, SuccessorHistory, SuccessorReplayRequest,
-        VerifiedSuccessorHistory,
+        InitialHistoryRequest, PolicySnapshot, SuccessorHistory, SuccessorHistoryResolution,
+        SuccessorReplayRequest, VerifiedSuccessorHistory,
     },
     rocks::{
         store::{
@@ -79,15 +79,287 @@ impl Backend {
     }
 }
 
+// Finite test seams only. The external fixture owns proxy loss/head mutation;
+// these gates observe real product boundaries and never manufacture a result.
+struct HistoryFault {
+    port: u16,
+    mode: &'static str,
+    prefix: PathBuf,
+    cancel: PathBuf,
+}
+impl HistoryFault {
+    const STAGES: [&'static str; 5] = [
+        "after-factory",
+        "before-compacted",
+        "compacted-returned",
+        "before-final",
+        "final-returned",
+    ];
+    const POLL: Duration = Duration::from_millis(5);
+    const GATE_TIMEOUT: Duration = Duration::from_secs(10);
+
+    fn new(port: u16, mode: &str, prefix: &Path) -> Self {
+        let mode = match mode {
+            "baseline" => "baseline",
+            "wire" => "wire",
+            "head-after-factory" => "head-after-factory",
+            "head-before-final" => "head-before-final",
+            "cancel" => "cancel",
+            "expiry" => "expiry",
+            _ => panic!("unknown compacted history fault mode"),
+        };
+        assert_ne!(port, 0);
+        let text = prefix.to_str().expect("UTF-8 gate prefix");
+        assert!(prefix.is_absolute() && text.len() <= 512 && prefix.file_name().is_some());
+        assert!(prefix.components().all(|part| matches!(
+            part,
+            std::path::Component::RootDir | std::path::Component::Normal(_)
+        )));
+        assert!(prefix.parent().unwrap().is_dir());
+        let mut result = Self {
+            port,
+            mode,
+            prefix: prefix.into(),
+            cancel: PathBuf::new(),
+        };
+        result.cancel = result.signal("cancel");
+        // Refuse stale/unsafe signals before native inspection or Control claim.
+        for suffix in ["go", "cancel"] {
+            assert!(!fault_signal(&result.signal(suffix)).expect("initially absent signal"));
+        }
+        for stage in Self::STAGES {
+            assert!(
+                !fault_signal(&result.signal(&format!("{stage}.go")))
+                    .expect("initially absent baseline signal")
+            );
+        }
+        result
+    }
+    fn signal(&self, suffix: &str) -> PathBuf {
+        let mut name = self.prefix.as_os_str().to_owned();
+        name.push(".");
+        name.push(suffix);
+        PathBuf::from(name)
+    }
+    async fn checkpoint(&self, stage: &'static str, error: Option<String>) -> Result<(), Failure> {
+        assert!(Self::STAGES.contains(&stage));
+        emit(serde_json::json!({"event":"lineage-history-fault-stage",
+            "mode":self.mode,"stage":stage,"error":error}));
+        let suffix = if self.mode == "baseline" {
+            Some(format!("{stage}.go"))
+        } else if (self.mode == "head-after-factory" && stage == "after-factory")
+            || (self.mode == "head-before-final" && stage == "before-final")
+        {
+            Some("go".into())
+        } else {
+            None
+        };
+        if let Some(suffix) = suffix {
+            self.gate(stage, self.signal(&suffix)).await?;
+        }
+        Ok(())
+    }
+    async fn gate(&self, stage: &'static str, path: PathBuf) -> Result<(), Failure> {
+        let emit_gate = |phase| {
+            emit(serde_json::json!({"event":"lineage-history-fault-gate",
+            "mode":self.mode,"stage":stage,"phase":phase,"prefix":self.prefix,"path":path,
+            "gate_timeout_ms":Self::GATE_TIMEOUT.as_millis(),"poll_ms":Self::POLL.as_millis()}))
+        };
+        emit_gate("ready");
+        tokio::time::timeout(Self::GATE_TIMEOUT, async {
+            loop {
+                if fault_signal(&self.cancel)? {
+                    return Err(std::io::Error::other("cancel preceded compacted dispatch"));
+                }
+                if fault_signal(&path)? {
+                    return Ok(());
+                }
+                tokio::time::sleep(Self::POLL).await;
+            }
+        })
+        .await
+        .map_err(|_| Failure::at("fault-gate", None, None, "GateTimeout"))?
+        .map_err(|e| Failure::at("fault-gate", None, None, e))?;
+        emit_gate("released");
+        Ok(())
+    }
+    fn cursor(&self, stage: &str, cursor: &SuccessorHistoryResolution<'_>) {
+        emit(
+            serde_json::json!({"event":"lineage-history-fault-cursor","mode":self.mode,
+            "stage":stage,"current_epoch":cursor.current_epoch(),
+            "needs_compacted_initial":cursor.needs_compacted_initial(),
+            "next_request":cursor.next_request().map(|r|serde_json::json!({
+                "producer_slot":hex(r.producer_slot_id.as_bytes()),"epoch":r.producer_epoch.get(),
+                "sequence":r.request_sequence.get()}))}),
+        );
+    }
+    async fn before_compacted(
+        &self,
+        probe: &Probe,
+        owner: &ControlSession,
+    ) -> Result<Option<i64>, Failure> {
+        self.checkpoint("before-compacted", None).await?;
+        if !matches!(self.mode, "cancel" | "expiry") {
+            return Ok(None);
+        }
+        let refreshed = fault_clock(probe, owner).await;
+        self.emit_clock("refreshed", &refreshed);
+        let (_, deadline) = refreshed?;
+        self.gate("before-compacted", self.signal("go")).await?;
+        // No product transaction or refresh runs during preage. Actual PG UTC
+        // and the same retained deadline, not elapsed sleep, establish liveness.
+        let dispatch = tokio::time::timeout(Duration::from_secs(22), async {
+            loop {
+                let time = fault_clock(probe, owner).await?;
+                if time.1 != deadline {
+                    return Err(Failure::at("fault-clock", None, None, "LeaseChanged"));
+                }
+                if self.mode == "cancel" || time.1 - time.0 <= 2_000_000 {
+                    return Ok(time);
+                }
+                let sleep_us = u64::try_from((time.1 - time.0 - 2_000_000).min(1_000_000))
+                    .expect("positive remaining preage interval");
+                tokio::time::sleep(Duration::from_micros(sleep_us)).await;
+            }
+        })
+        .await
+        .unwrap_or_else(|_| Err(Failure::at("fault-clock", None, None, "PreageTimeout")));
+        self.emit_clock("dispatch", &dispatch);
+        let (now, expires) = dispatch?;
+        if (self.mode == "expiry" && !(1_000_000..=2_000_000).contains(&(expires - now)))
+            || (self.mode == "cancel" && now >= expires)
+        {
+            return Err(Failure::at(
+                "fault-clock",
+                None,
+                None,
+                "MissedLiveDispatchWindow",
+            ));
+        }
+        if fault_signal(&self.cancel).map_err(|e| Failure::at("fault-gate", None, None, e))? {
+            return Err(Failure::at(
+                "fault-gate",
+                None,
+                None,
+                "CancelBeforeDispatch",
+            ));
+        }
+        Ok(Some(deadline))
+    }
+    async fn pending<T>(&self, probe: &Probe, future: impl Future<Output = T>) -> T {
+        if self.mode != "cancel" {
+            return future.await;
+        }
+        tokio::pin!(future);
+        let mut applied = false;
+        loop {
+            tokio::select! {
+                // Cancellation sets the flag; the actual pinned operation must
+                // return. Dropping its future would not prove refused delivery.
+                biased;
+                result = &mut future => return result,
+                () = tokio::time::sleep(Self::POLL), if !applied => {
+                    if fault_signal(&self.cancel).expect("invalid cancel signal; custody unknown") {
+                        probe.cancelled.store(true, Ordering::Relaxed);
+                        applied = true;
+                        emit(serde_json::json!({"event":"lineage-history-fault-cancel",
+                            "mode":self.mode,"phase":"applied","cancelled":true}));
+                    }
+                }
+            }
+        }
+    }
+    async fn returned(
+        &self,
+        probe: &Probe,
+        owner: &ControlSession,
+        deadline: Option<i64>,
+    ) -> Result<(), Failure> {
+        if let Some(deadline) = deadline {
+            let observed = fault_clock(probe, owner).await;
+            self.emit_clock("returned", &observed);
+            if observed?.1 != deadline {
+                return Err(Failure::at("fault-clock", None, None, "LeaseChanged"));
+            }
+        }
+        Ok(())
+    }
+    fn emit_clock(&self, stage: &str, result: &Result<(i64, i64), Failure>) {
+        emit(
+            serde_json::json!({"event":"lineage-history-fault-clock","mode":self.mode,
+            "stage":stage,"server_us":result.as_ref().ok().map(|v|v.0),
+            "control_deadline_us":result.as_ref().ok().map(|v|v.1),
+            "remaining_us":result.as_ref().ok().map(|v|v.1-v.0),
+            "error":result.as_ref().err().map(|e|&e.error)}),
+        );
+    }
+}
+
+// Match the existing wait protocol: metadata only for an exact empty regular
+// nonsymlink signal. Never open a FIFO/device, consume content or remove a file.
+fn fault_signal(path: &Path) -> std::io::Result<bool> {
+    match std::fs::symlink_metadata(path) {
+        Ok(metadata) if metadata.file_type().is_file() && metadata.len() == 0 => Ok(true),
+        Ok(_) => Err(std::io::Error::other(
+            "signal must be an empty regular nonsymlink file",
+        )),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(false),
+        Err(error) => Err(error),
+    }
+}
+async fn fault_clock(probe: &Probe, owner: &ControlSession) -> Result<(i64, i64), Failure> {
+    let id = owner.identity();
+    let row = probe
+        .bounded(
+            "fault-clock",
+            probe.observer.query_one(
+                "SELECT (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint,
+                o.lease_expires_at_us
+         FROM control.owner_epochs o JOIN pg_catalog.pg_stat_activity a
+           ON a.pid=o.control_backend_pid AND a.backend_start=o.control_backend_start
+         WHERE o.resource_id=$1::bytea AND o.epoch=$2::text::numeric
+           AND o.process_incarnation=$3::bytea AND o.role='control' AND o.state='active'
+           AND a.datname=current_database()",
+                &[
+                    &&id.resource_id.as_bytes()[..],
+                    &id.epoch.get().to_string(),
+                    &&id.process_incarnation.as_bytes()[..],
+                ],
+            ),
+        )
+        .await
+        .map_err(|e| Failure::at("fault-clock", None, None, e))?;
+    Ok((row.get(0), row.get(1)))
+}
+
 pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64) {
-    run_profile(config, config_file, metadata_bytes, false).await;
+    run_profile(config, config_file, metadata_bytes, false, None).await;
 }
 
 pub async fn run_compacted(config: Config, config_file: &Path, metadata_bytes: u64) {
-    run_profile(config, config_file, metadata_bytes, true).await;
+    run_profile(config, config_file, metadata_bytes, true, None).await;
 }
 
-async fn run_profile(config: Config, config_file: &Path, metadata_bytes: u64, compacted: bool) {
+pub async fn run_compacted_fault(
+    config: Config,
+    config_file: &Path,
+    metadata_bytes: u64,
+    port: u16,
+    mode: &str,
+    prefix: &Path,
+) {
+    let fault = HistoryFault::new(port, mode, prefix);
+    run_profile(config, config_file, metadata_bytes, true, Some(&fault)).await;
+}
+
+async fn run_profile(
+    config: Config,
+    config_file: &Path,
+    metadata_bytes: u64,
+    compacted: bool,
+    fault: Option<&HistoryFault>,
+) {
+    assert!(fault.is_none() || compacted);
     assert!(metadata_bytes <= MAX_LINEAGE_METADATA_BYTES);
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
@@ -172,8 +444,18 @@ async fn run_profile(config: Config, config_file: &Path, metadata_bytes: u64, co
         "role":hex(&role),"incarnation":hex(&incarnation),"lease_ttl_us":CONTROL_TTL.as_micros().to_string()}),
     );
     probe.snapshot("before-claim").await;
+    let mut control_config = config.clone();
+    if let Some(fault) = fault {
+        // Only Control traverses the finite laboratory proxy. Observer queries
+        // retain their direct connection, including clock and backend closure.
+        control_config.port(fault.port);
+        emit(
+            serde_json::json!({"event":"lineage-history-fault","mode":fault.mode,
+            "control_port":fault.port,"observer_port":5432,"prefix":fault.prefix,"proxied":true}),
+        );
+    }
     let (client, connection) = probe
-        .bounded("connect", config.connect(NoTls))
+        .bounded("connect", control_config.connect(NoTls))
         .await
         .unwrap();
     let driver = tokio::spawn(connection);
@@ -212,6 +494,7 @@ async fn run_profile(config: Config, config_file: &Path, metadata_bytes: u64, co
             custody.native.as_ref().unwrap(),
             metadata,
             compacted,
+            fault,
         )
         .await;
     emit(
@@ -232,10 +515,17 @@ async fn run_profile(config: Config, config_file: &Path, metadata_bytes: u64, co
     } else {
         drop(owner);
     }
-    crate::ingest_closing::join(driver, false).await;
+    let driver_result = tokio::time::timeout(Duration::from_secs(5), driver)
+        .await
+        .expect("Control driver join outcome unknown")
+        .expect("Control driver panicked");
+    let failed = driver_result.is_err();
     emit(
-        serde_json::json!({"event":"lineage-history-driver","driver":"control","failed":false,"joined":true}),
+        serde_json::json!({"event":"lineage-history-driver","driver":"control","failed":failed,"joined":true}),
     );
+    // Record the actual joined result first. A selected proxy does not prove
+    // loss; the independent fixture must also bind the exact wire boundary.
+    assert!(!failed || (fault.is_some() && result.is_err()));
     probe.absent(&backend).await;
     emit(serde_json::json!({"event":"lineage-history-control",
         "phase":if result.is_ok(){"released-and-joined"}else{"dropped-and-joined"},
@@ -366,11 +656,15 @@ impl Probe {
         recovery: &IngestRecovery,
         metadata: OwnedPermit,
         compacted: bool,
+        fault: Option<&HistoryFault>,
     ) -> Result<(), Failure> {
         let history = self
             .load_profile(owner, recovery, metadata, compacted)
             .await?;
-        self.replay_profile(owner, recovery, &history, compacted)
+        if let Some(fault) = fault {
+            fault.checkpoint("after-factory", None).await?;
+        }
+        self.replay_profile(owner, recovery, &history, compacted, fault)
             .await?;
         Ok(())
     }
@@ -436,7 +730,8 @@ impl Probe {
         recovery: &'a IngestRecovery,
         history: &'a SuccessorHistory,
     ) -> Result<VerifiedSuccessorHistory<'a>, Failure> {
-        self.replay_profile(owner, recovery, history, false).await
+        self.replay_profile(owner, recovery, history, false, None)
+            .await
     }
     async fn replay_profile<'a>(
         &'a self,
@@ -444,6 +739,7 @@ impl Probe {
         recovery: &'a IngestRecovery,
         history: &'a SuccessorHistory,
         compacted: bool,
+        fault: Option<&HistoryFault>,
     ) -> Result<VerifiedSuccessorHistory<'a>, Failure> {
         let mut resolution = history
             .resolution(recovery, &self.cancelled)
@@ -454,18 +750,43 @@ impl Probe {
             assert_eq!(before_epoch, Some(1));
             assert!(resolution.next_request().is_none());
             self.refresh(owner, Some(1), None).await?;
+            let deadline = if let Some(fault) = fault {
+                fault.cursor("before", &resolution);
+                fault.before_compacted(self, owner).await?
+            } else {
+                None
+            };
+            let future = owner.inspect_successor_compacted_initial(
+                &mut resolution,
+                self.request(),
+                recovery_limits().event,
+                compacted_grant(&self.budget),
+                |d, h| self.validate(d, h),
+            );
             let result = self
-                .bounded(
-                    "compacted-initial",
-                    owner.inspect_successor_compacted_initial(
-                        &mut resolution,
-                        self.request(),
-                        recovery_limits().event,
-                        compacted_grant(&self.budget),
-                        |d, h| self.validate(d, h),
-                    ),
-                )
+                .bounded("compacted-initial", async {
+                    if let Some(fault) = fault {
+                        fault.pending(self, future).await
+                    } else {
+                        future.await
+                    }
+                })
                 .await;
+            let observed_clock = if let Some(fault) = fault {
+                fault.cursor("returned", &resolution);
+                let gate = fault
+                    .checkpoint(
+                        "compacted-returned",
+                        result.as_ref().err().map(|e| format!("{e:?}")),
+                    )
+                    .await;
+                match gate {
+                    Ok(()) => fault.returned(self, owner, deadline).await,
+                    Err(error) => Err(error),
+                }
+            } else {
+                Ok(())
+            };
             let summary = match result {
                 Ok(summary) => summary,
                 Err(error) => {
@@ -479,6 +800,9 @@ impl Probe {
                     return Err(Failure::at("compacted-initial", Some(1), None, error));
                 }
             };
+            // The actual product error above takes precedence over an observer
+            // failure; its typed result and cursor were emitted before either.
+            observed_clock?;
             assert!(!resolution.needs_compacted_initial());
             assert_eq!(resolution.current_epoch(), Some(2));
             assert!((1..=64).contains(&summary.compacted_requests));
@@ -541,7 +865,10 @@ impl Probe {
             self.snapshot(&format!("epoch-{epoch}")).await;
         }
         self.refresh(owner, None, None).await?;
-        let proof = self
+        if let Some(fault) = fault {
+            fault.checkpoint("before-final", None).await?;
+        }
+        let result = self
             .bounded(
                 "finish",
                 owner.finish_successor_history(
@@ -552,8 +879,19 @@ impl Probe {
                     |d, h| self.validate(d, h),
                 ),
             )
-            .await
-            .map_err(|e| Failure::at("finish", None, None, e))?;
+            .await;
+        let returned_gate = if let Some(fault) = fault {
+            fault
+                .checkpoint(
+                    "final-returned",
+                    result.as_ref().err().map(|e| format!("{e:?}")),
+                )
+                .await
+        } else {
+            Ok(())
+        };
+        let proof = result.map_err(|e| Failure::at("finish", None, None, e))?;
+        returned_gate?;
         assert!(proof.matches_history(history));
         assert_eq!(proof.compacted_initial_requests(), compacted_requests);
         proof

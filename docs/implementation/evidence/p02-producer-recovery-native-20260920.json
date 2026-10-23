@@ -44199,6 +44199,23 @@
               "next_boundary_advice": {
                 "delivery_faults": "Reuse relay-source/rollback_proxy.py and existing Process/capture owners. Source predicts rollback1 factory,2 compacted completion,3 later original,4 epoch finish,5 final proof; first observe counters in a real wired positive baseline. Candidate cases: typed head change after1 and4, disconnect before/after2, cancellation after2 and genuine lease expiry across2. No runtime qualification claimed yet.",
                 "initial_transition": "Keep portable handoff bytes; fixed sealed floor/original manifest/N/cut/D/root/sequence/input-stamp basis. Reuse existing compacted cursor for epoch1 or checked two-entry lineage at empty prepared2. Preserve exact+4/zero-write retry, initial NO_SUCCESSOR and each operation COMMIT/ROLLBACK contract. Never fabricate original count or through1 successor-history proof. Advice only; no new implementation/plan."
+              },
+              "delivery_fault_preparation": {
+                "status": "RUST TEST PROBE independently reviewed/integrated; build and new Python fixture/runtime NOT_RUN",
+                "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
+                "probe_author_commit": "3d70898d04da963b080cbb790517718ae48fb845",
+                "probe_author_receipt": {
+                  "path": ".research/compacted-history-fault-probe-20261023/.research/compacted-history-fault-probe-source-v1.json",
+                  "sha256": "8c3ab8158a8108c5ef48b4e738dcc89f95d659e60cc7f0694012ba3bac3671b1"
+                },
+                "probe_root_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-probe-root-review-v1.json",
+                  "sha256": "5d7e5d1adcd78d64c60d86fc3b71989da14bce14077297cee5a705d151782592"
+                },
+                "scope": "Only existing two Rust example files; explicit argc9 mode, Control-only proxy/direct observer, five targeted stage gates, same pinned cancellation future and real20s Control lease sampled-UTC preage. Actual product errors/cursor/driver outcomes preserved; product code and ordinary entrypoint semantics unchanged.",
+                "fixture": "Existing Python profile work remains isolated. Seven fresh clones of qualified6ece PreparedOpen3 endpoint; exact old source/raw identity and original custody required. No observed new counter or fault outcome yet.",
+                "checks": "Author formatting/diff PASS; independent bounded source review/frozen identity reconciliation PASS. Compile/Clippy/wired baseline/faults NOT_RUN.",
+                "next": "Build reviewed Rust probe now through existing producer-floor; continue independent fixture authoring/review in parallel and reuse compiled ELFs for Python-only fixes. First measure wired baseline targeted counters before fault selection."
               }
             }
           }

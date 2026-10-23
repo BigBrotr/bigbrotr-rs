@@ -939,7 +939,9 @@ fn main() {
         );
     assert_eq!(
         args.len(),
-        if args[1] == "successor-archive-attempt-holder" {
+        if args[1] == "successor-lineage-compacted-fault" {
+            9
+        } else if args[1] == "successor-archive-attempt-holder" {
             7
         } else if args[1] == "successor-lineage-retire-wait" {
             8
@@ -1088,6 +1090,16 @@ fn main() {
                     config,
                     Path::new(&args[4]),
                     args[5].parse().expect("explicit metadata byte capacity"),
+                )
+                .await;
+            } else if args[1] == "successor-lineage-compacted-fault" {
+                ingest_successor_history::run_compacted_fault(
+                    config,
+                    Path::new(&args[4]),
+                    args[5].parse().expect("explicit metadata byte capacity"),
+                    args[6].parse().expect("explicit Control proxy port"),
+                    &args[7],
+                    Path::new(&args[8]),
                 )
                 .await;
             } else if args[1] == "successor-lineage-compacted-history" {
