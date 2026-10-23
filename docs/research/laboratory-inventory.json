@@ -61552,7 +61552,7 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Completed sourcec8d6737 and receipts; no active assignment"
+          "state": "Completed numeric correction0c27a1c; no active assignment"
         },
         "progress_hole_fixture": {
           "model": "gpt-6-astra",
@@ -61566,7 +61566,7 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
-          "state": "Completed exact four-owner review; no active assignment",
+          "state": "Active targeted numeric correction review; no runtime",
           "scope": "Independent critical review of native ACK fsync fault selector, poison and fresh-process replay expectations",
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json"
         }
@@ -61939,9 +61939,34 @@
           "root": "experiments/ingest-succession/native.py in canonical checkout",
           "ack_remaining_boundary": "producer_ack_tests.rs, publication_sync_cases.py and network-transport/lab.py in isolated worktree"
         },
-        "head": "c8d6737fc026c5be14901ef37f9f8343a6779e70",
-        "integrated_as": "3a99d1278a68beb4ab1d5063cb0bb846786ced37"
-      }
+        "head": "0c27a1c5b54275f2e7f7b92282aad5d1665b8ba7",
+        "integrated_as": "3a99d1278a68beb4ab1d5063cb0bb846786ced37",
+        "correction_integrated_as": "0b902361771b3f08d94be2abaca3d4b04241a69d"
+      },
+      "ack_fsync_runs_20261023": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e",
+          "source": "e06ed5ebd7941ed114bf3746891da678dd11be2b",
+          "tree": "1671d9746d11a501841a4f8c97c3af34453f17cd",
+          "owner": "1f97813a5123a9e6b4ecb8d89165c0a6",
+          "owner_label": "org.bigbrotr.network-transport",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "b759bddad63d5b7f0bdcba50bf7f6733f9e5b5f32977dd2728d4539e4e4219aa"
+            },
+            {
+              "name": "native",
+              "id": "331fb0dd47b76619244b30da925bf7c43c633237389f0e7f3f8dacc992dc4455"
+            }
+          ],
+          "session": "4320 joined1",
+          "state": "STOPPED_RETAINED; build PASS, runtime FAIL before ACK",
+          "resources_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/resources.json",
+          "preservation": "All raw outputs, original fixtures and pre-reopen copies retained; no cleanup/deletion authorized by this run",
+          "fresh_audit": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/root-terminal-audit.json"
+        }
+      ]
     }
   },
   "tux_intermediate_retirement_20261018": {

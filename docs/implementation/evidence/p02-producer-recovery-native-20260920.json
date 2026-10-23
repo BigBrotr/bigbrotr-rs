@@ -43155,7 +43155,7 @@
             "custody": "Runtime83263 and strict standalone raw command joined0. Root fresh exact client/borrowed PG IDs/labels exited/PID0/noOOM/cgroups absent; cleanup_errors/missing_owned/unrelated_changed empty. All stores, originals and failures preserved."
           },
           "native_ack_fsync_qualification_20261023": {
-            "status": "SOURCE_REVIEWED; build/runtime NOT_RUN",
+            "status": "FIRST_RUNTIME_FAIL_PRESERVED; sequence-oracle correction pending",
             "assessment": {
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-boundary-review-v1.json",
               "sha256": "005a5c8e10f094297412fc814227e20dae07faeffbe422e98d1d7d2baac3e1aa"
@@ -43164,8 +43164,8 @@
             "source_worktree": "/home/tux/bigbrotr-rs/.research/producer-ack-fsync-20261023",
             "base": "332f7a3514cc8c9ec27315a7294739bd55c45bb8",
             "qualified_product_unchanged": "9cef25f13db44cac1cdd55e1862229ba7298f3b0",
-            "expected": "CommitUnknown and same-owner poison; exact original9rows except A1 plus sequence10 on fresh reopen under the explicit intact ACK WAL premise",
-            "next": "Root exports exact containing commit and runs producer-ack-fault once; record both build and native fault outcomes.",
+            "expected": "Before sequence10, ACK sequence11 (1 initialize put +9bootstrap puts +1ACK), all9 independent rows unchanged except A1 and exact retained original",
+            "next": "Apply independently reviewed numeric-only oracle correction; run fresh candidate, preserving e06ed5e originals and build receipts.",
             "source_commit": "c8d6737fc026c5be14901ef37f9f8343a6779e70",
             "integrated_fixture": "3a99d1278a68beb4ab1d5063cb0bb846786ced37",
             "source_receipt": {
@@ -43181,6 +43181,66 @@
             "critical_review": {
               "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json",
               "sha256": "211729e032e44956ac268c1d76508c2827508f9a22fceecf42a64feb16a2b592"
+            },
+            "candidate": "e06ed5ebd7941ed114bf3746891da678dd11be2b",
+            "candidate_tree": "1671d9746d11a501841a4f8c97c3af34453f17cd",
+            "runs": [
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e",
+                "session": "4320 joined1",
+                "status": "FAIL_CONTROL_READY_BEFORE_ACK",
+                "command": "python3 -B source/experiments/network-transport/lab.py REV TREE producer-ack-fault",
+                "build": "PASS: libtest compile31.57s and library Clippy5.12s; native_components retained",
+                "observed": "All9 rows exactly match independent fixture, but native sequence10 differs from incorrect expected9; no ACK_BEGIN, injection or reopen reached",
+                "cause": "initialize emits manifest once; bootstrap emits same manifest again plus8other puts. Native sequences count mutations, not distinct keys: before10, ACK11. Source independently inspected by root/author/critical reviewer.",
+                "receipts": {
+                  "build": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/out/artifacts/ack-fault-build.json",
+                    "sha256": "0bf62244ba873780299f93b54cf33925259f4e92132bddf0b04c82d34eddc2e5",
+                    "bytes": 3074
+                  },
+                  "qualification": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/out/qualification.json",
+                    "sha256": "0981913a9c20ac8892cfe969a00905f4ed9e36809baf116cd47a1ec85883a694",
+                    "bytes": 3072
+                  },
+                  "runtime": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/out/ack-sync-cases/result.json",
+                    "sha256": "0bfe0710aaee0f5d6e3efa59d7e6d20a0f9c742eccc1bbf160f276effffbd398",
+                    "bytes": 4920
+                  },
+                  "runtime_log": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/out/fault-checks/ack-fsync.log",
+                    "sha256": "127c3ade3c7393391be9bbdf9cdd8dc7e23cea516da25b6a630905c971f90818",
+                    "bytes": 869
+                  },
+                  "resources": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/resources.json",
+                    "sha256": "7555133ebc7275078c9cd36e88b86f28b72e9341f84dd65f90004203a39a2f55",
+                    "bytes": 1008
+                  },
+                  "terminal_audit": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-e06ed5e/root-terminal-audit.json",
+                    "sha256": "b0e954e5b08e0aa8a5c1836315a1cce56a990ceab08465d8baa54e973b8cd193",
+                    "bytes": 1119
+                  }
+                },
+                "scope": "Runtime original remains FAIL. Control observation/trace and seed preserved. ACK EIO and reopen NOT_RUN. Original per-case exclusion UNKNOWN remains; separate fresh enclosing-container audit proves no residual process."
+              }
+            ],
+            "sequence_correction": {
+              "source": "0c27a1c5b54275f2e7f7b92282aad5d1665b8ba7",
+              "integrated_as": "0b902361771b3f08d94be2abaca3d4b04241a69d",
+              "diagnosis": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-e06-sequence-diagnostic-v1.json",
+                "sha256": "775017edd357dc2cf109026c3bea5173b0941b5c5cd9cfcd94fe7873780ded3e"
+              },
+              "source_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-source-v2.json",
+                "sha256": "6e15d384b4c196f498fc4d8589a24fb7728988ea7f144d610867ce4b5d221344"
+              },
+              "scope": "Constants10/11 and explanatory comment only; every other predicate and Rust source unchanged",
+              "checks": "Affected pure ACK controls PASS; prior publication/Rustfmt/source reviews reused"
             }
           }
         }
