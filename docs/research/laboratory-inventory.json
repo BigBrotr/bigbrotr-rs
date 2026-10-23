@@ -62618,10 +62618,10 @@
         }
       },
       "installed_initial_preparation_work_20261024": {
-        "state": "SOURCE_AND_BUILD_PASS163/54; independent fixture integrated/static PASS; connected runtime NOT_RUN",
+        "state": "BUILD163/54 and INSTALLED23/232 PASS; exact raw replay7898 PASS; next delivery-fault draft source-only",
         "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
-        "runtime_owner": "/root; all build drivers joined, exact build containers freshly stopped0/PID0/noOOM; borrowed PG freshly stopped0 and no connected run active",
-        "root_source": "Product a0e914e qualified163/54. Frozen author d80 fixture integrated with reviewed explicit profile/origin-shape corrections; runtime remains NOT_RUN.",
+        "runtime_owner": "/root; connected21423/replay76200 joined0, exact client143/borrowed PG0 freshly stopped/PID0/noOOM",
+        "root_source": "Qualified producta0e914e and integrated harness30d65540; complete exact receipts linked from owning recovery report.",
         "critical_reviewer": {
           "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-critical-review-v1.json",
           "sha256": "d8ee7e6ba249e6787c7958543eea0737c61f4a1a12bfde3e3f08c88dbb339261"
@@ -62693,6 +62693,27 @@
         "verified_build": {
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-a0e914e/verified-build.json",
           "sha256": "7694c0c4f8a20ffcd9d4e84a31d9f9242eb87faa5b92c82b3aa01b75c1a040ff"
+        }
+      },
+      "installed_initial_preparation_connected_20261024": {
+        "state": "PASS23/232; raw replayPASS7898; driver21423/replay76200 joined0; all four original preservation checks PASS and cleanup arrays empty",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-30d6554",
+        "source": "30d6554015fdf09fe300db13cc61cae1fb3fdc40",
+        "tree": "d767220ccea3019e7aa49868ff22c342fb31c39d",
+        "product_source": "a0e914e8b58650d94dec60c0b5d3c08a02e5e248",
+        "owner": "33c0567eb260e70243593e15f29af110",
+        "label": "org.bigbrotr.installed-initial-preparation",
+        "client": "2e048a7a0f52f38812913aa2ecea42ffd906aa0624ce464364256c6bb2799263",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "driver": 21423,
+        "custody": "Fresh exact client2e048a7a stopped143, borrowed PostgreSQL71775507 stopped0; both PID0/noOOM. Original SQL/catalog/native/input/physical state preserved for all4 origins. No run-owned autonomous writer remains; datasets/logs/captures/source retained.",
+        "driver_exit": 0,
+        "replay_driver": 76200,
+        "replay_driver_exit": 0,
+        "terminal_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-30d6554/verified-terminal.json",
+          "sha256": "0ba74cf7a8c85b7636944609406559548a3843178691598c3ef683d54ca2cb8d"
         }
       }
     }

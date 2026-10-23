@@ -44591,7 +44591,7 @@
               }
             },
             "installed_initial_preparation": {
-              "status": "BUILD_a0e914e_PASS163/54; independent installed fixture integrated, connected/runtime NOT_RUN",
+              "status": "PASS bounded installed completion/retry/refusal profile23/232 and exact raw replay7898; completion delivery faults remain NOT_RUN",
               "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
               "scope": "Explicit ingest recover --complete-initial-preparation: authentic existing native1 gap or empty OPEN2 retry, original or compacted predecessor, no new intent/activation/retirement/ACK",
               "implementation": "Dedicated supervised native-first custody and pinned acquisition using shared existing ClaimExit; owned plan retained through teardown; report after native close, Control release and driver join. Explicit sealed native2 structural selector chooses original/compacted without failed-proof fallback. Existing PG/native positive factories, immutable intent/typed closure and deadlines unchanged. Original prepared retry reconstructs without mutable dispatch.",
@@ -44606,8 +44606,8 @@
               "probe_author_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
               "static_checks": "Changed Rust rustfmt, Python runner AST and staged/unstaged diff check PASS; exact ten-file critical snapshot and two probe blobs reconciled",
               "required_new_controls": "PASS163 selected components/54 mandatory controls, including three new structural selector cases, two shared ClaimExit tests and two extended CLI entrypoint matrices. CLI/probe compilation and Clippy PASS.",
-              "fixture": "Frozen author d80db733 four-file Python profile plus two reviewed root qualification/origin-shape corrections;23 commands/232 planned checker controls/10 clones. Authentic original/compacted existing gaps and prepared retries, immutable intent preservation and isolated refusals. Connected/raw replay NOT_RUN.",
-              "remaining": "Independent installed whole-state connected run and exact raw replay; completion delivery faults/cancellation/lease scope. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate.",
+              "fixture": "Author d80db733 plus reviewed root corrections integrated in30d65540;23 actual commands/232 altered-evidence refusals/10 clones PASS. Original and compacted native1 gaps add exactly4 native writes; empty OPEN2 retries add0. Exact error predictions confirmed for all isolated refusals. All77 SQL tables/intent/canonical closure and original data preserved under modeled Control claim/fencing/release.",
+              "remaining": "Completion delivery faults with measured wire baselines and fresh installed retry; cancellation/lease scope and genuine epoch2/SQL-pending3 gap. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate.",
               "build_attempts": [
                 {
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332/verified-build-failure.json",
@@ -44634,6 +44634,10 @@
               "fixture_critical_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-fixture-critical-review-v1.json",
                 "sha256": "4f56e9e5eaa633febe4db5c37b47d20b1beff0674fdae83511ef22fb1342e566"
+              },
+              "qualified_run": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-30d6554/verified-run.json",
+                "sha256": "e72b1cb05ccd2676329266829013b0326ff330cf0e519021ec353834a4de7786"
               }
             }
           }

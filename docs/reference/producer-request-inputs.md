@@ -986,12 +986,12 @@ The existing `serve --activate-initial-successor` entrypoint selects the compact
 current-initial reader before claiming Control and reserves both census and
 canonical-outcome work. Its predecessor report separates zero original replays
 from N compacted requests. The current `--retire-initial` reader keeps its strict
-no-successor guards and confirmed COMMIT. General installed prepared/activated
-recovery, later live and Archive consumers retain their separate qualification
-gates; this source integration is not their acceptance evidence.
+no-successor guards and confirmed COMMIT. Installed activated recovery, later live and Archive consumers retain their
+separate qualification gates; initial preparation does not qualify those paths.
 
 The explicit `ingest recover --complete-initial-preparation --file ROOT` command
-is under qualification. It completes only an already recorded epoch1-to-2
+passed its bounded installed profile (23 commands, 232 altered-evidence refusals)
+and exact-source raw replay. It completes only an already recorded epoch1-to-2
 preparation, or verifies its exact empty OPEN epoch2 retry. It accepts complete
 original predecessor evidence or a verified closed-producer floor; it never
 selects a different basis after a failed proof. Current Control and accepted
@@ -1008,8 +1008,9 @@ closure digest, and separate `resolved_original_requests` and
 requests. Output follows native teardown, confirmed Control release and driver
 join; an interrupted or unknown outcome requires inspection of the same retained
 root and intent. The command performs no ACK, retirement, floor installation or
-unlink. Original evidence remains required by recovery modes not explicitly
-adapted to a compacted predecessor.
+unlink. Completion delivery loss, cancellation/lease expiry and a genuine
+epoch2/SQL-pending3 gap remain separate qualification gates. Original evidence
+remains required by recovery modes not explicitly adapted to a compacted predecessor.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

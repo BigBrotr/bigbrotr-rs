@@ -6,11 +6,12 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Last observed main/pushed revision: `0d92afdbf47963264d8eb4d36855b52479ffe9d3`.
+Current main: `30d6554015fdf09fe300db13cc61cae1fb3fdc40`; last verified pushed
+revision remains `0d92afdbf47963264d8eb4d36855b52479ffe9d3`.
 Qualified product: `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
 tree `e94652a5f2b68ac002487f728d073a8194120a1f`.
-Current coherent changes integrate author d80db733 Python fixture and two narrow
-review corrections, plus this checkpoint/report/inventory. No product code changed
+The current commit integrates author d80db733 fixture and two reviewed corrections.
+Local evidence/checkpoint/inventory/reference updates record the completed run. No product code changed
 since the qualified build. No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -34,8 +35,12 @@ FAIL attempts remain preserved. No unchanged qualification was repeated.
 
 Installed preparation fixture: source/static/pure checks PASS; four pinned origins,
 old/new qualification-profile separation and missing mandatory-test controls PASS.
-New23-command/232-control connected qualification and raw replay are NOT_RUN.
-Borrowed PostgreSQL71775507 is freshly stopped0; no connected lab driver is active.
+New23-command/232-control connected qualification PASS, driver21423 joined0, at
+`/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-30d6554`.
+Exact raw replay PASS23/232 with7898 bound files; driver76200 joined0.
+Owned client2e048a7a stopped143 and borrowed PostgreSQL71775507 stopped0 are
+freshly checked PID0/noOOM. All four originals preserved; cleanup arrays empty.
+No connected lab process is active.
 Sources, ELFs, clones, quarantines, failures, .research and worktrees are retained.
 No cache or dataset cleanup occurred; unrelated running workloads are untouched.
 
@@ -50,12 +55,12 @@ separate draft adds completion delivery faults. Root owns all engines/runtime.
 Earlier handoff/journey author worktrees remain clean detached at7824749/a7dd148;
 only their reconciled redundant branch refs were retired.
 
-Commit the reviewed fixture, create an exact detached laboratory source, then run
-`installed_compacted_reader.py RUN BUILD --product-source a0e914e8b58650d94dec60c0b5d3c08a02e5e248 --initial-preparation`.
-Use the retained a0e914e artifacts; no product rebuild is needed for Python changes.
-Verify actual driver exit and owned closure, then exact-source raw replay. Preserve
-any original failure before a narrow correction. Next qualify completion delivery
-faults with measured wire boundaries and fresh CLI retry, reusing existing custody.
+Commit/push this coherent installed result. Then review/integrate the author
+completion-delivery-fault draft: measured positive wire baselines, native1/native2
+pre-dispatch and post-dispatch loss, exact fresh CLI retry. Reuse the retained
+a0e914e artifacts and existing custody. Preserve any failure before correction.
+The critical reviewer is mapping the next activated recovery consumers read-only;
+no new product implementation is underway.
 
 Activated/later recovery, live frontier, retained Archive frontier and empty
 retirement remain before GC. Physical64file/32MiB bounds remain; physical loss,
