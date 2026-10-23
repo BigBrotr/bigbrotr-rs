@@ -62039,9 +62039,18 @@
         "branch": "work/producer-reclamation-native",
         "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
         "owner": "ack_remaining_boundary",
-        "state": "Created by root, assigned non-destructive native source; no build/engine/resource deletion",
+        "state": "Source complete, clean original worktrees retained; root integrated candidate pending build/review; no engine allocated",
         "contract": "Q39 / docs/reference/producer-request-inputs.md",
-        "space_observed": "272GiB available on /home/tux before worktree; no significant runtime allocation"
+        "space_observed": "268GiB available before candidate build allocation; no cleanup",
+        "commit": "584bad39d193fd2476f168acade723a5ca24c78b",
+        "pg": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/producer-reclamation-pg-20261023",
+          "branch": "work/producer-reclamation-pg",
+          "commit": "4662b96ed59063572dad22aaa6b7d15f0ddee577",
+          "owner": "progress_hole_critical",
+          "state": "clean; author finished"
+        },
+        "root": "Main source integration includes three author commits and existing recovery CLI consumer; no active subagents at last inspection"
       }
     }
   },

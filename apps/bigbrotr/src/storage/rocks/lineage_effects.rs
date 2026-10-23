@@ -1,5 +1,6 @@
 //! Whole-frontier semantic census with constant retained state. Historical
 //! receipt validation alone deliberately does not consult newer mutable minima.
+use super::lineage::Census;
 use super::receipt_effects::ReplayEventIntent;
 use super::{AdmissionError, AdmissionLimits, IngestRecovery, RetainedLineage};
 use super::{admission::ReadBudget, bootstrap::read_options};
@@ -107,6 +108,20 @@ impl super::IngestStore {
 }
 
 impl RetainedLineage {
+    pub(super) fn verify_effect_census(
+        &self,
+        recovery: &IngestRecovery,
+        through: u64,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        self.census()
+            .verify_effect_census(recovery, through, limits, permit, cancelled)
+    }
+}
+
+impl Census<'_> {
     pub(super) fn verify_effect_census(
         &self,
         recovery: &IngestRecovery,

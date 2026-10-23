@@ -395,7 +395,7 @@ async fn finish<E>(
 // cuts are compared here as well as in the native outcome witness. No mixed state
 // is repaired opportunistically; the operation writes either the entire initial
 // transition or nothing, and a retry preserves original timestamps and attribution.
-const RETIREMENT_STATE: &str = "
+pub(super) const RETIREMENT_STATE: &str = "
     SELECT (p.state='closing' AND p.reserved_through_request=$6::text::numeric
                AND i.state IN ('active','draining') AND r.retired_at_us IS NULL
                AND s.state='closed' AND s.closure_digest=$5::bytea

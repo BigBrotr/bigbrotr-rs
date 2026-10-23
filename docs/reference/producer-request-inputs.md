@@ -888,7 +888,7 @@ Empty, unactivated targets still require zero issued/acknowledged/retired state.
 These bounded two-slot demonstrations do not qualify GC, indefinite traffic, workflow completion or
 backup/restore.
 
-## Closed-producer reclamation (selected, not yet implemented)
+## Closed-producer reclamation (reader under qualification; deletion unavailable)
 
 The first reclamation profile covers one nonempty, completely retired initial
 producer, before successor preparation. Let N be its reserved request cut:
@@ -940,8 +940,24 @@ manufacture that proof. Reclaimed requests return `RetiredRequest` even with a
 changed digest. Missing detail without the matching floor, or post-GC native
 state paired with older/incompatible PG state, refuses recovery.
 
-Implementation begins with the non-destructive codec, compacted-prefix witness
-and shared census. Reclamation stays unavailable until initial recovery and the
+The non-destructive codec, compacted-prefix witness and shared census are
+implemented, with runtime qualification pending. The existing `--retire-initial`
+recovery action recognizes an already compacted initial producer. It checks the
+complete retained PostgreSQL closure and reports `resolved_requests = 0`,
+`compacted_requests = N` and `recovery_basis = closed-producer-floor-v3`; it does
+not replay absent originals or install the floor. Other recovery actions retain
+their original-reader restrictions.
+
+This compacted branch additionally needs the current Control login to have
+`SELECT(owner_resource_id)` on `control.initial_ingest_successions`,
+`control.ingest_successions` and `control.ingest_activations`, alongside the
+existing initial-activation read privilege. These column reads prove absence of
+prepared or activated successors. Provision them explicitly for an installation
+using this branch; the command does not grant itself privileges. No mutation
+privilege is added, and ordinary original-input recovery keeps its existing ACL.
+An absent permission refuses the compacted operation.
+
+Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
 witness without weakening their guarantees. Fresh-process replay, exact retry,
 interrupted synchronization/unlink, mixed restores, missing scientific/index/

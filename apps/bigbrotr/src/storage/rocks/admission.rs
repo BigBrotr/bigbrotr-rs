@@ -1443,7 +1443,7 @@ fn encode_rejection(
         ],
     )?)
 }
-fn read_rejection(
+pub(super) fn read_rejection(
     bytes: &[u8],
     request: ProducerRequestId,
     digest: Digest256,

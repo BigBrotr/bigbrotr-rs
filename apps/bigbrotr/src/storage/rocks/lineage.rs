@@ -6,6 +6,7 @@ use crate::runtime::OwnedPermit;
 use crate::storage::rocks::{
     keys::{ColumnFamily, IngestKey, decode_key},
     manifest::IngestManifest,
+    producer_floor::ClosedProducerFloor,
     succession::{
         LINEAGE_ENTRY_BYTES, LINEAGE_SCRATCH_BYTES, PredecessorTerminalKind, SuccessionProfile,
         SuccessionRecord,
@@ -26,6 +27,13 @@ pub(super) use frontier::AdmittedFrontier;
 
 #[path = "lineage_census.rs"]
 mod census;
+
+#[path = "compacted_prefix.rs"]
+mod compacted;
+pub use compacted::{
+    COMPACTED_PREFIX_METADATA_BYTES, CompactedOutcomeRow, CompactedPrefixResolution,
+    RetainedCompactedPrefix, VerifiedCompactedPrefix, compacted_outcome_data_bytes,
+};
 
 #[path = "successor_recovery.rs"]
 mod recovery;
@@ -104,6 +112,23 @@ pub struct RetainedLineage {
     _permit: OwnedPermit,
 }
 
+/// Shared native key/effect view; constructing it grants no PG authority.
+pub(super) struct Census<'a> {
+    entries: &'a [RetainedLineageEntry],
+    slot: ProducerSlotId,
+    compacted: Option<&'a ClosedProducerFloor>,
+}
+impl Census<'_> {
+    pub(super) fn entry(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
+        self.at(epoch)
+    }
+    fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
+        usize::try_from(epoch.checked_sub(1)?)
+            .ok()
+            .and_then(|index| self.entries.get(index))
+    }
+}
+
 /// Private snapshot identity. This is not a positive frontier by itself.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct LineageStamp {
@@ -113,6 +138,22 @@ pub(super) struct LineageStamp {
 }
 
 impl RetainedLineage {
+    pub(super) fn census(&self) -> Census<'_> {
+        Census {
+            entries: &self.entries,
+            slot: self.slot,
+            compacted: None,
+        }
+    }
+
+    fn inspect_census(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.census().inspect_census(recovery, cancelled)
+    }
+
     /// A pending PG target counts for resource admission only. Its existence,
     /// absence of activation and exact recorded identity remain PG obligations.
     pub fn inspect(
@@ -398,6 +439,17 @@ fn entry(
     if producer.issued > super::RETAINED_PRODUCER_REQUEST_LIMIT || producer.retired != 0 {
         return Err(BootstrapError::StateMismatch);
     }
+    entry_coordinates(recovery, manifest, incoming_sha256, terminal, producer)
+}
+
+fn entry_coordinates(
+    recovery: &IngestRecovery,
+    manifest: IngestManifest,
+    incoming_sha256: [u8; 32],
+    terminal: Option<(RetainedTerminalKind, u64, u64, [u8; 32])>,
+    producer: ProducerState,
+) -> Result<RetainedLineageEntry, BootstrapError> {
+    let epoch = manifest.identity().owner_epoch.get();
     let source = counter(recovery, source_key(&manifest))?;
     // Legacy genesis could close at zero after no-fact requests, without ever
     // creating a counter. Exact originals still need their later positive replay.

@@ -10,7 +10,7 @@ const EPOCHS: usize = MAX_LINEAGE_EPOCHS as usize;
 pub(super) const COUNTER_BYTES: usize = (2 * 9 + 3) * EPOCHS * size_of::<u64>();
 const _: () = assert!(COUNTER_BYTES < 64 * 1024);
 
-impl RetainedLineage {
+impl Census<'_> {
     pub(super) fn inspect_census(
         &self,
         recovery: &IngestRecovery,
@@ -88,7 +88,13 @@ impl RetainedLineage {
                         }
                         // The exact marker, count and ACK/GC veto were checked
                         // while constructing this entry under the same sequence.
-                        ProducerState::decode(bytes)?;
+                        match self.compacted.filter(|_| producer_epoch.get() == 1) {
+                            Some(floor) if floor.encode().as_slice() == bytes => {}
+                            Some(_) => return Err(BootstrapError::StateMismatch),
+                            None => {
+                                ProducerState::decode(bytes)?;
+                            }
+                        }
                         producers += 1;
                     }
                     IngestKey::AllocationStream {
@@ -197,7 +203,8 @@ impl RetainedLineage {
                             .entries
                             .get(index)
                             .ok_or(BootstrapError::StateMismatch)?;
-                        if request_id.producer_slot_id != self.slot
+                        if (index == 0 && self.compacted.is_some())
+                            || request_id.producer_slot_id != self.slot
                             || requests[index].checked_add(1)
                                 != Some(request_id.request_sequence.get())
                             || request_id.request_sequence.get() > entry.issued
@@ -232,7 +239,12 @@ impl RetainedLineage {
             return Err(BootstrapError::StateMismatch);
         }
         for (index, entry) in self.entries.iter().enumerate() {
-            if requests[index] != entry.issued
+            let retained_requests = if index == 0 && self.compacted.is_some() {
+                0
+            } else {
+                entry.issued
+            };
+            if requests[index] != retained_requests
                 || facts[index] != entry.source_through
                 || pending[index] != entry.source_through
                 || dictionaries[index] != entry.allocations

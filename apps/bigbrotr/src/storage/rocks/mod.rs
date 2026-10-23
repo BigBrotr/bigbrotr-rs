@@ -2,6 +2,7 @@
 
 pub mod keys;
 pub mod manifest;
+pub mod producer_floor;
 pub mod succession;
 
 mod options;

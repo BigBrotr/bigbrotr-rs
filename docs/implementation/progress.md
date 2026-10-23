@@ -7,11 +7,13 @@ unchanged verified Astra/xhigh sessions are reused.
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Main HEAD is `1fa673bca844f2e0613c6d9cba275fe697a83342`, verified pushed/equal remote.
-Root-owned local documentation records selected Q39 and its two source reviews.
-Native source work is assigned in a separate worktree; no new runtime has run.
-The qualified installed product remains9cef25f; integrated new source
-adds only the private native fault test/driver and focused build profile.
+Main base is `98f6d8575e3d73b01f4c239b67836183e0f56451`, pushed/equal remote.
+The commit containing this checkpoint integrates non-destructive Q39 source:
+native originals d224a8d + corrective584bad3 and PG4662b96, plus root's existing
+RetireInitial consumer, focused producer-floor build profile and ACL documentation.
+All author work is preserved in clean separate worktrees. No new runtime has run;
+independent source review, build/tests/Clippy and installed qualification are pending.
+The qualified installed product remains9cef25f. There is no floor writer or GC.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -46,18 +48,20 @@ worktrees remain. Redundant ACK-fsync branch refs were reconciled by exact patch
 IDs and retired; its worktree remains clean detached at4626808. Main and the active
 `work/producer-reclamation-native` branch remain.
 
-`ack_remaining_boundary` implements the non-destructive native floor/witness and
-shared census in `.research/producer-reclamation-native-20261023` at base1fa673b.
-Root owns the PG consumer and integration. `progress_hole_critical` completed the
-design countercheck; no engine/build is assigned. `progress_hole_fixture` completed a99 retained diagnosis reconciliation.
+`ack_remaining_boundary` completed native source at584bad3 in
+`.research/producer-reclamation-native-20261023`; `progress_hole_critical` completed
+PG source at4662b96 in `.research/producer-reclamation-pg-20261023`.
+Both useful branch refs and all prior artifacts remain. No subagent is active at
+this checkpoint. Root owns integration/runtime. `progress_hole_fixture` completed a99 retained diagnosis reconciliation.
 Its report entry under `initial_sync_diagnostics_20261020` confirms existing
 qualified diagnostics already in9cef25f; historical cause remains unknown.
 
 ## Precise next step and open boundaries
 
-Implement Q39's version3 native floor and compacted-prefix validation using the
-existing structural/semantic census and immutable PG outcome/typed-checkpoint
-closure. Review the read path before adapting recovery and successor consumers;
+Review the frozen integrated read path independently and run the exact isolated
+producer-floor component profile, including seven literal native controls and the
+PG exact-head control, affected lineage/input tests, CLI build and Clippy. Then
+qualify installed PG/native compacted recovery before adapting successor consumers;
 deletion remains unavailable until those consumers work. The retained dfbb8dc
 pre-origin requires authentic abandonment/retirement on an isolated clone before
 GC qualification. Preserve science/pending and all original evidence; do not

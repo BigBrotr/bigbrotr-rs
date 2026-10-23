@@ -35,8 +35,15 @@ impl IngestStore {
         addition: Option<(ProducerRequestId, [u8; 32], u64)>,
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], [u8; 32]), BootstrapError> {
-        self.lineage_input_scan(expected_count, accepts, addition, None, cancelled)
-            .map(|scan| (scan.all, scan.previous))
+        self.lineage_input_scan(
+            expected_count..=expected_count,
+            accepts,
+            addition,
+            None,
+            None,
+            cancelled,
+        )
+        .map(|scan| (scan.all, scan.previous))
     }
 
     /// Recovery alone may retain one current issued+1 input. All issued files
@@ -48,16 +55,70 @@ impl IngestStore {
         tail: ProducerRequestId,
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
-        self.lineage_input_scan(issued_count, accepts, None, Some(tail), cancelled)
-            .map(|scan| (scan.all, scan.tail))
+        self.lineage_input_scan(
+            issued_count..=issued_count,
+            accepts,
+            None,
+            Some(tail),
+            None,
+            cancelled,
+        )
+        .map(|scan| (scan.all, scan.tail))
+    }
+
+    /// Optional residual originals beneath one already observed native floor.
+    /// Their bytes are stamped, not authenticated against PostgreSQL here.
+    pub(in crate::storage::rocks::store) fn compacted_input_census(
+        &self,
+        slot: ProducerSlotId,
+        floor: u64,
+        cancelled: &AtomicBool,
+    ) -> Result<[u8; 32], BootstrapError> {
+        self.lineage_input_scan(
+            0..=floor,
+            |id| {
+                id.producer_slot_id == slot
+                    && id.producer_epoch.get() == 1
+                    && id.request_sequence.get() <= floor
+            },
+            None,
+            None,
+            None,
+            cancelled,
+        )
+        .map(|scan| scan.all)
+    }
+
+    pub(in crate::storage::rocks::store) fn require_compacted_input(
+        &self,
+        floor: u64,
+        request: ProducerRequestId,
+        digest: [u8; 32],
+        length: u64,
+        cancelled: &AtomicBool,
+    ) -> Result<[u8; 32], BootstrapError> {
+        self.lineage_input_scan(
+            0..=floor,
+            |id| {
+                id.producer_slot_id == request.producer_slot_id
+                    && id.producer_epoch.get() == 1
+                    && id.request_sequence.get() <= floor
+            },
+            None,
+            None,
+            Some((request, digest, length)),
+            cancelled,
+        )
+        .map(|scan| scan.all)
     }
 
     fn lineage_input_scan(
         &self,
-        expected_count: u64,
+        expected_count: std::ops::RangeInclusive<u64>,
         mut accepts: impl FnMut(ProducerRequestId) -> bool,
         addition: Option<(ProducerRequestId, [u8; 32], u64)>,
         tail: Option<ProducerRequestId>,
+        checked: Option<(ProducerRequestId, [u8; 32], u64)>,
         cancelled: &AtomicBool,
     ) -> Result<InputScan, BootstrapError> {
         let check = || {
@@ -68,7 +129,7 @@ impl IngestStore {
             }
         };
         check()?;
-        if expected_count > MAX_FILES as u64 {
+        if *expected_count.end() > MAX_FILES as u64 {
             return Err(BootstrapError::Limit);
         }
         let mut stamps: [Stamp; MAX_FILES] = [([0; 71], [0; 32]); MAX_FILES];
@@ -78,7 +139,9 @@ impl IngestStore {
         let mut buffer = [0; SCRATCH];
         let directory = match self.input_directory(false) {
             Ok(directory) => Some(directory),
-            Err(RequestInputError::Missing) if expected_count == 0 => None,
+            // An actually empty legacy lifetime may lack a spool. A nonempty
+            // compacted lifetime only unlinks files; its directory must remain.
+            Err(RequestInputError::Missing) if *expected_count.end() == 0 => None,
             Err(error) => return Err(BootstrapError::RequestInput(error)),
         };
         if let Some(directory) = directory {
@@ -148,7 +211,7 @@ impl IngestStore {
                         input_bytes: before.len() as u32, // bounded by MAX_INPUT
                     });
                 }
-                if let Some((added, expected, length)) = addition
+                if let Some((added, expected, length)) = addition.or(checked)
                     && id == added
                     && (content != expected || before.len() != length)
                 {
@@ -166,7 +229,7 @@ impl IngestStore {
                 count += 1;
             }
         }
-        if count as u64 != expected_count + u64::from(observed_tail.is_some()) {
+        if !expected_count.contains(&(count as u64 - u64::from(observed_tail.is_some()))) {
             return Err(BootstrapError::RequestInput(RequestInputError::Missing));
         }
         stamps[..count].sort_unstable_by_key(|(name, _)| *name);

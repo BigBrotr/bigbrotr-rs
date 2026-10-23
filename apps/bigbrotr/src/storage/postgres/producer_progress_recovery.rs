@@ -1,7 +1,11 @@
 //! Validate a retained typed closure under the caller's existing custody.
 //! No ACK, admission capability, decoded Fact or collection of rows is returned.
 use super::*;
-use crate::storage::rocks::{manifest::IngestManifest, store::IngestRecovery};
+use crate::storage::rocks::{
+    manifest::IngestManifest,
+    producer_floor::ClosedProducerFloor,
+    store::{IngestRecovery, RetainedCompactedPrefix},
+};
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
 use futures_util::TryStreamExt;
 use tokio_postgres::{Transaction, types::ToSql};
@@ -54,6 +58,51 @@ pub(in crate::storage::postgres::control_owner) async fn require(
     manifest: &IngestManifest,
     slot: ProducerSlotId,
     scratch: &OwnedPermit,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    require_inner(tx, recovery, manifest, slot, scratch, None, authority).await
+}
+
+/// Only an inspected native v3 prefix selects this path. Ordinary recovery
+/// keeps its R=0 boundary and complete-original requirement unchanged.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    prefix: &RetainedCompactedPrefix,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    prefix
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        prefix.manifest(),
+        prefix.producer_slot_id(),
+        scratch,
+        Some(prefix.floor()),
+        authority,
+    )
+    .await?;
+    prefix
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "explicit floor selects a distinct recovery format under the existing locked reader"
+)]
+async fn require_inner(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    manifest: &IngestManifest,
+    slot: ProducerSlotId,
+    scratch: &OwnedPermit,
+    floor: Option<&ClosedProducerFloor>,
     mut authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
 ) -> Result<u64, ProducerProgressError> {
     let native_error = ProducerProgressError::Native;
@@ -102,6 +151,9 @@ pub(in crate::storage::postgres::control_owner) async fn require(
     let typed: bool = producer.try_get(2).map_err(backend)?;
     let acknowledgements: bool = producer.try_get(3).map_err(backend)?;
     drop(producer);
+    if floor.is_some() && (!typed || !acknowledgements) {
+        return Err(ProducerProgressError::InvalidContext);
+    }
     if !acknowledgements {
         native
             .require_frontier(
@@ -198,14 +250,19 @@ pub(in crate::storage::postgres::control_owner) async fn require(
     } else {
         (0, 0, 0, 0, None)
     };
-    native
-        .require_frontier(
-            slot,
-            ProducerEpoch::new(context.epoch).map_err(|_| ProducerProgressError::InvalidContext)?,
-            complete,
-            reserved,
-        )
-        .map_err(native_error)?;
+    if let Some(floor) = floor {
+        require_compacted_head(context, floor, reserved, revision, complete, expected)?;
+    } else {
+        native
+            .require_frontier(
+                slot,
+                ProducerEpoch::new(context.epoch)
+                    .map_err(|_| ProducerProgressError::InvalidContext)?,
+                complete,
+                reserved,
+            )
+            .map_err(native_error)?;
+    }
     let mut hash = Sha256::new();
     hash.update(DIGEST_DOMAIN);
     hash.update(context.dataset.as_bytes());
@@ -296,4 +353,89 @@ pub(in crate::storage::postgres::control_owner) async fn require(
     authority().map_err(native_error)?;
     native.validate().map_err(native_error)?;
     Ok(complete)
+}
+
+fn require_compacted_head(
+    context: Context,
+    floor: &ClosedProducerFloor,
+    reserved: u64,
+    revision: u64,
+    complete: u64,
+    expected: Option<[u8; 32]>,
+) -> Result<(), ProducerProgressError> {
+    let fields = floor.fields();
+    if context.epoch != 1
+        || context.manifest != fields.manifest_sha256
+        || reserved != fields.issued_through
+        || complete != fields.issued_through
+        || revision != fields.checkpoint_revision
+        || expected != Some(fields.checkpoint_digest)
+    {
+        return Err(ProducerProgressError::InvalidContext);
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::storage::rocks::producer_floor::ClosedProducerFloorFields;
+    use bigbrotr_model::DatasetId;
+
+    #[test]
+    fn compacted_floor_requires_exact_retained_checkpoint() {
+        let context = Context {
+            dataset: DatasetId::try_from([1; 16]).unwrap(),
+            slot: ProducerSlotId::try_from([2; 16]).unwrap(),
+            epoch: 1,
+            manifest: [3; 32],
+        };
+        let floor = ClosedProducerFloor::new(ClosedProducerFloorFields {
+            issued_through: 7,
+            manifest_sha256: context.manifest,
+            source_through: 27,
+            closure_digest: [4; 32],
+            checkpoint_revision: 8,
+            checkpoint_digest: [5; 32],
+        })
+        .unwrap();
+        assert_eq!(
+            require_compacted_head(context, &floor, 7, 8, 7, Some([5; 32])),
+            Ok(())
+        );
+        // The complete canonical checksum cannot excuse an older/missing head,
+        // a changed context or a reserved tail outside this entire closed cut.
+        for (context, reserved, revision, complete, digest) in [
+            (
+                Context {
+                    epoch: 2,
+                    ..context
+                },
+                7,
+                8,
+                7,
+                Some([5; 32]),
+            ),
+            (
+                Context {
+                    manifest: [9; 32],
+                    ..context
+                },
+                7,
+                8,
+                7,
+                Some([5; 32]),
+            ),
+            (context, 8, 8, 7, Some([5; 32])),
+            (context, 7, 7, 7, Some([5; 32])),
+            (context, 7, 8, 6, Some([5; 32])),
+            (context, 7, 8, 7, Some([9; 32])),
+            (context, 7, 0, 0, None),
+        ] {
+            assert_eq!(
+                require_compacted_head(context, &floor, reserved, revision, complete, digest),
+                Err(ProducerProgressError::InvalidContext)
+            );
+        }
+    }
 }

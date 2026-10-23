@@ -16,7 +16,8 @@ from tools.archive_bundle import build_environment, install_bundle, native_targe
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'], ['producer-ack-fault'])
+assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'], ['producer-ack-fault'], ['producer-floor'])
+producer_floor = sys.argv[1:] == ['producer-floor']
 producer_ack_fault = sys.argv[1:] == ['producer-ack-fault']
 producer_ack = sys.argv[1:] == ['producer-ack']
 producer_progress = sys.argv[1:] in (['producer-progress'], ['producer-ack'])
@@ -31,7 +32,7 @@ history = sys.argv[1:] == ['history']
 transition_probe = sys.argv[1:] == ['transition-probe']
 probe = sys.argv[1:] == ['history-probe'] or transition_probe
 transition = sys.argv[1:] == ['transition']
-build_probe = probe or transition or writer or recovery or installed or archive_installed or producer_progress
+build_probe = probe or transition or writer or recovery or installed or archive_installed or producer_progress or producer_floor
 lineage = sys.argv[1:] == ['lineage']
 schema = sys.argv[1:] == ['schema'] or replay or history or build_probe
 
@@ -110,6 +111,11 @@ if producer_ack:
                          'schema40 catalog and CLI/probe compilation plus both Clippy selections. '
                          'Connected PG confirmation/ACK, installed two-slot traffic/loss/recovery, '
                          'resource capacity and Archive worker qualification NOT_RUN.')
+if producer_floor:
+    identity['scope'] = ('Non-destructive native compacted-prefix codec, outcome and scientific census '
+                         'with affected lineage/input components; CLI/probe compilation and Clippy. '
+                         'Connected PostgreSQL, installed compacted recovery, reclamation, '
+                         'compacted successor compatibility and crash/restore qualification NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
 if producer_ack_fault:
@@ -328,6 +334,13 @@ if producer_ack:
     # and the existing Sync controls in one non-overlapping consumer selection.
     tests = [(name, ['--bin', 'bigbrotr', 'interfaces::serve::initial_ingest::']
               if name == 'sync_progress' else selection) for name, selection in tests]
+if producer_floor:
+    tests = [(name, ['--lib', selection]) for name, selection in [
+        ('compacted_prefix', 'storage::rocks::store::admission_tests::compacted_prefix_tests::'),
+        ('compacted_progress', 'storage::postgres::control_owner::producer_progress::recovery::tests::'),
+        ('initial_reconstruction', 'initial_reconstruction_tests'),
+        ('request_inputs', 'request_input_tests'),
+    ]]
 steps = ([('probe_build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                           '--bin', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--message-format=json'])]
          if build_probe else [] if archive_components else
@@ -372,7 +385,7 @@ for name, selection in (tests + [('probe_build', None)] if build_probe else test
     if summaries:
         assert len(summaries) == 1
         counts[name] = int(summaries[0])
-        if producer_progress:
+        if producer_progress or producer_floor:
             test_names[name] = re.findall(r'^test (\S+) \.\.\. ok$', content, re.MULTILINE)
     paths = set()
     kind = ['example'] if selection is None else [selection[0][2:]]
@@ -503,13 +516,25 @@ if producer_ack:
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::' + name for name in [
             'initial_writer_tests::activated_recovery_tests::activated_source_tests::activated_ack_handoff_requires_all_predecessor_originals_before_target',
             'lineage_tests::lineage_replay_tests::successor_handoff_tests::successor_writer_tests::successor_ack_updates_only_exact_admitted_frontier_and_keeps_replay']]
+if producer_floor:
+    required_controls['compacted_progress'] = [
+        'storage::postgres::control_owner::producer_progress::recovery::tests::compacted_floor_requires_exact_retained_checkpoint']
+    required_controls['compacted_prefix'] = [
+        'storage::rocks::store::admission_tests::compacted_prefix_tests::' + name for name in [
+            'compacted_floor_codec_has_exact_bytes_and_legacy_refusal',
+            'compacted_prefix_validates_all_outcome_kinds_and_residual_originals_without_writes',
+            'compacted_prefix_requires_pending_indices_and_complete_scientific_census',
+            'compacted_outcome_reducer_refuses_changed_rows_and_incomplete_closure',
+            'compacted_prefix_binds_custody_inputs_cancellation_and_grants',
+            'compacted_outcomes_check_protection_batch_digest_and_residual_names',
+            'compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_mismatch']]
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}
 receipt = dict(identity, status='FAIL' if missing_controls else result['status'], test_counts=counts,
                executables_sha256=executables,
                independent_fixture_sha256=file_hash(SOURCE / 'experiments/ingest-succession/portable-handoff-v2.json'))
-if producer_progress:
+if producer_progress or producer_floor:
     receipt.update(test_names=test_names, required_controls=required_controls,
                    missing_controls=missing_controls)
 (artifacts / 'component-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
@@ -528,6 +553,7 @@ if archive_installed:
     assert archive_postcheck is not None and archive_postcheck['status'] == 'PASS'
 qualification = dict(identity, status='PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS' if archive_installed
                      else 'PASS_ARCHIVE_CATCH_UP_COMPONENTS' if archive_components
+                     else 'PASS_COMPACTED_PREFIX_COMPONENTS' if producer_floor
                      else 'PASS_PRODUCER_ACK_COMPONENTS' if producer_ack
                      else 'PASS_PRODUCER_PROGRESS_COMPONENTS' if producer_progress
                      else 'PASS_SUCCESSION_INSTALLED_COMPONENTS' if installed

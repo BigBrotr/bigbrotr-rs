@@ -140,10 +140,13 @@ pub use initial_gap::{InitialGapPlan, PreparedInitialGap};
 pub use initial_history::{InitialHistoryRequest, PreparedInitialHistory};
 #[path = "producer_closing.rs"]
 mod producer_closing;
+#[path = "producer_compaction.rs"]
+mod producer_compaction;
 #[path = "producer_recovery.rs"]
 mod producer_recovery;
 #[path = "producer_retirement.rs"]
 mod producer_retirement;
+pub use producer_compaction::{CompactedInitialRetirement, ProducerCompactionError};
 #[path = "source_closure.rs"]
 mod source_closure;
 pub use initial_batch::{

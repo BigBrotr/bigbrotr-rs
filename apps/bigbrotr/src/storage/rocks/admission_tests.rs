@@ -1349,3 +1349,6 @@ mod producer_checkpoint_tests;
 
 #[path = "producer_ack_tests.rs"]
 mod producer_ack_tests;
+
+#[path = "compacted_prefix_tests.rs"]
+mod compacted_prefix_tests;

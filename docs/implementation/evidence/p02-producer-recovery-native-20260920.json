@@ -43384,15 +43384,15 @@
           }
         },
         "closed_producer_reclamation_preparation_20261023": {
-          "status": "CONTRACT_SELECTED_Q39; native non-destructive implementation assigned; runtime NOT_RUN",
+          "status": "NON_DESTRUCTIVE_SOURCE_INTEGRATED; independent review/build/runtime NOT_RUN",
           "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
           "task": "P02-T02 Steps4/5/7",
           "purpose": "Reclaim acknowledged receipt/input operational detail for one completely closed and fully resolved producer while preserving all scientific facts, pending batches and causal recovery/backup closure.",
           "selection": "Native ACK EIO, connected COMMIT-loss recovery and fail-closed callers permit progressing to this real NoGC limitation. Installed PG-to-ACK-EIO remains unqualified, not silently claimed or made a prerequisite for every other implementation.",
           "boundaries": "Select exact eligible lifecycle, minimal versioned checkpoint/replay floor and deletion ordering before source changes. Missing or incompatible history must refuse; no bare ACK or untrusted PG row permits loss. No negative noncommit resolver, limit bump or second per-delivery proof ledger.",
-          "owners": "ack_remaining_boundary native codec/compacted-prefix/shared-census implementation in isolated worktree; critical design complete; root PG consumer/integration/runtime",
-          "next": "Implement and critically review non-destructive floor/witness/shared census with retained PG validation; preserve existing recovery and succession behavior before enabling deletion.",
-          "contract": "docs/reference/producer-request-inputs.md#closed-producer-reclamation-selected-not-yet-implemented",
+          "owners": "Native author ack_remaining_boundary and PG author progress_hole_critical completed separate clean worktrees; root CLI/build-profile integration/runtime",
+          "next": "Freeze integrated source, obtain independent critical review and run exact producer-floor native/affected component tests, CLI build and Clippy; then qualify installed PG/native compacted reader before successor adaptation and deletion.",
+          "contract": "docs/reference/producer-request-inputs.md#closed-producer-reclamation-reader-under-qualification-deletion-unavailable",
           "decision": "Q39;139-byte version3 producer floor binds unchanged source closure plus typed checkpoint. One synced floor/exact-receipt-delete batch precedes authenticated input unlink/directory sync. No deletion exposed until compacted recovery and existing succession consumers preserve guarantees.",
           "design_receipts": [
             {
@@ -43404,7 +43404,37 @@
               "sha256": "abd4fe729c83d524ee94da89c1494165b4e8c24438c7e52b68d85b705281f499"
             }
           ],
-          "origin": "Preserve dfbb8dc as pre-origin only: actual producer closing/source open. Isolated clone must execute existing abandon-acquisition then retire-initial and verify complete retirement before GC. No new EVENT or privileged lifecycle fabrication."
+          "origin": "Preserve dfbb8dc as pre-origin only: actual producer closing/source open. Isolated clone must execute existing abandon-acquisition then retire-initial and verify complete retirement before GC. No new EVENT or privileged lifecycle fabrication.",
+          "source_integration": {
+            "base": "98f6d8575e3d73b01f4c239b67836183e0f56451",
+            "original_commits": [
+              "d224a8d28b0183632ba14b32658f0400d561053b",
+              "584bad39d193fd2476f168acade723a5ca24c78b",
+              "4662b96ed59063572dad22aaa6b7d15f0ddee577"
+            ],
+            "root_changes": "Existing RetireInitial CLI explicit compacted branch, grant preflight, truthful no-original-replay report; focused producer-floor build profile; minimum column ACL documented. No reclamation writer or live grant.",
+            "finding": "Original native author version incorrectly equated historical outcome policy with manifest; corrective child preserves full-u64 original decision and adds seventh literal control. Original source and receipts preserved.",
+            "checks": {
+              "source_review": "Root read new production owners, complete recovery caller and changed tests/shared-owner diffs; author full PG parent-owner read retained in receipt. Independent review pending.",
+              "format_and_syntax": "PASS: author targeted rustfmt, root helper rustfmt, Python AST, staged and unstaged diff --check",
+              "compile_tests_clippy": "NOT_RUN",
+              "connected_pg_and_installed": "NOT_RUN"
+            },
+            "author_receipts": [
+              {
+                "path": ".research/producer-checkpoint-ack-review-20261020/initial-closed-reclamation-native-source-v1.json",
+                "sha256": "dada645bab1938498cd82ef22786c5d1626b4db6cb3eed1e773e204ca0d711c9"
+              },
+              {
+                "path": ".research/producer-checkpoint-ack-review-20261020/initial-closed-reclamation-native-source-v2.json",
+                "sha256": "9772d932bc4b67c42124dc3ba524f329f8caa919ad3a144dd8f309dd5028c2ee"
+              },
+              {
+                "path": ".research/producer-checkpoint-ack-review-20261020/closed-producer-pg-source-v1.json",
+                "sha256": "d3fc9f395cfd46d4b915fa26f2c15188fe9dafb05c6e3eaa79f53f5c083e9e62"
+              }
+            ]
+          }
         }
       }
     }

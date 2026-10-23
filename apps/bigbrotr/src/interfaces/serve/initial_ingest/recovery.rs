@@ -20,6 +20,7 @@ use bigbrotr_model::{
 use tokio::sync::oneshot;
 
 mod activated;
+mod compacted;
 mod empty;
 pub(super) mod replay;
 mod successor_family;
@@ -287,6 +288,15 @@ async fn connected(
         policy_ttl: duration(root, "authorization_ttl"),
         cancelled: &cancellation.requested,
     };
+    // The new historical read is explicit and non-destructive. Ordinary
+    // original replay continues to reject a reclaimed producer; it cannot
+    // manufacture missing input or turn a PG copy into a native outcome.
+    let compacted = if action == Action::RetireInitial {
+        phase(progress, timeout)?;
+        compacted::inspect(budget, recovery, &spec, &cancellation.requested)?
+    } else {
+        None
+    };
     let fresh = || super::super::fresh_process_incarnation().map_err(|e| (1, e.to_string()));
     let request = ClaimRequest {
         dataset: spec.dataset_id,
@@ -304,6 +314,20 @@ async fn connected(
             .map_err(owner_error)
     })
     .await?;
+    if let Some(prefix) = compacted {
+        let report = compacted::retirement(
+            root,
+            budget,
+            progress,
+            cancellation,
+            &mut owner,
+            recovery,
+            &prefix,
+            &spec,
+        )
+        .await?;
+        return Ok((owner, report));
+    }
     phase(progress, timeout)?;
     let closed = bounded(timeout, cancellation, async {
         let permit = grant(budget, 4096, 4096)?;

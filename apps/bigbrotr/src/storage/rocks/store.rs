@@ -135,13 +135,17 @@ pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 
 #[path = "lineage.rs"]
 mod lineage;
+pub use lineage::{
+    COMPACTED_PREFIX_METADATA_BYTES, CompactedOutcomeRow, CompactedPrefixResolution,
+    RetainedCompactedPrefix, RetainedLineage, RetainedLineageEntry, RetainedTerminalKind,
+    VerifiedCompactedPrefix, compacted_outcome_data_bytes,
+};
 pub(in crate::storage) use lineage::{
     NativeSuccessorRecovery, NativeSuccessorRetirement, ResolvedSuccessorRecovery,
     ResolvedSuccessorRetirement, SuccessorRecoveryResolution, SuccessorRetirementResolution,
 };
 #[cfg(test)]
 use lineage::{PendingSuccessorRequest, PendingSuccessorRetirementRequest};
-pub use lineage::{RetainedLineage, RetainedLineageEntry, RetainedTerminalKind};
 
 #[path = "lineage_replay.rs"]
 mod lineage_replay;
