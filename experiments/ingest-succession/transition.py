@@ -246,12 +246,14 @@ def legacy_installed_origin(basis, origin, retained):
 
 
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
-        origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False):
+        origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
+        preparation_hole=False):
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
+    assert type(preparation_hole) is bool and (not preparation_hole or producer_ack)
     if producer_progress:
         from installed_progress_replay import require_frozen_profile
-        progress_profile = require_frozen_profile(ack=producer_ack)
+        progress_profile = require_frozen_profile(ack=producer_ack,preparation_hole=preparation_hole)
         migration = SOURCE / ('migrations/postgres/0040_producer_ack.sql' if producer_ack
             else 'migrations/postgres/0039_producer_progress.sql')
         assert digest(migration) == progress_profile['migration_sha256']
@@ -270,7 +272,9 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 'result_sha256', 'snapshot', 'snapshot_sha256', 'native_file', 'native_sha256',
                 'inputs_file', 'inputs_sha256', 'store'}
             if 'origin_format' in origin:
-                assert origin['origin_format'] == 'legacy-installed'
+                assert origin['origin_format'] in ('legacy-installed','initial-ack-hole')
+                if origin['origin_format'] == 'initial-ack-hole':
+                    assert preparation_hole
                 fields |= {'origin_format', 'verification_file', 'verification_sha256'}
                 assert origin['verification_file'] == origin['final_case'] + '-verification.json'
                 assert re.fullmatch(r'[0-9a-f]{64}', origin['verification_sha256'])
@@ -290,16 +294,22 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
             assert origin['label'].startswith('org.bigbrotr.') and origin['status'].startswith('PASS_')
         pins = {o['name']: o for o in origin_specs}
     else:
+        assert not preparation_hole
         assert origin_for_clone is None
         origin_specs, pins = schema.ORIGINS, PINS
         origin_for_clone = {mode: 'empty' if mode == 'empty' else 'activated' for mode in suite.clones}
     assert isinstance(extra_grants, tuple) and all(isinstance(s, str) and s for s in extra_grants)
+    if preparation_hole:
+        assert not extra_grants, 'qualified initial recovery already has its exact authority'
     assert SOURCE == root / 'source'
     revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
     assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
     built = read(build / 'build-result.json')
     component = read(build / 'component-result.json')
     qualification = read(build.parent / 'qualification.json')
+    if preparation_hole:
+        from installed_progress_replay import preparation_hole_qualification
+        preparation_hole_qualification(built,component,qualification)
     allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
@@ -314,8 +324,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     binaries = component['executables_sha256']
     assert {'bigbrotr', 'ingest_bootstrap_probe'} <= set(binaries)
     if producer_ack:
-        from installed_progress_replay import ACK_EXECUTABLES_SHA256
-        assert binaries==ACK_EXECUTABLES_SHA256
+        from installed_progress_replay import ack_executables
+        assert binaries==ack_executables(preparation_hole=preparation_hole)
         assert set(binaries)=={'bigbrotr','ingest_bootstrap_probe','native_components','sync_progress',
             'fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
     assert all(digest(build / name) == value for name, value in binaries.items())
@@ -372,6 +382,9 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 assert retained['owner'] == origin['owner'] and retained['label'] == origin['label']
                 if origin.get('origin_format') == 'legacy-installed':
                     previous_client = legacy_installed_origin(basis, origin, retained)
+                elif origin.get('origin_format') == 'initial-ack-hole':
+                    from installed_progress_recovery_oracle import initial_ack_origin_report
+                    previous_client = initial_ack_origin_report(basis,origin,retained)
                 else:
                     assert type(retained['client']) is str and retained['client'] == origin['client_id']
                     assert not retained['unexpected_containers']
@@ -470,7 +483,10 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 assert answer.returncode == 0 and not answer.stderr
             migrated = schema.rows(pg, database)
             lab.write_json(output / (mode + '-migrated.json'), migrated)
-            statements = [(SOURCE / 'experiments/ingest-succession/schema_grants.sql').read_text(),
+            # The qualified initial origin already grants exact recovery rights;
+            # successor setup would broaden its authority and change its catalog.
+            statements = [] if preparation_hole else [
+                (SOURCE / 'experiments/ingest-succession/schema_grants.sql').read_text(),
                 'GRANT SELECT ON control.initial_ingest_activations TO bigbrotr_control;', *extra_grants]
             clone['grants'] = []
             for statement in statements:
