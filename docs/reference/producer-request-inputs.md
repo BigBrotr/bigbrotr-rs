@@ -771,13 +771,21 @@ Control/acquisition authority helpers and replaced historical validators remain
 necessary. The migrator owns trigger installation; application SQL does not
 disable those guards or seed checkpoint authority.
 
-### Native ACK and returned credit (under implementation)
+### Native ACK and returned credit (partial qualification)
 
-The next P02-T02 increment connects confirmed mutation checkpoints to the existing
-native acknowledged watermark. Its source and qualification remain in progress;
-the earlier ACK0 results above do not qualify this change. The owning
+This P02-T02 increment connects confirmed mutation checkpoints to the existing
+native acknowledged watermark. Product `fcad4c9` passes 258 selected component
+tests and both Clippy selections. Actual initial, activated epoch2 and successor
+epoch3 consumers pass with a registered two-request window, three new signed
+events before EOSE and a separately gated three-event proof-only resend. Complete
+independent SQL/native/input checks and raw replay pass: initial I=A=C6,
+epoch2/epoch3 I=A=C4; proof-only adds no native writes or request originals.
+The original result-packing, quiet-wire selection and standalone reader import
+failures remain recorded. The owning
 [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-records exact tested revisions and outstanding gates.
+pins exact fixture/build identities and invocation premises. Connected ambiguous
+completion/recovery, full-window proof-only and remaining refusal/resource gates
+are still open; the earlier ACK0 results do not qualify those new paths.
 
 Additive migration `0040_producer_ack.sql` separates the absolute retained limit
 from the coordination window: the next reservation is at most validated typed
@@ -821,6 +829,6 @@ Activated epoch2 recovery replays the exact epoch1 originals before its own;
 whole-lineage successors retain their ordered original replay. Preparing a new
 lifetime may preserve a verified closed ancestor with A<C: it supplies no live
 credit, and preparation neither rewrites that watermark nor re-stamps its proof.
-Empty, unactivated targets still require zero issued/acknowledged/retired state. Neither this increment nor its eventual
-two-slot demonstration qualifies GC, indefinite traffic, workflow completion or
+Empty, unactivated targets still require zero issued/acknowledged/retired state.
+These bounded two-slot demonstrations do not qualify GC, indefinite traffic, workflow completion or
 backup/restore.

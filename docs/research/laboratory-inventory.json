@@ -60905,7 +60905,7 @@
       }
     },
     "producer_checkpoint_ack_20261020": {
-      "state": "Qualified source/evidence integrated and pushed at main dd57110; five reconciled local branch refs retired, original detached worktrees preserved. Initial/activated and historical-recovery source fixtures active; no runtime/build/data cleanup.",
+      "state": "Owner-requested safe pause on 2026-10-23: integrated source main25cf6cf; positive initial/activated2/successor3 ACK and raw replay PASS. ACK-loss source reviewed/integrated, real fault/recovery runtime NOT_RUN. No active project driver or cleanup.",
       "worktree": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-20261020",
       "branch": "work/producer-checkpoint-ack",
       "base": "0e4ac3e917e09c4fc3053f5872ca5c75dbae0358",
@@ -61374,7 +61374,7 @@
           "branch": "work/producer-ack-sync",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Installed Sync credit/setup/ACK and all recovery CLI; additive migration40/registry and contract",
-          "state": "Clean integrated source, component qualification PASS; fast-forwarded to main, installed engines pending",
+          "state": "Clean integrated source, component qualification and actual initial/activated2/successor3 ACK PASS; fault/recovery qualification remains open.",
           "head": "fcad4c9a01ad1aa2cc5dd419707414c9516e97ce",
           "tree": "05159c1ed7bd690c4920ede1439a64d0a6be7cfa"
         },
@@ -61384,19 +61384,19 @@
           "branch": "work/producer-ack-fixture",
           "base": "2b00569f64abdea095e0f9f7380df756b4ca7829",
           "scope": "Independent existing-harness ACK qualification",
-          "state": "Clean frozen source, critically reviewed and merged main3b5228a; author completed. New installed ACK runtime NOT_RUN.",
+          "state": "Clean reviewed fixture integrated; subsequent packaging/phase fixes and positive installed qualification recorded in evidence owner; author completed.",
           "head": "f5cd4e9d49c80bf212daf3000a82b3ac12b2e091",
           "tree": "eea639f8f8f75fb99abfacce0b00ae3bbdbced84"
         },
         {
-          "owner": "export_setup_fixture",
+          "owner": "producer_ack_loss_resume",
           "path": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020",
           "branch": "work/producer-ack-loss",
           "base": "e8e3f9db6033bb2b961236161ca29e015eaf8eff",
           "scope": "Additive schema40 native ACK COMMIT-loss/recovery qualification using existing fixture owners",
-          "state": "Paused author; six uncommitted partial files, NOT_EXECUTABLE, not integrated; exact source/diff authenticated by root",
-          "head": "dc9bfe4c0675e5baff5742aaff82399bea0d2f17",
-          "tree": "981d319bf030510e551d29d7fee74bb0c330a5cd",
+          "state": "Clean completed source at70fd750, critically reviewed and integrated main25cf6cf; real ACK-loss qualification NOT_RUN. Earlier partial receipt/diff preserved.",
+          "head": "70fd75011cc5d7a8925aa038d63cd5aeaca4d2ff",
+          "tree": "f49343c031f25de153883c20a5d735430277fafe",
           "pause_receipt": "/home/tux/bigbrotr-rs/.research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/paused-partial-v1.json"
         }
       ],
@@ -61498,6 +61498,33 @@
           "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
           "finished_at": "2026-10-23T07:31:21.983746+00:00",
           "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-a3800ec",
+          "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-a3800ec/source",
+          "source": "a3800ec9c48531ea6bce3889836275964a83f1a0",
+          "state": "PASS_INSTALLED_ACTIVATED_PRODUCER_ACK; runtime/raw joined0, artifacts retained",
+          "owner": "ecebaa4f3591622868eee6e45feddcc9",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "3bb60e428cc82920e40296d6d327aa197b4b506a1967898ce284b2106d8d07cb",
+            "name": "bigbrotr-acquisition-binding-a3800ec-progress-activated-ack"
+          },
+          "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "finished_at": "2026-10-23T07:34:56.576148+00:00",
+          "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec",
+          "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec/source",
+          "source": "a3800ec9c48531ea6bce3889836275964a83f1a0",
+          "state": "PASS_INSTALLED_PRODUCER_ACK; runtime/raw joined0, artifacts retained",
+          "owner": "75127ae1efb2e64bbe9d6ebab425b012",
+          "label": "org.bigbrotr.installed-progress-ack",
+          "client": "147ed6b3ec5f2d922b948e7b5665af73700aaf891ce2632c3eee9eccc810c952",
+          "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "finished_at": "2026-10-23T07:36:45.799485+00:00",
+          "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
         }
       ],
       "active_agents_20261023": {
@@ -61506,8 +61533,38 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T09-25-42-01a167a6-bc41-7973-a332-c6cf4e8bee24.jsonl session_meta/turn_context",
-          "state": "Source-only active"
+          "state": "Completed at70fd750 and integrated main25cf6cf; no active work; explicit pause communicated."
+        },
+        "producer_ack_loss_critical": {
+          "scope": "Critical review of seven completed ACK-loss fixture owners and standalone import follow-up",
+          "model": "gpt-6-astra",
+          "effort": "xhigh",
+          "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T09-36-53-01a167b0-f8c7-7082-b662-a89a3dbf651c.jsonl session_meta/turn_context",
+          "state": "Completed; no remaining source blocker; no active work; explicit pause communicated.",
+          "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
         }
+      },
+      "pause_resource_observation_20261023": {
+        "observed_at": "2026-10-23T07:52:06+00:00",
+        "source_head": "25cf6cf00a930350d08c2ba9591cf2d2077691a9",
+        "git": "main had only evidence/reference/inventory documentation edits before this checkpoint; no merge/rebase or unfinished source edits. Four ACK source worktrees freshly observed clean; all retained.",
+        "agents": "Both live child entries completed; pause communicated without new tasks. Earlier agents are absent from the current live tree.",
+        "drivers": "Initial,activated,successor,reread and offline drivers already joined. Session73439 ended1 after saving complete ten-case PASS receipt due to presentation KeyError; no active writer.",
+        "client": {
+          "id": "147ed6b3ec5f2d922b948e7b5665af73700aaf891ce2632c3eee9eccc810c952",
+          "owner_label": "org.bigbrotr.installed-progress-ack",
+          "owner": "75127ae1efb2e64bbe9d6ebab425b012",
+          "state": "Fresh exact-ID inspection: exited,PID0,noOOM,exit143,cgroup absent; ordinary outer client stop"
+        },
+        "borrowed_pg": {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "state": "Fresh exact-ID inspection: exited,PID0,noOOM,exit0,cgroup absent"
+        },
+        "project_processes": "Fresh /proc command/cwd scan found no process under repository or external implementation lab, excluding the checkpoint inspection ancestry. Running Docker list contains no project-owned container; unrelated workloads left intact.",
+        "preservation": "All .research, historical partial diffs, worktrees, original failures, data/logs and external /home/tux/bigbrotr-implementation-20260917/runs artifacts retained. No cleanup, branch deletion or new run during suspension.",
+        "next_runtime": "NOT_RUN: installed-producer-ack-commit-loss new lab, after explicit resume only. Detailed source and reused verifier receipts live in evidence_owner native_ack_source_preparation."
       }
     }
   },

@@ -42153,7 +42153,7 @@
           }
         ],
         "native_ack_source_preparation": {
-          "status": "SOURCE_AND_COMPONENTS_PASS; installed initial ACK and strict raw replay PASS; activated original wrapper FAIL/corrected context PASS; successor and connected loss pending",
+          "status": "SOURCE_AND_COMPONENTS_PASS; real initial/activated2/successor3 window2 ACK and raw science PASS. Original fixture failures preserved; connected loss/recovery and remaining gates open.",
           "root_consumer": {
             "commit": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
             "tree": "765233f165cfe590eb3399f085306aff32f661dd",
@@ -42202,7 +42202,7 @@
             "Successful native ACK write with unexpected sequence poisons the actual initial/recovery owner as well as successor. Native component refusal exercised."
           ],
           "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
-          "next": "Run corrected activated2 profile and strict raw reader from new exact source, then actual successor3. Keep initial941 PASS; its inputs and verifier path are unaffected by activated-only fix.",
+          "next": "PAUSE requested by owner: do not execute until explicit resume. Then create a new detached exact-source lab, reuse qualified producer-ack-fcad4c9/out/artifacts and run installed_progress_commit_loss.py LAB BUILD --producer-ack followed by strict installed_progress_commit_replay.py LAB --producer-ack. Two faults plus four recovery/retry processes and 140 controls remain NOT_RUN; preserve sequential full-state binding.",
           "storage": {
             "commit": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
             "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
@@ -42367,8 +42367,170 @@
                 "sha256": "6edc61a43f485d71fd8741ca49f823a024a455dcd21ace811abc4ffb592db1ec"
               },
               "context_replay_status": "PASS_CONTEXT_ONLY: ACK4,C4,20dependencies,110native rows/sequence134 and41 controls; no full raw qualification of original failed run."
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-a3800ec",
+              "source": "a3800ec9c48531ea6bce3889836275964a83f1a0",
+              "kind": "activated",
+              "driver_session": 19891,
+              "driver_exit": 0,
+              "status": "PASS_INSTALLED_ACTIVATED_PRODUCER_ACK",
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-a3800ec/bindings/result.json",
+                "sha256": "41d865469b6e5c4cf8c65f701e2de679aceb3fe736a47da5af7d66fc17b46919"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-a3800ec/driver.log",
+                "sha256": "75f3da95586f3e458561a3f22640a57e88cfd8d06bb1c9271b5a3e4e70c73f8b"
+              },
+              "raw_replay": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-a3800ec/raw-replay.json",
+                "sha256": "971bb6066bde1c2998f7bd3cf5094d5fd74d3fe628553079938c56af9356c83b"
+              },
+              "raw_status": "PASS_RAW_ACK_CONTEXT_REPLAY",
+              "raw_bound_files": 2172,
+              "custody": "Runtime and raw drivers joined0; root independently checked exact client/borrowed PG labels,exited/PID0/noOOM/cgroups absent; no cleanup errors,missing owned or unrelated changes.",
+              "oracle": {
+                "ack": 4,
+                "acquisition_revision": 6,
+                "complete_through_request": 4,
+                "dependencies": 20,
+                "job_checkpoint_revision": 0,
+                "kind": "activated",
+                "legacy_science": {
+                  "actual_cli": true,
+                  "certification_per_resend": "not-observed",
+                  "completion": "not-qualified",
+                  "final_inputs": 8,
+                  "mode": "installed-live-on",
+                  "native_rows": 110,
+                  "native_sequence": 134,
+                  "original_inputs": 4,
+                  "snapshots": 5,
+                  "sql_tables": 72,
+                  "status": "PASS"
+                },
+                "mutation_revision": 4,
+                "producer_epoch": 2,
+                "proof_revision": 7,
+                "status": "PASS_TYPED_CONTEXT"
+              },
+              "negative_controls": 41
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec",
+              "source": "a3800ec9c48531ea6bce3889836275964a83f1a0",
+              "kind": "successor",
+              "driver_session": 35047,
+              "driver_exit": 0,
+              "status": "PASS_INSTALLED_PRODUCER_ACK",
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec/installed-progress-ack/result.json",
+                "sha256": "7f23b1519cb7c76e0482d58725906621bd52a20fb29657e3df63385af5cf7ef1"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec/driver.log",
+                "sha256": "72d410b1494d60d7cb355d23ec8cb387720124668788a0f36520e60e5dc0963e"
+              },
+              "raw_replay": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec/raw-replay-with-bootstrap.json",
+                "sha256": "bbe78cdec8e7d84518bb7dfe687f997ba7dca9e035b4526b9079f65cb9fbee57"
+              },
+              "raw_status": "PASS_INSTALLED_PRODUCER_ACK_CAPTURE_REPLAY",
+              "raw_bound_files": 2180,
+              "custody": "Runtime and raw drivers joined0; root independently checked exact client/borrowed PG labels,exited/PID0/noOOM/cgroups absent; no cleanup errors,missing owned or unrelated changes.",
+              "oracle": {
+                "status": "PASS_INSTALLED_PRODUCER_ACK",
+                "base": {
+                  "status": "VERIFIED_BASE_SCIENCE_ONLY",
+                  "name": "activated-live3",
+                  "snapshots": 5,
+                  "observed_states": 7,
+                  "sql_tables": 75,
+                  "target_epoch": 3,
+                  "requests": 4,
+                  "source_cut": 13,
+                  "native_rows": 113,
+                  "native_sequence": 143,
+                  "original_inputs": 6,
+                  "final_inputs": 10,
+                  "actual_cli": true,
+                  "certification_per_frame": "not-observed",
+                  "source_closure": "not-performed",
+                  "workflow_completion": "not-qualified"
+                },
+                "typed": {
+                  "status": "PASS_TYPED_CONTEXT",
+                  "kind": "successor",
+                  "producer_epoch": 3,
+                  "mutation_revision": 4,
+                  "proof_revision": 7,
+                  "complete_through_request": 4,
+                  "dependencies": 14,
+                  "acquisition_revision": 6,
+                  "job_checkpoint_revision": 0,
+                  "ack": 4
+                },
+                "sql_tables": 77,
+                "native_ack": 4,
+                "native_science": "complete independent native/input reconstruction",
+                "scope": "Three mutations through actual window2 then a distinct three-proof REQ; retained originals, noGC"
+              },
+              "negative_controls": 31,
+              "raw_original_failure": {
+                "status": "FAIL",
+                "exit_code": 1,
+                "stdout": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec/raw-replay.json",
+                  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                },
+                "stderr": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-successor-a3800ec/raw-replay.stderr",
+                  "sha256": "983471a94903d5307249afea510c861eeab60841956290821ebf13ee8b9a2dfb"
+                },
+                "finding": "Standalone reader lacked its own sibling ingest-bootstrap import path; runtime transition supplied it."
+              },
+              "raw_invocation": "PYTHONPATH=<this run>/source/experiments/ingest-bootstrap python3 -B -S <this exact source>/experiments/ingest-succession/installed_family_capture.py <run> --producer-ack",
+              "raw_scope": "Same unchanged source/captures; actual imported modules still checked by bind_ack_modules against full captured source manifest. No engine restart or weakened predicate. Source packaging fix is separately reviewed in loss70fd750."
             }
-          ]
+          ],
+          "resumed_loss_preparation_20261023": {
+            "status": "SOURCE_REVIEW_PASS_AND_INTEGRATED; ACK-loss real engines/raw replay/140 controls NOT_RUN at owner-requested pause",
+            "source": "70fd75011cc5d7a8925aa038d63cd5aeaca4d2ff",
+            "source_tree": "f49343c031f25de153883c20a5d735430277fafe",
+            "integrated_main": "25cf6cf00a930350d08c2ba9591cf2d2077691a9",
+            "integrated_tree": "d1282b7042d5a841991432de384212c5fcd7c0ba",
+            "author": "producer_ack_loss_resume; completed, isolated worktree clean; pause communicated",
+            "reviewer": "producer_ack_loss_critical; completed, no remaining source blocker; pause communicated",
+            "author_receipt": {
+              "path": ".research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/resumed-source-v1.json",
+              "sha256": "867c0e080dad75f2a7d11dc467f2769e2125dffb0ed5763b577b871fe76b1270"
+            },
+            "import_followup_receipt": {
+              "path": ".research/producer-ack-loss-20261020/.research/producer-ack-loss-source-20261020/replay-import-followup-v1.json",
+              "sha256": "b52f891310ca0b4e203c7ea79323e5d9cc807bd7cddfd3111952cc73a51e98c2"
+            },
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json",
+              "sha256": "33d7e78204d4fc15dd21a7c0dd1209a06bf6d7ba6b755e260d4a5d1c57958b01"
+            },
+            "source_checks": "Seven final owner hashes/AST and diff checks PASS; root authenticated integrated hashes. 783 product/build-manifest entries unchanged; qualified product build remains reusable.",
+            "contract": "Actual mutation request4 COMMIT: before-forward expects native I4/A3 and SQL C3; after-complete expects native I4/A3 and SQL C4. Retain originals; recovery/retry must bind full predecessor state. No post-ACK durability-loss claim.",
+            "preservation": "Earlier paused-partial-v1 receipt/diff remain historical and unchanged. Seven completed source owners are committed and integrated; runtime qualification remains incomplete, not silently promoted to PASS."
+          },
+          "integrated_loss_default_regression_20261023": {
+            "receipt": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/ack-loss-integrated-default-regression-25cf6cf.json",
+              "sha256": "3ceda78689e9a8355e4df1e084341f571a69c7690a046a8f6f5d503092ba221f"
+            },
+            "source": "25cf6cf00a930350d08c2ba9591cf2d2077691a9",
+            "scientific_result": "PASS_CHANGED_DEFAULT_AND_POSITIVE_ACK_VERIFIERS: all ten cases and 176 controls completed and serialized",
+            "scope": "Six original schema39 loss/recovery/retry contexts (82 controls), three original successor contexts (63), retained positive ACK successor (31). Explicit predecessor SQL/native/input linkage; pure verifier reuse only, no engine or new raw-source qualification.",
+            "driver_session": 73439,
+            "driver_exit": 1,
+            "driver_failure": "After saving the complete PASS receipt, the final presentation loop raised KeyError: controls because loss control summaries use count. Wrapper exit1 is preserved as FAIL; root read every saved case/status/count after the error. No scientific cases rerun and no new campaign required for this presentation error.",
+            "pause": "Driver already joined; no active process and no new ACK-loss laboratory created."
+          }
         }
       }
     }
