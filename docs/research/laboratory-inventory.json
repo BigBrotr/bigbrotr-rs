@@ -62618,7 +62618,7 @@
         }
       },
       "installed_initial_preparation_work_20261024": {
-        "state": "BUILD163/54 and INSTALLED23/232 PASS; exact raw replay7898 PASS; next delivery-fault draft source-only",
+        "state": "Product build/basic installed and compacted delivery profiles qualified within linked bounded scope; no runtime active",
         "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
         "runtime_owner": "/root; connected21423/replay76200 joined0, exact client143/borrowed PG0 freshly stopped/PID0/noOOM",
         "root_source": "Qualified producta0e914e and integrated harness30d65540; complete exact receipts linked from owning recovery report.",
@@ -62631,12 +62631,16 @@
           "model": "gpt-6-astra",
           "reasoning": "xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
-          "branch": "work/installed-initial-preparation",
+          "branch": "DETACHED at afc80ad5; former work/installed-initial-preparation ref retired",
           "scope": "Existing installed compacted reader/oracle/replay/client parameterized with initial-preparation; original7 real gated/normal setup and fixed synthetic target-closing refusal probe",
-          "state": "Frozen clean atafc80ad5; additive Python delivery fixture integrated, runtime NOT_RUN",
+          "state": "Clean detached at originalafc80ad5 after exact8file reconciliation; redundant branchref retired, allwork/artifacts preserved",
           "rust_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
           "python_commit": "d80db7333d340d2c73c22771684a74664c37833a",
-          "delivery_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05"
+          "delivery_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
+          "reconciliation": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-author-reconciliation-v1.json",
+            "sha256": "fb9b3b29d8d61050e4dc7db3a5a49a504731d44c2f83caa1907a189f072ac698"
+          }
         },
         "preservation": "All prior worktrees, datasets, original failures, captures and artifacts retained; no cleanup",
         "fixture_critical_review": {
@@ -62718,10 +62722,10 @@
         }
       },
       "installed_initial_preparation_delivery_20261024": {
-        "state": "FIRST_RUN_FAIL_CAPTURE_TIMESTAMP; source correction reviewed, rerun NOT_RUN",
-        "runtime_owner": "/root; driver1044 joined1; exact owned client143/borrowedPG0 freshly stopped/PID0/noOOM, no new run active",
+        "state": "PASS corrected connected13/164 and raw7521; firstFAIL preserved",
+        "runtime_owner": "/root; drivers1044joined1,27208/66078joined0; exact owned clients143/borrowedPG0 stopped/PID0/noOOM; no runtime active",
         "author_worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
-        "author_branch": "work/installed-initial-preparation",
+        "author_branch": "DETACHED at afc80ad5; former work/installed-initial-preparation ref retired",
         "author_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
         "product_source": "a0e914e8b58650d94dec60c0b5d3c08a02e5e248",
         "scope": "Existing retained a0 ELFs and exact6ece/f51 original endpoints; planned6clones/13commands; artifacts preserved, no cleanup",
@@ -62741,6 +62745,24 @@
             "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
             "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
             "preservation": "All2 original preservation vectors true; cleanup/missing/unrelated/unexpected arrays empty; all artifacts retained"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-dc6a3f1",
+            "source": "dc6a3f15d244895b4c38b4fdd62a60f60b6b48a4",
+            "driver": 27208,
+            "driver_exit": 0,
+            "replay_driver": 66078,
+            "replay_driver_exit": 0,
+            "owner": "1ea7f3add935d31d6090e95e8493d89c",
+            "label": "org.bigbrotr.installed-initial-preparation-faults",
+            "client": "ef32e0099fa8731ab497423b5433af24b41bc23f0a4c0341f84b6f0ef7d13e72",
+            "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "terminal_receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-dc6a3f1/verified-terminal.json",
+              "sha256": "1dfca01e340fcb702668f49ddaca87d46c13a23946750dce6a36bb3ae59cb36d"
+            },
+            "preservation": "All2 origin preservation vectors true; cleanup arrays empty; source/data/logs/raw/failures retained"
           }
         ]
       }

@@ -1008,7 +1008,12 @@ closure digest, and separate `resolved_original_requests` and
 requests. Output follows native teardown, confirmed Control release and driver
 join; an interrupted or unknown outcome requires inspection of the same retained
 root and intent. The command performs no ACK, retirement, floor installation or
-unlink. Completion delivery loss, cancellation/lease expiry and a genuine
+unlink. The compacted completion branch also passed bounded wire loss before
+native dispatch and after rollback completion, plus fresh installed retries
+(13 commands, 164 altered-evidence refusals and exact raw replay). An entry loss
+leaves a native1 gap unchanged; a lost completion reply may leave the four writes
+already durable, and retry writes nothing. Original-input delivery faults,
+cancellation/lease expiry, process/power/native syscall uncertainty and a genuine
 epoch2/SQL-pending3 gap remain separate qualification gates. Original evidence
 remains required by recovery modes not explicitly adapted to a compacted predecessor.
 

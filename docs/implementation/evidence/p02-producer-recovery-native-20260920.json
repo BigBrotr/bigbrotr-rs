@@ -44591,7 +44591,7 @@
               }
             },
             "installed_initial_preparation": {
-              "status": "PASS bounded installed completion/retry/refusal profile23/232 and exact raw replay7898; completion delivery faults remain NOT_RUN",
+              "status": "PASS bounded installed23/232/raw7898 and compacted delivery13/164/raw7521; broader consumers/gates remain open",
               "base": "fc523ab3978fa52b2047cc046837831aa88c3a7b",
               "scope": "Explicit ingest recover --complete-initial-preparation: authentic existing native1 gap or empty OPEN2 retry, original or compacted predecessor, no new intent/activation/retirement/ACK",
               "implementation": "Dedicated supervised native-first custody and pinned acquisition using shared existing ClaimExit; owned plan retained through teardown; report after native close, Control release and driver join. Explicit sealed native2 structural selector chooses original/compacted without failed-proof fallback. Existing PG/native positive factories, immutable intent/typed closure and deadlines unchanged. Original prepared retry reconstructs without mutable dispatch.",
@@ -44607,7 +44607,7 @@
               "static_checks": "Changed Rust rustfmt, Python runner AST and staged/unstaged diff check PASS; exact ten-file critical snapshot and two probe blobs reconciled",
               "required_new_controls": "PASS163 selected components/54 mandatory controls, including three new structural selector cases, two shared ClaimExit tests and two extended CLI entrypoint matrices. CLI/probe compilation and Clippy PASS.",
               "fixture": "Author d80db733 plus reviewed root corrections integrated in30d65540;23 actual commands/232 altered-evidence refusals/10 clones PASS. Original and compacted native1 gaps add exactly4 native writes; empty OPEN2 retries add0. Exact error predictions confirmed for all isolated refusals. All77 SQL tables/intent/canonical closure and original data preserved under modeled Control claim/fencing/release.",
-              "remaining": "Completion delivery faults with measured wire baselines and fresh installed retry; cancellation/lease scope and genuine epoch2/SQL-pending3 gap. Activated/later consumers, frontiers, Archive, empty retirement and actual GC remain separate.",
+              "remaining": "Activated positive recovery+ACK next, followed by other existing consumers before actualGC. Original-input completion faults, cancellation/expiry, genuine pending3, other failure envelopes and release gates remain explicitly unqualified.",
               "build_attempts": [
                 {
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332/verified-build-failure.json",
@@ -44640,7 +44640,7 @@
                 "sha256": "e72b1cb05ccd2676329266829013b0326ff330cf0e519021ec353834a4de7786"
               },
               "delivery_qualification": {
-                "status": "First connected573076f FAIL capture timestamp representation after4PASS/50controls; one-line capture correction reviewed, new runtime NOT_RUN",
+                "status": "PASS_INSTALLED_INITIAL_PREPARATION_DELIVERY13/164; exact source raw replayPASS7521; first capture failure retained",
                 "author_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
                 "source_receipt": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-delivery-fixture-source-v1.json",
@@ -44669,7 +44669,16 @@
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-573076f/timestamp-diagnostic.json",
                   "sha256": "f755d3a3e4f5ab7361ec4ae70fde1696ea0265576f88caa560013670f5ec172d",
                   "claim": "Only in-memory timestamp rendering changed, same parsed instant; context verifier/15controls then PASS. Original context unmodified and original run remains FAIL."
-                }
+                },
+                "qualified_run": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-faults-dc6a3f1/verified-run.json",
+                  "sha256": "52f031a99b83e654561e8554a529675ccf75f58092a27e5a316e4fb01ec57670"
+                },
+                "observed": "Source-derived wire baselines confirmed (native1 START6/R3, native2 START5/R2). Actual predispatch START5/4 and postdispatch rollback3/2 delivery loss returned exact expected errors. Fresh gap retry writes4 only after predispatch loss; all postdispatch/prepared retries write0. Full13cases/164controls PASS, driver27208joined0; raw replay13/164/7521 PASS,66078joined0."
+              },
+              "author_reconciliation": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-author-reconciliation-v1.json",
+                "sha256": "fb9b3b29d8d61050e4dc7db3a5a49a504731d44c2f83caa1907a189f072ac698"
               }
             },
             "next_activated_consumer_audit": {
@@ -44690,7 +44699,12 @@
                 "Preserve reserved>issued unresolved-tail semantics and physical64file/32MiB bound; compacted logical predecessor count must not inherit the old combined-original64 cap.",
                 "Use shared pinned ClaimExit in touched activated CLI owner; retain native-before-acquire-future teardown and exact grant overlaps."
               ],
-              "candidate_evidence": "Qualified f51 installed endpoint supplies activated-zero2; its live endpoint is a candidate nonzero original2 seed only after exact provenance/custody verification. Reuse existing real native activated tests and installed recovery/fault harnesses."
+              "candidate_evidence": "Qualified f51 installed endpoint supplies activated-zero2; its live endpoint is a candidate nonzero original2 seed only after exact provenance/custody verification. Reuse existing real native activated tests and installed recovery/fault harnesses.",
+              "retained_origin_audit": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-origin-audit-v1.json",
+                "sha256": "6dcc910783f4701fd8a82769368151ac4f6251666355d93e566872d79793f703"
+              },
+              "fixture_constraint": "f51 zero/nonzero originals are positively retained but have no epoch2 typed checkpoint. Genuine ACK requires fresh continuous activation and FIRST dictionary via existing append_live_initial_dictionaries_with_progress; no retroactive typed-head adoption. Existing before/after COMMIT loss seams need independent modern pins/wire baselines."
             }
           }
         }

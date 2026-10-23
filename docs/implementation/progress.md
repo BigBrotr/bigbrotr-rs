@@ -6,14 +6,14 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main: `573076febecbde38a887c7676c9717afd0797a31`; verified remote remains
+Current main: `dc6a3f15d244895b4c38b4fdd62a60f60b6b48a4`; verified remote remains
 70d3d1bd (push23755 joined0). Qualified basic installed harness is30d65540.
 Qualified product: `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
 tree `e94652a5f2b68ac002487f728d073a8194120a1f`.
 The integrated fixture includes author d80db733 and two reviewed corrections.
-Delivery fixture afc80ad5 is integrated in573076fe. One local capture-only SQL
-correction and evidence/checkpoint/inventory updates preserve its first failure;
-product bytes remain unchanged. No product code changed
+Delivery fixture afc80ad5 is integrated in573076fe; capture-only timestamp fix is
+dc6a3f15. Local documentation records its completed qualification; product bytes
+remain unchanged. No product code changed
 since the qualified build. No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -51,21 +51,21 @@ No cache or dataset cleanup occurred; unrelated running workloads are untouched.
 Critical reviewer found and resolved two fixture integration issues: new build
 selectors require an explicit preparation flag; exact pinned origin metadata is
 accepted only under that flag. Both original author commits remain preserved.
-Author works only in `.research/installed-initial-preparation-20261024`, branch
-`work/installed-initial-preparation`, frozen Rust396fb511/Pythond80db733 and deliveryafc80ad5; worktree clean.
+Author worktree `.research/installed-initial-preparation-20261024` is now clean
+and detached at originalafc80ad5, preserving Rust396fb511/Pythond80db733.
+The redundant branch ref was retired after exact8file reconciliation.
 The five-file additive delivery fixture is integrated with existing qualification
 corrections preserved. Root owns all engines/runtime.
 Earlier handoff/journey author worktrees remain clean detached at7824749/a7dd148;
 only their reconciled redundant branch refs were retired.
 
-First fault run at `runs/installed-initial-preparation-faults-573076f` FAIL after
-4PASS/50controls: actual gap-before loss reached the expected boundary and left
-native unchanged, but held backend_start was captured as SQL text while Control
-uses typed JSON. Driver1044 joined1; exact client6dbbf267 stopped143/PG0, PID0/noOOM,
-all2 originals preserved and cleanup arrays empty. Original failure remains intact.
-The one-line capture correction is reviewed; exact oracle remains unchanged.
-Commit it, run a fresh exact detached source with `--initial-preparation-faults`
-and existing a0e914e artifacts, then exact raw replay. Full13/164 remains unqualified.
+Corrected compacted delivery run at
+`runs/installed-initial-preparation-faults-dc6a3f1` PASS13/164; exact raw replay
+PASS13/164 with7521 bound files. Drivers27208/66078 joined0; exact clientef32e009
+stopped143/PG0, PID0/noOOM, all2 originals preserved, cleanup arrays empty.
+First573076f capture-format FAIL remains preserved (4PASS/50controls,1044joined1).
+No connected runtime process is active. Commit/push the coherent result, then
+implement the next bounded activated positive recovery+ACK consumer.
 The next activated positive-recovery/ACK consumer map is in the existing report;
 root complete owner reads are hash-bound there. No new product code is underway.
 
