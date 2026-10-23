@@ -1,19 +1,17 @@
 # Current execution checkpoint
 
-Observed 2026-10-20 on Tux. **Owner-requested safe pause; M1–M5 incomplete.**
-Resume development only on explicit instruction. The goal control is authoritative;
-root applies PAUSED after saving this checkpoint and pushing ready work. Q37 model
-allocation and Q38 evidence reuse remain in force.
+Observed 2026-10-23 on Tux. Goal **ACTIVE** after explicit resume; M1–M5
+incomplete. Root owns integration/runtime. Q37 model allocation and Q38 evidence
+reuse remain in force. The preceding turn made progress by preserving and pushing
+the safe checkpoint; no unresolved active driver was inherited.
 
 ## Objective and revision
 
 P02-T02 Steps4/5/7: classified producer checkpoint → synchronized native ACK →
-restart. Integrated source is main3b5228ad515896f3a8ced37d3559a0b2b5acc588,
-tree981d319bf030510e551d29d7fee74bb0c330a5cd. It combines qualified product
-fcad4c9 and independently reviewed fixture f5cd4e9 without manual merge edits.
-The following checkpoint commit changes only this document, the owning report
-and inventory. Before it, remote main e8e3f9d was verified; final commit/push
-identity is available through main HEAD and the session's final confirmation.
+restart. Main e8f7e4a9da5714bc51293dfef2357e6ffb6432cf and exact remote equality
+were rechecked clean on resume. It contains product fcad4c9 and reviewed fixture
+f5cd4e9 (integration3b5228a). Current changes are the initial fixture's final-result
+packing correction plus this checkpoint/report/inventory update.
 
 The [owning recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -34,13 +32,19 @@ The [inventory](../research/laboratory-inventory.json) owns resource/worktree cu
   activated965 input lacking the already-required ACL capture. Unchanged fcad
   baseline refuses the same input. No invented ACL or relaxed check; original
   exact-source965 qualification remains historical evidence.
-- **NOT_RUN:** new installed ACK profiles, their ten new counterexamples and
-  raw readers; connected PG ACK/returned credit and lost-completion recovery.
-  No new engine campaign was started before this pause.
+- **FAIL preserved:** first actual initial ACK run `installed-ack-initial-e8f7e4a`
+  reached final result assembly, then raised duplicate `status` TypeError from
+  the provisional capture marker. Full context survives. The correction keeps
+  that marker inside the retained context and returns the completed oracle.
+- **NOT_RUN:** strict ACK raw replay, activated2/successor3 ACK runs and connected
+  lost-completion recovery. No broad ACK qualification is inferred from the
+  failed initial wrapper.
 
 ## Preserved agent work and resources
 
-All workers received the pause and completed; no pending autonomous assignment.
+`producer_ack_loss_resume` is active on the preserved loss fixture; effective
+Astra/xhigh verified in its new runtime metadata. It performs source-only work;
+root remains the sole runtime owner. Previous agents remain stopped.
 Under `/home/tux/bigbrotr-rs/.research/`:
 
 - `producer-ack-sync-20261020`, branch `work/producer-ack-sync`, clean fcad4c9;
@@ -50,25 +54,24 @@ Under `/home/tux/bigbrotr-rs/.research/`:
   f5cd4e9; positive fixture integrated, author and critical reviewer completed.
 - `producer-ack-loss-20261020`, branch `work/producer-ack-loss`, HEAD
   dc9bfe4c0675e5baff5742aaff82399bea0d2f17: **six uncommitted partial files**.
-  Not integrated, not pushed, not executable: ACK loss/recovery predicates and
-  raw binder are unfinished; AST/imports/tests/review/runtime NOT_RUN. Exact
+  Resume starts from six preserved partial files; the new author is completing
+  them. Not integrated or pushed; source freeze/review/runtime remain pending. Exact
   hashes and diff are preserved in its
   `.research/producer-ack-loss-source-20261020/paused-partial-v1.json` and `.diff`.
 
-Component and offline drivers are joined. Exact build containers and borrowed
-PG were freshly observed exited, PID0, no OOM, exit0, cgroups absent; no project
-lab executable process remained. No cleanup is running. All ignored `.research`,
-worktrees, datasets, original failures/logs and external artifacts are preserved.
-Unrelated workloads were left intact. Inspect ownership/state again before reuse.
+Component and offline drivers remain joined. Initial ACK driver29576 joined1;
+its owned client and borrowed PG terminal receipts show exited/PID0/noOOM, with
+no cleanup errors or unrelated changes. No engine/build driver remains active.
+All `.research`, worktrees, datasets, original failures/logs and external artifacts
+are retained. No cleanup is running. Inspect ownership/state before reuse.
 
-## Precise next step after resume
+## Precise next step
 
-Use a clean detached source containing3b5228a and the qualified fcad4c9 artifacts
-with the existing `experiments/acquisition-scope/bindings.py LAB
---installed-sync-ack BUILD` owner. Check space/resource custody, then run initial
-window2 traffic and `python3 -B -S` raw replay; proceed to activated2/successor3
-only from actual results. Reuse valid component/source/default checks. Separately
-finish the preserved loss fixture and obtain critical review before executing it.
+Run the corrected initial ACK fixture from a new clean detached source using the
+qualified fcad4c9 artifacts and existing `bindings.py LAB --installed-sync-ack
+BUILD` owner, then strict `python3 -B -S` raw replay. Continue activated2/successor3
+from actual results; reuse unchanged component/source/default checks. Finish and
+critically review the isolated ACK-loss fixture before executing it.
 
 GC, preparation-hole, mixed-restore/refusal/resource gates and original a99 Sync
 timeout cause remain open. NoGC64/32MiB is temporary, not capacity qualification.

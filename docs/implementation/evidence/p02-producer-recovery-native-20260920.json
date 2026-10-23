@@ -42202,7 +42202,7 @@
             "Successful native ACK write with unexpected sequence poisons the actual initial/recovery owner as well as successor. Native component refusal exercised."
           ],
           "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
-          "next": "After explicit resume, use clean detached source containing3b5228a and qualified fcad ELFs to run --installed-sync-ack, then activated2 and successor3 with existing raw readers under python3 -B -S. Inspect resource custody before each owned run. ACK-loss source remains isolated and must be completed/reviewed before use.",
+          "next": "Run the corrected installed initial ACK owner from a new exact-source laboratory with retained qualified fcad artifacts, then strict raw replay; proceed to activated2/successor3 after actual results.",
           "storage": {
             "commit": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
             "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
@@ -42275,7 +42275,32 @@
             },
             "preservation": "Root authenticated all six dirty file hashes and exact retained binary diff. Missing verify_ack_loss/recovery and raw replay predicates; AST/imports/tests/critical review/runtime NOT_RUN. No author-owned process.",
             "resume": "Finish the existing independent C3/C4 versus native A3 loss/recovery expectations and raw binder in this worktree; review before execution. Positive installed ACK modes remain the first root runtime step."
-          }
+          },
+          "installed_ack_runs": [
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-e8f7e4a",
+              "source": "e8f7e4a9da5714bc51293dfef2357e6ffb6432cf",
+              "kind": "initial",
+              "driver_session": 29576,
+              "driver_exit": 1,
+              "status": "FAIL",
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-e8f7e4a/bindings/result.json",
+                "sha256": "4bfc66ca639259f7399dd955e2213aabeb74f5494ed2097d0c11e93d1e175f71"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-e8f7e4a/driver.log",
+                "sha256": "02460745d84f0defae0bf076cb7e77c5589c991334bae3ccfd6cb9fe6758bb13"
+              },
+              "context": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-e8f7e4a/bindings/sync-signed-progress-verification.json",
+                "sha256": "4724a5220b258d4f612e4e994a0e801200bf82310e5dd81aba570c766aaf86af"
+              },
+              "finding": "Final result assembly expands the ACK provisional native capture marker status beside explicit PASS, raising duplicate-key TypeError after InitialCapture.finish returned. Original FAIL preserved; no raw qualification claim.",
+              "correction": "Keep provisional capture status inside retained context; final case exposes completed scientific oracle via progress_result. Legacy native summary expansion unchanged.",
+              "custody": "Outer driver joined; retained terminal receipts show exact client and borrowed PG exited/PID0/noOOM; no cleanup errors, missing owned or unrelated changes."
+            }
+          ]
         }
       }
     }

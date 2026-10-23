@@ -61452,6 +61452,32 @@
         "project_processes": "No remaining executable process with project lab path observed; agent closure separately reconciled",
         "preservation": "All original failures,data,logs,ignored .research,worktrees and external artifacts retained; no cleanup or branch deletion during pause; unrelated workloads untouched",
         "agents": "export_setup_fixture,export_setup_review,producer_recovery_review received explicit pause and completed; no further task authorized until resume"
+      },
+      "installed_ack_runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-e8f7e4a",
+          "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-e8f7e4a/source",
+          "source": "e8f7e4a9da5714bc51293dfef2357e6ffb6432cf",
+          "state": "Driver joined1; original FAIL and all artifacts preserved; no cleanup",
+          "owner": "a59b10ab2714765991721e22e4b98959",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "3bb4f4a884ef5ad1764b28af5a8cf4d2bd3850f541b68fb98e52c057e61516ba",
+            "name": "bigbrotr-acquisition-binding-e8f7e4a-progress-initial-ack"
+          },
+          "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "finished_at": "2026-10-23T07:26:28.055350+00:00",
+          "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
+        }
+      ],
+      "active_agents_20261023": {
+        "producer_ack_loss_resume": {
+          "scope": "Complete preserved six-file partial ACK-loss fixture in original isolated worktree; root sole runtime owner",
+          "model": "gpt-6-astra",
+          "effort": "xhigh",
+          "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T09-25-42-01a167a6-bc41-7973-a332-c6cf4e8bee24.jsonl session_meta/turn_context",
+          "state": "Source-only active"
+        }
       }
     }
   },

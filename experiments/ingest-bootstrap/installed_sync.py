@@ -620,4 +620,6 @@ finally:
         selected_quiet_signal=selected_quiet,
         natural_expiry=expiry_evidence,
         full_window=window_evidence,
-        terminal=ended, **native_result, **progress_result)
+        # ACK's native_result is a capture marker; the completed scientific
+        # result is in progress_result. Do not merge its provisional status.
+        terminal=ended, **({} if ack else native_result), **progress_result)
