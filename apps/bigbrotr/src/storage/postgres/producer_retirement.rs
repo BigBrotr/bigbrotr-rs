@@ -378,7 +378,7 @@ fn check_delivery<E>(
     }
 }
 
-async fn finish<E>(
+pub(super) async fn finish<E>(
     tx: Transaction<'_>,
     lease: &mut PolicyLeaseTracker,
     epoch: PolicyEpoch,

@@ -238,7 +238,8 @@ impl ControlSession {
         let native = resolution
             .finish(input.cancelled)
             .map_err(ProducerCompactionError::Native)?;
-        initial_history::finish::<AdmissionError>(tx, &mut lease, policy, input.cancelled).await?;
+        producer_retirement::finish::<AdmissionError>(tx, &mut lease, policy, input.cancelled)
+            .await?;
         if self.client.is_closed() {
             return Err(ProducerCompactionError::DeliveryUnknown);
         }
