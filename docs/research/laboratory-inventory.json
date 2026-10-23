@@ -62267,6 +62267,31 @@
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fixture-source-v1.json",
           "sha256": "afeb51ea49350981e154d927f32c3cdd31b0627c535796c92c9096008e2aa281"
         }
+      },
+      "compacted_successor_history_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1b399e9",
+        "source": "1b399e91e7b3d2985aeac618f8e2f0cef78420e4",
+        "tree": "60bd908cd291b334ad1f55587b74e6d81f97e9dd",
+        "driver": "87837 joined exit1",
+        "owner": "c0c93b7328b24e941d4ca9cdaafd1537",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "0aab8f31408f16b2a24697f276e9dec5387d577b99f258020197148e2dfc0db9"
+          },
+          {
+            "name": "native",
+            "id": "f1b97074a222ac77c5718f8a5753d6deb8c57eed6e010ce4d23441d5d3022da3"
+          }
+        ],
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1b399e9/resources.json",
+          "sha256": "9e710610a65d52bed9dc5e1fafd1bf37b0542f1a961bcb24c9b3a5c8b82ff787"
+        },
+        "state": "STOPPED_RETAINED; CLI/probe and142components PASS; Clippy FAIL; no connected runtime",
+        "space_before_allocation_bytes": 280224395264,
+        "preserved": "Prior artifacts and exact author worktrees; no cleanup"
       }
     }
   },

@@ -43921,7 +43921,7 @@
               }
             },
             "connected_history": {
-              "status": "INTEGRATED SOURCE REVIEWED; local exact-source qualification next, runtime NOT_RUN",
+              "status": "INTEGRATED SOURCE;142components PASS at1b399e9, Clippy correction awaiting new exact-source qualification",
               "author_commit": "c97459b65ef1f3b96942e5a2adbde618e5b19a9b",
               "author_tree": "2d07e4b11e965ccd4ab12306bb46dec703620b33",
               "author_receipt": {
@@ -43939,7 +43939,7 @@
               "scope": "Explicit compacted initial history completion under existing historical SQL authority; separate compacted count and unchanged original replay for later epochs. Full current-head census and exact retained typed epoch1 head. Unadapted capability consumers refuse before exposing writer, frontier, handoff or Archive authority. No GC operation.",
               "integration_note": "Exact19 product-author files except two documented comment corrections; exact13 fixture-author files; root probe and runner identities match independent review. Both author worktrees clean and preserved.",
               "checks": "Independent source reviews, exact author reconciliation, Rustfmt25files, changed Python AST10files, artifact/handoff documentation and diff checks PASS; build/Clippy/components/connected runtime NOT_RUN",
-              "next": "Freeze coherent local main commit; existing producer-floor build, then installed_compacted_reader --history and raw replay under python3 -E -S.",
+              "next": "Commit narrow Clippy/test warning correction, rerun existing producer-floor at its exact source, then connected50command history profile/raw replay.",
               "fixture_author_commit": "ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f",
               "fixture_author_tree": "98e90934278c253ac7a238f06d78d90da667dd6a",
               "fixture_author_receipt": {
@@ -43959,7 +43959,41 @@
                 "commands": 50,
                 "negative_capture_controls": 454,
                 "status": "NOT_RUN"
-              }
+              },
+              "source_build_attempts": [
+                {
+                  "source": "1b399e91e7b3d2985aeac618f8e2f0cef78420e4",
+                  "tree": "60bd908cd291b334ad1f55587b74e6d81f97e9dd",
+                  "status": "FAIL_CLIPPY",
+                  "driver": "87837 joined exit1",
+                  "checks": "CLI/probe build and all142 component tests PASS; Clippy FAIL only large_enum_variant for inline EpochResolution. Component qualification artifact NOT_CREATED because runner gates finalization on Clippy. Connected fixture NOT_RUN.",
+                  "counts": {
+                    "compacted_prefix": 7,
+                    "compacted_progress": 1,
+                    "successor_history": 5,
+                    "archive_retained_frontier": 7,
+                    "initial_reconstruction": 102,
+                    "request_inputs": 20
+                  },
+                  "source_manifest_sha256": "0c3fc1209d5b7b4908c91de731b6710f349f05d22e2a4a894a33592b84a44dfe",
+                  "receipts": [
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1b399e9/resources.json",
+                      "sha256": "9e710610a65d52bed9dc5e1fafd1bf37b0542f1a961bcb24c9b3a5c8b82ff787"
+                    },
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1b399e9/out/build-checks/result.json",
+                      "sha256": "f28e536d765a7d1bc8ea8573d8f5c29c37d19c70fe77afa89ac264b07a85b89b"
+                    },
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1b399e9/out/build-checks/clippy.log",
+                      "sha256": "efc1eadbc5c6d7d4324a04279f2cf1a9c2f6652f7b3cb8df77f14965b3621ae8"
+                    }
+                  ],
+                  "correction": "Keep inline bounded state with narrowly reasoned Clippy allowance, matching existing AckResolution; existing full wrapper/cursor scratch size assertions remain. Remove ineffective drop of Copy HistoricalInitial in one test; retain actual legacy permit drop. Independent product-author review confirms both narrow deltas; no semantic changes.",
+                  "custody": "Both owned containers freshly stopped/PID0/noOOM; fetch exit0/native exit1; inventory_changed[]; all original artifacts retained."
+                }
+              ]
             }
           }
         }

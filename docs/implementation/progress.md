@@ -6,9 +6,11 @@ M1–M5 remain incomplete. Root owns integration/runtime. Q37/Q38 apply.
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Validated main source is `7de70661be56ceb0a8a9b7561db6b022583609ba`; this commit
-records its qualification. HEAD and remote were verified equal at
-`57427260a4c73024c6774371343baee78ac0d991`; no pending push. No GC writer or unlink is exposed.
+Last qualified source is `7de70661be56ceb0a8a9b7561db6b022583609ba`.
+Local main now freezes the independently reviewed connected-history integration at
+`1b399e91e7b3d2985aeac618f8e2f0cef78420e4`; Clippy correction pending, push pending.
+Last verified remote is `57427260a4c73024c6774371343baee78ac0d991`.
+No GC writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -39,7 +41,11 @@ natural recurrence; do not relabel prior failed attempts or rerun unchanged proo
 
 ## Active work and preserved resources
 
-No engine/build remains. Both7de7066 build containers exited0; installed client
+New1b399e9 driver87837 joined1: CLI/probe build and142 components PASS,
+Clippy FAIL on large inline enum. All owned containers are stopped/PID0/noOOM;
+original logs remain. Narrow bounded-state lint/test warning corrections are
+reviewed locally; no connected fixture has started.
+Prior7de7066 build containers exited0; installed client
 exited143 and borrowed PG exited0, all PID0/noOOM freshly inspected. All five
 original preservation flags are true; cleanup/missing/unrelated/unexpected lists
 empty. Sources, ELFs, clones, quarantined originals, failures, logs, ignored
@@ -58,13 +64,15 @@ Fixture agent froze `ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f` in
 Its exact13-file delta is integrated and independently reviewed. Root probe and
 runner changes match independent review; all source owners are now ready for one
 coherent exact-revision build. Formatting/AST/diff and document checks PASS.
-New build and connected runtime remain NOT_RUN. Both agents finished their source
-and review tasks; no independent runtime delegation. Root owns canonical changes.
+New build and connected runtime remain NOT_RUN. Fixture agent finished; product/review agent is reconciling the next existing
+initial-handoff/prepared-retry/native-gap consumer boundary read-only, without
+source changes or engines. Root owns runtime and canonical changes.
 
 ## Precise next step and open boundaries
 
 Product, probe and fixture independent source reviews are linked in the report.
-Freeze the coherent local main source, then run existing producer-floor plus
+Freeze the two-file lint/test warning correction and requalify the exact source
+with existing producer-floor; then run
 installed_compacted_reader --history and its independent raw replay. The selected
 fixture has seven clones/50 commands and454 capture controls, all NOT_RUN. Preserve
 current initial reader's no-successor/terminal/confirmed-COMMIT checks. Distinguish

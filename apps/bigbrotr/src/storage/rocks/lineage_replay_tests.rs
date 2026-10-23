@@ -498,7 +498,6 @@ fn lineage_record_requires_its_checked_profile_and_unchanged_input_custody() {
     );
     assert_eq!(p.next_request(), Some(at(1, 1)));
     drop(legacy);
-    drop(historical);
     let resolved = resolve_one(&f, &p);
     let old_sequence = r.store.db.latest_sequence_number();
     // Equal bytes with a different physical file must not transfer an old read

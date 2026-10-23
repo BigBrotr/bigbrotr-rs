@@ -48,6 +48,10 @@ pub struct CompactedInitialSummary {
     pub digest: [u8; 32],
 }
 
+#[allow(
+    clippy::large_enum_variant,
+    reason = "fixed bounded prefix state stays under the retained lineage grant; no extra heap allocation"
+)]
 enum EpochResolution {
     CompactedInitial,
     Original(Prefix),
