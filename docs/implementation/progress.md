@@ -8,10 +8,10 @@ the safe checkpoint; no unresolved active driver was inherited.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: classified producer checkpoint → synchronized native ACK →
-restart. Main e8f7e4a9da5714bc51293dfef2357e6ffb6432cf and exact remote equality
-were rechecked clean on resume. It contains product fcad4c9 and reviewed fixture
-f5cd4e9 (integration3b5228a). Current changes are the initial fixture's final-result
-packing correction plus this checkpoint/report/inventory update.
+restart. Main941847c contains the corrected initial result assembly. Product
+fcad4c9 and reviewed fixture f5cd4e9 remain the source basis. Current change fixes
+activated-only phase selection among ordinary quiet connections, with retained
+context verification, plus the checkpoint/report/inventory update.
 
 The [owning recovery report](evidence/p02-producer-recovery-native-20260920.json),
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -32,13 +32,16 @@ The [inventory](../research/laboratory-inventory.json) owns resource/worktree cu
   activated965 input lacking the already-required ACL capture. Unchanged fcad
   baseline refuses the same input. No invented ACL or relaxed check; original
   exact-source965 qualification remains historical evidence.
-- **FAIL preserved:** first actual initial ACK run `installed-ack-initial-e8f7e4a`
-  reached final result assembly, then raised duplicate `status` TypeError from
-  the provisional capture marker. Full context survives. The correction keeps
-  that marker inside the retained context and returns the completed oracle.
-- **NOT_RUN:** strict ACK raw replay, activated2/successor3 ACK runs and connected
-  lost-completion recovery. No broad ACK qualification is inferred from the
-  failed initial wrapper.
+- **PASS:** actual initial ACK run941847c and strict raw replay (2,136 bound
+  files, 48 controls). Native75/sequence95; I=A=C6 and22 dependencies. Three new
+  mutations cross window2, then proof-only resend adds no native write.
+- **FAIL preserved:** original initiale8f7e4a final result assembly duplicated
+  status. Activated941847c verifier indexed a missing phase on quiet wires.
+  Corrected activated verifier passes the original complete context and41
+  controls (I=A=C4,20 dependencies,native110/sequence134); full raw qualification
+  of that original FAIL is not claimed.
+- **NOT_RUN:** corrected full activated2 run, successor3 ACK and connected
+  lost-completion recovery. Source/component/default results remain reusable.
 
 ## Preserved agent work and resources
 
@@ -59,19 +62,19 @@ Under `/home/tux/bigbrotr-rs/.research/`:
   hashes and diff are preserved in its
   `.research/producer-ack-loss-source-20261020/paused-partial-v1.json` and `.diff`.
 
-Component and offline drivers remain joined. Initial ACK driver29576 joined1;
-its owned client and borrowed PG terminal receipts show exited/PID0/noOOM, with
-no cleanup errors or unrelated changes. No engine/build driver remains active.
-All `.research`, worktrees, datasets, original failures/logs and external artifacts
-are retained. No cleanup is running. Inspect ownership/state before reuse.
+All component, initial/activated runtime and offline drivers are joined. Existing
+owners recorded stopped client/PG with no cleanup errors or unrelated changes;
+root additionally checked initial941 custody before the activated invocation.
+All `.research`, worktrees, datasets, failures/logs and external artifacts remain.
+No cleanup runs. Inspect ownership/state before reuse.
 
 ## Precise next step
 
-Run the corrected initial ACK fixture from a new clean detached source using the
-qualified fcad4c9 artifacts and existing `bindings.py LAB --installed-sync-ack
-BUILD` owner, then strict `python3 -B -S` raw replay. Continue activated2/successor3
-from actual results; reuse unchanged component/source/default checks. Finish and
-critically review the isolated ACK-loss fixture before executing it.
+Run corrected activated2 ACK from a new clean detached source using qualified
+fcad4c9 artifacts and existing `bindings.py LAB --ingest-installed-live-ack BUILD`,
+then strict `python3 -B -S` raw replay. Continue actual successor3. Do not repeat
+initial941: the changed branch is activated-only. Finish and critically review
+the isolated ACK-loss fixture before its actual execution.
 
 GC, preparation-hole, mixed-restore/refusal/resource gates and original a99 Sync
 timeout cause remain open. NoGC64/32MiB is temporary, not capacity qualification.

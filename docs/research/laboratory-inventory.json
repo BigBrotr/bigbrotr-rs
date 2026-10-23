@@ -61468,6 +61468,36 @@
           "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
           "finished_at": "2026-10-23T07:26:28.055350+00:00",
           "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-941847c",
+          "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-941847c/source",
+          "source": "941847c9b428cc06aa3e2ae15e90514dfd0c6717",
+          "state": "Driver joined0; PASS_INSTALLED_INITIAL_PRODUCER_ACK; artifacts retained",
+          "owner": "4e066e3c4c74092fae195c5f78d59c19",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "b5c41ee60ed9a6493b16decbfc067ecf8ae5108772c7fec0196389c7e727aeab",
+            "name": "bigbrotr-acquisition-binding-941847c-progress-initial-ack"
+          },
+          "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "finished_at": "2026-10-23T07:30:12.887889+00:00",
+          "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-941847c",
+          "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-941847c/source",
+          "source": "941847c9b428cc06aa3e2ae15e90514dfd0c6717",
+          "state": "Driver joined1; FAIL; artifacts retained",
+          "owner": "b06be4fd8c3014b98cda8ccae2abb81e",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "6f215e6048c9fb8fc268917fc15c2988409e72fae7a3ed710f7f5267510a44b0",
+            "name": "bigbrotr-acquisition-binding-941847c-progress-activated-ack"
+          },
+          "borrowed_postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "finished_at": "2026-10-23T07:31:21.983746+00:00",
+          "evidence_owner": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json: native_ack_source_preparation.installed_ack_runs"
         }
       ],
       "active_agents_20261023": {

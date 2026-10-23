@@ -42153,7 +42153,7 @@
           }
         ],
         "native_ack_source_preparation": {
-          "status": "SOURCE_REVIEW_AND_COMPONENTS_PASS; connected PG ACK/credit/loss/recovery qualification NOT_RUN",
+          "status": "SOURCE_AND_COMPONENTS_PASS; installed initial ACK and strict raw replay PASS; activated original wrapper FAIL/corrected context PASS; successor and connected loss pending",
           "root_consumer": {
             "commit": "ba3dab06810c72a4a5a92bc0c5da83484f008d24",
             "tree": "765233f165cfe590eb3399f085306aff32f661dd",
@@ -42202,7 +42202,7 @@
             "Successful native ACK write with unexpected sequence poisons the actual initial/recovery owner as well as successor. Native component refusal exercised."
           ],
           "semantics": "Mutation/internal dictionary ACK requires positively confirmed typed PG checkpoint and exact native stamp; proof-only never ACKs. Pre40 recovery observes A0 only; historical closed A<C may remain in preparation and cannot grant target credit. Retained64/32MiB/noGC remains.",
-          "next": "Run the corrected installed initial ACK owner from a new exact-source laboratory with retained qualified fcad artifacts, then strict raw replay; proceed to activated2/successor3 after actual results.",
+          "next": "Run corrected activated2 profile and strict raw reader from new exact source, then actual successor3. Keep initial941 PASS; its inputs and verifier path are unaffected by activated-only fix.",
           "storage": {
             "commit": "fff690100b2aa66e3d15a45a6b214eb2b0d16b45",
             "tree": "38a5d5b7db7cbe9fe2b2fc3323cd1fba0c42caa1",
@@ -42299,6 +42299,74 @@
               "finding": "Final result assembly expands the ACK provisional native capture marker status beside explicit PASS, raising duplicate-key TypeError after InitialCapture.finish returned. Original FAIL preserved; no raw qualification claim.",
               "correction": "Keep provisional capture status inside retained context; final case exposes completed scientific oracle via progress_result. Legacy native summary expansion unchanged.",
               "custody": "Outer driver joined; retained terminal receipts show exact client and borrowed PG exited/PID0/noOOM; no cleanup errors, missing owned or unrelated changes."
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-941847c",
+              "source": "941847c9b428cc06aa3e2ae15e90514dfd0c6717",
+              "kind": "initial",
+              "driver_session": 6974,
+              "driver_exit": 0,
+              "status": "PASS_INSTALLED_INITIAL_PRODUCER_ACK",
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-941847c/bindings/result.json",
+                "sha256": "740c2762af16dee765c99945cd54fc98f692dc7c60ed01d0e2921fd948481e22"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-941847c/driver.log",
+                "sha256": "a8330ae50c2a1fa28115d40bb25b74d0c38bdadcf8ac567a16def2abb7718fdc"
+              },
+              "custody": "Driver joined; outer owner recorded exited/PID0/noOOM containers, no cleanup errors/missing owned/unrelated changes.",
+              "raw_replay": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-initial-941847c/raw-replay.json",
+                "sha256": "34d3da89009cc1447be715bdcec7a0d97ccdf6a458d06a3630ed83087cac42e5"
+              },
+              "raw_status": "PASS_RAW_ACK_CONTEXT_REPLAY",
+              "raw_bound_files": 2136,
+              "oracle": {
+                "ack": 6,
+                "acquisition_revision": 6,
+                "complete_through_request": 6,
+                "dependencies": 22,
+                "job_checkpoint_revision": 0,
+                "kind": "initial",
+                "mutation_revision": 6,
+                "producer_epoch": 1,
+                "proof_revision": 9,
+                "status": "PASS_TYPED_CONTEXT"
+              },
+              "negative_controls": 48,
+              "native_rows": 75,
+              "native_sequence": 95,
+              "scope": "Actual accepted/registered window2, three new signed events before EOSE then distinct gated proof-only triple. I=A=C6, retained originals, no extra native proof writes; no workflow completion, GC or capacity claim.",
+              "current_resource_audit": "Root independently rechecked owned client and borrowed PG labels,exited/PID0/noOOM/cgroups absent before next run."
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-941847c",
+              "source": "941847c9b428cc06aa3e2ae15e90514dfd0c6717",
+              "kind": "activated",
+              "driver_session": 93306,
+              "driver_exit": 1,
+              "status": "FAIL",
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-941847c/bindings/result.json",
+                "sha256": "3f429b7f51451777b6858756bad850333c53f63f0eedbedab53c697cfd3c9e25"
+              },
+              "log": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-941847c/driver.log",
+                "sha256": "91cdad635004e1456d5fd527993eb0d97db37f7b0ebb995e2bb48fdf51fd73f5"
+              },
+              "custody": "Driver joined; outer owner recorded exited/PID0/noOOM containers, no cleanup errors/missing owned/unrelated changes.",
+              "context": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-activated-941847c/bindings/installed-live-on-verification.json",
+                "sha256": "937b3cca7fab868b5d2821356f916fbd1cea66487579b03955da5ef4bb3b2f33"
+              },
+              "finding": "ACK verifier selected phase through only() over every closed wire, including ordinary quiet connections without progress_phase. Actual Serve naturally joined0; original FAIL preserved.",
+              "correction": "Select exactly one mutation-phase wire with get(); existing full wire/science checks still validate quiet connections and uniqueness.",
+              "context_replay": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/activated941-context-replay-v1.json",
+                "sha256": "6edc61a43f485d71fd8741ca49f823a024a455dcd21ace811abc4ffb592db1ec"
+              },
+              "context_replay_status": "PASS_CONTEXT_ONLY: ACK4,C4,20dependencies,110native rows/sequence134 and41 controls; no full raw qualification of original failed run."
             }
           ]
         }

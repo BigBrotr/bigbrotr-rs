@@ -543,7 +543,8 @@ def verify_live(context, *, ack=False):
     actual = {(r['cf'],bytes.fromhex(r['key'])):bytes.fromhex(r['value']) for r in context['native_after']['rows']}
     fact = lambda n:decode(actual['facts',b'\x01\x20'+science.src_key(n)][34:].split(b'\0',1)[1])
     if ack:
-        first=only(context['journey']['closed'],progress_phase='mutation')
+        first, = [wire for wire in context['journey']['closed']
+            if wire.get('progress_phase') == 'mutation']
         event,extras=ack_observations(science,actual,first,context['server_window'])
         science.network(True,fact(1)[4],fact(8)[5][1],fact(5)[4],fact(8)[5][3][1],
             event=event,additional_events=extras)
