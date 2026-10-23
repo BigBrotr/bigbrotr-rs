@@ -62475,8 +62475,8 @@
         "raw_replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-faults-077dc3c/raw-replay.json"
       },
       "compacted_initial_handoff_work_20261024": {
-        "state": "SOURCE_IN_PROGRESS; build/runtime NOT_RUN",
-        "canonical_head": "7bea8e3881776f385fb019bd0549e8925dfa45c7",
+        "state": "Product9bea0ff qualified150/47; fixturea7dd148 exactly staged; connected NOT_RUN",
+        "canonical_head": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
         "native_author": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-initial-handoff-20261024",
           "branch": "work/compacted-initial-handoff",
@@ -62499,15 +62499,35 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-initial-journey-20261024",
           "branch": "work/compacted-initial-journey",
           "base": "077dc3cfe56b4bffcce84e8f00d56bb545fe5c36",
-          "state": "three Rust example files frozen at873ad26 and integrated exactly; seven Python files remain isolated dirty; no engine/build by agent",
-          "head": "873ad26e768f9a266e4371ef8a44b0862c60597d"
+          "state": "clean frozen worktree; all10 files integrated exactly; independent expected-state review complete",
+          "head": "a7dd148270149961df3f8851ace78841dfa45a81",
+          "receipt": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-journey-fixture-source-v1.json",
+            "sha256": "d30478db4ac90d5f57c8644228f75aa2bb346907df5d1dfbf18d6d522c11b407"
+          }
         },
-        "runtime_owner": "/root only; no new engine/build launched",
+        "runtime_owner": "/root; build54339 finished; no engine running",
         "preservation": "Both worktrees, ignored receipts and qualified original/clones preserved; no cleanup",
         "origin": "installed-compacted-reader-6ece98c/installed-compacted-reader/positive; fresh physical census ef0beb7c32a1d712d99f7a854674a7b5a4d51502987420fb765597d69fa037b0 is a new observation, not an old raw physical binding",
         "probe_review": {
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-probe-root-review-v1.json",
           "sha256": "b54d40514e4ca7da3097e49fe0e948b3f3c56d04ecc33b50fa10199aadcf04e0"
+        }
+      },
+      "compacted_initial_handoff_build_20261024": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff",
+        "source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+        "tree": "1e3cf0d184caa89abb558d4480d017c88f625581",
+        "owner": "fdbb7157117aa3e2f342e2720d9d66c4",
+        "label": "org.bigbrotr.network-transport",
+        "driver_session": 54339,
+        "state": "PASS; driver54339 joined0; both containers freshly stopped0/PID0/noOOM; inventory_changed[]",
+        "preflight_free_bytes": 277401972736,
+        "profile": "producer-floor",
+        "preservation": "New exact detached source and output; exclusive owned compiler cache only; all prior artifacts retained",
+        "verified_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff/verified-build.json",
+          "sha256": "3f5c18ca01c102cd2a45394ea1c9babae98f79524c3529b5454957276dbda6fd"
         }
       }
     }

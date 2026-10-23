@@ -137,27 +137,29 @@ def minted_plan(original, native, inputs, observed):
 
 class Science:
     """Fixed finite import recipe with complete byte-level native effects."""
-    def __init__(self, plan, prepared_rows, inputs, *, compacted_history=False):
-        assert type(compacted_history) is bool
-        self.compacted_history = compacted_history
+    def __init__(self, plan, prepared_rows, inputs, *, compacted_history=False, compacted_initial=False):
+        assert type(compacted_history) is bool and type(compacted_initial) is bool
+        assert not (compacted_history and compacted_initial)
+        self.compacted_history = compacted_history or compacted_initial
+        self.compacted_initial = compacted_initial
         self.plan, self.rows, self.inputs = plan, dict(prepared_rows), copy.deepcopy(inputs)
         self.ds, self.slot = (bytes.fromhex(plan[k]) for k in ('dataset', 'producer_slot'))
         self.domains = {k: bytes.fromhex(v) for k, v in plan['domains']}
         old_manifest = bytes.fromhex(plan['previous_manifest'])
         old_visibility = old_manifest[104 + 3 * 18 + 2:104 + 4 * 18]
-        self.scope = [self.ds, 4, old_visibility, 1 if compacted_history else 3]
+        self.scope = [self.ds, 4, old_visibility, 1 if self.compacted_history else 3]
         self.lineage = self.ref(9)
-        self.sequence = 117 if compacted_history else 62
+        self.sequence = 125 if compacted_initial else 117 if compacted_history else 62
         self.writes = 0
         scope_n = self.scope[-1]
         old = self.rows['facts', b'\x01\x20' + self.ds + be(0, 4) + be(1) + be(scope_n)]
         self.refs = {(1, scope_n): [[self.ds, 0, 1, scope_n], old[2:34]]}
-        if compacted_history:
-            assert len(prepared_rows) == 91 and len(inputs) == 7
+        if self.compacted_history:
+            assert (len(prepared_rows),len(inputs)) == ((84,0) if compacted_initial else (91,7))
             assert old_visibility.hex() == '0e2a2cc69f18bd685ff795bd57faf3c0'
             assert old[2:34].hex() == '2885c061c7e1e4c3db59da67b32540440f465827ddc8932b37719fec8d92d204'
         self.requests, self.receipts = {}, {}
-        if not compacted_history:
+        if not self.compacted_history:
             assert ('default', b'\x01\x06' + self.ds + EVENT_ID) not in self.rows
 
     def ref(self, kind, ordinal=1):
@@ -224,7 +226,7 @@ class Science:
             original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, 2, 1], 'admit-evidence', 1,
                 [1, self.scope, [entry]]])
             result = self.commit(1, original, [1], [(1, self.scope[-1]), (2, 1)])
-            assert (len(self.rows), self.sequence) == ((97, 125) if self.compacted_history else (58, 70))
+            assert (len(self.rows), self.sequence) == ((90,133) if self.compacted_initial else (97,125) if self.compacted_history else (58,70))
             return result
         assert not self.compacted_history, 'the compacted-history seed appends one dictionary only'
         if stage == 'same-request':

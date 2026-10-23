@@ -44359,7 +44359,7 @@
               }
             },
             "initial_handoff_preparation": {
-              "status": "SOURCE_REVIEWED_NATIVE_PG_PROBE; ready for exact build; connected Python fixture review in progress",
+              "status": "PRODUCT9bea0ff_BUILD_CLIPPY_150COMPONENTS_47REQUIRED_PASS; exact fixturea7dd148 source-reviewed; connected NOT_RUN",
               "native_author_commit": "7824749369df3751850ae10912b37f7e18ad8167",
               "native_root_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json",
@@ -44381,9 +44381,9 @@
                 "new_native_controls": 8,
                 "expected_component_total": 150,
                 "expected_required_total": 47,
-                "measurement": "NOT_RUN; expectations only"
+                "measurement": "PASS150 components/47 required, including eight new native controls"
               },
-              "reviews_open": "Python fixture whole-state oracle/replay: deadline equality and renewal-causality findings being corrected. No product runtime claim.",
+              "reviews_open": "No source blocker remains in reviewed native/PG/probe/fixture scope. Connected engines/raw replay and all stated later consumer gates remain NOT_RUN.",
               "remaining": "Activated/later recovery, live frontier, retained Archive frontier and empty retirement before floor writer/unlink; physical loss, interrupted synchronization/unlink, mixed restore/backup and capacity.",
               "probe_author_commit": "873ad26e768f9a266e4371ef8a44b0862c60597d",
               "probe_root_review": {
@@ -44393,6 +44393,39 @@
               "final_format_addendum": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-format-addendum-v1.json",
                 "sha256": "9b230cf3afe56ceba3f790eae3cc467a9fb7d0bb23a607897635db650f89b231"
+              },
+              "fixture_author": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-journey-fixture-source-v1.json",
+                "sha256": "d30478db4ac90d5f57c8644228f75aa2bb346907df5d1dfbf18d6d522c11b407"
+              },
+              "fixture_root_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-fixture-root-review-v1.json",
+                "sha256": "9410b63dc76355bc8a7f46dd18ae6846b34b5c09dfb1a065fb4efddbf6ea7496"
+              },
+              "component_build": {
+                "source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+                "tree": "1e3cf0d184caa89abb558d4480d017c88f625581",
+                "status": "PASS_COMPACTED_PREFIX_COMPONENTS",
+                "driver": "54339 joined0",
+                "counts": {
+                  "compacted_prefix": 7,
+                  "compacted_progress": 1,
+                  "successor_history": 5,
+                  "archive_retained_frontier": 7,
+                  "initial_reconstruction": 110,
+                  "request_inputs": 20
+                },
+                "required_controls": 47,
+                "executables_sha256": {
+                  "native_components": "1ee6cd18d42d3347dfb412b3b52e44dbee6fa9cf63b3634f085961a3ea04d853",
+                  "ingest_bootstrap_probe": "d29802e9dae1446268c2d56d155bce9f86e57dc503d2faa2b0f6506aff6b924a",
+                  "bigbrotr": "747405c039e4ddfb2106286697cea8c2fb70d297f68a634edec998b7e892609a"
+                },
+                "source_manifest_sha256": "60b743df35d3811d2ea48129e5ab857a1698a5527600630019838c75657ac073",
+                "receipt": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff/verified-build.json",
+                  "sha256": "3f5c18ca01c102cd2a45394ea1c9babae98f79524c3529b5454957276dbda6fd"
+                }
               }
             }
           }

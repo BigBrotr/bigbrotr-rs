@@ -12,10 +12,10 @@ FLAGS = {'recover': '--successor', 'source': '--close-successor-source',
 
 
 def argv(operation, config):
-    assert operation in (*FLAGS, 'live', 'recover-initial')
+    assert operation in (*FLAGS, 'live', 'live-initial', 'recover-initial')
     assert config.is_absolute() and config.parent == Path('/lab') and config.suffix == '.toml'
-    if operation == 'live':
-        return ['/build/bigbrotr', 'serve', '--file', str(config), '--activate-successor',
+    if operation in ('live','live-initial'):
+        return ['/build/bigbrotr', 'serve', '--file', str(config), '--activate-initial-successor' if operation=='live-initial' else '--activate-successor',
                 '--roles', 'control,ingest']
     if operation == 'recover-initial':
         return ['/build/bigbrotr', 'ingest', 'recover', '--file', str(config)]

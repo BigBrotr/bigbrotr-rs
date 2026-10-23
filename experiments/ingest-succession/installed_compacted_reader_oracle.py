@@ -61,7 +61,8 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False):
+    assert type(initial_journey) is bool
     assert re.fullmatch(r'[0-9a-f]{40}',source)
     assert component['status'] == 'PASS' and qualification['status'] == 'PASS_COMPACTED_PREFIX_COMPONENTS'
     assert built['source'] == component['source'] == qualification['source'] == source
@@ -107,6 +108,18 @@ def qualification_checked(built, component, qualification, source):
         'compacted_history_reuses_one_permit_for_full_census_and_canonical_rows',
         'compacted_history_correction_census_counts_reclaimed_requests_beyond_spool_cap')}
     assert required_native <= set(component['test_names']['initial_reconstruction'])
+    if initial_journey:
+        required_handoff = {
+            'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'+n for n in (
+            'compacted_handoff_exact_four_writes_and_zero_write_prepared_retry',
+            'compacted_handoff_refuses_stale_custody_inputs_and_dispatch_without_writes',
+            'compacted_handoff_requires_full_census_original_manifest_cut_and_digest',
+            'compacted_handoff_wrong_owner_and_prepared_pending_context_refuse',
+            'compacted_handoff_prepared_target_must_be_empty_open_and_census_complete',
+            'compacted_candidate_binds_fresh_target_and_explicit_activation_only',
+            'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
+        required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
+        assert required_handoff <= set(component['test_names']['initial_reconstruction'])
     assert set(component['executables_sha256']) == {'bigbrotr','ingest_bootstrap_probe','native_components'}
     assert built['binary_sha256'] == component['executables_sha256']['bigbrotr']
     assert built['build_info']['source'] == dict(state='builder-supplied',revision=source,
@@ -443,6 +456,12 @@ HISTORY_GRANTS = GRANTS + (
     'GRANT SELECT,INSERT ON control.initial_ingest_activations, control.ingest_successions, '
     'control.ingest_activations, control.ingest_terminal_transactions TO bigbrotr_control;',
     'GRANT EXECUTE ON FUNCTION '+', '.join('control.'+n for n in HISTORY_FUNCTIONS)+' TO bigbrotr_control;')
+# This journey grants only the existing initial preparation/activation surface.
+# It does not grant later-lineage writes or activated recovery functions.
+JOURNEY_GRANTS = GRANTS + (
+    'GRANT SELECT,INSERT,UPDATE ON control.initial_ingest_successions TO bigbrotr_control;',
+    'GRANT SELECT,INSERT ON control.initial_ingest_activations TO bigbrotr_control;',
+    'GRANT EXECUTE ON FUNCTION '+', '.join('control.'+n for n in HISTORY_FUNCTIONS[:14])+' TO bigbrotr_control;')
 HISTORY_NOT_RUN = ('Actual product reclamation/GC and unlink',
     'Preparation/activation/recovery or writer publication after compaction',
     'Crash/unknown-commit and interrupted unlink', 'Mixed restore/backup and capacity')
@@ -458,7 +477,7 @@ class HistoryProfile:
     DATABASE_PREFIX = 'bb_compacted_history_'
 
 
-def history_catalog_checked(original, current):
+def history_catalog_checked(original, current, *, grants=HISTORY_GRANTS):
     """Exact ACL union; all nonapplication ACL and catalog bytes stay unchanged."""
     def key(kind, value):
         if kind == 'FUNCTION':
@@ -480,7 +499,8 @@ def history_catalog_checked(original, current):
     before, rest = parse(original); after, current_rest = parse(current)
     assert rest == current_rest
     wanted = copy.deepcopy(before)
-    for statement in HISTORY_GRANTS:
+    assert grants in (HISTORY_GRANTS,JOURNEY_GRANTS)
+    for statement in grants:
         m = re.fullmatch(r'GRANT (.+) ON (FUNCTION )?(.+) TO bigbrotr_control;',statement)
         rights, kind, targets = m.groups(); kind=(kind or 'TABLE').strip()
         parts = re.split(r',\s*(?=control\.)',targets)
@@ -491,10 +511,13 @@ def history_catalog_checked(original, current):
     assert normalize(after) == normalize(wanted)
 
 
-def history_seed_plan(pg, native, inputs, observed, seed):
+def history_seed_plan(pg, native, inputs, observed, seed, *, compacted_initial=False, installed_deadline=None):
     """Fresh identity/time coordinates only; complete portable bytes are ours."""
     terminal_checked(pg,seed)
-    assert native == seed[1] and inputs == seed[2]
+    assert type(compacted_initial) is bool
+    assert installed_deadline is None or compacted_initial
+    assert native == (compacted_native(seed,'positive') if compacted_initial else seed[1])
+    assert inputs == ({} if compacted_initial else seed[2])
     ds,p = only(pg['datasets']),only(pg['producer_epochs'])
     assert ds['topology_generation'] == 0 and ds['policy_revision'] == ds['config_revision'] == 1
     assert p['outstanding_request_limit'] == 2
@@ -509,21 +532,26 @@ def history_seed_plan(pg, native, inputs, observed, seed):
     target=bytes(target); digest=known(seed)['digest']
     handoff=b'\x01\x0a'+binary(p['producer_slot_id'])+be(1)+be(7)+be(27)+bytes.fromhex(digest)+be(266,2)+old+be(266,2)+target
     at=observed['created_at_us']; assert at >= p['retired_at_us']
+    deadline=at+60_000_000
+    if installed_deadline is not None:
+        assert set(observed)=={'target_role','target_incarnation','domains','created_at_us'}
+        number(installed_deadline,at+1,at+6_000_000,integer=True); deadline=installed_deadline
     plan=dict(event='successor-plan',dataset=ds['dataset_id'][2:],instance=ds['instance_id'][2:],
         resource=p['owner_resource_id'][2:],producer_slot=p['producer_slot_id'][2:],previous_epoch=1,target_epoch=2,
         shard=0,previous_topology=0,target_topology=1,target_incarnation=inc[2:],recovery_generation=old[78:94].hex(),
-        target_role=role[2:],created_at_us=at,lease_expires_at_us=at+60_000_000,window=2,
+        target_role=role[2:],created_at_us=at,lease_expires_at_us=deadline,window=2,
         policy_revision=1,config_revision=1,policy_digest=only(pg['policy_revisions'],revision=1)['document_digest'][2:],
         config_digest=only(pg['config_revisions'],revision=1)['document_digest'][2:],domains=[[k,v[2:]] for k,v in domains],
         issued_through=7,last_complete_sequence=27,closure_digest=digest,previous_manifest=old.hex(),
         target_manifest=target.hex(),handoff=handoff.hex())
-    assert observed == plan and len(handoff)==610
+    if installed_deadline is None: assert observed == plan
+    assert len(handoff)==610
     rows={(cf,bytes.fromhex(k)):bytes.fromhex(v) for (cf,k),v in model.native_map(native).items()}
     rows['default',b'\x01\x01']=target
     rows['default',b'\x01\x0a'+binary(ds['dataset_id'])+binary(p['owner_resource_id'])+be(1)]=handoff
     rows['default',b'\x01\x02'+binary(ds['dataset_id'])+be(0,4)+be(2)]=b'\x01\x02'+be(0)
     rows['receipts',b'\x01\x31'+binary(p['producer_slot_id'])+be(2)]=b'\x01\x31'+be(0)*3
-    assert len(rows)==91
+    assert len(rows)==(84 if compacted_initial else 91)
     return plan,rows
 
 
@@ -549,11 +577,14 @@ def seed_closed(response,database):
     return events
 
 
-def verify_history_seed(events, expected, seed, case, window):
+def verify_history_seed(events, expected, seed, case, window, *, compacted_initial=False):
     import initial_live_oracle as live
     import initial_succession_oracle as initial
+    assert type(compacted_initial) is bool
+    mode=JOURNEY_LIVE_MODE if compacted_initial else HISTORY_SEED_MODE
+    final_event="compacted-initial-seed-complete" if compacted_initial else "compacted-history-seed-complete"
     pg,native,inputs=copy.deepcopy(expected)
-    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),seed)
+    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),seed,compacted_initial=compacted_initial)
     live.clock(plan['created_at_us'],window)
     position=0
     def take(name,stage=None,phase=None):
@@ -569,21 +600,23 @@ def verify_history_seed(events, expected, seed, case, window):
     control=initial.claim(pg,after,1); model.clock(control['acquired_at_us'],window)
     assert claimed==dict(event='successor-control',stage='initial',phase='claimed',resource=control['resource_id'][2:],
         epoch=control['epoch'],role='d3'*16,incarnation='dd'*16)
-    pg=after; assert take('successor-plan')==plan
+    pg=after
+    if compacted_initial: assert take('successor-compacted-proof')==journey_proof(seed)
+    assert take('successor-plan')==plan
     after=snap('before-prepare'); control=initial.renewed(pg,after,control,plan['created_at_us'])
     model.fresh_xmin(control['xmin'],pg); pg=after
-    native=dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in rows.items()}),sequence=117)
+    native=dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in rows.items()}),sequence=125 if compacted_initial else 117)
     after=snap('prepared'); initial.prepared(pg,after,plan,control,compacted_history=True); pg=after
     backend=take('successor-backend','initial')
     assert backend==dict(event='successor-backend',stage='initial',database=case['database'],pid=control['control_backend_pid'],
         backend_start=control['control_backend_start'],control_epoch=control['epoch'],present=True)
-    assert take('live-activation-start')==dict(event='live-activation-start',mode=HISTORY_SEED_MODE,control_epoch=control['epoch'])
+    assert take('live-activation-start')==dict(event='live-activation-start',mode=mode,control_epoch=control['epoch'])
     activated=take('live-activation-result'); after=snap('activated-zero')
     assert activated==dict(event='live-activation-result',writer=True,error=None,activated_at_us=activated['activated_at_us'])
     live.activated(pg,after,plan,control,window,activated['activated_at_us']); pg=after
-    science=live.Science(plan,rows,inputs,compacted_history=True); receipt=science.advance('dictionary')
+    science=live.Science(plan,rows,inputs,compacted_history=not compacted_initial,compacted_initial=compacted_initial); receipt=science.advance('dictionary')
     assert take('live-receipt','dictionary')==dict(event='live-receipt',stage='dictionary',request=1,receipt=receipt.hex())
-    native=dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in science.rows.items()}),sequence=125)
+    native=dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in science.rows.items()}),sequence=133 if compacted_initial else 125)
     inputs=science.inputs; after=snap('dictionary'); live.admitted(pg,after,science,1,control,window); pg=after
     same(pg,snap('final-before-control-end'))
     assert take('successor-control','final','released-and-joined')==dict(event='successor-control',stage='final',
@@ -593,11 +626,11 @@ def verify_history_seed(events, expected, seed, case, window):
     model.fresh_xmin(released['xmin'],pg); model.clock(released['released_at_us'],window); pg=after
     assert take('successor-backend','initial')==dict(backend,present=False)
     same(pg,snap('final'))
-    assert take('live-complete')==dict(event='live-complete',mode=HISTORY_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=True)
-    assert take('compacted-history-seed-complete')==dict(event='compacted-history-seed-complete',native='closed',control='released-and-joined',observer='joined',requests=1,events=0)
+    assert take('live-complete')==dict(event='live-complete',mode=mode,native='closed',control='released-and-joined',writer=False,admission=True)
+    assert take(final_event)==dict(event=final_event,native='closed',control='released-and-joined',observer='joined',requests=1,events=0)
     assert position==len(events)
-    return (pg,native,inputs),dict(status='PASS',case=case['name'],native_rows=97,native_sequence=125,
-        required_originals=1,initial_originals=7,public_scope_ordinal=1,new_events=0)
+    return (pg,native,inputs),dict(status='PASS',case=case['name'],native_rows=90 if compacted_initial else 97,native_sequence=133 if compacted_initial else 125,
+        required_originals=1,initial_originals=0 if compacted_initial else 7,public_scope_ordinal=1,new_events=0)
 
 
 def history_closure2(pg):
@@ -994,6 +1027,20 @@ FAULT_ORIGIN = dict(name='compacted',run='installed-compacted-history-6ece98c',
     native_file='history-positive-absent-after-native.json',native_sha256='04c9d39b537572914fcfe43346f4296c17b8fe02f00b680f6517f7d598c1c02a',
     inputs_file='history-positive-absent-after-inputs.json',inputs_sha256='ff91e9db582bc212abf1ee9ecda78ab78f4b6f56c56a2bc7d32b4b4e2bd6d5ff',
     store='history-positive/store')
+JOURNEY_ORIGIN = dict(name='compacted-initial',run='installed-compacted-reader-6ece98c',
+    subdirectory='installed-compacted-reader',database='bb_compacted_reader_6ece98c_positive',
+    status=STATUS,source='6ece98c868e842d46fc4e13a359d19dd9a924d76',
+    owner='e7324816352cfbaa95e3cef0919bf69d',label=LABEL,
+    client_id='f5d5d694fc542596c70ec5a6001ac87ec6946e810a9c72d4d7650e12dff00f3e',
+    source_clone='positive',final_case='positive-absent',
+    catalog_sha256='e7951ae9d3013d0acbf109c46e92571e84d5da9f876c7af16a3f41a4b1b3ba3c',
+    result_sha256='80a4566505016987322b0c6690c0953c2951bc1104405e1e0c79b3e7aec9fe47',
+    snapshot='positive-final-sql.json',snapshot_sha256='82eee0aba08dbe581b5027a9884ae68340b7665744079c25b240d8cb823a7c34',
+    native_file='positive-absent-after-native.json',native_sha256='4eba225b321127dd42c34873f5761db3f02c5a67755f2258e39422ce0229f86d',
+    inputs_file='positive-absent-after-inputs.json',inputs_sha256='ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356',
+    store='positive/store')
+JOURNEY_REPLAY_SHA = '5855e37b2c2ef4339e0c42b00ee985b79ea6aca1453cdb904525c3c5e391b73a'
+JOURNEY_PHYSICAL_SHA = 'ef0beb7c32a1d712d99f7a854674a7b5a4d51502987420fb765597d69fa037b0'
 FAULT_REPLAY_SHA = 'f70a58b8f093c86577e8f53a68e7a88c8e44665f5a3602f5147ae7f9c13274a5'
 FAULT_PRODUCT = 'f4d1261fe85d69cec003a5f4266fdf1025824485'
 FAULT_MODE = 'successor-lineage-compacted-fault'
@@ -1018,41 +1065,53 @@ class HistoryFaultProfile:
 
 
 def fault_origin_checked(root,raw=None):
+    return qualified_endpoint(root,raw,initial_journey=False)
+
+
+def journey_origin_checked(root,raw=None):
+    return qualified_endpoint(root,raw,initial_journey=True)
+
+
+def qualified_endpoint(root,raw,*,initial_journey):
     """Bind the prior exact-source receipt; never replay it through new imports."""
     from installed_family_capture import physical, spool_checked
+    assert type(initial_journey) is bool
+    pin=JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN
     root=Path(root); raw=raw or retained.regular_read
-    basis=root.parent/FAULT_ORIGIN['run']/FAULT_ORIGIN['subdirectory']
+    basis=root.parent/pin['run']/pin['subdirectory']
     receipt_path=basis.parent/'raw-replay.json'; data=raw(receipt_path)
-    assert sha(data)==FAULT_REPLAY_SHA
+    assert sha(data)==(JOURNEY_REPLAY_SHA if initial_journey else FAULT_REPLAY_SHA)
     replay=loads(data)
-    assert replay['status']==HistoryProfile.STATUS+'_CAPTURE_REPLAY'
-    assert replay['source']==FAULT_ORIGIN['source'] and replay['product_source']==FAULT_PRODUCT
-    assert len(replay['cases'])==50 and sum(v['negative_controls']['count'] for v in replay['cases'])==454
-    assert len(replay['bound_files'])==5482
+    assert replay['status']==(STATUS if initial_journey else HistoryProfile.STATUS)+'_CAPTURE_REPLAY'
+    assert replay['source']==pin['source'] and replay['product_source']==FAULT_PRODUCT
+    assert len(replay['cases'])==(13 if initial_journey else 50)
+    assert sum(v['negative_controls']['count'] for v in replay['cases'])==(131 if initial_journey else 454)
+    assert len(replay['bound_files'])==(4629 if initial_journey else 5482)
     def bound(path):
         path=Path(path); value=raw(path)
         assert sha(value)==replay['bound_files'][str(path)]
         return value
     def read(path): return loads(bound(path))
-    report=read(basis/'result.json'); assert sha(raw(basis/'result.json'))==FAULT_ORIGIN['result_sha256']
-    assert all(report[k]==FAULT_ORIGIN[k] for k in ('status','source','owner','label'))
-    assert report['client']==FAULT_ORIGIN['client_id']
+    report=read(basis/'result.json'); assert sha(raw(basis/'result.json'))==pin['result_sha256']
+    assert all(report[k]==pin[k] for k in ('status','source','owner','label'))
+    assert report['client']==pin['client_id']
     assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
-    clone=only(report['clones'],name='history-positive'); case=only(report['cases'],name='history-positive-absent')
-    assert clone['database']==FAULT_ORIGIN['database'] and clone['status']==case['status']=='PASS'
+    clone=only(report['clones'],name=pin['source_clone']); case=only(report['cases'],name=pin['final_case'])
+    assert clone['database']==pin['database'] and clone['status']==case['status']=='PASS'
     assert clone['final_case']==case['name'] and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
-    assert sha(clone['final_catalog'].encode())==FAULT_ORIGIN['catalog_sha256']
+    assert sha(clone['final_catalog'].encode())==pin['catalog_sha256']
     final=[]
     for file_key,hash_key in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
-        path=basis/FAULT_ORIGIN[file_key]; value=bound(path); assert sha(value)==FAULT_ORIGIN[hash_key]; final.append(loads(value))
+        path=basis/pin[file_key]; value=bound(path); assert sha(value)==pin[hash_key]; final.append(loads(value))
     endpoint=tuple(final)
-    context=read(basis/'history-positive-absent-verification.json')
-    assert sha(raw(basis/'history-positive-absent-verification.json'))=='e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df'
+    context=read(basis/(pin['final_case']+'-verification.json'))
+    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==('afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
     assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
-    assert context['response']==read(basis/'history-positive-absent-response.json')
-    assert context['custody']==read(basis/'history-positive-absent-custody.json')
-    assert context['custody']['status']=='OBSERVED_CLOSED_AND_JOINED' and not context['custody']['errors']
-    terminal=read(basis/'client-terminal.json'); assert terminal['Id']==FAULT_ORIGIN['client_id']
+    assert context['response']==read(basis/(pin['final_case']+'-response.json'))
+    custody=read(basis/(pin['final_case']+'-custody.json'))
+    if not initial_journey: assert context['custody']==custody
+    assert custody['status']=='OBSERVED_CLOSED_AND_JOINED' and not custody['errors']
+    terminal=read(basis/'client-terminal.json'); assert terminal['Id']==pin['client_id']
     assert terminal['State']['Status']=='exited' and terminal['State']['Pid']==0 and terminal['State']['ExitCode']==143
     build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
     built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
@@ -1062,7 +1121,7 @@ def fault_origin_checked(root,raw=None):
     assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
     for name,digest in component['executables_sha256'].items(): assert sha(bound(build/name))==digest
     provenance=read(basis/'progress-source.json'); old_source=basis.parent/'source'
-    assert provenance['revision']==FAULT_ORIGIN['source'] and provenance['source']==str(old_source)
+    assert provenance['revision']==pin['source'] and provenance['source']==str(old_source)
     assert provenance['tree']==report['tree']
     # Recheck this endpoint's actual oracle/probe/transitive source bytes, not
     # a blanket rerun of the old 5482-file capture or a relaxed source gate.
@@ -1071,10 +1130,26 @@ def fault_origin_checked(root,raw=None):
             assert sha(bound(old_source/name))==digest
             if not name.startswith('experiments/'): assert manifest['files_sha256'][name]==digest
     initial=retained.origin_checked(root.parent/ORIGIN['run']/ORIGIN['subdirectory'],raw,ack_refusals=True)
-    known(initial); history_lineage(endpoint,initial,compacted=True)
+    known(initial)
+    if initial_journey:
+        terminal_checked(endpoint[0],initial)
+        assert endpoint[1]==compacted_native(initial,'positive') and endpoint[2]=={}
+        assert (len(endpoint[1]['rows']),endpoint[1]['sequence'])==(81,121)
+        store=basis/pin['store']
+        # This prior replay qualified the logical endpoint, not its physical DB
+        # files. Bind a separate complete newly observed census without opening
+        # the original engine; the first excluded clone must match all81rows.
+        assert not any(n.startswith(str(store)+'/') for n in replay['bound_files'])
+        assert sha(model.encoded(physical(store,raw)))==JOURNEY_PHYSICAL_SHA
+        spool_checked(store/'producer-inputs-v1',{},raw,complete=True)
+        q=read(basis/'positive-quarantine.json'); quarantine_checked(q,initial)
+        assert physical(basis/q['path'],bound)==q['quarantine_after']
+        for name,value in q['files'].items(): assert bound(basis/q['path']/name).hex()==value['hex']
+        return endpoint,initial
+    history_lineage(endpoint,initial,compacted=True)
     assert len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
     assert all('-0000000000000002-' in n for n in endpoint[2])
-    store=basis/FAULT_ORIGIN['store']
+    store=basis/pin['store']
     spool_checked(store/'producer-inputs-v1',endpoint[2],bound,complete=True)
     files=physical(store,bound)
     prefix=str(store)+'/'
@@ -1367,3 +1442,509 @@ def history_fault_controls(context,initial,expected,baseline=None):
         except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(name)
         else: raise AssertionError('accepted altered compacted fault evidence: '+name)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+JOURNEY_LIVE_MODE = 'successor-live-compacted-initial-seed'
+JOURNEY_PREPARE_MODE = 'successor-compacted-normal'
+JOURNEY_GAP_MODE = 'successor-compacted-gap-only'
+JOURNEY_READ_MODE = 'successor-compacted-prepared-recover'
+# Exact source-derived refusal chains; positive raw engine runs qualify them separately.
+JOURNEY_FAILURES = {
+    'head': ('compacted-load','Progress(InvalidContext)'),
+    'target-nonzero': ('compacted-native','StateMismatch'),
+    'target-input': ('compacted-native','RequestInput(Identity)'),
+}
+JOURNEY_STEPS = {
+    'prepared': ('prepare','inspect','strict'),
+    'gap': ('prepare-gap','current-refuse','complete','inspect'),
+    'live': ('dictionary','strict'),
+    'head': ('prepare','refuse'),
+    'target-nonzero': ('prepare','refuse'),
+    'target-input': ('prepare','refuse'),
+    'installed': ('serve',),
+}
+
+
+class InitialJourneyProfile:
+    DIRECTORY = 'installed-compacted-initial-journey'
+    LABEL = 'org.bigbrotr.installed-compacted-initial-journey'
+    STATUS = 'PASS_SYNTHETIC_COMPACTED_INITIAL_SUCCESSION'
+    DATABASE_PREFIX = 'bb_compacted_initial_'
+    CLONES = tuple(JOURNEY_STEPS)
+    STEPS = JOURNEY_STEPS
+    CASES = tuple(n+'-'+s for n in CLONES for s in JOURNEY_STEPS[n])
+    GRANTS = JOURNEY_GRANTS
+    NOT_RUN = ('Actual product reclamation/GC and unlink',
+        'Activated replacement recovery, later live frontier, Archive and empty retirement',
+        'Crash/unknown-commit and interrupted unlink', 'Mixed restore/backup and capacity')
+
+
+def journey_proof(initial):
+    return dict(event='successor-compacted-proof',compacted_requests=7,original_requests_replayed=0,
+        last_complete_sequence=27,closure_digest=known(initial)['digest'])
+
+
+def journey_specification(case):
+    name=case['clone']; assert name in JOURNEY_STEPS
+    step=case['name'].removeprefix(name+'-'); assert step in JOURNEY_STEPS[name]
+    assert case['name']==name+'-'+step and case['origin']=='compacted-initial'
+    index=JOURNEY_STEPS[name].index(step)
+    assert case['predecessor']==(name+'-'+JOURNEY_STEPS[name][index-1] if index else None)
+    operation={'prepare':JOURNEY_PREPARE_MODE,'prepare-gap':JOURNEY_GAP_MODE,'current-refuse':'retire-initial',
+        'dictionary':JOURNEY_LIVE_MODE,'strict':'successor-prepared-recover','serve':'live-initial'}.get(step,JOURNEY_READ_MODE)
+    assert case['operation']==operation and re.fullmatch('[a-z0-9_]{1,63}',case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def journey_closed(response,database):
+    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    events=[loads(v) for v in response['stdout'].splitlines()]
+    complete=events[-1]
+    assert complete['event'] in ('successor-complete','successor-history-complete','successor-gap-complete','compacted-initial-seed-complete')
+    assert complete['native']=='closed' and complete['control'] in ('released-and-joined','dropped-and-joined')
+    backends=[e for e in events if e['event']=='successor-backend']
+    if backends:
+        before,after=backends
+        assert before['database']==database and before['present'] is True and after==dict(before,present=False)
+        number(before['pid'],1,integer=True)
+        assert before['backend_start']
+    if complete['event'] in ('successor-history-complete','successor-gap-complete'):
+        driver,=[e for e in events if e['event']=='successor-driver']
+        assert driver==dict(event='successor-driver',stage='history' if complete['event']=='successor-history-complete' else 'gap',failed=False,joined=True)
+    if 'readers_joined' in response:
+        assert response['readers_joined'] is True and response['overflow'] is False and response['outcome']=='PROCESS_EXITED'
+    return events
+
+
+def journey_dump(rows,sequence):
+    return dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in rows.items()}),sequence=sequence)
+
+
+def verify_journey_prepare(events,expected,initial,case,window,gate):
+    import initial_succession_oracle as preparation
+    pg,native,inputs=copy.deepcopy(expected); gap=case['operation']==JOURNEY_GAP_MODE
+    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True)
+    assert plan['target_role']=='c9'*16 and plan['target_incarnation']=='ca'*16
+    assert plan['domains']==[[k,f'{160+k:02x}'*16] for k in range(1,10)]
+    model.clock(plan['created_at_us'],window)
+    position=0; control=None
+    def take(event,stage=None,phase=None):
+        nonlocal position
+        value=events[position]; position+=1
+        assert (value['event'],value.get('stage'),value.get('phase'))==(event,stage,phase),value
+        return value
+    def snap(stage): return history_snapshot(take('successor-state',stage),native,inputs,pg,stage=stage)
+    def claim(stage,ordinal):
+        nonlocal pg,control
+        role,inc=f'{210+ordinal:02x}'*16,f'{220+ordinal:02x}'*16
+        assert take('successor-control',stage,'claim-planned')==dict(event='successor-control',stage=stage,phase='claim-planned',role=role,incarnation=inc,lease_ttl_us='20000000')
+        same(pg,snap(stage+'-before-claim'))
+        claimed=take('successor-control',stage,'claimed'); after=snap(stage+'-after-claim')
+        control=preparation.claim(pg,after,ordinal); model.clock(control['acquired_at_us'],window)
+        assert claimed==dict(event='successor-control',stage=stage,phase='claimed',role=role,incarnation=inc,
+            resource=control['resource_id'][2:],epoch=control['epoch'])
+        pg=after
+    def end(stage,release):
+        nonlocal pg
+        same(pg,snap(stage+'-before-control-end'))
+        phase='released-and-joined' if release else 'dropped-and-joined'
+        assert take('successor-control',stage,phase)==dict(event='successor-control',stage=stage,phase=phase,
+            resource=control['resource_id'][2:],epoch=control['epoch'])
+        after=snap(stage+'-after-control-end'); preparation.ended(pg,after,control,release)
+        if release: model.fresh_xmin(only(after['owner_epochs'],role='control',epoch=control['epoch'])['xmin'],pg)
+        pg=after
+    def attempt(stage,first=False):
+        nonlocal pg,native
+        assert take('successor-attempt',stage)==dict(event='successor-attempt',stage=stage,role=plan['target_role'],control_epoch=control['epoch'])
+        if gap:
+            assert take('successor-compacted-gap-native')==dict(event='successor-compacted-gap-native',native=native)
+            assert gate is not None and gate['errors']==[]
+            for phase in ('ready','released'):
+                wanted=dict(event='successor-compacted-gap-gate',phase=phase,path='/lab/'+case['name']+'-gate.go',timeout_ms=10000,poll_ms=5)
+                assert take('successor-compacted-gap-gate',phase=phase)==gate[phase]==wanted
+            preparation.prepared(pg,gate['control'],plan,control,compacted_history=True)
+            assert gate['native']==native and gate['inputs']==inputs
+            for k in ('observed_before_us','observed_after_us','go_before_us','go_after_us'): model.clock(gate[k],window)
+            assert gate['observed_before_us']<=gate['observed_after_us']<=gate['go_before_us']<=gate['go_after_us']
+        error='Control(InvalidPolicy)' if gap else None
+        assert take('successor-result',stage)==dict(event='successor-result',stage=stage,control_epoch=control['epoch'],validations=3 if gap else 4,error=error)
+        if gap: assert take('successor-session-poisoned')==dict(event='successor-session-poisoned',control_epoch=control['epoch'])
+        elif first: native=journey_dump(rows,125)
+        after=snap(stage)
+        if first: preparation.prepared(pg,after,plan,control,compacted_history=True)
+        else: same(pg,after)
+        if gap: same(after,gate['control'])
+        pg=after
+    claim('initial',1)
+    assert take('successor-compacted-proof')==journey_proof(initial)
+    assert take('successor-plan')==plan
+    after=snap('before-prepare'); control=preparation.renewed(pg,after,control,plan['created_at_us']); model.fresh_xmin(control['xmin'],pg); pg=after
+    attempt('prepared-native-old' if gap else 'prepared',True)
+    if not gap:
+        attempt('same-control-retry'); end('first',True); claim('fresh',2); attempt('fresh-control-retry')
+    end('final',not gap); same(pg,snap('final'))
+    assert take('successor-complete')==dict(event='successor-complete',mode=case['operation'],native='closed',
+        control='dropped-and-joined' if gap else 'released-and-joined',admission=False)
+    assert position==len(events)
+    return (pg,native,inputs),dict(status='PASS',case=case['name'],result='PREPARED_NATIVE_GAP' if gap else 'PREPARED_WITH_EXACT_RETRIES',
+        native_rows=len(native['rows']),native_sequence=native['sequence'],compacted_requests=7,original_requests_replayed=0)
+
+
+def journey_plan_from_intent(pg,initial):
+    intent=only(pg['initial_ingest_successions'])
+    assert intent['issued_through']==7 and intent['last_complete_sequence']==27
+    assert intent['closure_digest']=='\\x'+known(initial)['digest'] and intent['outstanding_request_limit']==2
+    old=binary(intent['previous_manifest']); target=binary(intent['target_manifest'])
+    assert sha(old)==MANIFEST and target[:4]==b'\x01\x01\x00\x02' and target[54:62]==be(2)
+    handoff=b'\x01\x0a'+binary(intent['producer_slot_id'])+be(1)+be(7)+be(27)+bytes.fromhex(known(initial)['digest'])+be(266,2)+old+be(266,2)+target
+    assert binary(intent['handoff'])==handoff
+    for key in ('previous_manifest','target_manifest','handoff'): assert sha(binary(intent[key]))==intent[key+'_sha256'][2:]
+    return intent,handoff
+
+
+def verify_journey_read(events,expected,initial,case,window):
+    import initial_history_oracle as original
+    import initial_succession_oracle as preparation
+    pg,native,inputs=copy.deepcopy(expected); name,step=journey_specification(case)
+    intent,handoff=journey_plan_from_intent(pg,initial)
+    route='gap' if native['sequence']==121 else 'history'
+    strict=step=='strict'; failed=strict or step=='refuse'
+    # Exact stage/errors below are source-derived; runtime is a separate result.
+    failure=('history-load','Progress(Native(StateMismatch))' if name=='prepared' else 'Native(StateMismatch)') if strict else JOURNEY_FAILURES.get(name)
+    position=0
+    def take(event,stage=None,phase=None):
+        nonlocal position
+        value=events[position]; position+=1
+        assert (value['event'],value.get('stage'),value.get('phase'))==(event,stage,phase),value
+        return value
+    def snap(stage):
+        stage=route+'-'+stage
+        return history_snapshot(take('successor-state',stage),native,inputs,pg,stage=stage)
+    manifest=model.native_map(native)['default','0101']
+    assert take('successor-recovery-selection')==dict(event='successor-recovery-selection',route=route,owner_epoch=1 if route=='gap' else 2,
+        key_schema=1 if route=='gap' else 2,manifest=manifest,admission=False)
+    planned=take('successor-control',route,'claim-planned')
+    assert set(planned)=={'event','stage','phase','role','incarnation','lease_ttl_us'} and planned['lease_ttl_us']=='20000000'
+    same(pg,snap('before-claim'))
+    claimed=take('successor-control',route,'claimed'); policy=take('successor-policy',route,'acquired'); backend=take('successor-backend',route)
+    after=snap('after-claim'); prior=max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    control=original.claim(pg,after,planned,window,exclude_previous=prior['state']=='active'); pg=after
+    assert claimed==dict(event='successor-control',stage=route,phase='claimed',resource=control['resource_id'][2:],epoch=control['epoch'],role=planned['role'],incarnation=planned['incarnation'])
+    assert policy==dict(event='successor-policy',stage=route,phase='acquired',sequence=None,control_epoch=control['epoch'],config_revision=1,policy_revision=1,
+        config_digest=only(pg['config_revisions'],revision=1)['document_digest'][2:],policy_digest=only(pg['policy_revisions'],revision=1)['document_digest'][2:])
+    assert backend==dict(event='successor-backend',stage=route,pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database'],control_epoch=control['epoch'],present=True)
+    same(pg,snap('before-read'))
+    if not failed:
+        proof=dict(event='successor-'+route+'-compacted-proof',compacted_requests=7,original_requests_replayed=0,last_complete_sequence=27,
+            closure_digest=known(initial)['digest'],previous_manifest=intent['previous_manifest'][2:],target_manifest=intent['target_manifest'][2:],handoff=handoff.hex())
+        assert take(proof['event'])==proof; same(pg,snap('compacted-loaded'))
+        if route=='gap':
+            rows={(cf,bytes.fromhex(k)):bytes.fromhex(v) for (cf,k),v in model.native_map(native).items()}
+            rows['default',b'\x01\x01']=binary(intent['target_manifest'])
+            rows['default',b'\x01\x0a'+binary(intent['dataset_id'])+binary(intent['owner_resource_id'])+be(1)]=handoff
+            rows['default',b'\x01\x02'+binary(intent['dataset_id'])+be(0,4)+be(2)]=b'\x01\x02'+be(0)
+            rows['receipts',b'\x01\x31'+binary(intent['producer_slot_id'])+be(2)]=b'\x01\x31'+be(0)*3
+            assert len(rows)==84; native=journey_dump(rows,125)
+        for stage in ('completed','exact-retry'):
+            assert take('successor-'+route+'-compacted-completion',stage)==dict(event='successor-'+route+'-compacted-completion',stage=stage,handoff=handoff.hex(),admission=False)
+            same(pg,snap(stage))
+    assert take('successor-'+route+'-result',failure[0] if failed else 'complete')==dict(event='successor-'+route+'-result',stage=failure[0] if failed else 'complete',sequence=None,error=failure[1] if failed else None)
+    same(pg,snap('after-read')); same(pg,snap('before-control-end'))
+    assert take('successor-driver',route)==dict(event='successor-driver',stage=route,failed=False,joined=True)
+    assert take('successor-backend',route)==dict(backend,present=False)
+    phase='dropped-and-joined' if failed else 'released-and-joined'
+    assert take('successor-control',route,phase)==dict(event='successor-control',stage=route,phase=phase,resource=control['resource_id'][2:],epoch=control['epoch'])
+    after=snap('after-control-end'); preparation.ended(pg,after,control,not failed); pg=after
+    same(pg,snap('final'))
+    assert take('successor-'+route+'-complete')==dict(event='successor-'+route+'-complete',native='closed',control=phase,admission=False,success=not failed)
+    assert position==len(events)
+    return (pg,native,inputs),dict(status='PASS',case=case['name'],result='REFUSED' if failed else 'RECONSTRUCTED_EXISTING_INTENT',
+        native_rows=len(native['rows']),native_sequence=native['sequence'],compacted_requests=0 if failed else 7,original_requests_replayed=0)
+
+
+def journey_mutation_checked(record,expected,initial,name):
+    pg,native,inputs=expected
+    assert record['kind']=='isolated-compacted-initial-'+name
+    assert record['before']==dict(control=pg,native=native,inputs=inputs)
+    if name=='head':
+        result=history_head_checked(record['head'],expected,initial)
+    elif name=='target-nonzero':
+        intent,_=journey_plan_from_intent(pg,initial)
+        key=(b'\x01\x02'+binary(intent['dataset_id'])+be(0,4)+be(2)).hex()
+        wanted=copy.deepcopy(native); row=only(wanted['rows'],cf='default',key=key)
+        assert row['value']==(b'\x01\x02'+be(0)).hex(); row['value']=(b'\x01\x02'+be(1)).hex(); wanted['sequence']+=1
+        response=record['response']; assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+        events=[loads(v) for v in response['stdout'].splitlines()]
+        assert events==[dict(event='successor-history-corruption',phase=phase,mutation='target-nonzero',cf='default',key=key,
+            value=(b'\x01\x02'+be(n)).hex(),sequence=state['sequence'],rows=state['rows'])
+            for phase,n,state in [('before',0,native),('after',1,wanted)]]
+        result=pg,wanted,inputs
+    else:
+        assert name=='target-input' and inputs=={}
+        source_name=only(initial[0]['producer_epochs'])['producer_slot_id'][2:]+'-0000000000000001-0000000000000001.cbor'
+        target_name=source_name.replace('-0000000000000001-','-0000000000000002-',1)
+        data=bytes.fromhex(record['input']['hex']); assert initial[2][source_name]==dict(bytes=len(data),sha256=sha(data))
+        assert record['input']['source_name']==source_name and record['input']['target_name']==target_name
+        assert record['input']['before']=={'.':record['input']['before']['.']}
+        after=record['input']['after']; assert set(after)=={'.',target_name}
+        v=after[target_name]; assert stat.S_ISREG(v['mode']) and stat.S_IMODE(v['mode'])==0o600 and v['links']==1
+        assert (v['bytes'],v['sha256'])==(len(data),sha(data))
+        result=pg,native,{target_name:dict(bytes=len(data),sha256=sha(data))}
+    assert record['after']==dict(control=result[0],native=result[1],inputs=result[2])
+    return result
+
+
+def journey_installed_closed(response,case):
+    _,step=journey_specification(case); code=4 if step=='current-refuse' else 0
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert type(response['returncode']) is int and response['returncode']==code and response['outcome']=='PROCESS_EXITED'
+    t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv(case['operation'],Path(case['config']))
+    assert t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    number(t['pid'],1,integer=True); number(t['start_ticks'],1,integer=True); number(t['elapsed_seconds'],0,60)
+    if code:
+        assert response['stdout']=='' and response['stderr']=='error: producer operation unavailable: Control(InvalidMetadata)\n'
+        return None
+    assert response['stderr']==''
+    activated,stopped=[loads(v) for v in response['stdout'].splitlines()]
+    assert stopped==dict(format='bigbrotr-initial-successor/1',state='stopped',native='closed',owner_release='committed',source_closure='not-performed',producer_epoch='2',ready=False)
+    return activated
+
+
+def verify_journey_context(context,initial,expected):
+    case=context['case']; name,step=journey_specification(case)
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]); assert context['native_before']==expected[1] and context['inputs_before']==expected[2]
+    assert context['catalog_before']==context['catalog_after']
+    window=context['server_window']; assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True); number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    if step in ('current-refuse','serve'):
+        assert set(context)==CONTEXT_FIELDS
+        report=journey_installed_closed(context['response'],case)
+        backend_checked(context['backend'],case['database'],expected[0],context['after'])
+        assert context['fixture']['cleanup_errors']==[]
+        if step=='current-refuse':
+            assert context['snapshots']==[] and context['input_contents']=={} and expected[2]=={}
+            import installed_live_oracle as installed
+            installed.startup(expected[0],context['after'],None,window)
+            assert context['native_after']==expected[1] and context['inputs_after']==expected[2]
+            return dict(status='PASS',case=case['name'],result='NO_SUCCESSOR_REFUSED',native_rows=81,native_sequence=121)
+        return verify_journey_installed(context,initial,expected,report)
+    assert set(context)=={'case','before','native_before','inputs_before','after','native_after','inputs_after','response','server_window',
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','gate'}
+    assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+    assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    for v in absence['attempts']:
+        number(v['seconds'],0,5); assert type(v['count']) is int and v['count']==len(v['backends'])
+    assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
+    response=context['response']; number(response['seconds'],0,120)
+    args=[case['operation'],case['database'],'/run/secrets/application',case['config']]
+    if step=='prepare-gap': args.append('/lab/'+case['name']+'-gate')
+    else: assert context['gate'] is None
+    assert context['arguments']==args
+    events=journey_closed(response,case['database'])
+    if step=='dictionary': after,result=verify_history_seed(events,expected,initial,case,window,compacted_initial=True)
+    elif step in ('prepare','prepare-gap'): after,result=verify_journey_prepare(events,expected,initial,case,window,context['gate'])
+    else: after,result=verify_journey_read(events,expected,initial,case,window)
+    same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
+    assert len(after[2])<=64 and sum(r['bytes'] for r in after[2].values())<=32*1024**2
+    return result
+
+
+def journey_controls(context,initial,expected):
+    changes=[('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
+        ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
+        ('checkpoint-xmin',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(xmin='4294967000')),
+        ('outcome-byte',lambda c:only(c['after']['producer_outcomes'],producer_epoch=1,request_sequence=1).update(outcome_bytes='\\x00')),
+        ('catalog-change',lambda c:c.update(catalog_after='changed'))]
+    if context['case']['operation'] in ('retire-initial','live-initial'):
+        changes += [('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False)),
+            ('wrong-command',lambda c:c['response']['terminal']['command'].append('--successor')),
+            ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)]))]
+    else:
+        changes += [('missing-custody',lambda c:c['custody'].update(status='UNKNOWN')),
+            ('wrong-arguments',lambda c:c['arguments'].append('wrong')),('live-backend',lambda c:c['backends'].append(dict(pid=1)))]
+        if context['gate'] is not None:
+            changes.append(('gap-native-dispatched',lambda c:c['gate']['native'].update(sequence=125)))
+    if context['inputs_after']:
+        changes.append(('required-input-loss',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after'])))))
+    events=[loads(v) for v in context['response']['stdout'].splitlines()]
+    proof_events=[v for v in events if 'original_requests_replayed' in v]
+    if proof_events or context['case']['operation']=='live-initial':
+        def fabricated_originals(value):
+            import json
+            events=[loads(v) for v in value['response']['stdout'].splitlines()]
+            if value['case']['operation']=='live-initial': events[0]['predecessor']['resolved_requests']='7'
+            else: only([v for v in events if 'original_requests_replayed' in v])['original_requests_replayed']=7
+            value['response']['stdout']='\n'.join(json.dumps(v) for v in events)+'\n'
+        changes.append(('fabricated-original-replay-count',fabricated_originals))
+    if context['case']['operation']=='live-initial':
+        def shifted_immutable_deadline(value):
+            import json
+            deadline=only(value['snapshots'][0]['control']['initial_ingest_successions'])['lease_expires_at_us']+1
+            for capture in [value['after'],*(s['control'] for s in value['snapshots']),value['fixture']['renewal']['current']['control']]:
+                only(capture['initial_ingest_successions'])['lease_expires_at_us']=deadline
+            events=[loads(v) for v in value['response']['stdout'].splitlines()]
+            events[0]['initial_lease_expires_at_us']=str(deadline)
+            value['response']['stdout']='\n'.join(json.dumps(v) for v in events)+'\n'
+            value['fixture']['renewal']['initial_deadline_us']=deadline
+        changes.append(('coordinated-immutable-deadline-shift',shifted_immutable_deadline))
+        def stale_control(value):
+            old=max((r for r in value['snapshots'][0]['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+            renewed=value['snapshots'][1]
+            assert old['lease_expires_at_us']<only(renewed['control']['owner_epochs'],role='ingest',epoch=2)['lease_expires_at_us']
+            for capture in (renewed['control'],value['fixture']['renewal']['current']['control']):
+                row=only(capture['owner_epochs'],role='control',epoch=old['epoch']); row.clear(); row.update(copy.deepcopy(old))
+        def shared_renewal_transaction(value):
+            for capture in (value['snapshots'][1]['control'],value['fixture']['renewal']['current']['control']):
+                control=max((r for r in capture['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                only(capture['owner_epochs'],role='ingest',epoch=2)['xmin']=control['xmin']
+        def early_release(value):
+            control=max((r for r in value['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+            at=value['fixture']['signal']['before_us']-1
+            control['released_at_us']=at
+            only(value['after']['role_instances'],role_instance_id=control['role_instance_id'])['retired_at_us']=at
+        changes += [('coordinated-stale-control-snapshot',stale_control),
+            ('coordinated-shared-renewal-transaction',shared_renewal_transaction),
+            ('shared-final-release-transaction',lambda c:only(c['after']['owner_epochs'],role='ingest',epoch=2).update(
+                xmin=max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])['xmin'])),
+            ('coordinated-release-before-signal',early_release),
+            ('renewal-clock-outside-window',lambda c:c['fixture']['renewal'].update(observed_at_us=c['server_window']['after_us']+1)),
+            ('renewal-clock-after-snapshot',lambda c:c['fixture']['renewal'].update(observed_at_us=c['snapshots'][1]['server_us']+1))]
+
+    rejected=[]
+    for name,change in changes:
+        value=copy.deepcopy(context); change(value)
+        try: verify_journey_context(value,initial,expected)
+        except (AssertionError,KeyError,TypeError,ValueError,StopIteration): rejected.append(name)
+        else: raise AssertionError('accepted compacted initial capture mutation: '+name)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def journey_expected_preparation(before,plan,control,transaction):
+    """Independent expected intermediate; never normalize a captured snapshot.
+
+    The same immutable recipe as initial_succession_oracle.prepared, retaining
+    that verifier as a second complete comparison of this bounded constructor.
+    """
+    import initial_succession_oracle as original
+    model.fresh_xmin(transaction,before)
+    p=plan; tx=transaction; role='\\x'+p['target_role']; inc='\\x'+p['target_incarnation']; at=p['created_at_us']
+    wanted=copy.deepcopy(before); old=only(before['owner_epochs'],role='ingest')
+    wanted['owner_epochs'].append(dict(old,epoch=2,role_instance_id=role,process_incarnation=inc,acquired_at_us=at,
+        lease_expires_at_us=p['lease_expires_at_us'],state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,xmin=tx))
+    wanted['role_instances'].append(dict(only(before['role_instances'],role_instance_id=old['role_instance_id']),
+        role_instance_id=role,created_at_us=at,retired_at_us=None,xmin=tx))
+    wanted['producer_epochs'].append(dict(only(before['producer_epochs']),producer_epoch=2,producer_role_instance_id=role,
+        producer_incarnation=inc,owner_epoch=2,owner_incarnation=inc,state='open',reserved_through_request=0,outstanding_request_limit=2,
+        opened_at_us=at,retired_at_us=None,closure_digest=None,xmin=tx))
+    wanted['source_streams'].append(dict(only(before['source_streams']),owner_epoch=2,owner_incarnation=inc,state='open',opened_at_us=at,
+        closed_at_us=None,last_complete_sequence=None,closure_digest=None,xmin=tx))
+    for kind,domain in p['domains']:
+        wanted['allocation_domains'].append(dict(only(before['allocation_domains'],dictionary_kind=kind),allocation_domain='\\x'+domain,
+            owner_epoch=2,owner_incarnation=inc,state='active',created_at_us=at,closed_at_us=None,closure_digest=None,xmin=tx))
+    wanted['topology_generations'].append(dict(only(before['topology_generations']),generation=1,previous_generation=0,created_at_us=at,sealed=True,xmin=tx))
+    wanted['topology_streams'] += [dict(only(before['topology_streams']),topology_generation=1,owner_epoch=e,
+        handoff_last_complete_sequence=27 if e==1 else None,xmin=tx) for e in (1,2)]
+    wanted['datasets']=[dict(only(before['datasets']),topology_generation=1,xmin=tx)]
+    wanted['initial_ingest_successions']=[dict(dataset_id='\\x'+p['dataset'],owner_resource_id='\\x'+p['resource'],target_epoch=2,owner_role='ingest',
+        target_incarnation=inc,target_role_instance_id=role,producer_slot_id='\\x'+p['producer_slot'],producer_epoch=2,shard_id=0,previous_topology=0,target_topology=1,
+        issued_through=7,last_complete_sequence=27,closure_digest='\\x'+p['closure_digest'],previous_manifest='\\x'+p['previous_manifest'],
+        target_manifest='\\x'+p['target_manifest'],handoff='\\x'+p['handoff'],previous_manifest_sha256='\\x'+sha(bytes.fromhex(p['previous_manifest'])),
+        target_manifest_sha256='\\x'+sha(bytes.fromhex(p['target_manifest'])),handoff_sha256='\\x'+sha(bytes.fromhex(p['handoff'])),
+        config_revision=1,policy_revision=1,config_digest='\\x'+p['config_digest'],policy_digest='\\x'+p['policy_digest'],outstanding_request_limit=2,
+        created_at_us=at,lease_expires_at_us=p['lease_expires_at_us'],prepared_by_resource=control['resource_id'],prepared_by_epoch=control['epoch'],
+        prepared_by_role='control',prepared_by_incarnation=control['process_incarnation'],xmin=tx)]
+    original.prepared(before,wanted,plan,control,compacted_history=True)
+    return wanted
+
+
+def journey_lease_delta(expected,observed,window,control_epoch,*,stopped=False):
+    import initial_succession_oracle as initial
+    before=copy.deepcopy(expected)
+    assert only(observed['owner_epochs'],role='control',epoch=control_epoch)['xmin']!=only(observed['owner_epochs'],role='ingest',epoch=2)['xmin']
+    for role,epoch in (('control',control_epoch),('ingest',2)):
+        old=only(before['owner_epochs'],role=role,epoch=epoch); actual=only(observed['owner_epochs'],role=role,epoch=epoch)
+        row=only(expected['owner_epochs'],role=role,epoch=epoch)
+        deadline=actual['lease_expires_at_us']; number(deadline,old['lease_expires_at_us'],window['after_us']+6_000_000,integer=True)
+        model.clock(deadline-6_000_000,window)
+        if actual['xmin']!=old['xmin']: model.fresh_xmin(actual['xmin'],before)
+        else: assert deadline==old['lease_expires_at_us']
+        row.update(lease_expires_at_us=deadline,xmin=actual['xmin'])
+        if stopped and role=='control':
+            at=actual['released_at_us']; model.clock(at,window); assert deadline-6_000_000<=at<deadline
+            assert actual['xmin']!=old['xmin']
+            row.update(state='released',released_at_us=at,exclusion_method='storage_fenced',exclusion_digest=initial.exclusion(old,old['process_incarnation']))
+            role_row=only(expected['role_instances'],role_instance_id=old['role_instance_id'])
+            actual_role=only(observed['role_instances'],role_instance_id=old['role_instance_id'])
+            model.clock(actual_role['retired_at_us'],window); assert at<=actual_role['retired_at_us']
+            role_row.update(retired_at_us=actual_role['retired_at_us'],xmin=actual['xmin'])
+    same(expected,observed)
+
+
+def verify_journey_installed(context,initial,expected,report):
+    import installed_live_oracle as installed
+    import initial_live_oracle as live
+    before,native,inputs=expected; window=context['server_window']; snapshots=context['snapshots']; case=context['case']
+    assert [s['stage'] for s in snapshots]==['activated','renewed','before-stop'] and inputs==context['inputs_after']=={} and context['input_contents']=={}
+    for item in snapshots:
+        assert set(item)=={'stage','server_us','control','inputs','observed_by_us'} and item['inputs']=={}
+        model.clock(item['server_us'],window); model.clock(item['observed_by_us'],window)
+        assert item['server_us']<=item['observed_by_us']
+        control=max((r for r in item['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        target=only(item['control']['owner_epochs'],role='ingest',epoch=2)
+        assert control['state']==target['state']=='active' and control['xmin']!=target['xmin']
+        assert control['lease_expires_at_us']>=target['lease_expires_at_us']>item['server_us']
+    assert snapshots[0]['observed_by_us']<=snapshots[1]['server_us']
+    assert snapshots[1]['observed_by_us']<=snapshots[2]['server_us']
+    activated=snapshots[0]['control']; intent=only(activated['initial_ingest_successions'])
+    coordinates=dict(target_role=intent['target_role_instance_id'][2:],target_incarnation=intent['target_incarnation'][2:],created_at_us=intent['created_at_us'],
+        domains=[[k,only(activated['allocation_domains'],owner_epoch=2,dictionary_kind=k)['allocation_domain'][2:]] for k in range(1,10)])
+    plan,rows=history_seed_plan(before,native,inputs,coordinates,initial,compacted_initial=True,installed_deadline=intent['lease_expires_at_us'])
+    # Only fresh Control coordinates come from this actual startup. This model
+    # constructs every expected owner/role column from the qualified predecessor.
+    m=model.Model(*expected,window,initial=True)
+    control=retained.failed_control(m,activated,renewed=True)
+    assert plan['lease_expires_at_us']==control['acquired_at_us']+6_000_000
+    installed.startup(before,m.pg,None,window)
+    preparation=journey_expected_preparation(m.pg,plan,control,intent['xmin'])
+    activation=only(activated['initial_ingest_activations']); model.fresh_xmin(activation['xmin'],preparation)
+    expected_activation=copy.deepcopy(preparation)
+    fields=('dataset_id','owner_resource_id','target_epoch','target_incarnation','target_role_instance_id','producer_slot_id','producer_epoch',
+        'previous_manifest_sha256','target_manifest_sha256','handoff_sha256','prepared_by_resource','prepared_by_epoch','prepared_by_incarnation',
+        'config_revision','policy_revision','config_digest','policy_digest')
+    wanted_intent=only(preparation['initial_ingest_successions'])
+    expected_activation['initial_ingest_activations']=[dict({k:wanted_intent[k] for k in fields},activated_by_resource=control['resource_id'],
+        activated_by_epoch=control['epoch'],activated_by_incarnation=control['process_incarnation'],activated_at_us=activation['activated_at_us'],
+        activation_transaction=activation['activation_transaction'],xmin=activation['xmin'])]
+    live.activated(preparation,expected_activation,plan,control,window,activation['activated_at_us'])
+    # These projections are independently constructed expected states. The
+    # unchanged actual snapshot is compared in full after exact lease deltas.
+    journey_lease_delta(expected_activation,activated,window,control['epoch'])
+    wanted=dict(format='bigbrotr-initial-successor/1',state='activated',dataset_id=plan['dataset'],owner_resource_id=plan['resource'],
+        producer_slot_id=plan['producer_slot'],producer_epoch='2',process_incarnation=plan['target_incarnation'],topology_generation='1',config_revision='1',policy_revision='1',
+        config_sha256=plan['config_digest'],policy_sha256=plan['policy_digest'],outstanding_request_limit='2',created_at_us=str(plan['created_at_us']),
+        initial_lease_expires_at_us=str(plan['lease_expires_at_us']),activated_at_us=str(activation['activated_at_us']),
+        predecessor=dict(producer_epoch='1',issued_through='7',reserved_through='7',resolved_requests='0',compacted_requests='7',
+            recovery_basis='closed-producer-floor-v3',last_complete_sequence='27',sha256=known(initial)['digest']),
+        native_profile=1,native_allowance_bytes=134217728,acquisition='not-started',ready=False,listeners=[])
+    assert report==wanted
+    for snapshot in snapshots[1:]: journey_lease_delta(expected_activation,snapshot['control'],window,control['epoch'])
+    fixture=context['fixture']; assert set(fixture)=={'cleanup_errors','renewal','signal'}
+    renewal=fixture['renewal']; assert renewal==dict(initial_deadline_us=plan['lease_expires_at_us'],observed_at_us=renewal['observed_at_us'],
+        initial_target=only(activated['owner_epochs'],role='ingest',epoch=2),current=snapshots[1])
+    model.clock(renewal['observed_at_us'],window)
+    assert snapshots[0]['observed_by_us']<=renewal['observed_at_us']<=snapshots[1]['server_us']
+    assert renewal['observed_at_us']>max(plan['lease_expires_at_us'],plan['created_at_us']+6_000_000)
+    assert only(snapshots[1]['control']['owner_epochs'],role='ingest',epoch=2)['lease_expires_at_us']>plan['lease_expires_at_us']
+    signal=fixture['signal']; assert set(signal)=={'kind','identity','before_us','after_us'} and signal['kind']=='SIGTERM'
+    identity={k:context['response']['terminal'][k] for k in ('pid','start_ticks','command','config','prefix')}; assert signal['identity']==identity
+    model.clock(signal['before_us'],window); model.clock(signal['after_us'],window)
+    assert snapshots[-1]['observed_by_us']<=signal['before_us']<=signal['after_us']
+    journey_lease_delta(expected_activation,context['after'],window,control['epoch'],stopped=True)
+    assert only(context['after']['owner_epochs'],role='control',epoch=control['epoch'])['released_at_us']>=signal['before_us']
+    assert context['native_after']==journey_dump(rows,125)
+    return dict(status='PASS',case=case['name'],result='INSTALLED_ACTIVATED_RENEWED_STOPPED',native_rows=84,native_sequence=125,
+        compacted_requests=7,original_requests_replayed=0,epoch2_originals=0,acquisition='NOT_RUN')

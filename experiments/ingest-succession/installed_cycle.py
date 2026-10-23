@@ -65,7 +65,7 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
             case['config'],'/lab/'+name,timeout=5)
         wait_for(lambda: Path(str(prefix)+'.pid.json').exists() or Path(str(prefix)+'.terminal.json').exists(),
             'installed cycle process identity',5)
-        if case['operation']=='live':
+        if case['operation'] in ('live','live-initial'):
             published=wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(),
                 'new successor activation report',15)
             assert isinstance(published,list) and len(published)==1, 'Serve exited before activation'
@@ -73,8 +73,8 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
             initialized=snapshot('activated')
             epoch=int(initial['producer_epoch'])
             target,=[r for r in initialized['control']['owner_epochs'] if r['role']=='ingest' and r['epoch']==epoch]
-            deadline=int(initial['lease_expires_at_us'])
-            minimum=max(deadline,int(initial['prepared_at_us'])+6_000_000)
+            deadline=int(initial['initial_lease_expires_at_us' if case['operation']=='live-initial' else 'lease_expires_at_us'])
+            minimum=max(deadline,int(initial['created_at_us' if case['operation']=='live-initial' else 'prepared_at_us'])+6_000_000)
             def renewed():
                 now=history.server_clock(pg,database)
                 assert not Path(str(prefix)+'.terminal.json').exists(), 'Serve exited before renewal'
@@ -89,7 +89,7 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
             signal['after_us']=history.server_clock(pg,database)
             fixture['signal']=signal
             lab.write_json(output/(name+'-signal.json'),signal)
-        wait_for(Path(str(prefix)+'.terminal.json').exists,'installed process joined',45 if case['operation']!='live' else 12)
+        wait_for(Path(str(prefix)+'.terminal.json').exists,'installed process joined',12 if case['operation'] in ('live','live-initial') else 45)
         terminal=read(Path(str(prefix)+'.terminal.json'))
     except BaseException as error:
         failure=error
