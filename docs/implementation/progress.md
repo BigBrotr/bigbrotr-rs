@@ -8,11 +8,10 @@ root and current author/reviewer runtime metadata confirm Astra/xhigh.
 
 P02-T02 Steps4/5/7: classified producer checkpoint, synchronized native ACK,
 restart and refusal of inconsistent retained state. Main HEAD is
-`dfbb8dc2d542e99726b19c162161d5fa7e136bbc`; product/build remains qualified
+`685821b0e57a752f027f7807be82ce27ff8be068`; product/build remains qualified
 `9cef25f13db44cac1cdd55e1862229ba7298f3b0`. Only experiment source changed after
-product integration. Last verified remote main was `03008f3`; this checkpoint's
-containing documentation commit records the next coherent result. Local changes
-are root-owned evidence, inventory, reference, task note and this checkpoint.
+product integration. Main685821b was pushed and remote-equal verified. Current local changes are
+root-owned branch reconciliation/agent status in inventory and this checkpoint.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -44,10 +43,15 @@ Runtime clients and borrowed PG were freshly inspected by exact ID/label:
 exited,PID0,noOOM,cgroups absent; cleanup_errors/missing_owned/unrelated_changed
 empty. No engine/build process remains from these runs. All stores, databases,
 logs, original failures, `.research`, external labs and worktrees are preserved.
-Five verified redundant local branch refs were retired, retaining detached original
-worktrees and ignored evidence; inventory records exact identities.
+All redundant local branch refs were reconciled and retired, retaining detached
+original worktrees and ignored evidence. Two older qualification branches needed
+exact patch-ID mapping to main cherry-picks; all five patches matched. Only main
+and active work/producer-ack-refusals remain locally; remote has only main.
+Inventory records each operation and original identity.
 
-`progress_hole_fixture` completed correctedbb02c96, integrated and qualified.
+`progress_hole_fixture` completed correctedbb02c96, integrated and qualified,
+and now assesses the minimal same-REQ/full-window proof-only qualification
+(source-only, no implementation/runtime).
 `ack_remaining_boundary` now implements the two-case refusal extension in
 `.research/producer-ack-refusals-20261023`, branch `work/producer-ack-refusals`,
 base dfbb8dc. `progress_hole_critical` independently reviews it. Both are source-only;

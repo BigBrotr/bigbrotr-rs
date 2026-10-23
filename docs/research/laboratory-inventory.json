@@ -61558,8 +61558,8 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-57-47-01a16944-9ea6-75d2-8a3a-17f2103a80ca.jsonl session_meta/turn_context; root verified",
-          "state": "Completed atbb02c96, source integrated and runtime qualified; no active assignment",
-          "scope": "Independent actual installed hole-continuity fixture"
+          "state": "Source-only assessment active; completed frozen worktree remains detachedbb02c96. No implementation or runtime authorized.",
+          "scope": "Determine minimal same-REQ post-hole and full-window proof-only qualification without duplicating valid evidence"
         },
         "progress_hole_critical": {
           "model": "gpt-6-astra",
@@ -61634,7 +61634,8 @@
           "base": "2f5198b82ac9027b83ea0cc37c8006d15f4c74dd",
           "scope": "Additive existing initial ACK harness, complete independent science and raw replay; historical profile retained",
           "state": "Completed, critically reviewed, integrated dfbb8dc; full fresh live/recovery/retry/raw PASS; source/ignored receipts preserved",
-          "head": "bb02c96c0d006004a507d86653c6a8da9fed2e2c"
+          "head": "bb02c96c0d006004a507d86653c6a8da9fed2e2c",
+          "branch_state": "Retired local ref; exact clean detachedbb02c96 worktree and ignored evidence preserved"
         }
       ],
       "preparation_hole_build_20261023": {
@@ -61753,6 +61754,77 @@
         "qualified_origin": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ack-preparation-hole-dfbb8dc",
         "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-9cef25f/out/artifacts",
         "reviewer": "progress_hole_critical"
+      },
+      "remaining_integrated_branch_retirement_20261023": {
+        "observed_at": "2026-10-23T15:37:44.978455+00:00",
+        "main": "685821b0e57a752f027f7807be82ce27ff8be068",
+        "entries": [
+          {
+            "branch": "qualification/export-memory-phases",
+            "original_head": "de79f94de465754efe75db5c756645d436892ad9",
+            "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-phases-20261020",
+            "state": "Retired fully integrated local ref; detached exact original worktree and ignored evidence preserved"
+          },
+          {
+            "branch": "qualification/export-memory-probe",
+            "original_head": "370cf79288cbc121582f342dd96cb4b95d7de91f",
+            "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-probe-20261018",
+            "state": "Retired fully integrated local ref; detached exact original worktree and ignored evidence preserved"
+          },
+          {
+            "branch": "qualification/export-memory-setup",
+            "original_head": "130a85010d5d91c863680af20f55d68dc14c68d7",
+            "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-setup-20261020",
+            "state": "Retired fully integrated local ref; detached exact original worktree and ignored evidence preserved"
+          },
+          {
+            "branch": "qualification/export-memory-trace",
+            "original_head": "f179030c7f7e3b0fb163ab64e8298d0f4c0d34b1",
+            "worktree": "/home/tux/bigbrotr-rs/.research/export-memory-trace-20261020",
+            "state": "Retired fully integrated local ref; detached exact original worktree and ignored evidence preserved"
+          },
+          {
+            "branch": "work/producer-progress-hole-fixture",
+            "original_head": "bb02c96c0d006004a507d86653c6a8da9fed2e2c",
+            "worktree": "/home/tux/bigbrotr-rs/.research/producer-progress-hole-fixture-20261023",
+            "state": "Retired fully integrated local ref; detached exact original worktree and ignored evidence preserved"
+          }
+        ],
+        "preserved_unintegrated": [],
+        "operation_note": "Ancestry-only pass retired five refs then preserved two pending reconciliation. Follow-up exact stable patch-ID/ancestry checks confirmed all five cherry-picked commits; both remaining qualification refs now retired. Only main and active refusal work branch remain; no worktree/source/artifact deletion.",
+        "cherry_pick_reconciliation": {
+          "observed_at": "2026-10-23T15:38:37.056649+00:00",
+          "mapping": [
+            {
+              "original": "31b250f3f2ba4631ec6622c6ff14cdae54a58836",
+              "integrated": "005348b5a6f36b24b343757aec1f82f09b28b081",
+              "patch_id": "752f4674d97c05965655a1a8fe358a1c5bf1cd0a"
+            },
+            {
+              "original": "e2806e786120cd14776d030e2910c275cea3c8af",
+              "integrated": "2a548374d0e1027ff148961ffd09a7fda4b4d2b7",
+              "patch_id": "f68f4e8822840f8e358f4fcae593caf9526f8bc6"
+            },
+            {
+              "original": "69a32b6172ed4446ff7322d384d2516a13227c7b",
+              "integrated": "a8142a91fa17f26b5bead2aaf03b32ed8a702862",
+              "patch_id": "d91b75908c50a83cc16af2b83c6dddfd33ae437d"
+            },
+            {
+              "original": "bfe1b14c0b04f4194e09c1fafc6447d9cdd514e6",
+              "integrated": "11397d09917e5b605ea1d4f463af162120350a2a",
+              "patch_id": "d672105536eeef0414562ab1285009fd6044d4b2"
+            },
+            {
+              "original": "acc9bea67d5380f35c2fbf8d69ceed4539925133",
+              "integrated": "c18bc2c50d3a35862b069233348bbfc85eba8acf",
+              "patch_id": "f8030047871df5c06ecf08d51ed9607480c191a3"
+            }
+          ],
+          "worktree": "/home/tux/bigbrotr-rs/.research/archive-catch-up-refusals-20261018",
+          "preserved_head": "acc9bea67d5380f35c2fbf8d69ceed4539925133",
+          "state": "All five original patches exactly match reachable main commits. Both redundant local qualification refs retired; detached exact original worktree and ignored evidence preserved."
+        }
       }
     }
   },
