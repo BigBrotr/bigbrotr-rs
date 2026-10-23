@@ -759,7 +759,7 @@ def controls(context, verify):
             only(state['producer_checkpoints'])['dependency_count']-=1
             rehash(c,state)
         def replace_hole(c):
-            wire=only(c['transcript'],progress_phase='mutation')
+            wire,=[row for row in c['transcript'] if row.get('progress_phase')=='mutation']
             forged=dict(typed.preparation_hole_events()[0],sig='00'*64)
             raw=json.dumps(forged,ensure_ascii=False,separators=(',',':')).encode()
             wire['event_json_hex'][1]=raw.hex();wire['event_json_sha256'][1]=sha(raw)
