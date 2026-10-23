@@ -205,8 +205,11 @@ def ended(before, after, owner, release):
     same(wanted, after)
 
 
-def prepared(before, after, plan, control):
-    assert len(before) == 71 and before['initial_ingest_successions'] == []
+def prepared(before, after, plan, control, *, compacted_history=False):
+    assert type(compacted_history) is bool
+    count, cut, limit = (7, 27, 2) if compacted_history else (4, 12, 32)
+    assert (plan['issued_through'], plan['last_complete_sequence'], plan['window']) == (count, cut, limit)
+    assert len(before) == (77 if compacted_history else 71) and before['initial_ingest_successions'] == []
     intent = only(after['initial_ingest_successions'])
     tx = intent['xmin']
     assert tx.isdecimal() and all(tx != r['xmin'] for rows in before.values() for r in rows)
@@ -224,7 +227,7 @@ def prepared(before, after, plan, control):
     old = only(before['producer_epochs'])
     wanted['producer_epochs'].append(dict(old, producer_epoch=2, producer_role_instance_id=role,
         producer_incarnation=inc, owner_epoch=2, owner_incarnation=inc, state='open', reserved_through_request=0,
-        outstanding_request_limit=32, opened_at_us=timestamp, retired_at_us=None, closure_digest=None, xmin=tx))
+        outstanding_request_limit=limit, opened_at_us=timestamp, retired_at_us=None, closure_digest=None, xmin=tx))
     old = only(before['source_streams'])
     wanted['source_streams'].append(dict(old, owner_epoch=2, owner_incarnation=inc, state='open',
         opened_at_us=timestamp, closed_at_us=None, last_complete_sequence=None, closure_digest=None, xmin=tx))
@@ -236,19 +239,19 @@ def prepared(before, after, plan, control):
     wanted['topology_generations'].append(dict(old, generation=1, previous_generation=0, created_at_us=timestamp, sealed=True, xmin=tx))
     old = only(before['topology_streams'])
     wanted['topology_streams'] += [dict(old, topology_generation=1, owner_epoch=epoch,
-        handoff_last_complete_sequence=12 if epoch == 1 else None, xmin=tx) for epoch in (1, 2)]
+        handoff_last_complete_sequence=cut if epoch == 1 else None, xmin=tx) for epoch in (1, 2)]
     wanted['datasets'] = [dict(only(before['datasets']), topology_generation=1, xmin=tx)]
     wanted['initial_ingest_successions'] = [dict(dataset_id=ds, owner_resource_id=resource,
         target_epoch=2, owner_role='ingest', target_incarnation=inc, target_role_instance_id=role,
         producer_slot_id='\\x' + plan['producer_slot'], producer_epoch=2, shard_id=0,
-        previous_topology=0, target_topology=1, issued_through=4, last_complete_sequence=12,
+        previous_topology=0, target_topology=1, issued_through=count, last_complete_sequence=cut,
         closure_digest='\\x' + plan['closure_digest'], previous_manifest='\\x' + plan['previous_manifest'],
         target_manifest='\\x' + plan['target_manifest'], handoff='\\x' + plan['handoff'],
         previous_manifest_sha256='\\x' + digest(bytes.fromhex(plan['previous_manifest'])),
         target_manifest_sha256='\\x' + digest(bytes.fromhex(plan['target_manifest'])),
         handoff_sha256='\\x' + digest(bytes.fromhex(plan['handoff'])), config_revision=1, policy_revision=1,
         config_digest='\\x' + plan['config_digest'], policy_digest='\\x' + plan['policy_digest'],
-        outstanding_request_limit=32, created_at_us=timestamp, lease_expires_at_us=plan['lease_expires_at_us'],
+        outstanding_request_limit=limit, created_at_us=timestamp, lease_expires_at_us=plan['lease_expires_at_us'],
         prepared_by_resource=control['resource_id'], prepared_by_epoch=control['epoch'],
         prepared_by_role='control', prepared_by_incarnation=control['process_incarnation'], xmin=tx)]
     same(wanted, after)

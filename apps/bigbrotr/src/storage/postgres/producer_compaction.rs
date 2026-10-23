@@ -4,9 +4,9 @@ use super::*;
 use crate::{
     runtime::{OwnedPermit, policy_authority::PolicyLeaseTracker},
     storage::rocks::store::{
-        AdmissionError, AdmissionLimits, CompactedOutcomeRow, IngestRecovery, MAX_OUTCOME_BYTES,
-        NativeOutcomeKind, RetainedCompactedPrefix, VerifiedCompactedPrefix,
-        compacted_outcome_data_bytes,
+        AdmissionError, AdmissionLimits, CompactedOutcomeRow, CompactedPrefixResolution,
+        IngestRecovery, MAX_OUTCOME_BYTES, NativeOutcomeKind, RetainedCompactedPrefix,
+        VerifiedCompactedPrefix, compacted_outcome_data_bytes,
     },
 };
 use bigbrotr_model::{
@@ -168,10 +168,13 @@ impl ControlSession {
             return Err(OwnerError::InvalidMetadata.into());
         }
         drop(state);
+        initial_history::check_delivery::<AdmissionError>(&mut lease, policy, input.cancelled)?;
+        let resolution = prefix
+            .resolution(recovery, input.cancelled)
+            .map_err(ProducerCompactionError::Native)?;
         let native = resolve_initial_outcomes(
             &tx,
-            recovery,
-            prefix,
+            resolution,
             limits,
             &outcome_permit,
             &mut lease,
@@ -207,27 +210,19 @@ impl ControlSession {
 )]
 pub(super) async fn resolve_initial_outcomes<'a>(
     tx: &Transaction<'_>,
-    recovery: &'a IngestRecovery,
-    prefix: &'a RetainedCompactedPrefix,
+    mut resolution: CompactedPrefixResolution<'a>,
     limits: AdmissionLimits,
     outcome_permit: &OwnedPermit,
     lease: &mut PolicyLeaseTracker,
     policy: PolicyEpoch,
     cancelled: &AtomicBool,
 ) -> Result<VerifiedCompactedPrefix<'a>, ProducerCompactionError> {
-    let floor = prefix.floor().fields();
-    let slot_id = prefix.producer_slot_id();
+    let floor = *resolution.floor().fields();
+    let slot_id = resolution.producer_slot_id();
     let slot = &slot_id.as_bytes().as_slice();
-    let dataset = &prefix
-        .manifest()
-        .identity()
-        .dataset_id
-        .as_bytes()
-        .as_slice();
+    let dataset_id = resolution.manifest().identity().dataset_id;
+    let dataset = &dataset_id.as_bytes().as_slice();
     initial_history::check_delivery::<AdmissionError>(lease, policy, cancelled)?;
-    let mut resolution = prefix
-        .resolution(recovery, cancelled)
-        .map_err(ProducerCompactionError::Native)?;
     {
         let params: &[&(dyn ToSql + Sync)] = &[slot, dataset];
         let stream = tx
@@ -262,7 +257,7 @@ pub(super) async fn resolve_initial_outcomes<'a>(
                 .record(
                     CompactedOutcomeRow {
                         request: ProducerRequestId {
-                            producer_slot_id: prefix.producer_slot_id(),
+                            producer_slot_id: slot_id,
                             producer_epoch: ProducerEpoch::new(1).expect("initial epoch"),
                             request_sequence: RequestSequence::new(sequence)
                                 .map_err(|_| OwnerError::InvalidMetadata)?,

@@ -30,6 +30,23 @@ pub(in crate::storage::postgres::control_owner) struct Epoch {
     pub(in crate::storage::postgres::control_owner) source_digest: Option<[u8; 32]>,
 }
 impl Epoch {
+    pub(super) fn require_compacted_summary(
+        &self,
+        summary: &CompactedInitialSummary,
+    ) -> Result<(), OwnerError> {
+        if self.epoch() != 1
+            || self.producer != ProducerState::Retired
+            || self.source != SourceState::Closed
+            || !(1..=64).contains(&summary.compacted_requests)
+            || summary.compacted_requests != self.reserved
+            || Some(summary.last_complete_sequence) != self.source_cut
+            || Some(summary.digest) != self.source_digest
+        {
+            return Err(OwnerError::InvalidMetadata);
+        }
+        Ok(())
+    }
+
     pub(in crate::storage::postgres::control_owner) fn epoch(&self) -> u64 {
         self.manifest.identity().owner_epoch.get()
     }

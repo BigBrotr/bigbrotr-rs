@@ -122,6 +122,18 @@ impl RetainedLineage {
         effects: OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<Option<CompactedInitialAncestor<'a>>, AdmissionError> {
+        self.compacted_initial_ancestor_with_permit(recovery, limits, &effects, cancelled)
+    }
+
+    /// Connected canonical replay reuses the same effect grant serially after
+    /// this census. Neither the view nor its cursor retains decoded payloads.
+    pub(in crate::storage) fn compacted_initial_ancestor_with_permit<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Option<CompactedInitialAncestor<'a>>, AdmissionError> {
         if self.compacted.is_none() {
             return Ok(None);
         }
@@ -132,7 +144,7 @@ impl RetainedLineage {
             return Err(AdmissionError::InsufficientReservation);
         }
         self.validate(recovery, cancelled)?;
-        self.verify_effect_census(
+        self.census().verify_effect_census(
             recovery,
             self.native_head().manifest().identity().owner_epoch.get(),
             limits,
@@ -148,6 +160,11 @@ impl RetainedLineage {
 }
 
 impl<'a> CompactedInitialAncestor<'a> {
+    pub(in crate::storage) fn required_effect_data_bytes(
+        limits: AdmissionLimits,
+    ) -> Result<u64, AdmissionError> {
+        limits.required_dictionary_replay_data_bytes()
+    }
     pub fn manifest(&self) -> &IngestManifest {
         self.lineage
             .entry(1)
@@ -343,7 +360,7 @@ impl RetainedCompactedPrefix {
         observed.census().inspect_census(recovery, cancelled)?;
         observed
             .census()
-            .verify_effect_census(recovery, 1, limits, effects, cancelled)?;
+            .verify_effect_census(recovery, 1, limits, &effects, cancelled)?;
         observed.inputs = observed.input_census(recovery, cancelled)?;
         observed.validate(recovery, cancelled)?;
         Ok(observed)

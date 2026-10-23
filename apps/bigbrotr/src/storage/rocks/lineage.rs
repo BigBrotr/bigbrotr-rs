@@ -124,6 +124,19 @@ impl Census<'_> {
     pub(super) fn entry(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
         self.at(epoch)
     }
+    pub(super) fn correction_request_limit(&self) -> Result<u64, BootstrapError> {
+        // Reclaimed initial requests no longer consume a physical spool file.
+        // All other retained requests still share the original 64-file ceiling.
+        let maximum = super::RETAINED_PRODUCER_REQUEST_LIMIT
+            + self
+                .compacted
+                .map_or(0, |floor| floor.fields().issued_through);
+        self.entries
+            .iter()
+            .try_fold(0_u64, |total, entry| total.checked_add(entry.issued))
+            .filter(|count| *count <= maximum)
+            .ok_or(BootstrapError::Limit)
+    }
     fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
         usize::try_from(epoch.checked_sub(1)?)
             .ok()
@@ -471,7 +484,7 @@ impl RetainedLineage {
                 .is_some_and(|entry| id.request_sequence.get() <= entry.issued)
     }
 
-    pub(super) fn has_compacted_initial(&self) -> bool {
+    pub(in crate::storage) fn has_compacted_initial(&self) -> bool {
         self.compacted.is_some()
     }
     fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {

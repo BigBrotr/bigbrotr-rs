@@ -181,3 +181,58 @@ fn positive_summary_binds_kind_epoch_count_cut_and_digest() {
         assert!(row.require_summary(&summary).is_err());
     }
 }
+
+#[test]
+fn compacted_initial_summary_is_separate_from_original_replay() {
+    let mut row = epoch(1, true, true);
+    row.reserved = 7;
+    row.source_cut = Some(27);
+    let summary = CompactedInitialSummary {
+        compacted_requests: 7,
+        last_complete_sequence: 27,
+        digest: [6; 32],
+    };
+    row.require_compacted_summary(&summary).unwrap();
+    for changed in [
+        CompactedInitialSummary {
+            compacted_requests: 0,
+            ..summary
+        },
+        CompactedInitialSummary {
+            compacted_requests: 8,
+            ..summary
+        },
+        CompactedInitialSummary {
+            last_complete_sequence: 28,
+            ..summary
+        },
+        CompactedInitialSummary {
+            digest: [7; 32],
+            ..summary
+        },
+    ] {
+        assert!(row.require_compacted_summary(&changed).is_err());
+    }
+    let mut later = epoch(2, true, true);
+    later.reserved = 7;
+    later.source_cut = Some(27);
+    assert!(later.require_compacted_summary(&summary).is_err());
+    row.producer = ProducerState::Closing;
+    assert!(row.require_compacted_summary(&summary).is_err());
+    row.producer = ProducerState::Retired;
+    row.source = SourceState::Closing;
+    assert!(row.require_compacted_summary(&summary).is_err());
+    // Covered canonical requests are never inserted into the original count.
+    row.source = SourceState::Closed;
+    assert!(
+        row.require_summary(&LineageEpochSummary {
+            epoch: 1,
+            terminal_kind: RetainedTerminalKind::Initial,
+            resolved_requests: 0,
+            last_complete_sequence: 27,
+            digest: [6; 32],
+            event_request_mask: 0
+        })
+        .is_err()
+    );
+}

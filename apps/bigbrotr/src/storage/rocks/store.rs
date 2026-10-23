@@ -150,7 +150,8 @@ use lineage::{PendingSuccessorRequest, PendingSuccessorRetirementRequest};
 #[path = "lineage_replay.rs"]
 mod lineage_replay;
 pub use lineage_replay::{
-    LineageEpochSummary, LineagePendingError, LineageResolution, ResolvedLineage,
+    CompactedInitialSummary, LineageEpochSummary, LineagePendingError, LineageResolution,
+    ResolvedLineage,
 };
 
 #[path = "lineage_effects.rs"]

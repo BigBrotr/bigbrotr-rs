@@ -30,6 +30,9 @@ impl EmptySuccessorRetirement {
         proof: &ResolvedLineage<'_>,
         cancelled: &AtomicBool,
     ) -> Result<Self, BootstrapError> {
+        if proof.lineage().has_compacted_initial() {
+            return Err(BootstrapError::StateMismatch);
+        }
         proof.validate(cancelled)?;
         let lineage = proof.lineage();
         let head = lineage.native_head();

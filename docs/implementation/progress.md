@@ -7,8 +7,8 @@ M1–M5 remain incomplete. Root owns integration/runtime. Q37/Q38 apply.
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
 Validated main source is `7de70661be56ceb0a8a9b7561db6b022583609ba`; this commit
-records its qualification. Last observed equal remote was7dc9ed9; push the coherent
-result and verify equality. No GC writer or unlink is exposed.
+records its qualification. HEAD and remote were verified equal at
+`57427260a4c73024c6774371343baee78ac0d991`; no pending push. No GC writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -48,21 +48,36 @@ empty. Sources, ELFs, clones, quarantined originals, failures, logs, ignored
 Ancestor author727f9a0 is integrated unchanged; its original clean worktree at
 .research/compacted-ancestor-context-20261023 is detached after exact-blob
 reconciliation and redundant branch retirement. Scanner author538fc3a remains
-preserved detached. Reader-review agent is narrowing the next connected PG/native
-API; fixture agent is selecting an existing real-engine history fixture. Both
-are source-only under verified Astra/xhigh continuity, with no engine or source
-mutation authority for these current assignments. Root has only report/inventory/
-checkpoint changes ready for this coherent evidence commit.
+preserved detached. Reader-review agent froze the connected PG/native history reader at
+`c97459b65ef1f3b96942e5a2adbde618e5b19a9b` in
+.research/compacted-successor-history-20261023, branch
+work/compacted-successor-history at base5742726. Root independently reviewed
+its exact19-file delta and applied it to the canonical index; build/runtime NOT_RUN.
+Fixture agent froze `ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f` in
+.research/compacted-history-fixture-20261023, branch work/compacted-history-fixture.
+Its exact13-file delta is integrated and independently reviewed. Root probe and
+runner changes match independent review; all source owners are now ready for one
+coherent exact-revision build. Formatting/AST/diff and document checks PASS.
+New build and connected runtime remain NOT_RUN. Both agents finished their source
+and review tasks; no independent runtime delegation. Root owns canonical changes.
 
 ## Precise next step and open boundaries
 
-Implement explicit compacted-initial completion in the existing SuccessorHistory
-ordered owner, sharing sealed typed PG-head/canonical-outcome validation. Preserve
+Product, probe and fixture independent source reviews are linked in the report.
+Freeze the coherent local main source, then run existing producer-floor plus
+installed_compacted_reader --history and its independent raw replay. The selected
+fixture has seven clones/50 commands and454 capture controls, all NOT_RUN. Preserve
 current initial reader's no-successor/terminal/confirmed-COMMIT checks. Distinguish
 compacted counts from original replay, and guard every unadapted capability
 constructor before publishing a positive history. Reuse the existing runner and
 independent real-engine fixture; then wire initial handoff/prepared retry/gap,
-epoch2 activation, later recovery and live frontier before enabling deletion.
+epoch2 activation, later recovery, live frontier, retained Archive frontier and
+empty-retirement observation before enabling deletion.
+
+Confirmed source finding: correction ancestry traversal caps64 despite the
+independent compacted-initial/later-original counts. A bounded retained-count
+fix and >64 ancestry discrimination are independently reviewed at c97459b;
+runtime remains NOT_RUN. Existing small PASS fixtures did not cover it.
 
 Physical64file/32MiB bounds remain. Connected ACK error delivery, physical loss,
 mixed restore, capacity and backup remain open. Repeated residual-spool hashing

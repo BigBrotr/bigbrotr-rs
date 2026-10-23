@@ -119,3 +119,132 @@ pub fn mutate(path: &Path, mode: &str, literal_floor: &str) {
         "mode":mode,"rows":rows,"sequence":sequence,"native":"closed"}),
     );
 }
+
+/// Separate bounded later-history fixture. The caller supplies the independently
+/// derived complete before-state; accepting a product dump as that expectation
+/// is forbidden by the Python owner. No arbitrary key/value mutation is exposed.
+pub fn mutate_history(path: &Path, mode: &str, literal_floor: &str, expected_file: &Path) {
+    assert!(matches!(mode, "install" | "missing-later-pending"));
+    assert_eq!(path.file_name().unwrap(), "store");
+    assert_eq!(path.parent().unwrap().parent().unwrap(), Path::new("/lab"));
+    let clone = path
+        .parent()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap();
+    assert!(matches!(
+        clone,
+        "history-terminal"
+            | "history-positive"
+            | "history-strict"
+            | "history-missing-required"
+            | "history-incompatible-head"
+            | "history-corrupt-residual"
+            | "history-missing-pending"
+    ));
+    assert_eq!(expected_file.parent().unwrap(), Path::new("/lab"));
+    assert_eq!(
+        expected_file.file_name().unwrap().to_str().unwrap(),
+        format!("{clone}-{mode}-expected-native.json")
+    );
+    let metadata = std::fs::symlink_metadata(expected_file).unwrap();
+    assert!(metadata.is_file() && metadata.len() <= 1024 * 1024);
+    let expected: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(expected_file).unwrap()).unwrap();
+    assert_eq!(expected.as_object().unwrap().len(), 3);
+    assert_eq!(expected["event"], "dump-state");
+    let floor = bytes(literal_floor);
+    assert_eq!(floor.len(), 139);
+    assert_eq!(
+        hex(&floor),
+        format!(
+            "0331{0:016x}{0:016x}{0:016x}01{MANIFEST}{1:016x}c0414bfb32040948e843e06a05dd0dcab9fc136713bc302e047db1317c107954{2:016x}{HEAD}",
+            7, 27, 8
+        )
+    );
+    let (before, sequence) = raw_state(path);
+    assert_eq!(
+        serde_json::json!({"event":"dump-state","rows":before,"sequence":sequence}),
+        expected
+    );
+    let terminal = clone == "history-terminal";
+    assert_eq!(
+        (before.len(), sequence),
+        if mode == "install" {
+            if terminal { (97, 126) } else { (100, 130) }
+        } else {
+            (93, 138)
+        }
+    );
+    let manifest = before
+        .iter()
+        .find(|r| r["cf"] == "default" && r["key"] == "0101")
+        .unwrap();
+    let manifest = bytes(manifest["value"].as_str().unwrap());
+    assert_eq!(
+        &manifest[..10],
+        &bytes(if terminal {
+            "01010002000100010001"
+        } else {
+            "01010003000100010001"
+        })
+    );
+    assert_eq!(&manifest[10..26], bytes(DATASET));
+    assert_eq!(
+        &manifest[54..62],
+        &(if terminal { 2_u64 } else { 3_u64 }).to_be_bytes()
+    );
+    let db = rocksdb::DB::open_cf(
+        &rocksdb::Options::default(),
+        path,
+        ["default", "facts", "receipts"],
+    )
+    .unwrap();
+    assert_eq!(db.latest_sequence_number(), sequence);
+    let receipts = db.cf_handle("receipts").unwrap();
+    let state_key = bytes(&format!("0131{SLOT}0000000000000001"));
+    let state = db.get_cf(receipts, &state_key).unwrap().unwrap();
+    let mut batch = rocksdb::WriteBatch::default();
+    let mut removed = Vec::new();
+    if mode == "install" {
+        assert_eq!(
+            hex(&state),
+            "023100000000000000070000000000000007000000000000000001"
+        );
+        batch.put_cf(receipts, &state_key, &floor);
+        for sequence in 1..=7_u64 {
+            let key = bytes(&format!("0130{SLOT}0000000000000001{sequence:016x}"));
+            let value = db.get_cf(receipts, &key).unwrap().unwrap();
+            assert!(value.starts_with(b"bigbrotr/receipt/1\0"));
+            removed.push(serde_json::json!({"cf":"receipts","key":hex(&key),"value":hex(&value)}));
+            batch.delete_cf(receipts, key);
+        }
+    } else {
+        assert_eq!(clone, "history-missing-pending");
+        assert_eq!(state, floor);
+        let key = bytes(&format!(
+            "0121{DATASET}0000000000000000000000020000000000000001"
+        ));
+        let facts = db.cf_handle("facts").unwrap();
+        let value = db.get_cf(facts, &key).unwrap().unwrap();
+        assert_eq!(value.len(), 42);
+        assert_eq!(&value[..10], &[1, 0x21, 0, 0, 0, 0, 0, 0, 0, 1]);
+        removed.push(serde_json::json!({"cf":"facts","key":hex(&key),"value":hex(&value)}));
+        batch.delete_cf(facts, key);
+    }
+    emit(
+        serde_json::json!({"event":"synthetic-post-gc-history-fixture","phase":"before",
+        "mode":mode,"rows":before,"sequence":sequence,"floor":literal_floor,"removed":removed}),
+    );
+    let mut options = rocksdb::WriteOptions::default();
+    options.set_sync(true);
+    db.write_opt(batch, &options).unwrap();
+    drop(db);
+    let (rows, sequence) = raw_state(path);
+    emit(
+        serde_json::json!({"event":"synthetic-post-gc-history-fixture","phase":"after",
+        "mode":mode,"rows":rows,"sequence":sequence,"native":"closed"}),
+    );
+}

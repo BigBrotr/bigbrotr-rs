@@ -117,7 +117,7 @@ impl RetainedLineage {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         self.census()
-            .verify_effect_census(recovery, through, limits, permit, cancelled)
+            .verify_effect_census(recovery, through, limits, &permit, cancelled)
     }
 }
 
@@ -127,7 +127,7 @@ impl Census<'_> {
         recovery: &IngestRecovery,
         through: u64,
         limits: AdmissionLimits,
-        permit: OwnedPermit,
+        permit: &OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         if permit.request().units().items() == 0
@@ -136,6 +136,7 @@ impl Census<'_> {
         {
             return Err(AdmissionError::InsufficientReservation);
         }
+        let correction_request_limit = self.correction_request_limit()?;
         let store = &recovery.store;
         // Every index must name the exact semantic subject of its pointed fact.
         // Every reverse candidate must be the exact descriptor for that mapping.
@@ -264,6 +265,7 @@ impl Census<'_> {
                     limits,
                     &mut reads,
                     cancelled,
+                    correction_request_limit,
                 )?;
             }
             if let Some(corrects) = corrects {
@@ -314,6 +316,10 @@ impl Census<'_> {
     }
 }
 
+#[allow(
+    clippy::too_many_arguments,
+    reason = "exact retained request bound and unchanged per-call read/cancellation budgets"
+)]
 fn require_correction_ancestor(
     store: &super::IngestStore,
     mut selected: FactRef,
@@ -322,11 +328,14 @@ fn require_correction_ancestor(
     limits: AdmissionLimits,
     reads: &mut ReadBudget,
     cancelled: &AtomicBool,
+    request_limit: u64,
 ) -> Result<(), AdmissionError> {
-    // The complete spool has at most 64 requests. Positive Event batch checking
-    // admits at most one member for this minimum per request. No dynamic set is
-    // needed; the checked source order also prevents a cycle.
-    for _ in 0..64 {
+    // Positive Event batch checking admits at most one member for this minimum
+    // per request. A compacted initial epoch contributes retained science beyond
+    // the physical spool: the checked logical bound is at most N+64<=128.
+    // Existing ReadBudget bytes/read charges and cancellation remain unchanged;
+    // this traversal allocates no set, and checked source order excludes cycles.
+    for _ in 0..request_limit {
         check(cancelled)?;
         if selected == target {
             return Ok(());

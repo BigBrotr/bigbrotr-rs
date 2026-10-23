@@ -7,7 +7,8 @@ import time
 
 FLAGS = {'recover': '--successor', 'source': '--close-successor-source',
          'abandon': '--abandon-successor-acquisition', 'retire': '--retire-successor',
-         'abandon-initial': '--abandon-acquisition', 'retire-initial': '--retire-initial'}
+         'abandon-initial': '--abandon-acquisition', 'retire-initial': '--retire-initial',
+         'source-activated': '--close-activated-source', 'retire-activated': '--retire-activated-initial'}
 
 
 def argv(operation, config):

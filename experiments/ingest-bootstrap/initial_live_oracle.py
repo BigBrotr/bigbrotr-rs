@@ -137,20 +137,28 @@ def minted_plan(original, native, inputs, observed):
 
 class Science:
     """Fixed finite import recipe with complete byte-level native effects."""
-    def __init__(self, plan, prepared_rows, inputs):
+    def __init__(self, plan, prepared_rows, inputs, *, compacted_history=False):
+        assert type(compacted_history) is bool
+        self.compacted_history = compacted_history
         self.plan, self.rows, self.inputs = plan, dict(prepared_rows), copy.deepcopy(inputs)
         self.ds, self.slot = (bytes.fromhex(plan[k]) for k in ('dataset', 'producer_slot'))
         self.domains = {k: bytes.fromhex(v) for k, v in plan['domains']}
         old_manifest = bytes.fromhex(plan['previous_manifest'])
         old_visibility = old_manifest[104 + 3 * 18 + 2:104 + 4 * 18]
-        self.scope = [self.ds, 4, old_visibility, 3]
+        self.scope = [self.ds, 4, old_visibility, 1 if compacted_history else 3]
         self.lineage = self.ref(9)
-        self.sequence = 62
+        self.sequence = 117 if compacted_history else 62
         self.writes = 0
-        old = self.rows['facts', b'\x01\x20' + self.ds + be(0, 4) + be(1) + be(3)]
-        self.refs = {(1, 3): [[self.ds, 0, 1, 3], old[2:34]]}
+        scope_n = self.scope[-1]
+        old = self.rows['facts', b'\x01\x20' + self.ds + be(0, 4) + be(1) + be(scope_n)]
+        self.refs = {(1, scope_n): [[self.ds, 0, 1, scope_n], old[2:34]]}
+        if compacted_history:
+            assert len(prepared_rows) == 91 and len(inputs) == 7
+            assert old_visibility.hex() == '0e2a2cc69f18bd685ff795bd57faf3c0'
+            assert old[2:34].hex() == '2885c061c7e1e4c3db59da67b32540440f465827ddc8932b37719fec8d92d204'
         self.requests, self.receipts = {}, {}
-        assert ('default', b'\x01\x06' + self.ds + EVENT_ID) not in self.rows
+        if not compacted_history:
+            assert ('default', b'\x01\x06' + self.ds + EVENT_ID) not in self.rows
 
     def ref(self, kind, ordinal=1):
         assert type(ordinal) is int and 1 <= ordinal <= 3
@@ -215,9 +223,10 @@ class Science:
                 format_version=1, source_dataset_id=None, source_artifact_digest=CORPUS_DIGEST), 900_000_001)
             original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, 2, 1], 'admit-evidence', 1,
                 [1, self.scope, [entry]]])
-            result = self.commit(1, original, [1], [(1, 3), (2, 1)])
-            assert (len(self.rows), self.sequence) == (58, 70)
+            result = self.commit(1, original, [1], [(1, self.scope[-1]), (2, 1)])
+            assert (len(self.rows), self.sequence) == ((97, 125) if self.compacted_history else (58, 70))
             return result
+        assert not self.compacted_history, 'the compacted-history seed appends one dictionary only'
         if stage == 'same-request':
             return self.receipts[2]
         assert stage in ('new-event', 'same-id-alternate-signature')
@@ -287,6 +296,8 @@ def admitted(before, after, science, n, control, window):
         reserved_at_us=request['reserved_at_us'], relay_endpoint_id=None, relay_access_scope_id=None,
         relay_enrollment_generation=None, relay_route_id=None, acquisition_scope_id=None,
         acquisition_job_id=None, xmin=request['xmin'])
+    if science.compacted_history:
+        wanted_request.update(progress_event_ordinal=None,progress_input_sha256=None,progress_request_id=None,progress_wire_sequence=None)
     wanted_outcome = dict(producer_slot_id=bytea(science.slot), producer_epoch=2, request_sequence=n,
         dataset_id=bytea(science.ds), request_digest=bytea(sha(input_bytes)), manifest_sha256=manifest,
         outcome_kind=2 if n == 3 else 1, policy_epoch=1, outcome_bytes=bytea(receipt),

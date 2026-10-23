@@ -21,6 +21,7 @@ pub(super) fn is_mode(mode: &str) -> bool {
         || matches!(
             mode,
             "successor-live-zero"
+                | "successor-live-compacted-history-seed"
                 | "successor-live-rejected"
                 | "successor-live-guards"
                 | "successor-live-normal"
@@ -209,9 +210,13 @@ pub(super) async fn run(
             "commit_started":true,"error":null}));
         probe.snapshot("live-ingest-renewed").await;
     }
+    if mode == "successor-live-compacted-history-seed" {
+        compacted_history_dictionary(&probe, &mut owner, &mut writer, &spec).await;
+    }
     if !matches!(
         mode,
         "successor-live-zero"
+            | "successor-live-compacted-history-seed"
             | "successor-live-rejected"
             | "successor-live-already-durable"
             | "successor-live-acquisition-claims"
@@ -234,6 +239,13 @@ pub(super) async fn run(
         "writer":false,"admission":mode != "successor-live-zero"}));
     drop(probe);
     crate::ingest_closing::join(observer_driver, false).await;
+    if mode == "successor-live-compacted-history-seed" {
+        emit(
+            serde_json::json!({"event":"compacted-history-seed-complete",
+            "native":"closed","control":"released-and-joined","observer":"joined",
+            "requests":1,"events":0}),
+        );
+    }
 }
 
 // The count and zero-claim fixtures use this failure-aware ending. Every operation error
@@ -587,6 +599,10 @@ async fn reject(
 
 fn first_dictionary(writer: &LiveInitialWriter, previous: &InitialRegistration) -> EvidenceIntent {
     let scope = public_scope(previous);
+    dictionary_for_scope(writer, scope)
+}
+
+fn dictionary_for_scope(writer: &LiveInitialWriter, scope: QualifiedRef) -> EvidenceIntent {
     let lineage = QualifiedRef {
         dictionary_kind: DictionaryKind::DatasetLineage,
         allocation_domain: writer
@@ -620,6 +636,66 @@ fn first_dictionary(writer: &LiveInitialWriter, previous: &InitialRegistration) 
         },
     )
     .unwrap()
+}
+
+async fn compacted_history_dictionary(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    writer: &mut LiveInitialWriter,
+    previous: &InitialRegistration,
+) {
+    assert!(probe.compacted_history_seed);
+    let mut scope = public_scope(previous);
+    assert_eq!(
+        hex(scope.dataset_id.as_bytes()),
+        "309d9507c5b5c39e9947e1406482d519"
+    );
+    assert_eq!(
+        hex(scope.allocation_domain.as_bytes()),
+        "0e2a2cc69f18bd685ff795bd57faf3c0"
+    );
+    scope.ordinal = Ordinal::new(1).unwrap();
+    // The dfbb ACK seed has public visibility at1:1; the legacy seed's3
+    // coordinate is private here. Bind the frozen source/index bytes before
+    // appending, independently of what this new admission returns.
+    let (rows, sequence) = raw_state(&probe.path);
+    assert_eq!((rows.len(), sequence), (91, 117));
+    let fact_key = "0120309d9507c5b5c39e9947e1406482d5190000000000000000000000010000000000000001";
+    let fact = rows
+        .iter()
+        .find(|r| r["cf"] == "facts" && r["key"] == fact_key)
+        .unwrap();
+    assert!(
+        fact["value"]
+            .as_str()
+            .unwrap()
+            .starts_with("01202885c061c7e1e4c3db59da67b32540440f465827ddc8932b37719fec8d92d204")
+    );
+    let index_key =
+        "0104309d9507c5b5c39e9947e1406482d51900040e2a2cc69f18bd685ff795bd57faf3c00000000000000001";
+    let index = rows
+        .iter()
+        .find(|r| r["cf"] == "default" && r["key"] == index_key)
+        .unwrap();
+    assert_eq!(
+        index["value"],
+        "0104309d9507c5b5c39e9947e1406482d51900000000000000000000000100000000000000012885c061c7e1e4c3db59da67b32540440f465827ddc8932b37719fec8d92d204"
+    );
+    let intent = dictionary_for_scope(writer, scope);
+    let limits = AdmissionLimits {
+        max_outstanding_requests: 2,
+        max_dependencies: 256,
+        ..AdmissionLimits::default()
+    };
+    let receipt = append_first_dictionary(probe, owner, writer, &intent, limits)
+        .await
+        .unwrap();
+    emit(
+        serde_json::json!({"event":"live-receipt","stage":"dictionary","request":1,
+        "receipt":hex(&receipt.receipt().encode_persistent(65536).unwrap())}),
+    );
+    drop(receipt);
+    probe.snapshot("dictionary").await;
 }
 
 async fn append_first_dictionary(

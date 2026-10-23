@@ -250,7 +250,7 @@ fn complete_prefix_refuses_partial_overlap_missing_header_and_range_relabeling()
 fn only_complete_terminal_history_is_a_loader_prerequisite() {
     for epoch in [2, 3, 255] {
         assert_eq!(
-            require_terminal(SuccessorHistoryState::Terminal, epoch, epoch, epoch),
+            require_terminal(SuccessorHistoryState::Terminal, epoch, epoch, epoch, 0),
             Ok(())
         );
     }
@@ -264,7 +264,7 @@ fn only_complete_terminal_history_is_a_loader_prerequisite() {
         (SuccessorHistoryState::Terminal, 256, 256, 256),
     ] {
         assert_eq!(
-            require_terminal(state, native, registered, through),
+            require_terminal(state, native, registered, through, 0),
             Err(Error::InvalidInput)
         );
     }
@@ -272,6 +272,24 @@ fn only_complete_terminal_history_is_a_loader_prerequisite() {
     // itself is absent. An existing consumer with any missing LEFT JOIN refuses.
     assert_eq!(require_absent(false), Ok(()));
     assert_eq!(require_absent(true), Err(Error::InvalidMetadata));
+}
+
+#[test]
+fn compacted_history_is_not_an_archive_frontier_prerequisite() {
+    for epoch in [2, 3, 255] {
+        for compacted in [1, 7, 64] {
+            assert_eq!(
+                require_terminal(
+                    SuccessorHistoryState::Terminal,
+                    epoch,
+                    epoch,
+                    epoch,
+                    compacted
+                ),
+                Err(Error::InvalidInput)
+            );
+        }
+    }
 }
 
 #[test]

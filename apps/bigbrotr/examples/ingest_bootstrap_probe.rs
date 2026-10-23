@@ -883,6 +883,15 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
+    if args.len() == 6 && args[1] == "compacted-history-fixture" {
+        ingest_compacted_fixture::mutate_history(
+            Path::new(&args[2]),
+            &args[3],
+            &args[4],
+            Path::new(&args[5]),
+        );
+        return;
+    }
     if args.len() == 5 && args[1] == "compacted-reader-fixture" {
         ingest_compacted_fixture::mutate(Path::new(&args[2]), &args[3], &args[4]);
         return;
@@ -942,6 +951,7 @@ fn main() {
         } else if empty_lock
             || successor_gate
             || args[1] == "successor-lineage-history"
+            || args[1] == "successor-lineage-compacted-history"
             || args[1] == "successor-archive-attempt-cap"
             || matches!(
                 args[1].as_str(),
@@ -1075,6 +1085,13 @@ fn main() {
                 .await;
             } else if args[1] == "successor-lineage-history" {
                 ingest_successor_history::run(
+                    config,
+                    Path::new(&args[4]),
+                    args[5].parse().expect("explicit metadata byte capacity"),
+                )
+                .await;
+            } else if args[1] == "successor-lineage-compacted-history" {
+                ingest_successor_history::run_compacted(
                     config,
                     Path::new(&args[4]),
                     args[5].parse().expect("explicit metadata byte capacity"),

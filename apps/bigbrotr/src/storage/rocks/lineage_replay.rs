@@ -5,7 +5,7 @@ use super::producer_recovery::{RecoveryContext, ResolvedProducerRequest};
 use super::source_closure::Prefix;
 use super::{
     AdmissionError, BootstrapError, IngestRecovery, PendingBatch, PendingError, PendingReadLimits,
-    ProducerRecoveryError, ProducerRecoveryLimits,
+    ProducerRecoveryError, ProducerRecoveryLimits, VerifiedCompactedPrefix,
 };
 use crate::{runtime::OwnedPermit, storage::rocks::succession::PredecessorTerminalKind};
 use bigbrotr_model::{
@@ -39,6 +39,20 @@ pub struct LineageEpochSummary {
     pub event_request_mask: u64,
 }
 
+/// Canonical retained initial outcomes, not original-input replay. In
+/// particular, no Event-request mask can be reconstructed from deleted inputs.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CompactedInitialSummary {
+    pub compacted_requests: u64,
+    pub last_complete_sequence: u64,
+    pub digest: [u8; 32],
+}
+
+enum EpochResolution {
+    CompactedInitial,
+    Original(Prefix),
+}
+
 pub struct LineageResolution<'a> {
     lineage: &'a RetainedLineage,
     recovery: &'a IngestRecovery,
@@ -46,7 +60,7 @@ pub struct LineageResolution<'a> {
     through: u64,
     head_kind: Option<RetainedTerminalKind>,
     epoch: u64,
-    prefix: Prefix,
+    prefix: EpochResolution,
     completed: Option<LineageEpochSummary>,
     recovery_owner: Option<&'a NativeSuccessorRecovery>,
 }
@@ -68,7 +82,19 @@ impl RetainedLineage {
         head_kind: Option<PredecessorTerminalKind>,
         cancelled: &'a AtomicBool,
     ) -> Result<LineageResolution<'a>, BootstrapError> {
-        self.resolution_in(recovery, through_epoch, head_kind, cancelled, None)
+        self.resolution_in(recovery, through_epoch, head_kind, cancelled, None, false)
+    }
+
+    /// Only the connected historical owner can select the pending compacted
+    /// step. The ordinary public cursor and recovery/retirement stay strict.
+    pub(in crate::storage) fn compacted_resolution<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        through_epoch: u64,
+        head_kind: Option<PredecessorTerminalKind>,
+        cancelled: &'a AtomicBool,
+    ) -> Result<LineageResolution<'a>, BootstrapError> {
+        self.resolution_in(recovery, through_epoch, head_kind, cancelled, None, true)
     }
 
     fn resolution_in<'a>(
@@ -78,10 +104,13 @@ impl RetainedLineage {
         head_kind: Option<PredecessorTerminalKind>,
         cancelled: &'a AtomicBool,
         recovery_owner: Option<&'a NativeSuccessorRecovery>,
+        compacted: bool,
     ) -> Result<LineageResolution<'a>, BootstrapError> {
-        // Structural compacted inspection is not original replay. A separate
-        // connected ancestor proof step must be wired before this can advance.
-        if self.has_compacted_initial() {
+        // This reader always completes a later original epoch. Initial-only
+        // history keeps its separate proof and transaction contracts.
+        if self.has_compacted_initial() != compacted
+            || (compacted && (through_epoch < 2 || recovery_owner.is_some()))
+        {
             return Err(BootstrapError::StateMismatch);
         }
         if let Some(owner) = recovery_owner {
@@ -115,12 +144,16 @@ impl RetainedLineage {
                 PredecessorTerminalKind::UnactivatedEmpty => RetainedTerminalKind::UnactivatedEmpty,
             }),
             epoch: 1,
-            prefix: Prefix::lineage(
-                *first.manifest(),
-                self.producer_slot_id(),
-                first.issued_through(),
-                digest_start(self, 1, RetainedTerminalKind::Initial)?,
-            ),
+            prefix: if compacted {
+                EpochResolution::CompactedInitial
+            } else {
+                EpochResolution::Original(Prefix::lineage(
+                    *first.manifest(),
+                    self.producer_slot_id(),
+                    first.issued_through(),
+                    digest_start(self, 1, RetainedTerminalKind::Initial)?,
+                ))
+            },
             completed: None,
             recovery_owner,
         })
@@ -145,6 +178,7 @@ impl<'a> LineageResolution<'a> {
             Some(PredecessorTerminalKind::Activated),
             cancelled,
             Some(owner),
+            false,
         )
     }
     pub(super) fn validate(&self) -> Result<(), BootstrapError> {
@@ -162,12 +196,58 @@ impl<'a> LineageResolution<'a> {
     }
     pub fn next_request(&self) -> Option<ProducerRequestId> {
         let entry = self.lineage.entry(self.current_epoch()?)?;
-        let next = self.prefix.requests().checked_add(1)?;
+        let EpochResolution::Original(prefix) = &self.prefix else {
+            return None;
+        };
+        let next = prefix.requests().checked_add(1)?;
         (next <= entry.issued_through()).then(|| ProducerRequestId {
             producer_slot_id: self.lineage.producer_slot_id(),
             producer_epoch: ProducerEpoch::new(self.epoch).expect("inspected epoch"),
             request_sequence: RequestSequence::new(next).expect("positive next request"),
         })
+    }
+
+    pub(in crate::storage) fn needs_compacted_initial(&self) -> bool {
+        self.epoch == 1 && matches!(self.prefix, EpochResolution::CompactedInitial)
+    }
+
+    /// The connected owner calls this only after confirmed SQL read completion.
+    /// All fallible validation and the final authority callback precede advance.
+    pub(in crate::storage) fn accept_compacted_initial(
+        &mut self,
+        verified: &VerifiedCompactedPrefix<'_>,
+        mut authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<CompactedInitialSummary, AdmissionError> {
+        if !self.needs_compacted_initial() || !verified.matches_lineage(self.lineage) {
+            return Err(AdmissionError::StateMismatch);
+        }
+        self.validate()?;
+        verified.validate(self.recovery, self.cancelled)?;
+        let floor = verified.floor().fields();
+        let summary = CompactedInitialSummary {
+            compacted_requests: floor.issued_through,
+            last_complete_sequence: floor.source_through,
+            digest: floor.closure_digest,
+        };
+        let entry = self.lineage.entry(2).ok_or(AdmissionError::StateMismatch)?;
+        let kind = entry
+            .terminal_claim()
+            .map(|value| value.0)
+            .or(self.head_kind)
+            .ok_or(AdmissionError::StateMismatch)?;
+        let prefix = Prefix::lineage(
+            *entry.manifest(),
+            self.lineage.producer_slot_id(),
+            entry.issued_through(),
+            digest_start(self.lineage, 2, kind)?,
+        );
+        authority()?;
+        if self.cancelled.load(std::sync::atomic::Ordering::Relaxed) {
+            return Err(AdmissionError::AuthorityUnavailable);
+        }
+        self.prefix = EpochResolution::Original(prefix);
+        self.epoch = 2;
+        Ok(summary)
     }
 
     /// Resolving does not advance the prefix. The connected owner can compare
@@ -207,7 +287,7 @@ impl<'a> LineageResolution<'a> {
 
     pub fn record(&mut self, resolved: &ResolvedProducerRequest) -> Result<(), BootstrapError> {
         let prefix = self.preview(resolved)?;
-        self.prefix = prefix;
+        self.prefix = EpochResolution::Original(prefix);
         Ok(())
     }
 
@@ -222,7 +302,10 @@ impl<'a> LineageResolution<'a> {
             return Err(BootstrapError::StateMismatch);
         }
         let epoch = self.epoch;
-        let mut prefix = self.prefix.clone();
+        let EpochResolution::Original(prefix) = &self.prefix else {
+            return Err(BootstrapError::StateMismatch);
+        };
+        let mut prefix = prefix.clone();
         prefix.record_with_frontier(resolved, |source| {
             source.owner_epoch.get() < epoch
                 && self
@@ -234,11 +317,14 @@ impl<'a> LineageResolution<'a> {
     }
 
     pub(super) fn accept_preview(&mut self, prefix: Prefix) {
-        self.prefix = prefix;
+        self.prefix = EpochResolution::Original(prefix);
     }
 
     pub fn finish_epoch(&mut self) -> Result<LineageEpochSummary, BootstrapError> {
         self.validate()?;
+        let EpochResolution::Original(prefix) = &self.prefix else {
+            return Err(BootstrapError::StateMismatch);
+        };
         let epoch = self.current_epoch().ok_or(BootstrapError::StateMismatch)?;
         let entry = self
             .lineage
@@ -248,10 +334,10 @@ impl<'a> LineageResolution<'a> {
             Some((kind, digest)) => (kind, Some(digest)),
             None => (self.head_kind.ok_or(BootstrapError::StateMismatch)?, None),
         };
-        let digest = self.prefix.completed_digest();
+        let digest = prefix.completed_digest();
         if !entry.is_closing()
-            || self.prefix.requests() != entry.issued_through()
-            || self.prefix.source_through() != entry.source_through()
+            || prefix.requests() != entry.issued_through()
+            || prefix.source_through() != entry.source_through()
             || expected.is_some_and(|expected| digest != expected)
         {
             return Err(BootstrapError::StateMismatch);
@@ -259,10 +345,10 @@ impl<'a> LineageResolution<'a> {
         let summary = LineageEpochSummary {
             epoch,
             terminal_kind: kind,
-            resolved_requests: self.prefix.requests(),
-            last_complete_sequence: self.prefix.source_through(),
+            resolved_requests: prefix.requests(),
+            last_complete_sequence: prefix.source_through(),
             digest,
-            event_request_mask: self.prefix.event_requests(),
+            event_request_mask: prefix.event_requests(),
         };
         // Form the next state before advancing; every refused operation leaves
         // the current frontier and its exact next request unchanged.
@@ -288,7 +374,7 @@ impl<'a> LineageResolution<'a> {
         };
         self.epoch = next;
         if let Some(prefix) = prefix {
-            self.prefix = prefix;
+            self.prefix = EpochResolution::Original(prefix);
         }
         self.completed = Some(summary);
         Ok(summary)
@@ -336,6 +422,16 @@ impl<'a> LineageResolution<'a> {
 }
 
 impl ResolvedLineage<'_> {
+    pub fn compacted_initial_requests(&self) -> u64 {
+        if self.lineage.has_compacted_initial() {
+            self.lineage
+                .entry(1)
+                .expect("checked initial ancestor")
+                .issued_through()
+        } else {
+            0
+        }
+    }
     pub(super) fn recovery(&self) -> &IngestRecovery {
         self.recovery
     }
@@ -378,14 +474,16 @@ impl ResolvedLineage<'_> {
                 PendingError::InsufficientReservation,
             ));
         }
-        if self.verified_through()
-            != self
-                .lineage
-                .native_head()
-                .manifest()
-                .identity()
-                .owner_epoch
-                .get()
+        // Archive publication has not yet adapted its compacted proof boundary.
+        if self.lineage.has_compacted_initial()
+            || self.verified_through()
+                != self
+                    .lineage
+                    .native_head()
+                    .manifest()
+                    .identity()
+                    .owner_epoch
+                    .get()
             || self.lineage.pending_target().is_some()
         {
             return Err(LineagePendingError::Proof(BootstrapError::StateMismatch));

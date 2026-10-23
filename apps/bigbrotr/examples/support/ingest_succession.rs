@@ -38,6 +38,7 @@ struct Probe {
     budget: ResourceBudget,
     observer: tokio_postgres::Client,
     cancelled: AtomicBool,
+    compacted_history_seed: bool,
 }
 
 struct Attempt {
@@ -171,6 +172,7 @@ pub async fn run(
                 budget,
                 observer,
                 cancelled: AtomicBool::new(false),
+                compacted_history_seed: false,
             },
             recovery,
             observer_driver,
@@ -190,6 +192,7 @@ pub async fn run(
                 budget,
                 observer,
                 cancelled: AtomicBool::new(false),
+                compacted_history_seed: false,
             },
             recovery,
             observer_driver,
@@ -214,6 +217,7 @@ pub async fn run(
         budget,
         observer,
         cancelled: AtomicBool::new(false),
+        compacted_history_seed: mode == "successor-live-compacted-history-seed",
     };
     // Reserve the same worst-case decode/replay envelope as installed recovery
     // before the first claim. Resolve one original at a time, never a vector.
@@ -671,10 +675,28 @@ impl Probe {
         ))
         .await
         .unwrap();
-        assert_eq!(closed.issued_through(), 4, "frozen signed retired seed");
-        assert_eq!(closed.reserved_through(), 4);
+        let (requests, source_cut) = if self.compacted_history_seed {
+            assert_eq!(
+                hex(spec.dataset_id.as_bytes()),
+                "309d9507c5b5c39e9947e1406482d519"
+            );
+            assert_eq!(
+                hex(spec.producer_slot_id.as_bytes()),
+                "36a0253e6d94c18099f6c4dae9b7e040"
+            );
+            assert_eq!(spec.outstanding_request_limit, 2);
+            (7, 27)
+        } else {
+            (4, 12)
+        };
+        assert_eq!(
+            closed.issued_through(),
+            requests,
+            "frozen signed retired seed"
+        );
+        assert_eq!(closed.reserved_through(), requests);
         let mut prefix = closed.source_resolution(recovery).unwrap();
-        for sequence in 1..=4 {
+        for sequence in 1..=requests {
             bounded(owner.refresh(|doc, digest| self.validate(doc, digest)))
                 .await
                 .unwrap();
@@ -703,7 +725,7 @@ impl Probe {
             drop(resolved);
         }
         let source = prefix.finish().unwrap();
-        assert_eq!(source.last_complete_sequence(), 12);
+        assert_eq!(source.last_complete_sequence(), source_cut);
         let policy = bounded(owner.refresh(|doc, digest| self.validate(doc, digest)))
             .await
             .unwrap();

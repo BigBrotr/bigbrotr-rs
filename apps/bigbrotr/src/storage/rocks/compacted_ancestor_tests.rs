@@ -9,6 +9,9 @@ use crate::storage::rocks::{
     },
 };
 
+#[path = "compacted_history_tests.rs"]
+mod compacted_history_tests;
+
 fn floor_bytes(f: &Fixture) -> [u8; 139] {
     let mut bytes = [0; 139];
     bytes[..2].copy_from_slice(&[3, 0x31]);

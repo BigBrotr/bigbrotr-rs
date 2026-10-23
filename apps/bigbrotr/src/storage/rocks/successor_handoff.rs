@@ -244,6 +244,9 @@ impl SuccessorHandoff {
         candidate_role: Option<[u8; 16]>,
         cancelled: &AtomicBool,
     ) -> Result<Self, BootstrapError> {
+        if proof.lineage().has_compacted_initial() {
+            return Err(BootstrapError::StateMismatch);
+        }
         proof.validate(cancelled)?;
         let lineage = proof.lineage();
         if proof.verified_through()

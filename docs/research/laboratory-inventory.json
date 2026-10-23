@@ -62235,6 +62235,38 @@
         "report": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/installed-compacted-reader/result.json",
         "replay": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-7de7066/raw-replay.json",
         "preserved": "All five original flags true;4clones/seven quarantined original inputs/source/ELFs/logs/snapshots retained"
+      },
+      "compacted_successor_history_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-successor-history-20261023",
+        "branch": "work/compacted-successor-history",
+        "base": "57427260a4c73024c6774371343baee78ac0d991",
+        "owner": "compacted_reader_review",
+        "model": "gpt-6-astra/xhigh; verified existing session continuity",
+        "state": "CLEAN source frozen; root independent source review complete, compilation/runtime NOT_RUN",
+        "scope": "Explicit read-only compacted SuccessorHistory, shared sealed canonical PG stream, separate compacted count and early guards at unadapted positive transition consumers; focused native tests. Root owns runtime/probe integration.",
+        "preserved": "Original detached727 ancestor and538 scanner worktrees retained; no cleanup",
+        "commit": "c97459b65ef1f3b96942e5a2adbde618e5b19a9b",
+        "tree": "2d07e4b11e965ccd4ab12306bb46dec703620b33",
+        "author_receipt": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-history-source-v1.json",
+          "sha256": "a1d5e5aa885386895887fc8950a88be7e573815572410069ae2d63f1c39bcbdf"
+        }
+      },
+      "compacted_history_fixture_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-history-fixture-20261023",
+        "branch": "work/compacted-history-fixture",
+        "base": "57427260a4c73024c6774371343baee78ac0d991",
+        "owner": "compacted_reader_fixture",
+        "model": "gpt-6-astra/xhigh; verified existing session continuity",
+        "state": "CLEAN source frozen; integrated delta independently reviewed; new build/runtime NOT_RUN",
+        "scope": "Extend existing orchestration and independent oracle from exact dfbb8dc ACK seed through authentic terminal2/prepared3 before synthetic floor. Root owns runtime, bootstrap dispatch/history probe and native build profile.",
+        "preserved": "Existing seed files and detached author worktrees retained; no cleanup or engine activity",
+        "commit": "ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f",
+        "tree": "98e90934278c253ac7a238f06d78d90da667dd6a",
+        "author_receipt": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fixture-source-v1.json",
+          "sha256": "afeb51ea49350981e154d927f32c3cdd31b0627c535796c92c9096008e2aa281"
+        }
       }
     }
   },

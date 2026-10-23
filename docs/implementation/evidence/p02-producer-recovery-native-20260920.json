@@ -43794,7 +43794,7 @@
               "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
               "checks": "Independent source review, formatting, exact5be8449 build/Clippy/components and installed13commands/rawreplay PASS"
             },
-            "next": "Implement explicit connected SuccessorHistory compacted-initial completion and shared retained PG stream with exact compacted/original counts and strict guards at all unadapted capability constructors; then initial handoff, activated recovery and live frontier before any GC",
+            "next": "Finish fixture shared-helper review and frozen reconciliation, commit coherent source, run existing producer-floor and installed_compacted_reader --history with independent raw replay.",
             "input_scanner": {
               "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
               "source_review": {
@@ -43910,7 +43910,56 @@
                 "scope": "CLI/probe compile, Clippy and124components including six new ancestor controls; all26mandatory names present. Full mixed-input/current-head native census and strict unadapted-consumer refusal exercised. Connected positive compacted successor history, GC, restore and capacity NOT_RUN. Installed current-reader regression separately PASS; see installed_reader_attempts7de7066.",
                 "custody": "Both owned containers freshly verified exited0/PID0/noOOM; inventory_changed empty"
               },
-              "installed_qualification": "See installed_reader_attempts source7de7066 above"
+              "installed_qualification": "See installed_reader_attempts source7de7066 above",
+              "open_review_finding": {
+                "source": "7de70661be56ceb0a8a9b7561db6b022583609ba",
+                "owner": "apps/bigbrotr/src/storage/rocks/lineage_effects.rs::require_correction_ancestor",
+                "finding": "Traversal has a literal64-iteration cap justified by original spool cardinality. Mixed compacted input accounting permits initial floor N<=64 plus up to64 required later originals independently, so a valid retained correction ancestry may exceed64. This is possible conservative refusal, not false acceptance. Existing124tests do not exercise the >64 mixed lineage boundary.",
+                "status": "CONFIRMED at7de7066; bounded correction independently source-reviewed in c97459b; focused native runtime NOT_RUN",
+                "required": "Prove an independent retained logical64 invariant or derive a finite bound from actual retained issued counts, retain admission read/cancellation budgets and physical64file/32MiB caps, add discriminating boundary coverage if changed.",
+                "proposed_disposition": "Checked retained issued-count sum capped at N+64, preserving physical/read/cancellation bounds; six new native compacted-history tests include68 logical requests/64 physical originals and65-vertex correction chain with disconnected-chain refusal. Exact source/review under connected_history; qualification pending."
+              }
+            },
+            "connected_history": {
+              "status": "INTEGRATED SOURCE REVIEWED; local exact-source qualification next, runtime NOT_RUN",
+              "author_commit": "c97459b65ef1f3b96942e5a2adbde618e5b19a9b",
+              "author_tree": "2d07e4b11e965ccd4ab12306bb46dec703620b33",
+              "author_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-history-source-v1.json",
+                "sha256": "a1d5e5aa885386895887fc8950a88be7e573815572410069ae2d63f1c39bcbdf"
+              },
+              "root_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-history-root-review-v1.json",
+                "sha256": "76d306eb3187f178e1fd0b5c88618a3c6698e704fe09d40d6ae3cf34a46f5578"
+              },
+              "probe_independent_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-probe-independent-review-v1.json",
+                "sha256": "066ed461f6791a0f7ce5782f80abb2753a3916088713e37743fef33162950bf6"
+              },
+              "scope": "Explicit compacted initial history completion under existing historical SQL authority; separate compacted count and unchanged original replay for later epochs. Full current-head census and exact retained typed epoch1 head. Unadapted capability consumers refuse before exposing writer, frontier, handoff or Archive authority. No GC operation.",
+              "integration_note": "Exact19 product-author files except two documented comment corrections; exact13 fixture-author files; root probe and runner identities match independent review. Both author worktrees clean and preserved.",
+              "checks": "Independent source reviews, exact author reconciliation, Rustfmt25files, changed Python AST10files, artifact/handoff documentation and diff checks PASS; build/Clippy/components/connected runtime NOT_RUN",
+              "next": "Freeze coherent local main commit; existing producer-floor build, then installed_compacted_reader --history and raw replay under python3 -E -S.",
+              "fixture_author_commit": "ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f",
+              "fixture_author_tree": "98e90934278c253ac7a238f06d78d90da667dd6a",
+              "fixture_author_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fixture-source-v1.json",
+                "sha256": "afeb51ea49350981e154d927f32c3cdd31b0627c535796c92c9096008e2aa281"
+              },
+              "fixture_root_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fixture-root-review-v1.json",
+                "sha256": "6ad437e9fa663db7205bb7c208f49e16f2ec1cf350f2292ff452a850b5ae90f8"
+              },
+              "fixture_shared_independent_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fixture-shared-independent-review-v1.json",
+                "sha256": "02407566eaab513d886da8375380080e1848a5019914131e58de9b4b5fcd5b07"
+              },
+              "matrix": {
+                "clones": 7,
+                "commands": 50,
+                "negative_capture_controls": 454,
+                "status": "NOT_RUN"
+              }
             }
           }
         }

@@ -47,6 +47,11 @@ impl NativeSuccessorActivation {
             .parts
             .as_ref()
             .ok_or(BootstrapError::AuthorityUnavailable)?;
+        // Live input staging/frontier transfer has not adopted the floor yet.
+        // Refuse at the prepared gate, before the connected activation COMMIT.
+        if lineage.has_compacted_initial() {
+            return Err(BootstrapError::StateMismatch);
+        }
         candidate.require_prepared_handoff(lineage, handoff, cancelled)
     }
     /// Called only after the distinct activation COMMIT and the final actual

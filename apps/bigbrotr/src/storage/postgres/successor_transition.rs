@@ -541,7 +541,8 @@ impl ControlSession {
         let history = proof.history();
         self.check_successor_plan_cancellation(input.cancelled)?;
         let summary = proof.last_epoch();
-        if history.state() != SuccessorHistoryState::Terminal
+        if proof.compacted_initial_requests() != 0
+            || history.state() != SuccessorHistoryState::Terminal
             || history.native_epoch() < 3
             || proof.verified_through() != history.native_epoch()
             || summary.terminal_kind != RetainedTerminalKind::UnactivatedEmpty

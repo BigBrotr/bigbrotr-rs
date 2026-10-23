@@ -361,6 +361,7 @@ impl ControlSession {
             proof.history().native_epoch(),
             proof.history().registered_epoch(),
             proof.verified_through(),
+            proof.compacted_initial_requests(),
         )?;
         let identity = coordinator.identity();
         if identity.dataset() != self.request.dataset
@@ -411,8 +412,12 @@ fn require_terminal(
     native: u64,
     registered: u64,
     through: u64,
+    compacted_initial: u64,
 ) -> Result<(), Error> {
-    if state != SuccessorHistoryState::Terminal
+    // Archive input replay and frontier observation retain their original-only
+    // prerequisite until their compacted-history boundary is explicitly wired.
+    if compacted_initial != 0
+        || state != SuccessorHistoryState::Terminal
         || native != registered
         || native != through
         || !(2..=255).contains(&native)

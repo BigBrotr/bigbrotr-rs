@@ -9,7 +9,7 @@ use bigbrotr::storage::{
     rocks::{
         store::{
             AdmissionLimits, IngestRecovery, LineageEpochSummary, ProducerRecoveryLimits,
-            RetainedRequestInput, RetainedTerminalKind,
+            RetainedRequestInput, RetainedTerminalKind, compacted_outcome_data_bytes,
         },
         succession::{LINEAGE_ENTRY_BYTES, LINEAGE_SCRATCH_BYTES, MAX_LINEAGE_METADATA_BYTES},
     },
@@ -80,6 +80,14 @@ impl Backend {
 }
 
 pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64) {
+    run_profile(config, config_file, metadata_bytes, false).await;
+}
+
+pub async fn run_compacted(config: Config, config_file: &Path, metadata_bytes: u64) {
+    run_profile(config, config_file, metadata_bytes, true).await;
+}
+
+async fn run_profile(config: Config, config_file: &Path, metadata_bytes: u64, compacted: bool) {
     assert!(metadata_bytes <= MAX_LINEAGE_METADATA_BYTES);
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
@@ -121,6 +129,12 @@ pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64) {
     // inspection decides that. Preflight the largest live overlap before claim.
     drop(replay_grants(&budget));
     drop(effect_grant(&budget));
+    if compacted {
+        drop(compacted_grant(&budget));
+        emit(serde_json::json!({"event":"lineage-history-profile",
+            "profile":"compacted-initial",
+            "compacted_outcome_bytes":compacted_outcome_data_bytes(recovery_limits().event).unwrap()}));
+    }
     emit(
         serde_json::json!({"event":"lineage-history-resources","metadata_bytes":metadata_bytes,
         "metadata_scratch_bytes":LINEAGE_SCRATCH_BYTES,"metadata_entry_bytes":LINEAGE_ENTRY_BYTES,
@@ -197,6 +211,7 @@ pub async fn run(config: Config, config_file: &Path, metadata_bytes: u64) {
             custody.owner.as_mut().unwrap(),
             custody.native.as_ref().unwrap(),
             metadata,
+            compacted,
         )
         .await;
     emit(
@@ -350,9 +365,13 @@ impl Probe {
         owner: &mut ControlSession,
         recovery: &IngestRecovery,
         metadata: OwnedPermit,
+        compacted: bool,
     ) -> Result<(), Failure> {
-        let history = self.load(owner, recovery, metadata).await?;
-        self.replay(owner, recovery, &history).await?;
+        let history = self
+            .load_profile(owner, recovery, metadata, compacted)
+            .await?;
+        self.replay_profile(owner, recovery, &history, compacted)
+            .await?;
         Ok(())
     }
     async fn load(
@@ -361,16 +380,39 @@ impl Probe {
         recovery: &IngestRecovery,
         metadata: OwnedPermit,
     ) -> Result<SuccessorHistory, Failure> {
+        self.load_profile(owner, recovery, metadata, false).await
+    }
+    async fn load_profile(
+        &self,
+        owner: &mut ControlSession,
+        recovery: &IngestRecovery,
+        metadata: OwnedPermit,
+        compacted: bool,
+    ) -> Result<SuccessorHistory, Failure> {
         self.snapshot("before-read").await;
-        let history = self
-            .bounded(
+        let history = if compacted {
+            self.bounded(
+                "inspect-compacted",
+                owner.inspect_compacted_successor_history(
+                    recovery,
+                    self.request(),
+                    recovery_limits().event,
+                    metadata,
+                    effect_grant(&self.budget),
+                    |d, h| self.validate(d, h),
+                ),
+            )
+            .await
+        } else {
+            self.bounded(
                 "inspect",
                 owner.inspect_successor_history(recovery, self.request(), metadata, |d, h| {
                     self.validate(d, h)
                 }),
             )
             .await
-            .map_err(|e| Failure::at("inspect", None, None, e))?;
+        }
+        .map_err(|e| Failure::at("inspect", None, None, e))?;
         let lineage = history.lineage();
         let profile = lineage.profile();
         emit(
@@ -394,9 +436,64 @@ impl Probe {
         recovery: &'a IngestRecovery,
         history: &'a SuccessorHistory,
     ) -> Result<VerifiedSuccessorHistory<'a>, Failure> {
+        self.replay_profile(owner, recovery, history, false).await
+    }
+    async fn replay_profile<'a>(
+        &'a self,
+        owner: &mut ControlSession,
+        recovery: &'a IngestRecovery,
+        history: &'a SuccessorHistory,
+        compacted: bool,
+    ) -> Result<VerifiedSuccessorHistory<'a>, Failure> {
         let mut resolution = history
             .resolution(recovery, &self.cancelled)
             .map_err(|e| Failure::at("resolution", None, None, e))?;
+        assert_eq!(resolution.needs_compacted_initial(), compacted);
+        let compacted_requests = if compacted {
+            let before_epoch = resolution.current_epoch();
+            assert_eq!(before_epoch, Some(1));
+            assert!(resolution.next_request().is_none());
+            self.refresh(owner, Some(1), None).await?;
+            let result = self
+                .bounded(
+                    "compacted-initial",
+                    owner.inspect_successor_compacted_initial(
+                        &mut resolution,
+                        self.request(),
+                        recovery_limits().event,
+                        compacted_grant(&self.budget),
+                        |d, h| self.validate(d, h),
+                    ),
+                )
+                .await;
+            let summary = match result {
+                Ok(summary) => summary,
+                Err(error) => {
+                    assert!(resolution.needs_compacted_initial());
+                    assert_eq!(resolution.current_epoch(), before_epoch);
+                    assert!(resolution.next_request().is_none());
+                    emit(
+                        serde_json::json!({"event":"lineage-history-compacted-initial-refused",
+                        "epoch":before_epoch,"cursor_unchanged":true}),
+                    );
+                    return Err(Failure::at("compacted-initial", Some(1), None, error));
+                }
+            };
+            assert!(!resolution.needs_compacted_initial());
+            assert_eq!(resolution.current_epoch(), Some(2));
+            assert!((1..=64).contains(&summary.compacted_requests));
+            emit(
+                serde_json::json!({"event":"lineage-history-compacted-initial",
+                "compacted_requests":summary.compacted_requests,
+                "original_requests_replayed":0,
+                "last_complete_sequence":summary.last_complete_sequence,
+                "digest":hex(&summary.digest)}),
+            );
+            self.snapshot("compacted-initial").await;
+            summary.compacted_requests
+        } else {
+            0
+        };
         while let Some(epoch) = resolution.current_epoch() {
             assert!((1..=255).contains(&epoch));
             while let Some(request) = resolution.next_request() {
@@ -458,9 +555,17 @@ impl Probe {
             .await
             .map_err(|e| Failure::at("finish", None, None, e))?;
         assert!(proof.matches_history(history));
+        assert_eq!(proof.compacted_initial_requests(), compacted_requests);
         proof
             .validate(&self.cancelled)
             .map_err(|e| Failure::at("final-validation", None, None, e))?;
+        if compacted {
+            emit(
+                serde_json::json!({"event":"lineage-history-compacted-proof",
+                "compacted_initial_requests":proof.compacted_initial_requests(),
+                "original_initial_requests_replayed":0}),
+            );
+        }
         emit(
             serde_json::json!({"event":"lineage-history-proof","verified_through":proof.verified_through(),
             "last_epoch":summary_value(proof.last_epoch()),"matches_history":true,"admission":false}),
@@ -502,6 +607,13 @@ fn replay_grants(budget: &ResourceBudget) -> (OwnedPermit, OwnedPermit) {
 fn effect_grant(budget: &ResourceBudget) -> OwnedPermit {
     // The public replay grant covers the final dictionary/effect census too.
     grant(budget, recovery_limits().required_data_bytes().unwrap(), 0)
+}
+fn compacted_grant(budget: &ResourceBudget) -> OwnedPermit {
+    grant(
+        budget,
+        compacted_outcome_data_bytes(recovery_limits().event).unwrap(),
+        0,
+    )
 }
 fn recovery_limits() -> ProducerRecoveryLimits {
     ProducerRecoveryLimits {

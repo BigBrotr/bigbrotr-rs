@@ -66,8 +66,11 @@ def empty_digest(record, manifest, slot, epoch):
 
 class Model:
     """Only fresh identity/time/xid coordinates are taken from observations."""
-    def __init__(self, before, native, inputs, window):
-        assert len(before) == 75
+    def __init__(self, before, native, inputs, window, *, compacted_history=False):
+        assert type(compacted_history) is bool
+        self.compacted_history = compacted_history
+        self.request_limit = 2 if compacted_history else 32
+        assert len(before) == (77 if compacted_history else 75)
         assert set(window) == {'before_us', 'after_us'}
         assert all(type(v) is int and v > 0 for v in window.values())
         assert 0 <= window['after_us'] - window['before_us'] <= 120_000_000
@@ -208,7 +211,7 @@ class Model:
         self.pg['producer_epochs'].append(dict(producer_slot_id=slot, producer_epoch=epoch, dataset_id=ds,
             producer_role_instance_id=role, producer_role='ingest', producer_incarnation=incarnation,
             owner_resource_id=resource, owner_epoch=epoch, owner_role='ingest', owner_incarnation=incarnation,
-            outstanding_request_limit=32, opened_at_us=at, state='open', retired_at_us=None,
+            outstanding_request_limit=self.request_limit, opened_at_us=at, state='open', retired_at_us=None,
             closure_digest=None, reserved_through_request=0, xmin=xid))
         self.pg['topology_generations'].append(dict(dataset_id=ds, generation=topology,
             previous_generation=self.ds['topology_generation'], created_at_us=at, sealed=True, xmin=xid))
@@ -233,7 +236,7 @@ class Model:
             config_revision=self.ds['config_revision'], policy_revision=self.ds['policy_revision'],
             config_digest=only(self.pg['config_revisions'], revision=self.ds['config_revision'])['document_digest'],
             policy_digest=only(self.pg['policy_revisions'], revision=self.ds['policy_revision'])['document_digest'],
-            outstanding_request_limit=32, created_at_us=at, lease_expires_at_us=plan['deadline'],
+            outstanding_request_limit=self.request_limit, created_at_us=at, lease_expires_at_us=plan['deadline'],
             prepared_by_resource=self.control['resource_id'], prepared_by_epoch=self.control['epoch'],
             prepared_by_role='control', prepared_by_incarnation=self.control['process_incarnation'],
             preparation_transaction=receipt['preparation_transaction'], xmin=xid))
@@ -370,7 +373,7 @@ class Transcript:
         state = event['state']
         assert set(state) == {'native_rows', 'native_sha256', 'sequence', 'control_sha256', 'control_tables', 'originals'}
         tables = state['control_tables']
-        assert len(tables) == 75 and [name for name, _ in tables] == sorted(self.model.pg)
+        assert len(tables) == len(self.model.pg) and [name for name, _ in tables] == sorted(self.model.pg)
         assert state['control_sha256'] == sha(encoded(tables))
         pg = {name: loads(value) for name, value in tables}
         if mutation:

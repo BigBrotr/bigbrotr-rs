@@ -4,7 +4,7 @@ use super::*;
 use crate::storage::rocks::{
     manifest::IngestManifest,
     producer_floor::ClosedProducerFloor,
-    store::{IngestRecovery, RetainedCompactedPrefix},
+    store::{CompactedInitialAncestor, IngestRecovery, RetainedCompactedPrefix},
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
 use futures_util::TryStreamExt;
@@ -87,6 +87,36 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted(
     )
     .await?;
     prefix
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
+/// The original manifest and floor come only from a complete checked native
+/// lineage view. Historical SQL classification and completion remain the
+/// connected caller's obligations; no current-initial terminal rule is relaxed.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_ancestor(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    ancestor: &CompactedInitialAncestor<'_>,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    ancestor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        ancestor.manifest(),
+        ancestor.producer_slot_id(),
+        scratch,
+        Some(ancestor.floor()),
+        authority,
+    )
+    .await?;
+    ancestor
         .validate(recovery, cancelled)
         .map_err(ProducerProgressError::Native)?;
     Ok(complete)

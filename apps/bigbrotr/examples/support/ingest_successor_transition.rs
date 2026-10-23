@@ -211,7 +211,7 @@ async fn run_inner(
     emit(
         serde_json::json!({"event":"lineage-transition-resources","operation":operation,
         "mutation_data_bytes":mutation_bytes,"mutation_native_bytes":mutation_bytes,
-        "lease_ttl_us":CONTROL_TTL.as_micros().to_string(),"outstanding_request_limit":32}),
+        "lease_ttl_us":CONTROL_TTL.as_micros().to_string(),"outstanding_request_limit":u32::try_from(root.number("ingest.producer_outstanding_requests")).unwrap()}),
     );
     let (observer, observer_connection) =
         tokio::time::timeout(Duration::from_secs(10), config.connect(NoTls))
@@ -471,7 +471,10 @@ impl Probe {
                             SuccessorPreparationRequest {
                                 history: self.request(),
                                 lease_duration: CONTROL_TTL,
-                                outstanding_request_limit: 32,
+                                outstanding_request_limit: u32::try_from(
+                                    self.root.number("ingest.producer_outstanding_requests"),
+                                )
+                                .unwrap(),
                             },
                             |d, h| self.validate(d, h),
                         ),
@@ -484,7 +487,7 @@ impl Probe {
                     "record":record_value(plan.record()),"role":hex(&candidate.role_instance_id()),
                     "created_at_us":plan.created_at_us().to_string(),
                     "lease_expires_at_us":plan.lease_expires_at_us().to_string(),
-                    "outstanding_request_limit":32,
+                    "outstanding_request_limit":u32::try_from(self.root.number("ingest.producer_outstanding_requests")).unwrap(),
                     "policy":{"config_revision":policy.config_revision,"policy_revision":policy.policy_revision,
                         "config_digest":hex(&policy.config_digest),"policy_digest":hex(&policy.policy_digest)}}),
                 );

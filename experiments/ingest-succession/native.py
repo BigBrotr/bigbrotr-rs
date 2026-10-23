@@ -338,6 +338,8 @@ if producer_floor:
     tests = [(name, ['--lib', selection]) for name, selection in [
         ('compacted_prefix', 'storage::rocks::store::admission_tests::compacted_prefix_tests::'),
         ('compacted_progress', 'storage::postgres::control_owner::producer_progress::recovery::tests::'),
+        ('successor_history', 'storage::postgres::control_owner::successor_history::tests::'),
+        ('archive_retained_frontier', 'storage::postgres::control_owner::archive_retained_frontier::tests::'),
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
     ]]
@@ -517,6 +519,17 @@ if producer_ack:
             'initial_writer_tests::activated_recovery_tests::activated_source_tests::activated_ack_handoff_requires_all_predecessor_originals_before_target',
             'lineage_tests::lineage_replay_tests::successor_handoff_tests::successor_writer_tests::successor_ack_updates_only_exact_admitted_frontier_and_keeps_replay']]
 if producer_floor:
+    required_controls['archive_retained_frontier'] = [
+        'storage::postgres::control_owner::archive_retained_frontier::tests::' + name for name in [
+            'only_complete_terminal_history_is_a_loader_prerequisite',
+            'compacted_history_is_not_an_archive_frontier_prerequisite']]
+    required_controls['successor_history'] = [
+        'storage::postgres::control_owner::successor_history::tests::' + name for name in [
+            'terminal_genesis_kind_comes_from_activation_even_at_zero',
+            'pending_and_prepared_closing_do_not_certify_the_target',
+            'activated_nonterminal_and_noncontiguous_heads_refuse',
+            'positive_summary_binds_kind_epoch_count_cut_and_digest',
+            'compacted_initial_summary_is_separate_from_original_replay']]
     required_controls['compacted_progress'] = [
         'storage::postgres::control_owner::producer_progress::recovery::tests::compacted_floor_requires_exact_retained_checkpoint']
     required_controls['compacted_prefix'] = [
@@ -550,6 +563,14 @@ if producer_floor:
             'compacted_ancestor_requires_pending_science_and_later_originals',
             'compacted_ancestor_binds_root_sequence_sidecars_and_native_uncertainty',
             'compacted_ancestor_requires_grants_cancellation_and_complete_ordered_rows']]
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::' + name for name in [
+            'compacted_history_replays_later_originals_and_binds_initial_recorded_digest',
+            'compacted_history_pending_requires_its_exact_owner_and_final_authority',
+            'compacted_history_refuses_stale_completion_and_original_only_construction',
+            'compacted_history_cannot_mint_handoff_gap_empty_or_activation_capabilities',
+            'compacted_history_reuses_one_permit_for_full_census_and_canonical_rows',
+            'compacted_history_correction_census_counts_reclaimed_requests_beyond_spool_cap'])
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

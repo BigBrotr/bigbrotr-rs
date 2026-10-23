@@ -6,9 +6,10 @@ use crate::{
     runtime::{OwnedPermit, policy_authority::PolicyLeaseTracker},
     storage::rocks::{
         store::{
-            AdmissionError, AdmissionLimits, BootstrapError, IngestRecovery, LineageEpochSummary,
-            LineageResolution, ProducerRecoveryError, ProducerRecoveryLimits, ResolvedLineage,
-            RetainedLineage, RetainedTerminalKind,
+            AdmissionError, AdmissionLimits, BootstrapError, CompactedInitialAncestor,
+            CompactedInitialSummary, IngestRecovery, LineageEpochSummary, LineageResolution,
+            MAX_OUTCOME_BYTES, ProducerRecoveryError, ProducerRecoveryLimits, ResolvedLineage,
+            RetainedLineage, RetainedTerminalKind, compacted_outcome_data_bytes,
         },
         succession::{LINEAGE_SCRATCH_BYTES, PredecessorTerminalKind},
     },
@@ -39,6 +40,14 @@ struct Selection {
     state: SuccessorHistoryState,
     through: u64,
     head_kind: Option<PredecessorTerminalKind>,
+}
+
+enum Inspection {
+    Original,
+    CompactedInitial {
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+    },
 }
 
 /// Owns the single compact lineage allocation and its metadata grant. The fixed
@@ -88,6 +97,7 @@ const _: () = assert!(
         + size_of::<SuccessorHistoryResolution<'_>>()
         + 2 * size_of::<[(u64, [u8; 32], [u8; 32]); 64]>()
         + 8 * 1024 // native sidecar hashing scratch, used serially with SQL rows
+        + MAX_OUTCOME_BYTES + 4096 // one canonical SQL row and typed-head scratch
         < LINEAGE_SCRATCH_BYTES as usize
 );
 
@@ -129,12 +139,21 @@ impl SuccessorHistory {
         recovery: &'a IngestRecovery,
         cancelled: &'a AtomicBool,
     ) -> Result<SuccessorHistoryResolution<'a>, BootstrapError> {
-        let native = self.lineage.resolution(
-            recovery,
-            self.selection.through,
-            self.selection.head_kind,
-            cancelled,
-        )?;
+        let native = if self.lineage.has_compacted_initial() {
+            self.lineage.compacted_resolution(
+                recovery,
+                self.selection.through,
+                self.selection.head_kind,
+                cancelled,
+            )
+        } else {
+            self.lineage.resolution(
+                recovery,
+                self.selection.through,
+                self.selection.head_kind,
+                cancelled,
+            )
+        }?;
         Ok(SuccessorHistoryResolution {
             history: self,
             recovery,
@@ -142,8 +161,24 @@ impl SuccessorHistory {
             native,
         })
     }
+
+    fn compacted_ancestor<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<CompactedInitialAncestor<'a>, ProducerResolveError> {
+        self.lineage
+            .compacted_initial_ancestor_with_permit(recovery, limits, permit, cancelled)
+            .map_err(effect_error)?
+            .ok_or(OwnerError::InvalidInput.into())
+    }
 }
 impl SuccessorHistoryResolution<'_> {
+    pub fn needs_compacted_initial(&self) -> bool {
+        self.native.needs_compacted_initial()
+    }
     pub fn current_epoch(&self) -> Option<u64> {
         self.native.current_epoch()
     }
@@ -152,6 +187,9 @@ impl SuccessorHistoryResolution<'_> {
     }
 }
 impl VerifiedSuccessorHistory<'_> {
+    pub fn compacted_initial_requests(&self) -> u64 {
+        self.native.compacted_initial_requests()
+    }
     pub fn verified_through(&self) -> u64 {
         self.native.verified_through()
     }
@@ -185,6 +223,46 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<SuccessorHistory, ProducerResolveError> {
+        self.inspect_successor_history_in(recovery, input, permit, Inspection::Original, validate)
+            .await
+    }
+
+    /// Explicit compacted-initial historical read. Ordinary inspection and all
+    /// installed callers keep their original-input boundary until adapted.
+    pub async fn inspect_compacted_successor_history(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        metadata: OwnedPermit,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorHistory, ProducerResolveError> {
+        if effects.request().units().items() == 0
+            || effects.request().units().data_bytes()
+                < CompactedInitialAncestor::required_effect_data_bytes(limits)
+                    .map_err(effect_error)?
+        {
+            return Err(effect_error(AdmissionError::InsufficientReservation));
+        }
+        self.inspect_successor_history_in(
+            recovery,
+            input,
+            metadata,
+            Inspection::CompactedInitial { limits, effects },
+            validate,
+        )
+        .await
+    }
+
+    async fn inspect_successor_history_in(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        inspection: Inspection,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorHistory, ProducerResolveError> {
         let current = self.identity;
         let (tx, mut lease, policy) = self
             .begin_successor_history(recovery, &input, validate)
@@ -196,8 +274,18 @@ impl ControlSession {
         let native_epoch = recovery.manifest().identity().owner_epoch.get();
         let pending = pending_target(native_epoch, registered)?;
         rows::require_head(&tx, recovery, &head).await?;
-        let lineage = RetainedLineage::inspect(recovery, pending, permit, input.cancelled)
-            .map_err(native_error)?;
+        let lineage = match &inspection {
+            Inspection::Original => {
+                RetainedLineage::inspect(recovery, pending, permit, input.cancelled)
+            }
+            Inspection::CompactedInitial { .. } => RetainedLineage::inspect_compacted_initial(
+                recovery,
+                pending,
+                permit,
+                input.cancelled,
+            ),
+        }
+        .map_err(native_error)?;
         let entry = lineage.native_head();
         let native_row = if pending.is_some() {
             rows::read_epoch(&tx, recovery, native_epoch).await?
@@ -219,7 +307,25 @@ impl ControlSession {
             control: current,
         };
         rows::require_native(&tx, recovery, &history, input.cancelled).await?;
+        if let Inspection::CompactedInitial { limits, effects } = &inspection {
+            let ancestor =
+                history.compacted_ancestor(recovery, *limits, effects, input.cancelled)?;
+            producer_progress::recovery::require_compacted_ancestor(
+                &tx,
+                recovery,
+                &ancestor,
+                history.lineage.progress_scratch(),
+                input.cancelled,
+                || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            )
+            .await?;
+        }
         for entry in history.lineage.entries() {
+            if entry.manifest().identity().owner_epoch.get() == 1
+                && history.lineage.has_compacted_initial()
+            {
+                continue; // exact typed compacted head was checked above
+            }
             producer_progress::recovery::require(
                 &tx,
                 recovery,
@@ -240,6 +346,83 @@ impl ControlSession {
         }
         self.available = true;
         Ok(history)
+    }
+
+    /// Complete only the pending initial compacted epoch, under the same
+    /// historical locks and original deadline. No original request is resolved.
+    pub async fn inspect_successor_compacted_initial(
+        &mut self,
+        resolution: &mut SuccessorHistoryResolution<'_>,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<CompactedInitialSummary, ProducerResolveError> {
+        if !resolution.needs_compacted_initial() {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        if permit.request().units().items() == 0
+            || permit.request().units().data_bytes()
+                < compacted_outcome_data_bytes(limits).map_err(effect_error)?
+        {
+            return Err(effect_error(AdmissionError::InsufficientReservation));
+        }
+        let current = self.identity;
+        let (tx, mut lease, policy) = self
+            .begin_checked_successor_history(
+                resolution.history,
+                resolution.recovery,
+                &input,
+                validate,
+            )
+            .await?;
+        let ancestor = resolution.history.compacted_ancestor(
+            resolution.recovery,
+            limits,
+            &permit,
+            input.cancelled,
+        )?;
+        producer_progress::recovery::require_compacted_ancestor(
+            &tx,
+            resolution.recovery,
+            &ancestor,
+            resolution.history.lineage.progress_scratch(),
+            input.cancelled,
+            || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+        )
+        .await?;
+        let native = producer_compaction::resolve_initial_outcomes(
+            &tx,
+            ancestor.resolution(input.cancelled).map_err(effect_error)?,
+            limits,
+            &permit,
+            &mut lease,
+            policy,
+            input.cancelled,
+        )
+        .await
+        .map_err(compacted_error)?;
+        let fields = native.floor().fields();
+        let summary = CompactedInitialSummary {
+            compacted_requests: fields.issued_through,
+            last_complete_sequence: fields.source_through,
+            digest: fields.closure_digest,
+        };
+        rows::read_epoch(&tx, resolution.recovery, 1)
+            .await?
+            .require_compacted_summary(&summary)?;
+        finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
+        if self.client.is_closed() {
+            return Err(ProducerResolveError::DeliveryUnknown);
+        }
+        let accepted = resolution
+            .native
+            .accept_compacted_initial(&native, || {
+                producer_progress::recovery::authority(&mut lease, policy, input.cancelled)
+            })
+            .map_err(effect_error)?;
+        self.available = true;
+        Ok(accepted)
     }
 
     /// Resolve and compare exactly the next original. Existing recorder/issuer
@@ -327,7 +510,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<LineageEpochSummary, ProducerResolveError> {
         let epoch = resolution.current_epoch().ok_or(OwnerError::InvalidInput)?;
-        if resolution.next_request().is_some() {
+        if resolution.needs_compacted_initial() || resolution.next_request().is_some() {
             return Err(OwnerError::InvalidInput.into());
         }
         let current = self.identity;
@@ -373,6 +556,25 @@ impl ControlSession {
                 validate,
             )
             .await?;
+        // Rebind the retained typed head after all prior read transactions have
+        // released locks. The recorded-prefix loop below still hashes epoch1 D.
+        if resolution.history.lineage.has_compacted_initial() {
+            let ancestor = resolution.history.compacted_ancestor(
+                resolution.recovery,
+                limits,
+                &permit,
+                input.cancelled,
+            )?;
+            producer_progress::recovery::require_compacted_ancestor(
+                &tx,
+                resolution.recovery,
+                &ancestor,
+                resolution.history.lineage.progress_scratch(),
+                input.cancelled,
+                || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            )
+            .await?;
+        }
         let native = resolution
             .native
             .finish(limits, permit)
@@ -387,6 +589,12 @@ impl ControlSession {
         finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
+        }
+        if native.compacted_initial_requests() != 0 {
+            native
+                .validate(resolution.cancelled)
+                .map_err(native_error)?;
+            initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
         }
         self.available = true;
         Ok(VerifiedSuccessorHistory {
@@ -449,6 +657,21 @@ impl ControlSession {
 
 fn native_error(error: BootstrapError) -> ProducerResolveError {
     ProducerResolveError::Native(AdmissionError::from(error).into())
+}
+fn effect_error(error: AdmissionError) -> ProducerResolveError {
+    ProducerResolveError::Native(error.into())
+}
+fn compacted_error(error: ProducerCompactionError) -> ProducerResolveError {
+    match error {
+        ProducerOperationError::Control(e) => ProducerOperationError::Control(e),
+        ProducerOperationError::Registry(e) => ProducerOperationError::Registry(e),
+        ProducerOperationError::Native(e) => effect_error(e),
+        ProducerOperationError::Reservation(e) => ProducerOperationError::Reservation(e),
+        ProducerOperationError::Outcome(e) => ProducerOperationError::Outcome(e),
+        ProducerOperationError::Progress(e) => ProducerOperationError::Progress(e),
+        ProducerOperationError::CommitUnknown => ProducerOperationError::CommitUnknown,
+        ProducerOperationError::DeliveryUnknown => ProducerOperationError::DeliveryUnknown,
+    }
 }
 fn self_dataset(history: &SuccessorHistory) -> bigbrotr_model::DatasetId {
     history.head.manifest.identity().dataset_id

@@ -1,5 +1,6 @@
 //! Streaming validation of retained canonical outcomes against a native seal.
-//! The caller still owes PostgreSQL identity/lifecycle/head checks and COMMIT.
+//! The caller still owes PostgreSQL identity/lifecycle/head checks and confirmed
+//! transaction completion under its own read or retirement contract.
 use super::*;
 use crate::storage::rocks::store::MAX_OUTCOME_BYTES;
 use crate::storage::rocks::store::admission::{ReadBudget, read_rejection};
@@ -34,7 +35,8 @@ pub struct CompactedPrefixResolution<'a> {
 
 /// Native consistency only. It cannot be converted to original-input replay,
 /// ACK credit, a writer or reclamation permission. The PG owner wraps it only
-/// after authenticating the exact retained history and confirming COMMIT.
+/// after authenticating the exact retained history and confirming transaction
+/// completion: COMMIT for current initial retirement, ROLLBACK for history reads.
 pub struct VerifiedCompactedPrefix<'a> {
     prefix: PrefixOwner<'a>,
     recovery: &'a IngestRecovery,
@@ -74,6 +76,16 @@ impl<'a> CompactedPrefixResolution<'a> {
 }
 
 impl CompactedPrefixResolution<'_> {
+    pub(in crate::storage) fn manifest(&self) -> &IngestManifest {
+        self.prefix.manifest()
+    }
+    pub(in crate::storage) fn floor(&self) -> &ClosedProducerFloor {
+        self.prefix.floor()
+    }
+    pub(in crate::storage) fn producer_slot_id(&self) -> ProducerSlotId {
+        self.prefix.slot()
+    }
+
     pub fn record(
         &mut self,
         row: CompactedOutcomeRow<'_>,
@@ -231,6 +243,12 @@ impl<'a> CompactedPrefixResolution<'a> {
 }
 
 impl VerifiedCompactedPrefix<'_> {
+    pub(in crate::storage::rocks::store) fn matches_lineage(
+        &self,
+        lineage: &RetainedLineage,
+    ) -> bool {
+        matches!(self.prefix, PrefixOwner::Ancestor(owner) if std::ptr::eq(owner, lineage))
+    }
     pub fn floor(&self) -> &ClosedProducerFloor {
         self.prefix.floor()
     }

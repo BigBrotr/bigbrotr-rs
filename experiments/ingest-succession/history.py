@@ -113,14 +113,14 @@ def closed_and_joined(response, database):
     return events
 
 
-def external(pg, client, output, case, directory, response):
+def external(pg, client, output, case, directory, response, *, closure=closed_and_joined):
     """Persist each observation before rejecting missing custody or semantics."""
     name, database = case['name'], case['database']
     errors = []
     custody = 'UNKNOWN_PROCESS_OUTCOME'
     events = None
     try:
-        events = closed_and_joined(response, database)
+        events = closure(response, database)
         custody = 'OBSERVED_CLOSED_AND_JOINED'
     except BaseException as error:
         errors.append(dict(stage='probe-custody', error=repr(error)))

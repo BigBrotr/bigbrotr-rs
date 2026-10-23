@@ -287,14 +287,15 @@ def observe_origin_absence(pg, database, output, name):
 
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
-        preparation_hole=False, compacted_reader=False, product_source=None):
+        preparation_hole=False, compacted_reader=False, compacted_history=False, product_source=None):
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
     assert type(preparation_hole) is bool and (not preparation_hole or producer_ack)
     assert type(compacted_reader) is bool
+    assert type(compacted_history) is bool and (not compacted_history or compacted_reader)
     if compacted_reader:
-        from installed_compacted_reader_oracle import GRANTS, qualification_checked
-        assert preparation_hole and extra_grants == GRANTS
+        from installed_compacted_reader_oracle import GRANTS, HISTORY_GRANTS, qualification_checked
+        assert preparation_hole and extra_grants == (HISTORY_GRANTS if compacted_history else GRANTS)
         assert re.fullmatch(r'[0-9a-f]{40}', product_source or '')
     else:
         assert product_source is None
