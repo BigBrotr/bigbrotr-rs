@@ -62568,6 +62568,28 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-48fbb40/verified-terminal.json",
           "sha256": "1ede5983d4e258c7eb704f07ed2254e274a606d3e0ebb653e35f6f07a9877d32"
         }
+      },
+      "compacted_initial_handoff_domain_corrected_installed_20261024": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-c427aff",
+        "source": "c427aff7258c17932b5adac4b5bcd0ae12d03900",
+        "tree": "60d799602806ca75e9fd4554ea6fb19feb711339",
+        "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+        "driver_session": 10200,
+        "observed_report_status": "FAIL",
+        "state": "15cases/133controls PASS; last exact listener-report oracle FAIL; driver10200 joined1; exact client143/PG0 stopped/PID0/noOOM; original5preservationtrue",
+        "owner": "3be6078ed5a2389d002dcc86dbd587a3",
+        "label": "org.bigbrotr.installed-compacted-initial-journey",
+        "client": "e1e847421283d74cf7331223e635e0fe6d251ebf6b826f697036cb056a739a97",
+        "preflight_free_bytes": 276883439616,
+        "preservation": "Fresh source/copies; first two failed runs and all originals preserved; unchanged product build reused",
+        "verified_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-c427aff/verified-terminal.json",
+          "sha256": "c1d27e70b8133b54dffb8b7d437f12b2dbf3e40f3c240221c907dbb481e34466"
+        },
+        "corrected_capture_diagnostic": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-listener-diagnostic-v1.json",
+          "sha256": "2ccef05096619e6b82b8d5a97231372c7ca4bc2ffb494f7031933bea856cb8c7"
+        }
       }
     }
   },

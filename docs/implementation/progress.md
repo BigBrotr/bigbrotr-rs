@@ -6,15 +6,15 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main/harness is `48fbb400df3d705ed0d6311a4ec3ef8e30da2ee6`,
-tree `6e5a3aca79b3bc5ca42f61c7aedddde4ac9e72f1`.
+Current main/harness is `c427aff7258c17932b5adac4b5bcd0ae12d03900`,
+tree `60d799602806ca75e9fd4554ea6fb19feb711339`.
 Qualified product is `9bea0ff71c5573f3d470ed7ab8a27e827bac2743`.
 All native/PG/probe/Python source is coherently committed locally; canonical docs
 track the current run. Connected journey driver32917 joined1: FAIL in fixture snapshot ACL before
 Control claim/preparation; zero completed cases. Original failure retained under
 `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d`.
 Raw replay is NOT_RUN. Last verified push remains7bea8e3 (driver41118 joined0,
-remote equality at that revision). The three new local commits are not pushed yet.
+remote equality at that revision). The four new local commits are not pushed yet.
 No GC writer/unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -37,7 +37,9 @@ Build and retained ELFs are under
 original preservation checks true. Corrected connected driver45342 joined1, FAIL in deterministic target-domain
 oracle freshness (cross-namespace command ID collision). Probe exited0; full
 capture retained without relabeling FAIL. Exact client143/PG0 stopped/PID0/noOOM;
-original preservation all true. No engine/compiler/build remains active. No cache/dataset cleanup occurred; sources, ELFs, clones, quarantines,
+original preservation all true. Connected driver10200 joined1:15cases/133controls PASS, then installed listener
+report expectation FAIL. Actual installed exit0; full captures preserved.
+Exact client143/PG0 stopped/PID0/noOOM and originals preserved; no engine active. No cache/dataset cleanup occurred; sources, ELFs, clones, quarantines,
 failures, .research and all worktrees remain preserved.
 
 The source implements explicit compacted initial preparation, exact prepared
@@ -64,13 +66,14 @@ Exact-source receipts in `.research/producer-checkpoint-ack-review-20261020`
 are linked from the report. Final module-order formatting correction is separately
 recorded; the earlier reviewed PG snapshot was not silently rewritten.
 
-The independently reviewed deterministic-domain correction now passes the48fbb40
-saved complete prepared/retry capture and all9 negative controls, without new
-engines. Only the deterministic fixture branch uses namespace-specific literal
-domain checks; random live/installed checks and product9bea0ff are unchanged.
-Commit this correction, then execute a fresh exact-source seven-clone profile,
-join and inspect resource/original preservation, and run raw replay. Old525 ACL
-and48f oracle FAIL remain preserved.16 commands/149 controls are not yet completed.
+The deterministic-domain correction is qualified by15cases/133controls in the
+c427aff run. Its final installed process completed, but exact report verification
+expected no listener despite authoritative administration.enabled=true. The narrow
+listener expectation now matches source/config and passes the saved installed
+capture plus16negative controls. Product9bea0ff and workload are unchanged.
+Commit this final oracle correction and run the existing exact-source full profile,
+join/check resources and original preservation, then perform raw replay. All three
+original failed runs retain FAIL; no original result was overwritten.
 Original positive/store was
 logically qualified81/121/0; its new complete physical census is separately bound,
 never represented as an old raw physical pin. Never native-open the original.

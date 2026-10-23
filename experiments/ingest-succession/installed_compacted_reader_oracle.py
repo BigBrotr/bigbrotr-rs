@@ -1944,7 +1944,8 @@ def verify_journey_installed(context,initial,expected,report):
         initial_lease_expires_at_us=str(plan['lease_expires_at_us']),activated_at_us=str(activation['activated_at_us']),
         predecessor=dict(producer_epoch='1',issued_through='7',reserved_through='7',resolved_requests='0',compacted_requests='7',
             recovery_basis='closed-producer-floor-v3',last_complete_sequence='27',sha256=known(initial)['digest']),
-        native_profile=1,native_allowance_bytes=134217728,acquisition='not-started',ready=False,listeners=[])
+        native_profile=1,native_allowance_bytes=134217728,acquisition='not-started',ready=False,
+        listeners=[dict(kind='private-session-http',host='127.0.0.1',port=18081,profile='initial-source-commands')])
     assert report==wanted
     for snapshot in snapshots[1:]: journey_lease_delta(expected_activation,snapshot['control'],window,control['epoch'])
     fixture=context['fixture']; assert set(fixture)=={'cleanup_errors','renewal','signal'}

@@ -44359,7 +44359,7 @@
               }
             },
             "initial_handoff_preparation": {
-              "status": "BUILD_PASS150/47; first two connected FAILs preserved; corrected saved prepared/retry capture PASS with9negative controls; fresh complete journey pending",
+              "status": "BUILD_PASS150/47; c427aff15cases/133controls PASS then listener-expectation FAIL; corrected saved installed capture/16controls PASS; fresh full run pending",
               "native_author_commit": "7824749369df3751850ae10912b37f7e18ad8167",
               "native_root_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json",
@@ -44383,7 +44383,7 @@
                 "expected_required_total": 47,
                 "measurement": "PASS150 components/47 required, including eight new native controls"
               },
-              "reviews_open": "No remaining source blocker in reviewed correction; next fresh exact-source connected run and raw replay. Product9bea0ff unchanged.",
+              "reviews_open": "Final exact listener expectation reviewed against authoritative source/config and corrected saved capture. No product rebuild; fresh full qualification/raw replay pending.",
               "remaining": "Activated/later recovery, live frontier, retained Archive frontier and empty retirement before floor writer/unlink; physical loss, interrupted synchronization/unlink, mixed restore/backup and capacity.",
               "probe_author_commit": "873ad26e768f9a266e4371ef8a44b0862c60597d",
               "probe_root_review": {
@@ -44501,6 +44501,44 @@
                       "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-fixed-domain-diagnostic-v1.json",
                       "sha256": "c42e3dd2a9484e53bb8e91a1931e64a844c505dcbcf830bfa968ebb2860a74c2"
                     }
+                  }
+                },
+                {
+                  "source": "c427aff7258c17932b5adac4b5bcd0ae12d03900",
+                  "tree": "60d799602806ca75e9fd4554ea6fb19feb711339",
+                  "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+                  "status": "FAIL",
+                  "driver": "10200 joined1",
+                  "completed_cases": 15,
+                  "completed_controls": 133,
+                  "failed_case": "installed-serve exact report listeners expectation",
+                  "result": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-c427aff/installed-compacted-initial-journey/result.json",
+                    "sha256": "8500f95e92621f355ccb1ccce624e3f8514152cd26fd02d1d9a8614b65949e3d"
+                  },
+                  "response": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-c427aff/installed-compacted-initial-journey/installed-serve-response.json",
+                    "sha256": "7539aceb78e2e5fc9c8b60a3145d0025fe2235cba3cd33c1d3a8d3a3756526fc"
+                  },
+                  "context": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-c427aff/installed-compacted-initial-journey/installed-serve-verification.json",
+                    "sha256": "5356fceee6bc5718e16ce70acf611e9dad884fa43b87ada08c59297da949fab7"
+                  },
+                  "terminal": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-c427aff/verified-terminal.json",
+                    "sha256": "c1d27e70b8133b54dffb8b7d437f12b2dbf3e40f3c240221c907dbb481e34466"
+                  },
+                  "cause": "Oracle expected listeners[]; immutable authoritative policy administration.enabled true and commands::maintain publishes exact private-session-http127.0.0.1:18081. Actual CLI exit0, renewed and joined SIGTERM; original full-run FAIL unchanged.",
+                  "correction": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-listener-diagnostic-v1.json",
+                    "sha256": "2ccef05096619e6b82b8d5a97231372c7ca4bc2ffb494f7031933bea856cb8c7"
+                  },
+                  "preserved": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
                   }
                 }
               ]
