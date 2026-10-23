@@ -6,12 +6,15 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main/product is `9bea0ff71c5573f3d470ed7ab8a27e827bac2743`;
-tree `1e3cf0d184caa89abb558d4480d017c88f625581`.
-The seven-file Python journey from author `a7dd148270149961df3f8851ace78841dfa45a81`
-is exactly staged with updated evidence/inventory; source review complete,
-connected execution and raw replay **NOT_RUN**. Last verified push remains
-`7bea8e3881776f385fb019bd0549e8925dfa45c7` (driver41118 joined0, remote equality).
+Current main/harness is `525468db9ff1113906be9c1115b5b51f5f2e548e`,
+tree `7686d348a96b85e0ee9fed086343f74750e326cb`.
+Qualified product is `9bea0ff71c5573f3d470ed7ab8a27e827bac2743`.
+All native/PG/probe/Python source is coherently committed locally; canonical docs
+track the current run. Connected journey driver32917 joined1: FAIL in fixture snapshot ACL before
+Control claim/preparation; zero completed cases. Original failure retained under
+`/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d`.
+Raw replay is NOT_RUN. Last verified push remains7bea8e3 (driver41118 joined0,
+remote equality at that revision). Neither new local commit is pushed yet.
 No GC writer/unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -30,8 +33,8 @@ all eight new native controls ran. Build driver54339 joined0. Both exact owned
 containers were freshly verified stopped0/PID0/noOOM; inventory_changed[].
 Build and retained ELFs are under
 `/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff`;
-`verified-build.json` binds actual outcomes and artifacts. No engine/build remains
-active. No cache/dataset cleanup occurred; sources, ELFs, clones, quarantines,
+`verified-build.json` binds actual outcomes and artifacts. Connected driver32917 is stopped; exact client143/PG0 PID0/noOOM and all five
+original preservation checks true. No engine/compiler/build remains active. No cache/dataset cleanup occurred; sources, ELFs, clones, quarantines,
 failures, .research and all worktrees remain preserved.
 
 The source implements explicit compacted initial preparation, exact prepared
@@ -47,7 +50,7 @@ remains in clean `.research/compacted-initial-handoff-20261024`, branch
 `work/compacted-initial-handoff`. Journey873ad26/a7dd148 remains in clean
 `.research/compacted-initial-journey-20261024`, branch
 `work/compacted-initial-journey`. Native/probe code is integrated in9bea0ff;
-all seven Python blobs are exactly staged. Reconcile refs after qualification;
+all seven Python blobs are integrated in525468d. Reconcile refs after qualification;
 preserve worktrees and ignored artifacts.
 
 Root reviewed native/probe/full new journey/origin/replay changes; the existing
@@ -58,12 +61,13 @@ Exact-source receipts in `.research/producer-checkpoint-ack-review-20261020`
 are linked from the report. Final module-order formatting correction is separately
 recorded; the earlier reviewed PG snapshot was not silently rewritten.
 
-Commit the reviewed Python fixture/docs, create its exact isolated source and run
-`installed_compacted_reader.py ROOT BUILD --product-source 9bea0ff71c5573f3d470ed7ab8a27e827bac2743 --initial-journey`.
-Use the existing transition owner for seven clones/16 commands;149 negative
-controls are predicted, not measured. Join the driver, inspect exact resource
-closure/original preservation, then run exact-source raw replay with the same
-profile. Preserve any failure before correction. Original positive/store was
+Commit the narrow isolated-fixture SELECT correction and use a fresh run/copies
+with the same qualified9bea0ff product. Complete snapshot needs full SELECT on
+exactly ingest_successions, ingest_activations and ingest_terminal_transactions;
+77-table static catalog coverage checked. Product code and old profiles unchanged.
+Then join driver/resource closure and perform exact-source raw replay. Seven
+clones/16 commands and149 negative controls remain predicted, not measured.
+Preserve the525468d original FAIL and UNKNOWN_PROCESS_OUTCOME custody. Original positive/store was
 logically qualified81/121/0; its new complete physical census is separately bound,
 never represented as an old raw physical pin. Never native-open the original.
 

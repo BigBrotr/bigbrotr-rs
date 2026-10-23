@@ -456,11 +456,14 @@ HISTORY_GRANTS = GRANTS + (
     'GRANT SELECT,INSERT ON control.initial_ingest_activations, control.ingest_successions, '
     'control.ingest_activations, control.ingest_terminal_transactions TO bigbrotr_control;',
     'GRANT EXECUTE ON FUNCTION '+', '.join('control.'+n for n in HISTORY_FUNCTIONS)+' TO bigbrotr_control;')
-# This journey grants only the existing initial preparation/activation surface.
-# It does not grant later-lineage writes or activated recovery functions.
+# The product uses only the existing initial preparation/activation surface.
+# Complete fixture snapshots also read the three later-lineage tables; no
+# later-lineage writes or activated recovery functions are granted.
 JOURNEY_GRANTS = GRANTS + (
     'GRANT SELECT,INSERT,UPDATE ON control.initial_ingest_successions TO bigbrotr_control;',
     'GRANT SELECT,INSERT ON control.initial_ingest_activations TO bigbrotr_control;',
+    'GRANT SELECT ON control.ingest_successions, control.ingest_activations, '
+    'control.ingest_terminal_transactions TO bigbrotr_control;',
     'GRANT EXECUTE ON FUNCTION '+', '.join('control.'+n for n in HISTORY_FUNCTIONS[:14])+' TO bigbrotr_control;')
 HISTORY_NOT_RUN = ('Actual product reclamation/GC and unlink',
     'Preparation/activation/recovery or writer publication after compaction',

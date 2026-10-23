@@ -44359,7 +44359,7 @@
               }
             },
             "initial_handoff_preparation": {
-              "status": "PRODUCT9bea0ff_BUILD_CLIPPY_150COMPONENTS_47REQUIRED_PASS; exact fixturea7dd148 source-reviewed; connected NOT_RUN",
+              "status": "PRODUCT9bea0ff_BUILD_PASS150/47; first connected525468d FAIL_FIXTURE_SNAPSHOT_ACL; narrow read-only grant correction ready",
               "native_author_commit": "7824749369df3751850ae10912b37f7e18ad8167",
               "native_root_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json",
@@ -44383,7 +44383,7 @@
                 "expected_required_total": 47,
                 "measurement": "PASS150 components/47 required, including eight new native controls"
               },
-              "reviews_open": "No source blocker remains in reviewed native/PG/probe/fixture scope. Connected engines/raw replay and all stated later consumer gates remain NOT_RUN.",
+              "reviews_open": "Corrected connected execution and raw replay NOT_RUN; product build remains exact unchanged9bea0ff. No new build needed for fixture SELECT only.",
               "remaining": "Activated/later recovery, live frontier, retained Archive frontier and empty retirement before floor writer/unlink; physical loss, interrupted synchronization/unlink, mixed restore/backup and capacity.",
               "probe_author_commit": "873ad26e768f9a266e4371ef8a44b0862c60597d",
               "probe_root_review": {
@@ -44426,7 +44426,42 @@
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff/verified-build.json",
                   "sha256": "3f5c18ca01c102cd2a45394ea1c9babae98f79524c3529b5454957276dbda6fd"
                 }
-              }
+              },
+              "installed_attempts": [
+                {
+                  "source": "525468db9ff1113906be9c1115b5b51f5f2e548e",
+                  "tree": "7686d348a96b85e0ee9fed086343f74750e326cb",
+                  "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+                  "status": "FAIL",
+                  "driver": "32917 joined1",
+                  "completed_cases": 0,
+                  "failed_case": "prepared-prepare before Control claim/preparation",
+                  "result": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d/installed-compacted-initial-journey/result.json",
+                    "sha256": "bdecce747cce2929c3a5a7055a45f10132792c829e145a84fd8e3dcaf51041c0"
+                  },
+                  "response": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d/installed-compacted-initial-journey/prepared-prepare-response.json",
+                    "sha256": "968efb9462a9fffdaf635378a543a58a18bdccf5cfcd7fc914eb2adaa232e8c7"
+                  },
+                  "terminal": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d/verified-terminal.json",
+                    "sha256": "c646cc58da7af6c50b3f8813f8803a4b87b56c652fe6399cd445d7584c5214cc"
+                  },
+                  "cause": "Independent all-table snapshot lacks full SELECT on three later-lineage tables; actual42501 on ingest_activations. Custody stays UNKNOWN_PROCESS_OUTCOME; no external native open after failed probe.",
+                  "correction": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-snapshot-acl-correction-v1.json",
+                    "sha256": "7a3128bdf29a71ff947052bb21b3de4cb61050c842b910bd2ca570b1c1204c57"
+                  },
+                  "preserved": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
+                  }
+                }
+              ]
             }
           }
         }

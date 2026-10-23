@@ -62529,6 +62529,27 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-9bea0ff/verified-build.json",
           "sha256": "3f5c18ca01c102cd2a45394ea1c9babae98f79524c3529b5454957276dbda6fd"
         }
+      },
+      "compacted_initial_handoff_installed_20261024": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d",
+        "source": "525468db9ff1113906be9c1115b5b51f5f2e548e",
+        "tree": "7686d348a96b85e0ee9fed086343f74750e326cb",
+        "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+        "driver_session": 32917,
+        "state": "FAIL_FIXTURE_SNAPSHOT_ACL; driver32917 joined1; exact client stopped143/PG0 PID0/noOOM; original5preservationtrue and cleanup arrays empty",
+        "observed_owner": "3df3572d37741988158fdba1dabd2704",
+        "observed_client": "88fa451e8a975ac8f559171f67876a2ad50f07d3b7e9393d36b54dce353133c0",
+        "label": "org.bigbrotr.installed-compacted-initial-journey",
+        "preflight_free_bytes": 277026910208,
+        "preservation": "Existing transition owner creates seven new clones; original datasets/artifacts unchanged; root alone owns runtime; no cleanup expanded",
+        "verified_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-525468d/verified-terminal.json",
+          "sha256": "c646cc58da7af6c50b3f8813f8803a4b87b56c652fe6399cd445d7584c5214cc"
+        },
+        "failure_correction": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-snapshot-acl-correction-v1.json",
+          "sha256": "7a3128bdf29a71ff947052bb21b3de4cb61050c842b910bd2ca570b1c1204c57"
+        }
       }
     }
   },
