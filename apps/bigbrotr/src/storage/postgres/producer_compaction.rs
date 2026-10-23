@@ -2,7 +2,7 @@
 //! history. This reader writes no checkpoint, ACK, floor or reclaimed detail.
 use super::*;
 use crate::{
-    runtime::OwnedPermit,
+    runtime::{OwnedPermit, policy_authority::PolicyLeaseTracker},
     storage::rocks::store::{
         AdmissionError, AdmissionLimits, CompactedOutcomeRow, IngestRecovery, MAX_OUTCOME_BYTES,
         NativeOutcomeKind, RetainedCompactedPrefix, VerifiedCompactedPrefix,
@@ -168,76 +168,17 @@ impl ControlSession {
             return Err(OwnerError::InvalidMetadata.into());
         }
         drop(state);
-        initial_history::check_delivery::<AdmissionError>(&mut lease, policy, input.cancelled)?;
-        let mut resolution = prefix
-            .resolution(recovery, input.cancelled)
-            .map_err(ProducerCompactionError::Native)?;
-        {
-            let params: &[&(dyn ToSql + Sync)] = &[slot, dataset];
-            let stream = tx
-                .query_raw(OUTCOMES, params.iter().copied())
-                .await
-                .map_err(backend)?;
-            futures_util::pin_mut!(stream);
-            while let Some(row) = stream.try_next().await.map_err(backend)? {
-                initial_history::check_delivery::<AdmissionError>(
-                    &mut lease,
-                    policy,
-                    input.cancelled,
-                )?;
-                let sequence = ingest_registry::decimal(row.try_get(0).map_err(backend)?)
-                    .map_err(ProducerCompactionError::Registry)?;
-                let input_bytes: i32 = row.try_get(3).map_err(backend)?;
-                let bytes: &[u8] = row.try_get(6).map_err(backend)?;
-                if !(1..=16 * 1024 * 1024).contains(&input_bytes)
-                    || bytes.is_empty()
-                    || bytes.len() > MAX_OUTCOME_BYTES
-                    || !row.try_get::<_, bool>(8).map_err(backend)?
-                    || fixed::<32>(&row, 2)? != floor.manifest_sha256
-                    || <[u8; 32]>::from(Sha256::digest(bytes)) != fixed::<32>(&row, 7)?
-                {
-                    return Err(OwnerError::InvalidMetadata.into());
-                }
-                let kind = match row.try_get::<_, i16>(4).map_err(backend)? {
-                    1 => NativeOutcomeKind::NewFacts,
-                    2 => NativeOutcomeKind::AlreadyDurable,
-                    3 => NativeOutcomeKind::Rejected,
-                    _ => return Err(OwnerError::InvalidMetadata.into()),
-                };
-                let historical_policy = ingest_registry::decimal(row.try_get(5).map_err(backend)?)
-                    .map_err(ProducerCompactionError::Registry)?;
-                resolution
-                    .record(
-                        CompactedOutcomeRow {
-                            request: ProducerRequestId {
-                                producer_slot_id: spec.producer_slot_id,
-                                producer_epoch: ProducerEpoch::new(1).expect("initial epoch"),
-                                request_sequence: RequestSequence::new(sequence)
-                                    .map_err(|_| OwnerError::InvalidMetadata)?,
-                            },
-                            digest: Digest256::from_bytes(fixed::<32>(&row, 1)?),
-                            kind,
-                            policy_epoch: PolicyEpoch::new(historical_policy),
-                            bytes,
-                            input_bytes: input_bytes as u32,
-                        },
-                        limits,
-                        &outcome_permit,
-                        input.cancelled,
-                        || {
-                            producer_progress::recovery::authority(
-                                &mut lease,
-                                policy,
-                                input.cancelled,
-                            )
-                        },
-                    )
-                    .map_err(ProducerCompactionError::Native)?;
-            }
-        }
-        let native = resolution
-            .finish(input.cancelled)
-            .map_err(ProducerCompactionError::Native)?;
+        let native = resolve_initial_outcomes(
+            &tx,
+            recovery,
+            prefix,
+            limits,
+            &outcome_permit,
+            &mut lease,
+            policy,
+            input.cancelled,
+        )
+        .await?;
         producer_retirement::finish::<AdmissionError>(tx, &mut lease, policy, input.cancelled)
             .await?;
         if self.client.is_closed() {
@@ -254,6 +195,95 @@ impl ControlSession {
             _metadata: metadata_permit,
         })
     }
+}
+
+// Shared canonical outcome/native consistency phase. The caller retains SQL
+// metadata custody and validates the typed checkpoint and historical terminal
+// context under its own locks first. This result is not a confirmed PG proof;
+// the owning operation must complete its transaction and delivery checks.
+#[allow(
+    clippy::too_many_arguments,
+    reason = "locked transaction, native observation, bounded effect grant and original authority deadline"
+)]
+pub(super) async fn resolve_initial_outcomes<'a>(
+    tx: &Transaction<'_>,
+    recovery: &'a IngestRecovery,
+    prefix: &'a RetainedCompactedPrefix,
+    limits: AdmissionLimits,
+    outcome_permit: &OwnedPermit,
+    lease: &mut PolicyLeaseTracker,
+    policy: PolicyEpoch,
+    cancelled: &AtomicBool,
+) -> Result<VerifiedCompactedPrefix<'a>, ProducerCompactionError> {
+    let floor = prefix.floor().fields();
+    let slot_id = prefix.producer_slot_id();
+    let slot = &slot_id.as_bytes().as_slice();
+    let dataset = &prefix
+        .manifest()
+        .identity()
+        .dataset_id
+        .as_bytes()
+        .as_slice();
+    initial_history::check_delivery::<AdmissionError>(lease, policy, cancelled)?;
+    let mut resolution = prefix
+        .resolution(recovery, cancelled)
+        .map_err(ProducerCompactionError::Native)?;
+    {
+        let params: &[&(dyn ToSql + Sync)] = &[slot, dataset];
+        let stream = tx
+            .query_raw(OUTCOMES, params.iter().copied())
+            .await
+            .map_err(backend)?;
+        futures_util::pin_mut!(stream);
+        while let Some(row) = stream.try_next().await.map_err(backend)? {
+            initial_history::check_delivery::<AdmissionError>(lease, policy, cancelled)?;
+            let sequence = ingest_registry::decimal(row.try_get(0).map_err(backend)?)
+                .map_err(ProducerCompactionError::Registry)?;
+            let input_bytes: i32 = row.try_get(3).map_err(backend)?;
+            let bytes: &[u8] = row.try_get(6).map_err(backend)?;
+            if !(1..=16 * 1024 * 1024).contains(&input_bytes)
+                || bytes.is_empty()
+                || bytes.len() > MAX_OUTCOME_BYTES
+                || !row.try_get::<_, bool>(8).map_err(backend)?
+                || fixed::<32>(&row, 2)? != floor.manifest_sha256
+                || <[u8; 32]>::from(Sha256::digest(bytes)) != fixed::<32>(&row, 7)?
+            {
+                return Err(OwnerError::InvalidMetadata.into());
+            }
+            let kind = match row.try_get::<_, i16>(4).map_err(backend)? {
+                1 => NativeOutcomeKind::NewFacts,
+                2 => NativeOutcomeKind::AlreadyDurable,
+                3 => NativeOutcomeKind::Rejected,
+                _ => return Err(OwnerError::InvalidMetadata.into()),
+            };
+            let historical_policy = ingest_registry::decimal(row.try_get(5).map_err(backend)?)
+                .map_err(ProducerCompactionError::Registry)?;
+            resolution
+                .record(
+                    CompactedOutcomeRow {
+                        request: ProducerRequestId {
+                            producer_slot_id: prefix.producer_slot_id(),
+                            producer_epoch: ProducerEpoch::new(1).expect("initial epoch"),
+                            request_sequence: RequestSequence::new(sequence)
+                                .map_err(|_| OwnerError::InvalidMetadata)?,
+                        },
+                        digest: Digest256::from_bytes(fixed::<32>(&row, 1)?),
+                        kind,
+                        policy_epoch: PolicyEpoch::new(historical_policy),
+                        bytes,
+                        input_bytes: input_bytes as u32,
+                    },
+                    limits,
+                    outcome_permit,
+                    cancelled,
+                    || producer_progress::recovery::authority(lease, policy, cancelled),
+                )
+                .map_err(ProducerCompactionError::Native)?;
+        }
+    }
+    resolution
+        .finish(cancelled)
+        .map_err(ProducerCompactionError::Native)
 }
 
 // Current Control/dataset custody prevents concurrent successor preparation.

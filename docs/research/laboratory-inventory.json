@@ -62115,6 +62115,27 @@
         "invocation_record": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-61b15e4/replay-invocation-record.json",
         "preserved": "All five original-preservation flags true; four clones, quarantined seven original inputs, native files, SQL snapshots, logs, frozen source, all result/failure receipts retained. No cache/dataset cleanup.",
         "next": "Compacted successor compatibility before actual floor installation/deletion"
+      },
+      "compacted_lineage_inputs_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-lineage-inputs-20261023",
+        "branch": "work/compacted-lineage-inputs",
+        "base": "64150eae0d7c918d0700c562a61883d97d73c216",
+        "owner": "compacted_reader_fixture",
+        "model": "gpt-6-astra/xhigh; existing verified session continuity",
+        "scope": "Shared scanner exact required later originals versus optional compacted initial residuals; focused tests, no GC or later recovery integration",
+        "state": "Author sourcecomplete clean; exact changed files integrated into root pending coherent source commit/build; tests NOT_RUN",
+        "space_observed": "265GiB available before small isolated worktree allocation; no cleanup",
+        "commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f"
+      },
+      "compacted_ancestor_context_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-ancestor-context-20261023",
+        "branch": "work/compacted-ancestor-context",
+        "base": "64150eae0d7c918d0700c562a61883d97d73c216",
+        "owner": "compacted_reader_review",
+        "scope": "Native sealed compacted initial ancestor observation under full retained lineage; no new GC, handoff, activation or positive lineage completion",
+        "state": "Native source work assigned/active; root owns integration/build/runtime; tests NOT_RUN",
+        "space_observed": "same265GiB observation before second small worktree; no large allocation or cleanup",
+        "model": "gpt-6-astra/xhigh; verified existing session continuity"
       }
     }
   },

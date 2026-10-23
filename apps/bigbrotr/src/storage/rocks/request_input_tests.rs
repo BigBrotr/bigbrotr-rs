@@ -9,6 +9,9 @@ use bigbrotr_model::{
 };
 const MIB: u64 = 1024 * 1024;
 
+#[path = "lineage_input_tests.rs"]
+mod lineage_input_tests;
+
 #[test]
 fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent() {
     use bigbrotr_model::codec::request::{MutationIntent, RequestDecodeLimits};

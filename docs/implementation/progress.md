@@ -6,10 +6,11 @@ M1–M5 remain incomplete. Root owns integration/runtime. Q37/Q38 apply.
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Observed main HEAD is `61b15e4e68a910a3828359bae9bbd17259e8e36b`; product/helper
+Observed main HEAD and verified remote are
+`64150eae0d7c918d0700c562a61883d97d73c216`; product/helper
 build is `98f80b121b6e8b3501240284fcc5cf6f192a00d0`. This documentation commit
-records the corrected installed reader qualification. Last verified remote was
-2c2a1ff; push this coherent result and verify equality. No GC writer is exposed.
+records the corrected installed reader qualification. This next source commit integrates the reviewed required/optional scanner and
+PG stream extraction; their build/runtime checks remain NOT_RUN. No GC writer is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -46,15 +47,22 @@ results/failures, ignored `.research` and all worktrees remain; no cleanup occur
 The native, PG and installed-fixture author commits remain in clean detached
 worktrees after integration and recorded reconciliation. Redundant author branch
 refs were retired; original files and commits are preserved. Fixture author is
-finished. `compacted_reader_review` is inspecting remaining compacted successor
-boundaries read-only; same verified Astra/xhigh configuration. No other agent
-implementation or autonomous laboratory process is active.
+finished538fc3a exact required/optional input accounting in isolated
+`.research/compacted-lineage-inputs-20261023`, base64150ea; root integrated/reviewed
+the exact source and12new focused tests, with execution still NOT_RUN.
+`compacted_reader_review` completed the architecture receipt and is implementing
+the sealed native ancestor observation in its inventoried isolated worktree.
+Both retain their verified Astra/xhigh configuration. Root extracted the shared PG outcome stream without changing transaction order;
+source review passes, compilation/runtime remain NOT_RUN for that local edit.
+The native slice leaves positive successor consumers refused until explicit
+wiring; no source-only result qualifies deletion. No autonomous laboratory process is active.
 
 ## Precise next step and open boundaries
 
-Finish the bounded successor-consumer review and implement an explicit compacted
-initial-ancestor proof path across handoff/prepared retry/native-gap/activation
-and later recovery. Keep original-input proofs distinct, reuse shared census and
+Run the existing producer-floor component qualification on this exact source
+commit, then the installed synthetic-reader matrix and raw replay. Review the
+sealed native ancestor observation next; explicit handoff/prepared retry/native-gap/
+activation and later recovery wiring remains required. Keep original-input proofs distinct, reuse shared census and
 retain strict current-retirement eligibility. Qualify the affected consumers
 before implementing floor installation or unlink. Record work in the existing
 report and inventory, retaining the installed synthetic-reader scope above.

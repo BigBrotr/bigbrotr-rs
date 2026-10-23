@@ -24,6 +24,7 @@ const MAX_TOTAL: u64 = 32 * 1024 * 1024;
 const SCRATCH: usize = 8192;
 #[path = "lineage_inputs.rs"]
 mod lineage_inputs;
+pub(in crate::storage::rocks::store) use lineage_inputs::LineageInputSet;
 // Covers file comparison plus bounded directory/name/descriptor bookkeeping.
 // The qualified native profile still supplies the wider engine/libc allowance.
 pub(super) const STAGING_OVERHEAD_BYTES: usize = 64 * 1024;

@@ -43691,7 +43691,34 @@
                 "Mixed restore/backup and capacity"
               ]
             }
-          ]
+          ],
+          "compacted_successor_preparation": {
+            "status": "SOURCE_PREPARATION; all successor compatibility and GC remain NOT_RUN",
+            "architecture_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-boundaries-v1.json",
+              "sha256": "4f1481c547b3faaa85525a5f8c95424bcae9f48408f63e87c1728ebb807f0065"
+            },
+            "pg_extraction": {
+              "path": "apps/bigbrotr/src/storage/postgres/producer_compaction.rs",
+              "sha256": "d2cea997c0efd7a2577ec6376af69035fe54bf49daee9d582832c3b6333a92f0",
+              "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
+              "checks": "rustfmt/diff PASS; compile/runtime NOT_RUN for this edit"
+            },
+            "next": "Exact required/optional scanner support and sealed native ancestor observation in inventoried isolated worktrees; explicit positive successor consumers follow separately, before any GC",
+            "input_scanner": {
+              "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
+              "source_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-lineage-inputs-root-review-v1.json",
+                "sha256": "d2f78900ca44979ccc0bd946d6e603635878739cb30676c0afa2be1b70282816"
+              },
+              "status": "SOURCE_INTEGRATED; build/runtime NOT_RUN",
+              "scope": "Exact required later inputs versus optional initial residuals, shared physical64files/32MiB;12new actualfile/native-owner tests included in existing request_input_tests selector and mandatory runner names",
+              "author_receipt": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-lineage-inputs-source-v1.json",
+                "sha256": "e55930d6ca3df827a1d90504898a3affb976bf8aaa00ad7dbff6173a6f8d647c"
+              }
+            }
+          }
         }
       }
     }

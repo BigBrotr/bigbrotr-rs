@@ -528,6 +528,20 @@ if producer_floor:
             'compacted_prefix_binds_custody_inputs_cancellation_and_grants',
             'compacted_outcomes_check_protection_batch_digest_and_residual_names',
             'compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_mismatch']]
+    required_controls['request_inputs'] = [
+        'storage::rocks::store::request_input_tests::lineage_input_tests::' + name for name in [
+            'compacted_input_set_validates_floor_and_required_bounds_separately',
+            'mixed_inputs_accept_full_partial_and_no_residuals_with_exact_global_stamps',
+            'one_valid_residual_cannot_mask_one_missing_required_original',
+            'compacted_wrappers_check_present_residuals_and_preserve_missing_directory_refusal',
+            'mixed_inputs_refuse_wrong_slot_epoch_sequence_and_noncanonical_names',
+            'mixed_residual_check_binds_content_and_the_complete_required_spool',
+            'staged_addition_excludes_only_exact_new_required_file',
+            'recovery_tail_is_stamped_separately_and_never_supplies_required_credit',
+            'all_present_classes_share_the_physical_file_limit',
+            'required_residual_and_tail_bytes_share_the_existing_logical_byte_limit',
+            'residual_files_keep_private_link_and_complete_content_checks',
+            'mixed_input_scan_observes_cancellation_before_and_during_enumeration']]
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

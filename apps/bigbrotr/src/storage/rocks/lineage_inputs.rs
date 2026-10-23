@@ -14,14 +14,60 @@ struct InputScan {
     tail: Option<SuccessorStagedInput>,
 }
 
+/// Required originals and one optional initial residual range share a physical
+/// spool. The predicate supplied to a scan identifies required originals only
+/// after subtracting this range; residual presence never supplies required credit.
+#[derive(Clone, Copy)]
+pub(in crate::storage::rocks::store) struct LineageInputSet {
+    required_count: u64,
+    compacted_initial: Option<(ProducerSlotId, u64)>,
+}
+
+impl From<u64> for LineageInputSet {
+    fn from(required_count: u64) -> Self {
+        Self {
+            required_count,
+            compacted_initial: None,
+        }
+    }
+}
+
+impl LineageInputSet {
+    pub(in crate::storage::rocks::store) fn with_compacted_initial(
+        required_count: u64,
+        slot: ProducerSlotId,
+        floor: u64,
+    ) -> Result<Self, BootstrapError> {
+        if floor == 0 {
+            return Err(BootstrapError::InvalidIntent);
+        }
+        if required_count > MAX_FILES as u64 || floor > MAX_FILES as u64 {
+            return Err(BootstrapError::Limit);
+        }
+        // Only actual residual files consume the shared 64-file allowance.
+        Ok(Self {
+            required_count,
+            compacted_initial: Some((slot, floor)),
+        })
+    }
+
+    fn residual(self, id: ProducerRequestId) -> bool {
+        self.compacted_initial.is_some_and(|(slot, floor)| {
+            id.producer_slot_id == slot
+                && id.producer_epoch.get() == 1
+                && id.request_sequence.get() <= floor
+        })
+    }
+}
+
 impl IngestStore {
     pub(in crate::storage::rocks::store) fn lineage_input_census(
         &self,
-        expected_count: u64,
+        inputs: impl Into<LineageInputSet>,
         accepts: impl FnMut(ProducerRequestId) -> bool,
         cancelled: &AtomicBool,
     ) -> Result<[u8; 32], BootstrapError> {
-        self.lineage_input_delta(expected_count, accepts, None, cancelled)
+        self.lineage_input_delta(inputs, accepts, None, cancelled)
             .map(|(all, _)| all)
     }
 
@@ -30,40 +76,26 @@ impl IngestStore {
     /// Unknown files are still refused, never filtered out of the directory.
     pub(in crate::storage::rocks::store) fn lineage_input_delta(
         &self,
-        expected_count: u64,
+        inputs: impl Into<LineageInputSet>,
         accepts: impl FnMut(ProducerRequestId) -> bool,
         addition: Option<(ProducerRequestId, [u8; 32], u64)>,
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], [u8; 32]), BootstrapError> {
-        self.lineage_input_scan(
-            expected_count..=expected_count,
-            accepts,
-            addition,
-            None,
-            None,
-            cancelled,
-        )
-        .map(|scan| (scan.all, scan.previous))
+        self.lineage_input_scan(inputs.into(), accepts, addition, None, None, cancelled)
+            .map(|scan| (scan.all, scan.previous))
     }
 
     /// Recovery alone may retain one current issued+1 input. All issued files
     /// remain required; the optional file is stamped, never treated as issued.
     pub(in crate::storage::rocks::store) fn successor_recovery_inputs(
         &self,
-        issued_count: u64,
+        inputs: impl Into<LineageInputSet>,
         accepts: impl FnMut(ProducerRequestId) -> bool,
         tail: ProducerRequestId,
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
-        self.lineage_input_scan(
-            issued_count..=issued_count,
-            accepts,
-            None,
-            Some(tail),
-            None,
-            cancelled,
-        )
-        .map(|scan| (scan.all, scan.tail))
+        self.lineage_input_scan(inputs.into(), accepts, None, Some(tail), None, cancelled)
+            .map(|scan| (scan.all, scan.tail))
     }
 
     /// Optional residual originals beneath one already observed native floor.
@@ -75,12 +107,8 @@ impl IngestStore {
         cancelled: &AtomicBool,
     ) -> Result<[u8; 32], BootstrapError> {
         self.lineage_input_scan(
-            0..=floor,
-            |id| {
-                id.producer_slot_id == slot
-                    && id.producer_epoch.get() == 1
-                    && id.request_sequence.get() <= floor
-            },
+            super::LineageInputSet::with_compacted_initial(0, slot, floor)?,
+            |_| false,
             None,
             None,
             None,
@@ -97,24 +125,31 @@ impl IngestStore {
         length: u64,
         cancelled: &AtomicBool,
     ) -> Result<[u8; 32], BootstrapError> {
-        self.lineage_input_scan(
-            0..=floor,
-            |id| {
-                id.producer_slot_id == request.producer_slot_id
-                    && id.producer_epoch.get() == 1
-                    && id.request_sequence.get() <= floor
-            },
-            None,
-            None,
-            Some((request, digest, length)),
+        self.require_compacted_lineage_input(
+            super::LineageInputSet::with_compacted_initial(0, request.producer_slot_id, floor)?,
+            |_| false,
+            (request, digest, length),
             cancelled,
         )
-        .map(|scan| scan.all)
+    }
+
+    /// Authenticate a residual only if present, while retaining the complete
+    /// required/residual census. An absent original never excuses a missing
+    /// required file or changes the caller's recorded global stamp.
+    pub(in crate::storage::rocks::store) fn require_compacted_lineage_input(
+        &self,
+        inputs: LineageInputSet,
+        accepts: impl FnMut(ProducerRequestId) -> bool,
+        checked: (ProducerRequestId, [u8; 32], u64),
+        cancelled: &AtomicBool,
+    ) -> Result<[u8; 32], BootstrapError> {
+        self.lineage_input_scan(inputs, accepts, None, None, Some(checked), cancelled)
+            .map(|scan| scan.all)
     }
 
     fn lineage_input_scan(
         &self,
-        expected_count: std::ops::RangeInclusive<u64>,
+        inputs: LineageInputSet,
         mut accepts: impl FnMut(ProducerRequestId) -> bool,
         addition: Option<(ProducerRequestId, [u8; 32], u64)>,
         tail: Option<ProducerRequestId>,
@@ -129,11 +164,21 @@ impl IngestStore {
             }
         };
         check()?;
-        if *expected_count.end() > MAX_FILES as u64 {
+        if inputs.required_count > MAX_FILES as u64 {
             return Err(BootstrapError::Limit);
+        }
+        // A staged tail is not issued; a delta removes one required original
+        // from its prior stamp. Neither can silently consume a residual slot.
+        if tail.is_some_and(|id| inputs.residual(id) || accepts(id))
+            || addition
+                .is_some_and(|(id, _, _)| inputs.residual(id) || Some(id) == tail || !accepts(id))
+            || checked.is_some_and(|(id, _, _)| !inputs.residual(id))
+        {
+            return Err(BootstrapError::InvalidIntent);
         }
         let mut stamps: [Stamp; MAX_FILES] = [([0; 71], [0; 32]); MAX_FILES];
         let mut count = 0;
+        let mut required_count = 0;
         let mut total = 0_u64;
         let mut observed_tail = None;
         let mut buffer = [0; SCRATCH];
@@ -141,7 +186,11 @@ impl IngestStore {
             Ok(directory) => Some(directory),
             // An actually empty legacy lifetime may lack a spool. A nonempty
             // compacted lifetime only unlinks files; its directory must remain.
-            Err(RequestInputError::Missing) if *expected_count.end() == 0 => None,
+            Err(RequestInputError::Missing)
+                if inputs.required_count == 0 && inputs.compacted_initial.is_none() =>
+            {
+                None
+            }
             Err(error) => return Err(BootstrapError::RequestInput(error)),
         };
         if let Some(directory) = directory {
@@ -159,7 +208,11 @@ impl IngestStore {
                     return Err(BootstrapError::Limit);
                 }
                 let id = parse_name(name).map_err(BootstrapError::RequestInput)?;
-                if !accepts(id) && Some(id) != tail {
+                if inputs.residual(id) || Some(id) == tail {
+                    // Both optional classes are still read, charged and stamped.
+                } else if accepts(id) {
+                    required_count += 1;
+                } else {
                     return Err(BootstrapError::RequestInput(RequestInputError::Identity));
                 }
                 let mut file = open_input(
@@ -229,7 +282,7 @@ impl IngestStore {
                 count += 1;
             }
         }
-        if !expected_count.contains(&(count as u64 - u64::from(observed_tail.is_some()))) {
+        if required_count != inputs.required_count {
             return Err(BootstrapError::RequestInput(RequestInputError::Missing));
         }
         stamps[..count].sort_unstable_by_key(|(name, _)| *name);
