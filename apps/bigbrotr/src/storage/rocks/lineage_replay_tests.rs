@@ -6,6 +6,9 @@ use crate::storage::rocks::store::{LineageResolution, ResolvedLineage};
 use std::os::unix::fs::PermissionsExt;
 static NOT_CANCELLED: AtomicBool = AtomicBool::new(false);
 
+#[path = "compacted_ancestor_tests.rs"]
+mod compacted_ancestor_tests;
+
 #[path = "successor_handoff_tests.rs"]
 mod successor_handoff_tests;
 

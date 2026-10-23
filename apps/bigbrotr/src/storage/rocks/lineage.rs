@@ -31,8 +31,9 @@ mod census;
 #[path = "compacted_prefix.rs"]
 mod compacted;
 pub use compacted::{
-    COMPACTED_PREFIX_METADATA_BYTES, CompactedOutcomeRow, CompactedPrefixResolution,
-    RetainedCompactedPrefix, VerifiedCompactedPrefix, compacted_outcome_data_bytes,
+    COMPACTED_PREFIX_METADATA_BYTES, CompactedInitialAncestor, CompactedOutcomeRow,
+    CompactedPrefixResolution, RetainedCompactedPrefix, VerifiedCompactedPrefix,
+    compacted_outcome_data_bytes,
 };
 
 #[path = "successor_recovery.rs"]
@@ -104,6 +105,7 @@ impl RetainedLineageEntry {
 /// SQL lifecycle/activation, or expose a writer or a handoff conversion.
 pub struct RetainedLineage {
     entries: Vec<RetainedLineageEntry>,
+    compacted: Option<ClosedProducerFloor>,
     slot: ProducerSlotId,
     root: (u64, u64),
     sequence: u64,
@@ -142,7 +144,7 @@ impl RetainedLineage {
         Census {
             entries: &self.entries,
             slot: self.slot,
-            compacted: None,
+            compacted: self.compacted.as_ref(),
         }
     }
 
@@ -168,6 +170,25 @@ impl RetainedLineage {
         Ok(lineage)
     }
 
+    /// Structural/input inspection with one explicitly compacted initial
+    /// ancestor. This does not enable ordinary positive lineage resolution.
+    /// All later epochs retain their original receipts and required inputs.
+    pub fn inspect_compacted_initial(
+        recovery: &IngestRecovery,
+        pending_target: Option<u64>,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        let mut lineage =
+            Self::inspect_structure_in(recovery, pending_target, permit, cancelled, true)?;
+        if lineage.compacted.is_none() {
+            return Err(BootstrapError::StateMismatch);
+        }
+        lineage.inputs = lineage.input_census(recovery, cancelled)?;
+        lineage.validate(recovery, cancelled)?;
+        Ok(lineage)
+    }
+
     // Private construction stage shared with recovery. It has not yet accepted
     // any sidecar census and is never returned through the public reader API.
     fn inspect_structure(
@@ -175,6 +196,16 @@ impl RetainedLineage {
         pending_target: Option<u64>,
         permit: OwnedPermit,
         cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        Self::inspect_structure_in(recovery, pending_target, permit, cancelled, false)
+    }
+
+    fn inspect_structure_in(
+        recovery: &IngestRecovery,
+        pending_target: Option<u64>,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        allow_compacted_initial: bool,
     ) -> Result<Self, BootstrapError> {
         let head = recovery.manifest();
         let epoch = head.identity().owner_epoch.get();
@@ -216,18 +247,27 @@ impl RetainedLineage {
         let mut previous = *initial.next_manifest();
         let mut incoming: [u8; 32] = Sha256::digest(&initial_bytes).into();
         require_fresh(&[], initial.previous_manifest())?;
-        entries.push(entry(
-            recovery,
-            *initial.previous_manifest(),
-            [0; 32],
-            Some((
-                RetainedTerminalKind::Initial,
-                initial.issued_through(),
-                initial.last_complete_sequence(),
-                initial.closure_digest(),
-            )),
-            slot,
-        )?);
+        let terminal = Some((
+            RetainedTerminalKind::Initial,
+            initial.issued_through(),
+            initial.last_complete_sequence(),
+            initial.closure_digest(),
+        ));
+        let (first, compacted) =
+            match compacted::initial_entry(recovery, &initial, allow_compacted_initial)? {
+                Some((first, floor)) => (first, Some(floor)),
+                None => (
+                    entry(
+                        recovery,
+                        *initial.previous_manifest(),
+                        [0; 32],
+                        terminal,
+                        slot,
+                    )?,
+                    None,
+                ),
+            };
+        entries.push(first);
         drop(initial_bytes);
         for predecessor in 2..epoch {
             check_cancelled(cancelled)?;
@@ -270,6 +310,7 @@ impl RetainedLineage {
         entries.push(entry(recovery, *head, incoming, None, slot)?);
         let lineage = Self {
             entries,
+            compacted,
             slot,
             root,
             sequence,
@@ -397,22 +438,41 @@ impl RetainedLineage {
         recovery: &IngestRecovery,
         cancelled: &AtomicBool,
     ) -> Result<[u8; 32], BootstrapError> {
-        let expected = self
+        recovery.store.lineage_input_census(
+            self.input_set()?,
+            |id| self.accepts_input(id),
+            cancelled,
+        )
+    }
+
+    fn input_set(&self) -> Result<super::request_inputs::LineageInputSet, BootstrapError> {
+        let required = self
             .entries
             .iter()
+            .skip(usize::from(self.compacted.is_some()))
             .try_fold(0_u64, |total, entry| total.checked_add(entry.issued))
             .filter(|total| *total <= 64)
             .ok_or(BootstrapError::Limit)?;
-        recovery.store.lineage_input_census(
-            expected,
-            |id: ProducerRequestId| {
-                id.producer_slot_id == self.slot
-                    && self
-                        .at(id.producer_epoch.get())
-                        .is_some_and(|entry| id.request_sequence.get() <= entry.issued)
-            },
-            cancelled,
-        )
+        match &self.compacted {
+            Some(floor) => super::request_inputs::LineageInputSet::with_compacted_initial(
+                required,
+                self.slot,
+                floor.fields().issued_through,
+            ),
+            None => Ok(required.into()),
+        }
+    }
+
+    fn accepts_input(&self, id: ProducerRequestId) -> bool {
+        id.producer_slot_id == self.slot
+            && !(id.producer_epoch.get() == 1 && self.compacted.is_some())
+            && self
+                .at(id.producer_epoch.get())
+                .is_some_and(|entry| id.request_sequence.get() <= entry.issued)
+    }
+
+    pub(super) fn has_compacted_initial(&self) -> bool {
+        self.compacted.is_some()
     }
     fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
         usize::try_from(epoch.checked_sub(1)?)

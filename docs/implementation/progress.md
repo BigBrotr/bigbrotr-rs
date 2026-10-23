@@ -6,9 +6,11 @@ M1–M5 remain incomplete. Root owns integration/runtime. Q37/Q38 apply.
 ## Current objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Validated main source is `5be8449828f52a5fa96dc06312ec9490ffca13ba`; this commit
-records its qualification. Last observed equal remote was64150ea; push the
-coherent result and verify equality. No GC writer or unlink is exposed.
+Validated main source is `5be8449828f52a5fa96dc06312ec9490ffca13ba`; last observed
+HEAD and equal remote are `7dc9ed9e61eefb189befcefccfc502beb462460d`.
+This source commit integrates the independently reviewed native ancestor primitive
+from727f9a0 and six mandatory runner controls. New runtime checks are NOT_RUN.
+No GC writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -46,18 +48,21 @@ empty. Sources, ELFs, clones, quarantined originals, failures, logs, ignored
 
 Scanner author538fc3a is integrated unchanged; its original clean worktree is
 detached after exact-blob reconciliation and redundant branch retirement.
-`compacted_reader_review` is completing native ancestor-context source work in
+`compacted_reader_review` completed native ancestor-context source work in
 `.research/compacted-ancestor-context-20261023`, branch
 `work/compacted-ancestor-context`, base64150ea plus scanner cherry-pick7636d29.
-Assigned native changes and new tests are preserved there; all their builds/tests
-are NOT_RUN. Same verified Astra/xhigh session. No other agent writes or runs engines.
+Its clean frozen727f9a0 is preserved there and seven source blobs match the main
+integration exactly. Independent root review found no remaining source issue;
+the report links both receipts. Builds/tests are NOT_RUN for this new primitive.
+Both agents are idle; no other agent writes or runs engines. Same verified
+Astra/xhigh session continuity. Space263GiB before the next bounded build.
 
 ## Precise next step and open boundaries
 
-Review the frozen native ancestor-context delta/receipt, including full later
-scientific census, exact required/optional input stamp, original-manifest floor
-anchors and refusal of all unadapted positive consumers. Integrate and qualify
-that bounded primitive with the existing runner. Then explicitly wire initial
+Run the existing producer-floor profile from the new exact source commit:
+expect124 components and all26 mandatory controls, CLI/probe build and Clippy.
+Then run the installed current-reader regression and isolated raw replay.
+Record outcomes in the existing report/inventory. Then explicitly wire initial
 handoff/prepared retry/native-gap, epoch2 activated recovery, ordered later
 recovery and live writer frontier before enabling floor installation/deletion.
 

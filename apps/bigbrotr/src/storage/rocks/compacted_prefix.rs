@@ -23,6 +23,215 @@ pub struct RetainedCompactedPrefix {
 }
 const _: () = assert!(size_of::<RetainedCompactedPrefix>() < LINEAGE_SCRATCH_BYTES as usize / 4);
 
+/// Full native consistency of a compacted initial ancestor, borrowing the
+/// single retained lineage allocation and actual excluded native owner. Neither
+/// this view nor its canonical-outcome result enables positive original replay.
+pub struct CompactedInitialAncestor<'a> {
+    lineage: &'a RetainedLineage,
+    recovery: &'a IngestRecovery,
+}
+
+// One private borrowed interpretation shared by the canonical outcome reducer.
+// The strict initial owner retains its own entry/grant; an ancestor borrows the
+// existing lineage entry and grant, never a second frontier allocation.
+#[derive(Clone, Copy)]
+enum PrefixOwner<'a> {
+    Initial(&'a RetainedCompactedPrefix),
+    Ancestor(&'a RetainedLineage),
+}
+// The optional floor and all simultaneous borrowed cursor headers use the
+// existing metadata scratch, separately from the one capacity-charged Vec.
+const _: () = assert!(
+    size_of::<RetainedLineage>()
+        + size_of::<CompactedInitialAncestor<'_>>()
+        + size_of::<CompactedPrefixResolution<'_>>()
+        + size_of::<VerifiedCompactedPrefix<'_>>()
+        < LINEAGE_SCRATCH_BYTES as usize / 4
+);
+impl PrefixOwner<'_> {
+    fn manifest(&self) -> &IngestManifest {
+        match self {
+            Self::Initial(prefix) => prefix.manifest(),
+            Self::Ancestor(lineage) => lineage.entry(1).expect("inspected ancestor").manifest(),
+        }
+    }
+    fn floor(&self) -> &ClosedProducerFloor {
+        match self {
+            Self::Initial(prefix) => prefix.floor(),
+            Self::Ancestor(lineage) => lineage.compacted.as_ref().expect("sealed floor view"),
+        }
+    }
+    fn slot(&self) -> ProducerSlotId {
+        match self {
+            Self::Initial(prefix) => prefix.slot,
+            Self::Ancestor(lineage) => lineage.slot,
+        }
+    }
+    fn validate(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        match self {
+            Self::Initial(prefix) => prefix.validate(recovery, cancelled),
+            Self::Ancestor(lineage) => lineage.validate(recovery, cancelled).map_err(Into::into),
+        }
+    }
+    fn require_input(
+        &self,
+        recovery: &IngestRecovery,
+        checked: (ProducerRequestId, [u8; 32], u64),
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        let (actual, expected) = match self {
+            Self::Initial(prefix) => (
+                recovery.store.require_compacted_input(
+                    prefix.floor.fields().issued_through,
+                    checked.0,
+                    checked.1,
+                    checked.2,
+                    cancelled,
+                )?,
+                prefix.inputs,
+            ),
+            Self::Ancestor(lineage) => (
+                recovery.store.require_compacted_lineage_input(
+                    lineage.input_set()?,
+                    |id| lineage.accepts_input(id),
+                    checked,
+                    cancelled,
+                )?,
+                lineage.inputs,
+            ),
+        };
+        if actual != expected {
+            return Err(AdmissionError::StateMismatch);
+        }
+        Ok(())
+    }
+}
+
+impl RetainedLineage {
+    /// Validate every retained scientific/index/pending stream before exposing
+    /// the ancestor reducer. Later original requests are still unproved; the
+    /// ordinary positive cursor deliberately refuses this structural object.
+    pub fn compacted_initial_ancestor<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Option<CompactedInitialAncestor<'a>>, AdmissionError> {
+        if self.compacted.is_none() {
+            return Ok(None);
+        }
+        if effects.request().units().items() == 0
+            || effects.request().units().data_bytes()
+                < limits.required_dictionary_replay_data_bytes()?
+        {
+            return Err(AdmissionError::InsufficientReservation);
+        }
+        self.validate(recovery, cancelled)?;
+        self.verify_effect_census(
+            recovery,
+            self.native_head().manifest().identity().owner_epoch.get(),
+            limits,
+            effects,
+            cancelled,
+        )?;
+        self.validate(recovery, cancelled)?;
+        Ok(Some(CompactedInitialAncestor {
+            lineage: self,
+            recovery,
+        }))
+    }
+}
+
+impl<'a> CompactedInitialAncestor<'a> {
+    pub fn manifest(&self) -> &IngestManifest {
+        self.lineage
+            .entry(1)
+            .expect("inspected ancestor")
+            .manifest()
+    }
+    pub fn floor(&self) -> &ClosedProducerFloor {
+        self.lineage.compacted.as_ref().expect("sealed floor view")
+    }
+    pub fn producer_slot_id(&self) -> ProducerSlotId {
+        self.lineage.slot
+    }
+    pub fn validate(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        PrefixOwner::Ancestor(self.lineage).validate(recovery, cancelled)
+    }
+    pub fn resolution(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<CompactedPrefixResolution<'a>, AdmissionError> {
+        CompactedPrefixResolution::new(
+            PrefixOwner::Ancestor(self.lineage),
+            self.recovery,
+            cancelled,
+        )
+    }
+}
+
+/// Only the exact first handoff can select the original manifest/count/cut/D.
+/// All other producer markers keep the generic decoder's strict R=0 boundary.
+pub(super) fn initial_entry(
+    recovery: &IngestRecovery,
+    initial: &InitialHandoffRecord,
+    allowed: bool,
+) -> Result<Option<(RetainedLineageEntry, ClosedProducerFloor)>, BootstrapError> {
+    if !allowed {
+        return Ok(None);
+    }
+    let manifest = *initial.previous_manifest();
+    let bytes = value(
+        recovery,
+        IngestKey::ProducerState {
+            producer_slot_id: initial.producer_slot_id(),
+            producer_epoch: ProducerEpoch::new(1).expect("initial ancestor"),
+        },
+    )?;
+    if !bytes.starts_with(&[3, 0x31]) {
+        ProducerState::decode(&bytes)?;
+        return Ok(None);
+    }
+    let floor = ClosedProducerFloor::decode(&bytes).map_err(|_| BootstrapError::StateMismatch)?;
+    let fields = floor.fields();
+    if manifest.key_schema() != 1
+        || manifest.identity().owner_epoch.get() != 1
+        || fields.manifest_sha256 != <[u8; 32]>::from(Sha256::digest(manifest.encode().as_bytes()))
+        || fields.issued_through != initial.issued_through()
+        || fields.source_through != initial.last_complete_sequence()
+        || fields.closure_digest != initial.closure_digest()
+    {
+        return Err(BootstrapError::StateMismatch);
+    }
+    let entry = entry_coordinates(
+        recovery,
+        manifest,
+        [0; 32],
+        Some((
+            RetainedTerminalKind::Initial,
+            fields.issued_through,
+            fields.source_through,
+            fields.closure_digest,
+        )),
+        ProducerState {
+            issued: fields.issued_through,
+            acknowledged: fields.issued_through,
+            retired: fields.issued_through,
+            closing: true,
+        },
+    )?;
+    Ok(Some((entry, floor)))
+}
+
 impl IngestRecovery {
     /// Select the initial closed-floor reader without granting any authority.
     /// Ordinary legacy decoding/recovery still refuses the new version.

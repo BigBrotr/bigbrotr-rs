@@ -542,6 +542,14 @@ if producer_floor:
             'required_residual_and_tail_bytes_share_the_existing_logical_byte_limit',
             'residual_files_keep_private_link_and_complete_content_checks',
             'mixed_input_scan_observes_cancellation_before_and_during_enumeration']]
+    required_controls['initial_reconstruction'] = [
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::' + name for name in [
+            'compacted_ancestor_reads_full_later_census_and_all_residual_shapes_without_writes',
+            'compacted_ancestor_requires_exact_initial_anchor_and_refuses_later_floors',
+            'compacted_ancestor_census_covers_epoch_two_and_later_correction_ancestry',
+            'compacted_ancestor_requires_pending_science_and_later_originals',
+            'compacted_ancestor_binds_root_sequence_sidecars_and_native_uncertainty',
+            'compacted_ancestor_requires_grants_cancellation_and_complete_ordered_rows']]
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

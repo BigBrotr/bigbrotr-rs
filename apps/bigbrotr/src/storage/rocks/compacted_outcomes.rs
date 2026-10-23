@@ -25,7 +25,7 @@ pub struct CompactedOutcomeRow<'a> {
 }
 
 pub struct CompactedPrefixResolution<'a> {
-    prefix: &'a RetainedCompactedPrefix,
+    prefix: PrefixOwner<'a>,
     recovery: &'a IngestRecovery,
     requests: u64,
     source_through: u64,
@@ -36,7 +36,7 @@ pub struct CompactedPrefixResolution<'a> {
 /// ACK credit, a writer or reclamation permission. The PG owner wraps it only
 /// after authenticating the exact retained history and confirming COMMIT.
 pub struct VerifiedCompactedPrefix<'a> {
-    prefix: &'a RetainedCompactedPrefix,
+    prefix: PrefixOwner<'a>,
     recovery: &'a IngestRecovery,
 }
 
@@ -46,15 +46,25 @@ impl RetainedCompactedPrefix {
         recovery: &'a IngestRecovery,
         cancelled: &AtomicBool,
     ) -> Result<CompactedPrefixResolution<'a>, AdmissionError> {
-        self.validate(recovery, cancelled)?;
+        CompactedPrefixResolution::new(PrefixOwner::Initial(self), recovery, cancelled)
+    }
+}
+
+impl<'a> CompactedPrefixResolution<'a> {
+    pub(super) fn new(
+        prefix: PrefixOwner<'a>,
+        recovery: &'a IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        prefix.validate(recovery, cancelled)?;
         let mut digest = Sha256::new();
         digest.update(b"bigbrotr/initial-source-closure/1\0");
-        digest.update(self.floor().fields().manifest_sha256);
-        digest.update(self.slot.as_bytes());
+        digest.update(prefix.floor().fields().manifest_sha256);
+        digest.update(prefix.slot().as_bytes());
         digest.update(1_u64.to_be_bytes());
-        digest.update(self.floor().fields().issued_through.to_be_bytes());
+        digest.update(prefix.floor().fields().issued_through.to_be_bytes());
         Ok(CompactedPrefixResolution {
-            prefix: self,
+            prefix,
             recovery,
             requests: 0,
             source_through: 0,
@@ -81,7 +91,7 @@ impl CompactedPrefixResolution<'_> {
         self.prefix.validate(self.recovery, cancelled)?;
         let floor = self.prefix.floor().fields();
         let identity = self.prefix.manifest().identity();
-        if row.request.producer_slot_id != self.prefix.slot
+        if row.request.producer_slot_id != self.prefix.slot()
             || row.request.producer_epoch.get() != 1
             || self.requests.checked_add(1) != Some(row.request.request_sequence.get())
             || row.request.request_sequence.get() > floor.issued_through
@@ -92,16 +102,15 @@ impl CompactedPrefixResolution<'_> {
         {
             return Err(AdmissionError::StateMismatch);
         }
-        if self.recovery.store.require_compacted_input(
-            floor.issued_through,
-            row.request,
-            *row.digest.as_bytes(),
-            u64::from(row.input_bytes),
+        self.prefix.require_input(
+            self.recovery,
+            (
+                row.request,
+                *row.digest.as_bytes(),
+                u64::from(row.input_bytes),
+            ),
             cancelled,
-        )? != self.prefix.inputs
-        {
-            return Err(AdmissionError::StateMismatch);
-        }
+        )?;
         let next_source = if row.kind == NativeOutcomeKind::Rejected {
             let (_, policy) =
                 read_rejection(row.bytes, row.request, row.digest, identity.dataset_id)?;
@@ -229,7 +238,7 @@ impl VerifiedCompactedPrefix<'_> {
         self.prefix.manifest()
     }
     pub fn producer_slot_id(&self) -> ProducerSlotId {
-        self.prefix.slot
+        self.prefix.slot()
     }
     pub fn validate(
         &self,

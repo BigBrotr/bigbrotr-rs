@@ -79,6 +79,11 @@ impl RetainedLineage {
         cancelled: &'a AtomicBool,
         recovery_owner: Option<&'a NativeSuccessorRecovery>,
     ) -> Result<LineageResolution<'a>, BootstrapError> {
+        // Structural compacted inspection is not original replay. A separate
+        // connected ancestor proof step must be wired before this can advance.
+        if self.has_compacted_initial() {
+            return Err(BootstrapError::StateMismatch);
+        }
         if let Some(owner) = recovery_owner {
             owner.validate(recovery, cancelled)?;
         } else {
