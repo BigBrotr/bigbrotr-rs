@@ -62238,11 +62238,10 @@
       },
       "compacted_successor_history_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-successor-history-20261023",
-        "branch": "work/compacted-successor-history",
         "base": "57427260a4c73024c6774371343baee78ac0d991",
         "owner": "compacted_reader_review",
         "model": "gpt-6-astra/xhigh; verified existing session continuity",
-        "state": "CLEAN source frozen; root independent source review complete, compilation/runtime NOT_RUN",
+        "state": "DETACHED_CLEAN original author source preserved; independently reconciled/integrated/qualified; redundant branchref retired",
         "scope": "Explicit read-only compacted SuccessorHistory, shared sealed canonical PG stream, separate compacted count and early guards at unadapted positive transition consumers; focused native tests. Root owns runtime/probe integration.",
         "preserved": "Original detached727 ancestor and538 scanner worktrees retained; no cleanup",
         "commit": "c97459b65ef1f3b96942e5a2adbde618e5b19a9b",
@@ -62250,15 +62249,19 @@
         "author_receipt": {
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-history-source-v1.json",
           "sha256": "a1d5e5aa885386895887fc8950a88be7e573815572410069ae2d63f1c39bcbdf"
+        },
+        "retired_branch": "work/compacted-successor-history",
+        "branch_reconciliation": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-branch-reconciliation-v1.json",
+          "sha256": "6217db601eab183061dbb2f97f1880859875dbc6299cdfab69474f74cc9bc67b"
         }
       },
       "compacted_history_fixture_work_20261023": {
         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-history-fixture-20261023",
-        "branch": "work/compacted-history-fixture",
         "base": "57427260a4c73024c6774371343baee78ac0d991",
         "owner": "compacted_reader_fixture",
         "model": "gpt-6-astra/xhigh; verified existing session continuity",
-        "state": "CLEAN source frozen; integrated delta independently reviewed; new build/runtime NOT_RUN",
+        "state": "DETACHED_CLEAN original author source preserved; independently reconciled/integrated/qualified; redundant branchref retired",
         "scope": "Extend existing orchestration and independent oracle from exact dfbb8dc ACK seed through authentic terminal2/prepared3 before synthetic floor. Root owns runtime, bootstrap dispatch/history probe and native build profile.",
         "preserved": "Existing seed files and detached author worktrees retained; no cleanup or engine activity",
         "commit": "ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f",
@@ -62266,6 +62269,11 @@
         "author_receipt": {
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fixture-source-v1.json",
           "sha256": "afeb51ea49350981e154d927f32c3cdd31b0627c535796c92c9096008e2aa281"
+        },
+        "retired_branch": "work/compacted-history-fixture",
+        "branch_reconciliation": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-branch-reconciliation-v1.json",
+          "sha256": "6217db601eab183061dbb2f97f1880859875dbc6299cdfab69474f74cc9bc67b"
         }
       },
       "compacted_successor_history_build_20261023": {
@@ -62331,6 +62339,63 @@
         "result": {
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-f4d1261/installed-compacted-history/result.json",
           "sha256": "7f07d027b8488e840d3c6d98229ae26e3d0ba63a3d873dd4882c4663f95fc13c"
+        },
+        "preservation": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        }
+      },
+      "compacted_successor_history_corrected_installed_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c",
+        "source": "6ece98c868e842d46fc4e13a359d19dd9a924d76",
+        "tree": "bea1f9ae720bdb6a4ff00987db2e41f140b261f8",
+        "product_source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+        "build": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-f4d1261/out/artifacts",
+        "driver": "9260 joined exit0; raw37885 joined exit0",
+        "state": "STOPPED_RETAINED PASS50commands/454controls/raw5482",
+        "owner": "b5be20fe11a6ba90e682e33afbe4ab32",
+        "label": "org.bigbrotr.installed-compacted-history",
+        "client": "45e3e57671294b4749737609f20c4038b7cc30fe90e5016a33d33e91c0cad317",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "preserved": "Original failedf4d1261 connected run, source/ELFs, original ACK seed and all clones/quarantines preserved",
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c/installed-compacted-history/result.json",
+          "sha256": "bdb3e3599c1c624ee8e1e0bf264a3b9a2f37688da431d16d5146dd45ddfc6574"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c/raw-replay.json",
+          "sha256": "f70a58b8f093c86577e8f53a68e7a88c8e44665f5a3602f5147ae7f9c13274a5"
+        },
+        "preservation": {
+          "rows_unchanged": true,
+          "catalog_unchanged": true,
+          "native_unchanged": true,
+          "inputs_unchanged": true,
+          "physical_unchanged": true
+        }
+      },
+      "compacted_successor_history_initial_regression_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c",
+        "source": "6ece98c868e842d46fc4e13a359d19dd9a924d76",
+        "product_source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+        "driver": "66916 joined exit0; raw87043 joined exit0",
+        "state": "STOPPED_RETAINED PASS13commands/131controls/raw4629",
+        "owner": "e7324816352cfbaa95e3cef0919bf69d",
+        "label": "org.bigbrotr.installed-compacted-reader",
+        "client": "f5d5d694fc542596c70ec5a6001ac87ec6946e810a9c72d4d7650e12dff00f3e",
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/installed-compacted-reader/result.json",
+          "sha256": "80a4566505016987322b0c6690c0953c2951bc1104405e1e0c79b3e7aec9fe47"
+        },
+        "raw_replay": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/raw-replay.json",
+          "sha256": "5855e37b2c2ef4339e0c42b00ee985b79ea6aca1453cdb904525c3c5e391b73a"
         },
         "preservation": {
           "rows_unchanged": true,

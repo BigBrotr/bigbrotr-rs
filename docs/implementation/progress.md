@@ -6,67 +6,64 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Local main is `f4d1261fe85d69cec003a5f4266fdf1025824485`; product/probe build,
-Clippy and142 components PASS, all39 mandatory controls present. Driver3541
-joined0. Last verified remote is `57427260a4c73024c6774371343baee78ac0d991`;
-local integration/push pending final connected qualification. No GC writer/unlink.
-
-Canonical changes are the Python-only exact refusal-error correction plus this
-checkpoint, recovery report and inventory. Product, probe and dependencies are
-unchanged from qualified f4d1261; reuse its exact protected ELFs.
+Main implementation/harness revision is `6ece98c868e842d46fc4e13a359d19dd9a924d76`;
+this record commit saves its completed qualification. Compiled product/probe is
+`f4d1261fe85d69cec003a5f4266fdf1025824485`; later changes are only Python/docs.
+All local work is root-owned; next push includes these coherent commits.
+Last verified remote before this record is5742726. No GC writer/unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
-compacted_successor_preparation.connected_history`, owns sources, independent
-reviews, attempts and hashes. The [inventory](../research/laboratory-inventory.json)
-owns resource/worktree custody. Do not duplicate their detailed run histories.
+compacted_successor_preparation.connected_history`, owns source/review identities,
+original failures, exact receipts and limitations. The
+[inventory](../research/laboratory-inventory.json) owns resource/worktree custody.
 
-## Actual result and preserved failure
+## Verified result
 
-Connected --history driver72633 joined1. First28commands/256 capture controls PASS,
-including actual Terminal2, PreparedOpen3 full/partial/absent initial residuals
-and strict original-mode refusal. Command29 correctly refused a missing later
-original at inspect with RequestInput(Missing); the verifier incorrectly expected
-StateMismatch. Remaining commands were NOT_RUN. Original run stays FAIL.
+CLI/probe build, Clippy and142 components PASS; all39 mandatory controls present.
+Corrected connected history:50commands/454 negative capture controls/seven clones
+and exact-source raw replay binding5,482files PASS. Initial current-reader
+regression:13commands/131controls/four clones/raw4,629files PASS. Drivers3541,
+9260,37885,66916 and87043 joined0. Genuine Terminal2/PreparedOpen3 histories,
+full/partial/absent initial residuals and five concrete refusal boundaries are
+qualified within this fixture. Compacted counts remain separate from originals.
 
-The independently reviewed correction binds exact Missing and residual Conflict
-errors without broad alternatives. Corrected captured-case diagnostic passes;
-all9 negative captures plus wrong generic error refuse. This does not relabel the
-original run or establish full connected qualification. Detailed receipt linked
-in the report. Earlier1b399e9 Clippy failure remains preserved; f4d1261 resolved it.
+Preserved earlier attempts:1b399e9 Clippy FAIL, fixed without extra allocation;
+f4d1261 connected verifier FAIL after28commands/256controls because a correct
+Missing refusal had a generic expected error. The exact source-derived oracle
+correction and captured-case diagnostic are linked; original FAIL stays intact.
+The >64 retained correction ancestry finding is fixed and its native test passes.
 
 ## Resources and contributors
 
-No engine/build remains. f4d1261 build containers exited0; connected client
-exited143 and borrowed PG exited0, all freshly checked PID0/noOOM. All five
-original preservation flags true; cleanup/missing/unrelated/unexpected arrays
-empty. Exact source/ELFs, clones, quarantines, logs, failures, .research and
-worktrees remain; no cleanup occurred.
+No engine/build remains. Build containers exited0; both connected clients
+exited143 and borrowed PG exited0, all freshly PID0/noOOM. All five original
+preservation flags true; cleanup/missing/unrelated/unexpected arrays empty.
+Sources, ELFs, clones, quarantines, logs, failures, .research and worktrees remain.
+No cache/dataset cleanup occurred.
 
-Product author c97459b and fixture author ba99b7a worktrees are clean and preserved
-on their recorded branches. Their integration and independent reviews are in the
-report. Both agents completed source/review work; subsequent next-boundary advice
-was read-only. Original hashed architecture receipt remains unchanged. No agent
-has an autonomous runtime or writing task.
+Product c97459b and fixture ba99b7a original worktrees are clean/detached after
+exact integration reconciliation; only their redundant branch refs were retired.
+Both agents completed their tasks. Further boundary advice was read-only, is in
+the report, and has no implementation/runtime claim. Original architecture
+receipt retains its exact hash. No autonomous writer/process is assigned.
 
 ## Precise next action and open boundaries
 
-Commit the Python-only correction; run the existing seven-clone/50-command
---history harness at that exact source with qualified f4d1261 product ELFs,
-then exact-source raw replay, always python3 -E -S. Preserve previous FAIL and
-reuse unaffected build evidence. Record the coherent result and push main.
+Verify/push this coherent qualification record to main, then qualify connected
+rollback/cancellation/lease/head-change delivery faults. Reuse the existing
+rollback proxy and history harness; establish one wired positive counter/stage
+baseline before fault selection. Preserve current successful source/evidence.
 
-Connected rollback/cancellation/lease/head-change delivery faults remain open.
 Then adapt initial handoff/prepared retry/native gap and epoch2 activation,
 activated/later recovery, live frontier, retained Archive frontier and empty
-retirement before GC. Keep sealed compacted counts separate from original replay;
-current initial reader NO_SUCCESSOR/terminal/confirmed-COMMIT predicates remain.
-The >64 retained correction ancestry finding is fixed and its native test passes.
-
+retirement before GC. Keep initial reader NO_SUCCESSOR/terminal/confirmed-COMMIT
+predicates; do not fabricate original replay or relax required later inputs.
 Physical64file/32MiB bounds remain. Physical loss, mixed restore, capacity and
-backup remain open; repeated bounded hashing is not yet capacity-qualified.
+backup are open; bounded repeated hashing is not capacity-qualified.
+
 Prior98f80b1 ACL/unknown closure,61b15e4 Python-provenance failure and a99 initial
 Sync timeout remain in the report; no invented root cause. Q33 CI billing,
-arm64 and signing/registry are separate gates. No whole-step/release completion.
+arm64 and signing/registry remain separate gates. No whole-step/release completion.

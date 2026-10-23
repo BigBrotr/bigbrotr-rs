@@ -43780,10 +43780,46 @@
                 "Crash/unknown-commit and interrupted unlink",
                 "Mixed restore/backup and capacity"
               ]
+            },
+            {
+              "source": "6ece98c868e842d46fc4e13a359d19dd9a924d76",
+              "tree": "bea1f9ae720bdb6a4ff00987db2e41f140b261f8",
+              "product_source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c",
+              "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER",
+              "driver": "66916 joined exit0",
+              "raw_replay_driver": "87043 joined exit0",
+              "commands": 13,
+              "negative_capture_controls": 131,
+              "clones": 4,
+              "raw_bound_files": 4629,
+              "preservation": {
+                "rows_unchanged": true,
+                "catalog_unchanged": true,
+                "native_unchanged": true,
+                "inputs_unchanged": true,
+                "physical_unchanged": true
+              },
+              "receipts": [
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/installed-compacted-reader/result.json",
+                  "sha256": "80a4566505016987322b0c6690c0953c2951bc1104405e1e0c79b3e7aec9fe47"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/installed-compacted-reader/progress-source.json",
+                  "sha256": "231f6135b41805eddd3c4370630b9cdde43a8ec1de78e1b9befb747a2fe4323a"
+                },
+                {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/raw-replay.json",
+                  "sha256": "5855e37b2c2ef4339e0c42b00ee985b79ea6aca1453cdb904525c3c5e391b73a"
+                }
+              ],
+              "custody": "Client freshly exited143/PID0/noOOM; borrowedPG freshly exited0/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty",
+              "scope": "Exact read behavior and complete native/SQL/input/ACL preservation across named real-engine cases; synthetic fixture floor/receipt deletions only. No product GC/unlink, post-compaction writer, fault-delivery, mixed restore or capacity claim."
             }
           ],
           "compacted_successor_preparation": {
-            "status": "NATIVE_ANCESTOR_PRIMITIVE_QUALIFIED_7de7066; installed current-reader regression PASS; positive successors/GC NOT_RUN",
+            "status": "QUALIFIED_READ_ONLY_COMPACTED_SUCCESSOR_HISTORY: productf4d1261/harness6ece98c;142components,50connected commands/454controls/raw5482 and initial13/131/raw4629 PASS",
             "architecture_review": {
               "path": ".research/producer-checkpoint-ack-review-20261020/compacted-successor-boundaries-v1.json",
               "sha256": "4f1481c547b3faaa85525a5f8c95424bcae9f48408f63e87c1728ebb807f0065"
@@ -43794,7 +43830,7 @@
               "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
               "checks": "Independent source review, formatting, exact5be8449 build/Clippy/components and installed13commands/rawreplay PASS"
             },
-            "next": "Finish fixture shared-helper review and frozen reconciliation, commit coherent source, run existing producer-floor and installed_compacted_reader --history with independent raw replay.",
+            "next": "Qualify real connected typed-head changes and rollback/cancellation/lease/client delivery boundaries using existing rollback proxy and current history harness; then adapt initial handoff/prepared retry/native gap and continuous-candidate epoch2 activation before remaining recovery/frontier/Archive consumers and any GC.",
             "input_scanner": {
               "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
               "source_review": {
@@ -43921,7 +43957,7 @@
               }
             },
             "connected_history": {
-              "status": "f4d1261 product/build/Clippy/142components PASS; connected original attempt FAIL due verifier literal, corrected diagnostic PASS",
+              "status": "QUALIFIED_READ_ONLY_COMPACTED_SUCCESSOR_HISTORY: productf4d1261/harness6ece98c;142components,50connected commands/454controls/raw5482 and initial13/131/raw4629 PASS",
               "author_commit": "c97459b65ef1f3b96942e5a2adbde618e5b19a9b",
               "author_tree": "2d07e4b11e965ccd4ab12306bb46dec703620b33",
               "author_receipt": {
@@ -43939,7 +43975,7 @@
               "scope": "Explicit compacted initial history completion under existing historical SQL authority; separate compacted count and unchanged original replay for later epochs. Full current-head census and exact retained typed epoch1 head. Unadapted capability consumers refuse before exposing writer, frontier, handoff or Archive authority. No GC operation.",
               "integration_note": "Exact19 product-author files except two documented comment corrections; exact13 fixture-author files; root probe and runner identities match independent review. Both author worktrees clean and preserved.",
               "checks": "Independent source reviews, exact author reconciliation, Rustfmt25files, changed Python AST10files, artifact/handoff documentation and diff checks PASS; build/Clippy/components/connected runtime NOT_RUN",
-              "next": "Commit Python-only expected-error correction, reuse exactf4d1261 ELFs with a fresh existing --history run and then raw replay. No native rebuild needed because product/probe/dependencies unchanged.",
+              "next": "Qualify real connected typed-head changes and rollback/cancellation/lease/client delivery boundaries using existing rollback proxy and current history harness; then adapt initial handoff/prepared retry/native gap and continuous-candidate epoch2 activation before remaining recovery/frontier/Archive consumers and any GC.",
               "fixture_author_commit": "ba99b7a2f819eab6c915a51c6b21d5c2425e7f0f",
               "fixture_author_tree": "98e90934278c253ac7a238f06d78d90da667dd6a",
               "fixture_author_receipt": {
@@ -44082,8 +44118,88 @@
                     "sha256": "44bb265a528c63d1bd1a1ea972311bfd84c93775abe081ccea696cff125d2aa6"
                   },
                   "diagnostic_scope": "Corrected verifier accepts preserved failing case against prior independently PASS prepare3 and derived mutations; all9 capture controls plus wrong generic error refuse. Original full run remains FAIL; no retroactive qualification."
+                },
+                {
+                  "source": "6ece98c868e842d46fc4e13a359d19dd9a924d76",
+                  "tree": "bea1f9ae720bdb6a4ff00987db2e41f140b261f8",
+                  "product_source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c",
+                  "status": "PASS_SYNTHETIC_POST_GC_SUCCESSOR_HISTORY",
+                  "driver": "9260 joined exit0",
+                  "raw_replay_driver": "37885 joined exit0",
+                  "commands": 50,
+                  "negative_capture_controls": 454,
+                  "clones": 7,
+                  "raw_bound_files": 5482,
+                  "preservation": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
+                  },
+                  "receipts": [
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c/installed-compacted-history/result.json",
+                      "sha256": "bdb3e3599c1c624ee8e1e0bf264a3b9a2f37688da431d16d5146dd45ddfc6574"
+                    },
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c/installed-compacted-history/progress-source.json",
+                      "sha256": "5b0f551b1488cb81b21f691afe01d042774f1236ae351364a99c1f1763fcd519"
+                    },
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-history-6ece98c/raw-replay.json",
+                      "sha256": "f70a58b8f093c86577e8f53a68e7a88c8e44665f5a3602f5147ae7f9c13274a5"
+                    }
+                  ],
+                  "custody": "Client freshly exited143/PID0/noOOM; borrowedPG freshly exited0/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty",
+                  "scope": "Exact read behavior and complete native/SQL/input/ACL preservation across named real-engine cases; synthetic fixture floor/receipt deletions only. No product GC/unlink, post-compaction writer, fault-delivery, mixed restore or capacity claim."
                 }
-              ]
+              ],
+              "initial_reader_regression": {
+                "source": "6ece98c868e842d46fc4e13a359d19dd9a924d76",
+                "tree": "bea1f9ae720bdb6a4ff00987db2e41f140b261f8",
+                "product_source": "f4d1261fe85d69cec003a5f4266fdf1025824485",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c",
+                "status": "PASS_SYNTHETIC_POST_GC_INITIAL_READER",
+                "driver": "66916 joined exit0",
+                "raw_replay_driver": "87043 joined exit0",
+                "commands": 13,
+                "negative_capture_controls": 131,
+                "clones": 4,
+                "raw_bound_files": 4629,
+                "preservation": {
+                  "rows_unchanged": true,
+                  "catalog_unchanged": true,
+                  "native_unchanged": true,
+                  "inputs_unchanged": true,
+                  "physical_unchanged": true
+                },
+                "receipts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/installed-compacted-reader/result.json",
+                    "sha256": "80a4566505016987322b0c6690c0953c2951bc1104405e1e0c79b3e7aec9fe47"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/installed-compacted-reader/progress-source.json",
+                    "sha256": "231f6135b41805eddd3c4370630b9cdde43a8ec1de78e1b9befb747a2fe4323a"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-reader-6ece98c/raw-replay.json",
+                    "sha256": "5855e37b2c2ef4339e0c42b00ee985b79ea6aca1453cdb904525c3c5e391b73a"
+                  }
+                ],
+                "custody": "Client freshly exited143/PID0/noOOM; borrowedPG freshly exited0/PID0/noOOM; cleanup/missing/unrelated/unexpected arrays empty",
+                "scope": "Exact read behavior and complete native/SQL/input/ACL preservation across named real-engine cases; synthetic fixture floor/receipt deletions only. No product GC/unlink, post-compaction writer, fault-delivery, mixed restore or capacity claim."
+              },
+              "branch_reconciliation": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-branch-reconciliation-v1.json",
+                "sha256": "6217db601eab183061dbb2f97f1880859875dbc6299cdfab69474f74cc9bc67b"
+              },
+              "next_boundary_advice": {
+                "delivery_faults": "Reuse relay-source/rollback_proxy.py and existing Process/capture owners. Source predicts rollback1 factory,2 compacted completion,3 later original,4 epoch finish,5 final proof; first observe counters in a real wired positive baseline. Candidate cases: typed head change after1 and4, disconnect before/after2, cancellation after2 and genuine lease expiry across2. No runtime qualification claimed yet.",
+                "initial_transition": "Keep portable handoff bytes; fixed sealed floor/original manifest/N/cut/D/root/sequence/input-stamp basis. Reuse existing compacted cursor for epoch1 or checked two-entry lineage at empty prepared2. Preserve exact+4/zero-write retry, initial NO_SUCCESSOR and each operation COMMIT/ROLLBACK contract. Never fabricate original count or through1 successor-history proof. Advice only; no new implementation/plan."
+              }
             }
           }
         }
