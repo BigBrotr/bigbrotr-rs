@@ -98,12 +98,16 @@ ACK_TEST = ('storage::rocks::store::admission_tests::producer_ack_tests::'
             'native_ack_fsync_boundary')
 ACK_KEY = bytes.fromhex('0131') + bytes([5])*16 + (1).to_bytes(8, 'big')
 ACK_VALUE = bytes.fromhex('0131') + (1).to_bytes(8, 'big')*2 + bytes(8)
+# initialize puts the manifest once; bootstrap puts it again plus eight other
+# entries. Nine distinct final rows therefore represent ten native puts.
+ACK_BEFORE_SEQUENCE = 10
+ACK_AFTER_SEQUENCE = 11
 
 
 def ack_record():
     # Closed fixture grammar, from the pinned RocksDB WriteBatch/WAL format:
     # sequence LE64, count LE32, CF-put tag5, receipts CF2, short key/value.
-    payload = (10).to_bytes(8, 'little') + (1).to_bytes(4, 'little')
+    payload = ACK_AFTER_SEQUENCE.to_bytes(8, 'little') + (1).to_bytes(4, 'little')
     payload += bytes([5, 2, len(ACK_KEY)]) + ACK_KEY + bytes([len(ACK_VALUE)]) + ACK_VALUE
     crc = 0xffffffff
     for byte in b'\x01' + payload:
@@ -324,7 +328,7 @@ def native_ack(root):
                     process.condition.wait(.01)
             assert len(ready) == 1
             ready = ready[0]
-            assert ready['native'] == dict(sequence=9, rows=before_rows)
+            assert ready['native'] == dict(sequence=ACK_BEFORE_SEQUENCE, rows=before_rows)
             pid = ready['pid']
             status = dict(line.split(':', 1) for line in Path(f'/proc/{pid}/status').read_text().splitlines())
             assert int(status['PPid']) == int(status['TracerPid']) == process.process.pid
@@ -389,7 +393,7 @@ def native_ack(root):
             if selected:
                 assert case['selector']['fsync_index'] == selected
             else:
-                assert observed[-1]['native'] == dict(sequence=10, rows=after_rows)
+                assert observed[-1]['native'] == dict(sequence=ACK_AFTER_SEQUENCE, rows=after_rows)
             save()
             reopened = {}
             reader = ['env', 'BIGBROTR_ACK_FAULT_HOME='+str(directory), 'BIGBROTR_ACK_FAULT_MODE=reopen',
@@ -401,7 +405,7 @@ def native_ack(root):
             reopened['remote_exclusion'] = 'LOCAL_NATIVE_PROCESS_JOINED'
             final, = events(reopened['stdout'])
             assert final['event'] == 'ACK_REOPEN' and final['pid'] != owned['pid']
-            assert final['native'] == dict(sequence=10, rows=after_rows)
+            assert final['native'] == dict(sequence=ACK_AFTER_SEQUENCE, rows=after_rows)
             assert files(directory/'db/producer-inputs-v1') == case['inputs_before']
             assert files(directory/'preserved-db') == case['preserved_files']
             case['status'] = 'PASS'
