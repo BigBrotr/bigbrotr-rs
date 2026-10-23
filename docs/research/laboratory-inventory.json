@@ -62637,6 +62637,32 @@
           "rust_commit": "396fb5114bbae546494a769dd7c573d870c308d8"
         },
         "preservation": "All prior worktrees, datasets, original failures, captures and artifacts retained; no cleanup"
+      },
+      "installed_initial_preparation_build_20261024": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332",
+        "source": "1c7c332a191cd87e3915b089e129c915f0659c59",
+        "tree": "f2fb9cb164b055617a2f3c78d7dbe9997c41ebdf",
+        "profile": "producer-floor",
+        "driver_session": 73364,
+        "state": "FAIL_COMPILE_MISSING_DURATION_IMPORT; driver73364 joined1; fetch0/native1 stopped/PID0/noOOM; inventory_changed[]",
+        "owner": "9865a935c784008b04f47959cf2a58b2",
+        "label": "org.bigbrotr.network-transport",
+        "observed_containers": [
+          {
+            "name": "fetch",
+            "id": "4ed446fc43984fc42c2047ce0af018c6776183a4d0db60efe2dbaeffc32ca9e1"
+          },
+          {
+            "name": "native",
+            "id": "4a4fd84b8d5bcb6b79c891b837633d311c616a0d40794ebd3dea815a0a5fa6be"
+          }
+        ],
+        "preflight_free_bytes": 274437611520,
+        "preservation": "New exact detached source/output; prior artifacts retained; existing exclusive compiler-cache runner performs ownership and isolation checks.",
+        "verified_failure": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1c7c332/verified-build-failure.json",
+          "sha256": "a27c7f8be3d740045194c3cc4f85667d12d8265bbba4fcdf790b9625b2c1435e"
+        }
       }
     }
   },
