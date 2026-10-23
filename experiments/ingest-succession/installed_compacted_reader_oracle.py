@@ -2062,7 +2062,9 @@ def preparation_origins_checked(root,raw=None):
     return results,initial
 
 
-def preparation_specification(case):
+def preparation_specification(case,*,delivery=False):
+    assert type(delivery) is bool
+    if delivery: return preparation_delivery_specification(case)
     name=case['clone']; assert name in PREPARATION_STEPS
     step=case['name'].removeprefix(name+'-'); assert step in PREPARATION_STEPS[name]
     assert case['name']==name+'-'+step and case['origin']==PREPARATION_ORIGIN_NAMES[name]
@@ -2101,18 +2103,21 @@ PREPARATION_ERRORS = {
     'target-closing': 'initial dictionary batch failed: StateMismatch',
     'target-input': 'initial dictionary batch failed: RequestInput(Identity)',
     'missing-original': 'initial dictionary batch failed: RequestInput(Missing)',
+    'delivery-before': 'producer operation unavailable: Control(Backend)',
+    'delivery-after': 'producer operation unavailable: DeliveryUnknown',
 }
 PREPARATION_PRECLAIM = {'target-nonzero','target-closing','target-input','missing-original'}
 
 
-def preparation_failure(name,step):
+def preparation_failure(name,step,*,delivery=False):
+    if delivery: return 'delivery-'+name.rsplit('-',1)[1] if step=='loss' else None
     return step if step in ('missing-intent','missing-original') else name if step=='refuse' else None
 
 
-def preparation_closed(response,case):
-    name,step=preparation_specification(case)
+def preparation_closed(response,case,*,delivery=False):
+    name,step=preparation_specification(case,delivery=delivery)
     if step in ('abandon','retire'): return process_closed(response,case)
-    failure=preparation_failure(name,step); code=4 if failure else 0
+    failure=preparation_failure(name,step,delivery=delivery); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -2138,8 +2143,9 @@ def preparation_no_claim(backend,database):
     number(a['seconds'],a['attempts'][-1]['seconds'],6)
 
 
-def preparation_control(m,observed,*,success):
+def preparation_control(m,observed,*,success,renewed=False):
     import initial_succession_oracle as original
+    before=copy.deepcopy(m.pg)
     previous=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
     if previous['state']=='active':
         # The genuine gap's preparer was joined, not released. The next real
@@ -2157,13 +2163,34 @@ def preparation_control(m,observed,*,success):
             exclusion_digest=original.exclusion(previous,current['process_incarnation']),xmin=released['xmin'])
         previous.update(released); old_role.update(retired)
         if success: assert int(current['xmin'])>int(released['xmin'])
-        else: assert current['xmin']==new_role['xmin']==released['xmin']
+        elif not renewed: assert current['xmin']==new_role['xmin']==released['xmin']
+        else: assert new_role['xmin']==released['xmin']
     if success: m.completed_control(observed)
-    else: retained.failed_control(m,observed)
+    elif not renewed: retained.failed_control(m,observed)
+    else:
+        # Completion loss occurs after the actual Control refresh. A gap's old
+        # claimant is fenced by the new claim transaction, not that refresh.
+        current=only(observed['owner_epochs'],role='control',epoch=previous['epoch']+1)
+        role=only(observed['role_instances'],role_instance_id=current['role_instance_id'])
+        rid,inc=m.identity(role['role_instance_id'][2:]),m.identity(current['process_incarnation'][2:])
+        for at in (role['created_at_us'],current['acquired_at_us'],current['lease_expires_at_us']-6_000_000): model.clock(at,m.window)
+        assert m.window['before_us']<=retained.instant(current['control_backend_start'])<=role['created_at_us']<=current['acquired_at_us']
+        assert current['acquired_at_us']<current['lease_expires_at_us']-6_000_000
+        model.fresh_xmin(role['xmin'],before); model.fresh_xmin(current['xmin'],before)
+        assert int(role['xmin'])<int(current['xmin'])
+        number(current['control_backend_pid'],1,integer=True)
+        wanted=dict(previous,epoch=previous['epoch']+1,role_instance_id=rid,process_incarnation=inc,
+            acquired_at_us=current['acquired_at_us'],lease_expires_at_us=current['lease_expires_at_us'],
+            state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,
+            control_backend_pid=current['control_backend_pid'],control_backend_start=current['control_backend_start'],xmin=current['xmin'])
+        assert current==wanted
+        assert role==dict(role_instance_id=rid,dataset_id=m.ds['dataset_id'],role='control',created_at_us=role['created_at_us'],retired_at_us=None,xmin=role['xmin'])
+        m.pg['owner_epochs'].append(wanted); m.pg['role_instances'].append(role)
 
 
-def verify_preparation_context(context,initial,expected):
-    case=context['case']; name,step=preparation_specification(case)
+
+def verify_preparation_context(context,initial,expected,*,delivery=False,baseline=None):
+    case=context['case']; name,step=preparation_specification(case,delivery=delivery)
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert context['native_before']==expected[1] and context['inputs_before']==expected[2]
     assert context['catalog_before']==context['catalog_after']
@@ -2187,18 +2214,21 @@ def verify_preparation_context(context,initial,expected):
         after,result=verify_journey_prepare(events,expected,initial,case,window,context['gate'],compacted_initial=not name.startswith('original-'))
         same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
         return result
-    assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert set(context)==CONTEXT_FIELDS and context['snapshots']==[]
+    wire=delivery and step in ('baseline','loss')
+    assert context['fixture']['cleanup_errors']==[]
+    assert set(context['fixture'])==({'cleanup_errors','delivery_fault'} if wire else {'cleanup_errors'})
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=preparation_closed(context['response'],case); failure=preparation_failure(name,step)
+    report=preparation_closed(context['response'],case,delivery=delivery); failure=preparation_failure(name,step,delivery=delivery)
     if failure in PREPARATION_PRECLAIM:
         preparation_no_claim(context['backend'],case['database']); same(context['after'],expected[0])
     else:
         backend_checked(context['backend'],case['database'],expected[0],context['after'])
         m=model.Model(*expected,window,initial=not expected[0]['initial_ingest_successions'])
-        preparation_control(m,context['after'],success=failure is None); same(m.pg,context['after'])
+        preparation_control(m,context['after'],success=failure is None,renewed=delivery and step=='loss'); same(m.pg,context['after'])
     native=expected[1]; compacted=not name.startswith('original-')
     manifest=bytes.fromhex(model.native_map(native)['default','0101']); epoch=int.from_bytes(manifest[54:62],'big')
     assert epoch in (1,2)
@@ -2214,16 +2244,21 @@ def verify_preparation_context(context,initial,expected):
             original_source_closure=dict(producer_epoch='1',issued_through=count,last_complete_sequence='27',sha256=digest),
             prepared_target=dict(owner_epoch='2',incarnation=intent['target_incarnation'][2:],handoff_sha256=sha(handoff)),
             native='closed',owner_release='committed',ready=False)
+    if failure=='delivery-after' and epoch==1: native=preparation_native(native,expected[0],initial)
     assert context['native_after']==native
-    return dict(status='PASS',case=case['name'],result='REFUSED' if failure else 'COMPLETED_EXISTING_PREPARATION',
+    outcome={'delivery-before':'COMPLETION_NOT_DISPATCHED','delivery-after':'DELIVERY_UNKNOWN'}.get(failure,
+        'REFUSED' if failure else 'COMPLETED_EXISTING_PREPARATION')
+    result=dict(status='PASS',case=case['name'],result=outcome,
         from_owner_epoch=epoch,product_native_writes=native['sequence']-expected[1]['sequence'],
         native_rows=len(native['rows']),native_sequence=native['sequence'],input_files=len(expected[2]),
         compacted_requests=7 if not failure and compacted else 0,resolved_original_requests=7 if not failure and not compacted else 0,tables=77)
+    if wire: result['wire']=preparation_delivery_checked(context,expected,baseline)
+    return result
 
 
-def preparation_controls(context,initial,expected):
+def preparation_controls(context,initial,expected,*,delivery=False,baseline=None):
     import json
-    _,step=preparation_specification(context['case'])
+    _,step=preparation_specification(context['case'],delivery=delivery)
     changes=[('native-write-count',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
         ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
         ('historical-head-xmin',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(xmin='4294967000')),
@@ -2242,15 +2277,21 @@ def preparation_controls(context,initial,expected):
             ('wrong-command',lambda c:c['response']['terminal']['command'].append('--successor')),
             ('unknown-outcome',lambda c:c['response'].update(outcome='UNKNOWN')),
             ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)]))])
-        if step in ('complete','retry'):
+        if step in ('complete','retry','baseline'):
             def wrong_count(c):
                 v=loads(c['response']['stdout']); v['resolved_original_requests'],v['compacted_requests']=v['compacted_requests'],v['resolved_original_requests']
                 c['response']['stdout']=json.dumps(v)+'\n'
             changes.append(('swapped-original-compacted-counts',wrong_count))
+    if delivery and step in ('baseline','loss'):
+        changes.extend([('unjoined-proxy',lambda c:c['fixture']['delivery_fault']['wire'].update(readers_joined=False)),
+            ('wrong-wire-counter',lambda c:c['fixture']['delivery_fault']['wire']['receipt'].update(transaction_starts=63)),
+            ('unrestored-config',lambda c:c['fixture']['delivery_fault']['configuration'].update(restored='wrong')),
+            ('wrong-proxy-source',lambda c:c['fixture']['delivery_fault']['wire']['sources'].update({'initial_gap_proxy.py':'00'*32}))])
+        if step=='loss': changes.append(('held-SQL-delta',lambda c:only(c['fixture']['delivery_fault']['held']['control']['initial_ingest_successions']).update(prepared_by_epoch=999)))
     rejected=[]
     for name,change in changes:
         c=copy.deepcopy(context); change(c)
-        try: verify_preparation_context(c,initial,expected)
+        try: verify_preparation_context(c,initial,expected,delivery=delivery,baseline=baseline)
         except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(name)
         else: raise AssertionError('accepted altered installed initial preparation evidence: '+name)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
@@ -2310,3 +2351,134 @@ def preparation_quarantine_checked(q,expected,initial):
     assert stat.S_ISDIR(saved['.']['mode']) and stat.S_IMODE(saved['.']['mode'])==0o700
     inputs=copy.deepcopy(expected[2]); del inputs[name]
     return expected[0],expected[1],inputs
+
+
+DELIVERY_STEPS = {
+    'gap-baseline': ('prepare-gap','baseline'), 'prepared-baseline': ('baseline',),
+    'gap-before': ('prepare-gap','loss','retry'), 'gap-after': ('prepare-gap','loss','retry'),
+    'prepared-before': ('loss','retry'), 'prepared-after': ('loss','retry'),
+}
+DELIVERY_ORIGINS = (JOURNEY_ORIGIN,PREPARATION_RETAINED_ORIGINS[0])
+DELIVERY_ORIGIN_NAMES = {n:'compacted-initial' if n.startswith('gap-') else 'prepared-initial' for n in DELIVERY_STEPS}
+DELIVERY_SOURCES = {'initial_gap_proxy.py':'experiments/ingest-bootstrap/initial_gap_proxy.py',
+    'rollback_proxy.py':'experiments/relay-source/rollback_proxy.py','fault_proxy.py':'experiments/control-migrations/fault_proxy.py'}
+
+
+class InitialPreparationDeliveryProfile:
+    DIRECTORY = 'installed-initial-preparation-faults'
+    LABEL = 'org.bigbrotr.installed-initial-preparation-faults'
+    STATUS = 'PASS_INSTALLED_INITIAL_PREPARATION_DELIVERY'
+    DATABASE_PREFIX = 'bb_initial_delivery_'
+    CLONES = tuple(DELIVERY_STEPS)
+    STEPS = DELIVERY_STEPS
+    CASES = tuple(n+'-'+s for n in CLONES for s in DELIVERY_STEPS[n])
+    GRANTS = JOURNEY_GRANTS
+    NOT_RUN = ('Actual product reclamation/GC and unlink',
+        'Original-input completion delivery faults; the injected routes use compacted initial ancestors',
+        'Initial completion cancellation/lease expiry, process/power loss and native syscall uncertainty',
+        'Genuine epoch2/SQL-pending3 gap, activated replacement recovery, later consumers, mixed restore/backup and capacity')
+
+
+def preparation_delivery_origins(root,raw=None):
+    current,initial=journey_origin_checked(root,raw)
+    prepared,basis=qualified_endpoint(root,raw,initial_journey=False,prepared_origin=PREPARATION_RETAINED_ORIGINS[0])
+    assert initial==basis
+    return {'compacted-initial':current,'prepared-initial':prepared},initial
+
+
+def preparation_delivery_specification(case):
+    name=case['clone']; assert name in DELIVERY_STEPS
+    step=case['name'].removeprefix(name+'-'); assert step in DELIVERY_STEPS[name]
+    assert case['name']==name+'-'+step and case['origin']==DELIVERY_ORIGIN_NAMES[name]
+    index=DELIVERY_STEPS[name].index(step)
+    assert case['predecessor']==(name+'-'+DELIVERY_STEPS[name][index-1] if index else None)
+    assert case['operation']==(JOURNEY_GAP_MODE if step=='prepare-gap' else 'complete-initial')
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def preparation_wire_event(value):
+    from fault_cases import safe_event
+    extra={'transaction_starts','gap_boundary','gap_proxy_sha256','rollback_proxy_sha256',
+        'rollback_requests','rollback_completions','rollback_released','rollback_ready','rollback_number','before_forward'}
+    assert extra<=value.keys(); safe_event({k:v for k,v in value.items() if k not in extra})
+    assert value['gap_boundary'] in ('observe','before','after') and value['before_forward'] is False
+    assert value['mode']=='pass' and value['commit_number']==64
+    for k in ('gap_proxy_sha256','rollback_proxy_sha256'): assert re.fullmatch('[0-9a-f]{64}',value[k])
+    for k in extra-{'gap_boundary','gap_proxy_sha256','rollback_proxy_sha256','before_forward'}: number(value[k],0,64,integer=True)
+    counts=fault_counts(value); assert counts==sorted(counts,reverse=True)
+    return value
+
+
+def preparation_delivery_checked(context,expected,baseline):
+    import tomllib
+    case=context['case']; name,step=preparation_delivery_specification(case)
+    assert step in ('baseline','loss')
+    route='gap' if name.startswith('gap-') else 'prepared'
+    start,rollback=(5,3) if route=='gap' else (4,2)
+    boundary='observe' if step=='baseline' else name.rsplit('-',1)[1]
+    fault=context['fixture']['delivery_fault']; window=context['server_window']
+    assert set(fault)=={'status','boundary','start_number','rollback_number','wire','held','configuration','errors'}
+    assert fault['status']=='JOINED_CONFIG_RESTORED' and fault['errors']==[]
+    assert (fault['boundary'],fault['start_number'],fault['rollback_number'])==(boundary,start,rollback)
+    wire=fault['wire']
+    assert set(wire)=={'command','sources','ready','held','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
+    assert wire['exit_code']==0 and type(wire['exit_code']) is int and wire['readers_joined'] is True
+    assert wire['stderr']=='' and wire['overflow'] is False and wire['forced_wrapper_stop'] is False
+    command=wire['command']; assert command==['docker','exec','-i',command[3],'python3','-B','/lab/initial_gap_proxy.py',
+        '--upstream-port','5432','--listen-port','0','--boundary',boundary,'--start-number',str(start),'--rollback-number',str(rollback)]
+    assert re.fullmatch('bigbrotr-initial-delivery-[0-9a-f]{7}',command[3])
+    sources={name:sha(retained.regular_read(Path(__file__).resolve().parents[2]/path)) for name,path in DELIVERY_SOURCES.items()}
+    assert wire['sources']==sources
+    events=[preparation_wire_event(loads(v)) for v in wire['stdout'].splitlines()]
+    assert events==wire['events'] and [v['elapsed_ns'] for v in events]==sorted(v['elapsed_ns'] for v in events)
+    ready,receipt=wire['ready'],wire['receipt']
+    assert ready==events[0] and ready['event']=='ready' and receipt==events[-1] and receipt['event']=='receipt'
+    for e in events:
+        assert e['gap_boundary']==boundary and e['rollback_number']==(rollback if boundary=='after' else 0)
+        assert (e['gap_proxy_sha256'],e['rollback_proxy_sha256'])==(sources['initial_gap_proxy.py'],sources['rollback_proxy.py'])
+    assert ready['proxy_sha256']==sources['fault_proxy.py']
+    assert ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    number(ready['listen_port'],1,65535,integer=True); number(ready['pid'],1,integer=True)
+    assert (ready['max_frame_bytes'],ready['max_wire_bytes'],ready['max_messages'],ready['deadline_seconds'])==(1024**2,64*1024**2,20000,30)
+    commits=('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')
+    assert ready['transaction_starts']==0 and fault_counts(ready)==[0]*4 and all(ready[k]==0 for k in commits)
+    assert ready['faults']==0 and ready['held'] is False and ready['hold_action'] is None
+    config=fault['configuration']; assert set(config)=={'path','direct','proxied','restored'} and config['path']==case['config']
+    assert config['restored']==config['direct']
+    direct,proxied=tomllib.loads(config['direct']),tomllib.loads(config['proxied'])
+    assert direct['postgres']['control']['endpoint']=='127.0.0.1:5432'
+    wanted=copy.deepcopy(direct); wanted['postgres']['control']['endpoint']='127.0.0.1:'+str(ready['listen_port']); assert proxied==wanted
+    section=re.search(r'(?ms)(^\[postgres\.control\]\n)(.*?)(?=^\[|\Z)',config['direct']); assert section is not None
+    body,count=re.subn(r'(?m)^endpoint = .*$', 'endpoint = "127.0.0.1:'+str(ready['listen_port'])+'"',section[2]); assert count==1
+    assert config['proxied']==config['direct'][:section.start()]+section[1]+body+config['direct'][section.end():]
+    assert receipt['frames'] and receipt['declared_wire_bytes']<=64*1024**2
+    if step=='baseline':
+        assert baseline is None and fault['held'] is None and wire['held'] is None and events==[ready,receipt]
+        assert receipt['faults']==0 and receipt['held'] is False and receipt['hold_action'] is None
+        assert receipt['reason'] in ('frontend-eof','backend-eof')
+        assert receipt['transaction_starts']==start+1 and fault_counts(receipt)==[rollback]*4
+        assert all(receipt[k]==3 for k in commits)
+    else:
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']==route+'-baseline-baseline'
+        assert baseline['wire']==dict(boundary='observe',transaction_starts=start+1,rollback_counts=[rollback]*4,commit_counts=[3]*4)
+        held=wire['held']; assert events==[ready,held,receipt] and held['event']=='held' and held['held'] is True and held['faults']==1
+        assert held['hold_action'] is None and held['transaction_starts']==start
+        assert all(held[k]==2 for k in commits)
+        assert fault_counts(held)==([rollback-1]*4 if boundary=='before' else [rollback,rollback,rollback-1,rollback-1])
+        assert receipt['reason']=='held-close' and receipt['hold_action']=='close' and receipt['held'] is True and receipt['faults']==1
+        for k in (*commits,'transaction_starts','rollback_requests','rollback_completions','rollback_released','rollback_ready'):
+            assert receipt[k]==held[k]
+        capture=fault['held']; assert set(capture)=={'control','inputs','backend','before_us','after_us','close_before_us','close_after_us'}
+        # Only SQL and spool bytes are observed while the installed native owner
+        # is alive. The excluded external dump is independently checked later.
+        same(capture['control'],context['after']); assert capture['inputs']==expected[2]
+        for k in ('before_us','after_us','close_before_us','close_after_us'): model.clock(capture[k],window)
+        assert capture['before_us']<=capture['after_us']<=capture['close_before_us']<=capture['close_after_us']
+        control=max((r for r in capture['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        backend=capture['backend']
+        assert backend==dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database'],
+            user='bigbrotr_control',state='idle',xact_start=None,query='COMMIT' if boundary=='before' else 'ROLLBACK',observed_at_us=backend['observed_at_us'])
+        assert capture['before_us']<=backend['observed_at_us']<=capture['after_us']
+        assert control['lease_expires_at_us']>capture['close_after_us']
+    return dict(boundary=boundary,transaction_starts=receipt['transaction_starts'],rollback_counts=fault_counts(receipt),commit_counts=[receipt[k] for k in commits])

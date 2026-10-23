@@ -19,10 +19,11 @@ from installed_family_capture import inventory_checked, physical, spool_checked
 loads,sha,same,only,number = oracle.loads,oracle.sha,oracle.same,oracle.only,oracle.number
 
 
-def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False):
-    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation))
-    assert sum((history_profile,fault_profile,initial_journey,initial_preparation))<=1
-    profile=oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
+def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False,initial_preparation_faults=False):
+    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults))
+    assert sum((history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults))<=1
+    profile=oracle.InitialPreparationDeliveryProfile if initial_preparation_faults else oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
+    if initial_preparation_faults: initial_preparation=True
     root = Path(root).resolve(strict=True); folder = root/profile.DIRECTORY; bound = {}
     def raw(path):
         path = Path(path); assert stat.S_ISREG(path.lstat().st_mode)
@@ -51,8 +52,8 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     started,finished = [oracle.retained.instant(report[k]) for k in ('started_at','finished_at')]
     assert started <= finished
     if initial_preparation:
-        seeds,initial=oracle.preparation_origins_checked(root,raw)
-        pins=oracle.PREPARATION_ORIGINS
+        seeds,initial=(oracle.preparation_delivery_origins if initial_preparation_faults else oracle.preparation_origins_checked)(root,raw)
+        pins=oracle.DELIVERY_ORIGINS if initial_preparation_faults else oracle.PREPARATION_ORIGINS
     else:
         pin=oracle.JOURNEY_ORIGIN if initial_journey else oracle.FAULT_ORIGIN if fault_profile else oracle.ORIGIN
         basis=root.parent/pin['run']/pin['subdirectory']
@@ -112,7 +113,8 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     for clone in report['clones']:
         name = clone['name']; directory = folder/name
         if initial_preparation:
-            origin_name=oracle.PREPARATION_ORIGIN_NAMES[name]; seed=seeds[origin_name]; declaration=report['origins'][origin_name]
+            origin_name=(oracle.DELIVERY_ORIGIN_NAMES if initial_preparation_faults else oracle.PREPARATION_ORIGIN_NAMES)[name]
+            seed=seeds[origin_name]; declaration=report['origins'][origin_name]
         assert clone['origin'] == origin_name and clone['directory'] == name and clone['status'] == 'PASS'
         assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey or initial_preparation else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
         assert clone['config'] == '/lab/'+clone['database']+'.toml' and clone['final_backends'] == []
@@ -142,7 +144,12 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
         for filename in (name+'-config-validation.json',clone['database']+'-installed-config-validation.json'):
             v = read(folder/filename); assert type(v['returncode']) is int and v['returncode'] == 0 and v['stderr'] == ''; loads(v['stdout'])
         if initial_journey or initial_preparation:
-            checked,previous_time=journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,preparation=initial_preparation)
+            baseline=None
+            if initial_preparation_faults and not name.endswith('-baseline'):
+                route='gap' if name.startswith('gap-') else 'prepared'
+                baseline=only(results,name=route+'-baseline-baseline')['oracle']
+            checked,previous_time=journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,
+                preparation=initial_preparation,delivery=initial_preparation_faults,baseline=baseline)
             results.extend(checked)
             continue
         if fault_profile:
@@ -217,7 +224,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     return dict(status=profile.STATUS+'_CAPTURE_REPLAY',source=report['source'],product_source=product_source,
         cases=results,bound_files=bound,not_run=list(profile.NOT_RUN),
         preservation='Original files reread; original SQL/catalog and engine/process closure are captured-run evidence',
-        scope=('Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
+        scope=('Installed compacted initial completion delivery faults and fresh retries only' if initial_preparation_faults else 'Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
 
 
 
@@ -352,10 +359,10 @@ def fault_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,f
     return dict(name=label,oracle=checked,negative_controls=controls),previous_time
 
 
-def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,preparation=False):
-    assert type(preparation) is bool
+def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,preparation=False,delivery=False,baseline=None):
+    assert type(preparation) is bool and type(delivery) is bool and (not delivery or preparation)
     name=clone['name']; directory=folder/name; expected=seed; results=[]
-    steps=oracle.PREPARATION_STEPS if preparation else oracle.JOURNEY_STEPS
+    steps=oracle.DELIVERY_STEPS if delivery else oracle.PREPARATION_STEPS if preparation else oracle.JOURNEY_STEPS
     check=oracle.verify_preparation_context if preparation else oracle.verify_journey_context
     controls_check=oracle.preparation_controls if preparation else oracle.journey_controls
     specification=oracle.preparation_specification if preparation else oracle.journey_specification
@@ -388,7 +395,7 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
                 path=directory/'store/producer-inputs-v1'/mutation['input']['target_name']
                 assert raw(path).hex()==mutation['input']['hex']
                 assert physical(path.parent,raw)==mutation['input']['after']
-        label=name+'-'+step; case=only(report['cases'],name=label); specification(case)
+        label=name+'-'+step; case=only(report['cases'],name=label); specification(case,**(dict(delivery=delivery) if preparation else {}))
         assert case['status']=='PASS' and case['custody']=='OBSERVED_CLOSED_AND_JOINED' and case['catalog_after']==clone['catalog_before']
         item=lambda suffix:read(folder/(label+'-'+suffix+'.json'))
         context=item('verification')
@@ -425,13 +432,23 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
                     contents[filename]=values[0].hex()
                 assert context['input_contents']==contents
             else: assert context['input_contents']=={}
+            if delivery and step in ('baseline','loss'):
+                fault=context['fixture']['delivery_fault']; assert item('delivery')==fault
+                for suffix,key in [('direct','direct'),('proxied','proxied'),('restored','restored')]:
+                    assert raw(folder/(label+'-'+suffix+'.toml')).decode()==fault['configuration'][key]
+                assert raw(folder/Path(case['config']).name).decode()==fault['configuration']['direct']
+                for filename,relative in oracle.DELIVERY_SOURCES.items():
+                    data=raw(folder/filename); assert data==raw(folder.parent/'source'/relative)
+                    assert sha(data)==fault['wire']['sources'][filename]
+                assert fault['wire']['command'][3]=='bigbrotr-initial-delivery-'+report['source'][:7]
         else:
             assert item('custody')==context['custody'] and item('control-backends')==context['backend_absence'] and item('backends')==context['backends']
             if step=='prepare-gap':
                 assert item('gate')==context['gate']; path=folder/(label+'-gate.go'); meta=path.lstat()
                 assert stat.S_ISREG(meta.st_mode) and stat.S_IMODE(meta.st_mode)==0o600 and meta.st_nlink==1 and raw(path)==b''
-                assert context['response']['command']==['docker','exec',('bigbrotr-initial-preparation-' if preparation else 'bigbrotr-compacted-initial-')+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
-        result=check(context,initial,expected); controls=controls_check(context,initial,expected)
+                assert context['response']['command']==['docker','exec',('bigbrotr-initial-delivery-' if delivery else 'bigbrotr-initial-preparation-' if preparation else 'bigbrotr-compacted-initial-')+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
+        options=dict(delivery=delivery,baseline=baseline) if preparation else {}
+        result=check(context,initial,expected,**options); controls=controls_check(context,initial,expected,**options)
         assert case['oracle']==result and case['negative_controls']==controls
         results.append(dict(name=label,oracle=result,negative_controls=controls))
         expected=context['after'],context['native_after'],context['inputs_after']
@@ -449,5 +466,6 @@ if __name__ == '__main__':
     profile.add_argument('--history-faults',action='store_true')
     profile.add_argument('--initial-journey',action='store_true')
     profile.add_argument('--initial-preparation',action='store_true')
-    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation)
+    profile.add_argument('--initial-preparation-faults',action='store_true')
+    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation,initial_preparation_faults=args.initial_preparation_faults)
     with args.output.open('x') as stream: json.dump(result,stream,indent=2); stream.write('\n')

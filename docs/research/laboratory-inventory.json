@@ -62633,9 +62633,10 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
           "branch": "work/installed-initial-preparation",
           "scope": "Existing installed compacted reader/oracle/replay/client parameterized with initial-preparation; original7 real gated/normal setup and fixed synthetic target-closing refusal probe",
-          "state": "Rust396 integrated; Python d80 integrated with reviewed root corrections. Author now prepares separate additive completion-delivery-fault profile, no runtime.",
+          "state": "Frozen clean atafc80ad5; additive Python delivery fixture integrated, runtime NOT_RUN",
           "rust_commit": "396fb5114bbae546494a769dd7c573d870c308d8",
-          "python_commit": "d80db7333d340d2c73c22771684a74664c37833a"
+          "python_commit": "d80db7333d340d2c73c22771684a74664c37833a",
+          "delivery_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05"
         },
         "preservation": "All prior worktrees, datasets, original failures, captures and artifacts retained; no cleanup",
         "fixture_critical_review": {
@@ -62714,6 +62715,19 @@
         "terminal_receipt": {
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-30d6554/verified-terminal.json",
           "sha256": "0ba74cf7a8c85b7636944609406559548a3843178691598c3ef683d54ca2cb8d"
+        }
+      },
+      "installed_initial_preparation_delivery_20261024": {
+        "state": "SOURCE_INTEGRATED_NOT_RUN",
+        "runtime_owner": "/root; no runtime driver or new container yet",
+        "author_worktree": "/home/tux/bigbrotr-rs/.research/installed-initial-preparation-20261024",
+        "author_branch": "work/installed-initial-preparation",
+        "author_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
+        "product_source": "a0e914e8b58650d94dec60c0b5d3c08a02e5e248",
+        "scope": "Existing retained a0 ELFs and exact6ece/f51 original endpoints; planned6clones/13commands; artifacts preserved, no cleanup",
+        "critical_review": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-faults-critical-review-v1.json",
+          "sha256": "94d7feaf3f2effb51f9f89af805c760f044e3f1ffde1fc20cac163896d96d81b"
         }
       }
     }

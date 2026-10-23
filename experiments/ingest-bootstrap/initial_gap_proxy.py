@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Hold one initial-gap boundary in the owned loopback PostgreSQL fixture.
 
-Before: completion's twelfth transaction has not reached PostgreSQL. After:
-the second ROLLBACK completed on PostgreSQL after the synchronized native batch,
+Defaults preserve the original gap's twelfth transaction and second rollback.
+Explicit selectors support another qualified caller; observe never holds. Before:
+the selected transaction has not reached PostgreSQL. After: the selected ROLLBACK
+completed on PostgreSQL after the synchronized native batch,
 but its reply has not reached the caller. Explicit close loses delivery. Reuse
 the bounded single-session framing/cleanup and existing rollback selector.
 """
@@ -37,7 +39,7 @@ class GapSession(RollbackSession):
             tag, _, body = message
             if direction == 'frontend' and tag == b'Q' and body == START:
                 self.starts += 1
-                if self.args.boundary == 'before' and self.starts == 12:
+                if self.args.boundary == 'before' and self.starts == self.args.start_number:
                     self.faults += 1
                     self.held = True
                     self.emit('held')
@@ -49,9 +51,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--upstream-port', type=bounded_int(1, 65535), required=True)
     parser.add_argument('--listen-port', type=bounded_int(0, 65535), default=0)
-    parser.add_argument('--boundary', choices=('before', 'after'), required=True)
+    parser.add_argument('--boundary', choices=('before', 'after', 'observe'), required=True)
+    parser.add_argument('--start-number', type=bounded_int(1, 64), default=12)
+    parser.add_argument('--rollback-number', type=bounded_int(1, 64), default=2)
     args = parser.parse_args()
-    args.rollback_number = 0 if args.boundary == 'before' else 2
+    args.rollback_number = args.rollback_number if args.boundary == 'after' else 0
     args.before_forward = False
     args.mode, args.commit_number, args.later_commits = 'pass', 64, 0
     args.deadline_seconds = 30

@@ -44638,7 +44638,43 @@
               "qualified_run": {
                 "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-initial-preparation-30d6554/verified-run.json",
                 "sha256": "e72b1cb05ccd2676329266829013b0326ff330cf0e519021ec353834a4de7786"
+              },
+              "delivery_qualification": {
+                "status": "SOURCE_INTEGRATED; real-engine runtime/raw replay NOT_RUN",
+                "author_commit": "afc80ad5e431d98bd581111803fab3b101a6eb05",
+                "source_receipt": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-delivery-fixture-source-v1.json",
+                  "sha256": "57459f761fdb5e85b50c621801ff8f40ddfc7e5b0c934544e90671bc9b6018bb"
+                },
+                "matrix": "Six excluded clones/13 commands/164 planned controls: actual compacted native1/native2 positive wire baselines precede predispatch START and postdispatch rollback-response loss; four fresh installed retries. Expected native writes before0/retry4 vs after4/retry0 for gap, all0 for prepared. These are predictions until observed.",
+                "custody": "Optional execute callback; exact restored endpoint and joined proxy/child plus backend exclusion before external native dump. Any callback cleanup failure enters the existing native-open refusal gate. Held capture is SQL/backend/input only.",
+                "integration": "Exact afc80 additive delta merged over canonical30d qualification corrections; no Rust/ELF change. Root reviewed all5 changed deltas and full shared cycle/proxy owners, scope-specific base emitter/schema; integrated AST/origin/profile checks PASS. Existing protocol6 and basic-context23/232 compatibility reused from author.",
+                "not_run": "Original-input delivery faults, cancellation/expiry, process/power loss, native syscall uncertainty, genuine pending3, other consumers and actual GC remain excluded.",
+                "critical_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/installed-initial-preparation-faults-critical-review-v1.json",
+                  "sha256": "94d7feaf3f2effb51f9f89af805c760f044e3f1ffde1fc20cac163896d96d81b"
+                }
               }
+            },
+            "next_activated_consumer_audit": {
+              "status": "READ_ONLY_MAP; no implementation or runtime claim",
+              "root_complete_owner_reads_sha256": {
+                "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated.rs": "50af024f508217628517b6f9e251fe63a9fdda2b2c472fa5efdbc10d585a9c3d",
+                "apps/bigbrotr/src/storage/rocks/activated_recovery.rs": "ea1cd390612abea7dc3c66aea81cb9d922511a519b1069a9f1a9d5f64c7fd9c1",
+                "apps/bigbrotr/src/storage/postgres/activated_recovery.rs": "f9cf6d84e19f7a6951a022ef9012e64e04a58fba3618da5425e4cc43326fba17",
+                "apps/bigbrotr/src/storage/rocks/source_closure.rs": "d0889f9016af9d009dd29dc0b77d3d6491c7ff0120b7d14057f717def6d45dbb",
+                "apps/bigbrotr/src/storage/rocks/producer_ack.rs": "c892ea4c59525bd4b380ad6d7ea3e8528a2d13ba3dea153559d785bc6e7d00a6",
+                "apps/bigbrotr/src/storage/postgres/producer_ack.rs": "35463f0acd93ca5efc315f5910ba375eff2a1f226e73f9cdac69b2f3060c6581"
+              },
+              "critical_reviewer": "Existing compacted_reader_review mapped complete native/PG activated recovery and source/retirement owners plus CLI callers, source/ACK reducers and lineage/history seams. Broader fixture suites located, not requalified.",
+              "bounded_next_scope": "After installed initial preparation delivery faults: activated epoch2 positive recovery plus ACK through existing --activated-successor. Keep Source/Retirement factories refusing compacted ancestry until their separate paths are adapted.",
+              "constraints": [
+                "Explicit native compacted basis and PG Positive factory; no ordinary failed-proof fallback. Existing ordinary native producer_state and typed progress readers reject v3.",
+                "Rebuild current ancestor context after closing changes native sequence; complete compacted canonical phase before genuine epoch2 originals/ACK. Final ACK must rebind ancestor typed/canonical assumptions, not only target progress.",
+                "Preserve reserved>issued unresolved-tail semantics and physical64file/32MiB bound; compacted logical predecessor count must not inherit the old combined-original64 cap.",
+                "Use shared pinned ClaimExit in touched activated CLI owner; retain native-before-acquire-future teardown and exact grant overlaps."
+              ],
+              "candidate_evidence": "Qualified f51 installed endpoint supplies activated-zero2; its live endpoint is a candidate nonzero original2 seed only after exact provenance/custody verification. Reuse existing real native activated tests and installed recovery/fault harnesses."
             }
           }
         }

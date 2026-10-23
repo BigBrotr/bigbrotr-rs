@@ -324,7 +324,7 @@ FAULT_SUITE = transition.Suite(directory=oracle.HistoryFaultProfile.DIRECTORY,la
     not_run=oracle.HistoryFaultProfile.NOT_RUN)
 
 
-def fault_wire_next(process,wanted,seconds=5):
+def fault_wire_next(process,wanted,seconds=5,*,decode=oracle.fault_wire_event):
     # Process.event intentionally accepts only its original base schema. Keep
     # the existing bounded transport reader and validate the rollback extension.
     deadline=time.monotonic()+seconds
@@ -333,7 +333,7 @@ def fault_wire_next(process,wanted,seconds=5):
             assert not process.overflow
             end=process.stdout.find(b'\n',process.offset)
             if end>=0:
-                value=oracle.fault_wire_event(json.loads(bytes(process.stdout[process.offset:end])))
+                value=decode(json.loads(bytes(process.stdout[process.offset:end])))
                 process.offset=end+1; assert value['event']==wanted
                 return value
             assert time.monotonic()<deadline and (process.process.poll() is None or process.threads[0].is_alive())
@@ -544,7 +544,8 @@ def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True):
     return args,gate
 
 
-def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,preparation=False):
+def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,preparation=False,delivery=False):
+    assert type(preparation) is bool and type(delivery) is bool and (not delivery or preparation)
     label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
     native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store')
     assert (native,inputs)==expected[1:]
@@ -567,7 +568,8 @@ def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,pre
         custody=transition.read(output/(label+'-custody.json')))
     lab.write_json(output/(label+'-verification.json'),context)
     check,control=(oracle.verify_preparation_context,oracle.preparation_controls) if preparation else (oracle.verify_journey_context,oracle.journey_controls)
-    checked=check(context,initial,expected); controls=control(context,initial,expected)
+    options=dict(delivery=delivery) if preparation else {}
+    checked=check(context,initial,expected,**options); controls=control(context,initial,expected,**options)
     case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
@@ -705,8 +707,11 @@ def preparation_quarantine(output,directory,expected,initial):
     return result
 
 
-def run_preparation_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial):
-    name=clone['name']; origin_name=oracle.PREPARATION_ORIGIN_NAMES[name]
+def run_preparation_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,delivery=False):
+    assert type(delivery) is bool
+    names=oracle.DELIVERY_ORIGIN_NAMES if delivery else oracle.PREPARATION_ORIGIN_NAMES
+    steps=oracle.DELIVERY_STEPS if delivery else oracle.PREPARATION_STEPS
+    name=clone['name']; origin_name=names[name]
     assert clone['origin']==origin_name and expected==origins[origin_name]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.JOURNEY_GRANTS]
     oracle.history_catalog_checked(report['origins'][origin_name]['catalog'],clone['catalog_before'],grants=oracle.JOURNEY_GRANTS)
@@ -720,7 +725,12 @@ def run_preparation_sequence(pg,client,output,clone,directory,expected,report,*,
     assert history.digest(helper)==history.digest(target)
     configure(pg,client,output,clone['config'],ack=True)
     predecessor=None
-    for step in oracle.PREPARATION_STEPS[name]:
+    if delivery:
+        for filename,relative in oracle.DELIVERY_SOURCES.items():
+            target=output/filename; source=history.SOURCE/relative
+            if not target.exists(): shutil.copy2(source,target)
+            assert history.digest(target)==history.digest(source)
+    for step in steps[name]:
         if step=='refuse' and name!='activated-zero': expected=preparation_mutation(pg,client,output,clone,directory,expected,initial)
         elif step=='missing-original': expected=preparation_quarantine(output,directory,expected,initial)
         if step in ('prepare','prepare-gap'):
@@ -731,10 +741,17 @@ def run_preparation_sequence(pg,client,output,clone,directory,expected,report,*,
             database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case); lab.write_json(output/'result.json',report)
         if step in ('prepare','prepare-gap'):
-            expected=journey_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial,preparation=True)
+            expected=journey_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial,preparation=True,delivery=delivery)
         else:
+            baseline=None
+            if delivery and step=='loss':
+                route='gap' if name.startswith('gap-') else 'prepared'
+                baseline=oracle.only(report['cases'],name=route+'-baseline-baseline')['oracle']
+            fault=preparation_delivery_hook(pg,client,output,case,directory) if delivery and step in ('baseline','loss') else None
             expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
-                checks=(lambda c,s:oracle.verify_preparation_context(c,s,expected),lambda c,s:oracle.preparation_controls(c,s,expected),oracle.preparation_closed))
+                checks=(lambda c,s:oracle.verify_preparation_context(c,s,expected,delivery=delivery,baseline=baseline),
+                    lambda c,s:oracle.preparation_controls(c,s,expected,delivery=delivery,baseline=baseline),
+                    partial(oracle.preparation_closed,delivery=delivery)),fault=fault)
         case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==clone['catalog_before']
         predecessor=case['name']; lab.write_json(output/'result.json',report)
     return predecessor
@@ -752,6 +769,107 @@ def run_initial_preparation(root,build,product_source):
         assert oracle.preparation_origins_checked(root)==(origins,initial)
 
 
+PREPARATION_DELIVERY_SUITE = transition.Suite(directory=oracle.InitialPreparationDeliveryProfile.DIRECTORY,
+    label=oracle.InitialPreparationDeliveryProfile.LABEL,status=oracle.InitialPreparationDeliveryProfile.STATUS,
+    client_prefix='bigbrotr-initial-delivery-',database_prefix=oracle.InitialPreparationDeliveryProfile.DATABASE_PREFIX,
+    clones=oracle.InitialPreparationDeliveryProfile.CLONES,cases=oracle.InitialPreparationDeliveryProfile.CASES,
+    scope='Installed compacted initial completion: measured positive wire baselines, predispatch START loss, postdispatch rollback delivery loss and fresh retries',
+    not_run=oracle.InitialPreparationDeliveryProfile.NOT_RUN)
+
+
+def preparation_delivery_hook(pg,client,output,case,directory):
+    from fault_cases import Process
+    name,step=oracle.preparation_specification(case,delivery=True)
+    assert step in ('baseline','loss')
+    boundary='observe' if step=='baseline' else name.rsplit('-',1)[1]
+    start,rollback=(5,3) if name.startswith('gap-') else (4,2)
+    label=case['name']; config=output/Path(case['config']).name
+    record=dict(status='INCOMPLETE',boundary=boundary,start_number=start,rollback_number=rollback,wire=None,held=None,
+        configuration=dict(path=case['config'],direct=None,proxied=None,restored=None),errors=[])
+    proxy=None
+    def save(): lab.write_json(output/(label+'-delivery.json'),record)
+    def next_event(kind): return fault_wire_next(proxy,kind,decode=oracle.preparation_wire_event)
+    def callback(phase):
+        nonlocal proxy
+        try:
+            if phase=='before-launch':
+                command=['docker','exec','-i',client,'python3','-B','/lab/initial_gap_proxy.py','--upstream-port','5432',
+                    '--listen-port','0','--boundary',boundary,'--start-number',str(start),'--rollback-number',str(rollback)]
+                record['wire']=dict(command=command,sources={n:history.digest(output/n) for n in oracle.DELIVERY_SOURCES},ready=None,
+                    held=None,receipt=None,events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False)
+                save(); proxy=Process(command,input_pipe=True); ready=next_event('ready'); record['wire']['ready']=ready
+                assert (ready['proxy_sha256'],ready['gap_proxy_sha256'],ready['rollback_proxy_sha256'])==tuple(
+                    record['wire']['sources'][n] for n in ('fault_proxy.py','initial_gap_proxy.py','rollback_proxy.py'))
+                direct=config.read_text(); proxied=history.set_value(direct,'postgres.control','endpoint','127.0.0.1:'+str(ready['listen_port']))
+                record['configuration'].update(direct=direct,proxied=proxied); save()
+                (output/(label+'-direct.toml')).write_text(direct); (output/(label+'-proxied.toml')).write_text(proxied)
+                config.write_text(proxied)
+            elif phase=='launched':
+                if step=='loss':
+                    record['wire']['held']=next_event('held'); save()
+                    capture=dict(before_us=history.server_clock(pg,case['database']),control=schema.rows(pg,case['database']),
+                        inputs=history.inputs_at(directory/'store'),backend=None,after_us=None,close_before_us=None,close_after_us=None)
+                    record['held']=capture; save()
+                    control=max((r for r in capture['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                    pid=control['control_backend_pid']; assert type(pid) is int and pid>0
+                    statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
+                        "'pid',pid,'backend_start',backend_start::text,'database',datname,'user',usename,'state',state," \
+                        "'xact_start',xact_start::text,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(pid)+ \
+                        " AND datname=current_database() AND usename='bigbrotr_control';"
+                    capture['backend']=json.loads(lab.sql(pg,case['database'],statement))
+                    capture['after_us']=history.server_clock(pg,case['database']); save()
+                    capture['close_before_us']=history.server_clock(pg,case['database']); proxy.send('close')
+                    capture['close_after_us']=history.server_clock(pg,case['database']); save()
+            else:
+                assert phase=='child-joined'
+                try:
+                    assert proxy is not None
+                    record['wire']['receipt']=next_event('receipt')
+                    assert proxy.wait(5)==0
+                finally:
+                    try:
+                        if proxy is not None:
+                            forced=proxy.process.poll() is None; proxy.stop()
+                            wire=record['wire']; wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),
+                                exit_code=proxy.process.returncode,readers_joined=not any(t.is_alive() for t in proxy.threads),
+                                overflow=proxy.overflow,forced_wrapper_stop=forced)
+                            wire['events']=[oracle.preparation_wire_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+                    finally:
+                        settings=record['configuration']
+                        if settings['proxied'] is not None:
+                            assert config.read_text()==settings['proxied']
+                            config.write_text(settings['direct']); settings['restored']=config.read_text()
+                            (output/(label+'-restored.toml')).write_text(settings['restored'])
+                        save()
+                terminal=transition.read(output/(label+'.terminal.json'))
+                assert terminal['reaped'] is True and terminal['forced'] is False and terminal['error'] is None
+                assert record['wire']['readers_joined'] and not record['wire']['overflow'] and not record['wire']['forced_wrapper_stop']
+                assert record['wire']['stderr']=='' and record['configuration']['restored']==record['configuration']['direct']
+                assert record['errors']==[]
+                record['status']='JOINED_CONFIG_RESTORED'
+            save(); return record
+        except BaseException as error:
+            record['errors'].append(dict(phase=phase,error=repr(error))); save()
+            if phase!='child-joined' and proxy is not None and proxy.process.poll() is None:
+                try: proxy.send('close')
+                except BaseException: pass
+            raise
+    return callback
+
+
+def run_initial_preparation_faults(root,build,product_source):
+    oracle.preparation_qualification(transition.read(build/'component-result.json'))
+    origins,initial=oracle.preparation_delivery_origins(root)
+    try:
+        return transition.run(root,build,suite=PREPARATION_DELIVERY_SUITE,
+            sequence=partial(run_preparation_sequence,origins=origins,initial=initial,delivery=True),
+            origin_specs=oracle.DELIVERY_ORIGINS,origin_for_clone=oracle.DELIVERY_ORIGIN_NAMES,
+            extra_grants=oracle.JOURNEY_GRANTS,producer_progress=True,producer_ack=True,preparation_hole=True,
+            compacted_reader=True,compacted_initial=True,initial_preparation=True,product_source=product_source)
+    finally:
+        assert oracle.preparation_delivery_origins(root)==(origins,initial)
+
+
 ORIGIN = oracle.ORIGIN
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -762,5 +880,6 @@ if __name__ == '__main__':
     profile.add_argument('--history-faults',action='store_true',help='Exact retained PreparedOpen3 delivery fault profile')
     profile.add_argument('--initial-journey',action='store_true',help='Explicit compacted initial prepare/gap/activation and installed startup profile')
     profile.add_argument('--initial-preparation',action='store_true',help='Installed original/compacted existing initial preparation completion and exact retry')
+    profile.add_argument('--initial-preparation-faults',action='store_true',help='Installed compacted completion wire baselines and before/after dispatch delivery loss')
     args = parser.parse_args()
-    (run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

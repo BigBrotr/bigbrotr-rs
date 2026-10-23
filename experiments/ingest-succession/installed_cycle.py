@@ -31,13 +31,14 @@ SUITE = transition.Suite(directory='installed-cycle',label='org.bigbrotr.install
              'Import closure, Archive, acknowledgement/GC, injected faults and capacity/RSS qualification'))
 
 
-def execute(pg, client, output, case, directory, expected, catalog, seed, *, checks=None):
+def execute(pg, client, output, case, directory, expected, catalog, seed, *, checks=None, fault=None):
     if checks is None:
         from installed_cycle_replay import verify, negative_controls, process_closed
     else:
         # An explicit bounded profile may change semantic expectations while
         # retaining this exact process/backend/native capture and join path.
         verify, negative_controls, process_closed = checks
+    assert fault is None or (checks is not None and callable(fault) and case['operation']=='complete-initial')
     name,database=case['name'],case['database']; prefix=output/name
     before=schema.rows(pg,database)
     native=history.dump(client,output,name+'-before',directory)
@@ -61,10 +62,12 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
     try:
         window['before_us']=history.server_clock(pg,database)
         lab.write_json(output/(name+'-clock.json'),window)
+        if fault is not None: fixture['delivery_fault']=fault('before-launch')
         lab.docker('exec','-d',client,'python3','/lab/installed_cycle_client.py',case['operation'],
             case['config'],'/lab/'+name,timeout=5)
         wait_for(lambda: Path(str(prefix)+'.pid.json').exists() or Path(str(prefix)+'.terminal.json').exists(),
             'installed cycle process identity',5)
+        if fault is not None: fault('launched')
         if case['operation'] in ('live','live-initial'):
             published=wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(),
                 'new successor activation report',15)
@@ -104,6 +107,9 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
                 terminal=read(path)
         except BaseException as error:
             fixture['cleanup_errors'].append(dict(stage='process-join',error=repr(error)))
+        if fault is not None:
+            try: fixture['delivery_fault']=fault('child-joined')
+            except BaseException as error: fixture['cleanup_errors'].append(dict(stage='delivery-fault-join',error=repr(error)))
         try: window['after_us']=history.server_clock(pg,database)
         except BaseException as error: fixture['cleanup_errors'].append(dict(stage='final-clock',error=repr(error)))
         for stream in ('stdout','stderr'):
@@ -127,6 +133,8 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
             lab.write_json(output/(name+'-'+suffix+'.json'),value)
         after=after_inputs=after_native=after_catalog=None
         backend,errors={},[]
+        if fault is not None and fixture['cleanup_errors']:
+            errors.append(dict(stage='delivery-fault-custody',error='proxy/config lifecycle incomplete'))
         # Always retain provisional SQL/input observations, even if the wrapper
         # reply cannot prove native custody. They are not a final-state claim.
         for stage,action in [('sql',lambda:schema.rows(pg,database)),
