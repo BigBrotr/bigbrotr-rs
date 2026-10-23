@@ -43830,7 +43830,7 @@
               "review": "Source-only no blocker; existing outer typedhead/NO_SUCCESSOR/terminal/COMMIT and delivery order unchanged",
               "checks": "Independent source review, formatting, exact5be8449 build/Clippy/components and installed13commands/rawreplay PASS"
             },
-            "next": "Complete compacted initial handoff/prepared retry/native gap and continuous-candidate epoch2 activation qualification, then remaining activated/later recovery, live/Archive frontier and empty retirement before GC.",
+            "next": "Qualify the next prepared/activated installed recovery consumer on the compacted initial lineage; preserve the existing closed-floor and custody guarantees. Later live/Archive/empty-retirement consumers still precede any GC writer/unlink.",
             "input_scanner": {
               "author_commit": "538fc3a843dd0c0b6d584fbaf6bb12049aa7413f",
               "source_review": {
@@ -44359,7 +44359,7 @@
               }
             },
             "initial_handoff_preparation": {
-              "status": "BUILD_PASS150/47; c427aff15cases/133controls PASS then listener-expectation FAIL; corrected saved installed capture/16controls PASS; fresh full run pending",
+              "status": "PASS_BOUNDED_SYNTHETIC_INITIAL_HANDOFF: build150/47, connected16/149, raw6114; no GC qualification",
               "native_author_commit": "7824749369df3751850ae10912b37f7e18ad8167",
               "native_root_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-handoff-root-review-v1.json",
@@ -44383,7 +44383,7 @@
                 "expected_required_total": 47,
                 "measurement": "PASS150 components/47 required, including eight new native controls"
               },
-              "reviews_open": "Final exact listener expectation reviewed against authoritative source/config and corrected saved capture. No product rebuild; fresh full qualification/raw replay pending.",
+              "reviews_open": "No remaining source-review finding for this bounded initial slice; broader recovery/frontier and failure/capacity gates remain.",
               "remaining": "Activated/later recovery, live frontier, retained Archive frontier and empty retirement before floor writer/unlink; physical loss, interrupted synchronization/unlink, mixed restore/backup and capacity.",
               "probe_author_commit": "873ad26e768f9a266e4371ef8a44b0862c60597d",
               "probe_root_review": {
@@ -44540,8 +44540,55 @@
                     "inputs_unchanged": true,
                     "physical_unchanged": true
                   }
+                },
+                {
+                  "source": "f51a8a344907c259fd53320511aa552658ea45f6",
+                  "tree": "8fbeee92eb760425471a932a4bd042303329c0cb",
+                  "product_source": "9bea0ff71c5573f3d470ed7ab8a27e827bac2743",
+                  "status": "PASS_SYNTHETIC_COMPACTED_INITIAL_SUCCESSION",
+                  "driver": "55549 joined0",
+                  "completed_cases": 16,
+                  "completed_controls": 149,
+                  "clones": 7,
+                  "result": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-f51a8a3/installed-compacted-initial-journey/result.json",
+                    "sha256": "8eb90d549905667b1f683c7f57675f9d84bb0d5123c7381b2774462421908556"
+                  },
+                  "terminal": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-f51a8a3/verified-terminal.json",
+                    "sha256": "62ee4e366c9f38a3866e23ddb476f8ca4bfdd428f5b90bc9aaadc65590ddebf5"
+                  },
+                  "raw_replay": {
+                    "status": "PASS_SYNTHETIC_COMPACTED_INITIAL_SUCCESSION_CAPTURE_REPLAY",
+                    "driver": "59019 joined0",
+                    "cases": 16,
+                    "controls": 149,
+                    "bound_files": 6114,
+                    "receipt": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-initial-journey-f51a8a3/raw-replay.json",
+                      "sha256": "46b5ff1773a1bf1ea3d4ecf2fb025209d86698c890acc4acfd0f43ec55b879d7"
+                    }
+                  },
+                  "preserved": {
+                    "rows_unchanged": true,
+                    "catalog_unchanged": true,
+                    "native_unchanged": true,
+                    "inputs_unchanged": true,
+                    "physical_unchanged": true
+                  },
+                  "cleanup": "unrelated_changed/unexpected_containers/missing_owned/cleanup_errors all empty; client143 and borrowed PG0 stopped, PID0/noOOM",
+                  "not_run": [
+                    "Actual product reclamation/GC and unlink",
+                    "Activated replacement recovery, later live frontier, Archive and empty retirement",
+                    "Crash/unknown-commit and interrupted unlink",
+                    "Mixed restore/backup and capacity"
+                  ]
                 }
-              ]
+              ],
+              "author_reconciliation": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-initial-author-reconciliation-v1.json",
+                "sha256": "572d27390c80472691de162b946107e8b7fbdc622220778f56affb58bf513903"
+              }
             }
           }
         }

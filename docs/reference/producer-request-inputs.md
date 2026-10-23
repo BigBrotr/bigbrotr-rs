@@ -967,7 +967,10 @@ using this branch; the command does not grant itself privileges. No mutation
 privilege is added, and ordinary original-input recovery keeps its existing ACL.
 An absent permission refuses the compacted operation.
 
-The explicit compacted initial-succession implementation is under qualification.
+The explicit compacted initial-succession implementation passed the bounded
+synthetic-floor journey: preparation, exact retry, confirmed SQL/native gap, first
+dictionary write and installed startup/renewal/shutdown (16 cases, 149 negative
+controls). This qualifies those consumers; product floor installation remains gated.
 Its sealed handoff binds the verified floor, native root/sequence and complete
 input census while preserving the existing portable intent bytes. Preparation
 checks the exact typed checkpoint, canonical outcomes and historical epoch1
