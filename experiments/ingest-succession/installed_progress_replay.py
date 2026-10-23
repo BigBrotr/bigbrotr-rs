@@ -127,6 +127,58 @@ ACK_EXECUTABLES_SHA256 = {'bigbrotr': '4c1840a4957e0939ac4b2679e9d3813ac962f3ba7
  'native_components': 'bc330c1b78c47b1a768af54ef8db58bf1ded798ef3c9a1af135933b495df1a0c',
  'sync_progress': '72cdf877d436cbb520d233f4c0e150647058b26c959ae796c9f35b6ee35ea02e'}
 
+# Additive initial-only scenario, pinned to root's measured262-test/19-group/
+# 34-control component packet. Installed qualification is still a separate run.
+# Historical ACK_PROFILE and ACK_EXECUTABLES_SHA256 retain their exact meaning.
+PREPARATION_HOLE_EXPECTATIONS = {
+    'initial': dict(epoch=1,request=7,mutation_revision=5,continuation_revision=8,
+        dependencies=tuple((1,n) for n in range(1,28)),key='b1'),
+}
+PREPARATION_HOLE_PROFILE = dict(migration_sha256=ACK_MIGRATION_SHA256,
+    product_source='9cef25f13db44cac1cdd55e1862229ba7298f3b0',cases=PREPARATION_HOLE_EXPECTATIONS)
+PREPARATION_HOLE_BUILD = dict(tree='a473399f2eca0c953af9a2d61abfb4efb4434924',
+    source_manifest_sha256='6b173bd0e36b12d0a7d23510c710d8dae2bf345dae42100d666c43e59a23cc57',
+    lockfile_sha256='5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9')
+PREPARATION_HOLE_COMPONENT_CHECKS_SHA256 = 'e090daa0be760e2ca32775137ae501a83d1801b876ef47db0a0def34de21dbef'
+PREPARATION_HOLE_EXECUTABLES_SHA256 = {
+    'native_components':'e5401bf206fab743bf859a626d70b332f254bb891673b944c2a84c6c6fbc69de',
+    'sync_progress':'fac5b64eabeeee26d8c0da23a53a27f9fadbb36e772bf130e29fb5901ad227d0',
+    'fact_codec':'11458f28cbbf95a3e942f2a629666d4de62ff58245cf8784269d7c4158db9c07',
+    'evidence_intent':'9f50cfe4d853f113d3e6b445ed72b98d9e371c174883a24223e6a58ec1634cdf',
+    'control_schema':'3299f5197abf2fc4e3b397ee1dc10157faec4eccb6e2d9060c16447a4657d9ee',
+    'migrate_entrypoint':'82ccd47da1bf342a41421083fea51a8fe0da9aec6853e07b74c7232514412d57',
+    'ingest_bootstrap_probe':'654d33a8a2ee26b8be221df31ad60ab66fc815dcae3f093788b9f3b855a37f34',
+    'bigbrotr':'2398dfc457f643de16ee8e6e73171eef9efaf2c31c0b5ce7e028b1d195a6bc6c',
+}
+
+
+def preparation_hole_qualification(built, component, qualification):
+    profile=require_frozen_profile(ack=True,preparation_hole=True)
+    assert component['status']=='PASS' and qualification['status']=='PASS_PRODUCER_ACK_COMPONENTS'
+    assert built['source']==component['source']==qualification['source']==profile['product_source']
+    assert all({key:value[key] for key in PREPARATION_HOLE_BUILD}==PREPARATION_HOLE_BUILD
+        for value in (built,component,qualification))
+    assert component['executables_sha256']==ack_executables(preparation_hole=True)
+    assert component['test_counts']==qualification['test_counts']
+    selection={key:component[key] for key in ('test_counts','test_names','required_controls','missing_controls')}
+    encoded=json.dumps(selection,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+    assert hashlib.sha256(encoded).hexdigest()==PREPARATION_HOLE_COMPONENT_CHECKS_SHA256
+
+
+def phase_names(preparation_hole=False):
+    assert type(preparation_hole) is bool
+    return ('mutation','continuation' if preparation_hole else 'proof-only')
+
+
+def ack_executables(*, preparation_hole=False):
+    if not preparation_hole:
+        return ACK_EXECUTABLES_SHA256
+    pins=PREPARATION_HOLE_EXECUTABLES_SHA256
+    assert pins is not None, 'preparation-hole fixture NOT_READY: measured executable pins pending'
+    assert set(pins)==set(ACK_EXECUTABLES_SHA256)
+    assert all(re.fullmatch('[0-9a-f]{64}',value) for value in pins.values())
+    return pins
+
 # Additive authority only in the explicit0039 fixture. The ordinary0038
 # runner retains its original two grant statements.
 PROGRESS_GRANTS = """GRANT SELECT,INSERT,UPDATE ON
@@ -141,8 +193,19 @@ GRANT EXECUTE ON FUNCTION
 """
 
 
-def require_frozen_profile(*, ack=False):
+def require_frozen_profile(*, ack=False, preparation_hole=False):
     assert type(ack) is bool
+    assert type(preparation_hole) is bool and (not preparation_hole or ack)
+    if preparation_hole:
+        profile=PREPARATION_HOLE_PROFILE
+        assert profile is not None, 'preparation-hole fixture NOT_READY: reviewed source/build pins pending'
+        assert set(profile)=={'migration_sha256','product_source','cases'}
+        assert profile['migration_sha256']==ACK_MIGRATION_SHA256
+        assert re.fullmatch('[0-9a-f]{40}',profile['product_source'])
+        assert profile['product_source']!=ACK_PROFILE['product_source']
+        assert profile['cases']==PREPARATION_HOLE_EXPECTATIONS
+        ack_executables(preparation_hole=True)
+        return profile
     if ack:
         assert ACK_PROFILE is not None, 'producer ACK fixture NOT_READY: exact reviewed0040/build/profile pending'
         assert set(ACK_PROFILE)=={'migration_sha256','product_source','cases'}
@@ -176,6 +239,27 @@ def ack_event_sequence(*, successor=False):
          '32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791'),
         '3ac1dd47ad27c66939e5ed24e2002e71fcfac11c63254b622b3d54ea8491ce58']
     return copy.deepcopy(events)
+
+
+def preparation_hole_events():
+    """Four frozen signed bodies; malformed frame is a separate wire-only input."""
+    events=ack_event_sequence()
+    events.append(ack_event_sequence(successor=True)[1])
+    assert len({event['id'] for event in events})==4
+    return events
+
+
+def preparation_hole_recipe():
+    return dict(format='bigbrotr-ack-preparation-hole-events/1',events=preparation_hole_events())
+
+
+def phase_events(phase, *, preparation_hole=False, successor=False):
+    assert phase in phase_names(preparation_hole)
+    if not preparation_hole:
+        return ack_event_sequence(successor=successor)
+    assert not successor
+    a,b,c,d=preparation_hole_events()
+    return [a,{'id':a['id']},b] if phase=='mutation' else [c,d,b]
 
 
 def uint(value, bits=64, minimum=0):
@@ -755,9 +839,9 @@ def verify_ack(context):
         scope='Three mutations through actual window2 then a distinct three-proof REQ; retained originals, noGC')
 
 
-def ack_counterexamples(context, checker, kind):
+def ack_counterexamples(context, checker, kind, *, preparation_hole=False):
     """Exact native state/write accounting and three-frame/window discriminators."""
-    spec=ACK_EXPECTATIONS[kind]
+    spec=PREPARATION_HOLE_EXPECTATIONS[kind] if preparation_hole else ACK_EXPECTATIONS[kind]
     checks=[]
     def reject(name,change,reason=None):
         value=copy.deepcopy(context);change(value)

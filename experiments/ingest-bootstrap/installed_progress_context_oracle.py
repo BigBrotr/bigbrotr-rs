@@ -121,9 +121,17 @@ def project32(state, *, ack=False):
     return value
 
 
-def input_custody(cuts, after, inputs):
-    assert set(cuts) == {'mutation','proof-only'}
-    assert cuts['mutation'] == cuts['proof-only'] == after
+def input_custody(cuts, after, inputs, *, preparation_hole=False):
+    names=typed.phase_names(preparation_hole)
+    assert set(cuts) == set(names)
+    if preparation_hole:
+        assert cuts['continuation']==after
+        assert set(cuts['mutation'])=={'.',*(name for name in inputs if int(name[-21:-5],16)<=5)}
+        assert all(metadata==after[name] for name,metadata in cuts['mutation'].items() if name!='.')
+        # Directory size may grow as C/D are retained; its custody cannot move.
+        assert all(cuts['mutation']['.'][key]==after['.'][key] for key in ('mode','inode','device','links','sha256'))
+    else:
+        assert cuts['mutation'] == cuts['proof-only'] == after
     assert set(after) == {'.', *inputs}
     for name, metadata in after.items():
         assert set(metadata) == {'mode','inode','device','links','bytes','sha256'}
@@ -135,7 +143,20 @@ def input_custody(cuts, after, inputs):
             assert {key:metadata[key] for key in ('bytes','sha256')} == inputs[name]
 
 
-def ready(state, kind, phase, wire, *, ack=False):
+def ready(state, kind, phase, wire, *, ack=False, preparation_hole=False):
+    if preparation_hole:
+        assert ack and kind=='initial' and phase in typed.phase_names(True) and len(state)==77
+        heads,jobs=state['producer_checkpoints'],state['acquisition_progress']
+        if len(heads)!=1 or len(jobs)!=1: return False
+        head,job=heads[0],jobs[0]
+        later=phase=='continuation'
+        return (head['checkpoint_revision']==(8 if later else 5)
+            and head['complete_through_request']==(7 if later else 5)
+            and head['dependency_count']==(27 if later else 17) and head['progress_jobs']==1
+            and job['progress_revision']==job['classified_events']==job['successful_events']==(4 if later else 1)
+            and job['rejected_events']==0 and job['event_ordinal']==job['wire_sequence']==(3 if later else 1)
+            and job['classification']==(5 if later else 2) and job['mutation_request']==(None if later else 4)
+            and typed.bytea(job['request_id'],48)==wire['request'][1].encode())
     spec = typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
     width=3 if ack else 1
     assert len(state) == 77 and phase in ('mutation', 'proof-only')
@@ -155,10 +176,12 @@ def ready(state, kind, phase, wire, *, ack=False):
         and typed.bytea(job['request_id'], 48) == wire['request'][1].encode())
 
 
-def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, successor=False):
+def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, successor=False, preparation_hole=False):
     assert type(successor) is bool and (not successor or ack)
+    assert type(preparation_hole) is bool and (not preparation_hole or ack and not successor)
+    names=typed.phase_names(preparation_hole)
     if ack:
-        assert set(gates)=={'progress-mutation-observation.json','progress-proof-only-observation.json','progress-release.json'}
+        assert set(gates)=={*('progress-'+name+'-observation.json' for name in names),'progress-release.json'}
     events=typed.ack_event_sequence(successor=successor) if ack else [event]
     assert 3 <= len(opened) == len(closed) <= 128
     phases, nonces = {}, set()
@@ -168,7 +191,8 @@ def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, success
         extra={'frames','completion','closed_at_us','closed_monotonic_ns'}
         if 'progress_phase' in last:
             extra|={'progress_phase','event_ids','event_json_sha256','sent_at_us'}
-            if last['progress_phase']=='proof-only': extra.add('progress_release')
+            if last['progress_phase']==names[1]: extra.add('progress_release')
+            if preparation_hole: extra.add('event_json_hex')
         assert set(last)==opened_fields|extra
         assert first['number'] == last['number'] == number
         assert all(last[k] == v for k,v in first.items())
@@ -183,13 +207,17 @@ def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, success
             assert number > 1 and last['frames'] == [] and last['completion'] == 'quiet-eof'
             continue
         phase = last['progress_phase']
-        assert phase in ('mutation','proof-only') and phase not in phases
-        assert last['frames'] == ['signed']*len(events)+['EOSE'] and last['event_ids'] == [e['id'] for e in events]
+        assert phase in names and phase not in phases
+        if preparation_hole:
+            events=typed.phase_events(phase,preparation_hole=True)
+            assert last['event_json_hex']==[json.dumps(e,ensure_ascii=False,separators=(',',':')).encode().hex() for e in events]
+        labels=['signed','malformed-event','signed'] if preparation_hole and phase=='mutation' else ['signed']*len(events)
+        assert last['frames'] == labels+['EOSE'] and last['event_ids'] == [e['id'] for e in events]
         assert last['event_json_sha256'] == [sha(json.dumps(e,ensure_ascii=False,separators=(',',':')).encode()) for e in events]
         assert last['completion'] == 'request-and-websocket-close'
         assert last['request_at_us'] <= last['sent_at_us'] <= last['closed_at_us']
         phases[phase] = last
-    assert list(phases) == ['mutation','proof-only'] and phases['mutation']['number'] == 1
+    assert list(phases) == list(names) and phases['mutation']['number'] == 1
     observations = {s['stage']:s for s in snapshots}
     for phase, wire in phases.items():
         cut = observations['progress-'+phase]
@@ -200,15 +228,17 @@ def wires_checked(opened, closed, snapshots, event, gates, *, ack=False, success
     assert gate == dict(format='bigbrotr-progress-transport-release/1',
         mutation_request=phases['mutation']['request'][1],
         observation_sha256=sha(gates['progress-mutation-observation.json'].encode()))
-    assert phases['proof-only']['progress_release'] == dict(gate, release_sha256=sha(gates['progress-release.json'].encode()))
-    assert phases['proof-only']['sent_at_us'] >= observations['progress-mutation']['observed_by_us']
+    assert phases[names[1]]['progress_release'] == dict(gate, release_sha256=sha(gates['progress-release.json'].encode()))
+    assert phases[names[1]]['sent_at_us'] >= observations['progress-mutation']['observed_by_us']
     return phases
 
 
 def typed_checked(kind, before, after, snapshots, phases, event, native, inputs, receipts,
-                  scope, observer, witness, control, *, ack=False):
-    spec = typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
-    events=typed.ack_event_sequence(successor=kind=='successor') if ack else [event]
+                  scope, observer, witness, control, *, ack=False, preparation_hole=False):
+    assert not preparation_hole or ack and kind=='initial'
+    spec = typed.PREPARATION_HOLE_EXPECTATIONS[kind] if preparation_hole else typed.ACK_EXPECTATIONS[kind] if ack else PROFILES[kind]
+    events=typed.preparation_hole_events() if preparation_hole else typed.ack_event_sequence(successor=kind=='successor') if ack else [event]
+    names=typed.phase_names(preparation_hole)
     width=len(events)
     event=events[-1]
     epoch = spec['epoch']
@@ -227,50 +257,70 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
             if request['producer_epoch'] != epoch or not spec['request']-width < request['request_sequence'] <= spec['request']:
                 assert all(request[key] is None for key in typed.REQUEST_ADDITIONS)
             else:
-                wire = phases['mutation']
-                ordinal=request['request_sequence']-(spec['request']-width)
+                if preparation_hole:
+                    phase,ordinal,index={4:('mutation',1,0),5:('mutation',3,1),
+                        6:('continuation',1,2),7:('continuation',2,3)}[request['request_sequence']]
+                    wire=phases[phase]
+                else:
+                    wire = phases['mutation']
+                    ordinal=request['request_sequence']-(spec['request']-width)
+                    index=ordinal-1
                 assert {key:request[key] for key in typed.REQUEST_ADDITIONS} == dict(
                     progress_request_id='\\x'+wire['request'][1].encode().hex(),
                     progress_event_ordinal=ordinal, progress_wire_sequence=ordinal,
-                    progress_input_sha256='\\x'+sha(json.dumps(events[ordinal-1],ensure_ascii=False,separators=(',',':')).encode()))
+                    progress_input_sha256='\\x'+sha(json.dumps(events[index],ensure_ascii=False,separators=(',',':')).encode()))
     cuts = {s['stage']:s for s in snapshots}
-    mutation, proof = (cuts['progress-'+phase] for phase in ('mutation','proof-only'))
-    assert mutation['inputs'] == proof['inputs']
-    for table in ('producer_requests','producer_outcomes','producer_epochs','jobs','acquisition_jobs','job_admissions',
-                  'producer_checkpoint_dependencies'):
+    mutation, proof = (cuts['progress-'+phase] for phase in names)
+    if preparation_hole:
+        assert mutation['inputs'].items() <= proof['inputs'].items()
+        for table in ('producer_requests','producer_outcomes','producer_checkpoint_dependencies'):
+            assert all(row in proof['control'][table] for row in mutation['control'][table]), 'pre-hole originals changed'
+        equal_tables=('jobs','acquisition_jobs','job_admissions')
+    else:
+        assert mutation['inputs'] == proof['inputs']
+        equal_tables=('producer_requests','producer_outcomes','producer_epochs','jobs','acquisition_jobs','job_admissions',
+                      'producer_checkpoint_dependencies')
+    for table in equal_tables:
         same({table:mutation['control'][table]}, {table:proof['control'][table]})
     assert int(only(mutation['control']['producer_checkpoints'])['xmin']) != int(only(proof['control']['producer_checkpoints'])['xmin'])
     def check(cut, phase=None, setup=False):
         state = cut['control']
         if not setup:
             wire = phases[phase]
-            assert ready(state,kind,phase,wire,ack=ack)
+            assert ready(state,kind,phase,wire,ack=ack,preparation_hole=preparation_hole)
             actual = only(state['acquisition_progress'])
             accepted = only(state['jobs'], request_key='\\x'+spec['key']*16)
             assert accepted['checkpoint_revision'] == 0 and accepted['state'] == 'queued'
             detail = only(state['acquisition_jobs'],job_id=accepted['job_id'])
-            is_proof = phase == 'proof-only'
+            is_proof = phase == names[1]
+            current_event=events[1 if is_proof else 0] if preparation_hole else event
+            ordinal=(3 if is_proof else 1) if preparation_hole else width
+            classified=(4 if is_proof else 1) if preparation_hole else width*(1+is_proof)
+            job_request=4 if preparation_hole else spec['request']
             job = dict(common, job_id=accepted['job_id'],scope_id=detail['scope_id'],
-                progress_revision=width*(1+is_proof),request_id='\\x'+wire['request'][1].encode().hex(),
-                event_ordinal=width,wire_sequence=width,input_sha256='\\x'+sha(json.dumps(event,ensure_ascii=False,separators=(',',':')).encode()),
-                classification=5 if is_proof else 2, mutation_request=None if is_proof else spec['request'],
-                classified_events=width*(1+is_proof),successful_events=width*(1+is_proof),rejected_events=0,
+                progress_revision=classified,request_id='\\x'+wire['request'][1].encode().hex(),
+                event_ordinal=ordinal,wire_sequence=ordinal,input_sha256='\\x'+sha(json.dumps(current_event,ensure_ascii=False,separators=(',',':')).encode()),
+                classification=5 if is_proof else 2, mutation_request=None if is_proof else job_request,
+                classified_events=classified,successful_events=classified,rejected_events=0,
                 observed_at_us=actual['observed_at_us'],clock_resolution_us=actual['clock_resolution_us'],
                 clock_anomaly_flags=actual['clock_anomaly_flags'],xmin=actual['xmin'])
             if is_proof:
-                digest = typed.certification_digest(event,scope,observer,observer,witness,job,wire).hex()
+                digest = typed.certification_digest(current_event,scope,observer,observer,witness,job,wire).hex()
                 assert all(job['xmin'] != row['xmin'] for rows in typed.legacy_state(state,ack=ack).values() for row in rows)
             else:
-                raw = inputs[spec['request']]
+                raw = inputs[job_request]
                 observation = decode(raw.split(b'\0',1)[1])[3][5]
                 assert [job['observed_at_us'],job['clock_resolution_us'],job['clock_anomaly_flags']] == [
                     observation[0],observation[2][1],observation[2][3]]
                 assert wire['sent_at_us']-job['clock_resolution_us'] <= observation[0] <= wire['closed_at_us']+job['clock_resolution_us']
-                assert job['xmin'] == only(state['producer_outcomes'],producer_epoch=epoch,request_sequence=spec['request'])['xmin']
+                assert job['xmin'] == only(state['producer_outcomes'],producer_epoch=epoch,request_sequence=job_request)['xmin'], 'frozen prefix transaction changed'
                 digest = sha(raw)
             job['intent_digest'] = '\\x'+digest
             jobs, revision, complete = [job], spec['mutation_revision']+width*is_proof, spec['request']
             coordinates = spec['dependencies']
+            if preparation_hole:
+                revision,complete=(8,7) if is_proof else (5,5)
+                coordinates=tuple((1,n) for n in range(1,28 if is_proof else 18))
         else:
             assert kind == 'initial' and not state['acquisition_progress']
             jobs, revision, complete = [], 2, 2
@@ -282,7 +332,12 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
             issuer_incarnation=control['process_incarnation'],committed_at_us=head['committed_at_us'],xmin=head['xmin'])
         assert control['acquired_at_us'] <= head['committed_at_us'] <= cut['observed_by_us']
         if jobs:
-            assert head['xmin'] == jobs[0]['xmin'] and head['committed_at_us'] >= wire['sent_at_us']
+            if preparation_hole and not is_proof:
+                assert head['xmin']==only(state['producer_outcomes'],producer_epoch=epoch,request_sequence=5)['xmin']
+                assert head['xmin']!=jobs[0]['xmin'], 'hole must not update classified prefix'
+            else:
+                assert head['xmin'] == jobs[0]['xmin']
+            assert head['committed_at_us'] >= wire['sent_at_us']
         else:
             assert head['xmin'] == only(state['producer_outcomes'],producer_epoch=epoch,request_sequence=2)['xmin']
         dependencies = []
@@ -298,7 +353,7 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
             jobs,dependencies,lambda row:typed.native_reference(row,native)).hex()
         observed_deps = sorted(state['producer_checkpoint_dependencies'],key=lambda r:(r['source_shard'],r['source_epoch'],r['source_sequence']))
         typed.exact_snapshot(head,state['acquisition_progress'],observed_deps,expected_head,jobs,dependencies,native)
-    for phase in ('mutation','proof-only'):
+    for phase in names:
         check(cuts['progress-'+phase],phase)
     assert all(before[table] == [] for table in (*typed.TABLES,'producer_checkpoints'))
     for cut in snapshots:
@@ -307,21 +362,30 @@ def typed_checked(kind, before, after, snapshots, phases, event, native, inputs,
                 check(cut,setup=True)
             else:
                 assert all(cut['control'][table] == [] for table in (*typed.TABLES,'producer_checkpoints'))
-        elif cut['stage'] not in ('progress-mutation','progress-proof-only'):
+        elif cut['stage'] not in tuple('progress-'+phase for phase in names):
             for table in (*typed.TABLES,'producer_checkpoints'):
                 assert cut['control'][table] == proof['control'][table]
     for table in (*typed.TABLES,'producer_checkpoints'):
         assert after[table] == proof['control'][table]
+    if preparation_hole:
+        return dict(status='PASS_TYPED_PREPARATION_HOLE',kind=kind,producer_epoch=epoch,
+            mutation_revision=5,continuation_revision=8,complete_through_request=7,dependencies=27,
+            acquisition_revision=4,job_checkpoint_revision=0,ack=7,preparation_refusals=1,
+            frozen_prefix_ordinal=1,post_hole_mutations=3,window=2,
+            scope='Initial A/hole/B then genuine C/D/B-proof REQ; no EOSE/workflow completion or full-window proof')
     return dict(status='PASS_TYPED_CONTEXT',kind=kind,producer_epoch=epoch,
         mutation_revision=spec['mutation_revision'],proof_revision=spec['mutation_revision']+width,
         complete_through_request=spec['request'],dependencies=len(spec['dependencies']),
         acquisition_revision=2*width,job_checkpoint_revision=0,ack=spec['request'] if ack else 0)
 
 
-def verify_initial(context, *, ack=False):
+def verify_initial(context, *, ack=False, preparation_hole=False):
     from installed_sync import BOOTSTRAP, COMMANDS, validate_source, validate_queued
     from initial_jobs import unchanged, logged_out, released
     from live_replay import OLD_EVENT
+    assert type(preparation_hole) is bool and (not preparation_hole or ack)
+    typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole)
+    names=typed.phase_names(preparation_hole)
     assert set(context) == {'kind','setup','before','after','snapshots','report','transcript','opened',
         'terminal','stdout','stderr','signal','client_terminal','client_stdout','client_stderr','observations',
         'inputs','input_contents','native','event_bytes','native_result','catalog_after','backend_count','gates',
@@ -353,18 +417,20 @@ def verify_initial(context, *, ack=False):
         native='closed',owner_release='committed',source_closure='not-performed',ready=False)]
     assert context['report']['state'] == 'initialized' and context['report']['acquisition'] == 'finite-initial'
     snapshots = context['snapshots']
-    assert [s['stage'] for s in snapshots] == ['initialized','prepared','progress-mutation',
-        'progress-proof-only','durable','before-stop']
+    assert [s['stage'] for s in snapshots] == ['initialized','prepared',
+        *('progress-'+phase for phase in names),'durable','before-stop']
     event_raw = bytes.fromhex(context['event_bytes'])
     assert sha(event_raw) == SIGNED_SHA256
     event = json.loads(event_raw)
     assert event == OLD_EVENT  # Preserve the frozen raw JSON member order too.
     if ack:
-        assert context['producer_ack_profile']=='two-slot-three-events/1'
-        events=typed.ack_event_sequence()
-        assert json.loads(context['ack_event_recipe'])==dict(format='bigbrotr-ack-events/1',events=events)
+        assert context['producer_ack_profile']==('two-slot-preparation-hole/1' if preparation_hole else 'two-slot-three-events/1')
+        events=typed.preparation_hole_events() if preparation_hole else typed.ack_event_sequence()
+        assert json.loads(context['ack_event_recipe'])==(typed.preparation_hole_recipe() if preparation_hole
+            else dict(format='bigbrotr-ack-events/1',events=events))
         event=events[0]
-    phases = wires_checked(context['opened'],context['transcript'],snapshots,event,context['gates'],ack=ack)
+    phases = wires_checked(context['opened'],context['transcript'],snapshots,event,context['gates'],ack=ack,
+        preparation_hole=preparation_hole)
     signal = context['signal']
     quiet = only(context['transcript'],number=signal['round'])
     assert quiet['completion'] == 'quiet-eof' and not quiet['frames']
@@ -372,7 +438,7 @@ def verify_initial(context, *, ack=False):
     assert quiet['request_at_us'] <= signal['signal_at_us'] <= quiet['closed_at_us']
     before, after = typed.legacy_state(context['before'],ack=ack), typed.legacy_state(context['after'],ack=ack)
     projected = [typed.legacy_state(s['control'],ack=ack) for s in snapshots]
-    total=6 if ack else 4
+    total=7 if preparation_hole else 6 if ack else 4
     window=2 if ack else 32
     if ack:
         assert all(before[t][0]['document']['settings']['ingest.producer_outstanding_requests']==2
@@ -393,8 +459,9 @@ def verify_initial(context, *, ack=False):
             assert all(row in state[table] for row in initial[table]), 'retained bootstrap originals changed'
         expected_producer = dict(producer)
         if state is not prepared:
-            expected_producer.update(reserved_through_request=total,
-                xmin=only(state['producer_requests'],request_sequence=total)['xmin'])
+            current_total=5 if preparation_hole and state is mutation else total
+            expected_producer.update(reserved_through_request=current_total,
+                xmin=only(state['producer_requests'],request_sequence=current_total)['xmin'])
         assert state['producer_epochs'] == [expected_producer], 'producer lifecycle changed'
     unchanged(initial,prepared,COMMANDS)
     assert not prepared['jobs'] and prepared['producer_requests'] == initial['producer_requests']
@@ -406,7 +473,8 @@ def verify_initial(context, *, ack=False):
         validate_source(state,context['report'],observations)
         validate_queued(state,observations)
         for table in ('producer_requests','producer_outcomes'):
-            same({table:state[table]},{table:after[table]})
+            expected_rows=[r for r in after[table] if not preparation_hole or state is not mutation or r['request_sequence']<=5]
+            same({table:state[table]},{table:expected_rows})
         assert all(r in state['management_commands'] for r in prepared['management_commands'])
         assert all(r in state['management_audit'] for r in prepared['management_audit'])
         assert len(state['management_commands']) == len(prepared['management_commands'])+1
@@ -419,10 +487,10 @@ def verify_initial(context, *, ack=False):
     # Two further new-event batches are sixteen writes each. Under0040 each
     # of the six mutating operations contributes one separate ACK state put.
     if ack:
-        assert type(actual['sequence']) is int and actual['sequence']==95, 'ACK native write count differs'
-    assert type(actual['sequence']) is int and actual['sequence'] == 1+12+8+20+16+(32+6 if ack else 0)
+        assert type(actual['sequence']) is int and actual['sequence']==(112 if preparation_hole else 95), 'ACK native write count differs'
+    assert type(actual['sequence']) is int and actual['sequence'] == 1+12+8+20+16+(48+7 if preparation_hole else 32+6 if ack else 0)
     values = {(r['cf'],bytes.fromhex(r['key'])):bytes.fromhex(r['value']) for r in actual['rows']}
-    assert len(values) == len(actual['rows']) == (75 if ack else 49)
+    assert len(values) == len(actual['rows']) == (88 if preparation_hole else 75 if ack else 49)
     facts = {int.from_bytes(key[-8:],'big'):decode(value[34:].split(b'\0',1)[1])
         for (cf,key),value in values.items() if cf == 'facts' and key[:2] == b'\x01\x20'}
     dictionary_at, recorded, received = facts[4][4],facts[8][4],facts[11][5][1]
@@ -437,11 +505,13 @@ def verify_initial(context, *, ack=False):
         for ordinal,literal in enumerate(events[1:],2):
             first=8+5*(ordinal-1)
             at=facts[first+3][5][1];committed=facts[first][4]
-            assert facts[first+3][5][3][1]==resolution
-            assert phases['mutation']['sent_at_us']-resolution<=at<=phases['mutation']['closed_at_us']+resolution
+            wire=phases['continuation'] if preparation_hole and ordinal>=3 else phases['mutation']
+            quality=wire['clock_resolution_us']
+            assert facts[first+3][5][3][1]==quality
+            assert wire['sent_at_us']-quality<=at<=wire['closed_at_us']+quality
             assert at<=committed<=snapshots[-1]['observed_by_us']
-            extra.append((literal,at,committed,resolution,sha(b'bigbrotr/body/1\0'+typed.cbor(typed.body(literal)))))
-        options=dict(additional_events=extra,acknowledge=True,
+            extra.append((literal,at,committed,quality,sha(b'bigbrotr/body/1\0'+typed.cbor(typed.body(literal)))))
+        options=dict(additional_events=extra,acknowledge=True,preparation_hole=preparation_hole,
             expected_body_digest=sha(b'bigbrotr/body/1\0'+typed.cbor(typed.body(event))))
     else:
         assert context['native_result'] == dict(native_rows=49,original_requests=4,
@@ -456,10 +526,10 @@ def verify_initial(context, *, ack=False):
     assert context['inputs'] == expected_inputs
     assert context['input_contents'] == {slot+'-0000000000000001-'+f'{n:016x}.cbor':raw.hex()
         for n,raw in enumerate(inputs,1)}
-    input_custody(context['input_files'],context['input_files_after'],expected_inputs)
+    input_custody(context['input_files'],context['input_files_after'],expected_inputs,preparation_hole=preparation_hole)
     for index, snapshot in enumerate(snapshots):
         assert snapshot['inputs'] == {name:value for name,value in expected_inputs.items()
-            if index >= 2 or int(name[-21:-5],16) <= 2}
+            if int(name[-21:-5],16) <= (2 if index<2 else 5 if preparation_hole and index==2 else total)}
         assert snapshot['server_us'] <= snapshot['observed_by_us']
         if index:
             assert snapshots[index-1]['observed_by_us'] <= snapshot['server_us']
@@ -494,7 +564,7 @@ def verify_initial(context, *, ack=False):
     observation = event_input[5]
     return typed_checked('initial',context['before'],context['after'],snapshots,phases,event,
         {(cf,key.hex()):value.hex() for cf,key,value in wanted},dict(enumerate(inputs,1)),dict(enumerate(receipts,1)),
-        event_input[1],observation[1],observation[3],control,ack=ack)
+        event_input[1],observation[1],observation[3],control,ack=ack,preparation_hole=preparation_hole)
 
 
 def verify_live(context, *, ack=False):
@@ -563,11 +633,12 @@ def verify_live(context, *, ack=False):
 
 def controls(context, verify):
     verify(context)
+    preparation_hole=context.get('producer_ack_profile')=='two-slot-preparation-hole/1'
     results = []
     def reject(name, change, reason=None):
         value = copy.deepcopy(context)
         change(value)
-        if context.get('producer_ack_profile')=='two-slot-three-events/1':
+        if context.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-preparation-hole/1'):
             rebind_gates(value)
         try:
             verify(value)
@@ -577,7 +648,7 @@ def controls(context, verify):
             results.append(name)
         else:
             raise AssertionError('progress context accepted counterexample: '+name)
-    phase = lambda c:next(s for s in c['snapshots'] if s['stage']=='progress-proof-only')['control']
+    phase = lambda c:next(s for s in c['snapshots'] if s['stage']=='progress-'+typed.phase_names(preparation_hole)[1])['control']
     after = lambda c:c['after']
     upgrade = lambda c:c['setup'] if 'kind' in c else c['progress_setup']
     ledger = lambda c,stage:upgrade(c)[stage]['schema_versions']
@@ -608,7 +679,8 @@ def controls(context, verify):
     reject('changed-native-value',lambda c:(c['native'] if 'native' in c else c['native_after'])['rows'][0].update(value='00'))
     reject('changed-original-input',lambda c:c['input_contents'].update({next(iter(c['input_contents'])):'00'}))
     reject('foreign-progress-issuer',lambda c:after(c)['producer_checkpoints'][0].update(issuer_epoch=999))
-    reject('head-complete-overadvance',lambda c:after(c)['producer_checkpoints'][0].update(complete_through_request=(typed.ACK_EXPECTATIONS['initial' if 'kind' in c else 'activated']['request']+1
+    reject('head-complete-overadvance',lambda c:after(c)['producer_checkpoints'][0].update(complete_through_request=(8 if preparation_hole
+            else typed.ACK_EXPECTATIONS['initial' if 'kind' in c else 'activated']['request']+1
             if c.get('producer_ack_profile')=='two-slot-three-events/1' else 5)))
     reject('proof-revision-missing',lambda c:phase(c)['acquisition_progress'][0].update(progress_revision=1))
     reject('proof-mutating-request',lambda c:phase(c)['acquisition_progress'][0].update(mutation_request=1))
@@ -652,8 +724,56 @@ def controls(context, verify):
         reject('unjoined-cli',lambda c:c['response']['terminal'].update(reaped=False))
         reject('backend-not-absent',lambda c:c['backend']['absence']['attempts'][-1].update(count=1))
         reject('schema-drift',lambda c:c.update(progress_catalog_after=c['progress_catalog_after']+'changed'))
-    if context.get('producer_ack_profile')=='two-slot-three-events/1':
-        results.extend(typed.ack_counterexamples(context,verify,'initial' if 'kind' in context else 'activated'))
+    if context.get('producer_ack_profile') in ('two-slot-three-events/1','two-slot-preparation-hole/1'):
+        results.extend(typed.ack_counterexamples(context,verify,'initial' if 'kind' in context else 'activated',
+            preparation_hole=preparation_hole))
+    if preparation_hole:
+        mutation=lambda c:only(c['snapshots'],stage='progress-mutation')['control']
+        def rehash(c,state):
+            native={(r['cf'],r['key']):r['value'] for r in c['native']['rows']}
+            head=only(state['producer_checkpoints'])
+            jobs=sorted(state['acquisition_progress'],key=lambda r:r['job_id'])
+            dependencies=sorted(state['producer_checkpoint_dependencies'],key=lambda r:(
+                r['source_shard'],r['source_epoch'],r['source_sequence']))
+            head['checkpoint_digest']='\\x'+typed.head_digest(head,jobs,dependencies,
+                lambda row:typed.native_reference(row,native)).hex()
+        def advance_prefix(c):
+            state=mutation(c); job=only(state['acquisition_progress'])
+            request=only(state['producer_requests'],request_sequence=5)
+            outcome=only(state['producer_outcomes'],request_sequence=5)
+            original=bytes.fromhex(c['input_contents'][next(name for name in c['input_contents'] if name.endswith('0000000000000005.cbor'))])
+            observation=decode(original.split(b'\0',1)[1])[3][5]
+            job.update(progress_revision=2,classified_events=2,successful_events=2,event_ordinal=3,
+                wire_sequence=3,input_sha256=request['progress_input_sha256'],intent_digest=request['request_digest'],
+                mutation_request=5,observed_at_us=observation[0],clock_resolution_us=observation[2][1],
+                clock_anomaly_flags=observation[2][3],xmin=outcome['xmin'])
+            rehash(c,state)
+        def unbind_later_mutation(c):
+            for state in [s['control'] for s in c['snapshots'][2:]]+[c['after']]:
+                request=only(state['producer_requests'],request_sequence=5)
+                request.update({field:None for field in typed.REQUEST_ADDITIONS})
+        def drop_closure(c):
+            state=mutation(c); state['producer_checkpoint_dependencies'].pop()
+            only(state['producer_checkpoints'])['dependency_count']-=1
+            rehash(c,state)
+        def replace_hole(c):
+            wire=only(c['transcript'],progress_phase='mutation')
+            forged=dict(typed.preparation_hole_events()[0],sig='00'*64)
+            raw=json.dumps(forged,ensure_ascii=False,separators=(',',':')).encode()
+            wire['event_json_hex'][1]=raw.hex();wire['event_json_sha256'][1]=sha(raw)
+            wire['frames'][1]='forged-signature'
+        reject('coherent-head-skips-preparation-hole',advance_prefix)
+        reject('prefix-xmin-updated-by-post-hole-mutation',lambda c:only(mutation(c)['acquisition_progress']).update(
+            xmin=only(mutation(c)['producer_outcomes'],request_sequence=5)['xmin']),'frozen prefix transaction changed')
+        reject('post-hole-mutation-loses-raw-binding',unbind_later_mutation)
+        reject('post-hole-dependency-omitted-with-valid-checksum',drop_closure)
+        reject('classified-signature-rejection-substituted-for-preparation-hole',replace_hole)
+        reject('post-hole-ordinal-compacted',lambda c:only(mutation(c)['producer_requests'],request_sequence=5).update(
+            progress_event_ordinal=2,progress_wire_sequence=2))
+        reject('new-request-does-not-reset-ordinal',lambda c:only(phase(c)['producer_requests'],request_sequence=6).update(
+            progress_event_ordinal=4,progress_wire_sequence=4))
+        reject('new-request-proof-counts-skipped-hole',lambda c:only(phase(c)['acquisition_progress']).update(
+            classified_events=5,successful_events=5,progress_revision=5))
     return dict(status='PASS',rejected=len(results),cases=results)
 
 
@@ -661,7 +781,8 @@ def rebind_gates(context):
     gates=context['gates'] if 'kind' in context else context['progress_gates']
     wires=[r for r in (context['transcript'] if 'kind' in context else context['journey']['closed'])
         if 'progress_phase' in r]
-    for phase in ('mutation','proof-only'):
+    names=typed.phase_names(context.get('producer_ack_profile')=='two-slot-preparation-hole/1')
+    for phase in names:
         wire=only(wires,progress_phase=phase)
         cut=only(context['snapshots'],stage='progress-'+phase)
         gates['progress-'+phase+'-observation.json']=json.dumps(dict(
@@ -670,9 +791,166 @@ def rebind_gates(context):
             gate=dict(format='bigbrotr-progress-transport-release/1',mutation_request=wire['request'][1],
                 observation_sha256=sha(gates['progress-mutation-observation.json'].encode()))
             gates['progress-release.json']=json.dumps(gate)
-            only(wires,progress_phase='proof-only')['progress_release']=dict(gate,
+            only(wires,progress_phase=names[1])['progress_release']=dict(gate,
                 release_sha256=sha(gates['progress-release.json'].encode()))
 
+
+
+def verify_hole_recovery(context, seed):
+    """Full original preservation plus only fresh Control and native closing."""
+    import installed_cycle_model as model
+    from installed_cycle_replay import CONTEXT_FIELDS, process_closed
+    from installed_family_capture import backend_checked, number
+    typed.require_frozen_profile(ack=True,preparation_hole=True)
+    assert set(context)==CONTEXT_FIELDS
+    case=context['case']; retry=case['name']=='sync-signed-retry'
+    assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert case['name'] in ('sync-signed-recover','sync-signed-retry')
+    assert (case['clone'],case['origin'],case['operation'])==('sync-signed','initial','recover-initial')
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    assert case['predecessor']==('sync-signed-recover' if retry else None)
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    before,after=context['before'],context['after']
+    assert set(before)==set(after)==set(seed[0]) and len(before)==77
+    assert context['inputs_before']==context['inputs_after']==seed[2] and len(seed[2])==7
+    assert set(context['input_contents'])==set(seed[2])
+    for name,value in context['input_contents'].items():
+        raw=bytes.fromhex(value)
+        assert seed[2][name]==dict(bytes=len(raw),sha256=sha(raw))
+    assert context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert context['catalog_before']==context['catalog_after']
+    window=context['server_window']
+    assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True)
+    number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    reports=process_closed(context['response'],case)
+    backend_checked(context['backend'],case['database'],before,after)
+    producer=only(seed[0]['producer_epochs'])
+    assert producer['producer_epoch']==1 and producer['state']=='open' and producer['reserved_through_request']==7
+    assert only(seed[0]['producer_checkpoints'])['complete_through_request']==7
+    assert only(seed[0]['producer_checkpoints'])['checkpoint_revision']==8
+    assert only(seed[0]['acquisition_progress'])['classified_events']==4
+    expected_native=copy.deepcopy(seed[1]); values=model.native_map(expected_native)
+    key=('receipts','0131'+producer['producer_slot_id'][2:]+(1).to_bytes(8,'big').hex())
+    marker=b'\x01\x31'+(7).to_bytes(8,'big')*2+bytes(8)
+    assert values[key]==marker.hex() and expected_native['sequence']==112
+    values[key]=(b'\x02\x31'+marker[2:]+b'\x01').hex()
+    expected_native.update(rows=model.native_rows(values),sequence=113)
+    assert context['native_before']==(expected_native if retry else seed[1])
+    assert context['native_after']==expected_native, 'recovery permits only one closing write'
+    # All prior scientific, authorization, checkpoint and audit rows survive.
+    retained=copy.deepcopy(before)
+    if retry:
+        prior=only(retained['owner_epochs'],role='control',epoch=2)
+        assert prior['state']=='released' and prior['exclusion_method']=='storage_fenced'
+        role=only(retained['role_instances'],role_instance_id=prior['role_instance_id'])
+        retained['owner_epochs'].remove(prior); retained['role_instances'].remove(role)
+        current=only(retained['producer_epochs'])
+        assert current['state']=='closing'
+        model.fresh_xmin(current['xmin'],seed[0])
+        current.update(state='open',xmin=producer['xmin'])
+    same(retained,seed[0])
+    m=model.Model(before,context['native_before'],seed[2],window,initial=True)
+    m.completed_control(after)
+    if not retry:
+        changed=only(after['producer_epochs']); model.fresh_xmin(changed['xmin'],m.pg)
+        only(m.pg['producer_epochs']).update(state='closing',xmin=changed['xmin'])
+    same(m.pg,after)
+    assert reports==[dict(format='bigbrotr-ingest-recovery/1',state='positive-outcomes-resolved',
+        dataset_id=producer['dataset_id'][2:],owner_resource_id=producer['owner_resource_id'][2:],
+        producer_slot_id=producer['producer_slot_id'][2:],producer_epoch='1',issued_through='7',
+        reserved_through='7',resolved_requests='7',native='closed',owner_release='committed',ready=False)]
+    return dict(status='PASS',case=case['name'],tables=77,input_files=7,native_rows=88,native_sequence=113,
+        product_native_writes=0 if retry else 1,native_acknowledged=7,native_retired=0,
+        typed_heads_dependencies_original_xmins_preserved=True,source_and_job_completion=False)
+
+
+def hole_recovery_controls(context, seed):
+    verify_hole_recovery(context,seed)
+    changes=[
+        ('unknown-process',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN')),
+        ('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False)),
+        ('non-config-only-recovery',lambda c:c['response']['terminal']['command'].append('--close-source')),
+        ('backend-not-excluded',lambda c:c['backend'].update(all=[dict(pid=1)])),
+        ('missing-closing-or-extra-write',lambda c:c['native_after'].update(sequence=112)),
+        ('native-fact-lost',lambda c:c['native_after']['rows'].pop()),
+        ('original-input-lost',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after'])))),
+        ('original-request-xmin-rewritten',lambda c:c['after']['producer_requests'][0].update(xmin='4294967000')),
+        ('original-outcome-xmin-rewritten',lambda c:c['after']['producer_outcomes'][0].update(xmin='4294967001')),
+        ('historical-head-xmin-rewritten',lambda c:c['after']['producer_checkpoints'][0].update(xmin='4294967002')),
+        ('post-hole-frame-binding-lost',lambda c:only(c['after']['producer_requests'],request_sequence=5).update(progress_event_ordinal=None)),
+        ('old-prefix-reclassified',lambda c:c['after']['acquisition_progress'][0].update(classified_events=5)),
+        ('dependency-lost',lambda c:c['after']['producer_checkpoint_dependencies'].pop()),
+        ('historical-control-issuer-rewritten',lambda c:c['after']['producer_checkpoints'][0].update(issuer_epoch=2)),
+        ('old-control-fencing-lost',lambda c:only(c['after']['owner_epochs'],role='control',epoch=1).update(exclusion_digest=None)),
+        ('native-noop-instead-of-recovery',lambda c:c.update(native_after=copy.deepcopy(seed[1]))),
+        ('job-falsely-completed',lambda c:c['after']['jobs'][0].update(state='completed')),
+        ('source-falsely-closed',lambda c:c['after']['source_streams'][0].update(state='closed')),
+        ('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'changed')),
+    ]
+    if context['case']['name']=='sync-signed-retry':
+        changes.append(('retry-additional-native-write',lambda c:c['native_after'].update(sequence=114)))
+    rejected=[]
+    for name,change in changes:
+        other=copy.deepcopy(context); change(other)
+        try: verify_hole_recovery(other,seed)
+        except (AssertionError,KeyError,TypeError,ValueError,IndexError,StopIteration): rejected.append(name)
+        else: raise AssertionError('accepted hole-recovery corruption: '+name)
+    return dict(status='PASS',rejected=len(rejected),cases=rejected)
+
+
+def replay_hole_recovery(folder, cases, live, raw, read, database, config, finished):
+    """Bind the existing cycle capture files to both initial recovery processes."""
+    from installed_family_capture import number
+    assert raw(folder/'installed_cycle_client.py')==raw(SOURCE/'experiments/ingest-succession/installed_cycle_client.py')
+    assert cases==read(folder/'sync-signed-recovery-cases.json')
+    assert [case['name'] for case in cases]==['sync-signed-recover','sync-signed-retry']
+    seed=(live['after'],live['native'],live['inputs']); expected=seed; result=[]
+    previous=live['snapshots'][-1]['observed_by_us']
+    for case in cases:
+        name=case['name']; item=lambda suffix:read(folder/(name+'-'+suffix+'.json'))
+        context=item('verification')
+        fields={'name','clone','origin','operation','predecessor','database','config','custody'}
+        assert context['case']=={key:case[key] for key in fields}|dict(status='RUNNING')
+        assert case['status']=='PASS' and case['returncode']==0
+        assert case['database']==database and case['config']==config
+        before,after,native,after_native,inputs,after_inputs=[item(suffix) for suffix in
+            ('before','after','before-native','after-native','inputs','after-inputs')]
+        same(expected[0],before); assert expected[1:]==(native,inputs)
+        same(before,context['before']); same(after,context['after'])
+        assert (native,after_native,inputs,after_inputs)==tuple(context[key] for key in
+            ('native_before','native_after','inputs_before','inputs_after'))
+        for stage,value in (('before',native),('after',after_native)):
+            answer=item(stage+'-dump-response')
+            assert set(answer)=={'returncode','stdout','stderr','seconds'}
+            assert type(answer['returncode']) is int and answer['returncode']==0 and answer['stderr']==''
+            number(answer['seconds'],0,120)
+            assert json.loads(answer['stdout'])==value
+        response=item('response'); assert response==context['response']
+        identity,terminal=read(folder/(name+'.pid.json')),read(folder/(name+'.terminal.json'))
+        assert set(identity)=={'pid','start_ticks','command','config','prefix'}
+        assert all(terminal[key]==value for key,value in identity.items()) and terminal==response['terminal']
+        for stream in ('stdout','stderr'):
+            assert raw(folder/(name+'.'+stream)).decode()==response[stream]
+        window=item('clock'); assert window==context['server_window']==case['server_window']
+        number(window['before_us'],previous,finished,integer=True)
+        previous=number(window['after_us'],window['before_us'],finished,integer=True)
+        assert item('fixture')==context['fixture'] and item('observations')==context['snapshots']
+        backend=item('backends')
+        assert backend==context['backend'] and item('control-backends')==backend['absence']
+        assert item('external')==dict(control=after,native=after_native,inputs=after_inputs,
+            backend=backend,catalog=live['catalog_after'])
+        assert context['catalog_before']==context['catalog_after']==live['catalog_after']
+        assert item('custody')==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+        assert not (folder/(name+'-external-unavailable.json')).exists()
+        assert set(item('provisional-sql'))==set(before) and item('provisional-inputs')==inputs
+        assert context['input_contents']==live['input_contents']
+        answer=verify_hole_recovery(context,seed); controls=hole_recovery_controls(context,seed)
+        assert case['oracle']==answer and case['negative_controls']==controls
+        result.append(dict(name=name,oracle=answer,negative_controls=controls))
+        expected=(after,after_native,after_inputs)
+    return result
 
 
 def bind_ack_modules(provenance, raw):
@@ -689,7 +967,7 @@ def bind_ack_modules(provenance, raw):
         assert sha(raw(path))==provenance['files_sha256'][name], 'ACK replay source changed'
 
 
-def replay(root, kind, *, retained_initial_capture=False, ack=False):
+def replay(root, kind, *, retained_initial_capture=False, ack=False, preparation_hole=False):
     """Read original files only; retained custody is not a current resource audit.
 
     Reuse the family reader's strict JSON and physical-file checks. No SQL,
@@ -700,7 +978,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
     from inventory import projection
     assert kind in ('initial','activated')
     assert type(ack) is bool and not (ack and retained_initial_capture)
-    profile=typed.require_frozen_profile(ack=ack)
+    assert type(preparation_hole) is bool and (not preparation_hole or ack and kind=='initial')
+    profile=typed.require_frozen_profile(ack=ack,preparation_hole=preparation_hole)
     assert type(retained_initial_capture) is bool and (not retained_initial_capture or kind=='initial')
     root=Path(root).resolve(strict=True); folder=root/'bindings'
     bound={}
@@ -717,8 +996,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
         assert sha(raw(folder/'result.json'))=='cee2afb1c1170a0fec63cbad5c5c32ef33142f960c1dfd3e4520ac21b5adeba8'
         assert sha(raw(root/'driver.log'))=='49670a7daed23aa50554b7581a215e56b854c6cd2359e716c43eff20a1fd7db2'
     else:
-        assert report['status']=='PASS_INSTALLED_'+kind.upper()+('_PRODUCER_ACK' if ack else '_TYPED_PROGRESS')
-    assert report['wave']==kind+('-producer-ack' if ack else '-typed-progress') and report['label']=='org.bigbrotr.acquisition-binding'
+        assert report['status']=='PASS_INSTALLED_'+kind.upper()+('_PRODUCER_ACK' if ack else '_TYPED_PROGRESS')+('_PREPARATION_HOLE' if preparation_hole else '')
+    assert report['wave']==kind+('-producer-ack' if ack else '-typed-progress')+('-preparation-hole' if preparation_hole else '') and report['label']=='org.bigbrotr.acquisition-binding'
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{32}',report['owner'])
     assert all(report[key]==[] for key in ('cleanup_errors','missing_owned','unrelated_changed'))
     provenance=read(folder/'progress-source.json')
@@ -738,6 +1017,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
     build=Path(provenance['build']); assert build.is_absolute()
     built,component=read(build/'build-result.json'),read(build/'component-result.json')
     qualification=read(build.parent/'qualification.json')
+    if preparation_hole:
+        typed.preparation_hole_qualification(built,component,qualification)
     assert component['status']=='PASS' and qualification['status']==('PASS_PRODUCER_ACK_COMPONENTS' if ack else 'PASS_PRODUCER_PROGRESS_COMPONENTS')
     assert built['source']==component['source']==qualification['source']==profile['product_source']
     for key in ('tree','source_manifest_sha256','lockfile_sha256'):
@@ -745,7 +1026,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
     assert set(component['executables_sha256'])=={'bigbrotr','ingest_bootstrap_probe','native_components',
         'sync_progress','fact_codec','evidence_intent','control_schema','migrate_entrypoint'}
     if ack:
-        assert component['executables_sha256']==typed.ACK_EXECUTABLES_SHA256
+        assert component['executables_sha256']==typed.ack_executables(preparation_hole=preparation_hole)
     for name,digest in component['executables_sha256'].items():
         assert sha(raw(build/name))==digest
     assert component['executables_sha256']['bigbrotr']==built['binary_sha256']
@@ -770,7 +1051,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
     for name in (*expected_helpers,'installed_progress_transport.py','installed_family_client.py'):
         relative=('experiments/ingest-succession/' if name=='installed_family_client.py' else 'experiments/ingest-bootstrap/')+name
         assert raw(folder/name)==raw(root/'source'/relative)
-    assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-context/1' if ack else 'bigbrotr-progress-context/1',kind=kind)
+    assert read(directory/'progress-context.json')==dict(format='bigbrotr-ack-preparation-hole-context/1' if preparation_hole
+        else 'bigbrotr-ack-context/1' if ack else 'bigbrotr-progress-context/1',kind=kind)
     originals=read(folder/'progress-originals-before.json')
     assert set(originals)=={'bb_scope_54d1a18_basic','bb_source_template'}
     assert originals==read(folder/'progress-originals-after.json')
@@ -796,7 +1078,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
         assert all(state[k] is False for k in ('Running','Paused','Restarting','OOMKilled','Dead'))
         assert state['ExitCode'] in ((0,) if ident==pg_id else (0,143))
     client=only(inventory,Id=client_id)
-    assert client['Name']=='/bigbrotr-acquisition-binding-'+report['source'][:7]+'-progress-'+kind+('-ack' if ack else '')
+    assert client['Name']=='/bigbrotr-acquisition-binding-'+report['source'][:7]+'-progress-'+kind+('-ack' if ack else '')+('-preparation-hole' if preparation_hole else '')
     assert only(client['Mounts'],Destination='/lab')['Source']==str(folder)
     mount=only(client['Mounts'],Destination='/build')
     assert mount['Source']==str(build) and mount['RW'] is False
@@ -807,7 +1089,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
         assert sha(raw(context_file))=='9758b6bf4b96ef4e5ae0d88336ef354cbb50711b519ce91c29d9d2980271a5c3'
     if ack:
         assert context['ack_event_recipe']==raw(directory/'progress-ack-events.json').decode()
-        assert read(directory/'progress-ack-events.json')==dict(format='bigbrotr-ack-events/1',events=typed.ack_event_sequence())
+        assert read(directory/'progress-ack-events.json')==(typed.preparation_hole_recipe() if preparation_hole
+            else dict(format='bigbrotr-ack-events/1',events=typed.ack_event_sequence()))
     setup=context['setup'] if initial else context['progress_setup']
     assert setup==read(folder/(label+'-progress-upgrade.json'))
     assert setup['acl']==read(folder/(label+'-progress-acl.json'))
@@ -833,7 +1116,7 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
         assert cut['control']==read(path)
     assert context['after']==read(folder/(label+('-progress-after-sql.json' if initial else '-after-sql.json')))
     files=context['input_files'] if initial else context['progress_input_files']
-    for phase in ('mutation','proof-only'):
+    for phase in typed.phase_names(preparation_hole):
         assert files[phase]==read(directory/('progress-'+phase+'-input-files.json'))
     final_files=context['input_files_after'] if initial else context['progress_input_files_after']
     assert physical(directory/'store/producer-inputs-v1',raw)==final_files
@@ -865,11 +1148,15 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
         assert context['backend']['absence']['database']==database
         assert typed.legacy_state(context['before'],ack=ack)==read(folder/(label+'-before.json'))
         assert typed.legacy_state(context['after'],ack=ack)==read(folder/(label+'-after.json'))
-        checker=lambda value:verify_initial(value,ack=ack)
+        checker=lambda value:verify_initial(value,ack=ack,preparation_hole=preparation_hole)
         answer=checker(context); negative=controls(context,checker)
         if not retained_initial_capture:
             case,=report['cases']
             assert case['verification_sha256']==sha(raw(context_file))
+            if preparation_hole:
+                from installed_family_capture import instant
+                recovery=replay_hole_recovery(folder,case['recovery'],context,raw,read,
+                    database,identity['config'],instant(report['finished_at']))
     else:
         import initial_succession as seed_owner
         basis=root.parent/seed_owner.SEED/'bindings'
@@ -943,7 +1230,8 @@ def replay(root, kind, *, retained_initial_capture=False, ack=False):
     if ack:
         bind_ack_modules(provenance,raw)
     assert case['status']=='PASS' and case['oracle']==answer and case['negative_controls']==negative
-    return dict(status='PASS_RAW_ACK_CONTEXT_REPLAY' if ack else 'PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
+    return dict(status='PASS_RAW_ACK_PREPARATION_HOLE_REPLAY' if preparation_hole else 'PASS_RAW_ACK_CONTEXT_REPLAY' if ack else 'PASS_RAW_CONTEXT_REPLAY',kind=kind,oracle=answer,negative_controls=negative,
+        **(dict(recovery=recovery) if preparation_hole else {}),
         raw_files_sha256=bound,custody='RETAINED_OBSERVATIONS_ONLY_ROOT_CURRENT_AUDIT_SEPARATE')
 
 
@@ -953,8 +1241,10 @@ if __name__=='__main__':
     parser.add_argument('root',type=Path)
     parser.add_argument('--kind',choices=('initial','activated'),required=True)
     parser.add_argument('--producer-ack',action='store_true')
+    parser.add_argument('--preparation-hole',action='store_true',help='Initial-only A/hole/B then C/D/B-proof, exact separately pinned build.')
     parser.add_argument('--retained-initial-capture',action='store_true',
         help='Verify only the pinned complete7239 initial capture; preserve its original FAIL report.')
     arguments=parser.parse_args()
     print(json.dumps(replay(arguments.root,arguments.kind,
-        retained_initial_capture=arguments.retained_initial_capture,ack=arguments.producer_ack),sort_keys=True))
+        retained_initial_capture=arguments.retained_initial_capture,ack=arguments.producer_ack,
+        preparation_hole=arguments.preparation_hole),sort_keys=True))
