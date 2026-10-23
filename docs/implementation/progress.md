@@ -6,10 +6,11 @@ unchanged verified Astra/xhigh sessions are reused.
 
 ## Current objective and revision
 
-P02-T02 Steps4/5/7: durable producer progress, native ACK and recovery.
-Main HEAD is `b005d9193ee8fc24dcf5590411f4763da41cb13c`; last verified push is332f7a3.
-Root-owned local documentation records the completed outcome below. No source
-change is pending. The qualified installed product remains9cef25f; new source
+P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
+Main HEAD is `1fa673bca844f2e0613c6d9cba275fe697a83342`, verified pushed/equal remote.
+Root-owned local documentation records selected Q39 and its two source reviews.
+Native source work is assigned in a separate worktree; no new runtime has run.
+The qualified installed product remains9cef25f; integrated new source
 adds only the private native fault test/driver and focused build profile.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -42,21 +43,26 @@ No engine/build remains. Root freshly verified the exact b005d91 fetch/native
 containers exited0/PID0/noOOM and absent cgroups; unrelated inventory unchanged.
 All original/pre-reopen data, logs, failures, ignored receipts, external labs and
 worktrees remain. Redundant ACK-fsync branch refs were reconciled by exact patch
-IDs and retired; its worktree remains clean detached at4626808. Only main remains.
+IDs and retired; its worktree remains clean detached at4626808. Main and the active
+`work/producer-reclamation-native` branch remain.
 
-`ack_remaining_boundary` assesses the next dependency-ready P02 responsibility
-from existing source/evidence. Source-only: no implementation, build or engine
-assigned. `progress_hole_critical` completed all three narrow reviews; no active
-assignment. `progress_hole_fixture` completed a99 retained diagnosis reconciliation.
+`ack_remaining_boundary` implements the non-destructive native floor/witness and
+shared census in `.research/producer-reclamation-native-20261023` at base1fa673b.
+Root owns the PG consumer and integration. `progress_hole_critical` completed the
+design countercheck; no engine/build is assigned. `progress_hole_fixture` completed a99 retained diagnosis reconciliation.
 Its report entry under `initial_sync_diagnostics_20261020` confirms existing
 qualified diagnostics already in9cef25f; historical cause remains unknown.
 
 ## Precise next step and open boundaries
 
-Commit/push this coherent qualification and collect the bounded next-action
-assessment. Distinguish a concrete missing product responsibility from redundant
-combinations of already qualified native/connected behavior. Reuse valid evidence;
-only implement/run the next justified slice under the existing plan.
+Implement Q39's version3 native floor and compacted-prefix validation using the
+existing structural/semantic census and immutable PG outcome/typed-checkpoint
+closure. Review the read path before adapting recovery and successor consumers;
+deletion remains unavailable until those consumers work. The retained dfbb8dc
+pre-origin requires authentic abandonment/retirement on an isolated clone before
+GC qualification. Preserve science/pending and all original evidence; do not
+increase64/32MiB or infer noncommit. Report entry
+`closed_producer_reclamation_preparation_20261023` owns this slice and both design receipts.
 
 Connected ACK error delivery, post-ACK physical loss, remaining mixed restore and
 resource gates, GC and capacity/backup remain open. Current healthy serial typed

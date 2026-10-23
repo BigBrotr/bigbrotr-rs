@@ -43382,6 +43382,29 @@
               }
             }
           }
+        },
+        "closed_producer_reclamation_preparation_20261023": {
+          "status": "CONTRACT_SELECTED_Q39; native non-destructive implementation assigned; runtime NOT_RUN",
+          "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
+          "task": "P02-T02 Steps4/5/7",
+          "purpose": "Reclaim acknowledged receipt/input operational detail for one completely closed and fully resolved producer while preserving all scientific facts, pending batches and causal recovery/backup closure.",
+          "selection": "Native ACK EIO, connected COMMIT-loss recovery and fail-closed callers permit progressing to this real NoGC limitation. Installed PG-to-ACK-EIO remains unqualified, not silently claimed or made a prerequisite for every other implementation.",
+          "boundaries": "Select exact eligible lifecycle, minimal versioned checkpoint/replay floor and deletion ordering before source changes. Missing or incompatible history must refuse; no bare ACK or untrusted PG row permits loss. No negative noncommit resolver, limit bump or second per-delivery proof ledger.",
+          "owners": "ack_remaining_boundary native codec/compacted-prefix/shared-census implementation in isolated worktree; critical design complete; root PG consumer/integration/runtime",
+          "next": "Implement and critically review non-destructive floor/witness/shared census with retained PG validation; preserve existing recovery and succession behavior before enabling deletion.",
+          "contract": "docs/reference/producer-request-inputs.md#closed-producer-reclamation-selected-not-yet-implemented",
+          "decision": "Q39;139-byte version3 producer floor binds unchanged source closure plus typed checkpoint. One synced floor/exact-receipt-delete batch precedes authenticated input unlink/directory sync. No deletion exposed until compacted recovery and existing succession consumers preserve guarantees.",
+          "design_receipts": [
+            {
+              "path": ".research/producer-checkpoint-ack-review-20261020/initial-closed-reclamation-contract-review-v1.json",
+              "sha256": "61f1bad228f23da94fb05d57429a0f014a31ab6172310333e7f0649c20db49bf"
+            },
+            {
+              "path": ".research/producer-checkpoint-ack-review-20261020/closed-producer-reclamation-critical-design-v1.json",
+              "sha256": "abd4fe729c83d524ee94da89c1494165b4e8c24438c7e52b68d85b705281f499"
+            }
+          ],
+          "origin": "Preserve dfbb8dc as pre-origin only: actual producer closing/source open. Isolated clone must execute existing abandon-acquisition then retire-initial and verify complete retirement before GC. No new EVENT or privileged lifecycle fabrication."
         }
       }
     }

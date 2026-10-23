@@ -294,3 +294,17 @@ in their owning records without copying them across checkpoint/report/inventory.
 Group recording, commits and pushes around coherent outcomes. Apply through the
 existing execution guide and continue the same goal; no separate optimization
 project or historical rewrite.
+
+Q39 (implementation decision, 2026-10-23): Begin acknowledged-detail reclamation
+with a completely retired nonempty initial producer. Reuse immutable PostgreSQL
+outcomes, the existing source closure and typed checkpoint; do not introduce a
+second per-request proof ledger. The [selected native floor](../reference/producer-request-inputs.md#closed-producer-reclamation-selected-not-yet-implemented)
+binds those records in a versioned ProducerState value. Install the floor and
+remove exact native receipt keys atomically, then unlink authenticated original
+inputs only after observed synchronization success. Preserve all scientific and
+pending data. First implement the non-destructive witness and shared validation;
+do not enable deletion until recovery and existing successor consumers support
+the compacted prefix. This is an autonomous implementation choice under Q35,
+not an owner-directed scope change or a claim of qualified GC, unlimited traffic
+or backup support. The existing recovery report retains the critical countercheck
+and remaining practical gates.

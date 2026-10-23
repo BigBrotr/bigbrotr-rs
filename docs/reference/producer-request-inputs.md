@@ -887,3 +887,65 @@ credit, and preparation neither rewrites that watermark nor re-stamps its proof.
 Empty, unactivated targets still require zero issued/acknowledged/retired state.
 These bounded two-slot demonstrations do not qualify GC, indefinite traffic, workflow completion or
 backup/restore.
+
+## Closed-producer reclamation (selected, not yet implemented)
+
+The first reclamation profile covers one nonempty, completely retired initial
+producer, before successor preparation. Let N be its reserved request cut:
+require `0 < N <= 64`, native closing with `issued = acknowledged = N`, and
+validated typed format1 progress complete through N. Require the exact completed
+retirement tuple, including closed source/allocation domains, released and
+storage-fenced Ingest owner, retired role, matching closure digests/timestamps,
+and the existing workflow, acquisition-gap and import checks. Native closing or
+ACK alone is insufficient. Keep all PostgreSQL reservations, outcome bytes,
+progress/dependencies and terminal rows unchanged.
+
+Before the first reclamation, replay every original and validate the complete
+scientific state under exclusive native custody. Reuse the existing source
+closure digest, which binds the original manifest, producer identity, ordered
+request digests/outcome hashes and source cut, together with the typed checkpoint
+revision/digest. The closure is not a checksum of every SQL column or the store.
+No second per-request proof ledger is introduced.
+
+The existing ProducerState key gains this exact 139-byte version3 value; all
+integers are unsigned big-endian. Earlier values retain their existing meaning.
+
+| Byte interval (end excluded) | Value |
+|---|---|
+| 0..2 | `03 31` |
+| 2..10, 10..18, 18..26 | issued, acknowledged, retired; all N |
+| 26..27 | closing byte `01` |
+| 27..59 | SHA-256 of the original manifest bytes |
+| 59..67 | complete source sequence |
+| 67..99 | original source closure digest |
+| 99..107 | typed format1 checkpoint revision |
+| 107..139 | typed format1 checkpoint digest |
+
+A positively confirmed current-Control transaction validates the retained PG
+closure before authorizing any native mutation. One bounded synchronized native
+WriteBatch installs this floor and deletes at most64 exact receipt keys. Only
+observed native success permits unlinking authenticated original input files,
+followed by directory synchronization. PG or native unknown completion authorizes
+no unlink. An exact floor retry performs no native write; validated residual files
+after interruption can be removed idempotently. Unexpected or corrupt files remain
+refusals, not deletion candidates.
+
+Compacted recovery authenticates the exact floor against retained PG history,
+canonical outcomes and progress dependencies. It reuses the structural and semantic
+census to retain complete pending-batch boundaries, source cuts, Fact integrity,
+dictionary forward/reverse mappings, allocations, index subjects and correction
+ancestry. Hashing only the progress dependency union is insufficient. Original
+request semantics were established before the floor; a PG row alone cannot
+manufacture that proof. Reclaimed requests return `RetiredRequest` even with a
+changed digest. Missing detail without the matching floor, or post-GC native
+state paired with older/incompatible PG state, refuses recovery.
+
+Implementation begins with the non-destructive codec, compacted-prefix witness
+and shared census. Reclamation stays unavailable until initial recovery and the
+existing successor preparation, activation and recovery consumers support that
+witness without weakening their guarantees. Fresh-process replay, exact retry,
+interrupted synchronization/unlink, mixed restores, missing scientific/index/
+pending state and old-reader refusal remain required qualification. The existing
+[recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+owns the source decisions and measured results; no deletion has been implemented
+or qualified by this selection.

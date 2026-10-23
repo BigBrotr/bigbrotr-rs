@@ -61548,11 +61548,12 @@
           "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-mutation-commit-loss-source-review-v1.json"
         },
         "ack_remaining_boundary": {
-          "scope": "Source-only selection of next dependency-ready P02 product responsibility after scoped ACK error qualification; no implementation or runtime",
+          "scope": "Native version3 floor codec, compacted-prefix witness and shared census; no delete/write endpoint, no engine/build; isolated source ownership",
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T16-52-39-01a1693f-eba4-71a1-b22b-dd668a393df7.jsonl session_meta/turn_context; root verified",
-          "state": "Active bounded assessment"
+          "state": "Active source implementation in .research/producer-reclamation-native-20261023; contract design completed",
+          "receipt": ".research/producer-checkpoint-ack-review-20261020/initial-closed-reclamation-contract-review-v1.json"
         },
         "progress_hole_fixture": {
           "model": "gpt-6-astra",
@@ -61566,9 +61567,9 @@
           "model": "gpt-6-astra",
           "effort": "xhigh",
           "verified_runtime": "/home/tux/.codex/sessions/2026/10/23/rollout-2026-10-23T17-00-47-01a16947-5dd2-75f1-8c1b-3fb8d6865ed0.jsonl session_meta/turn_context; root verified",
-          "state": "Completed source reviews v1/v2/v3; no active assignment",
-          "scope": "Independent critical review of native ACK fsync fault selector, poison and fresh-process replay expectations",
-          "receipt": ".research/producer-checkpoint-ack-review-20261020/ack-native-error-critical-review-v1.json"
+          "state": "Critical source design completed; no active implementation/runtime assignment",
+          "scope": "Closed-producer reclamation PostgreSQL checkpoint/recovery closure, mixed-restore and ordering countercheck; source-only",
+          "receipt": ".research/producer-checkpoint-ack-review-20261020/closed-producer-reclamation-critical-design-v1.json"
         }
       },
       "pause_resource_observation_20261023": {
@@ -62032,7 +62033,16 @@
           "resources_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/resources.json",
           "fresh_audit": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ack-fault-b005d91/root-terminal-audit.json"
         }
-      ]
+      ],
+      "closed_reclamation_source_work_20261023": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/producer-reclamation-native-20261023",
+        "branch": "work/producer-reclamation-native",
+        "base": "1fa673bca844f2e0613c6d9cba275fe697a83342",
+        "owner": "ack_remaining_boundary",
+        "state": "Created by root, assigned non-destructive native source; no build/engine/resource deletion",
+        "contract": "Q39 / docs/reference/producer-request-inputs.md",
+        "space_observed": "272GiB available on /home/tux before worktree; no significant runtime allocation"
+      }
     }
   },
   "tux_intermediate_retirement_20261018": {
