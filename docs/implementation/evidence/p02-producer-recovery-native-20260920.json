@@ -44201,7 +44201,7 @@
                 "initial_transition": "Keep portable handoff bytes; fixed sealed floor/original manifest/N/cut/D/root/sequence/input-stamp basis. Reuse existing compacted cursor for epoch1 or checked two-entry lineage at empty prepared2. Preserve exact+4/zero-write retry, initial NO_SUCCESSOR and each operation COMMIT/ROLLBACK contract. Never fabricate original count or through1 successor-history proof. Advice only; no new implementation/plan."
               },
               "delivery_fault_preparation": {
-                "status": "RUST TEST PROBE independently reviewed/integrated; build and new Python fixture/runtime NOT_RUN",
+                "status": "RUST TEST PROBE source review and exact eec3bb0 build/Clippy/components PASS; Python fixture review ongoing; connected fault runtime NOT_RUN",
                 "base": "917d2e4928ca86a70c2cef4dc0708a67b18774c8",
                 "probe_author_commit": "3d70898d04da963b080cbb790517718ae48fb845",
                 "probe_author_receipt": {
@@ -44213,9 +44213,47 @@
                   "sha256": "5d7e5d1adcd78d64c60d86fc3b71989da14bce14077297cee5a705d151782592"
                 },
                 "scope": "Only existing two Rust example files; explicit argc9 mode, Control-only proxy/direct observer, five targeted stage gates, same pinned cancellation future and real20s Control lease sampled-UTC preage. Actual product errors/cursor/driver outcomes preserved; product code and ordinary entrypoint semantics unchanged.",
-                "fixture": "Existing Python profile work remains isolated. Seven fresh clones of qualified6ece PreparedOpen3 endpoint; exact old source/raw identity and original custody required. No observed new counter or fault outcome yet.",
-                "checks": "Author formatting/diff PASS; independent bounded source review/frozen identity reconciliation PASS. Compile/Clippy/wired baseline/faults NOT_RUN.",
-                "next": "Build reviewed Rust probe now through existing producer-floor; continue independent fixture authoring/review in parallel and reuse compiled ELFs for Python-only fixes. First measure wired baseline targeted counters before fault selection."
+                "fixture": "Frozen c0ec01d three existing Python owners integrated; seven exact qualified-origin clones and87 discriminating controls planned. Ordinary profiles unchanged. Author static/pure checks PASS, connected runtime NOT_RUN; independent origin/copy review pending final receipt.",
+                "checks": "Author formatting/diff and independent probe review PASS; exact eec3bb0 build/Clippy and142 components/39 mandatory controls PASS. Wired baseline/faults NOT_RUN.",
+                "next": "Finish independently reviewed Python fault fixture; reuse protected eec3bb0 ELFs. Wire-observe targeted rollback counters/stages before selecting fault injection targets.",
+                "component_qualification": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-eec3bb0",
+                  "source": "eec3bb0159a7a9c98cd5de21f5584504093c207b",
+                  "tree": "a0c7847f24b2f18305af71a769f8c77e74459681",
+                  "status": "PASS",
+                  "test_counts": {
+                    "compacted_prefix": 7,
+                    "compacted_progress": 1,
+                    "successor_history": 5,
+                    "archive_retained_frontier": 7,
+                    "initial_reconstruction": 102,
+                    "request_inputs": 20
+                  },
+                  "mandatory_controls": 39,
+                  "missing_controls": {},
+                  "source_manifest_sha256": "65631653392c9eb4afd685d7116ceb4dbc802e4427876e0c685e2a8942712abf",
+                  "executables_sha256": {
+                    "native_components": "05c9286a4cd1f19e84ce64b7058aba93a7ade67370cd6bef5974a22805be9058",
+                    "ingest_bootstrap_probe": "93ca414c570ae454f3e9aed8cb9f21c25450a0faa9a838c884bf2d58f9cf95b8",
+                    "bigbrotr": "857be585660a67282fc18ee3b6862d18cb2553be96dd31ace920c3fc296d5068"
+                  },
+                  "receipts": {
+                    "out/qualification.json": "d5aba6912c143898db93eaa809ec57f65102a204b6d736d49120686475a374a5",
+                    "out/artifacts/component-result.json": "724f321ab5caeac662b012449906d8c0a41585f3016bd95f348c4865d1c8df03",
+                    "out/artifacts/build-result.json": "01296752cbcf1521cc4a7cc59f5e0ce2503d00ec19efff4dda27273971730d08",
+                    "resources.json": "94ed71f981dc50ccd045fb871e5a513ab4ae6142afb364a6ebe08388476db213"
+                  },
+                  "completion": "Driver30173 terminal output was lost at compaction and handle is now unknown; durable final qualification/resources/driver log confirm completed run. Fresh inspect: both exact owned containers exited0/PID0/noOOM, inventory_changed empty. No invented terminal join status."
+                },
+                "fixture_author_commit": "c0ec01dcb15bf91b46fb7cf27e67c23e1d28b459",
+                "fixture_author_receipt": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-fixture-source-v1.json",
+                  "sha256": "fae149f67972854d0bb2c26294609f303910ba6bdf8c99227508e0ef920bfc3c"
+                },
+                "fixture_root_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-history-fault-fixture-root-review-v1.json",
+                  "sha256": "12fc76bf82f46076d8c97662a1e8254697a35d7dcc1344c683a425fbe23e84e6"
+                }
               }
             }
           }

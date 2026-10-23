@@ -62429,7 +62429,33 @@
         "model": "gpt-6-astra/xhigh; verified existing agent continuity",
         "state": "ACTIVE bounded source work; no runtime/build delegated",
         "scope": "Existing Python harness/oracle/raw replay explicit seven-clone fault profile; pinned qualified compacted endpoint reuse; no Rust/product/engines",
-        "preserved": "Originalc974/ba99 detached worktrees, both failed attempts and all qualified artifacts retained; no cleanup"
+        "preserved": "Originalc974/ba99 detached worktrees, both failed attempts and all qualified artifacts retained; no cleanup",
+        "commit": "c0ec01dcb15bf91b46fb7cf27e67c23e1d28b459",
+        "tree": "17c41b6805094eb225615d1aa59c73c35daf1691",
+        "status": "Frozen clean; exact3-file source integrated by root. Runtime NOT_RUN; independent origin review pending final receipt."
+      },
+      "compacted_history_fault_probe_build_20261023": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-eec3bb0",
+        "source": "eec3bb0159a7a9c98cd5de21f5584504093c207b",
+        "tree": "a0c7847f24b2f18305af71a769f8c77e74459681",
+        "driver": "30173 no longer available after lost terminal output at compaction; durable completed qualification and fresh owned-container closure reconciled",
+        "owner": "aae68ecc8fc04793f1aa80378203b5c2",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "d4516bb713d10b6eb7d0f117c1a715ad9aa8a6ffc1e61120356cee345b121a2e"
+          },
+          {
+            "name": "native",
+            "id": "7be7ce97689c37b534637709dff220a681a931487f6858ba5871855f86324d74"
+          }
+        ],
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-eec3bb0/resources.json",
+        "state": "PASS_COMPACTED_PREFIX_COMPONENTS; stopped-retained; both owned containers freshly exited0/PID0/noOOM; inventory_changed empty",
+        "space_before_bytes": 278119002112,
+        "preserved": "Qualifiedf4d1261 product/6ece history and initial runs, old failures and originalauthorworktrees",
+        "free_bytes_after": 277905870848
       }
     }
   },

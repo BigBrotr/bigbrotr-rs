@@ -10,9 +10,9 @@ Main implementation/harness revision is `6ece98c868e842d46fc4e13a359d19dd9a924d7
 this record commit saves its completed qualification. Compiled product/probe is
 `f4d1261fe85d69cec003a5f4266fdf1025824485`; later changes are only Python/docs.
 Main/remote equality verified at `917d2e4928ca86a70c2cef4dc0708a67b18774c8`
-after push driver96458 joined0. Canonical source adds only the independently reviewed two-file fault probe
-(author3d70898), plus root report/checkpoint/inventory updates; Python fixture
-work remains isolated below. No GC writer/unlink is exposed.
+after push driver96458 joined0. Local main adds the independently reviewed two-file fault probe (author3d70898)
+at `eec3bb0159a7a9c98cd5de21f5584504093c207b`; build/Clippy and142 components/39 mandatory controls PASS.
+Canonical changes include exact frozen fixturec0ec01d plus build qualification/custody docs. No GC writer/unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -40,7 +40,9 @@ The >64 retained correction ancestry finding is fixed and its native test passes
 
 ## Resources and contributors
 
-No engine/build remains. Build containers exited0; both connected clients
+New eec3bb0 producer-floor build completed; both exact owned containers are
+freshly exited0/PID0/noOOM. Driver30173 terminal output was lost at compaction;
+durable final qualification/resources establish completion, without an invented join status. Prior build containers exited0; both connected clients
 exited143 and borrowed PG exited0, all freshly PID0/noOOM. All five original
 preservation flags true; cleanup/missing/unrelated/unexpected arrays empty.
 Sources, ELFs, clones, quarantines, logs, failures, .research and worktrees remain.
@@ -52,14 +54,14 @@ Both agents completed the qualified slice. The next task implements only the
 explicit fault profile in separate .research/compacted-history-fault-probe-20261023
 and .research/compacted-history-fault-fixture-20261023 worktrees, base917d2e4.
 Product/review agent froze3d70898 and root independently reviewed its exact two-file
-probe delta. Fixture agent continues existing Python helpers. No product source
+probe delta. Fixture agent froze c0ec01d; root integrated/reviewed its exact three Python owners. No product source
 change, engines or builds delegated. Models reuse
 verified Astra/xhigh continuity. Original architecture receipt remains unchanged.
 
 ## Precise next action and open boundaries
 
-Freeze/build the reviewed Rust probe through existing producer-floor while the
-Python fixture is authored/reviewed. Reuse those ELFs for Python-only corrections.
+Finish independent origin/copy review receipt, then reuse qualified
+eec3bb0 ELFs for the exact frozen harness and any Python-only corrections.
 Then qualify the coordinated test-only fault profile. Agreed argc9 mode is
 successor-lineage-compacted-fault with DB/SECRET/CONFIG/METADATA/PORT/MODE/PREFIX.
 Use seven fresh clones of the exact qualified6ece PreparedOpen3 endpoint: wired

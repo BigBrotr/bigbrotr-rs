@@ -748,10 +748,12 @@ def history_resources(t):
     assert sum(resource[k] for k in ('metadata_bytes','input_bytes','outcome_bytes','effect_bytes','transport_bytes','observation_bytes'))<=1024**3
 
 
-def history_claim(t,case):
+def history_claim(t,case,*,transport=None):
     m=t.model; planned=t.take('control'); assert set(planned)=={'event','phase','role','incarnation','lease_ttl_us'}
     assert planned['phase']=='claim-planned' and planned['lease_ttl_us']=='20000000'
-    t.snapshot('before-claim'); claimed,policy,backend=t.take('control'),t.take('policy'),t.take('backend')
+    t.snapshot('before-claim')
+    if transport is not None: assert t.take('fault')==transport
+    claimed,policy,backend=t.take('control'),t.take('policy'),t.take('backend')
     t.snapshot('after-claim',lambda pg:m.claim(pg,planned))
     assert claimed==dict(event='lineage-history-control',phase='claimed',resource=m.control['resource_id'][2:],epoch=m.control['epoch'],
         role=planned['role'],incarnation=planned['incarnation'])
@@ -761,12 +763,13 @@ def history_claim(t,case):
     return backend
 
 
-def history_end(t,backend,*,success,transition=False):
+def history_end(t,backend,*,success,transition=False,control_failed=False):
+    assert type(control_failed) is bool
     m=t.model
     t.snapshot('after-transition' if transition else 'after-read')
     assert t.take('native')==dict(event='lineage-history-native',state='closed')
     t.snapshot('before-control-end')
-    assert t.take('driver')==dict(event='lineage-history-driver',driver='control',failed=False,joined=True)
+    assert t.take('driver')==dict(event='lineage-history-driver',driver='control',failed=control_failed,joined=True)
     assert t.take('backend')==dict(backend,present=False)
     phase='released-and-joined' if success else 'dropped-and-joined'
     assert t.take('control')==dict(event='lineage-history-control',phase=phase,resource=m.control['resource_id'][2:],epoch=m.control['epoch'])
@@ -975,3 +978,392 @@ def history_head_checked(record,expected,seed):
     after=copy.deepcopy(expected[0]); assert after['producer_checkpoints']==seed[0]['producer_checkpoints']
     after['producer_checkpoints']=[wanted]; same(record['after'],after)
     return after,expected[1],expected[2]
+
+
+# A qualified retained endpoint, not a newly emitted dump, supplies each fault
+# clone. Its original failed attempt and all quarantined inputs remain separate.
+FAULT_ORIGIN = dict(name='compacted',run='installed-compacted-history-6ece98c',
+    subdirectory='installed-compacted-history',database='bb_compacted_history_6ece98c_history_positive',
+    status='PASS_SYNTHETIC_POST_GC_SUCCESSOR_HISTORY',source='6ece98c868e842d46fc4e13a359d19dd9a924d76',
+    owner='b5be20fe11a6ba90e682e33afbe4ab32',label='org.bigbrotr.installed-compacted-history',
+    client_id='45e3e57671294b4749737609f20c4038b7cc30fe90e5016a33d33e91c0cad317',
+    source_clone='history-positive',final_case='history-positive-absent',
+    catalog_sha256='5d81aff0c2679613b5269de7cf2d718bd2bc74d9d0ceca75d3053033dde094b5',
+    result_sha256='bdb3e3599c1c624ee8e1e0bf264a3b9a2f37688da431d16d5146dd45ddfc6574',
+    snapshot='history-positive-final-sql.json',snapshot_sha256='8f9461276913dca7813c1f1af49fbebea94e8e71324d4b94bf28593b8ec74293',
+    native_file='history-positive-absent-after-native.json',native_sha256='04c9d39b537572914fcfe43346f4296c17b8fe02f00b680f6517f7d598c1c02a',
+    inputs_file='history-positive-absent-after-inputs.json',inputs_sha256='ff91e9db582bc212abf1ee9ecda78ab78f4b6f56c56a2bc7d32b4b4e2bd6d5ff',
+    store='history-positive/store')
+FAULT_REPLAY_SHA = 'f70a58b8f093c86577e8f53a68e7a88c8e44665f5a3602f5147ae7f9c13274a5'
+FAULT_PRODUCT = 'f4d1261fe85d69cec003a5f4266fdf1025824485'
+FAULT_MODE = 'successor-lineage-compacted-fault'
+FAULT_STAGES = ('after-factory','before-compacted','compacted-returned','before-final','final-returned')
+FAULT_CLONES = ('baseline','head-after-factory','head-before-final','rollback-before','rollback-after','cancel','expiry')
+
+
+class HistoryFaultProfile:
+    DIRECTORY = 'installed-compacted-history-faults'
+    LABEL = 'org.bigbrotr.installed-compacted-history-faults'
+    STATUS = 'PASS_SYNTHETIC_COMPACTED_HISTORY_DELIVERY_FAULTS'
+    DATABASE_PREFIX = 'bb_compacted_fault_'
+    CLONES = FAULT_CLONES
+    STEPS = {n:('read',) for n in FAULT_CLONES}
+    CASES = tuple(n+'-read' for n in FAULT_CLONES)
+    GRANTS = HISTORY_GRANTS
+    NOT_RUN = ('Actual product reclamation/GC and unlink',
+        'Post-confirmation client-is-closed instruction race',
+        'Later-original rollback3 individually gated measurement',
+        'Preparation/activation/recovery or writer publication after compaction',
+        'Crash/unknown-commit, mixed restore/backup and capacity')
+
+
+def fault_origin_checked(root,raw=None):
+    """Bind the prior exact-source receipt; never replay it through new imports."""
+    from installed_family_capture import physical, spool_checked
+    root=Path(root); raw=raw or retained.regular_read
+    basis=root.parent/FAULT_ORIGIN['run']/FAULT_ORIGIN['subdirectory']
+    receipt_path=basis.parent/'raw-replay.json'; data=raw(receipt_path)
+    assert sha(data)==FAULT_REPLAY_SHA
+    replay=loads(data)
+    assert replay['status']==HistoryProfile.STATUS+'_CAPTURE_REPLAY'
+    assert replay['source']==FAULT_ORIGIN['source'] and replay['product_source']==FAULT_PRODUCT
+    assert len(replay['cases'])==50 and sum(v['negative_controls']['count'] for v in replay['cases'])==454
+    assert len(replay['bound_files'])==5482
+    def bound(path):
+        path=Path(path); value=raw(path)
+        assert sha(value)==replay['bound_files'][str(path)]
+        return value
+    def read(path): return loads(bound(path))
+    report=read(basis/'result.json'); assert sha(raw(basis/'result.json'))==FAULT_ORIGIN['result_sha256']
+    assert all(report[k]==FAULT_ORIGIN[k] for k in ('status','source','owner','label'))
+    assert report['client']==FAULT_ORIGIN['client_id']
+    assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
+    clone=only(report['clones'],name='history-positive'); case=only(report['cases'],name='history-positive-absent')
+    assert clone['database']==FAULT_ORIGIN['database'] and clone['status']==case['status']=='PASS'
+    assert clone['final_case']==case['name'] and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    assert sha(clone['final_catalog'].encode())==FAULT_ORIGIN['catalog_sha256']
+    final=[]
+    for file_key,hash_key in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
+        path=basis/FAULT_ORIGIN[file_key]; value=bound(path); assert sha(value)==FAULT_ORIGIN[hash_key]; final.append(loads(value))
+    endpoint=tuple(final)
+    context=read(basis/'history-positive-absent-verification.json')
+    assert sha(raw(basis/'history-positive-absent-verification.json'))=='e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df'
+    assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
+    assert context['response']==read(basis/'history-positive-absent-response.json')
+    assert context['custody']==read(basis/'history-positive-absent-custody.json')
+    assert context['custody']['status']=='OBSERVED_CLOSED_AND_JOINED' and not context['custody']['errors']
+    terminal=read(basis/'client-terminal.json'); assert terminal['Id']==FAULT_ORIGIN['client_id']
+    assert terminal['State']['Status']=='exited' and terminal['State']['Pid']==0 and terminal['State']['ExitCode']==143
+    build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
+    built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
+    qualification_checked(built,component,qualification,FAULT_PRODUCT)
+    assert report['build']==built and report['component']==component
+    manifest=read(build.parent/'build/source-manifest.json')
+    assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
+    for name,digest in component['executables_sha256'].items(): assert sha(bound(build/name))==digest
+    provenance=read(basis/'progress-source.json'); old_source=basis.parent/'source'
+    assert provenance['revision']==FAULT_ORIGIN['source'] and provenance['source']==str(old_source)
+    assert provenance['tree']==report['tree']
+    # Recheck this endpoint's actual oracle/probe/transitive source bytes, not
+    # a blanket rerun of the old 5482-file capture or a relaxed source gate.
+    for name,digest in provenance['files_sha256'].items():
+        if name.startswith(('experiments/','apps/','crates/','migrations/')) or name in ('Cargo.toml','Cargo.lock','rust-toolchain.toml'):
+            assert sha(bound(old_source/name))==digest
+            if not name.startswith('experiments/'): assert manifest['files_sha256'][name]==digest
+    initial=retained.origin_checked(root.parent/ORIGIN['run']/ORIGIN['subdirectory'],raw,ack_refusals=True)
+    known(initial); history_lineage(endpoint,initial,compacted=True)
+    assert len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
+    assert all('-0000000000000002-' in n for n in endpoint[2])
+    store=basis/FAULT_ORIGIN['store']
+    spool_checked(store/'producer-inputs-v1',endpoint[2],bound,complete=True)
+    files=physical(store,bound)
+    prefix=str(store)+'/'
+    qualified={name[len(prefix):]:digest for name,digest in replay['bound_files'].items() if name.startswith(prefix)}
+    assert len(qualified)==20
+    assert {name:value['sha256'] for name,value in files.items() if stat.S_ISREG(value['mode'])}==qualified
+    directories={str(parent) for name in qualified for parent in Path(name).parents}
+    assert {name for name,value in files.items() if stat.S_ISDIR(value['mode'])}==directories
+    for step in ('partial','absent'):
+        q=read(basis/('history-positive-'+step+'-quarantine.json'))
+        assert physical(basis/q['path'],bound)==q['quarantine_after']
+        for name,value in q['files'].items():
+            data=bound(basis/q['path']/name); assert data.hex()==value['hex']
+            assert initial[2][name]==dict(bytes=len(data),sha256=sha(data))
+    return endpoint,initial
+
+
+def fault_specification(case):
+    name=case['clone']; assert name in FAULT_CLONES
+    assert case['name']==name+'-read' and case['origin']=='compacted' and case['predecessor'] is None
+    assert case['operation']==FAULT_MODE and re.fullmatch('[a-z0-9_]{1,63}',case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    return name,('wire' if name.startswith('rollback-') else name)
+
+
+def fault_wire_event(value):
+    from fault_cases import safe_event
+    extra={'rollback_requests','rollback_completions','rollback_released','rollback_ready','rollback_number','before_forward'}
+    assert extra<=value.keys()
+    safe_event({k:v for k,v in value.items() if k not in extra})
+    assert type(value['before_forward']) is bool
+    for key in extra-{'before_forward'}: number(value[key],0,64,integer=True)
+    counts=[value[k] for k in ('rollback_requests','rollback_completions','rollback_released','rollback_ready')]
+    assert counts==sorted(counts,reverse=True)
+    assert value['commit_number']==64 and value['mode']=='pass'
+    return value
+
+
+def fault_counts(value):
+    return [value[k] for k in ('rollback_requests','rollback_completions','rollback_released','rollback_ready')]
+
+
+def fault_backend(value,backend,window,*,held_before=False):
+    assert set(value)=={'observed_at_us','pid','backend_start','database','user','state','xact_start','query'}
+    assert value['pid']==backend['pid'] and value['database']==backend['database'] and value['user']=='bigbrotr_control'
+    assert retained.instant(value['backend_start'])==retained.instant(backend['backend_start'])
+    model.clock(value['observed_at_us'],window)
+    assert value['state']==('idle in transaction' if held_before else 'idle')
+    assert (value['xact_start'] is not None)==held_before
+    if held_before:
+        assert value['query'].startswith('SELECT control.require_control_owner(')
+        assert retained.instant(value['xact_start'])<=value['observed_at_us']
+    else: assert value['query'] in ('COMMIT','ROLLBACK')
+
+
+def fault_closed(response,database,wire):
+    """Gate reopening on complete native/driver/proxy custody, never the error."""
+    assert response['returncode']==0 and response['outcome']=='PROCESS_EXITED'
+    assert response['readers_joined'] is True and response['overflow'] is False and response['stderr']==''
+    assert wire['status']=='CAPTURED' and wire['exit_code']==0 and wire['readers_joined'] is True
+    assert wire['forced_wrapper_stop'] is False and wire['stderr']=='' and wire['overflow'] is False
+    events=[loads(v) for v in response['stdout'].splitlines()]
+    assert not any(v['event']=='lineage-history-timeout' for v in events)
+    native,=[i for i,v in enumerate(events) if v==dict(event='lineage-history-native',state='closed')]
+    drivers=[(i,v) for i,v in enumerate(events) if v['event']=='lineage-history-driver']
+    assert len(drivers)==2
+    control,observer=drivers
+    assert set(control[1])=={'event','driver','failed','joined'} and control[1]['driver']=='control'
+    assert type(control[1]['failed']) is bool and control[1]['joined'] is True
+    assert observer[1]==dict(event='lineage-history-driver',driver='observer',failed=False,joined=True)
+    present,absent=[v for v in events if v['event']=='lineage-history-backend']
+    assert present['present'] is True and present['database']==database and absent==dict(present,present=False)
+    assert native<control[0]<events.index(absent)<observer[0]<len(events)-1
+    complete=events[-1]
+    assert complete['event']=='lineage-history-complete' and complete['native']=='closed' and complete['observer']=='joined'
+    assert complete['control'] in ('released-and-joined','dropped-and-joined')
+    return events
+
+
+def verify_history_fault(context,initial,expected,baseline=None):
+    import transition_replay as tr
+    assert set(context)=={'case','before','native_before','inputs_before','after','native_after','inputs_after','response',
+        'server_window','catalog_before','catalog_after','backend_absence','backends','custody','arguments','fault'}
+    case=context['case']; name,mode=fault_specification(case)
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['native_after']==expected[1] and context['inputs_after']==expected[2]
+    assert context['catalog_before']==context['catalog_after'] and context['backends']==[]
+    assert context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    window=context['server_window']; assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True); number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+    assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    for item in absence['attempts']:
+        number(item['seconds'],0,5); assert type(item['count']) is int and item['count']==len(item['backends'])
+    assert absence['attempts'][-1]['count']==0
+    fault=context['fault']; assert set(fault)=={'mode','prefix','target','before_forward','wire','gates','held','errors'}
+    assert fault['mode']==mode and fault['prefix']=='/lab/'+case['name']+'-gate' and fault['errors']==[]
+    target=2 if name in ('rollback-before','rollback-after','cancel','expiry') else 0
+    assert fault['target']==target and fault['before_forward']==(name=='rollback-before')
+    wire=fault['wire']; assert set(wire)=={'status','sources','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop','command'}
+    assert set(wire['sources'])=={'fault_proxy.py','rollback_proxy.py'}
+    assert all(re.fullmatch('[0-9a-f]{64}',h) for h in wire['sources'].values())
+    events=[fault_wire_event(loads(v)) for v in wire['stdout'].splitlines()]; assert events==wire['events']
+    assert events[0]==wire['ready'] and events[-1]==wire['receipt']
+    ready=wire['ready']; port=ready['listen_port']; number(port,1,65535,integer=True)
+    assert ready['event']=='ready' and ready['rollback_number']==target and ready['before_forward']==fault['before_forward']
+    assert ready['proxy_sha256']==wire['sources']['fault_proxy.py'] and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    assert ready['deadline_seconds']==60 and ready['max_frame_bytes']==1024**2 and ready['max_wire_bytes']==64*1024**2 and ready['max_messages']==20000
+    assert fault_counts(ready)==[0]*4 and ready['faults']==0
+    proxy_args=['docker','exec','-i',wire['command'][3],'python3','-B','/lab/rollback_proxy.py','--upstream-port','5432','--listen-port','0','--rollback-number',str(target)]
+    if fault['before_forward']: proxy_args.append('--before-forward')
+    assert wire['command']==proxy_args
+    args=[FAULT_MODE,case['database'],'/run/secrets/application',case['config'],'262144',str(port),mode,fault['prefix']]
+    assert context['arguments']==args
+    response=context['response']; assert set(response)=={'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'}
+    assert response['command']==['docker','exec',wire['command'][3],'/build/ingest_bootstrap_probe',*args]
+    number(response['seconds'],0,120)
+    parsed=fault_closed(response,case['database'],wire)
+    loss=name.startswith('rollback-')
+    driver=only(parsed,event='lineage-history-driver',driver='control')
+    assert not driver['failed'] or loss
+    m=tr.Model(*expected,window,compacted_history=True); t=tr.Transcript(parsed,m)
+    profile=t.take('profile'); assert set(profile)=={'event','profile','compacted_outcome_bytes'} and profile['profile']=='compacted-initial'
+    number(profile['compacted_outcome_bytes'],1,256*1024**2,integer=True)
+    history_resources(t)
+    backend=history_claim(t,case,transport=dict(event='lineage-history-fault',mode=mode,control_port=port,observer_port=5432,prefix=fault['prefix'],proxied=True))
+    known_history=history_lineage(expected,initial,compacted=True)
+    assert t.take('loaded')==dict(event='lineage-history-loaded',state='PreparedOpen',native_epoch=3,registered_epoch=3,replay_through=2,
+        producer_slot=known_history['slot'],pending_target=None,metadata_bytes=132608,memberships=6,entries=known_history['entries'])
+    t.snapshot('loaded')
+    observed_gates=[]; clocks=[]
+    def stage(value,error=None):
+        assert t.take('fault-stage')==dict(event='lineage-history-fault-stage',mode=mode,stage=value,error=error)
+    def gate(value):
+        index=len(observed_gates); record=fault['gates'][index]
+        assert set(record)=={'ready','status','backend','control','head','go_before_us','go_after_us','released'}
+        path=fault['prefix']+('.'+value+'.go' if mode=='baseline' else '.go')
+        common=dict(event='lineage-history-fault-gate',mode=mode,stage=value,prefix=fault['prefix'],path=path,gate_timeout_ms=10000,poll_ms=5)
+        assert t.take('fault-gate')==record['ready']==dict(common,phase='ready')
+        sample=record['status']; assert sample in events and sample['event']=='status'
+        assert sample['rollback_number']==target and sample['faults']==0
+        count={'after-factory':1,'before-compacted':1,'compacted-returned':2,'before-final':4,'final-returned':5}[value]
+        assert fault_counts(sample)==[count]*4
+        assert len({sample[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')})==1
+        fault_backend(record['backend'],backend,window); same(record['control'],m.pg)
+        model.clock(record['go_before_us'],window); model.clock(record['go_after_us'],window)
+        assert record['backend']['observed_at_us']<=record['go_before_us']<=record['go_after_us']
+        if name in ('head-after-factory','head-before-final'):
+            assert value==name.removeprefix('head-')
+            changed=history_head_checked(record['head'],(m.pg,m.native,m.inputs),initial)
+            xid=only(changed[0]['producer_checkpoints'])['xmin']; m.fresh(xid)
+            m.pg['producer_checkpoints']=changed[0]['producer_checkpoints']
+        else: assert record['head'] is None
+        assert t.take('fault-gate')==record['released']==dict(common,phase='released')
+        observed_gates.append(record)
+    def clock(value):
+        item=t.take('fault-clock'); assert set(item)=={'event','mode','stage','server_us','control_deadline_us','remaining_us','error'}
+        assert item['mode']==mode and item['stage']==value and item['error'] is None
+        model.clock(item['server_us'],window)
+        assert item['control_deadline_us']==m.control['lease_expires_at_us'] and item['remaining_us']==item['control_deadline_us']-item['server_us']
+        if clocks: assert item['server_us']>=clocks[-1]['server_us']
+        clocks.append(item); return item
+    cursor=dict(event='lineage-history-fault-cursor',mode=mode,current_epoch=1,needs_compacted_initial=True,next_request=None)
+    stage('after-factory')
+    if name in ('baseline','head-after-factory'): gate('after-factory')
+    t.refresh(1,None); assert t.take('fault-cursor')==dict(cursor,stage='before')
+    stage('before-compacted')
+    if name=='baseline': gate('before-compacted')
+    if name in ('cancel','expiry'):
+        refreshed=clock('refreshed'); assert refreshed['remaining_us']>0
+        gate('before-compacted'); dispatch=clock('dispatch')
+        assert dispatch['remaining_us']>0
+        if name=='expiry': assert 1_000_000<=dispatch['remaining_us']<=2_000_000
+        else: assert t.take('fault-cancel')==dict(event='lineage-history-fault-cancel',mode=mode,phase='applied',cancelled=True)
+    early=name not in ('baseline','head-before-final')
+    error='Progress(InvalidContext)' if name.startswith('head-') else 'DeliveryUnknown' if early else None
+    returned=dict(cursor,stage='returned') if early else dict(cursor,stage='returned',current_epoch=2,needs_compacted_initial=False,
+        next_request=dict(producer_slot=known_history['slot'],epoch=2,sequence=1))
+    assert t.take('fault-cursor')==returned
+    stage('compacted-returned',error if early else None)
+    if name=='baseline': gate('compacted-returned')
+    if name in ('cancel','expiry'):
+        last=clock('returned')
+        if name=='expiry': assert last['remaining_us']<=0
+    if early:
+        assert t.take('compacted-initial-refused')==dict(event='lineage-history-compacted-initial-refused',epoch=1,cursor_unchanged=True)
+    else:
+        assert t.take('compacted-initial')==dict(event='lineage-history-compacted-initial',compacted_requests=7,original_requests_replayed=0,
+            last_complete_sequence=27,digest=known(initial)['digest'])
+        t.snapshot('compacted-initial'); t.refresh(2,1)
+        assert t.take('request')==dict(event='lineage-history-request',producer_slot=known_history['slot'],epoch=2,sequence=1,existing_copy_checked=True)
+        t.snapshot('resolved-2-1'); t.refresh(2,None)
+        assert t.take('epoch')==dict(event='lineage-history-epoch',summary=known_history['summaries'][1])
+        t.snapshot('epoch-2'); t.refresh(None,None)
+        stage('before-final'); gate('before-final')
+        stage('final-returned',error)
+        if name=='baseline':
+            gate('final-returned')
+            assert t.take('compacted-proof')==dict(event='lineage-history-compacted-proof',compacted_initial_requests=7,original_initial_requests_replayed=0)
+            assert t.take('proof')==dict(event='lineage-history-proof',verified_through=2,last_epoch=known_history['summaries'][1],matches_history=True,admission=False)
+            t.snapshot('proof')
+    assert len(observed_gates)==len(fault['gates'])
+    assert t.take('result')==dict(event='lineage-history-result',stage='compacted-initial' if early else 'finish' if name=='head-before-final' else 'complete',
+        epoch=1 if early else None,sequence=None,error=error)
+    history_end(t,backend,success=name=='baseline',control_failed=driver['failed'])
+    same(m.pg,context['after'])
+    held=fault['held']; receipt=wire['receipt']; assert receipt['event']=='receipt'
+    expected_events=[ready,*[g['status'] for g in observed_gates]]
+    assert all(v['rollback_number']==target and v['before_forward']==fault['before_forward'] for v in events)
+    assert [v['elapsed_ns'] for v in events]==sorted(v['elapsed_ns'] for v in events)
+    if target:
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']=='baseline-read'
+        assert set(held)=={'wire','backend','control','action_before_us','action_after_us','cancel','expiry'}
+        h=held['wire']; assert h in events and h['event']=='held' and h['faults']==1
+        expected_events.append(h)
+        assert fault_counts(h)==([2,1,1,1] if fault['before_forward'] else [2,2,1,1])
+        commits=baseline['wire_stages']['before-compacted']['commits']
+        assert all(h[k]==commits for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete'))
+        fault_backend(held['backend'],backend,window,held_before=fault['before_forward'])
+        # Only the normal Control refreshes precede this hold; no operation SQL writes.
+        same(held['control'],m.pg)
+        for k in ('action_before_us','action_after_us'): model.clock(held[k],window)
+        assert held['backend']['observed_at_us']<=held['action_before_us']<=held['action_after_us']
+        if name=='cancel':
+            assert held['cancel']==dict(event='lineage-history-fault-cancel',mode='cancel',phase='applied',cancelled=True)
+            assert held['expiry']==[]
+        elif name=='expiry':
+            assert held['cancel'] is None and held['expiry']
+            previous=held['backend']['observed_at_us']
+            for item in held['expiry']:
+                assert set(item)=={'server_us','remaining_us'}; number(item['server_us'],previous,window['after_us'],integer=True); previous=item['server_us']
+                assert item['remaining_us']==m.control['lease_expires_at_us']-item['server_us']
+            assert held['expiry'][-1]['remaining_us']<=-50_000 and previous<=held['action_before_us']
+        else: assert held['cancel'] is None and held['expiry']==[]
+        assert receipt['faults']==1
+        if loss:
+            assert receipt['reason']=='held-close' and receipt['hold_action']=='close'
+            assert fault_counts(receipt)==fault_counts(h)
+        else:
+            released=only(events,event='released')
+            assert released==dict(h,event='released',elapsed_ns=released['elapsed_ns'],held=False,hold_action='release')
+            expected_events.append(released)
+            # The two joined pumps race on clean close; only their exact EOF
+            # outcomes are interchangeable, never a product error or boundary.
+            assert receipt['reason'] in ('frontend-eof','backend-eof') and receipt['hold_action']=='release'
+            assert fault_counts(receipt)==[2]*4
+    else:
+        assert held is None and receipt['faults']==0 and receipt['reason'] in ('frontend-eof','backend-eof')
+        assert receipt['hold_action'] is None
+        if name=='baseline': assert fault_counts(receipt)==[5]*4
+    assert receipt['frames'] and receipt['declared_wire_bytes']<=64*1024**2
+    assert events==[*expected_events,receipt]
+    return dict(status='PASS',case=case['name'],tables=77,native_rows=93,native_sequence=138,input_files=1,
+        positive_proof=name=='baseline',compacted_summary_delivered=not early,original_initial_requests_replayed=0,
+        error=error,control_driver_failed=driver['failed'],
+        wire_stages={g['ready']['stage']:dict(rollbacks=fault_counts(g['status']),commits=g['status']['commits_seen']) for g in observed_gates})
+
+
+def history_fault_controls(context,initial,expected,baseline=None):
+    def cursor(c):
+        import json
+        events=[loads(v) for v in c['response']['stdout'].splitlines()]
+        row=only(events,event='lineage-history-fault-cursor',stage='returned')
+        row['current_epoch']=99
+        c['response']['stdout']='\n'.join(json.dumps(v) for v in events)+'\n'
+    def boundary(c):
+        fault=c['fault']; row=fault['held']['wire'] if fault['held'] else fault['gates'][0]['status']
+        row['rollback_completions']+=1
+    changes=[('native-sequence',lambda c:c['native_after'].update(sequence=139)),
+        ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
+        ('checkpoint-xmin',lambda c:only(c['after']['producer_checkpoints']).update(xmin='4294967000')),
+        ('required-input-loss',lambda c:c['inputs_after'].clear()),
+        ('catalog-change',lambda c:c.update(catalog_after='changed')),
+        ('wire-source',lambda c:c['fault']['wire']['sources'].update({'fault_proxy.py':'00'*32})),
+        ('wire-unjoined',lambda c:c['fault']['wire'].update(readers_joined=False)),
+        ('wrong-arguments',lambda c:c['arguments'].append('wrong')),
+        ('unknown-outcome',lambda c:c['response'].update(outcome='UNKNOWN')),
+        ('live-backend',lambda c:c['backends'].append(dict(pid=1))),
+        ('wrong-rollback-boundary',boundary),('cursor-advance',cursor)]
+    name=context['case']['clone']
+    if name.startswith('head-'):
+        changes.append(('head-change-not-exact',lambda c:only(c['fault']['gates'][0]['head']['after']['producer_checkpoints']).update(checkpoint_revision=99)))
+    elif name=='expiry':
+        changes.append(('deadline-still-live',lambda c:c['fault']['held']['expiry'][-1].update(remaining_us=1)))
+    rejected=[]
+    for name,change in changes:
+        value=copy.deepcopy(context); change(value)
+        try: verify_history_fault(value,initial,expected,baseline)
+        except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(name)
+        else: raise AssertionError('accepted altered compacted fault evidence: '+name)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)

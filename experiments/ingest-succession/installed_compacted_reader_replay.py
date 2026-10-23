@@ -19,9 +19,9 @@ from installed_family_capture import inventory_checked, physical, spool_checked
 loads,sha,same,only,number = oracle.loads,oracle.sha,oracle.same,oracle.only,oracle.number
 
 
-def replay(root, product_source, *, history_profile=False):
-    assert type(history_profile) is bool
-    profile=oracle.HistoryProfile if history_profile else oracle
+def replay(root, product_source, *, history_profile=False,fault_profile=False):
+    assert type(history_profile) is bool and type(fault_profile) is bool and not (history_profile and fault_profile)
+    profile=oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
     root = Path(root).resolve(strict=True); folder = root/profile.DIRECTORY; bound = {}
     def raw(path):
         path = Path(path); assert stat.S_ISREG(path.lstat().st_mode)
@@ -49,20 +49,23 @@ def replay(root, product_source, *, history_profile=False):
     assert set(report['database_names_after']) == set(report['database_names_before']) | set(report['databases'])
     started,finished = [oracle.retained.instant(report[k]) for k in ('started_at','finished_at')]
     assert started <= finished
-    pin = oracle.ORIGIN; basis = root.parent/pin['run']/pin['subdirectory']; store = basis/pin['store']
-    seed = oracle.retained.origin_checked(basis,raw,ack_refusals=True); oracle.known(seed)
-    assert set(report['origins']) == {'initial'}; declaration = report['origins']['initial']
+    pin = oracle.FAULT_ORIGIN if fault_profile else oracle.ORIGIN
+    origin_name=pin['name']; basis = root.parent/pin['run']/pin['subdirectory']; store = basis/pin['store']
+    if fault_profile: seed,initial=oracle.fault_origin_checked(root,raw)
+    else:
+        seed = oracle.retained.origin_checked(basis,raw,ack_refusals=True); oracle.known(seed)
+    assert set(report['origins']) == {origin_name}; declaration = report['origins'][origin_name]
     assert set(declaration) == set(pin) | {'pins','files','inputs','native','previous_client','rows','catalog','preserved'}
     assert declaration['pins'] == pin and all(declaration[k] == v for k,v in pin.items() if k != 'store')
     assert declaration['store'] == str(store)
-    same(declaration['rows'],seed[0]); same(read(folder/'initial-original.json'),seed[0])
+    same(declaration['rows'],seed[0]); same(read(folder/(origin_name+'-original.json')),seed[0])
     assert declaration['native'] == seed[1] and declaration['inputs'] == seed[2]
     assert declaration['previous_client'] == read(basis/'result.json')['client']
     assert sha(declaration['catalog'].encode()) == pin['catalog_sha256']
     assert physical(store,raw) == declaration['files']; spool_checked(store/'producer-inputs-v1',seed[2],raw,complete=True)
-    assert declaration['preserved'] == read(folder/'initial-preserved.json') == dict(
+    assert declaration['preserved'] == read(folder/(origin_name+'-preserved.json')) == dict(
         rows_unchanged=True,catalog_unchanged=True,native_unchanged=True,inputs_unchanged=True,physical_unchanged=True)
-    absent('initial',pin['database'])
+    absent(origin_name,pin['database'])
     terminal = read(folder/'terminal-containers.json')
     inventory_checked(read(folder/'preflight-containers.json'),terminal,report['client'],report['postgres'])
     assert report['postgres'] == '7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec'
@@ -95,8 +98,8 @@ def replay(root, product_source, *, history_profile=False):
     results = []; previous_time = started
     for clone in report['clones']:
         name = clone['name']; directory = folder/name
-        assert clone['origin'] == 'initial' and clone['directory'] == name and clone['status'] == 'PASS'
-        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
+        assert clone['origin'] == origin_name and clone['directory'] == name and clone['status'] == 'PASS'
+        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
         assert clone['config'] == '/lab/'+clone['database']+'.toml' and clone['final_backends'] == []
         assert clone['final_case'] == name+'-'+profile.STEPS[name][-1]
         same(read(folder/(name+'-copy-before.json')),seed[0]); same(read(folder/(name+'-migrated.json')),seed[0])
@@ -108,7 +111,8 @@ def replay(root, product_source, *, history_profile=False):
                 dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
         assert clone['grants'] == [dict(statement=s,stdout='') for s in profile.GRANTS]
         assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
-        (oracle.history_catalog_checked if history_profile else oracle.catalog_checked)(declaration['catalog'],clone['catalog_before'])
+        if fault_profile: assert declaration['catalog']==clone['catalog_before']
+        else: (oracle.history_catalog_checked if history_profile else oracle.catalog_checked)(declaration['catalog'],clone['catalog_before'])
         config = tomllib.loads(raw(folder/Path(clone['config']).name).decode()); ds = only(seed[0]['datasets'])
         assert config['storage']['ingest_root'] == '/lab/'+name+'/store'
         assert config['topology']['dataset_id'] == ds['dataset_id'][2:] and config['topology']['instance_id'] == ds['instance_id'][2:]
@@ -121,6 +125,11 @@ def replay(root, product_source, *, history_profile=False):
             lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
         for filename in (name+'-config-validation.json',clone['database']+'-installed-config-validation.json'):
             v = read(folder/filename); assert type(v['returncode']) is int and v['returncode'] == 0 and v['stderr'] == ''; loads(v['stdout'])
+        if fault_profile:
+            checked,previous_time=fault_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,finished,
+                None if name=='baseline' else results[0]['oracle'])
+            results.append(checked)
+            continue
         if history_profile:
             checked,previous_time=history_clone_replay(folder,clone,report,seed,raw,read,absent,previous_time,finished)
             results.extend(checked)
@@ -188,7 +197,7 @@ def replay(root, product_source, *, history_profile=False):
     return dict(status=profile.STATUS+'_CAPTURE_REPLAY',source=report['source'],product_source=product_source,
         cases=results,bound_files=bound,not_run=list(profile.NOT_RUN),
         preservation='Original files reread; original SQL/catalog and engine/process closure are captured-run evidence',
-        scope=('Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
+        scope=('Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
 
 
 
@@ -283,9 +292,51 @@ def history_clone_replay(folder,clone,report,seed,raw,read,absent,previous_time,
     return results,previous_time
 
 
+def fault_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,finished,baseline):
+    name=clone['name']; label=name+'-read'; directory=folder/name
+    case=only(report['cases'],name=label); oracle.fault_specification(case)
+    assert case['status']=='PASS' and case['custody']=='OBSERVED_CLOSED_AND_JOINED' and case['catalog_after']==clone['catalog_before']
+    item=lambda suffix:read(folder/(label+'-'+suffix+'.json'))
+    context=item('verification')
+    assert context['case']=={k:case[k] for k in ('name','clone','origin','operation','predecessor','database','config','custody')}|dict(status='RUNNING')
+    for suffix,key in [('before','before'),('after','after'),('before-native','native_before'),('after-native','native_after'),
+        ('inputs','inputs_before'),('after-inputs','inputs_after'),('response','response'),('clock','server_window'),
+        ('fault','fault'),('control-backends','backend_absence'),('backends','backends'),('custody','custody')]:
+        assert item(suffix)==context[key]
+    for phase in ('before','after'):
+        dump=item(phase+'-dump-response'); assert type(dump['returncode']) is int and dump['returncode']==0 and dump['stderr']==''
+        assert loads(dump['stdout'])==context['native_'+phase]; number(dump['seconds'],0,120)
+    assert context['catalog_before']==context['catalog_after']==clone['catalog_before']
+    assert case['returncode']==context['response']['returncode']==0
+    window=context['server_window']; assert window==case['server_window']
+    number(window['before_us'],previous_time,finished,integer=True); previous_time=number(window['after_us'],window['before_us'],finished,integer=True)
+    wire=context['fault']['wire']; assert wire['command'][3]=='bigbrotr-compacted-fault-'+report['source'][:7]
+    for relative,filename in [('experiments/control-migrations/fault_proxy.py','fault_proxy.py'),
+        ('experiments/relay-source/rollback_proxy.py','rollback_proxy.py')]:
+        data=raw(folder/filename); assert data==raw(folder.parent/'source'/relative) and sha(data)==wire['sources'][filename]
+    signals=[]
+    for gate in context['fault']['gates']:
+        signals.append(Path(gate['ready']['path']).name)
+        if gate['head'] is not None: assert raw(folder/(label+'-head.sql')).decode()==gate['head']['statement']
+    if name=='cancel': signals.append(label+'-gate.cancel')
+    assert sorted(p.name for p in folder.glob(label+'-gate*'))==sorted(signals)
+    for signal in signals:
+        path=folder/signal; meta=path.lstat()
+        assert stat.S_ISREG(meta.st_mode) and meta.st_mode&0o777==0o600 and meta.st_nlink==1 and raw(path)==b''
+    checked=oracle.verify_history_fault(context,initial,seed,baseline)
+    controls=oracle.history_fault_controls(context,initial,seed,baseline)
+    assert case['oracle']==checked and case['negative_controls']==controls
+    same(read(folder/(name+'-final-sql.json')),context['after'])
+    spool_checked(directory/'store/producer-inputs-v1',seed[2],raw,complete=True)
+    physical(directory/'store',raw)
+    return dict(name=label,oracle=checked,negative_controls=controls),previous_time
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('root',type=Path)
     parser.add_argument('--product-source',required=True); parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--history',action='store_true')
-    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history)
+    profile=parser.add_mutually_exclusive_group()
+    profile.add_argument('--history',action='store_true')
+    profile.add_argument('--history-faults',action='store_true')
+    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults)
     with args.output.open('x') as stream: json.dump(result,stream,indent=2); stream.write('\n')

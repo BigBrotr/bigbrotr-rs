@@ -5,14 +5,18 @@ Four excluded clones first execute actual abandonment and retirement. One raw
 test-only synced batch then installs the literal floor and deletes seven exact
 receipt keys. Every input and removed byte remains retained as fixture evidence.
 The existing transition owner alone owns engines, cloning, custody and cleanup.
+The explicit history-fault profile copies a qualified PreparedOpen3 endpoint and
+observes read delivery through the existing finite rollback proxy.
 """
 import argparse
+import json
 from datetime import datetime, timezone
 from functools import partial
 import os
 from pathlib import Path
 import shutil
 import sys
+import time
 
 sys.dont_write_bytecode = True
 import transition
@@ -313,11 +317,195 @@ def run_history(root,build,product_source):
         compacted_reader=True,compacted_history=True,product_source=product_source)
 
 
+FAULT_SUITE = transition.Suite(directory=oracle.HistoryFaultProfile.DIRECTORY,label=oracle.HistoryFaultProfile.LABEL,
+    status=oracle.HistoryFaultProfile.STATUS,client_prefix='bigbrotr-compacted-fault-',database_prefix=oracle.HistoryFaultProfile.DATABASE_PREFIX,
+    clones=oracle.FAULT_CLONES,cases=oracle.HistoryFaultProfile.CASES,
+    scope='Exact-source compacted PreparedOpen3 copies; observed rollback baseline, between-transaction head changes, delivery loss, cancellation and real lease expiry',
+    not_run=oracle.HistoryFaultProfile.NOT_RUN)
+
+
+def fault_wire_next(process,wanted,seconds=5):
+    # Process.event intentionally accepts only its original base schema. Keep
+    # the existing bounded transport reader and validate the rollback extension.
+    deadline=time.monotonic()+seconds
+    with process.condition:
+        while True:
+            assert not process.overflow
+            end=process.stdout.find(b'\n',process.offset)
+            if end>=0:
+                value=oracle.fault_wire_event(json.loads(bytes(process.stdout[process.offset:end])))
+                process.offset=end+1; assert value['event']==wanted
+                return value
+            assert time.monotonic()<deadline and (process.process.poll() is None or process.threads[0].is_alive())
+            process.condition.wait(min(.05,max(0,deadline-time.monotonic())))
+
+
+def fault_backend_observation(pg,database,probe):
+    probe.observe(); backend,=[v for v in probe.parsed if v['event']=='lineage-history-backend' and v['present']]
+    assert backend['database']==database and type(backend['pid']) is int and backend['pid']>0
+    assert oracle.re.fullmatch(r'[0-9T:.+ Z-]+',backend['backend_start'])
+    statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
+        "'pid',pid,'backend_start',backend_start::text,'database',datname,'user',usename,'state',state," \
+        "'xact_start',xact_start::text,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(backend['pid'])+ \
+        " AND backend_start='"+backend['backend_start']+"'::timestamptz AND datname=current_database();"
+    return json.loads(lab.sql(pg,database,statement))
+
+
+def fault_invoke(pg,client,output,case,expected,initial,baseline):
+    from fault_cases import Process
+    from initial_empty_locks import Probe
+    from activated_retirement_expiry import wait_event
+    from retirement_wait import open_gate
+    name,mode=oracle.fault_specification(case); label=case['name']; database=case['database']
+    prefix='/lab/'+label+'-gate'; target=2 if name in ('rollback-before','rollback-after','cancel','expiry') else 0
+    if target:
+        assert baseline is not None and baseline['wire_stages']['compacted-returned']['rollbacks']==[target]*4
+        assert baseline['wire_stages']['before-compacted']['rollbacks']==[target-1]*4
+    fault=dict(mode=mode,prefix=prefix,target=target,before_forward=name=='rollback-before',wire={},gates=[],held=None,errors=[])
+    proxy=probe=None; started=time.monotonic(); window=dict(before_us=history.server_clock(pg,database))
+    response=dict(returncode=None,stdout='',stderr='',seconds=None,outcome='UNKNOWN',readers_joined=False,overflow=False,command=None)
+    args=None
+    def save():
+        lab.write_json(output/(label+'-fault.json'),fault)
+        lab.write_json(output/(label+'-clock.json'),window)
+    try:
+        command=['docker','exec','-i',client,'python3','-B','/lab/rollback_proxy.py','--upstream-port','5432','--listen-port','0','--rollback-number',str(target)]
+        if fault['before_forward']: command.append('--before-forward')
+        proxy=Process(command,input_pipe=True)
+        ready=fault_wire_next(proxy,'ready')
+        fault['wire']=dict(status='RUNNING',sources={n:history.digest(output/n) for n in ('fault_proxy.py','rollback_proxy.py')},
+            ready=ready,receipt=None,events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False,command=command)
+        assert ready['proxy_sha256']==fault['wire']['sources']['fault_proxy.py']
+        args=[oracle.FAULT_MODE,database,'/run/secrets/application',case['config'],'262144',str(ready['listen_port']),mode,prefix]
+        response['command']=['docker','exec',client,'/build/ingest_bootstrap_probe',*args]
+        save(); probe=Probe(response['command'])
+        stages=oracle.FAULT_STAGES if mode=='baseline' else (name.removeprefix('head-'),) if name.startswith('head-') else ('before-compacted',) if mode in ('cancel','expiry') else ()
+        for stage in stages:
+            event=wait_event(probe,'lineage-history-fault-gate',stage=stage,phase='ready')
+            proxy.send('status'); status=fault_wire_next(proxy,'status')
+            record=dict(ready=event,status=status,backend=fault_backend_observation(pg,database,probe),control=schema.rows(pg,database),
+                head=None,go_before_us=None,go_after_us=None,released=None)
+            fault['gates'].append(record); save()
+            if name.startswith('head-'):
+                # Exact privileged mutation between product transactions. It
+                # cannot manufacture a native/terminal prerequisite.
+                statement=oracle.retained.ack_statement(initial)
+                mutation=dict(kind='privileged-isolated-valid-head-corruption',before=record['control'],statement=statement,sql_output=None,after=None)
+                record['head']=mutation; save(); (output/(label+'-head.sql')).write_text(statement)
+                mutation['sql_output']=lab.sql(pg,database,statement); mutation['after']=schema.rows(pg,database)
+                oracle.history_head_checked(mutation,(record['control'],expected[1],expected[2]),initial); save()
+            path=output/Path(event['path']).name
+            assert event['path']==prefix+('.'+stage+'.go' if mode=='baseline' else '.go')
+            record['go_before_us']=history.server_clock(pg,database); open_gate(path)
+            record['go_after_us']=history.server_clock(pg,database)
+            record['released']=wait_event(probe,'lineage-history-fault-gate',stage=stage,phase='released'); save()
+        if target:
+            held=fault_wire_next(proxy,'held',25)
+            record=dict(wire=held,backend=fault_backend_observation(pg,database,probe),control=schema.rows(pg,database),
+                action_before_us=None,action_after_us=None,cancel=None,expiry=[])
+            fault['held']=record; save()
+            if name=='cancel':
+                open_gate(output/(label+'-gate.cancel'))
+                record['cancel']=wait_event(probe,'lineage-history-fault-cancel',phase='applied',timeout=1); save()
+            elif name=='expiry':
+                control=oracle.only(record['control']['owner_epochs'],role='control',state='active')
+                deadline=time.monotonic()+3
+                while True:
+                    now=history.server_clock(pg,database)
+                    record['expiry'].append(dict(server_us=now,remaining_us=control['lease_expires_at_us']-now)); save()
+                    if now>=control['lease_expires_at_us']+50_000: break
+                    assert time.monotonic()<deadline, 'real UTC expiry was not observed'
+                    time.sleep(.02)
+            record['action_before_us']=history.server_clock(pg,database)
+            proxy.send('close' if name.startswith('rollback-') else 'release')
+            record['action_after_us']=history.server_clock(pg,database)
+            if not name.startswith('rollback-'): fault_wire_next(proxy,'released')
+            save()
+        code=probe.wait(15); probe.observe()
+        response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+        fault['wire']['receipt']=fault_wire_next(proxy,'receipt')
+        fault['wire']['exit_code']=proxy.wait(5)
+    except BaseException as error:
+        fault['errors'].append(dict(stage='invoke',error=repr(error)))
+    finally:
+        # A stopped local wrapper does not certify remote native custody. Keep
+        # original partial bytes; the outer owner still excludes its client.
+        if probe is not None:
+            code=probe.process.poll()
+            if code is not None:
+                for thread in probe.threads: thread.join(1)
+                response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+            response.update(stdout=bytes(probe.stdout).decode(errors='replace'),stderr=bytes(probe.stderr).decode(errors='replace'))
+            if code is None: fault['errors'].append(dict(stage='probe-stop',error='forced-wrapper-stop'))
+            probe.stop()
+        if proxy is not None:
+            forced=proxy.process.poll() is None
+            proxy.stop(); wire=fault['wire']
+            wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),
+                exit_code=proxy.process.returncode,forced_wrapper_stop=forced,readers_joined=not any(t.is_alive() for t in proxy.threads),overflow=proxy.overflow)
+            try:
+                wire['events']=[oracle.fault_wire_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+                if wire['events'] and wire['events'][-1]['event']=='receipt': wire['receipt']=wire['events'][-1]
+                wire['status']='CAPTURED' if wire['exit_code']==0 and not forced and wire['readers_joined'] and not wire['stderr'] and not wire['overflow'] else 'INCOMPLETE'
+            except BaseException as error:
+                wire['status']='INCOMPLETE'; fault['errors'].append(dict(stage='proxy-metadata',error=repr(error)))
+        response['seconds']=time.monotonic()-started; window['after_us']=history.server_clock(pg,database)
+        lab.write_json(output/(label+'-response.json'),response); save()
+    return response,window,fault,args
+
+
+def run_fault_sequence(pg,client,output,clone,directory,expected,report,*,endpoint,initial):
+    assert clone['origin']=='compacted' and expected==endpoint
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
+    assert clone['catalog_before']==report['origins']['compacted']['catalog']
+    configure(pg,client,output,clone['config'],ack=True)
+    for source,target in ((history.SOURCE/'experiments/control-migrations/fault_proxy.py','fault_proxy.py'),
+            (history.SOURCE/'experiments/relay-source/rollback_proxy.py','rollback_proxy.py'),
+            (Path(__file__).with_name('installed_cycle_client.py'),'installed_cycle_client.py')):
+        path=output/target
+        if not path.exists(): shutil.copy2(source,path)
+        assert history.digest(source)==history.digest(path)
+    name=clone['name']; label=name+'-read'
+    baseline=None if name=='baseline' else oracle.only(report['cases'],name='baseline-read')['oracle']
+    case=dict(name=label,clone=name,origin='compacted',operation=oracle.FAULT_MODE,predecessor=None,database=clone['database'],config=clone['config'],status='RUNNING')
+    report['cases'].append(case); lab.write_json(output/'result.json',report)
+    before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
+    native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store')
+    assert (native,inputs)==expected[1:]
+    lab.write_json(output/(label+'-before.json'),before); lab.write_json(output/(label+'-inputs.json'),inputs)
+    response,window,fault,args=fault_invoke(pg,client,output,case,expected,initial,baseline)
+    _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,
+        closure=lambda r,d:oracle.fault_closed(r,d,fault['wire']))
+    context=dict(case=dict(case),before=before,native_before=native,inputs_before=inputs,after=after,native_after=after_native,inputs_after=after_inputs,
+        response=response,server_window=window,catalog_before=clone['catalog_before'],catalog_after=history.catalog(pg,case['database']),arguments=args,fault=fault,
+        backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),custody=transition.read(output/(label+'-custody.json')))
+    lab.write_json(output/(label+'-verification.json'),context)
+    result=oracle.verify_history_fault(context,initial,expected,baseline)
+    controls=oracle.history_fault_controls(context,initial,expected,baseline)
+    case.update(status='PASS',returncode=response['returncode'],server_window=window,oracle=result,negative_controls=controls,catalog_after=context['catalog_after'])
+    lab.write_json(output/'result.json',report)
+    return label
+
+
+def run_history_faults(root,build,product_source):
+    endpoint,initial=oracle.fault_origin_checked(root)
+    try:
+        return transition.run(root,build,suite=FAULT_SUITE,sequence=partial(run_fault_sequence,endpoint=endpoint,initial=initial),
+            origin_specs=(oracle.FAULT_ORIGIN,),origin_for_clone={n:'compacted' for n in oracle.FAULT_CLONES},extra_grants=oracle.HISTORY_GRANTS,
+            producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,product_source=product_source)
+    finally:
+        # Recheck the pinned original, old checker/ELF evidence and separately
+        # retained initial quarantines after the runtime owner has stopped.
+        assert oracle.fault_origin_checked(root)==(endpoint,initial)
+
+
 ORIGIN = oracle.ORIGIN
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
     parser.add_argument('--product-source',required=True,help='Exact reviewed and qualified integrated build revision')
-    parser.add_argument("--history",action="store_true",help="Explicit connected Terminal2/PreparedOpen3 synthetic floor profile")
+    profile=parser.add_mutually_exclusive_group()
+    profile.add_argument("--history",action="store_true",help="Explicit connected Terminal2/PreparedOpen3 synthetic floor profile")
+    profile.add_argument('--history-faults',action='store_true',help='Exact retained PreparedOpen3 delivery fault profile')
     args = parser.parse_args()
-    (run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
