@@ -1122,8 +1122,14 @@ not a supported mixed-restore procedure. Separate fixture `2b556790` with produc
 controls; raw replay bound5737 files. A fixed fixture changes only floor byte25
 (retired7 to6), retaining all84 rows. The installed command refuses before
 Control connection/claim, preserving all77 SQL tables/xmins and native sequence126
-without a product write. Original-preparer claims, remaining proof-use/physical
-uncertainty and original-input delivery remain separate qualification gates.
+without a product write. Corrected fixture `16f32106`, with product `628f955`,
+passed one probe and two installed commands,62 case and11 setup controls, with
+raw replay over5768 files. An ordinary import is admitted before the probe and
+claimed by the actual original preparer inside its held second transaction.
+Fresh completion preserves that claim; fresh retirement refuses at the named
+claim guard before refresh or native close. The first fixture failure remains
+recorded separately. Import execution, remaining proof-use/physical uncertainty
+and original-input delivery remain separate qualification gates.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

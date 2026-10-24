@@ -63729,12 +63729,12 @@
         "original_preparer_fixture": {
           "owner": "/root/empty_malformed_floor reused verified Astra/xhigh; prior helper task complete",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-preparer-20261024",
-          "branch": "work/compacted-empty-initial-preparer",
+          "branch": null,
           "base": "d99b999dda90e2dc151b51f74a8e171f8bb0d524",
-          "state": "SOURCE_CORRECTION_ACTIVE after actual idle-in-transaction mismatch at validation3",
+          "state": "PASS; corrected source16 integrated in merge8c83798f with independently reviewed malformed profile union; clean detached16 preserved, redundant ref retired after ancestry/cleanliness checks",
           "scope": "Existing advisory one clone/three processes; actual preparing-Control ordinary import claim before gap release, fresh installed completion preserving job, fresh empty-retirement refusal; no resurrected owner or current-claim substitution",
-          "source": "83f1de3dfa0280c34d4ce7c7746ca50916b1e53a",
-          "tree": "3f530f1ee7e552162c471dd141ed4557b873696f"
+          "source": "16f321067a4e26361d257f94e0bc74c25329ebb2",
+          "tree": "43f116876fd18d3d8ac86ad33e7bc811a71702f2"
         },
         "proof_shapes_installed_attempts": [
           {
@@ -63787,17 +63787,6 @@
             "sha256": "1edb4018941f1bfbb25d899d13ac571e97b6137f4858c5d04238dc3eb513c128"
           }
         },
-        "original_preparer_installed": {
-          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3",
-          "source": "83f1de3dfa0280c34d4ce7c7746ca50916b1e53a",
-          "product": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
-          "driver_session": 7347,
-          "status": "FAIL_FIXTURE_LIVE_TRANSACTION_EXPECTATION_INCOMPLETE_CUSTODY",
-          "preflight": "root-preflight.json",
-          "driver_exit": 1,
-          "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3/verified-failure.json",
-          "resources": "Owned client b3847756 stopped143 and PG71775507 stopped0/PID0/noOOM; originalpreservation5true; no native reopen or further cleanup"
-        },
         "later_preparation_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-20261024",
           "branch": "work/compacted-later-empty",
@@ -63805,6 +63794,32 @@
           "state": "SOURCE_IMPLEMENTATION_ACTIVE; no build/engines",
           "scope": "Explicit compacted later preparation/gap and existing --retire-empty-successor four-state recovery; source/probe/component controls only, no new CLI/SQLformat/migration, activation/live/Archive remain gated",
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh"
+        },
+        "original_preparer_attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3",
+            "source": "83f1de3dfa0280c34d4ce7c7746ca50916b1e53a",
+            "product": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
+            "driver_session": 7347,
+            "status": "FAIL_FIXTURE_LIVE_TRANSACTION_EXPECTATION_INCOMPLETE_CUSTODY",
+            "preflight": "root-preflight.json",
+            "driver_exit": 1,
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3/verified-failure.json",
+            "resources": "Owned client b3847756 stopped143 and PG71775507 stopped0/PID0/noOOM; originalpreservation5true; no native reopen or further cleanup"
+          }
+        ],
+        "original_preparer_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-16f3210",
+          "source": "16f321067a4e26361d257f94e0bc74c25329ebb2",
+          "product": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
+          "driver_session": 80527,
+          "status": "PASS_INSTALLED_AND_EXACT_RAW_REPLAY",
+          "preflight": "root-preflight.json",
+          "driver_exit": 0,
+          "raw_driver_session": 45404,
+          "raw_driver_exit": 0,
+          "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-16f3210/verified-run.json",
+          "resources": "Actual client605d1360 exited143 and PG71775507 exited0/PID0/noOOM; rechecked after merge. Original preservation5true; all captures/failure/worktrees retained; no runtime active."
         }
       }
     }

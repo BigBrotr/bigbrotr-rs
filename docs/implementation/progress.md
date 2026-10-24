@@ -6,64 +6,57 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Observed main/last verified push `b5711690` (driver47636 joined0), recording
-malformed fixture2b556790 and its installed/raw qualification. Local navigation
-records track the original-preparer runtime. No product source change in either fixture.
+Integrated main `8c83798f2fe4fc9ae2cbb8bb2906927e25270027` reconciles corrected
+original-preparer16f32106 and malformed2b556790 fixtures. This checkpoint commit
+records their evidence and resources; last observed remote was e361cfaf, with
+this coherent outcome awaiting the already authorized push.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
-compacted_successor_preparation.empty_initial_consumer_work`, owns source,
-review, runtime identities and original failures. The
-[inventory](../research/laboratory-inventory.json) owns resources/worktrees.
+compacted_successor_preparation`, owns source, review, runtime identities and
+original failures. The [inventory](../research/laboratory-inventory.json) owns
+resources/worktrees. Historical valid build/installed results remain linked there.
 
 ## Verified result and next action
 
-Malformed fixture2b556790, using exact qualified product628f955, passed one
-installed refusal,14 case and8 fixture controls; raw replay bound5737 files.
-Drivers28004/22665 joined0. Root independently verified the single floor byte25
-change7→6,84 unchanged row identities/fixture sequence125→126, bare StateMismatch
-before Control claim, zero product native/SQL writes and all77 SQL tables/xmins,
-inputs/catalog preserved. All original preservation observations are true.
-Prior empty13/delivery5/locks9/proof-shapes6 and build185/76/Clippy results remain
-valid in the linked report; they were not rerun. Original d99b999+product30ab
-preflight incompatibility remains FAIL; current source requires product628.
+Corrected preparer16f32106/product628f955 passed one probe plus two installed
+commands,62 case+11 setup controls and exact raw replay over5768 files;
+drivers80527/45404 joined0. Genuine original-Control claim is preserved by fresh
+native completion; fresh retirement refuses before native close. Malformed2b
+qualification remains valid. The merged verifier paths reproduce both frozen
+captures; independent integration review found no source blocker. This is a
+source/capture integration check, not a new merged-source engine qualification.
+Original83f1de3 failure and unknown native-after outcome remain preserved.
 
-Next: correct original-preparer fixture83f1de3 in
-`.research/compacted-empty-initial-preparer-20261024`, author
-`/root/empty_malformed_floor`, reviewer `/root/compacted_reader_review` (reused
-verified Astra/xhigh). The actual first attempt exposed a transaction/lock
-assumption missed by its synthetic diagnostic and frozen source review. Verify
-ordinary precreation/sealing before probe and claim-only at validation3 against
-the complete trigger chain, then qualify the same one-clone/three-stage route.
-Root alone executes engines using qualified product628; no deadline widening.
+Next: finish/review the explicit later compacted preparation, gap and empty
+recovery implementation, then root freezes source for the existing isolated
+build and independent installed fixture. Author `/root/compacted_reader_fixture`
+works in `.research/compacted-later-empty-20261024`, branch
+`work/compacted-later-empty`, baseb5711690. Existing `--retire-empty-successor`
+selects actual floor evidence; ordinary/activation/live/Archive gates stay closed.
+No new CLI or persistent format. Work remains partial, build/runtime **NOT_RUN**.
+`/root/empty_malformed_floor` designs the independent later fixture from the
+existing audited origins; no engines or build. Critical reviewer
+`/root/compacted_reader_review` completed the current merge review and is idle.
+All three reuse verified Astra/xhigh. Root alone integrates and runs engines.
 
 ## Work and resources
 
-No root build/installed/raw process active. Failed preparer driver7347 joined1:
-no claim actor or go marker; original custody UNKNOWN_PROCESS_OUTCOME,
-after-native/raw/remaining stages NOT_RUN. Failure and original cleanup error
-are retained in inventoried verified-failure.json. Actual latest clientb3847756
-stopped143 and PG71775507 owner5e69b0f stopped0/PID0/noOOM. Free255233150976 bytes.
-Original preservation all five true. No cleanup/unrelated changes. Malformed
-fixture worktree clean detached2b556790 after exact integration and redundant-ref
-retirement; all .research/worktrees/logs/failures/data and snapshots preserved.
-
-Preparer author/reviewer are correcting/reviewing the source-only fixture.
-Agent `/root/compacted_reader_fixture` completed the later-consumer audit (linked
-in the recovery report) and now implements the selected existing
-`--retire-empty-successor` route in `.research/compacted-later-empty-20261024`,
-branch `work/compacted-later-empty`, baseb5711690. Explicit compacted preparation,
-gap and prepared-empty/terminal recovery share the existing owner machinery;
-no new CLI/SQL format or activation/live/Archive enablement. This is source work,
-NOT_RUN for build/runtime. Root retains sole integration/runtime ownership.
+No root build/installed/raw process active. Latest actual client605d1360 is
+exited143 and borrowed PG71775507 is exited0, both PID0/noOOM. All five original
+preservation observations are true. Last measured free space254914469888 bytes;
+check again before substantial allocation. No unrelated service or cleanup change.
+Corrected preparer worktree is clean detached16f32106; redundant branch ref
+retired after ancestry/cleanliness checks, with reviewed merged-source identities.
+Malformed worktree remains clean detached2b556790. All .research, worktrees,
+external data, captures, diagnostics and original failures are preserved.
 
 ## Open gates
 
-Original-preparer runtime, remaining proof-use/uncertainty, original-input delivery,
-later recovery/preparation/live and Archive consumers remain open before floor
-writer or unlink. Physical64-file/32MiB bounds, physical loss/mixed restore,
-backup/capacity and remaining M1–M5 are open. Original a99 Sync timeout cause remains
-unknown. Q33 CI billing, arm64 and signing/registry are separate gates. Original
-failures remain FAIL; unknown native observations remain NOT_RUN in their records.
+Remaining proof-use/uncertainty, original-input delivery, later recovery/preparation,
+live and Archive consumers remain open before floor writer or unlink. Physical
+64-file/32MiB bounds, physical loss/mixed restore, backup/capacity and remaining
+M1–M5 are open. Original a99 Sync timeout cause remains unknown. Q33 CI billing,
+arm64 and signing/registry are separate gates. FAIL/NOT_RUN records are unchanged.

@@ -45822,7 +45822,7 @@
                 "not_run": "Other malformed encodings, original-preparer (separate active task), proof-use uncertainty, physical loss/capacity and later consumers"
               },
               "original_preparer_fixture": {
-                "status": "SOURCE_CORRECTION_ACTIVE_AFTER_INSTALLED_FIXTURE_FAILURE",
+                "status": "PASS_CORRECTED_ORIGINAL_PREPARER_INSTALLED_AND_EXACT_RAW_REPLAY",
                 "source": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-preparer-source-v1.json",
                   "sha256": "8a3320de90141798c9e47074c987646d439621e8ca670d4032231ee036e389ec"
@@ -45839,7 +45839,33 @@
                 ],
                 "finding": "First actual attempt expected idle/None, observed idle in transaction at validation3 before actor creation. Source diagnosis: confirmed preparation COMMIT followed by second transaction whose snapshot holds datasets FOR UPDATE; ordinary job insertion at held gate would conflict. Author/reviewer correct schedule, not merely idle predicate; exact frozen source review remains historical and incomplete on this boundary.",
                 "root_review": "Full three-file deltas and new owners read;19 author boundaries/18 independent boundaries and all18 diagnostic artifacts reconciled at frozen83f1de3. Original runtime failure preserved; no after-native/raw qualification from unknown custody.",
-                "not_run": "Actual original-preparer claim, installed completion/refusal and raw replay; next corrected source remains pending"
+                "not_run": "Import execution/input/checkpoint/closure; remaining proof-use/physical uncertainty and original-input delivery; later recovery/live/Archive consumers, floor publication/reclamation/unlink.",
+                "corrected_source": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-preparer-source-v2.json",
+                  "sha256": "9ddf617ef568813b529f8f61998f06bc3e345c0343cbd2a8991c7fa37be44850"
+                },
+                "correction_critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-preparer-split-claim-critical-review-v1.json",
+                  "sha256": "47358599d3b868500eaee130b13c0c937f763812743771c04fd4a209f8ca77d0"
+                },
+                "runtime": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-16f3210/verified-run.json",
+                  "sha256": "c74cf92808d92ead5b4ac7b4090c40ca37921be4addc76b72811e72c56b23787"
+                },
+                "observed": "Source16f32106/product628f955:1clone,1probe+2installed,62case+11setup controls,raw5768; drivers80527/45404 joined0. Ordinary accepted import/admission created before probe, then claim-only under actual intent.prepared_by Control8 inside held second transaction at validation3. Native81/121 remains unchanged at deliberate gap; fresh Control9 completes84/125, preserving job/admission; fresh Control10 refuses at require_initial_empty_claims before refresh/native close, zero target SQL/native writes. Setup/claim actors closed and absent before release; same held XID/query; original lease valid through release.",
+                "correction_root_review": "Full changed owners and lock/transaction boundaries read;18 author source bindings,15 additional critical-review bindings and correction artifacts reconciled. Actual77-table snapshots/native rows/sequence/input census, claim/admission xmins, live actor/Control identity, gate clocks and exact refusal independently reconciled. Actual owned resources stopped/PID0/noOOM and original preservation5true. Historical source83 failure and both earlier receipts remain unchanged.",
+                "integration": {
+                  "commit": "8c83798f2fe4fc9ae2cbb8bb2906927e25270027",
+                  "critical_review": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-preparer-malformed-merge-critical-review-v1.json",
+                    "sha256": "d3eb872ff4c7f9a713811dc81fb4cef597cc85fa5f7506277db4d03f8b2b7784"
+                  },
+                  "capture_diagnostic": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-profiles-merge-diagnostic-v1.json",
+                    "sha256": "fb2a9ad4755ce9c520e41a8c22a9a30599d098798bb883b8f0b131bd9e0d7224"
+                  },
+                  "scope": "Both exact-source parent runtime results retained. Resolved shared verifier paths reproduce unchanged actual1malformed/3preparer case results and validate all reached original raw digests; both profile API exclusion guards PASS. Source review of all mixed functions/CLI, other bodies byte-identical to a reviewed parent; no new merged-source engine claim."
+                }
               }
             },
             "later_empty_consumer_work": {
