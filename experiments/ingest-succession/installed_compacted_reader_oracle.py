@@ -4298,7 +4298,9 @@ def empty_origins_checked(root,raw=None,*,delivery=False):
     return results,initial
 
 
-def empty_specification(case,*,delivery=False,locks=False,shapes=False):
+def empty_specification(case,*,delivery=False,locks=False,shapes=False,malformed=False):
+    assert type(malformed) is bool and not (malformed and (shapes or locks or delivery))
+    if malformed:return empty_shape_specification(case,malformed=True)
     assert type(shapes) is bool and not (shapes and (locks or delivery))
     if shapes: return empty_shape_specification(case)
     assert type(locks) is bool and not (locks and delivery)
@@ -4325,8 +4327,8 @@ EMPTY_ERRORS={
 }
 
 
-def empty_closed(response,case,*,delivery=False,locks=False,shapes=False):
-    name,step=empty_specification(case,delivery=delivery,locks=locks,shapes=shapes); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
+def empty_closed(response,case,*,delivery=False,locks=False,shapes=False,malformed=False):
+    name,step=empty_specification(case,delivery=delivery,locks=locks,shapes=shapes,malformed=malformed); failure=True if malformed else not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -4334,7 +4336,7 @@ def empty_closed(response,case,*,delivery=False,locks=False,shapes=False):
     assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv('retire-empty',Path(case['config']))
     assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
     if failure:
-        error=EMPTY_SHAPE_ERRORS['native-open' if step=='native-open' else name] if shapes else ('initial Ingest cancelled; original attempt may need recovery' if name=='cancel' else 'producer operation unavailable: Control(Unavailable)' if name=='expiry' else 'producer operation unavailable: Control(Backend)') if locks else 'producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
+        error='initial dictionary batch failed: StateMismatch' if malformed else EMPTY_SHAPE_ERRORS['native-open' if step=='native-open' else name] if shapes else ('initial Ingest cancelled; original attempt may need recovery' if name=='cancel' else 'producer operation unavailable: Control(Unavailable)' if name=='expiry' else 'producer operation unavailable: Control(Backend)') if locks else 'producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
         assert response['stdout']=='' and response['stderr']=='error: '+error+'\n'
         return None
     assert response['stderr']==''; report,=[loads(v) for v in response['stdout'].splitlines()]; return report
@@ -4376,8 +4378,8 @@ def empty_fault_checked(value,*,removed=False):
     guards(value['guards'])
 
 
-def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False):
-    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
+def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False,malformed=False):
+    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes,malformed=malformed); failure=True if malformed else not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
     wire=(shapes and step=='proof') or (delivery and step in ('baseline','loss')) or (locks and step=='attempt')
     assert set(context)==CONTEXT_FIELDS|({'empty_fault'} if name=='native-first' else {'empty_configuration'}|({'empty_claim_guard'} if name=='claim-commit' else set()) if locks else set())
     if locks:
@@ -4393,9 +4395,9 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=empty_closed(context['response'],context['case'],delivery=delivery,locks=locks,shapes=shapes)
+    report=empty_closed(context['response'],context['case'],delivery=delivery,locks=locks,shapes=shapes,malformed=malformed)
     m=model.Model(*expected,window,initial=False)
-    if name in ('target-input','target-nonempty','original-missing') or (shapes and name=='missing-handoff'):
+    if malformed or name in ('target-input','target-nonempty','original-missing') or (shapes and name=='missing-handoff'):
         preparation_no_claim(context['backend'],context['case']['database']); same(context['after'],expected[0])
     else:
         backend_checked(context['backend'],context['case']['database'],expected[0],context['after'])
@@ -4459,11 +4461,11 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
     return result
 
 
-def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False):
-    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes); rejected=[]
+def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False,malformed=False):
+    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes,malformed=malformed); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes,malformed=malformed); rejected=[]
     def check(label,change):
         value=copy.deepcopy(context); change(value)
-        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes)
+        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes,malformed=malformed)
         except (AssertionError,ValueError,KeyError): rejected.append(label)
         else: raise AssertionError('empty oracle accepted '+label)
     def pg(c,table,filters,**changes): only(c['after'][table],**filters).update(changes)
@@ -4482,7 +4484,7 @@ def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks
     control=max((r for r in context['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
     check('control-expiry',lambda c:pg(c,'owner_epochs',dict(role='control',epoch=control['epoch']),lease_expires_at_us=(1<<63)-1))
     check('unrelated-error',lambda c:c['response'].update(stderr='error: unrelated\n'))
-    if ((name=='proof-baseline' and step=='proof') if shapes else not empty_lock_failure(name,step) if locks else step!='loss' if delivery else step not in ('failure','refuse')):
+    if not malformed and ((name=='proof-baseline' and step=='proof') if shapes else not empty_lock_failure(name,step) if locks else step!='loss' if delivery else step not in ('failure','refuse')):
         def report(c,section,key,value):
             r=loads(c['response']['stdout']); (r if section is None else r[section])[key]=value
             c['response']['stdout']=model.encoded(r).decode()+'\n'
@@ -4497,7 +4499,7 @@ def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks
         if not name.startswith('original'): check('compacted-count',lambda c:report(c,None,'compacted_requests','0'))
     else:
         check('false-success-report',lambda c:c['response'].update(stdout='{}\n'))
-        if name not in ('target-input','target-nonempty','original-missing','missing-handoff'):
+        if not malformed and name not in ('target-input','target-nonempty','original-missing','missing-handoff'):
             check('invented-control-release',lambda c:pg(c,'owner_epochs',dict(role='control',epoch=control['epoch']),state='released'))
     if name=='native-first':
         check('fault-not-reached',lambda c:c['empty_fault'].update(hit='1false'))
@@ -4961,11 +4963,13 @@ class EmptyInitialShapeProfile:
         'Actual GC, floor writer/unlink, ACK/activation and later consumers')
 
 
-def empty_shape_specification(case):
-    name=case['clone']; assert name in EMPTY_SHAPE_STEPS
-    step=case['name'].removeprefix(name+'-'); assert case['name']==name+'-'+step and step in EMPTY_SHAPE_STEPS[name]
-    index=EMPTY_SHAPE_STEPS[name].index(step)
-    assert case['origin']=='empty-compacted' and case['predecessor']==(name+'-'+EMPTY_SHAPE_STEPS[name][index-1] if index else None)
+def empty_shape_specification(case,*,malformed=False):
+    assert type(malformed) is bool
+    steps=EMPTY_MALFORMED_STEPS if malformed else EMPTY_SHAPE_STEPS
+    name=case['clone']; assert name in steps
+    step=case['name'].removeprefix(name+'-'); assert case['name']==name+'-'+step and step in steps[name]
+    index=steps[name].index(step)
+    assert case['origin']=='empty-compacted' and case['predecessor']==(name+'-'+steps[name][index-1] if index else None)
     assert case['operation']=='retire-empty' and re.fullmatch('[a-z0-9_]{1,63}',case['database'])
     assert case['config']=='/lab/'+case['database']+'.toml'
     return name,step
@@ -5014,21 +5018,35 @@ def empty_shape_corruption_checked(record,pg,initial,name,window,database):
         before_us=record['before_us'],after_us=record['after_us']),pg,initial,kind,window)
 
 
-def empty_shape_missing_checked(record,expected):
-    assert set(record)=={'kind','before','after','response','arguments','server_window'} and record['kind']=='isolated-empty-missing-handoff'
+def empty_shape_missing_checked(record,expected,*,malformed=False):
+    assert type(malformed) is bool
+    name='malformed-floor' if malformed else 'missing-handoff'
+    mutation='empty-compacted-malformed-floor' if malformed else name
+    assert set(record)=={'kind','before','after','response','arguments','server_window'} and record['kind']=='isolated-empty-'+name
     empty_shape_window(record['server_window'])
-    assert record['arguments']==['history-corrupt','/lab/missing-handoff/store','missing-handoff']
+    assert record['arguments']==['history-corrupt','/lab/'+name+'/store',mutation]
     pg,native,inputs=expected;assert set(record['before'])=={'control','native','inputs'}
     same(record['before']['control'],pg);assert (record['before']['native'],record['before']['inputs'])==(native,inputs)
     assert len(native['rows'])==84 and native['sequence']==125 and inputs=={}
-    intent=only(pg['initial_ingest_successions']);key=(b'\x01\x0a'+binary(intent['dataset_id'])+binary(intent['owner_resource_id'])+be(1)).hex()
-    original=only(native['rows'],cf='default',key=key);assert original['value']==intent['handoff'][2:]
-    rows=[r for r in native['rows'] if r!=original];assert len(rows)==83
+    intent=only(pg['initial_ingest_successions']);family='receipts' if malformed else 'default'
+    if malformed:
+        key=(b'\x01\x31'+binary(intent['producer_slot_id'])+be(1)).hex()
+        original=only(native['rows'],cf=family,key=key)
+        value=bytes.fromhex(original['value']);assert value==EMPTY_MALFORMED_FLOOR_BEFORE and len(value)==139
+        altered=value[:25]+b'\x06'+value[26:];assert [i for i,(a,b) in enumerate(zip(value,altered,strict=True)) if a!=b]==[25]
+        after_value=altered.hex();rows=[dict(r,value=after_value) if r==original else r for r in native['rows']]
+        transcript=lambda rs:sha(b''.join(r[k].encode()+b'\0' for r in rs for k in ('cf','key','value')))
+        assert transcript(native['rows'])=='ab6d4751199549938131518a27381db6a585931d9b4210622ed2e177a3a1ea3f'
+        assert transcript(rows)=='d406e637a62403849d7a8ab9b9496a5d670e0e7ba4f0046d089e898b5751ea33'
+    else:
+        key=(b'\x01\x0a'+binary(intent['dataset_id'])+binary(intent['owner_resource_id'])+be(1)).hex()
+        original=only(native['rows'],cf=family,key=key);assert original['value']==intent['handoff'][2:]
+        rows=[r for r in native['rows'] if r!=original];assert len(rows)==83;after_value=None
     wanted=dict(native,rows=rows,sequence=126)
     response=record['response'];assert set(response)=={'returncode','stdout','stderr'} and type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
     events=[loads(v) for v in response['stdout'].splitlines()]
-    assert events==[dict(event='successor-history-corruption',phase=phase,mutation='missing-handoff',cf='default',key=key,value=value,rows=snapshot['rows'],sequence=snapshot['sequence'])
-        for phase,value,snapshot in (('before',original['value'],native),('after',None,wanted))]
+    assert events==[dict(event='successor-history-corruption',phase=phase,mutation=mutation,cf=family,key=key,value=value,rows=snapshot['rows'],sequence=snapshot['sequence'])
+        for phase,value,snapshot in (('before',original['value'],native),('after',after_value,wanted))]
     result=pg,wanted,inputs;assert set(record['after'])=={'control','native','inputs'}
     same(record['after']['control'],pg);assert (record['after']['native'],record['after']['inputs'])==(wanted,inputs)
     return result
@@ -5095,7 +5113,7 @@ def empty_shape_fixture_controls(record,expected,*,initial=None,database=None,pr
     kind=record['kind'];rejected=[]
     def verify(r):
         if kind=='privileged-isolated-empty-partial-sql':return empty_shape_corruption_checked(r,expected[0],initial,'partial-sql',dict(before_us=record['before_us'],after_us=record['after_us']),database)
-        if kind=='isolated-empty-missing-handoff':return empty_shape_missing_checked(r,expected)
+        if kind in ('isolated-empty-missing-handoff','isolated-empty-malformed-floor'):return empty_shape_missing_checked(r,expected,malformed=kind=='isolated-empty-malformed-floor')
         return empty_shape_snapshot_checked(r,expected,restore=prepared is not None,prepared=prepared)
     verify(record)
     def check(label,change):
@@ -5119,10 +5137,19 @@ def empty_shape_fixture_controls(record,expected,*,initial=None,database=None,pr
         check('fixture-unrelated-sql',lambda r:only(r['after']['control']['producer_epochs'],producer_epoch=1).update(xmin='4294967294'))
         check('fixture-native-sequence',lambda r:r['after']['native'].update(sequence=r['after']['native']['sequence']+1))
         check('fixture-extra-input',lambda r:r['after']['inputs'].update({'extra':dict(bytes=1,sha256='00'*32)}))
-        if kind=='isolated-empty-missing-handoff':
-            check('missing-wrong-argv',lambda r:r['arguments'].__setitem__(2,'target-nonzero'))
-            check('missing-extra-row-deletion',lambda r:r['after']['native']['rows'].pop())
-            check('missing-no-observed-exit',lambda r:r['response'].update(returncode=None))
+        if kind in ('isolated-empty-missing-handoff','isolated-empty-malformed-floor'):
+            prefix='malformed' if kind=='isolated-empty-malformed-floor' else 'missing'
+            check(prefix+'-wrong-argv',lambda r:r['arguments'].__setitem__(2,'target-nonzero'))
+            check(prefix+'-extra-row-deletion',lambda r:r['after']['native']['rows'].pop())
+            check(prefix+'-no-observed-exit',lambda r:r['response'].update(returncode=None))
+            if kind=='isolated-empty-malformed-floor':
+                def changed_floor(r,offset,value):
+                    events=[loads(v) for v in r['response']['stdout'].splitlines()];key=events[-1]['key']
+                    row=only(r['after']['native']['rows'],cf='receipts',key=key);data=bytearray.fromhex(row['value']);data[offset]=value
+                    row['value']=data.hex();events[-1]['value']=data.hex();events[-1]['rows']=r['after']['native']['rows']
+                    r['response']['stdout']=''.join(model.encoded(e).decode()+'\n' for e in events)
+                check('malformed-coordinated-repaired-floor',lambda r:changed_floor(r,25,7))
+                check('malformed-coordinated-extra-byte',lambda r:changed_floor(r,0,2))
         else:
             key=next(k for k,v in record['retained_files'].items() if stat.S_ISREG(v['mode']))
             check('snapshot-hardlinked-file',lambda r:r['retained_files'][key].update(links=2))
@@ -5161,3 +5188,30 @@ def empty_shape_controls(check,context):
                 event=loads(lines[i]);event['actor']['database']='unrelated_clone';lines[i]=model.encoded(event).decode()
             m['response']['stdout']='\n'.join(lines)+'\n'
         check('corruption-coordinated-wrong-database',wrong_database)
+
+
+# One exact fixed helper compiled at this revision; old shape/default profiles
+# retain their own case lists and qualifications.
+EMPTY_MALFORMED_PRODUCT='628f955ca69183417d21e91b5ef0d1e7b3e54633'
+EMPTY_MALFORMED_STEPS={'malformed-floor':('refuse',)}
+EMPTY_MALFORMED_FLOOR_BEFORE=bytes.fromhex(
+    '033100000000000000070000000000000007000000000000000701'
+    '4d6754fa296d44b3b140da79b6829cf1b7f777ff109c30170db473ce124bb042'
+    '000000000000001bc0414bfb32040948e843e06a05dd0dcab9fc136713bc302e047db1317c107954'
+    '0000000000000008a3948e3f2727a98d9b07bb0cd6815ca1004391143604c4a18e44683f57f00894')
+
+
+class EmptyInitialMalformedProfile:
+    DIRECTORY='installed-compacted-empty-initial-malformed-floor'
+    LABEL='org.bigbrotr.installed-compacted-empty-initial-malformed-floor'
+    STATUS='PASS_INSTALLED_COMPACTED_EMPTY_INITIAL_MALFORMED_FLOOR'
+    DATABASE_PREFIX='bb_compacted_empty_malformed_'
+    CLIENT_PREFIX='bigbrotr-compacted-empty-malformed-'
+    CLONES=tuple(EMPTY_MALFORMED_STEPS)
+    STEPS=EMPTY_MALFORMED_STEPS
+    CASES=('malformed-floor-refuse',)
+    GRANTS=EMPTY_GRANTS
+    NOT_RUN=('Original preparing-Control claim; optional residual/foreign root/sequence/cancellation proof reuse',
+        'Other malformed encodings, post-COMMIT census loss, syscall/physical loss/limits and capacity',
+        'Prior empty13/delivery5/locks9/proof-shapes6 remain separate qualifications, not rerun here',
+        'Actual GC, floor writer/unlink, ACK/activation and later consumers')
