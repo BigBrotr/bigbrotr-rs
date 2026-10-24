@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "NO_RUNTIME_ACTIVE;21208 joined1 at isolated mutation check; original/evidence retained; agents source-only",
+        "state": "NO_RUNTIME_ACTIVE; installed89792/raw68110 joined0; all owned resources stopped-retained; agents source-onlyfaultwork",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -63002,7 +63002,7 @@
           "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
           "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
         },
-        "root_followup": "Exact7bc63d97 product reused; full SQL row-order correction source-reviewed, no product rebuild",
+        "root_followup": "First terminal positive/refusal profile scopedPASS; waiting source freeze/critical review of separate fault13/56 before runtime",
         "installed_attempts": [
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
@@ -63083,6 +63083,27 @@
             "verified_failure_sha256": "1bbc4a1050e883cc94dcf29ca41acf8f0db9372901c4e7c82183a794a85ebba6",
             "failure": "Isolated mixed fixture UPDATE succeeded exactly but changes ordered JSONB row position; raw list equality failed despite complete identical SQL row multiset. Product mixed retirement command not started. Source mutation/native copies retained.",
             "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty;21 case processes closed, mutation native before/after identical"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b1b2dff",
+            "source": "b1b2dff64f66247d4435de3a87cef8f7509bebc9",
+            "tree": "944de43cd1d0944af92be90294165d1d37cd0ec3",
+            "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+            "owner": "a3fd514c22231a2a799d6128a0524075",
+            "client": "06de648c82c66c117854f16b63e23cc64f7e038336737d3c060f610993c4c96d",
+            "driver": 89792,
+            "driver_exit": 0,
+            "status": "PASS_INSTALLED_COMPACTED_ACTIVATED_TERMINAL_SCOPED",
+            "cases": 25,
+            "checker_controls": 338,
+            "clones": 8,
+            "raw_replay_driver": 68110,
+            "raw_replay_driver_exit": 0,
+            "raw_bound_files": 9299,
+            "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b1b2dff/verified-run.json",
+            "verified_receipt_sha256": "8724c1068bdb4e243025febf7cb913efd7bed2424890d5e8948a4a345b94ff73",
+            "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM; all25 custody closed; four origins unchanged; cleanup arrays empty",
+            "free_bytes_after": 266120318976
           }
         ],
         "endpoint_work": {

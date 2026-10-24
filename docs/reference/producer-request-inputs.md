@@ -916,9 +916,21 @@ and logical request counts above the unchanged physical64-file limit. Source
 closure, retirement success, later consumers, GC and physical-loss/restore/capacity
 remain unqualified by this slice. Both original failed attempts are preserved.
 
-The next compacted Source/abandonment/retirement extension at `56cac527` has passed
-source review, CLI/probe compilation,179 component tests/70 mandatory controls and
-Clippy. Installed terminal qualification has not run. It uses a distinct source-capable proof: confirmed canonical
+The compacted Source/abandonment/retirement extension is scoped-qualified at
+product `7bc63d97` and installed fixture `b1b2dff6`: source review, CLI/probe
+compilation,179 component tests/70 mandatory controls and Clippy passed. The
+installed positive/refusal profile passed25 commands/338 checker controls on
+eight copies, followed by exact raw replay over9299 bound files. It covers
+zero-request lifetimes, a genuine Event with its activating-Control job, exact
+source/abandonment/retirement retries, missing-copy repair before closure, and
+incompatible head, missing input, reservation tail, unbound Event and partial
+terminal refusals. The unbound Event is refused during original replay; it does
+not exercise the final Event-mask recheck. Original failures remain preserved.
+Final COMMIT delivery loss, cancellation, actual expiry and post-proof drift,
+including the final Event mask, remain separate open qualifications. No GC or
+physical-loss/restore/capacity qualification follows.
+
+It uses a distinct source-capable proof: confirmed canonical
 ancestor replay precedes genuine target originals, whose ordered digests, source
 cut and Event mask retain their existing meanings. The ACK-only proof cannot
 construct that source capability. Each final transaction must revalidate the
