@@ -4814,7 +4814,13 @@ def empty_lock_schedule_checked(value,case,window,expected,after):
         producer=only(after['producer_epochs'],producer_epoch=2)
         assert s['blocks'][-1]['holder']['backend_xid']==producer['xmin']
         assert producer['retired_at_us']<=s['blocks'][-1]['observed_at_us']<=h['release_before_us']
-        assert s['end_before_us']<=actual['released_at_us']
+        # The owner UPDATE can sample its clock before waiting for the claim's
+        # SHARE lock. release() awaits that UPDATE before sampling the role clock.
+        role=only(after['role_instances'],role_instance_id=current['role_instance_id'])
+        assert s['end_before_us']<=role['retired_at_us']
+        # These finite no-wrap transaction identities supplement the observed
+        # lock and successful COMMIT; xmin order alone is not commit-time proof.
+        assert int(producer['xmin'])<int(claimed['xmin'])<int(actual['xmin'])
     return claimed if name in ('claim-commit','retirement-first') else None
 
 
@@ -4858,6 +4864,20 @@ def empty_lock_controls(check,context,initial,expected):
     if name in ('claim-commit','retirement-first'):
         from initial_empty_locks_oracle import JOB
         check('claim-attribution-lost',lambda c:only(c['after']['jobs'],job_id=JOB).update(owner_epoch=1))
+    if name=='retirement-first':
+        def early_role(c):
+            current=only(fault(c)['held']['control']['owner_epochs'],role='control',state='active')
+            owner=only(c['after']['owner_epochs'],role='control',epoch=current['epoch'])
+            at=schedule(c)['end_before_us']-1
+            owner['released_at_us']=min(owner['released_at_us'],at)
+            only(c['after']['role_instances'],role_instance_id=current['role_instance_id'])['retired_at_us']=at
+        check('coordinated-role-retired-before-claim-commit',early_role)
+        def shared_xmin(c):
+            current=only(fault(c)['held']['control']['owner_epochs'],role='control',state='active')
+            xid=only(c['after']['jobs'],job_id=JOB)['xmin']
+            only(c['after']['owner_epochs'],role='control',epoch=current['epoch'])['xmin']=xid
+            only(c['after']['role_instances'],role_instance_id=current['role_instance_id'])['xmin']=xid
+        check('coordinated-claim-and-release-same-transaction',shared_xmin)
     if name=='cancel':
         check('signal-after-unlock',lambda c:schedule(c)['signal'].update(before_us=schedule(c)['end_after_us']+1))
         check('signal-wrong-process',lambda c:schedule(c)['signal']['identity'].update(start_ticks=1))

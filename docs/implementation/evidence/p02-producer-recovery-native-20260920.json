@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Correct/review the unsupported Control owner timestamp ordering using actual post-lock role clock and observed lock/transaction evidence; preserve eec929e FAIL. Then execute a fresh exact profile and raw replay.",
+              "next": "Execute a fresh exact --empty-initial-locks profile with unchanged product30ab and corrected oracle, then raw replay and independent runtime closure verification.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45596,7 +45596,7 @@
                 "root_review": "Full advisory read; all27 source hashes and3 existing qualification receipts match. Reuse native/refusal evidence;5clones/6commands for post-proof H/D and partial/mixed shapes are the next candidate after current claim suite. Original-preparer fresh gap route and connected malformed-floor helper remain separate prerequisites."
               },
               "locks_extension": {
-                "status": "FIRST_INSTALLED_FAIL_VERIFIER_CLOCK_ORDER; correction under review; raw NOT_RUN",
+                "status": "CORRECTED_SOURCE_REVIEWED; first FAIL preserved; fresh installed/raw NOT_RUN",
                 "author_commit": "10714546db9021986d3597ef86b19820d5f650f4",
                 "author_tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
                 "source_receipt": {
@@ -45622,7 +45622,22 @@
                       "sha256": "40f0b25d93a4b6a130edf11d80ce5f666056320faf8bbe2017c64d56b4502347"
                     }
                   }
-                ]
+                ],
+                "release_clock_correction": {
+                  "commit": "ae0b40adc79f9198cee8c2b82bdbe2d529dc95d0",
+                  "tree": "d407d1a8a93f09987cd265249f0ffd18260a769c",
+                  "source_receipt": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-locks-release-clock-source-v1.json",
+                    "sha256": "48514198f6e4ee5d8db0bcc0056b5b405534d7259991b2df579675ba72b91fc0"
+                  },
+                  "critical_addendum": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-locks-release-clock-critical-addendum-v1.json",
+                    "sha256": "71cd1176651005c3c34e864005451e76ac0dd7cc5d333c4dcdd230c9706eadcb"
+                  },
+                  "root_review": "Complete22-line delta, owning release/require/role clock statements and captured counterexample reviewed. All bound source/capture/diagnostic hashes and prior receipts verified. Actor end-before <= post-wait role retired-at replaces unsupported owner clock bound; actual lock/COMMIT evidence retained, ordered xmins supplementary. Two coordinated controls added.",
+                  "diagnostic": "Four preserved contexts/138 controls PASS under corrected oracle only; old predicate reproduces exact failure. Original eec929e remains FAIL.",
+                  "expected": "Fresh9 commands/279 case controls plus24 setup controls; NOT_RUN"
+                }
               }
             }
           }

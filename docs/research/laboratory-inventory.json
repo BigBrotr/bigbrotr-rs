@@ -63625,10 +63625,10 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-locks-20261024",
           "branch": "work/compacted-empty-initial-locks",
           "base": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
-          "state": "FROZEN_CLEAN_SOURCE_REVIEWED; integrated four files; no runtime yet",
+          "state": "FROZEN_CLEAN_CORRECTION_REVIEWED; original run preserved FAIL; no active runtime",
           "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain",
-          "commit": "10714546db9021986d3597ef86b19820d5f650f4",
-          "tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
+          "commit": "ae0b40adc79f9198cee8c2b82bdbe2d529dc95d0",
+          "tree": "d407d1a8a93f09987cd265249f0ffd18260a769c",
           "records": "Recovery report empty_initial_consumer_work.locks_extension owns source/review/diagnostic identities"
         },
         "proof_shape_advisory": {

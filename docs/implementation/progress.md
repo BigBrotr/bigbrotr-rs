@@ -6,10 +6,10 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main/last verified push `eec929e789dc2a343a3f0598a3493ce8fe1b74b1`
-(driver42498 joined0), integrating fixture author
+Main/last verified push `981f3ec9ca626d857ffab9aef6bbb3d51c69cac7`
+(driver52058 joined0), integrating fixture author
 `10714546db9021986d3597ef86b19820d5f650f4`. Local records preserve its first
-installed FAIL and the correction in review; product remains
+installed FAIL and the reviewed correction ae0b40ad; product remains
 qualified `30ab2e45176dac90c7c940ddc2992e81fd74042a`.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -34,8 +34,9 @@ raw replay are NOT_RUN. The owner release clock is sampled before its lock wait;
 the verifier incorrectly required it to follow the claimant COMMIT. Root, author
 and independent reviewer confirmed the separate subsequent role clock as the
 valid bound. Original captures/FAIL remain unchanged.
-Next: finish the narrow oracle correction/review, then a fresh exact installed
-profile and raw replay. Actor/lease/lock/transaction/custody checks stay required.
+Correction ae0b40ad is reviewed: role clock plus observed lock/COMMIT and
+supplementary transaction order. Fresh expected9/279+24 remains NOT_RUN.
+Next: execute a fresh exact installed profile and raw replay. Actor/lease/lock/transaction/custody checks stay required.
 The H/D/partial/mixed-shape source advisory remains linked, not executed evidence.
 
 ## Work and resources
@@ -44,7 +45,7 @@ No root build or connected runtime active. Failed run's client3ecd2c2a was fresh
 inspected stopped143 and borrowed PG71775507 owner5e69b0f stopped0/PID0/noOOM;
 all cleanup/preservation checks passed. Run and original failure receipt remain
 under `runs/installed-compacted-empty-initial-locks-eec929e` in the external lab.
-Author/reviewer work on the one-file correction at
+Author/reviewer completed the one-file correction at
 `.research/compacted-empty-initial-locks-20261024`. Native, first fixture and
 previous delivery worktrees remain detached/preserved. No cache cleanup;
 .research, datasets, failures and external labs are retained. Unrelated workloads
