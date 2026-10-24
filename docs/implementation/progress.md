@@ -6,9 +6,9 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Observed main `8c29f50a0c7e621df77b1786fdfb29dee21b06b0`, tree8722eb33;
-verified push8c29f50a (driver20848 joined0). Product7bc63d97 remains unchanged.
-This commit integrates the reviewed six-file fault fixture from1c24d0a6.
+Main/harness `858910172a21f8871be41a58ff1ac854bf89ba5b`, treee4d6ea88;
+verified push85891017 (driver2696 joined0). Product7bc63d97 remains unchanged.
+This checkpoint commit records the separate terminal-fault qualification.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -28,31 +28,35 @@ clones PASS, driver89792 joined0; exact raw replay68110 joined0 over9299 files.
 success/retries and selected refusals preserve full77-table state, scientific
 native bytes and original inputs. No whole-step/reclamation completion follows.
 
-Next: run the integrated --activated-terminal-faults profile from an exact-source
-worktree with built7bc63d97. Verify real wire baselines before loss injection, then
-exact raw replay.13 clones/56 commands/865 controls are source declarations only;
-new runtime remains NOT_RUN. Source and critical receipts are linked in the report.
+`runs/installed-compacted-terminal-faults-8589101`:56 commands/865 controls on13
+clones PASS, driver31002 joined0; raw replay71223 joined0 over7186 bound files.
+Its `verified-run.json` binds measured final COMMIT baselines/loss/retries, real
+job-lock cancellation/UTC expiry, retirement post-proof H/D/Event-mask and actual
+zero-request claimed-job refusal/abandonment/retirement.
+
+Next: qualify Source/abandonment post-proof H/D in a separate bounded profile.
+Critical reviewer is assessing an explicit after-server-COMMIT response hold at
+the preceding refresh; existing proxy needs an opt-in mode. No Rust change or
+rebuild is currently required. Exact backend-idle baseline precedes mutation;
+current retirement gates cannot qualify these other final transactions.
 
 ## Work and resources
 
-No build/connected runtime active. Last client06de648c stopped143; borrowed
-PG71775507 stopped0, PID0/noOOM; all25 case custody closed, cleanup arrays empty,
-and all four original sources unchanged. No cache cleanup or unrelated changes.
-Fault author and critical reviewer finished; clean frozen1c24d0a6 worktree remains
-at `.research/compacted-activated-terminal-fault-fixture-20261024` on its work ref.
-Root completed affected-owner/delta review and reconciled all six source hashes;
-AST/diff checks PASS. No source blocker. Existing first25 qualification is retained.
+No build/connected runtime active. Fault client3e9844ed stopped143; borrowed
+PG71775507 stopped0, PID0/noOOM. All56 custody closed, cleanup/unrelated/unexpected/
+missing-owned arrays empty; source origin unchanged. No cache cleanup.
+Fault author worktree `.research/compacted-activated-terminal-fault-fixture-20261024`
+is clean detached1c24d0a6; exact six-file integration reconciled before redundant
+work ref retirement. Author finished; reviewer only reads next affected boundary.
 Earlier detached author worktrees, .research, datasets, failures and external labs
 remain preserved. Redundant reconciled endpoint branch retired; files retained.
 
 ## Open gates
 
-Fault extension: final3operation COMMIT loss/retries, retirement job-lock cancel,
-real UTC expiry, post-proof ancestor H/D and Event-mask, actual zero-request claimed
-job. Source/abandon post-proof H/D remains owed separately. Unresolved import,
-draining owner, isolated native OPEN refusal and later recovery/live/Archive
-frontier/empty retirement precede floor writer or unlink. Physical64file/32MiB
-bounds, physical loss/mixed restore, backup/capacity and remaining M1–M5 are open.
+Source/abandonment post-proof H/D remains owed. Unresolved import, draining owner,
+isolated native OPEN refusal and later recovery/live/Archive frontier/empty
+retirement precede floor writer or unlink. Physical64file/32MiB bounds, physical
+loss/mixed restore, backup/capacity and remaining M1–M5 are open.
 Prior a99 Sync timeout cause remains unknown; all other original failures are
 linked in the report. Q33 CI billing, arm64 and signing/registry remain separate
 gates. Resume from this evidence without repeating unchanged qualified work.

@@ -44846,12 +44846,12 @@
               "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
               "terminal_consumer_work": {
                 "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
-                "state": "SCOPED_PASS_FIRST_TERMINAL_POSITIVE_REFUSALS; final delivery/cancel/expiry/drift/zero-job extensions remain open",
+                "state": "SCOPED_PASS_FIRST25_AND_TERMINAL_FAULT56; Source/abandonment post-proof H/D and later consumers remain open",
                 "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No connected runtime active at source integration; next root-owned exact-source terminal fault profile uses qualified product7bc63d97.",
+                "runtime": "No connected runtime active; installed driver31002 and raw replay71223 joined0. Reviewer read-only assessment of next Source/abandonment post-proof H/D boundary.",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -45221,9 +45221,37 @@
                     }
                   },
                   "root_review": "Complete six-file delta/new function review against previously read owners and retained product contracts; all six frozen hashes reconciled; AST/diff checks PASS. New profile reuses existing custody/proxy/scheduler/oracles. First25 results unchanged; author saved-capture25/338 diagnostic is separate from runtime.",
-                  "runtime": "NOT_RUN;13 clones/56 commands/865 controls are declarations only",
-                  "next": "Run --activated-terminal-faults with unchanged qualified7bc63d97 product; establish actual wire baselines before injected loss, then raw replay.",
+                  "runtime": "SCOPED_PASS; see fault_qualification below. Static declaration alone was not used as qualification.",
+                  "next": "Source/abandonment post-proof ancestor H/D requires a separate installed profile; current gate is retirement only.",
                   "preservation": "No product changes, native unlink, cache cleanup or alterations to existing failures/origins."
+                },
+                "fault_qualification": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-faults-8589101",
+                  "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-faults-8589101/verified-run.json",
+                  "verified_receipt_sha256": "8312a4487eaa5cd5e09a35cde792b1ff3cb9d664ca914d0bd8e431fa783f93c6",
+                  "source": "858910172a21f8871be41a58ff1ac854bf89ba5b",
+                  "tree": "e4d6ea882c0b4cd6cebc08297db9cb7c6756aa99",
+                  "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+                  "drivers": {
+                    "installed": 31002,
+                    "raw_replay": 71223,
+                    "both_exit": 0
+                  },
+                  "commands": 56,
+                  "checker_controls": 865,
+                  "clones": 13,
+                  "raw_bound_files": 7186,
+                  "result_sha256": "83b022233aa3e1c0e13b97ac4b9d462586ba97f7f9ab2e033374f42d3da127d7",
+                  "raw_replay_sha256": "a6aec29e173e7e8c9f143a707394518725205305459ed32a2a2b2f586f08a004",
+                  "scope": "Actual held final Source6/9, abandon8/11 and retirement5/8 COMMIT baselines; before/after response loss and fresh retries; real gap-job lock cancellation/UTC expiry, retirement post-proof ancestor H/D and Event-mask refusal; genuine zero-request claimed job and retirement refusal before abandonment. Exact77-table/native/input expectations.",
+                  "preservation": "Qualified compacted-initial origin SQL/catalog/native/input/physical unchanged; all56 custody closed, cleanup/unrelated/unexpected/missing-owned arrays empty. All prior failures/worktrees/artifacts retained.",
+                  "not_run": [
+                    "Actual product reclamation/GC and unlink",
+                    "Source/abandonment ancestor H/D drift after earlier proof; retirement gate does not qualify those final transactions",
+                    "Unresolved import, draining owner and isolated native OPEN retirement guard",
+                    "Later activated successors, live frontier, retained Archive frontier and empty retirement",
+                    "Mixed restore/backup, physical loss, process kill and capacity"
+                  ]
                 }
               }
             }

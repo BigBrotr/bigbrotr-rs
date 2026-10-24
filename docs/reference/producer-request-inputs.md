@@ -926,8 +926,13 @@ source/abandonment/retirement retries, missing-copy repair before closure, and
 incompatible head, missing input, reservation tail, unbound Event and partial
 terminal refusals. The unbound Event is refused during original replay; it does
 not exercise the final Event-mask recheck. Original failures remain preserved.
-Final COMMIT delivery loss, cancellation, actual expiry and post-proof drift,
-including the final Event mask, remain separate open qualifications. No GC or
+The separate fixture `85891017`, using the same product, then passed56 commands
+and865 checker controls on13 copies, with exact raw replay over7186 bound files.
+It measures final COMMIT baselines for all three operations and exercises response
+loss before forwarding and after server completion, fresh retries, cancellation
+and actual UTC expiry across a real job lock, retirement post-proof ancestor H/D
+and final Event-mask refusal, and a genuine zero-request claimed job. Source and
+abandonment post-proof ancestor H/D remain separate open qualifications. No GC or
 physical-loss/restore/capacity qualification follows.
 
 It uses a distinct source-capable proof: confirmed canonical

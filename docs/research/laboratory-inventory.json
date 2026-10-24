@@ -63153,9 +63153,9 @@
           "owner": "/root/compacted_reader_fixture; reused verified gpt-6-astra/xhigh",
           "critical_review": "/root/compacted_reader_review; reused verified gpt-6-astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fault-fixture-20261024",
-          "branch": "work/compacted-activated-terminal-fault-fixture",
+          "branch": "DETACHED; reconciled work/compacted-activated-terminal-fault-fixture ref retired",
           "base": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
-          "state": "FROZEN_REVIEWED_SOURCE; root integrates six files; connected runtime NOT_RUN",
+          "state": "SOURCE_INTEGRATED_85891017; clean detached author worktree preserved",
           "commit": "1c24d0a6d2d1e9fe0a4b18575c0e82af39848654",
           "tree": "b54608ee46ecc713c3b435542ff7e7eb36fc0a68",
           "receipts": {
@@ -63168,7 +63168,41 @@
               "sha256": "a580baa2c3f0a23e9a83a6c66ddd3fbca0f691ebdab42390358efaff74ca0c1b"
             }
           },
-          "agents": "Author and critical reviewer finished; no autonomous engine or source work active"
+          "agents": "Author finished; critical reviewer read-only assessment of next owed Source/abandonment H/D gate"
+        },
+        "fault_qualified_run": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-faults-8589101",
+          "source": "858910172a21f8871be41a58ff1ac854bf89ba5b",
+          "tree": "e4d6ea882c0b4cd6cebc08297db9cb7c6756aa99",
+          "owner": "5515aabb7d8ff9ba6fee9a1b0c0f347f",
+          "status": "SCOPED_PASS_STOPPED_RETAINED",
+          "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-faults-8589101/verified-run.json",
+          "verified_receipt_sha256": "8312a4487eaa5cd5e09a35cde792b1ff3cb9d664ca914d0bd8e431fa783f93c6",
+          "drivers": {
+            "installed": 31002,
+            "raw_replay": 71223,
+            "both_exit": 0
+          },
+          "containers": [
+            {
+              "id": "3e9844ed3ac698759f17ad3ec4486f09c482afd6f05e09ca8c509e9dfcb035ad",
+              "owner": "5515aabb7d8ff9ba6fee9a1b0c0f347f",
+              "state": "exited",
+              "exit_code": 143,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 265325469696,
+          "preservation": "13 clone databases/stores and all raw results remain; original source unchanged; no cleanup or unrelated writes."
         }
       }
     }
