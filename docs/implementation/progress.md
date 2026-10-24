@@ -6,9 +6,10 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main `e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d`, treeab0485ae;
-verified pushe75aaa2f (driver8524 joined0). Exact import-gate build21217 joined0
-and is independently verified; this documentation commit records that result.
+Main before this integration `b74bebd6741c00249d51dd39d8edda2bf8c6e78f`,
+verified push b74bebd6 (driver63459 joined0). This commit integrates the reviewed
+three-file guard fixture7bb67235. Product e75aaa2 exact build21217 joined0
+and is independently verified; installed guard commands/raw replay NOT_RUN.
 Previously qualified product7bc63d97 and three installed profiles remain distinct.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -45,10 +46,9 @@ mandatory controls and all10 checks including Clippy PASS; driver21217 joined0.
 Root verified all2060 exported source files, archive/manifest/build identities and
 five ELFs. `verified-build.json` binds this result; build containers stopped0.
 
-Next: qualify the separate import/draining/nativeOPEN guard fixture when reviewed
-using the verified e75aaa2 build.
-The Python author works isolated on that next profile; current qualifiers remain
-separate. No GC/floor writer/unlink is enabled.
+Next: run the exact integrated `--activated-terminal-guards` profile using the
+verified e75aaa2 build, then its exact raw replay and independent result/resource
+verification. Current qualifiers remain separate. No GC/floor writer/unlink is enabled.
 
 ## Work and resources
 
@@ -57,10 +57,12 @@ No root build or connected PostgreSQL fixture is active. Build21217 completed at
 proof15 client86678a33 stopped143, PG71775507 stopped0/PID0/noOOM; all custody and
 cleanup checks passed. No cache cleanup. Import-gate author is clean detached
 d92b3c1 after exact integration/ref reconciliation; worktree/evidence preserved.
-Guard fixture author/reviewer work source-only in
-`.research/compacted-activated-terminal-guards-20261024`, baseb6c4315a, proposed
-3 clones/8 commands. Native OPEN expects Control(InvalidMetadata) at the native/SQL
+Guard fixture source7bb67235 is clean, frozen and independently reviewed in
+`.research/compacted-activated-terminal-guards-20261024`, baseb6c4315a;
+3 clones/8 commands are declared. Native OPEN expects Control(InvalidMetadata) at the native/SQL
 inspector, not the later native observation guard; SQL veto maps Control(Backend).
+The import-gate agent performs a read-only audit of remaining consumers; initial
+empty-attempt retirement is the first candidate, pending complete boundary review.
 Earlier detached author worktrees, .research, datasets, failures and external labs
 remain preserved. Redundant reconciled endpoint branch retired; files retained.
 

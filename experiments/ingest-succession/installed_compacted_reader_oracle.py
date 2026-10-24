@@ -3066,6 +3066,158 @@ class ActivatedSourceProofProfile:
         'Later recovery/live frontier/Archive/empty retirement; mixed restore, physical loss, kill and capacity')
 
 
+TERMINAL_IMPORT_MODE='successor-live-compacted-terminal-import-gate'
+TERMINAL_GUARD_STEPS={'import':('seed','source','abandon','retire-refuse'),
+    'draining':('source','retire','retire-retry'),'native-open':('retire-refuse',)}
+TERMINAL_GUARD_ORIGIN_NAMES={name:'compacted-initial' if name=='import' else 'activated-initial' for name in TERMINAL_GUARD_STEPS}
+TERMINAL_GUARD_ORIGINS=(JOURNEY_ORIGIN,PREPARATION_RETAINED_ORIGINS[1])
+
+
+class ActivatedTerminalGuardProfile:
+    DIRECTORY='installed-compacted-terminal-guards'
+    LABEL='org.bigbrotr.installed-compacted-terminal-guards'
+    STATUS='PASS_INSTALLED_COMPACTED_TERMINAL_GUARDS'
+    DATABASE_PREFIX='bb_compacted_terminal_guard_'
+    CLIENT_PREFIX='bigbrotr-compacted-terminal-guard-'
+    CLONES=tuple(TERMINAL_GUARD_STEPS)
+    STEPS=TERMINAL_GUARD_STEPS
+    CASES=tuple(name+'-'+step for name in TERMINAL_GUARD_STEPS for step in TERMINAL_GUARD_STEPS[name])
+    GRANTS=TERMINAL_GRANTS
+    NOT_RUN=('Actual product reclamation/GC and unlink',
+        'Import execution, closure, input binding or checkpoint; setup is ordinary guarded relational claim only',
+        'Other terminal/delivery/proof cases are qualified separately and are not re-executed by this profile',
+        'Later recovery/live frontier/Archive/empty retirement; mixed restore, physical loss, kill and capacity')
+
+
+def terminal_guard_origins_checked(root,raw=None):
+    compacted,initial=journey_origin_checked(root,raw)
+    activated,basis=qualified_endpoint(root,raw,initial_journey=False,prepared_origin=PREPARATION_RETAINED_ORIGINS[1])
+    assert basis==initial
+    return {'compacted-initial':compacted,'activated-initial':activated},initial
+
+
+def terminal_import_checked(value,pg,control,activated_at,case,window,waiting,released):
+    from initial_empty_locks_oracle import app_identity,guards as guard_catalog
+    assert set(value)=={'status','cleanup_errors','gates','before','after','control','backend','identity','created_at_us',
+        'statements','transactions','server_window','observed_by_us','live_before','live_after','inputs_before','inputs_after',
+        'guards_before','guards_after','actor_absence','actor_exit_code','go_before_us'}
+    assert value['status']=='CAPTURED' and value['cleanup_errors']==[]
+    same(value['before'],pg); assert value['control']==control and value['inputs_before']==value['inputs_after']=={}
+    assert control['state']=='active'
+    go='/lab/'+case['name']+'-gate.go'
+    event=dict(event='live-terminal-import-gate',mode=TERMINAL_IMPORT_MODE,phase='waiting',go=go,gate_timeout_ms=10000,poll_ms=5,
+        control_resource=control['resource_id'][2:],control_epoch=control['epoch'],control_incarnation=control['process_incarnation'][2:],activated_at_us=activated_at)
+    assert waiting==event and released==dict(event,phase='released')
+    assert len(value['gates'])==2 and value['gates'][0]['event']==waiting and value['gates'][1]['event']==released
+    assert set(value['server_window'])=={'before_us','after_us'}
+    times=[window['before_us'],activated_at,value['gates'][0]['observed_us'],value['server_window']['before_us'],
+        value['created_at_us'],value['server_window']['after_us'],value['observed_by_us'],value['go_before_us'],
+        value['gates'][1]['observed_us'],window['after_us']]
+    assert all(type(v) is int for v in times) and times==sorted(times)
+    assert value['go_before_us']<control['lease_expires_at_us'] and value['gates'][1]['observed_us']-value['gates'][0]['observed_us']<10_000_000
+    live=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database'],user='bigbrotr_control',state='idle',xact_start=None)
+    assert value['live_before']==value['live_after']==live
+    actor=value['backend']; assert set(actor)=={'pid','backend_start','database','user','application','isolation','synchronous_commit'}
+    number(actor['pid'],1,integer=True); assert actor['pid']!=live['pid'] and actor['database']==case['database']
+    assert actor['user']=='bigbrotr_control' and actor['application']=='terminal_import_claim'
+    assert actor['isolation']=='read committed' and actor['synchronous_commit']=='on'
+    assert value['server_window']['before_us']<=retained.instant(actor['backend_start'])<=value['created_at_us']
+    app_identity(value['identity'],actor)
+    assert value['actor_absence']=='0' and type(value['actor_exit_code']) is int
+    guard_catalog(value['guards_before']); assert value['guards_after']==value['guards_before']
+    return terminal_import_rows(value,pg,control)
+
+
+def terminal_import_rows(value,pg,control):
+    from initial_empty_preparer_oracle import claim_statements,JOB,PRINCIPAL,REQUEST,DIGEST
+    assert value['statements']==claim_statements(control,value['created_at_us'])
+    responses=value['transactions']; assert len(responses)==5
+    assert all(responses[i]==dict(sqlstate='00000',rows=0,lines=[]) for i in (0,4))
+    assert not any(r['job_id']==JOB or r['principal_id']==PRINCIPAL or r['request_key']==REQUEST for r in pg['jobs'])
+    observed=only(value['after']['jobs'],job_id=JOB); xid=observed['xmin']; model.fresh_xmin(xid,pg)
+    dataset=only(pg['datasets'])
+    accepted=dict(job_id=JOB,dataset_id=dataset['dataset_id'],principal_id=PRINCIPAL,request_key=REQUEST,request_digest=DIGEST,
+        kind='import',config_revision=dataset['config_revision'],policy_revision=dataset['policy_revision'],created_at_us=value['created_at_us'],
+        state='accepted',job_revision=1,checkpoint_revision=0,reason_code=None,result_manifest_digest=None,
+        owner_resource_id=None,owner_epoch=None,owner_role='control',owner_incarnation=None,completed_at_us=None,
+        input_topology_generation=None,input_complete=False,acquisition_job_protocol=None,export_job_protocol=None,xmin=xid)
+    sealed=dict(accepted,input_complete=True)
+    queued=dict(sealed,state='queued',job_revision=2,owner_resource_id=control['resource_id'],owner_epoch=control['epoch'],owner_incarnation=control['process_incarnation'])
+    for response,row in zip(responses[1:4],(accepted,sealed,queued),strict=True):
+        assert response==dict(sqlstate='00000',rows=1,lines=response['lines']) and [loads(line) for line in response['lines']]==[row]
+    wanted=copy.deepcopy(pg); wanted['jobs'].append(queued)
+    wanted['job_admissions'].append(dict(job_id=JOB,admission_ordinal=max(r['admission_ordinal'] for r in pg['job_admissions'])+1,xmin=xid))
+    same(value['after'],wanted)
+    return wanted
+
+
+def terminal_guard_mutation_statement(kind,expected,at):
+    assert kind in ('draining','native-open') and type(at) is int
+    pg,native,inputs=expected; basis=terminal_basis(expected); intent=only(pg['initial_ingest_successions'])
+    slot=intent['producer_slot_id'][2:]; resource=intent['owner_resource_id'][2:]
+    start="BEGIN;\nSET LOCAL statement_timeout='10s';\nSET LOCAL lock_timeout='5s';\nSET LOCAL session_replication_role=replica;\n"
+    if kind=='draining':
+        commands=[("owner_epochs","state='draining'",f"resource_id=decode('{resource}','hex') AND epoch=2 AND role='ingest' AND state='active'")]
+    else:
+        commands=[('producer_epochs',"state='closing'",f"producer_slot_id=decode('{slot}','hex') AND producer_epoch=2 AND state='open'"),
+            ('source_streams',f"state='closed',closed_at_us={at},last_complete_sequence=0,closure_digest=decode('{basis['digest']}','hex')",
+                f"owner_resource_id=decode('{resource}','hex') AND owner_epoch=2 AND state='open'")]
+    return start+''.join('UPDATE control.'+table+' SET '+values+' WHERE '+predicate+'\nRETURNING (to_jsonb('+table+")||jsonb_build_object('xmin',xmin::text))::text;\n" for table,values,predicate in commands)+'COMMIT;\n'
+
+
+def terminal_guard_mutation_checked(record,expected,kind):
+    from initial_empty_locks_oracle import guards
+    assert set(record)=={'kind','before','after','statement','sql_output','server_window','guards_before','guards_after'}
+    assert record['kind']=='privileged-isolated-terminal-'+kind and record['before']==dict(control=expected[0],native=expected[1],inputs=expected[2])
+    window=record['server_window']; assert set(window)=={'before_us','after_us'}
+    at=number(window['before_us'],1,integer=True); number(window['after_us'],at,at+10_000_000,integer=True)
+    assert record['statement']==terminal_guard_mutation_statement(kind,expected,at)
+    guards(record['guards_before']); assert record['guards_after']==record['guards_before']
+    pg,native,inputs=copy.deepcopy(expected); basis=terminal_basis(expected)
+    assert not inputs and len(native['rows'])==84 and basis['issued']==0 and basis['cut']==0
+    owner=only(pg['owner_epochs'],role='ingest',epoch=2); producer=only(pg['producer_epochs'],producer_epoch=2); source=only(pg['source_streams'],owner_epoch=2)
+    assert owner['state']=='active' and all(r['state']=='active' for r in pg['allocation_domains'] if r['owner_epoch']==2)
+    assert only(pg['role_instances'],role_instance_id=owner['role_instance_id'])['retired_at_us'] is None
+    assert source['opened_at_us']<=at
+    returned=[loads(line) for line in record['sql_output'].splitlines()]; assert len(returned)==(1 if kind=='draining' else 2)
+    xid=returned[0]['xmin']; model.fresh_xmin(xid,pg)
+    if kind=='draining':
+        assert producer['state']=='closing' and source['state']=='closed' and native['sequence']==126
+        assert source['closed_at_us']<=at and source['closure_digest']=='\\x'+basis['digest']; owner.update(state='draining',xmin=xid); assert returned==[owner]
+    else:
+        assert kind=='native-open' and producer['state']==source['state']=='open' and native['sequence']==125
+        marker=only(native['rows'],cf='receipts',key=(b'\x01\x31'+binary(producer['producer_slot_id'])+be(2)).hex())
+        assert marker['value']==(b'\x01\x31'+be(0)*3).hex()
+        producer.update(state='closing',xmin=xid)
+        source.update(state='closed',closed_at_us=at,last_complete_sequence=0,closure_digest='\\x'+basis['digest'],xmin=xid)
+        assert returned==[producer,source]
+    assert set(record['after'])=={'control','native','inputs'}
+    same(record['after']['control'],pg); assert (record['after']['native'],record['after']['inputs'])==(native,inputs)
+    return pg,native,inputs
+
+
+def terminal_guard_mutation_controls(record,expected,kind):
+    terminal_guard_mutation_checked(record,expected,kind)
+    changes=[('unbound-statement',lambda r:r.update(statement='COMMIT;')),
+        ('native-write',lambda r:r['after']['native'].update(sequence=r['after']['native']['sequence']+1)),
+        ('extra-SQL-delta',lambda r:only(r['after']['control']['initial_ingest_successions']).update(prepared_by_epoch=999)),
+        ('guard-bypass-left-enabled',lambda r:r['guards_after'].update(session_replication_role='replica'))]
+    # Keep every actual field; perturb full captures rather than projecting rows.
+    if kind=='native-open':
+        changes.extend([('wrong-source-digest',lambda r:only(r['after']['control']['source_streams'],owner_epoch=2).update(closure_digest='\\x'+'00'*32)),
+            ('different-row-transaction',lambda r:only(r['after']['control']['source_streams'],owner_epoch=2).update(xmin='4294967000'))])
+    else:
+        changes.extend([('owner-still-active',lambda r:only(r['after']['control']['owner_epochs'],role='ingest',epoch=2).update(state='active')),
+            ('role-retired-early',lambda r:only(r['after']['control']['role_instances'],role_instance_id=only(r['after']['control']['owner_epochs'],role='ingest',epoch=2)['role_instance_id']).update(retired_at_us=r['server_window']['before_us']))])
+    rejected=[]
+    for label,change in changes:
+        altered=copy.deepcopy(record); change(altered)
+        try: terminal_guard_mutation_checked(altered,expected,kind)
+        except (AssertionError,KeyError,TypeError,ValueError): rejected.append(label)
+        else: raise AssertionError('accepted altered guard fixture: '+label)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
 def terminal_origins_checked(root,raw=None):
     previous,initial=activated_origins_checked(root,raw)
     tail,basis=qualified_endpoint(root,raw,initial_journey=False,terminal_origin=TERMINAL_TAIL_ORIGIN)
@@ -3073,16 +3225,16 @@ def terminal_origins_checked(root,raw=None):
     return {**{k:v for k,v in previous.items() if k!='initial'},'activated-tail':tail},initial
 
 
-def terminal_specification(case,*,faults=False,post_proof=False):
-    assert type(faults) is bool and type(post_proof) is bool and not (faults and post_proof)
-    profile=ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
+def terminal_specification(case,*,faults=False,post_proof=False,guards=False):
+    assert all(type(v) is bool for v in (faults,post_proof,guards)) and sum((faults,post_proof,guards))<=1
+    profile=ActivatedTerminalGuardProfile if guards else ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
     all_steps=profile.STEPS
     name=case['clone']; assert name in all_steps
     prefix=name+'-'; assert case['name'].startswith(prefix)
     step=case['name'][len(prefix):]; steps=all_steps[name]; index=steps.index(step)
-    assert case['origin']==('compacted-initial' if faults or post_proof else TERMINAL_ORIGIN_NAMES[name])
+    assert case['origin']==(TERMINAL_GUARD_ORIGIN_NAMES[name] if guards else 'compacted-initial' if faults or post_proof else TERMINAL_ORIGIN_NAMES[name])
     assert case['predecessor']==(prefix+steps[index-1] if index else None)
-    operation=(TERMINAL_ZERO_MODE if faults and name=='zero-job' else TERMINAL_SEED_MODE) if step=='seed' else (TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
+    operation=(TERMINAL_IMPORT_MODE if guards else TERMINAL_ZERO_MODE if faults and name=='zero-job' else TERMINAL_SEED_MODE) if step=='seed' else (TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
     if post_proof and step=='proof': operation=name.split('-')[0]+'-activated'
     assert case['operation']==operation
     assert re.fullmatch(profile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name.replace('-','_'),case['database'])
@@ -3090,10 +3242,10 @@ def terminal_specification(case,*,faults=False,post_proof=False):
     return name,step
 
 
-def terminal_network_checked(config,name,*,faults=False,post_proof=False):
-    assert type(faults) is bool and type(post_proof) is bool and not (faults and post_proof)
-    assert name in (TERMINAL_PROOF_STEPS if post_proof else TERMINAL_FAULT_STEPS if faults else TERMINAL_STEPS)
-    event=True if post_proof else (name!='zero-job') if faults else name in ('event','unbound-event')
+def terminal_network_checked(config,name,*,faults=False,post_proof=False,guards=False):
+    assert all(type(v) is bool for v in (faults,post_proof,guards)) and sum((faults,post_proof,guards))<=1
+    assert name in (TERMINAL_GUARD_STEPS if guards else TERMINAL_PROOF_STEPS if post_proof else TERMINAL_FAULT_STEPS if faults else TERMINAL_STEPS)
+    event=name=='import' if guards else True if post_proof else (name!='zero-job') if faults else name in ('event','unbound-event')
     endpoint='ws://127.0.0.1:7447/'+('installed-fixture' if event else 'installed-successor-fixture')
     assert config['network']['private']['rules']==[dict(endpoint=endpoint,cidr='127.0.0.1/32',port=7447)]
     assert config['network']['dns']['resolver']=='127.0.0.1:9' and config['network']['tls']['extra_roots']==[]
@@ -3165,12 +3317,12 @@ def terminal_event_science(plan,prepared_rows,inputs,contents,initial,report,rec
     return dict(plan=plan,ds=ds,slot=slot,rows=rows,inputs=originals),raw,receipt
 
 
-def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock,*,faults=False,post_proof=False):
+def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock,*,import_claim=None,faults=False,post_proof=False,guards=False):
     import activated_source_durable_oracle as durable
     import initial_live_oracle as live
     import initial_succession_oracle as original
-    name,step=terminal_specification(case,faults=faults,post_proof=post_proof); assert step=='seed'
-    zero=faults and name=='zero-job'; mode=TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE
+    name,step=terminal_specification(case,faults=faults,post_proof=post_proof,guards=guards); assert step=='seed'
+    zero=faults and name=='zero-job'; mode=TERMINAL_IMPORT_MODE if guards else TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE
     pg,native,inputs=copy.deepcopy(expected)
     plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True)
     model.clock(plan['created_at_us'],window); position=0
@@ -3192,6 +3344,12 @@ def verify_terminal_seed(events,expected,initial,case,window,attribution,receive
     activated=take('live-activation-result'); after=snap('activated-zero')
     assert activated==dict(event='live-activation-result',writer=True,error=None,activated_at_us=activated['activated_at_us'])
     live.activated(pg,after,plan,control,window,activated['activated_at_us']); pg=after
+    if guards:
+        gate_backend=take('successor-backend','terminal-import-gate'); assert gate_backend==dict(backend,stage='terminal-import-gate')
+        waiting=take('live-terminal-import-gate',phase='waiting'); released_gate=take('live-terminal-import-gate',phase='released')
+        pg=terminal_import_checked(import_claim,pg,control,activated['activated_at_us'],case,window,waiting,released_gate)
+        same(pg,snap('terminal-import-released'))
+    else: assert import_claim is None
     if zero:
         assert attribution is None
         pg,control=terminal_zero_claim(take,snap,pg,control,plan,window)
@@ -3233,10 +3391,12 @@ def verify_terminal_seed(events,expected,initial,case,window,attribution,receive
     assert position==len(events)
     return (pg,native,inputs),dict(status='PASS',case=case['name'],native_rows=84 if zero else 98,native_sequence=125 if zero else 141,
         original_target_files=0 if zero else 1,compacted_requests=7,original_predecessor_requests=0,target_events=0 if zero else 1,target_source_cut=0 if zero else 5,
-        activating_control_epoch=control['epoch'],claimed_acquisition_jobs=1,job_complete=False,session_revoked=False)
+        activating_control_epoch=control['epoch'],claimed_acquisition_jobs=1,job_complete=False,session_revoked=False,
+        **(dict(claimed_import_jobs=1,import_execution='NOT_RUN') if guards else {}))
 
 
-def terminal_failure(name,step):
+def terminal_failure(name,step,*,guards=False):
+    if guards: return {'import':'import','native-open':'native-open'}.get(name) if step=='retire-refuse' else None
     if step=='seed': return None
     if name=='head': return 'head'
     if name=='missing-input': return 'missing-input'
@@ -3249,6 +3409,8 @@ def terminal_failure(name,step):
 
 
 TERMINAL_ERRORS={
+    'import':'producer operation unavailable: Control(Backend)',
+    'native-open':'producer operation unavailable: Control(InvalidMetadata)',
     'head':'producer operation unavailable: Progress(InvalidContext)',
     'commit-loss':'producer operation unavailable: CommitUnknown',
     'proof-digest':'producer operation unavailable: Native(Compacted(StateMismatch))',
@@ -3262,13 +3424,20 @@ TERMINAL_ERRORS={
 }
 
 
-def terminal_seed_closed(response,database,*,zero=False):
+def terminal_seed_closed(response,database,*,zero=False,import_claim=None):
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    if import_claim is not None:
+        assert import_claim['status']=='CAPTURED' and import_claim['cleanup_errors']==[] and 'failure' not in import_claim
+        assert type(import_claim['actor_exit_code']) is int and import_claim['actor_absence']=='0'
+        assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
     events=[loads(v) for v in response['stdout'].splitlines()]
-    wanted=dict(event='live-complete',mode=TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=not zero)
+    wanted=dict(event='live-complete',mode=TERMINAL_IMPORT_MODE if import_claim is not None else TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=not zero)
     if zero: wanted['passed']=True
     assert events[-1]==wanted
-    present,absent=[e for e in events if e['event']=='successor-backend']
+    backends=[e for e in events if e['event']=='successor-backend']
+    if import_claim is not None:
+        present,gate,absent=backends; assert gate==dict(present,stage='terminal-import-gate')
+    else: present,absent=backends
     assert present['database']==database and present['present'] is True and absent==dict(present,present=False)
     if not zero: assert only(events,event='live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
     else:
@@ -3279,8 +3448,8 @@ def terminal_seed_closed(response,database,*,zero=False):
     return events
 
 
-def terminal_closed(response,case,*,faults=False,post_proof=False):
-    name,step=terminal_specification(case,faults=faults,post_proof=post_proof); failure='commit-loss' if faults and step.endswith('-loss') else terminal_failure(name,step)
+def terminal_closed(response,case,*,faults=False,post_proof=False,guards=False):
+    name,step=terminal_specification(case,faults=faults,post_proof=post_proof,guards=guards); failure='commit-loss' if faults and step.endswith('-loss') else terminal_failure(name,step,guards=guards)
     if post_proof and step=='proof' and not name.endswith('-baseline'): failure='head' if name.endswith('-head') else 'proof-digest'
     code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
@@ -3360,14 +3529,15 @@ def terminal_abandon_delta(m,observed,basis,*,released=True):
     return len(jobs)
 
 
-def terminal_retire_delta(m,observed,basis,*,released=True):
+def terminal_retire_delta(m,observed,basis,*,released=True,allow_draining=False):
+    assert type(allow_draining) is bool
     owner=only(m.pg['owner_epochs'],role='ingest',epoch=2); role=only(m.pg['role_instances'],role_instance_id=owner['role_instance_id'])
     producer=only(m.pg['producer_epochs'],producer_epoch=2); source=only(m.pg['source_streams'],owner_epoch=2)
     domains=[d for d in m.pg['allocation_domains'] if d['owner_epoch']==2]; assert len(domains)==9
     if producer['state']=='retired':
         assert owner['state']=='released' and all(d['state']=='closed' for d in domains)
         return 0
-    assert producer['state']=='closing' and owner['state']=='active' and role['retired_at_us'] is None and all(d['state']=='active' for d in domains)
+    assert producer['state']=='closing' and owner['state'] in (('active','draining') if allow_draining else ('active',)) and role['retired_at_us'] is None and all(d['state']=='active' for d in domains)
     actual=only(observed['producer_epochs'],producer_epoch=2); at,xid=actual['retired_at_us'],actual['xmin']
     model.clock(at,m.window); model.fresh_xmin(xid,m.pg)
     terminal_effect_time(m,at,source['closed_at_us'],released=released)
@@ -3378,8 +3548,8 @@ def terminal_retire_delta(m,observed,basis,*,released=True):
     return 12
 
 
-def verify_terminal_context(context,initial,expected,*,faults=False,post_proof=False,baseline=None):
-    case=context['case']; name,step=terminal_specification(case,faults=faults,post_proof=post_proof)
+def verify_terminal_context(context,initial,expected,*,faults=False,post_proof=False,guards=False,baseline=None):
+    case=context['case']; name,step=terminal_specification(case,faults=faults,post_proof=post_proof,guards=guards)
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after']
@@ -3387,34 +3557,42 @@ def verify_terminal_context(context,initial,expected,*,faults=False,post_proof=F
     number(window['before_us'],1,integer=True); number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
     if step=='seed':
         assert set(context)=={'case','before','native_before','inputs_before','after','native_after','inputs_after','response','server_window',
-            'catalog_before','catalog_after','backend_absence','backends','custody','arguments','attribution','receive_clock'}
+            'catalog_before','catalog_after','backend_absence','backends','custody','arguments','attribution','receive_clock'} | ({'import_claim'} if guards else set())
         assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
         absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
         assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
         for v in absence['attempts']: number(v['seconds'],0,5); assert type(v['count']) is int and v['count']==len(v['backends'])
         assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
-        assert context['arguments']==[case['operation'],case['database'],'/run/secrets/application',case['config']]
+        assert context['arguments']==[case['operation'],case['database'],'/run/secrets/application',case['config']]+(['/lab/'+case['name']+'-gate'] if guards else [])
         number(context['response']['seconds'],0,120)
-        profile=ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
+        profile=ActivatedTerminalGuardProfile if guards else ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
         revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
-        client_prefix=ActivatedSourceProofProfile.CLIENT_PREFIX if post_proof else ActivatedTerminalFaultProfile.CLIENT_PREFIX if faults else 'bigbrotr-compacted-terminal-'
+        client_prefix=ActivatedTerminalGuardProfile.CLIENT_PREFIX if guards else ActivatedSourceProofProfile.CLIENT_PREFIX if post_proof else ActivatedTerminalFaultProfile.CLIENT_PREFIX if faults else 'bigbrotr-compacted-terminal-'
         assert context['response']['command']==['docker','exec',client_prefix+revision,'/build/ingest_bootstrap_probe',*context['arguments']]
-        events=terminal_seed_closed(context['response'],case['database'],zero=faults and name=='zero-job')
-        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'],faults=faults,post_proof=post_proof)
+        events=terminal_seed_closed(context['response'],case['database'],zero=faults and name=='zero-job',import_claim=context.get('import_claim'))
+        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'],import_claim=context.get('import_claim'),faults=faults,post_proof=post_proof,guards=guards)
         same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
         return result
     if post_proof and step=='proof': return verify_terminal_delivery(context,initial,expected,baseline,post_proof=True)
     if faults and step=='wait': return verify_terminal_wait(context,initial,expected)
     if faults and step.endswith(('-baseline','-loss')):
         return verify_terminal_delivery(context,initial,expected,baseline)
-    assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert set(context)==CONTEXT_FIELDS | ({'guard_diagnostic'} if guards and name=='import' and step=='retire-refuse' else set()) and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=terminal_closed(context['response'],case,faults=faults,post_proof=post_proof); failure=terminal_failure(name,step)
+    report=terminal_closed(context['response'],case,faults=faults,post_proof=post_proof,guards=guards); failure=terminal_failure(name,step,guards=guards)
     backend_checked(context['backend'],case['database'],expected[0],context['after'])
     m=model.Model(*expected,window); preparation_control(m,context['after'],success=failure is None,renewed=failure=='unbound-event')
+    if guards and name=='native-open':
+        p=only(expected[0]['producer_epochs'],producer_epoch=2); stream=only(expected[0]['source_streams'],owner_epoch=2)
+        assert p['state']=='closing' and stream['state']=='closed' and expected[1]['sequence']==125 and len(expected[1]['rows'])==84 and expected[2]=={}
+        marker=only(expected[1]['rows'],cf='receipts',key=(b'\x01\x31'+binary(p['producer_slot_id'])+be(2)).hex())
+        assert marker['value']==(b'\x01\x31'+be(0)*3).hex()
+    if guards and name=='import' and step=='retire-refuse':
+        from activated_retirement_import_oracle import named_veto
+        named_veto(context['guard_diagnostic'],{k:context['backend']['exact'][0][k] for k in ('pid','backend_start','database')},window)
     native=expected[1]; basis=terminal_basis(expected); rows_retired=jobs=0
     if failure is None:
         assert only(m.pg['producer_epochs'],producer_epoch=2)['reserved_through_request']==basis['issued']
@@ -3429,7 +3607,7 @@ def verify_terminal_context(context,initial,expected,*,faults=False,post_proof=F
             if operation=='abandon-activated': jobs=terminal_abandon_delta(m,context['after'],basis)
         else:
             assert operation=='retire-activated'
-            rows_retired=terminal_retire_delta(m,context['after'],basis)
+            rows_retired=terminal_retire_delta(m,context['after'],basis,allow_draining=guards and name=='draining')
         wanted=dict(format='bigbrotr-ingest-recovery/1',state='activated-initial-retired' if operation=='retire-activated' else
             'activated-acquisition-abandoned' if operation=='abandon-activated' else 'activated-source-closed',
             dataset_id=m.ds['dataset_id'][2:],owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='2',
@@ -3447,9 +3625,9 @@ def verify_terminal_context(context,initial,expected,*,faults=False,post_proof=F
         retired_rows=rows_retired,abandoned_jobs=jobs,tables=77,input_files=len(expected[2]))
 
 
-def terminal_controls(context,initial,expected,*,faults=False,post_proof=False,baseline=None):
+def terminal_controls(context,initial,expected,*,faults=False,post_proof=False,guards=False,baseline=None):
     import json
-    name,step=terminal_specification(context['case'],faults=faults,post_proof=post_proof)
+    name,step=terminal_specification(context['case'],faults=faults,post_proof=post_proof,guards=guards)
     changes=[('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
         ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
         ('ancestor-checkpoint',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(checkpoint_digest='\\x'+'00'*32)),
@@ -3508,7 +3686,7 @@ def terminal_controls(context,initial,expected,*,faults=False,post_proof=False,b
             ('unexpected-argv',lambda c:c['response']['terminal']['command'].append('--successor')),
             ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)])),
             ('unknown-process',lambda c:c['response'].update(outcome='UNKNOWN'))])
-        if terminal_failure(name,step) is None and not (faults and step.endswith('-loss')) and not (post_proof and step=='proof' and not name.endswith('-baseline')):
+        if terminal_failure(name,step,guards=guards) is None and not (faults and step.endswith('-loss')) and not (post_proof and step=='proof' and not name.endswith('-baseline')):
             def report_value(c,key,value):
                 report=loads(c['response']['stdout']); report[key]=value; c['response']['stdout']=json.dumps(report)+'\n'
             changes.extend([('false-original-count',lambda c:report_value(c,'resolved_requests','7')),
@@ -3520,10 +3698,29 @@ def terminal_controls(context,initial,expected,*,faults=False,post_proof=False,b
             if step.startswith('retire'):
                 changes.append(('one-domain-not-retired',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(state='active')))
                 changes.append(('retired-row-transaction',lambda c:only(c['after']['producer_epochs'],producer_epoch=2).update(xmin='4294967000')))
-            if (name in ('event','unbound-event') or faults or post_proof) and (step.startswith(('abandon','retire')) or (post_proof and step=='proof' and name.startswith('abandon-'))):
+            if (name in ('event','unbound-event') or faults or post_proof or (guards and name=='import')) and (step.startswith(('abandon','retire')) or (post_proof and step=='proof' and name.startswith('abandon-'))):
                 changes.append(('gap-attribution',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=2).update(previous_owner_epoch=999)))
         else:
             changes.append(('different-typed-refusal',lambda c:c['response'].update(stderr='error: producer operation unavailable: Native(StateMismatch)\n')))
+    if guards:
+        if name=='import':
+            changes.extend([('import-claim-removed',lambda c:c['after']['jobs'].remove(only(c['after']['jobs'],job_id='\\x'+'e6'*16))),
+                ('import-claim-reassigned',lambda c:only(c['after']['jobs'],job_id='\\x'+'e6'*16).update(owner_epoch=999)),
+                ('import-input-invented',lambda c:only(c['after']['jobs'],job_id='\\x'+'e6'*16).update(input_topology_generation=1))])
+            if step=='seed':
+                changes.extend([('import-superuser',lambda c:c['import_claim']['identity'].update(superuser=True)),
+                    ('import-replica-bypass',lambda c:c['import_claim']['identity'].update(session_replication_role='replica')),
+                    ('import-no-commit',lambda c:c['import_claim']['transactions'][-1].update(sqlstate='23514')),
+                    ('import-actor-present',lambda c:c['import_claim'].update(actor_absence='1')),
+                    ('import-actor-unjoined',lambda c:c['import_claim'].update(actor_exit_code=None)),
+                    ('import-probe-unjoined',lambda c:c['response'].update(readers_joined=False)),
+                    ('import-before-activation',lambda c:c['import_claim'].update(created_at_us=c['server_window']['before_us'])),
+                    ('import-live-tuple',lambda c:c['import_claim']['live_after'].update(pid=1)),
+                    ('import-admission-xmin',lambda c:only(c['import_claim']['after']['job_admissions'],job_id='\\x'+'e6'*16).update(xmin='4294967000')),
+                    ('import-unbound-SQL',lambda c:c['import_claim']['statements'].__setitem__(0,'BEGIN; SET LOCAL session_replication_role=replica;'))])
+            if step=='retire-refuse': changes.append(('import-named-veto-absent',lambda c:c['guard_diagnostic'].update(errors=[])))
+        if name=='native-open':
+            changes.append(('retirement-invents-closing',lambda c:c.update(native_after=activated_native(c['native_after'],only(c['after']['initial_ingest_successions'])['producer_slot_id'],close=True))))
     if (faults and step.endswith(('-baseline','-loss'))) or (post_proof and step=='proof'):
         changes.extend([('proxy-not-joined',lambda c:c['fixture']['delivery_fault']['wire'].update(readers_joined=False)),
             ('proxy-source',lambda c:c['fixture']['delivery_fault']['wire'].update(source_sha256='00'*32)),
@@ -3547,7 +3744,7 @@ def terminal_controls(context,initial,expected,*,faults=False,post_proof=False,b
     rejected=[]
     for label,change in changes:
         c=copy.deepcopy(context); change(c)
-        try: verify_terminal_context(c,initial,expected,faults=faults,post_proof=post_proof,baseline=baseline)
+        try: verify_terminal_context(c,initial,expected,faults=faults,post_proof=post_proof,guards=guards,baseline=baseline)
         except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(label)
         else: raise AssertionError('accepted altered terminal evidence: '+label)
     return dict(status='PASS',count=len(rejected),rejected=rejected)

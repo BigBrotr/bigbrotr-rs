@@ -45345,6 +45345,29 @@
                     "sha256": "866b1401910cc52790ae3696d8e96a0f576d9f8df07e447037870e1992d6a089"
                   },
                   "verification": "Root independently matched Git archive, all 2060 exported file hashes, manifest/build metadata and five ELF hashes; all 10 checks including Clippy PASS, 179 components/70 exact mandatory controls unchanged from qualified 7bc. Exact owned containers observed stopped0/PID0/noOOM; inventory_changed empty. Installed terminal guards NOT_RUN."
+                },
+                "guard_fixture_integration": {
+                  "author_commit": "7bb67235f50518a30e72ea673239182aaf93af66",
+                  "author_tree": "e85ce1395970441b528fd2b70660712714bc5e9b",
+                  "files_sha256": {
+                    "experiments/ingest-succession/installed_compacted_reader.py": "b43a73dac570fcb76c1f958d80f7de219335799abe440c4408acf71fca311532",
+                    "experiments/ingest-succession/installed_compacted_reader_oracle.py": "0a0fb5f087385fc1cd8932319749b336676c11119717dead27be947a858f09e3",
+                    "experiments/ingest-succession/installed_compacted_reader_replay.py": "2f957a7d694ddbfcf2acefe4b3e6068a733226971bd0b208e32f4977761a1163"
+                  },
+                  "receipts": {
+                    "source": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-fixture-source-v1.json",
+                      "sha256": "04cde9f6e5ec479f13c18a6f38c53d76ba0e838e03be29205004330905e4a413"
+                    },
+                    "critical_review": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-critical-review-v1.json",
+                      "sha256": "cdca1b20bcd2b77e2fbcbb54f9d223c706ce0b985323440b6839b74a1ecfb0eb"
+                    }
+                  },
+                  "root_review": "Complete three-file delta and new/affected bodies reviewed against retained complete-owner reads, including final timestamp/import-scope changes. Ordinary claim rows, actual actor/Control custody, typed native/SQL refusal, independent 12-row draining transition/retry, named import veto and raw bindings reviewed; exact source hashes and unchanged critical boundaries reconciled. Author targeted pure checks reused. No source blocker; installed 8-command run/raw replay NOT_RUN.",
+                  "product_source": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d",
+                  "status": "SOURCE_REVIEWED_INSTALLED_NOT_RUN",
+                  "scope": "Three isolated clones: genuine unresolved import after Event/source/abandon; positive draining retirement/retry; native OPEN refusal at native/SQL inspector. No import execution or deeper native observation-guard claim."
                 }
               }
             }

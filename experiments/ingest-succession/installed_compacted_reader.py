@@ -1045,7 +1045,104 @@ def terminal_attribution(output,directory,initial):
     return contents
 
 
-def terminal_seed(pg,client,output,case,directory,expected,catalog,initial,attribution,*,faults=False,post_proof=False):
+def terminal_import_capture(pg,client,output,case,args,directory):
+    from activated_retirement_expiry import wait_event
+    from concurrency_cases import Session
+    from initial_empty_locks import Probe,guards,session_identity
+    from initial_empty_preparer import statements
+    from retirement_wait import open_gate
+    label=case['name']; database=case['database']; prefix=output/(label+'-gate')
+    assert not prefix.with_suffix('.go').exists() and not prefix.with_suffix('.go').is_symlink()
+    value=dict(status='INCOMPLETE',cleanup_errors=[],gates=[],transactions=[])
+    response=dict(command=['docker','exec',client,'/build/ingest_bootstrap_probe',*args],returncode=None,stdout='',stderr='',outcome='UNKNOWN_PROCESS_OUTCOME')
+    sessions=[]; probe=None; started=time.monotonic()
+    def save(): lab.write_json(output/(label+'-import-claim.json'),value)
+    def owned():
+        current,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert current['State']['Running'] and current['Config']['Labels'][lab.LABEL]==pg['owner']
+    def live(control):
+        return json.loads(lab.sql(pg,database,"SELECT json_build_object('pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state,'xact_start',xact_start) FROM pg_stat_activity WHERE pid="+str(control['control_backend_pid'])+" AND backend_start='"+control['control_backend_start']+"'::timestamptz AND datname='"+database+"';"))
+    try:
+        probe=Probe(response['command'])
+        waiting=wait_event(probe,'live-terminal-import-gate',phase='waiting')
+        value['gates'].append(dict(event=waiting,observed_us=history.server_clock(pg,database)))
+        state=oracle.only(probe.parsed,event='successor-state',stage='activated-zero')
+        pg_before={table:json.loads(rows) for table,rows in state['state']['control_tables']}
+        value['before']=schema.rows(pg,database); oracle.same(value['before'],pg_before)
+        control=oracle.only(pg_before['owner_epochs'],role='control',state='active'); value['control']=control
+        backend=oracle.only(probe.parsed,event='successor-backend',stage='terminal-import-gate')
+        assert backend==dict(event='successor-backend',stage='terminal-import-gate',database=database,
+            pid=control['control_backend_pid'],backend_start=control['control_backend_start'],control_epoch=control['epoch'],present=True)
+        assert waiting==dict(event='live-terminal-import-gate',mode=oracle.TERMINAL_IMPORT_MODE,phase='waiting',
+            go='/lab/'+prefix.with_suffix('.go').name,gate_timeout_ms=10000,poll_ms=5,
+            control_resource=control['resource_id'][2:],control_epoch=control['epoch'],control_incarnation=control['process_incarnation'][2:],
+            activated_at_us=oracle.only(pg_before['initial_ingest_activations'])['activated_at_us'])
+        value.update(inputs_before=history.inputs_at(directory/'store'),guards_before=guards(pg,database),live_before=live(control),
+            server_window=dict(before_us=history.server_clock(pg,database)))
+        assert value['inputs_before']=={} and value['live_before']==dict(pid=control['control_backend_pid'],
+            backend_start=control['control_backend_start'],database=database,user='bigbrotr_control',state='idle',xact_start=None)
+        actor=Session(pg,database,'terminal_import_claim',sessions,role='bigbrotr_control')
+        value.update(backend=actor.backend,identity=session_identity(actor),created_at_us=history.server_clock(pg,database))
+        value['statements']=statements(control,value['created_at_us']); save()
+        for statement in value['statements']:
+            value['transactions'].append(actor.execute(statement)); save()
+        value['server_window']['after_us']=history.server_clock(pg,database)
+        value.update(after=schema.rows(pg,database),inputs_after=history.inputs_at(directory/'store'),guards_after=guards(pg,database),live_after=live(control))
+        value['observed_by_us']=history.server_clock(pg,database)
+        assert value['guards_before']==value['guards_after'] and value['live_before']==value['live_after']
+        assert value['inputs_before']==value['inputs_after'] and value['observed_by_us']<control['lease_expires_at_us']
+        oracle.terminal_import_rows(value,pg_before,control)
+        # Close the ordinary auxiliary actor before releasing the native owner.
+        actor.close(owned); sessions.remove(actor)
+        value['actor_exit_code']=actor.process.returncode
+        value['actor_absence']=lab.sql(pg,'postgres',"SELECT count(*) FROM pg_stat_activity WHERE pid="+str(actor.backend['pid'])+" AND backend_start='"+actor.backend['backend_start']+"'::timestamptz AND datname='"+database+"';")
+        assert type(value['actor_exit_code']) is int and value['actor_absence']=='0'
+        value['go_before_us']=history.server_clock(pg,database)
+        assert value['go_before_us']<control['lease_expires_at_us']; save()
+        open_gate(prefix.with_suffix('.go'))
+        value['gates'].append(dict(event=wait_event(probe,'live-terminal-import-gate',phase='released'),observed_us=history.server_clock(pg,database)))
+        code=probe.wait(12); probe.observe()
+        assert code==0 and not probe.stderr
+        value['status']='CAPTURED'
+    except BaseException as error:
+        value['failure']=repr(error)
+    finally:
+        for actor in reversed(sessions):
+            try: actor.close(owned)
+            except BaseException as error: value['cleanup_errors'].append(dict(stage='actor',error=repr(error)))
+        if probe is not None:
+            code=probe.process.poll()
+            if code is not None:
+                for thread in probe.threads: thread.join(1)
+                response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+            response.update(stdout=bytes(probe.stdout).decode(errors='replace'),stderr=bytes(probe.stderr).decode(errors='replace'))
+            try: probe.stop()
+            except BaseException as error: value['cleanup_errors'].append(dict(stage='probe',error=repr(error)))
+        response['seconds']=time.monotonic()-started
+        save(); lab.write_json(output/(label+'-response.json'),response)
+    return value
+
+
+def terminal_guard_mutation(pg,client,output,clone,directory,expected,kind):
+    from initial_empty_locks import guards
+    label=clone['name']+'-retire'+('-refuse' if kind=='native-open' else '')+'-mutation'
+    transition.observe_origin_absence(pg,clone['database'],output,label)
+    oracle.same(schema.rows(pg,clone['database']),expected[0])
+    assert history.dump(client,output,label+'-before',directory)==expected[1] and history.inputs_at(directory/'store')==expected[2]
+    record=dict(kind='privileged-isolated-terminal-'+kind,before=dict(control=expected[0],native=expected[1],inputs=expected[2]),after=None,
+        server_window=dict(before_us=history.server_clock(pg,clone['database'])),guards_before=guards(pg,clone['database']))
+    record['statement']=oracle.terminal_guard_mutation_statement(kind,expected,record['server_window']['before_us']); record['sql_output']=None
+    lab.write_json(output/(label+'.json'),record); (output/(label+'.sql')).write_text(record['statement'])
+    record['sql_output']=lab.sql(pg,clone['database'],record['statement'])
+    record['server_window']['after_us']=history.server_clock(pg,clone['database']); record['guards_after']=guards(pg,clone['database'])
+    record['after']=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-after',directory),inputs=history.inputs_at(directory/'store'))
+    lab.write_json(output/(label+'.json'),record)
+    checked=oracle.terminal_guard_mutation_checked(record,expected,kind)
+    lab.write_json(output/(label+'-controls.json'),oracle.terminal_guard_mutation_controls(record,expected,kind))
+    return checked
+
+
+def terminal_seed(pg,client,output,case,directory,expected,catalog,initial,attribution,*,faults=False,post_proof=False,guards=False):
     label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
     native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store'); assert (native,inputs)==expected[1:]
     lab.write_json(output/(label+'-before.json'),before); lab.write_json(output/(label+'-inputs.json'),inputs)
@@ -1054,21 +1151,26 @@ def terminal_seed(pg,client,output,case,directory,expected,catalog,initial,attri
     lab.write_json(output/(label+'-receive-clock.json'),dict(returncode=resolution.returncode,stdout=resolution.stdout,stderr=resolution.stderr))
     assert resolution.returncode==0 and resolution.stderr==''; receive_clock=json.loads(resolution.stdout)
     args=[case['operation'],case['database'],'/run/secrets/application',case['config']]
+    if guards: args.append('/lab/'+label+'-gate')
+    import_claim=None
     window=dict(before_us=history.server_clock(pg,case['database'])); lab.write_json(output/(label+'-clock.json'),window)
-    try: history.capture(client,output,label,*args)
+    try:
+        if guards: import_claim=terminal_import_capture(pg,client,output,case,args,directory)
+        else: history.capture(client,output,label,*args)
     finally:
         path=output/(label+'-response.json')
         if not path.exists(): lab.write_json(path,dict(returncode=None,stdout='',stderr='',outcome='UNKNOWN'))
         response=transition.read(path); response['command']=['docker','exec',client,'/build/ingest_bootstrap_probe',*args]
         lab.write_json(path,response)
         window['after_us']=history.server_clock(pg,case['database']); lab.write_json(output/(label+'-clock.json'),window)
-        _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,closure=partial(oracle.terminal_seed_closed,zero=faults and case['clone']=='zero-job'))
+        _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,closure=partial(oracle.terminal_seed_closed,zero=faults and case['clone']=='zero-job',import_claim=import_claim))
     context=dict(case=dict(case),before=before,native_before=native,inputs_before=inputs,after=after,native_after=after_native,inputs_after=after_inputs,
         response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,case['database']),arguments=args,
         attribution=attribution,receive_clock=receive_clock,backend_absence=transition.read(output/(label+'-control-backends.json')),
         backends=transition.read(output/(label+'-backends.json')),custody=transition.read(output/(label+'-custody.json')))
+    if guards: context['import_claim']=import_claim
     lab.write_json(output/(label+'-verification.json'),context)
-    checked=oracle.verify_terminal_context(context,initial,expected,faults=faults,post_proof=post_proof); controls=oracle.terminal_controls(context,initial,expected,faults=faults,post_proof=post_proof)
+    checked=oracle.verify_terminal_context(context,initial,expected,faults=faults,post_proof=post_proof,guards=guards); controls=oracle.terminal_controls(context,initial,expected,faults=faults,post_proof=post_proof,guards=guards)
     case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
@@ -1213,9 +1315,9 @@ def terminal_wait(pg,client,output,case,directory,expected,catalog,initial):
     return after,after_native,after_inputs
 
 
-def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,faults=False,post_proof=False):
-    profile=oracle.ActivatedSourceProofProfile if post_proof else oracle.ActivatedTerminalFaultProfile if faults else oracle.ActivatedTerminalProfile
-    name=clone['name']; origin_name='compacted-initial' if faults or post_proof else oracle.TERMINAL_ORIGIN_NAMES[name]
+def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,faults=False,post_proof=False,guards=False):
+    profile=oracle.ActivatedTerminalGuardProfile if guards else oracle.ActivatedSourceProofProfile if post_proof else oracle.ActivatedTerminalFaultProfile if faults else oracle.ActivatedTerminalProfile
+    name=clone['name']; origin_name=oracle.TERMINAL_GUARD_ORIGIN_NAMES[name] if guards else 'compacted-initial' if faults or post_proof else oracle.TERMINAL_ORIGIN_NAMES[name]
     assert clone['origin']==origin_name and expected==origins[origin_name]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.TERMINAL_GRANTS]
     oracle.history_catalog_checked(report['origins'][origin_name]['catalog'],clone['catalog_before'],grants=oracle.TERMINAL_GRANTS)
@@ -1229,14 +1331,16 @@ def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,ori
     event='seed' in profile.STEPS[name] and not (faults and name=='zero-job')
     if event: configure(pg,client,output,clone['config'],ack=True,endpoint='ws://127.0.0.1:7447/installed-fixture')
     else: configure(pg,client,output,clone['config'],ack=True)
-    oracle.terminal_network_checked(tomllib.loads((output/Path(clone['config']).name).read_text()),name,faults=faults,post_proof=post_proof)
+    oracle.terminal_network_checked(tomllib.loads((output/Path(clone['config']).name).read_text()),name,faults=faults,post_proof=post_proof,guards=guards)
     attribution=terminal_attribution(output,directory,initial) if event else None
-    if not (faults or post_proof) and name=='missing-input': expected=activated_quarantine(output,directory,expected)
+    if not (faults or post_proof or guards) and name=='missing-input': expected=activated_quarantine(output,directory,expected)
     predecessor=None
     for step in profile.STEPS[name]:
-        kind=oracle.terminal_mutation_kind(name,step) if not (faults or post_proof) else None
+        if guards and ((name=='draining' and step=='retire') or name=='native-open'):
+            expected=terminal_guard_mutation(pg,client,output,clone,directory,expected,name)
+        kind=oracle.terminal_mutation_kind(name,step) if not (faults or post_proof or guards) else None
         if kind: expected=terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kind)
-        operation=(oracle.TERMINAL_ZERO_MODE if faults and name=='zero-job' else oracle.TERMINAL_SEED_MODE) if step=='seed' else (oracle.TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
+        operation=(oracle.TERMINAL_IMPORT_MODE if guards else oracle.TERMINAL_ZERO_MODE if faults and name=='zero-job' else oracle.TERMINAL_SEED_MODE) if step=='seed' else (oracle.TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
         if post_proof and step=='proof': operation=name.split('-')[0]+'-activated'
         case=dict(name=name+'-'+step,clone=name,origin=origin_name,operation=operation,predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case); lab.write_json(output/'result.json',report)
@@ -1246,33 +1350,42 @@ def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,ori
             assert baseline['status']=='PASS'
         if post_proof and step=='proof' and not name.endswith('-baseline'):
             baseline=oracle.only(report['cases'],name=name.split('-')[0]+'-baseline-proof')['oracle']; assert baseline['status']=='PASS'
-        if step=='seed': expected=terminal_seed(pg,client,output,case,directory,expected,clone['catalog_before'],initial,attribution,faults=faults,post_proof=post_proof)
+        if step=='seed': expected=terminal_seed(pg,client,output,case,directory,expected,clone['catalog_before'],initial,attribution,faults=faults,post_proof=post_proof,guards=guards)
         elif faults and step=='wait': expected=terminal_wait(pg,client,output,case,directory,expected,clone['catalog_before'],initial)
         else:
             hook=terminal_delivery_hook(pg,client,output,case,directory,post_proof=post_proof,expected=expected,initial=initial) if (faults and step.endswith(('-baseline','-loss'))) or (post_proof and step=='proof') else None
+            def verify_context(c,s):
+                if guards and name=='import' and step=='retire-refuse':
+                    from activated_retirement_import import diagnostic
+                    backend={k:c['backend']['exact'][0][k] for k in ('pid','backend_start','database')}
+                    c['guard_diagnostic']=diagnostic(pg,backend,c['server_window'])
+                    lab.write_json(output/(case['name']+'-diagnostic.json'),c['guard_diagnostic'])
+                    lab.write_json(output/(case['name']+'-verification.json'),c)
+                return oracle.verify_terminal_context(c,s,expected,faults=faults,post_proof=post_proof,guards=guards,baseline=baseline)
             expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
-                checks=(lambda c,s:oracle.verify_terminal_context(c,s,expected,faults=faults,post_proof=post_proof,baseline=baseline),
-                    lambda c,s:oracle.terminal_controls(c,s,expected,faults=faults,post_proof=post_proof,baseline=baseline),partial(oracle.terminal_closed,faults=faults,post_proof=post_proof)),fault=hook)
+                checks=(verify_context,
+                    lambda c,s:oracle.terminal_controls(c,s,expected,faults=faults,post_proof=post_proof,guards=guards,baseline=baseline),partial(oracle.terminal_closed,faults=faults,post_proof=post_proof,guards=guards)),fault=hook)
         case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==clone['catalog_before']
         predecessor=case['name']; lab.write_json(output/'result.json',report)
     return predecessor
 
 
-def run_activated_terminal(root,build,product_source,*,faults=False,post_proof=False):
-    assert type(faults) is bool and type(post_proof) is bool and not (faults and post_proof)
+def run_activated_terminal(root,build,product_source,*,faults=False,post_proof=False,guards=False):
+    assert all(type(v) is bool for v in (faults,post_proof,guards)) and sum((faults,post_proof,guards))<=1
     oracle.terminal_qualification(transition.read(build/'component-result.json'))
     def origins_checked():
+        if guards: return oracle.terminal_guard_origins_checked(root)
         if not (faults or post_proof): return oracle.terminal_origins_checked(root)
         seed,initial=oracle.journey_origin_checked(root); return {'compacted-initial':seed},initial
     origins,initial=origins_checked()
-    profile=oracle.ActivatedSourceProofProfile if post_proof else oracle.ActivatedTerminalFaultProfile
+    profile=oracle.ActivatedTerminalGuardProfile if guards else oracle.ActivatedSourceProofProfile if post_proof else oracle.ActivatedTerminalFaultProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
         database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
-        scope='Compacted Source/abandon post-proof ancestor H/D under released server-completed refresh holds' if post_proof else 'Compacted activated terminal final COMMIT wire baselines/loss/retries, genuine cancelled-job waits, retirement post-proof H/D/Event-mask and zero-request claimed job') if faults or post_proof else TERMINAL_SUITE
-    pins=(oracle.JOURNEY_ORIGIN,) if faults or post_proof else oracle.TERMINAL_ORIGINS
-    names={name:'compacted-initial' for name in profile.CLONES} if faults or post_proof else oracle.TERMINAL_ORIGIN_NAMES
+        scope='Compacted activated actual unresolved import, draining retirement and isolated native OPEN guard' if guards else 'Compacted Source/abandon post-proof ancestor H/D under released server-completed refresh holds' if post_proof else 'Compacted activated terminal final COMMIT wire baselines/loss/retries, genuine cancelled-job waits, retirement post-proof H/D/Event-mask and zero-request claimed job') if faults or post_proof or guards else TERMINAL_SUITE
+    pins=oracle.TERMINAL_GUARD_ORIGINS if guards else (oracle.JOURNEY_ORIGIN,) if faults or post_proof else oracle.TERMINAL_ORIGINS
+    names=oracle.TERMINAL_GUARD_ORIGIN_NAMES if guards else {name:'compacted-initial' for name in profile.CLONES} if faults or post_proof else oracle.TERMINAL_ORIGIN_NAMES
     try:
-        return transition.run(root,build,suite=suite,sequence=partial(run_terminal_sequence,origins=origins,initial=initial,faults=faults,post_proof=post_proof),
+        return transition.run(root,build,suite=suite,sequence=partial(run_terminal_sequence,origins=origins,initial=initial,faults=faults,post_proof=post_proof,guards=guards),
             origin_specs=pins,origin_for_clone=names,extra_grants=oracle.TERMINAL_GRANTS,
             producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
             compacted_activated=True,compacted_terminal=True,product_source=product_source)
@@ -1294,5 +1407,6 @@ if __name__ == '__main__':
     profile.add_argument('--activated-terminal',action='store_true',help='Compacted activated source, real Event abandonment and retirement positive/refusal profile')
     profile.add_argument('--activated-terminal-faults',action='store_true',help='Separate compacted terminal delivery, real job-lock waits and final-proof drift profile')
     profile.add_argument('--activated-source-proof',action='store_true',help='Separate Source/abandon ancestor H/D after actual proof and confirmed server refresh')
+    profile.add_argument('--activated-terminal-guards',action='store_true',help='Separate unresolved import, positive draining retirement and isolated native OPEN guard')
     args = parser.parse_args()
-    (partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

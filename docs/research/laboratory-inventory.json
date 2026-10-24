@@ -63323,8 +63323,25 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-guards-20261024",
           "branch": "work/compacted-activated-terminal-guards",
           "base": "b6c4315a3b7e322e408818c93036b3aa7c53f787",
-          "state": "SOURCE_WORK_ACTIVE; no runtime for agents",
-          "scope": "Separate3-clone/8-command import/draining/nativeOPEN profile; proposed declaration only, NOT_RUN"
+          "state": "FROZEN_REVIEWED_SOURCE; integrated three exact blobs; installed NOT_RUN",
+          "scope": "Separate3-clone/8-command import/draining/nativeOPEN profile; proposed declaration only, NOT_RUN",
+          "commit": "7bb67235f50518a30e72ea673239182aaf93af66",
+          "tree": "e85ce1395970441b528fd2b70660712714bc5e9b",
+          "receipts": {
+            "source": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-fixture-source-v1.json",
+              "sha256": "04cde9f6e5ec479f13c18a6f38c53d76ba0e838e03be29205004330905e4a413"
+            },
+            "critical_review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-critical-review-v1.json",
+              "sha256": "cdca1b20bcd2b77e2fbcbb54f9d223c706ce0b985323440b6839b74a1ecfb0eb"
+            }
+          }
+        },
+        "remaining_consumer_audit": {
+          "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
+          "state": "READ_ONLY_SOURCE_AUDIT_ACTIVE",
+          "scope": "Locate first dependency-ready remaining compacted consumer; initial empty-attempt retirement candidate, pending complete audit. No implementation/runtime."
         }
       }
     }
