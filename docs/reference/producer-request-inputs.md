@@ -931,8 +931,11 @@ and865 checker controls on13 copies, with exact raw replay over7186 bound files.
 It measures final COMMIT baselines for all three operations and exercises response
 loss before forwarding and after server completion, fresh retries, cancellation
 and actual UTC expiry across a real job lock, retirement post-proof ancestor H/D
-and final Event-mask refusal, and a genuine zero-request claimed job. Source and
-abandonment post-proof ancestor H/D remain separate open qualifications. No GC or
+and final Event-mask refusal, and a genuine zero-request claimed job. The separate `b6c4315a` fixture then passed15 commands/264 checker controls
+on six copies, with raw replay over6163 bound files and32 proxy wire/metadata
+tests. Measured post-proof refresh reply holds establish final Source and
+abandonment H/D refusal before terminal effects. Genuine pending import, draining
+owner and isolated native OPEN qualification remain open. No GC or
 physical-loss/restore/capacity qualification follows.
 
 It uses a distinct source-capable proof: confirmed canonical

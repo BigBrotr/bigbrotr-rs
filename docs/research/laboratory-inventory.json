@@ -63208,9 +63208,9 @@
           "owner": "/root/compacted_reader_fixture; reused verified gpt-6-astra/xhigh",
           "critical_review": "/root/compacted_reader_review; reused verified gpt-6-astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-source-proof-fixture-20261024",
-          "branch": "work/compacted-activated-source-proof-fixture",
+          "branch": "DETACHED; exact reconciled work/compacted-activated-source-proof-fixture ref retired",
           "base": "30656b709cee6709124a4a55375004e07a6afbe7",
-          "state": "FROZEN_REVIEWED_SOURCE; root integrates exact seven files; runtime NOT_RUN",
+          "state": "INTEGRATED_B6C4315; QUALIFIED15/264; clean detached4e93c415 worktree preserved",
           "scope": "Separate --activated-source-proof six-clone/15-command profile; opt-in after-COMMIT hold; source and scoped diagnostics only for agents. No product change.",
           "commit": "4e93c415f53a9fd3915de66926e49d65a0658db8",
           "tree": "d584a9cbdc96f462eb6b9a18322b0b48ea3a183c",
@@ -63236,8 +63236,44 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-terminal-import-gate-20261024",
           "branch": "compacted-terminal-import-gate-20261024",
           "base": "30656b709cee6709124a4a55375004e07a6afbe7",
-          "state": "SOURCE_ASSESSMENT_THEN_NARROW_PROBE_SUPPORT; all runtime prohibited for agent",
-          "scope": "Bounded gate under genuine live activating Control before terminal Event seed; ordinary application-role import claim performed later by root-owned fixture. No product-library change or historical synthetic claim."
+          "state": "FROZEN_REVIEWED_SOURCE; unintegrated/unbuilt",
+          "scope": "Bounded gate under genuine live activating Control before terminal Event seed; ordinary application-role import claim performed later by root-owned fixture. No product-library change or historical synthetic claim.",
+          "commit": "d92b3c1a298f0e867e2cb3393a34f72f7781fda2",
+          "tree": "e7ce186c42946bec4ba8d6ea9156e8850aca09d3"
+        },
+        "source_proof_qualified_run": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-source-proof-b6c4315",
+          "source": "b6c4315a3b7e322e408818c93036b3aa7c53f787",
+          "tree": "30ca3ecd7cd8e43a95959e96c21ded64c4e63add",
+          "owner": "48f87bd62786bb07971589f129c56de8",
+          "status": "SCOPED_PASS_STOPPED_RETAINED",
+          "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-source-proof-b6c4315/verified-run.json",
+          "verified_receipt_sha256": "36774e08be34404356322fb00d40582fdfd834d04f81b5d04326b57cd15d7cbb",
+          "drivers": {
+            "installed": 71069,
+            "raw_replay": 94443,
+            "both_exit": 0
+          },
+          "containers": [
+            {
+              "id": "86678a3323a744f0052e0bdececf2fa18556b89ff6f031ebd4fb8eed6cfd5e1b",
+              "owner": "48f87bd62786bb07971589f129c56de8",
+              "state": "exited",
+              "exit_code": 143,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 264655302656,
+          "preservation": "Six clones and raw artifacts retained; no cleanup; origin unchanged."
         }
       }
     }

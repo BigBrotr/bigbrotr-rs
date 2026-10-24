@@ -6,9 +6,9 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Observed main `30656b709cee6709124a4a55375004e07a6afbe7`;
-verified push30656b70 (driver58504 joined0). Product7bc63d97 remains unchanged.
-This commit integrates reviewed source-proof fixture4e93c415, still NOT_RUN.
+Main/harness `b6c4315a3b7e322e408818c93036b3aa7c53f787`, tree30ca3ecd;
+verified pushb6c4315a (driver22551 joined0). Product7bc63d97 remains unchanged.
+This checkpoint records scoped Source/abandon post-proof qualification.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -34,30 +34,31 @@ Its `verified-run.json` binds measured final COMMIT baselines/loss/retries, real
 job-lock cancellation/UTC expiry, retirement post-proof H/D/Event-mask and actual
 zero-request claimed-job refusal/abandonment/retirement.
 
-Next: run existing proxy loopback tests from exact integrated source, then
---activated-source-proof with product7bc and exact raw replay. Frozen reviewed
-4e93c415 adds explicit after-server-COMMIT reply hold at refresh5/7, with measured
-idle/no-transaction baseline before H/D mutation. Six clones/15 commands/264
-controls are declarations only. Existing1s deadline and strict custody stay.
+`runs/installed-compacted-source-proof-b6c4315`:32 proxy tests PASS23685 joined0;
+15 installed commands/264 controls PASS71069 joined0; raw replay94443 joined0
+binds6163 files. Its `verified-run.json` records actual refresh5/7 holds and four
+H/D refusals without final effects/ACK/release, retaining native/SQL/input state.
+
+Next: integrate reviewed import-gate probed92b3c1 and run its exact native build,
+then qualify the separate import/draining/nativeOPEN guard fixture when reviewed.
+The Python author works isolated on that next profile; current qualifiers remain
+separate. No GC/floor writer/unlink is enabled.
 
 ## Work and resources
 
-No build/connected runtime active. Fault client3e9844ed stopped143; borrowed
-PG71775507 stopped0, PID0/noOOM. All56 custody closed, cleanup/unrelated/unexpected/
-missing-owned arrays empty; source origin unchanged. No cache cleanup.
-Fault author worktree `.research/compacted-activated-terminal-fault-fixture-20261024`
-is clean detached1c24d0a6; exact six-file integration reconciled before redundant
-work ref retirement. Source-proof author/reviewer complete; clean4e93c415 worktree retained and exact
-seven-file integration reconciled. No engines active.
-Astra/xhigh import-gate agent also assesses narrow Rust probe support in
-`.research/compacted-terminal-import-gate-20261024`, base30656b70. This future
-fixture work is unintegrated/NOT_RUN and cannot change the current proof15 binary.
+No build/connected runtime active. Latest client86678a33 stopped143; borrowed
+PG71775507 stopped0, PID0/noOOM. All15 custody closed and cleanup/unrelated/
+unexpected/missing-owned arrays empty; origin unchanged. No cache cleanup.
+Source-proof author worktree is clean detached4e93c415; exact seven-file
+integration reconciled before work ref retirement. Import-gate d92b3c1 is clean,
+reviewed, unintegrated/unbuilt in `.research/compacted-terminal-import-gate-20261024`.
+Next Python guard fixture source work is isolated; runtime remains root-owned.
 Earlier detached author worktrees, .research, datasets, failures and external labs
 remain preserved. Redundant reconciled endpoint branch retired; files retained.
 
 ## Open gates
 
-Source/abandonment post-proof H/D remains owed. Unresolved import, draining owner,
+Unresolved import, positive draining-owner retirement,
 isolated native OPEN refusal and later recovery/live/Archive frontier/empty
 retirement precede floor writer or unlink. Physical64file/32MiB bounds, physical
 loss/mixed restore, backup/capacity and remaining M1–M5 are open.
