@@ -36,6 +36,10 @@ pub use compacted::{
     compacted_outcome_data_bytes,
 };
 
+#[path = "compacted_successor.rs"]
+mod compacted_successor;
+pub(in crate::storage) use compacted_successor::CompactedSuccessorPredecessor;
+
 #[path = "successor_recovery.rs"]
 mod recovery;
 #[cfg(test)]
@@ -199,6 +203,22 @@ impl RetainedLineage {
         if lineage.compacted.is_none() {
             return Err(BootstrapError::StateMismatch);
         }
+        lineage.inputs = lineage.input_census(recovery, cancelled)?;
+        lineage.validate(recovery, cancelled)?;
+        Ok(lineage)
+    }
+
+    /// Consumer-selected mixed inspection. Retained floor presence, independently
+    /// of request counts, selects the evidence basis; no failed read falls
+    /// back to a different basis. Ordinary inspection remains original-only.
+    pub(in crate::storage) fn inspect_with_compacted_initial(
+        recovery: &IngestRecovery,
+        pending_target: Option<u64>,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        let mut lineage =
+            Self::inspect_structure_in(recovery, pending_target, permit, cancelled, true)?;
         lineage.inputs = lineage.input_census(recovery, cancelled)?;
         lineage.validate(recovery, cancelled)?;
         Ok(lineage)

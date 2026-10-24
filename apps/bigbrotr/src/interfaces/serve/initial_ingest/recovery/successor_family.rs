@@ -6,7 +6,8 @@ use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
         ActivatedSuccessorRecovery, ActivatedSuccessorRetirement, ActivatedSuccessorSourceRecovery,
-        InitialHistoryRequest, SuccessorHistory, SuccessorReplayRequest,
+        InitialHistoryRequest, SuccessorEmptyPlan, SuccessorGapPlan, SuccessorHistory,
+        SuccessorReplayRequest,
     },
     rocks::{store::LineageEpochSummary, succession::MAX_LINEAGE_METADATA_BYTES},
 };
@@ -29,12 +30,14 @@ pub(super) enum Mode {
 }
 
 // Field order also protects unwinding: close native before releasing retained
-// proof grants or dropping Control. Only one of the four proof owners is used.
+// proof grants or dropping Control. Only the selected consumer's proof owners are used.
 // After acquisition, bounded operations borrow Control in this custody. The
 // acquisition future owns its client and has a separate native-first guard.
 #[derive(Default)]
 struct Custody {
     native: Option<IngestRecovery>,
+    gap: Option<SuccessorGapPlan>,
+    empty: Option<SuccessorEmptyPlan>,
     positive: Option<ActivatedSuccessorRecovery>,
     source: Option<ActivatedSuccessorSourceRecovery>,
     retirement: Option<ActivatedSuccessorRetirement>,
@@ -125,6 +128,9 @@ async fn own(
     let closing = grant(&budget, mutation_bytes, mutation_bytes)?;
     drop(replay_grants(&budget)?);
     drop(effect_grant(&budget)?);
+    if mode == Mode::RetireEmpty {
+        drop(compacted_grant(&budget)?);
+    }
     if mode != Mode::RetireEmpty {
         drop(grant(
             &budget,
@@ -395,6 +401,14 @@ impl Completed {
 }
 fn effect_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {
     grant(budget, limits().required_data_bytes().map_err(error)?, 0)
+}
+fn compacted_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {
+    grant(
+        budget,
+        bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(limits().event)
+            .map_err(error)?,
+        0,
+    )
 }
 fn error(error: impl std::fmt::Display) -> (u8, String) {
     (4, format!("successor recovery unavailable: {error}"))
