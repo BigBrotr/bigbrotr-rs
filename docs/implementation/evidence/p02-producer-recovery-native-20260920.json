@@ -44846,7 +44846,7 @@
               "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
               "terminal_consumer_work": {
                 "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
-                "state": "PASS_EXACT_BUILD_AND_COMPONENTS; first terminal matrix needs corrected earlier unbound-Event replay refusal",
+                "state": "Exact build PASS; corrected terminal21cases pass, isolated mixed mutation row-order oracle corrected; complete matrix pending",
                 "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
@@ -45094,6 +45094,23 @@
                     "verified_failure_sha256": "a695d4c34e295cf638d6f66930c155c0da8046234d9b4f8fd3561bf2d83c4a4d",
                     "failure": "Actual retirement refuses native Event without acquisition binding in require_retirement_copy as Outcome(Conflict), before final Event-mask check. Oracle predicted later Control(InvalidMetadata); strict wrapper skipped native reopen. Original OUTCOME_UNKNOWN retained; backend absent and outer client stopped.",
                     "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; last typed-error guard conservatively skipped native reopen"
+                  },
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-6f18fac",
+                    "source": "6f18facc0120228f9b00d8c7d6271bbcc2bd2c6e",
+                    "tree": "febb00c030cdb997ad19dd957f1b28e6863205b8",
+                    "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+                    "owner": "89e0e76ba837c2bc5a56f60383d75525",
+                    "client": "c15deb61a5385c7a56d89a3c4a2f7fd9f811ba84c23162b4c63b56d6127ac353",
+                    "driver": 21208,
+                    "driver_exit": 1,
+                    "status": "FAIL",
+                    "completed_cases": 21,
+                    "completed_checker_controls": 292,
+                    "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-6f18fac/verified-run-failure.json",
+                    "verified_failure_sha256": "1bbc4a1050e883cc94dcf29ca41acf8f0db9372901c4e7c82183a794a85ebba6",
+                    "failure": "Isolated mixed fixture UPDATE succeeded exactly but changes ordered JSONB row position; raw list equality failed despite complete identical SQL row multiset. Product mixed retirement command not started. Source mutation/native copies retained.",
+                    "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty;21 case processes closed, mutation native before/after identical"
                   }
                 ],
                 "endpoint_correction": {
@@ -45135,7 +45152,19 @@
                   "predicted_commands": 25,
                   "predicted_controls": 338,
                   "critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-unbound-replay-critical-review-v1.json",
-                  "critical_receipt_sha256": "56f7787941e1724625ef4d019cf941858fd28d8609ce4207cd43b3e86b46c747"
+                  "critical_receipt_sha256": "56f7787941e1724625ef4d019cf941858fd28d8609ce4207cd43b3e86b46c747",
+                  "integrated_commit": "6f18facc0120228f9b00d8c7d6271bbcc2bd2c6e"
+                },
+                "mutation_order_correction": {
+                  "source_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-mutation-order-source-v1.json",
+                  "source_receipt_sha256": "5e556c8efc93b56c9e3deca9ee8da3c3c414f31999e34d4cfa34b49a5d24c092",
+                  "critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-mutation-order-critical-review-v1.json",
+                  "critical_receipt_sha256": "edc2598dd48e8cb3b5bab6605b2f39607c9c0f1bd670e3092b68c36b01dbcc91",
+                  "change": "Reuse exact full SQL row normalization after isolated mutation; outer shape/native/inputs remain exact. No field/xmin omission or deduplication.",
+                  "checks": "Five saved mutation captures and five valid row permutations PASS;40 altered-state controls rejected. Original6f failed result unchanged.",
+                  "state": "Root complete affected helper/caller/raw binding and independent source review complete; no product change; full matrix pending",
+                  "predicted_commands": 25,
+                  "predicted_controls": 338
                 }
               }
             }

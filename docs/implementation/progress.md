@@ -6,7 +6,7 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Current objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main/harness `0b0d82bbc3b4f18ae8e15ef644130eac40cbe694`, treeed955a77;
+Main/harness `6f18facc0120228f9b00d8c7d6271bbcc2bd2c6e`, treefebb00c0;
 verified push0b0d82bb (driver6639 joined0). Product stays7bc63d97.
 Local changes are current report/inventory/checkpoint updates.
 No product change or new build is required for this verifier correction.
@@ -25,22 +25,23 @@ owns resources and retained worktrees. Reuse unchanged evidence through these li
 Clippy PASS; driver31502 joined0; source/ELFs verified, build containers stopped0.
 Fault/zero probes and receive diagnostic compiled. Corrected terminal attempt
 `runs/installed-compacted-terminal-7bc63d9`: driver43168 joined1, original FAIL.
-Ten cases/136 controls passed there; its retry-count oracle correction was reviewed
-and integrated0b0d82bb. Corrected run `runs/installed-compacted-terminal-0b0d82b`
-then reached19PASS/267controls before a distinct typed-refusal expectation failed:
-retirement original replay rejects a genuine Event with no job as Outcome(Conflict),
-before the later Event-mask query. The original FAIL/OUTCOME_UNKNOWN/native NOT_RUN
-remain preserved. Root's exact literal correction passes one saved-response check
-and four wrong-error controls; narrow independent review complete.
+Earlier verifier failures and scoped corrections remain in the linked report.
+Latest `runs/installed-compacted-terminal-6f18fac`:21cases/292controls PASS,
+driver21208 joined1 at the isolated mixed fixture mutation check, before the
+next product command. PostgreSQL changed only row order after the exact UPDATE;
+root now uses existing complete SQL normalization, retaining all fields/xmins,
+duplicates and exact native/input comparison. Five saved mutation captures,
+five valid order variants and40 negative controls PASS; independent review complete.
+Original failed result is unchanged. Product remains7bc63d97, no rebuild required.
 
-Next: run the corrected25-command/338-control
-matrix with existing product7bc63d97 and exact raw replay. No native rebuild needed.
+Next: commit the narrow correction and run corrected25-command/338-control matrix
+with existing product7bc63d97, then exact raw replay. Full qualification remains pending.
 
 ## Active work, custody and open gates
 
-No build/connected runtime active. Last terminal client512466a9 stopped143,
-borrowed PG71775507 stopped0, PID0/noOOM; last process reaped/backend absent,
-strict wrapper withheld native reopen, cleanup arrays empty and four originals preserved.
+No build/connected runtime active. Last terminal clientc15deb61 stopped143,
+borrowed PG71775507 stopped0, PID0/noOOM; all21 case processes/backend custody closed,
+mutation native unchanged, cleanup arrays empty and four originals preserved.
 Fixture agent works source-only in `.research/compacted-activated-terminal-fault-fixture-20261024`,
 branch `work/compacted-activated-terminal-fault-fixture`, base7bc63d97; critical
 agent reviews. Separate13-clone/56-command final COMMIT/cancel/real-expiry/H-D/Event-mask/zero-job

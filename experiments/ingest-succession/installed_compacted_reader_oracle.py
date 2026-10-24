@@ -3450,7 +3450,9 @@ def terminal_mutation_checked(record,expected,initial,kind):
             assert kind=='mixed'; row=only(pg['allocation_domains'],owner_epoch=2,dictionary_kind=1); assert row['state']=='active'
             source=only(pg['source_streams'],owner_epoch=2)
             row.update(state='closed',closed_at_us=source['closed_at_us'],closure_digest=source['closure_digest'],xmin=returned['xmin']); assert returned==row
-    assert record['after']==dict(control=pg,native=native,inputs=inputs)
+    assert set(record['after'])=={'control','native','inputs'}
+    same(record['after']['control'],pg)
+    assert (record['after']['native'],record['after']['inputs'])==(native,inputs)
     return pg,native,inputs
 
 

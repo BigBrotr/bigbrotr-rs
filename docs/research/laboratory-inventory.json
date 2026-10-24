@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "NO_RUNTIME_ACTIVE; driver7514 joined1, original FAIL/custody retained; agent source-only work active",
+        "state": "NO_RUNTIME_ACTIVE;21208 joined1 at isolated mutation check; original/evidence retained; agents source-only",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -63002,7 +63002,7 @@
           "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
           "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
         },
-        "root_followup": "Exact7bc63d97 product reused; narrow typed refusal oracle correction under review; no product rebuild",
+        "root_followup": "Exact7bc63d97 product reused; full SQL row-order correction source-reviewed, no product rebuild",
         "installed_attempts": [
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
@@ -63066,6 +63066,23 @@
             "verified_failure_sha256": "a695d4c34e295cf638d6f66930c155c0da8046234d9b4f8fd3561bf2d83c4a4d",
             "failure": "Actual retirement refuses native Event without acquisition binding in require_retirement_copy as Outcome(Conflict), before final Event-mask check. Oracle predicted later Control(InvalidMetadata); strict wrapper skipped native reopen. Original OUTCOME_UNKNOWN retained; backend absent and outer client stopped.",
             "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; last typed-error guard conservatively skipped native reopen"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-6f18fac",
+            "source": "6f18facc0120228f9b00d8c7d6271bbcc2bd2c6e",
+            "tree": "febb00c030cdb997ad19dd957f1b28e6863205b8",
+            "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+            "owner": "89e0e76ba837c2bc5a56f60383d75525",
+            "client": "c15deb61a5385c7a56d89a3c4a2f7fd9f811ba84c23162b4c63b56d6127ac353",
+            "driver": 21208,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "completed_cases": 21,
+            "completed_checker_controls": 292,
+            "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-6f18fac/verified-run-failure.json",
+            "verified_failure_sha256": "1bbc4a1050e883cc94dcf29ca41acf8f0db9372901c4e7c82183a794a85ebba6",
+            "failure": "Isolated mixed fixture UPDATE succeeded exactly but changes ordered JSONB row position; raw list equality failed despite complete identical SQL row multiset. Product mixed retirement command not started. Source mutation/native copies retained.",
+            "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty;21 case processes closed, mutation native before/after identical"
           }
         ],
         "endpoint_work": {
