@@ -6,9 +6,8 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main `30ab2e45176dac90c7c940ddc2992e81fd74042a`; last verified push0984d001
-(driver3838 joined0). All unused intermediate exports are removed and committed. Local records save its verified qualification; product operation code remains
-unchanged.
+Main `262b473c` (verified push driver91174 joined0). All unused intermediate exports are removed and committed. Local records save first installed/raw qualification; product operation code
+remains unchanged.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -29,28 +28,29 @@ now mechanically reviewed/committed. Third exact build30ab2e4 driver39600
 joined0: all10 checks including Clippy,185 components/76 required PASS. Root
 verified source/archive/all2063 files/five ELF hashes and actual stopped owners.
 
-First independent fixture723af3c is integrated at0ed4f31b: nine clones/thirteen
-commands/239 controls declared, full source review complete, connected/raw
-execution NOT_RUN. Exact prepared origins, one native close and thirteen-row SQL
-retirement/retry are fixed. Author pure diagnostics are not runtime evidence.
+First independent fixture723af3c is integrated; exact product/harness30ab2e45
+passed13 installed commands/239 controls on9 clones (driver65098 joined0),
+then raw replay40412 joined0 bound7698 files. Compacted/original positives,
+exact retries, native-first SQL failure/continuation and selected refusals passed.
+All four origins are unchanged; full result/limitations live in the report.
 
-Next: execute first empty installed profile using exact product/harness30ab2e45,
-then run its exact raw replay and independently verify driver/resource closure.
-Reuse all unaffected earlier qualified profiles from the report; no GC enabled.
+Next: finish the reviewed separate3-clone/5-command final COMMIT delivery
+fixture, freeze its exact source, then installed execution and raw replay against
+qualified product30ab2e4. Reuse unchanged first13 and build evidence.
 
 ## Work and resources
 
-Build30ab2e4 driver39600 joined0; its owned containers stopped0/PID0/noOOM.
-No root build or connected runtime active. Both failed-build owned containers
-are independently verified stopped/PID0/noOOM; all logs/artifacts retained.
-Borrowed PG71775507 last inspected stopped0/PID0/noOOM after guard8.
-Native ec28253 author worktree is clean detached after exact integration;
-first fixture723af3c is also clean detached after exact reconciliation. Separate delivery author works in
-`.research/compacted-empty-initial-delivery-20261024` off0ed4f31b; three-clone/
-five-command final COMMIT-loss extension is source-only. Critical reviewer checks
-that separate profile. See inventory for ownership and receipt paths.
-No cache cleanup; previous .research, worktrees, datasets, failures and external
-labs remain preserved. Unrelated workloads are untouched.
+No root build or connected runtime active. Build39600 and installed65098/raw40412
+joined0. Client3cc63ea9 stopped143 and PG71775507 stopped0/PID0/noOOM, freshly
+independently inspected; all custody closed and cleanup/unrelated/unexpected/
+missing-owned arrays empty. Both earlier Clippy failures/logs are retained.
+Native ec28253 and first fixture723af3c author worktrees are clean detached after
+exact integration. Delivery author works in
+`.research/compacted-empty-initial-delivery-20261024` off0ed4f31b; its four-file
+source draft is under critical review/pure diagnostics. No delivery engine run.
+See inventory for ownership and retained receipt paths. No cache cleanup;
+.research, worktrees, datasets, failures and external labs remain preserved.
+Unrelated workloads are untouched.
 
 ## Open gates
 

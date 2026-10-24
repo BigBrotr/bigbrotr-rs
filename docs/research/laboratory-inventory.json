@@ -63393,7 +63393,7 @@
       },
       "compacted_empty_initial_work_20261024": {
         "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-        "state": "EXACT_BUILD_PASS; installed NOT_RUN",
+        "state": "FIRST_INSTALLED_RAW_PASS; delivery fixture source work",
         "native": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-native-20261024",
@@ -63492,7 +63492,7 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-delivery-20261024",
           "branch": "work/compacted-empty-initial-delivery",
           "base": "0ed4f31b33cd1a1e1eee3c73b3bdd751fe52c729",
-          "state": "SOURCE_WORK_ACTIVE; no engines",
+          "state": "STABLE_FOUR_FILE_DRAFT; source review/pure diagnostics; no engines",
           "scope": "Separate3-clone/5-command measured final COMMIT delivery profile; first13 fixture unchanged",
           "audit": {
             "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fault-boundaries-20261024.json",
@@ -63531,6 +63531,45 @@
             }
           ],
           "free_bytes_after": 262924869632
+        },
+        "first_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-30ab2e4",
+          "harness_source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+          "product_source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+          "driver": 65098,
+          "state": "PASS13/239; installed65098 and raw40412 joined0;7698 bindings",
+          "owner": "57d518d87bf7236570c704e1a62433ee",
+          "label": "org.bigbrotr.installed-compacted-empty-initial",
+          "client": "3cc63ea974552fd429ae79b0927155f1a9a2ae593bb703f6d12441d6754591d9",
+          "free_bytes_before": 262877794304,
+          "preservation": "All four origin preservation maps true; every case custody closed; no cleanup errors/unrelated changes/unexpected/missing resources.",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-30ab2e4/verified-run.json",
+            "sha256": "f38afd360916b528452e430b9ae756d0a03f4893fd4e14c925b1a35b02d4662a"
+          },
+          "containers": [
+            {
+              "id": "3cc63ea974552fd429ae79b0927155f1a9a2ae593bb703f6d12441d6754591d9",
+              "name": "/bigbrotr-compacted-empty-30ab2e4",
+              "label": "org.bigbrotr.installed-compacted-empty-initial",
+              "owner": "57d518d87bf7236570c704e1a62433ee",
+              "state": "exited",
+              "exit_code": 143,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "label": "org.bigbrotr.control-migration-lab",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 262579396608
         }
       }
     }

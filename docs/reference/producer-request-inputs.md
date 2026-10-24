@@ -1079,7 +1079,7 @@ epoch2/SQL-pending3 gap remain separate qualification gates. Original evidence
 remains required by recovery modes not explicitly adapted to a compacted predecessor.
 
 The compacted `ingest recover --retire-empty-attempt --file ROOT` extension is
-implemented but not yet qualified. It selects only an exact unactivated empty
+scoped-qualified at product and installed fixture `30ab2e45`. It selects only an exact unactivated empty
 epoch2 target, OPEN0 or CLOSING0, with no pending successor. Its distinct proof
 authenticates the retired initial ancestor, typed checkpoint, canonical outcomes
 and complete native/input census. The final transaction repeats those checks
@@ -1093,7 +1093,12 @@ of Control teardown, including interrupted acquisition, and reports compacted
 requests separately from original replays. Original-input retirement retains
 its own proof and requires all original evidence. Exact product `30ab2e45`
 passed CLI/probe compilation,185 components/76 mandatory controls and Clippy.
-Installed and fault qualification remain pending for this extension.
+Its first installed profile passed13 commands/239 controls on nine copies;
+exact raw replay bound7698 files. It covers both evidence bases, unchanged
+terminal retries, a real SQL failure after native closure and fresh completion,
+and the selected H/D/input/activation/nonempty refusals. All four origins remain
+unchanged. Final COMMIT delivery loss, genuine claim/lock/cancellation/UTC-expiry,
+proof-use races and malformed/partial states remain separate qualification gates.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "EXACT_BUILD_COMPONENTS_PASS;185 components/76 required/Clippy; installed NOT_RUN",
+              "status": "FIRST_INSTALLED_AND_RAW_PASS; final delivery/claims/lock/proof-use gates open",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Execute critically reviewed first9-clone/13-command empty installed profile and exact raw replay; preserve original build failures and all later fault gates.",
+              "next": "Finish reviewed separate3-clone/5-command final COMMIT baseline/loss fixture, execute and raw-replay it against qualified product30ab2e4; retain remaining claims/locks/cancel/UTC/proof-use/partial gates.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45508,6 +45508,38 @@
                   "final delivery/claims/lock/expiry/proof-use qualification",
                   "later compacted consumers",
                   "floor writer/unlink"
+                ]
+              },
+              "first_installed": {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-30ab2e4",
+                "source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+                "tree": "a4fd0877e5b1e1cf6ea6be43e9f6e40ba0279201",
+                "product_source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+                "driver": 65098,
+                "driver_exit": 0,
+                "replay_driver": 40412,
+                "replay_exit": 0,
+                "receipt": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-30ab2e4/verified-run.json",
+                  "sha256": "f38afd360916b528452e430b9ae756d0a03f4893fd4e14c925b1a35b02d4662a"
+                },
+                "counts": {
+                  "clones": 9,
+                  "commands": 13,
+                  "checker_controls": 239,
+                  "raw_bound_files": 7698
+                },
+                "scope": "Compacted/original empty target retirement and exact terminal retries; authentic late SQL source rejection after native+1 and fresh zero-write completion; H/D/target-input/activated-zero/nonempty/missing-original refusals. Full77-table/native/input expectations and real custody closed.",
+                "observed": "Compacted84rows125->126 once and13 target SQL rows; original91rows117->118 with7 inputs. Late failure retained native126 with0 target SQL changes; fresh completion13 rows/0 native, retry0/0. Actual trigger-only pg_dump catalog delta passed.",
+                "preservation": "All four origins rows/catalog/native/input/physical unchanged; both process drivers joined0; actual client143 and PG0/PID0/noOOM; cleanup/unrelated/unexpected/missing-owned empty.",
+                "not_run": [
+                  "Actual product reclamation/GC, floor publication or unlink",
+                  "Final COMMIT wire baselines and before/after delivery loss",
+                  "Real preparing/current-Control import/acquisition claim vetoes and lock waits, cancellation and UTC expiry",
+                  "Proof-to-use root/sequence/input/H/D races and optional residual original census",
+                  "SQL-terminal/native-OPEN refusal, malformed floor and partial target SQL/native shapes",
+                  "Native write-unknown, driver/syscall faults, physical limits, mixed restore and capacity",
+                  "Later recovery, live frontier, Archive and later empty-attempt retirement"
                 ]
               }
             }
