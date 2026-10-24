@@ -1190,10 +1190,15 @@ def terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kin
 
 
 
-def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False):
+def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False):
     from fault_cases import Process,safe_event
+    assert type(empty_proof) is bool and not (empty_proof and (empty_initial or post_proof))
+    proof=post_proof or empty_proof
     assert type(empty_initial) is bool and not (empty_initial and post_proof)
-    if empty_initial:
+    if empty_proof:
+        name,step=oracle.empty_shape_specification(case);assert step=='proof'
+        operation='retire-empty';target,later=2,2;normal=name=='proof-baseline';mode='hold-after-complete'
+    elif empty_initial:
         name,step=oracle.empty_delivery_specification(case); assert step in ('baseline','loss')
         operation='retire-empty'; target,later=3,1; normal=step=='baseline'
         mode='hold' if normal else 'before-forward' if name=='before' else 'after-complete'
@@ -1207,7 +1212,7 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
     label=case['name']; config=output/Path(case['config']).name; proxy=None
     record=dict(status='INCOMPLETE',operation=operation,mode=mode,target_commit=target,wire=None,held=None,
         configuration=dict(path=case['config'],direct=None,proxied=None,restored=None),errors=[])
-    if post_proof: record['mutation']=None
+    if proof: record['mutation']=None
     def save(): lab.write_json(output/(label+'-delivery.json'),record)
     def callback(phase):
         nonlocal proxy
@@ -1223,7 +1228,7 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                 record['configuration'].update(direct=direct,proxied=proxied); save()
                 (output/(label+'-direct.toml')).write_text(direct); (output/(label+'-proxied.toml')).write_text(proxied); config.write_text(proxied)
             elif phase=='launched':
-                if normal or post_proof:
+                if normal or proof:
                     held=proxy.event('held',10)
                     capture=dict(event=held,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,
                         release_after_us=None,control=schema.rows(pg,case['database']),inputs=history.inputs_at(directory/'store'),backend=None)
@@ -1246,7 +1251,7 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                         assert b['pid']==checked.control['control_backend_pid'] and b['backend_start']==checked.control['control_backend_start']
                         assert b['database']==case['database'] and b['user']=='bigbrotr_control'
                         assert [held[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==[3,2,2,2]
-                    if post_proof:
+                    if proof:
                         assert expected is not None and initial is not None
                         window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
                         checked=oracle.terminal_held_state(expected,capture['control'],window,operation)
@@ -1255,7 +1260,10 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                         assert backend['pid']==checked.control['control_backend_pid'] and backend['backend_start']==checked.control['control_backend_start']
                         assert backend['database']==case['database'] and backend['user']=='bigbrotr_control'
                         assert [held[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==[target,target,target,target-1]
-                        if not normal:
+                        if empty_proof and not normal:
+                            record['mutation']=empty_shape_corruption(pg,output,case['database'],label+'-mutation',capture['control'],initial,name)
+                            assert record['mutation']['after_us']<checked.control['lease_expires_at_us'];save()
+                        elif not normal:
                             kind='head-drift' if name.endswith('-head') else 'digest-drift'
                             mutation=dict(kind=kind,before=capture['control'],after=None,statement=oracle.terminal_drift_statement(kind,capture['control'],initial),
                                 sql_output=None,before_us=history.server_clock(pg,case['database']),after_us=None)
@@ -1579,10 +1587,86 @@ def empty_lock_hook(pg,client,output,case,directory,expected):
     return callback
 
 
-def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,delivery=False,locks=False):
+def empty_shape_corruption(pg,output,database,label,expected,initial,name):
+    import subprocess
+    statement=oracle.empty_shape_actor_sql('before')+oracle.empty_shape_corruption_sql(name,expected,initial)+oracle.empty_shape_actor_sql('after')
+    record=dict(kind='privileged-isolated-empty-'+name,database=database,before=expected,after=None,statement=statement,
+        response=None,before_us=history.server_clock(pg,database),after_us=None)
+    def save():lab.write_json(output/(label+'.json'),record)
+    save();(output/(label+'.sql')).write_text(statement)
+    try:
+        response=lab.docker('exec','-i',pg['postgres'],'psql','-X','-A','-t','-q','--no-password','-v','ON_ERROR_STOP=1',
+            '-U','postgres','-d',database,data=statement,check=False,timeout=10)
+        record['response']=dict(returncode=response.returncode,stdout=response.stdout,stderr=response.stderr);save()
+        assert response.returncode==0 and response.stderr==''
+        record['after']=schema.rows(pg,database);record['after_us']=history.server_clock(pg,database);save()
+        oracle.empty_shape_corruption_checked(record,expected,initial,name,
+            dict(before_us=record['before_us'],after_us=record['after_us']),database)
+        return record
+    except subprocess.TimeoutExpired as error:
+        def text(value):return value.decode(errors='replace') if isinstance(value,bytes) else value or ''
+        record['response']=dict(returncode=None,stdout=text(error.stdout),stderr=text(error.stderr),outcome='UNKNOWN_TIMEOUT')
+        raise
+    finally:save()
+
+
+def empty_shape_snapshot(pg,client,output,clone,directory,expected,*,prepared=None):
+    restore=prepared is not None;label='proof-baseline-'+('restore-native' if restore else 'preserve-native')
+    window=dict(before_us=history.server_clock(pg,clone['database']),after_us=None)
+    transition.observe_origin_absence(pg,clone['database'],output,label)
+    before=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-before',directory),inputs=history.inputs_at(directory/'store'))
+    oracle.same(before['control'],expected[0]);assert (before['native'],before['inputs'])==expected[1:]
+    transition.observe_origin_absence(pg,clone['database'],output,label+'-before-copy')
+    store=directory/'store';snapshot=directory/'prepared-native-snapshot';terminal=directory/'terminal-native-preserved'
+    record=dict(kind='isolated-older-native-paired-with-genuine-terminal-sql' if restore else 'excluded-independent-prepared-native-copy',
+        before=before,after=None,source_files=history.census(store),retained_files=None,
+        prepared_path='proof-baseline/prepared-native-snapshot',terminal_path='proof-baseline/terminal-native-preserved',server_window=window)
+    if restore:record.update(prepared_files=history.census(snapshot),restored_files=None)
+    def save():lab.write_json(output/(label+'.json'),record)
+    save()
+    if restore:
+        assert record['prepared_files']==prepared['retained_files'] and not terminal.exists() and not terminal.is_symlink()
+        store.rename(terminal);record['retained_files']=history.census(terminal);save()
+        shutil.copytree(snapshot,store);record['restored_files']=history.census(store)
+        oracle.empty_shape_copy_checked(record['prepared_files'],record['restored_files'])
+    else:
+        assert not snapshot.exists() and not snapshot.is_symlink()
+        shutil.copytree(store,snapshot);record['retained_files']=history.census(snapshot)
+        oracle.empty_shape_copy_checked(record['source_files'],record['retained_files'])
+    save();transition.observe_origin_absence(pg,clone['database'],output,label+'-after-copy')
+    record['after']=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-after',directory),inputs=history.inputs_at(store))
+    assert history.census(snapshot)==(prepared['retained_files'] if restore else record['retained_files'])
+    if restore:assert history.census(terminal)==record['retained_files']
+    window['after_us']=history.server_clock(pg,clone['database'])
+    save();controls=oracle.empty_shape_fixture_controls(record,expected,prepared=prepared)
+    lab.write_json(output/(label+'-controls.json'),controls);clone.setdefault('shape_controls',{})[label]=controls
+    return oracle.empty_shape_snapshot_checked(record,expected,restore=restore,prepared=prepared),record
+
+
+def empty_shape_missing(pg,client,output,clone,directory,expected):
+    label='missing-handoff-mutation';window=dict(before_us=history.server_clock(pg,clone['database']),after_us=None)
+    transition.observe_origin_absence(pg,clone['database'],output,label)
+    before=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-before',directory),inputs=history.inputs_at(directory/'store'))
+    oracle.same(before['control'],expected[0]);assert (before['native'],before['inputs'])==expected[1:]
+    record=dict(kind='isolated-empty-missing-handoff',before=before,after=None,response=None,
+        arguments=['history-corrupt','/lab/missing-handoff/store','missing-handoff'],server_window=window)
+    lab.write_json(output/(label+'.json'),record)
+    response,_=history.capture(client,output,label,*record['arguments'])
+    record['response']=dict(returncode=response.returncode,stdout=response.stdout,stderr=response.stderr);lab.write_json(output/(label+'.json'),record)
+    assert response.returncode==0 and response.stderr==''
+    transition.observe_origin_absence(pg,clone['database'],output,label+'-after-mutation')
+    record['after']=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-after',directory),inputs=history.inputs_at(directory/'store'))
+    window['after_us']=history.server_clock(pg,clone['database'])
+    lab.write_json(output/(label+'.json'),record)
+    controls=oracle.empty_shape_fixture_controls(record,expected)
+    lab.write_json(output/(label+'-controls.json'),controls);clone.setdefault('shape_controls',{})[label]=controls
+    return oracle.empty_shape_missing_checked(record,expected)
+
+
+def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,delivery=False,locks=False,shapes=False):
     from initial_empty import guarded_fault
     from initial_gap_policy import GUARDS
-    name=clone['name']; origin='empty-compacted' if delivery or locks else oracle.EMPTY_ORIGIN_NAMES[name]
+    name=clone['name']; origin='empty-compacted' if delivery or locks or shapes else oracle.EMPTY_ORIGIN_NAMES[name]
     assert clone['origin']==origin and expected==origins[origin]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.EMPTY_GRANTS]
     oracle.history_catalog_checked(report['origins'][origin]['catalog'],clone['catalog_before'],grants=oracle.EMPTY_GRANTS)
@@ -1591,7 +1675,7 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
     helper=Path(__file__).with_name('installed_cycle_client.py'); target=output/helper.name
     if not target.exists(): shutil.copy2(helper,target)
     assert history.digest(helper)==history.digest(target)
-    if delivery or locks:
+    if delivery or locks or shapes:
         source=history.SOURCE/oracle.ACTIVATED_PROXY; target=output/'fault_proxy.py'
         if not target.exists(): shutil.copy2(source,target)
         assert history.digest(target)==history.digest(source)
@@ -1620,6 +1704,16 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
     if name=='original': expected=empty_restore(pg,client,output,clone,directory,expected,initial)
     if name in ('head','target-input'): expected=journey_mutation(pg,client,output,clone,directory,expected,initial)
     if name=='digest': expected=empty_digest_mutation(pg,client,output,clone,directory,expected,initial)
+    prepared_snapshot=None
+    if shapes:
+        if name=='proof-baseline':expected,prepared_snapshot=empty_shape_snapshot(pg,client,output,clone,directory,expected)
+        elif name=='missing-handoff':expected=empty_shape_missing(pg,client,output,clone,directory,expected)
+        elif name=='partial-sql':
+            label=name+'-mutation';transition.observe_origin_absence(pg,clone['database'],output,label)
+            mutation=empty_shape_corruption(pg,output,clone['database'],label,expected[0],initial,name)
+            controls=oracle.empty_shape_fixture_controls(mutation,expected,initial=initial,database=clone['database'])
+            lab.write_json(output/(label+'-controls.json'),controls);clone.setdefault('shape_controls',{})[label]=controls
+            expected=mutation['after'],expected[1],expected[2]
     predecessor=None; fault=None
     if name=='native-first':
         original_guards=json.loads(lab.sql(pg,clone['database'],'SELECT '+GUARDS))
@@ -1630,7 +1724,8 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
         oracle.empty_fault_guard_delta(fault)
         oracle.same(schema.rows(pg,clone['database']),expected[0])
         lab.write_json(output/(name+'-fault.json'),fault)
-    for step in (oracle.EMPTY_LOCK_STEPS if locks else oracle.EMPTY_DELIVERY_STEPS if delivery else oracle.EMPTY_STEPS)[name]:
+    for step in (oracle.EMPTY_SHAPE_STEPS if shapes else oracle.EMPTY_LOCK_STEPS if locks else oracle.EMPTY_DELIVERY_STEPS if delivery else oracle.EMPTY_STEPS)[name]:
+        if shapes and step=='native-open':expected,_=empty_shape_snapshot(pg,client,output,clone,directory,expected,prepared=prepared_snapshot)
         if step=='complete':
             restored=guarded_fault(pg,clone['database'],output,name,remove=True)
             assert restored==fault['guards_original']
@@ -1644,7 +1739,9 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
         baseline=None
         if delivery and step=='loss':
             baseline=oracle.only(report['cases'],name='baseline-baseline')['oracle']; assert baseline['status']=='PASS'
-        hook=empty_lock_hook(pg,client,output,case,directory,expected) if locks and step=='attempt' else terminal_delivery_hook(pg,client,output,case,directory,empty_initial=True,expected=expected) if delivery and step in ('baseline','loss') else None
+        if shapes and name in ('proof-head','proof-digest'):
+            baseline=oracle.only(report['cases'],name='proof-baseline-proof')['oracle'];assert baseline['status']=='PASS'
+        hook=terminal_delivery_hook(pg,client,output,case,directory,empty_proof=True,expected=expected,initial=initial) if shapes and step=='proof' else empty_lock_hook(pg,client,output,case,directory,expected) if locks and step=='attempt' else terminal_delivery_hook(pg,client,output,case,directory,empty_initial=True,expected=expected) if delivery and step in ('baseline','loss') else None
         def verify(c,s):
             if locks:
                 c['empty_configuration']=(output/Path(case['config']).name).read_text()
@@ -1659,27 +1756,32 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
                     fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
                     lab.write_json(output/(name+'-fault.json'),fault)
                 c['empty_fault']=json.loads(json.dumps(fault)); lab.write_json(output/(case['name']+'-verification.json'),c)
-            return oracle.verify_empty_context(c,s,expected,delivery=delivery,baseline=baseline,locks=locks)
+            return oracle.verify_empty_context(c,s,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes)
         expected=installed_cycle.execute(pg,client,output,case,directory,expected,catalog,initial,
-            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected,delivery=delivery,baseline=baseline,locks=locks),partial(oracle.empty_closed,delivery=delivery,locks=locks)),fault=hook)
+            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes),partial(oracle.empty_closed,delivery=delivery,locks=locks,shapes=shapes)),fault=hook)
         case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==catalog
         predecessor=case['name']; lab.write_json(output/'result.json',report)
     assert history.catalog(pg,clone['database'])==clone['catalog_before']
+    if shapes and name=='proof-baseline':
+        restored=transition.read(output/'proof-baseline-restore-native.json')
+        assert history.census(directory/'prepared-native-snapshot')==prepared_snapshot['retained_files']
+        assert history.census(directory/'terminal-native-preserved')==restored['retained_files']
     return predecessor
 
 
-def run_empty_initial(root,build,product_source,*,delivery=False,locks=False):
+def run_empty_initial(root,build,product_source,*,delivery=False,locks=False,shapes=False):
+    assert type(shapes) is bool and not (shapes and (locks or delivery))
     assert type(locks) is bool and not (locks and delivery)
-    origins,initial=oracle.empty_origins_checked(root,delivery=delivery or locks); profile=oracle.EmptyInitialLockProfile if locks else oracle.EmptyInitialDeliveryProfile if delivery else oracle.EmptyInitialProfile
+    origins,initial=oracle.empty_origins_checked(root,delivery=delivery or locks or shapes); profile=oracle.EmptyInitialShapeProfile if shapes else oracle.EmptyInitialLockProfile if locks else oracle.EmptyInitialDeliveryProfile if delivery else oracle.EmptyInitialProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
         database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
-        scope='Compacted empty current-Control claim ordering, actual installed cancellation and DB-UTC expiry' if locks else 'Compacted empty initial final COMMIT measured baseline and before/after loss with fresh completion/retry' if delivery else 'Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
+        scope='Compacted empty post-proof H/D and explicit partial/mixed-snapshot refusal shapes' if shapes else 'Compacted empty current-Control claim ordering, actual installed cancellation and DB-UTC expiry' if locks else 'Compacted empty initial final COMMIT measured baseline and before/after loss with fresh completion/retry' if delivery else 'Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
     try:
-        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial,delivery=delivery,locks=locks),
-            origin_specs=oracle.EMPTY_PREPARED_ORIGINS[:1] if delivery or locks else oracle.EMPTY_ORIGINS,origin_for_clone={n:'empty-compacted' for n in profile.CLONES} if delivery or locks else oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
+        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial,delivery=delivery,locks=locks,shapes=shapes),
+            origin_specs=oracle.EMPTY_PREPARED_ORIGINS[:1] if delivery or locks or shapes else oracle.EMPTY_ORIGINS,origin_for_clone={n:'empty-compacted' for n in profile.CLONES} if delivery or locks or shapes else oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
             producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
             empty_initial=True,product_source=product_source)
-    finally: assert oracle.empty_origins_checked(root,delivery=delivery or locks)==(origins,initial)
+    finally: assert oracle.empty_origins_checked(root,delivery=delivery or locks or shapes)==(origins,initial)
 
 
 ORIGIN = oracle.ORIGIN
@@ -1700,6 +1802,7 @@ if __name__ == '__main__':
     profile.add_argument('--activated-terminal-guards',action='store_true',help='Separate unresolved import, positive draining retirement and isolated native OPEN guard')
     profile.add_argument("--empty-initial",action="store_true",help="Prepared empty initial target retirement and native-first continuation")
     profile.add_argument('--empty-initial-faults',action='store_true',help='Compacted empty final COMMIT baseline, delivery loss and fresh retries')
+    profile.add_argument('--empty-initial-proof-shapes',action='store_true',help='Compacted empty final proof checks and isolated partial/mixed snapshot refusals')
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     args = parser.parse_args()
-    (partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
