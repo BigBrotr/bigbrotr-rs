@@ -63731,8 +63731,10 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-preparer-20261024",
           "branch": "work/compacted-empty-initial-preparer",
           "base": "d99b999dda90e2dc151b51f74a8e171f8bb0d524",
-          "state": "SOURCE_WORK_ACTIVE; no engine/build/runtime",
-          "scope": "Existing advisory one clone/three processes; actual preparing-Control ordinary import claim before gap release, fresh installed completion preserving job, fresh empty-retirement refusal; no resurrected owner or current-claim substitution"
+          "state": "SOURCE_CORRECTION_ACTIVE after actual idle-in-transaction mismatch at validation3",
+          "scope": "Existing advisory one clone/three processes; actual preparing-Control ordinary import claim before gap release, fresh installed completion preserving job, fresh empty-retirement refusal; no resurrected owner or current-claim substitution",
+          "source": "83f1de3dfa0280c34d4ce7c7746ca50916b1e53a",
+          "tree": "3f530f1ee7e552162c471dd141ed4557b873696f"
         },
         "proof_shapes_installed_attempts": [
           {
@@ -63777,9 +63779,32 @@
         },
         "later_preparation_audit": {
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
-          "state": "READ_ONLY_SOURCE_AUDIT_ACTIVE",
+          "state": "SOURCE_AUDIT_COMPLETE; root fullread/32 unchanged source hashes/10 endpoint artifacts checked",
           "source": "14708eb9 product owners unchanged at2b556790",
-          "scope": "Existing later preparation/handoff and prepared recovery boundaries for compacted initial; no source edits, engines or second plan"
+          "scope": "Existing later preparation/handoff and prepared recovery boundaries for compacted initial; no source edits, engines or second plan",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-successor-preparation-audit-20261024.json",
+            "sha256": "1edb4018941f1bfbb25d899d13ac571e97b6137f4858c5d04238dc3eb513c128"
+          }
+        },
+        "original_preparer_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3",
+          "source": "83f1de3dfa0280c34d4ce7c7746ca50916b1e53a",
+          "product": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
+          "driver_session": 7347,
+          "status": "FAIL_FIXTURE_LIVE_TRANSACTION_EXPECTATION_INCOMPLETE_CUSTODY",
+          "preflight": "root-preflight.json",
+          "driver_exit": 1,
+          "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3/verified-failure.json",
+          "resources": "Owned client b3847756 stopped143 and PG71775507 stopped0/PID0/noOOM; originalpreservation5true; no native reopen or further cleanup"
+        },
+        "later_preparation_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-20261024",
+          "branch": "work/compacted-later-empty",
+          "base": "b57116901324111742f04faa175e4386647cac2d",
+          "state": "SOURCE_IMPLEMENTATION_ACTIVE; no build/engines",
+          "scope": "Explicit compacted later preparation/gap and existing --retire-empty-successor four-state recovery; source/probe/component controls only, no new CLI/SQLformat/migration, activation/live/Archive remain gated",
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh"
         }
       }
     }

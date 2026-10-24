@@ -45820,7 +45820,37 @@
                 "root_review": "Full three-file deltas and new helper/checker/dispatch bodies read; all10 review boundary hashes and frozen source/diagnostic/build identities verified. Independently checked single byte25 change7\u21926, full84-row transcript,125\u2192126 fixture write, exact preclaim refusal, all77 unchanged SQL tables/xmins and unchanged native126/inputs/catalog, original preservation and actual stopped resources.",
                 "scope": "One clone/one installed refusal,14 case and8 fixture controls; raw binds5737 files. Prior profiles unchanged and not rerun; no GC, floor writer or product change.",
                 "not_run": "Other malformed encodings, original-preparer (separate active task), proof-use uncertainty, physical loss/capacity and later consumers"
+              },
+              "original_preparer_fixture": {
+                "status": "SOURCE_CORRECTION_ACTIVE_AFTER_INSTALLED_FIXTURE_FAILURE",
+                "source": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-preparer-source-v1.json",
+                  "sha256": "8a3320de90141798c9e47074c987646d439621e8ca670d4032231ee036e389ec"
+                },
+                "critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-preparer-critical-review-v1.json",
+                  "sha256": "99fa5ed072ec3853cbbe149569541a5c0a21604cb2bbbb4da7aac38dc32e9869"
+                },
+                "attempts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-83f1de3/verified-failure.json",
+                    "sha256": "58764d24f49828fee78a6decd64a67cfa575f597581c7c1f5143e6ca9bcf5936"
+                  }
+                ],
+                "finding": "First actual attempt expected idle/None, observed idle in transaction at validation3 before actor creation. Source diagnosis: confirmed preparation COMMIT followed by second transaction whose snapshot holds datasets FOR UPDATE; ordinary job insertion at held gate would conflict. Author/reviewer correct schedule, not merely idle predicate; exact frozen source review remains historical and incomplete on this boundary.",
+                "root_review": "Full three-file deltas and new owners read;19 author boundaries/18 independent boundaries and all18 diagnostic artifacts reconciled at frozen83f1de3. Original runtime failure preserved; no after-native/raw qualification from unknown custody.",
+                "not_run": "Actual original-preparer claim, installed completion/refusal and raw replay; next corrected source remains pending"
               }
+            },
+            "later_empty_consumer_work": {
+              "status": "SOURCE_IMPLEMENTATION_ACTIVE_RUNTIME_NOT_RUN",
+              "audit": {
+                "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-successor-preparation-audit-20261024.json",
+                "sha256": "1edb4018941f1bfbb25d899d13ac571e97b6137f4858c5d04238dc3eb513c128"
+              },
+              "scope": "Existing later preparation/gap and --retire-empty-successor PendingNative/PreparedOpen/PreparedClosing/Terminal. Positive original later replay follows compacted initial; shared final H/D and postdelivery native/input census with continuous custody. No new CLI or persistent format; ordinary/activation/live/Archive gates preserved.",
+              "expected_only": "Audited existing Terminal2 snapshot90rows/134 with8inputs; preparation expected93/138 then emptyclose93/139. SQL18 inserts+dataset update; later terminal13 target updates+ingest_terminal_transactions receipt. Fresh PreparedOpen endpoint93/138 with1required lateroriginal also retained. No new runtime claim.",
+              "root_review": "Audit fullread;32 non-navigation source hashes and10 frozen endpoint artifacts reconciled, no engine origin inspection. Product source owner isolated atb5711690; root documentation and other Pythonfixture work separate."
             }
           }
         }
