@@ -45330,8 +45330,21 @@
                     }
                   },
                   "root_review": "Complete five-file delta and affected dispatch/mode/gate/lifecycle functions reviewed against retained complete-owner reads; strict direct /lab parent correction made before freeze. Exact five hashes reconciled; author rustfmt/diff PASS reused. Product libraries/Cargo unchanged. No runtime approval from source review.",
-                  "status": "SOURCE_ONLY_BUILD_AND_INSTALLED_NOT_RUN",
-                  "next": "Exact producer-floor build; independently reviewed import/draining/nativeOPEN fixture on that build."
+                  "status": "EXACT_BUILD_VERIFIED_INSTALLED_GUARDS_NOT_RUN",
+                  "next": "Independently reviewed import/draining/nativeOPEN fixture on verified e75aaa2 build."
+                },
+                "import_gate_build_qualification": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-e75aaa2",
+                  "source": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d",
+                  "tree": "ab0485aeaf06485aaeb0d691d4b56e5aec1627cf",
+                  "status": "PASS_EXACT_BUILD_AND_COMPONENTS",
+                  "driver_session": 21217,
+                  "driver_exit": 0,
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-e75aaa2/verified-build.json",
+                    "sha256": "866b1401910cc52790ae3696d8e96a0f576d9f8df07e447037870e1992d6a089"
+                  },
+                  "verification": "Root independently matched Git archive, all 2060 exported file hashes, manifest/build metadata and five ELF hashes; all 10 checks including Clippy PASS, 179 components/70 exact mandatory controls unchanged from qualified 7bc. Exact owned containers observed stopped0/PID0/noOOM; inventory_changed empty. Installed terminal guards NOT_RUN."
                 }
               }
             }

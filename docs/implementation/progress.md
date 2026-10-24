@@ -6,10 +6,10 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main/harness `b6c4315a3b7e322e408818c93036b3aa7c53f787`, tree30ca3ecd;
-verified pushb6c4315a (driver22551 joined0). Product7bc63d97 remains unchanged.
-This commit integrates reviewed import-gate probed92b3c1; build/runtime NOT_RUN.
-The immediately preceding qualification checkpoint is88fb01dc.
+Main `e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d`, treeab0485ae;
+verified pushe75aaa2f (driver8524 joined0). Exact import-gate build21217 joined0
+and is independently verified; this documentation commit records that result.
+Previously qualified product7bc63d97 and three installed profiles remain distinct.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -40,20 +40,27 @@ zero-request claimed-job refusal/abandonment/retirement.
 binds6163 files. Its `verified-run.json` records actual refresh5/7 holds and four
 H/D refusals without final effects/ACK/release, retaining native/SQL/input state.
 
-Next: run the integrated import-gate probe exact producer-floor build,
-then qualify the separate import/draining/nativeOPEN guard fixture when reviewed.
+`runs/producer-floor-e75aaa2`: exact import-gate CLI/probe build,179 components/70
+mandatory controls and all10 checks including Clippy PASS; driver21217 joined0.
+Root verified all2060 exported source files, archive/manifest/build identities and
+five ELFs. `verified-build.json` binds this result; build containers stopped0.
+
+Next: qualify the separate import/draining/nativeOPEN guard fixture when reviewed
+using the verified e75aaa2 build.
 The Python author works isolated on that next profile; current qualifiers remain
 separate. No GC/floor writer/unlink is enabled.
 
 ## Work and resources
 
-No build/connected runtime active. Latest client86678a33 stopped143; borrowed
-PG71775507 stopped0, PID0/noOOM. All15 custody closed and cleanup/unrelated/
-unexpected/missing-owned arrays empty; origin unchanged. No cache cleanup.
-Source-proof author worktree is clean detached4e93c415; exact seven-file
-integration reconciled before work ref retirement. Import-gate d92b3c1 is clean,
-reviewed, integrated/unbuilt in `.research/compacted-terminal-import-gate-20261024`.
-Next Python guard fixture source work is isolated; runtime remains root-owned.
+No root build or connected PostgreSQL fixture is active. Build21217 completed at
+`runs/producer-floor-e75aaa2`; resources.json owns retained container/cache identity. Latest
+proof15 client86678a33 stopped143, PG71775507 stopped0/PID0/noOOM; all custody and
+cleanup checks passed. No cache cleanup. Import-gate author is clean detached
+d92b3c1 after exact integration/ref reconciliation; worktree/evidence preserved.
+Guard fixture author/reviewer work source-only in
+`.research/compacted-activated-terminal-guards-20261024`, baseb6c4315a, proposed
+3 clones/8 commands. Native OPEN expects Control(InvalidMetadata) at the native/SQL
+inspector, not the later native observation guard; SQL veto maps Control(Backend).
 Earlier detached author worktrees, .research, datasets, failures and external labs
 remain preserved. Redundant reconciled endpoint branch retired; files retained.
 

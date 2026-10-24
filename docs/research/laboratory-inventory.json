@@ -63234,9 +63234,9 @@
             "method": "Actual local turn_context plus collaboration settings observed at creation"
           },
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-terminal-import-gate-20261024",
-          "branch": "compacted-terminal-import-gate-20261024",
+          "branch": "DETACHED; exact reconciled compacted-terminal-import-gate-20261024 ref retired",
           "base": "30656b709cee6709124a4a55375004e07a6afbe7",
-          "state": "FROZEN_REVIEWED_SOURCE; exact five-file integration; BUILD_NOT_RUN",
+          "state": "SOURCE_INTEGRATED_E75AAA2; exact build verified; installed guard profile NOT_RUN",
           "scope": "Bounded gate under genuine live activating Control before terminal Event seed; ordinary application-role import claim performed later by root-owned fixture. No product-library change or historical synthetic claim.",
           "commit": "d92b3c1a298f0e867e2cb3393a34f72f7781fda2",
           "tree": "e7ce186c42946bec4ba8d6ea9156e8850aca09d3",
@@ -63249,7 +63249,8 @@
               "path": ".research/producer-checkpoint-ack-review-20261020/compacted-terminal-import-gate-critical-review-20261024.json",
               "sha256": "6455bdb28d0e0acb9e697a349a5a4390c4b57554c85c4854c7d2232074c524c3"
             }
-          }
+          },
+          "integration": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d"
         },
         "source_proof_qualified_run": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-source-proof-b6c4315",
@@ -63284,6 +63285,46 @@
           ],
           "free_bytes_after": 264655302656,
           "preservation": "Six clones and raw artifacts retained; no cleanup; origin unchanged."
+        },
+        "import_gate_build_work": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-e75aaa2",
+          "source": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d",
+          "tree": "ab0485aeaf06485aaeb0d691d4b56e5aec1627cf",
+          "owner": "bfa08af2dc5229282242e509742dd34d",
+          "driver": 21217,
+          "status": "PASS_EXACT_BUILD_AND_COMPONENTS; stopped-retained",
+          "resources": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-e75aaa2/resources.json",
+          "free_bytes_before": 264600473600,
+          "driver_exit": 0,
+          "free_bytes_after": 264228917248,
+          "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-e75aaa2/verified-build.json",
+          "containers": [
+            {
+              "id": "57da65ad9fee36b4405de159038943f38dcbfe5748985ba8dd00c449ab7d62c6",
+              "name": "/bigbrotr-producer-floor-e75aaa2-fetch",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "5b3fa0913a31bfe6406610b77673f39e588a23ac7474ab70c3e144efa5baa418",
+              "name": "/bigbrotr-producer-floor-e75aaa2-native",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ]
+        },
+        "terminal_guards_fixture_work": {
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
+          "critical_review": "/root/compacted_reader_review; reused verified Astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-guards-20261024",
+          "branch": "work/compacted-activated-terminal-guards",
+          "base": "b6c4315a3b7e322e408818c93036b3aa7c53f787",
+          "state": "SOURCE_WORK_ACTIVE; no runtime for agents",
+          "scope": "Separate3-clone/8-command import/draining/nativeOPEN profile; proposed declaration only, NOT_RUN"
         }
       }
     }
