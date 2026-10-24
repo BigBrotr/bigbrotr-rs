@@ -44846,12 +44846,12 @@
               "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
               "terminal_consumer_work": {
                 "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
-                "state": "SOURCE_REVIEWED_INTEGRATED; exact-source build and connected terminal qualification NOT_RUN",
+                "state": "PASS_EXACT_BUILD_AND_COMPONENTS; installed compacted terminal NOT_RUN",
                 "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "NOT_RUN; no build/connected process active",
+                "runtime": "No build/connected process active; source-only fixture/fault-probe agents active",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -44910,7 +44910,44 @@
                   "mandatory_controls": "Seven exact terminal component names added to existing producer-floor required_controls; predicted179components/70controls is NOT a measured result.",
                   "static_checks": "PASS scoped rustfmt, git diff --check, native.py AST and seven authored-file byte identities",
                   "connected_gates": "First25-command terminal profile pending; separate before/after final COMMIT loss, job-lock cancellation/actual expiry, ancestor H/D drift after earlier proof and zero-request claimed-job extension still required."
-                }
+                },
+                "integrated_commit": "56cac527313a8b5d813b52917beea1e544d010a0",
+                "integrated_tree": "37ac9ba41ecd889e241a97e5f0510918d8e04543",
+                "build_attempts": [
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-56cac52",
+                    "source": "56cac527313a8b5d813b52917beea1e544d010a0",
+                    "tree": "37ac9ba41ecd889e241a97e5f0510918d8e04543",
+                    "driver": 34712,
+                    "status": "PASS_EXACT_BUILD_AND_COMPONENTS",
+                    "owner": "18b8fbe2d25b0bea754c1bdac56fa530",
+                    "containers": [
+                      {
+                        "id": "ea27af12ce536eba27b168bd3cfe99ba5c51c2e28b1bafdc1a2ad696bdaee0d0",
+                        "name": "/bigbrotr-producer-floor-56cac52-fetch",
+                        "state": "exited",
+                        "exit_code": 0,
+                        "pid": 0,
+                        "oom": false
+                      },
+                      {
+                        "id": "e623ca79496ec0f1f15ba311d65f8759452881480505b30d8d99195ce9e7e483",
+                        "name": "/bigbrotr-producer-floor-56cac52-native",
+                        "state": "exited",
+                        "exit_code": 0,
+                        "pid": 0,
+                        "oom": false
+                      }
+                    ],
+                    "driver_exit": 0,
+                    "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-56cac52/verified-build.json",
+                    "verified_receipt_sha256": "eef9034d6fc3e16e07d086aca29a9e9443ad423b26e233f65b902e030f56f2df",
+                    "components": 179,
+                    "required_controls": 70,
+                    "checks": "CLI/probe compilation, eight component selectors and Clippy PASS; exact source archive/files, binaries and mandatory names verified",
+                    "free_bytes_after": 270275141632
+                  }
+                ]
               }
             }
           }

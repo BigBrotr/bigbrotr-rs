@@ -916,8 +916,9 @@ and logical request counts above the unchanged physical64-file limit. Source
 closure, retirement success, later consumers, GC and physical-loss/restore/capacity
 remain unqualified by this slice. Both original failed attempts are preserved.
 
-The next compacted Source/abandonment/retirement extension has passed source review,
-but build and installed terminal qualification have not run. It uses a distinct source-capable proof: confirmed canonical
+The next compacted Source/abandonment/retirement extension at `56cac527` has passed
+source review, CLI/probe compilation,179 component tests/70 mandatory controls and
+Clippy. Installed terminal qualification has not run. It uses a distinct source-capable proof: confirmed canonical
 ancestor replay precedes genuine target originals, whose ordered digests, source
 cut and Event mask retain their existing meanings. The ACK-only proof cannot
 construct that source capability. Each final transaction must revalidate the

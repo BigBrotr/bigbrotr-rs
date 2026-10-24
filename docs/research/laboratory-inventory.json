@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "SOURCE_REVIEWED_INTEGRATED; build not started",
+        "state": "BUILD_PASS; fixture and fault-probe agents source-only",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -62945,9 +62945,9 @@
             "model": "gpt-6-astra",
             "reasoning": "xhigh",
             "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-native-20261024",
-            "branch": "work/compacted-activated-terminal-native",
+            "branch": "DETACHED at0a063ef3; redundant work/compacted-activated-terminal-native retired after clean status and exact five-file byte reconciliation with integrated main56cac527",
             "scope": "Native source proof, observation-only retirement and component controls",
-            "state": "COMPLETE; source integrated exactly, worktree and original commits retained",
+            "state": "COMPLETE; source, worktree and ignored evidence preserved",
             "head": "0a063ef361e6a36b58dea1bb71209f82363f7f87"
           },
           {
@@ -62961,7 +62961,45 @@
           }
         ],
         "preservation": "Prior detached authored worktrees/receipts/clones/failures retained, no cleanup",
-        "build_preflight_free_bytes": 270691000320
+        "build_preflight_free_bytes": 270691000320,
+        "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-56cac52",
+          "source": "56cac527313a8b5d813b52917beea1e544d010a0",
+          "tree": "37ac9ba41ecd889e241a97e5f0510918d8e04543",
+          "driver": 34712,
+          "owner": "18b8fbe2d25b0bea754c1bdac56fa530",
+          "containers": [
+            {
+              "id": "ea27af12ce536eba27b168bd3cfe99ba5c51c2e28b1bafdc1a2ad696bdaee0d0",
+              "name": "/bigbrotr-producer-floor-56cac52-fetch",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "e623ca79496ec0f1f15ba311d65f8759452881480505b30d8d99195ce9e7e483",
+              "name": "/bigbrotr-producer-floor-56cac52-native",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "state": "stopped-retained",
+          "driver_exit": 0,
+          "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-56cac52/verified-build.json",
+          "verified_receipt_sha256": "eef9034d6fc3e16e07d086aca29a9e9443ad423b26e233f65b902e030f56f2df",
+          "free_bytes_after": 270275141632
+        },
+        "fault_probe_work": {
+          "agent": "/root/compacted_reader_review; reused verified gpt-6-astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fault-probe-20261024",
+          "branch": "work/compacted-activated-terminal-fault-probe",
+          "base": "56cac527313a8b5d813b52917beea1e544d010a0",
+          "state": "ACTIVE source-only; no engines/builds",
+          "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation"
+        }
       }
     }
   },
