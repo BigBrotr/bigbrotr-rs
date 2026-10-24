@@ -1097,8 +1097,14 @@ Its first installed profile passed13 commands/239 controls on nine copies;
 exact raw replay bound7698 files. It covers both evidence bases, unchanged
 terminal retries, a real SQL failure after native closure and fresh completion,
 and the selected H/D/input/activation/nonempty refusals. All four origins remain
-unchanged. Final COMMIT delivery loss, genuine claim/lock/cancellation/UTC-expiry,
-proof-use races and malformed/partial states remain separate qualification gates.
+unchanged. Separate fixture `b9c61f59`, using the same product, passed five
+commands/125 controls on three copies, with raw replay over5876 bound files.
+Its observed final COMMIT3 baseline distinguishes loss before forwarding from
+loss after server completion. Both leave exactly one native close and report
+CommitUnknown; fresh recovery completes prepared SQL or preserves all thirteen
+terminal timestamps/xmins without another native write. Genuine claim/lock/
+cancellation/UTC-expiry, proof-use races, original-input delivery and malformed/
+partial states remain separate qualification gates.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "FIRST_INSTALLED_AND_RAW_PASS; final delivery/claims/lock/proof-use gates open",
+              "status": "FIRST_INSTALLED_AND_FINAL_DELIVERY_RAW_PASS; claims/locks/cancel/UTC/proof-use gates open",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Finish reviewed separate3-clone/5-command final COMMIT baseline/loss fixture, execute and raw-replay it against qualified product30ab2e4; retain remaining claims/locks/cancel/UTC/proof-use/partial gates.",
+              "next": "Complete critically reviewed genuine current-Control claim/order/cancel/UTC-expiry fixture using existing helpers; preserve original-preparer, proof-use and malformed/partial gates.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45483,7 +45483,7 @@
                 }
               ],
               "delivery_extension": {
-                "status": "SOURCE_REVIEWED; installed/raw NOT_RUN",
+                "status": "INSTALLED5/125_AND_RAW5876_PASS",
                 "audit": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fault-boundaries-20261024.json",
                   "sha256": "8a74936e7f2a1c3eaf388674ec2241d0406ec7ef7d367949cb445d2710c3294d"
@@ -45507,6 +45507,35 @@
                   },
                   "root_review": "All four deltas and complete affected hook/oracle/held/native/Control/raw branches reviewed; four exact frozen source and helper/diagnostic hashes reconciled; changed ASTs and diff PASS. Original13/239 pure output byte-identical; new5/125 plus6 baseline-refusal diagnostics preserved, not product evidence.",
                   "status": "SOURCE_REVIEWED; installed/raw NOT_RUN"
+                },
+                "qualification": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-faults-b9c61f5",
+                  "source": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
+                  "tree": "2f7acbf956493befeb1118a5384d414f00e48dfc",
+                  "product_source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+                  "driver": 26975,
+                  "driver_exit": 0,
+                  "raw_driver": 36520,
+                  "raw_exit": 0,
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-faults-b9c61f5/verified-run.json",
+                    "sha256": "baf7e8476874bade88b1590889a9e755abd9b4296d5e348a70c573dee355b568"
+                  },
+                  "clones": 3,
+                  "commands": 5,
+                  "checker_controls": 125,
+                  "raw_bound_files": 5876,
+                  "measured": "Actual held finalCOMMIT3 then successful total4. Before loss counters3/2/2/2, after loss3/3/3/2; both exact CommitUnknown, refreshed unreleased Control, native125->126 once. Before fresh retry13 target rows/0 native; after retry0/0 with unchanged terminal timestamps/xmins.",
+                  "preservation": "Prepared origin all five preservation maps true; every actual child/proxy/backend closed; client143 and PG0/PID0/noOOM; cleanup/unrelated/unexpected/missing-owned empty.",
+                  "not_run": [
+                    "Actual product reclamation/GC, floor publication or unlink",
+                    "Real preparing/current-Control import/acquisition claim vetoes and lock waits, cancellation and UTC expiry",
+                    "Proof-to-use root/sequence/input/H/D races and optional residual original census",
+                    "SQL-terminal/native-OPEN refusal, malformed floor and partial target SQL/native shapes",
+                    "Native write-unknown, driver/syscall faults, physical limits, mixed restore and capacity",
+                    "Later recovery, live frontier, Archive and later empty-attempt retirement",
+                    "Original-input empty final COMMIT delivery loss; only compacted predecessor exercised here"
+                  ]
                 }
               },
               "qualified_build": {

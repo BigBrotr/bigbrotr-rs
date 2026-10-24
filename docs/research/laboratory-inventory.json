@@ -63393,7 +63393,7 @@
       },
       "compacted_empty_initial_work_20261024": {
         "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-        "state": "FIRST_INSTALLED_RAW_PASS; delivery fixture source work",
+        "state": "FIRST_AND_DELIVERY_INSTALLED_RAW_PASS; locks fixture source work",
         "native": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-native-20261024",
@@ -63490,9 +63490,9 @@
         "delivery_fixture": {
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-delivery-20261024",
-          "branch": "work/compacted-empty-initial-delivery",
+          "branch": "DETACHED; exact reconciled work/compacted-empty-initial-delivery ref retired",
           "base": "0ed4f31b33cd1a1e1eee3c73b3bdd751fe52c729",
-          "state": "CLEAN_FROZEN90FFE169; exact4 files integrated canonical; no engines",
+          "state": "INTEGRATED_B9C61F59; exact four files reconciled; author clean detached",
           "scope": "Separate3-clone/5-command measured final COMMIT delivery profile; first13 fixture unchanged",
           "audit": {
             "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fault-boundaries-20261024.json",
@@ -63580,6 +63580,53 @@
             }
           ],
           "free_bytes_after": 262579396608
+        },
+        "delivery_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-faults-b9c61f5",
+          "source": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
+          "product_source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+          "driver": 26975,
+          "state": "PASS5/125; installed26975 and raw36520 joined0;5876 bindings",
+          "owner": "8baf26e86e466ffc74da3c6118f2d15b",
+          "label": "org.bigbrotr.installed-compacted-empty-initial-faults",
+          "client": "021bec4620afc98850c38b35eb4737a422a2208c4a50ea6f6a599da879187bad",
+          "free_bytes_before": 262209323008,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-faults-b9c61f5/verified-run.json",
+            "sha256": "baf7e8476874bade88b1590889a9e755abd9b4296d5e348a70c573dee355b568"
+          },
+          "containers": [
+            {
+              "id": "021bec4620afc98850c38b35eb4737a422a2208c4a50ea6f6a599da879187bad",
+              "name": "/bigbrotr-compacted-empty-fault-b9c61f5",
+              "label": "org.bigbrotr.installed-compacted-empty-initial-faults",
+              "owner": "8baf26e86e466ffc74da3c6118f2d15b",
+              "state": "exited",
+              "exit_code": 143,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "label": "org.bigbrotr.control-migration-lab",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 262141206528
+        },
+        "locks_fixture": {
+          "owner": "/root/compacted_reader_fixture; verified Astra/xhigh reused",
+          "reviewer": "/root/compacted_reader_review; verified Astra/xhigh reused",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-locks-20261024",
+          "branch": "work/compacted-empty-initial-locks",
+          "base": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
+          "state": "SOURCE_WORK_ACTIVE; no engines",
+          "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain"
         }
       }
     }
