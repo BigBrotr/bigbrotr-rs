@@ -507,11 +507,99 @@ JOURNEY_SUITE = transition.Suite(directory=oracle.InitialJourneyProfile.DIRECTOR
     not_run=oracle.InitialJourneyProfile.NOT_RUN)
 
 
-def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True):
+def empty_preparer_setup(pg,output,clone,directory,expected):
+    """Admit and seal the ordinary unowned job before the gate's dataset lock."""
+    from concurrency_cases import Session
+    from initial_empty_locks import guards,session_identity,JOB,ACTOR,REQUEST,DIGEST
+    database=clone['database']; sessions=[]
+    setup=dict(before=schema.rows(pg,database),job_id='\\x'+JOB,principal_id='\\x'+ACTOR,request_key='\\x'+REQUEST,
+        request_digest='\\x'+DIGEST,guards_before=guards(pg,database),statement=[],transactions=[],status='INCOMPLETE',cleanup_errors=[])
+    record=dict(setup=setup,inputs_before=history.inputs_at(directory/'store'),actor_exit_code=None,actor_closed_by_us=None)
+    oracle.same(setup['before'],expected[0]); assert record['inputs_before']==expected[2]=={}
+    def save(): lab.write_json(output/'preparer-setup.json',record)
+    def owned():
+        current,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert current['State']['Running'] and current['Config']['Labels'][lab.LABEL]==pg['owner']
+    try:
+        setup['server_window']=dict(before_us=history.server_clock(pg,database))
+        actor=Session(pg,database,'preparer_setup',sessions,role='bigbrotr_control')
+        setup.update(backend=actor.backend,identity=session_identity(actor),created_at_us=history.server_clock(pg,database))
+        created=setup['created_at_us']
+        setup['statement']=['BEGIN ISOLATION LEVEL READ COMMITTED;',
+            "INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,kind,config_revision,policy_revision,created_at_us) SELECT "
+            f"decode('{JOB}','hex'),dataset_id,decode('{ACTOR}','hex'),decode('{REQUEST}','hex'),decode('{DIGEST}','hex'),'import',config_revision,policy_revision,{created} "
+            "FROM control.datasets RETURNING to_jsonb(jobs)||jsonb_build_object('xmin',xmin::text);",
+            f"UPDATE control.jobs j SET input_complete=true WHERE job_id=decode('{JOB}','hex') RETURNING to_jsonb(j)||jsonb_build_object('xmin',xmin::text);",'COMMIT;']
+        save()
+        for statement in setup['statement']:
+            setup['transactions'].append(actor.execute(statement)); save()
+        setup['server_window']['after_us']=history.server_clock(pg,database)
+        setup.update(after=schema.rows(pg,database),guards_after=guards(pg,database))
+        record['inputs_after']=history.inputs_at(directory/'store')
+        actor.close(owned); sessions.remove(actor)
+        record['actor_exit_code']=actor.process.returncode
+        setup['actor_absence']=installed_cycle.exact_absence(pg,database,[actor.backend])
+        record['actor_closed_by_us']=history.server_clock(pg,database)
+        setup['status']='CAPTURED'; oracle.empty_preparer_setup_checked(record,expected)
+    finally:
+        for actor in reversed(sessions):
+            try: actor.close(owned)
+            except BaseException as error: setup['cleanup_errors'].append(dict(stage='setup-actor',error=repr(error)))
+        save()
+    return record
+
+
+def empty_preparer_claim(pg,output,case,directory,gate):
+    """Claim the already admitted job under the actual waiting preparer."""
+    from concurrency_cases import Session
+    from initial_empty_locks import guards,session_identity,claim_statement
+    database=case['database']; before=gate['control']
+    intent=oracle.only(before['initial_ingest_successions'])
+    control=oracle.only(before['owner_epochs'],role='control',resource_id=intent['prepared_by_resource'],epoch=intent['prepared_by_epoch'])
+    assert control['process_incarnation']==intent['prepared_by_incarnation'] and control['state']=='active'
+    value=dict(status='INCOMPLETE',cleanup_errors=[],before=before,control=control,transactions=[])
+    sessions=[]
+    def save(): lab.write_json(output/(case['name']+'-import-claim.json'),value)
+    def owned():
+        current,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert current['State']['Running'] and current['Config']['Labels'][lab.LABEL]==pg['owner']
+    def live():
+        return json.loads(lab.sql(pg,database,"SELECT json_build_object('pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state,'xact_start',xact_start,'query_start',query_start,'query',query,'backend_xid',backend_xid::text,'blockers',pg_blocking_pids(pid)) FROM pg_stat_activity WHERE pid="+str(control['control_backend_pid'])+" AND backend_start='"+control['control_backend_start']+"'::timestamptz AND datname='"+database+"';"))
+    try:
+        oracle.same(schema.rows(pg,database),before)
+        value.update(inputs_before=history.inputs_at(directory/'store'),guards_before=guards(pg,database),live_before=live(),
+            server_window=dict(before_us=history.server_clock(pg,database)))
+        oracle.empty_preparer_live_checked(value['live_before'],control,intent,database,value['server_window']['before_us'])
+        actor=Session(pg,database,'empty_initial_preparer_claim',sessions,role='bigbrotr_control')
+        value.update(backend=actor.backend,identity=session_identity(actor),claimed_at_us=history.server_clock(pg,database))
+        value['statements']=['BEGIN ISOLATION LEVEL READ COMMITTED;',claim_statement(control,False),'COMMIT;']; save()
+        for statement in value['statements']:
+            value['transactions'].append(actor.execute(statement)); save()
+        value['server_window']['after_us']=history.server_clock(pg,database)
+        value.update(after=schema.rows(pg,database),inputs_after=history.inputs_at(directory/'store'),guards_after=guards(pg,database),live_after=live())
+        value['observed_by_us']=history.server_clock(pg,database)
+        assert value['guards_before']==value['guards_after'] and value['live_before']==value['live_after']
+        assert value['inputs_before']==value['inputs_after']=={} and value['observed_by_us']<control['lease_expires_at_us']
+        oracle.empty_preparer_claim_rows(value,before,control)
+        actor.close(owned); sessions.remove(actor)
+        value['actor_exit_code']=actor.process.returncode
+        value['actor_absence']=lab.sql(pg,'postgres',"SELECT count(*) FROM pg_stat_activity WHERE pid="+str(actor.backend['pid'])+" AND backend_start='"+actor.backend['backend_start']+"'::timestamptz AND datname='"+database+"';")
+        value['actor_closed_by_us']=history.server_clock(pg,database)
+        assert type(value['actor_exit_code']) is int and value['actor_absence']=='0'
+        value['status']='CAPTURED'
+    finally:
+        for actor in reversed(sessions):
+            try: actor.close(owned)
+            except BaseException as error: value['cleanup_errors'].append(dict(stage='actor',error=repr(error)))
+        save()
+    return value
+
+
+def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True,preparer=False):
     from initial_empty_locks import Probe
     from activated_retirement_expiry import wait_event
     from retirement_wait import open_gate
-    assert type(compacted) is bool
+    assert type(compacted) is bool and type(preparer) is bool and (not preparer or compacted)
     basis='compacted' if compacted else 'original'
     label=case['name']; prefix='/lab/'+label+'-gate'
     args=[case['operation'],case['database'],'/run/secrets/application',case['config'],prefix]
@@ -528,12 +616,24 @@ def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True):
         gate['observed_before_us']=history.server_clock(pg,case['database'])
         gate['control']=schema.rows(pg,case['database']); gate['inputs']=history.inputs_at(directory/'store')
         gate['observed_after_us']=history.server_clock(pg,case['database']); save()
+        if preparer:
+            gate['preparer_claim']=empty_preparer_claim(pg,output,case,directory,gate); save()
         path=output/(label+'-gate.go'); assert gate['ready']['path']==prefix+'.go'
-        gate['go_before_us']=history.server_clock(pg,case['database']); open_gate(path)
+        gate['go_before_us']=history.server_clock(pg,case['database'])
+        if preparer: assert gate['go_before_us']<gate['preparer_claim']['control']['lease_expires_at_us']
+        open_gate(path)
         gate['go_after_us']=history.server_clock(pg,case['database']); save()
         gate['released']=wait_event(probe,'successor-'+basis+'-gap-gate',phase='released'); save()
+        if preparer:
+            gate['released_observed_us']=history.server_clock(pg,case['database'])
+            assert gate['released_observed_us']<gate['preparer_claim']['control']['lease_expires_at_us']; save()
         code=probe.wait(15); probe.observe()
         response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+        if preparer:
+            gate['preparer_control_absence']=history.observe_backend_absence(pg,case['database'],output,label+'-preparer-control')
+            control=gate['preparer_claim']['control']
+            gate['preparer_absence']=installed_cycle.exact_absence(pg,case['database'],[dict(pid=control['control_backend_pid'],
+                backend_start=control['control_backend_start'],database=case['database'],control_epoch=control['epoch'])])
     except BaseException as error:
         gate['errors'].append(dict(stage='gap-capture',error=repr(error)))
         raise
@@ -545,8 +645,9 @@ def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True):
     return args,gate
 
 
-def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,preparation=False,delivery=False):
+def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,preparation=False,delivery=False,preparer=False):
     assert type(preparation) is bool and type(delivery) is bool and (not delivery or preparation)
+    assert type(preparer) is bool and not (preparer and (preparation or delivery))
     label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
     native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store')
     assert (native,inputs)==expected[1:]
@@ -555,7 +656,7 @@ def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,pre
     window=dict(before_us=history.server_clock(pg,case['database'])); lab.write_json(output/(label+'-clock.json'),window)
     try:
         if case['operation'] in (oracle.JOURNEY_GAP_MODE,oracle.PREPARATION_ORIGINAL_GAP):
-            args,gate=journey_gate_invoke(pg,client,output,case,directory,compacted=case['operation']==oracle.JOURNEY_GAP_MODE)
+            args,gate=journey_gate_invoke(pg,client,output,case,directory,compacted=case['operation']==oracle.JOURNEY_GAP_MODE,preparer=preparer)
         else: history.capture(client,output,label,*args)
     finally:
         path=output/(label+'-response.json')
@@ -568,8 +669,8 @@ def journey_probe(pg,client,output,case,directory,expected,catalog,initial,*,pre
         backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),
         custody=transition.read(output/(label+'-custody.json')))
     lab.write_json(output/(label+'-verification.json'),context)
-    check,control=(oracle.verify_preparation_context,oracle.preparation_controls) if preparation else (oracle.verify_journey_context,oracle.journey_controls)
-    options=dict(delivery=delivery) if preparation else {}
+    check,control=(oracle.verify_empty_preparer_context,oracle.empty_preparer_controls) if preparer else (oracle.verify_preparation_context,oracle.preparation_controls) if preparation else (oracle.verify_journey_context,oracle.journey_controls)
+    options=dict(delivery=delivery) if preparation and not preparer else {}
     checked=check(context,initial,expected,**options); controls=control(context,initial,expected,**options)
     case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
@@ -1773,6 +1874,61 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
     return predecessor
 
 
+def run_empty_preparer_sequence(pg,client,output,clone,directory,expected,report,*,endpoint,initial):
+    assert expected==endpoint and clone['origin']=='compacted-initial' and clone['name']=='preparer'
+    oracle.history_catalog_checked(report['origins']['compacted-initial']['catalog'],clone['catalog_before'],grants=oracle.EMPTY_GRANTS)
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.EMPTY_GRANTS]
+    transition.observe_origin_absence(pg,clone['database'],output,'preparer-logical-origin')
+    native=history.dump(client,output,'preparer-logical-origin',directory)
+    assert native==endpoint[1] and (len(native['rows']),native['sequence'])==(81,121)
+    assert history.inputs_at(directory/'store')==endpoint[2]=={}
+    helper=Path(__file__).with_name('installed_cycle_client.py'); target=output/helper.name
+    if not target.exists(): shutil.copy2(helper,target)
+    assert history.digest(helper)==history.digest(target)
+    configure(pg,client,output,clone['config'],ack=True)
+    setup=empty_preparer_setup(pg,output,clone,directory,expected)
+    clone['setup_controls']=oracle.empty_preparer_setup_controls(setup,expected)
+    expected=oracle.empty_preparer_setup_checked(setup,expected)
+    predecessor=None
+    for step in oracle.EMPTY_PREPARER_STEPS['preparer']:
+        operation={'prepare-gap':oracle.JOURNEY_GAP_MODE,'complete':'complete-initial','refuse':'retire-empty'}[step]
+        case=dict(name='preparer-'+step,clone='preparer',origin='compacted-initial',operation=operation,
+            predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case); lab.write_json(output/'result.json',report)
+        if step=='prepare-gap':
+            expected=journey_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial,preparer=True)
+        else:
+            def verify(c,s):
+                if step=='refuse':
+                    from initial_empty_locks import claim_guard
+                    current=max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                    backend=dict(pid=current['control_backend_pid'],backend_start=current['control_backend_start'],database=case['database'])
+                    c['empty_claim_guard']=claim_guard(pg,backend,c['server_window'])
+                    lab.write_json(output/(case['name']+'-claim-guard.json'),c['empty_claim_guard'])
+                    lab.write_json(output/(case['name']+'-verification.json'),c)
+                return oracle.verify_empty_preparer_context(c,s,expected)
+            closed=partial(oracle.empty_closed if step=='refuse' else oracle.preparation_closed,preparer=True)
+            expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
+                checks=(verify,lambda c,s:oracle.empty_preparer_controls(c,s,expected),closed))
+        case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==clone['catalog_before']
+        predecessor=case['name']; lab.write_json(output/'result.json',report)
+    return predecessor
+
+
+def run_empty_preparer(root,build,product_source):
+    assert product_source==oracle.EMPTY_PREPARER_PRODUCT
+    endpoint,initial=oracle.journey_origin_checked(root); profile=oracle.EmptyInitialPreparerProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
+        database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
+        scope='Actual compacted preparation gap, ordinary original-preparer import claim, fresh installed completion and named empty-retirement veto')
+    try:
+        return transition.run(root,build,suite=suite,sequence=partial(run_empty_preparer_sequence,endpoint=endpoint,initial=initial),
+            origin_specs=(oracle.JOURNEY_ORIGIN,),origin_for_clone={'preparer':'compacted-initial'},extra_grants=oracle.EMPTY_GRANTS,
+            producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
+            empty_initial=True,product_source=product_source)
+    finally: assert oracle.journey_origin_checked(root)==(endpoint,initial)
+
+
 def run_empty_initial(root,build,product_source,*,delivery=False,locks=False,shapes=False,malformed=False):
     assert type(malformed) is bool and not (malformed and (delivery or locks or shapes))
     if malformed:assert product_source==oracle.EMPTY_MALFORMED_PRODUCT
@@ -1811,5 +1967,6 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-malformed-floor',action='store_true',help='One exact malformed compacted floor refusal before Control claim')
     profile.add_argument('--empty-initial-proof-shapes',action='store_true',help='Compacted empty final proof checks and isolated partial/mixed snapshot refusals')
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
+    profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
