@@ -62767,9 +62767,9 @@
         ]
       },
       "compacted_activated_work_20261024": {
-        "state": "First source build failed test compilation; mechanical test correction ready, both agents idle with clean preserved worktrees",
+        "state": "Build qualified; reviewed verifier correction f293d18e integrated; both agents idle, source and failures preserved",
         "base": "c432f252c3542186782e5bd021348e49c41c53ea",
-        "runtime_owner": "/root; first build joined1; no connected runtime active",
+        "runtime_owner": "/root; no active engine/build driver",
         "root_scope": "PostgreSQL/CLI integration, bootstrap dispatch, build runner, independent review and all runtime",
         "agents": [
           {
@@ -62793,9 +62793,10 @@
             "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-fixture-20261024",
             "branch": "work/compacted-activated-fixture",
             "scope": "Authentic first typed-progress probe and parameterized installed fixture/oracle/replay",
-            "state": "Clean at8b238085 and idle; full source integrated exactly",
+            "state": "Clean f293d18e, one-file verifier correction integrated exactly",
             "seed_commit": "65d4bbf1faa27bb1f110d9c2047aebffef31e3ee",
-            "python_commit": "8b238085669e2f5fe999004ac6f1e28f95dd317c"
+            "python_commit": "8b238085669e2f5fe999004ac6f1e28f95dd317c",
+            "verifier_correction_commit": "f293d18e7ddb42a3738eb214ebe43bf8e7207148"
           }
         ],
         "preservation": "All prior artifacts, failures, worktrees, datasets and .research retained; no cleanup",
@@ -62827,6 +62828,71 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7cae635/verified-build-failure.json",
           "sha256": "1611c170d24edfc3a818c44a6d77d304ed9dbaed557f0e89b35b88182667ce57"
         }
+      },
+      "compacted_activated_corrected_build_20261024": {
+        "source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+        "tree": "e4a1c2d1b535049244cf32e03d211bfc586a47ee",
+        "owner": "7e60f5c64882e54162607369efdbd052",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-fc9388f",
+        "state": "PASS172 components/63 controls, CLI/probe and Clippy; driver joined0; exact owned containers stopped0/PID0/noOOM",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "7b001d533fe3d368f631ddc6c7f60da18f6f40618f7d91b5a6651cd4c5ffccd7"
+          },
+          {
+            "name": "native",
+            "id": "aa52ce4fba8b84bf082ff9aff08579d976747680d7d0af69494859b0f2084c8a"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-24T00:33:26.965238+00:00",
+        "driver_session": 38515,
+        "preflight_free_bytes": 271750774784,
+        "driver_exit": 0,
+        "verified_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-fc9388f/verified-build.json",
+          "sha256": "30d3de01933742921fb981884d01c88a6709317863727c1ac0f9d6ae4e5434b8"
+        }
+      },
+      "installed_compacted_activated_fc9388f": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-activated-fc9388f",
+        "source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+        "product_source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+        "driver_session": 79262,
+        "state": "FAIL_VERIFIER_FRESH_XMIN_AFTER_SAME_TRANSACTION_FENCING",
+        "driver_exit": 1,
+        "owner": "897ed8f3c4b50296bdab9e50768cd4a9",
+        "verified_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-activated-fc9388f/verified-run-failure.json",
+          "sha256": "8d6206a22664e970446242b4782fca5d2265fda8fe6bb2d9e40c8cb3a790072b"
+        },
+        "observed_containers": [
+          {
+            "id": "b500084c4d6fa6390549c7bfcf436679560b8f61cc4d82c83fce3ed95681ef33",
+            "state": "exited",
+            "exit_code": 143,
+            "pid": 0,
+            "oom": false
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "state": "exited",
+            "exit_code": 0,
+            "pid": 0,
+            "oom": false
+          }
+        ],
+        "originals_preserved": [
+          "initial",
+          "compacted-initial",
+          "activated-initial",
+          "activated-live"
+        ],
+        "cleanup_errors": []
       }
     }
   },

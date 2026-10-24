@@ -44682,7 +44682,7 @@
               }
             },
             "next_activated_consumer_audit": {
-              "status": "SOURCE_REVIEWED; first build FAIL test compilation; mechanical test fix ready; corrected build/connected/raw replay NOT_RUN",
+              "status": "Build PASS172/63+Clippy; original installed FAIL retained; reviewed verifier correction integrated, fresh run next",
               "root_complete_owner_reads_sha256": {
                 "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated.rs": "50af024f508217628517b6f9e251fe63a9fdda2b2c472fa5efdbc10d585a9c3d",
                 "apps/bigbrotr/src/storage/rocks/activated_recovery.rs": "ea1cd390612abea7dc3c66aea81cb9d922511a519b1069a9f1a9d5f64c7fd9c1",
@@ -44764,12 +44764,56 @@
                     "sha256": "1611c170d24edfc3a818c44a6d77d304ed9dbaed557f0e89b35b88182667ce57"
                   },
                   "completed": "CLI/probe build PASS. First component selector failed to compile; later selectors and Clippy NOT_RUN."
+                },
+                {
+                  "source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+                  "tree": "e4a1c2d1b535049244cf32e03d211bfc586a47ee",
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-fc9388f",
+                  "status": "PASS_EXACT_BUILD_AND_COMPONENTS",
+                  "driver_session": 38515,
+                  "driver_exit": 0,
+                  "verified_receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-fc9388f/verified-build.json",
+                    "sha256": "30d3de01933742921fb981884d01c88a6709317863727c1ac0f9d6ae4e5434b8"
+                  },
+                  "component_tests": 172,
+                  "mandatory_controls": 63
                 }
               ],
               "mechanical_test_correction": {
                 "path": "apps/bigbrotr/src/storage/rocks/compacted_activated_tests.rs",
                 "sha256": "510905fd60bc241b9e600c17c3b34c64a9e5b4ad067a52ceeb63c863587b8161",
                 "review": "Root reviewed exact two-line replacement: use retained handoff bytes from existing value(store,handoff_key()) instead of inaccessible private encode. Product bytes unchanged; prior source reviews retained. rustfmt/diff checks PASS; runtime NOT_RUN."
+              },
+              "installed_activated": {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-activated-fc9388f",
+                "source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+                "product_source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+                "driver_session": 79262,
+                "status": "FAIL_VERIFIER_FRESH_XMIN_AFTER_SAME_TRANSACTION_FENCING",
+                "raw_replay": "NOT_RUN",
+                "driver_exit": 1,
+                "verified_receipt": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-activated-fc9388f/verified-run-failure.json",
+                  "sha256": "8d6206a22664e970446242b4782fca5d2265fda8fe6bb2d9e40c8cb3a790072b"
+                },
+                "completed_commands": 3,
+                "checker_controls": 34,
+                "failed_case": "zero-retire",
+                "preservation": "Four originals unchanged; owned client143/PG0 exited/PID0/noOOM; cleanup arrays empty; no connected runtime active"
+              },
+              "next_terminal_consumer_audit": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-boundaries-v1.json",
+                "sha256": "596326edc6422d291f0055d60aff089e8f1184dd2b1ace1371915f5a1907a61f",
+                "status": "Read-only exact fc9388fc audit; no implementation or runtime claim"
+              },
+              "verifier_correction": {
+                "commit": "f293d18e7ddb42a3738eb214ebe43bf8e7207148",
+                "receipt": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-control-xmin-fix-v1.json",
+                  "sha256": "c556dffc4135c7ca3403b1ee71e3683088352c1c4cf9c2c2e50cd636c833b3f7"
+                },
+                "root_independent_review": "Complete 30-line diff and full affected failure-helper/negative-control branches reviewed against unchanged failed_control/fresh_xmin and ControlSession::acquire transaction. Exact original-before freshness, atomic fence+claim xmin, original exclusion digest, strict lease/identity/backend and full-state checks retained. Source/capture hashes and integrated byte equality verified; no source blocker. Author targeted diagnostics reused; connected rerun NOT_RUN."
               }
             }
           }

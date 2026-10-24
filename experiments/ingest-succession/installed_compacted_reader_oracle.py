@@ -2179,18 +2179,22 @@ def preparation_control(m,observed,*,success,renewed=False):
         elif not renewed: assert current['xmin']==new_role['xmin']==released['xmin']
         else: assert new_role['xmin']==released['xmin']
     if success: m.completed_control(observed)
-    elif not renewed: retained.failed_control(m,observed)
     else:
-        # Completion loss occurs after the actual Control refresh. A gap's old
-        # claimant is fenced by the new claim transaction, not that refresh.
+        # The original snapshot owns freshness: fencing and the new claim may
+        # share one transaction. The expected fence above must not make that
+        # transaction appear pre-existing. A later refresh has a distinct xmin.
         current=only(observed['owner_epochs'],role='control',epoch=previous['epoch']+1)
         role=only(observed['role_instances'],role_instance_id=current['role_instance_id'])
         rid,inc=m.identity(role['role_instance_id'][2:]),m.identity(current['process_incarnation'][2:])
         for at in (role['created_at_us'],current['acquired_at_us'],current['lease_expires_at_us']-6_000_000): model.clock(at,m.window)
         assert m.window['before_us']<=retained.instant(current['control_backend_start'])<=role['created_at_us']<=current['acquired_at_us']
-        assert current['acquired_at_us']<current['lease_expires_at_us']-6_000_000
         model.fresh_xmin(role['xmin'],before); model.fresh_xmin(current['xmin'],before)
-        assert int(role['xmin'])<int(current['xmin'])
+        if renewed:
+            assert current['acquired_at_us']<current['lease_expires_at_us']-6_000_000
+            assert int(role['xmin'])<int(current['xmin'])
+        else:
+            assert current['lease_expires_at_us']==current['acquired_at_us']+6_000_000
+            assert role['xmin']==current['xmin']
         number(current['control_backend_pid'],1,integer=True)
         wanted=dict(previous,epoch=previous['epoch']+1,role_instance_id=rid,process_incarnation=inc,
             acquired_at_us=current['acquired_at_us'],lease_expires_at_us=current['lease_expires_at_us'],
@@ -2894,6 +2898,22 @@ def activated_controls(context,initial,expected,*,baseline=None):
     else:
         changes.extend([('unreaped-child',lambda c:c['response']['terminal'].update(reaped=False)),('wrong-command',lambda c:c['response']['terminal']['command'].append('--successor')),
             ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)])),('unknown-outcome',lambda c:c['response'].update(outcome='UNKNOWN'))])
+        if name=='zero' and step=='retire':
+            previous=max((r for r in expected[0]['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+            assert previous['state']=='active'
+            def atomic_rows(c):
+                old=only(c['after']['owner_epochs'],role='control',epoch=previous['epoch'])
+                current=only(c['after']['owner_epochs'],role='control',epoch=previous['epoch']+1)
+                return old,current,only(c['after']['role_instances'],role_instance_id=old['role_instance_id']),only(c['after']['role_instances'],role_instance_id=current['role_instance_id'])
+            def stale_transaction(c):
+                for row in atomic_rows(c): row['xmin']=previous['xmin']
+            def split_transaction(c):
+                _,current,_,role=atomic_rows(c)
+                fresh=str(max(int(r['xmin']) for rows in c['after'].values() for r in rows)+1)
+                current['xmin']=role['xmin']=fresh
+            changes.extend([('atomic-claim-stale-xmin',stale_transaction),('atomic-claim-split-xmin',split_transaction),
+                ('atomic-fence-digest',lambda c:atomic_rows(c)[0].update(exclusion_digest='\\x'+'00'*32)),
+                ('unrefreshed-claim-deadline',lambda c:atomic_rows(c)[1].update(lease_expires_at_us=atomic_rows(c)[1]['lease_expires_at_us']+1))])
         if activated_failure(name,step) is None and not (name=='original' and step in ('abandon','retire')):
             def count(c):
                 v=loads(c['response']['stdout']); v['resolved_requests']='7'; c['response']['stdout']=json.dumps(v)+'\n'

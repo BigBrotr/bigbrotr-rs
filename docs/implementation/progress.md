@@ -7,10 +7,11 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
 Current slice: compacted activated epoch2 positive recovery and checkpoint ACK.
-Main source `7cae6358902382d2ac7c9ba42b8a1019b04ab181`, tree
-`800c12c8e0bf40daa8a42f95e43549ef61d80c73`; remote last verified at
+Main source `fc9388fc4c4f404ce57785eb5bfc66d11e10185a`, tree
+`e4a1c2d1b535049244cf32e03d211bfc586a47ee`; remote last verified at
 `c432f252c3542186782e5bd021348e49c41c53ea` (push26452 joined0).
-This checkpoint accompanies a mechanical test correction and evidence updates;
+The mechanical test correction is committed; this checkpoint accompanies the
+reviewed verifier correction and build/failure evidence;
 product source is unchanged from7cae635. No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -25,20 +26,26 @@ owns resource custody. Reuse their unchanged evidence.
 ## Verified state and preservation
 
 Native and fixture source is integrated in7cae635, with independent native/PG/CLI
-and fixture reviews linked from the report. Both agents are idle; their clean
+and fixture reviews linked from the report. The fixture agent correction f293d18e is independently reviewed and integrated;
+the native reviewer completed the linked read-only Source/retirement audit. Their clean
 worktrees remain at `.research/compacted-activated-native-20261024` (eb5ab35f,
 branch `work/compacted-activated-native`) and
-`.research/compacted-activated-fixture-20261024` (8b238085,
-branch `work/compacted-activated-fixture`). No incomplete agent edit is outstanding.
+`.research/compacted-activated-fixture-20261024` (f293d18e,
+branch `work/compacted-activated-fixture`). Both agents are idle; corrected connected qualification remains NOT_RUN.
 
 First exact build `runs/producer-floor-7cae635`: CLI/probe compilation PASS;
 component compilation FAIL because a new test called private handoff encode.
 Driver75338 joined1; remaining components/Clippy/connected matrix/raw replay
 NOT_RUN. Original source, logs and `verified-build-failure.json` are preserved.
 The test now reads actual retained handoff bytes through its existing helper;
-rustfmt and diff checks PASS. Corrected runtime remains NOT_RUN.
+rustfmt and diff checks PASS. Corrected build38515 joined0: CLI/probe,172 components/63 mandatory controls and
+Clippy PASS. Exact artifacts/source verified; owned containers stopped0/PID0/noOOM.
 The exact owned fetch/native containers are exited0/exited1, PID0/noOOM.
-No build or connected runtime is active. All data, failures, .research and
+Installed matrix79262 joined1 at `runs/installed-compacted-activated-fc9388f`: FAIL
+in zero-retire verifier after3 PASS commands/34 controls. Atomic old-owner fencing
+and new claim share one xmin; the checker incorrectly tests freshness against its
+already-mutated model. Original failure retained; four originals preserved, owned
+client143/PG0 exited/PID0/noOOM, cleanup arrays empty. No runtime remains active. All data, failures, .research and
 worktrees are preserved. No cleanup occurred; unrelated workloads are untouched.
 
 Previously qualified product a0e914e and preparation/delivery harnesses
@@ -49,9 +56,9 @@ the linked report, without duplicating them here.
 
 ## Precise next action and open gates
 
-Commit the mechanical test correction and run the exact producer-floor build
-with nine new mandatory controls. After a joined PASS and artifact verification,
-run the 8-clone/24-command `--activated` installed matrix and exact raw replay.
+Run a fresh 8-clone/24-command `--activated` matrix using
+the unchanged qualified fc9388fc binaries. Exact raw replay follows a joined PASS.
+Both original build and connected failures remain preserved.
 Root owns engines and process closure; preserve every failed attempt separately.
 
 Source/abandon/retirement, later recovery, live frontier, retained Archive frontier
