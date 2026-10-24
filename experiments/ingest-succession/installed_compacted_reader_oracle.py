@@ -61,7 +61,8 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False):
+    assert type(compacted_terminal) is bool and (not compacted_terminal or compacted_activated)
     assert type(initial_journey) is bool
     assert type(initial_preparation) is bool and (not initial_preparation or initial_journey)
     assert type(compacted_activated) is bool and (not compacted_activated or initial_journey)
@@ -128,6 +129,7 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
     if initial_preparation or compacted_activated: preparation_qualification(component)
     if compacted_activated: activated_qualification(component)
+    if compacted_terminal: terminal_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated: executables |= {'claim_custody','control_runtime_entrypoint'}
     assert set(component['executables_sha256']) == executables
@@ -512,7 +514,7 @@ def history_catalog_checked(original, current, *, grants=HISTORY_GRANTS):
     before, rest = parse(original); after, current_rest = parse(current)
     assert rest == current_rest
     wanted = copy.deepcopy(before)
-    assert grants in (HISTORY_GRANTS,JOURNEY_GRANTS,ACTIVATED_GRANTS)
+    assert grants in (HISTORY_GRANTS,JOURNEY_GRANTS,ACTIVATED_GRANTS,TERMINAL_GRANTS)
     for statement in grants:
         m = re.fullmatch(r'GRANT (.+) ON (FUNCTION )?(.+) TO bigbrotr_control;',statement)
         rights, kind, targets = m.groups(); kind=(kind or 'TABLE').strip()
@@ -1097,25 +1099,26 @@ def journey_origin_checked(root,raw=None):
     return qualified_endpoint(root,raw,initial_journey=True)
 
 
-def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated_origin=None):
+def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated_origin=None,terminal_origin=None):
     """Bind the prior exact-source receipt; never replay it through new imports."""
     from installed_family_capture import physical, spool_checked
     assert type(initial_journey) is bool
     assert prepared_origin is None or (not initial_journey and prepared_origin in PREPARATION_RETAINED_ORIGINS)
     assert activated_origin is None or (not initial_journey and prepared_origin is None and activated_origin==ACTIVATED_LIVE_ORIGIN)
+    assert terminal_origin is None or (not initial_journey and prepared_origin is None and activated_origin is None and terminal_origin==TERMINAL_TAIL_ORIGIN)
     prepared_origin=prepared_origin or activated_origin
-    pin=prepared_origin or (JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN)
-    product=PREPARATION_PRODUCT if prepared_origin else FAULT_PRODUCT
+    pin=terminal_origin or prepared_origin or (JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN)
+    product=TERMINAL_TAIL_PRODUCT if terminal_origin else PREPARATION_PRODUCT if prepared_origin else FAULT_PRODUCT
     root=Path(root); raw=raw or retained.regular_read
     basis=root.parent/pin['run']/pin['subdirectory']
     receipt_path=basis.parent/'raw-replay.json'; data=raw(receipt_path)
-    assert sha(data)==(PREPARATION_REPLAY_SHA if prepared_origin else JOURNEY_REPLAY_SHA if initial_journey else FAULT_REPLAY_SHA)
+    assert sha(data)==(TERMINAL_TAIL_REPLAY_SHA if terminal_origin else PREPARATION_REPLAY_SHA if prepared_origin else JOURNEY_REPLAY_SHA if initial_journey else FAULT_REPLAY_SHA)
     replay=loads(data)
-    assert replay['status']==(InitialJourneyProfile.STATUS if prepared_origin else STATUS if initial_journey else HistoryProfile.STATUS)+'_CAPTURE_REPLAY'
+    assert replay['status']==(ActivatedProfile.STATUS if terminal_origin else InitialJourneyProfile.STATUS if prepared_origin else STATUS if initial_journey else HistoryProfile.STATUS)+'_CAPTURE_REPLAY'
     assert replay['source']==pin['source'] and replay['product_source']==product
-    assert len(replay['cases'])==(16 if prepared_origin else 13 if initial_journey else 50)
-    assert sum(v['negative_controls']['count'] for v in replay['cases'])==(149 if prepared_origin else 131 if initial_journey else 454)
-    assert len(replay['bound_files'])==(6114 if prepared_origin else 4629 if initial_journey else 5482)
+    assert len(replay['cases'])==(24 if terminal_origin else 16 if prepared_origin else 13 if initial_journey else 50)
+    assert sum(v['negative_controls']['count'] for v in replay['cases'])==(291 if terminal_origin else 149 if prepared_origin else 131 if initial_journey else 454)
+    assert len(replay['bound_files'])==(7827 if terminal_origin else 6114 if prepared_origin else 4629 if initial_journey else 5482)
     def bound(path):
         path=Path(path); value=raw(path)
         assert sha(value)==replay['bound_files'][str(path)]
@@ -1134,17 +1137,18 @@ def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated
         path=basis/pin[file_key]; value=bound(path); assert sha(value)==pin[hash_key]; final.append(loads(value))
     endpoint=tuple(final)
     context=read(basis/(pin['final_case']+'-verification.json'))
-    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==(pin['verification_sha256'] if prepared_origin else 'afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
+    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==(pin['verification_sha256'] if prepared_origin or terminal_origin else 'afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
     assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
     assert context['response']==read(basis/(pin['final_case']+'-response.json'))
     custody=read(basis/(pin['final_case']+'-custody.json'))
-    if not initial_journey and (not prepared_origin or pin['source_clone']=='gap'): assert context['custody']==custody
+    if not initial_journey and not terminal_origin and (not prepared_origin or pin['source_clone']=='gap'): assert context['custody']==custody
     assert custody['status']=='OBSERVED_CLOSED_AND_JOINED' and not custody['errors']
     terminal=read(basis/'client-terminal.json'); assert terminal['Id']==pin['client_id']
     assert terminal['State']['Status']=='exited' and terminal['State']['Pid']==0 and terminal['State']['ExitCode']==143
     build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
     built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
-    qualification_checked(built,component,qualification,product,initial_journey=prepared_origin is not None)
+    qualification_checked(built,component,qualification,product,initial_journey=prepared_origin is not None or terminal_origin is not None,
+        compacted_activated=terminal_origin is not None)
     assert report['build']==built and report['component']==component
     manifest=read(build.parent/'build/source-manifest.json')
     assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
@@ -1175,7 +1179,17 @@ def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated
         assert physical(basis/q['path'],bound)==q['quarantine_after']
         for name,value in q['files'].items(): assert bound(basis/q['path']/name).hex()==value['hex']
         return endpoint,initial
-    if prepared_origin:
+    if terminal_origin:
+        assert len(endpoint[0])==77 and sum(map(len,endpoint[0].values()))==193
+        producer=only(endpoint[0]['producer_epochs'],producer_epoch=2)
+        assert producer['reserved_through_request']==1 and producer['state']=='closing'
+        assert only(endpoint[0]['source_streams'],owner_epoch=2)['state']=='open'
+        assert not [r for table in ('producer_outcomes','producer_checkpoints') for r in endpoint[0][table] if r['producer_epoch']==2]
+        assert len(endpoint[2])==1
+        expected=preparation_native(compacted_native(initial,'positive'),endpoint[0],initial)
+        expected=activated_native(expected,producer['producer_slot_id'],close=True)
+        assert endpoint[1]==expected and (len(expected['rows']),expected['sequence'])==(84,126)
+    elif prepared_origin:
         assert len(endpoint[0])==77
         if activated_origin:
             assert (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(90,133,1)
@@ -1193,19 +1207,19 @@ def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated
             assert only(endpoint[0]['producer_epochs'],producer_epoch=2)['reserved_through_request']==(1 if activated_origin else 0)
     else:
         history_lineage(endpoint,initial,compacted=True)
-    assert prepared_origin or len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
+    assert prepared_origin or terminal_origin or len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
     assert prepared_origin or all('-0000000000000002-' in n for n in endpoint[2])
     store=basis/pin['store']
     spool_checked(store/'producer-inputs-v1',endpoint[2],bound,complete=True)
     files=physical(store,bound)
     prefix=str(store)+'/'
     qualified={name[len(prefix):]:digest for name,digest in replay['bound_files'].items() if name.startswith(prefix)}
-    assert len(qualified)==(17 if activated_origin else 16 if prepared_origin else 20)
+    assert len(qualified)==(18 if terminal_origin else 17 if activated_origin else 16 if prepared_origin else 20)
     assert {name:value['sha256'] for name,value in files.items() if stat.S_ISREG(value['mode'])}==qualified
     directories={str(parent) for name in qualified for parent in Path(name).parents}
     if prepared_origin: directories.add('producer-inputs-v1')
     assert {name for name,value in files.items() if stat.S_ISDIR(value['mode'])}==directories
-    if prepared_origin: return endpoint,initial
+    if prepared_origin or terminal_origin: return endpoint,initial
     for step in ('partial','absent'):
         q=read(basis/('history-positive-'+step+'-quarantine.json'))
         assert physical(basis/q['path'],bound)==q['quarantine_after']
@@ -2942,4 +2956,490 @@ def activated_qualification(component):
         'compacted_activated_context_binds_actual_root_and_cannot_mint_prepared_handoff',
         'compacted_activated_optional_range_keeps_the_physical_file_ceiling',
         'compacted_activated_logical_requests_can_exceed_physical_spool_limit')
+    assert {prefix+n for n in names}<=set(component['test_names']['initial_reconstruction'])
+
+
+# Explicit terminal profile. The retained reservation tail was created by a
+# real lost reservation COMMIT, then independently qualified through cf1 replay.
+TERMINAL_TAIL_PRODUCT='fc9388fc4c4f404ce57785eb5bfc66d11e10185a'
+TERMINAL_TAIL_REPLAY_SHA='050b2ee51b9495eb462e0037b3e3b1642395735da402ce8145036e362c2b8dc2'
+TERMINAL_TAIL_ORIGIN=dict(name='activated-tail',run='installed-compacted-activated-cf1a2ef',subdirectory=ActivatedProfile.DIRECTORY,
+    database='bb_compacted_activated_cf1a2ef_reserved_tail',status=ActivatedProfile.STATUS,
+    source='cf1a2ef9fd180188955ddba83fbaeca3d61eca2e',owner='f3bf296891b75c390b1de4106d3f7091',label=ActivatedProfile.LABEL,
+    client_id='35be229c914d189eb4ad08387ab5acdd9d5032f2c57b3a0040405f51b01a457e',source_clone='reserved-tail',final_case='reserved-tail-retry',
+    catalog_sha256='589292f3beb45bbfc4a1bfe1cc827356db1e47f857aa652b132e4cf60ec2acbd',
+    result_sha256='6ecd93405b24f4c3550749354b6e5795c8e1a171b5c690c11278088920e45f82',
+    snapshot='reserved-tail-final-sql.json',snapshot_sha256='fe84cfdbaf8e7b6dd3a2421cfdc5e4212ca77884d9a862c0c8260c384c2ab305',
+    native_file='reserved-tail-retry-after-native.json',native_sha256='478402f7881ce010856ccf09ae3d902ecabcb70704a650dade6bfe8edb07abaa',
+    inputs_file='reserved-tail-retry-after-inputs.json',inputs_sha256='7408506e1d05535071e56d7074723b4bad1d9308f94ed6afdd76b230a6a65dfe',
+    verification_sha256='3fcf52a5c12bb32bc26c96564cb2aac1ece6c5615b6cdbc8db00c4dd41608570',store='reserved-tail/store')
+TERMINAL_ORIGINS=(JOURNEY_ORIGIN,*ACTIVATED_RETAINED_ORIGINS,TERMINAL_TAIL_ORIGIN)
+TERMINAL_GRANTS=ACTIVATED_GRANTS+(
+    'GRANT EXECUTE ON FUNCTION control.require_activated_initial_source(bytea) TO bigbrotr_control;',
+    'GRANT EXECUTE ON FUNCTION control.lock_activated_initial_retirement(bytea), '
+    'control.require_activated_initial_retirement(bytea), '
+    'control.require_activated_initial_retirement_transition(bytea,bytea,bigint) TO bigbrotr_control;')
+TERMINAL_STEPS={'zero':('source','source-retry','retire','retire-retry'),
+    'event':('seed','retire-open','source','source-retry','retire-unresolved','abandon','abandon-retry','retire','retire-retry'),
+    'missing-copy':('source','source-retry','source-closed-missing'),
+    'head':('source-refuse',),'unbound-event':('seed','abandon','retire-refuse'),
+    'mixed':('source','retire-refuse'),'reserved-tail':('source-refuse','retire-refuse'),'missing-input':('source-refuse',)}
+TERMINAL_ORIGIN_NAMES={name:'compacted-initial' if name in ('event','unbound-event') else
+    'activated-live' if name in ('missing-copy','missing-input') else 'activated-tail' if name=='reserved-tail' else 'activated-initial'
+    for name in TERMINAL_STEPS}
+TERMINAL_SEED_MODE='successor-live-compacted-terminal-event'
+TERMINAL_ATTRIBUTION={3:'a1992bc4cc2b57578e06da9ab64cdfe44d8c117a394e8fdb38355e955a64eee9',
+    5:'4add1a3691de324ebdc7202debd5f0187cbd895a997d16ec499cdfea16827a26'}
+
+
+class ActivatedTerminalProfile:
+    DIRECTORY='installed-compacted-activated-terminal'
+    LABEL='org.bigbrotr.installed-compacted-activated-terminal'
+    STATUS='PASS_INSTALLED_COMPACTED_ACTIVATED_TERMINAL_POSITIVE_REFUSALS'
+    DATABASE_PREFIX='bb_compacted_terminal_'
+    CLONES=tuple(TERMINAL_STEPS)
+    STEPS=TERMINAL_STEPS
+    CASES=tuple(name+'-'+step for name in TERMINAL_STEPS for step in TERMINAL_STEPS[name])
+    GRANTS=TERMINAL_GRANTS
+    NOT_RUN=('Actual product reclamation/GC and unlink',
+        'Final terminal COMMIT delivery loss, ancestor H/D drift after earlier completion, cancellation and lease expiry',
+        'Zero-request claimed acquisition, unresolved import, draining owner and isolated native OPEN retirement guard',
+        'Later activated successors, live frontier, retained Archive frontier and empty retirement',
+        'Mixed restore/backup, physical loss and capacity')
+
+
+def terminal_origins_checked(root,raw=None):
+    previous,initial=activated_origins_checked(root,raw)
+    tail,basis=qualified_endpoint(root,raw,initial_journey=False,terminal_origin=TERMINAL_TAIL_ORIGIN)
+    assert basis==initial
+    return {**{k:v for k,v in previous.items() if k!='initial'},'activated-tail':tail},initial
+
+
+def terminal_specification(case):
+    name=case['clone']; assert name in TERMINAL_STEPS
+    prefix=name+'-'; assert case['name'].startswith(prefix)
+    step=case['name'][len(prefix):]; steps=TERMINAL_STEPS[name]; index=steps.index(step)
+    assert case['origin']==TERMINAL_ORIGIN_NAMES[name]
+    assert case['predecessor']==(prefix+steps[index-1] if index else None)
+    operation=TERMINAL_SEED_MODE if step=='seed' else step.split('-')[0]+'-activated'
+    assert case['operation']==operation
+    assert re.fullmatch(ActivatedTerminalProfile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name.replace('-','_'),case['database'])
+    assert len(case['database'])<=63 and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def terminal_attribution(contents,initial):
+    from installed_sync_oracle import decode
+    slot=only(initial[0]['producer_epochs'])['producer_slot_id'][2:]
+    assert set(contents)=={f'{slot}-0000000000000001-{n:016x}.cbor' for n in TERMINAL_ATTRIBUTION}
+    decoded={}
+    for n,digest in TERMINAL_ATTRIBUTION.items():
+        name=f'{slot}-0000000000000001-{n:016x}.cbor'; data=bytes.fromhex(contents[name])
+        assert sha(data)==digest and initial[2][name]==dict(bytes=len(data),sha256=digest)
+        decoded[n]=decode(data.removeprefix(b'bigbrotr/producer-request/1\0'))
+    assert decoded[3][0]==[bytes.fromhex(slot),1,3] and decoded[3][1:3]==['admit-evidence',1]
+    assert decoded[5][0]==[bytes.fromhex(slot),1,5] and decoded[5][1:3]==['admit',1]
+    return decoded
+
+
+def terminal_event_science(plan,prepared_rows,inputs,contents,initial,report,receive_clock,window):
+    import activated_source_durable_oracle as durable
+    from bootstrap_oracle import cbor
+    decoded=terminal_attribution(contents,initial); assert inputs=={}
+    ds,slot=(bytes.fromhex(plan[k]) for k in ('dataset','producer_slot'))
+    old=decoded[5][3]; scope=old[1]; observation=old[5]
+    assert scope==[ds,4,bytes.fromhex('0e2a2cc69f18bd685ff795bd57faf3c0'),3]
+    assert old[3:5]==['network',None] and old[2][0].hex()=='32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791'
+    assert set(receive_clock)=={'clock','resolution_ns','resolution_us'} and receive_clock['clock']=='CLOCK_REALTIME'
+    ns=receive_clock['resolution_ns']; resolution=receive_clock['resolution_us']
+    number(ns,1,1_000_000_000,integer=True); assert resolution==(ns+999)//1000
+    at=report['received_at_us']; model.clock(at,window); assert at>observation[0]
+    sample=[at,observation[1],[observation[2][0],resolution,None,4 if resolution>1 else 0],observation[3]]
+    event=durable.SIGNED
+    body=[bytes.fromhex(event[k]) for k in ('id','pubkey')]+[1,1,[],'import then network']
+    signature=bytes.fromhex(event['sig']); event_ref=[ds,8,bytes.fromhex(dict(plan['domains'])[8]),1]
+    h=lambda data:bytes.fromhex(sha(data))
+    raw=b'bigbrotr/producer-request/1\0'+cbor([[slot,2,1],'admit',1,[1,scope,[*body,signature],'network',None,sample]])
+    rows=dict(prepared_rows); refs={}
+    assert len(rows)==84 and ('default',b'\x01\x06'+ds+body[0]) not in rows
+    for n in range(3,8):
+        value=rows['facts',b'\x01\x20'+ds+be(0,4)+be(1)+be(n)]
+        assert value[:2]==b'\x01\x20' and h(value[34:])==value[2:34]
+        refs[1,n]=[[ds,0,1,n],value[2:34]]
+    def ref_key(r): return r[0]+be(r[1],2)+r[2]+be(r[3])
+    def fact(n,family,payload):
+        value=b'bigbrotr/fact/1\0'+cbor([[ds,0,2,n],family,1,scope,at,payload])
+        refs[2,n]=[[ds,0,2,n],h(value)]
+        rows['facts',b'\x01\x20'+ds+be(0,4)+be(2)+be(n)]=b'\x01\x20'+h(value)+value
+    def index(domain,key,n): rows['default',bytes([1,domain])+key]=bytes([1,domain])+ds+be(0,4)+be(2)+be(n)+refs[2,n][1]
+    descriptor=[1,'event',1,dict(event_id=body[0])]
+    fact(1,'dictionary',[event_ref,*descriptor]); index(4,ref_key(event_ref),1)
+    rows['default',b'\x01\x05'+ds+be(8,2)+h(cbor(descriptor))+ref_key(event_ref)]=b'\x01\x05'+cbor(descriptor)
+    rows['default',b'\x01\x03'+ds+be(8,2)+event_ref[2]]=b'\x01\x03'+be(1)
+    fact(2,'event-payload',[*body,event_ref]); index(6,ds+body[0],2)
+    fact(3,'event-eligibility',[body[0],h(b'bigbrotr/body/1\0'+cbor(body)),signature,at,'network',None]); index(7,ds+body[0]+ref_key(scope),3)
+    observer=sample[1]; clock=sample[2]; endpoint,access,method=sample[3]
+    fact(4,'event-receive',[body[0],at,observer,clock,None]); index(8,ds+body[0]+ref_key(scope),4)
+    fact(5,'provenance',[body[0],endpoint,observer,access,at,clock,method,None]); index(9,ds+body[0]+ref_key(endpoint)+ref_key(observer)+ref_key(access)+ref_key(scope),5)
+    batch=[refs[2,n] for n in range(1,6)]; deps=[refs[1,n] for n in range(3,8)]+batch
+    receipt=b'bigbrotr/receipt/1\0'+cbor([1,[slot,2,1],h(raw),[ds,1,1,bytes.fromhex(plan['recovery_generation']),1],batch,deps])
+    rows['default',b'\x01\x02'+ds+be(0,4)+be(2)]=b'\x01\x02'+be(5)
+    rows['facts',b'\x01\x21'+ds+be(0,4)+be(2)+be(1)]=b'\x01\x21'+be(5)+h(b'bigbrotr/admission-batch/1\0'+cbor([ds,0,2,1,5,batch]))
+    rows['receipts',b'\x01\x30'+slot+be(2)+be(1)]=receipt
+    rows['receipts',b'\x01\x31'+slot+be(2)]=b'\x01\x31'+be(1)+be(0)*2
+    assert len(rows)==98
+    originals={slot.hex()+'-0000000000000002-0000000000000001.cbor':dict(bytes=len(raw),sha256=sha(raw))}
+    assert report==dict(event='live-durable-input',request=1,event_id=event['id'],preimage=raw.hex(),request_digest=sha(raw),
+        provenance=True,wire_sequence=1,wire_request=report['wire_request'],received_at_us=at,predecessor_received_at_us=observation[0])
+    return dict(plan=plan,ds=ds,slot=slot,rows=rows,inputs=originals),raw,receipt
+
+
+def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock):
+    import activated_source_durable_oracle as durable
+    import initial_live_oracle as live
+    import initial_succession_oracle as original
+    name,step=terminal_specification(case); assert step=='seed'
+    pg,native,inputs=copy.deepcopy(expected)
+    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True)
+    model.clock(plan['created_at_us'],window); position=0
+    def take(event,stage=None,phase=None):
+        nonlocal position
+        v=events[position]; position+=1; assert (v['event'],v.get('stage'),v.get('phase'))==(event,stage,phase); return v
+    def snap(stage): return history_snapshot(take('successor-state',stage),native,inputs,pg,stage=stage)
+    assert take('successor-control','initial','claim-planned')==dict(event='successor-control',stage='initial',phase='claim-planned',role='d3'*16,incarnation='dd'*16,lease_ttl_us='20000000')
+    same(pg,snap('initial-before-claim')); claimed=take('successor-control','initial','claimed'); after=snap('initial-after-claim')
+    control=original.claim(pg,after,1); model.clock(control['acquired_at_us'],window)
+    assert claimed==dict(event='successor-control',stage='initial',phase='claimed',resource=control['resource_id'][2:],epoch=control['epoch'],role='d3'*16,incarnation='dd'*16)
+    pg=after; assert take('successor-compacted-proof')==journey_proof(initial); assert take('successor-plan')==plan
+    after=snap('before-prepare'); control=original.renewed(pg,after,control,plan['created_at_us']); model.fresh_xmin(control['xmin'],pg); pg=after
+    native=journey_dump(rows,125)
+    after=snap('prepared'); original.prepared(pg,after,plan,control,compacted_history=True); pg=after
+    backend=take('successor-backend','initial')
+    assert backend==dict(event='successor-backend',stage='initial',database=case['database'],pid=control['control_backend_pid'],backend_start=control['control_backend_start'],control_epoch=control['epoch'],present=True)
+    assert take('live-activation-start')==dict(event='live-activation-start',mode=TERMINAL_SEED_MODE,control_epoch=control['epoch'])
+    activated=take('live-activation-result'); after=snap('activated-zero')
+    assert activated==dict(event='live-activation-result',writer=True,error=None,activated_at_us=activated['activated_at_us'])
+    live.activated(pg,after,plan,control,window,activated['activated_at_us']); pg=after
+    job=take('live-durable-job'); after=snap('durable-job-claimed')
+    control=durable.authenticated_job(pg,after,job,control,window,modern=True); pg=after
+    wire=take('live-durable-wire'); subscription=wire['request'][1]
+    assert re.fullmatch('[0-9a-f]{32}0000000000000001',subscription) and int(subscription[:32],16)
+    assert wire==dict(event='live-durable-wire',request=['REQ',subscription,dict(kinds=[1],limit=1)],signed_event=durable.SIGNED,events=1,eose=True)
+    assert take('live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
+    same(pg,snap('durable-received')); observation=take('live-durable-input')
+    assert observation['wire_request']==subscription and job['accepted_at_us']<=observation['received_at_us']<job['deadline_at_us']
+    science,raw,receipt=terminal_event_science(plan,rows,inputs,attribution,initial,observation,receive_clock,window)
+    native=journey_dump(science['rows'],141); inputs=science['inputs']
+    after=snap('terminal-event'); durable.admitted(pg,after,science,raw,receipt,control,observation,window,modern=True); pg=after
+    assert take('live-terminal-event')==dict(event='live-terminal-event',request=1,receipt=receipt.hex(),dependencies=10,
+        source_cut=5,native_rows=98,native_sequence=141,peer_joined=True,job_complete=False,session_revoked=False)
+    same(pg,snap('final-before-control-end'))
+    assert take('successor-control','final','released-and-joined')==dict(event='successor-control',stage='final',phase='released-and-joined',resource=control['resource_id'][2:],epoch=control['epoch'])
+    after=snap('final-after-control-end'); original.ended(pg,after,control,True)
+    released=only(after['owner_epochs'],role='control',epoch=control['epoch'])
+    model.fresh_xmin(released['xmin'],pg); model.clock(released['released_at_us'],window)
+    assert only(pg['producer_outcomes'],producer_epoch=2)['recorded_at_us']<=released['released_at_us']; pg=after
+    assert take('successor-backend','initial')==dict(backend,present=False); same(pg,snap('final'))
+    assert take('live-complete')==dict(event='live-complete',mode=TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=True)
+    assert position==len(events)
+    return (pg,native,inputs),dict(status='PASS',case=case['name'],native_rows=98,native_sequence=141,
+        original_target_files=1,compacted_requests=7,original_predecessor_requests=0,target_events=1,target_source_cut=5,
+        activating_control_epoch=control['epoch'],claimed_acquisition_jobs=1,job_complete=False,session_revoked=False)
+
+
+def terminal_failure(name,step):
+    if step=='seed': return None
+    if name=='head': return 'head'
+    if name=='missing-input': return 'missing-input'
+    if name=='reserved-tail': return 'reserved-tail' if step.startswith('source') else 'retirement-prerequisite'
+    if step in ('retire-open','retire-unresolved'): return 'retirement-prerequisite'
+    if name=='mixed' and step=='retire-refuse': return 'retirement-prerequisite'
+    if name=='unbound-event' and step=='retire-refuse': return 'unbound-event'
+    if step=='source-closed-missing': return 'closed-missing-copy'
+    return None
+
+
+TERMINAL_ERRORS={
+    'head':'producer operation unavailable: Progress(InvalidContext)',
+    'missing-input':'producer operation unavailable: Native(RequestInput(Missing))',
+    'reserved-tail':'producer operation unavailable: Control(InvalidMetadata)',
+    'retirement-prerequisite':'producer operation unavailable: Control(Backend)',
+    'closed-missing-copy':'producer operation unavailable: Control(Backend)',
+    'unbound-event':'producer operation unavailable: Control(InvalidMetadata)',
+}
+
+
+def terminal_seed_closed(response,database):
+    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    events=[loads(v) for v in response['stdout'].splitlines()]
+    assert events[-1]==dict(event='live-complete',mode=TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=True)
+    present,absent=[e for e in events if e['event']=='successor-backend']
+    assert present['database']==database and present['present'] is True and absent==dict(present,present=False)
+    assert only(events,event='live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
+    # The exact source-bound probe drops the writer before release, joins the
+    # Control driver, then joins the observer before returning process status0.
+    return events
+
+
+def terminal_closed(response,case):
+    name,step=terminal_specification(case); failure=terminal_failure(name,step); code=4 if failure else 0
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
+    t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True); number(t['start_ticks'],1,integer=True); number(t['elapsed_seconds'],0,60)
+    assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv(case['operation'],Path(case['config']))
+    assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    if failure:
+        assert response['stdout']=='' and response['stderr']=='error: '+TERMINAL_ERRORS[failure]+'\n'; return None
+    assert response['stderr']==''; values=response['stdout'].splitlines(); assert len(values)==1
+    return loads(values[0])
+
+
+def terminal_basis(expected):
+    pg,native,inputs=expected; intent=only(pg['initial_ingest_successions']); slot=binary(intent['producer_slot_id']); ds=binary(intent['dataset_id'])
+    values=model.native_map(native); marker=bytes.fromhex(values['receipts',(b'\x01\x31'+slot+be(2)).hex()])
+    assert marker[:2] in (b'\x01\x31',b'\x02\x31') and len(marker)==(26 if marker[:2]==b'\x01\x31' else 27)
+    issued=int.from_bytes(marker[2:10],'big'); acknowledged=int.from_bytes(marker[10:18],'big')
+    assert issued in (0,1) and acknowledged==0
+    manifest=bytes.fromhex(values['default','0101']); assert sha(manifest)==intent['target_manifest_sha256'][2:]
+    handoff=bytes.fromhex(values['default',(b'\x01\x0a'+ds+binary(intent['owner_resource_id'])+be(1)).hex()])
+    assert sha(handoff)==intent['handoff_sha256'][2:] and handoff.hex()==intent['handoff'][2:]
+    cut_value=bytes.fromhex(values['default',(b'\x01\x02'+ds+be(0,4)+be(2)).hex()]); assert cut_value[:2]==b'\x01\x02' and len(cut_value)==10
+    cut=int.from_bytes(cut_value[2:],'big'); assert cut in (0,1,5)
+    preimage=b'bigbrotr/activated-initial-source-closure/1\0'+bytes.fromhex(sha(handoff))+bytes.fromhex(sha(manifest))+slot+be(2)+be(issued)
+    receipts={}
+    for n in range(1,issued+1):
+        request=only(pg['producer_requests'],producer_epoch=2,request_sequence=n)
+        receipt=bytes.fromhex(values['receipts',(b'\x01\x30'+slot+be(2)+be(n)).hex()]); receipts[n]=receipt
+        filename=slot.hex()+'-0000000000000002-'+f'{n:016x}.cbor'
+        if filename in inputs: assert inputs[filename]==dict(bytes=request['input_bytes'],sha256=request['request_digest'][2:])
+        preimage+=be(n)+binary(request['request_digest'])+bytes.fromhex(sha(receipt))
+    return dict(issued=issued,acknowledged=acknowledged,cut=cut,digest=sha(preimage+be(cut)),receipts=receipts)
+
+
+def terminal_source_delta(m,observed,basis):
+    producer=only(m.pg['producer_epochs'],producer_epoch=2); source=only(m.pg['source_streams'],owner_epoch=2)
+    if producer['state']=='open':
+        actual=only(observed['producer_epochs'],producer_epoch=2); model.fresh_xmin(actual['xmin'],m.pg)
+        producer.update(state='closing',xmin=actual['xmin'])
+    assert producer['state']=='closing'
+    if source['state']=='open':
+        actual=only(observed['source_streams'],owner_epoch=2); at=actual['closed_at_us']
+        model.clock(at,m.window); model.fresh_xmin(actual['xmin'],m.pg)
+        assert max(source['opened_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+        source.update(state='closed',last_complete_sequence=basis['cut'],closure_digest='\\x'+basis['digest'],closed_at_us=at,xmin=actual['xmin'])
+    assert source['state']=='closed' and (source['last_complete_sequence'],source['closure_digest'])==(basis['cut'],'\\x'+basis['digest'])
+
+
+def terminal_abandon_delta(m,observed,basis):
+    activation=only(m.pg['initial_ingest_activations']); source=only(m.pg['source_streams'],owner_epoch=2)
+    prior=[g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2]
+    jobs=[j for j in m.pg['jobs'] if j['kind']=='acquisition' and (j['owner_resource_id'],j['owner_epoch'],j['owner_incarnation'])==
+        tuple(activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))]
+    assert len(prior)+len(jobs)==1
+    for job in jobs:
+        assert job['state']=='queued' and job['job_revision']==2 and job['checkpoint_revision']==0
+        gap=only(observed['acquisition_gaps'],job_id=job['job_id']); model.fresh_xmin(gap['xmin'],m.pg)
+        at=gap['abandoned_at_us']; model.clock(at,m.window)
+        assert max(source['closed_at_us'],job['created_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+        wanted=dict(job_id=job['job_id'],dataset_id=job['dataset_id'],producer_slot_id=activation['producer_slot_id'],producer_epoch=2,
+            shard_id=0,source_owner_epoch=2,last_complete_sequence=basis['cut'],source_closure_digest='\\x'+basis['digest'],
+            previous_job_revision=2,previous_owner_resource=activation['activated_by_resource'],previous_owner_epoch=activation['activated_by_epoch'],
+            previous_owner_incarnation=activation['activated_by_incarnation'],issuer_resource=m.control['resource_id'],issuer_epoch=m.control['epoch'],
+            issuer_incarnation=m.control['process_incarnation'],owner_role='control',abandoned_at_us=at,reason='activated_initial_producer_abandoned',xmin=gap['xmin'])
+        assert gap==wanted; m.pg['acquisition_gaps'].append(wanted)
+        job.update(state='cancelled',job_revision=4,reason_code=wanted['reason'],completed_at_us=at,owner_resource_id=m.control['resource_id'],
+            owner_epoch=m.control['epoch'],owner_incarnation=m.control['process_incarnation'],xmin=gap['xmin'])
+    return len(jobs)
+
+
+def terminal_retire_delta(m,observed,basis):
+    owner=only(m.pg['owner_epochs'],role='ingest',epoch=2); role=only(m.pg['role_instances'],role_instance_id=owner['role_instance_id'])
+    producer=only(m.pg['producer_epochs'],producer_epoch=2); source=only(m.pg['source_streams'],owner_epoch=2)
+    domains=[d for d in m.pg['allocation_domains'] if d['owner_epoch']==2]; assert len(domains)==9
+    if producer['state']=='retired':
+        assert owner['state']=='released' and all(d['state']=='closed' for d in domains)
+        return 0
+    assert producer['state']=='closing' and owner['state']=='active' and role['retired_at_us'] is None and all(d['state']=='active' for d in domains)
+    actual=only(observed['producer_epochs'],producer_epoch=2); at,xid=actual['retired_at_us'],actual['xmin']
+    model.clock(at,m.window); model.fresh_xmin(xid,m.pg)
+    assert max(source['closed_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+    producer.update(state='retired',retired_at_us=at,closure_digest='\\x'+basis['digest'],xmin=xid)
+    owner.update(state='released',released_at_us=at,exclusion_method='storage_fenced',exclusion_digest='\\x'+basis['digest'],xmin=xid)
+    role.update(retired_at_us=at,xmin=xid)
+    for d in domains: d.update(state='closed',closed_at_us=at,closure_digest='\\x'+basis['digest'],xmin=xid)
+    return 12
+
+
+def verify_terminal_context(context,initial,expected):
+    case=context['case']; name,step=terminal_specification(case)
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['catalog_before']==context['catalog_after']
+    window=context['server_window']; assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True); number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    if step=='seed':
+        assert set(context)=={'case','before','native_before','inputs_before','after','native_after','inputs_after','response','server_window',
+            'catalog_before','catalog_after','backend_absence','backends','custody','arguments','attribution','receive_clock'}
+        assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+        absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+        assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+        for v in absence['attempts']: number(v['seconds'],0,5); assert type(v['count']) is int and v['count']==len(v['backends'])
+        assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
+        assert context['arguments']==[case['operation'],case['database'],'/run/secrets/application',case['config']]
+        number(context['response']['seconds'],0,120)
+        revision=case['database'].removeprefix(ActivatedTerminalProfile.DATABASE_PREFIX)[:7]
+        assert context['response']['command']==['docker','exec','bigbrotr-compacted-terminal-'+revision,'/build/ingest_bootstrap_probe',*context['arguments']]
+        events=terminal_seed_closed(context['response'],case['database'])
+        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'])
+        same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
+        return result
+    assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
+    for filename,value in context['input_contents'].items():
+        data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
+    assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
+    report=terminal_closed(context['response'],case); failure=terminal_failure(name,step)
+    backend_checked(context['backend'],case['database'],expected[0],context['after'])
+    m=model.Model(*expected,window); preparation_control(m,context['after'],success=failure is None,renewed=failure=='unbound-event')
+    native=expected[1]; basis=terminal_basis(expected); rows_retired=jobs=0
+    if failure is None:
+        assert only(m.pg['producer_epochs'],producer_epoch=2)['reserved_through_request']==basis['issued']
+        assert not [r for r in m.pg['producer_checkpoints'] if r['producer_epoch']==2]
+        operation=case['operation']
+        if operation in ('source-activated','abandon-activated'):
+            native=activated_native(native,m.slot,close=True)
+            if basis['issued'] and not [r for r in m.pg['producer_outcomes'] if r['producer_epoch']==2]:
+                assert name=='missing-copy' and step=='source'
+                m.pg=activated_outcome(m.pg,context['after'],basis['receipts'][1],m.control,window)
+            terminal_source_delta(m,context['after'],basis)
+            if operation=='abandon-activated': jobs=terminal_abandon_delta(m,context['after'],basis)
+        else:
+            assert operation=='retire-activated'
+            rows_retired=terminal_retire_delta(m,context['after'],basis)
+        wanted=dict(format='bigbrotr-ingest-recovery/1',state='activated-initial-retired' if operation=='retire-activated' else
+            'activated-acquisition-abandoned' if operation=='abandon-activated' else 'activated-source-closed',
+            dataset_id=m.ds['dataset_id'][2:],owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='2',
+            issued_through=str(basis['issued']),reserved_through=str(basis['issued']),resolved_requests=str(basis['issued']),
+            source_closure=dict(last_complete_sequence=str(basis['cut']),sha256=basis['digest']),
+            recovery_basis='closed-producer-floor-v3',compacted_requests='7',native='closed',owner_release='committed',ready=False)
+        if operation=='abandon-activated': wanted['acquisition_abandonment']=dict(jobs=str(jobs),reason='activated_initial_producer_abandoned',coverage='unknown')
+        if operation=='retire-activated': wanted['ingest_retirement']=dict(allocation_domains='9',acquisition_gaps=str(len([g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2])),owner_release='committed',native_acknowledged='0',native_retired='0')
+        assert report==wanted
+    same(context['after'],m.pg); assert context['native_after']==native
+    return dict(status='PASS',case=case['name'],result='REFUSED' if failure else report['state'],
+        native_rows=len(native['rows']),native_sequence=native['sequence'],product_native_writes=native['sequence']-expected[1]['sequence'],
+        target_issued=basis['issued'],target_acknowledged=0,target_source_cut=basis['cut'],source_closure_sha256=basis['digest'],
+        compacted_requests=0 if failure else 7,original_predecessor_requests=0,resolved_target_requests=0 if failure else basis['issued'],
+        retired_rows=rows_retired,abandoned_jobs=jobs,tables=77,input_files=len(expected[2]))
+
+
+def terminal_controls(context,initial,expected):
+    import json
+    name,step=terminal_specification(context['case'])
+    changes=[('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
+        ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
+        ('ancestor-checkpoint',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(checkpoint_digest='\\x'+'00'*32)),
+        ('initial-intent-attribution',lambda c:only(c['after']['initial_ingest_successions']).update(prepared_by_epoch=999)),
+        ('catalog-change',lambda c:c.update(catalog_after='changed'))]
+    def wrong_ack(c):
+        row=only(c['native_after']['rows'],cf='receipts',key=(b'\x01\x31'+binary(only(c['after']['initial_ingest_successions'])['producer_slot_id'])+be(2)).hex())
+        value=bytes.fromhex(row['value']); assert int.from_bytes(value[10:18],'big')==0
+        row['value']=(value[:10]+be(1)+value[18:]).hex()
+    changes.append(('invented-target-ACK',wrong_ack))
+    if context['inputs_after']: changes.append(('required-input-loss',lambda c:c['inputs_after'].clear()))
+    if step=='seed':
+        changes.extend([('unknown-custody',lambda c:c['custody'].update(status='UNKNOWN')),
+            ('wrong-seed-command',lambda c:c['response']['command'].append('unexpected')),
+            ('attribution-original-loss',lambda c:c['attribution'].pop(next(iter(c['attribution'])))),
+            ('receive-resolution',lambda c:c['receive_clock'].update(resolution_us=c['receive_clock']['resolution_us']+1))])
+    else:
+        changes.extend([('unreaped-child',lambda c:c['response']['terminal'].update(reaped=False)),
+            ('unexpected-argv',lambda c:c['response']['terminal']['command'].append('--successor')),
+            ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)])),
+            ('unknown-process',lambda c:c['response'].update(outcome='UNKNOWN'))])
+        if terminal_failure(name,step) is None:
+            def report_value(c,key,value):
+                report=loads(c['response']['stdout']); report[key]=value; c['response']['stdout']=json.dumps(report)+'\n'
+            changes.extend([('false-original-count',lambda c:report_value(c,'resolved_requests','7')),
+                ('missing-compacted-count',lambda c:report_value(c,'compacted_requests','0')),
+                ('source-cut',lambda c:only(c['after']['source_streams'],owner_epoch=2).update(last_complete_sequence=999))])
+            if step.startswith('retire'):
+                changes.append(('one-domain-not-retired',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(state='active')))
+                changes.append(('retired-row-transaction',lambda c:only(c['after']['producer_epochs'],producer_epoch=2).update(xmin='4294967000')))
+            if name in ('event','unbound-event') and step.startswith(('abandon','retire')):
+                changes.append(('gap-attribution',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=2).update(previous_owner_epoch=999)))
+        else:
+            changes.append(('different-typed-refusal',lambda c:c['response'].update(stderr='error: producer operation unavailable: Native(StateMismatch)\n')))
+    rejected=[]
+    for label,change in changes:
+        c=copy.deepcopy(context); change(c)
+        try: verify_terminal_context(c,initial,expected)
+        except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(label)
+        else: raise AssertionError('accepted altered terminal evidence: '+label)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+TERMINAL_UNBOUND_FIELDS=('relay_endpoint_id','relay_access_scope_id','relay_enrollment_generation','relay_route_id','acquisition_scope_id','acquisition_job_id')
+
+
+def terminal_mutation_kind(name,step):
+    if name=='head': return 'head'
+    if name=='missing-copy' and step in ('source','source-closed-missing'): return 'missing-copy'
+    if name=='unbound-event' and step=='abandon': return 'unbound-event'
+    if name=='mixed' and step=='retire-refuse': return 'mixed'
+    return None
+
+
+def terminal_mutation_statement(kind,expected,initial):
+    if kind=='head': return retained.ack_statement(initial)
+    pg=expected[0]; intent=only(pg['initial_ingest_successions']); slot=intent['producer_slot_id'][2:]
+    start="BEGIN;\nSET LOCAL statement_timeout='10s';\nSET LOCAL lock_timeout='5s';\nSET LOCAL session_replication_role=replica;\n"
+    if kind=='missing-copy':
+        command="DELETE FROM control.producer_outcomes WHERE producer_slot_id=decode('"+slot+"','hex') AND producer_epoch=2 AND request_sequence=1"
+        table='producer_outcomes'
+    elif kind=='unbound-event':
+        command='UPDATE control.producer_requests SET '+','.join(k+'=NULL' for k in TERMINAL_UNBOUND_FIELDS)+" WHERE producer_slot_id=decode('"+slot+"','hex') AND producer_epoch=2 AND request_sequence=1"
+        table='producer_requests'
+    else:
+        assert kind=='mixed'; source=only(pg['source_streams'],owner_epoch=2); assert source['state']=='closed'
+        command="UPDATE control.allocation_domains SET state='closed',closed_at_us="+str(source['closed_at_us'])+",closure_digest=decode('"+source['closure_digest'][2:]+"','hex') WHERE owner_resource_id=decode('"+intent['owner_resource_id'][2:]+"','hex') AND owner_epoch=2 AND dictionary_kind=1"
+        table='allocation_domains'
+    return start+command+'\nRETURNING (to_jsonb('+table+")||jsonb_build_object('xmin',xmin::text))::text;\nCOMMIT;\n"
+
+
+def terminal_mutation_checked(record,expected,initial,kind):
+    assert set(record)=={'kind','before','after','statement','sql_output'}
+    assert record['kind']=='isolated-terminal-'+kind and record['before']==dict(control=expected[0],native=expected[1],inputs=expected[2])
+    assert record['statement']==terminal_mutation_statement(kind,expected,initial)
+    pg,native,inputs=copy.deepcopy(expected); returned=loads(record['sql_output'])
+    if kind=='missing-copy':
+        row=only(pg['producer_outcomes'],producer_epoch=2,request_sequence=1); assert returned==row; pg['producer_outcomes'].remove(row)
+    else:
+        model.fresh_xmin(returned['xmin'],pg)
+        if kind=='head':
+            row=only(pg['producer_checkpoints'],producer_epoch=1); wanted=retained.ack_head(initial); wanted['xmin']=returned['xmin']
+            assert returned==wanted; row.clear(); row.update(wanted)
+        elif kind=='unbound-event':
+            row=only(pg['producer_requests'],producer_epoch=2,request_sequence=1)
+            assert all(row[k] is not None for k in TERMINAL_UNBOUND_FIELDS)
+            row.update({k:None for k in TERMINAL_UNBOUND_FIELDS},xmin=returned['xmin']); assert returned==row
+        else:
+            assert kind=='mixed'; row=only(pg['allocation_domains'],owner_epoch=2,dictionary_kind=1); assert row['state']=='active'
+            source=only(pg['source_streams'],owner_epoch=2)
+            row.update(state='closed',closed_at_us=source['closed_at_us'],closure_digest=source['closure_digest'],xmin=returned['xmin']); assert returned==row
+    assert record['after']==dict(control=pg,native=native,inputs=inputs)
+    return pg,native,inputs
+
+
+def terminal_qualification(component):
+    activated_qualification(component)
+    prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::activated_recovery_tests::compacted_activated_tests::terminal_tests::'
+    names=('compacted_activated_source_preserves_genuine_digest_event_mask_and_counts',
+        'compacted_activated_source_confirmation_and_order_refusals_never_advance',
+        'compacted_activated_retirement_observes_complete_closing_without_native_writes',
+        'compacted_activated_source_cut_and_retirement_root_are_exact',
+        'compacted_activated_source_rechecks_sidecars_sequence_cancel_and_science',
+        'compacted_activated_source_preserves_optional_tail_but_refuses_reserved_gaps',
+        'compacted_activated_source_ack_handoff_retains_final_input_seal')
     assert {prefix+n for n in names}<=set(component['test_names']['initial_reconstruction'])

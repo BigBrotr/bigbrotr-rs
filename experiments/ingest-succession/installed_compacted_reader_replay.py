@@ -19,10 +19,10 @@ from installed_family_capture import inventory_checked, physical, spool_checked
 loads,sha,same,only,number = oracle.loads,oracle.sha,oracle.same,oracle.only,oracle.number
 
 
-def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False,initial_preparation_faults=False,activated=False):
-    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated))
-    assert sum((history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated))<=1
-    profile=oracle.ActivatedProfile if activated else oracle.InitialPreparationDeliveryProfile if initial_preparation_faults else oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
+def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False,initial_preparation_faults=False,activated=False,activated_terminal=False):
+    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated,activated_terminal))
+    assert sum((history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated,activated_terminal))<=1
+    profile=oracle.ActivatedTerminalProfile if activated_terminal else oracle.ActivatedProfile if activated else oracle.InitialPreparationDeliveryProfile if initial_preparation_faults else oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
     if initial_preparation_faults: initial_preparation=True
     root = Path(root).resolve(strict=True); folder = root/profile.DIRECTORY; bound = {}
     def raw(path):
@@ -51,7 +51,9 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     assert set(report['database_names_after']) == set(report['database_names_before']) | set(report['databases'])
     started,finished = [oracle.retained.instant(report[k]) for k in ('started_at','finished_at')]
     assert started <= finished
-    if activated:
+    if activated_terminal:
+        seeds,initial=oracle.terminal_origins_checked(root,raw); pins=oracle.TERMINAL_ORIGINS
+    elif activated:
         seeds,initial=oracle.activated_origins_checked(root,raw); pins=oracle.ACTIVATED_ORIGINS
     elif initial_preparation:
         seeds,initial=(oracle.preparation_delivery_origins if initial_preparation_faults else oracle.preparation_origins_checked)(root,raw)
@@ -95,7 +97,8 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     build = Path(mount['Source']); assert build.is_absolute()
     built,component,qualification = [read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
     oracle.qualification_checked(built,component,qualification,product_source,
-        initial_journey=initial_journey or initial_preparation or activated,initial_preparation=initial_preparation,compacted_activated=activated)
+        initial_journey=initial_journey or initial_preparation or activated or activated_terminal,initial_preparation=initial_preparation,
+        compacted_activated=activated or activated_terminal,compacted_terminal=activated_terminal)
     if initial_preparation: oracle.preparation_qualification(component)
     assert report['build'] == built and report['component'] == component
     data = raw(build.parent/'build/source-manifest.json'); assert sha(data) == built['source_manifest_sha256']
@@ -114,13 +117,15 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     results = []; previous_time = started
     for clone in report['clones']:
         name = clone['name']; directory = folder/name
-        if activated:
+        if activated_terminal:
+            origin_name=oracle.TERMINAL_ORIGIN_NAMES[name]; seed=seeds[origin_name]; declaration=report['origins'][origin_name]
+        elif activated:
             origin_name=oracle.ACTIVATED_ORIGIN_NAMES[name]; seed=seeds[origin_name]; declaration=report['origins'][origin_name]
         elif initial_preparation:
             origin_name=(oracle.DELIVERY_ORIGIN_NAMES if initial_preparation_faults else oracle.PREPARATION_ORIGIN_NAMES)[name]
             seed=seeds[origin_name]; declaration=report['origins'][origin_name]
         assert clone['origin'] == origin_name and clone['directory'] == name and clone['status'] == 'PASS'
-        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey or initial_preparation or activated else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
+        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey or initial_preparation or activated or activated_terminal else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
         assert clone['config'] == '/lab/'+clone['database']+'.toml' and clone['final_backends'] == []
         assert clone['final_case'] == name+'-'+profile.STEPS[name][-1]
         same(read(folder/(name+'-copy-before.json')),seed[0]); same(read(folder/(name+'-migrated.json')),seed[0])
@@ -132,7 +137,8 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
                 dataset_initialization='not-performed',release_upgrade_qualification='not-performed')
         assert clone['grants'] == [dict(statement=s,stdout='') for s in profile.GRANTS]
         assert clone['catalog_before'] == clone['catalog_after'] == clone['final_catalog']
-        if activated: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.ACTIVATED_GRANTS)
+        if activated_terminal: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.TERMINAL_GRANTS)
+        elif activated: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.ACTIVATED_GRANTS)
         elif initial_journey or initial_preparation: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.JOURNEY_GRANTS)
         elif fault_profile: assert declaration['catalog']==clone['catalog_before']
         else: (oracle.history_catalog_checked if history_profile else oracle.catalog_checked)(declaration['catalog'],clone['catalog_before'])
@@ -148,6 +154,9 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
             lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
         for filename in (name+'-config-validation.json',clone['database']+'-installed-config-validation.json'):
             v = read(folder/filename); assert type(v['returncode']) is int and v['returncode'] == 0 and v['stderr'] == ''; loads(v['stdout'])
+        if activated_terminal:
+            checked,previous_time=journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,terminal_profile=True)
+            results.extend(checked); continue
         if activated:
             baseline=only(results,name='progress-wire-seed')['oracle'] if name in ('outcome-after','outcome-before','reserved-tail') else None
             checked,previous_time=journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,activated=True,baseline=baseline)
@@ -233,7 +242,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     return dict(status=profile.STATUS+'_CAPTURE_REPLAY',source=report['source'],product_source=product_source,
         cases=results,bound_files=bound,not_run=list(profile.NOT_RUN),
         preservation='Original files reread; original SQL/catalog and engine/process closure are captured-run evidence',
-        scope=('Installed compacted activated-initial recovery and ACK with authentic COMMIT loss seeds' if activated else 'Installed compacted initial completion delivery faults and fresh retries only' if initial_preparation_faults else 'Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
+        scope=('Compacted activated terminal positive/refusal captures; final delivery/cancellation gates NOT_RUN' if activated_terminal else 'Installed compacted activated-initial recovery and ACK with authentic COMMIT loss seeds' if activated else 'Installed compacted initial completion delivery faults and fresh retries only' if initial_preparation_faults else 'Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
 
 
 
@@ -368,30 +377,50 @@ def fault_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,f
     return dict(name=label,oracle=checked,negative_controls=controls),previous_time
 
 
-def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,preparation=False,delivery=False,activated=False,baseline=None):
+def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,preparation=False,delivery=False,activated=False,terminal_profile=False,baseline=None):
     assert type(preparation) is bool and type(delivery) is bool and (not delivery or preparation)
     name=clone['name']; directory=folder/name; expected=seed; results=[]
     assert type(activated) is bool and not (activated and (preparation or delivery))
-    steps=oracle.ACTIVATED_STEPS if activated else oracle.DELIVERY_STEPS if delivery else oracle.PREPARATION_STEPS if preparation else oracle.JOURNEY_STEPS
-    check=oracle.verify_activated_context if activated else oracle.verify_preparation_context if preparation else oracle.verify_journey_context
-    controls_check=oracle.activated_controls if activated else oracle.preparation_controls if preparation else oracle.journey_controls
-    specification=oracle.activated_specification if activated else oracle.preparation_specification if preparation else oracle.journey_specification
+    assert type(terminal_profile) is bool and not (terminal_profile and (activated or preparation or delivery))
+    steps=oracle.TERMINAL_STEPS if terminal_profile else oracle.ACTIVATED_STEPS if activated else oracle.DELIVERY_STEPS if delivery else oracle.PREPARATION_STEPS if preparation else oracle.JOURNEY_STEPS
+    check=oracle.verify_terminal_context if terminal_profile else oracle.verify_activated_context if activated else oracle.verify_preparation_context if preparation else oracle.verify_journey_context
+    controls_check=oracle.terminal_controls if terminal_profile else oracle.activated_controls if activated else oracle.preparation_controls if preparation else oracle.journey_controls
+    specification=oracle.terminal_specification if terminal_profile else oracle.activated_specification if activated else oracle.preparation_specification if preparation else oracle.journey_specification
     label=name+'-logical-origin'; absent(label,clone['database'])
     assert read(folder/(label+'-native.json'))==seed[1]
     response=read(folder/(label+'-dump-response.json'))
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']=='' and loads(response['stdout'])==seed[1]
-    if activated and name=='missing-input':
+    if (activated or terminal_profile) and name=='missing-input':
         q=read(folder/'missing-input-quarantine.json'); expected=oracle.activated_quarantine_checked(q,expected)
         assert physical(folder/q['path'],raw)==q['quarantine_after'] and raw(folder/q['path']/q['name']).hex()==q['hex']
         assert physical(directory/'store/producer-inputs-v1',raw)==q['after']
+    attribution=None
+    if terminal_profile and 'seed' in steps[name]:
+        a=read(folder/(name+'-attribution.json'))
+        assert set(a)=={'kind','path','contents','physical'} and a['kind']=='retained-attribution-originals-outside-spool'
+        assert a['path']==name+'/terminal-seed-inputs'; attribution=a['contents']; oracle.terminal_attribution(attribution,initial)
+        assert physical(folder/a['path'],raw)==a['physical'] and set(a['physical'])=={'.',*attribution}
+        for filename,value in attribution.items(): assert raw(folder/a['path']/filename).hex()==value
     for step in steps[name]:
+        if terminal_profile:
+            kind=oracle.terminal_mutation_kind(name,step)
+            if kind:
+                label=name+'-'+step+'-mutation'; absent(label,clone['database']); mutation=read(folder/(label+'.json'))
+                assert read(folder/(label+'-before-native.json'))==expected[1]
+                expected=oracle.terminal_mutation_checked(mutation,expected,initial,kind)
+                assert read(folder/(label+'-after-native.json'))==expected[1]
+                assert raw(folder/(label+'.sql')).decode()==mutation['statement']
+                for phase in ('before','after'):
+                    dump=read(folder/(label+'-'+phase+'-dump-response.json'))
+                    assert type(dump['returncode']) is int and dump['returncode']==0 and dump['stderr']==''
+                    assert loads(dump['stdout'])==mutation[phase]['native']; number(dump['seconds'],0,120)
         if preparation and step=='missing-original':
             q=read(folder/(name+'-required-quarantine.json'))
             expected=oracle.preparation_quarantine_checked(q,expected,initial)
             assert physical(folder/q['path'],raw)==q['quarantine_after']
             assert raw(folder/q['path']/q['name']).hex()==q['hex']
             assert physical(directory/'store/producer-inputs-v1',raw)==q['after']
-        if step=='refuse' and not activated and not (preparation and name=='activated-zero'):
+        if step=='refuse' and not activated and not terminal_profile and not (preparation and name=='activated-zero'):
             label=name+'-mutation'; absent(label,clone['database']); mutation=read(folder/(label+'.json'))
             assert read(folder/(label+'-before-native.json'))==expected[1]
             expected=(oracle.preparation_mutation_checked if preparation else oracle.journey_mutation_checked)(mutation,expected,initial,name)
@@ -425,7 +454,7 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
         assert case['returncode']==context['response']['returncode']
         window=context['server_window']; assert window==case['server_window']
         number(window['before_us'],previous_time,finished,integer=True); previous_time=number(window['after_us'],window['before_us'],finished,integer=True)
-        installed=step!='seed' if activated else step not in ('prepare','prepare-gap') if preparation else step in ('current-refuse','serve')
+        installed=step!='seed' if activated or terminal_profile else step not in ('prepare','prepare-gap') if preparation else step in ('current-refuse','serve')
         if installed:
             assert item('fixture')==context['fixture'] and item('observations')==context['snapshots'] and item('backends')==context['backend']
             assert item('control-backends')==context['backend']['absence']
@@ -437,7 +466,7 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
             assert item('external')==dict(control=context['after'],native=context['native_after'],inputs=context['inputs_after'],backend=context['backend'],catalog=clone['catalog_before'])
             for snapshot in context['snapshots']: assert item(snapshot['stage'])==snapshot['control']
             if step=='serve': assert item('signal')==context['fixture']['signal']
-            if preparation or activated:
+            if preparation or activated or terminal_profile:
                 contents={}
                 for filename,identity in context['inputs_after'].items():
                     candidates=[directory/'store/producer-inputs-v1'/filename,directory/'quarantined-required'/filename]
@@ -461,6 +490,12 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
                 assert item('gate')==context['gate']; path=folder/(label+'-gate.go'); meta=path.lstat()
                 assert stat.S_ISREG(meta.st_mode) and stat.S_IMODE(meta.st_mode)==0o600 and meta.st_nlink==1 and raw(path)==b''
                 assert context['response']['command']==['docker','exec',('bigbrotr-initial-delivery-' if delivery else 'bigbrotr-initial-preparation-' if preparation else 'bigbrotr-compacted-initial-')+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
+            if terminal_profile:
+                assert context['response']['command']==['docker','exec','bigbrotr-compacted-terminal-'+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
+                assert context['attribution']==attribution
+                resolution=item('receive-clock')
+                assert type(resolution['returncode']) is int and resolution['returncode']==0 and resolution['stderr']==''
+                assert loads(resolution['stdout'])==context['receive_clock']
             if activated:
                 assert item('wire')==context['wire']
                 assert context['wire']['command'][3]=='bigbrotr-compacted-activated-'+report['source'][:7]
@@ -487,5 +522,6 @@ if __name__ == '__main__':
     profile.add_argument('--initial-preparation',action='store_true')
     profile.add_argument('--initial-preparation-faults',action='store_true')
     profile.add_argument('--activated',action='store_true')
-    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation,initial_preparation_faults=args.initial_preparation_faults,activated=args.activated)
+    profile.add_argument('--activated-terminal',action='store_true')
+    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation,initial_preparation_faults=args.initial_preparation_faults,activated=args.activated,activated_terminal=args.activated_terminal)
     with args.output.open('x') as stream: json.dump(result,stream,indent=2); stream.write('\n')

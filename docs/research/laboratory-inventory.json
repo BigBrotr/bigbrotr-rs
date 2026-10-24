@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "BUILD_PASS; fixture and fault-probe agents source-only",
+        "state": "BUILD_PASS; first Python fixture integrated and source-reviewed; runtime NOT_RUN; followup source retained",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -62957,7 +62957,8 @@
             "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fixture-20261024",
             "branch": "work/compacted-activated-terminal-fixture",
             "scope": "Actual Event/workflow probe and installed terminal expected-state matrix",
-            "state": "ACTIVE; Rust seed b48ccbf8 integrated; Python terminal profile partial in separate worktree"
+            "state": "COMPLETE; frozen six-file Python profile e245bbda integrated; originals retained",
+            "head": "e245bbda412c441426d6a15835326ab03489ee89"
           }
         ],
         "preservation": "Prior detached authored worktrees/receipts/clones/failures retained, no cleanup",
@@ -62997,9 +62998,11 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fault-probe-20261024",
           "branch": "work/compacted-activated-terminal-fault-probe",
           "base": "56cac527313a8b5d813b52917beea1e544d010a0",
-          "state": "ACTIVE source-only; no engines/builds",
-          "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation"
-        }
+          "state": "COMPLETE; frozen clean at b3af23cb, root source-reviewed, not integrated or built",
+          "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
+          "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
+        },
+        "root_followup": "Two canonical uncommitted Rust zero-claim fixture files; independent source review complete, build/runtime NOT_RUN"
       }
     }
   },

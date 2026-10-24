@@ -29,10 +29,13 @@ SCOPE = '\\xa39723d7c49af2c99498fb2f59c03b16'
 SIGNED = {'pubkey': 'f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9', 'created_at': 1, 'kind': 1, 'tags': [], 'content': 'import then network', 'id': '8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849', 'sig': 'ab9e62de93391621735c773f4b1c40f41029d7d49369993a63a226c4ce14605859b112dd261b5fa4f8a2b82bbac0a67323f39c4d007555711547bfd25560b4a6'}
 
 
-def authenticated_job(before, after, report, control, clock):
+def authenticated_job(before, after, report, control, clock, *, modern=False):
     """One actual login/accept/claim; no endpoint, scope or workflow mutation."""
+    assert type(modern) is bool
+    epoch=control['epoch'] if modern else 8
+    scope='\\x422b7d8b33d4b55977806fb711e2d082' if modern else SCOPE
     refreshed = copy.deepcopy(before)
-    changed = only(after['owner_epochs'], role='control', epoch=8)
+    changed = only(after['owner_epochs'], role='control', epoch=epoch)
     refreshed['owner_epochs'][refreshed['owner_epochs'].index(control)] = changed
     control = renewed(before, refreshed, control, report['accepted_at_us'])
     fresh_xmin(control['xmin'], before)
@@ -81,7 +84,7 @@ def authenticated_job(before, after, report, control, clock):
     fresh_xmin(tx, before); live.clock(at, clock)
     assert refreshed_at <= at < control['lease_expires_at_us']
     digest = live.sha(b'bigbrotr/acquisition-job/1\0' + binary(ds) + binary(ACTOR)
-        + binary(REQUEST_KEY) + binary(SCOPE) + live.be(30_000_000) + live.be(1) * 2)
+        + binary(REQUEST_KEY) + binary(scope) + live.be(30_000_000) + live.be(1) * 2)
     wanted['management_commands'].append(dict(dataset_id=ds, actor_id=ACTOR, request_key=REQUEST_KEY,
         request_digest=live.bytea(digest), action='job.acquisition.accept', accepted_at_us=at,
         expected_config_revision=1, policy_revision=1, audit_id=command['audit_id'],
@@ -91,7 +94,7 @@ def authenticated_job(before, after, report, control, clock):
     assert len(binary(job['job_id'])) == 16 and job['job_id'] not in {r['job_id'] for r in before['jobs']}
     fresh_xmin(job['xmin'], before)
     assert len({btx, stx, tx, job['xmin'], control['xmin']}) == 5
-    owner = dict(owner_resource_id=control['resource_id'], owner_epoch=8,
+    owner = dict(owner_resource_id=control['resource_id'], owner_epoch=epoch,
         owner_role='control', owner_incarnation=control['process_incarnation'])
     wanted['jobs'].append(dict(only(before['jobs'], kind='acquisition'), job_id=job['job_id'],
         request_key=REQUEST_KEY, request_digest=live.bytea(digest), state='queued', job_revision=2,
@@ -100,10 +103,10 @@ def authenticated_job(before, after, report, control, clock):
     wanted['job_admissions'].append(dict(job_id=job['job_id'],
         admission_ordinal=max(r['admission_ordinal'] for r in before['job_admissions']) + 1, xmin=tx))
     wanted['acquisition_jobs'].append(dict(only(before['acquisition_jobs']), job_id=job['job_id'],
-        request_key=REQUEST_KEY, scope_id=SCOPE, duration_us=30_000_000, deadline_at_us=at + 30_000_000,
-        session_id=sid, actor_credential_revision=1, actor_authentication_revision=1, actor_grant_revision=4, xmin=tx))
-    assert report == dict(event='live-durable-job', job=job['job_id'][2:], scope=SCOPE[2:],
-        accepted_at_us=at, deadline_at_us=at + 30_000_000, control_epoch=8, request_key=REQUEST_KEY[2:],
+        request_key=REQUEST_KEY, scope_id=scope, duration_us=30_000_000, deadline_at_us=at + 30_000_000,
+        session_id=sid, actor_credential_revision=1, actor_authentication_revision=1, actor_grant_revision=1 if modern else 4, xmin=tx))
+    assert report == dict(event='live-durable-job', job=job['job_id'][2:], scope=scope[2:],
+        accepted_at_us=at, deadline_at_us=at + 30_000_000, control_epoch=epoch, request_key=REQUEST_KEY[2:],
         provenance=True, existing_dictionaries=True)
     same(wanted, after)
     return control
@@ -153,7 +156,10 @@ def durable_science(plan, prepared_rows, inputs, contents, report, receive_clock
     return dict(plan=plan, ds=ds, slot=slot, rows=wanted, inputs=originals, digest=digest), filename, raw, receipt
 
 
-def admitted(before, after, science, raw, receipt, control, report, clock):
+def admitted(before, after, science, raw, receipt, control, report, clock, *, modern=False):
+    assert type(modern) is bool
+    epoch=control['epoch'] if modern else 8
+    scope_id='\\x422b7d8b33d4b55977806fb711e2d082' if modern else SCOPE
     request = only(after['producer_requests'], producer_epoch=2, request_sequence=1)
     outcome = only(after['producer_outcomes'], producer_epoch=2, request_sequence=1)
     fresh_xmin(request['xmin'], before); fresh_xmin(outcome['xmin'], before)
@@ -164,7 +170,7 @@ def admitted(before, after, science, raw, receipt, control, report, clock):
     assert report['received_at_us'] <= request['reserved_at_us'] <= outcome['recorded_at_us']
     assert outcome['recorded_at_us'] < min(control['lease_expires_at_us'],
         science['plan']['lease_expires_at_us'], job['deadline_at_us'])
-    scope = only(before['acquisition_scopes'], scope_id=SCOPE)
+    scope = only(before['acquisition_scopes'], scope_id=scope_id)
     enrollment = only(before['relay_enrollments'], endpoint_id=scope['endpoint_id'], access_scope_id=scope['access_scope_id'])
     identity = dict(producer_slot_id=live.bytea(science['slot']), producer_epoch=2, request_sequence=1,
         dataset_id=live.bytea(science['ds']), request_digest=live.bytea(live.sha(raw)),
@@ -172,14 +178,15 @@ def admitted(before, after, science, raw, receipt, control, report, clock):
     wanted = copy.deepcopy(before)
     only(wanted['producer_epochs'], producer_epoch=2).update(reserved_through_request=1, xmin=request['xmin'])
     wanted['producer_requests'].append(dict(identity, input_bytes=len(raw), input_profile=1,
-        issuer_resource=control['resource_id'], issuer_epoch=8, issuer_role='control',
+        issuer_resource=control['resource_id'], issuer_epoch=epoch, issuer_role='control',
         issuer_incarnation=control['process_incarnation'], reserved_at_us=request['reserved_at_us'],
         relay_endpoint_id=scope['endpoint_id'], relay_access_scope_id=scope['access_scope_id'],
         relay_enrollment_generation=enrollment['generation'], relay_route_id=enrollment['route_id'],
-        acquisition_scope_id=SCOPE, acquisition_job_id=job['job_id'], xmin=request['xmin']))
-    wanted['producer_outcomes'].append(dict(identity, outcome_kind=2, policy_epoch=1,
+        acquisition_scope_id=scope_id, acquisition_job_id=job['job_id'], xmin=request['xmin'],
+        **(dict(progress_event_ordinal=None,progress_input_sha256=None,progress_request_id=None,progress_wire_sequence=None) if modern else {})))
+    wanted['producer_outcomes'].append(dict(identity, outcome_kind=1 if modern else 2, policy_epoch=1,
         outcome_bytes=live.bytea(receipt), outcome_sha256=live.bytea(live.sha(receipt)),
-        recorder_resource=control['resource_id'], recorder_epoch=8, recorder_role='control',
+        recorder_resource=control['resource_id'], recorder_epoch=epoch, recorder_role='control',
         recorder_incarnation=control['process_incarnation'], recorded_at_us=outcome['recorded_at_us'], xmin=outcome['xmin']))
     same(wanted, after)
 

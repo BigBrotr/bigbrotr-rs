@@ -7,11 +7,14 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
 Compacted activated positive recovery and checkpoint ACK are now scoped-qualified.
-Current main: `56cac527313a8b5d813b52917beea1e544d010a0`; last verified push
-`bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b` (push10949 joined0). Main integrates
+Current main and last verified push: `b6b51e47c60c85cbd8bb6abe6369c4fa7345e362`
+(push95785 joined0). Main integrates
 reviewed compacted terminal native/PG/CLI consumers, seven required component
-controls and the real Event seed. The Python terminal fixture remains partial.
-Qualified product: `fc9388fc4c4f404ce57785eb5bfc66d11e10185a`,
+controls and the real Event seed. The first Python terminal fixture e245bbda is
+source-reviewed and integrated; its connected matrix has not run. Root retains
+two uncommitted Rust zero-claim fixture files for the later fault extension,
+independently source-reviewed but not yet built.
+Prior installed recovery/ACK product: `fc9388fc4c4f404ce57785eb5bfc66d11e10185a`,
 tree `e4a1c2d1b535049244cf32e03d211bfc586a47ee`.
 No floor writer or unlink is exposed. New terminal connected paths remain NOT_RUN.
 
@@ -53,23 +56,24 @@ logs remain intact. No cache cleanup occurred; unrelated workloads are untouched
 
 ## Precise next action and open gates
 
-Native agent completed from bbc36cbd; the fixture agent remains active in
-`.research/compacted-activated-terminal-native-20261024` and
-`.research/compacted-activated-terminal-fixture-20261024`. Native worktree is clean
-DETACHED at0a063ef3 after exact five-file reconciliation; its redundant branch ref
-was retired with artifacts preserved. Fixture branch retains partial Python work.
+The completed native worktree `.research/compacted-activated-terminal-native-20261024`
+is clean DETACHED at0a063ef3 after exact five-file reconciliation; its redundant
+branch ref was retired with artifacts preserved. The completed fixture worktree
+`.research/compacted-activated-terminal-fixture-20261024` is clean at e245bbda;
+its original authored commits and evidence remain retained.
 Native0a063ef3 and Rust seed b48ccbf8 match the integrated bytes; exact-hash independent
 PG/CLI review found no blocker. Exact-source build PASS; connected terminal
 qualification has not run.
 
-Use the qualified56cac527 artifacts for the first installed terminal matrix once
-the Python fixture is frozen and reviewed; preserve original failure/retry evidence.
-The reused native agent now prepares the existing activated retirement fault probe
-in `.research/compacted-activated-terminal-fault-probe-20261024` from56cac527
-(branch `work/compacted-activated-terminal-fault-probe`); source only, no runtime.
-Complete/review the separate Python terminal fixture, then qualify
-actual Event/workflow and terminal COMMIT/cancel/expiry boundaries; current
-zero/dictionary cases are insufficient for these new responsibilities.
+Run the frozen first terminal harness with qualified56cac527 artifacts and
+`--activated-terminal`, then exact-source raw replay: predicted 8 clones,25 commands,
+331 checker controls are not measured results. Preserve every failed attempt.
+The fault probe is frozen/source-reviewed at b3af23cb in
+`.research/compacted-activated-terminal-fault-probe-20261024`
+(branch `work/compacted-activated-terminal-fault-probe`). Integrate it with the
+root zero-claim draft after the first harness freeze, then build and qualify final
+COMMIT/cancel/expiry/post-proof H/D and zero-request claimed-job boundaries.
+Agents have completed their source work; no agent runtime is active.
 
 Later recovery, live frontier, retained Archive frontier and empty retirement
 remain before GC. Physical64file/32MiB bounds remain; physical loss, mixed restore,

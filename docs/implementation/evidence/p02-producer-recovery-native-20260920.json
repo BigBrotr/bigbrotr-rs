@@ -44947,7 +44947,42 @@
                     "checks": "CLI/probe compilation, eight component selectors and Clippy PASS; exact source archive/files, binaries and mandatory names verified",
                     "free_bytes_after": 270275141632
                   }
-                ]
+                ],
+                "first_terminal_fixture": {
+                  "author_commit": "e245bbda412c441426d6a15835326ab03489ee89",
+                  "author_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-fixture-source-v1.json",
+                  "author_receipt_sha256": "ae53a0603c354ba9b72686501d4712186242656a3e740bd37c52f29c9d00aea5",
+                  "files_sha256": {
+                    "experiments/ingest-bootstrap/activated_source_durable_oracle.py": "e4cc4e409e2db92ba25c7c065bb4706ea53b7fa619651d721c05602a33eb1b3d",
+                    "experiments/ingest-succession/installed_compacted_reader.py": "3ef312c3b9cbf06c78736a08d408e47539a8a94e9f244713570d87d6b2126cdb",
+                    "experiments/ingest-succession/installed_compacted_reader_oracle.py": "4eda997592e3906fd555ef718cc164b008e3f9ae26015ae8767bab7538046217",
+                    "experiments/ingest-succession/installed_compacted_reader_replay.py": "3c2d38f36173db9306e457eef4508abeb4fefefae0ba429381e19c2991873298",
+                    "experiments/ingest-succession/installed_cycle_client.py": "c196db2520d04a2c0e66339a66e310a8f9866ad74c926722d329d8bfc49167b0",
+                    "experiments/ingest-succession/transition.py": "0aabb3f5264c576ded046054a9df63686c7b955404b18d3f85acefd212b203e5"
+                  },
+                  "root_review": "Complete six-file delta and new terminal expected-state/run/replay/mutation bodies reviewed. Full466-line old durable oracle and actual capture helper read; unchanged prior exact-source runner/custody/raw replay owners reused. Verified literal Event science/dependencies/receipt, genuine target digest/ACK0, atomic12-row retirement, actual activating-Control job gap and complete SQL/native/input comparison. Shared replay terminal boolean collision found in root and author review and corrected to terminal_profile; root requested exact seed argv binding plus rejection control, now independently checked. Source freeze hashes match integrated six files; no unresolved source blocker.",
+                  "predicted_cases": 25,
+                  "predicted_controls": 331,
+                  "clones": 8,
+                  "runtime": "NOT_RUN",
+                  "not_run": [
+                    "Actual product reclamation/GC and unlink",
+                    "Final terminal COMMIT delivery loss, ancestor H/D drift after earlier completion, cancellation and lease expiry",
+                    "Zero-request claimed acquisition, unresolved import, draining owner and isolated native OPEN retirement guard",
+                    "Later activated successors, live frontier, retained Archive frontier and empty retirement",
+                    "Mixed restore/backup, physical loss and capacity"
+                  ]
+                },
+                "followup_probe_work": {
+                  "fault_probe_author_commit": "b3af23cbb337309d40cc21502d31ea16633bef83",
+                  "fault_probe_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-fault-probe-source-v1.json",
+                  "fault_probe_receipt_sha256": "fd3455af9fb859305ce340513fb29db44b2bdaa465981c163ded7308d7d5966b",
+                  "root_review": "Full three-file delta, complete activated expiry owner and existing wait helper, affected succession/bootstrap routing reviewed. No source blocker. Explicit source proof before gate, no refresh until final actual operation, retained pinned future for cancellation, real UTC expiry, unclassified exact gate Result; no weakened custody or old-profile semantics.",
+                  "zero_claim_draft": "Root two-file uncommitted adaptation in ingest_live.rs/ingest_live_durable.rs; source reviewed independently, no builds/runtime. Kept outside first harness commit so built56cac527 probe bytes remain exact.",
+                  "zero_claim_critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-zero-claim-critical-review-v1.json",
+                  "zero_claim_critical_receipt_sha256": "d971fd1c9757d5696d4dbb8fc49a8c369411d6225d8876891ea0a81d7b2b3313",
+                  "state": "Source-only; integrate/rebuild after first frozen terminal harness identity"
+                }
               }
             }
           }
