@@ -44846,12 +44846,12 @@
               "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
               "terminal_consumer_work": {
                 "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
-                "state": "PASS_EXACT_BUILD_AND_COMPONENTS; installed compacted terminal NOT_RUN",
+                "state": "PASS_EXACT_BUILD_AND_COMPONENTS; installed terminal failed at abandonment retry oracle total count, correction source reviewed",
                 "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No build/connected runtime active; source-only endpoint correction and receive diagnostic under review",
+                "runtime": "No build/connected runtime active. Root correcting total-job report oracle; agents prepare/review separate fault extension.",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -44946,6 +44946,39 @@
                     "required_controls": 70,
                     "checks": "CLI/probe compilation, eight component selectors and Clippy PASS; exact source archive/files, binaries and mandatory names verified",
                     "free_bytes_after": 270275141632
+                  },
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7bc63d9",
+                    "source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+                    "tree": "f4ff4bc7fe1a52aa9995f7020125dc721e87de61",
+                    "driver": 31502,
+                    "status": "PASS_EXACT_BUILD_AND_COMPONENTS",
+                    "owner": "7393102bbf716ad74a2e9ffa7799b2e4",
+                    "containers": [
+                      {
+                        "id": "db116994b96bc1bc9feb762c7346265fd7251214401a273b6336aa98244da99a",
+                        "name": "/bigbrotr-producer-floor-7bc63d9-fetch",
+                        "state": "exited",
+                        "exit_code": 0,
+                        "pid": 0,
+                        "oom": false
+                      },
+                      {
+                        "id": "641c562e8d14a7ea861b89dff0359a2064439267a8e47f8718189a78e30b5fea",
+                        "name": "/bigbrotr-producer-floor-7bc63d9-native",
+                        "state": "exited",
+                        "exit_code": 0,
+                        "pid": 0,
+                        "oom": false
+                      }
+                    ],
+                    "driver_exit": 0,
+                    "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7bc63d9/verified-build.json",
+                    "verified_receipt_sha256": "7126dc93bab98bd9915ab4250adef33d1496f026d9c6382657044c5554be4dd5",
+                    "components": 179,
+                    "required_controls": 70,
+                    "checks": "All10 checks PASS; exact source archive/2060files/ELFs verified; unchanged mandatory names and counts match prior qualified set",
+                    "free_bytes_after": 267451637760
                   }
                 ],
                 "first_terminal_fixture": {
@@ -44986,10 +45019,10 @@
                   "fault_probe_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-fault-probe-source-v1.json",
                   "fault_probe_receipt_sha256": "fd3455af9fb859305ce340513fb29db44b2bdaa465981c163ded7308d7d5966b",
                   "root_review": "Full three-file delta, complete activated expiry owner and existing wait helper, affected succession/bootstrap routing reviewed. No source blocker. Explicit source proof before gate, no refresh until final actual operation, retained pinned future for cancellation, real UTC expiry, unclassified exact gate Result; no weakened custody or old-profile semantics.",
-                  "zero_claim_draft": "Root two-file uncommitted adaptation in ingest_live.rs/ingest_live_durable.rs; source reviewed independently, no builds/runtime. Kept outside first harness commit so built56cac527 probe bytes remain exact.",
+                  "zero_claim_draft": "Two-file zero-claim probe integrated2557d2cb; Rust receive diagnostic integrated7bc63d97; source reviews recorded, exact build running.",
                   "zero_claim_critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-zero-claim-critical-review-v1.json",
                   "zero_claim_critical_receipt_sha256": "d971fd1c9757d5696d4dbb8fc49a8c369411d6225d8876891ea0a81d7b2b3313",
-                  "state": "Five fault/zero example files integrated and reviewed; build/runtime NOT_RUN. New one-file receive diagnostic draft source-reviewed; endpoint Python correction active.",
+                  "state": "Fault/zero probes compiled7bc63d97; independent fault Python extension source work active; connected fault scenarios NOT_RUN",
                   "integrated_commit": "2557d2cb155163e32e39ba2dcf344df903c0eaf4"
                 },
                 "installed_attempts": [
@@ -45026,13 +45059,30 @@
                     "failure": "Actual Event seed exit101 after10.3956 seconds; last stage durable-job-claimed. history.external correctly refused native reopen at UNKNOWN_PROCESS_OUTCOME; outer owner stopped client. No complete terminal qualification or raw replay.",
                     "diagnosis": "Saved fixture root permits /installed-successor-fixture while genuine endpoint/probe require /installed-fixture. Full policy/connector source shows sufficient pre-connect refusal, which join(receive,peer) can mask. No intermediate markers establish the actual failed await. Do not assign this cause to earlier a99.",
                     "resource_state": "Owned client stopped143; borrowed PG stopped0; PID0/noOOM; cleanup arrays empty and all four originals preserved. Failed Event native was not reopened by wrapper."
+                  },
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-7bc63d9",
+                    "source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+                    "tree": "f4ff4bc7fe1a52aa9995f7020125dc721e87de61",
+                    "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+                    "owner": "fb4ec3a282da61f6f8a614efd8f08aa8",
+                    "client": "797d3c2365a6159eece7b25d9936522847bb149e1639ca1a991c4478f559fadf",
+                    "driver": 43168,
+                    "driver_exit": 1,
+                    "status": "FAIL",
+                    "completed_cases": 10,
+                    "completed_checker_controls": 136,
+                    "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-7bc63d9/verified-run-failure.json",
+                    "verified_failure_sha256": "b613c5e28393d5996d9aecbcc0da8660c75c3a239b75d1ce5ee6109c1038906f",
+                    "failure": "event-abandon-retry report==wanted: exact successful product reports total jobs1; old oracle incorrectly expected newly abandoned0. Actual process/backend custody closed. Original FAIL unchanged.",
+                    "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; all11 captures have actual closed custody"
                   }
                 ],
                 "endpoint_correction": {
                   "root_draft": "ingest_live_durable.rs modern visibility/observation markers and actual receive error; try_join preserves both-complete success and avoids masking completed receive Err behind peer accept; no timeout increase",
                   "python_owner": "/root/compacted_reader_fixture in .research/compacted-activated-terminal-endpoint-20261024, base2557d2cb; explicit endpoint parameter preserving default, exact terminal seeded-clone rule and oracle/replay markers",
                   "root_source_review": "COMPLETE exact diagnostic SHA5919e69d and critical receipt; no runtime causal attribution of previous timeout",
-                  "build_runtime": "NOT_RUN",
+                  "build_runtime": "Exact7bc63d97 build PASS; genuine Event seed/source/refusals/firstabandon passed. Full matrix stopped at separate abandonment total-job oracle error.",
                   "python_author_commit": "32dc60eacb14b32c83f5b70b9f1c6938a3674fac",
                   "python_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-endpoint-source-v2.json",
                   "python_receipt_sha256": "d17d11a49097c6bb6b1ea3c802d9aa155ad3c47f202c1445306f741570aaa38a",
@@ -45041,7 +45091,20 @@
                   "root_review": "Complete four-file Python delta, full configure helper, affected runner/replay configuration/seed chronology reviewed; prior unchanged owners reused. Exact singleton endpoint override only for event/unbound-event, old default preserved. Boolean markers follow successful typed reads, exact order and full raw config checked. Integrated four Python hashes and one Rust hash match receipts; no source blocker.",
                   "state": "INTEGRATED_SOURCE_REVIEWED; next exact-source build required",
                   "predicted_commands": 25,
-                  "predicted_controls": 335
+                  "predicted_controls": 335,
+                  "integrated_commit": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c"
+                },
+                "abandonment_total_correction": {
+                  "contract": "docs/reference/ingest-registration.md:862 total jobs; activated_acquisition.rs returns retained gaps plus newly cancelled jobs",
+                  "change": "Report expectation uses total independently modeled epoch2 gaps; new-row metric remains zero on retry. Added false-abandoned-total control to each of three abandonment commands.",
+                  "source_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-abandon-total-source-v1.json",
+                  "source_receipt_sha256": "0a4fdf895bb016d66f8f14e2938f03924fd9dfae1dcf8ea62bec63c7c0e7a7cf",
+                  "checks": "Scoped saved first/retry capture recheck2cases/32controls PASS; original oracle rejects actual retry; original run FAIL unchanged; actual replay driver21839 joined0",
+                  "state": "Root complete delta/contract/PG+CLI owner review and independent critical review complete; scoped saved captures PASS, next installed matrix required",
+                  "predicted_commands": 25,
+                  "predicted_controls": 338,
+                  "critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-abandon-total-critical-review-v1.json",
+                  "critical_receipt_sha256": "63bc29200e78ddd864e65766445acfcdb76df30bc25c0bf22cd561e48b2b6815"
                 }
               }
             }

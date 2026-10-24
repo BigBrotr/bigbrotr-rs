@@ -3,74 +3,55 @@
 Observed 2026-10-24 on Tux. Goal **ACTIVE** under explicit owner resume.
 M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 
-## Objective and revision
+## Current objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Current main: `2557d2cb155163e32e39ba2dcf344df903c0eaf4`; last verified push
-`c37af9cb625c0f9765143787dc0494b0f11987ff` (push98461 joined0).
-Main includes reviewed compacted terminal consumers, first installed fixture,
-and source-only fault/zero-claim probes. The coherent endpoint/receive diagnostic
-correction is source-reviewed and ready to build; no build or connected runtime
-is active. Agents have completed their source work.
+Main source `7bc63d97e339b005202ad2f15f1e22d768e7bb6c`, treef4ff4bc7;
+last verified pushc37af9cb (driver98461 joined0). This checkpoint commit records one terminal oracle correction and existing
+report/inventory/checkpoint updates.
+No product change or new build is required for this verifier correction.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
 compacted_successor_preparation.next_activated_consumer_audit.terminal_consumer_work`,
-owns current source/review/run identities. The [inventory](../research/laboratory-inventory.json)
-owns resource custody. Reuse unchanged prior evidence through those links.
+owns exact source/review/run identities. The [inventory](../research/laboratory-inventory.json)
+owns resources and retained worktrees. Reuse unchanged evidence through these links.
 
-## Verified state and preserved failures
+## Verified result and next action
 
-Product `56cac527313a8b5d813b52917beea1e544d010a0`, tree37ac9ba4:
-`runs/producer-floor-56cac52` CLI/probe,179 components/70 mandatory controls and
-Clippy PASS; driver34712 joined0, exact source/artifacts verified. Build containers
-stopped0/PID0/noOOM. Later five probe files and the receive diagnostic are NOT_BUILT.
-Prior compacted positive recovery/ACK remains qualified at productfc9388fc and
-fixturecf1a2ef:24 commands/291 controls/raw7827 files; see linked report.
+`runs/producer-floor-7bc63d9`: exact CLI/probe,179 components/70 mandatory controls,
+Clippy PASS; driver31502 joined0; source/ELFs verified, build containers stopped0.
+Fault/zero probes and receive diagnostic compiled. Corrected terminal attempt
+`runs/installed-compacted-terminal-7bc63d9`: driver43168 joined1, original FAIL.
+Ten cases/136 controls passed, including real Event seed98rows/141seq, source,
+refusals and first abandonment. Retry product reports total jobs1 as specified;
+old oracle incorrectly expected newly abandoned0. Root correction keeps that
+new-row metric separate, with two saved captures/32 controls rechecked offline.
+The original failed report is preserved. Independent correction review complete; exact hash recorded in the report.
 
-First terminal attempt `runs/installed-compacted-terminal-b407917` failed before
-engine/client/clone start at the exact retained refusal exit4 under an exit0-only
-guard. Its INCOMPLETE_CUSTODY and four prestart-finalizer errors remain preserved;
-root verified unchanged stopped PG state and recorded physical originals.
-Correction8dbff698 admits only that exact source-bound terminal origin.
+Next: push the coherent source/evidence commit, then run the corrected25-command/338-control terminal matrix using built7bc63d97 and
+exact raw replay. Counts remain predictions until the new run finishes.
 
-Corrected attempt `runs/installed-compacted-terminal-c37af9c` failed at Event seed;
-driver52734 joined1. Four zero source/retirement commands and56 controls PASS,
-then seed exit101/10s timeout after durable-job-claimed. The wrapper correctly
-refused native reopen with UNKNOWN_PROCESS_OUTCOME. Outer clienta4ade175 stopped143,
-borrowed PG71775507 stopped0, PID0/noOOM; cleanup arrays empty and all four originals
-preserved. `verified-run-failure.json` binds each attempt. No full terminal PASS.
+## Active work, custody and open gates
 
-Saved root rule permits `/installed-successor-fixture`; retained Event source uses
-`/installed-fixture`. Source inspection proves this mismatch can refuse before
-connect, and join(receive,peer) can hide a completed error behind peer accept.
-The actual failed await remains unobserved. Root's reviewed diagnostic adds two
-modern-only successful-read markers and exposes receive error with try_join;
-no timeout increase or product policy relaxation. Prior a99 Sync cause is unknown.
+No build/connected runtime remains active. Terminal client797d3c23 stopped143,
+borrowed PG71775507 stopped0, PID0/noOOM; all11 case processes/backend custody
+closed, cleanup arrays empty and all four originals preserved.
+Fixture agent works source-only in `.research/compacted-activated-terminal-fault-fixture-20261024`,
+branch `work/compacted-activated-terminal-fault-fixture`, base7bc63d97; critical
+agent reviews. Separate12-clone/52-command final COMMIT/cancel/real-expiry/H-D/zero-job
+extension remains NOT_RUN. Retirement gate covers only retirement H/D drift;
+Source/abandon post-proof drift remains owed. Root remains sole runtime owner.
+Endpoint author worktree is retained clean DETACHED32dc60ea; exact four-file
+reconciliation to7bc63d97 preceded redundant branch retirement. Earlier detached
+worktrees, datasets, raw failures, .research and external runs remain preserved.
+No cleanup or unrelated workload mutation.
 
-## Precise next action and active source work
-
-Endpoint Python correction32dc60ea is frozen, integrated and root-reviewed in
-`.research/compacted-activated-terminal-endpoint-20261024`, branch
-`work/compacted-activated-terminal-endpoint`, base2557d2cb; owner
-`/root/compacted_reader_fixture`. It changes only seeded terminal clone endpoint
-configuration and strict oracle/replay expectations; old defaults remain intact.
-Together with root's reviewed Rust diagnostic, build exact new source using the
-existing producer-floor runner, then rerun the terminal matrix and raw replay
-(predicted25 commands/335 controls, not measured).
-The failure/zero-claim probe extension still needs its own final COMMIT loss,
-cancellation, real expiry, post-proof ancestor H/D and zero-request job evidence.
-
-Original terminal author worktrees are preserved clean DETACHED at8dbff698 and
-b3af23cb after exact8/3-file reconciliation to c37af9cb/2557d2cb; redundant refs
-retired, no source/artifact removal. Older native worktree remains DETACHED0a063ef3.
-Data, logs, originals, quarantines, .research and external lab runs remain intact;
-no cache cleanup and no unrelated workload changes.
-
-Later recovery/live frontier/retained Archive frontier/empty retirement remain
-before floor writer or unlink. Physical64file/32MiB bounds remain. Physical loss,
-mixed restore, backup/capacity and whole M1–M5 are open. Prior98f80b1 ACL/unknown
-closure and61b15e4 provenance failure remain preserved. Q33 CI billing, arm64 and
-signing/registry are separate gates; no whole-step or release completion.
+Prior b407 prestart failure, c37 Event timeout, a99 Sync timeout with unresolved
+cause,98f80b1 custody/ACL and61b15e4 provenance failure remain in linked evidence.
+Later recovery/live frontier/retained Archive frontier/empty retirement precede
+floor writer or unlink. Physical64file/32MiB bounds, physical loss/mixed restore,
+backup/capacity and remaining M1–M5 are open. Q33 CI billing, arm64 and signing/
+registry remain separate gates; no whole-step or release completion.

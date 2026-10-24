@@ -3333,7 +3333,7 @@ def verify_terminal_context(context,initial,expected):
             issued_through=str(basis['issued']),reserved_through=str(basis['issued']),resolved_requests=str(basis['issued']),
             source_closure=dict(last_complete_sequence=str(basis['cut']),sha256=basis['digest']),
             recovery_basis='closed-producer-floor-v3',compacted_requests='7',native='closed',owner_release='committed',ready=False)
-        if operation=='abandon-activated': wanted['acquisition_abandonment']=dict(jobs=str(jobs),reason='activated_initial_producer_abandoned',coverage='unknown')
+        if operation=='abandon-activated': wanted['acquisition_abandonment']=dict(jobs=str(len([g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2])),reason='activated_initial_producer_abandoned',coverage='unknown')
         if operation=='retire-activated': wanted['ingest_retirement']=dict(allocation_domains='9',acquisition_gaps=str(len([g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2])),owner_release='committed',native_acknowledged='0',native_retired='0')
         assert report==wanted
     same(context['after'],m.pg); assert context['native_after']==native
@@ -3380,6 +3380,9 @@ def terminal_controls(context,initial,expected):
             changes.extend([('false-original-count',lambda c:report_value(c,'resolved_requests','7')),
                 ('missing-compacted-count',lambda c:report_value(c,'compacted_requests','0')),
                 ('source-cut',lambda c:only(c['after']['source_streams'],owner_epoch=2).update(last_complete_sequence=999))])
+            if context['case']['operation']=='abandon-activated':
+                changes.append(('false-abandoned-total',lambda c:report_value(c,'acquisition_abandonment',
+                    dict(jobs='0',reason='activated_initial_producer_abandoned',coverage='unknown'))))
             if step.startswith('retire'):
                 changes.append(('one-domain-not-retired',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(state='active')))
                 changes.append(('retired-row-transaction',lambda c:only(c['after']['producer_epochs'],producer_epoch=2).update(xmin='4294967000')))

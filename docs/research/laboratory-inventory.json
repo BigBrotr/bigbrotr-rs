@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "NO_RUNTIME_ACTIVE; full fixture correction source-reviewed; next build required",
+        "state": "NO_RUNTIME_ACTIVE; terminal43168 joined1 with original FAIL retained; agents source-only fault work",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -63002,7 +63002,7 @@
           "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
           "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
         },
-        "root_followup": "Fault/zero probes committed2557d2cb but not built; one further uncommitted Rust receive diagnostic, source-reviewed",
+        "root_followup": "Exact7bc63d97 built/verified; corrected endpoint succeeds. Root fixing independent total-job oracle for retry; product unchanged.",
         "installed_attempts": [
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
@@ -63024,7 +63024,7 @@
             "owner": "61675ef563be9f154d12572ed91f4b39",
             "client": "a4ade175cce55f46f128e2694a6cd2d743bfc86992b82c61df4871eb78e07e65",
             "driver": 52734,
-            "status": "RUNNING",
+            "status": "FAIL",
             "product_source": "56cac527313a8b5d813b52917beea1e544d010a0",
             "state": "FAIL; driver joined1; client stopped143 and borrowed PG stopped0, PID0/noOOM",
             "driver_exit": 1,
@@ -63032,16 +63032,75 @@
             "completed_controls": 56,
             "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-c37af9c/verified-run-failure.json",
             "verified_failure_sha256": "c2e8b16da4fbbc0cad7cadc271a4f03f6f18733221abee6fa1246cf3f1969be1"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-7bc63d9",
+            "source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+            "tree": "f4ff4bc7fe1a52aa9995f7020125dc721e87de61",
+            "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+            "owner": "fb4ec3a282da61f6f8a614efd8f08aa8",
+            "client": "797d3c2365a6159eece7b25d9936522847bb149e1639ca1a991c4478f559fadf",
+            "driver": 43168,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "completed_cases": 10,
+            "completed_checker_controls": 136,
+            "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-7bc63d9/verified-run-failure.json",
+            "verified_failure_sha256": "b613c5e28393d5996d9aecbcc0da8660c75c3a239b75d1ce5ee6109c1038906f",
+            "failure": "event-abandon-retry report==wanted: exact successful product reports total jobs1; old oracle incorrectly expected newly abandoned0. Actual process/backend custody closed. Original FAIL unchanged.",
+            "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; all11 captures have actual closed custody"
           }
         ],
         "endpoint_work": {
           "owner": "/root/compacted_reader_fixture; verified gpt-6-astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-endpoint-20261024",
-          "branch": "work/compacted-activated-terminal-endpoint",
+          "branch": "DETACHED32dc60ea; redundant work/compacted-activated-terminal-endpoint ref retired after clean status and exact four-file reconciliation with main7bc63d97",
           "base": "2557d2cb155163e32e39ba2dcf344df903c0eaf4",
           "state": "COMPLETE; frozen32dc60ea integrated exactly and root reviewed; worktree/evidence preserved",
           "scope": "Narrow endpoint parameter/default preservation and explicit terminal seeded-clone config/oracle/replay correction",
           "head": "32dc60eacb14b32c83f5b70b9f1c6938a3674fac"
+        },
+        "current_build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7bc63d9",
+          "source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+          "tree": "f4ff4bc7fe1a52aa9995f7020125dc721e87de61",
+          "driver": 31502,
+          "status": "PASS_EXACT_BUILD_AND_COMPONENTS",
+          "owner": "7393102bbf716ad74a2e9ffa7799b2e4",
+          "containers": [
+            {
+              "id": "db116994b96bc1bc9feb762c7346265fd7251214401a273b6336aa98244da99a",
+              "name": "/bigbrotr-producer-floor-7bc63d9-fetch",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "641c562e8d14a7ea861b89dff0359a2064439267a8e47f8718189a78e30b5fea",
+              "name": "/bigbrotr-producer-floor-7bc63d9-native",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "driver_exit": 0,
+          "verified_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-7bc63d9/verified-build.json",
+          "verified_receipt_sha256": "7126dc93bab98bd9915ab4250adef33d1496f026d9c6382657044c5554be4dd5",
+          "components": 179,
+          "required_controls": 70,
+          "checks": "All10 checks PASS; exact source archive/2060files/ELFs verified; unchanged mandatory names and counts match prior qualified set",
+          "free_bytes_after": 267451637760,
+          "state": "stopped-retained"
+        },
+        "fault_fixture_work": {
+          "owner": "/root/compacted_reader_fixture; reused verified gpt-6-astra/xhigh",
+          "critical_review": "/root/compacted_reader_review; reused verified gpt-6-astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fault-fixture-20261024",
+          "branch": "work/compacted-activated-terminal-fault-fixture",
+          "base": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+          "state": "SOURCE WORK ACTIVE; engines/builds prohibited for agents"
         }
       }
     }
