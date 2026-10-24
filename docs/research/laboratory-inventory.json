@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "NO_RUNTIME_ACTIVE; terminal43168 joined1 with original FAIL retained; agents source-only fault work",
+        "state": "NO_RUNTIME_ACTIVE; driver7514 joined1, original FAIL/custody retained; agent source-only work active",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -63002,7 +63002,7 @@
           "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
           "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
         },
-        "root_followup": "Exact7bc63d97 built/verified; corrected endpoint succeeds. Root fixing independent total-job oracle for retry; product unchanged.",
+        "root_followup": "Exact7bc63d97 product reused; narrow typed refusal oracle correction under review; no product rebuild",
         "installed_attempts": [
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
@@ -63049,6 +63049,23 @@
             "verified_failure_sha256": "b613c5e28393d5996d9aecbcc0da8660c75c3a239b75d1ce5ee6109c1038906f",
             "failure": "event-abandon-retry report==wanted: exact successful product reports total jobs1; old oracle incorrectly expected newly abandoned0. Actual process/backend custody closed. Original FAIL unchanged.",
             "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; all11 captures have actual closed custody"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-0b0d82b",
+            "source": "0b0d82bbc3b4f18ae8e15ef644130eac40cbe694",
+            "tree": "ed955a7759b757c5a821e849414d90508fad9d21",
+            "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+            "owner": "8b9f07aac18cf6c393cf49a27ea215f7",
+            "client": "512466a973586842cbd4e68b1d0c15258bb59fa442d0b708097e4f1a0c416ed2",
+            "driver": 7514,
+            "driver_exit": 1,
+            "status": "FAIL",
+            "completed_cases": 19,
+            "completed_checker_controls": 267,
+            "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-0b0d82b/verified-run-failure.json",
+            "verified_failure_sha256": "a695d4c34e295cf638d6f66930c155c0da8046234d9b4f8fd3561bf2d83c4a4d",
+            "failure": "Actual retirement refuses native Event without acquisition binding in require_retirement_copy as Outcome(Conflict), before final Event-mask check. Oracle predicted later Control(InvalidMetadata); strict wrapper skipped native reopen. Original OUTCOME_UNKNOWN retained; backend absent and outer client stopped.",
+            "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; last typed-error guard conservatively skipped native reopen"
           }
         ],
         "endpoint_work": {

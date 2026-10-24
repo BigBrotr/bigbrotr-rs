@@ -3003,6 +3003,7 @@ class ActivatedTerminalProfile:
     GRANTS=TERMINAL_GRANTS
     NOT_RUN=('Actual product reclamation/GC and unlink',
         'Final terminal COMMIT delivery loss, ancestor H/D drift after earlier completion, cancellation and lease expiry',
+        'Final retirement Event-mask revalidation after successful original replay',
         'Zero-request claimed acquisition, unresolved import, draining owner and isolated native OPEN retirement guard',
         'Later activated successors, live frontier, retained Archive frontier and empty retirement',
         'Mixed restore/backup, physical loss and capacity')
@@ -3175,7 +3176,9 @@ TERMINAL_ERRORS={
     'reserved-tail':'producer operation unavailable: Control(InvalidMetadata)',
     'retirement-prerequisite':'producer operation unavailable: Control(Backend)',
     'closed-missing-copy':'producer operation unavailable: Control(Backend)',
-    'unbound-event':'producer operation unavailable: Control(InvalidMetadata)',
+    # Retirement original replay rejects the native Event's missing job before
+    # the final source-proof Event-mask check can be reached.
+    'unbound-event':'producer operation unavailable: Outcome(Conflict)',
 }
 
 

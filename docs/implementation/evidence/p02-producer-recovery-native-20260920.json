@@ -44846,12 +44846,12 @@
               "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
               "terminal_consumer_work": {
                 "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
-                "state": "PASS_EXACT_BUILD_AND_COMPONENTS; installed terminal failed at abandonment retry oracle total count, correction source reviewed",
+                "state": "PASS_EXACT_BUILD_AND_COMPONENTS; first terminal matrix needs corrected earlier unbound-Event replay refusal",
                 "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No build/connected runtime active. Root correcting total-job report oracle; agents prepare/review separate fault extension.",
+                "runtime": "No build/connected runtime active. Root narrow typed-refusal correction; agents source-only fault extension/review.",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -45023,7 +45023,8 @@
                   "zero_claim_critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-zero-claim-critical-review-v1.json",
                   "zero_claim_critical_receipt_sha256": "d971fd1c9757d5696d4dbb8fc49a8c369411d6225d8876891ea0a81d7b2b3313",
                   "state": "Fault/zero probes compiled7bc63d97; independent fault Python extension source work active; connected fault scenarios NOT_RUN",
-                  "integrated_commit": "2557d2cb155163e32e39ba2dcf344df903c0eaf4"
+                  "integrated_commit": "2557d2cb155163e32e39ba2dcf344df903c0eaf4",
+                  "python_design": "Separate13clone/56command profile: final3operation COMMIT baseline/loss+retry, retirement cancel/UTCexpiry/H-D drift, post-proof Eventmask and actualzerojob. Source/abandon post-proof H-D still owed."
                 },
                 "installed_attempts": [
                   {
@@ -45076,6 +45077,23 @@
                     "verified_failure_sha256": "b613c5e28393d5996d9aecbcc0da8660c75c3a239b75d1ce5ee6109c1038906f",
                     "failure": "event-abandon-retry report==wanted: exact successful product reports total jobs1; old oracle incorrectly expected newly abandoned0. Actual process/backend custody closed. Original FAIL unchanged.",
                     "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; all11 captures have actual closed custody"
+                  },
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-0b0d82b",
+                    "source": "0b0d82bbc3b4f18ae8e15ef644130eac40cbe694",
+                    "tree": "ed955a7759b757c5a821e849414d90508fad9d21",
+                    "product_source": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
+                    "owner": "8b9f07aac18cf6c393cf49a27ea215f7",
+                    "client": "512466a973586842cbd4e68b1d0c15258bb59fa442d0b708097e4f1a0c416ed2",
+                    "driver": 7514,
+                    "driver_exit": 1,
+                    "status": "FAIL",
+                    "completed_cases": 19,
+                    "completed_checker_controls": 267,
+                    "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-0b0d82b/verified-run-failure.json",
+                    "verified_failure_sha256": "a695d4c34e295cf638d6f66930c155c0da8046234d9b4f8fd3561bf2d83c4a4d",
+                    "failure": "Actual retirement refuses native Event without acquisition binding in require_retirement_copy as Outcome(Conflict), before final Event-mask check. Oracle predicted later Control(InvalidMetadata); strict wrapper skipped native reopen. Original OUTCOME_UNKNOWN retained; backend absent and outer client stopped.",
+                    "resource_state": "Client stopped143, borrowed PG stopped0, PID0/noOOM, all four originals preserved, cleanup arrays empty; last typed-error guard conservatively skipped native reopen"
                   }
                 ],
                 "endpoint_correction": {
@@ -45104,7 +45122,20 @@
                   "predicted_commands": 25,
                   "predicted_controls": 338,
                   "critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-abandon-total-critical-review-v1.json",
-                  "critical_receipt_sha256": "63bc29200e78ddd864e65766445acfcdb76df30bc25c0bf22cd561e48b2b6815"
+                  "critical_receipt_sha256": "63bc29200e78ddd864e65766445acfcdb76df30bc25c0bf22cd561e48b2b6815",
+                  "integrated_commit": "0b0d82bbc3b4f18ae8e15ef644130eac40cbe694"
+                },
+                "unbound_event_replay_correction": {
+                  "source_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-unbound-replay-source-v1.json",
+                  "source_receipt_sha256": "2aeef50a0e0d6bd906386d6e433920cda215c80b0de3317a3fa723c7dbe60e91",
+                  "diagnosis": "Retirement replay require_retirement_copy tests genuine resolved.is_event plus missing job and returns Outcome(Conflict). Source/abandon lack this veto. Final source Event-mask query not reached.",
+                  "change": "One exact refusal literal and explanatory comment; explicit NOT_RUN final Event-mask post-proof gate. Product unchanged.",
+                  "checks": "One saved typed response +4 wrong typed refusals PASS; old guard rejects. Original native final snapshot NOT_RUN; original failed result unchanged.",
+                  "state": "Root source audit and independent critical review complete; corrected full connected matrix pending",
+                  "predicted_commands": 25,
+                  "predicted_controls": 338,
+                  "critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-unbound-replay-critical-review-v1.json",
+                  "critical_receipt_sha256": "56f7787941e1724625ef4d019cf941858fd28d8609ce4207cd43b3e86b46c747"
                 }
               }
             }

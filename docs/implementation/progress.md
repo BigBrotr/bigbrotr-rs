@@ -6,9 +6,9 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Current objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main source `7bc63d97e339b005202ad2f15f1e22d768e7bb6c`, treef4ff4bc7;
-last verified pushc37af9cb (driver98461 joined0). This checkpoint commit records one terminal oracle correction and existing
-report/inventory/checkpoint updates.
+Main/harness `0b0d82bbc3b4f18ae8e15ef644130eac40cbe694`, treeed955a77;
+verified push0b0d82bb (driver6639 joined0). Product stays7bc63d97.
+Local changes are current report/inventory/checkpoint updates.
 No product change or new build is required for this verifier correction.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -25,23 +25,25 @@ owns resources and retained worktrees. Reuse unchanged evidence through these li
 Clippy PASS; driver31502 joined0; source/ELFs verified, build containers stopped0.
 Fault/zero probes and receive diagnostic compiled. Corrected terminal attempt
 `runs/installed-compacted-terminal-7bc63d9`: driver43168 joined1, original FAIL.
-Ten cases/136 controls passed, including real Event seed98rows/141seq, source,
-refusals and first abandonment. Retry product reports total jobs1 as specified;
-old oracle incorrectly expected newly abandoned0. Root correction keeps that
-new-row metric separate, with two saved captures/32 controls rechecked offline.
-The original failed report is preserved. Independent correction review complete; exact hash recorded in the report.
+Ten cases/136 controls passed there; its retry-count oracle correction was reviewed
+and integrated0b0d82bb. Corrected run `runs/installed-compacted-terminal-0b0d82b`
+then reached19PASS/267controls before a distinct typed-refusal expectation failed:
+retirement original replay rejects a genuine Event with no job as Outcome(Conflict),
+before the later Event-mask query. The original FAIL/OUTCOME_UNKNOWN/native NOT_RUN
+remain preserved. Root's exact literal correction passes one saved-response check
+and four wrong-error controls; narrow independent review complete.
 
-Next: push the coherent source/evidence commit, then run the corrected25-command/338-control terminal matrix using built7bc63d97 and
-exact raw replay. Counts remain predictions until the new run finishes.
+Next: run the corrected25-command/338-control
+matrix with existing product7bc63d97 and exact raw replay. No native rebuild needed.
 
 ## Active work, custody and open gates
 
-No build/connected runtime remains active. Terminal client797d3c23 stopped143,
-borrowed PG71775507 stopped0, PID0/noOOM; all11 case processes/backend custody
-closed, cleanup arrays empty and all four originals preserved.
+No build/connected runtime active. Last terminal client512466a9 stopped143,
+borrowed PG71775507 stopped0, PID0/noOOM; last process reaped/backend absent,
+strict wrapper withheld native reopen, cleanup arrays empty and four originals preserved.
 Fixture agent works source-only in `.research/compacted-activated-terminal-fault-fixture-20261024`,
 branch `work/compacted-activated-terminal-fault-fixture`, base7bc63d97; critical
-agent reviews. Separate12-clone/52-command final COMMIT/cancel/real-expiry/H-D/zero-job
+agent reviews. Separate13-clone/56-command final COMMIT/cancel/real-expiry/H-D/Event-mask/zero-job
 extension remains NOT_RUN. Retirement gate covers only retirement H/D drift;
 Source/abandon post-proof drift remains owed. Root remains sole runtime owner.
 Endpoint author worktree is retained clean DETACHED32dc60ea; exact four-file
