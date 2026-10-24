@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Execute a fresh exact --empty-initial-locks profile with unchanged product30ab and corrected oracle, then raw replay and independent runtime closure verification.",
+              "next": "Correct/review cancellation fixture order: actual SIGTERM/child join, then explicit holder rollback, actor/proxy join, final observed backend exclusion before native read. Preserve both failed runs; fresh exact profile/raw required.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45596,7 +45596,7 @@
                 "root_review": "Full advisory read; all27 source hashes and3 existing qualification receipts match. Reuse native/refusal evidence;5clones/6commands for post-proof H/D and partial/mixed shapes are the next candidate after current claim suite. Original-preparer fresh gap route and connected malformed-floor helper remain separate prerequisites."
               },
               "locks_extension": {
-                "status": "CORRECTED_SOURCE_REVIEWED; first FAIL preserved; fresh installed/raw NOT_RUN",
+                "status": "SECOND_INSTALLED_FAIL_PREMATURE_BACKEND_ABSENCE; native after cancellation NOT_RUN; correction under review",
                 "author_commit": "10714546db9021986d3597ef86b19820d5f650f4",
                 "author_tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
                 "source_receipt": {
@@ -45620,6 +45620,17 @@
                     "receipt": {
                       "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-eec929e/verified-failure.json",
                       "sha256": "40f0b25d93a4b6a130edf11d80ce5f666056320faf8bbe2017c64d56b4502347"
+                    }
+                  },
+                  {
+                    "source": "c3826bbb879dc5e129efde1469a0760605b29c8c",
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-c3826bb",
+                    "status": "FAIL;5 cases/161 controls PASS before cancellation capture failure;3 commands NOT_RUN; cancellation native_after NOT_RUN",
+                    "driver": 97064,
+                    "driver_exit": 1,
+                    "receipt": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-c3826bb/verified-failure.json",
+                      "sha256": "db44a3abc5b00f0c59bd5fa7e2d1c978e0fef1330fe37dcbea8bf2db16a68fae"
                     }
                   }
                 ],

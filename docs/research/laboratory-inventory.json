@@ -63623,9 +63623,9 @@
           "owner": "/root/compacted_reader_fixture; verified Astra/xhigh reused",
           "reviewer": "/root/compacted_reader_review; verified Astra/xhigh reused",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-locks-20261024",
-          "branch": "work/compacted-empty-initial-locks",
+          "branch": null,
           "base": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
-          "state": "FROZEN_CLEAN_CORRECTION_REVIEWED; original run preserved FAIL; no active runtime",
+          "state": "Original107 and correctionae0 are integrated; redundant ref retired after ancestry/blob/clean verification; worktree and commits retained. Cancellation-order correction authorized in same worktree.",
           "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain",
           "commit": "ae0b40adc79f9198cee8c2b82bdbe2d529dc95d0",
           "tree": "d407d1a8a93f09987cd265249f0ffd18260a769c",
@@ -63647,6 +63647,18 @@
             "postgres_state": "freshly inspected stopped0/PID0/noOOM",
             "driver": "82923 joined1",
             "state": "FAIL preserved; independent raw replay NOT_RUN",
+            "records": "Recovery report locks_extension.attempts owns exact failure receipt and scope"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-c3826bb",
+            "source": "c3826bbb879dc5e129efde1469a0760605b29c8c",
+            "owner": "21cc18bb6a56310a0271fc858f5e72b4",
+            "client": "383476e0461e03c5ab9b1de71fe2266a8a8534f006de8fb9b0086dce5e76f94c",
+            "client_state": "freshly inspected stopped143/PID0/noOOM",
+            "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_state": "freshly inspected stopped0/PID0/noOOM",
+            "driver": "97064 joined1",
+            "state": "FAIL preserved; cancellation native_after and raw NOT_RUN; no root runtime active",
             "records": "Recovery report locks_extension.attempts owns exact failure receipt and scope"
           }
         ]
