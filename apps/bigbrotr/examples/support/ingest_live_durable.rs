@@ -45,6 +45,7 @@ pub(super) enum Mode {
     Limit64,
     Limit65,
     ZeroClaim,
+    CompactedTerminalEvent,
 }
 impl Mode {
     pub(super) fn parse(mode: &str) -> Option<Self> {
@@ -54,6 +55,7 @@ impl Mode {
             "successor-live-acquisition-limit64" => Some(Self::Limit64),
             "successor-live-acquisition-limit65" => Some(Self::Limit65),
             "successor-live-acquisition-zero-claim" => Some(Self::ZeroClaim),
+            "successor-live-compacted-terminal-event" => Some(Self::CompactedTerminalEvent),
             _ => None,
         }
     }
@@ -61,21 +63,40 @@ impl Mode {
         match self {
             Self::Limit64 => Some(64),
             Self::Limit65 => Some(65),
-            Self::AlreadyDurable | Self::ExtraIntents | Self::ZeroClaim => None,
+            Self::AlreadyDurable
+            | Self::ExtraIntents
+            | Self::ZeroClaim
+            | Self::CompactedTerminalEvent => None,
         }
     }
 }
 
-fn original(probe: &Probe, previous: &InitialRegistration, sequence: u64) -> MutationIntent {
-    let expected = match sequence {
-        3 => "08c9b935c7c101c704f7c741847f26baad8063438fea836aff1678e4070240e5",
-        4 => "19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977",
+fn original(
+    probe: &Probe,
+    previous: &InitialRegistration,
+    sequence: u64,
+    modern: bool,
+) -> MutationIntent {
+    let expected = match (modern, sequence) {
+        (false, 3) => "08c9b935c7c101c704f7c741847f26baad8063438fea836aff1678e4070240e5",
+        (false, 4) => "19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977",
+        (true, 3) => "a1992bc4cc2b57578e06da9ab64cdfe44d8c117a394e8fdb38355e955a64eee9",
+        (true, 5) => "4add1a3691de324ebdc7202debd5f0187cbd895a997d16ec499cdfea16827a26",
         _ => unreachable!(),
     };
-    let path = probe.path.join("producer-inputs-v1").join(format!(
+    // The compacted fixture retains attribution originals separately from the
+    // native spool. They supply a fixed dictionary/observation recipe, never
+    // a reconstructed epoch1 input or an input to the compacted proof scanner.
+    let directory = if modern {
+        probe.path.parent().unwrap().join("terminal-seed-inputs")
+    } else {
+        probe.path.join("producer-inputs-v1")
+    };
+    let path = directory.join(format!(
         "{}-0000000000000001-{sequence:016x}.cbor",
         previous.producer_slot_id
     ));
+    assert!(std::fs::symlink_metadata(&path).unwrap().is_file());
     // The already retained metadata grant covers these small frozen inputs.
     // The previous full positive replay remains the historical proof.
     let mut bytes = Vec::new();
@@ -121,23 +142,62 @@ pub(super) async fn run(
         probe.root.local("sync"),
         "explicit finite network role selection"
     );
+    let modern = mode == Mode::CompactedTerminalEvent;
+    assert!(!modern || probe.compacted_initial);
     let (mut expected_rows, before_sequence) = raw_state(&probe.path);
-    assert_eq!((expected_rows.len(), before_sequence), (52, 62));
+    assert_eq!(
+        (expected_rows.len(), before_sequence),
+        if modern { (84, 125) } else { (52, 62) }
+    );
     let input_directory = probe.path.join("producer-inputs-v1");
-    assert_eq!(std::fs::read_dir(&input_directory).unwrap().count(), 4);
-    let MutationIntent::Evidence(dictionaries) = original(probe, previous, 3) else {
+    assert_eq!(
+        std::fs::read_dir(&input_directory).unwrap().count(),
+        if modern { 0 } else { 4 }
+    );
+    let MutationIntent::Evidence(dictionaries) = original(probe, previous, 3, modern) else {
         panic!("frozen attribution request3");
     };
-    let MutationIntent::Event(old_event) = original(probe, previous, 4) else {
-        panic!("frozen signed network request4");
+    let MutationIntent::Event(old_event) =
+        original(probe, previous, if modern { 5 } else { 4 }, modern)
+    else {
+        panic!("frozen signed network attribution");
     };
     let signed: SignedEvent = serde_json::from_str(EVENT).unwrap();
-    assert_eq!(old_event.event(), &signed);
+    if modern {
+        assert_eq!(
+            hex(previous.dataset_id.as_bytes()),
+            "309d9507c5b5c39e9947e1406482d519"
+        );
+        assert_eq!(
+            old_event.event().id.to_string(),
+            "32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791"
+        );
+        let event_key = hex(&[
+            &[1, 6][..],
+            previous.dataset_id.as_bytes(),
+            signed.id.as_bytes(),
+        ]
+        .concat());
+        assert!(
+            !expected_rows
+                .iter()
+                .any(|r| r["cf"] == "default" && r["key"] == event_key)
+        );
+    } else {
+        assert_eq!(old_event.event(), &signed);
+    }
     assert_eq!(old_event.origin(), bigbrotr_model::EventOrigin::Network);
     let old_observation = *old_event.observation().unwrap();
     assert!(old_observation.witness.is_some());
     let visibility = old_event.visibility_scope_id();
-    assert_eq!(visibility, public_scope(previous)); // frozen private scope3
+    assert_eq!(visibility, public_scope(previous)); // both pinned scopes are private ordinal3
+    if modern {
+        assert_eq!(
+            hex(visibility.allocation_domain.as_bytes()),
+            "0e2a2cc69f18bd685ff795bd57faf3c0"
+        );
+        assert_eq!(visibility.ordinal.get(), 3);
+    }
     assert_eq!(dictionaries.visibility_scope_id(), visibility);
     let observer_entry = dictionaries
         .dictionaries()
@@ -150,7 +210,13 @@ pub(super) async fn run(
         .find(|entry| entry.reference() == old_observation.clock_quality.clock_id())
         .unwrap();
 
-    let scope_id: AcquisitionScopeId = "a39723d7c49af2c99498fb2f59c03b16".parse().unwrap();
+    let scope_id: AcquisitionScopeId = if modern {
+        "422b7d8b33d4b55977806fb711e2d082"
+    } else {
+        "a39723d7c49af2c99498fb2f59c03b16"
+    }
+    .parse()
+    .unwrap();
     let scope = bounded(owner.read_acquisition_scope(scope_id, grant(&probe.budget, 8 * MIB, 0)))
         .await
         .unwrap()
@@ -394,11 +460,56 @@ pub(super) async fn run(
     )
     .await;
     // Preserve effects even when the expected positive result is not delivered.
-    probe.snapshot("already-durable").await;
+    probe
+        .snapshot(if modern {
+            "terminal-event"
+        } else {
+            "already-durable"
+        })
+        .await;
     let outcome = result.unwrap();
     let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
         panic!("the retained signed event must remain positively durable");
     };
+    if modern {
+        assert_eq!(receipt.batch().unwrap().records().len(), 5);
+        let dependencies = receipt.dependencies().records();
+        assert_eq!(dependencies.len(), 10);
+        for (dependency, (epoch, sequence)) in dependencies
+            .iter()
+            .zip((3..=7).map(|n| (1, n)).chain((1..=5).map(|n| (2, n))))
+        {
+            let source = dependency.source_record_id;
+            assert_eq!(source.dataset_id, previous.dataset_id);
+            assert_eq!(source.shard_id, previous.shard_id);
+            assert_eq!(
+                (source.owner_epoch.get(), source.sequence.get()),
+                (epoch, sequence)
+            );
+        }
+        let encoded = receipt.encode_persistent(65536).unwrap();
+        let (actual, sequence) = raw_state(&probe.path);
+        // Five new scientific facts and their exact indices are independently
+        // constructed by the Python oracle. Here bind the predicted physical
+        // count and preserve the complete in-process snapshot for that checker.
+        assert_eq!((actual.len(), sequence), (98, 141));
+        assert_eq!(std::fs::read_dir(&input_directory).unwrap().count(), 1);
+        assert_eq!(
+            std::fs::read(input_directory.join(format!(
+                "{}-0000000000000002-0000000000000001.cbor",
+                request.producer_slot_id
+            )))
+            .unwrap(),
+            preimage
+        );
+        emit(
+            serde_json::json!({"event":"live-terminal-event","request":1,
+            "receipt":hex(&encoded),"dependencies":10,"source_cut":5,
+            "native_rows":98,"native_sequence":141,"peer_joined":true,
+            "job_complete":false,"session_revoked":false}),
+        );
+        return true;
+    }
     assert!(receipt.batch().is_none());
     assert_eq!(receipt.dependencies().records().len(), 10);
     for (dependency, sequence) in receipt.dependencies().records().iter().zip(3..=12) {

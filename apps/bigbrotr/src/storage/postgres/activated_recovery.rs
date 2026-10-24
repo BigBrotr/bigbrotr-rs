@@ -18,7 +18,7 @@ use std::{
 };
 
 #[path = "activated_compaction.rs"]
-mod compacted;
+pub(super) mod compacted;
 
 /// Retained immutable SQL/native identity, before the native closing barrier.
 /// The owning caller retains the exclusive native handle separately.
@@ -169,9 +169,9 @@ impl ControlSession {
 
     #[allow(
         clippy::too_many_arguments,
-        reason = "explicit positive-only compacted inspection with separate effect grant"
+        reason = "explicit protocol-specific compacted inspection with separate effect grant"
     )]
-    async fn inspect_activated_producer_in(
+    pub(super) async fn inspect_activated_producer_in(
         &mut self,
         recovery: &IngestRecovery,
         input: InitialHistoryRequest<'_>,
@@ -194,10 +194,9 @@ impl ControlSession {
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         let selected = compacted.is_some()
-            && matches!(purpose, Purpose::Positive)
             && ActivatedInitial::compacted_initial_selected(recovery, intent.record)
                 .map_err(InitialSuccessionError::Native)?;
-        // Ordinary source/retirement still run the strict native inspector first.
+        // Factories without explicit compacted support retain strict original inspection.
         let mut permit = Some(permit);
         let ordinary = if selected {
             None
@@ -399,10 +398,7 @@ impl ControlSession {
                 BootstrapError::InsufficientReservation,
             ));
         }
-        inspected
-            .native
-            .validate(recovery)
-            .map_err(InitialSuccessionError::Native)?;
+        compacted::validate(&inspected.native, recovery, input.cancelled)?;
         require_deployment(&inspected.metadata, self)?;
         let current = self.identity;
         let (tx, mut lease, epoch) = self
@@ -410,29 +406,41 @@ impl ControlSession {
             .await?;
         require_metadata(&tx, &inspected.metadata, current, epoch).await?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
-        let native = inspected
-            .native
-            .observe_closed_producer(recovery, permit, || {
-                if input.cancelled.load(Ordering::Relaxed) {
-                    return Err(BootstrapError::AuthorityUnavailable);
-                }
-                lease
-                    .check_delivery(epoch)
-                    .map_err(|_| BootstrapError::AuthorityUnavailable)
-            })
-            .map_err(InitialSuccessionError::Native)?;
-        native
-            .validate(recovery)
-            .map_err(InitialSuccessionError::Native)?;
+        let authority = || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(BootstrapError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(epoch)
+                .map_err(|_| BootstrapError::AuthorityUnavailable)
+        };
+        let native = if inspected.native.has_compacted_initial() {
+            inspected.native.observe_compacted_closed_producer(
+                recovery,
+                permit,
+                input.cancelled,
+                authority,
+            )
+        } else {
+            inspected
+                .native
+                .observe_closed_producer(recovery, permit, authority)
+        }
+        .map_err(InitialSuccessionError::Native)?;
         initial_history::finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);
         }
-        self.available = true;
-        Ok(ClosedActivatedInitialProducer {
+        let closed = ClosedActivatedInitialProducer {
             native,
             metadata: inspected.metadata,
-        })
+        };
+        closed
+            .validate(recovery, input.cancelled)
+            .map_err(InitialSuccessionError::Native)?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        self.available = true;
+        Ok(closed)
     }
 
     /// Stream one positively resolved original. Existing copies retain their

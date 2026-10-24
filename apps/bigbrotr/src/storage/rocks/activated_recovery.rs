@@ -381,6 +381,35 @@ impl ActivatedInitial {
         })
     }
 
+    /// Observe an existing compacted barrier without reopening an ordinary
+    /// decoder, writing a marker or allocating a second lineage. The sole
+    /// inspected context and its grant move into the closing observation.
+    pub(in crate::storage) fn observe_compacted_closed_producer(
+        self,
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ActivatedProducerClosing, BootstrapError> {
+        if permit.request().units().data_bytes() < 4096
+            || permit.request().units().native_bytes() < 4096
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        authority()?;
+        self.validate_compacted(recovery, cancelled)?;
+        if !self.producer.closing {
+            return Err(BootstrapError::StateMismatch);
+        }
+        self.compacted_lineage()?.require_activated_complete()?;
+        authority()?;
+        Ok(ActivatedProducerClosing {
+            context: self,
+            _permit: permit,
+        })
+    }
+
     pub(in crate::storage::rocks::store) fn require_receipt_bounds(
         &self,
         receipt: &Receipt,
@@ -549,6 +578,24 @@ impl ActivatedProducerClosing {
             return Err(BootstrapError::StateMismatch);
         }
         self.validate(recovery)
+    }
+
+    pub(in crate::storage::rocks::store) fn require_compacted_source_cut(
+        &self,
+        recovery: &IngestRecovery,
+        through: u64,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.validate_compacted(recovery, cancelled)?;
+        let lineage = self.compacted_lineage()?;
+        lineage.require_activated_complete()?;
+        if !self.context.producer.closing
+            || lineage.native_head().source_through() != through
+            || self.context.source_through != through
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
     }
     pub(in crate::storage) fn manifest(&self) -> &IngestManifest {
         self.context.manifest()

@@ -31,7 +31,14 @@ pub(super) async fn resolve(
     phase(progress, timeout)?;
     let observed = bounded(timeout, cancellation, async {
         owner
-            .inspect_activated_initial_source(native, request(), metadata, validate)
+            .inspect_activated_initial_source_with_compacted(
+                native,
+                request(),
+                metadata,
+                limits().event,
+                compacted_effect_grant(budget)?,
+                validate,
+            )
             .await
             .map_err(|e| (4, e.to_string()))
     })
@@ -44,11 +51,42 @@ pub(super) async fn resolve(
             .map_err(|e| (4, e.to_string()))
     })
     .await?;
-    let mut prefix = closed
-        .source_resolution(native)
-        .map_err(|e| (4, e.to_string()))?;
+    let compacted = closed.has_compacted_initial();
+    let mut prefix = if compacted {
+        closed.compacted_source_resolution(native, &cancellation.requested)
+    } else {
+        closed.source_resolution(native)
+    }
+    .map_err(|e| (4, e.to_string()))?;
+    let compacted_requests = if compacted {
+        phase(progress, timeout)?;
+        bounded(timeout, cancellation, async {
+            owner
+                .resolve_activated_source_compacted_predecessor(
+                    native,
+                    &closed,
+                    request(),
+                    limits().event,
+                    compacted_effect_grant(budget)?,
+                    &mut prefix,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?
+    } else {
+        0
+    };
     for (epoch, through) in [
-        (1, closed.predecessor_issued_through()),
+        (
+            1,
+            if compacted {
+                0
+            } else {
+                closed.predecessor_issued_through()
+            },
+        ),
         (2, closed.reserved_through()),
     ] {
         for sequence in 1..=through {
@@ -110,11 +148,13 @@ pub(super) async fn resolve(
     phase(progress, timeout)?;
     bounded(timeout, cancellation, async {
         owner
-            .close_activated_initial_source(
+            .close_activated_initial_source_with_compacted(
                 &closed,
                 &source,
                 request(),
                 grant(budget, 64 * 1024, 0)?,
+                limits().event,
+                compacted_effect_grant(budget)?,
                 validate,
             )
             .await
@@ -133,6 +173,10 @@ pub(super) async fn resolve(
         "source_closure":{"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":Digest256::from_bytes(source.digest())},
         "native":"closed", "owner_release":"committed", "ready":false});
+    if compacted {
+        report["recovery_basis"] = json!("closed-producer-floor-v3");
+        report["compacted_requests"] = json!(compacted_requests.to_string());
+    }
     if mode == Mode::AbandonAcquisition {
         phase(progress, timeout)?;
         bounded(timeout, cancellation, async {
@@ -142,11 +186,13 @@ pub(super) async fn resolve(
         phase(progress, timeout)?;
         let abandoned = bounded(timeout, cancellation, async {
             owner
-                .abandon_activated_initial_acquisition(
+                .abandon_activated_initial_acquisition_with_compacted(
                     &closed,
                     &source,
                     request(),
                     grant(budget, 128 * 1024, 0)?,
+                    limits().event,
+                    compacted_effect_grant(budget)?,
                     validate,
                 )
                 .await

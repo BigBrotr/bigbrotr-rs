@@ -302,6 +302,7 @@ pub(super) async fn run(
             | "successor-live-rejected"
             | "successor-live-already-durable"
             | "successor-live-acquisition-claims"
+            | "successor-live-compacted-terminal-event"
     ) {
         admit(
             &probe,

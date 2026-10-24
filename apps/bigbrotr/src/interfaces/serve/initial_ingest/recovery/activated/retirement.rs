@@ -26,7 +26,14 @@ pub(super) async fn resolve(
     phase(progress, timeout)?;
     let inspected = bounded(timeout, cancellation, async {
         owner
-            .inspect_activated_initial_retirement(native, request(), metadata, validate)
+            .inspect_activated_initial_retirement_with_compacted(
+                native,
+                request(),
+                metadata,
+                limits().event,
+                compacted_effect_grant(budget)?,
+                validate,
+            )
             .await
             .map_err(|e| (4, e.to_string()))
     })
@@ -39,11 +46,42 @@ pub(super) async fn resolve(
             .map_err(|e| (4, e.to_string()))
     })
     .await?;
-    let mut prefix = closed
-        .source_resolution(native)
-        .map_err(|e| (4, e.to_string()))?;
+    let compacted = closed.has_compacted_initial();
+    let mut prefix = if compacted {
+        closed.compacted_source_resolution(native, &cancellation.requested)
+    } else {
+        closed.source_resolution(native)
+    }
+    .map_err(|e| (4, e.to_string()))?;
+    let compacted_requests = if compacted {
+        phase(progress, timeout)?;
+        bounded(timeout, cancellation, async {
+            owner
+                .inspect_activated_retirement_compacted_predecessor(
+                    native,
+                    &closed,
+                    request(),
+                    limits().event,
+                    compacted_effect_grant(budget)?,
+                    &mut prefix,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?
+    } else {
+        0
+    };
     for (epoch, through) in [
-        (1, closed.predecessor_issued_through()),
+        (
+            1,
+            if compacted {
+                0
+            } else {
+                closed.predecessor_issued_through()
+            },
+        ),
         (2, closed.reserved_through()),
     ] {
         for sequence in 1..=through {
@@ -105,11 +143,13 @@ pub(super) async fn resolve(
     phase(progress, timeout)?;
     let gaps = bounded(timeout, cancellation, async {
         owner
-            .retire_activated_initial_producer(
+            .retire_activated_initial_producer_with_compacted(
                 &closed,
                 &source,
                 request(),
                 grant(budget, 128 * 1024, 0)?,
+                limits().event,
+                compacted_effect_grant(budget)?,
                 validate,
             )
             .await
@@ -131,6 +171,10 @@ pub(super) async fn resolve(
         "ingest_retirement":{"allocation_domains":"9", "acquisition_gaps":gaps.to_string(),
             "owner_release":"committed", "native_acknowledged":"0", "native_retired":"0"},
         "native":"closed", "owner_release":"committed", "ready":false});
+    if compacted {
+        report["recovery_basis"] = json!("closed-producer-floor-v3");
+        report["compacted_requests"] = json!(compacted_requests.to_string());
+    }
     let replay = source
         .into_recovery_acknowledgement()
         .map_err(|e| (4, e.to_string()))?;

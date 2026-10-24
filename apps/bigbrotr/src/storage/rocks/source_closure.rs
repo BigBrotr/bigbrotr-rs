@@ -7,6 +7,7 @@ use super::{
 use crate::storage::rocks::{keys::IngestKey, manifest::IngestManifest};
 use bigbrotr_model::{ProducerEpoch, ProducerSlotId, Sequence, SourceRecordId};
 use sha2::{Digest, Sha256};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 /// This accumulator owns the existing closing grant and borrows native custody.
 /// It retains no receipt vector; only complete positive replay can produce
@@ -453,10 +454,30 @@ pub struct ActivatedSourceResolution<'a> {
     recovery: &'a IngestRecovery,
     closing: &'a ActivatedProducerClosing,
     prefix: Prefix,
-    predecessor: Prefix,
+    predecessor: ActivatedPredecessor<'a>,
 }
 
-const _: () = assert!(size_of::<ActivatedSourceResolution<'_>>() < 4096);
+const _: () = assert!(
+    size_of::<ActivatedSourceResolution<'_>>() + size_of::<ResolvedActivatedSource<'_>>() < 4096
+);
+
+#[allow(
+    clippy::large_enum_variant,
+    reason = "fixed prefix stays within the retained closing grant without another allocation"
+)]
+enum ActivatedPredecessor<'a> {
+    Original(Prefix),
+    Compacted {
+        cancelled: &'a AtomicBool,
+        confirmed: bool,
+    },
+}
+
+#[derive(Clone, Copy)]
+enum ActivatedSourceBasis<'a> {
+    Original,
+    Compacted(&'a AtomicBool),
+}
 
 /// Complete positive target prefix, tied to the same two-stream native custody.
 pub struct ResolvedActivatedSource<'a> {
@@ -465,6 +486,7 @@ pub struct ResolvedActivatedSource<'a> {
     source_through: u64,
     digest: [u8; 32],
     event_requests: u64,
+    basis: ActivatedSourceBasis<'a>,
 }
 
 impl ActivatedProducerClosing {
@@ -496,7 +518,7 @@ impl ActivatedProducerClosing {
         Ok(ActivatedSourceResolution {
             recovery,
             closing: self,
-            predecessor: Prefix::new(
+            predecessor: ActivatedPredecessor::Original(Prefix::new(
                 PrefixIdentity {
                     manifest: previous,
                     slot: self.producer_slot_id(),
@@ -505,7 +527,40 @@ impl ActivatedProducerClosing {
                     predecessor_cut: None,
                 },
                 digest,
+            )),
+            prefix: Prefix::new(
+                PrefixIdentity {
+                    manifest: *self.manifest(),
+                    slot: self.producer_slot_id(),
+                    epoch: ProducerEpoch::new(2).expect("checked activated producer"),
+                    issued: reserved_through,
+                    predecessor_cut: Some(self.predecessor_source_through()),
+                },
+                activated_digest(self),
             ),
+        })
+    }
+
+    /// Source completion is distinct from the ACK-only cursor. The sealed
+    /// canonical ancestor must complete before any genuine target is recorded.
+    pub(in crate::storage) fn compacted_source_resolution<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        reserved_through: u64,
+        cancelled: &'a AtomicBool,
+    ) -> Result<ActivatedSourceResolution<'a>, BootstrapError> {
+        self.validate_compacted(recovery, cancelled)?;
+        self.compacted_lineage()?.require_activated_complete()?;
+        if reserved_through != self.issued_through() {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(ActivatedSourceResolution {
+            recovery,
+            closing: self,
+            predecessor: ActivatedPredecessor::Compacted {
+                cancelled,
+                confirmed: false,
+            },
             prefix: Prefix::new(
                 PrefixIdentity {
                     manifest: *self.manifest(),
@@ -520,22 +575,76 @@ impl ActivatedProducerClosing {
     }
 }
 impl<'a> ActivatedSourceResolution<'a> {
+    pub fn has_compacted_initial(&self) -> bool {
+        matches!(self.predecessor, ActivatedPredecessor::Compacted { .. })
+    }
+
+    pub fn needs_compacted_initial(&self) -> bool {
+        matches!(
+            self.predecessor,
+            ActivatedPredecessor::Compacted {
+                confirmed: false,
+                ..
+            }
+        )
+    }
+
+    pub(in crate::storage) fn confirm_compacted_initial(
+        &mut self,
+        proof: &super::VerifiedCompactedPrefix<'_>,
+        final_authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<(), BootstrapError> {
+        let ActivatedPredecessor::Compacted {
+            cancelled,
+            confirmed,
+        } = &mut self.predecessor
+        else {
+            return Err(BootstrapError::StateMismatch);
+        };
+        confirm_compacted_activated(
+            self.closing,
+            self.recovery,
+            cancelled,
+            confirmed,
+            proof,
+            final_authority,
+        )
+    }
+
     pub fn record(&mut self, resolved: &ResolvedProducerRequest) -> Result<(), BootstrapError> {
-        self.closing.validate(self.recovery)?;
-        resolved.require_native_context(self.recovery)?;
-        if self.predecessor.requests() < self.closing.predecessor_issued_through() {
-            return self.predecessor.record(resolved);
+        match &mut self.predecessor {
+            ActivatedPredecessor::Original(predecessor) => {
+                self.closing.validate(self.recovery)?;
+                resolved.require_native_context(self.recovery)?;
+                if predecessor.requests() < self.closing.predecessor_issued_through() {
+                    return predecessor.record(resolved);
+                }
+            }
+            ActivatedPredecessor::Compacted { cancelled, .. } => {
+                self.closing.validate_compacted(self.recovery, cancelled)?;
+                resolved.require_native_context(self.recovery)?;
+                resolved.require_lineage(self.closing.compacted_lineage()?)?;
+            }
         }
         self.require_predecessor()?;
         self.prefix.record(resolved)
     }
 
     fn require_predecessor(&self) -> Result<(), BootstrapError> {
-        if self.predecessor.requests() != self.closing.predecessor_issued_through()
-            || self.predecessor.source_through() != self.closing.predecessor_source_through()
-            || self.predecessor.completed_digest() != self.closing.predecessor_closure_digest()
-        {
-            return Err(BootstrapError::StateMismatch);
+        match &self.predecessor {
+            ActivatedPredecessor::Original(predecessor) => {
+                if predecessor.requests() != self.closing.predecessor_issued_through()
+                    || predecessor.source_through() != self.closing.predecessor_source_through()
+                    || predecessor.completed_digest() != self.closing.predecessor_closure_digest()
+                {
+                    return Err(BootstrapError::StateMismatch);
+                }
+            }
+            ActivatedPredecessor::Compacted { confirmed, .. } => {
+                if !*confirmed {
+                    return Err(BootstrapError::StateMismatch);
+                }
+            }
         }
         Ok(())
     }
@@ -545,8 +654,21 @@ impl<'a> ActivatedSourceResolution<'a> {
         if self.prefix.requests != self.closing.issued_through() {
             return Err(BootstrapError::StateMismatch);
         }
-        self.closing
-            .require_source_cut(self.recovery, self.prefix.source_through)?;
+        let basis = match self.predecessor {
+            ActivatedPredecessor::Original(_) => {
+                self.closing
+                    .require_source_cut(self.recovery, self.prefix.source_through)?;
+                ActivatedSourceBasis::Original
+            }
+            ActivatedPredecessor::Compacted { cancelled, .. } => {
+                self.closing.require_compacted_source_cut(
+                    self.recovery,
+                    self.prefix.source_through,
+                    cancelled,
+                )?;
+                ActivatedSourceBasis::Compacted(cancelled)
+            }
+        };
         self.prefix
             .digest
             .update(self.prefix.source_through.to_be_bytes());
@@ -556,6 +678,7 @@ impl<'a> ActivatedSourceResolution<'a> {
             source_through: self.prefix.source_through,
             digest: self.prefix.digest.finalize().into(),
             event_requests: self.prefix.event_requests,
+            basis,
         })
     }
 }
@@ -568,13 +691,35 @@ impl ResolvedActivatedSource<'_> {
     pub fn recovery_acknowledgement(
         &self,
     ) -> Result<super::RecoveryAcknowledgement, BootstrapError> {
-        self.validate()?;
-        super::RecoveryAcknowledgement::from_replay(
-            self.recovery,
-            *self.closing.manifest(),
-            self.closing.producer_slot_id(),
-            self.closing.issued_through(),
-        )
+        match self.basis {
+            ActivatedSourceBasis::Original => {
+                self.validate()?;
+                super::RecoveryAcknowledgement::from_replay(
+                    self.recovery,
+                    *self.closing.manifest(),
+                    self.closing.producer_slot_id(),
+                    self.closing.issued_through(),
+                )
+            }
+            ActivatedSourceBasis::Compacted(cancelled) => {
+                self.validate_compacted(cancelled)?;
+                super::RecoveryAcknowledgement::from_compacted_replay(
+                    self.recovery,
+                    self.closing,
+                    cancelled,
+                )
+            }
+        }
+    }
+    pub fn has_compacted_initial(&self) -> bool {
+        matches!(self.basis, ActivatedSourceBasis::Compacted(_))
+    }
+    pub fn compacted_requests(&self) -> u64 {
+        if self.has_compacted_initial() {
+            self.closing.predecessor_issued_through()
+        } else {
+            0
+        }
     }
     pub fn acknowledged_through(&self) -> u64 {
         self.closing.acknowledged_through()
@@ -601,8 +746,42 @@ impl ResolvedActivatedSource<'_> {
         self.closing.manifest()
     }
     pub(in crate::storage) fn validate(&self) -> Result<(), BootstrapError> {
+        if self.has_compacted_initial() {
+            return Err(BootstrapError::StateMismatch);
+        }
         self.closing
             .require_source_cut(self.recovery, self.source_through)
+    }
+    pub(in crate::storage) fn validate_compacted(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.require_compacted_cancellation(cancelled)?;
+        self.closing
+            .require_compacted_source_cut(self.recovery, self.source_through, cancelled)?;
+        self.require_compacted_cancellation(cancelled)
+    }
+    fn require_compacted_cancellation(&self, cancelled: &AtomicBool) -> Result<(), BootstrapError> {
+        let ActivatedSourceBasis::Compacted(original_cancelled) = self.basis else {
+            return Err(BootstrapError::StateMismatch);
+        };
+        if original_cancelled.load(Ordering::Relaxed) || cancelled.load(Ordering::Relaxed) {
+            return Err(BootstrapError::AuthorityUnavailable);
+        }
+        Ok(())
+    }
+    pub(in crate::storage) fn compacted_initial_ancestor<'a>(
+        &'a self,
+        limits: super::AdmissionLimits,
+        effects: &crate::runtime::OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<super::CompactedInitialAncestor<'a>, super::AdmissionError> {
+        self.validate_compacted(cancelled)?;
+        let ancestor =
+            self.closing
+                .compacted_initial_ancestor(self.recovery, limits, effects, cancelled)?;
+        self.require_compacted_cancellation(cancelled)?;
+        Ok(ancestor)
     }
     pub(in crate::storage) fn matches_closed(&self, closing: &ActivatedProducerClosing) -> bool {
         std::ptr::eq(self.closing, closing)
@@ -676,19 +855,16 @@ impl<'a> CompactedActivatedAcknowledgementResolution<'a> {
     pub(super) fn confirm_compacted_initial(
         &mut self,
         proof: &super::VerifiedCompactedPrefix<'_>,
-        mut final_authority: impl FnMut() -> Result<(), BootstrapError>,
+        final_authority: impl FnMut() -> Result<(), BootstrapError>,
     ) -> Result<(), BootstrapError> {
-        self.closing
-            .validate_compacted(self.recovery, self.cancelled)?;
-        proof
-            .validate(self.recovery, self.cancelled)
-            .map_err(BootstrapError::Compacted)?;
-        if self.confirmed || !proof.matches_lineage(self.closing.compacted_lineage()?) {
-            return Err(BootstrapError::StateMismatch);
-        }
-        final_authority()?;
-        self.confirmed = true;
-        Ok(())
+        confirm_compacted_activated(
+            self.closing,
+            self.recovery,
+            self.cancelled,
+            &mut self.confirmed,
+            proof,
+            final_authority,
+        )
     }
     pub(super) fn record(
         &mut self,
@@ -723,4 +899,24 @@ impl<'a> CompactedActivatedAcknowledgementResolution<'a> {
             self.cancelled,
         )
     }
+}
+
+fn confirm_compacted_activated(
+    closing: &ActivatedProducerClosing,
+    recovery: &IngestRecovery,
+    cancelled: &AtomicBool,
+    confirmed: &mut bool,
+    proof: &super::VerifiedCompactedPrefix<'_>,
+    mut final_authority: impl FnMut() -> Result<(), BootstrapError>,
+) -> Result<(), BootstrapError> {
+    closing.validate_compacted(recovery, cancelled)?;
+    proof
+        .validate(recovery, cancelled)
+        .map_err(BootstrapError::Compacted)?;
+    if *confirmed || !proof.matches_lineage(closing.compacted_lineage()?) {
+        return Err(BootstrapError::StateMismatch);
+    }
+    final_authority()?;
+    *confirmed = true;
+    Ok(())
 }

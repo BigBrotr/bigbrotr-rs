@@ -606,6 +606,15 @@ if producer_floor:
             'compacted_activated_context_binds_actual_root_and_cannot_mint_prepared_handoff',
             'compacted_activated_optional_range_keeps_the_physical_file_ceiling',
             'compacted_activated_logical_requests_can_exceed_physical_spool_limit'])
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::activated_recovery_tests::compacted_activated_tests::terminal_tests::' + name for name in [
+            'compacted_activated_source_preserves_genuine_digest_event_mask_and_counts',
+            'compacted_activated_source_confirmation_and_order_refusals_never_advance',
+            'compacted_activated_retirement_observes_complete_closing_without_native_writes',
+            'compacted_activated_source_cut_and_retirement_root_are_exact',
+            'compacted_activated_source_rechecks_sidecars_sequence_cancel_and_science',
+            'compacted_activated_source_preserves_optional_tail_but_refuses_reserved_gaps',
+            'compacted_activated_source_ack_handoff_retains_final_input_seal'])
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

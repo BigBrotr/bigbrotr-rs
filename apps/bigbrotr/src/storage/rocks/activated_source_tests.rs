@@ -5,11 +5,11 @@ use super::*;
 #[path = "activated_retirement_tests.rs"]
 mod activated_retirement_tests;
 
-type Digests = Vec<(u64, [u8; 32], [u8; 32])>;
+pub(super) type Digests = Vec<(u64, [u8; 32], [u8; 32])>;
 
 /// Independent literal framing from retained preimages/outcomes, with an explicit
 /// expected request count and source cut. No production closure encoder is used.
-fn expected_closure(
+pub(super) fn expected_closure(
     fixture: &Fixture,
     recovery: &IngestRecovery,
     count: u64,
@@ -58,6 +58,8 @@ fn full_prefix<'a>(
     count: u64,
 ) -> crate::storage::rocks::store::ActivatedSourceResolution<'a> {
     let mut prefix = closed.source_resolution(recovery, count).unwrap();
+    assert!(!prefix.has_compacted_initial());
+    assert!(!prefix.needs_compacted_initial());
     for sequence in 1..=closed.predecessor_issued_through() {
         let bytes = std::fs::read(
             fixture
@@ -210,6 +212,12 @@ fn activated_source_closure_covers_the_complete_two_stream_prefix_and_exact_dige
     assert_eq!(source.digest(), expected);
     // Dictionary request1 is not an Event; NewFacts2 and AlreadyDurable3 are.
     assert_eq!(source.event_request_mask(), 0b110);
+    assert!(!source.has_compacted_initial());
+    assert_eq!(source.compacted_requests(), 0);
+    assert_eq!(
+        source.validate_compacted(&std::sync::atomic::AtomicBool::new(false)),
+        Err(BootstrapError::StateMismatch)
+    );
     assert_eq!(source.validate(), Ok(()));
     assert!(source.matches_closed(&closed));
     assert!(std::ptr::eq(source.recovery(), &recovery));

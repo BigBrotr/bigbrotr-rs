@@ -902,7 +902,7 @@ initial floor: it authenticates the retired ancestor, typed checkpoint and
 canonical outcomes, then replays genuine epoch2 originals. The ACK-only proof
 must revalidate that ancestor and target checkpoint in its final transaction,
 and retain the complete input census through synchronized native ACK. Compacted
-source closure and retirement remain unsupported. A reserved unissued request
+source closure and retirement are unsupported at that product revision. A reserved unissued request
 stays unresolved; a staged unreserved tail is preserved and supplies no credit.
 ACK of a verified contiguous issued prefix reclaims no file or outcome.
 The [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
@@ -915,6 +915,18 @@ The native tests separately exercise optional tails, proof/root/sequence binding
 and logical request counts above the unchanged physical64-file limit. Source
 closure, retirement success, later consumers, GC and physical-loss/restore/capacity
 remain unqualified by this slice. Both original failed attempts are preserved.
+
+The next compacted Source/abandonment/retirement extension has passed source review,
+but build and installed terminal qualification have not run. It uses a distinct source-capable proof: confirmed canonical
+ancestor replay precedes genuine target originals, whose ordered digests, source
+cut and Event mask retain their existing meanings. The ACK-only proof cannot
+construct that source capability. Each final transaction must revalidate the
+sealed ancestor checkpoint/canonical outcomes and exact target copies; an earlier
+confirmed read is insufficient. Retirement observes an existing native closing
+barrier and cannot create one. Workflow gaps and the exact twelve-row terminal
+transition retain their existing predicates. Every post-COMMIT return checks the
+complete native input census and current delivery authority; no terminal proof
+supplies permission to unlink inputs or discard scientific state.
 
 ## Closed-producer reclamation (reader under qualification; deletion unavailable)
 

@@ -44843,7 +44843,75 @@
                 ]
               },
               "qualified_behavior": "Existing --activated-successor: compacted retired epoch1 N7, activated targetzero/one original, fresh typed checkpoint and ACK, exact retry, before/after outcome COMMIT loss, reserved-unissued refusal/retry and missing-original refusal. Source/retirement compacted refusals and ordinary-original target regression retained. Native9 controls include optional tails and logical-count>physical-cap; no connected scale claim.",
-              "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation."
+              "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
+              "terminal_consumer_work": {
+                "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
+                "state": "SOURCE_REVIEWED_INTEGRATED; exact-source build and connected terminal qualification NOT_RUN",
+                "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
+                "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
+                "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
+                "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
+                "runtime": "NOT_RUN; no build/connected process active",
+                "root_baseline_reads": {
+                  "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
+                  "complete_files_sha256": {
+                    "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated.rs": "56e73da90da5a694355b48f5f9682d439b6b041cb921aa737ac99311ecfa2a49",
+                    "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated/retirement.rs": "f3589349f15ae41a848d03498ba8be1014b51b06a5b45adf8f2a5bcaf04047cf",
+                    "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated/source.rs": "d9ec3a982ef87f685c7975e86dbbc55f59507a756dd5e53b63ad4149bf976d25",
+                    "apps/bigbrotr/src/storage/postgres/activated_acquisition.rs": "6ae50e8fd4788b6e17f1a8ad013a8fd8e0393f666a1588347e444a394c14f075",
+                    "apps/bigbrotr/src/storage/postgres/activated_compaction.rs": "eaa98dbe912102f9882de9191d40a4e5f2e061ba16a4b8cbcb3349e07424c7e8",
+                    "apps/bigbrotr/src/storage/postgres/activated_recovery.rs": "e1559495b5f72998ee0fffc805d69e015fdcdf5ec83f7fbe20db06d908883bf2",
+                    "apps/bigbrotr/src/storage/postgres/activated_retirement.rs": "e40ad93cf6c4c4b2c64f5d82195917c1090466242fb68d3790d8819052cec772",
+                    "apps/bigbrotr/src/storage/postgres/activated_source.rs": "f2d7fa32a0dd2b35b7ffe443390cf13f6714769335ff270d05f55c6bf28d15c9",
+                    "migrations/postgres/0035_activated_source_closure.sql": "80b5441cbb2de1f782ce6458e1c2b26a2f3730f51e61619af49f1e8d8adc375a",
+                    "migrations/postgres/0036_activated_acquisition_abandonment.sql": "19e2390b46d9eba7e4eac765eafc30fc7b2cac03e03c0918df64ed0b87642e54",
+                    "migrations/postgres/0037_activated_initial_retirement.sql": "ea882fd887d0800ab1880646026ac85eeb6485f5fa4fd3323eee09b4bf96eac8"
+                  },
+                  "effective_sql": "Compared full0040 replacements of require_activated_initial_source and lock_activated_initial_retirement against the completely read0035/0037 originals: reserved<=64 and retained typed-progress validation replace original limits/veto. Complete0036 acquisition guards read; no migration change. Prior verified initial-history/progress/ACK readers retained.",
+                  "schema40_sha256": "47eaef37cc8bb475a7b597da0814c5a9dc3d4f983ed9506fdfd734d35fb64af6"
+                },
+                "root_draft_review": {
+                  "status": "Complete root self-review and exact-hash independent PG/CLI critical source review; no unresolved source finding; build/engines NOT_RUN",
+                  "files_sha256": {
+                    "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated.rs": "2d877b0f6e2cf53167b66c8239fa0134093207efb8c385aa518d5d0ded1ddc64",
+                    "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated/retirement.rs": "3835c294945398e60a3964bf33d04d2df3db61ade1931d0b08b8cc3dcaa18273",
+                    "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated/source.rs": "8d35d327c1acee924b4871470efae421d668bae25a54c07e4bc1e647c40e4701",
+                    "apps/bigbrotr/src/storage/postgres/activated_acquisition.rs": "f99ab0f6f3cb9fdc9065a1d54f2df700cce68f3c32e5cbf16125665b579dc9b3",
+                    "apps/bigbrotr/src/storage/postgres/activated_compaction.rs": "f55eaef37f3a43ac89ed4559f5c4fe4630582a3ad462e3ec4e2ea28a1400704c",
+                    "apps/bigbrotr/src/storage/postgres/activated_recovery.rs": "145c21e38175d5494631ab5740d7894a9c5c99bbf3e248dec2302d5f9a5ff2b4",
+                    "apps/bigbrotr/src/storage/postgres/activated_retirement.rs": "d3583013ec4a332664acfcdf22b28370a5c1e3d0dfde766eb4115e07705229c1",
+                    "apps/bigbrotr/src/storage/postgres/activated_source.rs": "4bb4d6e09d5a6ab9471877208e75af431fcc0206f6d9847eeee948356d674d26"
+                  },
+                  "correction": "Keep compacted helper/Pending visibility scoped to control_owner so sibling protocol wrappers can use it without exposing relaxed public selectors."
+                },
+                "source_reviews": {
+                  "compacted-activated-terminal-pg-cli-critical-review-v1.json": {
+                    "sha256": "46326d7d8d94b02d0963d8d27d6f306224867b1b15119fc3cf98961c95799c7e",
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-pg-cli-critical-review-v1.json"
+                  },
+                  "compacted-activated-terminal-native-source-v1.json": {
+                    "sha256": "d494d52c52c28b5eadc8995c4372273135a82be918edf043191ba3b3cacfdd5f",
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-native-source-v1.json"
+                  },
+                  "compacted-activated-terminal-native-cancellation-addendum-v1.json": {
+                    "sha256": "48b4e82f27b52e0d28d0dcf62186f0160cca810b95b723cd9ad94a39d8f193a7",
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-native-cancellation-addendum-v1.json"
+                  }
+                },
+                "integration": {
+                  "native_commits": [
+                    "8202dfea07f7c7c0aff590777e66f2bebee5f657",
+                    "0a063ef361e6a36b58dea1bb71209f82363f7f87"
+                  ],
+                  "rust_event_seed_commit": "b48ccbf8a091130531263877722e9e532a8ca781",
+                  "exact_authored_bytes": "Five native and two probe files reconciled against frozen commits before integration; existing author worktrees and receipts retained.",
+                  "independent_native_review": "Root read complete five-file delta and complete new555-line test owner against previously reviewed owners, plus full expected_closure literal helper and cancellation follow-up. Source prefix retains genuine target digest/Event mask, canonical confirmation does not advance on refusal, observation-only native closing, final source-to-ACK seal, bounded physical census and separate logical count. Root found retained cancellation during a census could escape the early check;0a063 adds both flags after full census/ancestor construction, without a second scan.",
+                  "independent_seed_review": "Root read complete ingest_live_durable owner, live caller and exact diff; reused unchanged previously verified transport/auth helpers; checked bootstrap dispatch and existing modern successor driver. External attributed epoch1 request3/5 files seed source3..7; genuine network Event produces expected target5 scientific facts/14 keys,98rows/seq141 with one original. Distinct modern private scope ordinal3, real activating Control claim retained; owner and observer drivers must actually join. Python installed expectations remain in progress.",
+                  "mandatory_controls": "Seven exact terminal component names added to existing producer-floor required_controls; predicted179components/70controls is NOT a measured result.",
+                  "static_checks": "PASS scoped rustfmt, git diff --check, native.py AST and seven authored-file byte identities",
+                  "connected_gates": "First25-command terminal profile pending; separate before/after final COMMIT loss, job-lock cancellation/actual expiry, ancestor H/D drift after earlier proof and zero-request claimed-job extension still required."
+                }
+              }
             }
           }
         }

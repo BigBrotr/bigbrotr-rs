@@ -62934,6 +62934,34 @@
           "activated-live"
         ],
         "cleanup_errors": []
+      },
+      "compacted_activated_terminal_work_20261024": {
+        "state": "SOURCE_REVIEWED_INTEGRATED; build not started",
+        "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
+        "runtime_owner": "/root",
+        "agents": [
+          {
+            "agent": "/root/compacted_reader_review",
+            "model": "gpt-6-astra",
+            "reasoning": "xhigh",
+            "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-native-20261024",
+            "branch": "work/compacted-activated-terminal-native",
+            "scope": "Native source proof, observation-only retirement and component controls",
+            "state": "COMPLETE; source integrated exactly, worktree and original commits retained",
+            "head": "0a063ef361e6a36b58dea1bb71209f82363f7f87"
+          },
+          {
+            "agent": "/root/compacted_reader_fixture",
+            "model": "gpt-6-astra",
+            "reasoning": "xhigh",
+            "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fixture-20261024",
+            "branch": "work/compacted-activated-terminal-fixture",
+            "scope": "Actual Event/workflow probe and installed terminal expected-state matrix",
+            "state": "ACTIVE; Rust seed b48ccbf8 integrated; Python terminal profile partial in separate worktree"
+          }
+        ],
+        "preservation": "Prior detached authored worktrees/receipts/clones/failures retained, no cleanup",
+        "build_preflight_free_bytes": 270691000320
       }
     }
   },

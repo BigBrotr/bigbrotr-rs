@@ -7,11 +7,13 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
 Compacted activated positive recovery and checkpoint ACK are now scoped-qualified.
-Current main and last verified push: `cf1a2ef9fd180188955ddba83fbaeca3d61eca2e`
-(push89932 joined0). This checkpoint accompanies qualification documentation only.
+Current main and last verified push: `bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b`
+(push10949 joined0). The next coherent source commit integrates reviewed compacted terminal native/PG/CLI
+consumers, seven required component controls and the real Event seed. Its build and
+connected terminal qualification have not run; the Python fixture remains partial.
 Qualified product: `fc9388fc4c4f404ce57785eb5bfc66d11e10185a`,
 tree `e4a1c2d1b535049244cf32e03d211bfc586a47ee`.
-No floor writer, unlink, compacted Source or retirement success is exposed.
+No floor writer or unlink is exposed. New terminal paths are draft/NOT_RUN.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -38,7 +40,7 @@ preserved. The first used inaccessible test-only encoding; the second mishandled
 same-transaction old-owner fencing/new claim. Exact corrections and independent
 reviews are linked; neither failed attempt was relabelled.
 
-Both agents are idle. Their original worktrees remain clean DETACHED at
+The two original author worktrees remain clean DETACHED at
 `.research/compacted-activated-native-20261024` (eb5ab35f) and
 `.research/compacted-activated-fixture-20261024` (f293d18e). Native10/fixture7 files
 were reconciled before redundant refs were retired, with the two-line test fix
@@ -47,10 +49,16 @@ logs remain intact. No cache cleanup occurred; unrelated workloads are untouched
 
 ## Precise next action and open gates
 
-Implement the next compacted Source/abandonment and retirement consumers using
-the linked exact-source terminal-boundary audit. Preserve genuine target Event
-classification/digest; add explicit compacted source proof and observation-only
-retirement, and revalidate ancestor H/D in each final PG transaction. Qualify
+Native agent completed from bbc36cbd; the fixture agent remains active in
+`.research/compacted-activated-terminal-native-20261024` and
+`.research/compacted-activated-terminal-fixture-20261024`; corresponding
+`work/compacted-activated-terminal-*` branches retain their authored work. Native
+0a063ef3 and Rust seed b48ccbf8 match the integrated bytes; exact-hash independent
+PG/CLI review found no blocker. No new build or connected qualification has run.
+
+Freeze the reviewed source and run the existing producer-floor exact-revision build;
+verify actual joins, mandatory component names, source/artifact identities and Clippy.
+Complete/review the separate Python terminal fixture, then qualify
 actual Event/workflow and terminal COMMIT/cancel/expiry boundaries; current
 zero/dictionary cases are insufficient for these new responsibilities.
 

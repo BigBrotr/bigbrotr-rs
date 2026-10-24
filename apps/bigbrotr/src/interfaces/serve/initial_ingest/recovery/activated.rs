@@ -10,8 +10,6 @@ use bigbrotr::storage::rocks::{
 mod retirement;
 mod source;
 
-const METADATA_BYTES: u64 = 128 * 1024;
-
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum Mode {
     Resolve,
@@ -89,13 +87,9 @@ async fn own(
     )?;
     // The sole worker retains both metadata and closing proof during each
     // input/outcome replay. Prove that full overlap before any claim or barrier.
-    let metadata_bytes = if mode == Mode::Resolve {
-        SuccessionProfile::for_recovery(2, None)
-            .map_err(|e| (3, e.to_string()))?
-            .required_metadata_bytes()
-    } else {
-        METADATA_BYTES
-    };
+    let metadata_bytes = SuccessionProfile::for_recovery(2, None)
+        .map_err(|e| (3, e.to_string()))?
+        .required_metadata_bytes();
     let metadata = grant(&budget, metadata_bytes, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
@@ -104,11 +98,13 @@ async fn own(
     }
     if matches!(mode, Mode::CloseSource | Mode::AbandonAcquisition) {
         // Publication overlaps metadata and closing, after dropping replay data.
-        drop(grant(&budget, 64 * 1024, 0)?);
+        let _transaction = grant(&budget, 64 * 1024, 0)?;
+        drop(compacted_effect_grant(&budget)?);
     }
     if matches!(mode, Mode::AbandonAcquisition | Mode::RetireInitial) {
         // Each terminal operation retains metadata and the native closing proof.
-        drop(grant(&budget, 128 * 1024, 0)?);
+        let _transaction = grant(&budget, 128 * 1024, 0)?;
+        drop(compacted_effect_grant(&budget)?);
     }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {

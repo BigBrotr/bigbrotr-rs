@@ -1,15 +1,17 @@
 //! Retire only an already closed activated source with completed workflows.
 //! Every original and native byte is retained; this never closes a native OPEN
 //! producer, repairs an outcome, abandons a job or constructs another writer.
+use super::activated_recovery::compacted;
 use super::*;
 use crate::{
     runtime::OwnedPermit,
     storage::rocks::store::{
-        ActivatedSourceResolution, BootstrapError, IngestRecovery, ResolvedActivatedSource,
-        ResolvedProducerRequest,
+        ActivatedSourceResolution, AdmissionLimits, BootstrapError, IngestRecovery,
+        ResolvedActivatedSource, ResolvedProducerRequest,
     },
 };
 use bigbrotr_model::ProducerSlotId;
+use std::sync::atomic::AtomicBool;
 
 pub struct ActivatedInitialRetirement(ActivatedInitialRecovery);
 pub struct ClosedActivatedInitialRetirement(ClosedActivatedInitialProducer);
@@ -26,6 +28,19 @@ impl ActivatedInitialRetirement {
     }
 }
 impl ClosedActivatedInitialRetirement {
+    pub fn has_compacted_initial(&self) -> bool {
+        self.0.has_compacted_initial()
+    }
+    pub fn compacted_source_resolution<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        cancelled: &'a AtomicBool,
+    ) -> Result<ActivatedSourceResolution<'a>, BootstrapError> {
+        self.0
+            .native
+            .compacted_source_resolution(recovery, self.reserved_through(), cancelled)
+    }
+
     pub fn predecessor_issued_through(&self) -> u64 {
         self.0.predecessor_issued_through()
     }
@@ -52,6 +67,57 @@ impl ClosedActivatedInitialRetirement {
 }
 
 impl ControlSession {
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit compacted metadata and independent effect grant"
+    )]
+    pub async fn inspect_activated_initial_retirement_with_compacted(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        metadata: OwnedPermit,
+        limits: AdmissionLimits,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedInitialRetirement, InitialSuccessionError> {
+        self.inspect_activated_producer_in(
+            recovery,
+            input,
+            metadata,
+            activated_recovery::Purpose::Retirement,
+            Some(compacted::Inspection::new(limits, outcomes)?),
+            validate,
+        )
+        .await
+        .map(ActivatedInitialRetirement)
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "distinct source proof and bounded canonical predecessor grant"
+    )]
+    pub async fn inspect_activated_retirement_compacted_predecessor(
+        &mut self,
+        recovery: &IngestRecovery,
+        closed: &ClosedActivatedInitialRetirement,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        outcomes: OwnedPermit,
+        source: &mut ActivatedSourceResolution<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, InitialSuccessionError> {
+        self.resolve_activated_compacted_predecessor_in(
+            recovery,
+            &closed.0,
+            input,
+            limits,
+            outcomes,
+            compacted::Pending::Source(source),
+            validate,
+        )
+        .await
+    }
+
     #[allow(
         clippy::too_many_arguments,
         reason = "closed context and per-original grants"
@@ -142,6 +208,48 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<u64, SourceCloseError> {
+        self.retire_activated_initial_producer_in(closed, source, input, permit, None, validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "source transaction and separate canonical ancestor effect grant"
+    )]
+    pub async fn retire_activated_initial_producer_with_compacted(
+        &mut self,
+        closed: &ClosedActivatedInitialRetirement,
+        source: &ResolvedActivatedSource<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        limits: AdmissionLimits,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, SourceCloseError> {
+        self.retire_activated_initial_producer_in(
+            closed,
+            source,
+            input,
+            permit,
+            Some(compacted::Inspection::new(limits, outcomes)?),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared strict source transaction with explicit compacted capability"
+    )]
+    async fn retire_activated_initial_producer_in(
+        &mut self,
+        closed: &ClosedActivatedInitialRetirement,
+        source: &ResolvedActivatedSource<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        inspection: Option<compacted::Inspection>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, SourceCloseError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
         {
@@ -158,7 +266,7 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
-        source.validate().map_err(SourceCloseError::Native)?;
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
         activated_recovery::require_deployment(&closed.0.metadata, self)?;
         let current = self.identity;
         let (tx, mut lease, epoch) = self
@@ -169,7 +277,12 @@ impl ControlSession {
         if !state.source_closed || !state.producer_closing {
             return Err(OwnerError::InvalidMetadata.into());
         }
-        source.validate().map_err(SourceCloseError::Native)?;
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
+        if let Some(inspection) = &inspection {
+            inspection
+                .require_source(&tx, &closed.0, source, &mut lease, epoch, input.cancelled)
+                .await?;
+        }
         activated_source::require_recorded(&tx, source).await?;
         let id = source.manifest().identity();
         let slot_id = source.producer_slot_id();
@@ -250,7 +363,7 @@ impl ControlSession {
             }
         }
         activated_recovery::require_metadata(&tx, &closed.0.metadata, current, epoch).await?;
-        source.validate().map_err(SourceCloseError::Native)?;
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
         activated_acquisition::require_current(&tx, id.dataset_id, current).await?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         tx.commit()
@@ -260,6 +373,8 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(SourceCloseError::DeliveryUnknown);
         }
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         self.available = true;
         Ok(gaps)
     }

@@ -1,9 +1,10 @@
 //! Whole-intent uncertainty for the activated local executor's queued claims.
 //! The borrowed native source proof excludes execution; SQL metadata does not.
+use super::activated_recovery::compacted;
 use super::*;
 use crate::{
     runtime::OwnedPermit,
-    storage::rocks::store::{BootstrapError, ResolvedActivatedSource},
+    storage::rocks::store::{AdmissionLimits, BootstrapError, ResolvedActivatedSource},
 };
 
 impl ControlSession {
@@ -17,6 +18,48 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<u64, SourceCloseError> {
+        self.abandon_activated_initial_acquisition_in(closed, source, input, permit, None, validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "source transaction and separate canonical ancestor effect grant"
+    )]
+    pub async fn abandon_activated_initial_acquisition_with_compacted(
+        &mut self,
+        closed: &ClosedActivatedInitialSource,
+        source: &ResolvedActivatedSource<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        limits: AdmissionLimits,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, SourceCloseError> {
+        self.abandon_activated_initial_acquisition_in(
+            closed,
+            source,
+            input,
+            permit,
+            Some(compacted::Inspection::new(limits, outcomes)?),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared strict source transaction with explicit compacted capability"
+    )]
+    async fn abandon_activated_initial_acquisition_in(
+        &mut self,
+        closed: &ClosedActivatedInitialSource,
+        source: &ResolvedActivatedSource<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        inspection: Option<compacted::Inspection>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, SourceCloseError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
         {
@@ -25,7 +68,7 @@ impl ControlSession {
             ));
         }
         let _permit = permit;
-        closed.require_source(source)?;
+        closed.require_source(source, inspection.as_ref(), input.cancelled)?;
         activated_recovery::require_deployment(&closed.0.metadata, self)?;
         let issuer = self.identity;
         let (tx, mut lease, epoch) = self
@@ -36,7 +79,12 @@ impl ControlSession {
         if !state.source_closed || !state.producer_closing {
             return Err(OwnerError::InvalidMetadata.into());
         }
-        source.validate().map_err(SourceCloseError::Native)?;
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
+        if let Some(inspection) = &inspection {
+            inspection
+                .require_source(&tx, &closed.0, source, &mut lease, epoch, input.cancelled)
+                .await?;
+        }
         activated_source::require_recorded(&tx, source).await?;
         let id = source.manifest().identity();
         let dataset = &id.dataset_id.as_bytes().as_slice();
@@ -121,7 +169,7 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
         }
-        source.validate().map_err(SourceCloseError::Native)?;
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
         require_current(&tx, id.dataset_id, issuer).await?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         for row in jobs {
@@ -156,7 +204,7 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
         }
-        source.validate().map_err(SourceCloseError::Native)?;
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
         require_current(&tx, id.dataset_id, issuer).await?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         tx.commit()
@@ -166,6 +214,8 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(SourceCloseError::DeliveryUnknown);
         }
+        compacted::validate_source(inspection.as_ref(), source, input.cancelled)?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         self.available = true;
         Ok(total)
     }

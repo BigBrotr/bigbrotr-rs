@@ -13,6 +13,9 @@ use std::sync::atomic::AtomicBool;
 
 static READY: AtomicBool = AtomicBool::new(false);
 
+#[path = "compacted_activated_terminal_tests.rs"]
+mod terminal_tests;
+
 fn metadata(f: &Fixture) -> OwnedPermit {
     grant(
         &f.budget,
@@ -770,5 +773,16 @@ fn compacted_activated_logical_requests_can_exceed_physical_spool_limit() {
     assert_eq!(ack.issued(), 61);
     assert_eq!(ack.compacted_requests(), 4);
     assert_eq!(inputs(&f.path()).len(), 61);
+    let source = terminal_tests::completed_source(&f, &r, &closed, &READY);
+    assert_eq!(
+        (source.compacted_requests(), source.resolved_requests()),
+        (4, 61)
+    );
+    assert_eq!(source.event_request_mask(), (1_u64 << 61) - 1);
+    assert_eq!(source.last_complete_sequence(), 0);
+    assert_eq!(
+        source.digest(),
+        super::activated_source_tests::expected_closure(&f, &r, 61, 0).0
+    );
     unchanged(&f, &r.store, &before);
 }
