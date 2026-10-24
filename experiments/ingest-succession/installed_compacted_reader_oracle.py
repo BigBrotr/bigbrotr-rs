@@ -1624,7 +1624,18 @@ def verify_journey_prepare(events,expected,initial,case,window,gate,*,compacted_
     gap=case['operation']=='successor-'+basis+'-gap-only'
     assert type(preparer) is bool and (not preparer or (gap and compacted_initial))
     assert case['operation']=='successor-'+basis+('-gap-only' if gap else '-normal')
-    plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=compacted_initial,fixed_initial_target=True)
+    plan_pg=pg
+    if preparer:
+        from initial_empty_locks_oracle import JOB
+        # The legacy ancestor plan checker requires its sole historical job.
+        # Only omit this already checked pre-admission from that plan input;
+        # every actual snapshot and preparation delta below retains all77 tables.
+        plan_pg=copy.deepcopy(pg); job=only(plan_pg['jobs'],job_id=JOB); admission=only(plan_pg['job_admissions'],job_id=JOB)
+        assert job['state']=='accepted' and job['job_revision']==1 and job['input_complete'] is True
+        assert all(job[k] is None for k in ('owner_resource_id','owner_epoch','owner_incarnation'))
+        assert job['created_at_us']<window['before_us'] and admission['xmin']==job['xmin']
+        plan_pg['jobs'].remove(job); plan_pg['job_admissions'].remove(admission)
+    plan,rows=history_seed_plan(plan_pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=compacted_initial,fixed_initial_target=True)
     assert plan['target_role']=='c9'*16 and plan['target_incarnation']=='ca'*16
     assert plan['domains']==[[k,f'{160+k:02x}'*16] for k in range(1,10)]
     model.clock(plan['created_at_us'],window)
@@ -4317,32 +4328,96 @@ def empty_preparer_specification(case):
     return name,step
 
 
+def empty_preparer_setup_checked(value,expected):
+    assert set(value)=={'setup','inputs_before','inputs_after','actor_exit_code','actor_closed_by_us'}
+    assert value['inputs_before']==value['inputs_after']==expected[2]=={}
+    setup=value['setup']; result=empty_lock_setup_checked(setup,expected)
+    assert setup['backend']['application']=='preparer_setup' and type(value['actor_exit_code']) is int
+    number(value['actor_closed_by_us'],setup['server_window']['after_us'],setup['server_window']['after_us']+10_000_000,integer=True)
+    assert setup['server_window']['before_us']<=retained.instant(setup['backend']['backend_start'])<=setup['created_at_us']
+    return result
+
+
+def empty_preparer_setup_controls(value,expected):
+    empty_preparer_setup_checked(value,expected)
+    result=empty_lock_setup_controls(value['setup'],expected); rejected=list(result['rejected'])
+    for label,change in [('setup-unjoined-actor',lambda v:v.update(actor_exit_code=None)),
+        ('setup-input-change',lambda v:v['inputs_after'].update(extra={})),
+        ('setup-closure-before-commit',lambda v:v.update(actor_closed_by_us=v['setup']['server_window']['before_us']-1))]:
+        v=copy.deepcopy(value); change(v)
+        try: empty_preparer_setup_checked(v,expected)
+        except (AssertionError,ValueError,KeyError,TypeError): rejected.append(label)
+        else: raise AssertionError('preparer setup accepted '+label)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def empty_preparer_live_checked(value,control,intent,database,observed_by_us):
+    from initial_empty_locks_oracle import sql_text
+    assert set(value)=={'pid','backend_start','database','user','state','xact_start','query_start','query','backend_xid','blockers'}
+    assert {k:value[k] for k in ('pid','backend_start','database','user','state','blockers')}==dict(pid=control['control_backend_pid'],
+        backend_start=control['control_backend_start'],database=database,user='bigbrotr_control',state='idle in transaction',blockers=[])
+    # Validation3 is in snapshot() of the second transaction, after the
+    # confirmed preparation COMMIT and its newly acquired dataset UPDATE lock.
+    query="""SELECT d.config_revision::text, d.policy_revision::text,
+        substring(c.document_digest FROM 1 FOR 33), substring(p.document_digest FROM 1 FOR 33),
+        CASE WHEN octet_length(c.document::text) <= 10485760 THEN c.document::text END,
+        CASE WHEN octet_length(p.document::text) <= 10485760 THEN p.document::text END,
+        c.authority_mode = $2::text AND p.config_revision = c.revision, c.schema_version, p.schema_version
+        FROM control.datasets d JOIN control.config_revisions c ON c.dataset_id = d.dataset_id AND c.revision = d.config_revision
+        JOIN control.policy_revisions p ON p.dataset_id = d.dataset_id AND p.revision = d.policy_revision WHERE d.dataset_id = $1::bytea"""
+    assert sql_text(value['query'])==sql_text(query)
+    assert type(value['backend_xid']) is str and value['backend_xid'].isdecimal() and int(value['backend_xid'])>0
+    assert int(value['backend_xid'])>int(intent['xmin'])
+    assert all(type(value[k]) is str for k in ('xact_start','query_start'))
+    assert control['acquired_at_us']<=intent['created_at_us']<=retained.instant(value['xact_start'])<=retained.instant(value['query_start'])<=observed_by_us
+
+
+def empty_preparer_claim_rows(value,pg,control):
+    from initial_empty_locks_oracle import JOB,statement,claimed_job
+    before=only(pg['jobs'],job_id=JOB)
+    assert before['state']=='accepted' and before['job_revision']==1 and before['input_complete'] is True
+    assert before['kind']=='import' and before['checkpoint_revision']==0
+    assert all(before[k] is None for k in ('owner_resource_id','owner_epoch','owner_incarnation','input_topology_generation','acquisition_job_protocol','export_job_protocol'))
+    assert before['created_at_us']<control['acquired_at_us']
+    assert value['statements']==['BEGIN ISOLATION LEVEL READ COMMITTED;',statement(control,False)+';','COMMIT;']
+    answers=value['transactions']; assert len(answers)==3
+    assert all(answers[i]==dict(sqlstate='00000',rows=0,lines=[]) for i in (0,2))
+    row=only(value['after']['jobs'],job_id=JOB); xid=row['xmin']; model.fresh_xmin(xid,pg)
+    assert int(xid)>int(before['xmin'])
+    assert int(xid)>int(value['live_before']['backend_xid'])
+    wanted=claimed_job(before,control,xid)
+    assert answers[1]==dict(sqlstate='00000',rows=1,lines=answers[1]['lines']) and [loads(v) for v in answers[1]['lines']]==[wanted]
+    after=copy.deepcopy(pg); only(after['jobs'],job_id=JOB).update(wanted)
+    same(value['after'],after)  # Includes the original admission xmin and all77 tables.
+    return after
+
+
 def empty_preparer_claim_checked(gate,case,window):
     from initial_empty_locks_oracle import app_identity,guards
     assert set(gate)=={'ready','released','native','control','inputs','observed_before_us','observed_after_us',
-        'go_before_us','go_after_us','errors','preparer_claim','preparer_control_absence','preparer_absence'}
+        'go_before_us','go_after_us','released_observed_us','errors','preparer_claim','preparer_control_absence','preparer_absence'}
     value=gate['preparer_claim']; pg=gate['control']; intent=only(pg['initial_ingest_successions'])
     control=only(pg['owner_epochs'],role='control',resource_id=intent['prepared_by_resource'],epoch=intent['prepared_by_epoch'])
     assert control['process_incarnation']==intent['prepared_by_incarnation'] and control['state']=='active'
     assert len(pg)==77 and (len(gate['native']['rows']),gate['native']['sequence'])==(81,121) and gate['inputs']=={}
-    assert set(value)=={'status','cleanup_errors','before','after','control','backend','identity','created_at_us',
+    assert set(value)=={'status','cleanup_errors','before','after','control','backend','identity','claimed_at_us',
         'statements','transactions','server_window','observed_by_us','live_before','live_after','inputs_before','inputs_after',
         'guards_before','guards_after','actor_absence','actor_exit_code','actor_closed_by_us'}
     assert value['status']=='CAPTURED' and value['cleanup_errors']==[]
     same(value['before'],pg); assert value['control']==control and value['inputs_before']==value['inputs_after']=={}
     assert set(value['server_window'])=={'before_us','after_us'}
     times=[window['before_us'],intent['created_at_us'],gate['observed_before_us'],gate['observed_after_us'],
-        value['server_window']['before_us'],value['created_at_us'],value['server_window']['after_us'],
-        value['observed_by_us'],value['actor_closed_by_us'],gate['go_before_us'],gate['go_after_us'],window['after_us']]
+        value['server_window']['before_us'],value['claimed_at_us'],value['server_window']['after_us'],
+        value['observed_by_us'],value['actor_closed_by_us'],gate['go_before_us'],gate['go_after_us'],gate['released_observed_us'],window['after_us']]
     assert all(type(v) is int for v in times) and times==sorted(times)
-    assert gate['go_before_us']<control['lease_expires_at_us'] and gate['go_after_us']-gate['observed_before_us']<10_000_000
-    live=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database'],user='bigbrotr_control',state='idle',xact_start=None)
-    assert value['live_before']==value['live_after']==live
+    assert gate['released_observed_us']<control['lease_expires_at_us'] and gate['go_after_us']-gate['observed_before_us']<10_000_000
+    live=value['live_before']; empty_preparer_live_checked(live,control,intent,case['database'],gate['observed_before_us'])
+    assert value['live_after']==live
     actor=value['backend']; assert set(actor)=={'pid','backend_start','database','user','application','isolation','synchronous_commit'}
     number(actor['pid'],1,integer=True); assert actor['pid']!=live['pid'] and actor['database']==case['database']
     assert actor['user']=='bigbrotr_control' and actor['application']=='empty_initial_preparer_claim'
     assert actor['isolation']=='read committed' and actor['synchronous_commit']=='on'
-    assert value['server_window']['before_us']<=retained.instant(actor['backend_start'])<=value['created_at_us']
+    assert value['server_window']['before_us']<=retained.instant(actor['backend_start'])<=value['claimed_at_us']
     app_identity(value['identity'],actor)
     assert value['actor_absence']=='0' and type(value['actor_exit_code']) is int
     guards(value['guards_before']); assert value['guards_after']==value['guards_before']
@@ -4358,11 +4433,11 @@ def empty_preparer_claim_checked(gate,case,window):
         assert (item['backends']==[])==(index==len(absence['attempts'])-1)
     number(absence['seconds'],elapsed,6)
     assert gate['preparer_absence']==[dict(pid=live['pid'],backend_start=live['backend_start'],database=case['database'],control_epoch=control['epoch'],present=False)]
-    return terminal_import_rows(value,pg,control)
+    return empty_preparer_claim_rows(value,pg,control)
 
 
 def verify_empty_preparer_context(context,initial,expected):
-    from initial_empty_preparer_oracle import JOB
+    from initial_empty_locks_oracle import JOB
     _,step=empty_preparer_specification(context['case'])
     result=(verify_empty_context if step=='refuse' else verify_preparation_context)(context,initial,expected,preparer=True)
     after=context['after']; intent=only(after['initial_ingest_successions']); job=only(after['jobs'],job_id=JOB)
@@ -4385,7 +4460,7 @@ def verify_empty_preparer_context(context,initial,expected):
 
 
 def empty_preparer_controls(context,initial,expected):
-    from initial_empty_preparer_oracle import JOB
+    from initial_empty_locks_oracle import JOB
     _,step=empty_preparer_specification(context['case'])
     verify_empty_preparer_context(context,initial,expected)
     base=(empty_controls if step=='refuse' else preparation_controls)(context,initial,expected,preparer=True)
@@ -4398,6 +4473,11 @@ def empty_preparer_controls(context,initial,expected):
             ('privileged-claim-actor',lambda c:c['gate']['preparer_claim']['identity'].update(superuser=True)),
             ('preparer-not-live',lambda c:c['gate']['preparer_claim'].update(live_after=None)),
             ('preparer-still-present',lambda c:c['gate']['preparer_absence'][0].update(present=True)),
+            ('wrong-validation-query',lambda c:c['gate']['preparer_claim']['live_before'].update(query='COMMIT')),
+            ('missing-validation-transaction',lambda c:c['gate']['preparer_claim']['live_before'].update(xact_start=None)),
+            ('changed-validation-transaction',lambda c:c['gate']['preparer_claim']['live_after'].update(backend_xid='1')),
+            ('claim-alters-admission',lambda c:c['gate']['preparer_claim']['after']['job_admissions'][-1].update(xmin='4294967000')),
+            ('gate-after-preparer-expiry',lambda c:c['gate'].update(released_observed_us=c['gate']['preparer_claim']['control']['lease_expires_at_us'])),
             ('actor-closed-after-go',lambda c:c['gate']['preparer_claim'].update(actor_closed_by_us=c['gate']['go_after_us']+1)),
             ('claim-commit-not-confirmed',lambda c:c['gate']['preparer_claim']['transactions'][-1].update(sqlstate='08006'))])
     if step=='refuse':

@@ -507,11 +507,52 @@ JOURNEY_SUITE = transition.Suite(directory=oracle.InitialJourneyProfile.DIRECTOR
     not_run=oracle.InitialJourneyProfile.NOT_RUN)
 
 
-def empty_preparer_claim(pg,output,case,directory,gate):
-    """Commit one ordinary import claim under the actual waiting preparer."""
+def empty_preparer_setup(pg,output,clone,directory,expected):
+    """Admit and seal the ordinary unowned job before the gate's dataset lock."""
     from concurrency_cases import Session
-    from initial_empty_locks import guards,session_identity
-    from initial_empty_preparer import statements
+    from initial_empty_locks import guards,session_identity,JOB,ACTOR,REQUEST,DIGEST
+    database=clone['database']; sessions=[]
+    setup=dict(before=schema.rows(pg,database),job_id='\\x'+JOB,principal_id='\\x'+ACTOR,request_key='\\x'+REQUEST,
+        request_digest='\\x'+DIGEST,guards_before=guards(pg,database),statement=[],transactions=[],status='INCOMPLETE',cleanup_errors=[])
+    record=dict(setup=setup,inputs_before=history.inputs_at(directory/'store'),actor_exit_code=None,actor_closed_by_us=None)
+    oracle.same(setup['before'],expected[0]); assert record['inputs_before']==expected[2]=={}
+    def save(): lab.write_json(output/'preparer-setup.json',record)
+    def owned():
+        current,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert current['State']['Running'] and current['Config']['Labels'][lab.LABEL]==pg['owner']
+    try:
+        setup['server_window']=dict(before_us=history.server_clock(pg,database))
+        actor=Session(pg,database,'preparer_setup',sessions,role='bigbrotr_control')
+        setup.update(backend=actor.backend,identity=session_identity(actor),created_at_us=history.server_clock(pg,database))
+        created=setup['created_at_us']
+        setup['statement']=['BEGIN ISOLATION LEVEL READ COMMITTED;',
+            "INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,kind,config_revision,policy_revision,created_at_us) SELECT "
+            f"decode('{JOB}','hex'),dataset_id,decode('{ACTOR}','hex'),decode('{REQUEST}','hex'),decode('{DIGEST}','hex'),'import',config_revision,policy_revision,{created} "
+            "FROM control.datasets RETURNING to_jsonb(jobs)||jsonb_build_object('xmin',xmin::text);",
+            f"UPDATE control.jobs j SET input_complete=true WHERE job_id=decode('{JOB}','hex') RETURNING to_jsonb(j)||jsonb_build_object('xmin',xmin::text);",'COMMIT;']
+        save()
+        for statement in setup['statement']:
+            setup['transactions'].append(actor.execute(statement)); save()
+        setup['server_window']['after_us']=history.server_clock(pg,database)
+        setup.update(after=schema.rows(pg,database),guards_after=guards(pg,database))
+        record['inputs_after']=history.inputs_at(directory/'store')
+        actor.close(owned); sessions.remove(actor)
+        record['actor_exit_code']=actor.process.returncode
+        setup['actor_absence']=installed_cycle.exact_absence(pg,database,[actor.backend])
+        record['actor_closed_by_us']=history.server_clock(pg,database)
+        setup['status']='CAPTURED'; oracle.empty_preparer_setup_checked(record,expected)
+    finally:
+        for actor in reversed(sessions):
+            try: actor.close(owned)
+            except BaseException as error: setup['cleanup_errors'].append(dict(stage='setup-actor',error=repr(error)))
+        save()
+    return record
+
+
+def empty_preparer_claim(pg,output,case,directory,gate):
+    """Claim the already admitted job under the actual waiting preparer."""
+    from concurrency_cases import Session
+    from initial_empty_locks import guards,session_identity,claim_statement
     database=case['database']; before=gate['control']
     intent=oracle.only(before['initial_ingest_successions'])
     control=oracle.only(before['owner_epochs'],role='control',resource_id=intent['prepared_by_resource'],epoch=intent['prepared_by_epoch'])
@@ -523,16 +564,15 @@ def empty_preparer_claim(pg,output,case,directory,gate):
         current,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
         assert current['State']['Running'] and current['Config']['Labels'][lab.LABEL]==pg['owner']
     def live():
-        return json.loads(lab.sql(pg,database,"SELECT json_build_object('pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state,'xact_start',xact_start) FROM pg_stat_activity WHERE pid="+str(control['control_backend_pid'])+" AND backend_start='"+control['control_backend_start']+"'::timestamptz AND datname='"+database+"';"))
+        return json.loads(lab.sql(pg,database,"SELECT json_build_object('pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state,'xact_start',xact_start,'query_start',query_start,'query',query,'backend_xid',backend_xid::text,'blockers',pg_blocking_pids(pid)) FROM pg_stat_activity WHERE pid="+str(control['control_backend_pid'])+" AND backend_start='"+control['control_backend_start']+"'::timestamptz AND datname='"+database+"';"))
     try:
         oracle.same(schema.rows(pg,database),before)
         value.update(inputs_before=history.inputs_at(directory/'store'),guards_before=guards(pg,database),live_before=live(),
             server_window=dict(before_us=history.server_clock(pg,database)))
-        assert value['live_before']==dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],
-            database=database,user='bigbrotr_control',state='idle',xact_start=None)
+        oracle.empty_preparer_live_checked(value['live_before'],control,intent,database,value['server_window']['before_us'])
         actor=Session(pg,database,'empty_initial_preparer_claim',sessions,role='bigbrotr_control')
-        value.update(backend=actor.backend,identity=session_identity(actor),created_at_us=history.server_clock(pg,database))
-        value['statements']=statements(control,value['created_at_us']); save()
+        value.update(backend=actor.backend,identity=session_identity(actor),claimed_at_us=history.server_clock(pg,database))
+        value['statements']=['BEGIN ISOLATION LEVEL READ COMMITTED;',claim_statement(control,False),'COMMIT;']; save()
         for statement in value['statements']:
             value['transactions'].append(actor.execute(statement)); save()
         value['server_window']['after_us']=history.server_clock(pg,database)
@@ -540,7 +580,7 @@ def empty_preparer_claim(pg,output,case,directory,gate):
         value['observed_by_us']=history.server_clock(pg,database)
         assert value['guards_before']==value['guards_after'] and value['live_before']==value['live_after']
         assert value['inputs_before']==value['inputs_after']=={} and value['observed_by_us']<control['lease_expires_at_us']
-        oracle.terminal_import_rows(value,before,control)
+        oracle.empty_preparer_claim_rows(value,before,control)
         actor.close(owned); sessions.remove(actor)
         value['actor_exit_code']=actor.process.returncode
         value['actor_absence']=lab.sql(pg,'postgres',"SELECT count(*) FROM pg_stat_activity WHERE pid="+str(actor.backend['pid'])+" AND backend_start='"+actor.backend['backend_start']+"'::timestamptz AND datname='"+database+"';")
@@ -584,6 +624,9 @@ def journey_gate_invoke(pg,client,output,case,directory,*,compacted=True,prepare
         open_gate(path)
         gate['go_after_us']=history.server_clock(pg,case['database']); save()
         gate['released']=wait_event(probe,'successor-'+basis+'-gap-gate',phase='released'); save()
+        if preparer:
+            gate['released_observed_us']=history.server_clock(pg,case['database'])
+            assert gate['released_observed_us']<gate['preparer_claim']['control']['lease_expires_at_us']; save()
         code=probe.wait(15); probe.observe()
         response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
         if preparer:
@@ -1839,6 +1882,9 @@ def run_empty_preparer_sequence(pg,client,output,clone,directory,expected,report
     if not target.exists(): shutil.copy2(helper,target)
     assert history.digest(helper)==history.digest(target)
     configure(pg,client,output,clone['config'],ack=True)
+    setup=empty_preparer_setup(pg,output,clone,directory,expected)
+    clone['setup_controls']=oracle.empty_preparer_setup_controls(setup,expected)
+    expected=oracle.empty_preparer_setup_checked(setup,expected)
     predecessor=None
     for step in oracle.EMPTY_PREPARER_STEPS['preparer']:
         operation={'prepare-gap':oracle.JOURNEY_GAP_MODE,'complete':'complete-initial','refuse':'retire-empty'}[step]

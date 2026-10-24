@@ -423,6 +423,12 @@ def journey_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previo
     assert read(folder/(label+'-native.json'))==seed[1]
     response=read(folder/(label+'-dump-response.json'))
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']=='' and loads(response['stdout'])==seed[1]
+    if preparer:
+        setup=read(folder/'preparer-setup.json'); window=setup['setup']['server_window']
+        number(window['before_us'],previous_time,finished,integer=True)
+        previous_time=number(setup['actor_closed_by_us'],window['after_us'],finished,integer=True)
+        assert clone['setup_controls']==oracle.empty_preparer_setup_controls(setup,expected)
+        expected=oracle.empty_preparer_setup_checked(setup,expected)
     prepared_snapshot=None
     shape_controls={}
     def shape_snapshot(current,*,restore=False):
