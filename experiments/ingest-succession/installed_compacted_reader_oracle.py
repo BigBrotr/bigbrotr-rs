@@ -1616,12 +1616,13 @@ def journey_dump(rows,sequence):
     return dict(event='dump-state',rows=model.native_rows({(cf,k.hex()):v.hex() for (cf,k),v in rows.items()}),sequence=sequence)
 
 
-def verify_journey_prepare(events,expected,initial,case,window,gate,*,compacted_initial=True):
+def verify_journey_prepare(events,expected,initial,case,window,gate,*,compacted_initial=True,preparer=False):
     import initial_succession_oracle as preparation
     assert type(compacted_initial) is bool
     pg,native,inputs=copy.deepcopy(expected)
     basis='compacted' if compacted_initial else 'original'
     gap=case['operation']=='successor-'+basis+'-gap-only'
+    assert type(preparer) is bool and (not preparer or (gap and compacted_initial))
     assert case['operation']=='successor-'+basis+('-gap-only' if gap else '-normal')
     plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=compacted_initial,fixed_initial_target=True)
     assert plan['target_role']=='c9'*16 and plan['target_incarnation']=='ca'*16
@@ -1666,14 +1667,15 @@ def verify_journey_prepare(events,expected,initial,case,window,gate,*,compacted_
             assert gate['native']==native and gate['inputs']==inputs
             for k in ('observed_before_us','observed_after_us','go_before_us','go_after_us'): model.clock(gate[k],window)
             assert gate['observed_before_us']<=gate['observed_after_us']<=gate['go_before_us']<=gate['go_after_us']
+            if preparer: pg=empty_preparer_claim_checked(gate,case,window)
         error='Control(InvalidPolicy)' if gap else None
         assert take('successor-result',stage)==dict(event='successor-result',stage=stage,control_epoch=control['epoch'],validations=3 if gap else 4,error=error)
         if gap: assert take('successor-session-poisoned')==dict(event='successor-session-poisoned',control_epoch=control['epoch'])
         elif first: native=journey_dump(rows,125 if compacted_initial else 117)
         after=snap(stage)
-        if first: preparation.prepared(pg,after,plan,control,compacted_history=True)
+        if first and not preparer: preparation.prepared(pg,after,plan,control,compacted_history=True)
         else: same(pg,after)
-        if gap: same(after,gate['control'])
+        if gap: same(after,gate['preparer_claim']['after'] if preparer else gate['control'])
         pg=after
     claim('initial',1)
     if compacted_initial: assert take('successor-compacted-proof')==journey_proof(initial)
@@ -2122,7 +2124,11 @@ def preparation_origins_checked(root,raw=None):
     return results,initial
 
 
-def preparation_specification(case,*,delivery=False):
+def preparation_specification(case,*,delivery=False,preparer=False):
+    assert type(preparer) is bool and not (preparer and delivery)
+    if preparer:
+        name,step=empty_preparer_specification(case); assert step in ('prepare-gap','complete')
+        return name,step
     assert type(delivery) is bool
     if delivery: return preparation_delivery_specification(case)
     name=case['clone']; assert name in PREPARATION_STEPS
@@ -2174,8 +2180,8 @@ def preparation_failure(name,step,*,delivery=False):
     return step if step in ('missing-intent','missing-original') else name if step=='refuse' else None
 
 
-def preparation_closed(response,case,*,delivery=False):
-    name,step=preparation_specification(case,delivery=delivery)
+def preparation_closed(response,case,*,delivery=False,preparer=False):
+    name,step=preparation_specification(case,delivery=delivery,preparer=preparer)
     if step in ('abandon','retire'): return process_closed(response,case)
     failure=preparation_failure(name,step,delivery=delivery); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
@@ -2254,8 +2260,8 @@ def preparation_control(m,observed,*,success,renewed=False,lease_us=6_000_000):
 
 
 
-def verify_preparation_context(context,initial,expected,*,delivery=False,baseline=None):
-    case=context['case']; name,step=preparation_specification(case,delivery=delivery)
+def verify_preparation_context(context,initial,expected,*,delivery=False,baseline=None,preparer=False):
+    case=context['case']; name,step=preparation_specification(case,delivery=delivery,preparer=preparer)
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert context['native_before']==expected[1] and context['inputs_before']==expected[2]
     assert context['catalog_before']==context['catalog_after']
@@ -2276,7 +2282,7 @@ def verify_preparation_context(context,initial,expected,*,delivery=False,baselin
         else: assert context['gate'] is None
         assert context['arguments']==args; number(context['response']['seconds'],0,120)
         events=journey_closed(context['response'],case['database'])
-        after,result=verify_journey_prepare(events,expected,initial,case,window,context['gate'],compacted_initial=not name.startswith('original-'))
+        after,result=verify_journey_prepare(events,expected,initial,case,window,context['gate'],compacted_initial=not name.startswith('original-'),preparer=preparer)
         same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
         return result
     assert set(context)==CONTEXT_FIELDS and context['snapshots']==[]
@@ -2287,7 +2293,7 @@ def verify_preparation_context(context,initial,expected,*,delivery=False,baselin
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=preparation_closed(context['response'],case,delivery=delivery); failure=preparation_failure(name,step,delivery=delivery)
+    report=preparation_closed(context['response'],case,delivery=delivery,preparer=preparer); failure=preparation_failure(name,step,delivery=delivery)
     if failure in PREPARATION_PRECLAIM:
         preparation_no_claim(context['backend'],case['database']); same(context['after'],expected[0])
     else:
@@ -2321,9 +2327,9 @@ def verify_preparation_context(context,initial,expected,*,delivery=False,baselin
     return result
 
 
-def preparation_controls(context,initial,expected,*,delivery=False,baseline=None):
+def preparation_controls(context,initial,expected,*,delivery=False,baseline=None,preparer=False):
     import json
-    _,step=preparation_specification(context['case'],delivery=delivery)
+    _,step=preparation_specification(context['case'],delivery=delivery,preparer=preparer)
     changes=[('native-write-count',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
         ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
         ('historical-head-xmin',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(xmin='4294967000')),
@@ -2356,7 +2362,7 @@ def preparation_controls(context,initial,expected,*,delivery=False,baseline=None
     rejected=[]
     for name,change in changes:
         c=copy.deepcopy(context); change(c)
-        try: verify_preparation_context(c,initial,expected,delivery=delivery,baseline=baseline)
+        try: verify_preparation_context(c,initial,expected,delivery=delivery,baseline=baseline,preparer=preparer)
         except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(name)
         else: raise AssertionError('accepted altered installed initial preparation evidence: '+name)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
@@ -4281,6 +4287,132 @@ class EmptyInitialProfile:
         'Later recovery, live frontier, Archive and later empty-attempt retirement')
 
 
+EMPTY_PREPARER_STEPS={'preparer':('prepare-gap','complete','refuse')}
+EMPTY_PREPARER_PRODUCT='628f955ca69183417d21e91b5ef0d1e7b3e54633'
+
+
+class EmptyInitialPreparerProfile:
+    DIRECTORY='installed-compacted-empty-initial-preparer'
+    LABEL='org.bigbrotr.installed-compacted-empty-initial-preparer'
+    STATUS='PASS_INSTALLED_COMPACTED_EMPTY_INITIAL_PREPARER_CLAIM'
+    DATABASE_PREFIX='bb_compacted_empty_preparer_'
+    CLIENT_PREFIX='bigbrotr-compacted-empty-preparer-'
+    CLONES=tuple(EMPTY_PREPARER_STEPS)
+    STEPS=EMPTY_PREPARER_STEPS
+    CASES=tuple(n+'-'+s for n in EMPTY_PREPARER_STEPS for s in EMPTY_PREPARER_STEPS[n])
+    GRANTS=EMPTY_GRANTS
+    NOT_RUN=('Actual product reclamation/GC, floor publication or unlink',
+        'Import execution, input bindings, checkpoints or closure; the fixture commits only a guarded queued import claim',
+        'Other empty proof, delivery, current-Control claim/lock and malformed-floor profiles are separate',
+        'Native write-unknown, physical loss, mixed restore, capacity and later recovery/live/Archive consumers')
+
+
+def empty_preparer_specification(case):
+    name=case['clone']; assert name=='preparer'
+    step=case['name'].removeprefix(name+'-'); assert step in EMPTY_PREPARER_STEPS[name] and case['name']==name+'-'+step
+    index=EMPTY_PREPARER_STEPS[name].index(step)
+    assert case['origin']=='compacted-initial' and case['predecessor']==(name+'-'+EMPTY_PREPARER_STEPS[name][index-1] if index else None)
+    assert case['operation']=={'prepare-gap':JOURNEY_GAP_MODE,'complete':'complete-initial','refuse':'retire-empty'}[step]
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def empty_preparer_claim_checked(gate,case,window):
+    from initial_empty_locks_oracle import app_identity,guards
+    assert set(gate)=={'ready','released','native','control','inputs','observed_before_us','observed_after_us',
+        'go_before_us','go_after_us','errors','preparer_claim','preparer_control_absence','preparer_absence'}
+    value=gate['preparer_claim']; pg=gate['control']; intent=only(pg['initial_ingest_successions'])
+    control=only(pg['owner_epochs'],role='control',resource_id=intent['prepared_by_resource'],epoch=intent['prepared_by_epoch'])
+    assert control['process_incarnation']==intent['prepared_by_incarnation'] and control['state']=='active'
+    assert len(pg)==77 and (len(gate['native']['rows']),gate['native']['sequence'])==(81,121) and gate['inputs']=={}
+    assert set(value)=={'status','cleanup_errors','before','after','control','backend','identity','created_at_us',
+        'statements','transactions','server_window','observed_by_us','live_before','live_after','inputs_before','inputs_after',
+        'guards_before','guards_after','actor_absence','actor_exit_code','actor_closed_by_us'}
+    assert value['status']=='CAPTURED' and value['cleanup_errors']==[]
+    same(value['before'],pg); assert value['control']==control and value['inputs_before']==value['inputs_after']=={}
+    assert set(value['server_window'])=={'before_us','after_us'}
+    times=[window['before_us'],intent['created_at_us'],gate['observed_before_us'],gate['observed_after_us'],
+        value['server_window']['before_us'],value['created_at_us'],value['server_window']['after_us'],
+        value['observed_by_us'],value['actor_closed_by_us'],gate['go_before_us'],gate['go_after_us'],window['after_us']]
+    assert all(type(v) is int for v in times) and times==sorted(times)
+    assert gate['go_before_us']<control['lease_expires_at_us'] and gate['go_after_us']-gate['observed_before_us']<10_000_000
+    live=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database'],user='bigbrotr_control',state='idle',xact_start=None)
+    assert value['live_before']==value['live_after']==live
+    actor=value['backend']; assert set(actor)=={'pid','backend_start','database','user','application','isolation','synchronous_commit'}
+    number(actor['pid'],1,integer=True); assert actor['pid']!=live['pid'] and actor['database']==case['database']
+    assert actor['user']=='bigbrotr_control' and actor['application']=='empty_initial_preparer_claim'
+    assert actor['isolation']=='read committed' and actor['synchronous_commit']=='on'
+    assert value['server_window']['before_us']<=retained.instant(actor['backend_start'])<=value['created_at_us']
+    app_identity(value['identity'],actor)
+    assert value['actor_absence']=='0' and type(value['actor_exit_code']) is int
+    guards(value['guards_before']); assert value['guards_after']==value['guards_before']
+    absence=gate['preparer_control_absence']
+    assert set(absence)=={'database','user','limit_seconds','status','attempts','seconds'}
+    assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+    assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    elapsed=0
+    for index,item in enumerate(absence['attempts']):
+        assert set(item)=={'seconds','count','backends'}
+        elapsed=number(item['seconds'],elapsed,5)
+        assert type(item['count']) is int and item['count']==len(item['backends'])
+        assert (item['backends']==[])==(index==len(absence['attempts'])-1)
+    number(absence['seconds'],elapsed,6)
+    assert gate['preparer_absence']==[dict(pid=live['pid'],backend_start=live['backend_start'],database=case['database'],control_epoch=control['epoch'],present=False)]
+    return terminal_import_rows(value,pg,control)
+
+
+def verify_empty_preparer_context(context,initial,expected):
+    from initial_empty_preparer_oracle import JOB
+    _,step=empty_preparer_specification(context['case'])
+    result=(verify_empty_context if step=='refuse' else verify_preparation_context)(context,initial,expected,preparer=True)
+    after=context['after']; intent=only(after['initial_ingest_successions']); job=only(after['jobs'],job_id=JOB)
+    assert job['kind']=='import' and job['state']=='queued' and job['job_revision']==2 and job['input_complete'] is True
+    assert (job['owner_resource_id'],job['owner_epoch'],job['owner_incarnation'])==(intent['prepared_by_resource'],intent['prepared_by_epoch'],intent['prepared_by_incarnation'])
+    original=only(after['owner_epochs'],role='control',resource_id=intent['prepared_by_resource'],epoch=intent['prepared_by_epoch'])
+    current=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    assert current['epoch']==original['epoch']+EMPTY_PREPARER_STEPS['preparer'].index(step)
+    if step=='prepare-gap':
+        assert original['state']=='active' and original['released_at_us'] is None
+        assert context['native_after']==context['native_before']
+    else:
+        assert job==only(context['before']['jobs'],job_id=JOB)
+        assert original['state']=='released' and original['exclusion_method']=='storage_fenced'
+        assert current['state']==('released' if step=='complete' else 'active')
+    if step=='refuse': result['claim_veto_stage']='load-before-refresh-and-native-close'
+    result.update(original_preparer_epoch=original['epoch'],current_control_epoch=current['epoch'],
+        claim_job_id=JOB,claim_xmin=job['xmin'],claim_owner='actual-original-preparer',claim_preserved=True)
+    return result
+
+
+def empty_preparer_controls(context,initial,expected):
+    from initial_empty_preparer_oracle import JOB
+    _,step=empty_preparer_specification(context['case'])
+    verify_empty_preparer_context(context,initial,expected)
+    base=(empty_controls if step=='refuse' else preparation_controls)(context,initial,expected,preparer=True)
+    changes=[('original-claim-owner',lambda c:only(c['after']['jobs'],job_id=JOB).update(owner_epoch=999)),
+        ('original-claim-xmin',lambda c:only(c['after']['jobs'],job_id=JOB).update(xmin='4294967000')),
+        ('original-claim-state',lambda c:only(c['after']['jobs'],job_id=JOB).update(state='accepted')),
+        ('original-admission-loss',lambda c:c['after']['job_admissions'].pop())]
+    if step=='prepare-gap':
+        changes.extend([('actor-still-present',lambda c:c['gate']['preparer_claim'].update(actor_absence='1')),
+            ('privileged-claim-actor',lambda c:c['gate']['preparer_claim']['identity'].update(superuser=True)),
+            ('preparer-not-live',lambda c:c['gate']['preparer_claim'].update(live_after=None)),
+            ('preparer-still-present',lambda c:c['gate']['preparer_absence'][0].update(present=True)),
+            ('actor-closed-after-go',lambda c:c['gate']['preparer_claim'].update(actor_closed_by_us=c['gate']['go_after_us']+1)),
+            ('claim-commit-not-confirmed',lambda c:c['gate']['preparer_claim']['transactions'][-1].update(sqlstate='08006'))])
+    if step=='refuse':
+        changes.extend([('missing-named-claim-veto',lambda c:c['empty_claim_guard'].update(errors=[])),
+            ('wrong-veto-backend',lambda c:c['empty_claim_guard']['backend'].update(pid=1)),
+            ('unrelated-veto-function',lambda c:c['empty_claim_guard'].update(contexts=['unrelated']))])
+    rejected=list(base['rejected'])
+    for label,change in changes:
+        value=copy.deepcopy(context); change(value)
+        try: verify_empty_preparer_context(value,initial,expected)
+        except (AssertionError,ValueError,KeyError,TypeError,IndexError,StopIteration): rejected.append(label)
+        else: raise AssertionError('original-preparer oracle accepted '+label)
+    return dict(status='PASS',rejected=rejected,count=len(rejected))
+
+
 def empty_origins_checked(root,raw=None,*,delivery=False):
     # The existing history owner registers the independent bootstrap codec used
     # by the reused empty oracle; importing it performs no engine operation.
@@ -4298,7 +4430,11 @@ def empty_origins_checked(root,raw=None,*,delivery=False):
     return results,initial
 
 
-def empty_specification(case,*,delivery=False,locks=False,shapes=False):
+def empty_specification(case,*,delivery=False,locks=False,shapes=False,preparer=False):
+    assert type(preparer) is bool and not (preparer and (delivery or locks or shapes))
+    if preparer:
+        name,step=empty_preparer_specification(case); assert step=='refuse'
+        return name,step
     assert type(shapes) is bool and not (shapes and (locks or delivery))
     if shapes: return empty_shape_specification(case)
     assert type(locks) is bool and not (locks and delivery)
@@ -4325,8 +4461,8 @@ EMPTY_ERRORS={
 }
 
 
-def empty_closed(response,case,*,delivery=False,locks=False,shapes=False):
-    name,step=empty_specification(case,delivery=delivery,locks=locks,shapes=shapes); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
+def empty_closed(response,case,*,delivery=False,locks=False,shapes=False,preparer=False):
+    name,step=empty_specification(case,delivery=delivery,locks=locks,shapes=shapes,preparer=preparer); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -4334,7 +4470,7 @@ def empty_closed(response,case,*,delivery=False,locks=False,shapes=False):
     assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv('retire-empty',Path(case['config']))
     assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
     if failure:
-        error=EMPTY_SHAPE_ERRORS['native-open' if step=='native-open' else name] if shapes else ('initial Ingest cancelled; original attempt may need recovery' if name=='cancel' else 'producer operation unavailable: Control(Unavailable)' if name=='expiry' else 'producer operation unavailable: Control(Backend)') if locks else 'producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
+        error='producer operation unavailable: Control(Backend)' if preparer else EMPTY_SHAPE_ERRORS['native-open' if step=='native-open' else name] if shapes else ('initial Ingest cancelled; original attempt may need recovery' if name=='cancel' else 'producer operation unavailable: Control(Unavailable)' if name=='expiry' else 'producer operation unavailable: Control(Backend)') if locks else 'producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
         assert response['stdout']=='' and response['stderr']=='error: '+error+'\n'
         return None
     assert response['stderr']==''; report,=[loads(v) for v in response['stdout'].splitlines()]; return report
@@ -4376,10 +4512,10 @@ def empty_fault_checked(value,*,removed=False):
     guards(value['guards'])
 
 
-def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False):
-    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
+def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False,preparer=False):
+    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes,preparer=preparer); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
     wire=(shapes and step=='proof') or (delivery and step in ('baseline','loss')) or (locks and step=='attempt')
-    assert set(context)==CONTEXT_FIELDS|({'empty_fault'} if name=='native-first' else {'empty_configuration'}|({'empty_claim_guard'} if name=='claim-commit' else set()) if locks else set())
+    assert set(context)==CONTEXT_FIELDS|({'empty_claim_guard'} if preparer else {'empty_fault'} if name=='native-first' else {'empty_configuration'}|({'empty_claim_guard'} if name=='claim-commit' else set()) if locks else set())
     if locks:
         import tomllib
         empty_lock_config(tomllib.loads(context['empty_configuration']),context['case'])
@@ -4393,14 +4529,14 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=empty_closed(context['response'],context['case'],delivery=delivery,locks=locks,shapes=shapes)
+    report=empty_closed(context['response'],context['case'],delivery=delivery,locks=locks,shapes=shapes,preparer=preparer)
     m=model.Model(*expected,window,initial=False)
     if name in ('target-input','target-nonempty','original-missing') or (shapes and name=='missing-handoff'):
         preparation_no_claim(context['backend'],context['case']['database']); same(context['after'],expected[0])
     else:
         backend_checked(context['backend'],context['case']['database'],expected[0],context['after'])
         preparation_control(m,context['after'],success=not failure,renewed=step=='failure' or (delivery and failure) or (locks and step=='attempt') or (shapes and step=='proof'),lease_us=8_000_000 if locks and name=='expiry' else 6_000_000)
-        if locks and name=='claim-commit':
+        if preparer or (locks and name=='claim-commit'):
             current=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
             empty_lock_guard_checked(context['empty_claim_guard'],current,context['case']['database'],window)
     if locks and step=='attempt':
@@ -4459,11 +4595,11 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
     return result
 
 
-def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False):
-    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes); rejected=[]
+def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False,preparer=False):
+    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes,preparer=preparer); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes,preparer=preparer); rejected=[]
     def check(label,change):
         value=copy.deepcopy(context); change(value)
-        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes)
+        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes,preparer=preparer)
         except (AssertionError,ValueError,KeyError): rejected.append(label)
         else: raise AssertionError('empty oracle accepted '+label)
     def pg(c,table,filters,**changes): only(c['after'][table],**filters).update(changes)
