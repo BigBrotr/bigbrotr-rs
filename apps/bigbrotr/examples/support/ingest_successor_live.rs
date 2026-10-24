@@ -234,7 +234,7 @@ impl Probe {
         metadata: OwnedPermit,
         mutation: OwnedPermit,
     ) -> Result<u64, Failure> {
-        self.transition(owner, native, metadata, Some(mutation), "prepare")
+        self.transition(owner, native, metadata, Some(mutation), "prepare", false)
             .await?;
         native.live.activation = Some(SuccessorActivation::new(native.preparation.take().unwrap()));
         let activation = native.live.activation.as_mut().unwrap();
