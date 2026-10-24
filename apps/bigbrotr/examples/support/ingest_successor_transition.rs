@@ -535,7 +535,6 @@ impl Probe {
                 let created = plan.created_at_us();
                 let deadline = plan.lease_expires_at_us();
                 let role = candidate.role_instance_id();
-                drop(proof);
                 let candidate = native.candidate.take().unwrap();
                 native.preparation = Some(SuccessorPreparation::new(candidate, history, plan));
                 let preparation = native.preparation.as_mut().unwrap();
@@ -614,7 +613,6 @@ impl Probe {
                     .await
                 }
                 .map_err(|e| Failure::at("plan", None, None, e))?;
-                drop(proof);
                 native.history = Some(history);
                 native.gap = Some(plan);
                 let history = native.history.as_ref().expect("retained history");
@@ -689,7 +687,6 @@ impl Probe {
                     .await
                 }
                 .map_err(|e| Failure::at("plan", None, None, e))?;
-                drop(proof);
                 native.history = Some(history);
                 native.empty = Some(plan);
                 let history = native.history.as_ref().expect("retained history");
