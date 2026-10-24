@@ -656,8 +656,8 @@ fn compacted_activated_context_binds_actual_root_and_cannot_mint_prepared_handof
         .compacted_initial_ancestor(&r, AdmissionLimits::default(), &effects, &READY)
         .unwrap();
     let proof = canonical(&f, ancestor.resolution(&READY).unwrap());
-    let record = record(&r);
-    let prepared = r.historical_initial(record.encode().as_bytes()).unwrap();
+    let handoff = value(&r.store, handoff_key());
+    let prepared = r.historical_initial(&handoff).unwrap();
     assert!(
         prepared
             .reconstruct_compacted_handoff(&proof, &READY)
