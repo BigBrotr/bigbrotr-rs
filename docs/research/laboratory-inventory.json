@@ -63393,7 +63393,7 @@
       },
       "compacted_empty_initial_work_20261024": {
         "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-        "state": "FIRST_BUILD_STOPPED_RETAINED; pending one-line repair rebuild",
+        "state": "CORRECTED_EXACT_BUILD_RUNNING; first failed run retained",
         "native": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-native-20261024",
@@ -63406,7 +63406,13 @@
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-fixture-20261024",
           "branch": "work/compacted-empty-initial-fixture",
-          "state": "DIRTY_SOURCE_REVIEW_ACTIVE; no engines"
+          "state": "CLEAN_FROZEN; five exact files integrated canonical; installed NOT_RUN",
+          "commit": "723af3c6c6240ed6bd924e4aab65f908e37da343",
+          "tree": "7db286e0eaa1980059750728050927606c380e79",
+          "receipts": {
+            "source": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fixture-source-v1.json",
+            "review": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fixture-critical-review-v1.json"
+          }
         },
         "review": "/root/compacted_reader_review; source-only, reused verified Astra/xhigh",
         "root": "PostgreSQL/CLI/integration; sole runtime owner",
@@ -63449,6 +63455,16 @@
             }
           ],
           "free_bytes_after": 263434096640
+        },
+        "corrected_build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-af28687",
+          "source": "af28687163213e17db35212163d559b018149c2c",
+          "tree": "f4a3f68f784eacf9e4b58bc6d3a6e149a34abf87",
+          "driver": 69645,
+          "owner": "cc6be8fd2047019551c5a0c4db6c026d",
+          "state": "RUNNING; not yet joined",
+          "resource_record": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-af28687/resources.json",
+          "free_bytes_before": 263431585792
         }
       }
     }

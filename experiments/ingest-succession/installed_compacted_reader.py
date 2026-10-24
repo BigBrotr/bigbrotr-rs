@@ -1392,6 +1392,109 @@ def run_activated_terminal(root,build,product_source,*,faults=False,post_proof=F
     finally: assert origins_checked()==(origins,initial)
 
 
+def empty_restore(pg,client,output,clone,directory,expected,initial):
+    label=clone['name']+'-restore'; transition.observe_origin_absence(pg,clone['database'],output,label)
+    before=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-before',directory),inputs=history.inputs_at(directory/'store'))
+    assert before==dict(control=expected[0],native=expected[1],inputs=expected[2])
+    pin=oracle.EMPTY_PREPARED_ORIGINS[1]; filename=oracle.only(initial[0]['producer_epochs'])['producer_slot_id'][2:]+'-0000000000000001-0000000000000003.cbor'
+    source=pin['run']+'/'+pin['subdirectory']+'/original-prepared/quarantined-required/'+filename
+    data=oracle.retained.regular_read(output.parent.parent/source); assert initial[2][filename]==dict(bytes=len(data),sha256=oracle.sha(data))
+    spool=directory/'store/producer-inputs-v1'
+    record=dict(kind='restore-retained-original-on-isolated-clone',source=source,name=filename,hex=data.hex(),before=before,after=None,
+        physical_before=history.census(spool),physical_after=None)
+    lab.write_json(output/(label+'.json'),record)
+    fd=os.open(spool/filename,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    with os.fdopen(fd,'wb') as stream: stream.write(data); stream.flush(); os.fsync(stream.fileno())
+    fd=os.open(spool,os.O_RDONLY|os.O_DIRECTORY)
+    try: os.fsync(fd)
+    finally: os.close(fd)
+    record['physical_after']=history.census(spool)
+    record['after']=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-after',directory),inputs=history.inputs_at(directory/'store'))
+    lab.write_json(output/(label+'.json'),record)
+    return oracle.empty_restore_checked(record,expected,initial)
+
+
+def empty_digest_mutation(pg,client,output,clone,directory,expected,initial):
+    label=clone['name']+'-mutation'; transition.observe_origin_absence(pg,clone['database'],output,label)
+    before=dict(control=schema.rows(pg,clone['database']),native=history.dump(client,output,label+'-before',directory),inputs=history.inputs_at(directory/'store'))
+    assert before==dict(control=expected[0],native=expected[1],inputs=expected[2])
+    mutation=dict(kind='digest-drift',before=before['control'],after=None,
+        statement=oracle.terminal_drift_statement('digest-drift',before['control'],initial),sql_output=None,
+        before_us=history.server_clock(pg,clone['database']),after_us=None)
+    record=dict(before=before,after=None,mutation=mutation)
+    lab.write_json(output/(label+'.json'),record); (output/(label+'.sql')).write_text(mutation['statement'])
+    mutation['sql_output']=lab.sql(pg,clone['database'],mutation['statement'])
+    mutation['after']=schema.rows(pg,clone['database']); mutation['after_us']=history.server_clock(pg,clone['database'])
+    record['after']=dict(control=mutation['after'],native=history.dump(client,output,label+'-after',directory),inputs=history.inputs_at(directory/'store'))
+    lab.write_json(output/(label+'.json'),record)
+    return oracle.empty_digest_mutation_checked(record,expected,initial)
+
+
+def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial):
+    from initial_empty import guarded_fault
+    from initial_gap_policy import GUARDS
+    name=clone['name']; origin=oracle.EMPTY_ORIGIN_NAMES[name]
+    assert clone['origin']==origin and expected==origins[origin]
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.EMPTY_GRANTS]
+    oracle.history_catalog_checked(report['origins'][origin]['catalog'],clone['catalog_before'],grants=oracle.EMPTY_GRANTS)
+    transition.observe_origin_absence(pg,clone['database'],output,name+'-logical-origin')
+    assert history.dump(client,output,name+'-logical-origin',directory)==expected[1] and history.inputs_at(directory/'store')==expected[2]
+    helper=Path(__file__).with_name('installed_cycle_client.py'); target=output/helper.name
+    if not target.exists(): shutil.copy2(helper,target)
+    assert history.digest(helper)==history.digest(target)
+    configure(pg,client,output,clone['config'],ack=True)
+    if name=='original': expected=empty_restore(pg,client,output,clone,directory,expected,initial)
+    if name in ('head','target-input'): expected=journey_mutation(pg,client,output,clone,directory,expected,initial)
+    if name=='digest': expected=empty_digest_mutation(pg,client,output,clone,directory,expected,initial)
+    predecessor=None; fault=None
+    if name=='native-first':
+        original_guards=json.loads(lab.sql(pg,clone['database'],'SELECT '+GUARDS))
+        guarded_fault(pg,clone['database'],output,name)
+        installed=transition.read(output/(name+'-fault-installed.json'))
+        fault=dict(installed=installed,removed=None,hit=None,guards_original=original_guards,
+            catalog_original=clone['catalog_before'],catalog_installed=history.catalog(pg,clone['database']),catalog_restored=None)
+        oracle.empty_fault_guard_delta(fault)
+        oracle.same(schema.rows(pg,clone['database']),expected[0])
+        lab.write_json(output/(name+'-fault.json'),fault)
+    for step in oracle.EMPTY_STEPS[name]:
+        if step=='complete':
+            restored=guarded_fault(pg,clone['database'],output,name,remove=True)
+            assert restored==fault['guards_original']
+            fault['removed']=transition.read(output/(name+'-fault-removed.json'))
+            fault['catalog_restored']=history.catalog(pg,clone['database']); assert fault['catalog_restored']==clone['catalog_before']
+            lab.write_json(output/(name+'-fault.json'),fault)
+        case=dict(name=name+'-'+step,clone=name,origin=origin,operation='retire-empty',predecessor=predecessor,
+            database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case); lab.write_json(output/'result.json',report)
+        catalog=fault['catalog_installed'] if step=='failure' else clone['catalog_before']
+        def verify(c,s):
+            if fault is not None:
+                if step=='failure':
+                    fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
+                    lab.write_json(output/(name+'-fault.json'),fault)
+                c['empty_fault']=json.loads(json.dumps(fault)); lab.write_json(output/(case['name']+'-verification.json'),c)
+            return oracle.verify_empty_context(c,s,expected)
+        expected=installed_cycle.execute(pg,client,output,case,directory,expected,catalog,initial,
+            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected),oracle.empty_closed))
+        case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==catalog
+        predecessor=case['name']; lab.write_json(output/'result.json',report)
+    assert history.catalog(pg,clone['database'])==clone['catalog_before']
+    return predecessor
+
+
+def run_empty_initial(root,build,product_source):
+    origins,initial=oracle.empty_origins_checked(root); profile=oracle.EmptyInitialProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
+        database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
+        scope='Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
+    try:
+        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial),
+            origin_specs=oracle.EMPTY_ORIGINS,origin_for_clone=oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
+            producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
+            empty_initial=True,product_source=product_source)
+    finally: assert oracle.empty_origins_checked(root)==(origins,initial)
+
+
 ORIGIN = oracle.ORIGIN
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1408,5 +1511,6 @@ if __name__ == '__main__':
     profile.add_argument('--activated-terminal-faults',action='store_true',help='Separate compacted terminal delivery, real job-lock waits and final-proof drift profile')
     profile.add_argument('--activated-source-proof',action='store_true',help='Separate Source/abandon ancestor H/D after actual proof and confirmed server refresh')
     profile.add_argument('--activated-terminal-guards',action='store_true',help='Separate unresolved import, positive draining retirement and isolated native OPEN guard')
+    profile.add_argument("--empty-initial",action="store_true",help="Prepared empty initial target retirement and native-first continuation")
     args = parser.parse_args()
-    (partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

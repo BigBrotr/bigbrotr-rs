@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "FIRST_BUILD_FAIL_CLIPPY;185 components PASS; one-line fix pending exact rebuild",
+              "status": "CORRECTED_EXACT_BUILD_RUNNING; fixture source reviewed; installed NOT_RUN",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45435,7 +45435,20 @@
                 "native_python_parse": "PASS",
                 "mandatory_controls": "70 original names preserved plus6 exact new names; not executed"
               },
-              "fixture": "Separate nine-clone/thirteen-command profile in author worktree; source review active; installed NOT_RUN",
+              "fixture": {
+                "author_commit": "723af3c6c6240ed6bd924e4aab65f908e37da343",
+                "author_tree": "7db286e0eaa1980059750728050927606c380e79",
+                "source_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fixture-source-v1.json",
+                "source_sha256": "373209e3af27bd3399540f90ed34a0d5a00d9730d5b11223ab2658c32a6e22ee",
+                "critical_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fixture-critical-review-v1.json",
+                  "sha256": "ad13c50ac6a16b8457b4c7ce4387b423f8666530ebe2347605d1d3e287c8ab2b"
+                },
+                "root_integration": "Five exact source hashes reconciled; full new owners/functions and every changed seam reviewed; changed AST and diff checks PASS; diagnostic sources/outputs preserved/hash verified, not rerun.",
+                "declared_scope": "Nine clones/thirteen commands/239 controls; connected execution and raw replay NOT_RUN",
+                "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
+                "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
+              },
               "next": "Freeze exact product, run isolated producer-floor build/components, then integrate critically reviewed independent fixture and execute installed/raw replay. Preserve final delivery/claims/lock/cancel/expiry/proof-to-use gates.",
               "build_attempts": [
                 {

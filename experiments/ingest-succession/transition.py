@@ -288,7 +288,7 @@ def observe_origin_absence(pg, database, output, name):
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False, compacted_reader=False, compacted_history=False,
-        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, product_source=None):
+        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, product_source=None):
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
     assert type(preparation_hole) is bool and (not preparation_hole or producer_ack)
@@ -298,13 +298,15 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     assert type(initial_preparation) is bool and (not initial_preparation or compacted_initial)
     assert type(compacted_activated) is bool and (not compacted_activated or compacted_initial)
     assert not (compacted_activated and initial_preparation)
+    assert type(empty_initial) is bool and (not empty_initial or compacted_initial)
+    assert not (empty_initial and (initial_preparation or compacted_activated))
     assert type(compacted_terminal) is bool and (not compacted_terminal or compacted_activated)
-    if initial_preparation or compacted_activated:
-        from installed_compacted_reader_oracle import PREPARATION_RETAINED_ORIGINS, ACTIVATED_RETAINED_ORIGINS, TERMINAL_TAIL_ORIGIN
+    if initial_preparation or compacted_activated or empty_initial:
+        from installed_compacted_reader_oracle import PREPARATION_RETAINED_ORIGINS, ACTIVATED_RETAINED_ORIGINS, TERMINAL_TAIL_ORIGIN, EMPTY_ORIGINS, EMPTY_PREPARED_ORIGINS
     assert not (compacted_initial and compacted_history)
     if compacted_reader:
-        from installed_compacted_reader_oracle import GRANTS, HISTORY_GRANTS, JOURNEY_GRANTS, ACTIVATED_GRANTS, TERMINAL_GRANTS, qualification_checked
-        assert preparation_hole and extra_grants == (TERMINAL_GRANTS if compacted_terminal else ACTIVATED_GRANTS if compacted_activated else JOURNEY_GRANTS if compacted_initial else HISTORY_GRANTS if compacted_history else GRANTS)
+        from installed_compacted_reader_oracle import GRANTS, HISTORY_GRANTS, JOURNEY_GRANTS, ACTIVATED_GRANTS, TERMINAL_GRANTS, EMPTY_GRANTS, qualification_checked
+        assert preparation_hole and extra_grants == (EMPTY_GRANTS if empty_initial else TERMINAL_GRANTS if compacted_terminal else ACTIVATED_GRANTS if compacted_activated else JOURNEY_GRANTS if compacted_initial else HISTORY_GRANTS if compacted_history else GRANTS)
         assert re.fullmatch(r'[0-9a-f]{40}', product_source or '')
     else:
         assert product_source is None
@@ -335,7 +337,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 fields |= {'origin_format', 'verification_file', 'verification_sha256'}
                 assert origin['verification_file'] == origin['final_case'] + '-verification.json'
                 assert re.fullmatch(r'[0-9a-f]{64}', origin['verification_sha256'])
-            elif (initial_preparation and origin in PREPARATION_RETAINED_ORIGINS) or (compacted_activated and origin in ACTIVATED_RETAINED_ORIGINS) or (compacted_terminal and origin==TERMINAL_TAIL_ORIGIN):
+            elif (initial_preparation and origin in PREPARATION_RETAINED_ORIGINS) or (compacted_activated and origin in ACTIVATED_RETAINED_ORIGINS) or (compacted_terminal and origin==TERMINAL_TAIL_ORIGIN) or (empty_initial and origin in EMPTY_ORIGINS):
                 fields.add('verification_sha256')
                 assert re.fullmatch(r'[0-9a-f]{64}', origin['verification_sha256'])
             assert set(origin) == fields
@@ -369,7 +371,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     qualification = read(build.parent / 'qualification.json')
     if compacted_reader:
         qualification_checked(built,component,qualification,product_source,
-            initial_journey=compacted_initial,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal)
+            initial_journey=compacted_initial,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial)
     elif preparation_hole:
         from installed_progress_replay import preparation_hole_qualification
         preparation_hole_qualification(built,component,qualification)
@@ -457,8 +459,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                     assert previous['directory'] + '/store' == origin['store']
                     final, = [c for c in retained['cases'] if c['name'] == origin['final_case']]
                     assert final['status'] == 'PASS' and final['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
-                    # This exact qualified reservation-tail origin ends in an expected refusal.
-                    assert final['returncode'] == (4 if compacted_terminal and origin == TERMINAL_TAIL_ORIGIN else 0)
+                    # These exact qualified endpoints end in their selected expected refusals.
+                    assert final['returncode'] == (4 if (compacted_terminal and origin == TERMINAL_TAIL_ORIGIN) or (empty_initial and origin == EMPTY_PREPARED_ORIGINS[1]) else 0)
                     assert hashlib.sha256(previous['final_catalog'].encode()).hexdigest() == origin['catalog_sha256']
                     previous_client = retained['client']
             else:
