@@ -44851,7 +44851,7 @@
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No connected runtime active; installed driver31002 and raw replay71223 joined0. Reviewer read-only assessment of next Source/abandonment post-proof H/D boundary.",
+                "runtime": "No connected runtime active at source integration. Root next runs exact-source proxy tests, installed Source/abandon proof15 with unchanged product7bc, then raw replay; import-gate probe remains isolated/unintegrated.",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -45252,6 +45252,35 @@
                     "Later activated successors, live frontier, retained Archive frontier and empty retirement",
                     "Mixed restore/backup, physical loss, process kill and capacity"
                   ]
+                },
+                "remaining_guard_assessment": {
+                  "status": "SOURCE_ASSESSMENT_ONLY_NOT_RUN",
+                  "draining": "Retirement is expected to succeed for exact ready target owner state draining: require_activated_initial_retirement in0037 explicitly accepts active/draining;0040 retained lock validator preserves that contract. Do not label draining as an expected refusal.",
+                  "import": "Reuse the ordinary guarded import-claim recipe from initial_empty_preparer.statements and activated_retirement_import while the authentic activating Control remains live. Historical synthetic owner attribution does not qualify this guard. Current terminal seed has no external claim gate; assess narrow probe support after current source-proof profile.",
+                  "native_open": "Isolate native OPEN only after establishing otherwise-ready SQL terminal metadata; existing event-retire-open fails at the earlier SQL metadata guard and does not qualify native observation. Preserve native bytes and prove no closing write.",
+                  "scope": "Remaining terminal predicates already listed in the current plan; no new reclamation capability or runtime qualification follows."
+                },
+                "source_proof_fixture_integration": {
+                  "author_commit": "4e93c415f53a9fd3915de66926e49d65a0658db8",
+                  "author_tree": "d584a9cbdc96f462eb6b9a18322b0b48ea3a183c",
+                  "receipts": {
+                    "source": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-source-proof-fixture-source-v1.json",
+                      "sha256": "f69f93108f2b91f265db6271926bc17d718cd38dc5fe26cbaa7388daf07ef6b2"
+                    },
+                    "critical-review": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-source-proof-fixture-critical-review-v1.json",
+                      "sha256": "bd57df62e5e2987ab092cb8c775fd73044ea25f2275d8a6c330da7f332a57de7"
+                    }
+                  },
+                  "root_review": "Complete seven-file changes/new functions and full existing proxy/fault_cases/test/README owners reviewed; reused unchanged installed owners/product reads. Frozen hashes/AST/diff PASS; no source blocker. Old25/56 exact-source qualifications remain distinct; changed proxy provenance is not applied to their original captures.",
+                  "status": "SOURCE_ONLY; runtime NOT_RUN",
+                  "declarations": {
+                    "clones": 6,
+                    "commands": 15,
+                    "controls": 264
+                  },
+                  "next": "Existing proxy loopback tests, then --activated-source-proof product7bc and exact raw replay. Preserve1s deadline and measure selected refresh5/7 before mutations."
                 }
               }
             }

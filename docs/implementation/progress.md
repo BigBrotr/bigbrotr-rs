@@ -6,9 +6,9 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main/harness `858910172a21f8871be41a58ff1ac854bf89ba5b`, treee4d6ea88;
-verified push85891017 (driver2696 joined0). Product7bc63d97 remains unchanged.
-This checkpoint commit records the separate terminal-fault qualification.
+Observed main `30656b709cee6709124a4a55375004e07a6afbe7`;
+verified push30656b70 (driver58504 joined0). Product7bc63d97 remains unchanged.
+This commit integrates reviewed source-proof fixture4e93c415, still NOT_RUN.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -34,11 +34,11 @@ Its `verified-run.json` binds measured final COMMIT baselines/loss/retries, real
 job-lock cancellation/UTC expiry, retirement post-proof H/D/Event-mask and actual
 zero-request claimed-job refusal/abandonment/retirement.
 
-Next: qualify Source/abandonment post-proof H/D in a separate bounded profile.
-Critical reviewer is assessing an explicit after-server-COMMIT response hold at
-the preceding refresh; existing proxy needs an opt-in mode. No Rust change or
-rebuild is currently required. Exact backend-idle baseline precedes mutation;
-current retirement gates cannot qualify these other final transactions.
+Next: run existing proxy loopback tests from exact integrated source, then
+--activated-source-proof with product7bc and exact raw replay. Frozen reviewed
+4e93c415 adds explicit after-server-COMMIT reply hold at refresh5/7, with measured
+idle/no-transaction baseline before H/D mutation. Six clones/15 commands/264
+controls are declarations only. Existing1s deadline and strict custody stay.
 
 ## Work and resources
 
@@ -47,7 +47,11 @@ PG71775507 stopped0, PID0/noOOM. All56 custody closed, cleanup/unrelated/unexpec
 missing-owned arrays empty; source origin unchanged. No cache cleanup.
 Fault author worktree `.research/compacted-activated-terminal-fault-fixture-20261024`
 is clean detached1c24d0a6; exact six-file integration reconciled before redundant
-work ref retirement. Author finished; reviewer only reads next affected boundary.
+work ref retirement. Source-proof author/reviewer complete; clean4e93c415 worktree retained and exact
+seven-file integration reconciled. No engines active.
+Astra/xhigh import-gate agent also assesses narrow Rust probe support in
+`.research/compacted-terminal-import-gate-20261024`, base30656b70. This future
+fixture work is unintegrated/NOT_RUN and cannot change the current proof15 binary.
 Earlier detached author worktrees, .research, datasets, failures and external labs
 remain preserved. Redundant reconciled endpoint branch retired; files retained.
 

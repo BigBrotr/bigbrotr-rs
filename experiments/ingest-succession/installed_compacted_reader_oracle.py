@@ -3043,6 +3043,29 @@ class ActivatedTerminalFaultProfile:
         'Mixed restore/backup, physical loss, process kill and capacity')
 
 
+
+# Separate source/abandon final-proof revalidation, with measured refresh holds.
+TERMINAL_PROOF_STEPS={name:('seed',*(('source',) if name.startswith('abandon-') else ()), 'proof')
+    for name in ('source-baseline','abandon-baseline','source-head','source-digest','abandon-head','abandon-digest')}
+TERMINAL_PROOF_SELECTORS={'source':5,'abandon':7}
+
+
+class ActivatedSourceProofProfile:
+    DIRECTORY='installed-compacted-source-proof'
+    LABEL='org.bigbrotr.installed-compacted-source-proof'
+    STATUS='PASS_INSTALLED_COMPACTED_SOURCE_FINAL_PROOF'
+    DATABASE_PREFIX='bb_compacted_source_proof_'
+    CLIENT_PREFIX='bigbrotr-compacted-source-proof-'
+    CLONES=tuple(TERMINAL_PROOF_STEPS)
+    STEPS=TERMINAL_PROOF_STEPS
+    CASES=tuple(name+'-'+step for name in TERMINAL_PROOF_STEPS for step in TERMINAL_PROOF_STEPS[name])
+    GRANTS=TERMINAL_GRANTS
+    NOT_RUN=('Actual product reclamation/GC and unlink',
+        'Other terminal/fault cases are qualified separately and are not re-executed by this profile',
+        'Unresolved import, draining owner and isolated native OPEN retirement guard',
+        'Later recovery/live frontier/Archive/empty retirement; mixed restore, physical loss, kill and capacity')
+
+
 def terminal_origins_checked(root,raw=None):
     previous,initial=activated_origins_checked(root,raw)
     tail,basis=qualified_endpoint(root,raw,initial_journey=False,terminal_origin=TERMINAL_TAIL_ORIGIN)
@@ -3050,25 +3073,27 @@ def terminal_origins_checked(root,raw=None):
     return {**{k:v for k,v in previous.items() if k!='initial'},'activated-tail':tail},initial
 
 
-def terminal_specification(case,*,faults=False):
-    assert type(faults) is bool
-    profile=ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
+def terminal_specification(case,*,faults=False,post_proof=False):
+    assert type(faults) is bool and type(post_proof) is bool and not (faults and post_proof)
+    profile=ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
     all_steps=profile.STEPS
     name=case['clone']; assert name in all_steps
     prefix=name+'-'; assert case['name'].startswith(prefix)
     step=case['name'][len(prefix):]; steps=all_steps[name]; index=steps.index(step)
-    assert case['origin']==('compacted-initial' if faults else TERMINAL_ORIGIN_NAMES[name])
+    assert case['origin']==('compacted-initial' if faults or post_proof else TERMINAL_ORIGIN_NAMES[name])
     assert case['predecessor']==(prefix+steps[index-1] if index else None)
     operation=(TERMINAL_ZERO_MODE if faults and name=='zero-job' else TERMINAL_SEED_MODE) if step=='seed' else (TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
+    if post_proof and step=='proof': operation=name.split('-')[0]+'-activated'
     assert case['operation']==operation
     assert re.fullmatch(profile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name.replace('-','_'),case['database'])
     assert len(case['database'])<=63 and case['config']=='/lab/'+case['database']+'.toml'
     return name,step
 
 
-def terminal_network_checked(config,name,*,faults=False):
-    assert type(faults) is bool and name in (TERMINAL_FAULT_STEPS if faults else TERMINAL_STEPS)
-    event=(name!='zero-job') if faults else name in ('event','unbound-event')
+def terminal_network_checked(config,name,*,faults=False,post_proof=False):
+    assert type(faults) is bool and type(post_proof) is bool and not (faults and post_proof)
+    assert name in (TERMINAL_PROOF_STEPS if post_proof else TERMINAL_FAULT_STEPS if faults else TERMINAL_STEPS)
+    event=True if post_proof else (name!='zero-job') if faults else name in ('event','unbound-event')
     endpoint='ws://127.0.0.1:7447/'+('installed-fixture' if event else 'installed-successor-fixture')
     assert config['network']['private']['rules']==[dict(endpoint=endpoint,cidr='127.0.0.1/32',port=7447)]
     assert config['network']['dns']['resolver']=='127.0.0.1:9' and config['network']['tls']['extra_roots']==[]
@@ -3140,11 +3165,11 @@ def terminal_event_science(plan,prepared_rows,inputs,contents,initial,report,rec
     return dict(plan=plan,ds=ds,slot=slot,rows=rows,inputs=originals),raw,receipt
 
 
-def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock,*,faults=False):
+def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock,*,faults=False,post_proof=False):
     import activated_source_durable_oracle as durable
     import initial_live_oracle as live
     import initial_succession_oracle as original
-    name,step=terminal_specification(case,faults=faults); assert step=='seed'
+    name,step=terminal_specification(case,faults=faults,post_proof=post_proof); assert step=='seed'
     zero=faults and name=='zero-job'; mode=TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE
     pg,native,inputs=copy.deepcopy(expected)
     plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True)
@@ -3226,6 +3251,7 @@ def terminal_failure(name,step):
 TERMINAL_ERRORS={
     'head':'producer operation unavailable: Progress(InvalidContext)',
     'commit-loss':'producer operation unavailable: CommitUnknown',
+    'proof-digest':'producer operation unavailable: Native(Compacted(StateMismatch))',
     'missing-input':'producer operation unavailable: Native(RequestInput(Missing))',
     'reserved-tail':'producer operation unavailable: Control(InvalidMetadata)',
     'retirement-prerequisite':'producer operation unavailable: Control(Backend)',
@@ -3253,8 +3279,10 @@ def terminal_seed_closed(response,database,*,zero=False):
     return events
 
 
-def terminal_closed(response,case,*,faults=False):
-    name,step=terminal_specification(case,faults=faults); failure='commit-loss' if faults and step.endswith('-loss') else terminal_failure(name,step); code=4 if failure else 0
+def terminal_closed(response,case,*,faults=False,post_proof=False):
+    name,step=terminal_specification(case,faults=faults,post_proof=post_proof); failure='commit-loss' if faults and step.endswith('-loss') else terminal_failure(name,step)
+    if post_proof and step=='proof' and not name.endswith('-baseline'): failure='head' if name.endswith('-head') else 'proof-digest'
+    code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -3350,8 +3378,8 @@ def terminal_retire_delta(m,observed,basis,*,released=True):
     return 12
 
 
-def verify_terminal_context(context,initial,expected,*,faults=False,baseline=None):
-    case=context['case']; name,step=terminal_specification(case,faults=faults)
+def verify_terminal_context(context,initial,expected,*,faults=False,post_proof=False,baseline=None):
+    case=context['case']; name,step=terminal_specification(case,faults=faults,post_proof=post_proof)
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after']
@@ -3367,14 +3395,15 @@ def verify_terminal_context(context,initial,expected,*,faults=False,baseline=Non
         assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
         assert context['arguments']==[case['operation'],case['database'],'/run/secrets/application',case['config']]
         number(context['response']['seconds'],0,120)
-        profile=ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
+        profile=ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
         revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
-        client_prefix=ActivatedTerminalFaultProfile.CLIENT_PREFIX if faults else 'bigbrotr-compacted-terminal-'
+        client_prefix=ActivatedSourceProofProfile.CLIENT_PREFIX if post_proof else ActivatedTerminalFaultProfile.CLIENT_PREFIX if faults else 'bigbrotr-compacted-terminal-'
         assert context['response']['command']==['docker','exec',client_prefix+revision,'/build/ingest_bootstrap_probe',*context['arguments']]
         events=terminal_seed_closed(context['response'],case['database'],zero=faults and name=='zero-job')
-        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'],faults=faults)
+        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'],faults=faults,post_proof=post_proof)
         same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
         return result
+    if post_proof and step=='proof': return verify_terminal_delivery(context,initial,expected,baseline,post_proof=True)
     if faults and step=='wait': return verify_terminal_wait(context,initial,expected)
     if faults and step.endswith(('-baseline','-loss')):
         return verify_terminal_delivery(context,initial,expected,baseline)
@@ -3383,7 +3412,7 @@ def verify_terminal_context(context,initial,expected,*,faults=False,baseline=Non
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=terminal_closed(context['response'],case,faults=faults); failure=terminal_failure(name,step)
+    report=terminal_closed(context['response'],case,faults=faults,post_proof=post_proof); failure=terminal_failure(name,step)
     backend_checked(context['backend'],case['database'],expected[0],context['after'])
     m=model.Model(*expected,window); preparation_control(m,context['after'],success=failure is None,renewed=failure=='unbound-event')
     native=expected[1]; basis=terminal_basis(expected); rows_retired=jobs=0
@@ -3418,9 +3447,9 @@ def verify_terminal_context(context,initial,expected,*,faults=False,baseline=Non
         retired_rows=rows_retired,abandoned_jobs=jobs,tables=77,input_files=len(expected[2]))
 
 
-def terminal_controls(context,initial,expected,*,faults=False,baseline=None):
+def terminal_controls(context,initial,expected,*,faults=False,post_proof=False,baseline=None):
     import json
-    name,step=terminal_specification(context['case'],faults=faults)
+    name,step=terminal_specification(context['case'],faults=faults,post_proof=post_proof)
     changes=[('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
         ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
         ('ancestor-checkpoint',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(checkpoint_digest='\\x'+'00'*32)),
@@ -3479,7 +3508,7 @@ def terminal_controls(context,initial,expected,*,faults=False,baseline=None):
             ('unexpected-argv',lambda c:c['response']['terminal']['command'].append('--successor')),
             ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)])),
             ('unknown-process',lambda c:c['response'].update(outcome='UNKNOWN'))])
-        if terminal_failure(name,step) is None and not (faults and step.endswith('-loss')):
+        if terminal_failure(name,step) is None and not (faults and step.endswith('-loss')) and not (post_proof and step=='proof' and not name.endswith('-baseline')):
             def report_value(c,key,value):
                 report=loads(c['response']['stdout']); report[key]=value; c['response']['stdout']=json.dumps(report)+'\n'
             changes.extend([('false-original-count',lambda c:report_value(c,'resolved_requests','7')),
@@ -3491,27 +3520,34 @@ def terminal_controls(context,initial,expected,*,faults=False,baseline=None):
             if step.startswith('retire'):
                 changes.append(('one-domain-not-retired',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(state='active')))
                 changes.append(('retired-row-transaction',lambda c:only(c['after']['producer_epochs'],producer_epoch=2).update(xmin='4294967000')))
-            if (name in ('event','unbound-event') or faults) and step.startswith(('abandon','retire')):
+            if (name in ('event','unbound-event') or faults or post_proof) and (step.startswith(('abandon','retire')) or (post_proof and step=='proof' and name.startswith('abandon-'))):
                 changes.append(('gap-attribution',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=2).update(previous_owner_epoch=999)))
         else:
             changes.append(('different-typed-refusal',lambda c:c['response'].update(stderr='error: producer operation unavailable: Native(StateMismatch)\n')))
-    if faults and step.endswith(('-baseline','-loss')):
+    if (faults and step.endswith(('-baseline','-loss'))) or (post_proof and step=='proof'):
         changes.extend([('proxy-not-joined',lambda c:c['fixture']['delivery_fault']['wire'].update(readers_joined=False)),
             ('proxy-source',lambda c:c['fixture']['delivery_fault']['wire'].update(source_sha256='00'*32)),
             ('proxy-counter',lambda c:c['fixture']['delivery_fault']['wire']['receipt'].update(commits_seen=63)),
             ('unrestored-config',lambda c:c['fixture']['delivery_fault']['configuration'].update(restored='')),
             ('source-owner-attribution',lambda c:only(c['after']['source_streams'],owner_epoch=2).update(owner_resource_id='\\x'+'ff'*16))])
-        if step.endswith('-baseline'):
+        if step.endswith('-baseline') or post_proof:
             changes.append(('held-query',lambda c:c['fixture']['delivery_fault']['held']['backend'].update(query='SELECT 1')))
             changes.append(('held-ancestor-head',lambda c:only(c['fixture']['delivery_fault']['held']['control']['producer_checkpoints'],producer_epoch=1).update(checkpoint_digest='\\x'+'00'*32)))
         if step.startswith('abandon') and name.endswith('-after'):
             changes.append(('atomic-gap-job-xmin',lambda c:only(c['after']['jobs'],job_id=only(c['after']['acquisition_gaps'],producer_epoch=2)['job_id']).update(xmin='4294967000')))
         if step.startswith('retire') and name.endswith('-after'):
             changes.append(('atomic-domain-xmin',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(xmin='4294967000')))
+    if post_proof and step=='proof':
+        changes.extend([('held-backend-in-transaction',lambda c:c['fixture']['delivery_fault']['held']['backend'].update(state='idle in transaction')),
+            ('held-transaction-start',lambda c:c['fixture']['delivery_fault']['held']['backend'].update(xact_start='1970-01-01 00:00:00+00'))])
+        if not name.endswith('-baseline'):
+            changes.extend([('mutation-before-proof-hold',lambda c:c['fixture']['delivery_fault']['mutation'].update(before_us=c['server_window']['before_us'])),
+                ('unbound-mutation-statement',lambda c:c['fixture']['delivery_fault']['mutation'].update(statement='SELECT 1;')),
+                ('extra-final-gap',lambda c:c['after']['acquisition_gaps'].append(dict(unexpected=True)))])
     rejected=[]
     for label,change in changes:
         c=copy.deepcopy(context); change(c)
-        try: verify_terminal_context(c,initial,expected,faults=faults,baseline=baseline)
+        try: verify_terminal_context(c,initial,expected,faults=faults,post_proof=post_proof,baseline=baseline)
         except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(label)
         else: raise AssertionError('accepted altered terminal evidence: '+label)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
@@ -3584,22 +3620,36 @@ def terminal_qualification(component):
     assert {prefix+n for n in names}<=set(component['test_names']['initial_reconstruction'])
 
 
+
+def terminal_held_state(expected,pg,window,operation):
+    m=model.Model(*expected,window); preparation_control(m,pg,success=False,renewed=True)
+    m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    if operation=='source':
+        producer=only(m.pg['producer_epochs'],producer_epoch=2); actual=only(pg['producer_epochs'],producer_epoch=2)
+        assert producer['state']=='open'; model.fresh_xmin(actual['xmin'],m.pg); producer.update(state='closing',xmin=actual['xmin'])
+    same(pg,m.pg)
+    return m
+
+
 TERMINAL_SOURCE_FINAL_QUERY="UPDATE control.source_streams SET state='closed', closed_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint, last_complete_sequence=$3::text::numeric,closure_digest=$4::bytea WHERE dataset_id=$1::bytea AND shard_id=$2::bigint AND owner_epoch=2 AND state='closing'"
 TERMINAL_AUTHORITY_QUERY="SELECT lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric"
 
 
-def terminal_delivery_checked(record,case,window,baseline,expected,after):
+def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_proof=False):
     import tomllib
     from fault_cases import safe_event
-    name,step=terminal_specification(case,faults=True); normal=step.endswith('-baseline'); operation=step.split('-')[0]
-    target=TERMINAL_COMMIT_SELECTORS[operation]; mode='hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
-    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}
+    name,step=terminal_specification(case,faults=not post_proof,post_proof=post_proof)
+    normal=name.endswith('-baseline') if post_proof else step.endswith('-baseline')
+    operation=name.split('-')[0] if post_proof else step.split('-')[0]
+    target=(TERMINAL_PROOF_SELECTORS if post_proof else TERMINAL_COMMIT_SELECTORS)[operation]; later=4 if post_proof else 3
+    mode='hold-after-complete' if post_proof else 'hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
+    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}|({'mutation'} if post_proof else set())
     assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[]
     assert (record['operation'],record['mode'],record['target_commit'])==(operation,mode,target)
     settings=record['configuration']; assert set(settings)=={'path','direct','proxied','restored'} and settings['path']==case['config']
     assert settings['direct']==settings['restored']
     direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'))
-    terminal_network_checked(direct,name,faults=True)
+    terminal_network_checked(direct,name,faults=not post_proof,post_proof=post_proof)
     wire=record['wire']; assert set(wire)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
     source=sha(retained.regular_read(Path(__file__).resolve().parents[2]/ACTIVATED_PROXY)); assert wire['source_sha256']==source
     assert wire['readers_joined'] is True and wire['overflow'] is False and wire['forced_wrapper_stop'] is False
@@ -3612,36 +3662,42 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after):
     assert (ready['max_frame_bytes'],ready['max_wire_bytes'],ready['max_messages'],ready['deadline_seconds'])==(1024**2,64*1024**2,20000,30)
     predicted=copy.deepcopy(direct); assert predicted['postgres']['control']['endpoint']=='127.0.0.1:5432'
     predicted['postgres']['control']['endpoint']='127.0.0.1:'+str(ready['listen_port']); assert proxied==predicted
-    revision=case['database'].removeprefix(ActivatedTerminalFaultProfile.DATABASE_PREFIX)[:7]
-    assert wire['command']==['docker','exec','-i',ActivatedTerminalFaultProfile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
-        '--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits','3','--deadline-seconds','30']
+    profile=ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile
+    revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
+    assert wire['command']==['docker','exec','-i',profile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
+        '--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits',str(later),'--deadline-seconds','30']
     counts=lambda e:[e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]
     assert counts(ready)==[0]*4 and ready['faults']==0 and ready['held'] is False and ready['hold_action'] is None
     for e in events: assert (e['mode'],e['commit_number'])==(mode,target)
     assert receipt['event']=='receipt' and receipt['faults']==1 and receipt['frames'] and receipt['declared_wire_bytes']<=64*1024**2
-    wanted=dict(operation=operation,selected_commit=target,total_successful_commits=target+3,boundary='hold-before-forward-released')
-    if normal:
-        assert baseline is None and [e['event'] for e in events]==['ready','held','released','receipt']
+    wanted=dict(operation=operation,selected_commit=target,total_successful_commits=target+later,boundary='hold-after-complete-released' if post_proof else 'hold-before-forward-released')
+    if normal or post_proof:
+        if normal: assert baseline is None
+        else:
+            assert baseline is not None and baseline['status']=='PASS' and baseline['case']==operation+'-baseline-proof' and baseline['wire']==wanted
+        assert [e['event'] for e in events]==['ready','held','released','receipt']
         held=record['held']; assert set(held)=={'event','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
-        assert held['event']==events[1] and counts(events[1])==[target,target-1,target-1,target-1]
+        assert held['event']==events[1] and counts(events[1])==([target,target,target,target-1] if post_proof else [target,target-1,target-1,target-1])
         assert events[1]['held'] is True and events[1]['hold_action'] is None
-        m=model.Model(*expected,window); preparation_control(m,held['control'],success=False,renewed=True)
-        m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
-        if operation=='source':
-            producer=only(m.pg['producer_epochs'],producer_epoch=2); actual=only(held['control']['producer_epochs'],producer_epoch=2)
-            assert producer['state']=='open'; model.fresh_xmin(actual['xmin'],m.pg); producer.update(state='closing',xmin=actual['xmin'])
-        same(held['control'],m.pg); assert held['inputs']==expected[2]
+        m=terminal_held_state(expected,held['control'],window,operation); assert held['inputs']==expected[2]
         for key in ('before_us','after_us','release_before_us','release_after_us'): model.clock(held[key],window)
         assert held['before_us']<=held['after_us']<=held['release_before_us']<=held['release_after_us']<m.control['lease_expires_at_us']
         b=held['backend']; assert b==dict(pid=m.control['control_backend_pid'],backend_start=m.control['control_backend_start'],database=case['database'],
-            user='bigbrotr_control',state='idle in transaction',xact_start=b['xact_start'],query=b['query'],observed_at_us=b['observed_at_us'])
-        assert b['xact_start'] is not None and held['before_us']<=b['observed_at_us']<=held['after_us']
-        assert ' '.join(b['query'].split())==(TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
+            user='bigbrotr_control',state='idle' if post_proof else 'idle in transaction',xact_start=b['xact_start'],query=b['query'],observed_at_us=b['observed_at_us'])
+        assert (b['xact_start'] is None if post_proof else b['xact_start'] is not None) and held['before_us']<=b['observed_at_us']<=held['after_us']
+        assert ' '.join(b['query'].split())==('COMMIT' if post_proof else TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
         assert counts(events[2])==counts(events[1]) and events[2]['held'] is False and events[2]['hold_action']=='release'
-        assert counts(receipt)==[target+3]*4 and receipt['reason'] in ('frontend-eof','backend-eof') and receipt['held'] is False and receipt['hold_action']=='release'
+        assert counts(receipt)==[target+later if normal else target]*4 and receipt['reason'] in ('frontend-eof','backend-eof') and receipt['held'] is False and receipt['hold_action']=='release'
         # The held claim and its exact last refresh survive until later release.
         current=only(after['owner_epochs'],role='control',epoch=m.control['epoch'])
-        assert current['lease_expires_at_us']>m.control['lease_expires_at_us'] and int(current['xmin'])>int(m.control['xmin'])
+        if normal:
+            assert current['lease_expires_at_us']>m.control['lease_expires_at_us'] and int(current['xmin'])>int(m.control['xmin'])
+        else: assert current==m.control
+        if post_proof:
+            if normal: assert record['mutation'] is None
+            else:
+                mutation=record['mutation']; same(mutation['before'],m.pg); same(mutation['after'],after)
+                assert held['after_us']<=mutation['before_us']<=mutation['after_us']<=held['release_before_us']
         for key in ('resource_id','role_instance_id','process_incarnation','acquired_at_us','control_backend_pid','control_backend_start'):
             assert current[key]==m.control[key]
     else:
@@ -3650,22 +3706,23 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after):
         count=[target,target-1,target-1,target-1] if mode=='before-forward' else [target,target,target,target-1]
         assert counts(events[1])==counts(receipt)==count and receipt['reason']==events[1]['reason']==mode
         assert receipt['held'] is False and receipt['hold_action'] is None
-    return wanted if normal else dict(operation=operation,selected_commit=target,counts=counts(receipt),boundary=mode)
+    return wanted if normal else dict(operation=operation,selected_commit=target,counts=counts(receipt),boundary='post-proof-refusal' if post_proof else mode)
 
 
-def verify_terminal_delivery(context,initial,expected,baseline):
-    case=context['case']; name,step=terminal_specification(case,faults=True); normal=step.endswith('-baseline')
+def verify_terminal_delivery(context,initial,expected,baseline,*,post_proof=False):
+    case=context['case']; name,step=terminal_specification(case,faults=not post_proof,post_proof=post_proof)
+    normal=name.endswith('-baseline') if post_proof else step.endswith('-baseline')
     assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and set(context['fixture'])=={'cleanup_errors','delivery_fault'}
     assert context['fixture']['cleanup_errors']==[]
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])==1 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=terminal_closed(context['response'],case,faults=True)
+    report=terminal_closed(context['response'],case,faults=not post_proof,post_proof=post_proof)
     backend_checked(context['backend'],case['database'],expected[0],context['after'])
     window=context['server_window']; m=model.Model(*expected,window); preparation_control(m,context['after'],success=normal,renewed=not normal)
     if not normal: m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
-    native=expected[1]; basis=terminal_basis(expected); operation=step.split('-')[0]
+    native=expected[1]; basis=terminal_basis(expected); operation=name.split('-')[0] if post_proof else step.split('-')[0]
     assert basis['issued']==1 and basis['cut']==5 and not [r for r in m.pg['producer_checkpoints'] if r['producer_epoch']==2]
     completed=normal or name.endswith('-after'); rows_retired=jobs=0
     if operation=='source':
@@ -3680,6 +3737,9 @@ def verify_terminal_delivery(context,initial,expected,baseline):
     else:
         assert operation=='retire' and len([g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2])==1
         if completed: rows_retired=terminal_retire_delta(m,context['after'],basis,released=normal)
+    if post_proof and not normal:
+        kind='head-drift' if name.endswith('-head') else 'digest-drift'
+        m.pg=terminal_drift_checked(context['fixture']['delivery_fault']['mutation'],m.pg,initial,kind,window)
     same(context['after'],m.pg); assert context['native_after']==native
     if normal:
         wanted=dict(format='bigbrotr-ingest-recovery/1',state='activated-initial-retired' if operation=='retire' else 'activated-acquisition-abandoned' if operation=='abandon' else 'activated-source-closed',
@@ -3688,8 +3748,8 @@ def verify_terminal_delivery(context,initial,expected,baseline):
         if operation=='abandon': wanted['acquisition_abandonment']=dict(jobs='1',reason='activated_initial_producer_abandoned',coverage='unknown')
         if operation=='retire': wanted['ingest_retirement']=dict(allocation_domains='9',acquisition_gaps='1',owner_release='committed',native_acknowledged='0',native_retired='0')
         assert report==wanted
-    wire=terminal_delivery_checked(context['fixture']['delivery_fault'],case,window,baseline,expected,context['after'])
-    return dict(status='PASS',case=case['name'],result='COMPLETED' if normal else 'COMMIT_UNKNOWN',wire=wire,
+    wire=terminal_delivery_checked(context['fixture']['delivery_fault'],case,window,baseline,expected,context['after'],post_proof=post_proof)
+    return dict(status='PASS',case=case['name'],result='COMPLETED' if normal else 'REFUSED' if post_proof else 'COMMIT_UNKNOWN',wire=wire,
         native_rows=len(native['rows']),native_sequence=native['sequence'],product_native_writes=native['sequence']-expected[1]['sequence'],
         target_issued=1,target_acknowledged=0,source_closure_sha256=basis['digest'],retired_rows=rows_retired,abandoned_jobs=jobs,
         target_original_files=1,ancestor_compacted_requests=7,original_predecessor_requests=0,tables=77)

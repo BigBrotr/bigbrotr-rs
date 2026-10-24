@@ -459,7 +459,130 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["reason"], "control-length")
 
 
+    async def test_after_complete_hold_withholds_coalesced_reply_until_release(self):
+        async def server(reader, writer):
+            for statement in (b"COMMIT", b"ROLLBACK", b"COMMIT", b"COMMIT"):
+                self.assertEqual(await receive(reader), (b"Q", statement + b"\x00"))
+                writer.write(frame(b"C", statement + b"\x00") + frame(b"Z", b"I"))
+                await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("hold-after-complete", server, "--commit-number", "2", "--later-commits", "1")
+        await self.authenticate(reader, writer)
+        for statement in (b"COMMIT", b"ROLLBACK"):
+            writer.write(frame(b"Q", statement + b"\x00")); await writer.drain()
+            self.assertEqual(await receive(reader), (b"C", statement + b"\x00"))
+            self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        held = await self.event("held")
+        fields = ("commits_seen", "commits_forwarded", "server_commit_complete", "client_commit_complete", "faults")
+        self.assertEqual(tuple(held[k] for k in fields), (2, 2, 2, 1, 1))
+        with self.assertRaises(asyncio.TimeoutError):
+            await asyncio.wait_for(reader.read(1), .05)
+        await self.command(b"status\n")
+        status = await self.event("status")
+        self.assertTrue(status["held"])
+        self.assertEqual(tuple(status[k] for k in fields), (2, 2, 2, 1, 1))
+        await self.command(b"release\n")
+        released = await self.event("released")
+        self.assertEqual(tuple(released[k] for k in fields), (2, 2, 2, 1, 1))
+        self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+        self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+        self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.close()
+        result = await self.finish()
+        self.assertEqual(tuple(result[k] for k in fields), (3, 3, 3, 3, 1))
+        self.assertEqual(result["hold_action"], "release")
+
+    async def test_after_complete_hold_later_commit_bound_is_preserved(self):
+        async def server(reader, writer):
+            for _ in range(2):
+                self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+                writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I")); await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("hold-after-complete", server, "--later-commits", "1")
+        await self.authenticate(reader, writer)
+        for index in range(2):
+            writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+            if index == 0:
+                await self.event("held"); await self.command(b"release\n")
+            self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+            self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await reader.read(), b"")
+        result = await self.finish(code=3)
+        self.assertEqual((result["reason"], result["commits_seen"], result["commits_forwarded"], result["client_commit_complete"], result["faults"]),
+                         ("multiple-commits", 3, 2, 2, 1))
+
+    async def after_complete_hold_stopped(self, action):
+        async def server(reader, writer):
+            self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+            writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I")); await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("hold-after-complete", server, "--deadline-seconds", "0.5" if action == "deadline" else "5")
+        await self.authenticate(reader, writer)
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        held = await self.event("held")
+        self.assertTrue(held["held"])
+        self.assertEqual((held["server_commit_complete"], held["client_commit_complete"]), (1, 0))
+        if action == "close": await self.command(b"close\n")
+        self.assertEqual(await reader.read(), b"")
+        result = await self.finish(code=3 if action == "deadline" else 0)
+        self.assertEqual((result["reason"], result["commits_forwarded"], result["server_commit_complete"], result["client_commit_complete"], result["faults"]),
+                         ("deadline" if action == "deadline" else "held-close", 1, 1, 0, 1))
+
+    async def test_after_complete_hold_close_never_delivers_reply(self):
+        await self.after_complete_hold_stopped("close")
+
+    async def test_after_complete_hold_deadline_never_delivers_reply(self):
+        await self.after_complete_hold_stopped("deadline")
+
+    async def after_complete_non_receipt(self, tag, body):
+        async def server(reader, writer):
+            self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+            writer.write(frame(tag, body) + frame(b"Z", b"I")); await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("hold-after-complete", server)
+        await self.authenticate(reader, writer)
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await receive(reader), (tag, body))
+        self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.close()
+        result = await self.finish(code=3)
+        self.assertFalse(any(e["event"] == "held" for e in self.events))
+        self.assertEqual((result["server_commit_complete"], result["client_commit_complete"], result["faults"]), (0, 0, 0))
+
+    async def test_after_complete_hold_does_not_match_error(self):
+        await self.after_complete_non_receipt(b"E", b"Msecret-error\x00\x00")
+
+    async def test_after_complete_hold_does_not_match_rollback(self):
+        await self.after_complete_non_receipt(b"C", b"ROLLBACK\x00")
+
+    async def test_after_complete_hold_requires_matching_frontend_commit(self):
+        async def server(reader, writer):
+            self.assertEqual(await receive(reader), (b"Q", b"SELECT 1\x00"))
+            writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I")); await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("hold-after-complete", server)
+        await self.authenticate(reader, writer)
+        writer.write(frame(b"Q", b"SELECT 1\x00")); await writer.drain()
+        self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+        self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.close()
+        result = await self.finish(code=3)
+        self.assertFalse(any(e["event"] == "held" for e in self.events))
+        self.assertEqual((result["commits_seen"], result["server_commit_complete"], result["client_commit_complete"], result["faults"]), (0, 1, 1, 0))
+
+
 class MetadataTests(unittest.TestCase):
+    def test_after_complete_hold_mode_keeps_closed_metadata_vocabulary(self):
+        event = dict(format='bigbrotr-pg-fault-proxy/1', event='held', mode='hold-after-complete', commit_number=7)
+        self.assertEqual(safe_event(event), event)
+        for mode in ('hold-after', 'hold-complete', 'unknown'):
+            with self.assertRaises(Incomplete): safe_event(dict(event, mode=mode))
+        with self.assertRaises(Incomplete): safe_event(dict(event, raw_reply='fixture-secret'))
+
     def test_commit_selection_is_bounded_and_unknown_payload_fields_stay_refused(self):
         event = dict(format='bigbrotr-pg-fault-proxy/1', event='ready', mode='hold', commit_number=3)
         self.assertEqual(safe_event(event), event)

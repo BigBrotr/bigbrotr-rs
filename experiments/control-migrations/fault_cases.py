@@ -59,7 +59,7 @@ def safe_event(item):
         raise Incomplete("proxy-metadata-fields")
     if item.get("format") != "bigbrotr-pg-fault-proxy/1" or item.get("event") not in {
         "ready", "held", "released", "fault", "status", "receipt"
-    } or item.get("mode") not in {"pass", "before-forward", "after-complete", "hold"}:
+    } or item.get("mode") not in {"pass", "before-forward", "after-complete", "hold", "hold-after-complete"}:
         raise Incomplete("proxy-metadata-format")
     for key, value in item.items():
         if key in {"format", "event", "mode"}:

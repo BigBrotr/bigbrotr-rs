@@ -63203,6 +63203,41 @@
           ],
           "free_bytes_after": 265325469696,
           "preservation": "13 clone databases/stores and all raw results remain; original source unchanged; no cleanup or unrelated writes."
+        },
+        "source_proof_fixture_work": {
+          "owner": "/root/compacted_reader_fixture; reused verified gpt-6-astra/xhigh",
+          "critical_review": "/root/compacted_reader_review; reused verified gpt-6-astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-source-proof-fixture-20261024",
+          "branch": "work/compacted-activated-source-proof-fixture",
+          "base": "30656b709cee6709124a4a55375004e07a6afbe7",
+          "state": "FROZEN_REVIEWED_SOURCE; root integrates exact seven files; runtime NOT_RUN",
+          "scope": "Separate --activated-source-proof six-clone/15-command profile; opt-in after-COMMIT hold; source and scoped diagnostics only for agents. No product change.",
+          "commit": "4e93c415f53a9fd3915de66926e49d65a0658db8",
+          "tree": "d584a9cbdc96f462eb6b9a18322b0b48ea3a183c",
+          "receipts": {
+            "source": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-source-proof-fixture-source-v1.json",
+              "sha256": "f69f93108f2b91f265db6271926bc17d718cd38dc5fe26cbaa7388daf07ef6b2"
+            },
+            "critical-review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-source-proof-fixture-critical-review-v1.json",
+              "sha256": "bd57df62e5e2987ab092cb8c775fd73044ea25f2275d8a6c330da7f332a57de7"
+            }
+          }
+        },
+        "import_gate_probe_work": {
+          "owner": "/root/terminal_import_gate",
+          "configuration": {
+            "model": "gpt-6-astra",
+            "effort": "xhigh",
+            "verified_thread": "01a16bc0-aedc-7db2-a394-4659f335ea76",
+            "method": "Actual local turn_context plus collaboration settings observed at creation"
+          },
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-terminal-import-gate-20261024",
+          "branch": "compacted-terminal-import-gate-20261024",
+          "base": "30656b709cee6709124a4a55375004e07a6afbe7",
+          "state": "SOURCE_ASSESSMENT_THEN_NARROW_PROBE_SUPPORT; all runtime prohibited for agent",
+          "scope": "Bounded gate under genuine live activating Control before terminal Event seed; ordinary application-role import claim performed later by root-owned fixture. No product-library change or historical synthetic claim."
         }
       }
     }

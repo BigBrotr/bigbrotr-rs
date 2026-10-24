@@ -130,6 +130,14 @@ class Session:
                     self.faults += 1
                     self.emit("fault", reason="after-complete")
                     return "after-complete"
+                if matched and self.args.mode == "hold-after-complete":
+                    self.faults += 1
+                    self.held = True
+                    self.emit("held")
+                    # The backend completed COMMIT, but the caller has not
+                    # received CommandComplete. Only explicit release forwards
+                    # these retained bytes; close/deadline cancel this pump.
+                    await self.hold_gate
                 self.client_commit_complete += 1
             writer.write(tag + header + body)
             await writer.drain()
@@ -220,7 +228,7 @@ class Session:
                 )
                 tasks.append(asyncio.create_task(self.controls(control_reader)))
             except (OSError, ValueError):
-                if self.args.mode == "hold":
+                if self.args.mode in ("hold", "hold-after-complete"):
                     raise Refused("control-unavailable") from None
             listener = await asyncio.start_server(
                 accept, "127.0.0.1", self.args.listen_port, limit=STREAM_LIMIT, backlog=1
@@ -277,7 +285,7 @@ class Session:
                   declared_wire_bytes=self.declared_bytes)
         injected = reason in ("before-forward", "after-complete", "held-close")
         completed = reason in ("frontend-eof", "backend-eof")
-        expected = self.args.mode == "pass" or (self.args.mode == "hold" and self.hold_action == "release")
+        expected = self.args.mode == "pass" or (self.args.mode in ("hold", "hold-after-complete") and self.hold_action == "release")
         return 0 if injected or (completed and expected) else 3
 
 
@@ -307,7 +315,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--upstream-port", type=bounded_int(1, 65535), required=True)
     parser.add_argument("--listen-port", type=bounded_int(0, 65535), default=0)
-    parser.add_argument("--mode", choices=("pass", "before-forward", "after-complete", "hold"), required=True)
+    parser.add_argument("--mode", choices=("pass", "before-forward", "after-complete", "hold", "hold-after-complete"), required=True)
     parser.add_argument("--commit-number", type=bounded_int(1, 64), default=1)
     # Persistent Control also commits refresh/release after the targeted fault.
     # Opt in to a finite allowance; historical finite-command defaults stay strict.

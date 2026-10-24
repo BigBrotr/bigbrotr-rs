@@ -31,11 +31,15 @@ and [simple query flow](https://www.postgresql.org/docs/16/protocol-flow.html).
 | `before-forward` | Read and recognize COMMIT, then close both sockets before writing any of that frame to the upstream transport |
 | `after-complete` | Forward recognized COMMIT; when its backend `CommandComplete` body is exactly `COMMIT\0`, suppress that whole frame and close both sockets. A coalesced ReadyForQuery frame is also never forwarded |
 | `hold` | Retain the COMMIT frame before forwarding, emit `held`, keep the upstream connection open, and await an explicit stdin action or deadline |
+| `hold-after-complete` | Forward the selected COMMIT, then retain its matching backend `CommandComplete` before client delivery; `held` precedes both that frame and any coalesced ReadyForQuery until explicit release |
 
 The proxy does not invent PostgreSQL responses. A backend ErrorResponse or a
-CommandComplete for ROLLBACK does not trigger `after-complete`. No observed matching
+CommandComplete for ROLLBACK does not trigger `after-complete` or
+`hold-after-complete`. No observed matching
 fault is a failed experiment, even if the client exits. A second recognized
-COMMIT in this one-session fixture is refused. Test retries through a fresh proxy
+COMMIT in this one-session fixture is refused by default. Explicit
+`--commit-number` and `--later-commits` permit a finite selected boundary and later
+COMMITs, with a combined ceiling of64. Test retries through a fresh proxy
 or directly against the same PostgreSQL catalog as the scenario requires.
 
 `hold` is also the precommit boundary for the actual migration runner: its DDL
@@ -47,6 +51,15 @@ limits, backend termination or transport failure can end this window. The curren
 runner's idle-in-transaction timeout is 10 seconds, so coordinate the observer
 promptly. Client disconnect during a hold does not itself release COMMIT; the
 upstream remains held until another terminating event or explicit control.
+
+`hold-after-complete` holds a reply after the server has completed COMMIT.
+A connected fixture must independently observe the original backend idle, with
+no transaction and last query COMMIT, before changing its isolated state. This
+mode does not retain the old transaction locks. The client operation deadline
+continues to run; it is not extended by the proxy or by observer capture. The
+Source/abandonment proof fixture selects the preceding refresh response, then
+releases it before the actual final transaction. Its engine evidence is separate
+from the proxy wire tests.
 
 ## Invocation and local control
 
@@ -65,7 +78,7 @@ that endpoint, retaining the original database/user/credential reference. The
 upstream database port and all fixtures remain owned by the external lab driver.
 A separate observer connects directly to the upstream, not through this proxy.
 
-For `hold`, keep stdin as a pipe or terminal. The only accepted lines are:
+For `hold` and `hold-after-complete`, keep stdin as a pipe or terminal. The only accepted lines are:
 
 ```text
 status
@@ -74,11 +87,11 @@ close
 ```
 
 `status` emits safe current counters. `release` is valid only after `held`; it
-unblocks exactly the retained COMMIT once. `close` closes the session, and when
+unblocks exactly the retained frontend COMMIT or backend completion once. `close` closes the session, and when
 held reports `held-close`. Unknown/oversized commands stop the experiment without
 printing their contents. Stdin EOF never releases COMMIT; the total deadline
 still closes it. A non-pollable stdin is allowed for automatic modes but refused
-for `hold`. Use a driver that continuously drains stdout and writes control lines
+for either hold mode. Use a driver that continuously drains stdout and writes control lines
 only after observing the required event. There is no second control listener,
 network administration endpoint, control file polling or credential-bearing URL.
 
@@ -130,6 +143,11 @@ policy lease or suspend-aware authority clock.
 python3 -m unittest discover -s experiments/control-migrations \
   -p test_fault_proxy.py -v
 ```
+
+The added `hold-after-complete` cases cover coalesced replies, selected counters,
+finite later COMMITs, close/deadline suppression and unmatched replies. Their
+execution status belongs to the exact-source integrating run; the historical
+result below does not qualify this added mode.
 
 The tests start the actual proxy executable and independent fake peers over real
 loopback sockets. On macOS arm64 with Python 3.9.6, 18 cases passed during this
