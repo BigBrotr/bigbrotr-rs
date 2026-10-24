@@ -63155,7 +63155,20 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fault-fixture-20261024",
           "branch": "work/compacted-activated-terminal-fault-fixture",
           "base": "7bc63d97e339b005202ad2f15f1e22d768e7bb6c",
-          "state": "SOURCE WORK ACTIVE; engines/builds prohibited for agents"
+          "state": "FROZEN_REVIEWED_SOURCE; root integrates six files; connected runtime NOT_RUN",
+          "commit": "1c24d0a6d2d1e9fe0a4b18575c0e82af39848654",
+          "tree": "b54608ee46ecc713c3b435542ff7e7eb36fc0a68",
+          "receipts": {
+            "source": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-fault-fixture-source-v1.json",
+              "sha256": "56600ab2b3757477259e51ec55c28c595de725851a1990e5c53989f625af0fb4"
+            },
+            "critical-review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-fault-fixture-critical-review-v1.json",
+              "sha256": "a580baa2c3f0a23e9a83a6c66ddd3fbca0f691ebdab42390358efaff74ca0c1b"
+            }
+          },
+          "agents": "Author and critical reviewer finished; no autonomous engine or source work active"
         }
       }
     }

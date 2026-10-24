@@ -1045,7 +1045,7 @@ def terminal_attribution(output,directory,initial):
     return contents
 
 
-def terminal_seed(pg,client,output,case,directory,expected,catalog,initial,attribution):
+def terminal_seed(pg,client,output,case,directory,expected,catalog,initial,attribution,*,faults=False):
     label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
     native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store'); assert (native,inputs)==expected[1:]
     lab.write_json(output/(label+'-before.json'),before); lab.write_json(output/(label+'-inputs.json'),inputs)
@@ -1062,13 +1062,13 @@ def terminal_seed(pg,client,output,case,directory,expected,catalog,initial,attri
         response=transition.read(path); response['command']=['docker','exec',client,'/build/ingest_bootstrap_probe',*args]
         lab.write_json(path,response)
         window['after_us']=history.server_clock(pg,case['database']); lab.write_json(output/(label+'-clock.json'),window)
-        _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,closure=oracle.terminal_seed_closed)
+        _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,closure=partial(oracle.terminal_seed_closed,zero=faults and case['clone']=='zero-job'))
     context=dict(case=dict(case),before=before,native_before=native,inputs_before=inputs,after=after,native_after=after_native,inputs_after=after_inputs,
         response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,case['database']),arguments=args,
         attribution=attribution,receive_clock=receive_clock,backend_absence=transition.read(output/(label+'-control-backends.json')),
         backends=transition.read(output/(label+'-backends.json')),custody=transition.read(output/(label+'-custody.json')))
     lab.write_json(output/(label+'-verification.json'),context)
-    checked=oracle.verify_terminal_context(context,initial,expected); controls=oracle.terminal_controls(context,initial,expected)
+    checked=oracle.verify_terminal_context(context,initial,expected,faults=faults); controls=oracle.terminal_controls(context,initial,expected,faults=faults)
     case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
@@ -1087,48 +1087,172 @@ def terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kin
     return oracle.terminal_mutation_checked(record,expected,initial,kind)
 
 
-def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial):
-    name=clone['name']; origin_name=oracle.TERMINAL_ORIGIN_NAMES[name]
+
+def terminal_delivery_hook(pg,client,output,case,directory):
+    from fault_cases import Process,safe_event
+    name,step=oracle.terminal_specification(case,faults=True)
+    operation=step.split('-')[0]; target=oracle.TERMINAL_COMMIT_SELECTORS[operation]
+    normal=step.endswith('-baseline'); assert normal or step.endswith('-loss')
+    mode='hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
+    label=case['name']; config=output/Path(case['config']).name; proxy=None
+    record=dict(status='INCOMPLETE',operation=operation,mode=mode,target_commit=target,wire=None,held=None,
+        configuration=dict(path=case['config'],direct=None,proxied=None,restored=None),errors=[])
+    def save(): lab.write_json(output/(label+'-delivery.json'),record)
+    def callback(phase):
+        nonlocal proxy
+        try:
+            if phase=='before-launch':
+                command=['docker','exec','-i',client,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
+                    '--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits','3','--deadline-seconds','30']
+                record['wire']=dict(command=command,source_sha256=history.digest(output/'fault_proxy.py'),ready=None,receipt=None,
+                    events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False)
+                save(); proxy=Process(command,input_pipe=True); ready=proxy.event('ready',5); record['wire']['ready']=ready
+                assert ready['proxy_sha256']==record['wire']['source_sha256']
+                direct=config.read_text(); proxied=history.set_value(direct,'postgres.control','endpoint','127.0.0.1:'+str(ready['listen_port']))
+                record['configuration'].update(direct=direct,proxied=proxied); save()
+                (output/(label+'-direct.toml')).write_text(direct); (output/(label+'-proxied.toml')).write_text(proxied); config.write_text(proxied)
+            elif phase=='launched':
+                if normal:
+                    held=proxy.event('held',10)
+                    capture=dict(event=held,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,
+                        release_after_us=None,control=schema.rows(pg,case['database']),inputs=history.inputs_at(directory/'store'),backend=None)
+                    record['held']=capture; save()
+                    current=max((r for r in capture['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                    pid=current['control_backend_pid']; assert type(pid) is int and pid>0
+                    statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
+                        "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
+                        "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(pid)+ \
+                        " AND datname=current_database() AND usename='bigbrotr_control';"
+                    capture['backend']=json.loads(lab.sql(pg,case['database'],statement))
+                    capture['after_us']=history.server_clock(pg,case['database']); save()
+                    capture['release_before_us']=history.server_clock(pg,case['database']); proxy.send('release')
+                    capture['release_after_us']=history.server_clock(pg,case['database']); proxy.event('released',5); save()
+            else:
+                assert phase=='child-joined'
+                try:
+                    assert proxy is not None
+                    record['wire']['receipt']=proxy.event('receipt',5); assert proxy.wait(5)==0
+                finally:
+                    try:
+                        if proxy is not None:
+                            forced=proxy.process.poll() is None; proxy.stop(); wire=record['wire']
+                            wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),
+                                exit_code=proxy.process.returncode,readers_joined=not any(t.is_alive() for t in proxy.threads),overflow=proxy.overflow,forced_wrapper_stop=forced)
+                            wire['events']=[safe_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+                    finally:
+                        settings=record['configuration']
+                        if settings['proxied'] is not None:
+                            assert config.read_text()==settings['proxied']; config.write_text(settings['direct']); settings['restored']=config.read_text()
+                            (output/(label+'-restored.toml')).write_text(settings['restored'])
+                        save()
+                terminal=transition.read(output/(label+'.terminal.json'))
+                assert terminal['reaped'] is True and terminal['forced'] is False and terminal['error'] is None
+                assert record['wire']['readers_joined'] and not record['wire']['overflow'] and not record['wire']['forced_wrapper_stop']
+                assert record['wire']['stderr']=='' and record['configuration']['restored']==record['configuration']['direct'] and record['errors']==[]
+                record['status']='JOINED_CONFIG_RESTORED'
+            save(); return record
+        except BaseException as error:
+            record['errors'].append(dict(phase=phase,error=repr(error))); save()
+            if phase!='child-joined' and proxy is not None and proxy.process.poll() is None:
+                try: proxy.send('close')
+                except BaseException: pass
+            raise
+    return callback
+
+
+def terminal_wait(pg,client,output,case,directory,expected,catalog,initial):
+    import retirement_wait
+    label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
+    native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store'); assert (native,inputs)==expected[1:]
+    lab.write_json(output/(label+'-before.json'),before); lab.write_json(output/(label+'-inputs.json'),inputs)
+    name=case['clone']; mode='gate' if name in ('head-drift','digest-drift','event-mask') else name
+    def drift(held):
+        # This observer mutates only the selected SQL rows after the actual
+        # proof gate. The probe retains the native owner throughout the wait.
+        record=dict(kind=name,before=held,after=None,statement=oracle.terminal_drift_statement(name,held,initial),sql_output=None,
+            before_us=history.server_clock(pg,case['database']),after_us=None)
+        lab.write_json(output/(label+'-mutation.json'),record); (output/(label+'-mutation.sql')).write_text(record['statement'])
+        record['sql_output']=lab.sql(pg,case['database'],record['statement']); lab.write_json(output/(label+'-mutation.json'),record)
+        record['after']=schema.rows(pg,case['database']); record['after_us']=history.server_clock(pg,case['database'])
+        lab.write_json(output/(label+'-mutation.json'),record)
+        return record
+    response,window,schedule=retirement_wait.invoke(pg,client,output,case,mode,compacted=True,drift=drift if mode=='gate' else None)
+    diagnostic=retirement_wait.diagnostic(pg,output,label,schedule,window,mode,compacted=True)
+    def closure(value,database):
+        assert retirement_wait.closed_and_joined(value,schedule,compacted=True), 'wait auxiliaries remain unexcluded'
+        return oracle.terminal_wait_closed(value,database)
+    _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,closure=closure)
+    args=[case['operation'],case['database'],'/run/secrets/application',case['config'],'/lab/'+label+'-gate']
+    context=dict(case=dict(case),before=before,native_before=native,inputs_before=inputs,after=after,native_after=after_native,inputs_after=after_inputs,
+        response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,case['database']),arguments=args,
+        schedule=schedule,diagnostic=diagnostic,backend_absence=transition.read(output/(label+'-control-backends.json')),
+        backends=transition.read(output/(label+'-backends.json')),custody=transition.read(output/(label+'-custody.json')))
+    lab.write_json(output/(label+'-verification.json'),context)
+    checked=oracle.verify_terminal_context(context,initial,expected,faults=True); controls=oracle.terminal_controls(context,initial,expected,faults=True)
+    case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
+    return after,after_native,after_inputs
+
+
+def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,faults=False):
+    profile=oracle.ActivatedTerminalFaultProfile if faults else oracle.ActivatedTerminalProfile
+    name=clone['name']; origin_name='compacted-initial' if faults else oracle.TERMINAL_ORIGIN_NAMES[name]
     assert clone['origin']==origin_name and expected==origins[origin_name]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.TERMINAL_GRANTS]
     oracle.history_catalog_checked(report['origins'][origin_name]['catalog'],clone['catalog_before'],grants=oracle.TERMINAL_GRANTS)
     transition.observe_origin_absence(pg,clone['database'],output,name+'-logical-origin')
     assert history.dump(client,output,name+'-logical-origin',directory)==expected[1] and history.inputs_at(directory/'store')==expected[2]
-    source=Path(__file__).with_name('installed_cycle_client.py'); target=output/'installed_cycle_client.py'
-    if not target.exists(): shutil.copy2(source,target)
-    assert history.digest(target)==history.digest(source)
-    if 'seed' in oracle.TERMINAL_STEPS[name]:
-        configure(pg,client,output,clone['config'],ack=True,endpoint='ws://127.0.0.1:7447/installed-fixture')
-    else:
-        configure(pg,client,output,clone['config'],ack=True)
-    oracle.terminal_network_checked(tomllib.loads((output/Path(clone['config']).name).read_text()),name)
-    attribution=terminal_attribution(output,directory,initial) if 'seed' in oracle.TERMINAL_STEPS[name] else None
-    if name=='missing-input': expected=activated_quarantine(output,directory,expected)
+    for filename in ('installed_cycle_client.py','fault_proxy.py') if faults else ('installed_cycle_client.py',):
+        source=history.SOURCE/oracle.ACTIVATED_PROXY if filename=='fault_proxy.py' else Path(__file__).with_name(filename)
+        target=output/filename
+        if not target.exists(): shutil.copy2(source,target)
+        assert history.digest(target)==history.digest(source)
+    event='seed' in profile.STEPS[name] and not (faults and name=='zero-job')
+    if event: configure(pg,client,output,clone['config'],ack=True,endpoint='ws://127.0.0.1:7447/installed-fixture')
+    else: configure(pg,client,output,clone['config'],ack=True)
+    oracle.terminal_network_checked(tomllib.loads((output/Path(clone['config']).name).read_text()),name,faults=faults)
+    attribution=terminal_attribution(output,directory,initial) if event else None
+    if not faults and name=='missing-input': expected=activated_quarantine(output,directory,expected)
     predecessor=None
-    for step in oracle.TERMINAL_STEPS[name]:
-        kind=oracle.terminal_mutation_kind(name,step)
+    for step in profile.STEPS[name]:
+        kind=oracle.terminal_mutation_kind(name,step) if not faults else None
         if kind: expected=terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kind)
-        operation=oracle.TERMINAL_SEED_MODE if step=='seed' else step.split('-')[0]+'-activated'
+        operation=(oracle.TERMINAL_ZERO_MODE if faults and name=='zero-job' else oracle.TERMINAL_SEED_MODE) if step=='seed' else (oracle.TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
         case=dict(name=name+'-'+step,clone=name,origin=origin_name,operation=operation,predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case); lab.write_json(output/'result.json',report)
-        if step=='seed': expected=terminal_seed(pg,client,output,case,directory,expected,clone['catalog_before'],initial,attribution)
+        baseline=None
+        if faults and step.endswith('-loss'):
+            baseline=oracle.only(report['cases'],name='baseline-'+step.split('-')[0]+'-baseline')['oracle']
+            assert baseline['status']=='PASS'
+        if step=='seed': expected=terminal_seed(pg,client,output,case,directory,expected,clone['catalog_before'],initial,attribution,faults=faults)
+        elif faults and step=='wait': expected=terminal_wait(pg,client,output,case,directory,expected,clone['catalog_before'],initial)
         else:
+            hook=terminal_delivery_hook(pg,client,output,case,directory) if faults and step.endswith(('-baseline','-loss')) else None
             expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
-                checks=(lambda c,s:oracle.verify_terminal_context(c,s,expected),lambda c,s:oracle.terminal_controls(c,s,expected),oracle.terminal_closed))
+                checks=(lambda c,s:oracle.verify_terminal_context(c,s,expected,faults=faults,baseline=baseline),
+                    lambda c,s:oracle.terminal_controls(c,s,expected,faults=faults,baseline=baseline),partial(oracle.terminal_closed,faults=faults)),fault=hook)
         case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==clone['catalog_before']
         predecessor=case['name']; lab.write_json(output/'result.json',report)
     return predecessor
 
 
-def run_activated_terminal(root,build,product_source):
+def run_activated_terminal(root,build,product_source,*,faults=False):
     oracle.terminal_qualification(transition.read(build/'component-result.json'))
-    origins,initial=oracle.terminal_origins_checked(root)
+    def origins_checked():
+        if not faults: return oracle.terminal_origins_checked(root)
+        seed,initial=oracle.journey_origin_checked(root); return {'compacted-initial':seed},initial
+    origins,initial=origins_checked()
+    profile=oracle.ActivatedTerminalFaultProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
+        database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
+        scope='Compacted activated terminal final COMMIT wire baselines/loss/retries, genuine cancelled-job waits, retirement post-proof H/D/Event-mask and zero-request claimed job') if faults else TERMINAL_SUITE
+    pins=(oracle.JOURNEY_ORIGIN,) if faults else oracle.TERMINAL_ORIGINS
+    names={name:'compacted-initial' for name in profile.CLONES} if faults else oracle.TERMINAL_ORIGIN_NAMES
     try:
-        return transition.run(root,build,suite=TERMINAL_SUITE,sequence=partial(run_terminal_sequence,origins=origins,initial=initial),
-            origin_specs=oracle.TERMINAL_ORIGINS,origin_for_clone=oracle.TERMINAL_ORIGIN_NAMES,extra_grants=oracle.TERMINAL_GRANTS,
+        return transition.run(root,build,suite=suite,sequence=partial(run_terminal_sequence,origins=origins,initial=initial,faults=faults),
+            origin_specs=pins,origin_for_clone=names,extra_grants=oracle.TERMINAL_GRANTS,
             producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
             compacted_activated=True,compacted_terminal=True,product_source=product_source)
-    finally: assert oracle.terminal_origins_checked(root)==(origins,initial)
+    finally: assert origins_checked()==(origins,initial)
 
 
 ORIGIN = oracle.ORIGIN
@@ -1144,5 +1268,6 @@ if __name__ == '__main__':
     profile.add_argument('--initial-preparation-faults',action='store_true',help='Installed compacted completion wire baselines and before/after dispatch delivery loss')
     profile.add_argument('--activated',action='store_true',help='Installed compacted activated-initial recovery and ACK with real COMMIT loss seeds')
     profile.add_argument('--activated-terminal',action='store_true',help='Compacted activated source, real Event abandonment and retirement positive/refusal profile')
+    profile.add_argument('--activated-terminal-faults',action='store_true',help='Separate compacted terminal delivery, real job-lock waits and final-proof drift profile')
     args = parser.parse_args()
-    (run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

@@ -125,7 +125,8 @@ def wait_gates(t, case, mode):
     return gates
 
 
-def diagnosis_checked(value, backend, window, released):
+def diagnosis_checked(value, backend, window, released, *, compacted=False):
+    assert type(compacted) is bool
     assert set(value) == {'backend', 'since', 'until', 'returncode', 'stdout', 'stderr',
         'errors', 'contexts', 'observed_sqlstate'}
     assert value['backend'] == backend and type(value['returncode']) is int and value['returncode'] == 0
@@ -134,16 +135,18 @@ def diagnosis_checked(value, backend, window, released):
     raw = value['stdout'] + value['stderr']
     assert len(raw.encode()) <= 256 * 1024
     prefix = r'\[' + str(backend['pid']) + r'\] '
-    pattern = prefix + r'ERROR:  (?:(?P<code>[0-9A-Z]{5}): )?lineage retirement Control authority expired$'
+    kind='activated' if compacted else 'lineage'
+    pattern = prefix + r'ERROR:  (?:(?P<code>[0-9A-Z]{5}): )?'+kind+' retirement Control authority expired$'
     errors = [line for line in raw.splitlines() if re.search(pattern, line)]
     contexts = [line for line in raw.splitlines() if f'[{backend["pid"]}] CONTEXT:  ' in line
-        and 'function control.require_ingest_successor(bytea,numeric,text)' in line]
+        and ('function control.lock_activated_initial_retirement(bytea)' if compacted else 'function control.require_ingest_successor(bytea,numeric,text)') in line]
     assert value['errors'] == errors and value['contexts'] == contexts
     error, = errors
     context, = contexts
     code = re.search(pattern, error).group('code')
     assert value['observed_sqlstate'] == code and code in (None, '23514')
-    assert re.search(prefix + r'CONTEXT:  PL/pgSQL function control\.require_ingest_successor\(bytea,numeric,text\) line [1-9][0-9]* at RAISE', context)
+    function=r'control\.lock_activated_initial_retirement\(bytea\)' if compacted else r'control\.require_ingest_successor\(bytea,numeric,text\)'
+    assert re.search(prefix + r'CONTEXT:  PL/pgSQL function '+function+r' line [1-9][0-9]* at RAISE', context)
     for line in (error, context):
         # Docker log arrival can race with the probe return, but must follow the
         # holder's independent pre-release observation within this process run.
@@ -151,7 +154,8 @@ def diagnosis_checked(value, backend, window, released):
 
 
 def schedule_checked(value, pg, current, backend, case, mode, refreshed, gates, dispatch, returned,
-        cancelled, diagnostic, window):
+        cancelled, diagnostic, window, *, compacted=False):
+    assert type(compacted) is bool
     fields = {'mode', 'status', 'gates', 'blocks', 'confirmed_blocks', 'expiry_observations',
         'cleanup_errors', 'holder', 'control_backend', 'control', 'refreshed', 'before_holder',
         'held', 'go_before_us', 'dispatch', 'release_before_us', 'release_after_us'}
@@ -184,7 +188,7 @@ def schedule_checked(value, pg, current, backend, case, mode, refreshed, gates, 
     assert holder['settings']['sqlstate'] == '00000' and holder['settings']['rows'] == 1
     assert [loads(s) for s in holder['settings']['lines']] == [dict(statement_timeout='30s', lock_timeout='20s', idle_timeout='1min')]
     assert holder['begin'] == holder['rollback'] == dict(sqlstate='00000', rows=0, lines=[])
-    gap = only(pg['acquisition_gaps'], producer_epoch=3)
+    gap = only(pg['acquisition_gaps'], producer_epoch=2 if compacted else 3)
     job = only(pg['jobs'], job_id=gap['job_id'])
     assert job['request_key'] == '\\x' + 'a6' * 16 and job['state'] == 'cancelled'
     assert job['job_revision'] == 4 and job['checkpoint_revision'] == 0
@@ -216,7 +220,7 @@ def schedule_checked(value, pg, current, backend, case, mode, refreshed, gates, 
             assert sample['holder']['backend_xid'] == xid
         last = samples[-1]; waiter = last['waiter']
         assert waiter['state'] == 'active' and waiter['wait_event_type'] == 'Lock' and physical['pid'] in waiter['blockers']
-        assert ' '.join(waiter['query'].split()) == 'SELECT control.require_ingest_successor($1::bytea,$2::text::numeric,$3::text)'
+        assert ' '.join(waiter['query'].split()) == ('SELECT control.require_activated_initial_retirement($1::bytea)' if compacted else 'SELECT control.require_ingest_successor($1::bytea,$2::text::numeric,$3::text)')
         assert any(lock['type'] == 'transactionid' and lock['mode'] == 'ShareLock'
             and lock['transaction'] == xid and lock['granted'] is False for lock in last['waiting_locks'])
         return previous
@@ -252,7 +256,7 @@ def schedule_checked(value, pg, current, backend, case, mode, refreshed, gates, 
         + " AND backend_start='" + physical['backend_start'] + "'::timestamptz AND datname='" + backend['database'] + "';")
     assert closed['observation'] == '0'
     if mode == 'expiry':
-        diagnosis_checked(diagnostic, backend, window, release_before)
+        diagnosis_checked(diagnostic, backend, window, release_before,compacted=compacted)
 
 
 def prefix(t, m, known, case, index):

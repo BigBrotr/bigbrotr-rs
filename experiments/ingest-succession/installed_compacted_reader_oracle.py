@@ -3009,6 +3009,40 @@ class ActivatedTerminalProfile:
         'Mixed restore/backup, physical loss and capacity')
 
 
+
+# A separately selected extension: the first25 terminal profile stays exact.
+TERMINAL_FAULT_STEPS={
+    'baseline':('seed','source-baseline','abandon-baseline','retire-baseline'),
+    **{op+'-'+side:('seed',*(('source',) if op=='abandon' else ('source','abandon') if op=='retire' else ()),op+'-loss',op+'-retry')
+       for op in ('source','abandon','retire') for side in ('before','after')},
+    **{mode:('seed','source','abandon','wait','retire') for mode in ('cancel','expiry')},
+    **{mode:('seed','source','abandon','wait') for mode in ('head-drift','digest-drift','event-mask')},
+    'zero-job':('seed','source','retire-unresolved','abandon','retire','retire-retry'),
+}
+TERMINAL_ZERO_MODE='successor-live-compacted-terminal-zero-claim'
+TERMINAL_WAIT_MODES={name:'successor-activated-retirement-compacted-'+('gate' if name in ('head-drift','digest-drift','event-mask') else name)
+    for name in ('cancel','expiry','head-drift','digest-drift','event-mask')}
+# Source-derived selectors; each loss requires its matching measured baseline.
+TERMINAL_COMMIT_SELECTORS={'source':6,'abandon':8,'retire':5}
+
+
+class ActivatedTerminalFaultProfile:
+    DIRECTORY='installed-compacted-terminal-faults'
+    LABEL='org.bigbrotr.installed-compacted-terminal-faults'
+    STATUS='PASS_INSTALLED_COMPACTED_TERMINAL_DELIVERY_WAITS'
+    DATABASE_PREFIX='bb_compacted_terminal_fault_'
+    CLIENT_PREFIX='bigbrotr-compacted-terminal-fault-'
+    CLONES=tuple(TERMINAL_FAULT_STEPS)
+    STEPS=TERMINAL_FAULT_STEPS
+    CASES=tuple(name+'-'+step for name in TERMINAL_FAULT_STEPS for step in TERMINAL_FAULT_STEPS[name])
+    GRANTS=TERMINAL_GRANTS
+    NOT_RUN=('Actual product reclamation/GC and unlink',
+        'Source/abandonment ancestor H/D drift after earlier proof; retirement gate does not qualify those final transactions',
+        'Unresolved import, draining owner and isolated native OPEN retirement guard',
+        'Later activated successors, live frontier, retained Archive frontier and empty retirement',
+        'Mixed restore/backup, physical loss, process kill and capacity')
+
+
 def terminal_origins_checked(root,raw=None):
     previous,initial=activated_origins_checked(root,raw)
     tail,basis=qualified_endpoint(root,raw,initial_journey=False,terminal_origin=TERMINAL_TAIL_ORIGIN)
@@ -3016,22 +3050,26 @@ def terminal_origins_checked(root,raw=None):
     return {**{k:v for k,v in previous.items() if k!='initial'},'activated-tail':tail},initial
 
 
-def terminal_specification(case):
-    name=case['clone']; assert name in TERMINAL_STEPS
+def terminal_specification(case,*,faults=False):
+    assert type(faults) is bool
+    profile=ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
+    all_steps=profile.STEPS
+    name=case['clone']; assert name in all_steps
     prefix=name+'-'; assert case['name'].startswith(prefix)
-    step=case['name'][len(prefix):]; steps=TERMINAL_STEPS[name]; index=steps.index(step)
-    assert case['origin']==TERMINAL_ORIGIN_NAMES[name]
+    step=case['name'][len(prefix):]; steps=all_steps[name]; index=steps.index(step)
+    assert case['origin']==('compacted-initial' if faults else TERMINAL_ORIGIN_NAMES[name])
     assert case['predecessor']==(prefix+steps[index-1] if index else None)
-    operation=TERMINAL_SEED_MODE if step=='seed' else step.split('-')[0]+'-activated'
+    operation=(TERMINAL_ZERO_MODE if faults and name=='zero-job' else TERMINAL_SEED_MODE) if step=='seed' else (TERMINAL_WAIT_MODES[name] if faults and step=='wait' else step.split('-')[0]+'-activated')
     assert case['operation']==operation
-    assert re.fullmatch(ActivatedTerminalProfile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name.replace('-','_'),case['database'])
+    assert re.fullmatch(profile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name.replace('-','_'),case['database'])
     assert len(case['database'])<=63 and case['config']=='/lab/'+case['database']+'.toml'
     return name,step
 
 
-def terminal_network_checked(config,name):
-    assert name in TERMINAL_STEPS
-    endpoint='ws://127.0.0.1:7447/'+('installed-fixture' if name in ('event','unbound-event') else 'installed-successor-fixture')
+def terminal_network_checked(config,name,*,faults=False):
+    assert type(faults) is bool and name in (TERMINAL_FAULT_STEPS if faults else TERMINAL_STEPS)
+    event=(name!='zero-job') if faults else name in ('event','unbound-event')
+    endpoint='ws://127.0.0.1:7447/'+('installed-fixture' if event else 'installed-successor-fixture')
     assert config['network']['private']['rules']==[dict(endpoint=endpoint,cidr='127.0.0.1/32',port=7447)]
     assert config['network']['dns']['resolver']=='127.0.0.1:9' and config['network']['tls']['extra_roots']==[]
 
@@ -3102,11 +3140,12 @@ def terminal_event_science(plan,prepared_rows,inputs,contents,initial,report,rec
     return dict(plan=plan,ds=ds,slot=slot,rows=rows,inputs=originals),raw,receipt
 
 
-def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock):
+def verify_terminal_seed(events,expected,initial,case,window,attribution,receive_clock,*,faults=False):
     import activated_source_durable_oracle as durable
     import initial_live_oracle as live
     import initial_succession_oracle as original
-    name,step=terminal_specification(case); assert step=='seed'
+    name,step=terminal_specification(case,faults=faults); assert step=='seed'
+    zero=faults and name=='zero-job'; mode=TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE
     pg,native,inputs=copy.deepcopy(expected)
     plan,rows=history_seed_plan(pg,native,inputs,only(events,event='successor-plan'),initial,compacted_initial=True)
     model.clock(plan['created_at_us'],window); position=0
@@ -3124,37 +3163,51 @@ def verify_terminal_seed(events,expected,initial,case,window,attribution,receive
     after=snap('prepared'); original.prepared(pg,after,plan,control,compacted_history=True); pg=after
     backend=take('successor-backend','initial')
     assert backend==dict(event='successor-backend',stage='initial',database=case['database'],pid=control['control_backend_pid'],backend_start=control['control_backend_start'],control_epoch=control['epoch'],present=True)
-    assert take('live-activation-start')==dict(event='live-activation-start',mode=TERMINAL_SEED_MODE,control_epoch=control['epoch'])
+    assert take('live-activation-start')==dict(event='live-activation-start',mode=mode,control_epoch=control['epoch'])
     activated=take('live-activation-result'); after=snap('activated-zero')
     assert activated==dict(event='live-activation-result',writer=True,error=None,activated_at_us=activated['activated_at_us'])
     live.activated(pg,after,plan,control,window,activated['activated_at_us']); pg=after
-    job=take('live-durable-job'); after=snap('durable-job-claimed')
-    control=durable.authenticated_job(pg,after,job,control,window,modern=True); pg=after
-    for kind in ('visibility','observation'):
-        certification=take('live-terminal-certification')
-        assert certification==dict(event='live-terminal-certification',kind=kind,available=True) and certification['available'] is True
-    wire=take('live-durable-wire'); subscription=wire['request'][1]
-    assert re.fullmatch('[0-9a-f]{32}0000000000000001',subscription) and int(subscription[:32],16)
-    assert wire==dict(event='live-durable-wire',request=['REQ',subscription,dict(kinds=[1],limit=1)],signed_event=durable.SIGNED,events=1,eose=True)
-    assert take('live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
-    same(pg,snap('durable-received')); observation=take('live-durable-input')
-    assert observation['wire_request']==subscription and job['accepted_at_us']<=observation['received_at_us']<job['deadline_at_us']
-    science,raw,receipt=terminal_event_science(plan,rows,inputs,attribution,initial,observation,receive_clock,window)
-    native=journey_dump(science['rows'],141); inputs=science['inputs']
-    after=snap('terminal-event'); durable.admitted(pg,after,science,raw,receipt,control,observation,window,modern=True); pg=after
-    assert take('live-terminal-event')==dict(event='live-terminal-event',request=1,receipt=receipt.hex(),dependencies=10,
-        source_cut=5,native_rows=98,native_sequence=141,peer_joined=True,job_complete=False,session_revoked=False)
+    if zero:
+        assert attribution is None
+        pg,control=terminal_zero_claim(take,snap,pg,control,plan,window)
+    else:
+        job=take('live-durable-job'); after=snap('durable-job-claimed')
+        control=durable.authenticated_job(pg,after,job,control,window,modern=True); pg=after
+        for kind in ('visibility','observation'):
+            certification=take('live-terminal-certification')
+            assert certification==dict(event='live-terminal-certification',kind=kind,available=True) and certification['available'] is True
+        wire=take('live-durable-wire'); subscription=wire['request'][1]
+        assert re.fullmatch('[0-9a-f]{32}0000000000000001',subscription) and int(subscription[:32],16)
+        assert wire==dict(event='live-durable-wire',request=['REQ',subscription,dict(kinds=[1],limit=1)],signed_event=durable.SIGNED,events=1,eose=True)
+        assert take('live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
+        same(pg,snap('durable-received')); observation=take('live-durable-input')
+        assert observation['wire_request']==subscription and job['accepted_at_us']<=observation['received_at_us']<job['deadline_at_us']
+        science,raw,receipt=terminal_event_science(plan,rows,inputs,attribution,initial,observation,receive_clock,window)
+        native=journey_dump(science['rows'],141); inputs=science['inputs']
+        after=snap('terminal-event'); durable.admitted(pg,after,science,raw,receipt,control,observation,window,modern=True); pg=after
+        assert take('live-terminal-event')==dict(event='live-terminal-event',request=1,receipt=receipt.hex(),dependencies=10,
+            source_cut=5,native_rows=98,native_sequence=141,peer_joined=True,job_complete=False,session_revoked=False)
     same(pg,snap('final-before-control-end'))
+    if zero:
+        assert take('live-zero-claim-release')==dict(event='live-zero-claim-release',attempted=True,error=None)
+        assert take('live-zero-claim-driver','control')==dict(event='live-zero-claim-driver',stage='control',joined=True,failed=False,aborted=False,error=None)
     assert take('successor-control','final','released-and-joined')==dict(event='successor-control',stage='final',phase='released-and-joined',resource=control['resource_id'][2:],epoch=control['epoch'])
+    if zero:
+        assert take('live-zero-claim-backend-absence')==dict(event='live-zero-claim-backend-absence',error=None)
+        assert take('successor-backend','initial')==dict(backend,present=False)
     after=snap('final-after-control-end'); original.ended(pg,after,control,True)
     released=only(after['owner_epochs'],role='control',epoch=control['epoch'])
     model.fresh_xmin(released['xmin'],pg); model.clock(released['released_at_us'],window)
-    assert only(pg['producer_outcomes'],producer_epoch=2)['recorded_at_us']<=released['released_at_us']; pg=after
-    assert take('successor-backend','initial')==dict(backend,present=False); same(pg,snap('final'))
-    assert take('live-complete')==dict(event='live-complete',mode=TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=True)
+    assert (only(pg['jobs'],request_key='\\x'+'a6'*16)['created_at_us'] if zero else only(pg['producer_outcomes'],producer_epoch=2)['recorded_at_us'])<=released['released_at_us']; pg=after
+    if not zero: assert take('successor-backend','initial')==dict(backend,present=False)
+    same(pg,snap('final'))
+    if zero: assert take('live-zero-claim-driver','observer')==dict(event='live-zero-claim-driver',stage='observer',joined=True,failed=False,aborted=False,error=None)
+    complete=dict(event='live-complete',mode=mode,native='closed',control='released-and-joined',writer=False,admission=not zero)
+    if zero: complete['passed']=True
+    assert take('live-complete')==complete
     assert position==len(events)
-    return (pg,native,inputs),dict(status='PASS',case=case['name'],native_rows=98,native_sequence=141,
-        original_target_files=1,compacted_requests=7,original_predecessor_requests=0,target_events=1,target_source_cut=5,
+    return (pg,native,inputs),dict(status='PASS',case=case['name'],native_rows=84 if zero else 98,native_sequence=125 if zero else 141,
+        original_target_files=0 if zero else 1,compacted_requests=7,original_predecessor_requests=0,target_events=0 if zero else 1,target_source_cut=0 if zero else 5,
         activating_control_epoch=control['epoch'],claimed_acquisition_jobs=1,job_complete=False,session_revoked=False)
 
 
@@ -3172,6 +3225,7 @@ def terminal_failure(name,step):
 
 TERMINAL_ERRORS={
     'head':'producer operation unavailable: Progress(InvalidContext)',
+    'commit-loss':'producer operation unavailable: CommitUnknown',
     'missing-input':'producer operation unavailable: Native(RequestInput(Missing))',
     'reserved-tail':'producer operation unavailable: Control(InvalidMetadata)',
     'retirement-prerequisite':'producer operation unavailable: Control(Backend)',
@@ -3182,20 +3236,25 @@ TERMINAL_ERRORS={
 }
 
 
-def terminal_seed_closed(response,database):
+def terminal_seed_closed(response,database,*,zero=False):
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
     events=[loads(v) for v in response['stdout'].splitlines()]
-    assert events[-1]==dict(event='live-complete',mode=TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=True)
+    wanted=dict(event='live-complete',mode=TERMINAL_ZERO_MODE if zero else TERMINAL_SEED_MODE,native='closed',control='released-and-joined',writer=False,admission=not zero)
+    if zero: wanted['passed']=True
+    assert events[-1]==wanted
     present,absent=[e for e in events if e['event']=='successor-backend']
     assert present['database']==database and present['present'] is True and absent==dict(present,present=False)
-    assert only(events,event='live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
+    if not zero: assert only(events,event='live-durable-peer-closed')==dict(event='live-durable-peer-closed',eof=True)
+    else:
+        for stage in ('control','observer'):
+            assert only(events,event='live-zero-claim-driver',stage=stage)==dict(event='live-zero-claim-driver',stage=stage,joined=True,failed=False,aborted=False,error=None)
     # The exact source-bound probe drops the writer before release, joins the
     # Control driver, then joins the observer before returning process status0.
     return events
 
 
-def terminal_closed(response,case):
-    name,step=terminal_specification(case); failure=terminal_failure(name,step); code=4 if failure else 0
+def terminal_closed(response,case,*,faults=False):
+    name,step=terminal_specification(case,faults=faults); failure='commit-loss' if faults and step.endswith('-loss') else terminal_failure(name,step); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -3230,7 +3289,14 @@ def terminal_basis(expected):
     return dict(issued=issued,acknowledged=acknowledged,cut=cut,digest=sha(preimage+be(cut)),receipts=receipts)
 
 
-def terminal_source_delta(m,observed,basis):
+def terminal_effect_time(m,at,lower,*,released=True):
+    model.clock(at,m.window)
+    assert max(lower,m.control['acquired_at_us'])<=at<m.control['lease_expires_at_us']
+    if released: assert at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+    else: assert m.control['state']=='active' and m.control['released_at_us'] is None
+
+
+def terminal_source_delta(m,observed,basis,*,released=True):
     producer=only(m.pg['producer_epochs'],producer_epoch=2); source=only(m.pg['source_streams'],owner_epoch=2)
     if producer['state']=='open':
         actual=only(observed['producer_epochs'],producer_epoch=2); model.fresh_xmin(actual['xmin'],m.pg)
@@ -3239,12 +3305,12 @@ def terminal_source_delta(m,observed,basis):
     if source['state']=='open':
         actual=only(observed['source_streams'],owner_epoch=2); at=actual['closed_at_us']
         model.clock(at,m.window); model.fresh_xmin(actual['xmin'],m.pg)
-        assert max(source['opened_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+        terminal_effect_time(m,at,source['opened_at_us'],released=released)
         source.update(state='closed',last_complete_sequence=basis['cut'],closure_digest='\\x'+basis['digest'],closed_at_us=at,xmin=actual['xmin'])
     assert source['state']=='closed' and (source['last_complete_sequence'],source['closure_digest'])==(basis['cut'],'\\x'+basis['digest'])
 
 
-def terminal_abandon_delta(m,observed,basis):
+def terminal_abandon_delta(m,observed,basis,*,released=True):
     activation=only(m.pg['initial_ingest_activations']); source=only(m.pg['source_streams'],owner_epoch=2)
     prior=[g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2]
     jobs=[j for j in m.pg['jobs'] if j['kind']=='acquisition' and (j['owner_resource_id'],j['owner_epoch'],j['owner_incarnation'])==
@@ -3254,7 +3320,7 @@ def terminal_abandon_delta(m,observed,basis):
         assert job['state']=='queued' and job['job_revision']==2 and job['checkpoint_revision']==0
         gap=only(observed['acquisition_gaps'],job_id=job['job_id']); model.fresh_xmin(gap['xmin'],m.pg)
         at=gap['abandoned_at_us']; model.clock(at,m.window)
-        assert max(source['closed_at_us'],job['created_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+        terminal_effect_time(m,at,max(source['closed_at_us'],job['created_at_us']),released=released)
         wanted=dict(job_id=job['job_id'],dataset_id=job['dataset_id'],producer_slot_id=activation['producer_slot_id'],producer_epoch=2,
             shard_id=0,source_owner_epoch=2,last_complete_sequence=basis['cut'],source_closure_digest='\\x'+basis['digest'],
             previous_job_revision=2,previous_owner_resource=activation['activated_by_resource'],previous_owner_epoch=activation['activated_by_epoch'],
@@ -3266,7 +3332,7 @@ def terminal_abandon_delta(m,observed,basis):
     return len(jobs)
 
 
-def terminal_retire_delta(m,observed,basis):
+def terminal_retire_delta(m,observed,basis,*,released=True):
     owner=only(m.pg['owner_epochs'],role='ingest',epoch=2); role=only(m.pg['role_instances'],role_instance_id=owner['role_instance_id'])
     producer=only(m.pg['producer_epochs'],producer_epoch=2); source=only(m.pg['source_streams'],owner_epoch=2)
     domains=[d for d in m.pg['allocation_domains'] if d['owner_epoch']==2]; assert len(domains)==9
@@ -3276,7 +3342,7 @@ def terminal_retire_delta(m,observed,basis):
     assert producer['state']=='closing' and owner['state']=='active' and role['retired_at_us'] is None and all(d['state']=='active' for d in domains)
     actual=only(observed['producer_epochs'],producer_epoch=2); at,xid=actual['retired_at_us'],actual['xmin']
     model.clock(at,m.window); model.fresh_xmin(xid,m.pg)
-    assert max(source['closed_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+    terminal_effect_time(m,at,source['closed_at_us'],released=released)
     producer.update(state='retired',retired_at_us=at,closure_digest='\\x'+basis['digest'],xmin=xid)
     owner.update(state='released',released_at_us=at,exclusion_method='storage_fenced',exclusion_digest='\\x'+basis['digest'],xmin=xid)
     role.update(retired_at_us=at,xmin=xid)
@@ -3284,8 +3350,8 @@ def terminal_retire_delta(m,observed,basis):
     return 12
 
 
-def verify_terminal_context(context,initial,expected):
-    case=context['case']; name,step=terminal_specification(case)
+def verify_terminal_context(context,initial,expected,*,faults=False,baseline=None):
+    case=context['case']; name,step=terminal_specification(case,faults=faults)
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after']
@@ -3301,18 +3367,23 @@ def verify_terminal_context(context,initial,expected):
         assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
         assert context['arguments']==[case['operation'],case['database'],'/run/secrets/application',case['config']]
         number(context['response']['seconds'],0,120)
-        revision=case['database'].removeprefix(ActivatedTerminalProfile.DATABASE_PREFIX)[:7]
-        assert context['response']['command']==['docker','exec','bigbrotr-compacted-terminal-'+revision,'/build/ingest_bootstrap_probe',*context['arguments']]
-        events=terminal_seed_closed(context['response'],case['database'])
-        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'])
+        profile=ActivatedTerminalFaultProfile if faults else ActivatedTerminalProfile
+        revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
+        client_prefix=ActivatedTerminalFaultProfile.CLIENT_PREFIX if faults else 'bigbrotr-compacted-terminal-'
+        assert context['response']['command']==['docker','exec',client_prefix+revision,'/build/ingest_bootstrap_probe',*context['arguments']]
+        events=terminal_seed_closed(context['response'],case['database'],zero=faults and name=='zero-job')
+        after,result=verify_terminal_seed(events,expected,initial,case,window,context['attribution'],context['receive_clock'],faults=faults)
         same(context['after'],after[0]); assert (context['native_after'],context['inputs_after'])==after[1:]
         return result
+    if faults and step=='wait': return verify_terminal_wait(context,initial,expected)
+    if faults and step.endswith(('-baseline','-loss')):
+        return verify_terminal_delivery(context,initial,expected,baseline)
     assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=terminal_closed(context['response'],case); failure=terminal_failure(name,step)
+    report=terminal_closed(context['response'],case,faults=faults); failure=terminal_failure(name,step)
     backend_checked(context['backend'],case['database'],expected[0],context['after'])
     m=model.Model(*expected,window); preparation_control(m,context['after'],success=failure is None,renewed=failure=='unbound-event')
     native=expected[1]; basis=terminal_basis(expected); rows_retired=jobs=0
@@ -3347,9 +3418,9 @@ def verify_terminal_context(context,initial,expected):
         retired_rows=rows_retired,abandoned_jobs=jobs,tables=77,input_files=len(expected[2]))
 
 
-def terminal_controls(context,initial,expected):
+def terminal_controls(context,initial,expected,*,faults=False,baseline=None):
     import json
-    name,step=terminal_specification(context['case'])
+    name,step=terminal_specification(context['case'],faults=faults)
     changes=[('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1)),
         ('native-row-loss',lambda c:c['native_after']['rows'].pop()),
         ('ancestor-checkpoint',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(checkpoint_digest='\\x'+'00'*32)),
@@ -3367,17 +3438,48 @@ def terminal_controls(context,initial,expected):
             only(events,event='live-terminal-certification',kind=kind)['available']=False
             c['response']['stdout']=''.join(json.dumps(event)+'\n' for event in events)
         changes.extend([('unknown-custody',lambda c:c['custody'].update(status='UNKNOWN')),
-            ('wrong-seed-command',lambda c:c['response']['command'].append('unexpected')),
-            ('false-visibility-certification',lambda c:false_certification(c,'visibility')),
-            ('false-observation-certification',lambda c:false_certification(c,'observation')),
-            ('attribution-original-loss',lambda c:c['attribution'].pop(next(iter(c['attribution'])))),
-            ('receive-resolution',lambda c:c['receive_clock'].update(resolution_us=c['receive_clock']['resolution_us']+1))])
+            ('wrong-seed-command',lambda c:c['response']['command'].append('unexpected'))])
+        if faults and name=='zero-job':
+            def zero_execution(c):
+                events=[loads(line) for line in c['response']['stdout'].splitlines()]
+                only(events,event='live-zero-claim-state')['executions']=1
+                c['response']['stdout']=''.join(json.dumps(e)+'\n' for e in events)
+            changes.extend([('invented-zero-execution',zero_execution),
+                ('wrong-claim-owner',lambda c:only(c['after']['jobs'],request_key='\\x'+'a6'*16).update(owner_epoch=999))])
+        else:
+            changes.extend([('false-visibility-certification',lambda c:false_certification(c,'visibility')),
+                ('false-observation-certification',lambda c:false_certification(c,'observation')),
+                ('attribution-original-loss',lambda c:c['attribution'].pop(next(iter(c['attribution'])))),
+                ('receive-resolution',lambda c:c['receive_clock'].update(resolution_us=c['receive_clock']['resolution_us']+1))])
+    elif faults and step=='wait':
+        def event_change(c,event,key,value,stage=None):
+            events=[loads(line) for line in c['response']['stdout'].splitlines()]
+            fields=dict(event=event)
+            if stage is not None: fields['stage']=stage
+            only(events,**fields)[key]=value
+            c['response']['stdout']=''.join(json.dumps(e)+'\n' for e in events)
+        changes.extend([('unknown-custody',lambda c:c['custody'].update(status='UNKNOWN')),
+            ('unjoined-readers',lambda c:c['response'].update(readers_joined=False)),
+            ('wrong-wait-command',lambda c:c['response']['command'].append('unexpected')),
+            ('different-typed-refusal',lambda c:event_change(c,'retirement-expiry-result','error','Control(Backend)' if name!='expiry' else 'Native(AuthorityUnavailable)')),
+            ('missing-compacted-proof',lambda c:event_change(c,'retirement-compacted-proof','compacted_requests',0)),
+            ('invented-original-proof',lambda c:event_change(c,'retirement-compacted-proof','original_requests_replayed',7)),
+            ('holder-cleanup',lambda c:c['schedule']['cleanup_errors'].append(dict(error='unjoined'))),
+            ('source-proof-digest',lambda c:event_change(c,'retirement-expiry-proof','sha256','00'*32))])
+        if name in ('cancel','expiry'):
+            changes.extend([('different-job-lock',lambda c:c['schedule']['holder'].update(statement='SELECT 1')),
+                ('missing-blocking-witness',lambda c:c['schedule']['blocks'][-1]['waiter'].update(blockers=[])),
+                ('holder-backend-present',lambda c:c['schedule']['holder']['closed'].update(observation='1'))])
+        else:
+            changes.extend([('mutation-before-proof',lambda c:c['schedule']['mutation'].update(before_us=c['server_window']['before_us'])),
+                ('unbound-mutation-statement',lambda c:c['schedule']['mutation'].update(statement='SELECT 1;')),
+                ('mutation-extra-table',lambda c:c['schedule']['mutation']['after']['jobs'].clear())])
     else:
         changes.extend([('unreaped-child',lambda c:c['response']['terminal'].update(reaped=False)),
             ('unexpected-argv',lambda c:c['response']['terminal']['command'].append('--successor')),
             ('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)])),
             ('unknown-process',lambda c:c['response'].update(outcome='UNKNOWN'))])
-        if terminal_failure(name,step) is None:
+        if terminal_failure(name,step) is None and not (faults and step.endswith('-loss')):
             def report_value(c,key,value):
                 report=loads(c['response']['stdout']); report[key]=value; c['response']['stdout']=json.dumps(report)+'\n'
             changes.extend([('false-original-count',lambda c:report_value(c,'resolved_requests','7')),
@@ -3389,14 +3491,27 @@ def terminal_controls(context,initial,expected):
             if step.startswith('retire'):
                 changes.append(('one-domain-not-retired',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(state='active')))
                 changes.append(('retired-row-transaction',lambda c:only(c['after']['producer_epochs'],producer_epoch=2).update(xmin='4294967000')))
-            if name in ('event','unbound-event') and step.startswith(('abandon','retire')):
+            if (name in ('event','unbound-event') or faults) and step.startswith(('abandon','retire')):
                 changes.append(('gap-attribution',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=2).update(previous_owner_epoch=999)))
         else:
             changes.append(('different-typed-refusal',lambda c:c['response'].update(stderr='error: producer operation unavailable: Native(StateMismatch)\n')))
+    if faults and step.endswith(('-baseline','-loss')):
+        changes.extend([('proxy-not-joined',lambda c:c['fixture']['delivery_fault']['wire'].update(readers_joined=False)),
+            ('proxy-source',lambda c:c['fixture']['delivery_fault']['wire'].update(source_sha256='00'*32)),
+            ('proxy-counter',lambda c:c['fixture']['delivery_fault']['wire']['receipt'].update(commits_seen=63)),
+            ('unrestored-config',lambda c:c['fixture']['delivery_fault']['configuration'].update(restored='')),
+            ('source-owner-attribution',lambda c:only(c['after']['source_streams'],owner_epoch=2).update(owner_resource_id='\\x'+'ff'*16))])
+        if step.endswith('-baseline'):
+            changes.append(('held-query',lambda c:c['fixture']['delivery_fault']['held']['backend'].update(query='SELECT 1')))
+            changes.append(('held-ancestor-head',lambda c:only(c['fixture']['delivery_fault']['held']['control']['producer_checkpoints'],producer_epoch=1).update(checkpoint_digest='\\x'+'00'*32)))
+        if step.startswith('abandon') and name.endswith('-after'):
+            changes.append(('atomic-gap-job-xmin',lambda c:only(c['after']['jobs'],job_id=only(c['after']['acquisition_gaps'],producer_epoch=2)['job_id']).update(xmin='4294967000')))
+        if step.startswith('retire') and name.endswith('-after'):
+            changes.append(('atomic-domain-xmin',lambda c:only(c['after']['allocation_domains'],owner_epoch=2,dictionary_kind=1).update(xmin='4294967000')))
     rejected=[]
     for label,change in changes:
         c=copy.deepcopy(context); change(c)
-        try: verify_terminal_context(c,initial,expected)
+        try: verify_terminal_context(c,initial,expected,faults=faults,baseline=baseline)
         except (AssertionError,KeyError,TypeError,ValueError,StopIteration,IndexError): rejected.append(label)
         else: raise AssertionError('accepted altered terminal evidence: '+label)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
@@ -3467,3 +3582,331 @@ def terminal_qualification(component):
         'compacted_activated_source_preserves_optional_tail_but_refuses_reserved_gaps',
         'compacted_activated_source_ack_handoff_retains_final_input_seal')
     assert {prefix+n for n in names}<=set(component['test_names']['initial_reconstruction'])
+
+
+TERMINAL_SOURCE_FINAL_QUERY="UPDATE control.source_streams SET state='closed', closed_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint, last_complete_sequence=$3::text::numeric,closure_digest=$4::bytea WHERE dataset_id=$1::bytea AND shard_id=$2::bigint AND owner_epoch=2 AND state='closing'"
+TERMINAL_AUTHORITY_QUERY="SELECT lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric"
+
+
+def terminal_delivery_checked(record,case,window,baseline,expected,after):
+    import tomllib
+    from fault_cases import safe_event
+    name,step=terminal_specification(case,faults=True); normal=step.endswith('-baseline'); operation=step.split('-')[0]
+    target=TERMINAL_COMMIT_SELECTORS[operation]; mode='hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
+    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}
+    assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[]
+    assert (record['operation'],record['mode'],record['target_commit'])==(operation,mode,target)
+    settings=record['configuration']; assert set(settings)=={'path','direct','proxied','restored'} and settings['path']==case['config']
+    assert settings['direct']==settings['restored']
+    direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'))
+    terminal_network_checked(direct,name,faults=True)
+    wire=record['wire']; assert set(wire)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
+    source=sha(retained.regular_read(Path(__file__).resolve().parents[2]/ACTIVATED_PROXY)); assert wire['source_sha256']==source
+    assert wire['readers_joined'] is True and wire['overflow'] is False and wire['forced_wrapper_stop'] is False
+    assert type(wire['exit_code']) is int and wire['exit_code']==0 and wire['stderr']==''
+    events=[safe_event(loads(line)) for line in wire['stdout'].splitlines()]
+    assert events==wire['events'] and [e['elapsed_ns'] for e in events]==sorted(e['elapsed_ns'] for e in events)
+    ready,receipt=wire['ready'],wire['receipt']; assert events[0]==ready and events[-1]==receipt
+    assert ready['proxy_sha256']==source and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    number(ready['listen_port'],1,65535,integer=True); number(ready['pid'],1,integer=True)
+    assert (ready['max_frame_bytes'],ready['max_wire_bytes'],ready['max_messages'],ready['deadline_seconds'])==(1024**2,64*1024**2,20000,30)
+    predicted=copy.deepcopy(direct); assert predicted['postgres']['control']['endpoint']=='127.0.0.1:5432'
+    predicted['postgres']['control']['endpoint']='127.0.0.1:'+str(ready['listen_port']); assert proxied==predicted
+    revision=case['database'].removeprefix(ActivatedTerminalFaultProfile.DATABASE_PREFIX)[:7]
+    assert wire['command']==['docker','exec','-i',ActivatedTerminalFaultProfile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
+        '--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits','3','--deadline-seconds','30']
+    counts=lambda e:[e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]
+    assert counts(ready)==[0]*4 and ready['faults']==0 and ready['held'] is False and ready['hold_action'] is None
+    for e in events: assert (e['mode'],e['commit_number'])==(mode,target)
+    assert receipt['event']=='receipt' and receipt['faults']==1 and receipt['frames'] and receipt['declared_wire_bytes']<=64*1024**2
+    wanted=dict(operation=operation,selected_commit=target,total_successful_commits=target+3,boundary='hold-before-forward-released')
+    if normal:
+        assert baseline is None and [e['event'] for e in events]==['ready','held','released','receipt']
+        held=record['held']; assert set(held)=={'event','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
+        assert held['event']==events[1] and counts(events[1])==[target,target-1,target-1,target-1]
+        assert events[1]['held'] is True and events[1]['hold_action'] is None
+        m=model.Model(*expected,window); preparation_control(m,held['control'],success=False,renewed=True)
+        m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        if operation=='source':
+            producer=only(m.pg['producer_epochs'],producer_epoch=2); actual=only(held['control']['producer_epochs'],producer_epoch=2)
+            assert producer['state']=='open'; model.fresh_xmin(actual['xmin'],m.pg); producer.update(state='closing',xmin=actual['xmin'])
+        same(held['control'],m.pg); assert held['inputs']==expected[2]
+        for key in ('before_us','after_us','release_before_us','release_after_us'): model.clock(held[key],window)
+        assert held['before_us']<=held['after_us']<=held['release_before_us']<=held['release_after_us']<m.control['lease_expires_at_us']
+        b=held['backend']; assert b==dict(pid=m.control['control_backend_pid'],backend_start=m.control['control_backend_start'],database=case['database'],
+            user='bigbrotr_control',state='idle in transaction',xact_start=b['xact_start'],query=b['query'],observed_at_us=b['observed_at_us'])
+        assert b['xact_start'] is not None and held['before_us']<=b['observed_at_us']<=held['after_us']
+        assert ' '.join(b['query'].split())==(TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
+        assert counts(events[2])==counts(events[1]) and events[2]['held'] is False and events[2]['hold_action']=='release'
+        assert counts(receipt)==[target+3]*4 and receipt['reason'] in ('frontend-eof','backend-eof') and receipt['held'] is False and receipt['hold_action']=='release'
+        # The held claim and its exact last refresh survive until later release.
+        current=only(after['owner_epochs'],role='control',epoch=m.control['epoch'])
+        assert current['lease_expires_at_us']>m.control['lease_expires_at_us'] and int(current['xmin'])>int(m.control['xmin'])
+        for key in ('resource_id','role_instance_id','process_incarnation','acquired_at_us','control_backend_pid','control_backend_start'):
+            assert current[key]==m.control[key]
+    else:
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']=='baseline-'+operation+'-baseline' and baseline['wire']==wanted
+        assert record['held'] is None and [e['event'] for e in events]==['ready','fault','receipt']
+        count=[target,target-1,target-1,target-1] if mode=='before-forward' else [target,target,target,target-1]
+        assert counts(events[1])==counts(receipt)==count and receipt['reason']==events[1]['reason']==mode
+        assert receipt['held'] is False and receipt['hold_action'] is None
+    return wanted if normal else dict(operation=operation,selected_commit=target,counts=counts(receipt),boundary=mode)
+
+
+def verify_terminal_delivery(context,initial,expected,baseline):
+    case=context['case']; name,step=terminal_specification(case,faults=True); normal=step.endswith('-baseline')
+    assert set(context)==CONTEXT_FIELDS and context['snapshots']==[] and set(context['fixture'])=={'cleanup_errors','delivery_fault'}
+    assert context['fixture']['cleanup_errors']==[]
+    assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
+    for filename,value in context['input_contents'].items():
+        data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
+    assert len(expected[2])==1 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
+    report=terminal_closed(context['response'],case,faults=True)
+    backend_checked(context['backend'],case['database'],expected[0],context['after'])
+    window=context['server_window']; m=model.Model(*expected,window); preparation_control(m,context['after'],success=normal,renewed=not normal)
+    if not normal: m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    native=expected[1]; basis=terminal_basis(expected); operation=step.split('-')[0]
+    assert basis['issued']==1 and basis['cut']==5 and not [r for r in m.pg['producer_checkpoints'] if r['producer_epoch']==2]
+    completed=normal or name.endswith('-after'); rows_retired=jobs=0
+    if operation=='source':
+        native=activated_native(native,m.slot,close=True)
+        if completed: terminal_source_delta(m,context['after'],basis,released=normal)
+        else:
+            producer=only(m.pg['producer_epochs'],producer_epoch=2); actual=only(context['after']['producer_epochs'],producer_epoch=2)
+            assert producer['state']=='open'; model.fresh_xmin(actual['xmin'],m.pg); producer.update(state='closing',xmin=actual['xmin'])
+    elif operation=='abandon':
+        assert only(m.pg['source_streams'],owner_epoch=2)['state']=='closed'
+        if completed: jobs=terminal_abandon_delta(m,context['after'],basis,released=normal)
+    else:
+        assert operation=='retire' and len([g for g in m.pg['acquisition_gaps'] if g['producer_epoch']==2])==1
+        if completed: rows_retired=terminal_retire_delta(m,context['after'],basis,released=normal)
+    same(context['after'],m.pg); assert context['native_after']==native
+    if normal:
+        wanted=dict(format='bigbrotr-ingest-recovery/1',state='activated-initial-retired' if operation=='retire' else 'activated-acquisition-abandoned' if operation=='abandon' else 'activated-source-closed',
+            dataset_id=m.ds['dataset_id'][2:],owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='2',issued_through='1',reserved_through='1',resolved_requests='1',
+            source_closure=dict(last_complete_sequence='5',sha256=basis['digest']),recovery_basis='closed-producer-floor-v3',compacted_requests='7',native='closed',owner_release='committed',ready=False)
+        if operation=='abandon': wanted['acquisition_abandonment']=dict(jobs='1',reason='activated_initial_producer_abandoned',coverage='unknown')
+        if operation=='retire': wanted['ingest_retirement']=dict(allocation_domains='9',acquisition_gaps='1',owner_release='committed',native_acknowledged='0',native_retired='0')
+        assert report==wanted
+    wire=terminal_delivery_checked(context['fixture']['delivery_fault'],case,window,baseline,expected,context['after'])
+    return dict(status='PASS',case=case['name'],result='COMPLETED' if normal else 'COMMIT_UNKNOWN',wire=wire,
+        native_rows=len(native['rows']),native_sequence=native['sequence'],product_native_writes=native['sequence']-expected[1]['sequence'],
+        target_issued=1,target_acknowledged=0,source_closure_sha256=basis['digest'],retired_rows=rows_retired,abandoned_jobs=jobs,
+        target_original_files=1,ancestor_compacted_requests=7,original_predecessor_requests=0,tables=77)
+
+
+
+def terminal_zero_claim(take,snap,pg,control,plan,window):
+    import activated_source_durable_oracle as durable
+    same(pg,snap('zero-claim-before'))
+    for phase in ('begin','verify','finish'):
+        assert take('live-zero-claim-login',phase=phase)==dict(event='live-zero-claim-login',phase=phase,error=None)
+    assert take('live-zero-claim-refresh')==dict(event='live-zero-claim-refresh',error=None,policy=dict(config_revision=1,policy_revision=1,
+        config_digest=plan['config_digest'],policy_digest=plan['policy_digest']))
+    after_login=snap('zero-claim-refreshed'); accepted=take('live-zero-claim-acceptance'); after_accept=snap('zero-claim-accepted')
+    claimed=take('live-zero-claim-claim'); after=snap('zero-claim-queued')
+    key='\\x'+'a6'*16; job=only(after['jobs'],request_key=key); command=only(after['management_commands'],actor_id=durable.ACTOR,request_key=key)
+    at=command['accepted_at_us']; scope='422b7d8b33d4b55977806fb711e2d082'
+    # Construct the expected command envelope for the existing complete SQL
+    # reducer. No network evidence or product report is inferred from it.
+    expected_command=dict(event='live-durable-job',job=job['job_id'][2:],scope=scope,accepted_at_us=at,deadline_at_us=at+30_000_000,
+        control_epoch=control['epoch'],request_key=key[2:],provenance=True,existing_dictionaries=True)
+    control=durable.authenticated_job(pg,after,expected_command,control,window,modern=True)
+    assert accepted==dict(event='live-zero-claim-acceptance',request_key=key[2:],error=None,commit_started=True,
+        receipt=dict(command_key=key[2:],job_id=job['job_id'][2:],accepted_at_us=at,created=True))
+    assert claimed==dict(event='live-zero-claim-claim',error=None,commit_started=True,job=dict(id=job['job_id'][2:],scope=scope,state='queued',
+        job_revision=2,checkpoint_revision=0,accepted_at_us=at,deadline_at_us=at+30_000_000,
+        owner=dict(resource=control['resource_id'][2:],epoch=control['epoch'],incarnation=control['process_incarnation'][2:])))
+    expected_accept=copy.deepcopy(after); tx=command['xmin']; accepted_job=only(expected_accept['jobs'],request_key=key)
+    accepted_job.update(state='accepted',job_revision=1,owner_resource_id=None,owner_epoch=None,owner_incarnation=None,xmin=tx)
+    same(expected_accept,after_accept)
+    expected_login=copy.deepcopy(expected_accept)
+    for table in ('jobs','job_admissions','acquisition_jobs'):
+        expected_login[table]=[r for r in expected_login[table] if r['job_id']!=job['job_id']]
+    expected_login['management_commands'].remove(command)
+    expected_login['management_audit']=[r for r in expected_login['management_audit'] if not (r['action']=='job.acquisition.accept' and r['subject_id']==key)]
+    same(expected_login,after_login)
+    assert only(after['producer_epochs'],producer_epoch=2)['reserved_through_request']==0
+    for table in ('producer_requests','producer_outcomes','producer_input_bindings','producer_checkpoints','acquisition_gaps'):
+        assert not [r for r in after[table] if r['producer_epoch']==2]
+    assert take('live-zero-claim-state')==dict(event='live-zero-claim-state',error=None,native_rows=84,native_sequence=125,
+        inputs_before=[],inputs_after=[],executions=0,passed=True)
+    return after,control
+
+
+TERMINAL_WAIT_ERRORS={'cancel':'Native(AuthorityUnavailable)','expiry':'Control(Backend)',
+    'head-drift':'Progress(InvalidContext)','digest-drift':'Native(Compacted(StateMismatch))','event-mask':'Control(InvalidMetadata)'}
+
+
+def terminal_digest_rows(pg,initial):
+    from installed_sync_oracle import decode
+    from bootstrap_oracle import cbor
+    request=only(pg['producer_requests'],producer_epoch=1,request_sequence=1)
+    outcome=only(pg['producer_outcomes'],producer_epoch=1,request_sequence=1)
+    original=only(initial[0]['producer_outcomes'],producer_epoch=1,request_sequence=1)
+    assert outcome==original and request==only(initial[0]['producer_requests'],producer_epoch=1,request_sequence=1)
+    raw=binary(outcome['outcome_bytes']); prefix=b'bigbrotr/receipt/1\0'; assert raw.startswith(prefix)
+    receipt=decode(raw[len(prefix):]); assert prefix+cbor(receipt)==raw
+    assert len(receipt)==6 and receipt[0]==1 and receipt[1]==[binary(request['producer_slot_id']),1,1]
+    assert receipt[2]==binary(request['request_digest'])==binary(outcome['request_digest'])
+    changed=bytes.fromhex('b7'*32); assert changed!=receipt[2]
+    receipt[2]=changed; changed_raw=prefix+cbor(receipt)
+    return dict(request_digest='\\x'+changed.hex()),dict(request_digest='\\x'+changed.hex(),outcome_bytes='\\x'+changed_raw.hex(),outcome_sha256='\\x'+sha(changed_raw))
+
+
+def terminal_drift_statement(kind,pg,initial):
+    if kind in ('head-drift','event-mask'):
+        return terminal_mutation_statement('head' if kind=='head-drift' else 'unbound-event',(pg,None,None),initial)
+    assert kind=='digest-drift'; request,outcome=terminal_digest_rows(pg,initial)
+    slot=only(pg['initial_ingest_successions'])['producer_slot_id'][2:]
+    statement="BEGIN;\nSET LOCAL statement_timeout='10s';\nSET LOCAL lock_timeout='5s';\nSET LOCAL session_replication_role=replica;\n"
+    for table,changes in (('producer_requests',request),('producer_outcomes',outcome)):
+        statement+='UPDATE control.'+table+' SET '+','.join(k+"=decode('"+v[2:]+"','hex')" for k,v in changes.items())
+        statement+=" WHERE producer_slot_id=decode('"+slot+"','hex') AND producer_epoch=1 AND request_sequence=1\n"
+        statement+='RETURNING (to_jsonb('+table+")||jsonb_build_object('xmin',xmin::text))::text;\n"
+    return statement+'COMMIT;\n'
+
+
+def terminal_drift_checked(record,pg,initial,kind,window):
+    assert set(record)=={'kind','before','after','statement','sql_output','before_us','after_us'} and record['kind']==kind
+    same(record['before'],pg); assert record['statement']==terminal_drift_statement(kind,pg,initial)
+    before=number(record['before_us'],window['before_us'],window['after_us'],integer=True); after=number(record['after_us'],window['before_us'],window['after_us'],integer=True); assert before<=after
+    if kind!='digest-drift':
+        synthetic=dict(kind='isolated-terminal-'+('head' if kind=='head-drift' else 'unbound-event'),
+            before=dict(control=pg,native=None,inputs=None),after=dict(control=record['after'],native=None,inputs=None),
+            statement=record['statement'],sql_output=record['sql_output'])
+        return terminal_mutation_checked(synthetic,(pg,None,None),initial,'head' if kind=='head-drift' else 'unbound-event')[0]
+    changes=terminal_digest_rows(pg,initial); returned=[loads(line) for line in record['sql_output'].splitlines()]
+    assert len(returned)==2 and returned[0]['xmin']==returned[1]['xmin']; tx=returned[0]['xmin']; model.fresh_xmin(tx,pg)
+    wanted=copy.deepcopy(pg)
+    for table,changed,row in zip(('producer_requests','producer_outcomes'),changes,returned,strict=True):
+        expected=only(wanted[table],producer_epoch=1,request_sequence=1); expected.update(changed,xmin=tx); assert row==expected
+    same(record['after'],wanted)
+    # Independently recompute the entire canonical stream digest. H and the
+    # installed floor stay literal; the changed D cannot match the sealed proof.
+    slot=binary(only(pg['initial_ingest_successions'])['producer_slot_id'])
+    digest=b'bigbrotr/initial-source-closure/1\0'+bytes.fromhex(MANIFEST)+slot+be(1)+be(7)
+    for n in range(1,8):
+        request=only(wanted['producer_requests'],producer_epoch=1,request_sequence=n)
+        outcome=only(wanted['producer_outcomes'],producer_epoch=1,request_sequence=n)
+        assert request['request_digest']==outcome['request_digest'] and outcome['outcome_sha256']=='\\x'+sha(binary(outcome['outcome_bytes']))
+        digest+=be(n)+binary(request['request_digest'])+binary(outcome['outcome_sha256'])
+    assert sha(digest+be(27))!=known(initial)['digest']
+    return wanted
+
+
+def terminal_wait_closed(response,database):
+    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
+    events=[loads(line) for line in response['stdout'].splitlines()]
+    complete=events[-1]; assert complete['event']=='retirement-expiry-complete' and complete['command'] in set(TERMINAL_WAIT_MODES.values())
+    assert complete['native']=='closed' and complete['control']=='dropped-and-joined' and complete['custody_confirmed'] is True
+    assert complete['operation_returned'] is True and complete['deadline_unchanged'] is True and complete['invalid_signal'] is False
+    for stage in ('control','observer'):
+        assert only(events,event='retirement-expiry-driver',stage=stage)==dict(event='retirement-expiry-driver',stage=stage,joined=True,failed=False,aborted=False,error=None)
+    assert only(events,event='retirement-expiry-backend-absence')==dict(event='retirement-expiry-backend-absence',error=None)
+    present,absent=[e for e in events if e['event']=='successor-backend']
+    assert present['database']==database and present['present'] is True and absent==dict(present,present=False)
+    return events
+
+
+def verify_terminal_wait(context,initial,expected):
+    import initial_succession_oracle as original
+    from retirement_fault_replay import schedule_checked
+    case=context['case']; name,step=terminal_specification(case,faults=True); assert step=='wait'
+    mode='gate' if name in ('head-drift','digest-drift','event-mask') else name
+    command=TERMINAL_WAIT_MODES[name]; prefix='/lab/'+case['name']+'-gate'; error=TERMINAL_WAIT_ERRORS[name]
+    fields={'case','before','native_before','inputs_before','after','native_after','inputs_after','response','server_window',
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','schedule','diagnostic'}
+    assert set(context)==fields and context['backends']==[]
+    assert context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+    assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    for v in absence['attempts']: number(v['seconds'],0,5); assert type(v['count']) is int and v['count']==len(v['backends'])
+    assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
+    assert context['arguments']==[command,case['database'],'/run/secrets/application',case['config'],prefix]
+    revision=case['database'].removeprefix(ActivatedTerminalFaultProfile.DATABASE_PREFIX)[:7]
+    assert context['response']['command']==['docker','exec',ActivatedTerminalFaultProfile.CLIENT_PREFIX+revision,'/build/ingest_bootstrap_probe',*context['arguments']]
+    number(context['response']['seconds'],0,120)
+    pg,native,inputs=copy.deepcopy(expected); basis=terminal_basis(expected)
+    assert basis['issued']==1 and basis['cut']==5 and len(inputs)==1
+    assert only(pg['source_streams'],owner_epoch=2)['state']=='closed' and only(pg['producer_epochs'],producer_epoch=2)['state']=='closing'
+    assert only(pg['acquisition_gaps'],producer_epoch=2)['job_id']==only(pg['jobs'],request_key='\\x'+'a6'*16)['job_id']
+    window=context['server_window']; events=terminal_wait_closed(context['response'],case['database']); position=0
+    def take(event,stage=None,phase=None):
+        nonlocal position
+        value=events[position]; position+=1; assert (value['event'],value.get('stage'),value.get('phase'))==(event,stage,phase); return value
+    def snap(stage): return history_snapshot(take('successor-state','retirement-expiry-'+stage),native,inputs,pg,stage='retirement-expiry-'+stage)
+    def clock(stage):
+        v=take('retirement-compacted-clock',stage); at=number(v['server_us'],window['before_us'],window['after_us'],integer=True)
+        assert v==dict(event='retirement-compacted-clock',command=command,mode=mode,stage=stage,server_us=at,
+            lease_expires_at_us=control['lease_expires_at_us'],remaining_us=control['lease_expires_at_us']-at,error=None)
+        return v
+    assert take('retirement-compacted-mode')==dict(event='retirement-compacted-mode',command=command,mode=mode,metadata_bytes=132096,original_predecessor_replay=False,native_writes=False,refresh_after_proof=False)
+    assert take('successor-control','retirement-expiry','claim-planned')==dict(event='successor-control',stage='retirement-expiry',phase='claim-planned',role='d5'*16,incarnation='df'*16,lease_ttl_us='20000000')
+    same(pg,snap('before-claim')); claimed=take('successor-control','retirement-expiry','claimed'); after=snap('after-claim')
+    control=original.claim(pg,after,3); model.clock(control['acquired_at_us'],window); pg=after
+    assert claimed==dict(event='successor-control',stage='retirement-expiry',phase='claimed',resource=control['resource_id'][2:],epoch=control['epoch'],role='d5'*16,incarnation='df'*16)
+    backend=take('successor-backend','retirement-expiry')
+    assert backend==dict(event='successor-backend',stage='retirement-expiry',database=case['database'],pid=control['control_backend_pid'],backend_start=control['control_backend_start'],control_epoch=control['epoch'],present=True)
+    for stage in ('loaded','producer-observed'): same(pg,snap(stage))
+    assert take('retirement-compacted-predecessor')==dict(event='retirement-compacted-predecessor',command=command,mode=mode,compacted_requests=7,original_requests_replayed=0,needs_compacted_initial=False)
+    same(pg,snap('compacted-predecessor'))
+    after=snap('refreshed-1'); model.fresh_xmin(only(after['owner_epochs'],role='control',epoch=control['epoch'])['xmin'],pg)
+    control=original.renewed(pg,after,control,window['after_us']); pg=after
+    assert take('retirement-expiry-request')==dict(event='retirement-expiry-request',sequence=1,outcome='durable',receipt=basis['receipts'][1].hex(),rejection=None)
+    same(pg,snap('resolved-1'))
+    after=snap('final-refreshed'); model.fresh_xmin(only(after['owner_epochs'],role='control',epoch=control['epoch'])['xmin'],pg)
+    old_deadline=control['lease_expires_at_us']; control=original.renewed(pg,after,control,window['after_us']); assert control['lease_expires_at_us']>old_deadline; pg=after
+    assert take('retirement-expiry-proof')==dict(event='retirement-expiry-proof',resolved_requests=1,last_complete_sequence=5,sha256=basis['digest'])
+    assert take('retirement-compacted-proof')==dict(event='retirement-compacted-proof',command=command,mode=mode,compacted_requests=7,original_requests_replayed=1,last_complete_sequence=5,sha256=basis['digest'])
+    proof=clock('proof'); assert control['lease_expires_at_us']-20_000_000<=proof['server_us']<control['lease_expires_at_us']
+    gates=[]
+    for phase in ('waiting','released'):
+        gate=take('retirement-expiry-gate',phase=phase)
+        assert gate==dict(event='retirement-expiry-gate',command=command,mode=mode,gate='before-retirement',phase=phase,prefix=prefix,
+            go=prefix+'.go',cancel=prefix+'.cancel',gate_timeout_ms=10000,poll_ms=5); gates.append(gate)
+    dispatch=clock('dispatch'); assert proof['server_us']<=dispatch['server_us']<control['lease_expires_at_us']
+    cancelled=None
+    if mode=='cancel':
+        cancelled=take('retirement-compacted-cancel',phase='applied')
+        assert cancelled==dict(event='retirement-compacted-cancel',command=command,mode=mode,phase='applied',cancelled=True)
+    assert take('retirement-expiry-result','retirement')==dict(event='retirement-expiry-result',command=command,mode=mode,stage='retirement',sequence=None,gaps=None,error=error)
+    ordinary_clock=take('retirement-expiry-clock','returned'); returned=clock('returned')
+    assert ordinary_clock=={k:v for k,v in dict(returned,event='retirement-expiry-clock').items() if k not in ('command','mode')}
+    assert dispatch['server_us']<=returned['server_us']
+    schedule=context['schedule']
+    if mode=='gate':
+        assert set(schedule)=={'mode','status','gates','blocks','confirmed_blocks','expiry_observations','cleanup_errors','holder',
+            'control_backend','control','refreshed','before_holder','held','go_before_us','dispatch','mutation'}
+        assert schedule['mode']=='gate' and schedule['status']=='CAPTURED' and schedule['holder'] is None
+        assert all(schedule[k]==[] for k in ('blocks','confirmed_blocks','expiry_observations','cleanup_errors'))
+        assert schedule['control_backend']==backend and schedule['control']==control and schedule['refreshed']==proof and schedule['dispatch']==dispatch
+        same(schedule['before_holder'],pg)
+        pg=terminal_drift_checked(schedule['mutation'],pg,initial,name,window); same(schedule['held'],pg)
+        assert len(schedule['gates'])==2
+        observed=[]
+        for supplied,event in zip(schedule['gates'],gates,strict=True):
+            assert supplied==dict(event=event,observed_us=supplied['observed_us']); observed.append(number(supplied['observed_us'],window['before_us'],window['after_us'],integer=True))
+        go=number(schedule['go_before_us'],window['before_us'],window['after_us'],integer=True)
+        assert proof['server_us']<=observed[0]<=schedule['mutation']['before_us']<=schedule['mutation']['after_us']<=go<=observed[1]
+        assert go<=dispatch['server_us'] and observed[1]-observed[0]<10_000_000 and returned['server_us']<control['lease_expires_at_us']
+        assert context['diagnostic'] is None
+    else:
+        schedule_checked(schedule,pg,control,backend,case,mode,proof,gates,dispatch,returned,cancelled,context['diagnostic'],window,compacted=True)
+    same(pg,snap('after-retirement'))
+    assert take('retirement-expiry-reuse')==dict(event='retirement-expiry-reuse',available=False,error='Unavailable')
+    for stage in ('after-reuse','final-before-control-end'): same(pg,snap(stage))
+    assert take('retirement-expiry-driver','control')==dict(event='retirement-expiry-driver',stage='control',joined=True,failed=False,aborted=False,error=None)
+    assert take('successor-control','retirement-expiry','dropped-and-joined')==dict(event='successor-control',stage='retirement-expiry',phase='dropped-and-joined',resource=control['resource_id'][2:],epoch=control['epoch'])
+    assert take('retirement-expiry-backend-absence')==dict(event='retirement-expiry-backend-absence',error=None)
+    assert take('successor-backend','retirement-expiry')==dict(backend,present=False)
+    for stage in ('final-after-control-end','final'): same(pg,snap(stage))
+    assert take('retirement-expiry-driver','observer')==dict(event='retirement-expiry-driver',stage='observer',joined=True,failed=False,aborted=False,error=None)
+    assert take('retirement-expiry-complete')==dict(event='retirement-expiry-complete',command=command,mode=mode,native='closed',control='dropped-and-joined',admission=False,
+        expected_refusal=None if mode=='gate' else True,custody_confirmed=True,operation_returned=True,cancelled=mode=='cancel',deadline_unchanged=True,invalid_signal=False)
+    assert position==len(events)
+    same(context['after'],pg); assert (context['native_after'],context['inputs_after'])==(native,inputs)
+    return dict(status='PASS',case=case['name'],result='REFUSED',error=error,compacted_requests=7,original_predecessor_requests=0,
+        resolved_target_requests=1,target_source_cut=5,source_closure_sha256=basis['digest'],native_rows=98,native_sequence=142,
+        product_native_writes=0,tables=77,input_files=1,failed_control_epoch=control['epoch'],boundary=name)
