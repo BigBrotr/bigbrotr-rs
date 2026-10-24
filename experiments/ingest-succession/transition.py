@@ -457,7 +457,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                     assert previous['directory'] + '/store' == origin['store']
                     final, = [c for c in retained['cases'] if c['name'] == origin['final_case']]
                     assert final['status'] == 'PASS' and final['custody'] == 'OBSERVED_CLOSED_AND_JOINED'
-                    assert final['returncode'] == 0
+                    # This exact qualified reservation-tail origin ends in an expected refusal.
+                    assert final['returncode'] == (4 if compacted_terminal and origin == TERMINAL_TAIL_ORIGIN else 0)
                     assert hashlib.sha256(previous['final_catalog'].encode()).hexdigest() == origin['catalog_sha256']
                     previous_client = retained['client']
             else:

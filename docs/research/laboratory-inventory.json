@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "BUILD_PASS; first Python fixture integrated and source-reviewed; runtime NOT_RUN; followup source retained",
+        "state": "BUILD_PASS; first installed attempt failed in preclient origin gate; no runtime active",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -62957,8 +62957,8 @@
             "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fixture-20261024",
             "branch": "work/compacted-activated-terminal-fixture",
             "scope": "Actual Event/workflow probe and installed terminal expected-state matrix",
-            "state": "COMPLETE; frozen six-file Python profile e245bbda integrated; originals retained",
-            "head": "e245bbda412c441426d6a15835326ab03489ee89"
+            "state": "COMPLETE; frozen8dbff698 narrow retained-refusal guard correction integrated and root-reviewed",
+            "head": "8dbff69850bc0d11da8f106195fc2c6c67fb21d0"
           }
         ],
         "preservation": "Prior detached authored worktrees/receipts/clones/failures retained, no cleanup",
@@ -63002,7 +63002,22 @@
           "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
           "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
         },
-        "root_followup": "Two canonical uncommitted Rust zero-claim fixture files; independent source review complete, build/runtime NOT_RUN"
+        "root_followup": "Five uncommitted Rust example files: frozen b3af fault probe plus root zero-claim extension; independently source-reviewed, build/runtime NOT_RUN",
+        "installed_attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
+            "source": "b4079170d5de8f5acc499523732bf3b31b5c255c",
+            "driver": 33767,
+            "driver_exit": 1,
+            "owner": "6c6ca4c471f157fc662f3d743ba09ec1",
+            "state": "FAILED before engine/client start; original INCOMPLETE_CUSTODY preserved",
+            "client": null,
+            "new_databases": [],
+            "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917/verified-run-failure.json",
+            "verified_failure_sha256": "effa7cc88733620b15a5173fe5cfba9fc1cd33c0d23c218a6746b746323d5595",
+            "preservation": "Fresh borrowed PG state unchanged from preflight; three recorded native source physical censuses unchanged; no cleanup or data removal"
+          }
+        ]
       }
     }
   },

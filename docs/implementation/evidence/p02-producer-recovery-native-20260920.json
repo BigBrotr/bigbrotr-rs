@@ -44851,7 +44851,7 @@
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No build/connected process active; source-only fixture/fault-probe agents active",
+                "runtime": "No build/connected process active; corrected harness ready for fresh run",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -44964,14 +44964,22 @@
                   "predicted_cases": 25,
                   "predicted_controls": 331,
                   "clones": 8,
-                  "runtime": "NOT_RUN",
+                  "runtime": "First attempt failed before any client/clone/case; narrow retained expected-refusal exit4 correction in progress",
                   "not_run": [
                     "Actual product reclamation/GC and unlink",
                     "Final terminal COMMIT delivery loss, ancestor H/D drift after earlier completion, cancellation and lease expiry",
                     "Zero-request claimed acquisition, unresolved import, draining owner and isolated native OPEN retirement guard",
                     "Later activated successors, live frontier, retained Archive frontier and empty retirement",
                     "Mixed restore/backup, physical loss and capacity"
-                  ]
+                  ],
+                  "integrated_harness": "b4079170d5de8f5acc499523732bf3b31b5c255c",
+                  "origin_guard_correction": {
+                    "author_commit": "8dbff69850bc0d11da8f106195fc2c6c67fb21d0",
+                    "receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-origin-refusal-addendum-v1.json",
+                    "receipt_sha256": "bc8bd9b7df8544f0e60268e4e62166531f4bc882c27210e1904c272acc88c65c",
+                    "root_review": "Entire two-line predicate delta reviewed; exact original bound response7a797328 and cf1 PASS/custody/exit4 case independently rechecked. Only new terminal profile AND complete literal origin equality select4; all other origins retain0 and source/hash/custody gates. AST/diff PASS; first failed run remains INCOMPLETE_CUSTODY.",
+                    "runtime": "NOT_RUN"
+                  }
                 },
                 "followup_probe_work": {
                   "fault_probe_author_commit": "b3af23cbb337309d40cc21502d31ea16633bef83",
@@ -44981,8 +44989,26 @@
                   "zero_claim_draft": "Root two-file uncommitted adaptation in ingest_live.rs/ingest_live_durable.rs; source reviewed independently, no builds/runtime. Kept outside first harness commit so built56cac527 probe bytes remain exact.",
                   "zero_claim_critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-zero-claim-critical-review-v1.json",
                   "zero_claim_critical_receipt_sha256": "d971fd1c9757d5696d4dbb8fc49a8c369411d6225d8876891ea0a81d7b2b3313",
-                  "state": "Source-only; integrate/rebuild after first frozen terminal harness identity"
-                }
+                  "state": "Five Rust example files integrated but uncommitted; all source-reviewed; build/runtime NOT_RUN; kept outside first frozen harness"
+                },
+                "installed_attempts": [
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
+                    "source": "b4079170d5de8f5acc499523732bf3b31b5c255c",
+                    "tree": "512c45800fbe6b3f1d008cda15e0e86bf0c62a32",
+                    "driver": 33767,
+                    "driver_exit": 1,
+                    "owner": "6c6ca4c471f157fc662f3d743ba09ec1",
+                    "status": "INCOMPLETE_CUSTODY",
+                    "cases_executed": 0,
+                    "client": null,
+                    "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917/verified-run-failure.json",
+                    "verified_failure_sha256": "effa7cc88733620b15a5173fe5cfba9fc1cd33c0d23c218a6746b746323d5595",
+                    "failure": "transition.run required exit0 for exact cf1 reserved-tail-retry whose qualified expected refusal is exit4; stopped before docker start or SQL work",
+                    "cleanup": "Existing finally attempted original SQL/catalog and database-name reads while borrowed PG was still stopped; no passing SQL-preservation result inferred. All errors retained.",
+                    "resource_state": "Fresh no owned client; borrowed PG stopped0/PID0/noOOM with StartedAt/FinishedAt identical to preflight. Three recorded original physical censuses unchanged. No SQL preservation PASS invented."
+                  }
+                ]
               }
             }
           }
