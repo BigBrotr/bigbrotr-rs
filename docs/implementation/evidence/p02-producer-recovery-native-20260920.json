@@ -45802,6 +45802,24 @@
                     "scope": "No engine/client/database allocated; new unrelated helper Rust blob violates old product equivalence. Guard unchanged; original reviewed b880 harness chosen for fresh run."
                   }
                 ]
+              },
+              "malformed_floor_fixture": {
+                "status": "PASS_INSTALLED_AND_EXACT_RAW_REPLAY",
+                "source": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-malformed-fixture-source-v1.json",
+                  "sha256": "e64657f44de835cf22d7959a3eb8213a8ffaf804ad32e823db982437e1d0e7f2"
+                },
+                "critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-malformed-fixture-critical-review-v1.json",
+                  "sha256": "e031bdff21a4bf781df6b796e22e5d105551f97159851eedcd39da72606e2ac9"
+                },
+                "runtime": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-malformed-2b55679/verified-run.json",
+                  "sha256": "7e430b38856885a7ae7be94ce923a54b78ad9dc9069ff09bba92b4f379962fd0"
+                },
+                "root_review": "Full three-file deltas and new helper/checker/dispatch bodies read; all10 review boundary hashes and frozen source/diagnostic/build identities verified. Independently checked single byte25 change7\u21926, full84-row transcript,125\u2192126 fixture write, exact preclaim refusal, all77 unchanged SQL tables/xmins and unchanged native126/inputs/catalog, original preservation and actual stopped resources.",
+                "scope": "One clone/one installed refusal,14 case and8 fixture controls; raw binds5737 files. Prior profiles unchanged and not rerun; no GC, floor writer or product change.",
+                "not_run": "Other malformed encodings, original-preparer (separate active task), proof-use uncertainty, physical loss/capacity and later consumers"
               }
             }
           }

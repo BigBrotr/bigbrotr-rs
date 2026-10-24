@@ -63745,7 +63745,42 @@
             "evidence": "Recovery report proof_shapes_extension owns source/review and eventual qualification",
             "receipt": "Recovery report proof_shapes_extension.attempts owns failure digest"
           }
-        ]
+        ],
+        "malformed_floor_fixture": {
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
+          "reviewer": "/root/compacted_reader_review; reused verified Astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-malformed-fixture-20261024",
+          "branch": null,
+          "base": "14708eb9da7e7bbd33b57a3ef365e46516edd5ae",
+          "state": "CLEAN_DETACHED_2b556790; exact integration verified; redundant ref retired, worktree/evidence preserved",
+          "scope": "One clone/one installed refusal for fixed floor byte25 corruption using compiled product628f955; existing five-clone proof-shapes profile unchanged",
+          "source": "2b556790f82f24992e9f24d01e74838dcb5e1042",
+          "tree": "4974da5491ff4b58ea840ea89dc0b3724cb406ee",
+          "status": "PASS_INSTALLED_AND_EXACT_RAW_REPLAY"
+        },
+        "malformed_floor_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-malformed-2b55679",
+          "source": "2b556790f82f24992e9f24d01e74838dcb5e1042",
+          "product": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
+          "driver_session": 28004,
+          "status": "PASS_INSTALLED_AND_EXACT_RAW_REPLAY",
+          "preflight": "root-preflight.json",
+          "preserve": "All source, artifacts and original failures; no cleanup expansion",
+          "driver_exit": 0,
+          "raw_driver_session": 22665,
+          "raw_driver_exit": 0,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-malformed-2b55679/verified-run.json",
+            "sha256": "7e430b38856885a7ae7be94ce923a54b78ad9dc9069ff09bba92b4f379962fd0"
+          },
+          "resources": "Client4e94f087 stopped143; borrowedPG71775507 stopped0; exact owners/PID0/noOOM freshly checked; no cleanup or unrelated changes"
+        },
+        "later_preparation_audit": {
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
+          "state": "READ_ONLY_SOURCE_AUDIT_ACTIVE",
+          "source": "14708eb9 product owners unchanged at2b556790",
+          "scope": "Existing later preparation/handoff and prepared recovery boundaries for compacted initial; no source edits, engines or second plan"
+        }
       }
     }
   },

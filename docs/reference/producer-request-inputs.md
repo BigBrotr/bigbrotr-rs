@@ -1117,9 +1117,13 @@ releases occurred within the unchanged1s renewal deadline. One source-only
 partial SQL state and a missing native handoff refuse; pairing independently
 retained native OPEN0 bytes with genuinely retired SQL also refuses, preserving
 all thirteen terminal timestamps/xmins. These are explicit corruption fixtures,
-not a supported mixed-restore procedure. Original-preparer claims, connected
-malformed floor, remaining proof-use/physical uncertainty and original-input
-delivery remain separate qualification gates.
+not a supported mixed-restore procedure. Separate fixture `2b556790` with product
+`628f955` passed one installed malformed-floor refusal,14 case and8 fixture
+controls; raw replay bound5737 files. A fixed fixture changes only floor byte25
+(retired7 to6), retaining all84 rows. The installed command refuses before
+Control connection/claim, preserving all77 SQL tables/xmins and native sequence126
+without a product write. Original-preparer claims, remaining proof-use/physical
+uncertainty and original-input delivery remain separate qualification gates.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
