@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "CORRECTED_EXACT_BUILD_RUNNING; fixture source reviewed; installed NOT_RUN",
+              "status": "SECOND_BUILD_FAIL_CLIPPY;185 components PASS; complete unused-chain removal pending exact rebuild",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45418,6 +45418,10 @@
                 "mechanical_addendum": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-critical-review-unused-export-addendum-v1.json",
                   "sha256": "5078b1db134017d05844b297107bf576ae6517d6c46463bf98990923a656ecbd"
+                },
+                "remaining_exports_addendum": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-critical-review-remaining-exports-addendum-v1.json",
+                  "sha256": "c8e3c0d65768e5956c8e65e7a1796653665e80676769c1c1c50c609fbd773573"
                 }
               },
               "expected_scope": "Distinct compacted empty proof for Open0/Closing0, canonical ancestor/floor/input stamp, one native+1 close and exact13-row SQL terminal/retry. Preserve original-only factories and Open-only handoff. Fresh final transaction/census/delivery required; no ACK/floor writer/unlink.",
@@ -45463,6 +45467,19 @@
                   "passed": "CLI/probe compilation and all185 components",
                   "failed": "Clippy unused internal CompactedEmptyInitialAttempt reexport in rocks/store.rs:123",
                   "repair": "Remove unused internal reexport only; no behavior change. First failure preserved."
+                },
+                {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-af28687",
+                  "source": "af28687163213e17db35212163d559b018149c2c",
+                  "driver": 69645,
+                  "exit_code": 1,
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-af28687/verified-failure.json",
+                    "sha256": "76d3f3455c44a156c89570b7e9124b38737f9e3fec43a6cd9ac580e029697305"
+                  },
+                  "passed": "CLI/probe compilation and all185 components",
+                  "failed": "Clippy unused CompactedEmptyInitialAttempt reexport in rocks/initial_handoff.rs:33",
+                  "repair": "Remove remaining same-type intermediate reexports in initial_handoff.rs and initial_empty.rs; keep definition/factory and behavior unchanged."
                 }
               ]
             }

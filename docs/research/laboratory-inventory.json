@@ -63393,7 +63393,7 @@
       },
       "compacted_empty_initial_work_20261024": {
         "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-        "state": "CORRECTED_EXACT_BUILD_RUNNING; first failed run retained",
+        "state": "SECOND_BUILD_STOPPED_RETAINED; pending full unused-chain repair rebuild",
         "native": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-native-20261024",
@@ -63462,9 +63462,38 @@
           "tree": "f4a3f68f784eacf9e4b58bc6d3a6e149a34abf87",
           "driver": 69645,
           "owner": "cc6be8fd2047019551c5a0c4db6c026d",
-          "state": "RUNNING; not yet joined",
+          "state": "FAIL_CLIPPY_UNUSED_INTERMEDIATE_REEXPORT; driver joined1",
           "resource_record": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-af28687/resources.json",
-          "free_bytes_before": 263431585792
+          "free_bytes_before": 263431585792,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-af28687/verified-failure.json",
+            "sha256": "76d3f3455c44a156c89570b7e9124b38737f9e3fec43a6cd9ac580e029697305"
+          },
+          "containers": [
+            {
+              "id": "ca617580979eed9b72e696585857f7d54f941b640c9b94cac7d8ef3a053c792b",
+              "name": "/bigbrotr-producer-floor-af28687-fetch",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "5838e91f894f7c1d948f8be1db16dfa937101430e263e11d5905285e570cd1f1",
+              "name": "/bigbrotr-producer-floor-af28687-native",
+              "exit_code": 1,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 263201861632
+        },
+        "delivery_fixture": {
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-delivery-20261024",
+          "branch": "work/compacted-empty-initial-delivery",
+          "base": "0ed4f31b33cd1a1e1eee3c73b3bdd751fe52c729",
+          "state": "SOURCE_WORK_ACTIVE; no engines",
+          "scope": "Separate3-clone/5-command measured final COMMIT delivery profile; first13 fixture unchanged"
         }
       }
     }

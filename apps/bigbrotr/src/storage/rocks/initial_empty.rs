@@ -9,7 +9,6 @@ use sha2::{Digest, Sha256};
 
 #[path = "compacted_empty.rs"]
 mod compacted;
-pub(in crate::storage) use compacted::CompactedEmptyInitialAttempt;
 pub use compacted::{
     COMPACTED_EMPTY_DATA_BYTES, CompactedEmptyInitialPredecessor, CompactedEmptyInitialRetirement,
     ObservedCompactedEmptyInitialRetirement,
