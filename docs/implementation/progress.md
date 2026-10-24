@@ -6,10 +6,10 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main/last verified push `c3826bbb879dc5e129efde1469a0760605b29c8c`
-(driver39135 joined0) includes fixture10714546 and reviewed clock correctionae0b40ad.
+Main/last verified push `371c062ccada1b38306736460f0bf77f4175b17b`
+(remote hash and absence of matching push process verified; prior driver handle not retained) includes fixture10714546 and reviewed clock correctionae0b40ad.
 Current local records preserve the second run failure; the cancellation fixture
-order is being corrected separately. Product remains qualified30ab2e45176dac90c7c940ddc2992e81fd74042a.
+order correction6e7a498e is now reviewed and included. Product remains qualified30ab2e45176dac90c7c940ddc2992e81fd74042a.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -31,10 +31,10 @@ The second run passed its first5 cases/161 controls plus24 setup controls; actua
 cancelled CLI exited4, but local custody is OUTCOME_UNKNOWN and native_after was
 correctly NOT_RUN. Three later commands and raw replay remain NOT_RUN.
 
-Next: finish/review minimal two-file cancellation-order correction: retain SHARE
+Reviewed two-file correction6e7a498e retains SHARE
 through exact SIGTERM-before-timeout and unforced child terminal; explicitly
 rollback holder; join actor/proxy; observe final actual backend exclusion before
-native reopening. Then a fresh exact9-command profile and raw replay. Do not infer
+native reopening. Next: run a fresh exact9-command profile and raw replay. Do not infer
 server query completion from client/driver join. No product change or wider timeout
 is authorized by this diagnosis. H/D/partial/mixed-shape advisory remains linked,
 not executed evidence; original-preparer and malformed-floor prerequisites remain.
@@ -45,7 +45,7 @@ No root runtime active. c3826bb client383476e0 was freshly inspected stopped143;
 PG71775507 owner5e69b0f stopped0/PID0/noOOM. Outer cleanup/unrelated checks are empty,
 original preserved map is all true; per-case unknown custody stays unchanged.
 Both runs and failure receipts remain under the external laboratory runs directory.
-Author/reviewer work in `.research/compacted-empty-initial-locks-20261024` on the
+Author/reviewer completed source work in `.research/compacted-empty-initial-locks-20261024` for the
 narrow fixture correction. Earlier merged branch ref was retired only after exact
 ancestry/blob/clean checks; worktree/commits remain. No cache cleanup or deletion of
 .research, datasets, logs, original failures or external labs. Unrelated workloads

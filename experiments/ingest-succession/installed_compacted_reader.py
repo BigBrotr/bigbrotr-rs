@@ -1528,12 +1528,15 @@ def empty_lock_hook(pg,client,output,case,directory,expected):
                 if name=='cancel':
                     from installed import wait_for
                     identity=transition.read(output/(label+'.pid.json'))
-                    signal=dict(kind='SIGTERM',identity=identity,before_us=history.server_clock(pg,case['database']),after_us=None,terminal=None,terminal_observed_us=None,backend_absence=None)
+                    signal=dict(kind='SIGTERM',identity=identity,before_us=history.server_clock(pg,case['database']),after_us=None,terminal=None,terminal_observed_us=None)
                     schedule['signal']=signal;save();installed_cycle.signal_child(client,identity)
                     signal['after_us']=history.server_clock(pg,case['database']);save()
                     wait_for((output/(label+'.terminal.json')).exists,'cancelled empty installed child joined while holder remains',5)
                     signal['terminal']=transition.read(output/(label+'.terminal.json'));signal['terminal_observed_us']=history.server_clock(pg,case['database'])
-                    signal['backend_absence']=installed_cycle.exact_absence(pg,case['database'],[control_backend]);save()
+                    # The server may still be waiting after client/driver join.
+                    # Roll back the holder next; final custody observes backend
+                    # exclusion after actor/proxy closure, before native reopen.
+                    save()
                 schedule['end_before_us']=history.server_clock(pg,case['database'])
                 a['end_statement']='COMMIT;' if name in ('claim-commit','retirement-first') else 'ROLLBACK;'
                 a['end']=actor.execute(a['end_statement']);schedule['end_after_us']=history.server_clock(pg,case['database'])

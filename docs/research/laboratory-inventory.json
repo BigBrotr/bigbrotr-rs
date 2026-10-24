@@ -63623,12 +63623,12 @@
           "owner": "/root/compacted_reader_fixture; verified Astra/xhigh reused",
           "reviewer": "/root/compacted_reader_review; verified Astra/xhigh reused",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-locks-20261024",
-          "branch": null,
-          "base": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
-          "state": "Original107 and correctionae0 are integrated; redundant ref retired after ancestry/blob/clean verification; worktree and commits retained. Cancellation-order correction authorized in same worktree.",
+          "branch": "work/compacted-empty-initial-cancel-custody",
+          "base": "c3826bbb879dc5e129efde1469a0760605b29c8c",
+          "state": "FROZEN_CLEAN_CANCELLATION_CORRECTION_REVIEWED; no runtime active",
           "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain",
-          "commit": "ae0b40adc79f9198cee8c2b82bdbe2d529dc95d0",
-          "tree": "d407d1a8a93f09987cd265249f0ffd18260a769c",
+          "commit": "6e7a498ee9f1353855c5ac12c5928d20518cef42",
+          "tree": "44746c404987d1d43bee04b2421f87011e1e2090",
           "records": "Recovery report empty_initial_consumer_work.locks_extension owns source/review/diagnostic identities"
         },
         "proof_shape_advisory": {

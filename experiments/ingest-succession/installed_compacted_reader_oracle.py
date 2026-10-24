@@ -4796,13 +4796,13 @@ def empty_lock_schedule_checked(value,case,window,expected,after):
         assert s['end_after_us']-h['release_before_us']<5_000_000
     else:assert s['pre_age']==s['expiry']==[]
     if name=='cancel':
-        signal=s['signal'];assert set(signal)=={'kind','identity','before_us','after_us','terminal','terminal_observed_us','backend_absence'}
+        signal=s['signal'];assert set(signal)=={'kind','identity','before_us','after_us','terminal','terminal_observed_us'}
         assert signal['kind']=='SIGTERM' and s['blocks'][-1]['observed_at_us']<=signal['before_us']<=signal['after_us']<current['lease_expires_at_us']
         assert signal['after_us']-h['release_before_us']<1_000_000
         t=signal['terminal'];assert signal['identity']=={k:t[k] for k in ('pid','start_ticks','config','prefix','command')}
         assert t['exit_code']==4 and t['reaped'] is True and t['forced'] is False and t['error'] is None
         assert t['command']==argv('retire-empty',Path(case['config'])) and t['prefix']=='/lab/'+case['name']
-        assert signal['after_us']<=signal['terminal_observed_us']<=s['end_before_us'] and signal['backend_absence']==[dict(control_backend,present=False)]
+        assert signal['after_us']<=signal['terminal_observed_us']<=s['end_before_us']
         assert not s['confirmed_blocks']
     elif name!='expiry':assert s['signal'] is None and not s['confirmed_blocks']
     actual=only(after['owner_epochs'],role='control',epoch=current['epoch'])
@@ -4881,7 +4881,10 @@ def empty_lock_controls(check,context,initial,expected):
     if name=='cancel':
         check('signal-after-unlock',lambda c:schedule(c)['signal'].update(before_us=schedule(c)['end_after_us']+1))
         check('signal-wrong-process',lambda c:schedule(c)['signal']['identity'].update(start_ticks=1))
-        check('signal-backend-still-present',lambda c:schedule(c)['signal']['backend_absence'][0].update(present=True))
+        def early_unlock(c):
+            s=schedule(c);at=s['signal']['after_us']+1
+            s.update(end_before_us=at,end_after_us=at+1)
+        check('holder-ended-before-child-join',early_unlock)
         def after_local_deadline(c):
             s=schedule(c);at=fault(c)['held']['release_before_us']+1_100_000
             s['signal'].update(before_us=at,after_us=at+1,terminal_observed_us=at+100)

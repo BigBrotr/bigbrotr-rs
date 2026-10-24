@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Correct/review cancellation fixture order: actual SIGTERM/child join, then explicit holder rollback, actor/proxy join, final observed backend exclusion before native read. Preserve both failed runs; fresh exact profile/raw required.",
+              "next": "Run fresh exact --empty-initial-locks using6e7a498e corrected custody and qualified30ab product, then independently bind raw replay and actual resource/driver closure.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45596,7 +45596,7 @@
                 "root_review": "Full advisory read; all27 source hashes and3 existing qualification receipts match. Reuse native/refusal evidence;5clones/6commands for post-proof H/D and partial/mixed shapes are the next candidate after current claim suite. Original-preparer fresh gap route and connected malformed-floor helper remain separate prerequisites."
               },
               "locks_extension": {
-                "status": "SECOND_INSTALLED_FAIL_PREMATURE_BACKEND_ABSENCE; native after cancellation NOT_RUN; correction under review",
+                "status": "CANCEL_CUSTODY_CORRECTION_SOURCE_REVIEWED; both failures preserved; fresh installed/raw NOT_RUN",
                 "author_commit": "10714546db9021986d3597ef86b19820d5f650f4",
                 "author_tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
                 "source_receipt": {
@@ -45648,6 +45648,20 @@
                   "root_review": "Complete22-line delta, owning release/require/role clock statements and captured counterexample reviewed. All bound source/capture/diagnostic hashes and prior receipts verified. Actor end-before <= post-wait role retired-at replaces unsupported owner clock bound; actual lock/COMMIT evidence retained, ordered xmins supplementary. Two coordinated controls added.",
                   "diagnostic": "Four preserved contexts/138 controls PASS under corrected oracle only; old predicate reproduces exact failure. Original eec929e remains FAIL.",
                   "expected": "Fresh9 commands/279 case controls plus24 setup controls; NOT_RUN"
+                },
+                "cancel_custody_correction": {
+                  "commit": "6e7a498ee9f1353855c5ac12c5928d20518cef42",
+                  "tree": "44746c404987d1d43bee04b2421f87011e1e2090",
+                  "source_receipt": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-cancel-custody-source-v1.json",
+                    "sha256": "288d2d612076653e6d67b6c50193716941a06e210312b3b7b5a9d70eab20140b"
+                  },
+                  "critical_addendum": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-cancel-custody-critical-addendum-v1.json",
+                    "sha256": "e1ba1b907f7fe347013f78f8a18cdf9b8a10a50d9f45aa316666a428cbffcbfb"
+                  },
+                  "root_review": "Complete two-file11+/5- delta and actual cancellation failure reviewed; source/capture/diagnostic hashes verified; AST/diff PASS. Hold SHARE through actual cancelled child terminal, rollback actor, join actor/proxy, then existing actual bounded backend exclusion before native reopening. Removed only premature absence check; no native result fabricated or product/timeout changes.",
+                  "pure": "Independent9/279 plus24 setup controls PASS; original c3826bb FAIL/UNKNOWN/native NOT_RUN preserved; fresh runtime NOT_RUN"
                 }
               }
             }
