@@ -895,8 +895,9 @@ Empty, unactivated targets still require zero issued/acknowledged/retired state.
 These bounded two-slot demonstrations do not qualify GC, indefinite traffic, workflow completion or
 backup/restore.
 
-The compacted activated recovery extension is under implementation, not yet
-qualified. Only positive `--activated-successor` recovery selects an inspected
+The compacted activated recovery extension is scoped-qualified at product
+`fc9388fc` and installed fixture `cf1a2ef9`. Only positive
+`--activated-successor` recovery selects an inspected
 initial floor: it authenticates the retired ancestor, typed checkpoint and
 canonical outcomes, then replays genuine epoch2 originals. The ACK-only proof
 must revalidate that ancestor and target checkpoint in its final transaction,
@@ -904,6 +905,16 @@ and retain the complete input census through synchronized native ACK. Compacted
 source closure and retirement remain unsupported. A reserved unissued request
 stays unresolved; a staged unreserved tail is preserved and supplies no credit.
 ACK of a verified contiguous issued prefix reclaims no file or outcome.
+The [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+binds 172 component tests/63 mandatory controls and Clippy,24 installed commands
+with291 checker controls, and exact raw replay over7827 bound files. The connected
+matrix uses a seven-request compacted ancestor and zero/one genuine target request:
+fresh typed ACK, before/after outcome COMMIT response loss and exact retries,
+missing input, reserved-but-unissued refusal, and original-input regression.
+The native tests separately exercise optional tails, proof/root/sequence binding
+and logical request counts above the unchanged physical64-file limit. Source
+closure, retirement success, later consumers, GC and physical-loss/restore/capacity
+remain unqualified by this slice. Both original failed attempts are preserved.
 
 ## Closed-producer reclamation (reader under qualification; deletion unavailable)
 

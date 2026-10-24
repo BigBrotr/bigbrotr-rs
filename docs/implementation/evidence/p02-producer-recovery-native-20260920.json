@@ -44682,7 +44682,7 @@
               }
             },
             "next_activated_consumer_audit": {
-              "status": "Build PASS172/63+Clippy; original installed FAIL retained; reviewed verifier correction integrated, fresh run next",
+              "status": "QUALIFIED_SCOPED_ACTIVATED_POSITIVE_RECOVERY_AND_ACK; build172/63 and Clippy, connected24/291, raw7827 bindings PASS; remaining consumers/GC open",
               "root_complete_owner_reads_sha256": {
                 "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated.rs": "50af024f508217628517b6f9e251fe63a9fdda2b2c472fa5efdbc10d585a9c3d",
                 "apps/bigbrotr/src/storage/rocks/activated_recovery.rs": "ea1cd390612abea7dc3c66aea81cb9d922511a519b1069a9f1a9d5f64c7fd9c1",
@@ -44737,7 +44737,7 @@
                 "installed_profile": "--activated",
                 "clones": 8,
                 "commands": 24,
-                "runtime": "NOT_RUN"
+                "runtime": "PASS24 commands/291 checker controls; exact raw replay7827 bindings"
               },
               "critical_review": {
                 "compacted-activated-pg-cli-critical-review-v1.json": {
@@ -44814,7 +44814,36 @@
                   "sha256": "c556dffc4135c7ca3403b1ee71e3683088352c1c4cf9c2c2e50cd636c833b3f7"
                 },
                 "root_independent_review": "Complete 30-line diff and full affected failure-helper/negative-control branches reviewed against unchanged failed_control/fresh_xmin and ControlSession::acquire transaction. Exact original-before freshness, atomic fence+claim xmin, original exclusion digest, strict lease/identity/backend and full-state checks retained. Source/capture hashes and integrated byte equality verified; no source blocker. Author targeted diagnostics reused; connected rerun NOT_RUN."
-              }
+              },
+              "installed_activated_corrected": {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-activated-cf1a2ef",
+                "source": "cf1a2ef9fd180188955ddba83fbaeca3d61eca2e",
+                "tree": "97cc796e005dc9e08d58f43d825a95f0d3dac9d5",
+                "product_source": "fc9388fc4c4f404ce57785eb5bfc66d11e10185a",
+                "driver_session": 64059,
+                "status": "PASS_INSTALLED_COMPACTED_ACTIVATED_RECOVERY_ACK_VERIFIED",
+                "raw_replay": "PASS24/291;7827 exact file bindings",
+                "driver_exit": 0,
+                "replay_driver_session": 77908,
+                "replay_driver_exit": 0,
+                "verified_receipt": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-activated-cf1a2ef/verified-run.json",
+                  "sha256": "8e5fb938e347f2c800949c1b04173de61729a25d2846ec83d465ac8ba9512b37"
+                },
+                "commands": 24,
+                "checker_controls": 291,
+                "clones": 8,
+                "bound_files": 7827,
+                "not_run": [
+                  "Actual product reclamation/GC and unlink",
+                  "Compacted source closure and retirement success",
+                  "Later activated successors, live frontier and retained Archive frontier",
+                  "Original-input completion delivery loss, cancellation and lease expiry",
+                  "Mixed restore/backup, physical loss and capacity"
+                ]
+              },
+              "qualified_behavior": "Existing --activated-successor: compacted retired epoch1 N7, activated targetzero/one original, fresh typed checkpoint and ACK, exact retry, before/after outcome COMMIT loss, reserved-unissued refusal/retry and missing-original refusal. Source/retirement compacted refusals and ordinary-original target regression retained. Native9 controls include optional tails and logical-count>physical-cap; no connected scale claim.",
+              "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation."
             }
           }
         }
