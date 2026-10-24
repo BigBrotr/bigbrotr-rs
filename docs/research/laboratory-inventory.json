@@ -63625,8 +63625,16 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-locks-20261024",
           "branch": "work/compacted-empty-initial-locks",
           "base": "b9c61f592305148bb7a2cd80eb4cd405f333716f",
-          "state": "SOURCE_WORK_ACTIVE; no engines",
-          "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain"
+          "state": "FROZEN_CLEAN_SOURCE_REVIEWED; integrated four files; no runtime yet",
+          "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain",
+          "commit": "10714546db9021986d3597ef86b19820d5f650f4",
+          "tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
+          "records": "Recovery report empty_initial_consumer_work.locks_extension owns source/review/diagnostic identities"
+        },
+        "proof_shape_advisory": {
+          "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-proof-shape-audit-20261024.json",
+          "owner": "/root/terminal_import_gate; completed source-only audit; no runtime or source mutations",
+          "record": "Recovery report empty_initial_consumer_work.proof_shape_audit owns digest and scope"
         }
       }
     }

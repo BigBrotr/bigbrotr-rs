@@ -238,8 +238,9 @@ class Model:
         self.native.update(rows=native_rows(values), sequence=self.native['sequence'] + 4)
         same(self.pg, observed)
 
-    def completed_control(self, observed):
+    def completed_control(self, observed, *, lease_us=6_000_000):
         """Model only observable final authority; do not invent refresh history."""
+        assert type(lease_us) is int and lease_us in (6_000_000,8_000_000)
         before = copy.deepcopy(self.pg)
         previous = max((r for r in before['owner_epochs'] if r['role'] == 'control'), key=lambda r:r['epoch'])
         assert previous['state'] == 'released'
@@ -247,10 +248,10 @@ class Model:
         role = only(observed['role_instances'], role_instance_id=actual['role_instance_id'])
         rid, inc = self.identity(role['role_instance_id'][2:]), self.identity(actual['process_incarnation'][2:])
         for at in (role['created_at_us'], actual['acquired_at_us'], actual['released_at_us'],
-                   role['retired_at_us'], actual['lease_expires_at_us'] - 6_000_000):
+                   role['retired_at_us'], actual['lease_expires_at_us'] - lease_us):
             clock(at, self.window)
-        assert role['created_at_us'] <= actual['acquired_at_us'] <= actual['lease_expires_at_us'] - 6_000_000
-        assert actual['lease_expires_at_us'] - 6_000_000 <= actual['released_at_us'] <= role['retired_at_us']
+        assert role['created_at_us'] <= actual['acquired_at_us'] <= actual['lease_expires_at_us'] - lease_us
+        assert actual['lease_expires_at_us'] - lease_us <= actual['released_at_us'] <= role['retired_at_us']
         assert actual['released_at_us'] < actual['lease_expires_at_us']
         assert type(actual['control_backend_pid']) is int and actual['control_backend_pid'] > 0
         assert self.window['before_us'] <= instant(actual['control_backend_start']) <= actual['acquired_at_us']

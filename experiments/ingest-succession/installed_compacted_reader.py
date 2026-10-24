@@ -1446,10 +1446,140 @@ def empty_digest_mutation(pg,client,output,clone,directory,expected,initial):
     return oracle.empty_digest_mutation_checked(record,expected,initial)
 
 
-def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,delivery=False):
+def empty_lock_hook(pg,client,output,case,directory,expected):
+    """One finite installed schedule; auxiliary custody closes before native inspection."""
+    from concurrency_cases import Session
+    from fault_cases import Process,safe_event
+    from initial_empty_locks import session_identity,claim_statement,block_observation
+    name,step=oracle.empty_lock_specification(case);assert step=='attempt'
+    first=name=='retirement-first';target,later=(3,1) if first else (2,2);mode='hold' if first else 'hold-after-complete'
+    label=case['name'];config=output/Path(case['config']).name;proxy=actor=None;sessions=[]
+    schedule=dict(status='INCOMPLETE',actor=None,blocks=[],confirmed_blocks=[],pre_age=[],expiry=[],signal=None,
+        end_before_us=None,end_after_us=None,cleanup_errors=[])
+    record=dict(status='INCOMPLETE',mode=name,wire=None,held=None,
+        configuration=dict(path=case['config'],direct=None,proxied=None,restored=None),schedule=schedule,errors=[])
+    def save():lab.write_json(output/(label+'-delivery.json'),record)
+    def owned():
+        observed,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert observed['State']['Running'] and observed['Config']['Labels'][lab.LABEL]==pg['owner']
+    def callback(phase):
+        nonlocal proxy,actor
+        try:
+            if phase=='before-launch':
+                actor=Session(pg,case['database'],label.replace('-','_')+'_actor',sessions,role='bigbrotr_control')
+                schedule['actor']=dict(backend=actor.backend,identity=session_identity(actor),begin=None,transaction_identity=None,
+                    statement=None,result=None,end_statement=None,end=None,closed=None)
+                schedule['actor']['begin']=actor.execute('BEGIN ISOLATION LEVEL READ COMMITTED;')
+                schedule['actor']['transaction_identity']=session_identity(actor);save()
+                command=['docker','exec','-i',client,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432','--listen-port','0',
+                    '--mode',mode,'--commit-number',str(target),'--later-commits',str(later),'--deadline-seconds','30']
+                record['wire']=dict(command=command,source_sha256=history.digest(output/'fault_proxy.py'),ready=None,receipt=None,events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False)
+                save();proxy=Process(command,input_pipe=True);ready=proxy.event('ready',5);record['wire']['ready']=ready
+                assert ready['proxy_sha256']==record['wire']['source_sha256']
+                direct=config.read_text();oracle.empty_lock_config(tomllib.loads(direct),case)
+                proxied=history.set_value(direct,'postgres.control','endpoint','127.0.0.1:'+str(ready['listen_port']))
+                record['configuration'].update(direct=direct,proxied=proxied);save()
+                (output/(label+'-direct.toml')).write_text(direct);(output/(label+'-proxied.toml')).write_text(proxied);config.write_text(proxied)
+            elif phase=='launched':
+                event=proxy.event('held',10)
+                held=dict(event=event,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,release_after_us=None,
+                    control=schema.rows(pg,case['database']),inputs=history.inputs_at(directory/'store'),backend=None)
+                record['held']=held;save()
+                current=max((r for r in held['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                control_backend=dict(pid=current['control_backend_pid'],backend_start=current['control_backend_start'],database=case['database'])
+                statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state,'xact_start',xact_start,'query',query) FROM pg_stat_activity WHERE pid="+str(current['control_backend_pid'])+" AND datname=current_database() AND usename='bigbrotr_control';"
+                held['backend']=json.loads(lab.sql(pg,case['database'],statement));held['after_us']=history.server_clock(pg,case['database']);save()
+                window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=held['after_us'])
+                m=oracle.model.Model(*expected,window);oracle.preparation_control(m,held['control'],success=False,renewed=True,lease_us=8_000_000 if name=='expiry' else 6_000_000)
+                oracle.same(m.pg,held['control']);assert held['inputs']==expected[2]
+                b=held['backend'];assert b['pid']==control_backend['pid'] and b['backend_start']==control_backend['backend_start']
+                assert b['database']==case['database'] and b['user']=='bigbrotr_control'
+                assert b['state']==('idle in transaction' if first else 'idle') and (b['xact_start'] is not None if first else b['xact_start'] is None)
+                assert ' '.join(b['query'].split())==('SELECT control.require_empty_initial_retirement($1::bytea,$2::bytea)' if first else 'COMMIT')
+                assert [event[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==([3,2,2,2] if first else [2,2,2,1])
+                a=schedule['actor']
+                a['statement']=claim_statement(current,name in ('cancel','expiry'));save()
+                if first:
+                    actor.start(a['statement']);schedule['blocks']=block_observation(pg,case['database'],actor.backend,control_backend,timeout=.7);save()
+                else:
+                    a['result']=actor.execute(a['statement'],rows=1);save()
+                if name=='expiry':
+                    until=time.monotonic()+5
+                    while True:
+                        now=history.server_clock(pg,case['database']);remaining=current['lease_expires_at_us']-now
+                        schedule['pre_age'].append(dict(server_us=now,remaining_us=remaining));save()
+                        assert remaining>=3_500_000 and time.monotonic()<until,'refresh hold missed valid expiry dispatch window'
+                        if remaining<=4_000_000:break
+                        time.sleep(min(.1,(remaining-4_000_000)/1_000_000))
+                held['release_before_us']=history.server_clock(pg,case['database'])
+                assert held['release_before_us']<current['lease_expires_at_us']
+                proxy.send('release');held['release_after_us']=history.server_clock(pg,case['database']);proxy.event('released',2);save()
+                if first:a['result']=actor.expect(actor.finish(.7),rows=1)
+                else:
+                    schedule['blocks']=block_observation(pg,case['database'],control_backend,actor.backend,timeout=.7);save()
+                if name=='expiry':
+                    until=time.monotonic()+5
+                    while True:
+                        now=history.server_clock(pg,case['database']);schedule['expiry'].append(dict(server_us=now,remaining_us=current['lease_expires_at_us']-now));save()
+                        if now>=current['lease_expires_at_us']+50_000:break
+                        assert time.monotonic()<until,'UTC expiry not reached within final phase'
+                        time.sleep(.02)
+                    schedule['confirmed_blocks']=block_observation(pg,case['database'],control_backend,actor.backend,timeout=.5);save()
+                if name=='cancel':
+                    from installed import wait_for
+                    identity=transition.read(output/(label+'.pid.json'))
+                    signal=dict(kind='SIGTERM',identity=identity,before_us=history.server_clock(pg,case['database']),after_us=None,terminal=None,terminal_observed_us=None,backend_absence=None)
+                    schedule['signal']=signal;save();installed_cycle.signal_child(client,identity)
+                    signal['after_us']=history.server_clock(pg,case['database']);save()
+                    wait_for((output/(label+'.terminal.json')).exists,'cancelled empty installed child joined while holder remains',5)
+                    signal['terminal']=transition.read(output/(label+'.terminal.json'));signal['terminal_observed_us']=history.server_clock(pg,case['database'])
+                    signal['backend_absence']=installed_cycle.exact_absence(pg,case['database'],[control_backend]);save()
+                schedule['end_before_us']=history.server_clock(pg,case['database'])
+                a['end_statement']='COMMIT;' if name in ('claim-commit','retirement-first') else 'ROLLBACK;'
+                a['end']=actor.execute(a['end_statement']);schedule['end_after_us']=history.server_clock(pg,case['database'])
+                schedule['status']='CAPTURED';save()
+            else:
+                assert phase=='child-joined'
+                try:
+                    for session in reversed(sessions):
+                        try:
+                            session.close(owned)
+                            absent=installed_cycle.exact_absence(pg,case['database'],[session.backend])
+                            schedule['actor']['closed']=dict(backend=session.backend,exit_code=session.process.returncode,absence=absent,pending=session.pending)
+                        except BaseException as error:schedule['cleanup_errors'].append(dict(stage='actor-close',error=repr(error)))
+                    assert proxy is not None
+                    record['wire']['receipt']=proxy.event('receipt',5);assert proxy.wait(5)==0
+                finally:
+                    try:
+                        if proxy is not None:
+                            forced=proxy.process.poll() is None;proxy.stop();wire=record['wire']
+                            wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),exit_code=proxy.process.returncode,
+                                readers_joined=not any(t.is_alive() for t in proxy.threads),overflow=proxy.overflow,forced_wrapper_stop=forced)
+                            wire['events']=[safe_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+                    finally:
+                        cfg=record['configuration']
+                        if cfg['proxied'] is not None:
+                            assert config.read_text()==cfg['proxied'];config.write_text(cfg['direct']);cfg['restored']=config.read_text();(output/(label+'-restored.toml')).write_text(cfg['restored'])
+                        save()
+                t=transition.read(output/(label+'.terminal.json'));assert t['reaped'] is True and t['forced'] is False and t['error'] is None
+                assert schedule['status']=='CAPTURED' and schedule['cleanup_errors']==[] and record['errors']==[]
+                assert record['wire']['readers_joined'] and not record['wire']['overflow'] and not record['wire']['forced_wrapper_stop']
+                assert record['wire']['stderr']=='' and cfg['direct']==cfg['restored']
+                record['status']='JOINED_CONFIG_RESTORED';save()
+            return record
+        except BaseException as error:
+            record['errors'].append(dict(phase=phase,error=repr(error)));save()
+            if phase!='child-joined' and proxy is not None and proxy.process.poll() is None:
+                try:proxy.send('close')
+                except BaseException:pass
+            raise
+    return callback
+
+
+def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,delivery=False,locks=False):
     from initial_empty import guarded_fault
     from initial_gap_policy import GUARDS
-    name=clone['name']; origin='empty-compacted' if delivery else oracle.EMPTY_ORIGIN_NAMES[name]
+    name=clone['name']; origin='empty-compacted' if delivery or locks else oracle.EMPTY_ORIGIN_NAMES[name]
     assert clone['origin']==origin and expected==origins[origin]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.EMPTY_GRANTS]
     oracle.history_catalog_checked(report['origins'][origin]['catalog'],clone['catalog_before'],grants=oracle.EMPTY_GRANTS)
@@ -1458,11 +1588,32 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
     helper=Path(__file__).with_name('installed_cycle_client.py'); target=output/helper.name
     if not target.exists(): shutil.copy2(helper,target)
     assert history.digest(helper)==history.digest(target)
-    if delivery:
+    if delivery or locks:
         source=history.SOURCE/oracle.ACTIVATED_PROXY; target=output/'fault_proxy.py'
         if not target.exists(): shutil.copy2(source,target)
         assert history.digest(target)==history.digest(source)
     configure(pg,client,output,clone['config'],ack=True)
+    if locks:
+        from initial_empty_locks import setup_import
+        path=output/Path(clone['config']).name
+        if name=='expiry':
+            text=path.read_text()
+            for key,value in (('lease_ttl','8s'),('renewal_timeout','5s'),('renewal_safety_margin','1s')):text=history.set_value(text,'runtime',key,value)
+            path.write_text(text)
+        answer=lab.cli(dict(pg,client=client),'config','validate','--file',clone['config'])
+        lab.write_json(output/(name+'-lock-config-validation.json'),dict(returncode=answer.returncode,stdout=answer.stdout,stderr=answer.stderr,configuration=path.read_text()))
+        assert answer.returncode==0 and answer.stderr==''
+        oracle.empty_lock_config(tomllib.loads(path.read_text()),dict(clone=name,config=clone['config'],database=clone['database']))
+        if name in ('claim-commit','claim-rollback','retirement-first'):
+            def owned():
+                observed,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+                assert observed['State']['Running'] and observed['Config']['Labels'][lab.LABEL]==pg['owner']
+            setup=setup_import(pg,clone['database'],output,name,lambda database:schema.rows(pg,database),owned)
+            setup['actor_absence']=installed_cycle.exact_absence(pg,clone['database'],[setup['backend']])
+            lab.write_json(output/(name+'-setup.json'),setup)
+            clone['setup_controls']=oracle.empty_lock_setup_controls(setup,expected)
+            expected=oracle.empty_lock_setup_checked(setup,expected)
+            assert history.catalog(pg,clone['database'])==clone['catalog_before']
     if name=='original': expected=empty_restore(pg,client,output,clone,directory,expected,initial)
     if name in ('head','target-input'): expected=journey_mutation(pg,client,output,clone,directory,expected,initial)
     if name=='digest': expected=empty_digest_mutation(pg,client,output,clone,directory,expected,initial)
@@ -1476,7 +1627,7 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
         oracle.empty_fault_guard_delta(fault)
         oracle.same(schema.rows(pg,clone['database']),expected[0])
         lab.write_json(output/(name+'-fault.json'),fault)
-    for step in (oracle.EMPTY_DELIVERY_STEPS if delivery else oracle.EMPTY_STEPS)[name]:
+    for step in (oracle.EMPTY_LOCK_STEPS if locks else oracle.EMPTY_DELIVERY_STEPS if delivery else oracle.EMPTY_STEPS)[name]:
         if step=='complete':
             restored=guarded_fault(pg,clone['database'],output,name,remove=True)
             assert restored==fault['guards_original']
@@ -1490,33 +1641,42 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
         baseline=None
         if delivery and step=='loss':
             baseline=oracle.only(report['cases'],name='baseline-baseline')['oracle']; assert baseline['status']=='PASS'
-        hook=terminal_delivery_hook(pg,client,output,case,directory,empty_initial=True,expected=expected) if delivery and step in ('baseline','loss') else None
+        hook=empty_lock_hook(pg,client,output,case,directory,expected) if locks and step=='attempt' else terminal_delivery_hook(pg,client,output,case,directory,empty_initial=True,expected=expected) if delivery and step in ('baseline','loss') else None
         def verify(c,s):
+            if locks:
+                c['empty_configuration']=(output/Path(case['config']).name).read_text()
+                if name=='claim-commit':
+                    from initial_empty_locks import claim_guard
+                    current=max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                    backend=dict(pid=current['control_backend_pid'],backend_start=current['control_backend_start'],database=case['database'])
+                    c['empty_claim_guard']=claim_guard(pg,backend,c['server_window']);lab.write_json(output/(case['name']+'-claim-guard.json'),c['empty_claim_guard'])
+                lab.write_json(output/(case['name']+'-verification.json'),c)
             if fault is not None:
                 if step=='failure':
                     fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
                     lab.write_json(output/(name+'-fault.json'),fault)
                 c['empty_fault']=json.loads(json.dumps(fault)); lab.write_json(output/(case['name']+'-verification.json'),c)
-            return oracle.verify_empty_context(c,s,expected,delivery=delivery,baseline=baseline)
+            return oracle.verify_empty_context(c,s,expected,delivery=delivery,baseline=baseline,locks=locks)
         expected=installed_cycle.execute(pg,client,output,case,directory,expected,catalog,initial,
-            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected,delivery=delivery,baseline=baseline),partial(oracle.empty_closed,delivery=delivery)),fault=hook)
+            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected,delivery=delivery,baseline=baseline,locks=locks),partial(oracle.empty_closed,delivery=delivery,locks=locks)),fault=hook)
         case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==catalog
         predecessor=case['name']; lab.write_json(output/'result.json',report)
     assert history.catalog(pg,clone['database'])==clone['catalog_before']
     return predecessor
 
 
-def run_empty_initial(root,build,product_source,*,delivery=False):
-    origins,initial=oracle.empty_origins_checked(root,delivery=delivery); profile=oracle.EmptyInitialDeliveryProfile if delivery else oracle.EmptyInitialProfile
+def run_empty_initial(root,build,product_source,*,delivery=False,locks=False):
+    assert type(locks) is bool and not (locks and delivery)
+    origins,initial=oracle.empty_origins_checked(root,delivery=delivery or locks); profile=oracle.EmptyInitialLockProfile if locks else oracle.EmptyInitialDeliveryProfile if delivery else oracle.EmptyInitialProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
         database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
-        scope='Compacted empty initial final COMMIT measured baseline and before/after loss with fresh completion/retry' if delivery else 'Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
+        scope='Compacted empty current-Control claim ordering, actual installed cancellation and DB-UTC expiry' if locks else 'Compacted empty initial final COMMIT measured baseline and before/after loss with fresh completion/retry' if delivery else 'Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
     try:
-        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial,delivery=delivery),
-            origin_specs=oracle.EMPTY_PREPARED_ORIGINS[:1] if delivery else oracle.EMPTY_ORIGINS,origin_for_clone={n:'empty-compacted' for n in profile.CLONES} if delivery else oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
+        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial,delivery=delivery,locks=locks),
+            origin_specs=oracle.EMPTY_PREPARED_ORIGINS[:1] if delivery or locks else oracle.EMPTY_ORIGINS,origin_for_clone={n:'empty-compacted' for n in profile.CLONES} if delivery or locks else oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
             producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
             empty_initial=True,product_source=product_source)
-    finally: assert oracle.empty_origins_checked(root,delivery=delivery)==(origins,initial)
+    finally: assert oracle.empty_origins_checked(root,delivery=delivery or locks)==(origins,initial)
 
 
 ORIGIN = oracle.ORIGIN
@@ -1537,5 +1697,6 @@ if __name__ == '__main__':
     profile.add_argument('--activated-terminal-guards',action='store_true',help='Separate unresolved import, positive draining retirement and isolated native OPEN guard')
     profile.add_argument("--empty-initial",action="store_true",help="Prepared empty initial target retirement and native-first continuation")
     profile.add_argument('--empty-initial-faults',action='store_true',help='Compacted empty final COMMIT baseline, delivery loss and fresh retries')
+    profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     args = parser.parse_args()
-    (partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
