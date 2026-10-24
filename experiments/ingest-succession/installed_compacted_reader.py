@@ -1947,11 +1947,166 @@ def run_empty_initial(root,build,product_source,*,delivery=False,locks=False,sha
 
 
 ORIGIN = oracle.ORIGIN
+def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseline):
+    from fault_cases import Process,safe_event
+    from initial_empty_locks import Probe
+    from activated_retirement_expiry import wait_event
+    _,step=oracle.later_specification(case);normal=step=='prepare';label=case['name'];database=case['database']
+    target=oracle.LATER_PREPARE_CANDIDATE if normal else baseline['prepare_commit']['ordinal']
+    if not normal:assert baseline['status']=='PASS' and baseline['case']=='normal-prepare'
+    mode='hold-after-complete' if normal else 'after-complete'
+    fault=dict(mode=mode,target=target,held=None,prefix=None,wire=None,errors=[])
+    probe=proxy=None;started=time.monotonic();window=dict(before_us=history.server_clock(pg,database))
+    response=dict(returncode=None,stdout='',stderr='',seconds=None,outcome='UNKNOWN',readers_joined=False,overflow=False,command=None)
+    args=None
+    def save():
+        lab.write_json(output/(label+'-wire.json'),fault)
+        lab.write_json(output/(label+'-clock.json'),window)
+    try:
+        command=['docker','exec','-i',client,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432','--listen-port','0',
+            '--mode',mode,'--commit-number',str(target),'--later-commits','1' if normal else '0','--deadline-seconds','30']
+        fault['wire']=dict(command=command,source_sha256=history.digest(output/'fault_proxy.py'),ready=None,receipt=None,
+            events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False)
+        save();proxy=Process(command,input_pipe=True);ready=proxy.event('ready',5);fault['wire']['ready']=ready
+        assert ready['proxy_sha256']==fault['wire']['source_sha256'];case['proxy_port']=ready['listen_port']
+        args=[case['operation'],database,'/run/secrets/application',case['config'],'262144',str(ready['listen_port'])]
+        response['command']=['docker','exec',client,'/build/ingest_bootstrap_probe',*args]
+        save();probe=Probe(response['command'])
+        if normal:
+            held=proxy.event('held',15)
+            wait_event(probe,'lineage-history-state',stage='planned',timeout=5)
+            capture=dict(event=held,control=None,inputs=None,backend=None,before_us=history.server_clock(pg,database),
+                after_us=None,release_before_us=None,release_after_us=None)
+            fault['held']=capture;save()
+            capture['backend']=fault_backend_observation(pg,database,probe)
+            capture['control']=schema.rows(pg,database);capture['inputs']=history.inputs_at(directory/'store')
+            capture['after_us']=history.server_clock(pg,database);probe.observe();fault['prefix']=list(probe.parsed);save()
+            # Establish the actual committed intent before forwarding its reply.
+            # A source-predicted ordinal alone never authorizes the later loss.
+            oracle.later_held_checked(capture,fault['prefix'],expected,initial,case,
+                dict(before_us=window['before_us'],after_us=capture['after_us']))
+            capture['release_before_us']=history.server_clock(pg,database)
+            control=oracle.only(capture['control']['owner_epochs'],role='control',state='active')
+            assert capture['release_before_us']<control['lease_expires_at_us']
+            proxy.send('release');capture['release_after_us']=history.server_clock(pg,database)
+            proxy.event('released',5);assert capture['release_after_us']<control['lease_expires_at_us'];save()
+        code=probe.wait(15);probe.observe()
+        response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+        if not normal:proxy.event('fault',5)
+        fault['wire']['receipt']=proxy.event('receipt',5);assert proxy.wait(5)==0
+    except BaseException as error:
+        fault['errors'].append(dict(stage='invoke',error=repr(error)))
+    finally:
+        if probe is not None:
+            code=probe.process.poll()
+            if code is not None:
+                for thread in probe.threads:thread.join(1)
+                response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+            response.update(stdout=bytes(probe.stdout).decode(errors='replace'),stderr=bytes(probe.stderr).decode(errors='replace'))
+            if code is None:fault['errors'].append(dict(stage='probe-stop',error='forced-wrapper-stop'))
+            probe.stop()
+        if proxy is not None:
+            forced=proxy.process.poll() is None;proxy.stop();wire=fault['wire']
+            wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),exit_code=proxy.process.returncode,
+                forced_wrapper_stop=forced,readers_joined=not any(t.is_alive() for t in proxy.threads),overflow=proxy.overflow)
+            try:wire['events']=[safe_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+            except BaseException as error:fault['errors'].append(dict(stage='proxy-metadata',error=repr(error)))
+        response['seconds']=time.monotonic()-started;window['after_us']=history.server_clock(pg,database)
+        lab.write_json(output/(label+'-response.json'),response);save()
+    return response,window,fault,args
+
+
+def later_prepare(pg,client,output,case,directory,expected,catalog,initial,baseline):
+    label=case['name'];before=schema.rows(pg,case['database']);native=history.dump(client,output,label+'-before',directory)
+    inputs=history.inputs_at(directory/'store');oracle.same(before,expected[0]);assert (native,inputs)==expected[1:]
+    lab.write_json(output/(label+'-before.json'),before);lab.write_json(output/(label+'-inputs.json'),inputs)
+    response,window,fault,args=later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseline)
+    wire=fault['wire'] or {}
+    closed=not fault['errors'] and wire.get('exit_code')==0 and wire.get('readers_joined') is True and wire.get('forced_wrapper_stop') is False and wire.get('overflow') is False and wire.get('stderr')==''
+    events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,
+        control_failed=case['clone']=='gap',proxy_closed=closed)
+    context=dict(case=dict(case),before=before,after=after,native_before=native,native_after=after_native,inputs_before=inputs,inputs_after=after_inputs,
+        response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,case['database']),
+        backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),
+        custody=transition.read(output/(label+'-custody.json')),arguments=args,wire=fault)
+    lab.write_json(output/(label+'-verification.json'),context)
+    result=oracle.verify_later_probe(context,initial,expected,baseline)
+    controls=oracle.later_controls(context,initial,expected,baseline)
+    case.update(status='PASS',returncode=response['returncode'],oracle=result,negative_controls=controls,server_window=window)
+    return after,after_native,after_inputs
+
+
+def later_sql_fault(pg,database,output,record=None):
+    from installed_empty_oracle import FAULT_INSTALL,FAULT_REMOVE
+    from initial_empty_locks import guards
+    remove=record is not None
+    if not remove:
+        record=dict(installed=None,removed=None,hit=None,guards_original=guards(pg,database),catalog_original=history.catalog(pg,database),
+            catalog_installed=None,catalog_restored=None)
+    statement=FAULT_REMOVE if remove else FAULT_INSTALL.replace('NEW.owner_epoch=2','NEW.owner_epoch=3')
+    hit=lab.sql(pg,database,'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit') if remove else None
+    if remove:assert hit==record['hit']=='1true'
+    lab.sql(pg,database,statement)
+    if not remove:assert lab.sql(pg,database,'SELECT is_called FROM empty_retirement_fixture.source_hit')=='f'
+    value=dict(statement=statement,hit=hit,guards=guards(pg,database))
+    record['removed' if remove else 'installed']=value
+    record['catalog_restored' if remove else 'catalog_installed']=history.catalog(pg,database)
+    lab.write_json(output/'closing-late-sql.json',record);oracle.empty_fault_guard_delta(record,epoch=3)
+    return record
+
+
+def run_later_sequence(pg,client,output,clone,directory,expected,report,*,seeds,initial):
+    name=clone['name'];assert expected==seeds[clone['origin']]
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
+    assert clone['catalog_before']==report['origins'][clone['origin']]['catalog']
+    configure(pg,client,output,clone['config'],ack=True)
+    for source in (Path(__file__).with_name('installed_cycle_client.py'),history.SOURCE/'experiments/control-migrations/fault_proxy.py'):
+        path=output/source.name
+        if not path.exists():shutil.copy2(source,path)
+        assert history.digest(source)==history.digest(path)
+    previous=None;fault=None
+    for step in oracle.LATER_STEPS[name]:
+        if step=='failure':fault=later_sql_fault(pg,clone['database'],output)
+        case=dict(name=name+'-'+step,clone=name,origin=clone['origin'],operation='successor-compacted-prepare' if step.startswith('prepare') else 'retire-empty-successor',
+            predecessor=previous,database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case);lab.write_json(output/'result.json',report)
+        if step.startswith('prepare'):
+            baseline=oracle.only(report['cases'],name='normal-prepare')['oracle'] if name=='gap' else None
+            expected=later_prepare(pg,client,output,case,directory,expected,clone['catalog_before'],initial,baseline)
+        else:
+            def verify(context,_seed):
+                if name=='closing':
+                    if step=='failure':
+                        fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
+                        assert fault['hit']=='1true';lab.write_json(output/'closing-late-sql.json',fault)
+                    context['later_fault']=json.loads(json.dumps(fault));lab.write_json(output/(case['name']+'-verification.json'),context)
+                return oracle.verify_later_installed(context,initial,expected)
+            expected=installed_cycle.execute(pg,client,output,case,directory,expected,history.catalog(pg,clone['database']),initial,
+                checks=(verify,lambda c,s:oracle.later_controls(c,initial,expected),oracle.later_closed))
+            if step=='failure':fault=later_sql_fault(pg,clone['database'],output,fault)
+        case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
+        previous=case['name'];lab.write_json(output/'result.json',report)
+    return previous
+
+
+def run_later_empty(root,build,product_source):
+    assert product_source==oracle.LATER_PRODUCT and oracle.LATER_PRODUCT is not None
+    seeds,initial=oracle.later_origins_checked(root)
+    profile=oracle.LaterEmptyProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
+        client_prefix='bigbrotr-compacted-later-',database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
+        scope='Actual compacted later preparation, measured preparation COMMIT loss, installed OPEN/gap/CLOSING empty recovery and exact terminal retry',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_sequence,seeds=seeds,initial=initial),origin_specs=oracle.LATER_ORIGINS,
+        origin_for_clone=oracle.LATER_ORIGIN_NAMES,extra_grants=profile.GRANTS,producer_progress=True,producer_ack=True,preparation_hole=True,
+        compacted_reader=True,compacted_history=True,later_empty=True,product_source=product_source)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
     parser.add_argument('--product-source',required=True,help='Exact reviewed and qualified integrated build revision')
     profile=parser.add_mutually_exclusive_group()
+    profile.add_argument('--later-empty',action='store_true',help='Actual compacted later preparation and installed gap/OPEN/CLOSING retirement')
     profile.add_argument("--history",action="store_true",help="Explicit connected Terminal2/PreparedOpen3 synthetic floor profile")
     profile.add_argument('--history-faults',action='store_true',help='Exact retained PreparedOpen3 delivery fault profile')
     profile.add_argument('--initial-journey',action='store_true',help='Explicit compacted initial prepare/gap/activation and installed startup profile')
@@ -1969,4 +2124,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

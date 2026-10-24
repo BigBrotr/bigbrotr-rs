@@ -61,7 +61,9 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False):
+    assert type(later_empty) is bool and (not later_empty or empty_initial)
+    if later_empty: assert source == LATER_PRODUCT
     assert type(empty_initial) is bool and (not empty_initial or initial_journey)
     assert not (empty_initial and (initial_preparation or compacted_activated or compacted_terminal))
     assert type(compacted_terminal) is bool and (not compacted_terminal or compacted_activated)
@@ -80,6 +82,7 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
     if initial_preparation or compacted_activated or empty_initial:
         selectors |= {'claim_custody','control_runtime_entrypoint'}
+    if later_empty: selectors.add('successor_transition')
     assert set(counts) == selectors
     assert all(type(n) is int and n > 0 for n in counts.values())
     assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == 1
@@ -133,6 +136,7 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     if compacted_activated: activated_qualification(component)
     if compacted_terminal: terminal_qualification(component)
     if empty_initial: empty_qualification(component)
+    if later_empty: later_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated or empty_initial: executables |= {'claim_custody','control_runtime_entrypoint'}
     assert set(component['executables_sha256']) == executables
@@ -1102,7 +1106,7 @@ def journey_origin_checked(root,raw=None):
     return qualified_endpoint(root,raw,initial_journey=True)
 
 
-def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated_origin=None,terminal_origin=None,empty_origin=None):
+def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated_origin=None,terminal_origin=None,empty_origin=None,later_terminal=False):
     """Bind the prior exact-source receipt; never replay it through new imports."""
     from installed_family_capture import physical, spool_checked
     assert type(initial_journey) is bool
@@ -1111,7 +1115,8 @@ def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated
     assert terminal_origin is None or (not initial_journey and prepared_origin is None and activated_origin is None and terminal_origin==TERMINAL_TAIL_ORIGIN)
     assert empty_origin is None or (not initial_journey and prepared_origin is None and activated_origin is None and terminal_origin is None and empty_origin in EMPTY_PREPARED_ORIGINS)
     prepared_origin=prepared_origin or activated_origin or empty_origin
-    pin=terminal_origin or prepared_origin or (JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN)
+    assert type(later_terminal) is bool and (not later_terminal or not (initial_journey or prepared_origin or terminal_origin))
+    pin=LATER_TERMINAL_ORIGIN if later_terminal else terminal_origin or prepared_origin or (JOURNEY_ORIGIN if initial_journey else FAULT_ORIGIN)
     product=EMPTY_PREPARATION_PRODUCT if empty_origin else TERMINAL_TAIL_PRODUCT if terminal_origin else PREPARATION_PRODUCT if prepared_origin else FAULT_PRODUCT
     root=Path(root); raw=raw or retained.regular_read
     basis=root.parent/pin['run']/pin['subdirectory']
@@ -1149,7 +1154,7 @@ def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated
         path=basis/pin[file_key]; value=bound(path); assert sha(value)==pin[hash_key]; final.append(loads(value))
     endpoint=tuple(final)
     context=read(basis/(pin['final_case']+'-verification.json'))
-    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==(pin['verification_sha256'] if prepared_origin or terminal_origin else 'afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
+    assert sha(raw(basis/(pin['final_case']+'-verification.json')))==('fa1d3d652c5a9dd8944323156b89f21336070fb069ea837ca71f08ed50b11baf' if later_terminal else pin['verification_sha256'] if prepared_origin or terminal_origin else 'afc231f444467632c3962edff4160510cf837a5b12d2bb9cf61501229316ce89' if initial_journey else 'e5fb3c077346f79ff016d2acb0e35ec96ba91b18771a0e46a7cc495fe42088df')
     assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
     assert context['response']==read(basis/(pin['final_case']+'-response.json'))
     if empty_origin:
@@ -1240,19 +1245,19 @@ def qualified_endpoint(root,raw,*,initial_journey,prepared_origin=None,activated
             assert only(endpoint[0]['producer_epochs'],producer_epoch=2)['reserved_through_request']==(1 if activated_origin else 0)
     else:
         history_lineage(endpoint,initial,compacted=True)
-    assert prepared_origin or terminal_origin or len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==(93,138,1)
-    assert prepared_origin or all('-0000000000000002-' in n for n in endpoint[2])
+    assert prepared_origin or terminal_origin or len(endpoint[0])==77 and (len(endpoint[1]['rows']),endpoint[1]['sequence'],len(endpoint[2]))==((90,134,8) if later_terminal else (93,138,1))
+    assert later_terminal or prepared_origin or all('-0000000000000002-' in n for n in endpoint[2])
     store=basis/pin['store']
     spool_checked(store/'producer-inputs-v1',endpoint[2],bound,complete=True)
     files=physical(store,bound)
     prefix=str(store)+'/'
     qualified={name[len(prefix):]:digest for name,digest in replay['bound_files'].items() if name.startswith(prefix)}
-    assert len(qualified)==(16 if empty_origin and pin['name']=='empty-compacted' else 23 if empty_origin else 18 if terminal_origin else 17 if activated_origin else 16 if prepared_origin else 20)
+    assert len(qualified)==(25 if later_terminal else 16 if empty_origin and pin['name']=='empty-compacted' else 23 if empty_origin else 18 if terminal_origin else 17 if activated_origin else 16 if prepared_origin else 20)
     assert {name:value['sha256'] for name,value in files.items() if stat.S_ISREG(value['mode'])}==qualified
     directories={str(parent) for name in qualified for parent in Path(name).parents}
     if prepared_origin: directories.add('producer-inputs-v1')
     assert {name for name,value in files.items() if stat.S_ISDIR(value['mode'])}==directories
-    if prepared_origin or terminal_origin: return endpoint,initial
+    if later_terminal or prepared_origin or terminal_origin: return endpoint,initial
     for step in ('partial','absent'):
         q=read(basis/('history-positive-'+step+'-quarantine.json'))
         assert physical(basis/q['path'],bound)==q['quarantine_after']
@@ -4585,11 +4590,12 @@ def empty_restore_checked(record,expected,initial):
     return result
 
 
-def empty_fault_checked(value,*,removed=False):
+def empty_fault_checked(value,*,removed=False,epoch=2):
+    assert type(epoch) is int and epoch in (2,3)
     from installed_empty_oracle import FAULT_INSTALL,FAULT_REMOVE
     from initial_empty_locks_oracle import guards
     assert set(value)=={'statement','hit','guards'}
-    assert value['statement']==(FAULT_REMOVE if removed else FAULT_INSTALL)
+    assert value['statement']==(FAULT_REMOVE if removed else FAULT_INSTALL.replace('NEW.owner_epoch=2','NEW.owner_epoch='+str(epoch)))
     assert value['hit']==('1true' if removed else None)
     guards(value['guards'])
 
@@ -4741,10 +4747,11 @@ def empty_digest_mutation_checked(record,expected,initial):
     return pg,expected[1],expected[2]
 
 
-def empty_fault_guard_delta(value):
+def empty_fault_guard_delta(value,*,epoch=2):
+    assert type(epoch) is int and epoch in (2,3)
     from initial_empty_locks_oracle import guards
     assert set(value)=={'installed','removed','hit','guards_original','catalog_original','catalog_installed','catalog_restored'}
-    empty_fault_checked(value['installed']); guards(value['guards_original'])
+    empty_fault_checked(value['installed'],epoch=epoch); guards(value['guards_original'])
     expected=copy.deepcopy(value['guards_original'])
     assert not any(t['name'].startswith('fixture_') for t in expected['triggers'])
     expected['triggers'].append(dict(table='source_streams',name='fixture_empty_source_rollback',enabled='O',internal=False,
@@ -4757,10 +4764,11 @@ def empty_fault_guard_delta(value):
     lines=lambda text:[line for line in text.splitlines() if line.strip() and not line.startswith('--')]
     before,after=lines(value['catalog_original']),lines(value['catalog_installed'])
     trigger="CREATE TRIGGER fixture_empty_source_rollback BEFORE UPDATE ON control.source_streams FOR EACH ROW WHEN ((((new.owner_epoch)::numeric = (2)::numeric) AND (old.state = 'open'::text) AND (new.state = 'closing'::text))) EXECUTE FUNCTION empty_retirement_fixture.reject_source();"
+    trigger=trigger.replace("(2)::numeric", "("+str(epoch)+")::numeric")
     assert trigger not in before and after.count(trigger)==1
     assert [line for line in after if line!=trigger]==before
     if value['removed'] is not None:
-        empty_fault_checked(value['removed'],removed=True)
+        empty_fault_checked(value['removed'],removed=True,epoch=epoch)
         assert value['removed']['guards']==value['guards_original'] and value['catalog_restored']==value['catalog_original']
     else: assert value['catalog_restored'] is None
 
@@ -5431,3 +5439,360 @@ class EmptyInitialMalformedProfile:
         'Other malformed encodings, post-COMMIT census loss, syscall/physical loss/limits and capacity',
         'Prior empty13/delivery5/locks9/proof-shapes6 remain separate qualifications, not rerun here',
         'Actual GC, floor writer/unlink, ACK/activation and later consumers')
+
+
+# One finite later-attempt profile. The product pin is filled only after the
+# integrating owner freezes the reviewed source; historical pins stay exact.
+LATER_PRODUCT = 'c1b834e3c3f0f74ddf5eef95b5f1ebf84e058e66'
+LATER_TERMINAL_ORIGIN = dict(FAULT_ORIGIN,name='later-terminal',
+    database='bb_compacted_history_6ece98c_history_terminal',source_clone='history-terminal',
+    final_case='history-terminal-full',snapshot='history-terminal-final-sql.json',
+    snapshot_sha256='b30cdb01f89b21f7b6c0448d716b382835e61e30b10d527aac0540be4037fa62',
+    native_file='history-terminal-full-after-native.json',
+    native_sha256='95dc04756b57b8144988b4645a3ea490bafe5a5e19adbd9d45126660f522676f',
+    inputs_file='history-terminal-full-after-inputs.json',
+    inputs_sha256='0f7fcd9d8e9e0190cddea7b9a284dcc3be033176916c1adcf36938829b1f5625',
+    store='history-terminal/store')
+LATER_ORIGINS = (LATER_TERMINAL_ORIGIN,FAULT_ORIGIN)
+LATER_ORIGIN_NAMES = dict(normal='later-terminal',prepared='compacted',gap='later-terminal',closing='compacted')
+LATER_STEPS = dict(normal=('prepare','retire','retry'),prepared=('retire',),gap=('prepare-loss','retire'),closing=('failure','retire'))
+# This is a source candidate, not qualified fault authority. The normal case
+# must observe the committed preparation at this exact held boundary first.
+LATER_PREPARE_CANDIDATE = 6
+
+
+class LaterEmptyProfile:
+    DIRECTORY='installed-compacted-later-empty'
+    LABEL='org.bigbrotr.installed-compacted-later-empty'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_EMPTY'
+    DATABASE_PREFIX='bb_compacted_later_'
+    CLONES=tuple(LATER_STEPS)
+    STEPS=LATER_STEPS
+    CASES=tuple(n+'-'+s for n in LATER_STEPS for s in LATER_STEPS[n])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Product floor installation or unlink; activation, live and Archive consumers',
+        'H/D proof-use drift, remaining delivery/cancellation/native uncertainty and capacity',
+        'Original-basis regression and actual missing-required-input refusal in this profile')
+
+
+def later_origins_checked(root,raw=None):
+    terminal,initial=qualified_endpoint(root,raw,initial_journey=False,later_terminal=True)
+    prepared,same_initial=fault_origin_checked(root,raw); assert initial==same_initial
+    assert len(terminal[0])==len(prepared[0])==77
+    assert sum(map(len,terminal[0].values()))==192 and sum(map(len,prepared[0].values()))==216
+    return {'later-terminal':terminal,'compacted':prepared},initial
+
+
+def later_qualification(component):
+    prefix='storage::postgres::control_owner::successor_transition::tests::'
+    names=('successor_preparation_is_one_shot_even_after_a_confirmed_observation',
+        'successor_preparation_checks_scheduling_overflow_and_independent_request_window',
+        'successor_plan_binding_requires_every_actual_control_coordinate',
+        'successor_native_transition_reserves_data_native_and_item_together',
+        'compacted_successor_requires_matching_private_check_and_retained_basis',
+        'compacted_successor_check_retains_the_full_canonical_effect_grant')
+    assert set(component['test_names']['successor_transition'])=={prefix+n for n in names}
+    assert component['test_counts']['successor_transition']==6
+    native='storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::'
+    assert {native+n for n in (
+        'compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry',
+        'compacted_successor_view_binds_root_sequence_cancellation_and_effect_grant',
+        'compacted_successor_residual_inputs_never_replace_required_later_originals',
+        'compacted_successor_candidate_preserves_original_and_activation_refusals',
+        'compacted_successor_dispatch_failure_keeps_exact_completed_retry')}<=set(component['test_names']['initial_reconstruction'])
+
+
+def later_specification(case):
+    name=case['clone']; assert name in LATER_STEPS
+    step=case['name'].removeprefix(name+'-'); steps=LATER_STEPS[name]; index=steps.index(step)
+    assert case['name']==name+'-'+step and case['origin']==LATER_ORIGIN_NAMES[name]
+    assert case['predecessor']==(name+'-'+steps[index-1] if index else None)
+    assert case['operation']==('successor-compacted-prepare' if step.startswith('prepare') else 'retire-empty-successor')
+    assert re.fullmatch(LaterEmptyProfile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name,case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def later_prefix(t,expected,initial):
+    """The exact two-epoch proof, including the one required later original."""
+    known_history=history_lineage(expected,initial,compacted=True)
+    assert known_history['head']==2
+    assert t.take('loaded')==dict(event='lineage-history-loaded',state='Terminal',native_epoch=2,
+        registered_epoch=2,replay_through=2,producer_slot=known_history['slot'],pending_target=None,
+        metadata_bytes=132096,memberships=3,entries=known_history['entries'])
+    t.snapshot('loaded'); t.refresh(1,None)
+    assert t.take('compacted-initial')==dict(event='lineage-history-compacted-initial',compacted_requests=7,
+        original_requests_replayed=0,last_complete_sequence=27,digest=known(initial)['digest'])
+    t.snapshot('compacted-initial'); t.refresh(2,1)
+    assert t.take('request')==dict(event='lineage-history-request',producer_slot=known_history['slot'],epoch=2,sequence=1,existing_copy_checked=True)
+    t.snapshot('resolved-2-1'); t.refresh(2,None)
+    assert t.take('epoch')==dict(event='lineage-history-epoch',summary=known_history['summaries'][1])
+    t.snapshot('epoch-2'); t.refresh(None,None)
+    assert t.take('compacted-proof')==dict(event='lineage-history-compacted-proof',compacted_initial_requests=7,original_initial_requests_replayed=0)
+    assert t.take('proof')==dict(event='lineage-history-proof',verified_through=2,last_epoch=known_history['summaries'][1],matches_history=True,admission=False)
+    t.snapshot('proof')
+
+
+def later_preparation_prefix(events,expected,initial,case,window):
+    import transition_replay as tr
+    name,step=later_specification(case); assert step.startswith('prepare')
+    m=tr.Model(*expected,window,compacted_history=True); t=tr.Transcript(events,m)
+    candidate=t.take('candidate',True)
+    assert set(candidate)=={'event','role','incarnation','namespaces'}
+    assert [r['kind'] for r in candidate['namespaces']]==list(range(1,10))
+    assert all(set(r)=={'kind','id'} for r in candidate['namespaces'])
+    profile=t.take('compacted',True)
+    assert set(profile)=={'event','command','compacted_outcome_bytes'} and profile['command']==case['operation']
+    number(profile['compacted_outcome_bytes'],1,256*1024**2,integer=True)
+    history_resources(t)
+    assert t.take('resources',True)==dict(event='lineage-transition-resources',operation='prepare',mutation_data_bytes=8192,
+        mutation_native_bytes=8192,lease_ttl_us='20000000',outstanding_request_limit=2)
+    planned=t.take('control'); assert set(planned)=={'event','phase','role','incarnation','lease_ttl_us'}
+    assert planned['phase']=='claim-planned' and planned['lease_ttl_us']=='20000000'
+    t.snapshot('before-claim')
+    transport=t.take('transport',True)
+    assert transport==dict(event='lineage-transition-transport',control_port=case['proxy_port'],observer_port=5432,proxied=True)
+    claimed,policy,backend=t.take('control'),t.take('policy'),t.take('backend')
+    t.snapshot('after-claim',lambda pg:m.claim(pg,planned))
+    assert claimed==dict(event='lineage-history-control',phase='claimed',resource=m.control['resource_id'][2:],epoch=m.control['epoch'],role=planned['role'],incarnation=planned['incarnation'])
+    assert backend==dict(event='lineage-history-backend',pid=m.control['control_backend_pid'],backend_start=m.control['control_backend_start'],database=case['database'],control_epoch=m.control['epoch'],present=True)
+    t.policy(policy,'acquired',None,None); t.snapshot('before-read'); later_prefix(t,expected,initial)
+    e=t.take('plan',True); at,deadline=e['created_at_us'],e['lease_expires_at_us']
+    assert re.fullmatch('[1-9][0-9]*',at) and re.fullmatch('[1-9][0-9]*',deadline)
+    plan=m.plan(candidate['role'],candidate['incarnation'],[r['id'] for r in candidate['namespaces']],3,int(at),int(deadline))
+    record=tr.record_value(plan['record'],3)
+    assert e==dict(event='lineage-transition-plan',operation='prepare',record=record,role=candidate['role'],created_at_us=at,
+        lease_expires_at_us=deadline,outstanding_request_limit=2,policy=dict(config_revision=m.ds['config_revision'],policy_revision=m.ds['policy_revision'],
+        config_digest=only(m.pg['config_revisions'],revision=m.ds['config_revision'])['document_digest'][2:],policy_digest=only(m.pg['policy_revisions'],revision=m.ds['policy_revision'])['document_digest'][2:]))
+    t.snapshot('planned')
+    return t,plan,backend
+
+
+def later_prepare_sql(m,observed,plan):
+    native=copy.deepcopy(m.native); before=copy.deepcopy(m.pg)
+    m.prepare(observed,plan); m.native=native
+    assert sum(map(len,m.pg.values()))-sum(map(len,before.values()))==18
+    changed=[table for table in before if model.encoded(model.history.normalized({table:before[table]}))!=model.encoded(model.history.normalized({table:m.pg[table]}))]
+    assert set(changed)=={'role_instances','owner_epochs','source_streams','allocation_domains','producer_epochs','topology_generations','topology_streams','datasets','ingest_successions'}
+
+
+def later_held_checked(held,events,expected,initial,case,window):
+    assert set(held)=={'event','control','inputs','backend','before_us','after_us','release_before_us','release_after_us'}
+    t,plan,backend=later_preparation_prefix(events,expected,initial,case,window)
+    later_prepare_sql(t.model,held['control'],plan)
+    assert held['inputs']==expected[2] and t.position==len(events)
+    b=held['backend']; c=t.model.control
+    assert b==dict(pid=backend['pid'],backend_start=backend['backend_start'],database=case['database'],user='bigbrotr_control',
+        state='idle',xact_start=None,query='COMMIT',observed_at_us=b['observed_at_us'])
+    number(held['before_us'],window['before_us'],window['after_us'],integer=True)
+    number(b['observed_at_us'],held['before_us'],held['after_us'],integer=True)
+    number(held['after_us'],held['before_us'],min(window['after_us'],c['lease_expires_at_us']-1),integer=True)
+    for field in ('release_before_us','release_after_us'):
+        if held[field] is not None: number(held[field],held['after_us'],min(window['after_us'],c['lease_expires_at_us']-1),integer=True)
+    return t,plan,backend
+
+
+def later_wire_checked(value,case,baseline):
+    from fault_cases import safe_event
+    from transition_fault_replay import PROXY_SHA256,COUNTERS
+    name,step=later_specification(case); normal=step=='prepare'; target=value['target']
+    assert set(value)=={'mode','target','held','prefix','wire','errors'} and value['errors']==[]
+    assert type(target) is int
+    if normal: assert target==LATER_PREPARE_CANDIDATE
+    else:
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']=='normal-prepare'
+        assert target==baseline['prepare_commit']['ordinal']
+        assert value['held'] is None and value['prefix'] is None
+    mode='hold-after-complete' if normal else 'after-complete'; assert value['mode']==mode
+    w=value['wire']; assert set(w)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
+    assert w['source_sha256']==PROXY_SHA256 and w['stderr']=='' and w['exit_code']==0
+    assert w['readers_joined'] is True and w['overflow'] is False and w['forced_wrapper_stop'] is False
+    assert w['command'][0:3]==['docker','exec','-i']
+    assert re.fullmatch('bigbrotr-compacted-later-[0-9a-f]{7}',w['command'][3])
+    assert w['command'][4:]==['python3','-B','/lab/fault_proxy.py','--upstream-port','5432','--listen-port','0','--mode',mode,
+        '--commit-number',str(target),'--later-commits','1' if normal else '0','--deadline-seconds','30']
+    events=[safe_event(loads(line)) for line in w['stdout'].splitlines()]
+    assert events==w['events'] and events[0]==w['ready'] and events[-1]==w['receipt']
+    assert [e['event'] for e in events]==(['ready','held','released','receipt'] if normal else ['ready','fault','receipt'])
+    elapsed=0
+    for i,e in enumerate(events):
+        number(e['elapsed_ns'],elapsed,35_000_000_000,integer=True);elapsed=e['elapsed_ns']
+        assert e['mode']==mode and e['commit_number']==target
+        wanted=[0]*5 if i==0 else [target,target,target,target-1,1]
+        if normal and i==3:wanted=[target+1]*4+[1]
+        assert [e[k] for k in COUNTERS]==wanted
+        assert e['held'] is (normal and i>0)
+        assert e['hold_action']==('release' if normal and i>=2 else None)
+    ready,receipt=events[0],events[-1]
+    assert ready['proxy_sha256']==PROXY_SHA256 and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    assert ready['listen_port']==case['proxy_port'] and ready['deadline_seconds']==30
+    number(ready['pid'],1,integer=True); number(case['proxy_port'],1,65535,integer=True)
+    assert case['proxy_port']!=5432 and ready['max_frame_bytes']==1024**2
+    assert ready['max_wire_bytes']==64*1024**2 and ready['max_messages']==20000
+    assert receipt['reason'] in (('frontend-eof','backend-eof') if normal else ('after-complete',))
+    assert set(receipt['tags'])==set(receipt['frames'])=={'frontend','backend'}
+    for direction,tags in receipt['tags'].items():
+        assert all(re.fullmatch('[0-9a-f]{2}',k) and type(n) is int and n>0 for k,n in tags.items())
+        assert receipt['frames'][direction]==sum(tags.values())>0
+    assert sum(receipt['frames'].values())<=20000
+    number(receipt['declared_wire_bytes'],1,64*1024**2,integer=True)
+    if normal:assert value['held']['event']==events[1]
+    else:assert events[1]['reason']=='after-complete'
+
+
+def verify_later_probe(context,initial,expected,baseline=None):
+    import transition_replay as tr
+    case=context['case']; name,step=later_specification(case); failure=step=='prepare-loss'
+    assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','wire'}
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['catalog_before']==context['catalog_after'] and context['inputs_after']==expected[2]
+    w=context['server_window']; assert set(w)=={'before_us','after_us'}
+    number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
+    response=context['response'];assert set(response)=={'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'}
+    assert response['returncode']==0 and type(response['returncode']) is int and response['stderr']==''
+    assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
+    number(response['seconds'],0,120)
+    args=[case['operation'],case['database'],'/run/secrets/application',case['config'],'262144',str(case['proxy_port'])]
+    assert context['arguments']==args and response['command']==['docker','exec',context['wire']['wire']['command'][3],'/build/ingest_bootstrap_probe',*args]
+    events=[loads(line) for line in response['stdout'].splitlines()]
+    t,plan,backend=later_preparation_prefix(events,expected,initial,case,w)
+    later_wire_checked(context['wire'],case,baseline)
+    held=context['wire']['held']
+    if not failure:
+        prefix=context['wire']['prefix'];assert prefix==events[:t.position]
+        held_t,_,_=later_held_checked(held,prefix,expected,initial,case,w)
+        assert all(held[k] is not None for k in ('release_before_us','release_after_us'))
+        assert held['release_before_us']<=held['release_after_us']
+        same(held['control'],held_t.model.pg)
+    t.snapshot('transition-returned',lambda pg:later_prepare_sql(t.model,pg,plan) if failure else t.model.prepare(pg,plan))
+    if not failure:
+        assert t.take('observed',True)==dict(event='lineage-transition-observed',operation='prepare',prepared=True,record=tr.record_value(plan['record'],3),activation=False)
+    assert t.take('result',True)==dict(event='lineage-transition-result',operation='prepare',stage='prepare' if failure else 'complete',
+        epoch=None,sequence=None,error='CommitUnknown' if failure else None,
+        observation=None if failure else dict(prepared=True,target_epoch=3,retired_at_us=None))
+    history_end(t,backend,success=not failure,transition=True,control_failed=failure)
+    same(context['after'],t.model.pg);assert context['native_after']==t.model.native
+    assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    absence=context['backend_absence'];assert set(absence)=={'database','user','limit_seconds','status','attempts','seconds'}
+    assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+    assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    elapsed=0
+    for a in absence['attempts']:
+        assert set(a)=={'seconds','count','backends'}
+        elapsed=number(a['seconds'],elapsed,5);assert type(a['count']) is int and a['count']==len(a['backends']) and a['count'] in (0,1)
+        for observed in a['backends']:
+            assert observed==dict(pid=backend['pid'],backend_start=backend['backend_start'])
+    number(absence['seconds'],elapsed,6)
+    assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
+    result=dict(status='PASS',case=case['name'],tables=77,native_rows=len(t.model.native['rows']),native_sequence=t.model.native['sequence'],
+        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests=1,input_files=len(expected[2]),
+        result='PREPARED_NATIVE_OLD_CALLER_UNKNOWN' if failure else 'PREPARED',snapshots=t.snapshots)
+    if not failure:
+        result['prepare_commit']=dict(ordinal=context['wire']['target'],backend=held['backend'],
+            preparation_transaction=only(held['control']['ingest_successions'])['preparation_transaction'],
+            prepared_by_epoch=t.model.control['epoch'],held_sql_sha256=sha(model.encoded(held['control'])))
+    return result
+
+
+def later_closed(response,case):
+    _,step=later_specification(case);failure=step=='failure';code=4 if failure else 0
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert type(response['returncode']) is int and response['returncode']==code and response['outcome']=='PROCESS_EXITED'
+    t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True);number(t['start_ticks'],1,integer=True);number(t['elapsed_seconds'],0,60)
+    assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv(case['operation'],Path(case['config']))
+    assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    if failure:
+        assert response['stdout']=='' and response['stderr']=='error: successor recovery unavailable: producer operation unavailable: Control(Backend)\n'
+        return None
+    assert response['stderr']=='';report,=[loads(line) for line in response['stdout'].splitlines()]
+    assert report['native']=='closed' and report['owner_release']=='committed' and report['ready'] is False
+    return report
+
+
+def verify_later_installed(context,initial,expected,baseline=None):
+    import installed_prepared_model as prepared
+    case=context['case'];name,step=later_specification(case);failure=step=='failure'
+    assert set(context)==CONTEXT_FIELDS|({'later_fault'} if name=='closing' else set())
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
+    for filename,value in context['input_contents'].items():
+        raw=bytes.fromhex(value);assert expected[2][filename]==dict(bytes=len(raw),sha256=sha(raw))
+    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    w=context['server_window'];assert set(w)=={'before_us','after_us'}
+    number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
+    backend_checked(context['backend'],case['database'],context['before'],context['after'])
+    report=later_closed(context['response'],case)
+    if name=='closing':
+        empty_fault_guard_delta(context['later_fault'],epoch=3)
+        assert context['later_fault']['hit']=='1true'
+        assert (context['later_fault']['removed'] is None)==failure
+        assert context['catalog_before']==context['later_fault']['catalog_installed' if failure else 'catalog_restored']
+    m=prepared.Model(*expected,w);preparation_control(m,context['after'],success=not failure,renewed=failure)
+    intent=only(expected[0]['ingest_successions']);assert intent['target_epoch']==3 and intent['previous_epoch']==2
+    assert expected[0]['ingest_activations']==[]
+    source=only(expected[0]['source_streams'],owner_epoch=2);producer=only(expected[0]['producer_epochs'],producer_epoch=2)
+    digest=history_closure2(expected[0]);assert source['last_complete_sequence']==producer['reserved_through_request']==1
+    assert source['closure_digest']==producer['closure_digest']=='\\x'+digest
+    predecessor=dict(epoch=2,terminal_kind='activated',resolved_requests=1,last_complete_sequence=1,digest=digest,event_request_mask=0)
+    if failure:
+        assert only(m.pg['producer_epochs'],producer_epoch=3)['state']=='open'
+        prepared.close(m.native,m.slot,3);same(m.pg,context['after'])
+        assert not m.pg['ingest_terminal_transactions']
+    else:
+        wanted=m.empty(context['after'],predecessor=predecessor)
+        wanted.update(recovery_basis='closed-producer-floor-v3',compacted_requests='7')
+        assert report==wanted
+    assert context['native_after']==m.native
+    same({'intent':expected[0]['ingest_successions']},{'intent':context['after']['ingest_successions']})
+    assert model.native_map(m.native)['receipts',known(initial)['state_key']]==floor_bytes(initial,'positive').hex()
+    return dict(status='PASS',case=case['name'],tables=77,native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
+        target_epoch=3,compacted_requests=7,later_original_requests=1,input_files=len(expected[2]),
+        result='NATIVE_CLOSING_SQL_PREPARED' if failure else 'EXACT_TERMINAL_RETRY' if step=='retry' else 'RETIRED')
+
+
+def later_controls(context,initial,expected,baseline=None):
+    name,step=later_specification(context['case']);probe=step.startswith('prepare')
+    check=verify_later_probe if probe else verify_later_installed
+    original=dict(context=context,initial=initial,expected=expected,baseline=baseline); rejected=[]
+    def reject(label,change):
+        v=copy.deepcopy(original);change(v)
+        try:check(**v)
+        except (AssertionError,KeyError,TypeError,ValueError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted later-attempt counterexample: '+label)
+    reject('extra-native-sequence',lambda v:v['context']['native_after'].update(sequence=999))
+    reject('missing-native-row',lambda v:v['context']['native_after']['rows'].pop())
+    reject('changed-native-value',lambda v:v['context']['native_after']['rows'][0].update(value='00'))
+    reject('unrelated-retained-xmin',lambda v:v['context']['after']['producer_requests'][0].update(xmin='4294967000'))
+    reject('old-preparer-substitution',lambda v:only(v['context']['after']['ingest_successions']).update(prepared_by_epoch=999))
+    reject('missing-required-later-input',lambda v:v['context']['inputs_after'].pop(next(n for n in expected[2] if '-0000000000000002-' in n)))
+    reject('catalog-drift',lambda v:v['context'].update(catalog_after='changed'))
+    reject('unknown-process-custody',lambda v:v['context']['case'].update(custody='UNKNOWN_PROCESS_OUTCOME'))
+    reject('unknown-response',lambda v:v['context']['response'].update(outcome='UNKNOWN'))
+    if probe:
+        reject('unjoined-reader',lambda v:v['context']['response'].update(readers_joined=False))
+        reject('proxy-not-joined',lambda v:v['context']['wire']['wire'].update(readers_joined=False))
+        reject('wrong-COMMIT-selector',lambda v:v['context']['wire'].update(target=11))
+        reject('wrong-native-gap-size',lambda v:v['context']['native_after'].update(sequence=138 if step=='prepare-loss' else 134))
+        if step=='prepare':
+            reject('held-transaction-not-committed',lambda v:v['context']['wire']['held']['backend'].update(state='idle in transaction',xact_start='2026-01-01'))
+            reject('held-SQL-not-prepared',lambda v:v['context']['wire']['held']['control']['ingest_successions'].clear())
+            reject('held-backend-substitution',lambda v:v['context']['wire']['held']['backend'].update(pid=1))
+            reject('released-after-expiry',lambda v:v['context']['wire']['held'].update(release_after_us=2**63))
+        else:reject('unqualified-selector',lambda v:v['baseline'].update(status='NOT_RUN'))
+    else:
+        reject('forced-child',lambda v:v['context']['response']['terminal'].update(forced=True))
+        reject('wrong-installed-argv',lambda v:v['context']['response']['terminal']['command'].append('--retire-empty-attempt'))
+        reject('foreign-backend-custody',lambda v:v['context']['backend'].update(all=[{}]))
+        if step!='failure':
+            reject('changed-terminal-attribution',lambda v:only(v['context']['after']['ingest_terminal_transactions'],target_epoch=3).update(control_epoch=999))
+            reject('changed-terminal-xmin',lambda v:only(v['context']['after']['source_streams'],owner_epoch=3).update(xmin='4294967000'))
+            reject('compacted-count-as-target-count',lambda v:v['context']['response'].update(stdout=v['context']['response']['stdout'].replace('"resolved_requests":"0"','"resolved_requests":"7"').replace('"resolved_requests": "0"','"resolved_requests": "7"')))
+        else:
+            reject('missing-late-trigger',lambda v:v['context']['later_fault']['installed'].update(statement='COMMIT;'))
+            reject('unobserved-late-trigger-hit',lambda v:v['context']['later_fault'].update(hit='1false'))
+            reject('invented-terminal-receipt',lambda v:v['context']['after']['ingest_terminal_transactions'].append(dict(target_epoch=3)))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
