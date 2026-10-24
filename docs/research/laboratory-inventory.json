@@ -63683,6 +63683,32 @@
           "base": "38c99d96b543254cea9a088ab2aeb9bc54dbef60",
           "state": "SOURCE_WORK_ACTIVE; no engines/builds",
           "scope": "Existing advisory5clones/6commands; post-proof H/D corruption, one partial SQL, fixed missing handoff, true terminal SQL/retained older native OPEN; original-preparer and malformed floor separate"
+        },
+        "malformed_floor_helper": {
+          "owner": "/root/empty_malformed_floor",
+          "configuration": "gpt-6-astra / xhigh verified actual turn_context 2026-10-24T04:50:09.721Z, thread01a16c3e-ac1d-7ef3-b5b5-1f077b9a24ce",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-malformed-floor-20261024",
+          "branch": null,
+          "base": "9fc1e0836b83be0b20c099c8406f9bc69efa0739",
+          "state": "SOURCE_REVIEWED_INTEGRATED; exact-source build RUNNING",
+          "scope": "Separate subsequent fixed malformed-floor native fixture helper only; no production behavior or current5clone/6command profile changes",
+          "space_before_bytes": 256686592000,
+          "source_commit": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
+          "source_tree": "f415df8475ab4eaeef89e1df3f4f101d94ec260c",
+          "root_review": "Complete helper/caller and floor-decoder/selector delta reviewed; independently reproduced all84-row digest and fixed byte25 delta from original capture5f8938e1c34db1a5328c9b3e55d4a192987f4e6c749f1ed7aa78ffcf28c7cd63; no findings",
+          "build": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-628f955",
+            "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-628f955/source",
+            "driver_session": 53721,
+            "owner": "5d295f47120f5a53688c0fa9fd67e0be",
+            "owner_label": "org.bigbrotr.network-transport",
+            "state": "RUNNING; no runtime result claimed",
+            "free_before_bytes": 256590241792
+          },
+          "retired_branch": "work/compacted-empty-malformed-floor",
+          "worktree_status": "Clean DETACHED628f955; exact original commit integrated and blob equality checked before retiring redundant ref; all files retained",
+          "source_agent_status": "Completed; no active task",
+          "evidence": "Recovery report empty_initial_consumer_work.malformed_floor_helper owns full source/critical receipts"
         }
       }
     }

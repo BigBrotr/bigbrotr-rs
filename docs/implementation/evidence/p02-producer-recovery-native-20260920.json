@@ -45693,6 +45693,23 @@
                     "Actual GC/floor writer/unlink, mixed restore/physical loss/capacity and later consumers"
                   ]
                 }
+              },
+              "malformed_floor_helper": {
+                "source": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
+                "tree": "f415df8475ab4eaeef89e1df3f4f101d94ec260c",
+                "status": "SOURCE_REVIEWED_INTEGRATED; exact-source build RUNNING; connected case NOT_RUN",
+                "source_receipt": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-malformed-floor-source-v1.json",
+                  "sha256": "6c91488263f5a082f1340c82583142b54e5c106e1d172c1a11c3c9e2ec6e383b"
+                },
+                "critical_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-malformed-floor-critical-review-v1.json",
+                  "sha256": "56259ee55bfce642dc1686932f0b517ffd6a546a602e19ad2e23932f0807d3e2"
+                },
+                "scope": "Single test-only fixed malformed-floor mode; exact84row/125 seed, one synced byte25 change7->6, no production code or current5clone profile change",
+                "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-628f955",
+                "build_driver": 53721,
+                "next": "Join build and verify actual artifacts/resources; qualify subsequent single connected refusal with reused fixture owner after current proof-shapes profile."
               }
             }
           }
