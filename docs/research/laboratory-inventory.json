@@ -62936,7 +62936,7 @@
         "cleanup_errors": []
       },
       "compacted_activated_terminal_work_20261024": {
-        "state": "BUILD_PASS; first installed attempt failed in preclient origin gate; no runtime active",
+        "state": "INSTALLED_TERMINAL_RUNNING; root driver52734 owns client and borrowed PG",
         "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
         "runtime_owner": "/root",
         "agents": [
@@ -62998,11 +62998,11 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-fault-probe-20261024",
           "branch": "work/compacted-activated-terminal-fault-probe",
           "base": "56cac527313a8b5d813b52917beea1e544d010a0",
-          "state": "COMPLETE; frozen clean at b3af23cb, root source-reviewed, not integrated or built",
+          "state": "COMPLETE; frozen b3af23cb integrated exactly and root source-reviewed; not built",
           "scope": "Bounded existing activated retirement probe adaptation for compacted source proof, actual pending cancellation, UTC expiry and post-proof ancestor H/D drift gate; bootstrap seam only, no product mutation",
           "head": "b3af23cbb337309d40cc21502d31ea16633bef83"
         },
-        "root_followup": "Five uncommitted Rust example files: frozen b3af fault probe plus root zero-claim extension; independently source-reviewed, build/runtime NOT_RUN",
+        "root_followup": "Five reviewed Rust example files staged for coherent followup probe commit; build/runtime NOT_RUN",
         "installed_attempts": [
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917",
@@ -63016,6 +63016,16 @@
             "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-b407917/verified-run-failure.json",
             "verified_failure_sha256": "effa7cc88733620b15a5173fe5cfba9fc1cd33c0d23c218a6746b746323d5595",
             "preservation": "Fresh borrowed PG state unchanged from preflight; three recorded native source physical censuses unchanged; no cleanup or data removal"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-c37af9c",
+            "source": "c37af9cb625c0f9765143787dc0494b0f11987ff",
+            "tree": "3909b6ea41171edf9bed278ad9e20a44330588aa",
+            "owner": "61675ef563be9f154d12572ed91f4b39",
+            "client": "a4ade175cce55f46f128e2694a6cd2d743bfc86992b82c61df4871eb78e07e65",
+            "driver": 52734,
+            "status": "RUNNING",
+            "product_source": "56cac527313a8b5d813b52917beea1e544d010a0"
           }
         ]
       }

@@ -90,6 +90,7 @@ pub async fn run(
         live::is_mode(mode)
             || mode == activated_acquisition::MODE
             || mode == activated_retirement::MODE
+            || activated_retirement::is_compacted_mode(mode)
             || matches!(
                 mode,
                 "successor-normal"
@@ -122,6 +123,7 @@ pub async fn run(
         gate_prefix.is_some(),
         mode == activated_acquisition::MODE
             || mode == activated_retirement::MODE
+            || activated_retirement::is_compacted_mode(mode)
             || mode == "successor-compacted-gap-only"
             || mode == "successor-original-gap-only"
             || matches!(
@@ -129,7 +131,9 @@ pub async fn run(
                 "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
             )
     );
-    if let Some(prefix) = gate_prefix {
+    let retirement_wait = activated_retirement::is_compacted_mode(mode)
+        .then(|| activated_retirement::Wait::new(mode, gate_prefix.unwrap()));
+    if let Some(prefix) = gate_prefix.filter(|_| retirement_wait.is_none()) {
         assert!(prefix.is_absolute());
         assert!(!prefix.with_extension("go").try_exists().unwrap());
         if matches!(mode, "successor-live-guards" | "successor-live-manifest") {
@@ -190,6 +194,28 @@ pub async fn run(
             observer_driver,
             gate_prefix.unwrap(),
             instance.try_into().unwrap(),
+        )
+        .await;
+        return;
+    }
+    if let Some(wait) = retirement_wait {
+        activated_retirement::run_compacted(
+            Probe {
+                config,
+                initial_proxy_port: None,
+                root,
+                path,
+                budget,
+                observer,
+                cancelled: AtomicBool::new(false),
+                compacted_history_seed: false,
+                compacted_initial: false,
+                gap_prefix: None,
+            },
+            recovery,
+            observer_driver,
+            instance.try_into().unwrap(),
+            wait,
         )
         .await;
         return;

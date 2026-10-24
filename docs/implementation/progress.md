@@ -7,13 +7,13 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
 Compacted activated positive recovery and checkpoint ACK are now scoped-qualified.
-Current main: `b4079170d5de8f5acc499523732bf3b31b5c255c`; last verified push
-`b6b51e47c60c85cbd8bb6abe6369c4fa7345e362` (push95785 joined0). Main integrates
+Current main and last verified push: `c37af9cb625c0f9765143787dc0494b0f11987ff`
+(push98461 joined0). Main integrates
 reviewed compacted terminal native/PG/CLI consumers, seven required component
 controls and the real Event seed. The first Python terminal fixture e245bbda is
 source-reviewed and integrated; first runtime attempt failed before any case. Root
-retains five uncommitted Rust example files for compacted fault and zero-claim
-fixtures, independently source-reviewed but not yet built.
+integrates five Rust example files for compacted fault and zero-claim fixtures in
+the next coherent commit; independently source-reviewed, build/runtime NOT_RUN.
 Prior installed recovery/ACK product: `fc9388fc4c4f404ce57785eb5bfc66d11e10185a`,
 tree `e4a1c2d1b535049244cf32e03d211bfc586a47ee`.
 No floor writer or unlink is exposed. New terminal connected paths remain NOT_RUN.
@@ -40,7 +40,10 @@ originals preserved and cleanup arrays empty. New build `runs/producer-floor-56c
 PASS:179 components/70 mandatory controls, CLI/probe and Clippy; driver34712
 joined0. `verified-build.json` binds source56cac527/tree37ac9ba4 and artifacts;
 owned fetch/native containers stopped0/PID0/noOOM, owner18b8fbe2d25b0bea754c1bdac56fa530.
-No build or connected runtime active. First terminal attempt
+Corrected terminal run `runs/installed-compacted-terminal-c37af9c` is RUNNING
+under root driver52734, owner61675ef563be9f154d12572ed91f4b39, clienta4ade175.
+Four zero source/retirement cases report PASS; whole matrix/replay is not qualified.
+No build active. First terminal attempt
 `runs/installed-compacted-terminal-b407917` failed before client/clone/engine start;
 driver33767 joined1. It rejected the retained cf1 expected-refusal exit4 under an
 old exit0-only origin guard. Original INCOMPLETE_CUSTODY and four finalizer errors
@@ -70,14 +73,14 @@ Native0a063ef3 and Rust seed b48ccbf8 match the integrated bytes; exact-hash ind
 PG/CLI review found no blocker. Exact-source build PASS; connected terminal
 qualification has not run.
 
-The exact origin guard correction8dbff698 is integrated/source-reviewed; run
-a fresh frozen first terminal harness with qualified56cac527 artifacts and
-`--activated-terminal`, then exact-source raw replay: predicted 8 clones,25 commands,
-331 checker controls are not measured results. Preserve every failed attempt.
+Join corrected installed driver52734 and diagnose any failure without changing
+expectations to fit it. Then exact-source raw replay with `--activated-terminal`;
+predicted 8 clones,25 commands,331 checker controls are not final measured results.
+Preserve every failed attempt and verify actual process/container closure.
 The fault probe is frozen/source-reviewed at b3af23cb in
 `.research/compacted-activated-terminal-fault-probe-20261024`
 (branch `work/compacted-activated-terminal-fault-probe`). Integrate it with the
-root zero-claim draft after the first harness freeze, then build and qualify final
+root zero-claim extension, then build only after connected runtime stops and qualify final
 COMMIT/cancel/expiry/post-proof H/D and zero-request claimed-job boundaries.
 Agents have completed source work; no agent runtime is active.
 

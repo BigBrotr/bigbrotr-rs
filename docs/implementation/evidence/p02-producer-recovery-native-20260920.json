@@ -44851,7 +44851,7 @@
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No build/connected process active; corrected harness ready for fresh run",
+                "runtime": "Installed terminal driver52734 RUNNING; first four zero cases report PASS, whole matrix/replay not yet qualified",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -44989,7 +44989,7 @@
                   "zero_claim_draft": "Root two-file uncommitted adaptation in ingest_live.rs/ingest_live_durable.rs; source reviewed independently, no builds/runtime. Kept outside first harness commit so built56cac527 probe bytes remain exact.",
                   "zero_claim_critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-zero-claim-critical-review-v1.json",
                   "zero_claim_critical_receipt_sha256": "d971fd1c9757d5696d4dbb8fc49a8c369411d6225d8876891ea0a81d7b2b3313",
-                  "state": "Five Rust example files integrated but uncommitted; all source-reviewed; build/runtime NOT_RUN; kept outside first frozen harness"
+                  "state": "Five Rust example files source-reviewed and ready in this coherent probe commit; build/runtime NOT_RUN; frozen first harness c37af9cb and product56cac527 remain separate"
                 },
                 "installed_attempts": [
                   {
@@ -45007,6 +45007,16 @@
                     "failure": "transition.run required exit0 for exact cf1 reserved-tail-retry whose qualified expected refusal is exit4; stopped before docker start or SQL work",
                     "cleanup": "Existing finally attempted original SQL/catalog and database-name reads while borrowed PG was still stopped; no passing SQL-preservation result inferred. All errors retained.",
                     "resource_state": "Fresh no owned client; borrowed PG stopped0/PID0/noOOM with StartedAt/FinishedAt identical to preflight. Three recorded original physical censuses unchanged. No SQL preservation PASS invented."
+                  },
+                  {
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-c37af9c",
+                    "source": "c37af9cb625c0f9765143787dc0494b0f11987ff",
+                    "tree": "3909b6ea41171edf9bed278ad9e20a44330588aa",
+                    "owner": "61675ef563be9f154d12572ed91f4b39",
+                    "client": "a4ade175cce55f46f128e2694a6cd2d743bfc86992b82c61df4871eb78e07e65",
+                    "driver": 52734,
+                    "status": "RUNNING",
+                    "product_source": "56cac527313a8b5d813b52917beea1e544d010a0"
                   }
                 ]
               }

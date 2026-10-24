@@ -46,6 +46,7 @@ pub(super) enum Mode {
     Limit65,
     ZeroClaim,
     CompactedTerminalEvent,
+    CompactedZeroClaim,
 }
 impl Mode {
     pub(super) fn parse(mode: &str) -> Option<Self> {
@@ -56,6 +57,7 @@ impl Mode {
             "successor-live-acquisition-limit65" => Some(Self::Limit65),
             "successor-live-acquisition-zero-claim" => Some(Self::ZeroClaim),
             "successor-live-compacted-terminal-event" => Some(Self::CompactedTerminalEvent),
+            "successor-live-compacted-terminal-zero-claim" => Some(Self::CompactedZeroClaim),
             _ => None,
         }
     }
@@ -66,8 +68,12 @@ impl Mode {
             Self::AlreadyDurable
             | Self::ExtraIntents
             | Self::ZeroClaim
-            | Self::CompactedTerminalEvent => None,
+            | Self::CompactedTerminalEvent
+            | Self::CompactedZeroClaim => None,
         }
+    }
+    pub(super) fn is_zero_claim(self) -> bool {
+        matches!(self, Self::ZeroClaim | Self::CompactedZeroClaim)
     }
 }
 
@@ -135,8 +141,8 @@ pub(super) async fn run(
     previous: &InitialRegistration,
     mode: Mode,
 ) -> bool {
-    if mode == Mode::ZeroClaim {
-        return zero_claim(probe, owner).await;
+    if mode.is_zero_claim() {
+        return zero_claim(probe, owner, mode == Mode::CompactedZeroClaim).await;
     }
     assert!(
         probe.root.local("sync"),
@@ -771,18 +777,20 @@ async fn limit_intents(
     passed
 }
 
-async fn zero_claim(probe: &Probe, owner: &mut ControlSession) -> bool {
+async fn zero_claim(probe: &Probe, owner: &mut ControlSession, compacted: bool) -> bool {
+    assert!(!compacted || probe.compacted_initial);
     let directory = probe.path.join("producer-inputs-v1");
     let before_native = raw_state(&probe.path);
-    let before_inputs = input_bytes(&directory, 4);
+    let input_count = if compacted { 0 } else { 4 };
+    let before_inputs = input_bytes(&directory, input_count);
     probe.snapshot("zero-claim-before").await;
-    let result = zero_claim_work(probe, owner).await;
+    let result = zero_claim_work(probe, owner, compacted).await;
     // Even a failed or timed-out typed call retains its effects before teardown.
     probe.snapshot("zero-claim-queued").await;
     let after_native = raw_state(&probe.path);
-    let after_inputs = input_bytes(&directory, 4);
+    let after_inputs = input_bytes(&directory, input_count);
     let passed = result.is_ok()
-        && (before_native.0.len(), before_native.1) == (52, 62)
+        && (before_native.0.len(), before_native.1) == if compacted { (84, 125) } else { (52, 62) }
         && before_native == after_native
         && before_inputs == after_inputs;
     emit(serde_json::json!({"event":"live-zero-claim-state",
@@ -792,8 +800,18 @@ async fn zero_claim(probe: &Probe, owner: &mut ControlSession) -> bool {
     passed
 }
 
-async fn zero_claim_work(probe: &Probe, owner: &mut ControlSession) -> Result<(), String> {
-    let scope_id: AcquisitionScopeId = "a39723d7c49af2c99498fb2f59c03b16".parse().unwrap();
+async fn zero_claim_work(
+    probe: &Probe,
+    owner: &mut ControlSession,
+    compacted: bool,
+) -> Result<(), String> {
+    let scope_id: AcquisitionScopeId = if compacted {
+        "422b7d8b33d4b55977806fb711e2d082"
+    } else {
+        "a39723d7c49af2c99498fb2f59c03b16"
+    }
+    .parse()
+    .unwrap();
     let login = limit_call(owner.begin_browser_login("alice", "127.0.0.1".parse().unwrap())).await;
     emit(
         serde_json::json!({"event":"live-zero-claim-login","phase":"begin",

@@ -927,6 +927,9 @@ fn main() {
             | "successor-live-manifest"
             | "successor-activated-acquisition-expiry"
             | "successor-activated-retirement-expiry"
+            | "successor-activated-retirement-compacted-cancel"
+            | "successor-activated-retirement-compacted-expiry"
+            | "successor-activated-retirement-compacted-gate"
     );
     let transition_proxy = args.len() == 7
         && matches!(

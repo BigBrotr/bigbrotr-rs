@@ -237,8 +237,8 @@ pub(super) async fn run(
     }
     if let Some(durable_mode) = durable::Mode::parse(mode) {
         let passed = durable::run(&probe, &mut owner, &mut writer, &spec, durable_mode).await;
-        if durable_mode.limit().is_some() || durable_mode == durable::Mode::ZeroClaim {
-            let prefix = if durable_mode == durable::Mode::ZeroClaim {
+        if durable_mode.limit().is_some() || durable_mode.is_zero_claim() {
+            let prefix = if durable_mode.is_zero_claim() {
                 "zero-claim"
             } else {
                 "limit"
@@ -252,7 +252,7 @@ pub(super) async fn run(
                 "native":"closed","control":if passed && stopped {
                     "released-and-joined"
                 } else { "failed-see-custody-events" },
-                "writer":false,"admission":durable_mode != durable::Mode::ZeroClaim,"passed":passed && stopped && observer}));
+                "writer":false,"admission":!durable_mode.is_zero_claim(),"passed":passed && stopped && observer}));
             assert!(
                 passed && stopped && observer,
                 "preserved count fixture failure"
