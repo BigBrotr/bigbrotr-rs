@@ -63321,9 +63321,9 @@
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "critical_review": "/root/compacted_reader_review; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-terminal-guards-20261024",
-          "branch": "work/compacted-activated-terminal-guards",
+          "branch": "DETACHED; exact reconciled work/compacted-activated-terminal-guards ref retired",
           "base": "b6c4315a3b7e322e408818c93036b3aa7c53f787",
-          "state": "FROZEN_REVIEWED_SOURCE; integrated three exact blobs; installed NOT_RUN",
+          "state": "INTEGRATED_0CEFF580; exact source reconciled; author clean detached",
           "scope": "Separate3-clone/8-command import/draining/nativeOPEN profile; proposed declaration only, NOT_RUN",
           "commit": "7bb67235f50518a30e72ea673239182aaf93af66",
           "tree": "e85ce1395970441b528fd2b70660712714bc5e9b",
@@ -63336,12 +63336,55 @@
               "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-critical-review-v1.json",
               "sha256": "cdca1b20bcd2b77e2fbcbb54f9d223c706ce0b985323440b6839b74a1ecfb0eb"
             }
-          }
+          },
+          "diagnostic_artifacts": [
+            ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-author-diagnostic-v1.py",
+            ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-guards-author-diagnostic-output-v1.jsons"
+          ]
         },
         "remaining_consumer_audit": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "state": "READ_ONLY_SOURCE_AUDIT_ACTIVE",
           "scope": "Locate first dependency-ready remaining compacted consumer; initial empty-attempt retirement candidate, pending complete audit. No implementation/runtime."
+        },
+        "guard_run_work": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-guards-0ceff58",
+          "source": "0ceff5800b18129965623fd68cd4f51b8d21b8d9",
+          "tree": "505379f536a9e7e288e943bd5f5b0005de2fa4f5",
+          "product_source": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d",
+          "driver": 9803,
+          "state": "QUALIFIED_SCOPED; stopped-retained",
+          "free_bytes_before": 264167235584,
+          "profile": "--activated-terminal-guards",
+          "runtime_record": "installed-compacted-terminal-guards/result.json",
+          "driver_exit": 0,
+          "raw_replay_driver": 61439,
+          "raw_replay_driver_exit": 0,
+          "owner": "99c707afb7b81f6a4fec98ced3075823",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-guards-0ceff58/verified-run.json",
+            "sha256": "8641b446295e241236385a54ad98314a7439260f3188cc53e2d98ae680d33ecc"
+          },
+          "containers": [
+            {
+              "id": "20a0384892bbac12b6a5e7664bb82a8972af680bb402d3f8dc7c9cb1b573fdd5",
+              "owner": "99c707afb7b81f6a4fec98ced3075823",
+              "state": "exited",
+              "exit_code": 143,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 264060641280,
+          "preservation": "Both compacted-initial and activated-initial origins unchanged; all three clones/raw captures retained; no cleanup."
         }
       }
     }

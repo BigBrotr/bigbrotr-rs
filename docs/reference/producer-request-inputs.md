@@ -934,8 +934,15 @@ and actual UTC expiry across a real job lock, retirement post-proof ancestor H/D
 and final Event-mask refusal, and a genuine zero-request claimed job. The separate `b6c4315a` fixture then passed15 commands/264 checker controls
 on six copies, with raw replay over6163 bound files and32 proxy wire/metadata
 tests. Measured post-proof refresh reply holds establish final Source and
-abandonment H/D refusal before terminal effects. Genuine pending import, draining
-owner and isolated native OPEN qualification remain open. No GC or
+abandonment H/D refusal before terminal effects. Fixture `0ceff580`, using the
+verified import-gate probe at `e75aaa2f`, passed eight commands/133 case controls
+and twelve isolated-mutation controls on three copies; exact raw replay bound
+7351 files. An ordinary application-role import claim under the live activating
+Control remains queued through genuine Event source closure and acquisition
+abandonment, then causes the named retirement veto. A draining owner permits the
+exact twelve-row retirement and unchanged retry. Otherwise-ready SQL with an
+unchanged native OPEN target refuses at the native/SQL inspector, before the
+deeper native observation guard. Import execution is not exercised. No GC or
 physical-loss/restore/capacity qualification follows.
 
 It uses a distinct source-capable proof: confirmed canonical

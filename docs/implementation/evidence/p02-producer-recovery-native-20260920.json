@@ -44846,7 +44846,7 @@
               "next": "Adapt explicit compacted Source/abandonment and retirement proof/final transactions under linked audit; qualify genuine Event/workflow and final-transaction loss/expiry boundaries before later consumers or reclamation.",
               "terminal_consumer_work": {
                 "base": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
-                "state": "SCOPED_PASS_FIRST25_TERMINAL_FAULT56_SOURCE_PROOF15; import/draining/nativeOPEN and later consumers remain open",
+                "state": "SCOPED_TERMINAL_CONSUMERS_QUALIFIED: positive/refusal, final delivery/waits/proof drift and import/draining/nativeOPEN; remaining consumer compatibility and GC open",
                 "root": "PG/CLI explicit compacted Source/abandonment/retirement factories, final ancestor validation and authority/custody; independent native/fixture review and all runtime",
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
@@ -45366,9 +45366,38 @@
                   },
                   "root_review": "Complete three-file delta and new/affected bodies reviewed against retained complete-owner reads, including final timestamp/import-scope changes. Ordinary claim rows, actual actor/Control custody, typed native/SQL refusal, independent 12-row draining transition/retry, named import veto and raw bindings reviewed; exact source hashes and unchanged critical boundaries reconciled. Author targeted pure checks reused. No source blocker; installed 8-command run/raw replay NOT_RUN.",
                   "product_source": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d",
-                  "status": "SOURCE_REVIEWED_INSTALLED_NOT_RUN",
-                  "scope": "Three isolated clones: genuine unresolved import after Event/source/abandon; positive draining retirement/retry; native OPEN refusal at native/SQL inspector. No import execution or deeper native observation-guard claim."
-                }
+                  "status": "QUALIFIED_SCOPED_INSTALLED_GUARDS",
+                  "scope": "Three isolated clones: genuine unresolved import after Event/source/abandon; positive draining retirement/retry; native OPEN refusal at native/SQL inspector. No import execution or deeper native observation-guard claim.",
+                  "integrated_commit": "0ceff5800b18129965623fd68cd4f51b8d21b8d9"
+                },
+                "guard_qualification": {
+                  "source": "0ceff5800b18129965623fd68cd4f51b8d21b8d9",
+                  "tree": "505379f536a9e7e288e943bd5f5b0005de2fa4f5",
+                  "product_source": "e75aaa2f6751d96c5a3ac47f9d3e11c4d8747e6d",
+                  "status": "PASS_INSTALLED_COMPACTED_TERMINAL_GUARDS_SCOPED",
+                  "driver_session": 9803,
+                  "driver_exit": 0,
+                  "raw_replay_driver": 61439,
+                  "raw_replay_driver_exit": 0,
+                  "cases": 8,
+                  "checker_controls": 133,
+                  "isolated_mutation_controls": 12,
+                  "clones": 3,
+                  "raw_bound_files": 7351,
+                  "scope": "Actual ordinary-role queued import under live activating Control, followed by genuine Event/source/acquisition abandonment and named retirement veto; positive draining12-row retirement and exact retry; unchanged native OPEN refusal at native/SQL inspector, not deeper observation guard.",
+                  "not_run": [
+                    "Actual product reclamation/GC and unlink",
+                    "Import execution, closure, input binding or checkpoint; setup is ordinary guarded relational claim only",
+                    "Other terminal/delivery/proof cases are qualified separately and are not re-executed by this profile",
+                    "Later recovery/live frontier/Archive/empty retirement; mixed restore, physical loss, kill and capacity"
+                  ],
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-guards-0ceff58",
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-guards-0ceff58/verified-run.json",
+                    "sha256": "8641b446295e241236385a54ad98314a7439260f3188cc53e2d98ae680d33ecc"
+                  }
+                },
+                "next": "Finish source audit, then adapt compacted initial empty-attempt retirement if confirmed dependency-ready; preserve separate later-recovery/preparation/live/Archive gates and no floor writer/unlink."
               }
             }
           }
