@@ -44851,7 +44851,7 @@
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "No connected runtime active; proof15 driver71069 and raw replay94443 joined0;32 proxy tests23685 joined0. Next integrate reviewed import-gate probe and exact build; guard fixture source work active.",
+                "runtime": "No connected runtime active at import-gate source integration; next root-only exact native build. Guard fixture author and critical reviewer source-only.",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -45315,6 +45315,23 @@
                     "Unresolved import, draining owner and isolated native OPEN retirement guard",
                     "Later recovery/live frontier/Archive/empty retirement; mixed restore, physical loss, kill and capacity"
                   ]
+                },
+                "import_gate_integration": {
+                  "author_commit": "d92b3c1a298f0e867e2cb3393a34f72f7781fda2",
+                  "author_tree": "e7ce186c42946bec4ba8d6ea9156e8850aca09d3",
+                  "receipts": {
+                    "source": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-terminal-import-gate-source-20261024.json",
+                      "sha256": "897608020bb410365af0a2ac530a4f4d416a0583730443703efe3a49c3b8a0ed"
+                    },
+                    "critical-review": {
+                      "path": ".research/producer-checkpoint-ack-review-20261020/compacted-terminal-import-gate-critical-review-20261024.json",
+                      "sha256": "6455bdb28d0e0acb9e697a349a5a4390c4b57554c85c4854c7d2232074c524c3"
+                    }
+                  },
+                  "root_review": "Complete five-file delta and affected dispatch/mode/gate/lifecycle functions reviewed against retained complete-owner reads; strict direct /lab parent correction made before freeze. Exact five hashes reconciled; author rustfmt/diff PASS reused. Product libraries/Cargo unchanged. No runtime approval from source review.",
+                  "status": "SOURCE_ONLY_BUILD_AND_INSTALLED_NOT_RUN",
+                  "next": "Exact producer-floor build; independently reviewed import/draining/nativeOPEN fixture on that build."
                 }
               }
             }

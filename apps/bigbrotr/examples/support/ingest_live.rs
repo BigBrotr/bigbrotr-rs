@@ -213,6 +213,9 @@ pub(super) async fn run(
     assert_eq!(writer.manifest().identity().owner_epoch.get(), 2);
     assert_eq!(writer.producer_slot_id(), spec.producer_slot_id);
     probe.snapshot("activated-zero").await;
+    if mode == "successor-live-compacted-terminal-import-gate" {
+        terminal_import_gate(&probe, &owner, &writer, gate_prefix.unwrap()).await;
+    }
     if let Some(seed) = ProgressSeed::parse(mode) {
         progress_seed(&probe, owner, driver, writer, &spec, &backend, seed, mode).await;
         let compacted = probe.compacted_initial;
@@ -303,6 +306,7 @@ pub(super) async fn run(
             | "successor-live-already-durable"
             | "successor-live-acquisition-claims"
             | "successor-live-compacted-terminal-event"
+            | "successor-live-compacted-terminal-import-gate"
     ) {
         admit(
             &probe,
@@ -421,6 +425,67 @@ async fn join_limit_driver(mut driver: Driver, stage: &str, prefix: &str) -> boo
         "joined":true,"failed":error.is_some(),"aborted":aborted,"error":error}),
     );
     error.is_none() && !aborted
+}
+
+pub(super) fn validate_terminal_import_gate(prefix: &Path) {
+    // Reject stale or malformed signals before native inspection/Control claim.
+    let text = prefix.to_str().expect("UTF-8 terminal import gate prefix");
+    assert!(text.len() <= 512 && prefix.file_name().is_some());
+    assert_eq!(prefix.parent(), Some(Path::new("/lab")));
+    assert!(prefix.components().all(|part| matches!(
+        part,
+        std::path::Component::RootDir | std::path::Component::Normal(_)
+    )));
+    assert!(
+        std::fs::symlink_metadata(prefix.parent().unwrap())
+            .unwrap()
+            .file_type()
+            .is_dir()
+    );
+    assert!(
+        !activated_retirement::signal_present(&prefix.with_extension("go"))
+            .expect("valid absent terminal import go signal")
+    );
+}
+
+async fn terminal_import_gate(
+    probe: &Probe,
+    owner: &ControlSession,
+    writer: &LiveInitialWriter,
+    prefix: &Path,
+) {
+    // Activation has returned its live writer after confirmed COMMIT and final
+    // validation. No transaction, login, job acceptance or socket is pending.
+    // The external harness can now queue an ordinary guarded import attributed
+    // to this actual activator; this probe neither creates nor resolves it.
+    assert!(probe.compacted_initial);
+    probe
+        .observe_backend_at(owner, "terminal-import-gate")
+        .await;
+    let identity = owner.identity();
+    let go = prefix.with_extension("go");
+    let gate_event = |phase| {
+        emit(serde_json::json!({"event":"live-terminal-import-gate",
+            "mode":"successor-live-compacted-terminal-import-gate","phase":phase,
+            "go":go,"gate_timeout_ms":10000,"poll_ms":5,
+            "control_resource":hex(identity.resource_id.as_bytes()),
+            "control_epoch":identity.epoch.get(),
+            "control_incarnation":hex(identity.process_incarnation.as_bytes()),
+            "activated_at_us":writer.activated_at_us()}));
+    };
+    gate_event("waiting");
+    // A timeout or malformed signal fails without reporting native closure;
+    // the outer process owner must establish custody before another open.
+    bounded(async {
+        while !activated_retirement::signal_present(&go)
+            .expect("invalid terminal import signal; preserve custody")
+        {
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await;
+    gate_event("released");
+    probe.snapshot("terminal-import-released").await;
 }
 
 async fn guard_gate(prefix: &Path, gate: &str, extension: &str) {

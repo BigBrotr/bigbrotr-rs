@@ -925,6 +925,7 @@ fn main() {
         "successor-preparer-claim"
             | "successor-live-guards"
             | "successor-live-manifest"
+            | "successor-live-compacted-terminal-import-gate"
             | "successor-activated-acquisition-expiry"
             | "successor-activated-retirement-expiry"
             | "successor-activated-retirement-compacted-cancel"

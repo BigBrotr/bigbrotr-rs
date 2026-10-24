@@ -777,7 +777,7 @@ impl Wait {
     }
 }
 
-fn signal_present(path: &Path) -> std::io::Result<bool> {
+pub(super) fn signal_present(path: &Path) -> std::io::Result<bool> {
     match std::fs::symlink_metadata(path) {
         Ok(metadata) if metadata.file_type().is_file() && metadata.len() == 0 => Ok(true),
         Ok(_) => Err(std::io::Error::other(

@@ -63236,10 +63236,20 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-terminal-import-gate-20261024",
           "branch": "compacted-terminal-import-gate-20261024",
           "base": "30656b709cee6709124a4a55375004e07a6afbe7",
-          "state": "FROZEN_REVIEWED_SOURCE; unintegrated/unbuilt",
+          "state": "FROZEN_REVIEWED_SOURCE; exact five-file integration; BUILD_NOT_RUN",
           "scope": "Bounded gate under genuine live activating Control before terminal Event seed; ordinary application-role import claim performed later by root-owned fixture. No product-library change or historical synthetic claim.",
           "commit": "d92b3c1a298f0e867e2cb3393a34f72f7781fda2",
-          "tree": "e7ce186c42946bec4ba8d6ea9156e8850aca09d3"
+          "tree": "e7ce186c42946bec4ba8d6ea9156e8850aca09d3",
+          "receipts": {
+            "source": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-terminal-import-gate-source-20261024.json",
+              "sha256": "897608020bb410365af0a2ac530a4f4d416a0583730443703efe3a49c3b8a0ed"
+            },
+            "critical-review": {
+              "path": ".research/producer-checkpoint-ack-review-20261020/compacted-terminal-import-gate-critical-review-20261024.json",
+              "sha256": "6455bdb28d0e0acb9e697a349a5a4390c4b57554c85c4854c7d2232074c524c3"
+            }
+          }
         },
         "source_proof_qualified_run": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-source-proof-b6c4315",

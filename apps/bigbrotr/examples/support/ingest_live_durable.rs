@@ -56,7 +56,8 @@ impl Mode {
             "successor-live-acquisition-limit64" => Some(Self::Limit64),
             "successor-live-acquisition-limit65" => Some(Self::Limit65),
             "successor-live-acquisition-zero-claim" => Some(Self::ZeroClaim),
-            "successor-live-compacted-terminal-event" => Some(Self::CompactedTerminalEvent),
+            "successor-live-compacted-terminal-event"
+            | "successor-live-compacted-terminal-import-gate" => Some(Self::CompactedTerminalEvent),
             "successor-live-compacted-terminal-zero-claim" => Some(Self::CompactedZeroClaim),
             _ => None,
         }

@@ -128,12 +128,18 @@ pub async fn run(
             || mode == "successor-original-gap-only"
             || matches!(
                 mode,
-                "successor-preparer-claim" | "successor-live-guards" | "successor-live-manifest"
+                "successor-preparer-claim"
+                    | "successor-live-guards"
+                    | "successor-live-manifest"
+                    | "successor-live-compacted-terminal-import-gate"
             )
     );
     let retirement_wait = activated_retirement::is_compacted_mode(mode)
         .then(|| activated_retirement::Wait::new(mode, gate_prefix.unwrap()));
     if let Some(prefix) = gate_prefix.filter(|_| retirement_wait.is_none()) {
+        if mode == "successor-live-compacted-terminal-import-gate" {
+            live::validate_terminal_import_gate(prefix);
+        }
         assert!(prefix.is_absolute());
         assert!(!prefix.with_extension("go").try_exists().unwrap());
         if matches!(mode, "successor-live-guards" | "successor-live-manifest") {

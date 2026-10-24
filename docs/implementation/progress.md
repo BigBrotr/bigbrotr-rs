@@ -8,7 +8,8 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
 Main/harness `b6c4315a3b7e322e408818c93036b3aa7c53f787`, tree30ca3ecd;
 verified pushb6c4315a (driver22551 joined0). Product7bc63d97 remains unchanged.
-This checkpoint records scoped Source/abandon post-proof qualification.
+This commit integrates reviewed import-gate probed92b3c1; build/runtime NOT_RUN.
+The immediately preceding qualification checkpoint is88fb01dc.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -39,7 +40,7 @@ zero-request claimed-job refusal/abandonment/retirement.
 binds6163 files. Its `verified-run.json` records actual refresh5/7 holds and four
 H/D refusals without final effects/ACK/release, retaining native/SQL/input state.
 
-Next: integrate reviewed import-gate probed92b3c1 and run its exact native build,
+Next: run the integrated import-gate probe exact producer-floor build,
 then qualify the separate import/draining/nativeOPEN guard fixture when reviewed.
 The Python author works isolated on that next profile; current qualifiers remain
 separate. No GC/floor writer/unlink is enabled.
@@ -51,7 +52,7 @@ PG71775507 stopped0, PID0/noOOM. All15 custody closed and cleanup/unrelated/
 unexpected/missing-owned arrays empty; origin unchanged. No cache cleanup.
 Source-proof author worktree is clean detached4e93c415; exact seven-file
 integration reconciled before work ref retirement. Import-gate d92b3c1 is clean,
-reviewed, unintegrated/unbuilt in `.research/compacted-terminal-import-gate-20261024`.
+reviewed, integrated/unbuilt in `.research/compacted-terminal-import-gate-20261024`.
 Next Python guard fixture source work is isolated; runtime remains root-owned.
 Earlier detached author worktrees, .research, datasets, failures and external labs
 remain preserved. Redundant reconciled endpoint branch retired; files retained.
