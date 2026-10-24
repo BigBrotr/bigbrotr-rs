@@ -6,11 +6,13 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main `0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a`, verified push0984d001
+Main `1e052ead97404b7e0effe29ee16a02c5de83095f`; last verified push0984d001
 (driver3838 joined0). Product e75aaa2 and guard harness0ceff580 remain qualified.
-Local compacted initial empty2 retirement implementation is source-reviewed:
+Committed compacted initial empty2 retirement implementation is source-reviewed:
 native author ec28253 exact nine files, root six PG/CLI files and six additional
-mandatory component names. Build/components/installed execution are NOT_RUN.
+mandatory component names. First exact build stopped: CLI/probe and185 components PASS; Clippy FAIL for
+one unused internal reexport. That one-line removal awaits exact rebuild;
+installed execution is NOT_RUN.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -34,8 +36,8 @@ driver21217 joined0, receipt verified. Prior product7bc and installed profiles
 b1b2dff(25),8589101(56),b6c4315(15) remain separately qualified in the report;
 reuse their unchanged evidence. No GC/floor writer/unlink is enabled.
 
-Next: freeze the reviewed compacted initial empty2 retirement source and run the
-isolated exact producer-floor build; then qualify the reviewed independent
+Next: commit the reviewed unused-reexport fix and rebuild the exact product;
+then qualify the reviewed independent
 installed fixture and raw replay. Root owns runtime. Audit and work
 record are in the same report under `compacted_successor_preparation.
 empty_initial_consumer_work`. Exact prepared origin, native125→126 once and
@@ -44,7 +46,9 @@ custody remain required. Later consumers remain separate; build/runtime NOT_RUN.
 
 ## Work and resources
 
-No root build or connected runtime active. Guard client20a03848 stopped143;
+Root producer-floor1e052ea driver55284 joined1; both owned containers are
+verified stopped/PID0/noOOM. Failure/logs retained in inventory. No root build
+or connected runtime active. Guard client20a03848 stopped143;
 borrowed PG71775507 stopped0/PID0/noOOM, independently inspected after drivers
 joined. Both origins unchanged; all8 custody closed and cleanup/unrelated/
 unexpected/missing-owned arrays empty. All clones/raw captures retained.

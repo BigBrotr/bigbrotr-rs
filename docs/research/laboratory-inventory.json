@@ -63393,14 +63393,14 @@
       },
       "compacted_empty_initial_work_20261024": {
         "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-        "state": "SOURCE_REVIEWED; no build/connected runtime yet",
+        "state": "FIRST_BUILD_STOPPED_RETAINED; pending one-line repair rebuild",
         "native": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-native-20261024",
-          "branch": "work/compacted-empty-initial-native",
+          "branch": "DETACHED; exact reconciled work/compacted-empty-initial-native ref retired",
           "commit": "ec28253fbd61ca8bcf58107934cf291b1106adb5",
           "tree": "38bf44f6119d380bf4ba4d3799425466d9076402",
-          "state": "AUTHOR_CLEAN_FROZEN; exact9 files reconciled into canonical worktree; branch retained pending commit"
+          "state": "INTEGRATED_1E052EAD; exact nine source hashes matched; author clean detached; artifacts retained"
         },
         "fixture": {
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
@@ -63418,6 +63418,37 @@
         "review_receipt": {
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-critical-review-v1.json",
           "sha256": "52e1f27559311df0211d1dd411bf8bfbbc7f6755fc32414a1719335d761fc117"
+        },
+        "build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
+          "source": "1e052ead97404b7e0effe29ee16a02c5de83095f",
+          "tree": "7bb9a68113bd3f041568b59835f4ad238648dd46",
+          "driver": 55284,
+          "state": "FAIL_CLIPPY_UNUSED_REEXPORT; driver joined1",
+          "owner": "971c5127d3c29cb9787da299447f8d2c",
+          "resource_record": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea/resources.json",
+          "free_bytes_before": 263664238592,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea/verified-failure.json",
+            "sha256": "70a9d3ced4b4bab35cce042e34982409b0e02e07f111deeec5949c1726bad2cc"
+          },
+          "containers": [
+            {
+              "id": "6db0cfce8b322127a21011a1e613a980f85ece141c50fe79504c2a28ab7f7004",
+              "name": "/bigbrotr-producer-floor-1e052ea-fetch",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "1a440dfd7a7f2fc46033e06bb0dc3921ea56c5c8b6ba6fd26f29ee44c0fcd1aa",
+              "name": "/bigbrotr-producer-floor-1e052ea-native",
+              "exit_code": 1,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 263434096640
         }
       }
     }

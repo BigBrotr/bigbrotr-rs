@@ -120,7 +120,6 @@ pub use source_closure::{
 
 #[path = "initial_handoff.rs"]
 mod initial_handoff;
-pub(in crate::storage) use initial_handoff::CompactedEmptyInitialAttempt;
 pub(in crate::storage) use initial_handoff::{
     ActivatedInitial, ActivatedProducerClosing, EmptyInitialAttempt, HistoricalInitial,
     InitialHandoffRecord,

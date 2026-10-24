@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "SOURCE_REVIEWED; exact build/components/installed NOT_RUN",
+              "status": "FIRST_BUILD_FAIL_CLIPPY;185 components PASS; one-line fix pending exact rebuild",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45414,7 +45414,11 @@
               "critical_review": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-critical-review-v1.json",
                 "sha256": "52e1f27559311df0211d1dd411bf8bfbbc7f6755fc32414a1719335d761fc117",
-                "disposition": "NO_REMAINING_SOURCE_BLOCKER in the bounded native and PG/CLI slice; not build or runtime qualification"
+                "disposition": "NO_REMAINING_SOURCE_BLOCKER in the bounded native and PG/CLI slice; not build or runtime qualification",
+                "mechanical_addendum": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-critical-review-unused-export-addendum-v1.json",
+                  "sha256": "5078b1db134017d05844b297107bf576ae6517d6c46463bf98990923a656ecbd"
+                }
               },
               "expected_scope": "Distinct compacted empty proof for Open0/Closing0, canonical ancestor/floor/input stamp, one native+1 close and exact13-row SQL terminal/retry. Preserve original-only factories and Open-only handoff. Fresh final transaction/census/delivery required; no ACK/floor writer/unlink.",
               "native_source": {
@@ -45432,7 +45436,22 @@
                 "mandatory_controls": "70 original names preserved plus6 exact new names; not executed"
               },
               "fixture": "Separate nine-clone/thirteen-command profile in author worktree; source review active; installed NOT_RUN",
-              "next": "Freeze exact product, run isolated producer-floor build/components, then integrate critically reviewed independent fixture and execute installed/raw replay. Preserve final delivery/claims/lock/cancel/expiry/proof-to-use gates."
+              "next": "Freeze exact product, run isolated producer-floor build/components, then integrate critically reviewed independent fixture and execute installed/raw replay. Preserve final delivery/claims/lock/cancel/expiry/proof-to-use gates.",
+              "build_attempts": [
+                {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
+                  "source": "1e052ead97404b7e0effe29ee16a02c5de83095f",
+                  "driver": 55284,
+                  "exit_code": 1,
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea/verified-failure.json",
+                    "sha256": "70a9d3ced4b4bab35cce042e34982409b0e02e07f111deeec5949c1726bad2cc"
+                  },
+                  "passed": "CLI/probe compilation and all185 components",
+                  "failed": "Clippy unused internal CompactedEmptyInitialAttempt reexport in rocks/store.rs:123",
+                  "repair": "Remove unused internal reexport only; no behavior change. First failure preserved."
+                }
+              ]
             }
           }
         }
