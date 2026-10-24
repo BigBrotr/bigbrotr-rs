@@ -17,6 +17,7 @@ from pathlib import Path
 import shutil
 import sys
 import time
+import tomllib
 
 sys.dont_write_bytecode = True
 import transition
@@ -1096,7 +1097,11 @@ def run_terminal_sequence(pg,client,output,clone,directory,expected,report,*,ori
     source=Path(__file__).with_name('installed_cycle_client.py'); target=output/'installed_cycle_client.py'
     if not target.exists(): shutil.copy2(source,target)
     assert history.digest(target)==history.digest(source)
-    configure(pg,client,output,clone['config'],ack=True)
+    if 'seed' in oracle.TERMINAL_STEPS[name]:
+        configure(pg,client,output,clone['config'],ack=True,endpoint='ws://127.0.0.1:7447/installed-fixture')
+    else:
+        configure(pg,client,output,clone['config'],ack=True)
+    oracle.terminal_network_checked(tomllib.loads((output/Path(clone['config']).name).read_text()),name)
     attribution=terminal_attribution(output,directory,initial) if 'seed' in oracle.TERMINAL_STEPS[name] else None
     if name=='missing-input': expected=activated_quarantine(output,directory,expected)
     predecessor=None

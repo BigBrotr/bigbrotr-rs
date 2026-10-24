@@ -307,6 +307,10 @@ pub(super) async fn run(
     .await
     .unwrap()
     .unwrap();
+    if modern {
+        emit(serde_json::json!({"event":"live-terminal-certification",
+            "kind":"visibility","available":true}));
+    }
     let observation = bounded(owner.read_live_initial_observation(
         writer,
         LiveInitialObservationRequest {
@@ -327,6 +331,10 @@ pub(super) async fn run(
     .await
     .unwrap()
     .unwrap();
+    if modern {
+        emit(serde_json::json!({"event":"live-terminal-certification",
+            "kind":"observation","available":true}));
+    }
 
     // Account the socket/session/captured-message overlap in the parent before
     // subdividing it. The independent peer is finite laboratory scaffolding.
@@ -400,8 +408,20 @@ pub(super) async fn run(
             Ok((captured, received))
         },
     );
-    let (arrival, ()) = bounded(async { tokio::join!(receive, peer(&listener)) }).await;
-    let (captured, received) = arrival.unwrap();
+    // Only the actual receive operation can return an error. Preserve that
+    // error immediately instead of waiting for a peer that may never connect.
+    let arrived = bounded(async {
+        tokio::try_join!(receive, async {
+            peer(&listener).await;
+            Ok(())
+        })
+    })
+    .await;
+    if modern && let Err(error) = &arrived {
+        emit(serde_json::json!({"event":"live-terminal-receive-error",
+            "error":format!("{error:?}")}));
+    }
+    let ((captured, received), ()) = arrived.unwrap();
     drop(listener);
     drop(connector);
     drop(visible);

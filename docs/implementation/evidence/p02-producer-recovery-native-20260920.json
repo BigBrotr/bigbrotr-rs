@@ -44851,7 +44851,7 @@
                 "native_agent": "/root/compacted_reader_review; native proof/observation-only retirement and components",
                 "fixture_agent": "/root/compacted_reader_fixture; authentic activating-Control job plus Event seed, independent full-state installed terminal oracle, then selected final COMMIT/cancel/expiry extension",
                 "scope": "No GC/unlink/floor writer. Preserve strict old APIs, original target digest/Event mask and physical64file/32MiB limits. Final transactions require fresh ancestor H/D; ACK proof cannot mint source.",
-                "runtime": "Installed terminal driver52734 RUNNING; first four zero cases report PASS, whole matrix/replay not yet qualified",
+                "runtime": "No build/connected runtime active; source-only endpoint correction and receive diagnostic under review",
                 "root_baseline_reads": {
                   "revision": "bbc36cbd1b1164c9ca83b4ef8f8695092300cd6b",
                   "complete_files_sha256": {
@@ -44989,7 +44989,8 @@
                   "zero_claim_draft": "Root two-file uncommitted adaptation in ingest_live.rs/ingest_live_durable.rs; source reviewed independently, no builds/runtime. Kept outside first harness commit so built56cac527 probe bytes remain exact.",
                   "zero_claim_critical_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-zero-claim-critical-review-v1.json",
                   "zero_claim_critical_receipt_sha256": "d971fd1c9757d5696d4dbb8fc49a8c369411d6225d8876891ea0a81d7b2b3313",
-                  "state": "Five Rust example files source-reviewed and ready in this coherent probe commit; build/runtime NOT_RUN; frozen first harness c37af9cb and product56cac527 remain separate"
+                  "state": "Five fault/zero example files integrated and reviewed; build/runtime NOT_RUN. New one-file receive diagnostic draft source-reviewed; endpoint Python correction active.",
+                  "integrated_commit": "2557d2cb155163e32e39ba2dcf344df903c0eaf4"
                 },
                 "installed_attempts": [
                   {
@@ -45015,10 +45016,33 @@
                     "owner": "61675ef563be9f154d12572ed91f4b39",
                     "client": "a4ade175cce55f46f128e2694a6cd2d743bfc86992b82c61df4871eb78e07e65",
                     "driver": 52734,
-                    "status": "RUNNING",
-                    "product_source": "56cac527313a8b5d813b52917beea1e544d010a0"
+                    "status": "FAIL",
+                    "product_source": "56cac527313a8b5d813b52917beea1e544d010a0",
+                    "driver_exit": 1,
+                    "completed_cases": 4,
+                    "completed_checker_controls": 56,
+                    "verified_failure_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-terminal-c37af9c/verified-run-failure.json",
+                    "verified_failure_sha256": "c2e8b16da4fbbc0cad7cadc271a4f03f6f18733221abee6fa1246cf3f1969be1",
+                    "failure": "Actual Event seed exit101 after10.3956 seconds; last stage durable-job-claimed. history.external correctly refused native reopen at UNKNOWN_PROCESS_OUTCOME; outer owner stopped client. No complete terminal qualification or raw replay.",
+                    "diagnosis": "Saved fixture root permits /installed-successor-fixture while genuine endpoint/probe require /installed-fixture. Full policy/connector source shows sufficient pre-connect refusal, which join(receive,peer) can mask. No intermediate markers establish the actual failed await. Do not assign this cause to earlier a99.",
+                    "resource_state": "Owned client stopped143; borrowed PG stopped0; PID0/noOOM; cleanup arrays empty and all four originals preserved. Failed Event native was not reopened by wrapper."
                   }
-                ]
+                ],
+                "endpoint_correction": {
+                  "root_draft": "ingest_live_durable.rs modern visibility/observation markers and actual receive error; try_join preserves both-complete success and avoids masking completed receive Err behind peer accept; no timeout increase",
+                  "python_owner": "/root/compacted_reader_fixture in .research/compacted-activated-terminal-endpoint-20261024, base2557d2cb; explicit endpoint parameter preserving default, exact terminal seeded-clone rule and oracle/replay markers",
+                  "root_source_review": "COMPLETE exact diagnostic SHA5919e69d and critical receipt; no runtime causal attribution of previous timeout",
+                  "build_runtime": "NOT_RUN",
+                  "python_author_commit": "32dc60eacb14b32c83f5b70b9f1c6938a3674fac",
+                  "python_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-endpoint-source-v2.json",
+                  "python_receipt_sha256": "d17d11a49097c6bb6b1ea3c802d9aa155ad3c47f202c1445306f741570aaa38a",
+                  "critical_rust_receipt": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-terminal-endpoint-diagnostic-critical-review-v1.json",
+                  "critical_rust_receipt_sha256": "19cb00a4fc917cb4c6643b8b8a814fc929510da54e680a0bb92a6a9f3cb63dd2",
+                  "root_review": "Complete four-file Python delta, full configure helper, affected runner/replay configuration/seed chronology reviewed; prior unchanged owners reused. Exact singleton endpoint override only for event/unbound-event, old default preserved. Boolean markers follow successful typed reads, exact order and full raw config checked. Integrated four Python hashes and one Rust hash match receipts; no source blocker.",
+                  "state": "INTEGRATED_SOURCE_REVIEWED; next exact-source build required",
+                  "predicted_commands": 25,
+                  "predicted_controls": 335
+                }
               }
             }
           }

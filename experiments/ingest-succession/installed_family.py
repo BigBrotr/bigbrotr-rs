@@ -101,8 +101,9 @@ SUITE = transition.Suite(directory='installed-family', label='org.bigbrotr.insta
         'Writer adoption, unresolved input cleanup, COMMIT loss, capacity/RSS qualification'))
 
 
-def configure(pg, client, output, config, *, ack=False):
+def configure(pg, client, output, config, *, ack=False, endpoint=ENDPOINT):
     assert type(ack) is bool
+    assert endpoint in (ENDPOINT, 'ws://127.0.0.1:7447/installed-fixture')
     path = output / Path(config).name
     text = path.read_text()
     for section, key, value in [
@@ -116,9 +117,9 @@ def configure(pg, client, output, config, *, ack=False):
         ('runtime', 'graceful_shutdown_timeout', '2s'),
     ]:
         text = set_value(text, section, key, value)
-    rule = [dict(endpoint=ENDPOINT, cidr='127.0.0.1/32', port=7447)]
+    rule = [dict(endpoint=endpoint, cidr='127.0.0.1/32', port=7447)]
     text = set_value(text, 'network.private', 'rules', rule).replace(json.dumps(rule),
-        '[{endpoint="' + ENDPOINT + '",cidr="127.0.0.1/32",port=7447}]')
+        '[{endpoint="' + endpoint + '",cidr="127.0.0.1/32",port=7447}]')
     path.write_text(text)
     answer = lab.cli(dict(pg, client=client), 'config', 'validate', '--file', config)
     lab.write_json(output / (path.stem + '-installed-config-validation.json'), dict(

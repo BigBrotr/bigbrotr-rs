@@ -3028,6 +3028,13 @@ def terminal_specification(case):
     return name,step
 
 
+def terminal_network_checked(config,name):
+    assert name in TERMINAL_STEPS
+    endpoint='ws://127.0.0.1:7447/'+('installed-fixture' if name in ('event','unbound-event') else 'installed-successor-fixture')
+    assert config['network']['private']['rules']==[dict(endpoint=endpoint,cidr='127.0.0.1/32',port=7447)]
+    assert config['network']['dns']['resolver']=='127.0.0.1:9' and config['network']['tls']['extra_roots']==[]
+
+
 def terminal_attribution(contents,initial):
     from installed_sync_oracle import decode
     slot=only(initial[0]['producer_epochs'])['producer_slot_id'][2:]
@@ -3122,6 +3129,9 @@ def verify_terminal_seed(events,expected,initial,case,window,attribution,receive
     live.activated(pg,after,plan,control,window,activated['activated_at_us']); pg=after
     job=take('live-durable-job'); after=snap('durable-job-claimed')
     control=durable.authenticated_job(pg,after,job,control,window,modern=True); pg=after
+    for kind in ('visibility','observation'):
+        certification=take('live-terminal-certification')
+        assert certification==dict(event='live-terminal-certification',kind=kind,available=True) and certification['available'] is True
     wire=take('live-durable-wire'); subscription=wire['request'][1]
     assert re.fullmatch('[0-9a-f]{32}0000000000000001',subscription) and int(subscription[:32],16)
     assert wire==dict(event='live-durable-wire',request=['REQ',subscription,dict(kinds=[1],limit=1)],signed_event=durable.SIGNED,events=1,eose=True)
@@ -3349,8 +3359,14 @@ def terminal_controls(context,initial,expected):
     changes.append(('invented-target-ACK',wrong_ack))
     if context['inputs_after']: changes.append(('required-input-loss',lambda c:c['inputs_after'].clear()))
     if step=='seed':
+        def false_certification(c,kind):
+            events=[loads(line) for line in c['response']['stdout'].splitlines()]
+            only(events,event='live-terminal-certification',kind=kind)['available']=False
+            c['response']['stdout']=''.join(json.dumps(event)+'\n' for event in events)
         changes.extend([('unknown-custody',lambda c:c['custody'].update(status='UNKNOWN')),
             ('wrong-seed-command',lambda c:c['response']['command'].append('unexpected')),
+            ('false-visibility-certification',lambda c:false_certification(c,'visibility')),
+            ('false-observation-certification',lambda c:false_certification(c,'observation')),
             ('attribution-original-loss',lambda c:c['attribution'].pop(next(iter(c['attribution'])))),
             ('receive-resolution',lambda c:c['receive_clock'].update(resolution_us=c['receive_clock']['resolution_us']+1))])
     else:
