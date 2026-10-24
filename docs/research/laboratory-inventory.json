@@ -63635,7 +63635,21 @@
           "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-proof-shape-audit-20261024.json",
           "owner": "/root/terminal_import_gate; completed source-only audit; no runtime or source mutations",
           "record": "Recovery report empty_initial_consumer_work.proof_shape_audit owns digest and scope"
-        }
+        },
+        "locks_installed_attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-eec929e",
+            "source": "eec929e789dc2a343a3f0598a3493ce8fe1b74b1",
+            "owner": "05451c469090599c8800ad20d213ee5a",
+            "client": "3ecd2c2aa8d71af9601e26cef194054f329a456797887813f2a2d7d153e67986",
+            "client_state": "freshly inspected stopped143/PID0/noOOM",
+            "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_state": "freshly inspected stopped0/PID0/noOOM",
+            "driver": "82923 joined1",
+            "state": "FAIL preserved; independent raw replay NOT_RUN",
+            "records": "Recovery report locks_extension.attempts owns exact failure receipt and scope"
+          }
+        ]
       }
     }
   },

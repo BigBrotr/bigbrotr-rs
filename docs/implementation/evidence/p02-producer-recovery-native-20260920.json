@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Run exact integrated --empty-initial-locks profile with qualified30ab product; then bind raw replay and independently join/inspect owned resources. Follow source-reviewed H/D/partial/mixed-shape candidate only after current result is reconciled.",
+              "next": "Correct/review the unsupported Control owner timestamp ordering using actual post-lock role clock and observed lock/transaction evidence; preserve eec929e FAIL. Then execute a fresh exact profile and raw replay.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45596,7 +45596,7 @@
                 "root_review": "Full advisory read; all27 source hashes and3 existing qualification receipts match. Reuse native/refusal evidence;5clones/6commands for post-proof H/D and partial/mixed shapes are the next candidate after current claim suite. Original-preparer fresh gap route and connected malformed-floor helper remain separate prerequisites."
               },
               "locks_extension": {
-                "status": "SOURCE_REVIEWED; installed/raw NOT_RUN",
+                "status": "FIRST_INSTALLED_FAIL_VERIFIER_CLOCK_ORDER; correction under review; raw NOT_RUN",
                 "author_commit": "10714546db9021986d3597ef86b19820d5f650f4",
                 "author_tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
                 "source_receipt": {
@@ -45609,7 +45609,20 @@
                 },
                 "root_review": "All four deltas and complete affected hook/runner/control/oracle/raw owners reviewed. Four frozen source plus16 helper hashes and six saved diagnostic artifacts reconciled. Actor completion/livelease, refreshed-before-held, wire bounds, raw8s configuration and signal-before-local-deadline findings resolved; AST/diff PASS.",
                 "scope": "Five clones/nine installed commands; genuine current-Control import claim COMMIT/ROLLBACK/reverse-order, SIGTERM and actual DB-UTC expiry; source-predicted277 case controls plus24 setup controls. Reuse qualified product30ab, no Rust changes.",
-                "diagnostics": "Nine pure contexts/277 plus3 setup models/24 controls PASS; old13/239 and5/125 outputs unchanged. Source/pure evidence only, no new installed result."
+                "diagnostics": "Nine pure contexts/277 plus3 setup models/24 controls PASS; old13/239 and5/125 outputs unchanged. Source/pure evidence only, no new installed result.",
+                "attempts": [
+                  {
+                    "source": "eec929e789dc2a343a3f0598a3493ce8fe1b74b1",
+                    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-eec929e",
+                    "status": "FAIL;3 cases/95 controls PASS before fourth command verifier failure;5 commands NOT_RUN",
+                    "driver": 82923,
+                    "driver_exit": 1,
+                    "receipt": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-eec929e/verified-failure.json",
+                      "sha256": "40f0b25d93a4b6a130edf11d80ce5f666056320faf8bbe2017c64d56b4502347"
+                    }
+                  }
+                ]
               }
             }
           }

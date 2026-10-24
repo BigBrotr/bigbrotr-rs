@@ -6,9 +6,10 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Starting main/last verified push `3bdc890ac919691a36dac4c988afc357a0f32eff`
-(driver53796 joined0). This integration adds reviewed fixture author
-`10714546db9021986d3597ef86b19820d5f650f4` and its records; product remains
+Main/last verified push `eec929e789dc2a343a3f0598a3493ce8fe1b74b1`
+(driver42498 joined0), integrating fixture author
+`10714546db9021986d3597ef86b19820d5f650f4`. Local records preserve its first
+installed FAIL and the correction in review; product remains
 qualified `30ab2e45176dac90c7c940ddc2992e81fd74042a`.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
@@ -27,21 +28,23 @@ First empty profile passed13 installed commands/239 controls, raw7698 bound file
 Compacted final delivery passed5 commands/125 controls, raw5876 bound files.
 All drivers joined; those frozen results remain reusable.
 
-New claim/lock fixture10714546 is source-reviewed: five clones/nine commands,
-277 case controls plus24 setup controls in pure diagnostics; installed/raw NOT_RUN.
-Actor completion before lease expiry, actual refresh timing, proxy bounds,
-8s expiry configuration and SIGTERM before local timeout are explicitly checked.
-Next: execute exact integrated `--empty-initial-locks` with qualified30ab artifacts,
-then raw replay and independent owned-resource/driver verification. Record actual
-failures as failures. The subsequent H/D/partial/mixed-shape source advisory is
-linked in the report; it does not qualify those scenarios or replace the plan.
+First claim/lock run eec929e driver82923 joined1: FAIL at the fourth command's
+verifier, after3 cases/95 controls and24 setup controls passed. Five commands and
+raw replay are NOT_RUN. The owner release clock is sampled before its lock wait;
+the verifier incorrectly required it to follow the claimant COMMIT. Root, author
+and independent reviewer confirmed the separate subsequent role clock as the
+valid bound. Original captures/FAIL remain unchanged.
+Next: finish the narrow oracle correction/review, then a fresh exact installed
+profile and raw replay. Actor/lease/lock/transaction/custody checks stay required.
+The H/D/partial/mixed-shape source advisory remains linked, not executed evidence.
 
 ## Work and resources
 
-No root build or connected runtime active at this checkpoint. Borrowed PG71775507
-owner5e69b0f was freshly inspected stopped0/PID0/noOOM; free259735412736 bytes.
-Prior delivery client021bec46 stopped143; its closure is retained evidence.
-Fixture author/reviewer finished source work; its clean worktree is
+No root build or connected runtime active. Failed run's client3ecd2c2a was freshly
+inspected stopped143 and borrowed PG71775507 owner5e69b0f stopped0/PID0/noOOM;
+all cleanup/preservation checks passed. Run and original failure receipt remain
+under `runs/installed-compacted-empty-initial-locks-eec929e` in the external lab.
+Author/reviewer work on the one-file correction at
 `.research/compacted-empty-initial-locks-20261024`. Native, first fixture and
 previous delivery worktrees remain detached/preserved. No cache cleanup;
 .research, datasets, failures and external labs are retained. Unrelated workloads
@@ -49,7 +52,7 @@ are untouched. Subsequent actual run identity belongs in this same checkpoint.
 
 ## Open gates
 
-Real claims/locks/cancel/UTC expiry remain NOT_RUN for the new profile.
+The new claim/lock profile remains unqualified after its verifier failure.
 Original-preparer claim, proof-use, malformed/partial states, original-input
 delivery, later preparation/recovery/live and Archive consumers remain open before
 floor writer or unlink. Physical64-file/32MiB bounds, physical loss/mixed restore,
