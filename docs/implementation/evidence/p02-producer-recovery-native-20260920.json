@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "FIRST_INSTALLED_AND_FINAL_DELIVERY_RAW_PASS; claims/locks/cancel/UTC/proof-use gates open",
+              "status": "FIRST_INSTALLED_FINAL_DELIVERY_AND_CURRENT_CLAIM_LOCKS_RAW_PASS; original-preparer/proof-use/shape gates open",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Run fresh exact --empty-initial-locks using6e7a498e corrected custody and qualified30ab product, then independently bind raw replay and actual resource/driver closure.",
+              "next": "Complete source and critical review for next5-clone/6-command post-proof H/D, partial SQL/native and genuine terminal-SQL/older-native-OPEN profile using existing advisory. Original-preparer gap claim and malformed-floor helper remain separate prerequisites.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45596,7 +45596,7 @@
                 "root_review": "Full advisory read; all27 source hashes and3 existing qualification receipts match. Reuse native/refusal evidence;5clones/6commands for post-proof H/D and partial/mixed shapes are the next candidate after current claim suite. Original-preparer fresh gap route and connected malformed-floor helper remain separate prerequisites."
               },
               "locks_extension": {
-                "status": "CANCEL_CUSTODY_CORRECTION_SOURCE_REVIEWED; both failures preserved; fresh installed/raw NOT_RUN",
+                "status": "INSTALLED9/279_PLUS24_SETUP_AND_RAW6027_PASS; both original FAILs retained",
                 "author_commit": "10714546db9021986d3597ef86b19820d5f650f4",
                 "author_tree": "f6f04d8f7baac24a62c3ee4049a6dcc0d153ac27",
                 "source_receipt": {
@@ -45662,6 +45662,36 @@
                   },
                   "root_review": "Complete two-file11+/5- delta and actual cancellation failure reviewed; source/capture/diagnostic hashes verified; AST/diff PASS. Hold SHARE through actual cancelled child terminal, rollback actor, join actor/proxy, then existing actual bounded backend exclusion before native reopening. Removed only premature absence check; no native result fabricated or product/timeout changes.",
                   "pure": "Independent9/279 plus24 setup controls PASS; original c3826bb FAIL/UNKNOWN/native NOT_RUN preserved; fresh runtime NOT_RUN"
+                },
+                "qualification": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-38c99d9",
+                  "source": "38c99d96b543254cea9a088ab2aeb9bc54dbef60",
+                  "tree": "1a55fc32951f35f856e29e46a26a74de49477542",
+                  "product_source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+                  "driver": 82390,
+                  "driver_exit": 0,
+                  "raw_driver": 22482,
+                  "raw_exit": 0,
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-38c99d9/verified-run.json",
+                    "sha256": "93d1d63f4eb406a7700e92b36a82dbed7a017767332a6b8d519957b3acd56620"
+                  },
+                  "clones": 5,
+                  "commands": 9,
+                  "case_controls": 279,
+                  "setup_controls": 24,
+                  "raw_bound_files": 6027,
+                  "measured": "Real current claim COMMIT veto and fresh refusal; ROLLBACK permits retirement; retirement-first permits later claim and unchanged retry. Held2 counters2/2/2/1, final3 reverse-order3/2/2/2. Signal457280us after refresh release; child terminal precedes holder rollback, final backend absence observed. UTC live wait1792816773467589 < lease1792816777156576 < expired wait1792816777364111; final dispatch through rollback4220335us<5s. Cancel/expiry preserve native125 and prepared SQL, fresh completion writes1 native/13 SQL.",
+                  "preservation": "Original all five maps true; every case custody closed; actual client143 and PG0/PID0/noOOM; cleanup/unrelated/unexpected/missing-owned empty; both original failures and missing native-after remain unchanged.",
+                  "not_run": [
+                    "Actual original preparing-Control claim; current-Control interval only",
+                    "Same-Control proof reuse after failure; malformed/foreign/cancelled proof use",
+                    "Original-input claim/lock/cancellation/expiry counterparts",
+                    "Optional residual originals; partial target shapes; SQL-terminal/nativeOPEN isolation",
+                    "No import execution/input binding/checkpoint; ordinary guarded relational claim only",
+                    "Prior empty13/delivery5 profiles remain separately qualified, not rerun here",
+                    "Actual GC/floor writer/unlink, mixed restore/physical loss/capacity and later consumers"
+                  ]
                 }
               }
             }

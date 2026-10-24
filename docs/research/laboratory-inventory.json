@@ -63623,9 +63623,9 @@
           "owner": "/root/compacted_reader_fixture; verified Astra/xhigh reused",
           "reviewer": "/root/compacted_reader_review; verified Astra/xhigh reused",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-locks-20261024",
-          "branch": "work/compacted-empty-initial-cancel-custody",
+          "branch": null,
           "base": "c3826bbb879dc5e129efde1469a0760605b29c8c",
-          "state": "FROZEN_CLEAN_CANCELLATION_CORRECTION_REVIEWED; no runtime active",
+          "state": "CLEAN_DETACHED6e7a498e; integrated ancestry/exact4blobs verified; redundant ref retired; worktree and original commits retained",
           "scope": "Proposed5clones/9commands: genuine claim commit/rollback/order, exact SIGTERM and actual UTC expiry with independent timing; original-preparer/proof-use/partial gates remain",
           "commit": "6e7a498ee9f1353855c5ac12c5928d20518cef42",
           "tree": "44746c404987d1d43bee04b2421f87011e1e2090",
@@ -63661,7 +63661,29 @@
             "state": "FAIL preserved; cancellation native_after and raw NOT_RUN; no root runtime active",
             "records": "Recovery report locks_extension.attempts owns exact failure receipt and scope"
           }
-        ]
+        ],
+        "locks_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-locks-38c99d9",
+          "source": "38c99d96b543254cea9a088ab2aeb9bc54dbef60",
+          "owner": "7646c5c00dd11e7ce2709b2390cb758d",
+          "client": "cd5e50f057f89dc53ced7d7d8ea7ee5e7fd9c87affc72186950771b58fdd737e",
+          "client_state": "freshly inspected stopped143/PID0/noOOM",
+          "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "postgres_state": "freshly inspected stopped0/PID0/noOOM",
+          "drivers": "82390 installed joined0;22482 raw joined0",
+          "state": "QUALIFIED9/279+24;6027 raw files; original preserved; no active root runtime",
+          "records": "Recovery report locks_extension.qualification owns exact receipt and measured scope"
+        },
+        "proof_shape_fixture": {
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
+          "reviewer": "/root/compacted_reader_review; reused verified Astra/xhigh",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-proof-shapes-20261024",
+          "branch": "work/compacted-empty-initial-proof-shapes",
+          "base": "38c99d96b543254cea9a088ab2aeb9bc54dbef60",
+          "state": "SOURCE_WORK_ACTIVE; no engines/builds",
+          "scope": "Existing advisory5clones/6commands; post-proof H/D corruption, one partial SQL, fixed missing handoff, true terminal SQL/retained older native OPEN; original-preparer and malformed floor separate"
+        }
       }
     }
   },

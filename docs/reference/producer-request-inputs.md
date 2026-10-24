@@ -1102,9 +1102,15 @@ commands/125 controls on three copies, with raw replay over5876 bound files.
 Its observed final COMMIT3 baseline distinguishes loss before forwarding from
 loss after server completion. Both leave exactly one native close and report
 CommitUnknown; fresh recovery completes prepared SQL or preserves all thirteen
-terminal timestamps/xmins without another native write. Genuine claim/lock/
-cancellation/UTC-expiry, proof-use races, original-input delivery and malformed/
-partial states remain separate qualification gates.
+terminal timestamps/xmins without another native write. Fixture `38c99d96`
+additionally passed nine installed commands, 279 case controls and 24 setup
+controls, with raw replay over6027 files. It exercises genuine current-Control
+generic import claims in both lock orders, rollback, unchanged terminal retry,
+SIGTERM during a held lock, and actual database UTC expiry followed by fresh
+completion. No cancelled or expired attempt writes a native close. These guarded
+relational claims do not qualify import execution or original preparing-Control
+claims. Those preparer claims, proof-use races, original-input delivery and
+malformed/partial states remain separate qualification gates.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
