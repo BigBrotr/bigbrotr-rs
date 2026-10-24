@@ -108,7 +108,7 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
 pub fn corrupt(path: &Path, mutation: &str) {
     assert!(matches!(
         mutation,
-        "missing-handoff" | "target-nonzero" | "target-closing"
+        "missing-handoff" | "target-nonzero" | "target-closing" | "empty-compacted-malformed-floor"
     ));
     corrupt_fixture(path, mutation, false);
 }
@@ -138,12 +138,41 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
     if activated {
         assert_eq!((before_rows.len(), before_sequence), (70, 84));
     }
+    let empty_floor = mutation == "empty-compacted-malformed-floor";
+    if empty_floor {
+        assert!(!activated);
+        assert_eq!((before_rows.len(), before_sequence), (84, 125));
+        // Frozen EMPTY_PREPARED_ORIGINS[0], including every CF/key/value. The
+        // independent oracle's compacted-prepared-retry native capture supplies
+        // this literal; its ASCII transcript is cf NUL key-hex NUL value-hex NUL
+        // for every row in raw_state order. Only an excluded owned clone is valid.
+        let mut digest = Sha256::new();
+        for row in &before_rows {
+            for field in ["cf", "key", "value"] {
+                digest.update(row[field].as_str().unwrap().as_bytes());
+                digest.update([0]);
+            }
+        }
+        assert_eq!(
+            hex(&digest.finalize()),
+            "ab6d4751199549938131518a27381db6a585931d9b4210622ed2e177a3a1ea3f"
+        );
+        assert!(
+            std::fs::read_dir(path.join("producer-inputs-v1"))
+                .unwrap()
+                .next()
+                .is_none()
+        );
+    }
     let db = rocksdb::DB::open_cf(
         &rocksdb::Options::default(),
         path,
         ["default", "facts", "receipts"],
     )
     .unwrap();
+    if empty_floor {
+        assert_eq!(db.latest_sequence_number(), before_sequence);
+    }
     let cf = db.cf_handle("default").unwrap();
     let manifest = IngestManifest::decode(&db.get_cf(cf, [1, 1]).unwrap().unwrap()).unwrap();
     assert_eq!(manifest.key_schema(), 2);
@@ -216,6 +245,14 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
     }
     let key = match mutation {
         "missing-handoff" | "wrong-handoff" => handoff_key,
+        "empty-compacted-malformed-floor" => IngestKey::ProducerState {
+            producer_slot_id: ProducerSlotId::try_from([
+                0x36, 0xa0, 0x25, 0x3e, 0x6d, 0x94, 0xc1, 0x80, 0x99, 0xf6, 0xc4, 0xda, 0xe9, 0xb7,
+                0xe0, 0x40,
+            ])
+            .unwrap(),
+            producer_epoch: ProducerEpoch::new(1).unwrap(),
+        },
         "target-nonzero" => IngestKey::SourceStream {
             dataset_id: id.dataset_id,
             shard_id: id.shard_id,
@@ -260,6 +297,24 @@ fn corrupt_fixture(path: &Path, mutation: &str, activated: bool) {
     let cf = db.cf_handle(family).unwrap();
     let before = db.get_cf(cf, key.as_bytes()).unwrap();
     let after = match mutation {
+        "empty-compacted-malformed-floor" => {
+            let mut after = before.clone().unwrap();
+            assert_eq!(
+                hex(&after),
+                concat!(
+                    "033100000000000000070000000000000007000000000000000701",
+                    "4d6754fa296d44b3b140da79b6829cf1b7f777ff109c30170db473ce124bb042",
+                    "000000000000001b",
+                    "c0414bfb32040948e843e06a05dd0dcab9fc136713bc302e047db1317c107954",
+                    "0000000000000008",
+                    "a3948e3f2727a98d9b07bb0cd6815ca1004391143604c4a18e44683f57f00894"
+                )
+            );
+            // Keep the complete 139-byte v3 encoding and all digests. R=6
+            // contradicts issued=A=7, so the floor decoder itself must refuse.
+            after[25] = 6;
+            Some(after)
+        }
         "target-nonzero" => {
             assert_eq!(before.as_deref(), Some(&[1, 2, 0, 0, 0, 0, 0, 0, 0, 0][..]));
             Some(vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 1])
