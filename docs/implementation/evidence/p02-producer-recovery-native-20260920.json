@@ -45697,7 +45697,7 @@
               "malformed_floor_helper": {
                 "source": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
                 "tree": "f415df8475ab4eaeef89e1df3f4f101d94ec260c",
-                "status": "SOURCE_REVIEWED_INTEGRATED; exact-source build RUNNING; connected case NOT_RUN",
+                "status": "SOURCE_REVIEWED_INTEGRATED; exact-source build PASS; connected case NOT_RUN",
                 "source_receipt": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-malformed-floor-source-v1.json",
                   "sha256": "6c91488263f5a082f1340c82583142b54e5c106e1d172c1a11c3c9e2ec6e383b"
@@ -45709,7 +45709,99 @@
                 "scope": "Single test-only fixed malformed-floor mode; exact84row/125 seed, one synced byte25 change7->6, no production code or current5clone profile change",
                 "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-628f955",
                 "build_driver": 53721,
-                "next": "Join build and verify actual artifacts/resources; qualify subsequent single connected refusal with reused fixture owner after current proof-shapes profile."
+                "next": "Qualify subsequent single malformed-floor connected refusal with reused fixture owner after current proof-shapes profile.",
+                "qualified_build": {
+                  "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-628f955/verified-build.json",
+                  "sha256": "ef1518c6521d87b8c3ceca7ab068d516db0d8784336150a4fc3a675a7c42ae35",
+                  "driver_session": 53721,
+                  "driver_exit": 0,
+                  "checks": 10,
+                  "components": 185,
+                  "required_controls": 76,
+                  "clippy": "PASS",
+                  "source_archive_files": 2063,
+                  "root_verification": "Exact Git tree/archive/exported file hashes, five ELF hashes, full component/check status, unchanged required names and source-owned stopped containers independently verified",
+                  "not_run": "New helper execution and connected malformed-floor refusal; existing proof-shapes will still use qualified30ab product."
+                }
+              },
+              "proof_shapes_extension": {
+                "source": "b88029c1b8cf26be515a7b67ae2093079c99f85e",
+                "integrated": "d99b999dda90e2dc151b51f74a8e171f8bb0d524",
+                "tree": "9a5e47e6a028f7f576146676eed6997f50721e94",
+                "source_receipt": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-proof-shapes-source-v1.json",
+                  "sha256": "2364a8bfcaa9dc254beed329d7e6898c0bf66278a76753ef5b372e021d8cbc33"
+                },
+                "critical_review": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-proof-shapes-critical-review-v1.json",
+                  "sha256": "a5d3ea1a7849c0d7d0b474793296afc3fd5b88485d15099175b1f4ddbc7cc7ca"
+                },
+                "root_review": "Complete three changed deltas and new helpers reviewed; exact hash/diff/AST and retained diagnostic bindings reconciled;15 reviewed boundaries and7 prior receipts rehashed. Root filename and scope findings plus reviewer copy/database findings resolved. Product30ab reused, unused additive malformed helper628f955 separately reviewed.",
+                "source_validation": "AST/diff PASS; pure synthetic6cases/122 case controls+25 fixture controls, not runtime evidence",
+                "runtime": {
+                  "state": "PASS_INSTALLED_AND_EXACT_RAW_REPLAY",
+                  "harness": "b88029c1b8cf26be515a7b67ae2093079c99f85e",
+                  "product": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-proof-shapes-b88029c",
+                  "receipt": "verified-run.json",
+                  "sha256": "2ffc686f473600e3c835b26db612646dffc4d91ac1905b9991549bfb7582d6c2",
+                  "installed_driver": {
+                    "session": 16219,
+                    "exit": 0
+                  },
+                  "raw_driver": {
+                    "session": 45622,
+                    "exit": 0
+                  },
+                  "clones": 5,
+                  "commands": 6,
+                  "case_controls": 122,
+                  "fixture_controls": 25,
+                  "raw_bound_files": 6013,
+                  "root_independent_checks": "Exact result/raw case equality; normal one marker/13SQL rows; five refusals native0/targetSQL0; all13 terminal timestamps/xmins survive explicit older-native restore; exact typed errors; all3 physical maps regular nlink1 and pairwise inode-disjoint; original five preservation flags true; actual owned resources stopped; no cleanup/unrelated changes",
+                  "observed_gate2_counts": [
+                    2,
+                    2,
+                    2,
+                    1
+                  ],
+                  "observed_final_baseline_counts": [
+                    4,
+                    4,
+                    4,
+                    4
+                  ],
+                  "observed_final_refusal_counts": [
+                    2,
+                    2,
+                    2,
+                    2
+                  ],
+                  "release_after_refresh_us": {
+                    "baseline": 438995,
+                    "head": 889893,
+                    "digest": 952209
+                  },
+                  "qualification": "Real server-completed refresh after proof, then isolated exact H/D corruption before unchanged1s renewal response deadline. No native close on refusals. Partial SQL and missing native handoff explicitly synthetic; older native paired with genuine terminal SQL is refused, not supported restore.",
+                  "not_run": [
+                    "Original preparing-Control claim and installed import execution",
+                    "Connected malformed-floor case; compiled fixed helper628f955 separate",
+                    "Optional residual inputs and remaining proof-use/uncertainty/physical/capacity boundaries",
+                    "Original-input delivery and later consumers",
+                    "Actual floor writer, GC or unlink"
+                  ]
+                },
+                "attempts": [
+                  {
+                    "harness": "d99b999dda90e2dc151b51f74a8e171f8bb0d524",
+                    "driver": 15930,
+                    "exit": 1,
+                    "status": "FAIL_PREFLIGHT_SOURCE_ARTIFACT_MISMATCH",
+                    "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-proof-shapes-d99b999/verified-failure.json",
+                    "sha256": "f4495e886b2f93f4552149398b99ba40d1ab941930155a33df158c5bf5fb7fb7",
+                    "scope": "No engine/client/database allocated; new unrelated helper Rust blob violates old product equivalence. Guard unchanged; original reviewed b880 harness chosen for fresh run."
+                  }
+                ]
               }
             }
           }

@@ -1109,8 +1109,17 @@ generic import claims in both lock orders, rollback, unchanged terminal retry,
 SIGTERM during a held lock, and actual database UTC expiry followed by fresh
 completion. No cancelled or expired attempt writes a native close. These guarded
 relational claims do not qualify import execution or original preparing-Control
-claims. Those preparer claims, proof-use races, original-input delivery and
-malformed/partial states remain separate qualification gates.
+claims. Fixture `b88029c1`, with the same product, passed six commands/122 case
+controls plus25 fixture controls and raw replay over6013 files. A held,
+server-completed refresh COMMIT2 confirms the initial proof precedes isolated H/D
+corruption; both exact refusals preserve native state and target SQL. All three
+releases occurred within the unchanged1s renewal deadline. One source-only
+partial SQL state and a missing native handoff refuse; pairing independently
+retained native OPEN0 bytes with genuinely retired SQL also refuses, preserving
+all thirteen terminal timestamps/xmins. These are explicit corruption fixtures,
+not a supported mixed-restore procedure. Original-preparer claims, connected
+malformed floor, remaining proof-use/physical uncertainty and original-input
+delivery remain separate qualification gates.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

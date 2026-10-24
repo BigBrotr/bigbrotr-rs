@@ -63679,10 +63679,12 @@
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "reviewer": "/root/compacted_reader_review; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-proof-shapes-20261024",
-          "branch": "work/compacted-empty-initial-proof-shapes",
+          "branch": null,
           "base": "38c99d96b543254cea9a088ab2aeb9bc54dbef60",
-          "state": "SOURCE_WORK_ACTIVE; no engines/builds",
-          "scope": "Existing advisory5clones/6commands; post-proof H/D corruption, one partial SQL, fixed missing handoff, true terminal SQL/retained older native OPEN; original-preparer and malformed floor separate"
+          "state": "Clean DETACHEDb88029c1; exact3blobs integratedd99b999d; redundant ref retired after clean/ancestry/blob check",
+          "scope": "Existing advisory5clones/6commands; post-proof H/D corruption, one partial SQL, fixed missing handoff, true terminal SQL/retained older native OPEN; original-preparer and malformed floor separate",
+          "retired_branch": "work/compacted-empty-initial-proof-shapes",
+          "source": "b88029c1b8cf26be515a7b67ae2093079c99f85e"
         },
         "malformed_floor_helper": {
           "owner": "/root/empty_malformed_floor",
@@ -63690,7 +63692,7 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-malformed-floor-20261024",
           "branch": null,
           "base": "9fc1e0836b83be0b20c099c8406f9bc69efa0739",
-          "state": "SOURCE_REVIEWED_INTEGRATED; exact-source build RUNNING",
+          "state": "SOURCE_REVIEWED_INTEGRATED; exact-source build PASS; connected case NOT_RUN",
           "scope": "Separate subsequent fixed malformed-floor native fixture helper only; no production behavior or current5clone/6command profile changes",
           "space_before_bytes": 256686592000,
           "source_commit": "628f955ca69183417d21e91b5ef0d1e7b3e54633",
@@ -63702,14 +63704,48 @@
             "driver_session": 53721,
             "owner": "5d295f47120f5a53688c0fa9fd67e0be",
             "owner_label": "org.bigbrotr.network-transport",
-            "state": "RUNNING; no runtime result claimed",
-            "free_before_bytes": 256590241792
+            "state": "STOPPED_RETAINED; driver53721 joined0; actual fetch/native stopped0/PID0/noOOM with matching owner labels",
+            "free_before_bytes": 256590241792,
+            "free_after_bytes": 256216334336,
+            "receipt": "Recovery report malformed_floor_helper.qualified_build owns digest"
           },
           "retired_branch": "work/compacted-empty-malformed-floor",
           "worktree_status": "Clean DETACHED628f955; exact original commit integrated and blob equality checked before retiring redundant ref; all files retained",
           "source_agent_status": "Completed; no active task",
           "evidence": "Recovery report empty_initial_consumer_work.malformed_floor_helper owns full source/critical receipts"
-        }
+        },
+        "proof_shapes_installed": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-proof-shapes-b88029c",
+          "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-proof-shapes-b88029c/source",
+          "harness": "b88029c1b8cf26be515a7b67ae2093079c99f85e",
+          "state": "PASS; installed16219 and raw45622 joined0; no root runtime active",
+          "owner": "4f420e9d4dd68ed72e842bd66729f414",
+          "client": "31815ddaaf021003b38706e7c95f948a78a7f62bc5ed0967f47183b46ba1b897",
+          "actual_resources": "Client stopped143/PID0/noOOM; PG71775507 owner5e69b0f stopped0/PID0/noOOM; exact labels independently checked",
+          "preserved": "Original SQL/catalog/native/inputs/physical all unchanged; prepared-native-snapshot and terminal-native-preserved retained independently with full physical maps; every case custody closed",
+          "free_after_bytes": 255794753536,
+          "evidence": "Recovery report proof_shapes_extension.runtime owns qualification receipt/digests"
+        },
+        "original_preparer_fixture": {
+          "owner": "/root/empty_malformed_floor reused verified Astra/xhigh; prior helper task complete",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-preparer-20261024",
+          "branch": "work/compacted-empty-initial-preparer",
+          "base": "d99b999dda90e2dc151b51f74a8e171f8bb0d524",
+          "state": "SOURCE_WORK_ACTIVE; no engine/build/runtime",
+          "scope": "Existing advisory one clone/three processes; actual preparing-Control ordinary import claim before gap release, fresh installed completion preserving job, fresh empty-retirement refusal; no resurrected owner or current-claim substitution"
+        },
+        "proof_shapes_installed_attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-proof-shapes-d99b999",
+            "source_worktree": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-proof-shapes-d99b999/source",
+            "harness": "d99b999dda90e2dc151b51f74a8e171f8bb0d524",
+            "driver": 15930,
+            "state": "FAIL_PREFLIGHT_SOURCE_ARTIFACT_MISMATCH; driver15930 joined1 before any engine/output allocation; source/preflight preserved",
+            "preflight": "root-preflight.json records actual stopped owned PG71775507 and256009584640 free bytes",
+            "evidence": "Recovery report proof_shapes_extension owns source/review and eventual qualification",
+            "receipt": "Recovery report proof_shapes_extension.attempts owns failure digest"
+          }
+        ]
       }
     }
   },
