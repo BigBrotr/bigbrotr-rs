@@ -3866,11 +3866,16 @@ TERMINAL_SOURCE_FINAL_QUERY="UPDATE control.source_streams SET state='closed', c
 TERMINAL_AUTHORITY_QUERY="SELECT lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric"
 
 
-def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_proof=False,empty_initial=False):
+def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_proof=False,empty_initial=False,empty_proof=False):
     import tomllib
     from fault_cases import safe_event
+    assert type(empty_proof) is bool and not (empty_proof and (empty_initial or post_proof))
+    proof=post_proof or empty_proof
     assert type(empty_initial) is bool and not (empty_initial and post_proof)
-    if empty_initial:
+    if empty_proof:
+        name,step=empty_shape_specification(case);assert step=='proof'
+        normal=name=='proof-baseline';operation='retire-empty';target,later=2,2;mode='hold-after-complete'
+    elif empty_initial:
         name,step=empty_delivery_specification(case); assert step in ('baseline','loss')
         normal=step=='baseline'; operation='retire-empty'; target,later=3,1
         mode='hold' if normal else 'before-forward' if name=='before' else 'after-complete'
@@ -3880,13 +3885,13 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
         operation=name.split('-')[0] if post_proof else step.split('-')[0]
         target=(TERMINAL_PROOF_SELECTORS if post_proof else TERMINAL_COMMIT_SELECTORS)[operation]; later=4 if post_proof else 3
         mode='hold-after-complete' if post_proof else 'hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
-    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}|({'mutation'} if post_proof else set())
+    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}|({'mutation'} if proof else set())
     assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[]
     assert (record['operation'],record['mode'],record['target_commit'])==(operation,mode,target)
     settings=record['configuration']; assert set(settings)=={'path','direct','proxied','restored'} and settings['path']==case['config']
     assert settings['direct']==settings['restored']
     direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'))
-    if empty_initial: empty_delivery_config(direct,case)
+    if empty_initial or empty_proof: empty_delivery_config(direct,case)
     else: terminal_network_checked(direct,name,faults=not post_proof,post_proof=post_proof)
     wire=record['wire']; assert set(wire)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
     source=sha(retained.regular_read(Path(__file__).resolve().parents[2]/ACTIVATED_PROXY)); assert wire['source_sha256']==source
@@ -3900,7 +3905,7 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
     assert (ready['max_frame_bytes'],ready['max_wire_bytes'],ready['max_messages'],ready['deadline_seconds'])==(1024**2,64*1024**2,20000,30)
     predicted=copy.deepcopy(direct); assert predicted['postgres']['control']['endpoint']=='127.0.0.1:5432'
     predicted['postgres']['control']['endpoint']='127.0.0.1:'+str(ready['listen_port']); assert proxied==predicted
-    profile=EmptyInitialDeliveryProfile if empty_initial else ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile
+    profile=EmptyInitialShapeProfile if empty_proof else EmptyInitialDeliveryProfile if empty_initial else ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile
     revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
     assert wire['command']==['docker','exec','-i',profile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
         '--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits',str(later),'--deadline-seconds','30']
@@ -3908,40 +3913,46 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
     assert counts(ready)==[0]*4 and ready['faults']==0 and ready['held'] is False and ready['hold_action'] is None
     for e in events: assert (e['mode'],e['commit_number'])==(mode,target)
     assert receipt['event']=='receipt' and receipt['faults']==1 and receipt['frames'] and receipt['declared_wire_bytes']<=64*1024**2
-    wanted=dict(operation=operation,selected_commit=target,total_successful_commits=target+later,boundary='hold-after-complete-released' if post_proof else 'hold-before-forward-released')
-    if normal or post_proof:
+    wanted=dict(operation=operation,selected_commit=target,total_successful_commits=target+later,boundary='hold-after-complete-released' if proof else 'hold-before-forward-released')
+    if normal or proof:
         if normal: assert baseline is None
         else:
-            assert baseline is not None and baseline['status']=='PASS' and baseline['case']==operation+'-baseline-proof' and baseline['wire']==wanted
+            assert baseline is not None and baseline['status']=='PASS' and baseline['case']==('proof-baseline-proof' if empty_proof else operation+'-baseline-proof') and baseline['wire']==wanted
         assert [e['event'] for e in events]==['ready','held','released','receipt']
         held=record['held']; assert set(held)=={'event','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
-        assert held['event']==events[1] and counts(events[1])==([target,target,target,target-1] if post_proof else [target,target-1,target-1,target-1])
+        assert held['event']==events[1] and counts(events[1])==([target,target,target,target-1] if proof else [target,target-1,target-1,target-1])
         assert events[1]['held'] is True and events[1]['hold_action'] is None
         m=terminal_held_state(expected,held['control'],window,operation); assert held['inputs']==expected[2]
         for key in ('before_us','after_us','release_before_us','release_after_us'): model.clock(held[key],window)
         assert held['before_us']<=held['after_us']<=held['release_before_us']<=held['release_after_us']<m.control['lease_expires_at_us']
         b=held['backend']; assert b==dict(pid=m.control['control_backend_pid'],backend_start=m.control['control_backend_start'],database=case['database'],
-            user='bigbrotr_control',state='idle' if post_proof else 'idle in transaction',xact_start=b['xact_start'],query=b['query'],observed_at_us=b['observed_at_us'])
-        assert (b['xact_start'] is None if post_proof else b['xact_start'] is not None) and held['before_us']<=b['observed_at_us']<=held['after_us']
-        assert ' '.join(b['query'].split())==('SELECT control.require_empty_initial_retirement($1::bytea,$2::bytea)' if empty_initial else 'COMMIT' if post_proof else TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
+            user='bigbrotr_control',state='idle' if proof else 'idle in transaction',xact_start=b['xact_start'],query=b['query'],observed_at_us=b['observed_at_us'])
+        assert (b['xact_start'] is None if proof else b['xact_start'] is not None) and held['before_us']<=b['observed_at_us']<=held['after_us']
+        assert ' '.join(b['query'].split())==('SELECT control.require_empty_initial_retirement($1::bytea,$2::bytea)' if empty_initial else 'COMMIT' if proof else TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
         assert counts(events[2])==counts(events[1]) and events[2]['held'] is False and events[2]['hold_action']=='release'
         assert counts(receipt)==[target+later if normal else target]*4 and receipt['reason'] in ('frontend-eof','backend-eof') and receipt['held'] is False and receipt['hold_action']=='release'
         # The held claim and its exact last refresh survive until later release.
         current=only(after['owner_epochs'],role='control',epoch=m.control['epoch'])
         if normal:
-            if empty_initial:
+            if empty_initial or empty_proof:
                 assert current['lease_expires_at_us']==m.control['lease_expires_at_us']
                 producer=only(after['producer_epochs'],producer_epoch=2)
                 assert int(m.control['xmin'])<int(producer['xmin'])<int(current['xmin'])
-                assert m.control['acquired_at_us']<=producer['retired_at_us']<=held['before_us']
+                if empty_proof: assert held['release_before_us']<=producer['retired_at_us']<=current['released_at_us']
+                else: assert m.control['acquired_at_us']<=producer['retired_at_us']<=held['before_us']
             else: assert current['lease_expires_at_us']>m.control['lease_expires_at_us']
             assert int(current['xmin'])>int(m.control['xmin'])
         else: assert current==m.control
-        if post_proof:
+        if proof:
             if normal: assert record['mutation'] is None
             else:
                 mutation=record['mutation']; same(mutation['before'],m.pg); same(mutation['after'],after)
                 assert held['after_us']<=mutation['before_us']<=mutation['after_us']<=held['release_before_us']
+        if empty_proof:
+            refreshed=m.control['lease_expires_at_us']-6_000_000
+            assert m.control['acquired_at_us']<=refreshed<=held['before_us']
+            assert held['release_after_us']-refreshed<1_000_000
+            assert all(type(e['elapsed_ns']) is int and 0<=e['elapsed_ns']<30_000_000_000 for e in events) and 0<sum(receipt['frames'].values())<=20000
         for key in ('resource_id','role_instance_id','process_incarnation','acquired_at_us','control_backend_pid','control_backend_start'):
             assert current[key]==m.control[key]
     else:
@@ -3950,7 +3961,7 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
         count=[target,target-1,target-1,target-1] if mode=='before-forward' else [target,target,target,target-1]
         assert counts(events[1])==counts(receipt)==count and receipt['reason']==events[1]['reason']==mode
         assert receipt['held'] is False and receipt['hold_action'] is None
-    return wanted if normal else dict(operation=operation,selected_commit=target,counts=counts(receipt),boundary='post-proof-refusal' if post_proof else mode)
+    return wanted if normal else dict(operation=operation,selected_commit=target,counts=counts(receipt),boundary='post-proof-refusal' if proof else mode)
 
 
 def verify_terminal_delivery(context,initial,expected,baseline,*,post_proof=False):
@@ -4287,7 +4298,9 @@ def empty_origins_checked(root,raw=None,*,delivery=False):
     return results,initial
 
 
-def empty_specification(case,*,delivery=False,locks=False):
+def empty_specification(case,*,delivery=False,locks=False,shapes=False):
+    assert type(shapes) is bool and not (shapes and (locks or delivery))
+    if shapes: return empty_shape_specification(case)
     assert type(locks) is bool and not (locks and delivery)
     if locks: return empty_lock_specification(case)
     if delivery: return empty_delivery_specification(case)
@@ -4312,8 +4325,8 @@ EMPTY_ERRORS={
 }
 
 
-def empty_closed(response,case,*,delivery=False,locks=False):
-    name,step=empty_specification(case,delivery=delivery,locks=locks); failure=empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
+def empty_closed(response,case,*,delivery=False,locks=False,shapes=False):
+    name,step=empty_specification(case,delivery=delivery,locks=locks,shapes=shapes); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -4321,7 +4334,7 @@ def empty_closed(response,case,*,delivery=False,locks=False):
     assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv('retire-empty',Path(case['config']))
     assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
     if failure:
-        error=('initial Ingest cancelled; original attempt may need recovery' if name=='cancel' else 'producer operation unavailable: Control(Unavailable)' if name=='expiry' else 'producer operation unavailable: Control(Backend)') if locks else 'producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
+        error=EMPTY_SHAPE_ERRORS['native-open' if step=='native-open' else name] if shapes else ('initial Ingest cancelled; original attempt may need recovery' if name=='cancel' else 'producer operation unavailable: Control(Unavailable)' if name=='expiry' else 'producer operation unavailable: Control(Backend)') if locks else 'producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
         assert response['stdout']=='' and response['stderr']=='error: '+error+'\n'
         return None
     assert response['stderr']==''; report,=[loads(v) for v in response['stdout'].splitlines()]; return report
@@ -4363,9 +4376,9 @@ def empty_fault_checked(value,*,removed=False):
     guards(value['guards'])
 
 
-def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None,locks=False):
-    name,step=empty_specification(context['case'],delivery=delivery,locks=locks); failure=empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
-    wire=(delivery and step in ('baseline','loss')) or (locks and step=='attempt')
+def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False):
+    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes); failure=not (name=='proof-baseline' and step=='proof') if shapes else empty_lock_failure(name,step) if locks else step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
+    wire=(shapes and step=='proof') or (delivery and step in ('baseline','loss')) or (locks and step=='attempt')
     assert set(context)==CONTEXT_FIELDS|({'empty_fault'} if name=='native-first' else {'empty_configuration'}|({'empty_claim_guard'} if name=='claim-commit' else set()) if locks else set())
     if locks:
         import tomllib
@@ -4380,13 +4393,13 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=empty_closed(context['response'],context['case'],delivery=delivery,locks=locks)
+    report=empty_closed(context['response'],context['case'],delivery=delivery,locks=locks,shapes=shapes)
     m=model.Model(*expected,window,initial=False)
-    if name in ('target-input','target-nonempty','original-missing'):
+    if name in ('target-input','target-nonempty','original-missing') or (shapes and name=='missing-handoff'):
         preparation_no_claim(context['backend'],context['case']['database']); same(context['after'],expected[0])
     else:
         backend_checked(context['backend'],context['case']['database'],expected[0],context['after'])
-        preparation_control(m,context['after'],success=not failure,renewed=step=='failure' or (delivery and failure) or (locks and step=='attempt'),lease_us=8_000_000 if locks and name=='expiry' else 6_000_000)
+        preparation_control(m,context['after'],success=not failure,renewed=step=='failure' or (delivery and failure) or (locks and step=='attempt') or (shapes and step=='proof'),lease_us=8_000_000 if locks and name=='expiry' else 6_000_000)
         if locks and name=='claim-commit':
             current=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
             empty_lock_guard_checked(context['empty_claim_guard'],current,context['case']['database'],window)
@@ -4394,6 +4407,9 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
         claimed=empty_lock_schedule_checked(context['fixture']['delivery_fault'],context['case'],window,expected,context['after'])
         if claimed is not None: only(m.pg['jobs'],job_id=claimed['job_id']).update(claimed)
         if name=='cancel':assert context['fixture']['delivery_fault']['schedule']['signal']['terminal']==context['response']['terminal']
+    if shapes and step=='proof' and name!='proof-baseline':
+        mutation=context['fixture']['delivery_fault']['mutation']
+        m.pg=empty_shape_corruption_checked(mutation,m.pg,initial,name,window,context['case']['database'])
     intent,empty_digest=empty_basis(expected[0],initial)
     native=expected[1]; changed=False; at=tx=None
     if delivery or not failure or step=='failure': native=activated_native(native,intent['producer_slot_id'],close=True)
@@ -4437,16 +4453,17 @@ def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None
         target_rows_changed=13 if changed else 0,retired_at_us=at,retirement_xmin=tx,
         compacted_requests=7 if compacted and not failure else 0,resolved_original_requests=7 if not compacted and not failure else 0,
         original_source_digest=known(initial)['digest'],empty_digest=empty_digest,input_files=len(expected[2]),ready=False)
-    if wire and not locks: result['wire']=terminal_delivery_checked(context['fixture']['delivery_fault'],context['case'],window,baseline,expected,context['after'],empty_initial=True)
+    if wire and not locks and not shapes: result['wire']=terminal_delivery_checked(context['fixture']['delivery_fault'],context['case'],window,baseline,expected,context['after'],empty_initial=True)
+    if shapes and step=='proof': result['wire']=terminal_delivery_checked(context['fixture']['delivery_fault'],context['case'],window,baseline,expected,context['after'],empty_proof=True)
     if locks: result['claim_or_wait']=name if step=='attempt' else 'fresh-'+step
     return result
 
 
-def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks=False):
-    name,step=empty_specification(context['case'],delivery=delivery,locks=locks); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline,locks=locks); rejected=[]
+def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks=False,shapes=False):
+    name,step=empty_specification(context['case'],delivery=delivery,locks=locks,shapes=shapes); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes); rejected=[]
     def check(label,change):
         value=copy.deepcopy(context); change(value)
-        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline,locks=locks)
+        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline,locks=locks,shapes=shapes)
         except (AssertionError,ValueError,KeyError): rejected.append(label)
         else: raise AssertionError('empty oracle accepted '+label)
     def pg(c,table,filters,**changes): only(c['after'][table],**filters).update(changes)
@@ -4465,7 +4482,7 @@ def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks
     control=max((r for r in context['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
     check('control-expiry',lambda c:pg(c,'owner_epochs',dict(role='control',epoch=control['epoch']),lease_expires_at_us=(1<<63)-1))
     check('unrelated-error',lambda c:c['response'].update(stderr='error: unrelated\n'))
-    if (not empty_lock_failure(name,step) if locks else step!='loss' if delivery else step not in ('failure','refuse')):
+    if ((name=='proof-baseline' and step=='proof') if shapes else not empty_lock_failure(name,step) if locks else step!='loss' if delivery else step not in ('failure','refuse')):
         def report(c,section,key,value):
             r=loads(c['response']['stdout']); (r if section is None else r[section])[key]=value
             c['response']['stdout']=model.encoded(r).decode()+'\n'
@@ -4480,7 +4497,7 @@ def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks
         if not name.startswith('original'): check('compacted-count',lambda c:report(c,None,'compacted_requests','0'))
     else:
         check('false-success-report',lambda c:c['response'].update(stdout='{}\n'))
-        if name not in ('target-input','target-nonempty','original-missing'):
+        if name not in ('target-input','target-nonempty','original-missing','missing-handoff'):
             check('invented-control-release',lambda c:pg(c,'owner_epochs',dict(role='control',epoch=control['epoch']),state='released'))
     if name=='native-first':
         check('fault-not-reached',lambda c:c['empty_fault'].update(hit='1false'))
@@ -4491,6 +4508,7 @@ def empty_controls(context,initial,expected,*,delivery=False,baseline=None,locks
         if step=='failure': check('native-close-missing',lambda c:c.update(native_after=copy.deepcopy(c['native_before'])))
     if delivery and step in ('baseline','loss'):
         empty_delivery_controls(check,context,initial,expected,baseline)
+    if shapes: empty_shape_controls(check,context)
     if locks: empty_lock_controls(check,context,initial,expected)
     return dict(status='PASS',rejected=rejected,count=len(rejected))
 
@@ -4915,3 +4933,231 @@ def empty_lock_setup_controls(value,expected):
     check('setup-admission-reordered',lambda v:only(v['after']['job_admissions'],job_id=v['job_id']).update(admission_ordinal=1))
     check('setup-unrelated-row',lambda v:v['after']['producer_epochs'][0].update(xmin='4294967294'))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+EMPTY_SHAPE_STEPS={'proof-baseline':('proof','native-open'),'proof-head':('proof',),
+    'proof-digest':('proof',),'partial-sql':('refuse',),'missing-handoff':('refuse',)}
+EMPTY_SHAPE_ERRORS={'native-open':'producer operation unavailable: Control(InvalidMetadata)',
+    'proof-head':'producer operation unavailable: Progress(InvalidContext)',
+    'proof-digest':'producer operation unavailable: Native(Compacted(StateMismatch))',
+    'partial-sql':'producer operation unavailable: Control(Backend)',
+    'missing-handoff':'initial dictionary batch failed: StateMismatch'}
+
+
+class EmptyInitialShapeProfile:
+    DIRECTORY='installed-compacted-empty-initial-proof-shapes'
+    LABEL='org.bigbrotr.installed-compacted-empty-initial-proof-shapes'
+    STATUS='PASS_INSTALLED_COMPACTED_EMPTY_INITIAL_PROOF_SHAPES'
+    DATABASE_PREFIX='bb_compacted_empty_shape_'
+    CLIENT_PREFIX='bigbrotr-compacted-empty-shape-'
+    CLONES=tuple(EMPTY_SHAPE_STEPS)
+    STEPS=EMPTY_SHAPE_STEPS
+    CASES=tuple(n+'-'+s for n in EMPTY_SHAPE_STEPS for s in EMPTY_SHAPE_STEPS[n])
+    GRANTS=EMPTY_GRANTS
+    NOT_RUN=('Actual original preparing-Control claim; previously qualified current-Control profile is separate',
+        'Connected malformed floor; optional residual inputs; foreign root/sequence/cancellation proof reuse',
+        'Post-COMMIT census loss, syscall faults, physical loss/limits, supported mixed restore and capacity',
+        'Prior empty13/delivery5/locks9 remain separately qualified, not rerun here',
+        'Actual GC, floor writer/unlink, ACK/activation and later consumers')
+
+
+def empty_shape_specification(case):
+    name=case['clone']; assert name in EMPTY_SHAPE_STEPS
+    step=case['name'].removeprefix(name+'-'); assert case['name']==name+'-'+step and step in EMPTY_SHAPE_STEPS[name]
+    index=EMPTY_SHAPE_STEPS[name].index(step)
+    assert case['origin']=='empty-compacted' and case['predecessor']==(name+'-'+EMPTY_SHAPE_STEPS[name][index-1] if index else None)
+    assert case['operation']=='retire-empty' and re.fullmatch('[a-z0-9_]{1,63}',case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def empty_shape_corruption_sql(name,pg,initial):
+    if name!='partial-sql':return terminal_drift_statement('head-drift' if name=='proof-head' else 'digest-drift',pg,initial)
+    intent=only(pg['initial_ingest_successions']); source=only(pg['source_streams'],owner_epoch=2)
+    assert source['state']=='open' and source['closed_at_us'] is None and source['closure_digest'] is None and source['last_complete_sequence'] is None
+    return "BEGIN;\nSET LOCAL statement_timeout='10s';\nSET LOCAL lock_timeout='5s';\nSET LOCAL session_replication_role=replica;\n"+ \
+        "UPDATE control.source_streams SET state='closing' WHERE dataset_id=decode('"+intent['dataset_id'][2:]+"','hex') AND shard_id="+str(intent['shard_id'])+" AND owner_epoch=2\n"+ \
+        "RETURNING (to_jsonb(source_streams)||jsonb_build_object('xmin',xmin::text))::text;\nCOMMIT;\n"
+
+
+def empty_shape_actor_sql(phase):
+    from initial_gap_policy import GUARDS
+    assert phase in ('before','after')
+    return "SELECT json_build_object('phase','"+phase+"','server_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'actor',"+ \
+        "json_build_object('pid',pid,'backend_start',backend_start,'database',datname,'user',session_user,'role',current_user,"+ \
+        "'superuser',(SELECT rolsuper FROM pg_roles WHERE rolname=session_user),'synchronous_commit',current_setting('synchronous_commit')),'guards',"+GUARDS+ \
+        ") FROM pg_stat_activity WHERE pid=pg_backend_pid();\n"
+
+
+def empty_shape_corruption_checked(record,pg,initial,name,window,database):
+    from initial_gap_policy import require_guards
+    assert name in ('proof-head','proof-digest','partial-sql')
+    assert set(record)=={'kind','database','before','after','statement','response','before_us','after_us'} and record['kind']=='privileged-isolated-empty-'+name
+    assert record['database']==database and re.fullmatch('[a-z0-9_]{1,63}',database)
+    same(record['before'],pg)
+    mutation=empty_shape_corruption_sql(name,pg,initial)
+    assert record['statement']==empty_shape_actor_sql('before')+mutation+empty_shape_actor_sql('after')
+    response=record['response']; assert set(response)=={'returncode','stdout','stderr'} and type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    lines=response['stdout'].splitlines(); before,after=loads(lines[0]),loads(lines[-1]); middle=lines[1:-1]
+    for event,phase in ((before,'before'),(after,'after')):
+        assert set(event)=={'phase','server_us','actor','guards'} and event['phase']==phase
+        a=event['actor'];assert a==dict(pid=a['pid'],backend_start=a['backend_start'],database=record['database'],user='postgres',role='postgres',superuser=True,synchronous_commit='on')
+        number(a['pid'],1,integer=True);assert retained.instant(a['backend_start'])<=event['server_us'];require_guards(event['guards'])
+    assert before['actor']==after['actor'] and before['guards']==after['guards']
+    assert window['before_us']<=record['before_us']<=before['server_us']<=after['server_us']<=record['after_us']<=window['after_us']
+    if name=='partial-sql':
+        row,=map(loads,middle);model.fresh_xmin(row['xmin'],pg);wanted=copy.deepcopy(pg)
+        source=only(wanted['source_streams'],owner_epoch=2);source.update(state='closing',xmin=row['xmin']);assert row==source
+        same(record['after'],wanted);return wanted
+    kind='head-drift' if name=='proof-head' else 'digest-drift'
+    return terminal_drift_checked(dict(kind=kind,before=pg,after=record['after'],statement=mutation,sql_output='\n'.join(middle),
+        before_us=record['before_us'],after_us=record['after_us']),pg,initial,kind,window)
+
+
+def empty_shape_missing_checked(record,expected):
+    assert set(record)=={'kind','before','after','response','arguments','server_window'} and record['kind']=='isolated-empty-missing-handoff'
+    empty_shape_window(record['server_window'])
+    assert record['arguments']==['history-corrupt','/lab/missing-handoff/store','missing-handoff']
+    pg,native,inputs=expected;assert set(record['before'])=={'control','native','inputs'}
+    same(record['before']['control'],pg);assert (record['before']['native'],record['before']['inputs'])==(native,inputs)
+    assert len(native['rows'])==84 and native['sequence']==125 and inputs=={}
+    intent=only(pg['initial_ingest_successions']);key=(b'\x01\x0a'+binary(intent['dataset_id'])+binary(intent['owner_resource_id'])+be(1)).hex()
+    original=only(native['rows'],cf='default',key=key);assert original['value']==intent['handoff'][2:]
+    rows=[r for r in native['rows'] if r!=original];assert len(rows)==83
+    wanted=dict(native,rows=rows,sequence=126)
+    response=record['response'];assert set(response)=={'returncode','stdout','stderr'} and type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    events=[loads(v) for v in response['stdout'].splitlines()]
+    assert events==[dict(event='successor-history-corruption',phase=phase,mutation='missing-handoff',cf='default',key=key,value=value,rows=snapshot['rows'],sequence=snapshot['sequence'])
+        for phase,value,snapshot in (('before',original['value'],native),('after',None,wanted))]
+    result=pg,wanted,inputs;assert set(record['after'])=={'control','native','inputs'}
+    same(record['after']['control'],pg);assert (record['after']['native'],record['after']['inputs'])==(wanted,inputs)
+    return result
+
+
+def empty_shape_physical_checked(files):
+    assert '.' in files and 'producer-inputs-v1' in files
+    assert stat.S_ISDIR(files['.']['mode']) and stat.S_ISDIR(files['producer-inputs-v1']['mode'])
+    for name,v in files.items():
+        assert name=='.' or not Path(name).is_absolute() and '..' not in Path(name).parts
+        assert set(v)=={'mode','inode','device','links','bytes','sha256'}
+        for key in ('mode','inode','device','links','bytes'):number(v[key],0,integer=True)
+        assert stat.S_ISDIR(v['mode']) or stat.S_ISREG(v['mode'])
+        if stat.S_ISREG(v['mode']):assert v['links']==1 and re.fullmatch('[0-9a-f]{64}',v['sha256'])
+        else:assert v['sha256'] is None
+    identities={(v['device'],v['inode']) for v in files.values()};assert len(identities)==len(files)
+    return identities
+
+
+def empty_shape_copy_checked(source,target):
+    assert set(source)==set(target)
+    assert not empty_shape_physical_checked(source)&empty_shape_physical_checked(target)
+    for name in source:
+        a,b=source[name],target[name]
+        assert set(a)==set(b)=={'mode','inode','device','links','bytes','sha256'}
+        assert stat.S_ISDIR(a['mode']) or stat.S_ISREG(a['mode'])
+        assert a['mode']==b['mode'] and (a['device'],a['inode'])!=(b['device'],b['inode'])
+        if stat.S_ISREG(a['mode']):assert a['links']==b['links']==1 and (a['bytes'],a['sha256'])==(b['bytes'],b['sha256'])
+
+
+def empty_shape_snapshot_checked(record,expected,*,restore=False,prepared=None):
+    fields={'kind','before','after','source_files','retained_files','prepared_path','terminal_path','server_window'}
+    assert set(record)==fields|({'restored_files','prepared_files'} if restore else set())
+    empty_shape_window(record['server_window'])
+    assert record['prepared_path']=='proof-baseline/prepared-native-snapshot' and record['terminal_path']=='proof-baseline/terminal-native-preserved'
+    pg,native,inputs=expected;assert set(record['before'])==set(record['after'])=={'control','native','inputs'}
+    same(record['before']['control'],pg);same(record['after']['control'],pg)
+    assert (record['before']['native'],record['before']['inputs'])==(native,inputs)
+    assert inputs=={} and len(native['rows'])==84
+    if not restore:
+        assert record['kind']=='excluded-independent-prepared-native-copy' and native['sequence']==125
+        empty_shape_copy_checked(record['source_files'],record['retained_files'])
+        assert (record['after']['native'],record['after']['inputs'])==(native,inputs);return expected
+    assert prepared is not None and record['kind']=='isolated-older-native-paired-with-genuine-terminal-sql'
+    assert native['sequence']==126 and only(pg['producer_epochs'],producer_epoch=2)['state']=='retired'
+    assert record['source_files']==record['retained_files']
+    assert record['prepared_files']==prepared['retained_files']
+    empty_shape_copy_checked(record['prepared_files'],record['restored_files'])
+    terminal=empty_shape_physical_checked(record['retained_files'])
+    assert not terminal&empty_shape_physical_checked(record['prepared_files'])
+    assert not terminal&empty_shape_physical_checked(record['restored_files'])
+    restored=prepared['before']['native'];intent=only(pg['initial_ingest_successions'])
+    assert native==activated_native(restored,intent['producer_slot_id'],close=True)
+    assert (record['after']['native'],record['after']['inputs'])==(restored,inputs)
+    return pg,restored,inputs
+
+
+def empty_shape_window(window):
+    assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True);number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+
+
+def empty_shape_fixture_controls(record,expected,*,initial=None,database=None,prepared=None):
+    kind=record['kind'];rejected=[]
+    def verify(r):
+        if kind=='privileged-isolated-empty-partial-sql':return empty_shape_corruption_checked(r,expected[0],initial,'partial-sql',dict(before_us=record['before_us'],after_us=record['after_us']),database)
+        if kind=='isolated-empty-missing-handoff':return empty_shape_missing_checked(r,expected)
+        return empty_shape_snapshot_checked(r,expected,restore=prepared is not None,prepared=prepared)
+    verify(record)
+    def check(label,change):
+        candidate=copy.deepcopy(record);change(candidate)
+        try:verify(candidate)
+        except (AssertionError,ValueError,KeyError,TypeError):rejected.append(label)
+        else:raise AssertionError('empty shape fixture accepted '+label)
+    if kind=='privileged-isolated-empty-partial-sql':
+        check('partial-unrelated-row',lambda r:only(r['after']['producer_epochs'],producer_epoch=1).update(xmin='4294967294'))
+        check('partial-extra-closure',lambda r:only(r['after']['source_streams'],owner_epoch=2).update(closure_digest='\\x'+'00'*32))
+        check('partial-unbound-statement',lambda r:r.update(statement='SELECT 1;'))
+        def actor_change(r,field,value):
+            lines=r['response']['stdout'].splitlines()
+            for i in (0,-1):
+                e=loads(lines[i]);e['actor'][field]=value;lines[i]=model.encoded(e).decode()
+            r['response']['stdout']='\n'.join(lines)+'\n'
+        def database_change(r):r['database']='unrelated_clone';actor_change(r,'database','unrelated_clone')
+        check('partial-coordinated-database',database_change)
+        check('partial-wrong-actor',lambda r:actor_change(r,'role','bigbrotr_control'))
+    else:
+        check('fixture-unrelated-sql',lambda r:only(r['after']['control']['producer_epochs'],producer_epoch=1).update(xmin='4294967294'))
+        check('fixture-native-sequence',lambda r:r['after']['native'].update(sequence=r['after']['native']['sequence']+1))
+        check('fixture-extra-input',lambda r:r['after']['inputs'].update({'extra':dict(bytes=1,sha256='00'*32)}))
+        if kind=='isolated-empty-missing-handoff':
+            check('missing-wrong-argv',lambda r:r['arguments'].__setitem__(2,'target-nonzero'))
+            check('missing-extra-row-deletion',lambda r:r['after']['native']['rows'].pop())
+            check('missing-no-observed-exit',lambda r:r['response'].update(returncode=None))
+        else:
+            key=next(k for k,v in record['retained_files'].items() if stat.S_ISREG(v['mode']))
+            check('snapshot-hardlinked-file',lambda r:r['retained_files'][key].update(links=2))
+            check('snapshot-missing-file',lambda r:r['retained_files'].pop(key))
+            if prepared is None:
+                check('snapshot-shared-inode',lambda r:r['retained_files'][key].update(device=r['source_files'][key]['device'],inode=r['source_files'][key]['inode']))
+                check('snapshot-changed-copy',lambda r:r['retained_files'][key].update(sha256='00'*32))
+            else:
+                prepared_key=next(k for k,v in record['prepared_files'].items() if stat.S_ISREG(v['mode']))
+                def terminal_alias(r):
+                    value={k:r['prepared_files'][prepared_key][k] for k in ('device','inode')}
+                    r['source_files'][key].update(value);r['retained_files'][key].update(value)
+                check('terminal-prepared-alias',terminal_alias)
+                check('restore-terminal-alias',lambda r:r['restored_files'][prepared_key].update(device=r['retained_files'][key]['device'],inode=r['retained_files'][key]['inode']))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def empty_shape_controls(check,context):
+    name,step=empty_shape_specification(context['case'])
+    if step!='proof':return
+    def fault(c):return c['fixture']['delivery_fault']
+    check('proof-proxy-unjoined',lambda c:fault(c)['wire'].update(readers_joined=False))
+    check('proof-wrong-gate',lambda c:fault(c).update(target_commit=3))
+    check('proof-still-in-transaction',lambda c:fault(c)['held']['backend'].update(state='idle in transaction'))
+    check('proof-wrong-held-query',lambda c:fault(c)['held']['backend'].update(query='SELECT 1'))
+    check('proof-config-unrestored',lambda c:fault(c)['configuration'].update(restored=''))
+    check('proof-after-phase-deadline',lambda c:fault(c)['held'].update(release_after_us=only(fault(c)['held']['control']['owner_epochs'],role='control',state='active')['lease_expires_at_us']-4_000_000))
+    if name!='proof-baseline':
+        check('corruption-before-proof',lambda c:fault(c)['mutation'].update(before_us=c['server_window']['before_us']))
+        check('corruption-statement-unbound',lambda c:fault(c)['mutation'].update(statement='SELECT 1;'))
+        check('corruption-unrelated-row',lambda c:fault(c)['mutation']['after']['jobs'].clear())
+        def wrong_database(c):
+            m=fault(c)['mutation'];m['database']='unrelated_clone'
+            lines=m['response']['stdout'].splitlines()
+            for i in (0,-1):
+                event=loads(lines[i]);event['actor']['database']='unrelated_clone';lines[i]=model.encoded(event).decode()
+            m['response']['stdout']='\n'.join(lines)+'\n'
+        check('corruption-coordinated-wrong-database',wrong_database)
