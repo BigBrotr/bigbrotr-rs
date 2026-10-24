@@ -234,6 +234,44 @@ impl RetainedLineage {
         Ok(lineage)
     }
 
+    /// Select only an empty initial attempt, including its exact Closing0
+    /// retry. PostgreSQL still owes absence of activation and pending epoch3.
+    /// This structural observation cannot mint an original or compacted proof.
+    pub fn inspect_initial_empty_attempt(
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        if recovery.manifest().key_schema() != 2
+            || recovery.manifest().identity().owner_epoch.get() != 2
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let mut lineage = Self::inspect_structure_in(recovery, None, permit, cancelled, true)?;
+        lineage.require_initial_empty_shape()?;
+        lineage.inputs = lineage.input_census(recovery, cancelled)?;
+        lineage.validate(recovery, cancelled)?;
+        Ok(lineage)
+    }
+
+    pub(super) fn require_initial_empty_shape(&self) -> Result<(), BootstrapError> {
+        let head = self.native_head();
+        if self.entries.len() != 2
+            || self.pending_target().is_some()
+            || self.activated_reserved.is_some()
+            || head.manifest.key_schema() != 2
+            || head.manifest.identity().owner_epoch.get() != 2
+            || head.issued != 0
+            || head.acknowledged != 0
+            || head.source_through != 0
+            || !head.source_present
+            || head.allocations != [0; 9]
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
     // Private construction stage shared with recovery. It has not yet accepted
     // any sidecar census and is never returned through the public reader API.
     fn inspect_structure(
@@ -584,7 +622,7 @@ impl RetainedLineage {
     pub(super) fn compacted_floor(&self) -> Option<&ClosedProducerFloor> {
         self.compacted.as_ref()
     }
-    pub(super) fn into_metadata_permit(self) -> OwnedPermit {
+    pub(in crate::storage) fn into_metadata_permit(self) -> OwnedPermit {
         self._permit
     }
     fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {

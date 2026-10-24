@@ -10,6 +10,10 @@ use crate::{
 use bigbrotr_model::DictionaryKind;
 use std::sync::atomic::Ordering;
 
+#[path = "initial_empty_compaction.rs"]
+mod compacted;
+pub use compacted::CompactedInitialEmptyRetirementPlan;
+
 /// Borrowed native custody and exact retained metadata, before positive replay.
 pub struct PreparedEmptyInitialAttempt<'a> {
     native: EmptyInitialAttempt<'a>,

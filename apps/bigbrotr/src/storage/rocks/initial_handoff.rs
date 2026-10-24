@@ -25,8 +25,12 @@ const MAX_HANDOFF_BYTES: usize = 78 + 2 * MAX_MANIFEST_BYTES;
 
 #[path = "initial_empty.rs"]
 mod initial_empty;
-pub(in crate::storage) use initial_empty::EmptyInitialAttempt;
-pub use initial_empty::{EmptyInitialRetirement, ObservedEmptyInitialRetirement};
+pub use initial_empty::{
+    COMPACTED_EMPTY_DATA_BYTES, CompactedEmptyInitialPredecessor, CompactedEmptyInitialRetirement,
+    EmptyInitialRetirement, ObservedCompactedEmptyInitialRetirement,
+    ObservedEmptyInitialRetirement,
+};
+pub(in crate::storage) use initial_empty::{CompactedEmptyInitialAttempt, EmptyInitialAttempt};
 
 #[path = "activated_recovery.rs"]
 mod activated_recovery;

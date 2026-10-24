@@ -615,6 +615,14 @@ if producer_floor:
             'compacted_activated_source_rechecks_sidecars_sequence_cancel_and_science',
             'compacted_activated_source_preserves_optional_tail_but_refuses_reserved_gaps',
             'compacted_activated_source_ack_handoff_retains_final_input_seal'])
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_empty_tests::' + name for name in [
+            'compacted_empty_exact_one_write_preserves_science_and_fresh_closing_retry',
+            'compacted_empty_requires_exact_canonical_origin_and_empty_two_entry_shape',
+            'compacted_empty_rejects_foreign_root_and_changed_census_without_writes',
+            'compacted_empty_full_effect_census_and_zero_target_are_required',
+            'compacted_empty_grant_and_delivery_failure_preserve_exact_close_retry',
+            'compacted_empty_original_cancellation_cannot_be_replaced_by_a_fresh_flag'])
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

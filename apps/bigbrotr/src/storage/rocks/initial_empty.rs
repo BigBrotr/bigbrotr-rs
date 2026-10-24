@@ -7,6 +7,14 @@ use super::{
 };
 use sha2::{Digest, Sha256};
 
+#[path = "compacted_empty.rs"]
+mod compacted;
+pub(in crate::storage) use compacted::CompactedEmptyInitialAttempt;
+pub use compacted::{
+    COMPACTED_EMPTY_DATA_BYTES, CompactedEmptyInitialPredecessor, CompactedEmptyInitialRetirement,
+    ObservedCompactedEmptyInitialRetirement,
+};
+
 /// Exact OPEN/zero or CLOSING/zero target, with its predecessor read context.
 /// Its borrow keeps the actual native owner alive throughout positive replay.
 #[derive(Clone, Copy)]
@@ -32,23 +40,31 @@ impl<'a> EmptyInitialAttempt<'a> {
         source: &ResolvedSource<'_>,
     ) -> Result<EmptyInitialRetirement, BootstrapError> {
         self.history.validate_source(source)?;
+        Ok(EmptyInitialRetirement::from_history(&self.history))
+    }
+}
+
+impl EmptyInitialRetirement {
+    // Callers must first establish their distinct complete predecessor proof.
+    // Shared fixed empty-target bytes do not themselves certify that proof.
+    fn from_history(history: &HistoricalInitial<'_>) -> Self {
         let mut digest = Sha256::new();
         digest.update(b"bigbrotr/initial-empty-attempt-closure/1\0");
-        digest.update(Sha256::digest(self.history.record.encode().as_bytes()));
+        digest.update(Sha256::digest(history.record.encode().as_bytes()));
         digest.update(Sha256::digest(
-            self.historical().target_manifest().encode().as_bytes(),
+            history.target_manifest().encode().as_bytes(),
         ));
-        digest.update(self.historical().producer_slot_id().as_bytes());
+        digest.update(history.producer_slot_id().as_bytes());
         digest.update(2_u64.to_be_bytes());
         digest.update(0_u64.to_be_bytes());
         digest.update(0_u64.to_be_bytes());
-        Ok(EmptyInitialRetirement {
-            record: self.history.record,
-            native_sequence: self.history.sequence,
-            native_root: self.history.root,
-            target: self.history.target,
+        Self {
+            record: history.record,
+            native_sequence: history.sequence,
+            native_root: history.root,
+            target: history.target,
             closure_digest: digest.finalize().into(),
-        })
+        }
     }
 }
 

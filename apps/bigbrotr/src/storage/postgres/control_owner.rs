@@ -137,7 +137,9 @@ pub use successor_transition::{
 };
 #[path = "initial_succession.rs"]
 mod initial_succession;
-pub use initial_empty::{InitialEmptyRetirementPlan, PreparedEmptyInitialAttempt};
+pub use initial_empty::{
+    CompactedInitialEmptyRetirementPlan, InitialEmptyRetirementPlan, PreparedEmptyInitialAttempt,
+};
 pub use initial_gap::{InitialGapPlan, PreparedInitialGap};
 pub use initial_history::{InitialHistoryRequest, PreparedInitialHistory};
 #[path = "producer_closing.rs"]

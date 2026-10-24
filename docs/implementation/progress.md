@@ -6,9 +6,11 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main/harness `0ceff5800b18129965623fd68cd4f51b8d21b8d9`, tree505379f5;
-verified push0ceff580 (driver79077 joined0). This documentation commit records
-its installed guard qualification. Product e75aaa2 remains unchanged.
+Main `0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a`, verified push0984d001
+(driver3838 joined0). Product e75aaa2 and guard harness0ceff580 remain qualified.
+Local compacted initial empty2 retirement implementation is source-reviewed:
+native author ec28253 exact nine files, root six PG/CLI files and six additional
+mandatory component names. Build/components/installed execution are NOT_RUN.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -32,10 +34,13 @@ driver21217 joined0, receipt verified. Prior product7bc and installed profiles
 b1b2dff(25),8589101(56),b6c4315(15) remain separately qualified in the report;
 reuse their unchanged evidence. No GC/floor writer/unlink is enabled.
 
-Next: finish the bounded remaining-consumer source audit, then adapt initial
-empty-attempt retirement with a compacted ancestor if its dependency-ready
-boundary is confirmed. Use the existing prepared unactivated origin; keep later
-recovery/preparation/live/Archive consumers separate. No new implementation yet.
+Next: freeze the reviewed compacted initial empty2 retirement source and run the
+isolated exact producer-floor build; then qualify the reviewed independent
+installed fixture and raw replay. Root owns runtime. Audit and work
+record are in the same report under `compacted_successor_preparation.
+empty_initial_consumer_work`. Exact prepared origin, native125→126 once and
+thirteen target SQL rows/retry are fixed; final canonical/census/authority and
+custody remain required. Later consumers remain separate; build/runtime NOT_RUN.
 
 ## Work and resources
 
@@ -45,8 +50,12 @@ joined. Both origins unchanged; all8 custody closed and cleanup/unrelated/
 unexpected/missing-owned arrays empty. All clones/raw captures retained.
 Guard author7bb67235 is clean detached after exact three-file reconciliation;
 redundant branch ref retired, worktree and diagnostic artifacts preserved.
-The import-gate agent performs the read-only remaining-consumer audit. Other
-agents finished their assigned work. No cache cleanup; previous .research,
+Native author and fixture author work in `.research/compacted-empty-initial-
+native-20261024` and `.research/compacted-empty-initial-fixture-20261024`;
+native author is clean/frozen, fixture author and critical reviewer continue the
+nine-clone/thirteen-command fixture source review only. See inventory for exact
+paths/ownership and the report for hash-bound source reviews.
+No cache cleanup; previous .research,
 worktrees, datasets, failures and external labs remain preserved.
 
 ## Open gates

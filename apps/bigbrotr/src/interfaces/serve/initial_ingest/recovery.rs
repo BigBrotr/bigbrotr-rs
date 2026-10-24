@@ -158,6 +158,9 @@ pub(in crate::interfaces::serve) fn run(
         ));
     }
     match action {
+        Action::RetireEmptyAttempt => {
+            return empty::run(root, output);
+        }
         Action::CompleteInitialPreparation => {
             return prepared_initial::run(root, output);
         }
@@ -237,9 +240,7 @@ async fn own(
     // Check overlapping worst-case replay grants before a claim or barrier.
     // There is only this worker, so later per-request acquisition cannot race
     // another consumer. Never retain a vector of requests or decoded outcomes.
-    if action == Action::RetireEmptyAttempt {
-        empty::preflight(&budget)?;
-    } else {
+    {
         let closing = grant(&budget, 4096, 4096)?;
         drop(replay_grants(&budget)?);
         drop(closing);
@@ -292,9 +293,6 @@ async fn connected(
     mut client: tokio_postgres::Client,
     action: Action,
 ) -> Result<(ControlSession, Value)> {
-    if action == Action::RetireEmptyAttempt {
-        return empty::connected(root, budget, progress, cancellation, recovery, client).await;
-    }
     let instance: DatasetId = required(root, "topology.instance_id")?
         .parse()
         .map_err(|_| (3, "invalid instance".into()))?;

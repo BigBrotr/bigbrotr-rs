@@ -10,6 +10,9 @@ use std::{os::unix::fs::PermissionsExt, sync::atomic::AtomicBool};
 
 static READY: AtomicBool = AtomicBool::new(false);
 
+#[path = "compacted_empty_tests.rs"]
+mod compacted_empty_tests;
+
 fn floor_bytes(f: &Fixture) -> [u8; 139] {
     let mut floor = [0; 139];
     floor[..2].copy_from_slice(&[3, 0x31]);

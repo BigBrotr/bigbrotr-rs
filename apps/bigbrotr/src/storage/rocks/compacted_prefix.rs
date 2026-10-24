@@ -39,6 +39,7 @@ enum PrefixOwner<'a> {
     Initial(&'a RetainedCompactedPrefix),
     Ancestor(&'a RetainedLineage),
     Handoff(CompactedInitialPredecessor<'a>),
+    EmptyRetirement(crate::storage::rocks::store::CompactedEmptyInitialPredecessor<'a>),
     Acknowledgement(crate::storage::rocks::store::CompactedAcknowledgementPredecessor<'a>),
 }
 // The optional floor and all simultaneous borrowed cursor headers use the
@@ -56,6 +57,7 @@ impl PrefixOwner<'_> {
             Self::Initial(prefix) => prefix.manifest(),
             Self::Ancestor(lineage) => lineage.entry(1).expect("inspected ancestor").manifest(),
             Self::Handoff(view) => view.manifest(),
+            Self::EmptyRetirement(view) => view.manifest(),
             Self::Acknowledgement(view) => view.manifest(),
         }
     }
@@ -64,6 +66,7 @@ impl PrefixOwner<'_> {
             Self::Initial(prefix) => prefix.floor(),
             Self::Ancestor(lineage) => lineage.compacted.as_ref().expect("sealed floor view"),
             Self::Handoff(view) => view.floor(),
+            Self::EmptyRetirement(view) => view.floor(),
             Self::Acknowledgement(view) => view.floor(),
         }
     }
@@ -72,6 +75,7 @@ impl PrefixOwner<'_> {
             Self::Initial(prefix) => prefix.slot,
             Self::Ancestor(lineage) => lineage.slot,
             Self::Handoff(view) => view.producer_slot_id(),
+            Self::EmptyRetirement(view) => view.producer_slot_id(),
             Self::Acknowledgement(view) => view.producer_slot_id(),
         }
     }
@@ -84,6 +88,7 @@ impl PrefixOwner<'_> {
             Self::Initial(prefix) => prefix.validate(recovery, cancelled),
             Self::Ancestor(lineage) => lineage.validate(recovery, cancelled).map_err(Into::into),
             Self::Handoff(view) => view.validate(recovery, cancelled).map_err(Into::into),
+            Self::EmptyRetirement(view) => view.validate(recovery, cancelled).map_err(Into::into),
             Self::Acknowledgement(view) => view.validate(recovery, cancelled),
         }
     }
@@ -115,6 +120,16 @@ impl PrefixOwner<'_> {
                 lineage.inputs,
             ),
             Self::Handoff(view) => (
+                recovery.store.require_compacted_input(
+                    view.floor().fields().issued_through,
+                    checked.0,
+                    checked.1,
+                    checked.2,
+                    cancelled,
+                )?,
+                view.input_stamp(),
+            ),
+            Self::EmptyRetirement(view) => (
                 recovery.store.require_compacted_input(
                     view.floor().fields().issued_through,
                     checked.0,

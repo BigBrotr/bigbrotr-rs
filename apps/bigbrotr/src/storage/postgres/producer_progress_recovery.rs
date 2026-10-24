@@ -5,8 +5,9 @@ use crate::storage::rocks::{
     manifest::IngestManifest,
     producer_floor::ClosedProducerFloor,
     store::{
-        CompactedAcknowledgementPredecessor, CompactedInitialAncestor, CompactedInitialPredecessor,
-        IngestRecovery, RetainedCompactedPrefix,
+        CompactedAcknowledgementPredecessor, CompactedEmptyInitialPredecessor,
+        CompactedInitialAncestor, CompactedInitialPredecessor, IngestRecovery,
+        RetainedCompactedPrefix,
     },
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
@@ -132,6 +133,35 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_hando
     tx: &Transaction<'_>,
     recovery: &IngestRecovery,
     predecessor: &CompactedInitialPredecessor<'_>,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(|error| ProducerProgressError::Native(error.into()))?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        predecessor.manifest(),
+        predecessor.producer_slot_id(),
+        scratch,
+        Some(predecessor.floor()),
+        authority,
+    )
+    .await?;
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(|error| ProducerProgressError::Native(error.into()))?;
+    Ok(complete)
+}
+
+/// The empty retirement seal permits its one closing write, while preserving
+/// the exact ancestor floor and complete input census through final dispatch.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_empty_retirement(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    predecessor: &CompactedEmptyInitialPredecessor<'_>,
     scratch: &OwnedPermit,
     cancelled: &std::sync::atomic::AtomicBool,
     authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,

@@ -120,13 +120,16 @@ pub use source_closure::{
 
 #[path = "initial_handoff.rs"]
 mod initial_handoff;
+pub(in crate::storage) use initial_handoff::CompactedEmptyInitialAttempt;
 pub(in crate::storage) use initial_handoff::{
     ActivatedInitial, ActivatedProducerClosing, EmptyInitialAttempt, HistoricalInitial,
     InitialHandoffRecord,
 };
 pub use initial_handoff::{
-    COMPACTED_HANDOFF_DATA_BYTES, CompactedInitialPredecessor, EmptyInitialRetirement,
-    EncodedHandoff, InitialHandoff, ObservedEmptyInitialRetirement, ObservedHandoff,
+    COMPACTED_EMPTY_DATA_BYTES, COMPACTED_HANDOFF_DATA_BYTES, CompactedEmptyInitialPredecessor,
+    CompactedEmptyInitialRetirement, CompactedInitialPredecessor, EmptyInitialRetirement,
+    EncodedHandoff, InitialHandoff, ObservedCompactedEmptyInitialRetirement,
+    ObservedEmptyInitialRetirement, ObservedHandoff,
 };
 
 #[path = "initial_writer.rs"]

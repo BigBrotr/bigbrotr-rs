@@ -1078,6 +1078,22 @@ cancellation/lease expiry, process/power/native syscall uncertainty and a genuin
 epoch2/SQL-pending3 gap remain separate qualification gates. Original evidence
 remains required by recovery modes not explicitly adapted to a compacted predecessor.
 
+The compacted `ingest recover --retire-empty-attempt --file ROOT` extension is
+implemented but not yet qualified. It selects only an exact unactivated empty
+epoch2 target, OPEN0 or CLOSING0, with no pending successor. Its distinct proof
+authenticates the retired initial ancestor, typed checkpoint, canonical outcomes
+and complete native/input census. The final transaction repeats those checks
+before the existing one-marker native close and atomic thirteen-row SQL
+retirement. A prepared CLOSING0 target can finish SQL retirement; terminal SQL
+with native OPEN0 refuses. An exact terminal retry preserves native state and
+the original thirteen timestamps and row versions. The proof remains bound
+through native dispatch, SQL COMMIT and result delivery; it supplies no writer,
+activation, ACK or deletion authority. The command keeps native custody ahead
+of Control teardown, including interrupted acquisition, and reports compacted
+requests separately from original replays. Original-input retirement retains
+its own proof and requires all original evidence. Build, component and installed
+fault qualification are still pending for this extension.
+
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
 witness without weakening their guarantees. Fresh-process replay, exact retry,
