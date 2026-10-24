@@ -63791,9 +63791,13 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-20261024",
           "branch": "work/compacted-later-empty",
           "base": "b57116901324111742f04faa175e4386647cac2d",
-          "state": "SOURCE_IMPLEMENTATION_ACTIVE; no build/engines",
+          "state": "PAUSED_CLEAN_SOURCE_BUILD_PASS; not integrated into main; installed/runtime NOT_RUN",
           "scope": "Explicit compacted later preparation/gap and existing --retire-empty-successor four-state recovery; source/probe/component controls only, no new CLI/SQLformat/migration, activation/live/Archive remain gated",
-          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh"
+          "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
+          "source": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+          "tree": "32d7686923857b0cf83415447f69e37f17e3ed17",
+          "remote": "origin/work/compacted-later-empty at2bdf513c; push47771 joined0",
+          "owner_state": "Author stopped; root owns resume/integration; partial next-consumer audit preserved in existing review folder."
         },
         "original_preparer_attempts": [
           {
@@ -63820,6 +63824,79 @@
           "raw_driver_exit": 0,
           "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-empty-initial-preparer-16f3210/verified-run.json",
           "resources": "Actual client605d1360 exited143 and PG71775507 exited0/PID0/noOOM; rechecked after merge. Original preservation5true; all captures/failure/worktrees retained; no runtime active."
+        },
+        "later_empty_fixture_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-fixture-20261024",
+          "branch": "work/compacted-later-empty-fixture",
+          "base": "3b30393fc6619bf4dd08aef314cb55793911922a",
+          "owner": "/root/empty_malformed_floor; reused verified Astra/xhigh",
+          "state": "PAUSED_CLEAN_WIP; not integrated into main; final diagnostics/review/runtime NOT_RUN",
+          "scope": "Four isolated copies/eight stages: real preparation+installed empty+exact retry; captured PreparedOpen; observed preparation COMMIT-response loss+fresh installed gap/empty; late SQL failure after native close+fresh Closing completion. Independent whole-state/native/input/custody expectations and negative checker controls. Existing harness/client only; actual product revision pending freeze.",
+          "source": "d8ceb01354d781acf682472c5f1ed5cd74fa414d",
+          "tree": "de96e05ed6d44151416c9e6afacf2c259d20fa7f",
+          "merged_product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+          "current_product_pin": "c1b834e3c3f0f74ddf5eef95b5f1ebf84e058e66",
+          "remote": "origin/work/compacted-later-empty-fixture atd8ceb013; push47771 joined0",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-fixture-paused-source-v1.json",
+            "sha256": "1edbe35f7376c183e9b7281b84479698f14e9cc153b9f286b40ce9ce8fd1028b"
+          },
+          "partial_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-fixture-critical-review-partial-v1.json",
+            "sha256": "a69bc839bae9845667b9c1dffebe43e7fb4a97f2d39cbb9ec885d453807a3c61"
+          }
+        },
+        "later_preparation_build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2bdf513",
+          "source": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+          "tree": "32d7686923857b0cf83415447f69e37f17e3ed17",
+          "driver_session": 1741,
+          "status": "PASS_COMPACTED_PREFIX_COMPONENTS_STOPPED_RETAINED",
+          "free_bytes_before": 253681360896,
+          "driver_exit": 0,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2bdf513/verified-build.json",
+            "sha256": "a0cd7be9e37314db38cb1ca3a4e8b7612a7d31f808b21a58b6d9adfd05168843"
+          },
+          "free_bytes_after": 251705139200,
+          "resources": "Ownerc7420984cc8875c955cc796188ab7fa2; actual fetchbadec7d2/nativee3a524ee exited0/PID0/noOOM. Existing resources.json unchanged; all retained ELFs hash matched."
+        },
+        "later_preparation_build_attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-fb4ab43",
+            "source": "fb4ab436abd7a9722ab42869b230d27ed6575331",
+            "tree": "b9bdc0c931a3afb09ccd5b6488944cbfc48244c7",
+            "driver_session": 36845,
+            "status": "FAIL_PROBE_COMPILATION",
+            "preflight": "root-preflight.json; existing runner preflight/resources.json owns actual cache/container custody",
+            "free_bytes_before": 254415994880,
+            "driver_exit": 1,
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-fb4ab43/verified-failure.json",
+            "resources": "Actual fetchc659d99a exited0/native87315d8d exited1/PID0/noOOM; owner9dc707e76591869474264370faa3c94c; inventory_changed[]; unqualified partialCLI preserved"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-c1b834e",
+            "source": "c1b834e3c3f0f74ddf5eef95b5f1ebf84e058e66",
+            "tree": "0ccd34928a3f3d445d67fee02fb7f6effe6fb68e",
+            "driver_session": 35363,
+            "status": "FAIL_CLIPPY_AFTER_COMPONENTS_PASS",
+            "free_bytes_before": 254096269312,
+            "driver_exit": 1,
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-c1b834e/verified-failure.json",
+            "resources": "Actual fetchd01b20aa exited0/native6f0ecaeb exited1/PID0/noOOM; ownerb67c198e13487d7e942b3bd06b9b514d; inventory_changed[]; allartifacts retained"
+          }
+        ],
+        "pause_20261024": {
+          "observed_at": "2026-10-24T06:30:34.248400+00:00",
+          "active_bigbrotr_containers": [],
+          "known_resources": "Build fetch/native exited0. BorrowedPG71775507 exited0, prior preparer client605d1360 exited143, all PID0/noOOM checked during shutdown. No laboratory stop needed; no new installed run started.",
+          "agents": "compacted_reader_fixture, compacted_reader_review and empty_malformed_floor stopped after saving source/partial reviews. No agent-owned process active.",
+          "source_only_audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-activation-frontier-audit-partial-20261024.json",
+            "sha256": "8452191faeefc6c9f3b58144b49e30c533fe0253aef889652beaa39bd8f1c01a"
+          },
+          "retained": "All .research/worktrees/datasets/database volumes/raw captures/artifacts and original failures, including fb4/c1 builds and v1/v3/v4 diagnostic failures. No cleanup; unrelated workloads untouched.",
+          "remote_save": "Both work branches pushed successfully by driver47771 joined0; main receives only checkpoint/evidence/inventory documentation."
         }
       }
     }
