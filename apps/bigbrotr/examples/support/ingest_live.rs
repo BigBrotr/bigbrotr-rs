@@ -4,7 +4,7 @@ use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{
         InitialEventError, InitialHistoryRequest, LiveInitialDictionaryAppendRequest,
-        LiveInitialEventRequest, LiveInitialWriter,
+        LiveInitialEventRequest, LiveInitialWriter, ProgressGrant,
     },
     rocks::store::{AdmissionOutcome, PreparedEvent, RejectionReason, StoredReceipt},
 };
@@ -16,8 +16,31 @@ mod durable;
 #[path = "ingest_live_refusals.rs"]
 mod refusals;
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum ProgressSeed {
+    Wire,
+    ReservationAfter,
+    OutcomeBefore,
+    OutcomeAfter,
+}
+
+impl ProgressSeed {
+    pub(super) fn parse(mode: &str) -> Option<Self> {
+        match mode {
+            "successor-live-compacted-progress-wire" | "successor-live-original-progress-wire" => {
+                Some(Self::Wire)
+            }
+            "successor-live-compacted-progress-reservation-after" => Some(Self::ReservationAfter),
+            "successor-live-compacted-progress-outcome-before" => Some(Self::OutcomeBefore),
+            "successor-live-compacted-progress-outcome-after" => Some(Self::OutcomeAfter),
+            _ => None,
+        }
+    }
+}
+
 pub(super) fn is_mode(mode: &str) -> bool {
-    durable::Mode::parse(mode).is_some()
+    ProgressSeed::parse(mode).is_some()
+        || durable::Mode::parse(mode).is_some()
         || matches!(
             mode,
             "successor-live-zero"
@@ -47,6 +70,10 @@ pub(super) async fn run(
     gate_prefix: Option<&Path>,
 ) {
     assert!(is_mode(mode));
+    if ProgressSeed::parse(mode).is_some() {
+        // Account for the additional checkpoint grant before claiming Control.
+        drop(progress_grant(&probe));
+    }
     let mut candidate = InitialWriterCandidate::new(recovery).unwrap();
     let (mut owner, driver) = probe.acquire("initial", &spec, 1).await;
     let attempt = probe
@@ -186,6 +213,19 @@ pub(super) async fn run(
     assert_eq!(writer.manifest().identity().owner_epoch.get(), 2);
     assert_eq!(writer.producer_slot_id(), spec.producer_slot_id);
     probe.snapshot("activated-zero").await;
+    if let Some(seed) = ProgressSeed::parse(mode) {
+        progress_seed(&probe, owner, driver, writer, &spec, &backend, seed, mode).await;
+        let compacted = probe.compacted_initial;
+        drop(probe);
+        crate::ingest_closing::join(observer_driver, false).await;
+        emit(
+            serde_json::json!({"event":"progress-seed-complete","mode":mode,
+            "native":"closed","control":if seed == ProgressSeed::Wire {"released-and-joined"} else {"dropped-and-joined"},
+            "observer":"joined","compacted_predecessor_requests":if compacted {7} else {0},
+            "original_predecessor_requests":if compacted {0} else {7},"requested_epoch2":1,"events":0}),
+        );
+        return;
+    }
     if mode == "successor-live-reservation-after" {
         reservation_after(&probe, owner, driver, writer, &spec, &backend).await;
         drop(probe);
@@ -690,6 +730,28 @@ async fn compacted_history_dictionary(
     writer: &mut LiveInitialWriter,
     previous: &InitialRegistration,
 ) {
+    let intent = compacted_history_dictionary_intent(probe, writer, previous);
+    let limits = AdmissionLimits {
+        max_outstanding_requests: 2,
+        max_dependencies: 256,
+        ..AdmissionLimits::default()
+    };
+    let receipt = append_first_dictionary(probe, owner, writer, &intent, limits)
+        .await
+        .unwrap();
+    emit(
+        serde_json::json!({"event":"live-receipt","stage":"dictionary","request":1,
+        "receipt":hex(&receipt.receipt().encode_persistent(65536).unwrap())}),
+    );
+    drop(receipt);
+    probe.snapshot("dictionary").await;
+}
+
+fn compacted_history_dictionary_intent(
+    probe: &Probe,
+    writer: &LiveInitialWriter,
+    previous: &InitialRegistration,
+) -> EvidenceIntent {
     assert!(probe.compacted_history_seed || probe.compacted_initial);
     let mut scope = public_scope(previous);
     assert_eq!(
@@ -734,21 +796,126 @@ async fn compacted_history_dictionary(
         index["value"],
         "0104309d9507c5b5c39e9947e1406482d51900000000000000000000000100000000000000012885c061c7e1e4c3db59da67b32540440f465827ddc8932b37719fec8d92d204"
     );
-    let intent = dictionary_for_scope(writer, scope);
+    dictionary_for_scope(writer, scope)
+}
+
+fn progress_grant(probe: &Probe) -> ProgressGrant {
+    ProgressGrant::new(grant(
+        &probe.budget,
+        ProgressGrant::REQUIRED_DATA_BYTES,
+        ProgressGrant::REQUIRED_NATIVE_BYTES,
+    ))
+    .unwrap()
+}
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "finite existing-owner seed and explicit fault mode"
+)]
+async fn progress_seed(
+    probe: &Probe,
+    mut owner: ControlSession,
+    driver: Driver,
+    mut writer: LiveInitialWriter,
+    previous: &InitialRegistration,
+    backend: &Backend,
+    seed: ProgressSeed,
+    mode: &str,
+) {
+    assert!(probe.initial_proxy_port.is_some());
+    let intent = compacted_history_dictionary_intent(probe, &writer, previous);
+    let request = ProducerRequestId {
+        producer_slot_id: writer.producer_slot_id(),
+        producer_epoch: ProducerEpoch::new(2).unwrap(),
+        request_sequence: RequestSequence::new(1).unwrap(),
+    };
+    let preimage = intent.encode_request_preimage(request, 8192).unwrap();
+    let progress = progress_grant(probe);
     let limits = AdmissionLimits {
         max_outstanding_requests: 2,
         max_dependencies: 256,
         ..AdmissionLimits::default()
     };
-    let receipt = append_first_dictionary(probe, owner, writer, &intent, limits)
-        .await
-        .unwrap();
     emit(
-        serde_json::json!({"event":"live-receipt","stage":"dictionary","request":1,
-        "receipt":hex(&receipt.receipt().encode_persistent(65536).unwrap())}),
+        serde_json::json!({"event":"progress-seed-request","mode":mode,"request":1,
+        "preimage":hex(&preimage),"request_digest":intent.request_digest(request),
+        "progress_data_bytes":ProgressGrant::REQUIRED_DATA_BYTES,
+        "progress_native_bytes":ProgressGrant::REQUIRED_NATIVE_BYTES}),
     );
-    drop(receipt);
-    probe.snapshot("dictionary").await;
+    let result = bounded(owner.append_live_initial_dictionaries_with_progress(
+        &mut writer,
+        LiveInitialDictionaryAppendRequest {
+            ingest_root: &probe.path,
+            request_sequence: request.request_sequence,
+            intent: &intent,
+            recorded_at: ObservedTime::new(900_000_001),
+            limits,
+            policy_ttl: probe.policy_ttl(),
+            cancelled: &probe.cancelled,
+        },
+        grant(
+            &probe.budget,
+            limits.required_dictionary_data_bytes().unwrap(),
+            limits.required_native_bytes().unwrap(),
+        ),
+        &progress,
+        |doc, digest| probe.validate(doc, digest),
+    ))
+    .await;
+    emit(
+        serde_json::json!({"event":"progress-seed-result","mode":mode,
+        "error":result.as_ref().err().map(|error|format!("{error:?}")),
+        "receipt":result.as_ref().ok().map(|receipt|hex(&receipt.receipt().encode_persistent(65536).unwrap()))}),
+    );
+    probe.snapshot("progress-returned").await;
+    match seed {
+        ProgressSeed::Wire => assert!(result.is_ok()),
+        ProgressSeed::ReservationAfter => assert!(matches!(
+            &result,
+            Err(InitialEventError::Reservation(
+                bigbrotr::storage::postgres::producer_requests::ReservationError::CommitUnknown
+            ))
+        )),
+        ProgressSeed::OutcomeBefore | ProgressSeed::OutcomeAfter => assert!(matches!(
+            &result,
+            Err(InitialEventError::Outcome(
+                bigbrotr::storage::postgres::producer_outcomes::OutcomeError::CommitUnknown
+            ))
+        )),
+    }
+    drop(result);
+    drop(progress);
+    if seed != ProgressSeed::Wire {
+        probe.check_poisoned(&mut owner).await;
+    }
+    drop(writer);
+    emit(serde_json::json!({"event":"progress-seed-native","state":"closed"}));
+    probe.snapshot("progress-before-control-end").await;
+    let identity = owner.identity();
+    if seed == ProgressSeed::Wire {
+        bounded(owner.release()).await.unwrap();
+    } else {
+        drop(owner);
+    }
+    let joined = tokio::time::timeout(Duration::from_secs(5), driver)
+        .await
+        .unwrap()
+        .unwrap();
+    let failed = joined.is_err();
+    if seed == ProgressSeed::Wire {
+        assert!(!failed);
+    }
+    // A clean transport EOF may join normally while its pending COMMIT fails.
+    // Preserve that actual driver outcome independently of the operation error.
+    emit(serde_json::json!({"event":"progress-seed-driver","failed":failed,"joined":true}));
+    emit(
+        serde_json::json!({"event":"successor-control","stage":"progress",
+        "phase":if seed == ProgressSeed::Wire {"released-and-joined"} else {"dropped-and-joined"},
+        "resource":hex(identity.resource_id.as_bytes()),"epoch":identity.epoch.get()}),
+    );
+    probe.snapshot("progress-after-control-end").await;
+    probe.require_backend_absent(backend).await;
+    probe.snapshot("final").await;
 }
 
 async fn append_first_dictionary(

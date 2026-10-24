@@ -3,7 +3,10 @@
 use super::*;
 use crate::{
     runtime::OwnedPermit,
-    storage::rocks::store::{AdmissionError, IngestRecovery, RecoveryAcknowledgement},
+    storage::rocks::store::{
+        AdmissionError, AdmissionLimits, IngestRecovery, RecoveryAcknowledgement,
+        compacted_outcome_data_bytes,
+    },
 };
 use bigbrotr_model::{ProducerEpoch, ProducerSlotId};
 
@@ -54,7 +57,69 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ProducerAcknowledgementReceipt, ProducerAcknowledgementError> {
-        if permit.request().units().data_bytes() < RecoveryAcknowledgement::REQUIRED_DATA_BYTES
+        if replay.compacted_requests() != 0 {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        self.acknowledge_recovered_producer_in(recovery, replay, input, permit, None, validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit compacted replay with distinct metadata/native and decoded-effect grants"
+    )]
+    pub async fn acknowledge_recovered_compacted_producer(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        replay: RecoveryAcknowledgement,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        limits: AdmissionLimits,
+        outcomes: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ProducerAcknowledgementReceipt, ProducerAcknowledgementError> {
+        if replay.compacted_requests() == 0 {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        if outcomes.request().units().items() == 0
+            || outcomes.request().units().data_bytes()
+                < compacted_outcome_data_bytes(limits)
+                    .map_err(ProducerAcknowledgementError::Native)?
+        {
+            return Err(ProducerAcknowledgementError::Native(
+                AdmissionError::InsufficientReservation,
+            ));
+        }
+        self.acknowledge_recovered_producer_in(
+            recovery,
+            replay,
+            input,
+            permit,
+            Some((limits, outcomes)),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "shared ACK transaction with an explicit compacted proof phase"
+    )]
+    async fn acknowledge_recovered_producer_in(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        replay: RecoveryAcknowledgement,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        compacted: Option<(AdmissionLimits, OwnedPermit)>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ProducerAcknowledgementReceipt, ProducerAcknowledgementError> {
+        let required = if compacted.is_some() {
+            RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES
+        } else {
+            RecoveryAcknowledgement::REQUIRED_DATA_BYTES
+        };
+        if permit.request().units().data_bytes() < required
             || permit.request().units().native_bytes()
                 < RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES
             || permit.request().units().items() == 0
@@ -68,9 +133,7 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
-        replay
-            .validate(recovery)
-            .map_err(ProducerAcknowledgementError::Native)?;
+        validate_replay(&replay, recovery, input.cancelled, compacted.is_some())?;
         let manifest = *replay.manifest();
         let slot = replay.slot();
         let issued = replay.issued();
@@ -78,9 +141,64 @@ impl ControlSession {
         let id = manifest.identity();
         let producer_epoch =
             ProducerEpoch::new(id.owner_epoch.get()).map_err(|_| OwnerError::InvalidInput)?;
+        let instance = *self.request.instance.as_bytes();
         let (tx, mut lease, policy) = self
-            .begin_history_authority(recovery, &input, 14, validate)
+            .begin_history_authority(
+                recovery,
+                &input,
+                if compacted.is_some() { 34 } else { 14 },
+                validate,
+            )
             .await?;
+        if let Some((limits, outcomes)) = &compacted {
+            let ancestor = replay
+                .compacted_initial_predecessor(recovery, &permit, input.cancelled)
+                .map_err(ProducerAcknowledgementError::Native)?
+                .ok_or(OwnerError::InvalidInput)?;
+            let previous =
+                ingest_registry::reconstruct_historical(&tx, instance, ancestor.manifest())
+                    .await
+                    .map_err(ProducerAcknowledgementError::Registry)?;
+            if previous.producer_slot_id != slot {
+                return Err(OwnerError::InvalidMetadata.into());
+            }
+            // Establish the historical parent/source locks before the typed
+            // reader takes producer UPDATE, preserving retirement lock order.
+            let floor = ancestor.floor().fields();
+            initial_compaction::require_retired_predecessor(
+                &tx,
+                &previous,
+                floor.issued_through,
+                floor.source_through,
+                floor.closure_digest,
+            )
+            .await
+            .map_err(history_error)?;
+            producer_progress::recovery::require_compacted_acknowledgement(
+                &tx,
+                recovery,
+                &ancestor,
+                &permit,
+                input.cancelled,
+                || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            )
+            .await?;
+            let verified = producer_compaction::resolve_initial_outcomes(
+                &tx,
+                ancestor
+                    .resolution(input.cancelled)
+                    .map_err(ProducerAcknowledgementError::Native)?,
+                *limits,
+                outcomes,
+                &mut lease,
+                policy,
+                input.cancelled,
+            )
+            .await?;
+            verified
+                .validate(recovery, input.cancelled)
+                .map_err(ProducerAcknowledgementError::Native)?;
+        }
         // Current Control/dataset precede this historical Ingest parent SHARE
         // and the progress reader's producer UPDATE. Old scheduling expiry is
         // not recovery authority; the consumed replay supplies local exclusion.
@@ -109,9 +227,7 @@ impl ControlSession {
                 producer_progress::recovery::authority(&mut lease, policy, input.cancelled)
             })
             .await?;
-        replay
-            .validate(recovery)
-            .map_err(ProducerAcknowledgementError::Native)?;
+        validate_replay(&replay, recovery, input.cancelled, compacted.is_some())?;
         initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
         let enabled: bool = tx
             .query_one(
@@ -127,12 +243,11 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
             initial_history::finish(tx, &mut lease, policy, input.cancelled).await?;
-            replay
-                .validate(recovery)
-                .map_err(ProducerAcknowledgementError::Native)?;
+            validate_replay(&replay, recovery, input.cancelled, compacted.is_some())?;
             if self.client.is_closed() {
                 return Err(ProducerAcknowledgementError::DeliveryUnknown);
             }
+            initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
             self.available = true;
             return Ok(ProducerAcknowledgementReceipt {
                 slot,
@@ -141,11 +256,13 @@ impl ControlSession {
                 acknowledged,
             });
         }
-        replay
-            .validate(recovery)
-            .map_err(ProducerAcknowledgementError::Native)?;
+        validate_replay(&replay, recovery, input.cancelled, compacted.is_some())?;
         initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
-        let pending = producer_progress::PendingAcknowledgement::recovered(replay, complete)?;
+        let pending = if compacted.is_some() {
+            producer_progress::PendingAcknowledgement::recovered_compacted(replay, complete)
+        } else {
+            producer_progress::PendingAcknowledgement::recovered(replay, complete)
+        }?;
         let confirmed = pending
             .commit(tx)
             .await
@@ -154,11 +271,19 @@ impl ControlSession {
             return Err(ProducerAcknowledgementError::DeliveryUnknown);
         }
         initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
-        recovery
-            .acknowledge_checkpoint(confirmed, &permit, || {
-                producer_progress::recovery::authority(&mut lease, policy, input.cancelled)
-            })
-            .map_err(ProducerAcknowledgementError::Native)?;
+        let authority =
+            || producer_progress::recovery::authority(&mut lease, policy, input.cancelled);
+        if compacted.is_some() {
+            recovery.acknowledge_compacted_checkpoint(
+                confirmed,
+                &permit,
+                input.cancelled,
+                authority,
+            )
+        } else {
+            recovery.acknowledge_checkpoint(confirmed, &permit, authority)
+        }
+        .map_err(ProducerAcknowledgementError::Native)?;
         if self.client.is_closed() {
             return Err(ProducerAcknowledgementError::DeliveryUnknown);
         }
@@ -169,5 +294,32 @@ impl ControlSession {
             issued,
             acknowledged: complete,
         })
+    }
+}
+
+fn validate_replay(
+    replay: &RecoveryAcknowledgement,
+    recovery: &IngestRecovery,
+    cancelled: &std::sync::atomic::AtomicBool,
+    compacted: bool,
+) -> Result<(), ProducerAcknowledgementError> {
+    if compacted {
+        replay.validate_compacted(recovery, cancelled)
+    } else {
+        replay.validate(recovery)
+    }
+    .map_err(ProducerAcknowledgementError::Native)
+}
+
+fn history_error(error: InitialSuccessionError) -> ProducerAcknowledgementError {
+    match error {
+        ProducerOperationError::Control(e) => ProducerOperationError::Control(e),
+        ProducerOperationError::Registry(e) => ProducerOperationError::Registry(e),
+        ProducerOperationError::Native(e) => ProducerOperationError::Native(e.into()),
+        ProducerOperationError::Reservation(e) => ProducerOperationError::Reservation(e),
+        ProducerOperationError::Outcome(e) => ProducerOperationError::Outcome(e),
+        ProducerOperationError::Progress(e) => ProducerOperationError::Progress(e),
+        ProducerOperationError::CommitUnknown => ProducerOperationError::CommitUnknown,
+        ProducerOperationError::DeliveryUnknown => ProducerOperationError::DeliveryUnknown,
     }
 }

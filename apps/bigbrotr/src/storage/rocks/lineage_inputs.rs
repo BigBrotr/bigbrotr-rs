@@ -21,6 +21,7 @@ struct InputScan {
 pub(in crate::storage::rocks::store) struct LineageInputSet {
     required_count: u64,
     compacted_initial: Option<(ProducerSlotId, u64)>,
+    optional: Option<(ProducerSlotId, ProducerEpoch, u64, u64)>,
 }
 
 impl From<u64> for LineageInputSet {
@@ -28,6 +29,7 @@ impl From<u64> for LineageInputSet {
         Self {
             required_count,
             compacted_initial: None,
+            optional: None,
         }
     }
 }
@@ -48,6 +50,32 @@ impl LineageInputSet {
         Ok(Self {
             required_count,
             compacted_initial: Some((slot, floor)),
+            optional: None,
+        })
+    }
+
+    /// Positive recovery may preserve staged bytes beyond native issuance.
+    /// These consume physical capacity but never satisfy the required count.
+    pub(in crate::storage::rocks::store) fn with_optional_inputs(
+        mut self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        issued: u64,
+        through: u64,
+    ) -> Result<Self, BootstrapError> {
+        if epoch.get() != 2 || issued > through || through > MAX_FILES as u64 {
+            return Err(BootstrapError::InvalidIntent);
+        }
+        self.optional = (issued < through).then_some((slot, epoch, issued, through));
+        Ok(self)
+    }
+
+    fn optional(self, id: ProducerRequestId) -> bool {
+        self.optional.is_some_and(|(slot, epoch, issued, through)| {
+            id.producer_slot_id == slot
+                && id.producer_epoch == epoch
+                && id.request_sequence.get() > issued
+                && id.request_sequence.get() <= through
         })
     }
 
@@ -169,9 +197,10 @@ impl IngestStore {
         }
         // A staged tail is not issued; a delta removes one required original
         // from its prior stamp. Neither can silently consume a residual slot.
-        if tail.is_some_and(|id| inputs.residual(id) || accepts(id))
-            || addition
-                .is_some_and(|(id, _, _)| inputs.residual(id) || Some(id) == tail || !accepts(id))
+        if tail.is_some_and(|id| inputs.residual(id) || inputs.optional(id) || accepts(id))
+            || addition.is_some_and(|(id, _, _)| {
+                inputs.residual(id) || inputs.optional(id) || Some(id) == tail || !accepts(id)
+            })
             || checked.is_some_and(|(id, _, _)| !inputs.residual(id))
         {
             return Err(BootstrapError::InvalidIntent);
@@ -208,8 +237,8 @@ impl IngestStore {
                     return Err(BootstrapError::Limit);
                 }
                 let id = parse_name(name).map_err(BootstrapError::RequestInput)?;
-                if inputs.residual(id) || Some(id) == tail {
-                    // Both optional classes are still read, charged and stamped.
+                if inputs.residual(id) || inputs.optional(id) || Some(id) == tail {
+                    // Every optional class is still read, charged and stamped.
                 } else if accepts(id) {
                     required_count += 1;
                 } else {

@@ -6,15 +6,15 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and source
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a completely closed producer.
-Current main: `dc6a3f15d244895b4c38b4fdd62a60f60b6b48a4`; verified remote remains
-70d3d1bd (push23755 joined0). Qualified basic installed harness is30d65540.
+Last observed main and verified remote: `c432f252c3542186782e5bd021348e49c41c53ea`
+(push26452 joined0). Qualified basic installed harness is30d65540.
 Qualified product: `a0e914e8b58650d94dec60c0b5d3c08a02e5e248`,
 tree `e94652a5f2b68ac002487f728d073a8194120a1f`.
 The integrated fixture includes author d80db733 and two reviewed corrections.
 Delivery fixture afc80ad5 is integrated in573076fe; capture-only timestamp fix is
 dc6a3f15. Local documentation records its completed qualification; product bytes
-remain unchanged. No product code changed
-since the qualified build. No floor writer or unlink is exposed.
+remain unchanged. The next activated recovery changes are now being implemented
+and are **NOT_RUN**, separately from that qualified build. No floor writer or unlink is exposed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -64,10 +64,27 @@ Corrected compacted delivery run at
 PASS13/164 with7521 bound files. Drivers27208/66078 joined0; exact clientef32e009
 stopped143/PG0, PID0/noOOM, all2 originals preserved, cleanup arrays empty.
 First573076f capture-format FAIL remains preserved (4PASS/50controls,1044joined1).
-No connected runtime process is active. Commit/push the coherent result, then
-implement the next bounded activated positive recovery+ACK consumer.
+No connected runtime process is active. The coherent result is committed and
+pushed at c432f252. Implement the next bounded activated positive recovery+ACK consumer.
 The next activated positive-recovery/ACK consumer map is in the existing report;
-root complete owner reads are hash-bound there. No new product code is underway.
+root complete baseline owner reads are hash-bound there. Root owns PostgreSQL,
+CLI and integration in main. Existing Astra/xhigh agents worked from c432f252 in
+`.research/compacted-activated-native-20261024` (native recovery/ACK and components,
+branch `work/compacted-activated-native`) and
+`.research/compacted-activated-fixture-20261024` (authentic progress/loss probes and
+independent installed oracle, branch `work/compacted-activated-fixture`). Both
+have frozen their source: native core88b3f2fc, nine controls9aadf40a, final
+authority correctioneb5ab35f; probe65d4bbf1/Python8b238085. All are integrated
+exactly as local changes. Independent PG/CLI source review reports no unresolved blocker;
+its exact-hash receipt is being saved. the fixture author is idle with a clean worktree. Source/AST/diff checks
+PASS; product build, components, connected matrix and raw replay **NOT_RUN**.
+The compacted path preserves optional staged tails, refuses unresolved
+reservations, and rechecks ancestor H/canonical outcomes plus target progress
+before native ACK. Critical review identified late authority checks after full
+input scans; the fixes and original review are retained in linked receipts.
+No build or connected run is active. Next: save reviewed source, run the existing
+exact-source producer-floor build (nine new mandatory controls), then the
+8-clone/24-command `--activated` installed matrix and raw replay.
 
 Activated/later recovery, live frontier, retained Archive frontier and empty
 retirement remain before GC. Physical64file/32MiB bounds remain; physical loss,

@@ -8,6 +8,9 @@ use crate::storage::rocks::store::{
 #[path = "activated_source_tests.rs"]
 mod activated_source_tests;
 
+#[path = "compacted_activated_tests.rs"]
+mod compacted_activated_tests;
+
 fn record(recovery: &IngestRecovery) -> InitialHandoffRecord {
     InitialHandoffRecord::decode(&value(&recovery.store, handoff_key())).unwrap()
 }

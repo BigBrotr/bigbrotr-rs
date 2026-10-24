@@ -870,6 +870,154 @@ def run_initial_preparation_faults(root,build,product_source):
         assert oracle.preparation_delivery_origins(root)==(origins,initial)
 
 
+ACTIVATED_SUITE = transition.Suite(directory=oracle.ActivatedProfile.DIRECTORY,label=oracle.ActivatedProfile.LABEL,
+    status=oracle.ActivatedProfile.STATUS,client_prefix='bigbrotr-compacted-activated-',database_prefix=oracle.ActivatedProfile.DATABASE_PREFIX,
+    clones=oracle.ActivatedProfile.CLONES,cases=oracle.ActivatedProfile.CASES,
+    scope='Installed compacted activated-initial recovery and ACK, authentic first checkpoint and exact reservation/outcome COMMIT loss; original-input regression',
+    not_run=oracle.ActivatedProfile.NOT_RUN)
+
+
+def activated_seed_invoke(pg,client,output,case,directory,baseline):
+    from fault_cases import Process, safe_event
+    from initial_empty_locks import Probe
+    name,step=oracle.activated_specification(case); assert step=='seed'
+    normal=name in ('progress-wire','original')
+    target=21 if name=='original' else 6 if name=='reserved-tail' else 7
+    mode='hold' if normal else 'before-forward' if name=='outcome-before' else 'after-complete'
+    if not normal:
+        assert baseline['wire']==dict(outcome_commit=7,reservation_commit=6,commit_counts=[8]*4,boundary='hold-before-forward-released')
+    proxy=probe=None; label=case['name']; started=time.monotonic(); args=None
+    window=dict(before_us=history.server_clock(pg,case['database']))
+    wire=dict(command=None,source_sha256=history.digest(output/'fault_proxy.py'),ready=None,held=None,receipt=None,
+        events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False,errors=[])
+    response=dict(returncode=None,stdout='',stderr='',seconds=None,outcome='UNKNOWN',readers_joined=False,overflow=False,command=None)
+    def save():
+        lab.write_json(output/(label+'-wire.json'),wire); lab.write_json(output/(label+'-clock.json'),window)
+    try:
+        command=['docker','exec','-i',client,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432','--listen-port','0',
+            '--mode',mode,'--commit-number',str(target),'--later-commits','1','--deadline-seconds','30']
+        wire['command']=command; proxy=Process(command,input_pipe=True); ready=proxy.event('ready',5); wire['ready']=ready
+        assert ready['proxy_sha256']==wire['source_sha256']
+        args=[case['operation'],case['database'],'/run/secrets/application',case['config'],str(ready['listen_port'])]
+        response['command']=['docker','exec',client,'/build/ingest_bootstrap_probe',*args]; save()
+        probe=Probe(response['command'])
+        if normal:
+            held=proxy.event('held',15); probe.observe()
+            backend,=[v for v in probe.parsed if v['event']=='successor-backend' and v['present']]
+            assert backend['database']==case['database'] and type(backend['pid']) is int and backend['pid']>0
+            assert oracle.re.fullmatch('[0-9T:.+ Z-]+',backend['backend_start'])
+            capture=dict(event=held,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,release_after_us=None,
+                control=schema.rows(pg,case['database']),inputs=history.inputs_at(directory/'store'),backend=None)
+            wire['held']=capture; save()
+            statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
+                "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
+                "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(backend['pid'])+ \
+                " AND backend_start='"+backend['backend_start']+"'::timestamptz AND datname=current_database();"
+            capture['backend']=json.loads(lab.sql(pg,case['database'],statement)); capture['after_us']=history.server_clock(pg,case['database'])
+            capture['release_before_us']=history.server_clock(pg,case['database']); proxy.send('release')
+            capture['release_after_us']=history.server_clock(pg,case['database']); proxy.event('released',5); save()
+        code=probe.wait(20); probe.observe()
+        response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+        wire['receipt']=proxy.event('receipt',5); wire['exit_code']=proxy.wait(5)
+    except BaseException as error: wire['errors'].append(dict(stage='invoke',error=repr(error)))
+    finally:
+        if probe is not None:
+            code=probe.process.poll()
+            if code is not None:
+                for thread in probe.threads: thread.join(1)
+                response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+            else: wire['errors'].append(dict(stage='probe-stop',error='forced-wrapper-stop'))
+            response.update(stdout=bytes(probe.stdout).decode(errors='replace'),stderr=bytes(probe.stderr).decode(errors='replace'))
+            probe.stop()
+        if proxy is not None:
+            forced=proxy.process.poll() is None; proxy.stop()
+            wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),
+                exit_code=proxy.process.returncode,readers_joined=not any(t.is_alive() for t in proxy.threads),overflow=proxy.overflow,forced_wrapper_stop=forced)
+            try: wire['events']=[safe_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+            except BaseException as error: wire['errors'].append(dict(stage='proxy-metadata',error=repr(error)))
+        response['seconds']=time.monotonic()-started; window['after_us']=history.server_clock(pg,case['database'])
+        lab.write_json(output/(label+'-response.json'),response); save()
+    return response,window,wire,args
+
+
+def activated_seed(pg,client,output,case,directory,expected,catalog,initial,baseline):
+    label=case['name']; before=schema.rows(pg,case['database']); oracle.same(before,expected[0])
+    native=history.dump(client,output,label+'-before',directory); inputs=history.inputs_at(directory/'store')
+    assert (native,inputs)==expected[1:]
+    lab.write_json(output/(label+'-before.json'),before); lab.write_json(output/(label+'-inputs.json'),inputs)
+    response,window,wire,args=activated_seed_invoke(pg,client,output,case,directory,baseline)
+    # Proxy closure is part of the external-native exclusion gate, not a later
+    # semantic assertion after reopening the store.
+    def closed(reply,database):
+        assert wire['errors']==[] and wire['exit_code']==0 and wire['readers_joined'] and not wire['overflow']
+        assert not wire['forced_wrapper_stop'] and wire['stderr']==''
+        return oracle.activated_seed_closed(reply,database)
+    _,after,after_native,after_inputs=history.external(pg,client,output,case,directory,response,closure=closed)
+    context=dict(case=dict(case),before=before,native_before=native,inputs_before=inputs,after=after,native_after=after_native,inputs_after=after_inputs,
+        response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,case['database']),arguments=args,wire=wire,
+        backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),
+        custody=transition.read(output/(label+'-custody.json')))
+    lab.write_json(output/(label+'-verification.json'),context)
+    checked=oracle.verify_activated_context(context,initial,expected,baseline=baseline)
+    controls=oracle.activated_controls(context,initial,expected,baseline=baseline)
+    case.update(status='PASS',returncode=response['returncode'],oracle=checked,negative_controls=controls,server_window=window)
+    return after,after_native,after_inputs
+
+
+def activated_quarantine(output,directory,expected):
+    assert len(expected[2])==1; name=next(iter(expected[2])); spool=directory/'store/producer-inputs-v1'; target=directory/'quarantined-required'
+    target.mkdir(mode=0o700); before=history.census(spool); data=oracle.retained.regular_read(spool/name)
+    q=dict(kind='reversible-required-target-quarantine',path=str(target.relative_to(output)),name=name,hex=data.hex(),before=before,after=None,quarantine_after=None,status='INCOMPLETE')
+    lab.write_json(output/'missing-input-quarantine.json',q); (spool/name).rename(target/name)
+    for path in (spool,target,directory):
+        fd=os.open(path,os.O_RDONLY|os.O_DIRECTORY)
+        try: os.fsync(fd)
+        finally: os.close(fd)
+    q.update(after=history.census(spool),quarantine_after=history.census(target),status='RETAINED')
+    lab.write_json(output/'missing-input-quarantine.json',q)
+    return oracle.activated_quarantine_checked(q,expected)
+
+
+def run_activated_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial):
+    name=clone['name']; origin_name=oracle.ACTIVATED_ORIGIN_NAMES[name]
+    assert clone['origin']==origin_name and expected==origins[origin_name]
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.ACTIVATED_GRANTS]
+    oracle.history_catalog_checked(report['origins'][origin_name]['catalog'],clone['catalog_before'],grants=oracle.ACTIVATED_GRANTS)
+    transition.observe_origin_absence(pg,clone['database'],output,name+'-logical-origin')
+    assert history.dump(client,output,name+'-logical-origin',directory)==expected[1]
+    assert history.inputs_at(directory/'store')==expected[2]
+    for source,target in [(Path(__file__).with_name('installed_cycle_client.py'),output/'installed_cycle_client.py'),
+        (history.SOURCE/oracle.ACTIVATED_PROXY,output/'fault_proxy.py')]:
+        if not target.exists(): shutil.copy2(source,target)
+        assert history.digest(target)==history.digest(source)
+    configure(pg,client,output,clone['config'],ack=True)
+    if name=='missing-input': expected=activated_quarantine(output,directory,expected)
+    predecessor=None
+    for step in oracle.ACTIVATED_STEPS[name]:
+        operation=oracle.ACTIVATED_SEED_MODES[name] if step=='seed' else 'abandon-initial' if step=='abandon' else 'retire-initial' if name=='original' and step=='retire' else {'source':'source-activated','retire':'retire-activated'}.get(step,'recover-activated')
+        case=dict(name=name+'-'+step,clone=name,origin=origin_name,operation=operation,predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case); lab.write_json(output/'result.json',report)
+        baseline=oracle.only(report['cases'],name='progress-wire-seed')['oracle'] if step=='seed' and name not in ('progress-wire','original') else None
+        if step=='seed': expected=activated_seed(pg,client,output,case,directory,expected,clone['catalog_before'],initial,baseline)
+        else:
+            expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
+                checks=(lambda c,s:oracle.verify_activated_context(c,s,expected),lambda c,s:oracle.activated_controls(c,s,expected),oracle.activated_closed))
+        case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==clone['catalog_before']
+        predecessor=case['name']; lab.write_json(output/'result.json',report)
+    return predecessor
+
+
+def run_activated(root,build,product_source):
+    oracle.activated_qualification(transition.read(build/'component-result.json'))
+    origins,initial=oracle.activated_origins_checked(root)
+    try:
+        return transition.run(root,build,suite=ACTIVATED_SUITE,sequence=partial(run_activated_sequence,origins=origins,initial=initial),
+            origin_specs=oracle.ACTIVATED_ORIGINS,origin_for_clone=oracle.ACTIVATED_ORIGIN_NAMES,extra_grants=oracle.ACTIVATED_GRANTS,
+            producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
+            compacted_activated=True,product_source=product_source)
+    finally: assert oracle.activated_origins_checked(root)==(origins,initial)
+
+
 ORIGIN = oracle.ORIGIN
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -881,5 +1029,6 @@ if __name__ == '__main__':
     profile.add_argument('--initial-journey',action='store_true',help='Explicit compacted initial prepare/gap/activation and installed startup profile')
     profile.add_argument('--initial-preparation',action='store_true',help='Installed original/compacted existing initial preparation completion and exact retry')
     profile.add_argument('--initial-preparation-faults',action='store_true',help='Installed compacted completion wire baselines and before/after dispatch delivery loss')
+    profile.add_argument('--activated',action='store_true',help='Installed compacted activated-initial recovery and ACK with real COMMIT loss seeds')
     args = parser.parse_args()
-    (run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

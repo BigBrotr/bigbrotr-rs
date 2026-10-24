@@ -106,16 +106,17 @@ pub async fn run(
                     | "successor-commit-after"
             )
     );
-    let commit_fault = matches!(
-        mode,
-        "successor-commit-before"
-            | "successor-commit-after"
-            | "successor-live-commit-before"
-            | "successor-live-commit-after"
-            | "successor-live-renew-before"
-            | "successor-live-renew-after"
-            | "successor-live-reservation-after"
-    );
+    let commit_fault = live::ProgressSeed::parse(mode).is_some()
+        || matches!(
+            mode,
+            "successor-commit-before"
+                | "successor-commit-after"
+                | "successor-live-commit-before"
+                | "successor-live-commit-after"
+                | "successor-live-renew-before"
+                | "successor-live-renew-after"
+                | "successor-live-reservation-after"
+        );
     assert_eq!(proxy_port.is_some(), commit_fault);
     assert_eq!(
         gate_prefix.is_some(),
@@ -235,6 +236,7 @@ pub async fn run(
             "successor-live-compacted-history-seed"
                 | "successor-original-normal"
                 | "successor-original-gap-only"
+                | "successor-live-original-progress-wire"
         ),
         compacted_initial: mode.contains("compacted")
             && mode != "successor-live-compacted-history-seed",

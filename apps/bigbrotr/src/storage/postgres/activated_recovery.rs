@@ -17,6 +17,9 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
+#[path = "activated_compaction.rs"]
+mod compacted;
+
 /// Retained immutable SQL/native identity, before the native closing barrier.
 /// The owning caller retains the exclusive native handle separately.
 pub struct ActivatedInitialRecovery {
@@ -34,7 +37,8 @@ pub(super) struct Metadata {
     intent: initial_history::Intent,
     reserved_through: u64,
     purpose: Purpose,
-    _permit: OwnedPermit,
+    // Compacted native context owns the one lineage grant instead.
+    _permit: Option<OwnedPermit>,
 }
 impl Metadata {
     pub(super) fn target_role(&self) -> &[u8; 16] {
@@ -78,6 +82,32 @@ impl ActivatedInitialRecovery {
     }
 }
 impl ClosedActivatedInitialProducer {
+    pub fn has_compacted_initial(&self) -> bool {
+        self.native.has_compacted_initial()
+    }
+    pub fn compacted_acknowledgement_resolution<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        cancelled: &'a AtomicBool,
+    ) -> Result<crate::storage::rocks::store::RecoveryAcknowledgementResolution<'a>, BootstrapError>
+    {
+        self.native.compacted_acknowledgement_resolution(
+            recovery,
+            self.reserved_through(),
+            cancelled,
+        )
+    }
+    fn validate(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        if self.has_compacted_initial() {
+            self.native.validate_compacted(recovery, cancelled)
+        } else {
+            self.native.validate(recovery)
+        }
+    }
     pub fn acknowledged_through(&self) -> u64 {
         self.native.acknowledged_through()
     }
@@ -133,6 +163,23 @@ impl ControlSession {
         purpose: Purpose,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedInitialRecovery, InitialSuccessionError> {
+        self.inspect_activated_producer_in(recovery, input, permit, purpose, None, validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "explicit positive-only compacted inspection with separate effect grant"
+    )]
+    async fn inspect_activated_producer_in(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        purpose: Purpose,
+        compacted: Option<compacted::Inspection>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedInitialRecovery, InitialSuccessionError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
         {
@@ -146,14 +193,40 @@ impl ControlSession {
             .begin_initial_history_locked(recovery, &input, 2, purpose.schema(), validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
-        let native = ActivatedInitial::inspect(recovery, intent.record)
-            .map_err(InitialSuccessionError::Native)?;
-        let previous =
-            ingest_registry::reconstruct_historical(&tx, instance, native.previous_manifest())
-                .await
-                .map_err(InitialSuccessionError::Registry)?;
+        let selected = compacted.is_some()
+            && matches!(purpose, Purpose::Positive)
+            && ActivatedInitial::compacted_initial_selected(recovery, intent.record)
+                .map_err(InitialSuccessionError::Native)?;
+        // Ordinary source/retirement still run the strict native inspector first.
+        let mut permit = Some(permit);
+        let ordinary = if selected {
+            None
+        } else {
+            Some(
+                ActivatedInitial::inspect(recovery, intent.record)
+                    .map_err(InitialSuccessionError::Native)?,
+            )
+        };
+        let previous = ingest_registry::reconstruct_historical(
+            &tx,
+            instance,
+            intent.record.previous_manifest(),
+        )
+        .await
+        .map_err(InitialSuccessionError::Registry)?;
         initial_history::require_intent_identity(&tx, &previous, &intent, current, epoch).await?;
         let state = require_target(&tx, &previous, &intent, purpose).await?;
+        let native = match ordinary {
+            Some(native) => native,
+            None => ActivatedInitial::inspect_compacted(
+                recovery,
+                intent.record,
+                state.reserved_through,
+                permit.take().expect("retained metadata"),
+                input.cancelled,
+            )
+            .map_err(InitialSuccessionError::Native)?,
+        };
         if native.issued_through() > state.reserved_through
             || (state.producer_closing && !native.is_closing())
             || (matches!(purpose, Purpose::Source | Purpose::Retirement)
@@ -162,26 +235,57 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidMetadata.into());
         }
-        native
-            .validate(recovery)
-            .map_err(InitialSuccessionError::Native)?;
+        compacted::validate(&native, recovery, input.cancelled)?;
         // Both predecessor and activated target can retain typed progress. The
         // unactivated-target protocol still keeps its separate empty veto.
-        for manifest in [native.previous_manifest(), native.manifest()] {
+        let scratch = if selected {
+            native
+                .compacted_progress_scratch()
+                .map_err(InitialSuccessionError::Native)?
+        } else {
+            permit.as_ref().expect("original metadata")
+        };
+        if selected {
+            compacted
+                .as_ref()
+                .expect("explicit compacted inspection")
+                .require(
+                    &tx,
+                    recovery,
+                    &native,
+                    &previous,
+                    &intent,
+                    &mut lease,
+                    epoch,
+                    input.cancelled,
+                )
+                .await?;
+        } else {
             producer_progress::recovery::require(
                 &tx,
                 recovery,
-                manifest,
+                native.previous_manifest(),
                 native.producer_slot_id(),
-                &permit,
+                scratch,
                 || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
             )
             .await?;
         }
+        producer_progress::recovery::require(
+            &tx,
+            recovery,
+            native.manifest(),
+            native.producer_slot_id(),
+            scratch,
+            || producer_progress::recovery::authority(&mut lease, epoch, input.cancelled),
+        )
+        .await?;
         initial_history::finish(tx, &mut lease, epoch, input.cancelled).await?;
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);
         }
+        compacted::validate(&native, recovery, input.cancelled)?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         self.available = true;
         Ok(ActivatedInitialRecovery {
             native,
@@ -216,10 +320,7 @@ impl ControlSession {
                 BootstrapError::InsufficientReservation,
             ));
         }
-        inspected
-            .native
-            .validate(recovery)
-            .map_err(InitialSuccessionError::Native)?;
+        compacted::validate(&inspected.native, recovery, input.cancelled)?;
         require_deployment(&inspected.metadata, self)?;
         let current = self.identity;
         let (tx, mut lease, epoch) = self
@@ -233,22 +334,30 @@ impl ControlSession {
             .await?;
         require_metadata(&tx, &inspected.metadata, current, epoch).await?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
-        let native = inspected
-            .native
-            .close_producer(recovery, permit, || {
-                if input.cancelled.load(Ordering::Relaxed) {
-                    return Err(BootstrapError::AuthorityUnavailable);
-                }
-                lease
-                    .check_delivery(epoch)
-                    .map_err(|_| BootstrapError::AuthorityUnavailable)
-            })
-            .map_err(InitialSuccessionError::Native)?;
+        let authority = || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(BootstrapError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(epoch)
+                .map_err(|_| BootstrapError::AuthorityUnavailable)
+        };
+        let native = if inspected.native.has_compacted_initial() {
+            inspected
+                .native
+                .close_compacted_producer(recovery, permit, input.cancelled, authority)
+        } else {
+            inspected.native.close_producer(recovery, permit, authority)
+        }
+        .map_err(InitialSuccessionError::Native)?;
         tx.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=2 AND state='open'",
             &[&&native.producer_slot_id().as_bytes()[..]]).await.map_err(backend)?;
-        native
-            .validate(recovery)
-            .map_err(InitialSuccessionError::Native)?;
+        if native.has_compacted_initial() {
+            native.validate_compacted(recovery, input.cancelled)
+        } else {
+            native.validate(recovery)
+        }
+        .map_err(InitialSuccessionError::Native)?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         tx.commit()
             .await
@@ -257,11 +366,16 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(InitialSuccessionError::DeliveryUnknown);
         }
-        self.available = true;
-        Ok(ClosedActivatedInitialProducer {
+        let closed = ClosedActivatedInitialProducer {
             native,
             metadata: inspected.metadata,
-        })
+        };
+        closed
+            .validate(recovery, input.cancelled)
+            .map_err(InitialSuccessionError::Native)?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        self.available = true;
+        Ok(closed)
     }
 
     /// Retirement observes an existing barrier only. It cannot call the native
@@ -402,8 +516,7 @@ impl ControlSession {
         }
         require_deployment(&closed.metadata, self)?;
         closed
-            .native
-            .validate(recovery)
+            .validate(recovery, input.cancelled)
             .map_err(|e| ProducerResolveError::Native(AdmissionError::from(e).into()))?;
         let current = self.identity;
         let request = InitialHistoryRequest {
@@ -461,6 +574,17 @@ impl ControlSession {
                 outcome_permit,
                 authority,
             )
+        } else if closed.has_compacted_initial() {
+            closed.native.resolve_compacted_original_request(
+                recovery,
+                input.request,
+                reservation.digest,
+                input.limits,
+                input_permit,
+                outcome_permit,
+                input.cancelled,
+                authority,
+            )
         } else {
             closed.native.resolve_original_request(
                 recovery,
@@ -503,6 +627,10 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
+        closed
+            .validate(recovery, input.cancelled)
+            .map_err(|e| ProducerResolveError::Native(AdmissionError::from(e).into()))?;
+        initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         self.available = true;
         Ok(resolved)
     }

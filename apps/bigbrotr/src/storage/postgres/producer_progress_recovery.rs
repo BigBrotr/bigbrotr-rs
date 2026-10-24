@@ -5,8 +5,8 @@ use crate::storage::rocks::{
     manifest::IngestManifest,
     producer_floor::ClosedProducerFloor,
     store::{
-        CompactedInitialAncestor, CompactedInitialPredecessor, IngestRecovery,
-        RetainedCompactedPrefix,
+        CompactedAcknowledgementPredecessor, CompactedInitialAncestor, CompactedInitialPredecessor,
+        IngestRecovery, RetainedCompactedPrefix,
     },
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
@@ -152,6 +152,35 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_hando
     predecessor
         .validate(recovery, cancelled)
         .map_err(|error| ProducerProgressError::Native(error.into()))?;
+    Ok(complete)
+}
+
+/// The owned recovery ACK seal preserves the confirmed compacted ancestor after
+/// releasing the borrowed closing context. Recheck its exact H before native ACK.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_acknowledgement(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    predecessor: &CompactedAcknowledgementPredecessor<'_>,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        predecessor.manifest(),
+        predecessor.producer_slot_id(),
+        scratch,
+        Some(predecessor.floor()),
+        authority,
+    )
+    .await?;
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
     Ok(complete)
 }
 

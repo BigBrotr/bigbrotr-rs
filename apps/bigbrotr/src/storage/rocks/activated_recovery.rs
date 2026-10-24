@@ -1,10 +1,22 @@
 //! Checked two-stream recovery interpretation, never an activation capability.
 use super::super::{
-    PendingBatchHeader, producer_closing::ProducerState, producer_recovery::RecoveryContext,
+    AdmissionLimits, AdmissionOutcome, CompactedInitialAncestor, PendingBatchHeader,
+    RecoveryAcknowledgementResolution, RetainedLineage, producer_closing::ProducerState,
+    producer_recovery::RecoveryContext,
 };
 use super::*;
 use crate::storage::rocks::keys::{ColumnFamily, KeyDomain, decode_key};
 use bigbrotr_model::Receipt;
+use std::sync::atomic::AtomicBool;
+
+#[allow(
+    clippy::large_enum_variant,
+    reason = "fixed lineage header remains under its retained metadata grant without another allocation"
+)]
+enum InitialRecoveryBasis {
+    Original,
+    Compacted(RetainedLineage),
+}
 
 /// Fixed-size checked metadata. The connected owner retains its metadata grant
 /// and validates the immutable SQL activation separately. Decoding a handoff
@@ -15,6 +27,7 @@ pub(in crate::storage) struct ActivatedInitial {
     sequence: u64,
     producer: ProducerState,
     source_through: u64,
+    basis: InitialRecoveryBasis,
 }
 
 /// A synchronized barrier plus bounded replay context. Only its distinct
@@ -24,8 +37,168 @@ pub(in crate::storage) struct ActivatedProducerClosing {
     context: ActivatedInitial,
     _permit: OwnedPermit,
 }
+const _: () = assert!(
+    std::mem::size_of::<ActivatedInitial>() + std::mem::size_of::<ActivatedProducerClosing>()
+        < crate::storage::rocks::succession::LINEAGE_SCRATCH_BYTES as usize / 4
+);
 
 impl ActivatedInitial {
+    /// Reader selection only, from the exact retained handoff and marker.
+    pub(in crate::storage) fn compacted_initial_selected(
+        recovery: &IngestRecovery,
+        record: InitialHandoffRecord,
+    ) -> Result<bool, BootstrapError> {
+        if recovery.store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if recovery.manifest() != record.next_manifest()
+            || recovery.manifest().key_schema() != 2
+            || recovery.manifest().identity().owner_epoch.get() != 2
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        recovery
+            .store
+            .handoff_value(record.key(), Some(record.encode().as_bytes()))?;
+        RetainedLineage::compacted_activated_marker(recovery, &record)
+    }
+    /// A separate structural context for positive recovery only. The supplied
+    /// reservation bound must already have passed the connected target validator.
+    /// Canonical ancestor completion remains a distinct subsequent phase.
+    pub(in crate::storage) fn inspect_compacted(
+        recovery: &IngestRecovery,
+        record: InitialHandoffRecord,
+        reserved_through: u64,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        let lineage = RetainedLineage::inspect_compacted_activated(
+            recovery,
+            reserved_through,
+            permit,
+            cancelled,
+        )?;
+        if recovery.manifest() != record.next_manifest()
+            || lineage.producer_slot_id() != record.slot
+            || lineage.entry(1).map(|entry| entry.manifest()) != Some(&record.previous)
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        recovery
+            .store
+            .handoff_value(record.key(), Some(record.encode().as_bytes()))?;
+        let head = lineage.native_head();
+        let context = Self {
+            record,
+            root: recovery.store.handoff_root_identity()?,
+            sequence: recovery.store.db.latest_sequence_number(),
+            producer: ProducerState {
+                issued: head.issued_through(),
+                acknowledged: head.acknowledged_through(),
+                retired: 0,
+                closing: head.is_closing(),
+            },
+            source_through: head.source_through(),
+            basis: InitialRecoveryBasis::Compacted(lineage),
+        };
+        context.validate_compacted(recovery, cancelled)?;
+        Ok(context)
+    }
+
+    pub(in crate::storage) fn has_compacted_initial(&self) -> bool {
+        matches!(self.basis, InitialRecoveryBasis::Compacted(_))
+    }
+
+    pub(in crate::storage) fn compacted_progress_scratch(
+        &self,
+    ) -> Result<&OwnedPermit, BootstrapError> {
+        Ok(self.compacted_lineage()?.progress_scratch())
+    }
+
+    pub(in crate::storage::rocks::store) fn compacted_lineage(
+        &self,
+    ) -> Result<&RetainedLineage, BootstrapError> {
+        match &self.basis {
+            InitialRecoveryBasis::Compacted(lineage) => Ok(lineage),
+            InitialRecoveryBasis::Original => Err(BootstrapError::StateMismatch),
+        }
+    }
+
+    pub(in crate::storage) fn validate_compacted(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.validate_identity(recovery)?;
+        self.compacted_lineage()?.validate(recovery, cancelled)
+    }
+
+    pub(in crate::storage) fn compacted_initial_ancestor<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<CompactedInitialAncestor<'a>, AdmissionError> {
+        self.validate_compacted(recovery, cancelled)?;
+        self.compacted_lineage()?
+            .compacted_initial_ancestor_with_permit(recovery, limits, effects, cancelled)?
+            .ok_or(AdmissionError::StateMismatch)
+    }
+
+    /// Consume the old sequence observation before rebuilding after the native
+    /// barrier. A failed post-write check returns no reusable old context.
+    pub(in crate::storage) fn close_compacted_producer(
+        self,
+        recovery: &mut IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ActivatedProducerClosing, BootstrapError> {
+        if permit.request().units().data_bytes() < 4096
+            || permit.request().units().native_bytes() < 4096
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        authority()?;
+        self.validate_compacted(recovery, cancelled)?;
+        let reserved = self.compacted_lineage()?.activated_reserved_through()?;
+        let inputs = self.compacted_lineage()?.input_stamp();
+        recovery.store.close_producer_marker(
+            self.record.slot,
+            ProducerEpoch::new(2).expect("selected target"),
+            self.producer,
+            &mut authority,
+        )?;
+        let expected = self
+            .sequence
+            .checked_add(u64::from(!self.producer.closing))
+            .ok_or(BootstrapError::StateMismatch)?;
+        let InitialRecoveryBasis::Compacted(lineage) = self.basis else {
+            return Err(BootstrapError::StateMismatch);
+        };
+        // Drop the old entry allocation before allocating its replacement.
+        let metadata = lineage.into_metadata_permit();
+        let context =
+            Self::inspect_compacted(recovery, self.record, reserved, metadata, cancelled)?;
+        if !context.producer.closing
+            || context.producer.issued != self.producer.issued
+            || context.producer.acknowledged != self.producer.acknowledged
+            || context.root != self.root
+            || context.sequence != expected
+            || context.source_through != self.source_through
+            || context.compacted_lineage()?.input_stamp() != inputs
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        authority()?;
+        Ok(ActivatedProducerClosing {
+            context,
+            _permit: permit,
+        })
+    }
+
     pub(in crate::storage) fn inspect(
         recovery: &IngestRecovery,
         record: InitialHandoffRecord,
@@ -85,6 +258,7 @@ impl ActivatedInitial {
             sequence,
             producer,
             source_through,
+            basis: InitialRecoveryBasis::Original,
         };
         context.validate(recovery)?;
         Ok(context)
@@ -113,6 +287,18 @@ impl ActivatedInitial {
         &self,
         recovery: &IngestRecovery,
     ) -> Result<(), BootstrapError> {
+        self.require_original()?;
+        self.validate_identity(recovery)
+    }
+
+    fn require_original(&self) -> Result<(), BootstrapError> {
+        if !matches!(self.basis, InitialRecoveryBasis::Original) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
+    fn validate_identity(&self, recovery: &IngestRecovery) -> Result<(), BootstrapError> {
         let store = &recovery.store;
         if store.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
@@ -221,6 +407,82 @@ impl ActivatedInitial {
 }
 
 impl ActivatedProducerClosing {
+    pub(in crate::storage) fn has_compacted_initial(&self) -> bool {
+        self.context.has_compacted_initial()
+    }
+    pub(in crate::storage) fn compacted_acknowledgement_resolution<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        reserved: u64,
+        cancelled: &'a AtomicBool,
+    ) -> Result<RecoveryAcknowledgementResolution<'a>, BootstrapError> {
+        RecoveryAcknowledgementResolution::compacted_activated(self, recovery, reserved, cancelled)
+    }
+    pub(in crate::storage) fn compacted_progress_scratch(
+        &self,
+    ) -> Result<&OwnedPermit, BootstrapError> {
+        self.context.compacted_progress_scratch()
+    }
+    pub(in crate::storage::rocks::store) fn compacted_lineage(
+        &self,
+    ) -> Result<&RetainedLineage, BootstrapError> {
+        self.context.compacted_lineage()
+    }
+    pub(in crate::storage) fn validate_compacted(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.context.validate_compacted(recovery, cancelled)
+    }
+    pub(in crate::storage) fn compacted_initial_ancestor<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<CompactedInitialAncestor<'a>, AdmissionError> {
+        self.context
+            .compacted_initial_ancestor(recovery, limits, effects, cancelled)
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "separate original input and outcome grants with cancellation"
+    )]
+    pub(in crate::storage) fn resolve_compacted_original_request(
+        &self,
+        recovery: &IngestRecovery,
+        request: ProducerRequestId,
+        digest: Digest256,
+        limits: ProducerRecoveryLimits,
+        input_permit: OwnedPermit,
+        outcome_permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<ResolvedProducerRequest, ProducerRecoveryError> {
+        self.validate_compacted(recovery, cancelled)
+            .map_err(AdmissionError::from)?;
+        let result = recovery.resolve_original_request_in(
+            request,
+            digest,
+            limits,
+            input_permit,
+            outcome_permit,
+            authority,
+            RecoveryContext::Lineage {
+                lineage: self.compacted_lineage().map_err(AdmissionError::from)?,
+                epoch: 2,
+                cancelled,
+            },
+        )?;
+        if let AdmissionOutcome::Durable(receipt) = result.outcome() {
+            self.context.require_receipt_bounds(receipt)?;
+        }
+        self.validate_compacted(recovery, cancelled)
+            .map_err(AdmissionError::from)?;
+        Ok(result)
+    }
     pub(in crate::storage) fn predecessor_manifest(&self) -> &IngestManifest {
         &self.context.record.previous
     }

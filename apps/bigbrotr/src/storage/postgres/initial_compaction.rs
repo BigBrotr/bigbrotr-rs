@@ -147,7 +147,7 @@ fn native_error(error: AdmissionError) -> InitialSuccessionError {
     InitialSuccessionError::Native(BootstrapError::Compacted(error))
 }
 
-fn compaction_error(error: ProducerCompactionError) -> InitialSuccessionError {
+pub(super) fn compaction_error(error: ProducerCompactionError) -> InitialSuccessionError {
     match error {
         ProducerOperationError::Control(error) => ProducerOperationError::Control(error),
         ProducerOperationError::Registry(error) => ProducerOperationError::Registry(error),
@@ -165,8 +165,24 @@ async fn require_terminal(
     registration: &ingest_registry::InitialRegistration,
     handoff: &InitialHandoff,
 ) -> Result<(), InitialSuccessionError> {
+    require_retired_predecessor(
+        tx,
+        registration,
+        handoff.issued_through(),
+        handoff.last_complete_sequence(),
+        handoff.closure_digest(),
+    )
+    .await
+}
+
+pub(super) async fn require_retired_predecessor(
+    tx: &Transaction<'_>,
+    registration: &ingest_registry::InitialRegistration,
+    issued: u64,
+    source_through: u64,
+    digest: [u8; 32],
+) -> Result<(), InitialSuccessionError> {
     let slot = &registration.producer_slot_id.as_bytes().as_slice();
-    let digest = handoff.closure_digest();
     tx.query_one(
         "SELECT control.require_initial_retirement($1::bytea,1,$2::bytea)",
         &[slot, &&digest[..]],
@@ -182,9 +198,9 @@ async fn require_terminal(
                 &registration.ingest_role_instance_id.as_slice(),
                 &registration.dataset_id.as_bytes().as_slice(),
                 &&digest[..],
-                &handoff.issued_through().to_string(),
+                &issued.to_string(),
                 &i64::from(registration.shard_id),
-                &handoff.last_complete_sequence().to_string(),
+                &source_through.to_string(),
             ],
         )
         .await

@@ -630,3 +630,97 @@ fn activated_digest(closing: &ActivatedProducerClosing) -> Sha256 {
     digest.update(closing.issued_through().to_be_bytes());
     digest
 }
+
+/// ACK-only reducer. It never constructs the source/retirement proof exposed by
+/// ordinary activated replay, and pending compacted history supplies no count.
+pub(super) struct CompactedActivatedAcknowledgementResolution<'a> {
+    recovery: &'a IngestRecovery,
+    closing: &'a ActivatedProducerClosing,
+    cancelled: &'a std::sync::atomic::AtomicBool,
+    confirmed: bool,
+    prefix: Prefix,
+}
+
+impl<'a> CompactedActivatedAcknowledgementResolution<'a> {
+    pub(super) fn new(
+        closing: &'a ActivatedProducerClosing,
+        recovery: &'a IngestRecovery,
+        reserved: u64,
+        cancelled: &'a std::sync::atomic::AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        closing.validate_compacted(recovery, cancelled)?;
+        closing.compacted_lineage()?.require_activated_complete()?;
+        if reserved != closing.issued_through() {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(Self {
+            recovery,
+            closing,
+            cancelled,
+            confirmed: false,
+            prefix: Prefix::new(
+                PrefixIdentity {
+                    manifest: *closing.manifest(),
+                    slot: closing.producer_slot_id(),
+                    epoch: ProducerEpoch::new(2).expect("checked activated producer"),
+                    issued: reserved,
+                    predecessor_cut: Some(closing.predecessor_source_through()),
+                },
+                activated_digest(closing),
+            ),
+        })
+    }
+    pub(super) fn needs_compacted_initial(&self) -> bool {
+        !self.confirmed
+    }
+    pub(super) fn confirm_compacted_initial(
+        &mut self,
+        proof: &super::VerifiedCompactedPrefix<'_>,
+        mut final_authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<(), BootstrapError> {
+        self.closing
+            .validate_compacted(self.recovery, self.cancelled)?;
+        proof
+            .validate(self.recovery, self.cancelled)
+            .map_err(BootstrapError::Compacted)?;
+        if self.confirmed || !proof.matches_lineage(self.closing.compacted_lineage()?) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        final_authority()?;
+        self.confirmed = true;
+        Ok(())
+    }
+    pub(super) fn record(
+        &mut self,
+        resolved: &ResolvedProducerRequest,
+    ) -> Result<(), BootstrapError> {
+        self.closing
+            .validate_compacted(self.recovery, self.cancelled)?;
+        if !self.confirmed {
+            return Err(BootstrapError::StateMismatch);
+        }
+        resolved.require_native_context(self.recovery)?;
+        resolved.require_lineage(self.closing.compacted_lineage()?)?;
+        self.prefix.record(resolved)
+    }
+    pub(super) fn finish(self) -> Result<super::RecoveryAcknowledgement, BootstrapError> {
+        self.closing
+            .validate_compacted(self.recovery, self.cancelled)?;
+        if !self.confirmed
+            || self.prefix.requests() != self.closing.issued_through()
+            || self.prefix.source_through()
+                != self
+                    .closing
+                    .compacted_lineage()?
+                    .native_head()
+                    .source_through()
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        super::RecoveryAcknowledgement::from_compacted_replay(
+            self.recovery,
+            self.closing,
+            self.cancelled,
+        )
+    }
+}

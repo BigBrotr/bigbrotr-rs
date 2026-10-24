@@ -887,13 +887,23 @@ mixed restore cut. Recovery must preserve exact native sequence and proof
 ownership across any ACK write. Authenticated schemas before40 retain their
 original recovery behavior with A=0 and no native ACK; schema39 typed closure is
 still validated. Nonzero A cannot be accepted through a pre40 schema.
-Activated epoch2 recovery replays the exact epoch1 originals before its own;
+Ordinary activated epoch2 recovery replays the exact epoch1 originals before its own;
 whole-lineage successors retain their ordered original replay. Preparing a new
 lifetime may preserve a verified closed ancestor with A<C: it supplies no live
 credit, and preparation neither rewrites that watermark nor re-stamps its proof.
 Empty, unactivated targets still require zero issued/acknowledged/retired state.
 These bounded two-slot demonstrations do not qualify GC, indefinite traffic, workflow completion or
 backup/restore.
+
+The compacted activated recovery extension is under implementation, not yet
+qualified. Only positive `--activated-successor` recovery selects an inspected
+initial floor: it authenticates the retired ancestor, typed checkpoint and
+canonical outcomes, then replays genuine epoch2 originals. The ACK-only proof
+must revalidate that ancestor and target checkpoint in its final transaction,
+and retain the complete input census through synchronized native ACK. Compacted
+source closure and retirement remain unsupported. A reserved unissued request
+stays unresolved; a staged unreserved tail is preserved and supplies no credit.
+ACK of a verified contiguous issued prefix reclaims no file or outcome.
 
 ## Closed-producer reclamation (reader under qualification; deletion unavailable)
 

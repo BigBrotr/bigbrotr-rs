@@ -595,6 +595,17 @@ if producer_floor:
         'explicit_recovery_modes_conflict_before_configuration_io']
     required_controls['initial_reconstruction'].append(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::activated_recovery_tests::compacted_activated_tests::' + name for name in [
+            'compacted_activated_recovery_separates_ancestor_and_target_and_ack_preserves_all_bytes',
+            'compacted_activated_pending_requires_exact_ancestor_owner_and_never_partially_advances',
+            'compacted_activated_census_refuses_incompatible_floor_missing_science_and_required_originals',
+            'compacted_activated_stamps_refuse_stale_sequence_sidecars_cancellation_and_small_grants',
+            'compacted_activated_unreserved_tail_is_preserved_but_reserved_tail_cannot_ack',
+            'compacted_activated_ack_target_rechecks_optional_tail_after_token_creation',
+            'compacted_activated_context_binds_actual_root_and_cannot_mint_prepared_handoff',
+            'compacted_activated_optional_range_keeps_the_physical_file_ceiling',
+            'compacted_activated_logical_requests_can_exceed_physical_spool_limit'])
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

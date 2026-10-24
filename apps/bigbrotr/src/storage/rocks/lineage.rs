@@ -106,6 +106,8 @@ impl RetainedLineageEntry {
 pub struct RetainedLineage {
     entries: Vec<RetainedLineageEntry>,
     compacted: Option<ClosedProducerFloor>,
+    // Only the private activated-positive factory admits optional staged input.
+    activated_reserved: Option<u64>,
     slot: ProducerSlotId,
     root: (u64, u64),
     sequence: u64,
@@ -354,6 +356,7 @@ impl RetainedLineage {
         let lineage = Self {
             entries,
             compacted,
+            activated_reserved: None,
             slot,
             root,
             sequence,
@@ -496,13 +499,23 @@ impl RetainedLineage {
             .try_fold(0_u64, |total, entry| total.checked_add(entry.issued))
             .filter(|total| *total <= 64)
             .ok_or(BootstrapError::Limit)?;
-        match &self.compacted {
+        let inputs = match &self.compacted {
             Some(floor) => super::request_inputs::LineageInputSet::with_compacted_initial(
                 required,
                 self.slot,
                 floor.fields().issued_through,
             ),
             None => Ok(required.into()),
+        }?;
+        if self.activated_reserved.is_some() {
+            inputs.with_optional_inputs(
+                self.slot,
+                ProducerEpoch::new(2).expect("activated target"),
+                self.native_head().issued,
+                self.activated_optional_through()?,
+            )
+        } else {
+            Ok(inputs)
         }
     }
 
@@ -518,6 +531,61 @@ impl RetainedLineage {
     /// outcomes or authorize skipping the positive compacted-prefix proof.
     pub fn has_compacted_initial(&self) -> bool {
         self.compacted.is_some()
+    }
+
+    pub(super) fn inspect_compacted_activated(
+        recovery: &IngestRecovery,
+        reserved: u64,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        if recovery.manifest().key_schema() != 2
+            || recovery.manifest().identity().owner_epoch.get() != 2
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let mut lineage = Self::inspect_structure_in(recovery, None, permit, cancelled, true)?;
+        if lineage.compacted.is_none()
+            || lineage.entries.len() != 2
+            || lineage.pending_target().is_some()
+            || reserved < lineage.native_head().issued
+            || reserved > super::RETAINED_PRODUCER_REQUEST_LIMIT
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        lineage.activated_reserved = Some(reserved);
+        lineage.inputs = lineage.input_census(recovery, cancelled)?;
+        lineage.validate(recovery, cancelled)?;
+        Ok(lineage)
+    }
+    pub(super) fn compacted_activated_marker(
+        recovery: &IngestRecovery,
+        record: &InitialHandoffRecord,
+    ) -> Result<bool, BootstrapError> {
+        Ok(compacted::initial_entry(recovery, record, true)?.is_some())
+    }
+    pub(super) fn activated_reserved_through(&self) -> Result<u64, BootstrapError> {
+        self.activated_reserved.ok_or(BootstrapError::StateMismatch)
+    }
+    pub(super) fn activated_optional_through(&self) -> Result<u64, BootstrapError> {
+        Ok(self
+            .activated_reserved_through()?
+            .max(self.native_head().issued + 1)
+            .min(super::RETAINED_PRODUCER_REQUEST_LIMIT))
+    }
+    pub(super) fn require_activated_complete(&self) -> Result<(), BootstrapError> {
+        if self.activated_reserved_through()? != self.native_head().issued
+            || !self.native_head().closing
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+    pub(super) fn compacted_floor(&self) -> Option<&ClosedProducerFloor> {
+        self.compacted.as_ref()
+    }
+    pub(super) fn into_metadata_permit(self) -> OwnedPermit {
+        self._permit
     }
     fn at(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
         usize::try_from(epoch.checked_sub(1)?)

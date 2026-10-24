@@ -44682,7 +44682,7 @@
               }
             },
             "next_activated_consumer_audit": {
-              "status": "READ_ONLY_MAP; no implementation or runtime claim",
+              "status": "SOURCE_INTEGRATED; independent PG/CLI review finishing; build/connected/raw replay NOT_RUN",
               "root_complete_owner_reads_sha256": {
                 "apps/bigbrotr/src/interfaces/serve/initial_ingest/recovery/activated.rs": "50af024f508217628517b6f9e251fe63a9fdda2b2c472fa5efdbc10d585a9c3d",
                 "apps/bigbrotr/src/storage/rocks/activated_recovery.rs": "ea1cd390612abea7dc3c66aea81cb9d922511a519b1069a9f1a9d5f64c7fd9c1",
@@ -44704,7 +44704,41 @@
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-origin-audit-v1.json",
                 "sha256": "6dcc910783f4701fd8a82769368151ac4f6251666355d93e566872d79793f703"
               },
-              "fixture_constraint": "f51 zero/nonzero originals are positively retained but have no epoch2 typed checkpoint. Genuine ACK requires fresh continuous activation and FIRST dictionary via existing append_live_initial_dictionaries_with_progress; no retroactive typed-head adoption. Existing before/after COMMIT loss seams need independent modern pins/wire baselines."
+              "fixture_constraint": "f51 zero/nonzero originals are positively retained but have no epoch2 typed checkpoint. Genuine ACK requires fresh continuous activation and FIRST dictionary via existing append_live_initial_dictionaries_with_progress; no retroactive typed-head adoption. Existing before/after COMMIT loss seams need independent modern pins/wire baselines.",
+              "active_work": "Root owns PG/CLI/integration; existing native and fixture agents in inventoried isolated worktrees. Preserve prior qualified product and original failures.",
+              "tail_contract": "Complete census includes optional epoch2 issued+1..max(validated reserved,issued+1), capped64. Optional files confer no issuance credit. Reserved>issued remains unresolved/no ACK; when reserved=issued, an unreserved staged tail is stamped and preserved while a verified contiguous prefix may ACK without reclamation.",
+              "native_core_commit": "88b3f2fc048e2b7976380ec5d5a458594a0c64cf",
+              "native_tests_commit": "9aadf40a6b9c4547fe5d7c3046a696e9c775b6ee",
+              "seed_probe_commit": "65d4bbf1faa27bb1f110d9c2047aebffef31e3ee",
+              "root_source_review": {
+                "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-native-integration-v1.json",
+                "sha256": "34d50b7eba7a1a412f5dd8f9674121448d9670620327e29c95e19cbf8c1d6bbb"
+              },
+              "native_final_authority_commit": "eb5ab35f437d5032f2964e5df49925a257cdf20f",
+              "python_fixture_commit": "8b238085669e2f5fe999004ac6f1e28f95dd317c",
+              "source_receipts": {
+                "native_author": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-native-source-v1.json",
+                  "sha256": "7420c8f93215cf8b84977ca6817d1bdf4e3142457554b578427417b65ec22c5e"
+                },
+                "fixture_author": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-fixture-source-v1.json",
+                  "sha256": "8a919fec7e7753703ca232db54840bd04f542d0b94e24283ee1c347973c3c261"
+                },
+                "root_integration_after_correction": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-activated-integration-v2.json",
+                  "sha256": "0762c15712f75e7e6be425600899b5be3cb2742556f806925e19dca626637ae3"
+                }
+              },
+              "critical_correction": "Retain initial source review, then fix final authority expiry during complete spool scans: before ACK cursor confirmation and after native no-op/write validation, plus PG post-read/post-COMMIT returns. Final ACK retired-parent locks precede producer UPDATE; canonical ancestor and target typed closure remain locked through COMMIT.",
+              "planned_verification": {
+                "build_profile": "producer-floor",
+                "new_mandatory_native_controls": 9,
+                "installed_profile": "--activated",
+                "clones": 8,
+                "commands": 24,
+                "runtime": "NOT_RUN"
+              }
             }
           }
         }

@@ -3,6 +3,9 @@ use super::*;
 use bigbrotr::storage::postgres::control_owner::{
     ActivatedInitialResolveRequest, InitialHistoryRequest,
 };
+use bigbrotr::storage::rocks::{
+    store::compacted_outcome_data_bytes, succession::SuccessionProfile,
+};
 
 mod retirement;
 mod source;
@@ -86,9 +89,19 @@ async fn own(
     )?;
     // The sole worker retains both metadata and closing proof during each
     // input/outcome replay. Prove that full overlap before any claim or barrier.
-    let metadata = grant(&budget, METADATA_BYTES, 0)?;
+    let metadata_bytes = if mode == Mode::Resolve {
+        SuccessionProfile::for_recovery(2, None)
+            .map_err(|e| (3, e.to_string()))?
+            .required_metadata_bytes()
+    } else {
+        METADATA_BYTES
+    };
+    let metadata = grant(&budget, metadata_bytes, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
+    if mode == Mode::Resolve {
+        drop(compacted_effect_grant(&budget)?);
+    }
     if matches!(mode, Mode::CloseSource | Mode::AbandonAcquisition) {
         // Publication overlaps metadata and closing, after dropping replay data.
         drop(grant(&budget, 64 * 1024, 0)?);
@@ -128,18 +141,23 @@ async fn own(
         super::super::super::accepted_policy(&root, document, digest).map(|_| ())
     };
     phase(&progress, timeout)?;
-    let (owner, _) = bounded(timeout, &cancellation, async {
-        ControlSession::acquire(
+    {
+        let commit = Cell::new(false);
+        let acquisition = ControlSession::acquire(
             custody.client.take().expect("connected client"),
             claim,
             validate,
-            &Cell::new(false),
-        )
-        .await
-        .map_err(owner_error)
-    })
-    .await?;
-    custody.owner = Some(owner);
+            &commit,
+        );
+        tokio::pin!(acquisition);
+        let mut guard = supervision::ClaimExit(Some(&mut custody.native));
+        let (owner, _) = bounded(timeout, &cancellation, async {
+            acquisition.as_mut().await.map_err(owner_error)
+        })
+        .await?;
+        custody.owner = Some(owner);
+        guard.0 = None;
+    }
     let report = match mode {
         Mode::Resolve => {
             resolve(
@@ -223,7 +241,14 @@ async fn resolve(
     phase(progress, timeout)?;
     let observed = bounded(timeout, cancellation, async {
         owner
-            .inspect_activated_initial_producer(native, request(), metadata, validate)
+            .inspect_activated_initial_producer_with_compacted(
+                native,
+                request(),
+                metadata,
+                limits().event,
+                compacted_effect_grant(budget)?,
+                validate,
+            )
             .await
             .map_err(|e| (4, e.to_string()))
     })
@@ -236,20 +261,51 @@ async fn resolve(
             .map_err(|e| (4, e.to_string()))
     })
     .await?;
+    let compacted = closed.has_compacted_initial();
     let mut prefix = if closed.issued_through() == closed.reserved_through() {
         Some(
-            closed
-                .acknowledgement_resolution(native)
-                .map_err(|e| (4, e.to_string()))?,
+            if compacted {
+                closed.compacted_acknowledgement_resolution(native, &cancellation.requested)
+            } else {
+                closed.acknowledgement_resolution(native)
+            }
+            .map_err(|e| (4, e.to_string()))?,
         )
     } else {
         None
     };
+    let compacted_requests = if compacted {
+        phase(progress, timeout)?;
+        bounded(timeout, cancellation, async {
+            owner
+                .resolve_activated_compacted_predecessor(
+                    native,
+                    &closed,
+                    request(),
+                    limits().event,
+                    compacted_effect_grant(budget)?,
+                    prefix.as_mut(),
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?
+    } else {
+        0
+    };
     let mut resolved = 0_u64;
-    // The predecessor's exact originals precede the current lifetime in the
-    // same bounded proof. Neither a typed head nor its dependencies replace them.
+    // Original ancestry replays before the current lifetime. Compacted ancestry
+    // has completed its distinct canonical phase above, never a head-only shortcut.
     for (epoch, through) in [
-        (1, closed.predecessor_issued_through()),
+        (
+            1,
+            if compacted {
+                0
+            } else {
+                closed.predecessor_issued_through()
+            },
+        ),
         (2, closed.reserved_through()),
     ] {
         for sequence in 1..=through {
@@ -309,7 +365,7 @@ async fn resolve(
     }
     // The enclosing worker closes native and releases Control; the parent joins
     // its actual driver before publishing this successful terminal report.
-    let report = json!({"format":"bigbrotr-ingest-recovery/1",
+    let mut report = json!({"format":"bigbrotr-ingest-recovery/1",
         "state":"activated-positive-outcomes-resolved", "dataset_id":identity.dataset_id,
         "owner_resource_id":identity.owner_resource_id,
         "producer_slot_id":closed.producer_slot_id(), "producer_epoch":"2",
@@ -317,10 +373,22 @@ async fn resolve(
         "reserved_through":closed.reserved_through().to_string(),
         "resolved_requests":resolved.to_string(), "source_closure":"not-performed",
         "native":"closed", "owner_release":"committed", "ready":false});
+    if compacted {
+        report["recovery_basis"] = json!("closed-producer-floor-v3");
+        report["compacted_requests"] = json!(compacted_requests.to_string());
+    }
     if let Some(prefix) = prefix {
         let replay = prefix.finish().map_err(|e| (4, e.to_string()))?;
         drop(closed);
         acknowledge(root, budget, progress, cancellation, owner, native, replay).await?;
     }
     Ok(report)
+}
+
+fn compacted_effect_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {
+    grant(
+        budget,
+        compacted_outcome_data_bytes(limits().event).map_err(|e| (3, e.to_string()))?,
+        0,
+    )
 }

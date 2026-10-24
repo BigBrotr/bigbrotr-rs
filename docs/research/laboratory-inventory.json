@@ -62765,6 +62765,41 @@
             "preservation": "All2 origin preservation vectors true; cleanup arrays empty; source/data/logs/raw/failures retained"
           }
         ]
+      },
+      "compacted_activated_work_20261024": {
+        "state": "All native/fixture source integrated in main local changes; independent root PG/CLI review finishing; runtime NOT_RUN",
+        "base": "c432f252c3542186782e5bd021348e49c41c53ea",
+        "runtime_owner": "/root; no runtime started",
+        "root_scope": "PostgreSQL/CLI integration, bootstrap dispatch, build runner, independent review and all runtime",
+        "agents": [
+          {
+            "agent": "/root/compacted_reader_review",
+            "model": "gpt-6-astra",
+            "reasoning": "xhigh",
+            "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-native-20261024",
+            "branch": "work/compacted-activated-native",
+            "scope": "Native activated compacted recovery, ACK seal and component controls",
+            "state": "Clean at eb5ab35f; independent PG/CLI critical review active",
+            "commits": [
+              "88b3f2fc048e2b7976380ec5d5a458594a0c64cf",
+              "9aadf40a6b9c4547fe5d7c3046a696e9c775b6ee",
+              "eb5ab35f437d5032f2964e5df49925a257cdf20f"
+            ]
+          },
+          {
+            "agent": "/root/compacted_reader_fixture",
+            "model": "gpt-6-astra",
+            "reasoning": "xhigh",
+            "worktree": "/home/tux/bigbrotr-rs/.research/compacted-activated-fixture-20261024",
+            "branch": "work/compacted-activated-fixture",
+            "scope": "Authentic first typed-progress probe and parameterized installed fixture/oracle/replay",
+            "state": "Clean at8b238085 and idle; full source integrated exactly",
+            "seed_commit": "65d4bbf1faa27bb1f110d9c2047aebffef31e3ee",
+            "python_commit": "8b238085669e2f5fe999004ac6f1e28f95dd317c"
+          }
+        ],
+        "preservation": "All prior artifacts, failures, worktrees, datasets and .research retained; no cleanup",
+        "preflight_free_bytes": 272387248128
       }
     }
   },

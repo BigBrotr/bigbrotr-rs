@@ -55,6 +55,13 @@ impl RetainedCompactedPrefix {
 }
 
 impl<'a> CompactedPrefixResolution<'a> {
+    pub(in crate::storage::rocks::store) fn from_acknowledgement(
+        view: crate::storage::rocks::store::CompactedAcknowledgementPredecessor<'a>,
+        recovery: &'a IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new(PrefixOwner::Acknowledgement(view), recovery, cancelled)
+    }
     pub(in crate::storage::rocks::store) fn from_handoff(
         view: CompactedInitialPredecessor<'a>,
         recovery: &'a IngestRecovery,
@@ -271,6 +278,7 @@ impl VerifiedCompactedPrefix<'_> {
                 let head = lineage.native_head();
                 if lineage.entries.len() != 2
                     || lineage.pending_target().is_some()
+                    || lineage.activated_reserved.is_some()
                     || head.manifest.key_schema() != 2
                     || head.manifest.identity().owner_epoch.get() != 2
                     || head.issued != 0
@@ -284,7 +292,9 @@ impl VerifiedCompactedPrefix<'_> {
                 }
                 lineage.inputs
             }
-            PrefixOwner::Handoff(_) => return Err(AdmissionError::StateMismatch),
+            PrefixOwner::Handoff(_) | PrefixOwner::Acknowledgement(_) => {
+                return Err(AdmissionError::StateMismatch);
+            }
         };
         Ok((self.recovery, inputs))
     }

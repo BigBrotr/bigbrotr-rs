@@ -122,6 +122,15 @@ impl Snapshot {
     }
 }
 impl PendingAcknowledgement {
+    pub(super) fn recovered_compacted(
+        replay: crate::storage::rocks::store::RecoveryAcknowledgement,
+        complete: u64,
+    ) -> Result<Self, ProducerProgressError> {
+        replay
+            .compacted_target(complete)
+            .map(Self)
+            .map_err(ProducerProgressError::Native)
+    }
     pub(super) fn recovered(
         replay: crate::storage::rocks::store::RecoveryAcknowledgement,
         complete: u64,

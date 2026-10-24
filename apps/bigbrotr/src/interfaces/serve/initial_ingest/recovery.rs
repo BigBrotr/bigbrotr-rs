@@ -81,8 +81,8 @@ pub(super) fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, Own
     Ok((grant(budget, input, 0)?, grant(budget, outcome, 0)?))
 }
 
-/// Finish only an opaque complete-original replay, after any SQL-only terminal
-/// operation has released its native proof borrow. Older schemas observe A=0.
+/// Finish an opaque replay after releasing its native proof borrow. A compacted
+/// initial ancestor requires its distinct final validator; older schemas observe A=0.
 pub(super) async fn acknowledge(
     root: &Resolved,
     budget: &ResourceBudget,
@@ -102,24 +102,46 @@ pub(super) async fn acknowledge(
     .await?;
     phase(progress, timeout)?;
     bounded(timeout, cancellation, async {
-        owner
-            .acknowledge_recovered_producer(
-                recovery,
-                replay,
-                InitialHistoryRequest {
-                    ingest_root: Path::new(required(root, "storage.ingest_root")?),
-                    policy_ttl: duration(root, "authorization_ttl"),
-                    cancelled: &cancellation.requested,
-                },
-                grant(
-                    budget,
-                    RecoveryAcknowledgement::REQUIRED_DATA_BYTES,
-                    RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
-                )?,
-                validate,
-            )
-            .await
-            .map_err(|e| (4, e.to_string()))
+        let input = InitialHistoryRequest {
+            ingest_root: Path::new(required(root, "storage.ingest_root")?),
+            policy_ttl: duration(root, "authorization_ttl"),
+            cancelled: &cancellation.requested,
+        };
+        let result = if replay.compacted_requests() != 0 {
+            let effects =
+                bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(limits().event)
+                    .map_err(|e| (3, e.to_string()))?;
+            owner
+                .acknowledge_recovered_compacted_producer(
+                    recovery,
+                    replay,
+                    input,
+                    grant(
+                        budget,
+                        RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES,
+                        RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
+                    )?,
+                    limits().event,
+                    grant(budget, effects, 0)?,
+                    validate,
+                )
+                .await
+        } else {
+            owner
+                .acknowledge_recovered_producer(
+                    recovery,
+                    replay,
+                    input,
+                    grant(
+                        budget,
+                        RecoveryAcknowledgement::REQUIRED_DATA_BYTES,
+                        RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
+                    )?,
+                    validate,
+                )
+                .await
+        };
+        result.map_err(|e| (4, e.to_string()))
     })
     .await
 }
