@@ -6,8 +6,8 @@ use crate::storage::rocks::{
     producer_floor::ClosedProducerFloor,
     store::{
         CompactedAcknowledgementPredecessor, CompactedEmptyInitialPredecessor,
-        CompactedInitialAncestor, CompactedInitialPredecessor, IngestRecovery,
-        RetainedCompactedPrefix,
+        CompactedInitialAncestor, CompactedInitialPredecessor, CompactedSuccessorPredecessor,
+        IngestRecovery, RetainedCompactedPrefix,
     },
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
@@ -121,6 +121,35 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_ances
     )
     .await?;
     ancestor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
+/// A sealed later handoff or empty-close plan retains the same ancestor on
+/// either side of its exact native delta. No portable row selects this view.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_successor(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    predecessor: &CompactedSuccessorPredecessor<'_>,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        predecessor.manifest(),
+        predecessor.producer_slot_id(),
+        scratch,
+        Some(predecessor.floor()),
+        authority,
+    )
+    .await?;
+    predecessor
         .validate(recovery, cancelled)
         .map_err(ProducerProgressError::Native)?;
     Ok(complete)

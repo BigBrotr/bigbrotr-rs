@@ -55,6 +55,13 @@ impl RetainedCompactedPrefix {
 }
 
 impl<'a> CompactedPrefixResolution<'a> {
+    pub(in crate::storage::rocks::store) fn from_successor(
+        view: crate::storage::rocks::store::CompactedSuccessorPredecessor<'a>,
+        recovery: &'a IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new(PrefixOwner::Successor(view), recovery, cancelled)
+    }
     pub(in crate::storage::rocks::store) fn from_empty_retirement(
         view: crate::storage::rocks::store::CompactedEmptyInitialPredecessor<'a>,
         recovery: &'a IngestRecovery,
@@ -300,6 +307,7 @@ impl VerifiedCompactedPrefix<'_> {
                 lineage.inputs
             }
             PrefixOwner::Handoff(_)
+            | PrefixOwner::Successor(_)
             | PrefixOwner::Acknowledgement(_)
             | PrefixOwner::EmptyRetirement(_) => {
                 return Err(AdmissionError::StateMismatch);

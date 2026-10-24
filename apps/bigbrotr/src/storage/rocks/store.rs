@@ -143,8 +143,9 @@ pub use lineage::{
     RetainedTerminalKind, VerifiedCompactedPrefix, compacted_outcome_data_bytes,
 };
 pub(in crate::storage) use lineage::{
-    NativeSuccessorRecovery, NativeSuccessorRetirement, ResolvedSuccessorRecovery,
-    ResolvedSuccessorRetirement, SuccessorRecoveryResolution, SuccessorRetirementResolution,
+    CompactedSuccessorPredecessor, NativeSuccessorRecovery, NativeSuccessorRetirement,
+    ResolvedSuccessorRecovery, ResolvedSuccessorRetirement, SuccessorRecoveryResolution,
+    SuccessorRetirementResolution,
 };
 #[cfg(test)]
 use lineage::{PendingSuccessorRequest, PendingSuccessorRetirementRequest};

@@ -6,8 +6,9 @@ use crate::{
     runtime::{OwnedPermit, policy_authority::PolicyLeaseTracker},
     storage::rocks::{
         store::{
-            AdmissionError, BootstrapError, EmptySuccessorRetirement, IngestRecovery,
-            ObservedSuccessorHandoff, RetainedTerminalKind, SuccessorCandidate, SuccessorHandoff,
+            AdmissionError, AdmissionLimits, BootstrapError, EmptySuccessorRetirement,
+            IngestRecovery, ObservedSuccessorHandoff, RetainedTerminalKind, SuccessorCandidate,
+            SuccessorHandoff,
         },
         succession::{LINEAGE_SCRATCH_BYTES, SuccessionRecord},
     },
@@ -20,6 +21,8 @@ mod rows;
 use rows::Intent;
 #[path = "successor_activation.rs"]
 mod activation;
+#[path = "successor_compaction.rs"]
+mod compacted;
 pub(super) use activation::LiveSuccessorBinding;
 pub use activation::{LiveSuccessorWriter, SuccessorActivation};
 #[path = "successor_recovery.rs"]
@@ -44,6 +47,7 @@ pub struct SuccessorPreparationRequest<'a> {
 pub struct SuccessorPreparationPlan {
     intent: Intent,
     native: SuccessorHandoff,
+    check: Option<compacted::Check>,
 }
 impl SuccessorPreparationPlan {
     pub fn record(&self) -> &SuccessionRecord {
@@ -122,6 +126,7 @@ impl SuccessorPreparation {
 pub struct SuccessorGapPlan {
     intent: Intent,
     native: SuccessorHandoff,
+    check: Option<compacted::Check>,
     control: ingest_registry::ControlOwner,
 }
 impl SuccessorGapPlan {
@@ -132,6 +137,7 @@ impl SuccessorGapPlan {
 pub struct SuccessorEmptyPlan {
     intent: Intent,
     native: EmptySuccessorRetirement,
+    check: Option<compacted::Check>,
     control: ingest_registry::ControlOwner,
 }
 impl SuccessorEmptyPlan {
@@ -162,6 +168,32 @@ impl ControlSession {
         input: SuccessorPreparationRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<SuccessorPreparationPlan, ProducerResolveError> {
+        self.plan_successor_preparation_in(candidate, proof, input, None, validate)
+            .await
+    }
+
+    pub async fn plan_compacted_successor_preparation(
+        &mut self,
+        candidate: &SuccessorCandidate,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: SuccessorPreparationRequest<'_>,
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorPreparationPlan, ProducerResolveError> {
+        let check = compacted::Check::new(limits, effects)?;
+        self.plan_successor_preparation_in(candidate, proof, input, Some(check), validate)
+            .await
+    }
+
+    async fn plan_successor_preparation_in(
+        &mut self,
+        candidate: &SuccessorCandidate,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: SuccessorPreparationRequest<'_>,
+        check: Option<compacted::Check>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorPreparationPlan, ProducerResolveError> {
         self.check_successor_plan_cancellation(input.history.cancelled)?;
         let duration = lease_micros(input.lease_duration, input.outstanding_request_limit)?;
         let history = proof.history();
@@ -183,9 +215,31 @@ impl ControlSession {
             .validate(input.history.cancelled)
             .map_err(native_error)?;
         let policy = rows::current_policy(&tx, candidate.recovery()).await?;
-        let native = candidate
-            .handoff(proof.resolved_lineage(), epoch, input.history.cancelled)
-            .map_err(native_error)?;
+        let native = if check.is_some() {
+            candidate.handoff_compacted(proof.resolved_lineage(), epoch, input.history.cancelled)
+        } else {
+            candidate.handoff(proof.resolved_lineage(), epoch, input.history.cancelled)
+        }
+        .map_err(native_error)?;
+        if let Some(check) = &check {
+            let view = check.handoff(
+                candidate.recovery(),
+                history.lineage(),
+                &native,
+                input.history.cancelled,
+            )?;
+            check
+                .require(
+                    &tx,
+                    candidate.recovery(),
+                    history.lineage(),
+                    &view,
+                    &mut lease,
+                    epoch,
+                    input.history.cancelled,
+                )
+                .await?;
+        }
         let created = rows::clock(&tx).await?;
         let intent = Intent {
             record: *native.record(),
@@ -199,16 +253,34 @@ impl ControlSession {
             preparer: current,
         };
         rows::require_fresh(&tx, &intent).await?;
-        candidate
-            .require_handoff(history.lineage(), &native, input.history.cancelled)
-            .map_err(native_error)?;
+        compacted::require_candidate(
+            check.as_ref(),
+            candidate,
+            history,
+            &native,
+            input.history.cancelled,
+        )
+        .map_err(native_error)?;
         successor_history::finish_read(tx, &mut lease, epoch, input.history.cancelled, current)
             .await?;
+        if let Some(check) = &check {
+            check.handoff(
+                candidate.recovery(),
+                history.lineage(),
+                &native,
+                input.history.cancelled,
+            )?;
+            initial_history::check_delivery(&mut lease, epoch, input.history.cancelled)?;
+        }
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
         self.available = true;
-        Ok(SuccessorPreparationPlan { intent, native })
+        Ok(SuccessorPreparationPlan {
+            intent,
+            native,
+            check,
+        })
     }
 
     /// One attempt only. Every failure leaves the caller's owner intact and
@@ -218,20 +290,52 @@ impl ControlSession {
         owner: &mut SuccessorPreparation,
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(), ProducerResolveError> {
+        self.prepare_successor_in(owner, input, permit, false, validate)
+            .await
+    }
+
+    pub async fn prepare_compacted_successor(
+        &mut self,
+        owner: &mut SuccessorPreparation,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(), ProducerResolveError> {
+        self.prepare_successor_in(owner, input, permit, true, validate)
+            .await
+    }
+
+    async fn prepare_successor_in(
+        &mut self,
+        owner: &mut SuccessorPreparation,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        compacted_basis: bool,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(), ProducerResolveError> {
         let result: Result<ObservedSuccessorHandoff, ProducerResolveError> = async {
             owner.state.start()?;
+            compacted::require_basis(
+                owner.plan.check.as_ref(),
+                owner.history.lineage(),
+                compacted_basis,
+            )?;
             require_permit(&permit, 8192)?;
             let intent = &owner.plan.intent;
             require_control(owner.history.control(), intent.preparer, self.identity)?;
             if owner.history.state() != SuccessorHistoryState::Terminal {
                 return Err(OwnerError::InvalidInput.into());
             }
-            owner
-                .candidate
-                .require_handoff(owner.history.lineage(), &owner.plan.native, input.cancelled)
-                .map_err(native_error)?;
+            compacted::require_candidate(
+                owner.plan.check.as_ref(),
+                &owner.candidate,
+                &owner.history,
+                &owner.plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             let current = self.identity;
             let (tx, mut lease, epoch) = self
                 .begin_checked_successor_history(
@@ -243,14 +347,37 @@ impl ControlSession {
                 .await?;
             rows::require_policy(&tx, owner.candidate.recovery(), intent.policy).await?;
             rows::require_fresh(&tx, intent).await?;
+            if let Some(check) = &owner.plan.check {
+                let view = check.handoff(
+                    owner.candidate.recovery(),
+                    owner.history.lineage(),
+                    &owner.plan.native,
+                    input.cancelled,
+                )?;
+                check
+                    .require(
+                        &tx,
+                        owner.candidate.recovery(),
+                        owner.history.lineage(),
+                        &view,
+                        &mut lease,
+                        epoch,
+                        input.cancelled,
+                    )
+                    .await?;
+            }
             rows::insert(&tx, intent).await?;
             rows::require_intent(&tx, intent).await?;
             rows::require_target(&tx, intent, "prepared").await?;
             rows::require_live(&tx, current, Some(intent)).await?;
-            owner
-                .candidate
-                .require_handoff(owner.history.lineage(), &owner.plan.native, input.cancelled)
-                .map_err(native_error)?;
+            compacted::require_candidate(
+                owner.plan.check.as_ref(),
+                &owner.candidate,
+                &owner.history,
+                &owner.plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
             tx.commit()
                 .await
@@ -276,23 +403,63 @@ impl ControlSession {
             rows::require_target(&tx, intent, "prepared").await?;
             rows::require_live(&tx, current, Some(intent)).await?;
             initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
-            let observed = owner
-                .candidate
-                .apply_handoff(
+            if let Some(check) = &owner.plan.check {
+                let view = check.handoff(
+                    owner.candidate.recovery(),
+                    owner.history.lineage(),
+                    &owner.plan.native,
+                    input.cancelled,
+                )?;
+                check
+                    .require(
+                        &tx,
+                        owner.candidate.recovery(),
+                        owner.history.lineage(),
+                        &view,
+                        &mut lease,
+                        epoch,
+                        input.cancelled,
+                    )
+                    .await?;
+            }
+            let observed = if compacted_basis {
+                owner.candidate.apply_compacted_handoff(
                     owner.history.lineage(),
                     &owner.plan.native,
                     permit,
                     input.cancelled,
                     || native_authority(&mut lease, epoch, input.cancelled),
                 )
-                .map_err(native_error)?;
+            } else {
+                owner.candidate.apply_handoff(
+                    owner.history.lineage(),
+                    &owner.plan.native,
+                    permit,
+                    input.cancelled,
+                    || native_authority(&mut lease, epoch, input.cancelled),
+                )
+            }
+            .map_err(native_error)?;
             rows::require_target(&tx, intent, "prepared").await?;
             rows::require_live(&tx, current, Some(intent)).await?;
-            owner
-                .candidate
-                .require_handoff(owner.history.lineage(), &owner.plan.native, input.cancelled)
-                .map_err(native_error)?;
+            compacted::require_candidate(
+                owner.plan.check.as_ref(),
+                &owner.candidate,
+                &owner.history,
+                &owner.plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             successor_history::finish_read(tx, &mut lease, epoch, input.cancelled, current).await?;
+            if let Some(check) = &owner.plan.check {
+                check.handoff(
+                    owner.candidate.recovery(),
+                    owner.history.lineage(),
+                    &owner.plan.native,
+                    input.cancelled,
+                )?;
+                initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+            }
             if self.client.is_closed() {
                 return Err(ProducerResolveError::DeliveryUnknown);
             }
@@ -321,6 +488,32 @@ impl ControlSession {
         input: InitialHistoryRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<SuccessorGapPlan, ProducerResolveError> {
+        self.plan_prepared_successor_gap_in(recovery, proof, input, None, validate)
+            .await
+    }
+
+    pub async fn plan_prepared_compacted_successor_gap(
+        &mut self,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorGapPlan, ProducerResolveError> {
+        let check = compacted::Check::new(limits, effects)?;
+        self.plan_prepared_successor_gap_in(recovery, proof, input, Some(check), validate)
+            .await
+    }
+
+    async fn plan_prepared_successor_gap_in(
+        &mut self,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: InitialHistoryRequest<'_>,
+        check: Option<compacted::Check>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorGapPlan, ProducerResolveError> {
         self.check_successor_plan_cancellation(input.cancelled)?;
         if proof.history().state() != SuccessorHistoryState::PendingNative {
             return Err(OwnerError::InvalidInput.into());
@@ -331,16 +524,57 @@ impl ControlSession {
             .await?;
         proof.validate(input.cancelled).map_err(native_error)?;
         let intent = rows::read(&tx, recovery, proof.history().registered_epoch()).await?;
-        let native = SuccessorHandoff::reconstruct_gap(
-            proof.resolved_lineage(),
-            intent.record,
+        let native = if check.is_some() {
+            SuccessorHandoff::reconstruct_compacted_gap(
+                proof.resolved_lineage(),
+                intent.record,
+                input.cancelled,
+            )
+        } else {
+            SuccessorHandoff::reconstruct_gap(
+                proof.resolved_lineage(),
+                intent.record,
+                input.cancelled,
+            )
+        }
+        .map_err(native_error)?;
+        compacted::validate_handoff(
+            check.as_ref(),
+            recovery,
+            proof.history(),
+            &native,
             input.cancelled,
         )
         .map_err(native_error)?;
-        recovery
-            .validate_successor_handoff(proof.history().lineage(), &native, input.cancelled)
-            .map_err(native_error)?;
+        if let Some(check) = &check {
+            let view = check.handoff(
+                recovery,
+                proof.history().lineage(),
+                &native,
+                input.cancelled,
+            )?;
+            check
+                .require(
+                    &tx,
+                    recovery,
+                    proof.history().lineage(),
+                    &view,
+                    &mut lease,
+                    epoch,
+                    input.cancelled,
+                )
+                .await?;
+        }
         successor_history::finish_read(tx, &mut lease, epoch, input.cancelled, current).await?;
+        if let Some(check) = &check {
+            check.handoff(
+                recovery,
+                proof.history().lineage(),
+                &native,
+                input.cancelled,
+            )?;
+            initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        }
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
@@ -348,6 +582,7 @@ impl ControlSession {
         Ok(SuccessorGapPlan {
             intent,
             native,
+            check,
             control: current,
         })
     }
@@ -363,7 +598,43 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ObservedSuccessorHandoff, ProducerResolveError> {
+        self.complete_prepared_successor_gap_in(
+            recovery, history, plan, input, permit, false, validate,
+        )
+        .await
+    }
+
+    pub async fn complete_prepared_compacted_successor_gap(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        history: &SuccessorHistory,
+        plan: &SuccessorGapPlan,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedSuccessorHandoff, ProducerResolveError> {
+        self.complete_prepared_successor_gap_in(
+            recovery, history, plan, input, permit, true, validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "same retained owner, private basis and unchanged dispatch authority"
+    )]
+    async fn complete_prepared_successor_gap_in(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        history: &SuccessorHistory,
+        plan: &SuccessorGapPlan,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        compacted_basis: bool,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ObservedSuccessorHandoff, ProducerResolveError> {
         let result: Result<ObservedSuccessorHandoff, ProducerResolveError> = async {
+            compacted::require_basis(plan.check.as_ref(), history.lineage(), compacted_basis)?;
             require_permit(&permit, 8192)?;
             require_control(history.control(), plan.control, self.identity)?;
             if history.state() != SuccessorHistoryState::PendingNative
@@ -371,9 +642,14 @@ impl ControlSession {
             {
                 return Err(OwnerError::InvalidInput.into());
             }
-            recovery
-                .validate_successor_handoff(history.lineage(), &plan.native, input.cancelled)
-                .map_err(native_error)?;
+            compacted::validate_handoff(
+                plan.check.as_ref(),
+                recovery,
+                history,
+                &plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             let current = self.identity;
             let (tx, mut lease, epoch) = self
                 .begin_successor_history(recovery, &input, validate)
@@ -381,20 +657,53 @@ impl ControlSession {
             rows::require_intent(&tx, &plan.intent).await?;
             rows::require_target(&tx, &plan.intent, "prepared").await?;
             rows::require_live(&tx, current, None).await?;
-            let observed = recovery
-                .apply_successor_handoff(
+            if let Some(check) = &plan.check {
+                let view =
+                    check.handoff(recovery, history.lineage(), &plan.native, input.cancelled)?;
+                check
+                    .require(
+                        &tx,
+                        recovery,
+                        history.lineage(),
+                        &view,
+                        &mut lease,
+                        epoch,
+                        input.cancelled,
+                    )
+                    .await?;
+            }
+            let observed = if compacted_basis {
+                recovery.apply_compacted_successor_handoff(
                     history.lineage(),
                     &plan.native,
                     permit,
                     input.cancelled,
                     || native_authority(&mut lease, epoch, input.cancelled),
                 )
-                .map_err(native_error)?;
+            } else {
+                recovery.apply_successor_handoff(
+                    history.lineage(),
+                    &plan.native,
+                    permit,
+                    input.cancelled,
+                    || native_authority(&mut lease, epoch, input.cancelled),
+                )
+            }
+            .map_err(native_error)?;
             rows::require_target(&tx, &plan.intent, "prepared").await?;
-            recovery
-                .validate_successor_handoff(history.lineage(), &plan.native, input.cancelled)
-                .map_err(native_error)?;
+            compacted::validate_handoff(
+                plan.check.as_ref(),
+                recovery,
+                history,
+                &plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             successor_history::finish_read(tx, &mut lease, epoch, input.cancelled, current).await?;
+            if let Some(check) = &plan.check {
+                check.handoff(recovery, history.lineage(), &plan.native, input.cancelled)?;
+                initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+            }
             if self.client.is_closed() {
                 return Err(ProducerResolveError::DeliveryUnknown);
             }
@@ -412,6 +721,32 @@ impl ControlSession {
         input: InitialHistoryRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<SuccessorEmptyPlan, ProducerResolveError> {
+        self.plan_empty_successor_retirement_in(recovery, proof, input, None, validate)
+            .await
+    }
+
+    pub async fn plan_compacted_empty_successor_retirement(
+        &mut self,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorEmptyPlan, ProducerResolveError> {
+        let check = compacted::Check::new(limits, effects)?;
+        self.plan_empty_successor_retirement_in(recovery, proof, input, Some(check), validate)
+            .await
+    }
+
+    async fn plan_empty_successor_retirement_in(
+        &mut self,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: InitialHistoryRequest<'_>,
+        check: Option<compacted::Check>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorEmptyPlan, ProducerResolveError> {
         self.check_successor_plan_cancellation(input.cancelled)?;
         if !matches!(
             proof.history().state(),
@@ -425,21 +760,56 @@ impl ControlSession {
             .await?;
         proof.validate(input.cancelled).map_err(native_error)?;
         let intent = rows::read(&tx, recovery, proof.history().registered_epoch()).await?;
-        let native =
+        let native = if check.is_some() {
+            EmptySuccessorRetirement::from_compacted_lineage(
+                proof.resolved_lineage(),
+                input.cancelled,
+            )
+        } else {
             EmptySuccessorRetirement::from_lineage(proof.resolved_lineage(), input.cancelled)
-                .map_err(native_error)?;
+        }
+        .map_err(native_error)?;
         if native.record() != &intent.record {
             return Err(OwnerError::InvalidMetadata.into());
         }
         rows::require_empty_claims(&tx, &intent).await?;
-        recovery
-            .validate_empty_successor_retirement(
+        compacted::validate_empty(
+            check.as_ref(),
+            recovery,
+            proof.history(),
+            &native,
+            input.cancelled,
+        )
+        .map_err(native_error)?;
+        if let Some(check) = &check {
+            let view = check.empty(
+                recovery,
                 proof.history().lineage(),
                 &native,
                 input.cancelled,
-            )
-            .map_err(native_error)?;
+            )?;
+            check
+                .require(
+                    &tx,
+                    recovery,
+                    proof.history().lineage(),
+                    &view,
+                    &mut lease,
+                    epoch,
+                    input.cancelled,
+                )
+                .await?;
+        }
         successor_history::finish_read(tx, &mut lease, epoch, input.cancelled, current).await?;
+        if let Some(check) = &check {
+            check.empty(
+                recovery,
+                proof.history().lineage(),
+                &native,
+                input.cancelled,
+            )?;
+            initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        }
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
@@ -447,6 +817,7 @@ impl ControlSession {
         Ok(SuccessorEmptyPlan {
             intent,
             native,
+            check,
             control: current,
         })
     }
@@ -462,7 +833,39 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<i64, ProducerResolveError> {
+        self.retire_empty_successor_in(recovery, history, plan, input, permit, false, validate)
+            .await
+    }
+
+    pub async fn retire_compacted_empty_successor(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        history: &SuccessorHistory,
+        plan: &SuccessorEmptyPlan,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<i64, ProducerResolveError> {
+        self.retire_empty_successor_in(recovery, history, plan, input, permit, true, validate)
+            .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "same retained owner, private basis and unchanged dispatch authority"
+    )]
+    async fn retire_empty_successor_in(
+        &mut self,
+        recovery: &mut IngestRecovery,
+        history: &SuccessorHistory,
+        plan: &SuccessorEmptyPlan,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        compacted_basis: bool,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<i64, ProducerResolveError> {
         let result: Result<i64, ProducerResolveError> = async {
+            compacted::require_basis(plan.check.as_ref(), history.lineage(), compacted_basis)?;
             require_permit(&permit, 4096)?;
             require_control(history.control(), plan.control, self.identity)?;
             if !matches!(
@@ -472,13 +875,14 @@ impl ControlSession {
             {
                 return Err(OwnerError::InvalidInput.into());
             }
-            recovery
-                .validate_empty_successor_retirement(
-                    history.lineage(),
-                    &plan.native,
-                    input.cancelled,
-                )
-                .map_err(native_error)?;
+            compacted::validate_empty(
+                plan.check.as_ref(),
+                recovery,
+                history,
+                &plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             let current = self.identity;
             let (tx, mut lease, epoch) = self
                 .begin_successor_history(recovery, &input, validate)
@@ -491,33 +895,62 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
             rows::require_empty_claims(&tx, &plan.intent).await?;
-            let _closing = recovery
-                .close_empty_successor(
+            if let Some(check) = &plan.check {
+                let view =
+                    check.empty(recovery, history.lineage(), &plan.native, input.cancelled)?;
+                check
+                    .require(
+                        &tx,
+                        recovery,
+                        history.lineage(),
+                        &view,
+                        &mut lease,
+                        epoch,
+                        input.cancelled,
+                    )
+                    .await?;
+            }
+            let _closing = if compacted_basis {
+                recovery.close_compacted_empty_successor(
                     history.lineage(),
                     &plan.native,
                     permit,
                     input.cancelled,
                     || native_authority(&mut lease, epoch, input.cancelled),
                 )
-                .map_err(native_error)?;
+            } else {
+                recovery.close_empty_successor(
+                    history.lineage(),
+                    &plan.native,
+                    permit,
+                    input.cancelled,
+                    || native_authority(&mut lease, epoch, input.cancelled),
+                )
+            }
+            .map_err(native_error)?;
             rows::require_live(&tx, current, None).await?;
             let time = rows::retire_empty(&tx, &plan.intent, plan.native.closure_digest()).await?;
             if rows::require_target(&tx, &plan.intent, "empty").await? != Some(time) {
                 return Err(OwnerError::InvalidMetadata.into());
             }
-            recovery
-                .validate_empty_successor_retirement(
-                    history.lineage(),
-                    &plan.native,
-                    input.cancelled,
-                )
-                .map_err(native_error)?;
+            compacted::validate_empty(
+                plan.check.as_ref(),
+                recovery,
+                history,
+                &plan.native,
+                input.cancelled,
+            )
+            .map_err(native_error)?;
             rows::require_live(&tx, current, None).await?;
             initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
             tx.commit()
                 .await
                 .map_err(|_| ProducerResolveError::CommitUnknown)?;
             initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+            if let Some(check) = &plan.check {
+                check.empty(recovery, history.lineage(), &plan.native, input.cancelled)?;
+                initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+            }
             if self.client.is_closed() {
                 return Err(ProducerResolveError::DeliveryUnknown);
             }
@@ -538,11 +971,37 @@ impl ControlSession {
         input: InitialHistoryRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<i64, ProducerResolveError> {
+        self.observe_retired_empty_successor_in(recovery, proof, input, None, validate)
+            .await
+    }
+
+    pub async fn observe_retired_compacted_empty_successor(
+        &mut self,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<i64, ProducerResolveError> {
+        let check = compacted::Check::new(limits, effects)?;
+        self.observe_retired_empty_successor_in(recovery, proof, input, Some(check), validate)
+            .await
+    }
+
+    async fn observe_retired_empty_successor_in(
+        &mut self,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        input: InitialHistoryRequest<'_>,
+        check: Option<compacted::Check>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<i64, ProducerResolveError> {
         let history = proof.history();
         self.check_successor_plan_cancellation(input.cancelled)?;
         let summary = proof.last_epoch();
-        if proof.compacted_initial_requests() != 0
-            || history.state() != SuccessorHistoryState::Terminal
+        compacted::require_basis(check.as_ref(), history.lineage(), check.is_some())?;
+        if history.state() != SuccessorHistoryState::Terminal
             || history.native_epoch() < 3
             || proof.verified_through() != history.native_epoch()
             || summary.terminal_kind != RetainedTerminalKind::UnactivatedEmpty
@@ -556,12 +1015,21 @@ impl ControlSession {
             .begin_checked_successor_history(history, recovery, &input, validate)
             .await?;
         proof.validate(input.cancelled).map_err(native_error)?;
+        if let Some(check) = &check {
+            check
+                .require_history(&tx, recovery, history, &mut lease, epoch, input.cancelled)
+                .await?;
+        }
         let intent = rows::read(&tx, recovery, history.registered_epoch()).await?;
         let time = rows::require_target(&tx, &intent, "empty")
             .await?
             .ok_or(OwnerError::InvalidMetadata)?;
         rows::require_empty_digest(&tx, &intent, summary.digest).await?;
         successor_history::finish_read(tx, &mut lease, epoch, input.cancelled, current).await?;
+        if let Some(check) = &check {
+            check.validate_history(recovery, history, input.cancelled)?;
+            initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        }
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }

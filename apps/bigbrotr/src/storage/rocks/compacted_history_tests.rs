@@ -545,3 +545,6 @@ fn compacted_history_correction_census_counts_reclaimed_requests_beyond_spool_ca
         assert_eq!(r.store.db.latest_sequence_number(), sequence);
     }
 }
+
+#[path = "compacted_successor_tests.rs"]
+mod compacted_successor_tests;

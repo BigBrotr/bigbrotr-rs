@@ -95,3 +95,52 @@ fn successor_native_transition_reserves_data_native_and_item_together() {
         }
     }
 }
+
+#[test]
+fn compacted_successor_requires_matching_private_check_and_retained_basis() {
+    for check in [false, true] {
+        for retained_floor in [false, true] {
+            for explicit_compacted in [false, true] {
+                assert_eq!(
+                    compacted::require_basis_presence(check, retained_floor, explicit_compacted)
+                        .is_ok(),
+                    matches!(
+                        (check, retained_floor, explicit_compacted),
+                        (false, false, false) | (true, true, true)
+                    )
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn compacted_successor_check_retains_the_full_canonical_effect_grant() {
+    let limits = AdmissionLimits::default();
+    let bytes = crate::storage::rocks::store::compacted_outcome_data_bytes(limits).unwrap();
+    let budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            bytes * 2,
+            0,
+            ResourceLimits::new(bytes * 2, 4, 0, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    for (data, items, accepted) in [(bytes - 1, 1, false), (bytes, 0, false), (bytes, 1, true)] {
+        let permit = budget
+            .try_acquire(ResourceRequest::data(data, items, 0).unwrap())
+            .unwrap();
+        let check = compacted::Check::new(limits, permit);
+        assert_eq!(check.is_ok(), accepted);
+        if accepted {
+            assert_eq!(budget.snapshot().used().data_bytes(), bytes);
+            assert_eq!(budget.snapshot().active_permits(), 1);
+        } else {
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+        drop(check);
+        assert_eq!(budget.snapshot().used().data_bytes(), 0);
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
+}
