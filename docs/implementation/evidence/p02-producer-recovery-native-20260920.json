@@ -45402,7 +45402,7 @@
             },
             "empty_initial_consumer_work": {
               "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-              "status": "SECOND_BUILD_FAIL_CLIPPY;185 components PASS; complete unused-chain removal pending exact rebuild",
+              "status": "EXACT_BUILD_COMPONENTS_PASS;185 components/76 required/Clippy; installed NOT_RUN",
               "audit": {
                 "path": ".research/producer-checkpoint-ack-review-20261020/compacted-remaining-consumers-empty2-audit-20261024.json",
                 "sha256": "f9d09a6a71a572701fe7e08772c1bdf1cf5137d3e1e59087f9d57d1696a4c872"
@@ -45453,7 +45453,7 @@
                 "resolved": "Exact trigger-only catalog delta and coordinated unrelated ACL controls; retained prepared endpoint receipt/process pins",
                 "diagnostics": "Author pure13 synthetic contexts/239 controls and1 restore/8 controls PASS; not product execution"
               },
-              "next": "Freeze exact product, run isolated producer-floor build/components, then integrate critically reviewed independent fixture and execute installed/raw replay. Preserve final delivery/claims/lock/cancel/expiry/proof-to-use gates.",
+              "next": "Execute critically reviewed first9-clone/13-command empty installed profile and exact raw replay; preserve original build failures and all later fault gates.",
               "build_attempts": [
                 {
                   "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-1e052ea",
@@ -45481,7 +45481,35 @@
                   "failed": "Clippy unused CompactedEmptyInitialAttempt reexport in rocks/initial_handoff.rs:33",
                   "repair": "Remove remaining same-type intermediate reexports in initial_handoff.rs and initial_empty.rs; keep definition/factory and behavior unchanged."
                 }
-              ]
+              ],
+              "delivery_extension": {
+                "status": "SOURCE_WORK_ACTIVE; runtime NOT_RUN",
+                "audit": {
+                  "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fault-boundaries-20261024.json",
+                  "sha256": "8a74936e7f2a1c3eaf388674ec2241d0406ec7ef7d367949cb445d2710c3294d"
+                },
+                "selection": "Separate3-clone/5-command final COMMIT baseline/before/after loss profile; candidate3/4 must be measured; first13 profile unchanged.",
+                "remaining": "Actual claims/locks/cancellation/UTC expiry, proof-use and malformed/partial state gates remain required; audit documents default timing limitation."
+              },
+              "qualified_build": {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-30ab2e4",
+                "source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+                "tree": "a4fd0877e5b1e1cf6ea6be43e9f6e40ba0279201",
+                "driver": 39600,
+                "exit_code": 0,
+                "receipt": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-30ab2e4/verified-build.json",
+                  "sha256": "2d8f192c1446e49f43fc5d307d08097388bde65a21a141f9ad903b85529178b3"
+                },
+                "verification": "All10 checks PASS including Clippy;185 components/76 exact required names; source archive/Git tree/all2063 exported hashes/build identities/five ELF hashes reconciled; actual owned containers stopped0/PID0/noOOM.",
+                "limits": [
+                  "installed empty initial profile",
+                  "exact raw replay",
+                  "final delivery/claims/lock/expiry/proof-use qualification",
+                  "later compacted consumers",
+                  "floor writer/unlink"
+                ]
+              }
             }
           }
         }

@@ -63393,7 +63393,7 @@
       },
       "compacted_empty_initial_work_20261024": {
         "base": "0984d001a5f7b51b7e104e0dc6fc47c2d99e9e6a",
-        "state": "SECOND_BUILD_STOPPED_RETAINED; pending full unused-chain repair rebuild",
+        "state": "EXACT_BUILD_PASS; installed NOT_RUN",
         "native": {
           "owner": "/root/terminal_import_gate; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-native-20261024",
@@ -63405,8 +63405,8 @@
         "fixture": {
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-empty-initial-fixture-20261024",
-          "branch": "work/compacted-empty-initial-fixture",
-          "state": "CLEAN_FROZEN; five exact files integrated canonical; installed NOT_RUN",
+          "branch": "DETACHED; exact reconciled work/compacted-empty-initial-fixture ref retired",
+          "state": "INTEGRATED_0ED4F31B; five exact hashes reconciled; author clean detached; diagnostics/artifacts retained",
           "commit": "723af3c6c6240ed6bd924e4aab65f908e37da343",
           "tree": "7db286e0eaa1980059750728050927606c380e79",
           "receipts": {
@@ -63493,7 +63493,44 @@
           "branch": "work/compacted-empty-initial-delivery",
           "base": "0ed4f31b33cd1a1e1eee3c73b3bdd751fe52c729",
           "state": "SOURCE_WORK_ACTIVE; no engines",
-          "scope": "Separate3-clone/5-command measured final COMMIT delivery profile; first13 fixture unchanged"
+          "scope": "Separate3-clone/5-command measured final COMMIT delivery profile; first13 fixture unchanged",
+          "audit": {
+            "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fault-boundaries-20261024.json",
+            "sha256": "8a74936e7f2a1c3eaf388674ec2241d0406ec7ef7d367949cb445d2710c3294d"
+          }
+        },
+        "final_export_repair_build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-30ab2e4",
+          "source": "30ab2e45176dac90c7c940ddc2992e81fd74042a",
+          "tree": "a4fd0877e5b1e1cf6ea6be43e9f6e40ba0279201",
+          "owner": "fd00dd8e09cf46b4b039bd1092286025",
+          "driver": 39600,
+          "state": "PASS_EXACT_BUILD_AND_COMPONENTS; driver39600 joined0",
+          "resource_record": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-30ab2e4/resources.json",
+          "free_bytes_before": 263154515968,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-30ab2e4/verified-build.json",
+            "sha256": "2d8f192c1446e49f43fc5d307d08097388bde65a21a141f9ad903b85529178b3"
+          },
+          "containers": [
+            {
+              "id": "7c6fcf2541ce9f3068b0764bd86073d38bc1e610b38362d77b91a999c7e02f46",
+              "name": "/bigbrotr-producer-floor-30ab2e4-fetch",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            },
+            {
+              "id": "47dc0eec7c63379b035b71373d288e7782e27f4017b97bc4bcdec977e53eb850",
+              "name": "/bigbrotr-producer-floor-30ab2e4-native",
+              "state": "exited",
+              "exit_code": 0,
+              "pid": 0,
+              "oom": false
+            }
+          ],
+          "free_bytes_after": 262924869632
         }
       }
     }

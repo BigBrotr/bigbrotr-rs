@@ -1091,8 +1091,9 @@ through native dispatch, SQL COMMIT and result delivery; it supplies no writer,
 activation, ACK or deletion authority. The command keeps native custody ahead
 of Control teardown, including interrupted acquisition, and reports compacted
 requests separately from original replays. Original-input retirement retains
-its own proof and requires all original evidence. Build, component and installed
-fault qualification are still pending for this extension.
+its own proof and requires all original evidence. Exact product `30ab2e45`
+passed CLI/probe compilation,185 components/76 mandatory controls and Clippy.
+Installed and fault qualification remain pending for this extension.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
