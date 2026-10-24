@@ -45483,13 +45483,31 @@
                 }
               ],
               "delivery_extension": {
-                "status": "SOURCE_WORK_ACTIVE; runtime NOT_RUN",
+                "status": "SOURCE_REVIEWED; installed/raw NOT_RUN",
                 "audit": {
                   "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-fault-boundaries-20261024.json",
                   "sha256": "8a74936e7f2a1c3eaf388674ec2241d0406ec7ef7d367949cb445d2710c3294d"
                 },
                 "selection": "Separate3-clone/5-command final COMMIT baseline/before/after loss profile; candidate3/4 must be measured; first13 profile unchanged.",
-                "remaining": "Actual claims/locks/cancellation/UTC expiry, proof-use and malformed/partial state gates remain required; audit documents default timing limitation."
+                "remaining": "Actual claims/locks/cancellation/UTC expiry, proof-use and malformed/partial state gates remain required; audit documents default timing limitation.",
+                "fixture": {
+                  "commit": "90ffe16984b129df77e08920f0b3d0c1e61191e2",
+                  "tree": "1b17e2c19f5da00ccff77ad0c446d86a1274be97",
+                  "source_receipt": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-delivery-source-v1.json",
+                    "sha256": "009a4f1242348ccefbd3aeb9fa7e04e213b7d705101a15ad24688e059d27602a"
+                  },
+                  "critical_review": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-delivery-critical-review-v1.json",
+                    "sha256": "0e83963bde6320e9e473bc53e8d2e8e7d705378b4cb93e8de3b13d5bda7c7d19"
+                  },
+                  "command_addendum": {
+                    "path": ".research/producer-checkpoint-ack-review-20261020/compacted-empty-initial-delivery-critical-review-build-path-addendum-v1.json",
+                    "sha256": "c18fec694e3b66c1f11fb3dcd8605d771ecbf26ea04e5b72b3bc7683bf12f289"
+                  },
+                  "root_review": "All four deltas and complete affected hook/oracle/held/native/Control/raw branches reviewed; four exact frozen source and helper/diagnostic hashes reconciled; changed ASTs and diff PASS. Original13/239 pure output byte-identical; new5/125 plus6 baseline-refusal diagnostics preserved, not product evidence.",
+                  "status": "SOURCE_REVIEWED; installed/raw NOT_RUN"
+                }
               },
               "qualified_build": {
                 "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-30ab2e4",

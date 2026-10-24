@@ -6,8 +6,8 @@ M1–M5 remain incomplete. Root owns integration/runtime; Q37/Q38 apply.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Main `262b473c` (verified push driver91174 joined0). All unused intermediate exports are removed and committed. Local records save first installed/raw qualification; product operation code
-remains unchanged.
+Main `f0f39d46` (verified push driver5679 joined0). All unused intermediate exports are removed and committed. Local four-file delivery fixture90ffe169 and source records are integrated;
+product operation code remains unchanged.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -34,9 +34,9 @@ then raw replay40412 joined0 bound7698 files. Compacted/original positives,
 exact retries, native-first SQL failure/continuation and selected refusals passed.
 All four origins are unchanged; full result/limitations live in the report.
 
-Next: finish the reviewed separate3-clone/5-command final COMMIT delivery
-fixture, freeze its exact source, then installed execution and raw replay against
-qualified product30ab2e4. Reuse unchanged first13 and build evidence.
+Next: commit the reviewed separate3-clone/5-command/125-control final COMMIT
+delivery fixture, execute it and exact raw replay against qualified product30ab2e4
+with BUILD=/runs/producer-floor-30ab2e4/out/artifacts. Reuse first13/build evidence.
 
 ## Work and resources
 
@@ -47,7 +47,8 @@ missing-owned arrays empty. Both earlier Clippy failures/logs are retained.
 Native ec28253 and first fixture723af3c author worktrees are clean detached after
 exact integration. Delivery author works in
 `.research/compacted-empty-initial-delivery-20261024` off0ed4f31b; its four-file
-source draft is under critical review/pure diagnostics. No delivery engine run.
+source90ffe169 is frozen/source-reviewed, exact four hashes integrated. Author
+pure diagnostics retained; no delivery engine run.
 See inventory for ownership and retained receipt paths. No cache cleanup;
 .research, worktrees, datasets, failures and external labs remain preserved.
 Unrelated workloads are untouched.

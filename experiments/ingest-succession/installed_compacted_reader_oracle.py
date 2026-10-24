@@ -3865,21 +3865,28 @@ TERMINAL_SOURCE_FINAL_QUERY="UPDATE control.source_streams SET state='closed', c
 TERMINAL_AUTHORITY_QUERY="SELECT lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric"
 
 
-def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_proof=False):
+def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_proof=False,empty_initial=False):
     import tomllib
     from fault_cases import safe_event
-    name,step=terminal_specification(case,faults=not post_proof,post_proof=post_proof)
-    normal=name.endswith('-baseline') if post_proof else step.endswith('-baseline')
-    operation=name.split('-')[0] if post_proof else step.split('-')[0]
-    target=(TERMINAL_PROOF_SELECTORS if post_proof else TERMINAL_COMMIT_SELECTORS)[operation]; later=4 if post_proof else 3
-    mode='hold-after-complete' if post_proof else 'hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
+    assert type(empty_initial) is bool and not (empty_initial and post_proof)
+    if empty_initial:
+        name,step=empty_delivery_specification(case); assert step in ('baseline','loss')
+        normal=step=='baseline'; operation='retire-empty'; target,later=3,1
+        mode='hold' if normal else 'before-forward' if name=='before' else 'after-complete'
+    else:
+        name,step=terminal_specification(case,faults=not post_proof,post_proof=post_proof)
+        normal=name.endswith('-baseline') if post_proof else step.endswith('-baseline')
+        operation=name.split('-')[0] if post_proof else step.split('-')[0]
+        target=(TERMINAL_PROOF_SELECTORS if post_proof else TERMINAL_COMMIT_SELECTORS)[operation]; later=4 if post_proof else 3
+        mode='hold-after-complete' if post_proof else 'hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
     assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}|({'mutation'} if post_proof else set())
     assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[]
     assert (record['operation'],record['mode'],record['target_commit'])==(operation,mode,target)
     settings=record['configuration']; assert set(settings)=={'path','direct','proxied','restored'} and settings['path']==case['config']
     assert settings['direct']==settings['restored']
     direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'))
-    terminal_network_checked(direct,name,faults=not post_proof,post_proof=post_proof)
+    if empty_initial: empty_delivery_config(direct,case)
+    else: terminal_network_checked(direct,name,faults=not post_proof,post_proof=post_proof)
     wire=record['wire']; assert set(wire)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
     source=sha(retained.regular_read(Path(__file__).resolve().parents[2]/ACTIVATED_PROXY)); assert wire['source_sha256']==source
     assert wire['readers_joined'] is True and wire['overflow'] is False and wire['forced_wrapper_stop'] is False
@@ -3892,7 +3899,7 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
     assert (ready['max_frame_bytes'],ready['max_wire_bytes'],ready['max_messages'],ready['deadline_seconds'])==(1024**2,64*1024**2,20000,30)
     predicted=copy.deepcopy(direct); assert predicted['postgres']['control']['endpoint']=='127.0.0.1:5432'
     predicted['postgres']['control']['endpoint']='127.0.0.1:'+str(ready['listen_port']); assert proxied==predicted
-    profile=ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile
+    profile=EmptyInitialDeliveryProfile if empty_initial else ActivatedSourceProofProfile if post_proof else ActivatedTerminalFaultProfile
     revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
     assert wire['command']==['docker','exec','-i',profile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
         '--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits',str(later),'--deadline-seconds','30']
@@ -3915,13 +3922,19 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
         b=held['backend']; assert b==dict(pid=m.control['control_backend_pid'],backend_start=m.control['control_backend_start'],database=case['database'],
             user='bigbrotr_control',state='idle' if post_proof else 'idle in transaction',xact_start=b['xact_start'],query=b['query'],observed_at_us=b['observed_at_us'])
         assert (b['xact_start'] is None if post_proof else b['xact_start'] is not None) and held['before_us']<=b['observed_at_us']<=held['after_us']
-        assert ' '.join(b['query'].split())==('COMMIT' if post_proof else TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
+        assert ' '.join(b['query'].split())==('SELECT control.require_empty_initial_retirement($1::bytea,$2::bytea)' if empty_initial else 'COMMIT' if post_proof else TERMINAL_SOURCE_FINAL_QUERY if operation=='source' else TERMINAL_AUTHORITY_QUERY)
         assert counts(events[2])==counts(events[1]) and events[2]['held'] is False and events[2]['hold_action']=='release'
         assert counts(receipt)==[target+later if normal else target]*4 and receipt['reason'] in ('frontend-eof','backend-eof') and receipt['held'] is False and receipt['hold_action']=='release'
         # The held claim and its exact last refresh survive until later release.
         current=only(after['owner_epochs'],role='control',epoch=m.control['epoch'])
         if normal:
-            assert current['lease_expires_at_us']>m.control['lease_expires_at_us'] and int(current['xmin'])>int(m.control['xmin'])
+            if empty_initial:
+                assert current['lease_expires_at_us']==m.control['lease_expires_at_us']
+                producer=only(after['producer_epochs'],producer_epoch=2)
+                assert int(m.control['xmin'])<int(producer['xmin'])<int(current['xmin'])
+                assert m.control['acquired_at_us']<=producer['retired_at_us']<=held['before_us']
+            else: assert current['lease_expires_at_us']>m.control['lease_expires_at_us']
+            assert int(current['xmin'])>int(m.control['xmin'])
         else: assert current==m.control
         if post_proof:
             if normal: assert record['mutation'] is None
@@ -3931,7 +3944,7 @@ def terminal_delivery_checked(record,case,window,baseline,expected,after,*,post_
         for key in ('resource_id','role_instance_id','process_incarnation','acquired_at_us','control_backend_pid','control_backend_start'):
             assert current[key]==m.control[key]
     else:
-        assert baseline is not None and baseline['status']=='PASS' and baseline['case']=='baseline-'+operation+'-baseline' and baseline['wire']==wanted
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']==('baseline-baseline' if empty_initial else 'baseline-'+operation+'-baseline') and baseline['wire']==wanted
         assert record['held'] is None and [e['event'] for e in events]==['ready','fault','receipt']
         count=[target,target-1,target-1,target-1] if mode=='before-forward' else [target,target,target,target-1]
         assert counts(events[1])==counts(receipt)==count and receipt['reason']==events[1]['reason']==mode
@@ -4256,14 +4269,15 @@ class EmptyInitialProfile:
         'Later recovery, live frontier, Archive and later empty-attempt retirement')
 
 
-def empty_origins_checked(root,raw=None):
+def empty_origins_checked(root,raw=None,*,delivery=False):
     # The existing history owner registers the independent bootstrap codec used
     # by the reused empty oracle; importing it performs no engine operation.
     import history
     assert history.bootstrap_oracle.__file__==str(Path(__file__).resolve().parents[1]/'ingest-bootstrap/oracle.py')
     raw=raw or retained.regular_read
     results={}; initial=None
-    for pin in EMPTY_ORIGINS:
+    assert type(delivery) is bool
+    for pin in EMPTY_PREPARED_ORIGINS[:1] if delivery else EMPTY_ORIGINS:
         kwargs=dict(empty_origin=pin) if pin in EMPTY_PREPARED_ORIGINS else dict(activated_origin=pin) if pin==ACTIVATED_LIVE_ORIGIN else dict(prepared_origin=pin)
         endpoint,basis=qualified_endpoint(root,raw,initial_journey=False,**kwargs)
         if initial is None: initial=basis
@@ -4272,7 +4286,8 @@ def empty_origins_checked(root,raw=None):
     return results,initial
 
 
-def empty_specification(case):
+def empty_specification(case,*,delivery=False):
+    if delivery: return empty_delivery_specification(case)
     name=case['clone']; assert name in EMPTY_STEPS
     step=case['name'].removeprefix(name+'-'); assert step in EMPTY_STEPS[name] and case['name']==name+'-'+step
     index=EMPTY_STEPS[name].index(step)
@@ -4294,8 +4309,8 @@ EMPTY_ERRORS={
 }
 
 
-def empty_closed(response,case):
-    name,step=empty_specification(case); failure=step=='failure' or step=='refuse'; code=4 if failure else 0
+def empty_closed(response,case,*,delivery=False):
+    name,step=empty_specification(case,delivery=delivery); failure=step=='loss' if delivery else step in ('failure','refuse'); code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal']; assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -4303,7 +4318,8 @@ def empty_closed(response,case):
     assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv('retire-empty',Path(case['config']))
     assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
     if failure:
-        assert response['stdout']=='' and response['stderr']=='error: '+EMPTY_ERRORS['failure' if step=='failure' else name]+'\n'
+        error='producer operation unavailable: CommitUnknown' if delivery else EMPTY_ERRORS['failure' if step=='failure' else name]
+        assert response['stdout']=='' and response['stderr']=='error: '+error+'\n'
         return None
     assert response['stderr']==''; report,=[loads(v) for v in response['stdout'].splitlines()]; return report
 
@@ -4344,30 +4360,32 @@ def empty_fault_checked(value,*,removed=False):
     guards(value['guards'])
 
 
-def verify_empty_context(context,initial,expected):
-    name,step=empty_specification(context['case']); failure=step in ('failure','refuse'); compacted=not name.startswith('original')
+def verify_empty_context(context,initial,expected,*,delivery=False,baseline=None):
+    name,step=empty_specification(context['case'],delivery=delivery); failure=step=='loss' if delivery else step in ('failure','refuse'); compacted=not name.startswith('original')
+    wire=delivery and step in ('baseline','loss')
     assert set(context)==CONTEXT_FIELDS|({'empty_fault'} if name=='native-first' else set())
     assert context['case']['status']=='RUNNING' and context['case']['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[]
-    assert context['fixture']==dict(cleanup_errors=[])
+    assert set(context['fixture'])==({'cleanup_errors','delivery_fault'} if wire else {'cleanup_errors'}) and context['fixture']['cleanup_errors']==[]
     window=context['server_window']; assert set(window)=={'before_us','after_us'}
     number(window['before_us'],1,integer=True); number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
     for filename,value in context['input_contents'].items():
         data=bytes.fromhex(value); assert expected[2][filename]==dict(bytes=len(data),sha256=sha(data))
     assert len(expected[2])<=64 and sum(v['bytes'] for v in expected[2].values())<=32*1024**2
-    report=empty_closed(context['response'],context['case'])
+    report=empty_closed(context['response'],context['case'],delivery=delivery)
     m=model.Model(*expected,window,initial=False)
     if name in ('target-input','target-nonempty','original-missing'):
         preparation_no_claim(context['backend'],context['case']['database']); same(context['after'],expected[0])
     else:
         backend_checked(context['backend'],context['case']['database'],expected[0],context['after'])
-        preparation_control(m,context['after'],success=not failure,renewed=step=='failure')
+        preparation_control(m,context['after'],success=not failure,renewed=step=='failure' or (delivery and failure))
     intent,empty_digest=empty_basis(expected[0],initial)
     native=expected[1]; changed=False; at=tx=None
-    if not failure or step=='failure': native=activated_native(native,intent['producer_slot_id'],close=True)
-    if not failure:
+    if delivery or not failure or step=='failure': native=activated_native(native,intent['producer_slot_id'],close=True)
+    completed=not failure or (delivery and name=='after')
+    if completed:
         producer=only(expected[0]['producer_epochs'],producer_epoch=2)
         changed=producer['state']=='open'
         if changed:
@@ -4375,10 +4393,15 @@ def verify_empty_context(context,initial,expected):
             at,tx=terminal(m.pg,context['after'],dict(empty_digest=empty_digest),window)
             # terminal() compares the complete independently projected 77-table state.
             control=only(m.pg['owner_epochs'],role='control',epoch=max(r['epoch'] for r in m.pg['owner_epochs'] if r['role']=='control'))
-            assert control['acquired_at_us']<=at<=control['released_at_us'] and tx!=control['xmin']
+            if failure:
+                assert control['acquired_at_us']<=at<control['lease_expires_at_us']
+                assert control['state']=='active' and int(tx)>int(control['xmin'])
+            else: assert control['acquired_at_us']<=at<=control['released_at_us'] and tx!=control['xmin']
         else:
             assert producer['state']=='retired'; same(m.pg,context['after'])
             at,tx=producer['retired_at_us'],producer['xmin']
+    else: same(m.pg,context['after'])
+    if not failure:
         count='0' if compacted else '7'
         wanted=dict(format='bigbrotr-ingest-recovery/1',state='empty-attempt-retired',dataset_id=intent['dataset_id'][2:],
             owner_resource_id=intent['owner_resource_id'][2:],producer_slot_id=intent['producer_slot_id'][2:],producer_epoch='2',
@@ -4389,7 +4412,6 @@ def verify_empty_context(context,initial,expected):
             native='closed',owner_release='committed',ready=False)
         if compacted: wanted.update(compacted_requests='7',recovery_basis='closed-producer-floor-v3')
         assert report==wanted and type(report['ready']) is bool
-    else: same(m.pg,context['after'])
     assert context['native_after']==native
     if name=='native-first':
         f=context['empty_fault']; empty_fault_guard_delta(f)
@@ -4397,18 +4419,20 @@ def verify_empty_context(context,initial,expected):
         assert f['hit']=='1true'
         if step=='failure': assert f['removed'] is None
         else: empty_fault_checked(f['removed'],removed=True)
-    return dict(status='PASS',case=context['case']['name'],result='REFUSED' if failure else 'EMPTY_ATTEMPT_RETIRED',
+    result=dict(status='PASS',case=context['case']['name'],result='COMMIT_UNKNOWN' if delivery and failure else 'REFUSED' if failure else 'EMPTY_ATTEMPT_RETIRED',
         tables=77,native_rows=len(native['rows']),native_sequence=native['sequence'],product_native_writes=native['sequence']-expected[1]['sequence'],
         target_rows_changed=13 if changed else 0,retired_at_us=at,retirement_xmin=tx,
         compacted_requests=7 if compacted and not failure else 0,resolved_original_requests=7 if not compacted and not failure else 0,
         original_source_digest=known(initial)['digest'],empty_digest=empty_digest,input_files=len(expected[2]),ready=False)
+    if wire: result['wire']=terminal_delivery_checked(context['fixture']['delivery_fault'],context['case'],window,baseline,expected,context['after'],empty_initial=True)
+    return result
 
 
-def empty_controls(context,initial,expected):
-    name,step=empty_specification(context['case']); verify_empty_context(context,initial,expected); rejected=[]
+def empty_controls(context,initial,expected,*,delivery=False,baseline=None):
+    name,step=empty_specification(context['case'],delivery=delivery); verify_empty_context(context,initial,expected,delivery=delivery,baseline=baseline); rejected=[]
     def check(label,change):
         value=copy.deepcopy(context); change(value)
-        try: verify_empty_context(value,initial,expected)
+        try: verify_empty_context(value,initial,expected,delivery=delivery,baseline=baseline)
         except (AssertionError,ValueError,KeyError): rejected.append(label)
         else: raise AssertionError('empty oracle accepted '+label)
     def pg(c,table,filters,**changes): only(c['after'][table],**filters).update(changes)
@@ -4427,7 +4451,7 @@ def empty_controls(context,initial,expected):
     control=max((r for r in context['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
     check('control-expiry',lambda c:pg(c,'owner_epochs',dict(role='control',epoch=control['epoch']),lease_expires_at_us=(1<<63)-1))
     check('unrelated-error',lambda c:c['response'].update(stderr='error: unrelated\n'))
-    if step not in ('failure','refuse'):
+    if (step!='loss' if delivery else step not in ('failure','refuse')):
         def report(c,section,key,value):
             r=loads(c['response']['stdout']); (r if section is None else r[section])[key]=value
             c['response']['stdout']=model.encoded(r).decode()+'\n'
@@ -4451,6 +4475,8 @@ def empty_controls(context,initial,expected):
             if step=='failure': c.update(catalog_before=f['catalog_installed'],catalog_after=f['catalog_installed'])
         check('coordinated-unrelated-fixture-acl',changed_fault_catalog)
         if step=='failure': check('native-close-missing',lambda c:c.update(native_after=copy.deepcopy(c['native_before'])))
+    if delivery and step in ('baseline','loss'):
+        empty_delivery_controls(check,context,initial,expected,baseline)
     return dict(status='PASS',rejected=rejected,count=len(rejected))
 
 
@@ -4498,3 +4524,66 @@ def empty_qualification(component):
         'compacted_empty_full_effect_census_and_zero_target_are_required',
         'compacted_empty_grant_and_delivery_failure_preserve_exact_close_retry',
         'compacted_empty_original_cancellation_cannot_be_replaced_by_a_fresh_flag')} <= set(component['test_names']['initial_reconstruction'])
+
+
+EMPTY_DELIVERY_STEPS={'baseline':('baseline',),'before':('loss','retry'),'after':('loss','retry')}
+
+
+class EmptyInitialDeliveryProfile:
+    DIRECTORY='installed-compacted-empty-initial-faults'
+    LABEL='org.bigbrotr.installed-compacted-empty-initial-faults'
+    STATUS='PASS_INSTALLED_COMPACTED_EMPTY_INITIAL_DELIVERY'
+    DATABASE_PREFIX='bb_compacted_empty_fault_'
+    CLIENT_PREFIX='bigbrotr-compacted-empty-fault-'
+    CLONES=tuple(EMPTY_DELIVERY_STEPS)
+    STEPS=EMPTY_DELIVERY_STEPS
+    CASES=tuple(n+'-'+s for n in EMPTY_DELIVERY_STEPS for s in EMPTY_DELIVERY_STEPS[n])
+    GRANTS=EMPTY_GRANTS
+    NOT_RUN=tuple(v for v in EmptyInitialProfile.NOT_RUN if v!='Final COMMIT wire baselines and before/after delivery loss')+(
+        'Original-input empty final COMMIT delivery loss; only compacted predecessor exercised here',)
+
+
+def empty_delivery_specification(case):
+    name=case['clone']; assert name in EMPTY_DELIVERY_STEPS
+    step=case['name'].removeprefix(name+'-'); assert step in EMPTY_DELIVERY_STEPS[name] and case['name']==name+'-'+step
+    index=EMPTY_DELIVERY_STEPS[name].index(step)
+    assert case['origin']=='empty-compacted' and case['predecessor']==(name+'-'+EMPTY_DELIVERY_STEPS[name][index-1] if index else None)
+    assert case['operation']=='retire-empty' and re.fullmatch('[a-z0-9_]{1,63}',case['database'])
+    assert case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def empty_delivery_config(config,case):
+    assert config['storage']['ingest_root']=='/lab/'+case['clone']+'/store'
+    assert {k:config['postgres']['control'][k] for k in ('database','endpoint','user','password_ref','tls')}==dict(
+        database=case['database'],endpoint='127.0.0.1:5432',user='bigbrotr_control',password_ref='file:/run/secrets/application',
+        tls=dict(local_boundary='loopback',mode='local-plaintext'))
+    assert {k:config['runtime'][k] for k in ('lease_ttl','heartbeat_interval','renewal_timeout','authorization_ttl','graceful_shutdown_timeout')}==dict(
+        lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
+    assert config['sync']['enabled'] is False and config['administration']['enabled'] is False
+    assert config['ingest']['producer_outstanding_requests']==2
+
+
+def empty_delivery_controls(check,context,initial,expected,baseline):
+    import json
+    def fault(c): return c['fixture']['delivery_fault']
+    check('proxy-not-joined',lambda c:fault(c)['wire'].update(readers_joined=False))
+    check('proxy-forced-stop',lambda c:fault(c)['wire'].update(forced_wrapper_stop=True))
+    check('proxy-source-mismatch',lambda c:fault(c)['wire'].update(source_sha256='00'*32))
+    check('configuration-not-restored',lambda c:fault(c)['configuration'].update(restored=''))
+    check('wrong-selected-commit',lambda c:fault(c).update(target_commit=2))
+    check('proxy-cleanup-error',lambda c:fault(c)['errors'].append(dict(phase='child-joined',error='unknown')))
+    def counter(c):
+        wire=fault(c)['wire'];wire['events'][-1]['client_commit_complete']+=1
+        wire['receipt']=wire['events'][-1]
+        wire['stdout']=''.join(json.dumps(e)+'\n' for e in wire['events'])
+    check('coordinated-false-delivery-counter',counter)
+    if context['case']['clone']=='baseline':
+        check('wrong-final-query',lambda c:fault(c)['held']['backend'].update(query='COMMIT'))
+        check('wrong-held-state',lambda c:fault(c)['held']['backend'].update(state='idle'))
+        check('missing-held-transaction',lambda c:fault(c)['held']['backend'].update(xact_start=None))
+        check('held-input-added',lambda c:fault(c)['held']['inputs'].update({'extra.cbor':dict(bytes=1,sha256='00'*32)}))
+        check('held-target-prematurely-retired',lambda c:only(fault(c)['held']['control']['producer_epochs'],producer_epoch=2).update(state='retired'))
+        check('held-current-lease-expired',lambda c:only(fault(c)['held']['control']['owner_epochs'],role='control',state='active').update(lease_expires_at_us=1))
+    else:
+        check('partial-terminal-batch',lambda c:only(c['after']['source_streams'],owner_epoch=2).update(state='open' if context['case']['clone']=='after' else 'closed'))

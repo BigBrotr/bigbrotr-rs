@@ -1190,14 +1190,20 @@ def terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kin
 
 
 
-def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None):
+def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False):
     from fault_cases import Process,safe_event
-    name,step=oracle.terminal_specification(case,faults=not post_proof,post_proof=post_proof)
-    operation=name.split('-')[0] if post_proof else step.split('-')[0]
-    target=(oracle.TERMINAL_PROOF_SELECTORS if post_proof else oracle.TERMINAL_COMMIT_SELECTORS)[operation]; later=4 if post_proof else 3
-    normal=name.endswith('-baseline') if post_proof else step.endswith('-baseline')
-    assert post_proof or normal or step.endswith('-loss')
-    mode='hold-after-complete' if post_proof else 'hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
+    assert type(empty_initial) is bool and not (empty_initial and post_proof)
+    if empty_initial:
+        name,step=oracle.empty_delivery_specification(case); assert step in ('baseline','loss')
+        operation='retire-empty'; target,later=3,1; normal=step=='baseline'
+        mode='hold' if normal else 'before-forward' if name=='before' else 'after-complete'
+    else:
+        name,step=oracle.terminal_specification(case,faults=not post_proof,post_proof=post_proof)
+        operation=name.split('-')[0] if post_proof else step.split('-')[0]
+        target=(oracle.TERMINAL_PROOF_SELECTORS if post_proof else oracle.TERMINAL_COMMIT_SELECTORS)[operation]; later=4 if post_proof else 3
+        normal=name.endswith('-baseline') if post_proof else step.endswith('-baseline')
+        assert post_proof or normal or step.endswith('-loss')
+        mode='hold-after-complete' if post_proof else 'hold' if normal else 'before-forward' if name.endswith('-before') else 'after-complete'
     label=case['name']; config=output/Path(case['config']).name; proxy=None
     record=dict(status='INCOMPLETE',operation=operation,mode=mode,target_commit=target,wire=None,held=None,
         configuration=dict(path=case['config'],direct=None,proxied=None,restored=None),errors=[])
@@ -1230,6 +1236,16 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                         " AND datname=current_database() AND usename='bigbrotr_control';"
                     capture['backend']=json.loads(lab.sql(pg,case['database'],statement))
                     capture['after_us']=history.server_clock(pg,case['database']); save()
+                    if empty_initial:
+                        assert expected is not None
+                        window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
+                        checked=oracle.terminal_held_state(expected,capture['control'],window,operation)
+                        assert capture['inputs']==expected[2] and capture['after_us']<checked.control['lease_expires_at_us']
+                        b=capture['backend']; assert b['state']=='idle in transaction' and b['xact_start'] is not None
+                        assert ' '.join(b['query'].split())=='SELECT control.require_empty_initial_retirement($1::bytea,$2::bytea)'
+                        assert b['pid']==checked.control['control_backend_pid'] and b['backend_start']==checked.control['control_backend_start']
+                        assert b['database']==case['database'] and b['user']=='bigbrotr_control'
+                        assert [held[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==[3,2,2,2]
                     if post_proof:
                         assert expected is not None and initial is not None
                         window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
@@ -1430,10 +1446,10 @@ def empty_digest_mutation(pg,client,output,clone,directory,expected,initial):
     return oracle.empty_digest_mutation_checked(record,expected,initial)
 
 
-def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial):
+def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origins,initial,delivery=False):
     from initial_empty import guarded_fault
     from initial_gap_policy import GUARDS
-    name=clone['name']; origin=oracle.EMPTY_ORIGIN_NAMES[name]
+    name=clone['name']; origin='empty-compacted' if delivery else oracle.EMPTY_ORIGIN_NAMES[name]
     assert clone['origin']==origin and expected==origins[origin]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.EMPTY_GRANTS]
     oracle.history_catalog_checked(report['origins'][origin]['catalog'],clone['catalog_before'],grants=oracle.EMPTY_GRANTS)
@@ -1442,6 +1458,10 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
     helper=Path(__file__).with_name('installed_cycle_client.py'); target=output/helper.name
     if not target.exists(): shutil.copy2(helper,target)
     assert history.digest(helper)==history.digest(target)
+    if delivery:
+        source=history.SOURCE/oracle.ACTIVATED_PROXY; target=output/'fault_proxy.py'
+        if not target.exists(): shutil.copy2(source,target)
+        assert history.digest(target)==history.digest(source)
     configure(pg,client,output,clone['config'],ack=True)
     if name=='original': expected=empty_restore(pg,client,output,clone,directory,expected,initial)
     if name in ('head','target-input'): expected=journey_mutation(pg,client,output,clone,directory,expected,initial)
@@ -1456,7 +1476,7 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
         oracle.empty_fault_guard_delta(fault)
         oracle.same(schema.rows(pg,clone['database']),expected[0])
         lab.write_json(output/(name+'-fault.json'),fault)
-    for step in oracle.EMPTY_STEPS[name]:
+    for step in (oracle.EMPTY_DELIVERY_STEPS if delivery else oracle.EMPTY_STEPS)[name]:
         if step=='complete':
             restored=guarded_fault(pg,clone['database'],output,name,remove=True)
             assert restored==fault['guards_original']
@@ -1467,32 +1487,36 @@ def run_empty_sequence(pg,client,output,clone,directory,expected,report,*,origin
             database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case); lab.write_json(output/'result.json',report)
         catalog=fault['catalog_installed'] if step=='failure' else clone['catalog_before']
+        baseline=None
+        if delivery and step=='loss':
+            baseline=oracle.only(report['cases'],name='baseline-baseline')['oracle']; assert baseline['status']=='PASS'
+        hook=terminal_delivery_hook(pg,client,output,case,directory,empty_initial=True,expected=expected) if delivery and step in ('baseline','loss') else None
         def verify(c,s):
             if fault is not None:
                 if step=='failure':
                     fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
                     lab.write_json(output/(name+'-fault.json'),fault)
                 c['empty_fault']=json.loads(json.dumps(fault)); lab.write_json(output/(case['name']+'-verification.json'),c)
-            return oracle.verify_empty_context(c,s,expected)
+            return oracle.verify_empty_context(c,s,expected,delivery=delivery,baseline=baseline)
         expected=installed_cycle.execute(pg,client,output,case,directory,expected,catalog,initial,
-            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected),oracle.empty_closed))
+            checks=(verify,lambda c,s:oracle.empty_controls(c,s,expected,delivery=delivery,baseline=baseline),partial(oracle.empty_closed,delivery=delivery)),fault=hook)
         case['catalog_after']=history.catalog(pg,clone['database']); assert case['catalog_after']==catalog
         predecessor=case['name']; lab.write_json(output/'result.json',report)
     assert history.catalog(pg,clone['database'])==clone['catalog_before']
     return predecessor
 
 
-def run_empty_initial(root,build,product_source):
-    origins,initial=oracle.empty_origins_checked(root); profile=oracle.EmptyInitialProfile
+def run_empty_initial(root,build,product_source,*,delivery=False):
+    origins,initial=oracle.empty_origins_checked(root,delivery=delivery); profile=oracle.EmptyInitialDeliveryProfile if delivery else oracle.EmptyInitialProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,client_prefix=profile.CLIENT_PREFIX,
         database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,not_run=profile.NOT_RUN,
-        scope='Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
+        scope='Compacted empty initial final COMMIT measured baseline and before/after loss with fresh completion/retry' if delivery else 'Compacted and original empty initial target retirement, fresh retry, actual native-first SQL rollback continuation and selected refusals')
     try:
-        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial),
-            origin_specs=oracle.EMPTY_ORIGINS,origin_for_clone=oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
+        return transition.run(root,build,suite=suite,sequence=partial(run_empty_sequence,origins=origins,initial=initial,delivery=delivery),
+            origin_specs=oracle.EMPTY_PREPARED_ORIGINS[:1] if delivery else oracle.EMPTY_ORIGINS,origin_for_clone={n:'empty-compacted' for n in profile.CLONES} if delivery else oracle.EMPTY_ORIGIN_NAMES,extra_grants=oracle.EMPTY_GRANTS,
             producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_initial=True,
             empty_initial=True,product_source=product_source)
-    finally: assert oracle.empty_origins_checked(root)==(origins,initial)
+    finally: assert oracle.empty_origins_checked(root,delivery=delivery)==(origins,initial)
 
 
 ORIGIN = oracle.ORIGIN
@@ -1512,5 +1536,6 @@ if __name__ == '__main__':
     profile.add_argument('--activated-source-proof',action='store_true',help='Separate Source/abandon ancestor H/D after actual proof and confirmed server refresh')
     profile.add_argument('--activated-terminal-guards',action='store_true',help='Separate unresolved import, positive draining retirement and isolated native OPEN guard')
     profile.add_argument("--empty-initial",action="store_true",help="Prepared empty initial target retirement and native-first continuation")
+    profile.add_argument('--empty-initial-faults',action='store_true',help='Compacted empty final COMMIT baseline, delivery loss and fresh retries')
     args = parser.parse_args()
-    (run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
