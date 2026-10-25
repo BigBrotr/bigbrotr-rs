@@ -24,6 +24,15 @@ impl PublicationState {
         }
         Ok(())
     }
+    fn start_abandonment(&self, compacted: bool) -> Result<(), OwnerError> {
+        self.start()?;
+        // A compacted Source proof permits publication and typed ACK only.
+        // Spend the attempted consumer even when its basis is refused.
+        if compacted {
+            return Err(OwnerError::InvalidInput);
+        }
+        Ok(())
+    }
 }
 
 pub struct ActivatedSuccessorSourceRecovery {
@@ -95,6 +104,9 @@ impl ActivatedSuccessorSourceRecovery {
     }
 }
 impl ActivatedSuccessorSourceResolution<'_> {
+    pub fn needs_compacted_initial(&self) -> bool {
+        self.inner.needs_compacted_initial()
+    }
     pub fn current_epoch(&self) -> Option<u64> {
         self.inner.current_epoch()
     }
@@ -134,6 +146,39 @@ impl ResolvedActivatedSuccessorSource<'_> {
 }
 
 impl ControlSession {
+    /// Require the compacted basis for Source publication and its final ACK.
+    /// This does not authorize acquisition abandonment or producer retirement.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "separate native metadata, original input and retained canonical effect grants"
+    )]
+    pub async fn inspect_activated_successor_source_with_compacted(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: SuccessorReplayRequest<'_>,
+        metadata_permit: OwnedPermit,
+        input_permit: OwnedPermit,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedSuccessorSourceRecovery, ProducerResolveError> {
+        let check = successor_compaction::Check::new(input.limits.event, effects)?;
+        let inner = self
+            .inspect_successor_recovery(
+                recovery,
+                input,
+                metadata_permit,
+                input_permit,
+                Purpose::Source,
+                Some(check),
+                validate,
+            )
+            .await?;
+        Ok(ActivatedSuccessorSourceRecovery {
+            inner,
+            publication: PublicationState::default(),
+        })
+    }
+
     pub async fn inspect_activated_successor_source(
         &mut self,
         recovery: &IngestRecovery,
@@ -191,6 +236,17 @@ impl ControlSession {
             validate,
         )
         .await
+    }
+
+    pub async fn inspect_activated_successor_source_compacted_initial(
+        &mut self,
+        resolution: &mut ActivatedSuccessorSourceResolution<'_>,
+        input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<crate::storage::rocks::store::CompactedInitialSummary, ProducerResolveError> {
+        resolution.owner.require_available()?;
+        self.inspect_activated_successor_compacted_initial(&mut resolution.inner, input, validate)
+            .await
     }
 
     pub async fn finish_activated_successor_source_epoch(

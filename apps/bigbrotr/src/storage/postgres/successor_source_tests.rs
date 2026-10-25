@@ -220,3 +220,64 @@ fn publication_is_spent_before_failure_and_never_rearms() {
     fn send_sync<T: Send + Sync>() {}
     send_sync::<PublicationState>();
 }
+
+#[test]
+fn compacted_source_abandonment_refusal_spends_publication() {
+    for compacted in [false, true] {
+        let publication = PublicationState::default();
+        publication.require_available().unwrap();
+        assert_eq!(
+            publication.start_abandonment(compacted),
+            if compacted {
+                Err(OwnerError::InvalidInput)
+            } else {
+                Ok(())
+            }
+        );
+        // Both the accepted original consumer and the refused compacted
+        // consumer spend the owner before any transaction or job effect.
+        assert_eq!(
+            publication.require_available(),
+            Err(OwnerError::Unavailable)
+        );
+        assert_eq!(publication.start(), Err(OwnerError::Unavailable));
+        assert_eq!(
+            publication.start_abandonment(false),
+            Err(OwnerError::Unavailable)
+        );
+    }
+}
+
+#[test]
+fn source_cut_is_independent_of_checkpoint_credit_and_initial_floor() {
+    let closed = head(3);
+    let expected = summary(3);
+    let (checkpoint, acknowledged, initial_floor_requests) = (1, 1, 7);
+    assert_eq!(checkpoint, acknowledged);
+    assert_eq!(
+        (expected.resolved_requests, expected.last_complete_sequence),
+        (3, 4)
+    );
+    projection::require_summary(&expected, &closed, 3, 4).unwrap();
+    // The existing final ACK kernel uses typed C1. Source publication instead
+    // requires the complete current Fact cut4, never C1, issued3 or floor N7.
+    for cut in [
+        checkpoint,
+        expected.resolved_requests,
+        initial_floor_requests,
+    ] {
+        let wrong = LineageEpochSummary {
+            last_complete_sequence: cut,
+            ..expected
+        };
+        assert!(projection::require_summary(&wrong, &closed, 3, 4).is_err());
+        assert!(require_published(&closed, &closed, &wrong).is_err());
+    }
+    let wrong_floor_digest = LineageEpochSummary {
+        digest: [7; 32],
+        ..expected
+    };
+    assert!(projection::require_summary(&wrong_floor_digest, &closed, 3, 4).is_err());
+    assert!(require_published(&closed, &closed, &wrong_floor_digest).is_err());
+    require_published(&closed, &closed, &expected).unwrap();
+}
