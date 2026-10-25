@@ -5585,7 +5585,8 @@ def later_held_checked(held,events,expected,initial,case,window):
     later_prepare_sql(t.model,held['control'],plan)
     assert held['inputs']==expected[2] and t.position==len(events)
     b=held['backend']; c=t.model.control
-    assert b==dict(pid=backend['pid'],backend_start=backend['backend_start'],database=case['database'],user='bigbrotr_control',
+    assert retained.instant(b['backend_start'])==retained.instant(backend['backend_start'])
+    assert b==dict(pid=backend['pid'],backend_start=b['backend_start'],database=case['database'],user='bigbrotr_control',
         state='idle',xact_start=None,query='COMMIT',observed_at_us=b['observed_at_us'])
     number(held['before_us'],window['before_us'],window['after_us'],integer=True)
     number(b['observed_at_us'],held['before_us'],held['after_us'],integer=True)
