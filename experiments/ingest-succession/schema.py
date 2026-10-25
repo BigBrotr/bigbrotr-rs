@@ -57,9 +57,8 @@ def containers():
     return json.loads(lab.docker('inspect', *ids).stdout)
 
 
-def rows(pg, database):
-    # Actual complete rows/xmin, including old unknown-to-the-fixture relations.
-    return json.loads(lab.sql(pg, database, """
+# Actual complete rows/xmin, including old unknown-to-the-fixture relations.
+ROWS_SQL = """
 SET max_parallel_workers_per_gather=0;
 SET statement_timeout='15s';
 CREATE FUNCTION pg_temp.capture() RETURNS jsonb LANGUAGE plpgsql AS $$
@@ -73,7 +72,11 @@ BEGIN
     RETURN answer;
 END $$;
 SELECT pg_temp.capture();
-"""))
+"""
+
+
+def rows(pg, database):
+    return json.loads(lab.sql(pg, database, ROWS_SQL))
 
 
 def absence(pg, database):

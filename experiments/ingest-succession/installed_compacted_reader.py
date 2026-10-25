@@ -1291,6 +1291,31 @@ def terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kin
 
 
 
+def later_input_observation(pg,database,actor=None):
+    from installed_empty import bounded_sql,exact_absence_sql
+    clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint;\n'
+    if actor is None:
+        backend="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
+            "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
+            "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid=" \
+            "(SELECT control_backend_pid FROM control.owner_epochs WHERE role='control' ORDER BY epoch DESC LIMIT 1)" \
+            " AND datname=current_database() AND usename='bigbrotr_control';\n"
+        # Separate statements retain actual PG order; no volatile expression/CTE ordering premise.
+        lines=bounded_sql(pg,database,clock+schema.ROWS_SQL+backend+clock,5).splitlines()
+        before,control,backend,after=map(json.loads,lines)
+        assert type(before) is int and type(after) is int and 0<before<=after
+        assert type(control) is dict and len(control)==77 and type(backend) is dict
+        return dict(before_us=before,after_us=after,control=control,backend=backend)
+    lines=bounded_sql(pg,database,schema.ROWS_SQL+clock+clock+exact_absence_sql(database,actor)+';\n'+clock,5).splitlines()
+    control,after,before_absence,present,after_absence=lines
+    control=json.loads(control);after,before_absence,after_absence=map(json.loads,(after,before_absence,after_absence))
+    assert type(control) is dict and len(control)==77
+    assert all(type(v) is int for v in (after,before_absence,after_absence)) and 0<after<=before_absence<=after_absence
+    assert present=='f', 'original mutation backend still present'
+    return dict(control=control,after_us=after,actor_absence=dict(before_us=before_absence,
+        observations=[dict(actor,present=False)],after_us=after_absence))
+
+
 def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False,later_input=False,baseline=None):
     from fault_cases import Process,safe_event
     assert type(empty_proof) is bool and not (empty_proof and (empty_initial or post_proof))
@@ -1337,8 +1362,14 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
             elif phase=='launched':
                 if normal or proof:
                     held=proxy.event('held',10)
-                    capture=dict(event=held,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,
-                        release_after_us=None,control=schema.rows(pg,case['database']),inputs=history.inputs_at(directory/'store'),backend=None)
+                    if later_input:
+                        # SQL clocks bracket the batch; local file census follows
+                        # under the same gate and precedes the final release clock.
+                        capture=dict(event=held,**later_input_observation(pg,case['database']),release_before_us=None,
+                            release_after_us=None,inputs=history.inputs_at(directory/'store'))
+                    else:
+                        capture=dict(event=held,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,
+                            release_after_us=None,control=schema.rows(pg,case['database']),inputs=history.inputs_at(directory/'store'),backend=None)
                     record['held']=capture; save()
                     current=max((r for r in capture['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
                     pid=current['control_backend_pid']; assert type(pid) is int and pid>0
@@ -1346,8 +1377,10 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                         "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
                         "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(pid)+ \
                         " AND datname=current_database() AND usename='bigbrotr_control';"
-                    capture['backend']=json.loads(lab.sql(pg,case['database'],statement))
-                    capture['after_us']=history.server_clock(pg,case['database']); save()
+                    if not later_input:
+                        capture['backend']=json.loads(lab.sql(pg,case['database'],statement))
+                        capture['after_us']=history.server_clock(pg,case['database'])
+                    save()
                     if empty_initial:
                         assert expected is not None
                         window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
@@ -1371,7 +1404,7 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                         assert [held[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==[target,target,target,target-1]
                         if later_input and not normal:
                             kind='proof-head' if name=='empty_head' else 'proof-digest'
-                            record['mutation']=empty_shape_corruption(pg,output,case['database'],label+'-mutation',capture['control'],initial,kind,observe_actor=True)
+                            record['mutation']=empty_shape_corruption(pg,output,case['database'],label+'-mutation',capture['control'],initial,kind,observe_actor=True,batch_observation=True)
                             assert record['mutation']['after_us']<checked.control['lease_expires_at_us'];save()
                         elif empty_proof and not normal:
                             record['mutation']=empty_shape_corruption(pg,output,case['database'],label+'-mutation',capture['control'],initial,name)
@@ -1705,9 +1738,10 @@ def empty_lock_hook(pg,client,output,case,directory,expected):
     return callback
 
 
-def empty_shape_corruption(pg,output,database,label,expected,initial,name,*,observe_actor=False):
+def empty_shape_corruption(pg,output,database,label,expected,initial,name,*,observe_actor=False,batch_observation=False):
     import subprocess
     assert type(observe_actor) is bool
+    assert type(batch_observation) is bool and (not batch_observation or observe_actor)
     statement=oracle.empty_shape_actor_sql('before')+oracle.empty_shape_corruption_sql(name,expected,initial)+oracle.empty_shape_actor_sql('after')
     record=dict(kind='privileged-isolated-empty-'+name,database=database,before=expected,after=None,statement=statement,
         response=None,before_us=history.server_clock(pg,database),after_us=None)
@@ -1718,10 +1752,16 @@ def empty_shape_corruption(pg,output,database,label,expected,initial,name,*,obse
             '-U','postgres','-d',database,data=statement,check=False,timeout=10)
         record['response']=dict(returncode=response.returncode,stdout=response.stdout,stderr=response.stderr);save()
         assert response.returncode==0 and response.stderr==''
-        record['after']=schema.rows(pg,database);record['after_us']=history.server_clock(pg,database);save()
-        oracle.empty_shape_corruption_checked(record,expected,initial,name,
+        if batch_observation:
+            actor=json.loads(response.stdout.splitlines()[0])['actor']
+            observed=later_input_observation(pg,database,{k:actor[k] for k in ('pid','backend_start','database')})
+            record.update(after=observed['control'],after_us=observed['after_us'],actor_absence=observed['actor_absence'])
+        else:
+            record['after']=schema.rows(pg,database);record['after_us']=history.server_clock(pg,database)
+        save()
+        oracle.empty_shape_corruption_checked({k:v for k,v in record.items() if k!='actor_absence'},expected,initial,name,
             dict(before_us=record['before_us'],after_us=record['after_us']),database)
-        if observe_actor:
+        if observe_actor and not batch_observation:
             from installed_empty import exact_absence
             actor=json.loads(response.stdout.splitlines()[0])['actor']
             identity={k:actor[k] for k in ('pid','backend_start','database')}
