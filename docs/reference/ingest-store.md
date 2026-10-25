@@ -488,8 +488,12 @@ checkpoint1. An exact closed retry preserves the closure timestamp, digest and
 row version. The report adds the same compacted basis/count fields as positive
 recovery; it confers no abandonment, retirement or Archive capability. Installed
 closed-source positive recovery refuses at the SQL open-source guard, while
-installed abandonment still refuses at its strict factory. Source-publication
-response loss and final-ACK fault schedules remain separate gates.
+installed abandonment still refuses at its strict factory. Actual Source-publication
+COMMIT response loss is qualified on exact5ed: loss before forwarding leaves
+Source open, and fresh completion publishes it without another native write; loss
+after server completion retains the closed row, which the fresh retry preserves
+exactly. Both losses return CommitUnknown and precede final ACK/release delivery.
+Final-ACK fault schedules remain a separate gate.
 
 Source publication spends its owner before fallible work and retains native and
 proof custody through known publication, final ACK and shutdown. The public

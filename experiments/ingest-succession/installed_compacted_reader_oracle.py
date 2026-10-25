@@ -7011,7 +7011,9 @@ def later_source_qualification(component):
     assert set(component['test_names']['successor_source'])==set(LATER_SOURCE_CONTROLS)
 
 
-def later_source_specification(case):
+def later_source_specification(case,*,faults=False):
+    assert type(faults) is bool
+    if faults:return later_source_fault_specification(case)
     name=case['clone'];assert name in LATER_SOURCE_STEPS
     assert case['origin']==LATER_SOURCE_ORIGIN_NAMES[name]
     assert case['name'].startswith(name+'-');step=case['name'][len(name)+1:];assert step in LATER_SOURCE_STEPS[name]
@@ -7264,8 +7266,8 @@ def later_loss_recovery_controls(context,loss,initial,original,wire,baseline,exp
     return dict(status='PASS',count=len(rejected),rejected=rejected)
 
 
-def later_source_closed(response,case):
-    _,step=later_source_specification(case);failure=step in LATER_SOURCE_ERRORS;code=4 if failure else 0
+def later_source_closed(response,case,*,faults=False):
+    _,step=later_source_specification(case,faults=faults);failure=step=='loss' if faults else step in LATER_SOURCE_ERRORS;code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -7273,7 +7275,7 @@ def later_source_closed(response,case):
     assert t['command']==argv(case['operation'],Path(case['config'])) and t['config']==case['config'] and t['prefix']=='/lab/'+case['name']
     assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
     if failure:
-        assert response['stdout']=='' and response['stderr']==LATER_SOURCE_ERRORS[step]
+        assert response['stdout']=='' and response['stderr']==(LATER_SOURCE_COMMIT_UNKNOWN if faults else LATER_SOURCE_ERRORS[step])
         return None
     assert response['stderr']=='';report,=[loads(line) for line in response['stdout'].splitlines()]
     assert report['native']=='closed' and report['owner_release']=='committed' and report['ready'] is False
@@ -7344,17 +7346,20 @@ def later_source_diagnostic(record,case,window,control):
         error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)
 
 
-def verify_later_source(context,seed,expected,*,delivery=False):
-    assert type(delivery) is bool
+def verify_later_source(context,seed,expected,*,delivery=False,faults=False,baseline=None):
+    assert type(delivery) is bool and type(faults) is bool and not (delivery and faults)
+    if faults:assert baseline['publication_commit']==15 and baseline['product_source']==LATER_SOURCE_PRODUCT
+    else:assert baseline is None
     if delivery:assert later_source_specification(context['case'])==('finite','source')
-    case=context['case'];name,step=later_source_specification(case);quiet=name=='quiet';failure=step in LATER_SOURCE_ERRORS
+    case=context['case'];name,step=later_source_specification(case,faults=faults);quiet=name=='quiet'
+    loss=faults and step=='loss';failure=loss or step in LATER_SOURCE_ERRORS
     assert set(context)==CONTEXT_FIELDS|({'source_diagnostic'} if step=='closed-positive' else set())
     assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert set(context['before'])==set(context['after'])==set(seed[0]) and len(seed[0])==77
     assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[]
-    assert set(context['fixture'])==({'cleanup_errors','delivery_fault'} if delivery else {'cleanup_errors'}) and context['fixture']['cleanup_errors']==[]
+    assert set(context['fixture'])==({'cleanup_errors','delivery_fault'} if delivery or loss else {'cleanup_errors'}) and context['fixture']['cleanup_errors']==[]
     w=context['server_window'];assert set(w)=={'before_us','after_us'}
     number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
     wanted_inputs=later_recovery_missing_basis(seed,name)[2] if step=='refuse' else seed[2]
@@ -7363,27 +7368,44 @@ def verify_later_source(context,seed,expected,*,delivery=False):
     for n,v in context['input_contents'].items():
         data=bytes.fromhex(v);assert wanted_inputs[n]==dict(bytes=len(data),sha256=sha(data))
     backend_checked(context['backend'],case['database'],context['before'],context['after'])
-    report=later_source_closed(context['response'],case);basis=later_source_basis(seed,quiet)
+    report=later_source_closed(context['response'],case,faults=faults);basis=later_source_basis(seed,quiet)
     issued,ack,cut,digest=(basis[k] for k in ('issued','ack','cut','digest'))
-    m=model.Model(*expected,w);preparation_control(m,context['after'],success=not failure)
+    m=model.Model(*expected,w);preparation_control(m,context['after'],success=not failure,renewed=loss)
+    if loss:m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
     producer=only(m.pg['producer_epochs'],producer_epoch=3);source=only(m.pg['source_streams'],owner_epoch=3)
-    already=step in ('retry','closed-positive','abandon')
+    already=(not loss) if faults else step in ('retry','closed-positive','abandon')
+    source_already=(not loss and name=='publication-after') if faults else already
     assert producer['state']==('closing' if already else 'open') and producer['reserved_through_request']==issued
-    assert source['state']==('closed' if already else 'open')
-    if already:assert (source['last_complete_sequence'],source['closure_digest'])==(cut,'\\x'+digest)
+    assert source['state']==('closed' if source_already else 'open')
+    if source_already:assert (source['last_complete_sequence'],source['closure_digest'])==(cut,'\\x'+digest)
     key=('receipts',(b'\x01\x31'+binary(producer['producer_slot_id'])+be(3)).hex())
     opened=(b'\x01\x31'+be(issued)+be(ack)+be(0)).hex();closed=(b'\x02\x31'+be(issued)+be(ack)+be(0)+b'\x01').hex()
     values=model.native_map(m.native);assert values[key]==(closed if already else opened)
     assert (len(m.native['rows']),m.native['sequence'])==((93,138+already) if quiet else (110,161+already))
-    if step=='source':
-        row=only(context['after']['producer_epochs'],producer_epoch=3);actual=only(context['after']['source_streams'],owner_epoch=3)
-        model.fresh_xmin(row['xmin'],m.pg);model.fresh_xmin(actual['xmin'],m.pg)
-        assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(row['xmin'])<int(actual['xmin'])<int(m.control['xmin'])
-        at=actual['closed_at_us'];model.clock(at,w)
-        assert max(source['opened_at_us'],m.control['acquired_at_us'])<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+    closes=loss if faults else step=='source'
+    publishes=((loss and name=='publication-after') or (not loss and name=='publication-before')) if faults else step=='source'
+    if closes:
+        row=only(context['after']['producer_epochs'],producer_epoch=3);model.fresh_xmin(row['xmin'],m.pg)
+        assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(row['xmin'])<int(m.control['xmin'])
+        if loss:
+            role=only(m.pg['role_instances'],role_instance_id=m.control['role_instance_id'])
+            assert int(role['xmin'])<int(row['xmin'])
         producer.update(state='closing',xmin=row['xmin'])
-        source.update(state='closed',closed_at_us=at,last_complete_sequence=cut,closure_digest='\\x'+digest,xmin=actual['xmin'])
         values[key]=closed;m.native.update(rows=model.native_rows(values),sequence=m.native['sequence']+1)
+    if publishes:
+        actual=only(context['after']['source_streams'],owner_epoch=3);model.fresh_xmin(actual['xmin'],m.pg)
+        assert int(producer['xmin'])<int(actual['xmin'])
+        at=actual['closed_at_us'];model.clock(at,w)
+        assert max(source['opened_at_us'],m.control['acquired_at_us'])<=at<m.control['lease_expires_at_us']
+        if loss:
+            assert int(m.control['xmin'])<int(actual['xmin'])
+            assert m.control['lease_expires_at_us']-6_000_000<=at
+        else:
+            assert int(actual['xmin'])<int(m.control['xmin']) and at<=m.control['released_at_us']
+            if faults:
+                claim=only(context['after']['owner_epochs'],role='control',epoch=m.control['epoch']-1)
+                assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(claim['xmin'])<int(actual['xmin'])
+        source.update(state='closed',closed_at_us=at,last_complete_sequence=cut,closure_digest='\\x'+digest,xmin=actual['xmin'])
     same(m.pg,context['after']);assert m.native==context['native_after']
     guard=None
     if step=='closed-positive':
@@ -7397,17 +7419,22 @@ def verify_later_source(context,seed,expected,*,delivery=False):
         assert report==wanted
     result=dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
         input_files=len(wanted_inputs),producer_epoch=3,target_requests=issued,target_checkpoint=ack,target_acknowledged=ack,source_cut=cut,source_digest=digest,
-        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=0 if failure else issued+1,
-        native_writes=int(step=='source'),refused_before_barrier=failure,refusal_guard=guard)
+        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=0 if failure and not loss else issued+1,
+        native_writes=int(closes),refused_before_barrier=failure and not loss,refusal_guard=guard)
     if delivery:result['publication_commit']=later_source_delivery_checked(context['fixture']['delivery_fault'],case,w,expected,context['after'])
+    if faults:
+        result.update(source_published=source['state']=='closed',control_release=not loss,caller_error='CommitUnknown' if loss else None,
+            final_ACK_delivery='NOT_DELIVERED' if loss else 'CONFIRMED_EQUAL_WATERMARK')
+        if loss:result['publication_loss']=later_source_loss_delivery(context['fixture']['delivery_fault'],case,expected,baseline)
     return result
 
 
-def later_source_controls(context,seed,expected,*,delivery=False):
-    verify_later_source(context,seed,expected,delivery=delivery);name,step=later_source_specification(context['case']);failure=step in LATER_SOURCE_ERRORS;rejected=[]
+def later_source_controls(context,seed,expected,*,delivery=False,faults=False,baseline=None):
+    verify_later_source(context,seed,expected,delivery=delivery,faults=faults,baseline=baseline)
+    name,step=later_source_specification(context['case'],faults=faults);loss=faults and step=='loss';failure=loss or step in LATER_SOURCE_ERRORS;rejected=[]
     def reject(label,change):
         c=copy.deepcopy(context);change(c)
-        try:verify_later_source(c,seed,expected,delivery=delivery)
+        try:verify_later_source(c,seed,expected,delivery=delivery,faults=faults,baseline=baseline)
         except (AssertionError,KeyError,ValueError,TypeError,StopIteration,IndexError):rejected.append(label)
         else:raise AssertionError('accepted later Source control '+label)
     reject('unknown-process',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN'))
@@ -7433,7 +7460,9 @@ def later_source_controls(context,seed,expected,*,delivery=False):
         reject('false-target-count',lambda c:reported(c,'resolved_requests','1' if name=='quiet' else '7'))
         reject('reported-cut-is-issued',lambda c:reported(c,'source_closure',dict(last_complete_sequence='1' if name=='quiet' else '3',sha256=later_source_basis(seed,name=='quiet')['digest'])))
         reject('invented-recovery-field',lambda c:reported(c,'original_initial_requests_replayed','7'))
-    if step!='source':
+    if faults:
+        later_source_fault_controls(reject,context,name,step)
+    elif step!='source':
         reject('rewritten-producer-xmin',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(xmin='4294967002'))
         reject('rewritten-source-xmin',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(xmin='4294967003'))
         reject('rewritten-source-time',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closed_at_us=c['server_window']['before_us']))
@@ -7595,3 +7624,168 @@ def later_source_delivery_controls(reject,context):
     reject('coordinated-premature-COMMIT-delivery',lambda c:wire_change(c,lambda events:events[1].update(client_commit_complete=15)))
     reject('coordinated-missing-final-ACK-or-release',lambda c:wire_change(c,lambda events:events[-1].update(commits_seen=17,commits_forwarded=17,server_commit_complete=17,client_commit_complete=17)))
     reject('coordinated-inconsistent-wire-census',lambda c:wire_change(c,lambda events:events[-1]['frames'].update(frontend=events[-1]['frames']['frontend']+1)))
+
+
+LATER_SOURCE_COMMIT_UNKNOWN='error: successor recovery unavailable: producer operation unavailable: CommitUnknown\n'
+
+
+class LaterSourceFaultProfile:
+    DIRECTORY='installed-compacted-later-source-faults'
+    LABEL='org.bigbrotr.installed-compacted-later-source-faults'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_SOURCE_PUBLICATION_LOSS'
+    DATABASE_PREFIX='bb_later_source_fault_'
+    CLIENT_PREFIX='bigbrotr-later-source-fault-'
+    CLONES=('publication-before','publication-after')
+    STEPS={'publication-before':('loss','complete'),'publication-after':('loss','retry')}
+    CASES=tuple(n+'-'+s for n,steps in STEPS.items() for s in steps)
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Final ACK loss, cancellation, UTC expiry and Source post-proof H/D drift',
+        'Quiet Source faults, missing-copy Source repair, compacted abandonment/retirement/Archive',
+        'Real Sync, capacity and physical/mixed restore; existing Source7 and held baseline remain separate')
+
+
+def later_source_fault_specification(case):
+    name=case['clone'];assert name in LaterSourceFaultProfile.CLONES
+    assert case['name'].startswith(name+'-');step=case['name'][len(name)+1:]
+    assert step in LaterSourceFaultProfile.STEPS[name]
+    assert case['origin']=='live-absent' and case['operation']=='source'
+    assert case['predecessor']==(None if step=='loss' else name+'-loss')
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def later_source_baseline_checked(root,raw=None):
+    """Immutable measured publication, qualified under its own frozen source."""
+    raw=raw or retained.regular_read
+    run=Path(root).parent/'installed-compacted-later-source-delivery-b2c9b72'
+    data=raw(run/'verified-run.json');assert sha(data)=='d99c27e1a2c8487035df6214b8a240897c6732b92fca9257808807d4bca1371d'
+    verified=loads(data);assert verified['status']=='PASS_EXACT_SOURCE_PUBLICATION_BASELINE_AND_RAW'
+    assert verified['source']=='b2c9b72394f25a8b4e302d3ae5e534b83a35acc3' and verified['product_source']==LATER_SOURCE_PRODUCT
+    assert verified['driver']==dict(session=54272,joined=True,exit=0) and verified['raw_driver']==dict(session=60135,joined=True,exit=0)
+    assert (verified['commands'],verified['controls'],verified['raw_file_bindings'])==(1,45,4317)
+    for path,digest in verified['files_sha256'].items():assert sha(raw(Path(path)))==digest
+    replay=loads(raw(run/'raw-replay.json'));assert len(replay['bound_files'])==4317
+    assert replay['status']==LaterSourceDeliveryProfile.STATUS+'_CAPTURE_REPLAY'
+    assert replay['source']==verified['source'] and replay['product_source']==LATER_SOURCE_PRODUCT
+    def bound(path):
+        value=raw(path);assert sha(value)==replay['bound_files'][str(path)];return value
+    folder=run/LaterSourceDeliveryProfile.DIRECTORY
+    report=loads(bound(folder/'result.json'));assert report['status']==LaterSourceDeliveryProfile.STATUS
+    assert report['source']==verified['source'] and report['tree']==verified['tree']
+    case,=report['cases'];assert case['name']=='finite-source' and case['status']=='PASS' and case['returncode']==0
+    assert case['oracle']==verified['oracle']==replay['cases'][0]['oracle']
+    assert case['negative_controls']['count']==45 and case['negative_controls']==replay['cases'][0]['negative_controls']
+    assert case['oracle']['publication_commit']==dict(boundary='later-source-publication-held-before-forward-released',selected_commit=15,
+        total_successful_commits=18,source_cut=4,target_checkpoint=1,target_acknowledged=1,held_native_observation='NOT_RUN_OWNER_LIVE')
+    assert verified['preservation']==dict.fromkeys(('rows_unchanged','catalog_unchanged','native_unchanged','inputs_unchanged','physical_unchanged'),True)
+    assert all(v==[] for v in verified['isolation'].values())
+    terminal=loads(bound(folder/'client-terminal.json'));assert terminal['Id']==report['client']
+    state=terminal['State'];assert state['Status']=='exited' and state['Pid']==0 and state['ExitCode']==143 and state['OOMKilled'] is False
+    build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
+    built,component,qualification=[loads(bound(p)) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
+    qualification_checked(built,component,qualification,LATER_SOURCE_PRODUCT,initial_journey=True,empty_initial=True,later_source=True)
+    provenance=loads(bound(folder/'progress-source.json'));assert provenance['revision']==verified['source'] and provenance['tree']==verified['tree']
+    for name,digest in provenance['files_sha256'].items():assert sha(bound(run/'source'/name))==digest
+    for name,digest in component['executables_sha256'].items():assert sha(bound(build/name))==digest
+    context=loads(bound(folder/'finite-source-verification.json'));delivery=loads(bound(folder/'finite-source-delivery.json'))
+    assert delivery==context['fixture']['delivery_fault'] and context['response']==loads(bound(folder/'finite-source-response.json'))
+    assert verified['custody']==loads(bound(folder/'finite-source-custody.json'))==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    wire=delivery['wire'];assert wire['source_sha256']==sha(bound(run/'source'/ACTIVATED_PROXY))==LATER_PROXY_SHA256
+    assert wire['readers_joined'] is True and wire['forced_wrapper_stop'] is False and wire['exit_code']==0
+    assert delivery['errors']==[] and delivery['configuration']['restored']==delivery['configuration']['direct']
+    assert [[e['event'],*[e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]] for e in wire['events']]==verified['wire_counts']
+    assert verified['wire_counts']==[['ready',0,0,0,0],['held',15,14,14,14],['released',15,14,14,14],['receipt',18,18,18,18]]
+    assert delivery['held']['backend']==verified['held_backend']
+    assert ' '.join(verified['held_backend']['query'].split())==LATER_SOURCE_PUBLICATION_QUERY
+    lock,=verified['held_backend']['source_locks'];assert lock==dict(pid=verified['held_backend']['pid'],database=case['database'],schema='control',relation='source_streams',mode='RowExclusiveLock',granted=True)
+    return dict(source=verified['source'],product_source=LATER_SOURCE_PRODUCT,verified_sha256=sha(data),publication_commit=15,final_commits=18,
+        delivery_sha256=sha(raw(folder/'finite-source-delivery.json')),raw_sha256=sha(raw(run/'raw-replay.json')))
+
+
+def later_source_loss_delivery(record,case,expected,baseline):
+    import tomllib
+    from fault_cases import safe_event
+    name,step=later_source_fault_specification(case);assert step=='loss'
+    assert baseline['publication_commit']==15 and baseline['final_commits']==18 and baseline['product_source']==LATER_SOURCE_PRODUCT
+    assert baseline['verified_sha256']=='d99c27e1a2c8487035df6214b8a240897c6732b92fca9257808807d4bca1371d'
+    mode='before-forward' if name=='publication-before' else 'after-complete';target=baseline['publication_commit']
+    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}
+    assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[] and record['held'] is None
+    assert (record['operation'],record['mode'],record['target_commit'])==('source',mode,target)
+    settings=record['configuration'];assert set(settings)=={'path','direct','proxied','restored'}
+    assert settings['path']==case['config'] and settings['direct']==settings['restored']
+    direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'));empty_delivery_config(direct,case)
+    dataset=only(expected[0]['datasets']);assert direct['topology']['dataset_id']==dataset['dataset_id'][2:] and direct['topology']['instance_id']==dataset['instance_id'][2:]
+    assert direct['topology']['local_roles']==['control','ingest','sync','archive']
+    assert direct['network']['dns']['resolver']=='127.0.0.1:9' and direct['network']['tls']['extra_roots']==[]
+    assert direct['network']['private']['rules']==[dict(endpoint='ws://127.0.0.1:7447/installed-successor-fixture',cidr='127.0.0.1/32',port=7447)]
+    w=record['wire'];assert set(w)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
+    assert w['source_sha256']==LATER_PROXY_SHA256 and w['stderr']=='' and type(w['exit_code']) is int and w['exit_code']==0
+    assert w['readers_joined'] is True and w['overflow'] is False and w['forced_wrapper_stop'] is False
+    events=[safe_event(loads(v)) for v in w['stdout'].splitlines()]
+    assert events==w['events'] and [e['event'] for e in events]==['ready','fault','receipt']
+    ready,_,receipt=events;assert ready==w['ready'] and receipt==w['receipt']
+    port=number(ready['listen_port'],1,65535,integer=True);assert port!=5432;number(ready['pid'],1,integer=True)
+    assert ready['proxy_sha256']==LATER_PROXY_SHA256 and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    assert (ready['max_frame_bytes'],ready['max_wire_bytes'],ready['max_messages'],ready['deadline_seconds'])==(1024**2,64*1024**2,20000,30)
+    wanted=copy.deepcopy(direct);wanted['postgres']['control']['endpoint']='127.0.0.1:'+str(port);assert proxied==wanted
+    revision=case['database'].removeprefix(LaterSourceFaultProfile.DATABASE_PREFIX)[:7]
+    assert w['command']==['docker','exec','-i',LaterSourceFaultProfile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py',
+        '--upstream-port','5432','--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits','0','--deadline-seconds','30']
+    elapsed=0;counts=[15,14,14,14] if name=='publication-before' else [15,15,15,14]
+    for i,e in enumerate(events):
+        elapsed=number(e['elapsed_ns'],elapsed,30_000_000_000,integer=True)
+        assert e['mode']==mode and type(e['commit_number']) is int and e['commit_number']==target
+        assert e['held'] is False and e['hold_action'] is None and type(e['faults']) is int and e['faults']==int(i>0)
+        keys=('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')
+        assert all(type(e[k]) is int for k in keys) and [e[k] for k in keys]==(counts if i else [0]*4)
+        if i:assert e['reason']==mode
+    assert set(receipt['frames'])==set(receipt['tags'])=={'frontend','backend'}
+    for direction,tags in receipt['tags'].items():
+        assert all(re.fullmatch('[0-9a-f]{2}',k) and type(n) is int and n>0 for k,n in tags.items())
+        assert type(receipt['frames'][direction]) is int and receipt['frames'][direction]==sum(tags.values())>0
+    assert sum(receipt['frames'].values())<=20000
+    assert receipt['tags']['frontend']['51']>=15 and receipt['tags']['backend']['43']>=receipt['server_commit_complete']
+    number(receipt['declared_wire_bytes'],1,64*1024**2,integer=True)
+    return dict(boundary=mode,selected_commit=15,commit_counters=counts,later_commits_delivered=0,baseline_sha256=baseline['verified_sha256'])
+
+
+def later_source_fault_controls(reject,context,name,step):
+    loss=step=='loss';publishes=(loss and name=='publication-after') or (not loss and name=='publication-before')
+    if not loss:
+        reject('retry-producer-rewritten',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(xmin='4294967002'))
+        old=max((r for r in context['before']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        reject('failed-owner-not-fenced',lambda c:only(c['after']['owner_epochs'],role='control',epoch=old['epoch']).update(state='active',released_at_us=None))
+    if publishes:
+        reject('publication-before-barrier',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(xmin=only(c['after']['producer_epochs'],producer_epoch=3)['xmin']))
+        reject('publication-before-current-claim',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closed_at_us=c['server_window']['before_us']-1))
+        if not loss:
+            def older(c):
+                used={int(r['xmin']) for rows in c['before'].values() for r in rows};ceiling=max(used)
+                lower=int(only(c['before']['producer_epochs'],producer_epoch=3)['xmin'])
+                candidates=[x for x in range(max(lower+1,ceiling-64),ceiling) if x not in used]
+                assert len(candidates)>=2;fence,published=candidates[-2:]
+                previous=max((r for r in c['before']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                only(c['after']['owner_epochs'],role='control',epoch=previous['epoch']).update(xmin=str(fence))
+                only(c['after']['role_instances'],role_instance_id=previous['role_instance_id']).update(xmin=str(fence))
+                only(c['after']['source_streams'],owner_epoch=3).update(xmin=str(published))
+            reject('coordinated-publication-before-retained-refresh',older)
+    else:
+        reject('retained-source-xmin',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(xmin='4294967003'))
+        reject('retained-source-time',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closed_at_us=c['server_window']['before_us']))
+    reject('initial-H-drift',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(checkpoint_revision=only(c['after']['producer_checkpoints'],producer_epoch=1)['checkpoint_revision']+1))
+    if not loss:return
+    def fault(c):return c['fixture']['delivery_fault']
+    reject('proxy-not-joined',lambda c:fault(c)['wire'].update(readers_joined=False))
+    reject('proxy-forced-stop',lambda c:fault(c)['wire'].update(forced_wrapper_stop=True))
+    reject('proxy-source-drift',lambda c:fault(c)['wire'].update(source_sha256='00'*32))
+    reject('proxy-cleanup-error',lambda c:fault(c)['errors'].append(dict(phase='child-joined',error='unknown')))
+    reject('configuration-not-restored',lambda c:fault(c)['configuration'].update(restored=''))
+    reject('wrong-publication-selector',lambda c:fault(c).update(target_commit=11))
+    reject('invented-held-observation',lambda c:fault(c).update(held={}))
+    def change_wire(c,change):
+        w=fault(c)['wire'];change(w['events']);w['ready']=w['events'][0];w['receipt']=w['events'][-1]
+        w['stdout']=''.join(model.encoded(e).decode()+'\n' for e in w['events'])
+    reject('coordinated-delivered-publication',lambda c:change_wire(c,lambda es:[e.update(client_commit_complete=15) for e in es[1:]]))
+    reject('coordinated-later-ACK-or-release',lambda c:change_wire(c,lambda es:[e.update(commits_seen=16,commits_forwarded=16,server_commit_complete=16) for e in es[1:]]))
+    reject('coordinated-wire-census',lambda c:change_wire(c,lambda es:es[-1]['frames'].update(frontend=es[-1]['frames']['frontend']+1)))

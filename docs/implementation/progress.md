@@ -6,78 +6,73 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites and later compacted
-consumers. Main `b660a179231e14ad766b578f4327e533c069509d` is pushed (42398 joined0),
-including Source delivery baselineb2c9; product remains exact5ed. This documentation
-checkpoint records the separate reviewed85a abandonment build. Main has no pending
-merge/rebase. Source85 is not integrated or installed-qualified.
+consumers. Main was clean/pushed at `c2a3b62e82f04bc9c8c4752e8e18db947f31bad3`.
+This coherent merge integrates qualified Source publication fault fixture
+`24fb91b67bf0425df2dcb67bc462b48eb203b0a3`; its three Python files match that
+frozen source exactly and product remains5ed. Push is pending this commit.
+Separate product85 abandonment is reviewed/build-qualified, not integrated or
+installed-qualified. No pending conflict or rebase.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 exact identities/results under `initial_successor_preparation_20261012.
 repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.compacted_successor_preparation.
-later_empty_consumer_work`: `next_fresh_recovery_work_20261025.next_delivery_work`
-and sibling `next_source_work_20261025`. The [inventory](../research/laboratory-inventory.json)
-owns retained resources. Reuse unchanged evidence.
+later_empty_consumer_work.next_source_work_20261025`: `next_delivery_work`
+and `next_abandonment_work_20261025`. The [inventory](../research/laboratory-inventory.json)
+owns retained resources. Reuse unchanged evidence and linked earlier qualifications.
 
 ## Verified work and open findings
 
-- **PASS:** Source publication baselineb2c9:1 command/45 controls/4317 raw bindings;
-  measured COMMIT15/final18, full held SQL/backend/query/Source relation lock.
-  Release327366us after refresh under unchanged6s/1s/5s; final110/162/C1/A1/cut4.
-- **PASS:** exact5ed build226 tests/117 mandatory controls/14 checks including
-  Clippy; Source b370:3 clones/7 commands/152 controls/4519 raw bindings.
-  Finite cut4/C1/A1 and quiet cut0 closure/retry, closed-positive SQL refusal,
-  strict installed abandonment refusal and missing-required-current refusal.
-- **PASS:** exact837/c814 authentic COMMIT11 loss:2 clones/6 commands/112 controls/
-  7978 raw bindings. Fresh missing-copy repair preserves C0/A0; after-completion
-  loss permits ACK1 using retained C1. Exact retries add no native writes.
-  This is exact837 fault evidence, not an exact5ed connected fault result.
-- **PASS, reused:** measured baseline9f; positive recoveryd8; livefa; input821;
-  later-empty28cd and ordinaryc3. Their scope and receipts remain in the report.
-- Integrated-verifier compatibility is distinct from frozen-run qualification.
-  Historical source-binding guards must still refuse a changed verifier; original
-  PASS receipts and failed compatibility attempts remain unmodified.
-- Original failures4a/15da/0169, fixture diagnostics, and initial a99 Sync timeout
-  remain preserved. The cause of a99 is unknown; retain existing diagnostic markers
-  if a required future Sync journey naturally reproduces it.
+- **PASS:** Source publication faults24:2 clones/4 commands/111 controls/6506 raw
+  bindings. Before-forward COMMIT15 loss leaves SourceOPEN/nativeCLOSING110/162;
+  fresh completion publishes with zero native writes. After-completion loss leaves
+  SourceCLOSED; fresh retry preserves row/time/xmin with zero native writes.
+  Both losses return exact CommitUnknown/exit4 and deliver no later ACK/release.
+  Full77 tables, original inputs, H/D, C1/A1/cut4 remain checked and preserved.
+- **PASS:** measured baselineb2:1/45/4317; publication15/final18 and actual Source
+  write lock. Sourceb370:3 clones/7 commands/152 controls/4519 bindings; finite/quiet
+  closure/retry and three refusals. Both use exact5ed build226/117/14checks.
+- **PASS:** separate85 build229 tests/120 mandatory/13 selectors/all15 checks,
+  including Clippy. Exact five ELF identities and closed build containers verified.
+  Installed zero-job/nonzero abandonment remains **NOT_RUN**.
+- Prior837 outcome-loss/c814, positive recoveryd8, livefa, input821, later-empty28cd
+  and ordinaryc3 evidence remains scoped to its original source and artifacts.
+  Changed verifier bytes must still fail historical binding; no historical PASS
+  is requalified using a newer verifier.
+- Sourcefault review corrected a new before-completion version-order gap:
+  max retained xmin < owner fence < Source publication < final Control, with a
+  coordinated negative. Existing shared/default semantics remain unchanged.
+- Original failures and diagnostic failures remain preserved. Initial a99 Sync
+  timeout cause is unknown; keep existing diagnostic markers if a required future
+  Sync journey naturally reproduces it. No floor writer/unlink is qualified.
 
 ## Work and resources
 
-Prior actual build/runtime/raw drivers joined, including latest54272/60135 exit0.
-New exact85a build42575 is RUNNING; no final exit observed. Its retainedrun
-`/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-85a4308/resources.json`
-owns fetchb91f253343aa and nativea9ce09ec196c under the exclusive existing cache.
-Last inspected Sourceclient3d885c5bd57b exited143; borrowedPG71775507 exited0;
-both PID0/noOOM. No PG/installed runtime active; only the new build is active.
-Faultclient148fe012 also stopped.
+All root handles joined: runtime33364/raw71468 exit0; build42575 exit0. Freshly
+inspected Sourcefault clienta3c455da6793 exited143 and borrowedPG71775507 exited0,
+both PID0/noOOM. Build fetchb91f253343aa/nativea9ce09ec196c previously inspected
+exited0/PID0/noOOM at its completed receipt. No active root engine or agent engine.
+All two fault clones/databases, datasets/logs/failures/.research/worktrees remain.
+Free space before the small fault run was186,624,745,472bytes; no cleanup needed.
 
-Source5ed, fixtureb370 and faultc814 worktrees remain clean/detached at their exact
-revisions. Their three redundant local refs are retired; archive refs and a verified
-17,384,152-byte0600 bundle preserve their histories. All originals/logs/failures/
-databases/datasets/.research remain intact; inventory links the retirement receipt.
-Old837/d8 refs were already retired and their worktrees preserved.
-
-`compacted_reader_fixture` continues authentic Source publication loss and fresh
-completion/retry source in `.research/compacted-later-source-delivery-fixture-20261025`,
-branch `work/compacted-later-source-delivery-fixture`, frozen baselineb2c9.
-`empty_malformed_floor` froze explicit compacted abandonment85a in
-`.research/compacted-later-abandonment-20261025`, branch
-`work/compacted-later-abandonment`, basecb9a2bb2; eight files reviewed/formatted,
-build42575 pending. Author now audits genuine compacted claim setup read-only.
-`compacted_reader_review` handles critical reviews; root retains formatting/build/
-engine ownership. Build42575 is the only root execution; agents have no engines.
+`compacted_reader_fixture` and `compacted_reader_review` finished fault source/review
+in `.research/compacted-later-source-delivery-fixture-20261025`, frozen24fb91b on
+`work/compacted-later-source-delivery-fixture`. `empty_malformed_floor` keeps85
+frozen in `.research/compacted-later-abandonment-20261025` on
+`work/compacted-later-abandonment`; genuine compacted claims audit988ded07 was accepted and a minimal separate
+probe worktree authorized. Prior retired refs remain archived/bundled with detached worktrees
+and ignored artifacts intact; current useful branches remain until integration.
 
 ## Next action
 
-Review/execute two authentic Source publication loss clones (before-forward and
-after-complete) and fresh Source completion/exactretry using the measured baseline
-and existing proxy/custody/oracle. Join exact abandonment85a build42575 and verify actual tests/artifacts/custody;
-229/120/13 remain predictions until then. Nonzero abandonment requires a real
-claim under the still-live activating Control; never retrofit attribution on a
-closed origin. Canonical H/D exclusion relies on existing same-transaction locks
-and immutable guards, separately from native validation and final typed ACK.
+Finish this coherent Sourcefault integration/push. Extend the existing finite probe minimally: actually prepare/activate
+epoch3 from the qualified compacted Terminal2 origin, then accept/claim one
+zero-request job and accept an unclaimed job under that same still-live Control.
+Use independent complete77-table/native/input expectations; do not retrofit
+attribution or infer nonzero abandonment from the zero-job livefa origin.
+Then qualify installed compacted abandonment and exact retry using real jobs.
 
 Source/ACK fault schedules, staged/reserved tails, Sync, abandonment/retirement/
 Archive, physical limits under load, restore/backup/capacity and M1–M5 remain
-incomplete. No floor writer/unlink is qualified. Q33 CI billing, arm64 and signing/
-registry remain separate gates. No whole-product completion claim.
+incomplete. Q33 CI billing, arm64 and signing/registry remain separate gates.
+No whole-product completion claim.

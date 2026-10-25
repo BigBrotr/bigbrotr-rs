@@ -64565,7 +64565,7 @@
           }
         },
         "later_source_delivery_fixture_work": {
-          "status": "BASELINE_QUALIFIED; SOURCE_PUBLICATION_LOSS_SOURCE_IN_PROGRESS",
+          "status": "BASELINE_AND_PUBLICATION_LOSS_QUALIFIED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-delivery-fixture-20261025",
           "branch": "work/compacted-later-source-delivery-fixture",
           "base": "689e94fb2e1a3f8b97762524fd4119feca73cff9",
@@ -64574,19 +64574,23 @@
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-delivery-reuse-audit-v1.json",
             "sha256": "42be23b140560cb249317005d6b83e9554239cfa932194ae3932a7fa2a5f9e2f"
           },
-          "scope": "One finite clone/one held-success Source baseline first. Explicit exact5ed12 profile, independent77-table/input model, exact held backend/query plus Source RowExclusiveLock, immutable H/D and C1/A1/cut4. C15/18 candidates unmeasured. Preserve installed6s/1s/5s timing. Existing proxy/owners only; no Rust change.",
+          "scope": "Measured held-success Source publication COMMIT15/final18 and authentic before/after publication loss with fresh completion/exact retry on exact5ed.",
           "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only actual engines/runtime/integration",
-          "next": "Implement/review before-forward and after-complete publication loss with fresh Source completion/exactretry (2clones4commands), pinning the successful baseline. Same owners and exact5edbuild; no ordinal inference from older paths.",
-          "source": "b2c9b72394f25a8b4e302d3ae5e534b83a35acc3",
+          "next": "Final ACK loss/cancellation/expiry/H-D boundaries remain separate; next useful work is installed compacted abandonment with genuine activator-owned claims.",
+          "source": "24fb91b67bf0425df2dcb67bc462b48eb203b0a3",
           "runtime": {
             "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-source-delivery-b2c9b72/verified-run.json",
             "sha256": "d99c27e1a2c8487035df6214b8a240897c6732b92fca9257808807d4bca1371d"
           },
-          "state": "Baseline frozen/qualified and integrated by current merge; author continues fault source in same retainedworktree.",
-          "processes": "Root54272/60135 joined0; client3d885c5bd57b exited143 and PG71775507 exited0/PID0/noOOM. No active root engine; author source only."
+          "state": "Frozen clean24fb91b, qualifying baselineb2 and fault24 retained; current main merge integrates fault24.",
+          "processes": "Root33364/71468 joined0; clienta3c455da6793 exited143 and PG71775507 exited0/PID0/noOOM. No active root engine. Two retained clones/databases and all original files/logs preserved.",
+          "publication_faults": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-source-faults-24fb91b/verified-run.json",
+            "sha256": "197012988a7e6eb9a02da84c2f07c599d25ffb4fffd8c357d6f1ea2912a5f2a6"
+          }
         },
         "later_abandonment_work": {
-          "status": "FROZEN_REVIEWED_FORMATTED; BUILD_IN_PROGRESS_RUNTIME_NOT_RUN",
+          "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-abandonment-20261025",
           "branch": "work/compacted-later-abandonment",
           "base": "cb9a2bb2118b0983bd040bfd8c587e71a8f869ed",
@@ -64596,7 +64600,7 @@
           },
           "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
           "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
-          "next": "Join actual build and verify its result/ELFs/custody. Author read-only genuine compacted claim-origin audit while85 remains frozen; installed zero-job/nonzero qualification not started.",
+          "next": "Root accepted genuine compacted claims audit; minimal four-owner finite probe authorized in a separate85-based worktree. Independent full-state fixture and actual zero-job/nonzero installed abandonment remain NOT_RUN. Product85 frozen, not integrated.",
           "source": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
           "tree": "efa1520a24b6d03bfd03c1191c71c50df2cefe07",
           "source_receipt": {
@@ -64618,10 +64622,18 @@
           "build": {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-85a4308",
             "session": 42575,
-            "state": "RUNNING; EXIT_NOT_OBSERVED",
-            "expected_only": "229 components/120 mandatory/13 selectors; no actual pass claim"
+            "state": "JOINED_EXIT0",
+            "verified": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-85a4308/verified-build.json",
+              "sha256": "fd27d6b1b42682af4c68e2a08679bc7e6b691770747ed9559f4ce7396c5e8ae4"
+            },
+            "result": "229tests/120mandatory/13selectors/all15checks includingClippy PASS;5ELFs verified; fetch/native exited0/PID0/noOOM, inventory unchanged."
           },
-          "processes": "Root build42575 running; exactrun resources.json owns fetchb91f253343aa and nativea9ce09ec196c, existing exclusive compiler cache. No PG/installed runtime concurrent. Source85WT frozen; author next-origin audit read-only."
+          "processes": "Root42575 joined0; fetchb91f253343aa/nativea9ce09ec196c exited0/PID0/noOOM. Source85WT frozen; genuine claim-origin audit only, no agent engines.",
+          "claims_prerequisite_audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-claims-prerequisite-20261025.json",
+            "sha256": "988ded07518da23088d133a60d9a99d6474103152984b787310922c0af572fce"
+          }
         }
       }
     }
