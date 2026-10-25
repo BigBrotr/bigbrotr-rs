@@ -6811,7 +6811,11 @@ def later_live_wire_checked(wire,context,expected,initial):
         assert e['held'] is (i==1) and e['hold_action']==('release' if i>=2 else None)
         assert [e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==(
             [0]*4 if i==0 else [11,10,10,10] if i<3 else [22]*4)
-    assert receipt['reason'] in ('frontend-eof','backend-eof') and sum(receipt['frames'].values())<=20000
+    assert receipt['reason'] in ('frontend-eof','backend-eof') and set(receipt['tags'])==set(receipt['frames'])=={'frontend','backend'}
+    for direction,tags in receipt['tags'].items():
+        assert all(re.fullmatch('[0-9a-f]{2}',k) and type(n) is int and n>0 for k,n in tags.items())
+        assert type(receipt['frames'][direction]) is int and receipt['frames'][direction]==sum(tags.values())>0
+    assert sum(receipt['frames'].values())<=20000
     number(receipt['declared_wire_bytes'],1,64*1024**2,integer=True)
     request=later_dictionary_held(wire['held'],context['case'],expected,initial,context['server_window'],port,released=True)
     full=[loads(v) for v in context['response']['stdout'].splitlines()]
@@ -6870,6 +6874,8 @@ def later_recovery_delivery_controls(context,initial,expected,wire):
         w['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
     reject('coordinated-held-completion',lambda w:counter(w,1,'server_commit_complete',11))
     reject('coordinated-final-count',lambda w:counter(w,3,'client_commit_complete',21))
+    reject('coordinated-wire-frame-tag-mismatch',lambda w:counter(w,3,'frames',
+        dict(w['receipt']['frames'],frontend=w['receipt']['frames']['frontend']+1)))
     truncated=copy.deepcopy(context)
     truncated['response']['stdout']='\n'.join(model.encoded(e).decode() for e in wire['held']['prefix'])+'\n'
     try:verify_later_recovery_delivery(truncated,initial,expected,wire)
