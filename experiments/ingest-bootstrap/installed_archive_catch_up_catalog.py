@@ -113,7 +113,7 @@ def verify_catalog(phase,science,*,virgin=False):
         leaves=virgin_layout(b)
     # The immutable native layout names, rather than fixed generated table IDs,
     # associate each physical file with its independently expected family count.
-    expected_paths=set(before['physical']['data']['files']);newids=set()
+    expected_paths=set(before['physical']['data']['files']);newids=set();parents=set()
     last=only(a['public.ducklake_snapshot'],snapshot_id=start+1)
     for snapshot,counts in expected.items():
         row=only(b['public.ducklake_snapshot'],snapshot_id=snapshot);clock(instant(row['snapshot_time']),phase['window'])
@@ -145,13 +145,30 @@ def verify_catalog(phase,science,*,virgin=False):
                 assert fid>=last['next_file_id']+len(maps)
                 assert record['mapping_id']==only(b['public.ducklake_column_mapping'],table_id=table['table_id'])['mapping_id']
             schema=only(b['public.ducklake_schema'],schema_id=table['schema_id'])
+            if virgin:assert schema['path']=='main/' and table['path']==name+'/'
             path=str(PurePosixPath(schema['path'])/table['path']/record['path']);expected_paths.update((path,str(PurePosixPath(path).parent)))
+            if virgin:
+                parents.update(str(p) for p in PurePosixPath(path).parents if str(p)!='.')
+                expected_paths.update(parents)
             metadata=after['physical']['data']['files'][path]
             assert metadata['mode']==0o600 and metadata['links']==1 and re.fullmatch('[0-9a-f]{64}',metadata['sha256'])
         last=row
     added=sum(map(len,expected.values()))
     assert len(b['public.ducklake_data_file'])==len(a['public.ducklake_data_file'])+added and len(newids)==added
-    if virgin:assert added==32
+    if virgin:
+        assert added==32
+        # Virgin publication creates main/table parents as well as the private
+        # prepared directories. Derive every ancestor from closed catalog paths.
+        prior=before['physical']['data'];current=after['physical']['data']
+        identities={(prior['device'],prior['inode'])}|{(v['device'],v['inode']) for v in prior['files'].values()}
+        for name in sorted(parents-set(prior['files'])):
+            item=current['files'][name]
+            assert set(item)=={'mode','inode','device','links','sha256'} and item['sha256'] is None
+            assert type(item['mode']) is int and 0<=item['mode']<=0o777 and item['mode']&0o700==0o700 and not item['mode']&0o022
+            if PurePosixPath(name).name.startswith('prepared-'):assert item['mode']==0o700
+            assert type(item['inode']) is int and item['inode']>0 and item['device']==current['device']
+            assert type(item['links']) is int and item['links']>=2
+            identity=(item['device'],item['inode']);assert identity not in identities;identities.add(identity)
     assert set(after['physical']['data']['files'])==expected_paths
     for name,old in before['physical']['data']['files'].items():
         current=after['physical']['data']['files'][name]

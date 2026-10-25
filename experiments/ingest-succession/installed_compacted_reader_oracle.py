@@ -8409,6 +8409,10 @@ def later_archive_controls(phase,seed,setup,previous):
     reject('column-null-count-rewritten',lambda c:c['after']['catalog']['public.ducklake_file_column_stats'][0].update(null_count=999))
     reject('retained-journal-missing',lambda c:c['after']['local_records'].pop('coordinator.json'))
     if phase['step']=='catchup':
+        reject('virgin-parent-missing',lambda c:c['after']['physical']['data']['files'].pop('main'))
+        reject('virgin-parent-as-file',lambda c:c['after']['physical']['data']['files']['main'].update(sha256='00'*32))
+        reject('virgin-parent-aliased',lambda c:c['after']['physical']['data']['files']['main'].update(inode=c['before']['physical']['data']['inode']))
+        reject('virgin-parent-group-writable',lambda c:c['after']['physical']['data']['files']['main'].update(mode=0o775))
         reject('old-attempt-xmin',lambda c:c['after']['control']['archive_attempts'][0].update(xmin='1'))
         reject('late-archive-refresh',lambda c:only(c['after']['control']['owner_epochs'],role='archive').update(
             lease_expires_at_us=only(c['after']['control']['owner_epochs'],role='archive')['acquired_at_us']+6_000_001))
