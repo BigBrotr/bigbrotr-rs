@@ -64929,9 +64929,9 @@
           "free_after_installed_build": 182015471616
         },
         "later_archive_fixture_work": {
-          "status": "E040_RUNTIME_RAW_PASS_STOPPED_RETAINED; INTEGRATION_READY",
+          "status": "E040_QUALIFIED_INTEGRATED_PUSHED_STOPPED_RETAINED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
-          "branch": "work/compacted-later-archive-fixture",
+          "branch": "DETACHED",
           "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
           "audit": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-audit-v1.json",
@@ -64990,7 +64990,34 @@
               "free_after": 176579837952
             }
           ],
-          "preservation": "All original three-command output/stages, native copy, virgin initialized Archive state/data and credentials remain under the exact run. No data/worktree/cache/container deletion."
+          "preservation": "All995/598/e040 source worktrees, database/native/Archive roots, journals/logs and original failures retained. Only merged local branch ref retired; archive ref and verified19,002,675B0600 bundle preserved.",
+          "archived_branch": "work/compacted-later-archive-fixture",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-ref-retirement-20261025.json",
+            "sha256": "7b1dbe5efaebb5ab85f0e2a3fd75826911f4371fce78bceb169ac589a6f5ef7b"
+          }
+        },
+        "later_archive_loader_fixture_work": {
+          "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-loader-fixture-20261025",
+          "branch": "work/compacted-later-archive-loader-fixture",
+          "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
+          "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
+          "scope": "Two fresh genuine initializations from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control backend loss. Expected240\u2192242 only failed activeControl/role, immutable native93/139/input1 and catalog/journals; exact exit4 and full custody.",
+          "prerequisites": {
+            "audit": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-audit-20261025.json",
+              "sha256": "58f5934266f6b9474b198cb1dacc965fc7a290a2c6e007d386e262f9d6ce27a2"
+            },
+            "critical": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-critical-v1.json",
+              "sha256": "a9fbee1030aa649d8eb487b3f8edff17295206d59dec185e5af2e546636e46a0"
+            },
+            "state": "SOURCE_AUDIT_ACCEPTED; IMPLEMENTATION_IN_PROGRESS",
+            "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
+          },
+          "resources": "Only isolated source worktree allocated; no new runtime resources or source product build.",
+          "next": "Review narrow existing-owner fixture/profile and strict raw changes; freeze exact source, then root runs with unchangedc49 builds. Enforce conservative last-refresh+1s action and no snapshots while consumersAX held."
         }
       }
     }

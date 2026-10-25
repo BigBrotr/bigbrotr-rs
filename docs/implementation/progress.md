@@ -6,11 +6,10 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `d11903b7` is pushed (59872 joined0), containing integrated productc49 and
-its dual builds. This record saves qualified independent fixturee040 before
-integration; only the existing checkpoint/evidence/inventory are locally modified.
-Fixture worktree is clean at `e0401d9165cd5d881842a81e066e26bdde36d597`
-(treef7b07ae1), parent59807b5/995e71d; all12combined files reviewed and qualified.
+Main `f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798` is pushed
+(25651 joined0), integrating qualified fixturee040. All12blobs exactly match the
+runtime source; product paths exactlyc49 (integrationd7c742b3). No merge pending.
+This follow-up updates evidence/inventory; new loader work is isolated below.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
@@ -42,13 +41,15 @@ The [inventory](../research/laboratory-inventory.json) owns retained resources.
 
 ## Owners and resources
 
-No active root engine/build or author/reviewer process. Actual e040 client6a1bdcce
+No active root engine/build. Source author and reviewer are active on the new
+loader fixture; they have no engine authority. Actual e040 client6a1bdcce
 exited143/PID0/noOOM; borrowed PostgreSQL71775507 exited0/PID0/noOOM.
 Both actual catch-up children reaped/unforced; exclusion before external native/
 CAPI opens, origin preservation and empty cleanup/isolation arrays verified.
 
 - `.research/compacted-later-archive-fixture-20261025`, branch
-  `work/compacted-later-archive-fixture`, cleane040. Source233c404d, correction
+  formerly `work/compacted-later-archive-fixture`, now clean detachede040. Merged
+  local ref retired; archive ref/bundle preserved (7b1dbe5e). Source233c404d, correction
   1cbb737f/b55192a0 and critical86a7c3a0/3544aee0/66ad1db1 bind final source.
 - External `/home/tux/bigbrotr-implementation-20260917/runs/` retains
   `installed-compacted-later-archive-995e71d`, `...-59807b5`, `...-e0401d9`:
@@ -56,13 +57,17 @@ CAPI opens, origin preservation and empty cleanup/isolation arrays verified.
   Freeaftere040176,579,837,952bytes. Preserve all artifacts and prior laboratories.
 - Product worktree remains detachedc49 with archived ref/bundle. Qualified dual
   builds and original280 remain inventoried. No dataset/cache/container deleted.
-- Next refusal audit58f59342/criticala9fbee10 is source-only. No next code started.
+- `.research/compacted-later-archive-loader-fixture-20261025`, branch
+  `work/compacted-later-archive-loader-fixture`, basef0efa93a. Source author
+  `compacted_reader_fixture` and independent `compacted_reader_review` own the
+  bounded next fixture. Audit58f59342/criticala9fbee10 accepted; no runtime yet.
+  Report `next_archive_work.next_loader_work` and inventory own its details.
 
 ## Next action
 
-Integrate qualifiede040 plus evidence on main and retire only redundant branch refs
-with worktrees/artifacts preserved. Then implement the two audited loader cases on
-fresh genuine initializations: SIGTERM and exact Control-backend loss while the
-PREREQUISITES query waits on consumers. Act before last-refresh anchor+1s; retain
-holder until child terminal, then rollback/join and exclude all backends before
-native reopen. Existing6/1/5 clocks and full independent state expectations remain.
+Review and freeze the two audited loader cases on fresh genuine initializations:
+SIGTERM and exact Control-backend loss while PREREQUISITES waits on consumers.
+Act before last-refresh anchor+1s; retain holder until child terminal, then
+rollback/join and exclude all backends before native reopen. No full77snapshot
+while AXheld. Existing6/1/5 clocks and full independent state expectations remain.
+Reuse currentc49 builds; root alone runs frozen-source actual cases and raw replay.

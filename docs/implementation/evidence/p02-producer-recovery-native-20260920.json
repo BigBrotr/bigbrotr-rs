@@ -46853,7 +46853,7 @@
                       "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
-                      "status": "PRODUCT_INTEGRATED_PUSHED; DUAL_BUILD_AND_INSTALLED_ARCHIVE_PASS; FIXTURE_INTEGRATION_READY",
+                      "status": "ARCHIVE_POSITIVE_INTEGRATED_QUALIFIED; LOADER_REFUSAL_FIXTURE_IN_PROGRESS",
                       "audit": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
@@ -46873,9 +46873,9 @@
                       },
                       "custody": "Source reviewed: Reserved/Loaded/Bound holds one Check before connection; errors preserve it; native closes before named supervised driver receives keeper, transport drops before keeper. Pure owner and synthetic transport controls do not demonstrate actual SQL cancellation.",
                       "fixture_work": {
-                        "status": "PASS_EXACT_E040_RUNTIME_AND_RAW; INTEGRATION_READY",
+                        "status": "PASS_EXACT_E040_RUNTIME_RAW_INTEGRATED_PUSHED",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
-                        "branch": "work/compacted-later-archive-fixture",
+                        "branch": "DETACHED",
                         "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "audit": {
                           "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-audit-v1.json",
@@ -46905,7 +46905,7 @@
                           "sha256": "750882e1331ee8ed8ed84e8f8c720136841a9e437df6d1fc1e4b7a334d6f8296"
                         },
                         "result": "Three initializer commands exited0, SQL236/236/240; full setup validator FAIL at installation.layout_checksum before reader/publication. Stored hash is ordered PostgreSQL structural definitions, while checker wrongly used native declaration file hash. Original RUNNING case labels preserved and do not imply live work. Cleanup/isolation arrays empty; all54 new controls/raw/publication/retry NOT_RUN.",
-                        "next": "Integrate verified12-file fixture and evidence; then two fresh initialized copies for loader cancellation and exact Control-backend loss, implementing audit58/criticala9fbee timing condition. Read/export/pre-succession/fault delivery remain separate.",
+                        "next": "Qualified source is integrated/pushed; next_loader_work owns the bounded real cancellation/loss increment.",
                         "layout_correction": {
                           "source": "59807b5f974c8471d776d865e37df1233cb3dd1c",
                           "tree": "a0e92083fd3bf597dc27c0592737357742dd2f87",
@@ -46950,7 +46950,25 @@
                         },
                         "qualified_source": "e0401d9165cd5d881842a81e066e26bdde36d597",
                         "qualified_tree": "f7b07ae1c66325c241cdca0d51087fdf7c6d9744",
-                        "qualified_result": "1clone/5mutatingcommands/62negativecontrols/4394rawbindings PASS. SQL236/236/240/267/269;93native rows/sequence139/input1 preserved. First8attempts/frontier1/snapshot9/topology2/cuts27,1,0; complete signed families12,4,4,4,4,8digests/catalog/BBINPUT/BBFRONT/physical maps; retry adds0attempts/0frontiers and onlyfreshControl rows. Actual child/client/backend custody and origin/isolation checks passed."
+                        "qualified_result": "1clone/5mutatingcommands/62negativecontrols/4394rawbindings PASS. SQL236/236/240/267/269;93native rows/sequence139/input1 preserved. First8attempts/frontier1/snapshot9/topology2/cuts27,1,0; complete signed families12,4,4,4,4,8digests/catalog/BBINPUT/BBFRONT/physical maps; retry adds0attempts/0frontiers and onlyfreshControl rows. Actual child/client/backend custody and origin/isolation checks passed.",
+                        "integration": {
+                          "commit": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
+                          "push": {
+                            "session": 25651,
+                            "exit": 0,
+                            "joined": true
+                          },
+                          "checks": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-integration-checks-v1.json",
+                            "sha256": "d7c742b3f3410373fab91ea10924d4352d5074cecf396003688f3a974fbbbb0f"
+                          }
+                        },
+                        "ref_retirement": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-ref-retirement-20261025.json",
+                          "sha256": "7b1dbe5efaebb5ab85f0e2a3fd75826911f4371fce78bceb169ac589a6f5ef7b"
+                        },
+                        "worktree_state": "CLEAN_DETACHED_E040_PRESERVED",
+                        "archived_branch": "work/compacted-later-archive-fixture"
                       },
                       "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
                       "tree": "60d9d237a06b85eb8b10d9b5feba56620d7d353a",
@@ -46991,7 +47009,7 @@
                         "sha256": "7ea05b5c46cfbdcf4076c5808e2f1929c147366bfe218cb82991f230d84570e5"
                       },
                       "result": "Unchanged c49 dual builds PASS (45component+56installed tests and required Clippy/worker controls); e040 exact installed first-publication/retry and raw PASS62controls. Original280,995 and598 failures preserved. No phase/task closure; next real loader cancellation/loss remains unqualified.",
-                      "next": "Integrate verified12-file fixture and evidence; then two fresh initialized copies for loader cancellation and exact Control-backend loss, implementing audit58/criticala9fbee timing condition. Read/export/pre-succession/fault delivery remain separate.",
+                      "next": "Review narrow existing-owner fixture/profile and strict raw changes; freeze exact source, then root runs with unchangedc49 builds. Enforce conservative last-refresh+1s action and no snapshots while consumersAX held.",
                       "integration": {
                         "commit": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "push": {
@@ -47017,8 +47035,30 @@
                           "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-critical-v1.json",
                           "sha256": "a9fbee1030aa649d8eb487b3f8edff17295206d59dec185e5af2e546636e46a0"
                         },
-                        "state": "SOURCE_AUDIT_ONLY; IMPLEMENTATION_NOT_STARTED",
+                        "state": "SOURCE_AUDIT_ACCEPTED; IMPLEMENTATION_IN_PROGRESS",
                         "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
+                      },
+                      "next_loader_work": {
+                        "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; RUNTIME_NOT_RUN",
+                        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-loader-fixture-20261025",
+                        "branch": "work/compacted-later-archive-loader-fixture",
+                        "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
+                        "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
+                        "scope": "Two fresh genuine initializations from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control backend loss. Expected240\u2192242 only failed activeControl/role, immutable native93/139/input1 and catalog/journals; exact exit4 and full custody.",
+                        "prerequisites": {
+                          "audit": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-audit-20261025.json",
+                            "sha256": "58f5934266f6b9474b198cb1dacc965fc7a290a2c6e007d386e262f9d6ce27a2"
+                          },
+                          "critical": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-critical-v1.json",
+                            "sha256": "a9fbee1030aa649d8eb487b3f8edff17295206d59dec185e5af2e546636e46a0"
+                          },
+                          "state": "SOURCE_AUDIT_ACCEPTED; IMPLEMENTATION_IN_PROGRESS",
+                          "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
+                        },
+                        "resources": "Only isolated source worktree allocated; no new runtime resources or source product build.",
+                        "next": "Review narrow existing-owner fixture/profile and strict raw changes; freeze exact source, then root runs with unchangedc49 builds. Enforce conservative last-refresh+1s action and no snapshots while consumersAX held."
                       }
                     },
                     "next_import_work": {
