@@ -2050,8 +2050,10 @@ def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseli
 
 def later_digest_log(pg,output,case,window):
     # Existing finite docker-log observation; no additional SQL or retry.
+    owned,=json.loads(lab.docker('inspect',pg['postgres'],timeout=5).stdout)
+    assert owned['Name']=='/'+pg['postgres'] and owned['Config']['Labels'].get(lab.LABEL)==pg['owner']
     bounds=[datetime.fromtimestamp(window[k]/1_000_000,timezone.utc).isoformat() for k in ('before_us','after_us')]
-    command=['logs','--timestamps','--since',bounds[0],'--until',bounds[1],pg['postgres']]
+    command=['logs','--timestamps','--since',bounds[0],'--until',bounds[1],owned['Id']]
     reply=lab.docker(*command,check=False,timeout=5)
     record=dict(command=['docker',*command],returncode=reply.returncode,stdout=reply.stdout,stderr=reply.stderr)
     lab.write_json(output/(case['name']+'-digest-diagnostic.json'),record)
