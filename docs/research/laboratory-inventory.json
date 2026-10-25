@@ -63980,10 +63980,10 @@
         ],
         "later_live_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-live-20261025",
-          "branch": "work/compacted-later-live",
+          "branch": null,
           "base": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
           "owner": "/root/compacted_reader_fixture; reused Astra/xhigh",
-          "state": "QUALIFIED_SOURCE_INTEGRATED_BY_THIS_COMMIT",
+          "state": "INTEGRATED_PUSHED_REF_RETIRED_WORKTREE_PRESERVED",
           "scope": "Explicit compacted continuous activation and same live frontier/admission/read/progress/ACK/renewal. Private shared native/canonical view and retained check/grant. Fresh activated3 recovery and Archive remain separate explicit gates.",
           "audit": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-activation-frontier-audit-20261025.json",
@@ -64024,6 +64024,11 @@
           "modern_probe_review": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-modern-probe-critical-review-v1.json",
             "sha256": "2ea27f12d4591dafe7d1c7a6a792b0140ca065b28218f66d118373e7ce229525"
+          },
+          "detached_head": "5df6b94264300103a7385b174f6272070dc94e98",
+          "retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-ref-retirement-20261025.json",
+            "sha256": "c03b01bca29c51c4711181e61ffe675b31ba265aca396a35fd9137faaa135a9b"
           }
         },
         "later_remaining_fixture_audit": {
@@ -64222,10 +64227,10 @@
         ],
         "later_live_fixture_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-live-fixture-20261025",
-          "branch": "work/compacted-later-live-fixture",
+          "branch": null,
           "base": "5df6b94264300103a7385b174f6272070dc94e98",
           "owner": "/root/compacted_reader_fixture, independent /root/compacted_reader_review; existing Astra/xhigh continuity",
-          "state": "QUALIFIED_SOURCE_INTEGRATED_BY_THIS_COMMIT",
+          "state": "INTEGRATED_PUSHED_REF_RETIRED_WORKTREE_PRESERVED",
           "scope": "Reuse independent existing models for full/partial/absent originals on genuine Terminal2, finite live dictionary ACK/Event/read/certification and separate installed quiet activation/renewal/join; no fabricated Sync progress",
           "head": "fa76466a65d55a106cdf541e1fe4332d85eca031",
           "source_receipt": {
@@ -64243,6 +64248,11 @@
           "capture_review": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-capture-critical-review-v1.json",
             "sha256": "a176b0fbb8b8006e8c130d9839c1d313b9d08d7368002aca2010e1d8a4360913"
+          },
+          "detached_head": "fa76466a65d55a106cdf541e1fe4332d85eca031",
+          "retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-ref-retirement-20261025.json",
+            "sha256": "c03b01bca29c51c4711181e61ffe675b31ba265aca396a35fd9137faaa135a9b"
           }
         },
         "later_live_build": {
@@ -64312,7 +64322,15 @@
           "base": "fa76466a65d55a106cdf541e1fe4332d85eca031",
           "state": "SOURCE_ONLY_IMPLEMENTATION_AND_REVIEW; no runtime qualification",
           "owner": "empty_malformed_floor author, compacted_reader_review critical; existing verified Astra/xhigh assignments",
-          "scope": "Positive-only fresh --successor through final ACK, private proof and mixed census. Root solely owns builds/engines/SQL/integration. Fixture design is read-only until separate worktree assigned."
+          "scope": "Positive-only fresh --successor through final ACK, private proof and mixed census. Root solely owns builds/engines/SQL/integration; independent fixture now in separately inventoried worktree."
+        },
+        "later_fresh_recovery_fixture_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-fixture-20261025",
+          "branch": "work/compacted-later-recovery-fixture",
+          "base": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
+          "owner": "compacted_reader_fixture, existing verified Astra/xhigh; root sole engine/build/integration owner",
+          "state": "SOURCE_ONLY_IMPLEMENTATION; no runtime/build qualification",
+          "scope": "Four clones/six existing installed --successor commands, literal77-table/native/input expectations from qualifiedfa endpoints; existing reader/oracle/raw/transition owners, no new runner."
         }
       }
     }

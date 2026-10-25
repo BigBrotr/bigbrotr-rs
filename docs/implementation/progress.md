@@ -6,8 +6,9 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites, including later
-compacted consumers. This commit integrates product `5df6b942` and qualified
-live fixture `fa76466a` into main from pushed `efa15ffd74bd6a63a177979f021a0032e6b1edbd`.
+compacted consumers. Product `5df6b942` and qualified live fixture `fa76466a` are
+integrated and pushed in `ee2f3c6d292c802d0c5610abfdcb071d3427d407`; this
+documentation-only checkpoint follows that push. No merge/rebase is pending.
 Input fixture `82103420`, later-empty `28cd644d` and ordinary `c3bec54c` were already
 integrated. Four Python routing conflicts were reconciled and independently
 reviewed; all product bytes match qualified 5df. The merged fixture has scoped
@@ -53,24 +54,30 @@ Corrections have fresh qualifications; original failed evidence is unchanged.
   The completed source audit is linked from the report. Source, retirement and
   Archive capabilities remain strict; no writer adoption is authorized by recovery.
 - `/root/compacted_reader_fixture` designs the independent four-copy/six-command
-  recovery fixture from qualified fa endpoints: finite and quiet first/retry,
-  missing required ancestor input, missing required current input. Editing awaits
-  a separate fixture worktree. Existing live worktrees remain clean at 5df/fa.
+  recovery fixture from qualified fa endpoints in
+  `.research/compacted-later-recovery-fixture-20261025`, branch
+  `work/compacted-later-recovery-fixture`, base ee2f3c6d: finite and quiet
+  first/retry, missing required ancestor input, missing required current input.
+  Source is in progress and unqualified. Existing live worktrees remain clean
+  and detached at 5df/fa.
 - All root build/runtime/raw drivers have joined. Last observed live client
   e6ff888d exited143 and borrowed PG71775507 exited0, PID0/noOOM. All originals,
   logs, failures, databases, datasets, .research and worktrees are retained.
   Agents perform source work only. No cleanup was performed.
-- Input821 and ordinaryc3 redundant local branch refs are retired with clean
-  detached worktrees, protected archive refs and verified bundles preserved.
-  Live refs can be retired after this integration is pushed; retain their files.
+- Input821, ordinaryc3 and both live redundant local branch refs are retired with
+  clean detached worktrees, protected archive refs and verified bundles preserved.
+  The new recovery implementation and fixture branches remain active.
 
 ## Next action
 
-Complete this integration/push, then assign the separate recovery fixture worktree
-from integrated main. Finish and critically review the positive recovery source,
+Finish and critically review the positive recovery source and independent fixture,
 run its exact build/components and the independent installed/raw profile. Reuse
 qualified fa origins and preserve ACK1/ACK0; do not infer ACK advancement or
 missing-copy repair from these endpoints.
+
+The source review caught original-cancellation retention and unnecessary
+compacted reservations on ordinary Resolve. The first is corrected; basis-sensitive
+preflight is being reconciled before source freeze. No new build/tests have run.
 
 Real Sync/fault qualification, genuine interrupted recovery/ACK advancement,
 Source/retirement/Archive, physical 64-file/32MiB limits under live load, mixed

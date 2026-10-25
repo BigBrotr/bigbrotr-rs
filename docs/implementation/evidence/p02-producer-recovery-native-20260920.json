@@ -46171,7 +46171,7 @@
                   }
                 ],
                 "finding": "Exact63a8fbf compile E0599: historical InitialWriterCandidate still calls removed VerifiedCompactedPrefix::recovery. One build checkFAIL,11NOT_RUN. Prior review missed this caller; receipt retained unchanged.",
-                "next": "Integrate qualified5df product/fa fixture on main with input821 and ordinaryc3 routing. Continue positive-only compacted fresh recovery through final ACK in separate worktree; live Sync/fault/Archive/capacity gates remain.",
+                "next": "Continue separately owned positive-only compacted fresh recovery through finalACK; integrated product/live fixture qualification retained. Source/retirement/Archive, Sync/faults and capacity remain open.",
                 "remaining": "Connected live/Sync/faults, fresh activated3 adoption, Archive, capacity and reclamation remain unqualified.",
                 "correction": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-recovery-identity-correction-v1.json",
@@ -46253,6 +46253,12 @@
                 "integration_review": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-main-integration-20261025.json",
                   "sha256": "d3f7316477d6cc81f39bcea873ff18d27bcf63226db0fc0e4efa717e9b08a0a7"
+                },
+                "integration_commit": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
+                "push": "71318 joined0",
+                "ref_retirement": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-ref-retirement-20261025.json",
+                  "sha256": "c03b01bca29c51c4711181e61ffe675b31ba265aca396a35fd9137faaa135a9b"
                 }
               },
               "next_fresh_recovery_audit_partial_20261025": {
@@ -46274,7 +46280,11 @@
                 "fixture_audit": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-fresh-recovery-fixture-audit-20261025.json",
                   "sha256": "2d72e0f454fc83bdbd4ec05242342a07a721ce12fedc1e3b4b171f25c99ec7b8"
-                }
+                },
+                "fixture_worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-fixture-20261025",
+                "fixture_branch": "work/compacted-later-recovery-fixture",
+                "fixture_base": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
+                "review_findings": "Original cancellation retained after reviewer finding; basis-sensitive Resolve preflight being reconciled to preserve ordinary resource minimum. Source/tests/fixture still in progress, no execution claim."
               }
             }
           }
