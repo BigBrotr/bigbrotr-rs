@@ -76,14 +76,14 @@ impl NativeOwner<'_> {
         lease: &mut PolicyLeaseTracker,
         policy: PolicyEpoch,
     ) -> Result<(), InitialEventError> {
-        if let Self::Successor(owner) = self {
-            if let Some(check) = owner.check {
-                check
-                    .validate_live(owner.native, cancelled)
-                    .map_err(InitialEventError::Compacted)?;
-                initial_history::check_delivery(lease, policy, cancelled)
-                    .map_err(InitialEventError::Compacted)?;
-            }
+        if let Self::Successor(owner) = self
+            && let Some(check) = owner.check
+        {
+            check
+                .validate_live(owner.native, cancelled)
+                .map_err(InitialEventError::Compacted)?;
+            initial_history::check_delivery(lease, policy, cancelled)
+                .map_err(InitialEventError::Compacted)?;
         }
         Ok(())
     }

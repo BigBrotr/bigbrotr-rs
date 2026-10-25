@@ -77,7 +77,7 @@ struct Fixture {
 }
 impl Fixture {
     fn load(probe: &Probe, writer: &LiveSuccessorWriter, compacted: bool) -> Self {
-        let sequence = if compacted { 3 } else { 4 };
+        let sequence = if compacted { 5 } else { 4 };
         let name = format!(
             "{}-0000000000000001-{sequence:016x}.cbor",
             writer.producer_slot_id()
@@ -102,7 +102,7 @@ impl Fixture {
         assert_eq!(
             digest.to_string(),
             if compacted {
-                "a1992bc4cc2b57578e06da9ab64cdfe44d8c117a394e8fdb38355e955a64eee9"
+                "4add1a3691de324ebdc7202debd5f0187cbd895a997d16ec499cdfea16827a26"
             } else {
                 "19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977"
             }
@@ -149,11 +149,13 @@ impl Fixture {
             "../../../../experiments/identity-contract/signed-fixture.json"
         ))
         .unwrap();
-        let fresh: SignedEvent =
-            serde_json::from_value(signed["events"]["B_note"].clone()).unwrap();
+        let fresh: SignedEvent = serde_json::from_value(
+            signed["events"][if compacted { "I" } else { "B_note" }].clone(),
+        )
+        .unwrap();
         assert_ne!(fresh.id, old.id);
         // Retain the exact finite artifact in the output. Its descriptor names
-        // both signed inputs; it never falsely attributes B_note to the old file.
+        // both signed inputs; it never attributes the new Event to the old file.
         let artifact = serde_json::to_vec(&[&old, &fresh]).unwrap();
         assert!(artifact.len() <= 2 * MAX_INPUT);
         let artifact_sha256 = Digest256::from_bytes(Sha256::digest(&artifact).into());
@@ -536,7 +538,7 @@ impl Probe {
             if sequence == 2 {
                 assert!(receipt.batch().is_none());
             } else {
-                let batch = receipt.batch().expect("new signed B_note facts");
+                let batch = receipt.batch().expect("new signed fixture Event facts");
                 assert_eq!(
                     (
                         batch.first().owner_epoch.get(),
