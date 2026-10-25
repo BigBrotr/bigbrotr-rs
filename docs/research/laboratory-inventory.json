@@ -64878,7 +64878,7 @@
           }
         },
         "later_archive_work": {
-          "status": "DESIGN_CLEAR; SOURCE_IMPLEMENTATION_IN_PROGRESS; BUILD_RUNTIME_NOT_RUN",
+          "status": "SOURCE_C49_CLEAN; COMPONENTS_PASS; INSTALLED_BUILD_RUNNING",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-20261025",
           "branch": "work/compacted-later-archive",
           "base": "4e353c494f4031cf264fe9830fc157f61a35488e",
@@ -64891,10 +64891,36 @@
             "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
           },
           "owners": "empty_malformed_floor source; compacted_reader_review critical; compacted_reader_fixture independent fixture; root runtime/integration",
-          "resources": "Only source worktree allocated; no Archive build/engine/catalog/database yet. Existing retirement origin4d9 preserved; real virgin initialization must be verified."
+          "resources": "Failed280 and passedc49 component runs retained with actual stopped fetch/native containers; no engine/catalog/database for Archive yet. Exactc49 installed build42512 active; root sole runtime/cache owner.",
+          "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
+          "build_runs": [
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-280797f",
+              "state": "stopped-retained",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-280797f/verified-build-failure.json",
+                "sha256": "5ef02718d3e58193f4acc5c5aa001a3d93f22608798aee4e54facbee9c5315ea"
+              }
+            },
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-c49cfe5",
+              "state": "stopped-retained",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-c49cfe5/verified-build.json",
+                "sha256": "b1b6b362ece86637c4194ce3ecc183b261f8940241ff43af09f8726abf2fcbc3"
+              }
+            },
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-c49cfe5",
+              "state": "running",
+              "driver_session": 42512
+            }
+          ],
+          "free_after_components": 182437462016,
+          "preservation": "All previous datasets, original failures, .research, worktrees and external runs retained; no deletion."
         },
         "later_archive_fixture_work": {
-          "status": "DESIGN_READ; SOURCE_IMPLEMENTATION_AUTHORIZED; BUILD_RUNTIME_NOT_RUN",
+          "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; ENGINE_NOT_RUN",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
           "branch": "work/compacted-later-archive-fixture",
           "base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",

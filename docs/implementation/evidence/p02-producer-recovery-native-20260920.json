@@ -46853,7 +46853,7 @@
                       "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
-                      "status": "DESIGN_CLEAR; SOURCE_IMPLEMENTATION_IN_PROGRESS; BUILD_RUNTIME_NOT_RUN",
+                      "status": "SOURCE_REVIEW_CLEAR; CORRECTED_COMPONENTS_PASS; INSTALLED_BUILD_RUNNING; ENGINE_NOT_RUN",
                       "audit": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
@@ -46871,9 +46871,9 @@
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-custody-supplement-20261025.json",
                         "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
                       },
-                      "custody": "Existing frontier owner Reserved/Loaded/Bound retains same Check before connection, across fallible borrowed loader/bind; native-first transfer to existing supervised driver. Wrong phase refuses, not virgin absence. Actual implementation review remains pending.",
+                      "custody": "Source reviewed: Reserved/Loaded/Bound holds one Check before connection; errors preserve it; native closes before named supervised driver receives keeper, transport drops before keeper. Pure owner and synthetic transport controls do not demonstrate actual SQL cancellation.",
                       "fixture_work": {
-                        "status": "DESIGN_READ; SOURCE_IMPLEMENTATION_AUTHORIZED; BUILD_RUNTIME_NOT_RUN",
+                        "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; ENGINE_NOT_RUN",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
                         "branch": "work/compacted-later-archive-fixture",
                         "base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
@@ -46883,9 +46883,50 @@
                         },
                         "owner": "compacted_reader_fixture; root sole runtime/integration",
                         "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-                        "prerequisites": "Exact final Archive product components plus separate same-source archive-installed worker+embedded CLI qualification; complete pinned virgin mapping/stat source read. No arbitrary historical worker; final product pins pending.",
+                        "prerequisites": "c49 components qualified; same-source archive-installed worker/CLI still running. Complete virgin mapping/stat, full77 state, five invocations, custody and raw binding review before execution.",
                         "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained."
-                      }
+                      },
+                      "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
+                      "tree": "60d9d237a06b85eb8b10d9b5feba56620d7d353a",
+                      "source_receipt": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-implementation-v1.json",
+                        "sha256": "61f8499dc50835fbbb4011eb29570cfb5679ee77afc1947c5edfb7caefebad1e"
+                      },
+                      "critical": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-critical-v1.json",
+                        "sha256": "a02f28f191a24e5e0cc8399bb2dbdca97fb4bcb8337cbc4a1e02a63aee1c5d42"
+                      },
+                      "format": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-format-v1.json",
+                        "sha256": "e9152946df45a3a7892034b03a00ec7c079a76c342e46769a7812a6397f143d9"
+                      },
+                      "test_correction": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-test-correction-v1.json",
+                        "sha256": "c53028cd1b73b888b40fa98728140c64944be015bee289efbfe67e6b66fabdef"
+                      },
+                      "test_correction_critical": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-test-correction-critical-v1.json",
+                        "sha256": "3ad9adced6ae8fc29fb2c25550abc38ce7717dc23607932127c993bdd23947a6"
+                      },
+                      "test_correction_format": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-test-correction-format-v1.json",
+                        "sha256": "741a4bb11271bf4144a015ef89ac41b25acaa68ab5c318b037be797cbe6de596"
+                      },
+                      "original_component_failure": {
+                        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-280797f/verified-build-failure.json",
+                        "sha256": "5ef02718d3e58193f4acc5c5aa001a3d93f22608798aee4e54facbee9c5315ea"
+                      },
+                      "component_build": {
+                        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-components-c49cfe5/verified-build.json",
+                        "sha256": "b1b6b362ece86637c4194ce3ecc183b261f8940241ff43af09f8726abf2fcbc3"
+                      },
+                      "installed_build": {
+                        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-c49cfe5",
+                        "session": 42512,
+                        "status": "RUNNING; NOT_YET_JOINED"
+                      },
+                      "result": "c49 components80612 joined0:45 tests,7 mandatory controls,6 selectors/all7 checks incl library Clippy. Original280 test-premise failures retained, corrected only in test owner. Installed CLI/worker and actual first publication/retry remain separate.",
+                      "next": "Join exact c49 archive-installed build, inspect actual artifacts/tests; integrate only coherent qualified source, then reconcile and freeze independent modern Archive fixture for five actual commands."
                     },
                     "next_import_work": {
                       "status": "PASS_INTEGRATED_PUSHED; CLEAN_DETACHED_SOURCE_PRESERVED",
