@@ -81,6 +81,25 @@ and link between them instead of duplicating detail. Group recording, commits an
 pushes around coherent outcomes; these rules preserve all product/quality gates
 and do not create a separate process-optimization project.
 
+Q38's October25 clarification makes each increment a demonstrable capability:
+briefly state its expected result, real dependencies and necessary checks. Do not
+turn every substep into a further refinement chain. Verifier or documentation
+changes alone do not mandate product rebuilds; use retained captures and inexpensive
+independent diagnostics where useful before required real runs. Classify a failure
+as product, fixture/verifier, environment or unknown and fix its cause, preserving
+the original outcome. Never fit expectations to observations, widen limits for
+PASS or weaken durability, authority, cancellation or recovery. Repeat critical
+review only for relevant changes, new evidence or unresolved questions. Reduce
+duplication in touched owners without a general rewrite or new framework.
+
+Select the next increment by dependency, risk and capability unlocked. Keep a short
+M1 blocker list in the checkpoint, separating its signed-event admission/archive/
+read/export/restart requirements from later work. Name the concrete risk requiring
+any deeper prerequisite; do not gate M1 on all of P02. Preserve later obligations
+in the existing plan. Updates should explain what now works, its evidence, the
+remaining blocker and next useful result. Commit/test counts are not productivity
+or quality measures; there is no imposed deadline or reduced product scope.
+
 Record enough to resume safely:
 
 | Field | Minimum useful content |

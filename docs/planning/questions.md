@@ -295,6 +295,38 @@ Group recording, commits and pushes around coherent outcomes. Apply through the
 existing execution guide and continue the same goal; no separate optimization
 project or historical rewrite.
 
+Q38 clarification (2026-10-25): The owner requests safe suspension and a durable
+execution correction, retaining Q37, all selected product scope and correctness,
+durability, authorization, cancellation, recovery and code-quality obligations.
+No deadline or reduced functionality is imposed. The external October25 audit
+reported real frequent increments still concentrated on P02 prerequisites,
+relatively short builds/checks, avoidable verifier assumptions and fragmented
+implementation/verification/recording/integration. These observations do not make
+checks unnecessary; commit/test counts measure neither waste nor quality.
+
+Choose coherent increments that demonstrate a useful capability. State the expected
+result, actual prerequisites and necessary checks at the start; a substep does not
+automatically open another refinement chain. Reuse valid source reads, reviews,
+lab configurations, binaries and results. Verifier/documentation-only changes do
+not automatically require product rebuilds. Prefer extending existing tools and
+cheap independent checks against retained captures before required real runs;
+avoid a new generic framework. Classify failures promptly as product, fixture/
+verifier, environment or unknown, then correct that cause. Preserve the original
+failure and independent expectations; never fit an oracle to observed output,
+widen limits for PASS or weaken safety guarantees. Repeat critical reviews for
+changed evidence or unresolved questions, not unchanged material. Reduce duplication
+when touching its owners without a general rewrite. Group records/commits/pushes
+around coherent results, keeping interruption checkpoints timely and compact.
+
+At resumption select by dependency, risk and useful capability unlocked. The
+checkpoint must distinguish actual M1 signed-event admission/archive/read/export/
+restart blockers from later-milestone work. A deep prerequisite needs its concrete
+requirement or risk; all of P02 is not an indivisible gate. Later work stays in the
+existing plan, incomplete. Report what works, supporting evidence, remaining
+blocker and next demonstrable result. No parallel plan, metrics system or repeated
+historical audit is requested. After preserving work and pushing ready commits,
+set the actual goal PAUSED and wait for the owner's explicit resume.
+
 Q39 (implementation decision, 2026-10-23): Begin acknowledged-detail reclamation
 with a completely retired nonempty initial producer. Reuse immutable PostgreSQL
 outcomes, the existing source closure and typed checkpoint; do not introduce a
