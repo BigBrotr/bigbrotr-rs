@@ -10,10 +10,11 @@ impl Work<'_> {
         mode: Mode,
         compacted: bool,
     ) -> Result<Value> {
-        if compacted && mode != Mode::CloseSource {
+        if compacted && !matches!(mode, Mode::CloseSource | Mode::AbandonAcquisition) {
             return Err((
                 4,
-                "compacted successor source supports publication only".into(),
+                "compacted successor source supports publication or acquisition abandonment only"
+                    .into(),
             ));
         }
         let native = custody.native.as_mut().expect("exclusive native owner");
@@ -115,15 +116,26 @@ impl Work<'_> {
         let compacted_requests = replay.compacted_requests();
         self.refresh(owner).await?;
         let jobs = if mode == Mode::AbandonAcquisition {
-            Some(
+            let permit = grant(self.budget, FINAL_JOB_BYTES, 0)?;
+            Some(if compacted {
+                self.operation(
+                    owner.abandon_activated_successor_acquisition_with_compacted(
+                        proof,
+                        self.request(),
+                        permit,
+                        |d, h| self.validate(d, h),
+                    ),
+                )
+                .await?
+            } else {
                 self.operation(owner.abandon_activated_successor_acquisition(
                     proof,
                     self.request(),
-                    grant(self.budget, FINAL_JOB_BYTES, 0)?,
+                    permit,
                     |d, h| self.validate(d, h),
                 ))
-                .await?,
-            )
+                .await?
+            })
         } else {
             self.operation(owner.close_activated_successor_source(
                 proof,

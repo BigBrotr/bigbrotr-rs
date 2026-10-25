@@ -258,7 +258,7 @@ impl Probe {
         self.activate_live_in(owner, native, metadata, mutation, false)
             .await
     }
-    async fn activate_live_in(
+    pub(super) async fn activate_live_in(
         &self,
         owner: &mut ControlSession,
         native: &mut Native,

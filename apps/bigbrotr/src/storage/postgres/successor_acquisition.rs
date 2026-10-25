@@ -7,8 +7,9 @@ const JOB_DATA_BYTES: u64 = 128 * 1024;
 const MAX_JOBS: usize = 64;
 
 impl ControlSession {
-    /// Consume a fresh source-purpose proof. Publishing source closure spends
-    /// the same owner, so callers must inspect/replay again before abandonment.
+    /// Consume a fresh original-input source-purpose proof. Publishing source
+    /// closure spends the same owner, so callers must inspect/replay again
+    /// before abandonment. A compacted proof is refused and remains spent.
     /// Exact retries preserve every retained gap and its historical issuer.
     pub async fn abandon_activated_successor_acquisition(
         &mut self,
@@ -17,10 +18,37 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<u64, ProducerResolveError> {
+        self.abandon_activated_successor_acquisition_in(source, input, permit, false, validate)
+            .await
+    }
+
+    /// Require a fresh compacted source-purpose proof and an already closed
+    /// Source. This uses the same terminal transaction and retained canonical
+    /// Check; it neither adopts old execution nor authorizes retirement.
+    /// An original-input proof is refused and remains spent.
+    pub async fn abandon_activated_successor_acquisition_with_compacted(
+        &mut self,
+        source: ResolvedActivatedSuccessorSource<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, ProducerResolveError> {
+        self.abandon_activated_successor_acquisition_in(source, input, permit, true, validate)
+            .await
+    }
+
+    async fn abandon_activated_successor_acquisition_in(
+        &mut self,
+        source: ResolvedActivatedSuccessorSource<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        expected_compacted: bool,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, ProducerResolveError> {
         source
             .owner
             .publication
-            .start_abandonment(source.owner.inner.compacted.is_some())?;
+            .start_abandonment(source.owner.inner.compacted.is_some(), expected_compacted)?;
         if permit.request().units().data_bytes() < JOB_DATA_BYTES
             || permit.request().units().items() == 0
         {
