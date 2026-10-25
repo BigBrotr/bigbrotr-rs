@@ -46590,7 +46590,7 @@
                   "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; WT_CLEAN_DETACHED24; archive/bundle retained"
                 },
                 "next_abandonment_work_20261025": {
-                  "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
+                  "status": "BUILD_AND_CONNECTED_CLAIMS_SOURCE_ABANDON_RETRY_PASS_EXACT2D",
                   "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-abandonment-20261025",
                   "branch": "work/compacted-later-abandonment",
                   "base": "cb9a2bb2118b0983bd040bfd8c587e71a8f869ed",
@@ -46600,7 +46600,7 @@
                   },
                   "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
                   "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
-                  "next": "Review/freeze independent one-clone/four-command fixture, then root executes actual claims, installed Source, Abandon and exactretry on exact2d5 artifacts. Product85 and probe2d remain outside main until connected qualification.",
+                  "next": "Integrate qualified85/2d/5b2f7f3 into main; next bounded consumer is explicit compacted retirement, with remaining abandonment faults/cancellation/H-D gates retained.",
                   "source": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
                   "tree": "efa1520a24b6d03bfd03c1191c71c50df2cefe07",
                   "source_receipt": {
@@ -46634,7 +46634,7 @@
                     "sha256": "988ded07518da23088d133a60d9a99d6474103152984b787310922c0af572fce"
                   },
                   "claims_probe": {
-                    "status": "FROZEN_REVIEWED_BUILD_PASS; CONNECTED_NOT_RUN",
+                    "status": "FROZEN_REVIEWED_BUILD_AND_CONNECTED_PASS",
                     "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-claims-probe-20261025",
                     "branch": "work/compacted-later-claims-probe",
                     "base": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
@@ -46656,11 +46656,11 @@
                       "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2d5e161/verified-build.json",
                       "sha256": "b2635c3babd21729b5f23c50d3d545a2afd343faf8d32fbffc250b77017502de"
                     },
-                    "result": "Build31391 joined0;229tests/120mandatory/13selectors/all15checksinclClippy. ProbeandCLI newhashes verified, three componentELFs unchanged85. RuntimeNOT_RUN.",
+                    "result": "Build31391 joined0;229tests/120mandatory/13selectors/all15checks includingClippy. Connected claims/source/abandon/retry on exact2d qualified by next_fixture_work runtime; no acquisition execution claim.",
                     "scope": "Named finite same-Control compacted prepare/activate/renew plus genuine browser-authenticated a6claim and a7unclaimed; zero requests, exact mixed-input census and Check/hash65MiB overlap. Four existing probe owners only."
                   },
                   "next_fixture_work": {
-                    "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+                    "status": "FROZEN_REVIEWED_CONNECTED_AND_RAW_PASS",
                     "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-acquisition-fixture-20261025",
                     "branch": "work/compacted-later-acquisition-fixture",
                     "base": "c365c6cdffa114c09071c86661b49f4b37ad1aff",
@@ -46669,11 +46669,37 @@
                       "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-fixture-reuse-audit-v1.json",
                       "sha256": "e0771e9790bfaac96c063c4d3472e593dc6581f7ad900e379fc06b8a26115462"
                     },
-                    "scope": "One Terminal2 clone, optional initial7 originals reversibly quarantined; actualclaims then Source/Abandon/retry. Full77tables/native/inputs/auth/actualactivator/custody. Fourcommands expected, no runtime pass claim; optionalzerojob slice not selected.",
+                    "scope": "One real Terminal2 clone; optional7 originals preserved in quarantine, required2:1 retained. Same-Control genuine claims then installed Source/Abandon/retry;1clone4commands79controls5811rawbindings,77tables. SQL224/226/229/231, native93/138\u2192139/139/139, targetC0/A0/cut0; one cancelled job/gap and one unchanged unclaimed job.",
                     "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only engines/integration",
-                    "prerequisite_merge": "Root merged main862 and probe2d in isolated fixture branch; docs-only conflict reconciled. Apps/Cargo/native.py exact2d, sourceguard retained. No product integration into main yet."
+                    "prerequisite_merge": "Root merged main862 and probe2d in isolated fixture branch; reference-only conflict reconciled. Final main merge from825 is conflict-free and keeps apps/Cargo/native.py exact2d and five fixture files exact5b2f7f3.",
+                    "source": "5b2f7f3072c0480aee05c9021c405802de866951",
+                    "tree": "1f2861073f977f9cfd7c41445a846d8430f38933",
+                    "source_receipt": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-fixture-source-v1.json",
+                      "sha256": "037d43a610e06a886e4e15b8fb71c5cefcfb3e0f6b3a4fb46869b7736edf9814"
+                    },
+                    "critical_review": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-fixture-critical-v1.json",
+                      "sha256": "4b7393dfe347edf2f8466b10a0b2ee352255d7a28f17cf6b1e343f9cb56f2df0"
+                    },
+                    "runtime": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3/verified-run.json",
+                      "sha256": "71a16e175cc11bda325115579f006927494dc3e3c8c17d95c037ba2b182ac817"
+                    }
                   },
-                  "next_retirement_audit": "empty_malformed_floor read-only prerequisite audit of existing activated-later retirement boundary; no implementation/engine authorized for that next consumer."
+                  "next_retirement_audit": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-prerequisite-audit-20261025.json",
+                    "sha256": "5b121b79df99289771e296093e47460559d225a32db97c6ce447e147e57d4ec8"
+                  },
+                  "next_retirement_work": {
+                    "status": "SOURCE_IN_PROGRESS; BUILD_AND_INSTALLED_NOT_RUN",
+                    "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
+                    "branch": "work/compacted-later-retirement",
+                    "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
+                    "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
+                    "scope": "Explicit compacted retirement wrapper/Check/ACK reuse and retained-count/window distinction; no Archive/floor/unlink. First prospective installed origin is qualified5b2f7f3 claims-retry; no synthetic historical attribution.",
+                    "next": "Review/freeze minimal source and component declarations, root build then existing-runner whole-state retirement/retry fixture."
+                  }
                 }
               }
             }

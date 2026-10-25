@@ -64595,7 +64595,7 @@
           }
         },
         "later_abandonment_work": {
-          "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
+          "status": "BUILD_AND_CONNECTED_CLAIMS_SOURCE_ABANDON_RETRY_PASS_EXACT2D",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-abandonment-20261025",
           "branch": "work/compacted-later-abandonment",
           "base": "cb9a2bb2118b0983bd040bfd8c587e71a8f869ed",
@@ -64605,7 +64605,7 @@
           },
           "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
           "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
-          "next": "Review/freeze independent one-clone/four-command fixture, then root executes actual claims, installed Source, Abandon and exactretry on exact2d5 artifacts. Product85 and probe2d remain outside main until connected qualification.",
+          "next": "Qualified connected source85/probe2d integrated with fixture5b2f7f3; retirement source continues in its separate worktree.",
           "source": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
           "tree": "efa1520a24b6d03bfd03c1191c71c50df2cefe07",
           "source_receipt": {
@@ -64634,14 +64634,14 @@
             },
             "result": "229tests/120mandatory/13selectors/all15checks includingClippy PASS;5ELFs verified; fetch/native exited0/PID0/noOOM, inventory unchanged."
           },
-          "processes": "Root42575 joined0; fetchb91f253343aa/nativea9ce09ec196c exited0/PID0/noOOM. Source85WT frozen; genuine claim-origin audit only, no agent engines.",
+          "processes": "Build42575 joined0; subsequent actual connected run81154/raw8098 joined0, recorded under later_acquisition_fixture_work.",
           "claims_prerequisite_audit": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-claims-prerequisite-20261025.json",
             "sha256": "988ded07518da23088d133a60d9a99d6474103152984b787310922c0af572fce"
           }
         },
         "later_claims_probe_work": {
-          "status": "FROZEN_REVIEWED_BUILD_PASS; CONNECTED_NOT_RUN",
+          "status": "BUILD_AND_CONNECTED_PASS",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-claims-probe-20261025",
           "branch": "work/compacted-later-claims-probe",
           "base": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
@@ -64655,13 +64655,37 @@
           "processes": "Root31391 joined0; fetchd9409680fe33/native4dd0eb257258 exited0/PID0/noOOM; inventory unchanged,186202632192bytes freeafterbuild. No active root engine."
         },
         "later_acquisition_fixture_work": {
-          "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "status": "FROZEN_REVIEWED_CONNECTED_AND_RAW_PASS",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-acquisition-fixture-20261025",
           "branch": "work/compacted-later-acquisition-fixture",
           "base": "c365c6cdffa114c09071c86661b49f4b37ad1aff",
           "product_source": "2d5e161363b71b1c1c475e5eb654185011238eb1",
           "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only engines/integration",
-          "scope": "One Terminal2 clone, optional initial7 originals reversibly quarantined; actualclaims then Source/Abandon/retry. Full77tables/native/inputs/auth/actualactivator/custody. Fourcommands expected, no runtime pass claim; optionalzerojob slice not selected."
+          "scope": "One real Terminal2 clone; optional7 originals preserved in quarantine, required2:1 retained. Same-Control genuine claims then installed Source/Abandon/retry;1clone4commands79controls5811rawbindings,77tables. SQL224/226/229/231, native93/138\u2192139/139/139, targetC0/A0/cut0; one cancelled job/gap and one unchanged unclaimed job.",
+          "source": "5b2f7f3072c0480aee05c9021c405802de866951",
+          "tree": "1f2861073f977f9cfd7c41445a846d8430f38933",
+          "runtime": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3/verified-run.json",
+            "sha256": "71a16e175cc11bda325115579f006927494dc3e3c8c17d95c037ba2b182ac817"
+          },
+          "retained_run": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3",
+          "run_source": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3/source",
+          "database": "bb_compacted_later_acquisition_5b2f7f3_claims",
+          "owner": "a3a005286129d05ef3600a3f0d24f68b",
+          "client": "ecaad6f6fdbeb30f19b81d12f5b180f0947f60c052853c5e5b43134a81f6b89f",
+          "processes": "Root81154/raw8098 joined0; client exited143/PG717 exited0, bothPID0/noOOM freshly inspected. All four custody receipts closed/joined with backend absence; isolation arrays empty; original5preservation predicates true;185992122368bytes freeafterrun. No active root engine."
+        },
+        "later_retirement_work": {
+          "status": "SOURCE_IN_PROGRESS; BUILD_AND_INSTALLED_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
+          "branch": "work/compacted-later-retirement",
+          "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
+          "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
+          "audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-prerequisite-audit-20261025.json",
+            "sha256": "5b121b79df99289771e296093e47460559d225a32db97c6ce447e147e57d4ec8"
+          },
+          "preservation": "Dedicated writable worktree; no engine or build started. Previous source/build/run/negative artifacts unchanged."
         }
       }
     }

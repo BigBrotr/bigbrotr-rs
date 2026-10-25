@@ -13,6 +13,10 @@ use std::io::Read;
 
 const JOB_BYTES: u64 = 128 * 1024;
 const SCOPE: &str = "a39723d7c49af2c99498fb2f59c03b16";
+const COMPACTED_SCOPE: &str = "422b7d8b33d4b55977806fb711e2d082";
+const COMPACTED_SLOT: &str = "36a0253e6d94c18099f6c4dae9b7e040";
+const REQUIRED_LATER_INPUT: &str =
+    "36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor";
 
 pub(super) fn preflight(budget: &ResourceBudget, claims: bool) {
     // The grant overlaps the retained lineage/native and finite observations.
@@ -76,19 +80,24 @@ impl Probe {
         native: &mut Native,
         metadata: OwnedPermit,
         mutation: OwnedPermit,
+        compacted: bool,
     ) -> Result<serde_json::Value, Failure> {
-        let target = self
-            .activate_live(owner, native, metadata, mutation)
-            .await?;
-        assert_eq!(target, 3, "finite empty-terminal2 seed");
+        let target = if compacted {
+            self.activate_live_in(owner, native, metadata, mutation, true)
+                .await?
+        } else {
+            self.activate_live(owner, native, metadata, mutation)
+                .await?
+        };
+        assert_eq!(target, 3, "finite terminal2 seed");
         let before_native = raw_state(&self.path);
-        let before_inputs = originals(&self.path);
+        let before_inputs = originals(&self.path, compacted);
         self.snapshot("before-acquisition-claims").await;
-        let result = self.claim_intents(owner, target).await;
+        let result = self.claim_intents(owner, target, compacted).await;
         // Retain the actual final effects even on a failed typed operation.
         self.snapshot("acquisition-claims-returned").await;
         let after_native = raw_state(&self.path);
-        let after_inputs = originals(&self.path);
+        let after_inputs = originals(&self.path, compacted);
         let unchanged = before_native == after_native && before_inputs == after_inputs;
         emit(
             serde_json::json!({"event":"lineage-acquisition-seed-state","target_epoch":target,
@@ -111,8 +120,11 @@ impl Probe {
         &self,
         owner: &mut ControlSession,
         target: u64,
+        compacted: bool,
     ) -> Result<serde_json::Value, Failure> {
-        let scope: AcquisitionScopeId = SCOPE.parse().unwrap();
+        let scope: AcquisitionScopeId = if compacted { COMPACTED_SCOPE } else { SCOPE }
+            .parse()
+            .unwrap();
         let lifetime = SessionLifetime::default();
         emit(
             serde_json::json!({"event":"lineage-acquisition-seed-plan","target_epoch":target,
@@ -259,13 +271,33 @@ impl Probe {
     }
 }
 
-fn originals(path: &Path) -> Vec<serde_json::Value> {
+fn originals(path: &Path, compacted: bool) -> Vec<serde_json::Value> {
+    let maximum = if compacted { 8 } else { 4 };
     let mut result: Vec<_> = std::fs::read_dir(path.join("producer-inputs-v1"))
         .unwrap()
-        .take(5)
+        .take(maximum + 1)
         .map(|entry| {
             let entry = entry.unwrap();
             assert!(entry.file_type().unwrap().is_file());
+            let name = entry.file_name().into_string().unwrap();
+            if compacted {
+                // Fixed Terminal2 vocabulary: every present residual is
+                // observed, and none can substitute for the required2:1 input.
+                assert!(
+                    name.strip_prefix(COMPACTED_SLOT)
+                        .is_some_and(|suffix| matches!(
+                            suffix,
+                            "-0000000000000001-0000000000000001.cbor"
+                                | "-0000000000000001-0000000000000002.cbor"
+                                | "-0000000000000001-0000000000000003.cbor"
+                                | "-0000000000000001-0000000000000004.cbor"
+                                | "-0000000000000001-0000000000000005.cbor"
+                                | "-0000000000000001-0000000000000006.cbor"
+                                | "-0000000000000001-0000000000000007.cbor"
+                                | "-0000000000000002-0000000000000001.cbor"
+                        ))
+                );
+            }
             let mut bytes = Vec::new();
             std::fs::File::open(entry.path())
                 .unwrap()
@@ -273,14 +305,23 @@ fn originals(path: &Path) -> Vec<serde_json::Value> {
                 .read_to_end(&mut bytes)
                 .unwrap();
             assert!(bytes.len() <= 8192);
-            serde_json::json!({"name":entry.file_name().into_string().unwrap(),"bytes":hex(&bytes)})
+            serde_json::json!({"name":name,"bytes":hex(&bytes)})
         })
         .collect();
-    assert_eq!(
-        result.len(),
-        4,
-        "four retained predecessor inputs, no target input"
-    );
+    if compacted {
+        assert!((1..=maximum).contains(&result.len()));
+        assert!(
+            result
+                .iter()
+                .any(|input| input["name"].as_str() == Some(REQUIRED_LATER_INPUT))
+        );
+    } else {
+        assert_eq!(
+            result.len(),
+            4,
+            "four retained predecessor inputs, no target input"
+        );
+    }
     result.sort_unstable_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
     result
 }

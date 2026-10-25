@@ -6,74 +6,70 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `862db645055caedb9ac147fc94489cffd673a673` is pushed (29981 joined0),
-including qualified Source publication faults24. This documentation update records
-qualified probe2d and the next fixture. Product main remains5ed; abandonment85 and
-probe2d are separate, reviewed/build-qualified and connected **NOT_RUN**.
-No pending merge conflict or rebase. Do not integrate those products as qualified
-installed work before their actual journey passes.
+Observed main/origin `825f21a7d61ede1670bf460260a10ba378e5f1f7` before this
+integration. This commit merges qualified fixture `5b2f7f3072c0480aee05c9021c405802de866951`
+and its product85/probe2d ancestors without conflicts. Product sources and native
+build runner remain exact `2d5e161363b71b1c1c475e5eb654185011238eb1`; five fixture
+files remain exact5b2f7f3. The pending push must be observed, never inferred.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
 repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.compacted_successor_preparation.
-later_empty_consumer_work.next_source_work_20261025`: `next_delivery_work`
-and `next_abandonment_work_20261025`. The [inventory](../research/laboratory-inventory.json)
-owns retained resources. Reuse unchanged evidence and linked earlier qualifications.
+later_empty_consumer_work.next_source_work_20261025.next_abandonment_work_20261025`.
+Its `next_fixture_work` links the source/critical/runtime receipts;
+`next_retirement_work` names ongoing work. The [inventory](../research/laboratory-inventory.json)
+owns resources. Reuse unchanged evidence and linked earlier qualifications.
 
 ## Current evidence and gaps
 
-- **PASS:** exact5ed Sourcefault24:2 clones/4 commands/111 controls/6506 bindings.
-  Before-forward C15 loss leaves SourceOPEN/nativeCLOSING110/162; completion
-  publishes with0 native writes. After-completion loss leaves SourceCLOSED;
-  retry preserves exact row/time/xmin with0 native writes. Both exactCommitUnknown
-  exit4, no later ACK/release delivery; full77tables/inputs/H-D/C1/A1/cut4 checked.
-  Baselineb2 and Sourceb370 remain separately qualified at their original sources.
-- **PASS:** exact probe2d build31391 joined0:229tests/120mandatory/13selectors/
-  all15checks includingClippy. Five ELF identities verified; three componentELFs
-  unchanged85. Build receiptb2635c3b; source08470984, critical57bb5f09.
-  This qualifies compilation, not genuine connected claims or abandonment.
-- Prior outcome-loss/recovery/live/input/empty/retirement evidence remains scoped
-  to its source/artifacts. Changed verifiers must still fail historical bindings.
-- Original failures and diagnostics remain preserved. Initial a99 Sync timeout
-  cause remains unknown; capture existing markers if required future Sync work
-  naturally reproduces it. No floor writer/unlink is qualified.
+- **PASS:** exact2d connected claims→Source→Abandon→retry, fixture5b2f7f3:
+  1 clone/4 commands/79 controls/5811 raw bindings. SQL77tables with224/226/229/231
+  rows; native93rows/138→139→139→139. Genuine activator10 owns queued a6;
+  Abandon creates one gap and cancels it, preserving accepted-unclaimed a7.
+  Retry preserves every gap/job/Source field and xmin. Required2:1 stays intact;
+  optional7initial originals are preserved in quarantine. Target C0/A0/cut0.
+  Run81154/raw8098 joined0; receipt71a16e17. No acquisition execution inferred.
+- **PASS:** exact2d build31391:229tests/120mandatory/13selectors/all15checks
+  includingClippy. Source/critical fixture receipts037d43a6/4b7393df.
+  Original diagnostic lookup failure and missing-custody negative are preserved;
+  corrected final source and actual runtime pass.
+- Prior exact5ed Sourcepublication faults24 and baselineb2/Sourceb370 remain
+  separately qualified at their original sources, as do earlier recovery/live/
+  input/empty/retirement results. Changed verifiers retain strict source bindings.
+- Initial a99 Sync timeout cause remains unknown. No floor writer/unlink is
+  qualified. Separate zero-job origins, abandonment faults/waits/cancellation/
+  expiry/H-D, staged/reserved tails, Sync, retirement/Archive, physical limits,
+  restore/backup/capacity and M1–M5 remain incomplete. Q33 CI billing, arm64 and
+  signing/registry remain separate gates.
 
 ## Active work and preserved resources
 
-All root build/runtime/raw handles joined. Sourcefault clienta3c455da6793 and
-borrowedPG71775507 were inspected exited143/0, PID0/noOOM after the fault run.
-Latest build fetchd9409680fe33/native4dd0eb257258 were freshly inspected
-exited0/PID0/noOOM. No active root engine. Freeafterbuild186,202,632,192bytes.
-All originals, databases, datasets, logs, .research, worktrees and failures remain.
+No active root engine; all build/runtime/raw handles joined. After5b2f7f3,
+clientecaad6f6 and borrowedPG71775507 were inspected exited143/0, PID0/noOOM.
+All four custody receipts report closed/joined and backend absence; isolation
+arrays are empty and all five origin-preservation predicates pass.
+Freeafterrun185,992,122,368bytes. All originals, databases, datasets, logs,
+.research, worktrees and failures remain.
 
-- `.research/compacted-later-abandonment-20261025`, branch
-  `work/compacted-later-abandonment`: clean frozen85a4308.
-- `.research/compacted-later-claims-probe-20261025`, branch
-  `work/compacted-later-claims-probe`: clean frozen2d5e161; four probe owners only.
-- `.research/compacted-later-acquisition-fixture-20261025`, branch
-  `work/compacted-later-acquisition-fixture`, basec365c6cd: root merged main862+2d
-  here only. Apps/Cargo/native runner exactly2d; one reference-doc conflict
-  reconciled without changing product code. `compacted_reader_fixture` writes the
-  independent Python fixture; `compacted_reader_review` reviews it. RuntimeNOT_RUN.
-- `empty_malformed_floor` audits the next retirement prerequisite read-only;
-  no retirement implementation or engine work started.
-
-Source publication branch is now retired after push; its clean detached24 WT,
-archive ref and verified17,411,747-byte0600 bundle remain. Inventory links the
-retirement receipt42e50c86. Prior retired refs/artifacts remain preserved too.
+- Abandonment85, claimsprobe2d and acquisitionfixture5b2f7f3 worktrees are clean
+  frozen under their existing `.research/compacted-later-*` paths. Branch refs
+  remain until the integrated push is confirmed; preserve worktrees and evidence.
+- `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3`
+  retains the detached exact source, raw captures, quarantined originals and
+  verified-run.json. Its claims-retry endpoint is now a genuine positive origin.
+- `.research/compacted-later-retirement-20261025`, branch
+  `work/compacted-later-retirement`, base2d: `empty_malformed_floor` implements
+  the bounded adaptation; `compacted_reader_review` reviews it. Source in progress,
+  build/runtime **NOT_RUN**. `compacted_reader_fixture` audits existing fixture
+  reuse read-only. No agent engine or build is authorized.
 
 ## Next action
 
-Review/freeze the existing-runner acquisition fixture: one Terminal2 clone with
-seven optional originals quarantined, actual compacted prepare/activate/login/
-claim under the same Control, then installed Source/Abandon/exactretry. Expect a
-queued job and an untouched accepted job, independently modeled across all77
-SQL tables/native/input/custody; no fabricated historical attribution. Exact2d
-build is ready. Root then runs the four commands and raw replay and integrates
-only the coherent qualified result. Optional finite/quiet zero-job cases remain
-separate and NOT_RUN; no invented nonzero-job claim from the old livefa origin.
-
-Final ACK faults, waits/cancellation/expiry/H-D, staged/reserved tails, Sync,
-retirement/Archive, physical limits, restore/backup/capacity and M1–M5 remain
-incomplete. Q33 CI billing, arm64 and signing/registry remain separate gates.
+Finish this coherent integration/push and retire only the resulting redundant
+refs with the established archive/bundle preservation. Then review/freeze the
+existing retirement wrapper/Check/ACK adaptation, including the independent
+retained-count64 versus outstanding-window bound. Root builds its exact revision
+and qualifies installed retirement/retry from the retained5b2f7f3 claims-retry
+endpoint using the existing whole-state/raw runner. Keep required refusal,
+concurrency, fault and remaining product gates explicit; no new parallel plan.

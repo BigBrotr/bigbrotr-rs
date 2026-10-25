@@ -109,13 +109,15 @@ async fn own(
         native: Some(native),
         ..Custody::default()
     };
-    let compacted_replay = matches!(mode, Mode::Resolve | Mode::CloseSource)
-        && custody
-            .native
-            .as_ref()
-            .expect("exclusive native owner")
-            .has_compacted_successor_ancestor(&cancellation.requested)
-            .map_err(error)?;
+    let compacted_replay = matches!(
+        mode,
+        Mode::Resolve | Mode::CloseSource | Mode::AbandonAcquisition
+    ) && custody
+        .native
+        .as_ref()
+        .expect("exclusive native owner")
+        .has_compacted_successor_ancestor(&cancellation.requested)
+        .map_err(error)?;
     phase(&progress, timeout)?;
     let (prepared, control_grant) = postgres_command::prepare_control_shared(
         &root,
@@ -158,10 +160,13 @@ async fn own(
         )?);
         drop(ack_effects);
     }
-    drop(retained_compacted);
     if matches!(mode, Mode::AbandonAcquisition | Mode::Retire) {
+        // Abandonment retains its canonical Check through terminal job writes.
+        // The compacted ACK overlap above already dominates this grant; admit
+        // the actual job overlap explicitly rather than rely on equal constants.
         drop(grant(&budget, FINAL_JOB_BYTES, 0)?);
     }
+    drop(retained_compacted);
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared)

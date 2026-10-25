@@ -24,11 +24,15 @@ impl PublicationState {
         }
         Ok(())
     }
-    fn start_abandonment(&self, compacted: bool) -> Result<(), OwnerError> {
+    fn start_abandonment(
+        &self,
+        compacted: bool,
+        expected_compacted: bool,
+    ) -> Result<(), OwnerError> {
         self.start()?;
-        // A compacted Source proof permits publication and typed ACK only.
-        // Spend the attempted consumer even when its basis is refused.
-        if compacted {
+        // Each public consumer requires its exact basis. Spend the attempted
+        // consumer before refusal, without enabling fallback to the other API.
+        if compacted != expected_compacted {
             return Err(OwnerError::InvalidInput);
         }
         Ok(())
@@ -147,7 +151,8 @@ impl ResolvedActivatedSuccessorSource<'_> {
 
 impl ControlSession {
     /// Require the compacted basis for Source publication and its final ACK.
-    /// This does not authorize acquisition abandonment or producer retirement.
+    /// The explicit compacted abandonment consumer additionally requires an
+    /// already closed Source. This does not authorize producer retirement.
     #[allow(
         clippy::too_many_arguments,
         reason = "separate native metadata, original input and retained canonical effect grants"

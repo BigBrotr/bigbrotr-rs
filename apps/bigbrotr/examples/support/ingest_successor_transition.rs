@@ -105,6 +105,7 @@ async fn run_inner(
             | "successor-compacted-empty"
             | "successor-compacted-empty-retry"
             | "successor-compacted-live"
+            | "successor-compacted-acquisition-claims"
     );
     let operation = match command {
         "successor-prepare" | "successor-compacted-prepare" => "prepare",
@@ -116,7 +117,9 @@ async fn run_inner(
         "successor-lineage-recover" => "recover",
         "successor-lineage-source" => "source",
         "successor-lineage-abandon" => "abandon",
-        "successor-lineage-acquisition-claims" => "acquisition-claims",
+        "successor-lineage-acquisition-claims" | "successor-compacted-acquisition-claims" => {
+            "acquisition-claims"
+        }
         "successor-lineage-retire" => "retire",
         _ => panic!("unknown finite successor operation"),
     };
@@ -222,13 +225,18 @@ async fn run_inner(
                 true,
             );
         }
+        if claims {
+            // The delivered compacted writer retains this Check while the
+            // synchronous password hash owns its separate65MiB grant.
+            acquisition::preflight(&budget, true);
+        }
         emit(serde_json::json!({"event":"lineage-transition-compacted",
             "command":command,"compacted_outcome_bytes":compacted_outcome_data_bytes(recovery_limits().event).unwrap()}));
     }
     if live && !compacted {
         live::preflight(&budget, 32, false);
     }
-    if acquisition {
+    if acquisition && !compacted {
         acquisition::preflight(&budget, claims);
     }
     if operation == "retire" {
@@ -335,6 +343,7 @@ async fn run_inner(
                 custody.native.as_mut().unwrap(),
                 metadata,
                 mutation_permit.unwrap(),
+                compacted,
             )
             .await
     } else if operation == "abandon" {

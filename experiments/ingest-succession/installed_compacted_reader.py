@@ -227,7 +227,7 @@ def history_floor(pg,client,output,clone,directory,expected,seed,*,mode='install
     return oracle.history_mutation_checked(record,expected,seed)
 
 
-def history_quarantine(output,directory,expected,seed,step):
+def history_quarantine(output,directory,expected,seed,step,*,acquisition=False):
     spool=directory/'store/producer-inputs-v1'; target=directory/('quarantined-'+step)
     target.mkdir(mode=0o700); before=history.census(spool)
     initial=sorted(n for n in expected[2] if n in seed[2])
@@ -253,7 +253,7 @@ def history_quarantine(output,directory,expected,seed,step):
         try: os.fsync(fd)
         finally: os.close(fd)
     record.update(status='RETAINED',after=history.census(spool),quarantine_after=history.census(target)); lab.write_json(path,record)
-    result=oracle.history_quarantine_checked(record,expected,seed,directory.name,step)
+    result=oracle.history_quarantine_checked(record,expected,seed,directory.name,step,acquisition=acquisition)
     assert history.inputs_at(directory/'store')==result[2]
     return result
 
@@ -2315,13 +2315,14 @@ def later_live_delivery_invoke(pg,client,output,case,directory,expected,initial,
     return response,window,wire,args
 
 
-def later_live_probe(pg,client,output,case,directory,expected,catalog,initial,*,delivery=False,loss=None,baseline=None):
+def later_live_probe(pg,client,output,case,directory,expected,catalog,initial,*,delivery=False,loss=None,baseline=None,acquisition=False):
+    assert type(acquisition) is bool and not (acquisition and (delivery or loss))
     name=case['name'];database=case['database']
     before=schema.rows(pg,database);oracle.same(before,expected[0]);lab.write_json(output/(name+'-before.json'),before)
     native=history.dump(client,output,name+'-before',directory);inputs=history.inputs_at(directory/'store')
     assert (native,inputs)==expected[1:];lab.write_json(output/(name+'-inputs.json'),inputs)
     window=dict(before_us=history.server_clock(pg,database));lab.write_json(output/(name+'-clock.json'),window)
-    args=['successor-compacted-live',database,'/run/secrets/application',case['config'],'262144']
+    args=['successor-compacted-acquisition-claims' if acquisition else 'successor-compacted-live',database,'/run/secrets/application',case['config'],'262144']
     response=dict(returncode=None,stdout='',stderr='',outcome='UNKNOWN');errors=[];wire=None
     try:
         if delivery or loss:response,window,wire,args=later_live_delivery_invoke(pg,client,output,case,directory,expected,initial,loss=loss)
@@ -2347,7 +2348,7 @@ def later_live_probe(pg,client,output,case,directory,expected,catalog,initial,*,
             except BaseException as error:
                 errors.append(dict(stage='driver-result',error=repr(error)));proxy_closed=False;failed=False
             lab.write_json(output/(name+'-capture-errors.json'),errors)
-        events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,control_failed=failed,proxy_closed=proxy_closed,completion_event='lineage-live-complete')
+        events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,control_failed=failed,proxy_closed=proxy_closed,completion_event='lineage-acquisition-complete' if acquisition else 'lineage-live-complete')
     assert not errors
     context=dict(case=dict(case),before=before,after=after,native_before=native,native_after=after_native,inputs_before=inputs,inputs_after=after_inputs,
         response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,database),
@@ -2358,6 +2359,7 @@ def later_live_probe(pg,client,output,case,directory,expected,catalog,initial,*,
         result=oracle.verify_later_loss(context,initial,expected,wire,baseline);controls=oracle.later_loss_controls(context,initial,expected,wire,baseline)
     elif delivery:
         result=oracle.verify_later_recovery_delivery(context,initial,expected,wire);controls=oracle.later_recovery_delivery_controls(context,initial,expected,wire)
+    elif acquisition:result=oracle.verify_later_acquisition(context,initial,expected,expected);controls=oracle.later_acquisition_controls(context,initial,expected,expected)
     else:result=oracle.verify_later_live(context,initial,expected);controls=oracle.later_live_controls(context,initial,expected)
     case.update(status='PASS',returncode=response['returncode'],oracle=result,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
@@ -2559,6 +2561,49 @@ def run_later_source(root,build,product_source,*,delivery=False,faults=False):
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_source=True,product_source=product_source)
 
 
+def run_later_acquisition_sequence(pg,client,output,clone,directory,expected,report,*,seed,initial):
+    assert clone['name']=='claims' and clone['origin']=='later-terminal' and expected==seed
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
+    assert clone['catalog_before']==report['origins']['later-terminal']['catalog']
+    configure(pg,client,output,clone['config'],ack=True)
+    helper=Path(__file__).with_name('installed_cycle_client.py');target=output/helper.name
+    shutil.copy2(helper,target);assert history.digest(helper)==history.digest(target)
+    label='claims-residual';transition.observe_origin_absence(pg,clone['database'],output,label)
+    before=schema.rows(pg,clone['database']);oracle.same(before,expected[0]);lab.write_json(output/(label+'-before.json'),before)
+    assert history.dump(client,output,label+'-before',directory)==expected[1]
+    expected=history_quarantine(output,directory,expected,initial,'absent',acquisition=True)
+    after=schema.rows(pg,clone['database']);oracle.same(after,expected[0]);lab.write_json(output/(label+'-after.json'),after)
+    predecessor=None;claims_seed=None
+    for step in oracle.LaterAcquisitionProfile.STEPS['claims']:
+        case=dict(name='claims-'+step,clone='claims',origin='later-terminal',
+            operation='successor-compacted-acquisition-claims' if step=='claims' else 'source' if step=='source' else 'abandon',
+            predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case);lab.write_json(output/'result.json',report)
+        if step=='claims':
+            expected=later_live_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial,acquisition=True)
+            claims_seed=expected
+        else:
+            expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],claims_seed,
+                checks=(lambda c,s:oracle.verify_later_acquisition(c,initial,claims_seed,expected),
+                    lambda c,s:oracle.later_acquisition_controls(c,initial,claims_seed,expected),
+                    lambda r,c:oracle.later_source_closed(r,c,acquisition=True)))
+        case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
+        predecessor=case['name'];lab.write_json(output/'result.json',report)
+    return predecessor
+
+
+def run_later_acquisition(root,build,product_source):
+    assert product_source==oracle.LATER_ACQUISITION_PRODUCT
+    seed,initial=oracle.qualified_endpoint(root,None,initial_journey=False,later_terminal=True)
+    profile=oracle.LaterAcquisitionProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
+        client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
+        scope='Genuine compacted activated3 zero-request claim and accepted-unclaimed intent; installed Source, abandonment and exact retry',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_acquisition_sequence,seed=seed,initial=initial),
+        origin_specs=(oracle.LATER_TERMINAL_ORIGIN,),origin_for_clone={'claims':'later-terminal'},extra_grants=profile.GRANTS,
+        producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_acquisition=True,product_source=product_source)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
@@ -2566,6 +2611,7 @@ if __name__ == '__main__':
     profile=parser.add_mutually_exclusive_group()
     profile.add_argument('--later-recovery-faults',action='store_true',help='Measured dictionary outcome loss and fresh installed repair/ACK/retry')
     profile.add_argument('--later-recovery-delivery',action='store_true',help='Measure first dictionary outcome/progress COMMIT before any fault schedule')
+    profile.add_argument('--later-acquisition',action='store_true',help='Authentic compacted acquisition claims and installed Source/Abandon/retry')
     profile.add_argument('--later-source-faults',action='store_true',help='Measured Source publication loss and fresh completion/exact retry')
     profile.add_argument('--later-source-delivery',action='store_true',help='Measure the exact later Source publication COMMIT with a joined held-success baseline')
     profile.add_argument('--later-source',action='store_true',help='Compacted later Source closure, exact retries and strict installed refusals')
@@ -2590,4 +2636,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_later_acquisition if args.later_acquisition else partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
