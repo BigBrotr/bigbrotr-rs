@@ -288,7 +288,10 @@ def observe_origin_absence(pg, database, output, name):
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False, compacted_reader=False, compacted_history=False,
-        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, later_live=False, later_recovery=False, later_source=False, later_acquisition=False, later_retirement=False, product_source=None, ordinary_regression=False):
+        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, later_live=False, later_recovery=False, later_source=False, later_acquisition=False, later_retirement=False, product_source=None, ordinary_regression=False,later_archive=False,archive_components=None):
+    assert type(later_archive) is bool
+    assert (archive_components is not None)==later_archive
+    assert not later_archive or (compacted_history and not any((ordinary_regression,later_empty,later_live,later_recovery,later_source,later_acquisition,later_retirement)))
     assert type(ordinary_regression) is bool
     if ordinary_regression:
         assert not any((producer_progress, producer_ack, preparation_hole, compacted_reader,
@@ -387,7 +390,15 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     if ordinary_regression:
         from installed_prepared_model import ordinary_qualification
         ordinary_qualification(built, component, qualification)
-    if compacted_reader:
+    if later_archive:
+        from installed_compacted_reader_oracle import later_archive_qualification
+        archive_components=Path(archive_components).resolve(strict=True)
+        archive_component=read(archive_components/'component-result.json')
+        archive_qualification=read(archive_components.parent/'qualification.json')
+        later_archive_qualification(built,component,qualification,product_source,archive_component,archive_qualification)
+        assert all(digest(archive_components/name)==value for name,value in archive_component['executables_sha256'].items())
+        assert digest(archive_components.parent/'build/source-manifest.json')==built['source_manifest_sha256']
+    elif compacted_reader:
         qualification_checked(built,component,qualification,product_source,
             initial_journey=compacted_initial or later_empty or later_live or later_recovery or later_source or later_acquisition or later_retirement,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial or later_empty or later_live or later_recovery or later_source or later_acquisition or later_retirement,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition,later_retirement=later_retirement)
     elif preparation_hole:
@@ -396,7 +407,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
-    assert qualification['status'] in (('PASS_COMPACTED_PREFIX_COMPONENTS',) if compacted_reader or ordinary_regression else ('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
+    assert qualification['status'] in (('PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS',) if later_archive else ('PASS_COMPACTED_PREFIX_COMPONENTS',) if compacted_reader or ordinary_regression else ('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
         if producer_progress else allowed)
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']
@@ -442,6 +453,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(), origins={}, clones=[], cases=[],
         free_bytes_before=shutil.disk_usage(root).free,
         scope=suite.scope, not_run=list(suite.not_run))
+    if later_archive:
+        report['archive_components']=dict(path=str(archive_components),component=archive_component,qualification=archive_qualification)
     if producer_ack:
         from installed_progress_context import record_source
         record_source(output,build,revision)
@@ -601,6 +614,15 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 assert clone['final_backends'] == []
             except BaseException as error:
                 errors.append(dict(copy=clone['database'], error=repr(error)))
+        if later_archive:
+            for resource in report.get('archive_resources',[]):
+                try:
+                    database=resource['catalog_database']
+                    assert resource['control_database'] in {c['database'] for c in report['clones']}
+                    assert database==resource['control_database']+'_cat' and database in report['databases']
+                    observe_origin_absence(pg,database,output,'archive-catalog-final')
+                except BaseException as error:
+                    errors.append(dict(archive_resource=resource['catalog_database'],error=repr(error)))
         for origin in origin_specs:
             name = origin['name']
             if name not in origins:

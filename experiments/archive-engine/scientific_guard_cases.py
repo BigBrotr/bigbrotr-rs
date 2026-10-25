@@ -93,15 +93,7 @@ children=[]
 def layout_cases():
     # Frozen raw structural query/order from 91af8a9. This independent oracle
     # deliberately has neither the product's wire projection nor its row limit.
-    raw_layout_sql='''WITH objects(kind,ns,name,definition) AS (
-SELECT 'table',n.nspname::text,c.relname::text,ROW(c.relkind,c.relpersistence,c.relrowsecurity,c.relforcerowsecurity,c.relispartition,c.reloptions)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind<>'i'
-UNION ALL SELECT 'column',n.nspname,c.relname||'.'||a.attnum,ROW(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attisdropped,a.attidentity,a.attgenerated,a.attcollation::regcollation::text,a.attstorage,a.attcompression,pg_get_expr(d.adbin,d.adrelid))::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attnum>0
-UNION ALL SELECT 'constraint',n.nspname,c.relname||'.'||p.conname,pg_get_constraintdef(p.oid,false) FROM pg_constraint p JOIN pg_class c ON c.oid=p.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace
-UNION ALL SELECT 'index',n.nspname,c.relname,ROW(pg_get_indexdef(i.indexrelid),i.indisvalid,i.indisready,i.indislive)::text FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid JOIN pg_namespace n ON n.oid=c.relnamespace
-UNION ALL SELECT 'trigger',n.nspname,c.relname||'.'||t.tgname,ROW(pg_get_triggerdef(t.oid,false),t.tgenabled,t.tgisinternal)::text FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace
-UNION ALL SELECT 'function',n.nspname,p.proname||'('||pg_get_function_identity_arguments(p.oid)||')',pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.prokind IN ('f','p')
-UNION ALL SELECT 'rule',n.nspname,c.relname||'.'||r.rulename,pg_get_ruledef(r.oid,false) FROM pg_rewrite r JOIN pg_class c ON c.oid=r.ev_class JOIN pg_namespace n ON n.oid=c.relnamespace
-) SELECT kind,ns,name,definition FROM objects WHERE ns IN ('public','bigbrotr_archive') ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C"'''
+    from scientific_layout_oracle import STRUCTURAL_SQL as raw_layout_sql, structural_checksum as checksum
     # Read the actual product SQL only to observe its projected wire field sizes.
     # It is never an oracle for the expected layout hash or object count.
     inspection=(SOURCE/'apps/bigbrotr/src/storage/postgres/catalog_guard/inspection.rs').read_text()
@@ -119,13 +111,6 @@ UNION ALL SELECT 'rule',n.nspname,c.relname||'.'||r.rulename,pg_get_ruledef(r.oi
         result=[json.loads(line) for line in result.splitlines()]
         assert all(len(row)==4 and all(isinstance(field,str) for field in row) for row in result)
         return result
-    def checksum(raw):
-        digest=hashlib.sha256(b'bigbrotr/catalog-guard-layout/1\0')
-        for row in raw:
-            for field in row:
-                encoded=field.encode('utf-8')
-                digest.update(len(encoded).to_bytes(8,'big'));digest.update(encoded)
-        return digest.hexdigest()
     def closed(db):
         # A zero probe exit includes drop(client), driver.await and grant release.
         # Independently require that its real PostgreSQL backend has also left.

@@ -333,8 +333,12 @@ def catalog_roles(phase):
     assert wanted==observed
 
 
-def journals(state,science,initial_revision,original):
+def journals(state,science,initial_revision,original,*,virgin=False):
     """Literal retained input, local manifest, and BBFRONT version1 science."""
+    assert type(virgin) is bool
+    if virgin:
+        assert initial_revision==0 and not original['control']['archive_attempts']
+        assert len(science['batches'])==8 and len(state['control']['archive_frontier_snapshots'])==1
     normal.retained(state,science)
     files=state['physical']['state']['files'];records=state['local_records'];pg=state['control']
     assert set(records)=={name for name,value in files.items() if value['sha256'] is not None}
@@ -358,21 +362,24 @@ def journals(state,science,initial_revision,original):
             worker_incarnation=attempt['worker_incarnation'][2:],publication_ordinal=attempt['ordinal'],topology_generation=str(attempt['topology_generation']),batch_digest=attempt['batch_digest'][2:])
         assert records[identity+'/custody.lock']==''
         assert attempt['coordinator_binding_sha256']=='\\x'+binding
-        if attempt['ordinal']>4:expected_paths.update((identity,identity+'/custody.lock',identity+'/intent.json',identity+'.inputs'))
+        if attempt['ordinal']>(0 if virgin else 4):expected_paths.update((identity,identity+'/custody.lock',identity+'/intent.json',identity+'.inputs'))
     for snap in pg['archive_frontier_snapshots']:
         revision=snap['frontier_revision']
         if revision<=initial_revision:continue
         operation=binary(snap['operation_id']);name='frontier-'+operation.hex()+'.intent';expected_paths.add(name)
         raw=bytes.fromhex(records[name]);assert 214<=len(raw)<=65536 and raw[:8]==b'BBFRONT\x01'
         assert raw[8:40]==bytes.fromhex(binding) and raw[40:56]==binary(snap['dataset_id']) and raw[56:72]==binary(snap['catalog_id']) and raw[72:88]==operation
-        assert raw[88:96]==be(revision-1) and raw[96:104]==be(8) and raw[104:136]==binary(snap['request_digest'])
+        assert raw[88:96]==be(revision-1) and raw[96:104]==be(9 if virgin else 8) and raw[104:136]==binary(snap['request_digest'])
         assert raw[136:176]==b''.join(be(snap[k]) for k in COUNTS)
         n=int.from_bytes(raw[176:180],'big');assert len(raw)==180+n+32 and raw[-32:]==bytes.fromhex(sha(b'bigbrotr/archive-frontier-intent/1\0'+raw[:-32]))
         offset=revision-initial_revision;bounds=[(1,12),(2,0)]+([] if offset==1 else [(3,10 if offset==3 else 0)])
         selected=receipts[:7 if offset==3 else 4]
+        if virgin:
+            assert revision==1 and snap['topology_generation']==2
+            bounds=[(1,27),(2,1),(3,0)];selected=receipts;assert len(selected)==8
         expected=dict(dataset_id=snap['dataset_id'][2:],topology_generation=str(snap['topology_generation']),
             bounds=[dict(shard_id=0,owner_epoch=e,complete_through=c) for e,c in bounds],
-            receipts=[dict(r,dataset_id=r['dataset_id'].lower(),topology_generation=str(r['topology_generation']),batch_digest=r['batch_digest'].lower(),attempt_id=list(bytes.fromhex(r['attempt_id']))) for r in selected],snapshot_id=8)
+            receipts=[dict(r,dataset_id=r['dataset_id'].lower(),topology_generation=str(r['topology_generation']),batch_digest=r['batch_digest'].lower(),attempt_id=list(bytes.fromhex(r['attempt_id']))) for r in selected],snapshot_id=9 if virgin else 8)
         # JSON field order is Rust declaration order, different from C API rows.
         expected['receipts']=[{k:r[k] for k in ('dataset_id','schema_version','topology_generation','batch_digest','record_count','input_ranges','attempt_id','publication_ordinal')} for r in expected['receipts']]
         assert raw[180:180+n]==json.dumps(expected,separators=(',',':')).encode()

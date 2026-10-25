@@ -8047,26 +8047,404 @@ def later_retirement_qualification(component):
         'compacted_successor_retirement_wrong_prefix_and_cancelled_proof_stay_spent')}<=set(component['test_names']['initial_reconstruction'])
 
 
-def later_retirement_origin_checked(root,raw=None):
-    """Bind the qualified final claims endpoint; never rerun its old verifier."""
+LATER_ARCHIVE_PRODUCT='c49cfe5c69ac2a6f17b2bb381bef04a052ffd553'
+LATER_ARCHIVE_ORIGIN=dict(name='retired-terminal',
+    run='installed-compacted-later-retirement-4d9a190',subdirectory='installed-compacted-later-retirement',
+    database='bb_compacted_later_retirement_4d9a190_retirement',status='PASS_INSTALLED_COMPACTED_LATER_RETIREMENT',
+    source='4d9a1902f7941b4cda3bc13101a48e50c579802e',owner='40c3c2854b271fbce854cdedb95bb9a6',
+    label='org.bigbrotr.installed-compacted-later-retirement',client_id='13cb7cf2e84b34697226015108328e3f6d8538c46bc8a3c31a29e467e0791826',
+    source_clone='retirement',final_case='retirement-retry',
+    catalog_sha256='5d81aff0c2679613b5269de7cf2d718bd2bc74d9d0ceca75d3053033dde094b5',
+    result_sha256='de3806fbd7a975b1010363038e50bfa22baf561e2bfcf58f17a8546e52eb6cc5',
+    snapshot='retirement-retry-after.json',snapshot_sha256='a356ba83abd12be5affbe68618dce789318fb9b6503e7f71f29c7e5470e3af3a',
+    native_file='retirement-retry-after-native.json',native_sha256='4d7712788ce4898576e32ff55a8e900b064c032f8ca40c6a42a69cecc28c1eae',
+    inputs_file='retirement-retry-after-inputs.json',inputs_sha256='15e7ed66e33d9e60b4ae83cffd66cf4feab4175c23364eab859060b8c3477840',store='retirement/store')
+
+
+class LaterArchiveProfile:
+    DIRECTORY='installed-compacted-later-archive'
+    LABEL='org.bigbrotr.installed-compacted-later-archive'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_ARCHIVE'
+    DATABASE_PREFIX='bb_compacted_later_archive_'
+    CLIENT_PREFIX='bigbrotr-compacted-later-archive-'
+    CLONES=('archive',)
+    STEPS={'archive':('initialize','state','coordinator','catchup','catchup-retry')}
+    CASES=tuple('archive-'+s for s in STEPS['archive'])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Archive publication/frontier COMMIT delivery loss and interruption',
+        'Post-proof H/D/input drift, missing required input and capacity refusals',
+        'Installed read/export, adoption, topology bridge and retention/GC',
+        'Power-loss, reboot, mixed restore and hostile filesystem mutation')
+
+
+def later_archive_qualification(built,component,qualification,source,components,component_qualification):
+    assert LATER_ARCHIVE_PRODUCT is not None and source==LATER_ARCHIVE_PRODUCT
+    assert component['status']==components['status']=='PASS'
+    assert qualification['status']=='PASS_ARCHIVE_CATCH_UP_INSTALLED_COMPONENTS'
+    assert component_qualification['status']=='PASS_ARCHIVE_CATCH_UP_COMPONENTS'
+    for item in (built,component,qualification,components,component_qualification):
+        assert item['source']==source
+        for key in ('tree','source_manifest_sha256','lockfile_sha256'):assert item[key]==built[key]
+    selected={'frontier_intents','serve_owner','control_runtime_entrypoint'}
+    libselected={'historical_pending','compacted_pending','retained_frontier','archive_receipts','archive_membership','archive_custody'}
+    prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::'
+    pg='storage::postgres::control_owner::archive_retained_frontier::tests::'
+    required={'compacted_pending':[prefix+n for n in (
+        'compacted_archive_pending_preserves_complete_original_bytes_with_optional_residuals',
+        'compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch',
+        'compacted_archive_pending_rechecks_required_inputs_native_stamp_and_grants')],
+        'retained_frontier':[pg+n for n in (
+        'compacted_frontier_reservation_and_bind_errors_preserve_outer_check_and_state',
+        'compacted_frontier_requires_exact_dataset_catalog_binding_and_terminal_basis',
+        'only_complete_terminal_history_is_a_loader_prerequisite',
+        'compacted_history_is_not_an_archive_frontier_prerequisite')]}
+    runtime={'serve_owner':['interfaces::serve::initial_ingest::archive_catch_up::retained_driver::tests::'+n for n in (
+        'retained_driver_destroys_transport_before_queued_or_received_keeper',
+        'retained_driver_waits_for_owner_after_early_connection_completion',
+        'retained_driver_sender_failure_and_closed_sender_do_not_skip_transport',
+        'retained_driver_abort_join_confirms_transport_before_keeper_release')]}
+    for entry,q,names,controls in ((component,qualification,selected,runtime),(components,component_qualification,libselected,required)):
+        assert set(entry['test_counts'])==set(entry['test_names'])==names
+        assert entry['test_counts']==q['test_counts'] and entry['missing_controls']=={}
+        assert entry['required_controls']==controls
+        for group,tests in entry['test_names'].items():
+            assert len(tests)==len(set(tests))==number(entry['test_counts'][group],1,integer=True)
+            assert set(controls.get(group,()))<=set(tests)
+    assert set(components['executables_sha256'])=={'native_components'}
+    assert set(component['executables_sha256'])=={'bigbrotr','native_components','serve_owner','control_runtime_entrypoint','ingest_bootstrap_probe'}
+    # The packaged CLI is a build artifact, not the Serve unit-test executable.
+    assert re.fullmatch('[0-9a-f]{64}',built['binary_sha256'])
+    assert component['archive_worker']==qualification['archive_worker']==built['archive_worker']
+    assert built['postcheck_status']=='PASS' and built['build_info']['archive_worker']==built['archive_worker']
+    assert built['archive_verification']['result']=='verified' and built['archive_verification']['executable']==built['archive_worker']
+
+
+def later_archive_basis(seed):
+    pg,native,inputs=seed
+    assert len(pg)==77 and sum(map(len,pg.values()))==236
+    assert (len(native['rows']),native['sequence'])==(93,139)
+    assert inputs=={'36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor':
+        dict(bytes=298,sha256='aa8343efd7d8c712b050819fd9d089f3d3bdfa4f7e778d44dfb93ecda62b5798')}
+    assert all(r['state']=='released' for r in pg['owner_epochs'])
+    assert only(pg['producer_epochs'],producer_epoch=3)['state']=='retired'
+    source=only(pg['source_streams'],owner_epoch=3)
+    assert source['state']=='closed' and source['last_complete_sequence']==0
+    assert source['closure_digest']=='\\x985c7198beb0ce34a224e74288e0afb30f430e8a48e008e2e35df86ef6bbbdeb'
+    assert len([r for r in pg['ingest_terminal_transactions'] if r['target_epoch']==3])==1
+    assert all(not pg[t] for t in ('archive_attempts','archive_coordinators','archive_persistence',
+        'archive_owner_sessions','archive_frontier_snapshots','archive_frontier_batches','archive_snapshot_pins',
+        'archive_pin_recoveries','consumers','consumer_frontier_revisions','consumer_frontiers'))
+
+
+def later_archive_modules():
+    # history owns bootstrap codec registration; these existing pure reducers
+    # share that registration without starting a client or native engine.
+    import history
+    import installed_archive_catch_up_oracle as archive
+    import installed_archive_catch_up_fault_oracle as journal
+    return archive,journal
+
+
+def later_archive_structure_checked(record,database):
+    import sys
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'archive-engine'))
+    from scientific_layout_oracle import structural_checksum,structural_statement
+    assert set(record)=={'database','sql','stdout'} and record['database']==database
+    assert record['sql']==structural_statement() and len(record['stdout'].encode())<=2*1024*1024
+    rows=[loads(line) for line in record['stdout'].splitlines()]
+    assert 1<=len(rows)<=1024
+    identities=[]
+    for row in rows:
+        assert type(row) is list and len(row)==4
+        assert all(type(field) is str and len(field.encode())<=8192 for field in row)
+        assert row[0] in ('table','column','constraint','index','trigger','function','rule')
+        assert row[1] in ('public','bigbrotr_archive')
+        identities.append(tuple(field.encode() for field in row[:3]))
+    assert identities==sorted(identities) and len(set(identities))==len(identities)
+    return '\\x'+structural_checksum(rows)
+
+
+def later_archive_setup_checked(value,seed):
+    archive,_=later_archive_modules();later_archive_basis(seed)
+    assert value['status']=='OBSERVED_INITIALIZERS_CLOSED' and value['native_opened'] is False
+    resource=value['resource'];database=resource['control_database'];catalog=resource['catalog_database']
+    assert re.fullmatch('[a-z0-9_]{1,63}',database) and catalog==database+'_cat'
+    assert re.fullmatch('bb_archive_[0-9a-f]{24}',resource['manager']) and re.fullmatch('[0-9a-f]{32}',resource['catalog_id'])
+    assert value['backend_absence']=={database:'0',catalog:'0'}
+    ds=only(seed[0]['datasets'])['dataset_id'];cid='\\x'+resource['catalog_id'];config='/lab/'+database+'.toml'
+    assert value['config']==config and resource['config']==config and resource['state']=='setup-retained'
+    commands=value['commands'];assert set(commands)=={'build-info','worker','validate','initialize','state','coordinator'}
+    expected_args={'build-info':['build-info'],'worker':['archive','verify-worker','--root','/build/archive-worker'],
+        'validate':['config','validate','--file',config],
+        'initialize':['archive','initialize','--file',config,'--initializer-user','postgres','--initializer-password-ref','file:/run/secrets/bootstrap','--worker-root','/build/archive-worker'],
+        'state':['archive','state-initialize','--file',config],
+        'coordinator':['archive','coordinator-initialize','--file',config]}
+    outputs={}
+    for label,entry in commands.items():
+        command=entry['command'];assert set(command)=={'args','exit_code','seconds'} and command['args']==expected_args[label]
+        assert type(command['exit_code']) is int and command['exit_code']==0 and entry['stderr']==''
+        number(command['seconds'],0,160);outputs[label]=loads(entry['stdout'])
+    assert outputs['initialize']==dict(format='bigbrotr-catalog-initialization/1',status='installed',new_installation=True,
+        dataset_id=ds[2:],catalog_id=cid[2:],bootstrap='retired',manager_inspection='verified',runtime_authorization='not-granted',ready=False)
+    assert outputs['state']==dict(format='bigbrotr-coordinator-state/1',state='bound',dataset_id=ds[2:],catalog_id=cid[2:],
+        catalog_inspection='not-performed',attempt_adoption='not-performed',publication_authority='not-granted',ready=False)
+    assert outputs['coordinator']==dict(format='bigbrotr-coordinator-initialization/1',state='bound',created=True,
+        dataset_id=ds[2:],catalog_id=cid[2:],binding_sha256=resource['binding_sha256'],owner_release='committed',
+        catalog_inspection='verified',persistence_protocol=1,persistence_created=True,publication_authority='not-granted',ready=False)
+    stages=value['stages'];assert [s['label'] for s in stages]==['initialize','state','coordinator']
+    assert value['before']==seed[0] and stages[0]['control']==stages[1]['control']==seed[0]
+    window=value['window'];previous=number(window['before_us'],1,integer=True)
+    for stage in stages:
+        assert stage['backend_absence']==value['backend_absence']
+        previous=number(stage['observed_at_us'],previous,window['after_us'],integer=True)
+    assert stages[0]['catalog']==stages[1]['catalog']==stages[2]['catalog']==value['catalog']
+    assert stages[0]['roles']==stages[1]['roles']==stages[2]['roles']==value['roles']
+    assert stages[1]['files']==stages[2]['files']==value['files']
+    # Physically empty roots preceded genuine initialization. Native store
+    # files were copied independently and are not reinterpreted as Archive.
+    virgin=value['virgin_files']
+    for root in ('data','state','scratch'):
+        assert root in virgin and virgin[root]['sha256'] is None and virgin[root]['mode']==0o700
+        assert not any(n.startswith(root+'/') for n in virgin)
+        for stage in stages:
+            item=stage['files'][root]
+            assert all(item[k]==virgin[root][k] for k in ('mode','inode','device','sha256'))
+    for name,item in virgin.items():
+        if name=='store' or name.startswith('store/'):
+            assert all(s['files'][name]==item for s in stages)
+    cat=value['catalog'];assert len(cat)==32
+    nonempty={'public.ducklake_table','public.ducklake_column','public.ducklake_schema',
+        'public.ducklake_metadata','public.ducklake_snapshot','public.ducklake_schema_versions',
+        'public.ducklake_snapshot_changes','bigbrotr_archive.owner','bigbrotr_archive.installation','bigbrotr_archive.scientific_schema'}
+    assert {k for k,v in cat.items() if v}==nonempty
+    import sys
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'archive-engine'))
+    from scientific_layout_oracle import expected,observed
+    observed({k.removeprefix('public.'):v for k,v in cat.items()},expected())
+    installation=only(cat['bigbrotr_archive.installation']);schema=only(cat['bigbrotr_archive.scientific_schema'])
+    source=Path(__file__).resolve().parents[2]
+    checksum=lambda name:'\\x'+sha((source/name).read_bytes())
+    assert installation==dict(singleton=True,protocol=1,dataset_id=ds,catalog_id=cid,data_root='/lab/archive/data/',
+        sql_checksum=checksum('migrations/catalog/0001_writer_guard.sql'),layout_checksum=later_archive_structure_checked(value['structure'],catalog),xmin=installation['xmin'])
+    assert schema==dict(singleton=True,format_version=1,declaration_checksum=checksum('contracts/archive/v1/schema.json'),
+        native_layout_checksum=checksum('contracts/archive/v1/native-layout.json'),sql_checksum=checksum('migrations/catalog/0002_scientific_schema.sql'),
+        initialization_snapshot=1,xmin=installation['xmin'])
+    owner=only(cat['bigbrotr_archive.owner']);assert owner==dict(singleton=True,ordinal=0,enabled=False,xmin=installation['xmin'])
+    assert [r['snapshot_id'] for r in sorted(cat['public.ducklake_snapshot'],key=lambda r:r['snapshot_id'])]==[0,1]
+    for snap in cat['public.ducklake_snapshot']:
+        n=snap['snapshot_id'];assert snap==dict(snapshot_id=n,snapshot_time=snap['snapshot_time'],schema_version=n,
+            next_catalog_id=1 if n==0 else 7,next_file_id=0,xmin=snap['xmin'])
+        at=retained.instant(snap['snapshot_time']);number(at,window['before_us'],window['after_us'])
+    # Independent full Control union: actual coordinator command creates only
+    # two immutable bindings and one fresh, released Control owner/role.
+    m=archive.Model(seed[0],seed[1],seed[2],value['coordinator_window']);m.completed_control(value['control'])
+    control=m.control;oldmax=max(int(r['xmin']) for rows in seed[0].values() for r in rows)
+    coordinator=only(value['control']['archive_coordinators']);persistence=only(value['control']['archive_persistence'])
+    assert oldmax<int(coordinator['xmin'])<int(persistence['xmin'])<int(control['xmin'])
+    assert control['acquired_at_us']<=coordinator['initialized_at_us']<=persistence['initialized_at_us']<=control['released_at_us']
+    common=dict(dataset_id=ds,catalog_id=cid,protocol_version=1,issuer_resource=control['resource_id'],
+        issuer_epoch=control['epoch'],issuer_role='control',issuer_incarnation=control['process_incarnation'])
+    m.pg['archive_coordinators'].append(dict(common,binding_sha256='\\x'+resource['binding_sha256'],
+        initialized_at_us=coordinator['initialized_at_us'],xmin=coordinator['xmin']))
+    m.pg['archive_persistence'].append(dict(common,coordinator_binding_sha256='\\x'+resource['binding_sha256'],
+        protection_class='local-synced',baseline_snapshot=1,initialized_at_us=persistence['initialized_at_us'],xmin=persistence['xmin']))
+    same(m.pg,value['control']);assert value['control']==stages[2]['control'] and sum(map(len,m.pg.values()))==240
+    binding=bytes.fromhex(value['binding_hex']);assert sha(binding)==resource['binding_sha256']
+    assert value['files']['state/coordinator.json']['sha256']==value['files']['data/.bigbrotr-initialization/coordinator.json']['sha256']==sha(binding)
+    initialization=bytes.fromhex(value['initialization_hex']);initial=loads(initialization)
+    identity=initial['initialization_id'];assert len(identity)==16 and any(identity)
+    for n in identity:number(n,0,255,integer=True)
+    assert re.fullmatch('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',initial['boot_id'])
+    lock=value['files']['data/.bigbrotr-initialization/custody.lock']
+    manifest=dict(format='bigbrotr-local-initialization/1',initialization_id=identity,dataset_id=ds[2:],catalog_id=cid[2:],
+        catalog_root='/lab/archive/data/',boot_id=initial['boot_id'],root_device=virgin['data']['device'],root_inode=virgin['data']['inode'],
+        lock_device=lock['device'],lock_inode=lock['inode'])
+    assert initialization==archive.json.dumps(manifest,separators=(',',':')).encode()
+    assert value['files']['data/.bigbrotr-initialization/intent.json']['sha256']==sha(initialization)
+    expected_binding=dict(format='bigbrotr-local-coordinator/1',initialization_sha256=list(bytes.fromhex(sha(initialization))),
+        state_root='/lab/archive/state',state_device=virgin['state']['device'],state_inode=virgin['state']['inode'])
+    assert binding==archive.json.dumps(expected_binding,separators=(',',':')).encode()
+    assert lock['sha256']==sha(b'')
+    for name in ('data/.bigbrotr-initialization/custody.lock','data/.bigbrotr-initialization/intent.json',
+            'data/.bigbrotr-initialization/coordinator.json','state/coordinator.json'):
+        assert value['files'][name]['mode']==0o600 and value['files'][name]['links']==1
+    roles=value['setup_roles'];assert roles['after']==value['roles']
+    for table in ('roles','members'):assert all(r in roles['after'][table] for r in roles['before'][table])
+    added=[r for r in roles['after']['roles'] if r not in roles['before']['roles']]
+    identity=resource['roles'];assert identity['manager']==resource['manager'] and identity['bootstrap_retired'] is True
+    assert {r['rolname'] for r in added}=={identity['manager'],identity['bootstrap'],identity['reservation']} and len(added)==3
+    manager=only(added,rolname=identity['manager']);bootstrap=only(added,rolname=identity['bootstrap'])
+    for field in ('manager_oid','bootstrap_oid'):number(identity[field],1,integer=True)
+    assert manager['oid']==str(identity['manager_oid']) and bootstrap['oid']==str(identity['bootstrap_oid'])
+    assert manager['rolcanlogin'] is True and manager['rolcreaterole'] is True and manager['credential_present'] is True
+    assert not any(manager[k] for k in ('rolsuper','rolcreatedb','rolinherit','rolreplication','rolbypassrls'))
+    assert bootstrap['rolcanlogin'] is False and bootstrap['credential_present'] is False
+    for r in roles['after']['members']:
+        if r in roles['before']['members']:continue
+        assert r['member']==manager['oid'] and r['roleid']==bootstrap['oid']
+        assert (r['admin_option'],r['inherit_option'],r['set_option'])==(True,False,False)
+    if 'baseline' in value:later_archive_reader_checked(value)
+    return dict(status='PASS',commands=3,rows=[236,236,240],native_opened=False)
+
+
+
+def later_archive_reader_checked(value):
+    """Provisioning adds only the configured least-privilege observer role."""
+    before=value['roles'];after=value['baseline']['system_roles'];name=value['resource']['reader']
+    assert re.fullmatch('bb_archive_read_[0-9a-f]{20}',name)
+    assert set(before)==set(after)=={'roles','members'} and after['members']==before['members']
+    role=only(after['roles'],rolname=name)
+    number(int(role['oid']),max(int(r['oid']) for r in before['roles'])+1)
+    number(int(role['xmin']),max(int(r['xmin']) for rows in before.values() for r in rows)+1)
+    wanted=dict(oid=role['oid'],xmin=role['xmin'],rolname=name,rolsuper=False,rolinherit=False,
+        rolcreaterole=False,rolcreatedb=False,rolcanlogin=True,rolreplication=False,rolconnlimit=-1,
+        rolvaliduntil=None,rolbypassrls=False,credential_present=True)
+    same(after,dict(roles=before['roles']+[wanted],members=before['members']))
+    privilege=value['reader_privileges']
+    assert privilege['role']==name and privilege['memberships']==0
+    assert privilege['login'] is True and privilege['connect'] is True
+    assert not any(privilege[k] for k in ('privileged','db_extra','schema_extra','function_execute'))
+    assert set(privilege['tables'])==set(value['catalog'])
+    for table,rights in privilege['tables'].items():
+        assert rights==dict(select=table.startswith('public.') or table in (
+            'bigbrotr_archive.installation','bigbrotr_archive.scientific_schema'),extra=False)
+
+def verify_later_archive(phase,seed,setup,previous):
+    archive,journal=later_archive_modules();later_archive_reader_checked(setup)
+    assert phase['step'] in ('catchup','catchup-retry') and phase['operation']=='catchup'
+    assert phase['database']==setup['resource']['control_database'] and phase['config']=='/lab/'+phase['database']+'.toml'
+    assert archive.semantic(phase['before'])==archive.semantic(previous)
+    assert phase['fixture']==dict(errors=[],snapshots=[])
+    response=phase['response'];assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']=='' and response['outcome']=='PROCESS_EXITED'
+    from installed_archive_catch_up_client import argv as archive_argv
+    terminal=response['terminal'];assert terminal['command']==archive_argv('catchup',Path(phase['config']))
+    assert terminal['prefix']=='/lab/catch-up-'+phase['step'] and terminal['config']==phase['config']
+    assert terminal['reaped'] is True and terminal['forced'] is False and terminal['error'] is None and terminal['exit_code']==0
+    number(terminal['pid'],1,integer=True);number(terminal['start_ticks'],1,integer=True);number(terminal['elapsed_seconds'],0,110)
+    assert phase['backend']['all']=={phase['database']:'0',setup['resource']['catalog_database']:'0'}
+    assert set(phase['backend'])=={'exact','all'}
+    current=max((r for r in phase['after']['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    assert phase['backend']['exact']==[dict(pid=current['control_backend_pid'],backend_start=current['control_backend_start'],database=phase['database'],present=False)]
+    assert phase['readback']['returncode']==0 and type(phase['readback']['returncode']) is int and phase['readback']['stderr']==''
+    assert phase['readback_backend_absence']==phase['backend']['all']
+    for state in (phase['before'],phase['after']):
+        assert set(state)=={'control','native','inputs','contents','catalog','system_roles','physical','retained','local_records'}
+        assert set(state['contents'])==set(seed[2])
+        for name,raw in state['contents'].items():assert dict(bytes=len(bytes.fromhex(raw)),sha256=sha(bytes.fromhex(raw)))==seed[2][name]
+        for area in ('store','data','state','scratch'):
+            assert {k:v for k,v in state['physical'][area].items() if k!='files'}=={k:v for k,v in setup['baseline']['physical'][area].items() if k!='files'}
+    report=loads(response['stdout'])
+    for key in ('terminal_epoch','issued_attempts_before','new_attempts','frontier_revision','snapshot_id','new_frontier_revisions'):
+        number(report[key],0,integer=True)
+    assert all(type(n) is int for n in report['family_counts'])
+    science=archive.archive_science(seed[1],compacted=True)
+    receipts=archive.archive(phase,science,0,compacted=True)
+    archive.roles(phase['before'],phase['after'],phase['step'],virgin_manager=setup['resource']['manager'])
+    journal.journals(phase['after'],science,0,setup['baseline'],virgin=True)
+    assert phase['after']['native']==seed[1] and phase['after']['inputs']==seed[2]
+    expected_count=267 if phase['step']=='catchup' else 269
+    assert len(phase['after']['control'])==77 and sum(map(len,phase['after']['control'].values()))==expected_count
+    return dict(status='PASS',sql_rows=expected_count,archive_attempts=len(receipts),frontier_revision=1,snapshot=9,
+        family_counts=[12,4,4,4,4],native_rows=93,native_sequence=139,inputs=1)
+
+
+def later_archive_setup_controls(value,seed):
+    rejected=[]
+    def reject(name,change):
+        candidate=copy.deepcopy(value);change(candidate)
+        try:later_archive_setup_checked(candidate,seed)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(name)
+        else:raise AssertionError('accepted setup control '+name)
+    reject('incomplete-initializer-custody',lambda c:c.update(status='UNKNOWN'))
+    reject('backend-still-present',lambda c:c['backend_absence'].update({c['resource']['catalog_database']:'1'}))
+    reject('nonvirgin-data-root',lambda c:c['virgin_files'].update({'data/old.parquet':dict(c['virgin_files']['data'])}))
+    reject('false-first-installation',lambda c:c['commands']['initialize'].update(stdout=c['commands']['initialize']['stdout'].replace('true','false')))
+    reject('wrong-initializer-argv',lambda c:c['commands']['initialize']['command']['args'].append('--unknown'))
+    def changed_structure(c):
+        import json
+        rows=[loads(line) for line in c['structure']['stdout'].splitlines()];rows[0][3]+=' changed'
+        c['structure']['stdout']='\n'.join(json.dumps(row) for row in rows)
+    reject('structural-definition-rewritten',changed_structure)
+    reject('structural-order-reversed',lambda c:c['structure'].update(stdout='\n'.join(reversed(c['structure']['stdout'].splitlines()))))
+    reject('wrong-structural-database',lambda c:c['structure'].update(database=c['resource']['control_database']))
+    reject('failed-initializer',lambda c:c['commands']['state']['command'].update(exit_code=4))
+    reject('coordinator-binding-rewritten',lambda c:c.update(binding_hex='00'+c['binding_hex'][2:]))
+    reject('initialization-root-rewritten',lambda c:c.update(initialization_hex='00'+c['initialization_hex'][2:]))
+    reject('retained-source-rewritten',lambda c:only(c['control']['source_streams'],owner_epoch=3).update(closed_at_us=0))
+    reject('missing-persistence',lambda c:c['control']['archive_persistence'].clear())
+    reject('old-coordinator-xmin',lambda c:only(c['control']['archive_coordinators']).update(xmin='1'))
+    reject('native-store-mutated-during-initialization',lambda c:c['stages'][0]['files']['store'].update(inode=1))
+    reject('bootstrap-login-retained',lambda c:only(c['setup_roles']['after']['roles'],rolname=c['resource']['roles']['bootstrap']).update(rolcanlogin=True))
+    reject('wrong-bootstrap-role-oid',lambda c:c['resource']['roles'].update(bootstrap_oid=c['resource']['roles']['bootstrap_oid']+1))
+    if 'baseline' in value:
+        reject('unrelated-role-rewritten-during-reader-provisioning',lambda c:only(
+            c['baseline']['system_roles']['roles'],rolname=c['resource']['manager']).update(rolcreatedb=True))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def later_archive_controls(phase,seed,setup,previous):
+    rejected=[]
+    def reject(name,change):
+        candidate=copy.deepcopy(phase);change(candidate)
+        try:verify_later_archive(candidate,seed,setup,previous)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(name)
+        else:raise AssertionError('accepted archive control '+name)
+    reject('unjoined-child',lambda c:c['response']['terminal'].update(reaped=False))
+    reject('forced-child',lambda c:c['response']['terminal'].update(forced=True))
+    reject('cleanup-error',lambda c:c['fixture']['errors'].append({'error':'unknown'}))
+    reject('catalog-backend-present',lambda c:c['backend']['all'].update({setup['resource']['catalog_database']:'1'}))
+    reject('reader-backend-present',lambda c:c['readback_backend_absence'].update({setup['resource']['catalog_database']:'1'}))
+    reject('native-write',lambda c:c['after']['native'].update(sequence=140))
+    reject('missing-required-input',lambda c:c['after']['inputs'].clear())
+    reject('source-rewritten',lambda c:only(c['after']['control']['source_streams'],owner_epoch=3).update(closed_at_us=0))
+    reject('gap-rewritten',lambda c:c['after']['control']['acquisition_gaps'][0].update(reason='unknown'))
+    reject('omitted-family-record',lambda c:c['readback'].update(stdout=c['readback']['stdout'].replace('"dictionaries"','"wrong"')))
+    reject('wrong-first-frontier',lambda c:only(c['after']['control']['consumer_frontier_revisions']).update(previous_revision=1))
+    reject('missing-frontier-membership',lambda c:c['after']['control']['archive_frontier_batches'].pop())
+    reject('wrong-topology',lambda c:c['after']['control']['archive_attempts'][0].update(topology_generation=1))
+    reject('wrong-batch-digest',lambda c:c['after']['control']['archive_attempts'][0].update(batch_digest='\\x'+'00'*32))
+    reject('catalog-snapshot-omitted',lambda c:c['after']['catalog']['public.ducklake_snapshot'].pop())
+    reject('mapping-field-rewritten',lambda c:c['after']['catalog']['public.ducklake_name_mapping'][0].update(target_field_id=999))
+    reject('column-null-count-rewritten',lambda c:c['after']['catalog']['public.ducklake_file_column_stats'][0].update(null_count=999))
+    reject('retained-journal-missing',lambda c:c['after']['local_records'].pop('coordinator.json'))
+    if phase['step']=='catchup':
+        reject('virgin-parent-missing',lambda c:c['after']['physical']['data']['files'].pop('main'))
+        reject('virgin-parent-as-file',lambda c:c['after']['physical']['data']['files']['main'].update(sha256='00'*32))
+        reject('virgin-parent-aliased',lambda c:c['after']['physical']['data']['files']['main'].update(inode=c['before']['physical']['data']['inode']))
+        reject('virgin-parent-group-writable',lambda c:c['after']['physical']['data']['files']['main'].update(mode=0o775))
+        reject('old-attempt-xmin',lambda c:c['after']['control']['archive_attempts'][0].update(xmin='1'))
+        reject('late-archive-refresh',lambda c:only(c['after']['control']['owner_epochs'],role='archive').update(
+            lease_expires_at_us=only(c['after']['control']['owner_epochs'],role='archive')['acquired_at_us']+6_000_001))
+    else:
+        reject('retry-attempt-rewritten',lambda c:c['after']['control']['archive_attempts'][0].update(xmin='1'))
+        reject('retry-new-frontier',lambda c:c['after']['control']['consumer_frontier_revisions'].append(copy.deepcopy(c['after']['control']['consumer_frontier_revisions'][0])))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def later_retirement_origin_checked(root,raw=None,*,archive=False):
+    """Bind a qualified claims/retirement endpoint; never rerun its old verifier."""
+    assert type(archive) is bool
     import history
     assert history.bootstrap_oracle.__file__==str(Path(__file__).resolve().parents[1]/'ingest-bootstrap/oracle.py')
     from installed_family_capture import physical,spool_checked
-    raw=raw or retained.regular_read;pin=LATER_RETIREMENT_ORIGIN
+    raw=raw or retained.regular_read;pin=LATER_ARCHIVE_ORIGIN if archive else LATER_RETIREMENT_ORIGIN
     basis=Path(root).parent/pin['run']/pin['subdirectory']
-    data=raw(basis.parent/'verified-run.json');assert sha(data)=='71a16e175cc11bda325115579f006927494dc3e3c8c17d95c037ba2b182ac817'
+    data=raw(basis.parent/'verified-run.json');assert sha(data)==('5d5cee57509e70556707dea64969e248a965242a357e9cada3201c3c2fe37dd9' if archive else '71a16e175cc11bda325115579f006927494dc3e3c8c17d95c037ba2b182ac817')
     receipt=loads(data)
-    assert receipt['status']=='PASS_EXACT_COMPACTED_ACQUISITION_SOURCE_ABANDON_RETRY_AND_RAW'
-    assert receipt['source']==pin['source'] and receipt['product_source']==LATER_ACQUISITION_PRODUCT
-    assert receipt['driver']==dict(exit=0,joined=True,session=81154) and receipt['raw_driver']==dict(exit=0,joined=True,session=8098)
-    assert (receipt['commands'],receipt['controls'],receipt['raw_file_bindings'])==(4,79,5811)
+    historical_product=LATER_RETIREMENT_PRODUCT if archive else LATER_ACQUISITION_PRODUCT
+    assert receipt['status']==('PASS_EXACT_COMPACTED_RETIREMENT_RETRY_AND_RAW' if archive else 'PASS_EXACT_COMPACTED_ACQUISITION_SOURCE_ABANDON_RETRY_AND_RAW')
+    assert receipt['source']==pin['source'] and receipt['product_source']==historical_product
+    assert receipt['driver']==dict(exit=0,joined=True,session=57875 if archive else 81154) and receipt['raw_driver']==dict(exit=0,joined=True,session=1857 if archive else 8098)
+    assert (receipt['commands'],receipt['controls'],receipt['raw_file_bindings'])==((2,43,4276) if archive else (4,79,5811))
     for name,digest in receipt['evidence'].items():assert sha(raw(basis.parent/name))==digest
-    data=raw(basis.parent/'raw-replay.json');assert sha(data)=='284feb6c146bde182e97c600e357eeec2e68e7742f865673339909e36b7b48e2'
+    data=raw(basis.parent/'raw-replay.json');assert sha(data)==('49934eb934436cd789aa233c7f2ed798cbf156b40cafb87102b8a52c752773ce' if archive else '284feb6c146bde182e97c600e357eeec2e68e7742f865673339909e36b7b48e2')
     replay=loads(data)
-    assert replay['status']==LaterAcquisitionProfile.STATUS+'_CAPTURE_REPLAY'
-    assert replay['source']==pin['source'] and replay['product_source']==LATER_ACQUISITION_PRODUCT
-    assert len(replay['bound_files'])==5811 and [c['name'] for c in replay['cases']]==list(LaterAcquisitionProfile.CASES)
-    assert sum(c['negative_controls']['count'] for c in replay['cases'])==79
+    profile=LaterRetirementProfile if archive else LaterAcquisitionProfile
+    assert replay['status']==profile.STATUS+'_CAPTURE_REPLAY'
+    assert replay['source']==pin['source'] and replay['product_source']==historical_product
+    assert len(replay['bound_files'])==(4276 if archive else 5811) and [c['name'] for c in replay['cases']]==list(profile.CASES)
+    assert sum(c['negative_controls']['count'] for c in replay['cases'])==(43 if archive else 79)
     def bound(path):
         path=Path(path);data=raw(path);assert sha(data)==replay['bound_files'][str(path)];return data
     def read(path):return loads(bound(path))
@@ -8082,11 +8460,12 @@ def later_retirement_origin_checked(root,raw=None):
     for file_key,hash_key in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
         data=bound(basis/pin[file_key]);assert sha(data)==pin[hash_key];endpoint.append(loads(data))
     endpoint=tuple(endpoint);label=pin['final_case'];context=read(basis/(label+'-verification.json'))
-    assert sha(raw(basis/(label+'-verification.json')))== '17084d20dd3b39367e07240f747aa76ae708a233a640424b012cc6f3a0315199'
+    assert sha(raw(basis/(label+'-verification.json')))==('b486b7e66a473cce6a285263ce4535524e3332a45e5f56bbfb569bb6616e4131' if archive else '17084d20dd3b39367e07240f747aa76ae708a233a640424b012cc6f3a0315199')
     assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
     assert context['response']==read(basis/(label+'-response.json'))
     # Preserve this prior operation's actual argv and terminal identity.
-    later_source_closed(context['response'],context['case'],acquisition=True)
+    if archive:later_retirement_closed(context['response'],context['case'])
+    else:later_source_closed(context['response'],context['case'],acquisition=True)
     assert context['response']['terminal']==read(basis/(label+'.terminal.json'))
     assert read(basis/(label+'-custody.json'))==dict(status='OBSERVED_CLOSED_AND_JOINED',database=pin['database'],backend_absent=True,errors=[])
     assert context['backend']==read(basis/(label+'-backends.json'))
@@ -8095,7 +8474,8 @@ def later_retirement_origin_checked(root,raw=None):
     state=terminal['State'];assert state['Status']=='exited' and state['Pid']==0 and state['ExitCode']==143 and state['OOMKilled'] is False
     build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
     built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
-    qualification_checked(built,component,qualification,LATER_ACQUISITION_PRODUCT,initial_journey=True,empty_initial=True,later_acquisition=True)
+    qualification_checked(built,component,qualification,historical_product,initial_journey=True,empty_initial=True,
+        later_acquisition=not archive,later_retirement=archive)
     assert report['build']==built and report['component']==component
     manifest=read(build.parent/'build/source-manifest.json');assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
     for name,digest in component['executables_sha256'].items():assert sha(bound(build/name))==digest
@@ -8106,10 +8486,11 @@ def later_retirement_origin_checked(root,raw=None):
         assert sha(bound(source/name))==digest
         if not name.startswith(('docs/','experiments/')):assert manifest['files_sha256'][name]==digest
     pg,native,inputs=endpoint
-    assert len(pg)==77 and sum(map(len,pg.values()))==231
+    assert len(pg)==77 and sum(map(len,pg.values()))==(236 if archive else 231)
     assert (len(native['rows']),native['sequence'],len(inputs))==(93,139,1)
-    assert max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])['epoch']==13
-    later_retirement_basis(endpoint)
+    assert max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])['epoch']==(15 if archive else 13)
+    if archive:later_archive_basis(endpoint)
+    else:later_retirement_basis(endpoint)
     store=basis/pin['store'];files=physical(store,bound)
     wanted={str(Path(p).relative_to(store)):digest for p,digest in replay['bound_files'].items() if p.startswith(str(store)+'/')}
     actual={n:m['sha256'] for n,m in files.items() if stat.S_ISREG(m['mode'])}

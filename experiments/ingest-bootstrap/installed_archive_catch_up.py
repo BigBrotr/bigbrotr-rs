@@ -96,6 +96,9 @@ def snapshot(pg,client,output,label,database,rows,setup,native=True):
     value['contents']={p.name:p.read_bytes().hex() for p in sorted((setup['home']/'store/producer-inputs-v1').glob('*.cbor'))}
     value['retained']={str(p.relative_to(setup['home'])):p.read_bytes().hex() for p in
         [setup['home']/'data/.bigbrotr-initialization/intent.json',*sorted((setup['home']/'state').glob('*.inputs'))]}
+    if setup.get('compacted',False):
+        from installed_archive_catch_up_faults import local_records
+        value['local_records']=local_records(setup['home'])
     assert all(len(bytes.fromhex(raw))<=1024*1024 for raw in value['retained'].values())
     value['physical']=physical(setup['home'])
     lab.write_json(output/(label+'-state.json'),value)
@@ -204,7 +207,8 @@ def execute(pg,client,output,database,rows,setup,step,before,action=None):
             backend['all']={db:lab.sql(pg,db,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')
                 for db in (database,setup['resource']['catalog_database'])}
             assert all(v=='0' for v in backend['all'].values())
-            if closed and fixture.get('client_joined',True): after=snapshot(pg,client,output,name+'-after',database,rows,setup)
+            if closed and fixture.get('client_joined',True) and (not setup.get('compacted',False) or (failure is None and not fixture['errors'])):
+                after=snapshot(pg,client,output,name+'-after',database,rows,setup)
         except BaseException as error: fixture['errors'].append(dict(stage='external',error=repr(error)))
         lab.write_json(output/(name+'-backends.json'),backend)
         lab.write_json(output/(name+'-fixture.json'),fixture)
