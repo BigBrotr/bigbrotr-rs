@@ -121,6 +121,10 @@ pub struct CompactedAcknowledgementPredecessor<'a> {
     _scratch: &'a OwnedPermit,
 }
 
+#[allow(
+    clippy::large_enum_variant,
+    reason = "fixed recovery stamp is charged to ACK scratch; boxing would add an allocation"
+)]
 enum AckStamp {
     Live(CheckpointStamp),
     Recovery {
