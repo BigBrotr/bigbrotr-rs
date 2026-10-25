@@ -58,7 +58,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
         self.certify_native_event(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
@@ -125,7 +125,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
         self.admit_native_event(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
@@ -190,7 +190,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
         self.append_native_dictionaries(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,

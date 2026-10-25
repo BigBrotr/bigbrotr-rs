@@ -6,8 +6,8 @@ use crate::storage::rocks::{
     producer_floor::ClosedProducerFloor,
     store::{
         CompactedAcknowledgementPredecessor, CompactedEmptyInitialPredecessor,
-        CompactedInitialAncestor, CompactedInitialPredecessor, CompactedSuccessorPredecessor,
-        IngestRecovery, RetainedCompactedPrefix,
+        CompactedInitialAncestor, CompactedInitialPredecessor, CompactedLiveSuccessor,
+        CompactedSuccessorPredecessor, IngestRecovery, ProgressRead, RetainedCompactedPrefix,
     },
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
@@ -243,6 +243,30 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_ackno
     Ok(complete)
 }
 
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_live(
+    tx: &Transaction<'_>,
+    view: &CompactedLiveSuccessor<'_>,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    view.validate(cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_read(
+        tx,
+        view.progress_read()
+            .map_err(ProducerProgressError::Native)?,
+        view.manifest(),
+        view.producer_slot_id(),
+        view.progress_scratch(),
+        Some(view.floor()),
+        authority,
+    )
+    .await?;
+    view.validate(cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
 #[allow(
     clippy::too_many_arguments,
     reason = "explicit floor selects a distinct recovery format under the existing locked reader"
@@ -256,10 +280,29 @@ async fn require_inner(
     floor: Option<&ClosedProducerFloor>,
     mut authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
 ) -> Result<u64, ProducerProgressError> {
+    authority().map_err(ProducerProgressError::Native)?;
+    let native = recovery
+        .progress_read(scratch)
+        .map_err(ProducerProgressError::Native)?;
+    require_read(tx, native, manifest, slot, scratch, floor, authority).await
+}
+#[allow(
+    clippy::too_many_arguments,
+    reason = "locked typed head, borrowed native read and existing scratch/authority"
+)]
+async fn require_read(
+    tx: &Transaction<'_>,
+    native: ProgressRead<'_>,
+    manifest: &IngestManifest,
+    slot: ProducerSlotId,
+    scratch: &OwnedPermit,
+    floor: Option<&ClosedProducerFloor>,
+    mut authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
     let native_error = ProducerProgressError::Native;
     authority().map_err(native_error)?;
     let id = manifest.identity();
-    let actual = recovery.manifest().identity();
+    let actual = native.manifest().identity();
     if id.dataset_id != actual.dataset_id
         || id.owner_resource_id != actual.owner_resource_id
         || id.shard_id != actual.shard_id
@@ -280,7 +323,6 @@ async fn require_inner(
     };
     let epoch = context.epoch.to_string();
     let params: &[&(dyn ToSql + Sync)] = &[&&slot.as_bytes()[..], &epoch];
-    let native = recovery.progress_read(scratch).map_err(native_error)?;
     let producer = tx
         .query_one(
             "SELECT substring(dataset_id FROM 1 FOR 17),

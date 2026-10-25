@@ -340,6 +340,7 @@ if producer_floor:
         ('compacted_progress', 'storage::postgres::control_owner::producer_progress::recovery::tests::'),
         ('successor_history', 'storage::postgres::control_owner::successor_history::tests::'),
         ('successor_transition', 'storage::postgres::control_owner::successor_transition::tests::'),
+        ('successor_activation', 'storage::postgres::control_owner::successor_transition::activation::tests::'),
         ('archive_retained_frontier', 'storage::postgres::control_owner::archive_retained_frontier::tests::'),
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
@@ -632,6 +633,11 @@ if producer_floor:
             'successor_native_transition_reserves_data_native_and_item_together',
             'compacted_successor_requires_matching_private_check_and_retained_basis',
             'compacted_successor_check_retains_the_full_canonical_effect_grant']]
+    required_controls['successor_activation'] = [
+        'storage::postgres::control_owner::successor_transition::activation::tests::' + name for name in [
+            'successor_activation_attempt_is_spent_before_any_result',
+            'successor_binding_requires_full_target_manifest_and_actual_control',
+            'successor_binding_keeps_dynamic_epoch_and_accepted_window']]
     required_controls['initial_reconstruction'].extend(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::' + name for name in [
             'compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry',
@@ -639,6 +645,14 @@ if producer_floor:
             'compacted_successor_residual_inputs_never_replace_required_later_originals',
             'compacted_successor_candidate_preserves_original_and_activation_refusals',
             'compacted_successor_dispatch_failure_keeps_exact_completed_retry'])
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::compacted_live_successor_tests::' + name for name in [
+            'compacted_live_promotes_one_allocation_with_full_partial_and_absent_residuals',
+            'compacted_live_required_original_cannot_be_masked_by_residual_and_failure_poison_persists',
+            'compacted_live_view_binds_grant_original_cancel_and_canonical_digest',
+            'compacted_live_checkpoint_ack_preserves_inputs_and_poisons_failed_final_authority',
+            'compacted_live_reads_and_event_replay_keep_complete_science_but_not_fresh_adoption',
+            'compacted_live_ack_refuses_sidecar_drift_without_using_checkpoint_stamp_as_census'])
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

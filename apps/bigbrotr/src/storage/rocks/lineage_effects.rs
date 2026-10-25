@@ -130,6 +130,16 @@ impl Census<'_> {
         permit: &OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
+        self.verify_store_effect_census(&recovery.store, through, limits, permit, cancelled)
+    }
+    pub(super) fn verify_store_effect_census(
+        &self,
+        store: &super::IngestStore,
+        through: u64,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
         if permit.request().units().items() == 0
             || permit.request().units().data_bytes()
                 < limits.required_dictionary_replay_data_bytes()?
@@ -137,7 +147,6 @@ impl Census<'_> {
             return Err(AdmissionError::InsufficientReservation);
         }
         let correction_request_limit = self.correction_request_limit()?;
-        let store = &recovery.store;
         // Every index must name the exact semantic subject of its pointed fact.
         // Every reverse candidate must be the exact descriptor for that mapping.
         // The structural census counts candidates per allocation domain. Exact

@@ -8,7 +8,9 @@ use bigbrotr::storage::{
         SuccessorPreparationRequest, SuccessorReplayRequest,
     },
     rocks::{
-        store::{IngestRecovery, LineageEpochSummary, SuccessorCandidate},
+        store::{
+            IngestRecovery, LineageEpochSummary, SuccessorCandidate, compacted_outcome_data_bytes,
+        },
         succession::MAX_LINEAGE_METADATA_BYTES,
     },
 };
@@ -20,6 +22,7 @@ use std::time::Duration;
 #[derive(Default)]
 struct Startup {
     candidate: Option<SuccessorCandidate>,
+    history: Option<SuccessorHistory>,
     preparation: Option<SuccessorPreparation>,
     activation: Option<SuccessorActivation>,
     client: Option<tokio_postgres::Client>,
@@ -34,14 +37,14 @@ pub(in crate::interfaces::serve) fn run(
     selected_roots(&root)?;
     // Metadata survives into the live frontier. Preparation's additional grant
     // overlaps it until the infallible activation-envelope transfer.
-    let budget = owner_budget(&root, sync, false, 2)?;
+    let budget = owner_budget(&root, sync, false, 3)?;
     supervision::run_owned(
         root,
         budget,
         output,
         "Ingest successor",
         true,
-        2,
+        3,
         move |root, budget, progress, cancellation, driver| {
             own(root, budget, progress, cancellation, driver, sync)
         },
@@ -99,11 +102,15 @@ async fn own(
     // Admit the real overlaps before claiming Control or preparing the target.
     // Input/outcome replay and final effect census are serial; neither overlaps
     // live HTTP/Sync work. No receipt vector or second lineage is allocated.
+    // The compacted Check remains live alongside every later request/Sync
+    // grant. Admit that overlap now, before Control or any SQL preparation.
+    let live_effects = compacted_effect_grant(&budget)?;
     drop(recovery::replay_grants(&budget)?);
     drop(effect_grant(&budget)?);
     if selected_sync {
         sync::preflight(&budget)?;
     }
+    drop(live_effects);
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared)
@@ -130,8 +137,9 @@ async fn own(
     };
     let mut window = 64_u32;
     phase(&progress, timeout)?;
-    let (owner, policy) = bounded(timeout, &cancellation, async {
-        ControlSession::acquire(
+    let policy = {
+        let commit_started = Cell::new(false);
+        let acquisition = ControlSession::acquire(
             startup.client.take().expect("connected client"),
             request,
             |document, digest| {
@@ -150,13 +158,18 @@ async fn own(
                 }
                 Ok(())
             },
-            &Cell::new(false),
-        )
-        .await
-        .map_err(owner_error)
-    })
-    .await?;
-    startup.owner = Some(owner);
+            &commit_started,
+        );
+        tokio::pin!(acquisition);
+        let mut claim_exit = supervision::ClaimExit(Some(&mut startup.candidate));
+        let (owner, policy) = bounded(timeout, &cancellation, async {
+            acquisition.as_mut().await.map_err(owner_error)
+        })
+        .await?;
+        startup.owner = Some(owner);
+        claim_exit.0 = None;
+        policy
+    };
     let work = Work {
         root: &root,
         path,
@@ -169,26 +182,31 @@ async fn own(
     };
     let owner = startup.owner.as_mut().expect("claimed Control");
     let candidate = startup.candidate.as_ref().expect("fresh candidate");
-    let history = work
-        .operation(async {
+    startup.history = Some(
+        work.operation(async {
             owner
-                .inspect_successor_history(
+                .inspect_successor_history_with_compacted(
                     candidate.recovery(),
                     work.request(),
+                    recovery::limits().event,
                     metadata,
+                    compacted_effect_grant(&budget)?,
                     |d, h| work.validate(d, h),
                 )
                 .await
                 .map_err(error)
         })
-        .await?;
+        .await?,
+    );
+    let history = startup.history.as_ref().expect("retained history");
     if history.state() != SuccessorHistoryState::Terminal {
         return Err((
             4,
             "successor activation requires a fully terminal predecessor".into(),
         ));
     }
-    let (plan, predecessor) = work.plan(owner, candidate, &history, window).await?;
+    let (plan, predecessor, compacted) = work.plan(owner, candidate, history, window).await?;
+    let plan_policy = plan.policy();
     let created = plan.created_at_us();
     let deadline = plan.lease_expires_at_us();
     startup.preparation = Some(SuccessorPreparation::new(
@@ -196,19 +214,32 @@ async fn own(
             .candidate
             .take()
             .expect("continuously retained candidate"),
-        history,
+        startup.history.take().expect("retained history"),
         plan,
     ));
+    if plan_policy != policy {
+        return Err((
+            4,
+            "accepted policy changed before successor preparation".into(),
+        ));
+    }
     work.operation(async {
-        owner
-            .prepare_successor(
-                startup.preparation.as_mut().expect("retained preparation"),
-                work.request(),
-                mutation,
-                |d, h| work.validate(d, h),
-            )
-            .await
-            .map_err(error)
+        let preparation = startup.preparation.as_mut().expect("retained preparation");
+        if compacted.is_some() {
+            owner
+                .prepare_compacted_successor(preparation, work.request(), mutation, |d, h| {
+                    work.validate(d, h)
+                })
+                .await
+                .map_err(error)
+        } else {
+            owner
+                .prepare_successor(preparation, work.request(), mutation, |d, h| {
+                    work.validate(d, h)
+                })
+                .await
+                .map_err(error)
+        }
     })
     .await?;
     // This move is infallible. Every subsequent failure still leaves native
@@ -218,19 +249,27 @@ async fn own(
     ));
     let writer = work
         .operation(async {
-            owner
-                .activate_successor_writer(
-                    startup.activation.as_mut().expect("retained activation"),
-                    work.request(),
-                    |d, h| work.validate(d, h),
-                )
-                .await
-                .map_err(error)
+            let activation = startup.activation.as_mut().expect("retained activation");
+            if compacted.is_some() {
+                owner
+                    .activate_compacted_successor_writer(activation, work.request(), |d, h| {
+                        work.validate(d, h)
+                    })
+                    .await
+                    .map_err(error)
+            } else {
+                owner
+                    .activate_successor_writer(activation, work.request(), |d, h| {
+                        work.validate(d, h)
+                    })
+                    .await
+                    .map_err(error)
+            }
         })
         .await?;
     let id = *writer.manifest().identity();
     let slot = writer.producer_slot_id();
-    let report = json!({"format":"bigbrotr-ingest-successor/1","state":"activated",
+    let mut report = json!({"format":"bigbrotr-ingest-successor/1","state":"activated",
         "dataset_id":id.dataset_id,"owner_resource_id":id.owner_resource_id,
         "producer_slot_id":slot,"producer_epoch":id.owner_epoch.get().to_string(),
         "process_incarnation":id.process_incarnation,
@@ -244,6 +283,10 @@ async fn own(
             "last_complete_sequence":predecessor.last_complete_sequence.to_string(),
             "sha256":Digest256::from_bytes(predecessor.digest)},
         "acquisition":if selected_sync {"finite-successor"} else {"not-started"},"ready":false});
+    if let Some(count) = compacted {
+        report["recovery_basis"] = json!("closed-producer-floor-v3");
+        report["compacted_requests"] = json!(count.to_string());
+    }
     let mut custody = Custody {
         store: Some(NativeOwner::Successor(Box::new(writer))),
         sync,
@@ -330,11 +373,28 @@ impl Work<'_> {
         candidate: &SuccessorCandidate,
         history: &SuccessorHistory,
         window: u32,
-    ) -> Result<(SuccessorPreparationPlan, LineageEpochSummary)> {
+    ) -> Result<(SuccessorPreparationPlan, LineageEpochSummary, Option<u64>)> {
         let mut resolution = history
             .resolution(candidate.recovery(), &self.cancellation.requested)
             .map_err(error)?;
         while resolution.current_epoch().is_some() {
+            if resolution.needs_compacted_initial() {
+                self.refresh(owner).await?;
+                self.operation(async {
+                    owner
+                        .inspect_successor_compacted_initial(
+                            &mut resolution,
+                            self.request(),
+                            recovery::limits().event,
+                            compacted_effect_grant(self.budget)?,
+                            |d, h| self.validate(d, h),
+                        )
+                        .await
+                        .map_err(error)
+                })
+                .await?;
+                continue;
+            }
             while resolution.next_request().is_some() {
                 self.refresh(owner).await?;
                 let (input, outcome) = recovery::replay_grants(self.budget)?;
@@ -376,24 +436,10 @@ impl Work<'_> {
                         resolution,
                         self.request(),
                         recovery::limits().event,
-                        effect_grant(self.budget)?,
-                        |d, h| self.validate(d, h),
-                    )
-                    .await
-                    .map_err(error)
-            })
-            .await?;
-        let predecessor = proof.last_epoch();
-        let plan = self
-            .operation(async {
-                owner
-                    .plan_successor_preparation(
-                        candidate,
-                        &proof,
-                        SuccessorPreparationRequest {
-                            history: self.request(),
-                            lease_duration: self.ttl,
-                            outstanding_request_limit: window,
+                        if history.lineage().has_compacted_initial() {
+                            compacted_effect_grant(self.budget)?
+                        } else {
+                            effect_grant(self.budget)?
                         },
                         |d, h| self.validate(d, h),
                     )
@@ -401,14 +447,50 @@ impl Work<'_> {
                     .map_err(error)
             })
             .await?;
-        if plan.policy() != self.policy {
-            return Err((
-                4,
-                "accepted policy changed before successor preparation".into(),
-            ));
-        }
-        Ok((plan, predecessor))
+        let predecessor = proof.last_epoch();
+        let compacted = history
+            .lineage()
+            .has_compacted_initial()
+            .then(|| proof.compacted_initial_requests());
+        let plan = self
+            .operation(async {
+                let input = SuccessorPreparationRequest {
+                    history: self.request(),
+                    lease_duration: self.ttl,
+                    outstanding_request_limit: window,
+                };
+                if compacted.is_some() {
+                    owner
+                        .plan_compacted_successor_preparation(
+                            candidate,
+                            &proof,
+                            input,
+                            recovery::limits().event,
+                            compacted_effect_grant(self.budget)?,
+                            |d, h| self.validate(d, h),
+                        )
+                        .await
+                        .map_err(error)
+                } else {
+                    owner
+                        .plan_successor_preparation(candidate, &proof, input, |d, h| {
+                            self.validate(d, h)
+                        })
+                        .await
+                        .map_err(error)
+                }
+            })
+            .await?;
+        Ok((plan, predecessor, compacted))
     }
+}
+
+fn compacted_effect_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {
+    grant(
+        budget,
+        compacted_outcome_data_bytes(recovery::limits().event).map_err(error)?,
+        0,
+    )
 }
 
 fn effect_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {

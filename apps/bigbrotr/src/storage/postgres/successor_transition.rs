@@ -25,6 +25,7 @@ mod activation;
 mod compacted;
 pub(super) use activation::LiveSuccessorBinding;
 pub use activation::{LiveSuccessorWriter, SuccessorActivation};
+pub(super) use compacted::Check as SuccessorCompactionCheck;
 #[path = "successor_recovery.rs"]
 mod recovery;
 pub use recovery::{

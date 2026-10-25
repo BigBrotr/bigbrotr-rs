@@ -8,18 +8,100 @@ use crate::storage::rocks::{
 
 pub(super) enum NativeOwner<'a> {
     Store(&'a mut IngestStore),
-    Successor(&'a mut ActiveSuccessorWriter),
+    Successor(SuccessorOperation<'a>),
+}
+// This borrow covers every await and early return in one existing operation.
+// Only successful final delivery disarms compacted poisoning; no permit moves.
+pub(super) struct SuccessorOperation<'a> {
+    native: &'a mut ActiveSuccessorWriter,
+    check: Option<&'a successor_transition::SuccessorCompactionCheck>,
+    delivered: bool,
+}
+impl std::ops::Deref for SuccessorOperation<'_> {
+    type Target = ActiveSuccessorWriter;
+    fn deref(&self) -> &Self::Target {
+        self.native
+    }
+}
+impl std::ops::DerefMut for SuccessorOperation<'_> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.native
+    }
+}
+impl Drop for SuccessorOperation<'_> {
+    fn drop(&mut self) {
+        if self.check.is_some() && !self.delivered {
+            self.native.poison();
+        }
+    }
+}
+impl<'a> NativeOwner<'a> {
+    pub(super) fn successor(
+        native: &'a mut ActiveSuccessorWriter,
+        check: Option<&'a successor_transition::SuccessorCompactionCheck>,
+    ) -> Self {
+        Self::Successor(SuccessorOperation {
+            native,
+            check,
+            delivered: false,
+        })
+    }
 }
 impl NativeOwner<'_> {
+    pub(super) fn compacted(&self) -> bool {
+        matches!(self, Self::Successor(owner) if owner.check.is_some())
+    }
+    pub(super) async fn require_compacted(
+        &self,
+        tx: &Transaction<'_>,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        if let Self::Successor(owner) = self {
+            if owner.check.is_some() != owner.native.has_compacted_initial() {
+                return Err(OwnerError::InvalidInput.into());
+            }
+            if let Some(check) = owner.check {
+                check
+                    .require_live(tx, owner.native, lease, policy, cancelled)
+                    .await?;
+            }
+        }
+        Ok(())
+    }
+    pub(super) fn validate_delivery(
+        &self,
+        cancelled: &AtomicBool,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+    ) -> Result<(), InitialEventError> {
+        if let Self::Successor(owner) = self {
+            if let Some(check) = owner.check {
+                check
+                    .validate_live(owner.native, cancelled)
+                    .map_err(InitialEventError::Compacted)?;
+                initial_history::check_delivery(lease, policy, cancelled)
+                    .map_err(InitialEventError::Compacted)?;
+            }
+        }
+        Ok(())
+    }
+    pub(super) fn delivered(&mut self) {
+        if let Self::Successor(owner) = self {
+            owner.delivered = true;
+        }
+    }
     pub(super) fn acknowledge_checkpoint(
         &mut self,
         confirmed: ConfirmedAcknowledgement,
         permit: &OwnedPermit,
+        cancelled: &AtomicBool,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<(), AdmissionError> {
         match self {
             Self::Store(s) => s.acknowledge_checkpoint(confirmed, permit, authority),
-            Self::Successor(s) => s.acknowledge_checkpoint(confirmed, permit, authority),
+            Self::Successor(s) => s.acknowledge_checkpoint(confirmed, permit, cancelled, authority),
         }
     }
     pub(super) fn manifest(&self) -> &IngestManifest {

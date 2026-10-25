@@ -941,6 +941,7 @@ fn main() {
                 | "successor-empty"
                 | "successor-lineage-live"
                 | "successor-lineage-live-new"
+                | "successor-compacted-live"
                 | "successor-lineage-retire"
         );
     assert_eq!(
@@ -975,6 +976,7 @@ fn main() {
                     | "successor-gap"
                     | "successor-lineage-live"
                     | "successor-lineage-live-new"
+                    | "successor-compacted-live"
                     | "successor-lineage-recover"
                     | "successor-lineage-source"
                     | "successor-lineage-abandon"
@@ -1097,6 +1099,7 @@ fn main() {
                     | "successor-gap"
                     | "successor-lineage-live"
                     | "successor-lineage-live-new"
+                    | "successor-compacted-live"
                     | "successor-lineage-recover"
                     | "successor-lineage-source"
                     | "successor-lineage-abandon"

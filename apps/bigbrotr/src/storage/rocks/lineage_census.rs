@@ -16,6 +16,13 @@ impl Census<'_> {
         recovery: &IngestRecovery,
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
+        self.inspect_store_census(&recovery.store, cancelled)
+    }
+    pub(super) fn inspect_store_census(
+        &self,
+        store: &IngestStore,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
         let mut dictionaries = [[0_u64; 9]; EPOCHS];
         let mut reverse = [[0_u64; 9]; EPOCHS];
         let mut facts = [0_u64; EPOCHS];
@@ -23,21 +30,17 @@ impl Census<'_> {
         let mut requests = [0_u64; EPOCHS];
         let (mut manifests, mut sources, mut producers, mut handoffs, mut allocations) =
             (0, 0, 0, 0, 0);
-        let head = recovery.manifest().identity();
+        let head = store.manifest().identity();
         for cf in [
             ColumnFamily::Default,
             ColumnFamily::Facts,
             ColumnFamily::Receipts,
         ] {
-            let handle = recovery
-                .store
+            let handle = store
                 .db
                 .cf_handle(cf.name())
                 .ok_or(BootstrapError::EngineRead)?;
-            let mut cursor = recovery
-                .store
-                .db
-                .raw_iterator_cf_opt(handle, read_options());
+            let mut cursor = store.db.raw_iterator_cf_opt(handle, read_options());
             cursor.seek_to_first();
             while cursor.valid() {
                 check_cancelled(cancelled)?;
@@ -48,14 +51,14 @@ impl Census<'_> {
                 match key {
                     IngestKey::Manifest => {
                         manifests += 1;
-                        if bytes != recovery.manifest().encode().as_bytes() {
+                        if bytes != store.manifest().encode().as_bytes() {
                             return Err(BootstrapError::StateMismatch);
                         }
                     }
                     IngestKey::OwnerHandoff {
                         predecessor_epoch, ..
                     } => {
-                        if key != handoff_key(recovery.manifest(), predecessor_epoch.get())?
+                        if key != handoff_key(store.manifest(), predecessor_epoch.get())?
                             || predecessor_epoch.get() >= self.entries.len() as u64
                         {
                             return Err(BootstrapError::StateMismatch);
@@ -117,7 +120,7 @@ impl Census<'_> {
                             return Err(BootstrapError::StateMismatch);
                         }
                         *count = reference.ordinal.get();
-                        let source = self.index_pointer(recovery, key, bytes, cancelled)?;
+                        let source = self.index_pointer(store, key, bytes, cancelled)?;
                         if source.owner_epoch != self.entries[index].manifest.identity().owner_epoch
                         {
                             return Err(BootstrapError::StateMismatch);
@@ -149,7 +152,7 @@ impl Census<'_> {
                         if dataset_id != head.dataset_id {
                             return Err(BootstrapError::StateMismatch);
                         }
-                        self.index_pointer(recovery, key, bytes, cancelled)?;
+                        self.index_pointer(store, key, bytes, cancelled)?;
                     }
                     IngestKey::EventEligibility {
                         visibility_scope, ..
@@ -158,7 +161,7 @@ impl Census<'_> {
                         visibility_scope, ..
                     } => {
                         self.reference_index(visibility_scope)?;
-                        self.index_pointer(recovery, key, bytes, cancelled)?;
+                        self.index_pointer(store, key, bytes, cancelled)?;
                     }
                     IngestKey::Provenance {
                         endpoint_id,
@@ -175,7 +178,7 @@ impl Census<'_> {
                         ] {
                             self.reference_index(reference)?;
                         }
-                        self.index_pointer(recovery, key, bytes, cancelled)?;
+                        self.index_pointer(store, key, bytes, cancelled)?;
                     }
                     IngestKey::Fact { source_record_id } => {
                         let index = self.source_index(source_record_id)?;
@@ -301,7 +304,7 @@ impl Census<'_> {
     }
     fn index_pointer(
         &self,
-        recovery: &IngestRecovery,
+        store: &IngestStore,
         key: IngestKey,
         bytes: &[u8],
         cancelled: &AtomicBool,
@@ -325,8 +328,8 @@ impl Census<'_> {
             .map_err(|_| BootstrapError::StateMismatch)?,
         };
         self.source_index(source)?;
-        let fact = value(
-            recovery,
+        let fact = store_value(
+            store,
             IngestKey::Fact {
                 source_record_id: source,
             },

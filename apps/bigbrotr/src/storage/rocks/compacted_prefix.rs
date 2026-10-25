@@ -42,6 +42,7 @@ enum PrefixOwner<'a> {
     EmptyRetirement(crate::storage::rocks::store::CompactedEmptyInitialPredecessor<'a>),
     Acknowledgement(crate::storage::rocks::store::CompactedAcknowledgementPredecessor<'a>),
     Successor(crate::storage::rocks::store::CompactedSuccessorPredecessor<'a>),
+    Live(CompactedLiveSuccessor<'a>),
 }
 // The optional floor and all simultaneous borrowed cursor headers use the
 // existing metadata scratch, separately from the one capacity-charged Vec.
@@ -52,7 +53,53 @@ const _: () = assert!(
         + size_of::<VerifiedCompactedPrefix<'_>>()
         < LINEAGE_SCRATCH_BYTES as usize / 4
 );
+#[derive(Clone, Copy)]
+enum PrefixRead<'a> {
+    Recovery(&'a IngestRecovery),
+    Live(&'a IngestStore),
+}
+impl<'a> PrefixRead<'a> {
+    fn store(self) -> &'a IngestStore {
+        match self {
+            Self::Recovery(owner) => &owner.store,
+            Self::Live(store) => store,
+        }
+    }
+    fn recovery(self) -> Result<&'a IngestRecovery, AdmissionError> {
+        match self {
+            Self::Recovery(owner) => Ok(owner),
+            Self::Live(_) => Err(AdmissionError::StateMismatch),
+        }
+    }
+}
 impl PrefixOwner<'_> {
+    fn validate_read(
+        &self,
+        read: PrefixRead<'_>,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        match (self, read) {
+            (Self::Live(view), PrefixRead::Live(store)) if std::ptr::eq(view.store(), store) => {
+                view.validate(cancelled)
+            }
+            (_, PrefixRead::Recovery(recovery)) => self.validate(recovery, cancelled),
+            _ => Err(AdmissionError::StateMismatch),
+        }
+    }
+    fn require_read_input(
+        &self,
+        read: PrefixRead<'_>,
+        checked: (ProducerRequestId, [u8; 32], u64),
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        match (self, read) {
+            (Self::Live(view), PrefixRead::Live(store)) if std::ptr::eq(view.store(), store) => {
+                view.require_input(checked, cancelled)
+            }
+            (_, PrefixRead::Recovery(recovery)) => self.require_input(recovery, checked, cancelled),
+            _ => Err(AdmissionError::StateMismatch),
+        }
+    }
     fn manifest(&self) -> &IngestManifest {
         match self {
             Self::Initial(prefix) => prefix.manifest(),
@@ -61,6 +108,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.manifest(),
             Self::Acknowledgement(view) => view.manifest(),
             Self::Successor(view) => view.manifest(),
+            Self::Live(view) => view.manifest(),
         }
     }
     fn floor(&self) -> &ClosedProducerFloor {
@@ -71,6 +119,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.floor(),
             Self::Acknowledgement(view) => view.floor(),
             Self::Successor(view) => view.floor(),
+            Self::Live(view) => view.floor(),
         }
     }
     fn slot(&self) -> ProducerSlotId {
@@ -81,6 +130,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.producer_slot_id(),
             Self::Acknowledgement(view) => view.producer_slot_id(),
             Self::Successor(view) => view.producer_slot_id(),
+            Self::Live(view) => view.producer_slot_id(),
         }
     }
     fn validate(
@@ -95,6 +145,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.validate(recovery, cancelled).map_err(Into::into),
             Self::Acknowledgement(view) => view.validate(recovery, cancelled),
             Self::Successor(view) => view.validate(recovery, cancelled),
+            Self::Live(_) => Err(AdmissionError::StateMismatch),
         }
     }
     fn require_input(
@@ -104,6 +155,7 @@ impl PrefixOwner<'_> {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         let (actual, expected) = match self {
+            Self::Live(_) => return Err(AdmissionError::StateMismatch),
             Self::Acknowledgement(view) => return view.require_input(recovery, checked, cancelled),
             Self::Successor(view) => return view.require_input(recovery, checked, cancelled),
             Self::Initial(prefix) => (
@@ -439,7 +491,7 @@ impl RetainedCompactedPrefix {
     }
     fn census(&self) -> Census<'_> {
         Census {
-            entries: std::slice::from_ref(&self.entry),
+            entries: std::slice::from_ref(&self.entry).into(),
             slot: self.slot,
             compacted: Some(&self.floor),
         }

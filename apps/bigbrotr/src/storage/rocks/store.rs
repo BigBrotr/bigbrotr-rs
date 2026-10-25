@@ -90,6 +90,7 @@ pub use producer_ack::{
 
 #[path = "producer_progress_recovery.rs"]
 mod producer_progress_recovery;
+pub(in crate::storage) use producer_progress_recovery::ProgressRead;
 
 #[path = "visibility.rs"]
 mod visibility;
@@ -143,9 +144,9 @@ pub use lineage::{
     RetainedTerminalKind, VerifiedCompactedPrefix, compacted_outcome_data_bytes,
 };
 pub(in crate::storage) use lineage::{
-    CompactedSuccessorPredecessor, NativeSuccessorRecovery, NativeSuccessorRetirement,
-    ResolvedSuccessorRecovery, ResolvedSuccessorRetirement, SuccessorRecoveryResolution,
-    SuccessorRetirementResolution,
+    CompactedLiveSuccessor, CompactedSuccessorPredecessor, NativeSuccessorRecovery,
+    NativeSuccessorRetirement, ResolvedSuccessorRecovery, ResolvedSuccessorRetirement,
+    SuccessorRecoveryResolution, SuccessorRetirementResolution,
 };
 #[cfg(test)]
 use lineage::{PendingSuccessorRequest, PendingSuccessorRetirementRequest};

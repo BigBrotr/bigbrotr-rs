@@ -27,7 +27,7 @@ pub struct CompactedOutcomeRow<'a> {
 
 pub struct CompactedPrefixResolution<'a> {
     prefix: PrefixOwner<'a>,
-    recovery: &'a IngestRecovery,
+    read: PrefixRead<'a>,
     requests: u64,
     source_through: u64,
     digest: Sha256,
@@ -41,7 +41,7 @@ pub struct CompactedPrefixResolution<'a> {
 /// completion: COMMIT for current initial retirement, ROLLBACK for history reads.
 pub struct VerifiedCompactedPrefix<'a> {
     prefix: PrefixOwner<'a>,
-    recovery: &'a IngestRecovery,
+    read: PrefixRead<'a>,
 }
 
 impl RetainedCompactedPrefix {
@@ -89,7 +89,24 @@ impl<'a> CompactedPrefixResolution<'a> {
         recovery: &'a IngestRecovery,
         cancelled: &AtomicBool,
     ) -> Result<Self, AdmissionError> {
-        prefix.validate(recovery, cancelled)?;
+        Self::new_read(prefix, PrefixRead::Recovery(recovery), cancelled)
+    }
+    pub(in crate::storage::rocks::store) fn from_live(
+        view: CompactedLiveSuccessor<'a>,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new_read(
+            PrefixOwner::Live(view),
+            PrefixRead::Live(view.store()),
+            cancelled,
+        )
+    }
+    fn new_read(
+        prefix: PrefixOwner<'a>,
+        read: PrefixRead<'a>,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        prefix.validate_read(read, cancelled)?;
         let mut digest = Sha256::new();
         digest.update(b"bigbrotr/initial-source-closure/1\0");
         digest.update(prefix.floor().fields().manifest_sha256);
@@ -98,7 +115,7 @@ impl<'a> CompactedPrefixResolution<'a> {
         digest.update(prefix.floor().fields().issued_through.to_be_bytes());
         Ok(CompactedPrefixResolution {
             prefix,
-            recovery,
+            read,
             requests: 0,
             source_through: 0,
             digest,
@@ -131,7 +148,7 @@ impl CompactedPrefixResolution<'_> {
             return Err(AdmissionError::InsufficientReservation);
         }
         authority()?;
-        self.prefix.validate(self.recovery, cancelled)?;
+        self.prefix.validate_read(self.read, cancelled)?;
         let floor = self.prefix.floor().fields();
         let identity = self.prefix.manifest().identity();
         if row.request.producer_slot_id != self.prefix.slot()
@@ -145,8 +162,8 @@ impl CompactedPrefixResolution<'_> {
         {
             return Err(AdmissionError::StateMismatch);
         }
-        self.prefix.require_input(
-            self.recovery,
+        self.prefix.require_read_input(
+            self.read,
             (
                 row.request,
                 *row.digest.as_bytes(),
@@ -207,8 +224,8 @@ impl CompactedPrefixResolution<'_> {
                 authority()?;
                 check_cancelled(cancelled)?;
                 let pending = self
-                    .recovery
-                    .store
+                    .read
+                    .store()
                     .admission_value(IngestKey::PendingBatch { first }, 128, &mut reads)?
                     .ok_or(AdmissionError::StateMismatch)?;
                 if pending != PendingBatchHeader::from_batch(batch).encode() {
@@ -217,8 +234,8 @@ impl CompactedPrefixResolution<'_> {
                 for reference in batch.records() {
                     authority()?;
                     check_cancelled(cancelled)?;
-                    self.recovery
-                        .store
+                    self.read
+                        .store()
                         .admission_fact(*reference, limits, &mut reads)?;
                 }
             }
@@ -233,14 +250,14 @@ impl CompactedPrefixResolution<'_> {
                 {
                     return Err(AdmissionError::StateMismatch);
                 }
-                self.recovery
-                    .store
+                self.read
+                    .store()
                     .admission_fact(*reference, limits, &mut reads)?;
             }
             next
         };
         authority()?;
-        self.prefix.validate(self.recovery, cancelled)?;
+        self.prefix.validate_read(self.read, cancelled)?;
         // A refused row leaves the ordered accumulator unchanged.
         self.digest
             .update(row.request.request_sequence.get().to_be_bytes());
@@ -257,7 +274,7 @@ impl<'a> CompactedPrefixResolution<'a> {
         mut self,
         cancelled: &AtomicBool,
     ) -> Result<VerifiedCompactedPrefix<'a>, AdmissionError> {
-        self.prefix.validate(self.recovery, cancelled)?;
+        self.prefix.validate_read(self.read, cancelled)?;
         let floor = self.prefix.floor().fields();
         self.digest.update(self.source_through.to_be_bytes());
         if self.requests != floor.issued_through
@@ -268,14 +285,26 @@ impl<'a> CompactedPrefixResolution<'a> {
         }
         Ok(VerifiedCompactedPrefix {
             prefix: self.prefix,
-            recovery: self.recovery,
+            read: self.read,
         })
     }
 }
 
 impl VerifiedCompactedPrefix<'_> {
-    pub(in crate::storage::rocks::store) fn recovery(&self) -> &IngestRecovery {
-        self.recovery
+    pub(in crate::storage::rocks::store) fn matches_recovery(
+        &self,
+        recovery: &IngestRecovery,
+    ) -> bool {
+        matches!(self.read, PrefixRead::Recovery(owner) if std::ptr::eq(owner, recovery))
+    }
+    pub(in crate::storage) fn validate_live(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        if !matches!(self.prefix, PrefixOwner::Live(_)) {
+            return Err(AdmissionError::StateMismatch);
+        }
+        self.prefix.validate_read(self.read, cancelled)
     }
 
     // A handoff can retain only current epoch1 or a genuinely empty two-entry
@@ -285,7 +314,7 @@ impl VerifiedCompactedPrefix<'_> {
         &self,
         cancelled: &AtomicBool,
     ) -> Result<(&IngestRecovery, [u8; 32]), AdmissionError> {
-        self.prefix.validate(self.recovery, cancelled)?;
+        self.prefix.validate_read(self.read, cancelled)?;
         let inputs = match self.prefix {
             PrefixOwner::Initial(prefix) => prefix.inputs,
             PrefixOwner::Ancestor(lineage) => {
@@ -306,14 +335,15 @@ impl VerifiedCompactedPrefix<'_> {
                 }
                 lineage.inputs
             }
-            PrefixOwner::Handoff(_)
+            PrefixOwner::Live(_)
+            | PrefixOwner::Handoff(_)
             | PrefixOwner::Successor(_)
             | PrefixOwner::Acknowledgement(_)
             | PrefixOwner::EmptyRetirement(_) => {
                 return Err(AdmissionError::StateMismatch);
             }
         };
-        Ok((self.recovery, inputs))
+        Ok((self.read.recovery()?, inputs))
     }
 
     pub(in crate::storage::rocks::store) fn matches_lineage(
@@ -336,7 +366,7 @@ impl VerifiedCompactedPrefix<'_> {
         recovery: &IngestRecovery,
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
-        self.prefix.validate(self.recovery, cancelled)?;
+        self.prefix.validate_read(self.read, cancelled)?;
         self.prefix.validate(recovery, cancelled)
     }
 }

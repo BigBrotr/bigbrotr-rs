@@ -5,7 +5,7 @@ use bigbrotr::storage::{
     postgres::control_owner::{
         LiveSuccessorCertificationRequest, LiveSuccessorDictionaryAppendRequest,
         LiveSuccessorEventRequest, LiveSuccessorVisibilityRequest, LiveSuccessorWriter,
-        SuccessorActivation,
+        ProgressGrant, SuccessorActivation,
     },
     rocks::store::{
         AdmissionOutcome, CertificationLimits, CertificationOutcome, PreparedCertification,
@@ -35,9 +35,9 @@ const MAX_INPUT: usize = 8192;
 const MAX_EVENT: usize = 256 * 1024;
 const WINDOW: u64 = 32;
 
-fn admission_limits() -> AdmissionLimits {
+fn admission_limits(window: u64) -> AdmissionLimits {
     AdmissionLimits {
-        max_outstanding_requests: WINDOW,
+        max_outstanding_requests: window,
         max_dependencies: 256,
         ..AdmissionLimits::default()
     }
@@ -48,11 +48,12 @@ fn read_limits() -> CertificationLimits {
         max_dependencies: 256,
     }
 }
-pub(super) fn preflight(budget: &ResourceBudget) {
+pub(super) fn preflight(budget: &ResourceBudget, window: u64, compacted: bool) {
     // The prepared event and dispatch/result grants overlap the retained
     // lineage, native, transport, observation and preparation grants before claim.
     let _input = grant(budget, MIB, 0);
-    let limits = admission_limits();
+    let limits = admission_limits(window);
+    let _progress = compacted.then(|| progress_grant(budget));
     let data = limits
         .required_data_bytes()
         .unwrap()
@@ -63,7 +64,7 @@ pub(super) fn preflight(budget: &ResourceBudget) {
         serde_json::json!({"event":"lineage-live-resources","prepared_input_bytes":MIB,
         "operation_data_bytes":data,"operation_native_bytes":limits.required_native_bytes().unwrap(),
         "max_input_bytes":MAX_INPUT,"max_event_bytes":MAX_EVENT,"max_dependencies":256,
-        "outstanding_request_limit":WINDOW,"provenance":false}),
+        "outstanding_request_limit":window,"provenance":false}),
     );
 }
 
@@ -75,13 +76,23 @@ struct Fixture {
     dictionary: EvidenceIntent,
 }
 impl Fixture {
-    fn load(probe: &Probe, writer: &LiveSuccessorWriter) -> Self {
+    fn load(probe: &Probe, writer: &LiveSuccessorWriter, compacted: bool) -> Self {
+        let sequence = if compacted { 3 } else { 4 };
         let name = format!(
-            "{}-0000000000000001-0000000000000004.cbor",
+            "{}-0000000000000001-{sequence:016x}.cbor",
             writer.producer_slot_id()
         );
+        // Attribution input remains outside the compacted native spool. It is
+        // never restored as an original or fed to the ancestor proof scanner.
+        let directory = if compacted {
+            probe.path.parent().unwrap().join("terminal-seed-inputs")
+        } else {
+            probe.path.join("producer-inputs-v1")
+        };
+        let path = directory.join(&name);
+        assert!(std::fs::symlink_metadata(&path).unwrap().is_file());
         let mut bytes = Vec::new();
-        std::fs::File::open(probe.path.join("producer-inputs-v1").join(&name))
+        std::fs::File::open(path)
             .unwrap()
             .take((MAX_INPUT + 1) as u64)
             .read_to_end(&mut bytes)
@@ -90,7 +101,11 @@ impl Fixture {
         let digest = Digest256::from_bytes(Sha256::digest(&bytes).into());
         assert_eq!(
             digest.to_string(),
-            "19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977"
+            if compacted {
+                "a1992bc4cc2b57578e06da9ab64cdfe44d8c117a394e8fdb38355e955a64eee9"
+            } else {
+                "19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977"
+            }
         );
         let (original, input) = decode_request(
             &bytes,
@@ -112,16 +127,19 @@ impl Fixture {
                 original.producer_epoch.get(),
                 original.request_sequence.get()
             ),
-            (1, 4)
+            (1, sequence)
         );
         let MutationIntent::Event(input) = input else {
             panic!("frozen original Event input")
         };
-        let old: SignedEvent = serde_json::from_str(include_str!(
-            "../../../../tests/fixtures/ingest/import-event.jsonl"
-        ))
-        .unwrap();
-        assert_eq!(input.event(), &old);
+        let old = input.event().clone();
+        if !compacted {
+            let expected: SignedEvent = serde_json::from_str(include_str!(
+                "../../../../tests/fixtures/ingest/import-event.jsonl"
+            ))
+            .unwrap();
+            assert_eq!(old, expected);
+        }
         assert_eq!(input.origin(), EventOrigin::Network);
         let scope = input.visibility_scope_id();
         assert_eq!(scope.dataset_id, writer.manifest().identity().dataset_id);
@@ -199,13 +217,14 @@ impl Probe {
         metadata: OwnedPermit,
         mutation: OwnedPermit,
         new_event: bool,
+        compacted: bool,
     ) -> Result<serde_json::Value, Failure> {
         let target = self
-            .activate_live(owner, native, metadata, mutation)
+            .activate_live_in(owner, native, metadata, mutation, compacted)
             .await?;
         let writer = native.live.writer.as_mut().unwrap();
-        let fixture = Fixture::load(self, writer);
-        self.dictionary(owner, writer, &fixture).await?;
+        let fixture = Fixture::load(self, writer, compacted);
+        self.dictionary(owner, writer, &fixture, compacted).await?;
         self.event_pair(owner, writer, &fixture, &fixture.old, 2, "already-durable")
             .await?;
         if new_event {
@@ -234,8 +253,26 @@ impl Probe {
         metadata: OwnedPermit,
         mutation: OwnedPermit,
     ) -> Result<u64, Failure> {
-        self.transition(owner, native, metadata, Some(mutation), "prepare", false)
-            .await?;
+        self.activate_live_in(owner, native, metadata, mutation, false)
+            .await
+    }
+    async fn activate_live_in(
+        &self,
+        owner: &mut ControlSession,
+        native: &mut Native,
+        metadata: OwnedPermit,
+        mutation: OwnedPermit,
+        compacted: bool,
+    ) -> Result<u64, Failure> {
+        self.transition(
+            owner,
+            native,
+            metadata,
+            Some(mutation),
+            "prepare",
+            compacted,
+        )
+        .await?;
         native.live.activation = Some(SuccessorActivation::new(native.preparation.take().unwrap()));
         let activation = native.live.activation.as_mut().unwrap();
         let target = activation
@@ -250,12 +287,21 @@ impl Probe {
             "control_epoch":owner.identity().epoch.get()}),
         );
         let result = self
-            .bounded(
-                "activate",
-                owner.activate_successor_writer(activation, self.request(), |d, h| {
-                    self.validate(d, h)
-                }),
-            )
+            .bounded("activate", async {
+                if compacted {
+                    owner
+                        .activate_compacted_successor_writer(activation, self.request(), |d, h| {
+                            self.validate(d, h)
+                        })
+                        .await
+                } else {
+                    owner
+                        .activate_successor_writer(activation, self.request(), |d, h| {
+                            self.validate(d, h)
+                        })
+                        .await
+                }
+            })
             .await;
         // Install successful native custody before any observer await or assertion.
         match result {
@@ -278,7 +324,14 @@ impl Probe {
         );
         self.snapshot("activated-zero").await;
         assert_eq!(writer.manifest().identity().owner_epoch.get(), target);
-        assert_eq!(u64::from(writer.outstanding_request_limit()), WINDOW);
+        assert_eq!(
+            u64::from(writer.outstanding_request_limit()),
+            if compacted {
+                self.root.number("ingest.producer_outstanding_requests")
+            } else {
+                WINDOW
+            }
+        );
         let policy = self
             .bounded("live-refresh", owner.refresh(|d, h| self.validate(d, h)))
             .await
@@ -292,6 +345,7 @@ impl Probe {
                 owner.renew_live_successor_ingest(
                     writer,
                     self.request().policy_ttl,
+                    self.request().cancelled,
                     |d, h| self.validate(d, h),
                     &started,
                 ),
@@ -311,9 +365,11 @@ impl Probe {
         owner: &mut ControlSession,
         writer: &mut LiveSuccessorWriter,
         fixture: &Fixture,
+        compacted: bool,
     ) -> Result<(), Failure> {
         let request = request(writer, 1);
-        let limits = admission_limits();
+        let limits = admission_limits(u64::from(writer.outstanding_request_limit()));
+        let progress = compacted.then(|| progress_grant(&self.budget));
         let preimage = fixture
             .dictionary
             .encode_request_preimage(request, MAX_INPUT)
@@ -327,27 +383,39 @@ impl Probe {
             emit_input(stage, request, &preimage, digest, time, None);
             self.snapshot(&format!("before-{stage}")).await;
             let result = self
-                .bounded(
-                    stage,
-                    owner.append_live_successor_dictionaries(
-                        writer,
-                        LiveSuccessorDictionaryAppendRequest {
-                            ingest_root: &self.path,
-                            request_sequence: request.request_sequence,
-                            intent: &fixture.dictionary,
-                            recorded_at: ObservedTime::new(time),
-                            limits,
-                            policy_ttl: self.request().policy_ttl,
-                            cancelled: &self.cancelled,
-                        },
-                        grant(
-                            &self.budget,
-                            limits.required_dictionary_data_bytes().unwrap(),
-                            limits.required_native_bytes().unwrap(),
-                        ),
-                        |d, h| self.validate(d, h),
-                    ),
-                )
+                .bounded(stage, async {
+                    let input = LiveSuccessorDictionaryAppendRequest {
+                        ingest_root: &self.path,
+                        request_sequence: request.request_sequence,
+                        intent: &fixture.dictionary,
+                        recorded_at: ObservedTime::new(time),
+                        limits,
+                        policy_ttl: self.request().policy_ttl,
+                        cancelled: &self.cancelled,
+                    };
+                    let permit = grant(
+                        &self.budget,
+                        limits.required_dictionary_data_bytes().unwrap(),
+                        limits.required_native_bytes().unwrap(),
+                    );
+                    if let Some(progress) = &progress {
+                        owner
+                            .append_live_successor_dictionaries_with_progress(
+                                writer,
+                                input,
+                                permit,
+                                progress,
+                                |d, h| self.validate(d, h),
+                            )
+                            .await
+                    } else {
+                        owner
+                            .append_live_successor_dictionaries(writer, input, permit, |d, h| {
+                                self.validate(d, h)
+                            })
+                            .await
+                    }
+                })
                 .await;
             self.snapshot(&format!("after-{stage}")).await;
             let receipt = result.map_err(|e| {
@@ -382,7 +450,7 @@ impl Probe {
         kind: &str,
     ) -> Result<(), Failure> {
         let request = request(writer, sequence);
-        let limits = admission_limits();
+        let limits = admission_limits(u64::from(writer.outstanding_request_limit()));
         let mut original = None;
         for retry in [false, true] {
             let stage = if retry {
@@ -602,6 +670,15 @@ impl Probe {
         );
         Ok(())
     }
+}
+
+fn progress_grant(budget: &ResourceBudget) -> ProgressGrant {
+    ProgressGrant::new(grant(
+        budget,
+        ProgressGrant::REQUIRED_DATA_BYTES,
+        ProgressGrant::REQUIRED_NATIVE_BYTES,
+    ))
+    .unwrap()
 }
 
 fn request(writer: &LiveSuccessorWriter, sequence: u64) -> ProducerRequestId {

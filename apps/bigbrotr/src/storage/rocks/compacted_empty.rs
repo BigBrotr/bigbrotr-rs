@@ -79,7 +79,7 @@ impl<'a> CompactedEmptyInitialAttempt<'a> {
         let fields = floor.fields();
         let history = self.historical();
         if !source.matches_lineage(self.lineage)
-            || !std::ptr::eq(source.recovery(), history.recovery())
+            || !source.matches_recovery(history.recovery())
             || source.manifest() != history.manifest()
             || source.producer_slot_id() != history.producer_slot_id()
             || fields.issued_through != history.issued_through()

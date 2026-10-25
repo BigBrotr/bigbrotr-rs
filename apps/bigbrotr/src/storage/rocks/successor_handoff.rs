@@ -226,6 +226,19 @@ impl SuccessorCandidate {
         Ok(())
     }
 
+    pub(in crate::storage) fn require_prepared_compacted_handoff(
+        &self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.require_compacted_handoff(lineage, handoff, cancelled)?;
+        if self.recovery.manifest() != &handoff.record.fields().next_manifest {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
     // Infallible field transfer, called only after the envelope's final checked
     // prepared gate. No decoder or recovery path can call a public conversion.
     pub(super) fn into_writer_parts(self) -> (super::IngestStore, [u8; 16]) {
