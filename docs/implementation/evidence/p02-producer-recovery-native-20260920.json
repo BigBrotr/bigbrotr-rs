@@ -46853,7 +46853,7 @@
                       "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
-                      "status": "SOURCE_INTEGRATED_PUSHED; DUAL_BUILD_PASS; ENGINE_FIXTURE_IN_PROGRESS",
+                      "status": "SOURCE_INTEGRATED_PUSHED; DUAL_BUILD_PASS; FIXTURE_SETUP_CORRECTION_IN_PROGRESS",
                       "audit": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
@@ -46873,7 +46873,7 @@
                       },
                       "custody": "Source reviewed: Reserved/Loaded/Bound holds one Check before connection; errors preserve it; native closes before named supervised driver receives keeper, transport drops before keeper. Pure owner and synthetic transport controls do not demonstrate actual SQL cancellation.",
                       "fixture_work": {
-                        "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; ENGINE_NOT_RUN",
+                        "status": "995_FROZEN_REVIEWED; ACTUAL_SETUP_ORACLE_FAIL; CORRECTION_IN_PROGRESS",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
                         "branch": "work/compacted-later-archive-fixture",
                         "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
@@ -46883,9 +46883,29 @@
                         },
                         "owner": "compacted_reader_fixture; root sole runtime/integration",
                         "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-                        "prerequisites": "Exact c49 dual builds qualified; draft reconciled onto integrated eb4933af with preserved pre-update patch. Final caller/raw/dual-build review and freeze pending.",
-                        "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained.",
-                        "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b"
+                        "prerequisites": "Exact c49 dual builds unchanged and qualified. Fixture995 source review missed wrong layout checksum domain; author and critical reviewer independently diagnosed actual failure.",
+                        "resources": "Runtime74804 joined1; actual client8a9ad616 exit143/PID0 and borrowed PostgreSQL71775507 exit0/PID0/noOOM. Both clone databases, virgin initialized roots, native copy, original captures and all logs retained.",
+                        "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
+                        "source": "995e71d7430f4f9d8eb5b08a71990a7e1cd2b7ac",
+                        "tree": "853b9d868af2f10d52a742808761dd4aa6066f50",
+                        "source_receipt": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-source-v1.json",
+                          "sha256": "233c404d33339dfec890167b4df62d15e9760a94418f2c1ccd3232f33224539d"
+                        },
+                        "critical": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-critical-v1.json",
+                          "sha256": "86a7c3a0ea8e3504104fd1a068d076157c216325ad5064f93cb18943ce56ebf8"
+                        },
+                        "static": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-static-v1.json",
+                          "sha256": "c98214684811c1d6301887b0efd2c6e0026d93e814f99ffe8f6ddbc48a2fbc5d"
+                        },
+                        "original_runtime_failure": {
+                          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-995e71d/verified-run-failure.json",
+                          "sha256": "750882e1331ee8ed8ed84e8f8c720136841a9e437df6d1fc1e4b7a334d6f8296"
+                        },
+                        "result": "Three initializer commands exited0, SQL236/236/240; full setup validator FAIL at installation.layout_checksum before reader/publication. Stored hash is ordered PostgreSQL structural definitions, while checker wrongly used native declaration file hash. Original RUNNING case labels preserved and do not imply live work. Cleanup/isolation arrays empty; all54 new controls/raw/publication/retry NOT_RUN.",
+                        "next": "Reuse existing independent structural query/framing oracle; critically review correction and raw binding, then run exact new fixture on fresh clone. Do not recertify original995 failure or rebuild unchanged product."
                       },
                       "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
                       "tree": "60d9d237a06b85eb8b10d9b5feba56620d7d353a",
@@ -46926,7 +46946,7 @@
                         "sha256": "7ea05b5c46cfbdcf4076c5808e2f1929c147366bfe218cb82991f230d84570e5"
                       },
                       "result": "c49 components80612 joined0:45 tests/7mandatory/6selectors/all7checks incl library Clippy. Installed42512 joined0:56tests/4mandatory/3selectors/all5checks incl Clippy; actual CLI/probe/worker, embedded identity and pinned bundle postchecks PASS. Original280 test-premise failures retained. Actual first publication/retry and SQL cancellation remain unqualified.",
-                      "next": "Freeze and critically review the reconciled modern Archive fixture, including dual-build identities, virgin setup, five actual invocations, full77 SQL, signed rows, physical journals and raw replay. Root then executes exact source.",
+                      "next": "Reuse existing independent structural query/framing oracle; critically review correction and raw binding, then run exact new fixture on fresh clone. Do not recertify original995 failure or rebuild unchanged product.",
                       "integration": {
                         "commit": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "push": {

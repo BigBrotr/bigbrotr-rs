@@ -64891,7 +64891,7 @@
             "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
           },
           "owners": "empty_malformed_floor source; compacted_reader_review critical; compacted_reader_fixture independent fixture; root runtime/integration",
-          "resources": "Failed280 and passedc49 component/installed runs retained; actual fetch/native containers exited PID0/noOOM and ownership verified. No Archive fixture database yet; root engine handles joined.",
+          "resources": "Failed280 and passedc49 builds remain stopped/retained. Actual995 fixture resources are recorded separately in later_archive_fixture_work.",
           "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
           "build_runs": [
             {
@@ -64929,7 +64929,7 @@
           "free_after_installed_build": 182015471616
         },
         "later_archive_fixture_work": {
-          "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; ENGINE_NOT_RUN",
+          "status": "995_RUNTIME_FAILED_STOPPED_RETAINED; SOURCE_CORRECTION_IN_PROGRESS",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
           "branch": "work/compacted-later-archive-fixture",
           "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
@@ -64939,9 +64939,28 @@
           },
           "owner": "compacted_reader_fixture; root sole runtime/integration",
           "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-          "prerequisites": "c49 dual build qualified; preserved draft reconciled to eb4933af. Final source/caller/raw review and freeze pending.",
-          "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained.",
-          "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b"
+          "prerequisites": "Unchanged c49 qualified dual builds. Independent structural checksum correction and critical review pending.",
+          "resources": "Original995 run stopped and retained; root handle74804 joined1. No active root build/engine. Author/reviewer source-only follow-up active.",
+          "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
+          "source": "995e71d7430f4f9d8eb5b08a71990a7e1cd2b7ac",
+          "runtime_runs": [
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-995e71d",
+              "state": "failed-stopped-retained",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-995e71d/verified-run-failure.json",
+                "sha256": "750882e1331ee8ed8ed84e8f8c720136841a9e437df6d1fc1e4b7a334d6f8296"
+              },
+              "databases": [
+                "bb_compacted_later_archive_995e71d_archive",
+                "bb_compacted_later_archive_995e71d_archive_cat"
+              ],
+              "owner": "14f0a33791763ebfe379fd8bb519969a",
+              "client": "8a9ad6167422c0dcb947e0d26be76449a63c8d2ee5c846e4625d3bba98d18dc8",
+              "free_after": 177141972992
+            }
+          ],
+          "preservation": "All original three-command output/stages, native copy, virgin initialized Archive state/data and credentials remain under the exact run. No data/worktree/cache/container deletion."
         }
       }
     }
