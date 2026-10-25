@@ -3,8 +3,8 @@
 use super::bootstrap::{Prepared, frame, read_options};
 use super::lineage::LineageStamp;
 use super::successor_handoff::{
-    CLOSING_PRODUCER, EMPTY_SOURCE, OPEN_PRODUCER, producer_key, require_current_authority,
-    require_permit, require_predecessor, require_value, source_key,
+    CLOSING_PRODUCER, EMPTY_SOURCE, OPEN_PRODUCER, SuccessorBasis, producer_key,
+    require_current_authority, require_permit, require_predecessor, require_value, source_key,
 };
 use super::{BootstrapError, BootstrapLimits, IngestRecovery, ResolvedLineage, RetainedLineage};
 use crate::runtime::OwnedPermit;
@@ -24,15 +24,29 @@ pub struct EmptySuccessorRetirement {
     stamp: LineageStamp,
     initially_closing: bool,
     digest: [u8; 32],
+    basis: SuccessorBasis,
 }
 impl EmptySuccessorRetirement {
     pub fn from_lineage(
         proof: &ResolvedLineage<'_>,
         cancelled: &AtomicBool,
     ) -> Result<Self, BootstrapError> {
-        if proof.lineage().has_compacted_initial() {
-            return Err(BootstrapError::StateMismatch);
-        }
+        Self::from_lineage_in(proof, cancelled, SuccessorBasis::Original)
+    }
+
+    pub fn from_compacted_lineage(
+        proof: &ResolvedLineage<'_>,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        Self::from_lineage_in(proof, cancelled, SuccessorBasis::Compacted)
+    }
+
+    fn from_lineage_in(
+        proof: &ResolvedLineage<'_>,
+        cancelled: &AtomicBool,
+        basis: SuccessorBasis,
+    ) -> Result<Self, BootstrapError> {
+        basis.require(proof.lineage())?;
         proof.validate(cancelled)?;
         let lineage = proof.lineage();
         let head = lineage.native_head();
@@ -85,11 +99,12 @@ impl EmptySuccessorRetirement {
             stamp: lineage.transition_stamp(),
             initially_closing: head.is_closing(),
             digest: digest.finalize().into(),
+            basis,
         };
         drop(bytes);
         proof
             .recovery()
-            .validate_empty_successor_retirement(lineage, &plan, cancelled)?;
+            .empty_successor_state(lineage, &plan, cancelled, basis)?;
         Ok(plan)
     }
     pub fn record(&self) -> &SuccessionRecord {
@@ -130,7 +145,17 @@ impl IngestRecovery {
         plan: &EmptySuccessorRetirement,
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
-        self.empty_successor_state(lineage, plan, cancelled)
+        self.empty_successor_state(lineage, plan, cancelled, SuccessorBasis::Original)
+            .map(|_| ())
+    }
+
+    pub(in crate::storage) fn validate_compacted_empty_successor_retirement(
+        &self,
+        lineage: &RetainedLineage,
+        plan: &EmptySuccessorRetirement,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.empty_successor_state(lineage, plan, cancelled, SuccessorBasis::Compacted)
             .map(|_| ())
     }
 
@@ -139,8 +164,11 @@ impl IngestRecovery {
         lineage: &RetainedLineage,
         plan: &EmptySuccessorRetirement,
         cancelled: &AtomicBool,
+        basis: SuccessorBasis,
     ) -> Result<bool, BootstrapError> {
-        if lineage.native_head().manifest() != plan.target_manifest()
+        basis.require(lineage)?;
+        if plan.basis != basis
+            || lineage.native_head().manifest() != plan.target_manifest()
             || lineage.producer_slot_id() != plan.producer_slot_id()
         {
             return Err(BootstrapError::StateMismatch);
@@ -203,11 +231,48 @@ impl IngestRecovery {
         plan: &EmptySuccessorRetirement,
         permit: OwnedPermit,
         cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ObservedEmptySuccessorRetirement, BootstrapError> {
+        self.close_empty_successor_in(
+            lineage,
+            plan,
+            permit,
+            cancelled,
+            authority,
+            SuccessorBasis::Original,
+        )
+    }
+
+    pub(in crate::storage) fn close_compacted_empty_successor(
+        &mut self,
+        lineage: &RetainedLineage,
+        plan: &EmptySuccessorRetirement,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ObservedEmptySuccessorRetirement, BootstrapError> {
+        self.close_empty_successor_in(
+            lineage,
+            plan,
+            permit,
+            cancelled,
+            authority,
+            SuccessorBasis::Compacted,
+        )
+    }
+
+    fn close_empty_successor_in(
+        &mut self,
+        lineage: &RetainedLineage,
+        plan: &EmptySuccessorRetirement,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
         mut authority: impl FnMut() -> Result<(), BootstrapError>,
+        basis: SuccessorBasis,
     ) -> Result<ObservedEmptySuccessorRetirement, BootstrapError> {
         require_permit(&permit, 4096)?;
         authority()?;
-        if !self.empty_successor_state(lineage, plan, cancelled)? {
+        if !self.empty_successor_state(lineage, plan, cancelled, basis)? {
             plan.stamp
                 .sequence
                 .checked_add(1)
@@ -225,7 +290,7 @@ impl IngestRecovery {
             })?;
         }
         authority()?;
-        if !self.empty_successor_state(lineage, plan, cancelled)? {
+        if !self.empty_successor_state(lineage, plan, cancelled, basis)? {
             return Err(BootstrapError::StateMismatch);
         }
         Ok(ObservedEmptySuccessorRetirement {

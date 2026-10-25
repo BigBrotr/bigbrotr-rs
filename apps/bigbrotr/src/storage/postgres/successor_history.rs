@@ -45,6 +45,7 @@ struct Selection {
 enum Inspection {
     Original,
     CompactedInitial {
+        required: bool,
         limits: AdmissionLimits,
         effects: OwnedPermit,
     },
@@ -249,7 +250,43 @@ impl ControlSession {
             recovery,
             input,
             metadata,
-            Inspection::CompactedInitial { limits, effects },
+            Inspection::CompactedInitial {
+                required: true,
+                limits,
+                effects,
+            },
+            validate,
+        )
+        .await
+    }
+
+    /// Explicit consumer entrypoint admitting either retained evidence basis.
+    /// The native floor's presence selects the basis, never a resolved count.
+    pub async fn inspect_successor_history_with_compacted(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        limits: AdmissionLimits,
+        metadata: OwnedPermit,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<SuccessorHistory, ProducerResolveError> {
+        if effects.request().units().items() == 0
+            || effects.request().units().data_bytes()
+                < CompactedInitialAncestor::required_effect_data_bytes(limits)
+                    .map_err(effect_error)?
+        {
+            return Err(effect_error(AdmissionError::InsufficientReservation));
+        }
+        self.inspect_successor_history_in(
+            recovery,
+            input,
+            metadata,
+            Inspection::CompactedInitial {
+                required: false,
+                limits,
+                effects,
+            },
             validate,
         )
         .await
@@ -278,7 +315,17 @@ impl ControlSession {
             Inspection::Original => {
                 RetainedLineage::inspect(recovery, pending, permit, input.cancelled)
             }
-            Inspection::CompactedInitial { .. } => RetainedLineage::inspect_compacted_initial(
+            Inspection::CompactedInitial { required: true, .. } => {
+                RetainedLineage::inspect_compacted_initial(
+                    recovery,
+                    pending,
+                    permit,
+                    input.cancelled,
+                )
+            }
+            Inspection::CompactedInitial {
+                required: false, ..
+            } => RetainedLineage::inspect_with_compacted_initial(
                 recovery,
                 pending,
                 permit,
@@ -307,7 +354,11 @@ impl ControlSession {
             control: current,
         };
         rows::require_native(&tx, recovery, &history, input.cancelled).await?;
-        if let Inspection::CompactedInitial { limits, effects } = &inspection {
+        if let Inspection::CompactedInitial {
+            limits, effects, ..
+        } = &inspection
+            && history.lineage.has_compacted_initial()
+        {
             let ancestor =
                 history.compacted_ancestor(recovery, *limits, effects, input.cancelled)?;
             producer_progress::recovery::require_compacted_ancestor(
@@ -587,14 +638,14 @@ impl ControlSession {
             .validate(resolution.cancelled)
             .map_err(native_error)?;
         finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
-        if self.client.is_closed() {
-            return Err(ProducerResolveError::DeliveryUnknown);
-        }
-        if native.compacted_initial_requests() != 0 {
+        if resolution.history.lineage.has_compacted_initial() {
             native
                 .validate(resolution.cancelled)
                 .map_err(native_error)?;
             initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+        }
+        if self.client.is_closed() {
+            return Err(ProducerResolveError::DeliveryUnknown);
         }
         self.available = true;
         Ok(VerifiedSuccessorHistory {
@@ -661,7 +712,7 @@ fn native_error(error: BootstrapError) -> ProducerResolveError {
 fn effect_error(error: AdmissionError) -> ProducerResolveError {
     ProducerResolveError::Native(error.into())
 }
-fn compacted_error(error: ProducerCompactionError) -> ProducerResolveError {
+pub(super) fn compacted_error(error: ProducerCompactionError) -> ProducerResolveError {
     match error {
         ProducerOperationError::Control(e) => ProducerOperationError::Control(e),
         ProducerOperationError::Registry(e) => ProducerOperationError::Registry(e),

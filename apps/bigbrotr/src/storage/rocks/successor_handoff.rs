@@ -112,6 +112,25 @@ impl SuccessorCandidate {
         policy: PolicyEpoch,
         cancelled: &AtomicBool,
     ) -> Result<SuccessorHandoff, BootstrapError> {
+        self.handoff_in(proof, policy, cancelled, SuccessorBasis::Original)
+    }
+
+    pub fn handoff_compacted(
+        &self,
+        proof: &ResolvedLineage<'_>,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+    ) -> Result<SuccessorHandoff, BootstrapError> {
+        self.handoff_in(proof, policy, cancelled, SuccessorBasis::Compacted)
+    }
+
+    fn handoff_in(
+        &self,
+        proof: &ResolvedLineage<'_>,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+        basis: SuccessorBasis,
+    ) -> Result<SuccessorHandoff, BootstrapError> {
         if !std::ptr::eq(proof.recovery(), &self.recovery)
             || self.recovery.manifest() != &self.previous
             || proof.lineage().pending_target().is_some()
@@ -152,7 +171,7 @@ impl SuccessorCandidate {
             next_manifest: next,
         })
         .map_err(|_| BootstrapError::InvalidIntent)?;
-        SuccessorHandoff::from_proof(proof, record, Some(self.role), cancelled)
+        SuccessorHandoff::from_proof(proof, record, Some(self.role), cancelled, basis)
     }
 
     /// Read-only local binding. A reconstructed gap plan never matches a local
@@ -163,6 +182,25 @@ impl SuccessorCandidate {
         handoff: &SuccessorHandoff,
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
+        self.require_handoff_in(lineage, handoff, cancelled, SuccessorBasis::Original)
+    }
+
+    pub fn require_compacted_handoff(
+        &self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.require_handoff_in(lineage, handoff, cancelled, SuccessorBasis::Compacted)
+    }
+
+    fn require_handoff_in(
+        &self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        cancelled: &AtomicBool,
+        basis: SuccessorBasis,
+    ) -> Result<(), BootstrapError> {
         let fields = handoff.record.fields();
         if handoff.candidate_role != Some(self.role)
             || fields.previous_manifest != self.previous
@@ -172,7 +210,7 @@ impl SuccessorCandidate {
             return Err(BootstrapError::StateMismatch);
         }
         self.recovery
-            .validate_successor_handoff(lineage, handoff, cancelled)
+            .validate_successor_handoff_in(lineage, handoff, cancelled, basis)
     }
 
     pub(in crate::storage) fn require_prepared_handoff(
@@ -206,6 +244,33 @@ impl SuccessorCandidate {
         self.recovery
             .apply_successor_handoff(lineage, handoff, permit, cancelled, authority)
     }
+
+    pub(in crate::storage) fn apply_compacted_handoff(
+        &mut self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ObservedSuccessorHandoff, BootstrapError> {
+        self.require_compacted_handoff(lineage, handoff, cancelled)?;
+        self.recovery
+            .apply_compacted_successor_handoff(lineage, handoff, permit, cancelled, authority)
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum SuccessorBasis {
+    Original,
+    Compacted,
+}
+impl SuccessorBasis {
+    pub(super) fn require(self, lineage: &RetainedLineage) -> Result<(), BootstrapError> {
+        if lineage.has_compacted_initial() != (self == Self::Compacted) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
 }
 
 /// Owned positive proof for one exact native transition. The separately retained
@@ -214,6 +279,7 @@ pub struct SuccessorHandoff {
     record: SuccessionRecord,
     stamp: LineageStamp,
     candidate_role: Option<[u8; 16]>,
+    basis: SuccessorBasis,
 }
 impl SuccessorHandoff {
     pub fn record(&self) -> &SuccessionRecord {
@@ -230,12 +296,29 @@ impl SuccessorHandoff {
         record: SuccessionRecord,
         cancelled: &AtomicBool,
     ) -> Result<Self, BootstrapError> {
+        Self::reconstruct_gap_in(proof, record, cancelled, SuccessorBasis::Original)
+    }
+
+    pub fn reconstruct_compacted_gap(
+        proof: &ResolvedLineage<'_>,
+        record: SuccessionRecord,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        Self::reconstruct_gap_in(proof, record, cancelled, SuccessorBasis::Compacted)
+    }
+
+    fn reconstruct_gap_in(
+        proof: &ResolvedLineage<'_>,
+        record: SuccessionRecord,
+        cancelled: &AtomicBool,
+        basis: SuccessorBasis,
+    ) -> Result<Self, BootstrapError> {
         if proof.lineage().pending_target()
             != Some(record.fields().next_manifest.identity().owner_epoch.get())
         {
             return Err(BootstrapError::StateMismatch);
         }
-        Self::from_proof(proof, record, None, cancelled)
+        Self::from_proof(proof, record, None, cancelled, basis)
     }
 
     fn from_proof(
@@ -243,10 +326,9 @@ impl SuccessorHandoff {
         record: SuccessionRecord,
         candidate_role: Option<[u8; 16]>,
         cancelled: &AtomicBool,
+        basis: SuccessorBasis,
     ) -> Result<Self, BootstrapError> {
-        if proof.lineage().has_compacted_initial() {
-            return Err(BootstrapError::StateMismatch);
-        }
+        basis.require(proof.lineage())?;
         proof.validate(cancelled)?;
         let lineage = proof.lineage();
         if proof.verified_through()
@@ -266,10 +348,11 @@ impl SuccessorHandoff {
             record,
             stamp: lineage.transition_stamp(),
             candidate_role,
+            basis,
         };
         proof
             .recovery()
-            .validate_successor_handoff(lineage, &plan, cancelled)?;
+            .validate_successor_handoff_in(lineage, &plan, cancelled, basis)?;
         Ok(plan)
     }
 }
@@ -291,6 +374,29 @@ impl IngestRecovery {
         handoff: &SuccessorHandoff,
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
+        self.validate_successor_handoff_in(lineage, handoff, cancelled, SuccessorBasis::Original)
+    }
+
+    pub(in crate::storage) fn validate_compacted_successor_handoff(
+        &self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        self.validate_successor_handoff_in(lineage, handoff, cancelled, SuccessorBasis::Compacted)
+    }
+
+    fn validate_successor_handoff_in(
+        &self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        cancelled: &AtomicBool,
+        basis: SuccessorBasis,
+    ) -> Result<(), BootstrapError> {
+        basis.require(lineage)?;
+        if handoff.basis != basis {
+            return Err(BootstrapError::StateMismatch);
+        }
         let f = handoff.record.fields();
         if lineage.native_head().manifest() != &f.previous_manifest
             || lineage.producer_slot_id() != f.producer_slot_id
@@ -345,11 +451,48 @@ impl IngestRecovery {
         handoff: &SuccessorHandoff,
         permit: OwnedPermit,
         cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ObservedSuccessorHandoff, BootstrapError> {
+        self.apply_successor_handoff_in(
+            lineage,
+            handoff,
+            permit,
+            cancelled,
+            authority,
+            SuccessorBasis::Original,
+        )
+    }
+
+    pub(in crate::storage) fn apply_compacted_successor_handoff(
+        &mut self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ObservedSuccessorHandoff, BootstrapError> {
+        self.apply_successor_handoff_in(
+            lineage,
+            handoff,
+            permit,
+            cancelled,
+            authority,
+            SuccessorBasis::Compacted,
+        )
+    }
+
+    fn apply_successor_handoff_in(
+        &mut self,
+        lineage: &RetainedLineage,
+        handoff: &SuccessorHandoff,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
         mut authority: impl FnMut() -> Result<(), BootstrapError>,
+        basis: SuccessorBasis,
     ) -> Result<ObservedSuccessorHandoff, BootstrapError> {
         require_permit(&permit, 8192)?;
         authority()?;
-        self.validate_successor_handoff(lineage, handoff, cancelled)?;
+        self.validate_successor_handoff_in(lineage, handoff, cancelled, basis)?;
         let f = handoff.record.fields();
         if self.manifest() != &f.next_manifest {
             // Refuse sequence overflow before entering the native dispatch.
@@ -381,7 +524,7 @@ impl IngestRecovery {
             self.store.manifest = f.next_manifest;
         }
         authority()?;
-        self.validate_successor_handoff(lineage, handoff, cancelled)?;
+        self.validate_successor_handoff_in(lineage, handoff, cancelled, basis)?;
         Ok(ObservedSuccessorHandoff {
             record: handoff.record,
             _permit: permit,

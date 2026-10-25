@@ -3,7 +3,9 @@
 //! its candidate through activation; recovery commands never adopt one.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::{SuccessorPreparation, SuccessorPreparationRequest},
+    postgres::control_owner::{
+        SuccessorEmptyPlan, SuccessorGapPlan, SuccessorPreparation, SuccessorPreparationRequest,
+    },
     rocks::{store::SuccessorCandidate, succession::SuccessionRecord},
 };
 
@@ -30,6 +32,9 @@ struct Native {
     recovery: Option<IngestRecovery>,
     candidate: Option<SuccessorCandidate>,
     preparation: Option<SuccessorPreparation>,
+    history: Option<SuccessorHistory>,
+    gap: Option<SuccessorGapPlan>,
+    empty: Option<SuccessorEmptyPlan>,
     live: live::LiveCustody,
     activated_recovery: Option<recovery::ActivatedSuccessorRecovery>,
     source_recovery: Option<source::ActivatedSuccessorSourceRecovery>,
@@ -93,11 +98,18 @@ async fn run_inner(
     retirement_wait: Option<retirement_wait::Wait>,
 ) {
     assert!(metadata_bytes <= MAX_LINEAGE_METADATA_BYTES);
+    let compacted = matches!(
+        command,
+        "successor-compacted-prepare"
+            | "successor-compacted-gap"
+            | "successor-compacted-empty"
+            | "successor-compacted-empty-retry"
+    );
     let operation = match command {
-        "successor-prepare" => "prepare",
-        "successor-empty" => "empty",
-        "successor-empty-retry" => "empty-retry",
-        "successor-gap" => "gap",
+        "successor-prepare" | "successor-compacted-prepare" => "prepare",
+        "successor-empty" | "successor-compacted-empty" => "empty",
+        "successor-empty-retry" | "successor-compacted-empty-retry" => "empty-retry",
+        "successor-gap" | "successor-compacted-gap" => "gap",
         "successor-lineage-live" => "live",
         "successor-lineage-live-new" => "live-new",
         "successor-lineage-recover" => "recover",
@@ -164,6 +176,9 @@ async fn run_inner(
             recovery: None,
             candidate: Some(candidate),
             preparation: None,
+            history: None,
+            gap: None,
+            empty: None,
             live: live::LiveCustody::default(),
             activated_recovery: None,
             source_recovery: None,
@@ -174,6 +189,9 @@ async fn run_inner(
             recovery: Some(recovery),
             candidate: None,
             preparation: None,
+            history: None,
+            gap: None,
+            empty: None,
             live: live::LiveCustody::default(),
             activated_recovery: None,
             source_recovery: None,
@@ -190,6 +208,11 @@ async fn run_inner(
     // inspection decides that. Preflight the largest live overlap before claim.
     drop(replay_grants(&budget));
     drop(effect_grant(&budget));
+    if compacted {
+        drop(compacted_grant(&budget));
+        emit(serde_json::json!({"event":"lineage-transition-compacted",
+            "command":command,"compacted_outcome_bytes":compacted_outcome_data_bytes(recovery_limits().event).unwrap()}));
+    }
     if live {
         live::preflight(&budget);
     }
@@ -347,6 +370,7 @@ async fn run_inner(
                 metadata,
                 mutation_permit,
                 operation,
+                compacted,
             )
             .await
     };
@@ -456,14 +480,39 @@ impl Probe {
         metadata: OwnedPermit,
         mutation_permit: Option<OwnedPermit>,
         operation: &str,
+        compacted: bool,
     ) -> Result<serde_json::Value, Failure> {
-        let history = self.load(owner, native.recovery(), metadata).await?;
-        let proof = self.replay(owner, native.recovery(), &history).await?;
+        let history = self
+            .load_profile(owner, native.recovery(), metadata, compacted)
+            .await?;
+        let proof = self
+            .replay_profile(owner, native.recovery(), &history, compacted, None)
+            .await?;
         match operation {
             "prepare" => {
                 let candidate = native.candidate.as_ref().unwrap();
-                let plan = self
-                    .bounded(
+                let plan = if compacted {
+                    self.bounded(
+                        "plan",
+                        owner.plan_compacted_successor_preparation(
+                            candidate,
+                            &proof,
+                            SuccessorPreparationRequest {
+                                history: self.request(),
+                                lease_duration: CONTROL_TTL,
+                                outstanding_request_limit: u32::try_from(
+                                    self.root.number("ingest.producer_outstanding_requests"),
+                                )
+                                .unwrap(),
+                            },
+                            recovery_limits().event,
+                            compacted_grant(&self.budget),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                } else {
+                    self.bounded(
                         "plan",
                         owner.plan_successor_preparation(
                             candidate,
@@ -480,25 +529,40 @@ impl Probe {
                         ),
                     )
                     .await
-                    .map_err(|e| Failure::at("plan", None, None, e))?;
+                }
+                .map_err(|e| Failure::at("plan", None, None, e))?;
                 let policy = plan.policy();
+                let created = plan.created_at_us();
+                let deadline = plan.lease_expires_at_us();
+                let role = candidate.role_instance_id();
+                let candidate = native.candidate.take().unwrap();
+                native.preparation = Some(SuccessorPreparation::new(candidate, history, plan));
+                let preparation = native.preparation.as_mut().unwrap();
                 emit(
                     serde_json::json!({"event":"lineage-transition-plan","operation":operation,
-                    "record":record_value(plan.record()),"role":hex(&candidate.role_instance_id()),
-                    "created_at_us":plan.created_at_us().to_string(),
-                    "lease_expires_at_us":plan.lease_expires_at_us().to_string(),
+                    "record":record_value(preparation.record()),"role":hex(&role),
+                    "created_at_us":created.to_string(),
+                    "lease_expires_at_us":deadline.to_string(),
                     "outstanding_request_limit":u32::try_from(self.root.number("ingest.producer_outstanding_requests")).unwrap(),
                     "policy":{"config_revision":policy.config_revision,"policy_revision":policy.policy_revision,
                         "config_digest":hex(&policy.config_digest),"policy_digest":hex(&policy.policy_digest)}}),
                 );
                 self.snapshot("planned").await;
-                let candidate = native.candidate.take().unwrap();
-                native.preparation = Some(SuccessorPreparation::new(candidate, history, plan));
-                let preparation = native.preparation.as_mut().unwrap();
                 // The owner remains in native custody on every Result, including
                 // CommitUnknown. Save the actual state before classifying it.
-                let result = self
-                    .bounded(
+                let result = if compacted {
+                    self.bounded(
+                        "prepare",
+                        owner.prepare_compacted_successor(
+                            preparation,
+                            self.request(),
+                            mutation_permit.unwrap(),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                } else {
+                    self.bounded(
                         "prepare",
                         owner.prepare_successor(
                             preparation,
@@ -507,7 +571,8 @@ impl Probe {
                             |d, h| self.validate(d, h),
                         ),
                     )
-                    .await;
+                    .await
+                };
                 self.snapshot("transition-returned").await;
                 result.map_err(|e| Failure::at("prepare", None, None, e))?;
                 let prepared = preparation.is_prepared();
@@ -522,8 +587,21 @@ impl Probe {
                     "retired_at_us":null}))
             }
             "gap" => {
-                let plan = self
-                    .bounded(
+                let plan = if compacted {
+                    self.bounded(
+                        "plan",
+                        owner.plan_prepared_compacted_successor_gap(
+                            native.recovery(),
+                            &proof,
+                            self.request(),
+                            recovery_limits().event,
+                            compacted_grant(&self.budget),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                } else {
+                    self.bounded(
                         "plan",
                         owner.plan_prepared_successor_gap(
                             native.recovery(),
@@ -533,25 +611,44 @@ impl Probe {
                         ),
                     )
                     .await
-                    .map_err(|e| Failure::at("plan", None, None, e))?;
+                }
+                .map_err(|e| Failure::at("plan", None, None, e))?;
+                native.history = Some(history);
+                native.gap = Some(plan);
+                let history = native.history.as_ref().expect("retained history");
+                let plan = native.gap.as_ref().expect("retained transition plan");
                 emit(
                     serde_json::json!({"event":"lineage-transition-plan","operation":operation,
                     "record":record_value(plan.record()),"candidate":false}),
                 );
                 self.snapshot("planned").await;
-                let result = self
-                    .bounded(
+                let result = if compacted {
+                    self.bounded(
                         "gap",
-                        owner.complete_prepared_successor_gap(
+                        owner.complete_prepared_compacted_successor_gap(
                             native.recovery.as_mut().unwrap(),
-                            &history,
-                            &plan,
+                            history,
+                            plan,
                             self.request(),
                             mutation_permit.unwrap(),
                             |d, h| self.validate(d, h),
                         ),
                     )
-                    .await;
+                    .await
+                } else {
+                    self.bounded(
+                        "gap",
+                        owner.complete_prepared_successor_gap(
+                            native.recovery.as_mut().unwrap(),
+                            history,
+                            plan,
+                            self.request(),
+                            mutation_permit.unwrap(),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                };
                 self.snapshot("transition-returned").await;
                 let observed = result.map_err(|e| Failure::at("gap", None, None, e))?;
                 emit(
@@ -564,8 +661,21 @@ impl Probe {
                     "retired_at_us":null}))
             }
             "empty" => {
-                let plan = self
-                    .bounded(
+                let plan = if compacted {
+                    self.bounded(
+                        "plan",
+                        owner.plan_compacted_empty_successor_retirement(
+                            native.recovery(),
+                            &proof,
+                            self.request(),
+                            recovery_limits().event,
+                            compacted_grant(&self.budget),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                } else {
+                    self.bounded(
                         "plan",
                         owner.plan_empty_successor_retirement(
                             native.recovery(),
@@ -575,7 +685,12 @@ impl Probe {
                         ),
                     )
                     .await
-                    .map_err(|e| Failure::at("plan", None, None, e))?;
+                }
+                .map_err(|e| Failure::at("plan", None, None, e))?;
+                native.history = Some(history);
+                native.empty = Some(plan);
+                let history = native.history.as_ref().expect("retained history");
+                let plan = native.empty.as_ref().expect("retained transition plan");
                 let target = plan
                     .record()
                     .fields()
@@ -588,19 +703,33 @@ impl Probe {
                     "record":record_value(plan.record()),"closure_digest":hex(&plan.closure_digest())}),
                 );
                 self.snapshot("planned").await;
-                let result = self
-                    .bounded(
+                let result = if compacted {
+                    self.bounded(
                         "empty",
-                        owner.retire_empty_successor(
+                        owner.retire_compacted_empty_successor(
                             native.recovery.as_mut().unwrap(),
-                            &history,
-                            &plan,
+                            history,
+                            plan,
                             self.request(),
                             mutation_permit.unwrap(),
                             |d, h| self.validate(d, h),
                         ),
                     )
-                    .await;
+                    .await
+                } else {
+                    self.bounded(
+                        "empty",
+                        owner.retire_empty_successor(
+                            native.recovery.as_mut().unwrap(),
+                            history,
+                            plan,
+                            self.request(),
+                            mutation_permit.unwrap(),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                };
                 self.snapshot("transition-returned").await;
                 let retired = result.map_err(|e| Failure::at("empty", None, None, e))?;
                 emit(
@@ -619,8 +748,21 @@ impl Probe {
                     "target_epoch":target,"closure_digest":hex(&digest),"read_only":true}),
                 );
                 self.snapshot("planned").await;
-                let result = self
-                    .bounded(
+                let result = if compacted {
+                    self.bounded(
+                        "empty-retry",
+                        owner.observe_retired_compacted_empty_successor(
+                            native.recovery(),
+                            &proof,
+                            self.request(),
+                            recovery_limits().event,
+                            compacted_grant(&self.budget),
+                            |d, h| self.validate(d, h),
+                        ),
+                    )
+                    .await
+                } else {
+                    self.bounded(
                         "empty-retry",
                         owner.observe_retired_empty_successor(
                             native.recovery(),
@@ -629,7 +771,8 @@ impl Probe {
                             |d, h| self.validate(d, h),
                         ),
                     )
-                    .await;
+                    .await
+                };
                 self.snapshot("transition-returned").await;
                 let retired = result.map_err(|e| Failure::at("empty-retry", None, None, e))?;
                 emit(

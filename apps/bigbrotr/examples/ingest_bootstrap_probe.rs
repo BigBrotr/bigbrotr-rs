@@ -936,6 +936,8 @@ fn main() {
         && matches!(
             args[1].as_str(),
             "successor-prepare"
+                | "successor-compacted-prepare"
+                | "successor-compacted-empty"
                 | "successor-empty"
                 | "successor-lineage-live"
                 | "successor-lineage-live-new"
@@ -964,6 +966,10 @@ fn main() {
             || matches!(
                 args[1].as_str(),
                 "successor-prepare"
+                    | "successor-compacted-prepare"
+                    | "successor-compacted-gap"
+                    | "successor-compacted-empty"
+                    | "successor-compacted-empty-retry"
                     | "successor-empty"
                     | "successor-empty-retry"
                     | "successor-gap"
@@ -1082,6 +1088,10 @@ fn main() {
             } else if matches!(
                 args[1].as_str(),
                 "successor-prepare"
+                    | "successor-compacted-prepare"
+                    | "successor-compacted-gap"
+                    | "successor-compacted-empty"
+                    | "successor-compacted-empty-retry"
                     | "successor-empty"
                     | "successor-empty-retry"
                     | "successor-gap"

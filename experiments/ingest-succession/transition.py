@@ -288,7 +288,8 @@ def observe_origin_absence(pg, database, output, name):
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False, compacted_reader=False, compacted_history=False,
-        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, product_source=None):
+        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, product_source=None):
+    assert type(later_empty) is bool and (not later_empty or compacted_history)
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
     assert type(preparation_hole) is bool and (not preparation_hole or producer_ack)
@@ -371,7 +372,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     qualification = read(build.parent / 'qualification.json')
     if compacted_reader:
         qualification_checked(built,component,qualification,product_source,
-            initial_journey=compacted_initial,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial)
+            initial_journey=compacted_initial or later_empty,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial or later_empty,later_empty=later_empty)
     elif preparation_hole:
         from installed_progress_replay import preparation_hole_qualification
         preparation_hole_qualification(built,component,qualification)

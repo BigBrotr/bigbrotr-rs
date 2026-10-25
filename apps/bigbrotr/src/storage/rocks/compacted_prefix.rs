@@ -41,6 +41,7 @@ enum PrefixOwner<'a> {
     Handoff(CompactedInitialPredecessor<'a>),
     EmptyRetirement(crate::storage::rocks::store::CompactedEmptyInitialPredecessor<'a>),
     Acknowledgement(crate::storage::rocks::store::CompactedAcknowledgementPredecessor<'a>),
+    Successor(crate::storage::rocks::store::CompactedSuccessorPredecessor<'a>),
 }
 // The optional floor and all simultaneous borrowed cursor headers use the
 // existing metadata scratch, separately from the one capacity-charged Vec.
@@ -59,6 +60,7 @@ impl PrefixOwner<'_> {
             Self::Handoff(view) => view.manifest(),
             Self::EmptyRetirement(view) => view.manifest(),
             Self::Acknowledgement(view) => view.manifest(),
+            Self::Successor(view) => view.manifest(),
         }
     }
     fn floor(&self) -> &ClosedProducerFloor {
@@ -68,6 +70,7 @@ impl PrefixOwner<'_> {
             Self::Handoff(view) => view.floor(),
             Self::EmptyRetirement(view) => view.floor(),
             Self::Acknowledgement(view) => view.floor(),
+            Self::Successor(view) => view.floor(),
         }
     }
     fn slot(&self) -> ProducerSlotId {
@@ -77,6 +80,7 @@ impl PrefixOwner<'_> {
             Self::Handoff(view) => view.producer_slot_id(),
             Self::EmptyRetirement(view) => view.producer_slot_id(),
             Self::Acknowledgement(view) => view.producer_slot_id(),
+            Self::Successor(view) => view.producer_slot_id(),
         }
     }
     fn validate(
@@ -90,6 +94,7 @@ impl PrefixOwner<'_> {
             Self::Handoff(view) => view.validate(recovery, cancelled).map_err(Into::into),
             Self::EmptyRetirement(view) => view.validate(recovery, cancelled).map_err(Into::into),
             Self::Acknowledgement(view) => view.validate(recovery, cancelled),
+            Self::Successor(view) => view.validate(recovery, cancelled),
         }
     }
     fn require_input(
@@ -100,6 +105,7 @@ impl PrefixOwner<'_> {
     ) -> Result<(), AdmissionError> {
         let (actual, expected) = match self {
             Self::Acknowledgement(view) => return view.require_input(recovery, checked, cancelled),
+            Self::Successor(view) => return view.require_input(recovery, checked, cancelled),
             Self::Initial(prefix) => (
                 recovery.store.require_compacted_input(
                     prefix.floor.fields().issued_through,

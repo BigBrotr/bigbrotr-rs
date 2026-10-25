@@ -234,14 +234,15 @@ class Model(cycle.Model):
         self.pg['role_instances'].append(dict(role_instance_id=rid,dataset_id=self.ds['dataset_id'],role='control',
             created_at_us=created,retired_at_us=retired_at,xmin=actual['xmin']))
 
-    def empty(self, observed):
+    def empty(self, observed, *, predecessor=None):
         legacy,_,native_head,epoch=coordinates(self.pg,self.native)
         assert epoch>=3 and not any(r['target_epoch']==epoch for r in self.pg['ingest_activations'])
         intent=only(self.pg['ingest_successions'],target_epoch=epoch)
         producer=only(self.pg['producer_epochs'],producer_epoch=epoch)
         assert producer['reserved_through_request']==0
         assert not any(r['producer_epoch']==epoch for r in self.pg['producer_requests']+self.pg['producer_outcomes'])
-        predecessor=summary(self.pg,epoch-1)
+        predecessor=summary(self.pg,epoch-1) if predecessor is None else predecessor
+        assert predecessor['epoch']==epoch-1
         digest=transition.empty_digest(binary(intent['handoff']),binary(intent['target_manifest']),binary(self.slot),epoch)
         retry=producer['state']=='retired'
         if not retry:
