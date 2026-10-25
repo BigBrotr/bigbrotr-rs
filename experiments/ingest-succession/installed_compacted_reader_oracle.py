@@ -5894,15 +5894,13 @@ def verify_later_live(context,initial,expected):
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after']
     case=context['case']; response=context['response']
-    assert set(response)=={'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'}
+    # history.capture uses synchronous subprocess.run, not the fault Process
+    # wrapper. Native/client closure is independently required by the transcript.
+    assert set(response)=={'returncode','stdout','stderr','seconds'}
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
-    assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
     number(response['seconds'],0,120)
     args=['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
     assert context['arguments']==args
-    command=response['command']; assert len(command)==9 and command[:2]==['docker','exec']
-    assert re.fullmatch(LaterLiveProfile.CLIENT_PREFIX+'[0-9a-f]{7}',command[2])
-    assert command[3:]==['/build/ingest_bootstrap_probe',*args]
     events=[loads(line) for line in response['stdout'].splitlines()]
     known_history=history_lineage(expected,initial,compacted=True)
     result=live.verify_live(events,*expected,case,context['server_window'],known_history,compacted=True,initial=initial)
@@ -5984,7 +5982,7 @@ def later_live_controls(context,initial,expected):
         try: verify_later_live(c,initial,expected)
         except (AssertionError,KeyError,ValueError,TypeError,StopIteration,OverflowError): rejected.append(name)
         else: raise AssertionError('accepted later-live alteration: '+name)
-    reject('unknown-process',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN'))
+    reject('unknown-process',lambda c:c['response'].update(**(dict(outcome='OUTCOME_UNKNOWN') if c['case']['clone']=='installed' else dict(returncode=None))))
     reject('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
     reject('required-later-input-lost',lambda c:c['inputs_after'].pop('36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor'))
     reject('old-outcome-version',lambda c:c['after']['producer_outcomes'][0].update(xmin='4000000000'))
@@ -6013,12 +6011,12 @@ def later_live_controls(context,initial,expected):
             c['fixture']['renewal']['current']=copy.deepcopy(c['snapshots'][1])
         reject('coordinated-renewal-xid',same_xid)
     else:
-        reject('unjoined-reader',lambda c:c['response'].update(readers_joined=False))
         reject('backend-still-present',lambda c:c.update(backends=[{'pid':1}]))
         def transcript(c,change):
             events=[loads(v) for v in c['response']['stdout'].splitlines()];change(events)
             c['response']['stdout']='\n'.join(model.encoded(v).decode() for v in events)+'\n'
         def event(c,event_kind,change,**fields):transcript(c,lambda es:change(only(es,event=event_kind,**fields)))
+        reject('unjoined-reader',lambda c:event(c,'lineage-history-driver',lambda e:e.update(joined=False),driver='control'))
         reject('false-original-replay',lambda c:event(c,'lineage-history-compacted-proof',lambda e:e.update(original_initial_requests_replayed=7)))
         reject('boolean-original-count',lambda c:event(c,'lineage-history-compacted-proof',lambda e:e.update(original_initial_requests_replayed=False)))
         reject('false-compacted-count',lambda c:event(c,'lineage-history-compacted-proof',lambda e:e.update(compacted_initial_requests=0)))
@@ -6039,6 +6037,9 @@ def later_live_controls(context,initial,expected):
             transcript(c,alter)
         reject('coordinated-checkpoint-revision',lambda c:sql_tail(c,lambda p:[r.update(checkpoint_revision=2) for r in p['producer_checkpoints'] if r['producer_epoch']==3]))
         reject('coordinated-checkpoint-dependency',lambda c:sql_tail(c,lambda p:[r.update(source_sequence=1) for r in p['producer_checkpoint_dependencies'] if r['producer_epoch']==3 and r['source_epoch']==1]))
+        reject('coordinated-false-Sync-binding',lambda c:sql_tail(c,lambda p:[r.update(
+            progress_request_id='\\x'+'30'*48,progress_event_ordinal=1,progress_wire_sequence=1,progress_input_sha256='\\x'+'ff'*32)
+            for r in p['producer_requests'] if r['producer_epoch']==3]))
         def ack_zero(c):
             def alter(es):
                 for e in es:

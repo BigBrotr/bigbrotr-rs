@@ -280,7 +280,9 @@ class Model(transition.Model):
             issuer_resource=c['resource_id'], issuer_epoch=c['epoch'], issuer_role='control',
             issuer_incarnation=c['process_incarnation'], reserved_at_us=reserved,
             relay_endpoint_id=None, relay_access_scope_id=None, relay_enrollment_generation=None,
-            relay_route_id=None, acquisition_scope_id=None, acquisition_job_id=None, xmin=rx))
+            relay_route_id=None, acquisition_scope_id=None, acquisition_job_id=None, xmin=rx,
+            **(dict(progress_request_id=None, progress_event_ordinal=None,
+                progress_wire_sequence=None, progress_input_sha256=None) if science.compacted else {})))
         self.pg['producer_outcomes'].append(dict(base, outcome_kind=2 if n == 2 else 1,
             policy_epoch=self.ds['policy_revision'], outcome_bytes=bx(receipt), outcome_sha256='\\x' + sha(receipt),
             recorder_resource=c['resource_id'], recorder_epoch=c['epoch'], recorder_role='control',

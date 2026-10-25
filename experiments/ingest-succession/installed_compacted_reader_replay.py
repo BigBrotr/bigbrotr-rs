@@ -820,7 +820,9 @@ def later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,pre
     else:
         assert item('capture-errors')==[] and item('control-backends')==context['backend_absence']
         assert item('backends')==context['backends'] and context['custody']==custody
-        assert context['response']['command']==['docker','exec',oracle.LaterLiveProfile.CLIENT_PREFIX+report['source'][:7],'/build/ingest_bootstrap_probe',*context['arguments']]
+        # Direct history.capture records four fields; the hashed runner/capture
+        # owners bind this exact argv to the retained client and product ELF.
+        assert context['arguments']==['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
     result=oracle.verify_later_live(context,initial,expected);controls=oracle.later_live_controls(context,initial,expected)
     assert case['oracle']==result and case['negative_controls']==controls
     same(read(folder/(name+'-final-sql.json')),context['after'])
