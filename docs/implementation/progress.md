@@ -6,13 +6,12 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites and later compacted
-consumers. Current main merge integrates Source product `5eddf46a` and fixture
-`b370238e` into `190fcdf0` (qualified outcome-loss fixture `c814b152`). The exact
-integration revision is the commit containing this checkpoint; last pushed main
-before this merge is `f8da87ca`. Product files match qualified5ed byte for byte.
-Shared fixture conflicts are reconciled and critical review is CLEAR. Both offline
-compatibility attempts reached the final frozen-verifier identity guard and refused
-as required; neither is a full replay PASS. No additional build needed.
+consumers. Main `689e94fb2e1a3f8b97762524fd4119feca73cff9` is integrated/pushed
+(driver90976 joined0; origin/main matched). It includes Source5ed/b370 and outcome
+loss c814 via190fcdf0. Product files match qualified5ed byte for byte. Integration
+review is CLEAR; both compatibility attempts reached only the final unchanged
+frozen-verifier identity refusal, not full replay PASS. Their artifacts are linked
+from the report. This checkpoint follows integration and reference retirement.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 exact identities/results under `initial_successor_preparation_20261012.
@@ -47,23 +46,29 @@ All actual build/runtime/raw drivers joined:44010,8509,86742,99804,90689 exit0.
 Last inspected Sourceclient36357a22621a exited143; borrowedPG71775507 exited0;
 both PID0/noOOM. No root engine active. Faultclient148fe012 also stopped.
 
-Source product and fixture worktrees remain clean/frozen at5ed/b370 under
-`.research/compacted-later-source-20261025` and
-`.research/compacted-later-source-fixture-20261025`. Fault worktree
-`.research/compacted-later-recovery-delivery-fixture-20261025` remains clean/frozen
-atc814. Branch refs await post-integration retirement; preserve worktrees/history.
-`empty_malformed_floor` finished source work; `compacted_reader_review` reviews the
-integration; `compacted_reader_fixture` audits the next Source publication boundary
-read-only. Old837/d8 refs are already archived/retired and worktrees detached.
-All original logs, failures, databases, datasets, .research and artifacts retained.
+Source5ed, fixtureb370 and faultc814 worktrees remain clean/detached at their exact
+revisions. Their three redundant local refs are retired; archive refs and a verified
+17,384,152-byte0600 bundle preserve their histories. All originals/logs/failures/
+databases/datasets/.research remain intact; inventory links the retirement receipt.
+Old837/d8 refs were already retired and their worktrees preserved.
+
+`compacted_reader_fixture` implements only the next held-success Source baseline in
+`.research/compacted-later-source-delivery-fixture-20261025`, branch
+`work/compacted-later-source-delivery-fixture`, base689e94fb. Critical reviewer
+`compacted_reader_review` covers its independent model/custody. Source-derived
+C15/18 is unmeasured. `empty_malformed_floor` audits the next compacted abandonment
+consumer read-only; no product change or runtime from that audit. Root retains all
+engine ownership; no engine or build active. Compatibility drivers73920/58715 also
+joined; children exited1 at the expected final identity guard. Source/audit agents
+may have bounded file work, no autonomous runtime.
 
 ## Next action
 
-Finish coherent integration/push, then retire the three redundant branch refs
-with retained archive refs/bundle and detached worktrees. Use the existing Source
-hook/proxy/capture/oracle owners to measure publication before scheduling response
-loss and fresh installed Source retry. Candidate COMMIT counts from source are
-predictions until held state/backend/lock and actual wire evidence identify them.
+Complete/review the single Source baseline fixture, then root executes one held
+publication/release with full committed state, exact backend/query and granted
+Source relation lock witness. Preserve6s/1s/5s; no external native observer while
+held. Qualify the actual ordinal before before/after loss and fresh Source retry.
+Reuse the existing hook/proxy/capture/oracle; no new product mode or framework.
 
 Source/ACK fault schedules, staged/reserved tails, Sync, abandonment/retirement/
 Archive, physical limits under load, restore/backup/capacity and M1–M5 remain

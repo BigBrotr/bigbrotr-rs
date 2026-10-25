@@ -46388,7 +46388,7 @@
                 "next_delivery_work": {
                   "status": "BASELINE_AND_AUTHENTIC_LOSS_RECOVERY_QUALIFIED",
                   "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-delivery-fixture-20261025",
-                  "branch": "work/compacted-later-recovery-delivery-fixture",
+                  "branch": null,
                   "base": "5414e1be61eea1fd827a9cda72a241de4c56a950",
                   "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
                   "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
@@ -46443,14 +46443,19 @@
                       "sha256": "f7be6e377bd3908a1b1261b95c5f5123967b90c644ad0b500a80ddae89207faf"
                     },
                     "result": "PASS: two clones/six commands/112 controls/7978 raw bindings. Before-forward COMMIT11 loss: fresh recovery repairs one copy, C0/A0 preserved; after-complete loss: retained C1 permits ACK1. Exact retries add no native writes. All77 SQL tables, native/input/custody/originals checked. Exact product837; Positive branch equivalence on5ed is source review, not exact5ed connected evidence.",
-                    "integration": "Included by the current main merge; exact revision obtained from containing Git commit."
+                    "integration": "190fcdf0204d9465b1028b92fc96e80475efa3f8; included in pushed689e94fb."
+                  },
+                  "retired_branch": "work/compacted-later-recovery-delivery-fixture",
+                  "ref_retirement": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-source-fault-ref-retirement-20261025.json",
+                    "sha256": "7b20c592ca455da8bcd5d0198de59198bb565d4839a62152bae8b4ad07c21bbd"
                   }
                 }
               },
               "next_source_work_20261025": {
-                "status": "SOURCE_BUILD_AND_INSTALLED_QUALIFIED; MAIN_INTEGRATION",
+                "status": "INTEGRATED_PUSHED_QUALIFIED",
                 "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-20261025",
-                "branch": "work/compacted-later-source",
+                "branch": null,
                 "base": "fbb35c653f1ea5d6b6755017355e781752f584ff",
                 "source": "5eddf46a11c4ae8bc7098e3eea1be3f832cdfba7",
                 "tree": "119a0cfc26963a890e777745ea7a113d5e0b8be0",
@@ -46489,10 +46494,10 @@
                 "result": "PASS: exact5ed build226 tests/117 required/12 selectors/14 checks incl Clippy; b370 three clones/seven actual commands/152 controls/4519 raw bindings. Finite closes cut4/C1/A1/native110/162; quiet closes cut0/native93/139; exact retries add no native writes or closure changes. Closed Positive refusal bound to actual backend SQL guard; installed Abandon strict factory refuses; missing required current input refuses before native close. Entire77 tables/inputs/native/custody and origins preserved.",
                 "fixture": {
                   "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-fixture-20261025",
-                  "branch": "work/compacted-later-source-fixture",
+                  "branch": null,
                   "base": "7855fdd055cf9e00e98823f7fc2629ce2e23f464",
                   "owner": "empty_malformed_floor source, compacted_reader_review independent expected-state and critical review; root execution",
-                  "state": "CLEAN_FROZEN_QUALIFIED; INCLUDED_BY_CURRENT_MAIN_MERGE",
+                  "state": "CLEAN_DETACHED_QUALIFIED",
                   "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile.",
                   "source": "b370238e92c16057c6a96aa924b901caa8897e30",
                   "tree": "64f2f5b8ceca26aa6ec33392c3ae4e3481240888",
@@ -46504,14 +46509,19 @@
                     "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-fixture-critical-v1.json",
                     "sha256": "f0212ad25cd8e93d73365988a7544927d8aeb4f691020448a477562726646e1e"
                   },
-                  "offline_failure": "Author v2 synthetic quarantine inode diagnostic failed; v3 uses actual synthetic inode census. Both retained in source receipt; verifier unchanged, no runtime failure."
+                  "offline_failure": "Author v2 synthetic quarantine inode diagnostic failed; v3 uses actual synthetic inode census. Both retained in source receipt; verifier unchanged, no runtime failure.",
+                  "retired_branch": "work/compacted-later-source-fixture",
+                  "ref_retirement": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-source-fault-ref-retirement-20261025.json",
+                    "sha256": "7b20c592ca455da8bcd5d0198de59198bb565d4839a62152bae8b4ad07c21bbd"
+                  }
                 },
                 "runtime": {
                   "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-source-b370238/verified-run.json",
                   "sha256": "0f97642cc2e5b7f6966e53da7f2de5a941a399cd314394c28a9bd08fda0268ea"
                 },
                 "root_review_boundary": "Complete affected product diff and Source model/runner/transition reviewed; full raw owner critical review delegated. Integrated product files match5ed byte for byte; no rebuild. c814 fault evidence remains exact837; unchanged Positive semantic branch reviewed separately.",
-                "main_integration": "Current merge of b370 into190fcdf0; exact revision from containing commit. Shared fixture reconciliation critically reviewed separately; no historical run requalification.",
+                "main_integration": "689e94fb2e1a3f8b97762524fd4119feca73cff9; push90976 joined0, origin/main matched.",
                 "integration_review": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-fault-integration-critical-v1.json",
                   "sha256": "f8c1aeba7e73dba6dbc4a7a73d662af861dcc76b6246d75c87af57c7306e08ca"
@@ -46519,6 +46529,25 @@
                 "integration_checks": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-source-fault-integration-20261025/integration-checks.json",
                   "sha256": "faafd81813e9a9dc75c931c1ee9d5bc963129e5c07895ec53076ed5c620953ac"
+                },
+                "retired_branch": "work/compacted-later-source",
+                "ref_retirement": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-source-fault-ref-retirement-20261025.json",
+                  "sha256": "7b20c592ca455da8bcd5d0198de59198bb565d4839a62152bae8b4ad07c21bbd"
+                },
+                "next_delivery_work": {
+                  "status": "SOURCE_IN_PROGRESS; NEW_RUNTIME_NOT_RUN",
+                  "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-delivery-fixture-20261025",
+                  "branch": "work/compacted-later-source-delivery-fixture",
+                  "base": "689e94fb2e1a3f8b97762524fd4119feca73cff9",
+                  "product_source": "5eddf46a11c4ae8bc7098e3eea1be3f832cdfba7",
+                  "audit": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-delivery-reuse-audit-v1.json",
+                    "sha256": "42be23b140560cb249317005d6b83e9554239cfa932194ae3932a7fa2a5f9e2f"
+                  },
+                  "scope": "One finite clone/one held-success Source baseline first. Explicit exact5ed12 profile, independent77-table/input model, exact held backend/query plus Source RowExclusiveLock, immutable H/D and C1/A1/cut4. C15/18 candidates unmeasured. Preserve installed6s/1s/5s timing. Existing proxy/owners only; no Rust change.",
+                  "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only actual engines/runtime/integration",
+                  "next": "Freeze/review baseline source, execute and independently replay actual measured successful boundary; only then implement before/after-publication response loss and fresh Source completion/retry."
                 }
               }
             }
