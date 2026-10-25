@@ -46074,6 +46074,60 @@
                 "validation": "Root driver12103 joined0; raw driver completed0,787boundfiles and30case counterexamples. Actual owned client69c1d0a4 exited143/PG71775507 exited0/PID0/noOOM; original5preservation facts true; cleanup/unrelated/missing/unexpected empty. No new build.",
                 "integration": "Fast-forward integrated into main at exactc3bec54; current documentation-only record follows. No product/fixture byte change or new merged-source runtime claim.",
                 "remaining": "Broader ordinary lifecycle/faults, compacted input/H/D qualification, continuous activation/live, Archive and reclamation/restore/capacity remain separate gates."
+              },
+              "later_input_proof_20261025": {
+                "status": "SOURCE_REVIEWED_RUNTIME_ATTEMPT_FAIL_CORRECTION_IN_PROGRESS",
+                "source": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-proof-source-v1.json",
+                  "sha256": "e795bd85b4030be12d4ea09b4eb7bf7492cffba4652d7ad71b99824e9e871d36"
+                },
+                "critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-proof-critical-review-v1.json",
+                  "sha256": "81a39b30ebb2bece4586215017159eae8f2e6795a140f0ac975ec3ce15b3d0c4"
+                },
+                "runtime_attempts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-input-proof-736cbd5/failed-run.json",
+                    "sha256": "c9d0454bce0fa344ebfaaeb3bee372e6661f885ed7ede5547b9a0120e053b8ac"
+                  }
+                ],
+                "finding": "First6cases PASS, including own installed COMMIT6 hold baseline. Fixed D mutant reaches SQL closed-source commitment guard before canonical Rust recheck: actual Control(Backend), expected Native(Native(StateMismatch)). Native134 unchanged and known closed custody. This is not a passing full profile or Rust recheck qualification. Final2cases/raw NOT_RUN.",
+                "next": "Keep fixed independent D mutation; bind exact SQL guard refusal causally to actual backend/time/log and name the observed boundary honestly. Preserve narrower post-SQL Rust recheck as open. Root reviews corrected source before fresh exact-source runtime.",
+                "preservation": "Both original sources pass all5preservation facts; owned client/PG stopped, no unexpected/unrelated changes or cleanup errors. Original failed captures immutable."
+              },
+              "later_live_source_20261025": {
+                "status": "CORRECTED_SOURCE_REVIEWED_BUILD_RUNNING",
+                "source": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-source-v1.json",
+                  "sha256": "cf9ce1f31f0e360fed91c5b762f97288fd212e6123e90411e0a9dedf125fdc11"
+                },
+                "critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-critical-review-v1.json",
+                  "sha256": "2ebbbbe7d6e1dbe4a386122ffcde08e39006b7e8a1f486f5db36ec7eedc1a638"
+                },
+                "build_attempts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-63a8fbf/verified-failure.json",
+                    "sha256": "d8c4cfa2aa3ad8e091d02df830b4023b6e06d07f264d16481bdce4afe421e3f2"
+                  }
+                ],
+                "finding": "Exact63a8fbf compile E0599: historical InitialWriterCandidate still calls removed VerifiedCompactedPrefix::recovery. One build checkFAIL,11NOT_RUN. Prior review missed this caller; receipt retained unchanged.",
+                "next": "Join existing build2308, inspect actual checks/artifacts, correct only observed failures. Complete separately authored live fixture and critical review before connected runtime.",
+                "remaining": "Connected live/Sync/faults, fresh activated3 adoption, Archive, capacity and reclamation remain unqualified.",
+                "correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-recovery-identity-correction-v1.json",
+                  "sha256": "a0cb62ca10a871a13cfa58a77da49598bb141530ba98504a46d518efea19d3e6"
+                },
+                "correction_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-recovery-identity-critical-review-v1.json",
+                  "sha256": "0155b1dc7d57833a1b9dc8580b8e3bae53ef4d61646cb4b56158f172139bba07"
+                },
+                "current_source": "2622fc82ba79b7e20c0ba039a68f84b9b999ea5b",
+                "current_build": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2622fc8",
+                  "driver_session": 2308,
+                  "status": "RUNNING_NO_RESULT_CLAIM"
+                }
               }
             }
           }
