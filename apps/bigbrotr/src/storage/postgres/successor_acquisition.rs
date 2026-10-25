@@ -17,7 +17,10 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<u64, ProducerResolveError> {
-        source.owner.publication.start()?;
+        source
+            .owner
+            .publication
+            .start_abandonment(source.owner.inner.compacted.is_some())?;
         if permit.request().units().data_bytes() < JOB_DATA_BYTES
             || permit.request().units().items() == 0
         {

@@ -8,10 +8,27 @@ impl Work<'_> {
         metadata: OwnedPermit,
         closing: OwnedPermit,
         mode: Mode,
+        compacted: bool,
     ) -> Result<Value> {
+        if compacted && mode != Mode::CloseSource {
+            return Err((
+                4,
+                "compacted successor source supports publication only".into(),
+            ));
+        }
         let native = custody.native.as_mut().expect("exclusive native owner");
         let owner = custody.owner.as_mut().expect("claimed Control");
-        custody.source = Some(
+        custody.source = Some(if compacted {
+            self.operation(owner.inspect_activated_successor_source_with_compacted(
+                native,
+                self.replay_request(),
+                metadata,
+                self.input_grant()?,
+                compacted_grant(self.budget)?,
+                |d, h| self.validate(d, h),
+            ))
+            .await?
+        } else {
             self.operation(owner.inspect_activated_successor_source(
                 native,
                 self.replay_request(),
@@ -19,8 +36,8 @@ impl Work<'_> {
                 self.input_grant()?,
                 |d, h| self.validate(d, h),
             ))
-            .await?,
-        );
+            .await?
+        });
         let recovered = custody.source.as_mut().expect("retained source owner");
         if mode == Mode::AbandonAcquisition && !recovered.source_closed() {
             // Refuse before the native barrier. Publication spends its owner;
@@ -42,6 +59,16 @@ impl Work<'_> {
             .resolution(native, &self.cancellation.requested)
             .map_err(error)?;
         while resolution.current_epoch().is_some() {
+            if resolution.needs_compacted_initial() {
+                self.refresh(owner).await?;
+                self.operation(owner.inspect_activated_successor_source_compacted_initial(
+                    &mut resolution,
+                    self.request(),
+                    |d, h| self.validate(d, h),
+                ))
+                .await?;
+                continue;
+            }
             while resolution.next_request().is_some() {
                 self.refresh(owner).await?;
                 let (input, outcome) = replay_grants(self.budget)?;
@@ -85,6 +112,7 @@ impl Work<'_> {
         let replay = proof
             .recovery_acknowledgement(&self.cancellation.requested)
             .map_err(error)?;
+        let compacted_requests = replay.compacted_requests();
         self.refresh(owner).await?;
         let jobs = if mode == Mode::AbandonAcquisition {
             Some(
@@ -118,6 +146,10 @@ impl Work<'_> {
         // Only a known final Result constructs the report. The spent owner and
         // its grants remain in Custody through native close and Control release.
         let mut report = completed.report(native, mode);
+        if compacted_requests != 0 {
+            report["recovery_basis"] = json!("closed-producer-floor-v3");
+            report["compacted_requests"] = json!(compacted_requests.to_string());
+        }
         if let Some(jobs) = jobs {
             report["acquisition_abandonment"] = json!({"jobs":jobs.to_string(),
                 "reason":"ingest_successor_abandoned","coverage":"unknown"});

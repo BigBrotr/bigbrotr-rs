@@ -109,7 +109,7 @@ async fn own(
         native: Some(native),
         ..Custody::default()
     };
-    let compacted_positive = mode == Mode::Resolve
+    let compacted_replay = matches!(mode, Mode::Resolve | Mode::CloseSource)
         && custody
             .native
             .as_ref()
@@ -133,9 +133,9 @@ async fn own(
         4096
     };
     let closing = grant(&budget, mutation_bytes, mutation_bytes)?;
-    // Positive compacted recovery retains its canonical grant across every
+    // Selected compacted recovery retains its canonical grant across every
     // replay step and through final ACK. Preflight those actual overlaps.
-    let retained_compacted = compacted_positive
+    let retained_compacted = compacted_replay
         .then(|| compacted_grant(&budget))
         .transpose()?;
     drop(replay_grants(&budget)?);
@@ -144,12 +144,12 @@ async fn own(
         drop(compacted_grant(&budget)?);
     }
     if mode != Mode::RetireEmpty {
-        let ack_effects = compacted_positive
+        let ack_effects = compacted_replay
             .then(|| compacted_grant(&budget))
             .transpose()?;
         drop(grant(
             &budget,
-            if compacted_positive {
+            if compacted_replay {
                 RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES
             } else {
                 RecoveryAcknowledgement::REQUIRED_DATA_BYTES
@@ -219,11 +219,12 @@ async fn own(
     }
     let report = match mode {
         Mode::Resolve => {
-            work.resolve(&mut custody, metadata, closing, compacted_positive)
+            work.resolve(&mut custody, metadata, closing, compacted_replay)
                 .await?
         }
         Mode::CloseSource | Mode::AbandonAcquisition => {
-            work.source(&mut custody, metadata, closing, mode).await?
+            work.source(&mut custody, metadata, closing, mode, compacted_replay)
+                .await?
         }
         Mode::Retire => work.retire(&mut custody, metadata, closing).await?,
         Mode::RetireEmpty => work.retire_empty(&mut custody, metadata, closing).await?,

@@ -96,14 +96,11 @@ fn recovered_retained_count_is_separate_from_acknowledged_outstanding_window() {
 }
 
 #[test]
-fn compacted_recovery_requires_positive_purpose_and_matching_private_basis() {
-    require_recovery_basis(Purpose::Positive, true, true).unwrap();
-    for purpose in [Purpose::Positive, Purpose::Source] {
-        require_recovery_basis(purpose, false, false).unwrap();
-        assert!(require_recovery_basis(purpose, false, true).is_err());
-        assert!(require_recovery_basis(purpose, true, false).is_err());
-    }
-    assert!(require_recovery_basis(Purpose::Source, true, true).is_err());
+fn compacted_recovery_requires_matching_private_basis() {
+    require_recovery_basis(true, true).unwrap();
+    require_recovery_basis(false, false).unwrap();
+    assert!(require_recovery_basis(false, true).is_err());
+    assert!(require_recovery_basis(true, false).is_err());
 }
 
 #[test]
