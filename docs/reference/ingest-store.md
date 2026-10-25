@@ -515,17 +515,32 @@ dominates that reservation. This extension is source-only: component, installed
 whole-state/retry, genuine nonzero-job, cancellation, lock-wait, H/D and delivery
 fault qualification remain NOT_RUN. Existing finite and quiet compacted origins
 have no jobs owned by their activating Control and cannot establish nonzero
-abandonment. Retirement and Archive remain strict on the compacted basis.
+abandonment. Original retirement entrypoints and Archive remain strict; the
+explicit compacted retirement extension below is a separate consumer.
 
 `--retire-successor` requires completed source closure and workflow abandonment;
 it verifies existing copies and retires the producer, its nine allocation domains
 and Ingest owner. An exact retry preserves original attribution and row versions.
 Unresolved import obligations and unbound historical Events refuse retirement.
+Its compacted extension retains the existing observe-only retirement owner and
+canonical Check: native must already be CLOSING and Source must already be CLOSED.
+It authenticates initial H/D separately, then checks every required later original
+against an existing exact outcome copy. It neither repairs copies nor creates a
+barrier, abandons work or invents an initial Event mask. The explicit factory and
+terminal consumer require the compacted basis; a mismatched terminal call consumes
+the proof and leaves the owner spent before SQL effects. Original-only APIs remain
+strict. The cumulative prefix may exceed the active request window but must remain
+within retained64 with issued equal to reserved; typed progress and final ACK are
+validated independently. The final ACK targets current typed C, including a no-op
+watermark, and the report adds the same compacted basis/count fields. This extension
+is source-only: new component and installed first/retry, refusal, wait, H/D and
+delivery-fault qualification are NOT_RUN. No native retirement, floor write, input
+unlink or Archive capability follows.
 
 Retry a mode only while its prerequisites remain valid: positive recovery is
 source-open-only, and terminal retirement has its own retry. No mode starts
 acquisition, resolves an unactivated preparation or reclaims space. On the compacted
-basis, positive recovery and the explicit Source and abandonment paths perform
+basis, positive recovery and the explicit Source, abandonment and retirement paths perform
 their final typed-checkpoint ACK. A successful
 `bigbrotr-ingest-recovery/1` report contains the actual epoch,
 request bounds and verified history; it is published after native closure,
