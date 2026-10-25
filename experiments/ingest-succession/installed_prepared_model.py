@@ -111,6 +111,16 @@ SEED_HASHES = {'activated': ['6d6ffdd9c8bce2f3f6b4baa86fc7eb0da36fdd831cb5a858dc
           '5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea']}
 
 
+ORDINARY_PRODUCT = '2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f'
+
+
+def ordinary_qualification(built, component, qualification):
+    """Exact modern build evidence; the selected data still uses ordinary originals."""
+    from installed_compacted_reader_oracle import qualification_checked
+    qualification_checked(built, component, qualification, ORDINARY_PRODUCT,
+        initial_journey=True, empty_initial=True, later_empty=True)
+
+
 def seed_checked(seed, origin, window):
     pg, native, inputs = seed
     assert len(pg) == 75

@@ -16,7 +16,8 @@ from installed_family import configure
 from installed import messages, wait_for
 from installed_empty import exact_absence, signal_child
 from installed_prepared_model import PINS
-from installed_prepared_replay import CLONES, ORIGIN_FOR_CLONE, SPECS, CASES, STATUS, process_closed
+from installed_prepared_replay import (CLONES, ORIGIN_FOR_CLONE, SPECS, CASES, STATUS,
+    ORDINARY_SPECS, ORDINARY_STATUS, ORDINARY_DIRECTORY, ORDINARY_LABEL, ORDINARY_DATABASE_PREFIX, process_closed)
 
 history, schema, lab = transition.history, transition.schema, transition.lab
 read, normalized = transition.read, transition.normalized
@@ -32,7 +33,15 @@ SUITE = transition.Suite(directory='installed-prepared', label='org.bigbrotr.ins
              'No import closure, Archive, ACK/GC, later capacity or RSS qualification'))
 
 
-def execute(pg, client, output, case, directory, expected, catalog, seed):
+ORDINARY_SUITE = transition.Suite(directory=ORDINARY_DIRECTORY, label=ORDINARY_LABEL,
+    status=ORDINARY_STATUS, client_prefix='bigbrotr-ordinary-successor-',
+    database_prefix=ORDINARY_DATABASE_PREFIX, clones=('open',),
+    cases=tuple(s[0] for s in ORDINARY_SPECS),
+    scope='Current pinned product: ordinary PreparedOpen4 retirement and exact terminal retry on one genuine75-table copy',
+    not_run=('Compacted input/proof-use, activation/live and Archive qualification',
+             'Unknown-commit, native errors, physical loss and capacity'))
+
+def execute(pg, client, output, case, directory, expected, catalog, seed, *, ordinary_regression=False):
     from installed_prepared_replay import verify, negative_controls
     name,database=case['name'],case['database']; prefix=output/name
     before=schema.rows(pg,database)
@@ -166,7 +175,7 @@ def execute(pg, client, output, case, directory, expected, catalog, seed):
         inputs_before=inputs,inputs_after=after_inputs,input_contents=contents,snapshots=snapshots,response=response,
         fixture=fixture,server_window=window,backend=backend,catalog_before=catalog,catalog_after=after_catalog)
     lab.write_json(output/(name+'-verification.json'),context)
-    result,controls=verify(context,seed),negative_controls(context,seed)
+    result,controls=verify(context,seed),negative_controls(context,seed,ordinary_regression=ordinary_regression)
     case.update(status=result['status'],returncode=response['returncode'],oracle=result,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
@@ -207,17 +216,20 @@ def setup(pg,client,output,case,directory,expected,proxy):
     return after,after_native,after_inputs
 
 
-def run_sequence(pg,client,output,clone,directory,expected,report):
+def run_sequence(pg,client,output,clone,directory,expected,report, *, ordinary_regression=False):
     helper=Path(__file__).with_name('installed_prepared_client.py');target=output/helper.name
     if not target.exists():shutil.copy2(helper,target)
     assert history.digest(target)==history.digest(helper)
-    proxy_source=history.SOURCE/'experiments/control-migrations/fault_proxy.py'
-    proxy=output/'installed-prepared-proxy.py'
-    if not proxy.exists():shutil.copy2(proxy_source,proxy)
-    assert history.digest(proxy)==history.digest(proxy_source)
+    assert type(ordinary_regression) is bool
+    proxy=None
+    if not ordinary_regression:
+        proxy_source=history.SOURCE/'experiments/control-migrations/fault_proxy.py'
+        proxy=output/'installed-prepared-proxy.py'
+        if not proxy.exists():shutil.copy2(proxy_source,proxy)
+        assert history.digest(proxy)==history.digest(proxy_source)
     configure(pg,client,output,clone['config'])
     seed=expected
-    for name,mode,operation,predecessor in SPECS:
+    for name,mode,operation,predecessor in (ORDINARY_SPECS if ordinary_regression else SPECS):
         if mode!=clone['name']:continue
         case=dict(name=name,clone=mode,origin=clone['origin'],operation=operation,predecessor=predecessor,
             database=clone['database'],config=clone['config'],status='RUNNING')
@@ -227,17 +239,27 @@ def run_sequence(pg,client,output,clone,directory,expected,report):
         if case.get('setup'):
             expected=setup(pg,client,output,case,directory,expected,proxy)
         else:
-            expected=execute(pg,client,output,case,directory,expected,clone['catalog_before'],seed)
+            expected=execute(pg,client,output,case,directory,expected,clone['catalog_before'],seed,
+                ordinary_regression=ordinary_regression)
         case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
         lab.write_json(output/'result.json',report)
     return case['name']
 
 
-def run(root,build):
-    return transition.run(root,build,suite=SUITE,sequence=run_sequence,origin_specs=ORIGINS,
-        origin_for_clone=ORIGIN_FOR_CLONE,extra_grants=GRANTS)
+def run(root,build, *, ordinary_regression=False):
+    from functools import partial
+    assert type(ordinary_regression) is bool
+    return transition.run(root,build,suite=ORDINARY_SUITE if ordinary_regression else SUITE,
+        sequence=partial(run_sequence,ordinary_regression=ordinary_regression),
+        origin_specs=(PINS['open'],) if ordinary_regression else ORIGINS,
+        origin_for_clone={'open':'open'} if ordinary_regression else ORIGIN_FOR_CLONE,
+        extra_grants=GRANTS,ordinary_regression=ordinary_regression)
 
 
 if __name__=='__main__':
-    assert len(sys.argv)==3
-    run(Path(sys.argv[1]).resolve(strict=True),Path(sys.argv[2]).resolve(strict=True))
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('root',type=Path);parser.add_argument('build',type=Path)
+    parser.add_argument('--ordinary-regression',action='store_true')
+    args=parser.parse_args()
+    run(args.root.resolve(strict=True),args.build.resolve(strict=True),ordinary_regression=args.ordinary_regression)

@@ -288,7 +288,16 @@ def observe_origin_absence(pg, database, output, name):
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False, compacted_reader=False, compacted_history=False,
-        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, product_source=None):
+        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, product_source=None, ordinary_regression=False):
+    assert type(ordinary_regression) is bool
+    if ordinary_regression:
+        assert not any((producer_progress, producer_ack, preparation_hole, compacted_reader,
+            compacted_history, compacted_initial, initial_preparation, compacted_activated,
+            compacted_terminal, empty_initial, later_empty))
+        from installed_prepared_model import PINS as ordinary_pins
+        assert origin_specs == (ordinary_pins['open'],)
+        assert origin_for_clone == {'open': 'open'}
+        assert suite.clones == ('open',) and suite.cases == ('open-retire', 'open-retry')
     assert type(later_empty) is bool and (not later_empty or compacted_history)
     assert type(producer_progress) is bool
     assert type(producer_ack) is bool and (not producer_ack or producer_progress)
@@ -370,6 +379,9 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     built = read(build / 'build-result.json')
     component = read(build / 'component-result.json')
     qualification = read(build.parent / 'qualification.json')
+    if ordinary_regression:
+        from installed_prepared_model import ordinary_qualification
+        ordinary_qualification(built, component, qualification)
     if compacted_reader:
         qualification_checked(built,component,qualification,product_source,
             initial_journey=compacted_initial or later_empty,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial or later_empty,later_empty=later_empty)
@@ -379,7 +391,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
     allowed = ('PASS_SUCCESSION_TRANSITION_COMPONENTS',
         'PASS_SUCCESSION_HISTORY_PROBE_BUILD', 'PASS_SUCCESSION_TRANSITION_PROBE_BUILD',
         'PASS_SUCCESSION_RECOVERY_COMPONENTS', 'PASS_SUCCESSION_INSTALLED_COMPONENTS')
-    assert qualification['status'] in (('PASS_COMPACTED_PREFIX_COMPONENTS',) if compacted_reader else ('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
+    assert qualification['status'] in (('PASS_COMPACTED_PREFIX_COMPONENTS',) if compacted_reader or ordinary_regression else ('PASS_PRODUCER_ACK_COMPONENTS',) if producer_ack else ('PASS_PRODUCER_PROGRESS_COMPONENTS',)
         if producer_progress else allowed)
     assert component['status'] == 'PASS'
     assert component['source'] == built['source'] == qualification['source']

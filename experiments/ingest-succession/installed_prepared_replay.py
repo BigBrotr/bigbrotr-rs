@@ -32,6 +32,11 @@ SPECS=(('gap-prepare-loss','gap','prepare',None),('gap-retire','gap','empty','ga
     ('legacy-refused','legacy','refused',None))
 CASES=tuple(s[0] for s in SPECS)
 STATUS='PASS_INSTALLED_PREPARED_SUCCESSOR_CYCLE'
+ORDINARY_SPECS = tuple(s for s in SPECS if s[0] in ('open-retire', 'open-retry'))
+ORDINARY_STATUS = 'PASS_INSTALLED_ORDINARY_SUCCESSOR_REGRESSION'
+ORDINARY_DIRECTORY = 'installed-ordinary-successor'
+ORDINARY_LABEL = 'org.bigbrotr.installed-ordinary-successor'
+ORDINARY_DATABASE_PREFIX = 'bb_ordinary_successor_'
 ERRORS={'activated':'error: successor recovery unavailable: producer operation unavailable: Control(InvalidMetadata)\n',
         'legacy':'error: empty successor recovery requires a retained target epoch3 or later\n'}
 CONTEXT_FIELDS={'case','before','after','native_before','native_after','inputs_before','inputs_after','input_contents',
@@ -148,7 +153,10 @@ def verify(context,seed):
         states=states,tables=75,native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],input_files=len(inputs))
 
 
-def negative_controls(context,seed):
+def negative_controls(context,seed,*,ordinary_regression=False):
+    assert type(ordinary_regression) is bool
+    if ordinary_regression:
+        assert context['case']['name'] in ('open-retire', 'open-retry')
     mutations=[]
     def add(name,change):
         value=copy.deepcopy(context);change(value);mutations.append((name,value))
@@ -174,6 +182,12 @@ def negative_controls(context,seed):
     else:
         add('missing-renewal',lambda c:c['snapshots'].pop(1))
         add('signal-before-renewal',lambda c:c['fixture']['signal'].update(before_us=c['server_window']['before_us']))
+    if ordinary_regression:
+        def false_basis(c, key, value):
+            report=loads(c['response']['stdout']);report[key]=value
+            c['response']['stdout']=json.dumps(report)+'\n'
+        add('false-compacted-basis',lambda c:false_basis(c,'recovery_basis','closed-producer-floor-v3'))
+        add('false-compacted-count',lambda c:false_basis(c,'compacted_requests','4'))
     rejected=[]
     for name,value in mutations:
         try:verify(value,seed)
@@ -247,25 +261,35 @@ def origin_checked(root, folder, name, declaration, raw, read):
 
 
 
-def replay(root):
+def replay(root, *, ordinary_regression=False):
     """Rebind every context to actual files, final stores and exact predecessor."""
-    root=Path(root).resolve(strict=True); folder=root/'installed-prepared'; bound={}
+    assert type(ordinary_regression) is bool
+    selected_specs = ORDINARY_SPECS if ordinary_regression else SPECS
+    selected_clones = ('open',) if ordinary_regression else CLONES
+    selected_origins = ('open',) if ordinary_regression else tuple(model.PINS)
+    status = ORDINARY_STATUS if ordinary_regression else STATUS
+    label = ORDINARY_LABEL if ordinary_regression else 'org.bigbrotr.installed-prepared'
+    database_prefix = ORDINARY_DATABASE_PREFIX if ordinary_regression else 'bb_installed_prepared_'
+    root=Path(root).resolve(strict=True)
+    folder=root/(ORDINARY_DIRECTORY if ordinary_regression else 'installed-prepared'); bound={}
     def raw(path):
         path=Path(path); assert stat.S_ISREG(path.lstat().st_mode)
         value=path.read_bytes(); bound[str(path)]=sha(value); return value
     def read(path): return loads(raw(path))
     report=read(folder/'result.json')
-    assert report['status']==STATUS and report['label']=='org.bigbrotr.installed-prepared'
+    assert report['status']==status and report['label']==label
     assert re.fullmatch('[0-9a-f]{40}',report['source']) and re.fullmatch('[0-9a-f]{40}',report['tree'])
     assert re.fullmatch('[0-9a-f]{32}',report['owner']) and re.fullmatch('[0-9a-f]{64}',report['client'])
     assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
-    assert [c['name'] for c in report['clones']]==list(CLONES) and [c['name'] for c in report['cases']]==list(CASES)
-    assert report['databases']==[c['database'] for c in report['clones']] and len(set(report['databases']))==5
+    assert [c['name'] for c in report['clones']]==list(selected_clones)
+    assert [c['name'] for c in report['cases']]==[s[0] for s in selected_specs]
+    assert report['databases']==[c['database'] for c in report['clones']]
+    assert len(set(report['databases']))==len(selected_clones)
     assert not set(report['databases']) & set(report['database_names_before'])
     assert set(report['database_names_after'])==set(report['database_names_before'])|set(report['databases'])
     started,finished=instant(report['started_at']),instant(report['finished_at']); assert started<=finished
-    assert set(report['origins'])==set(model.PINS)
-    origins={name:origin_checked(root,folder,name,report['origins'][name],raw,read) for name in model.PINS}
+    assert set(report['origins'])==set(selected_origins)
+    origins={name:origin_checked(root,folder,name,report['origins'][name],raw,read) for name in selected_origins}
     terminal=read(folder/'terminal-containers.json')
     inventory_checked(read(folder/'preflight-containers.json'),terminal,report['client'],report['postgres'])
     assert report['postgres']=='7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec'
@@ -281,8 +305,11 @@ def replay(root):
     build=Path(mount['Source']); assert build.is_absolute()
     built,component=read(build/'build-result.json'),read(build/'component-result.json')
     qualification=read(build.parent/'qualification.json')
-    assert qualification['status'] in ('PASS_SUCCESSION_TRANSITION_COMPONENTS','PASS_SUCCESSION_HISTORY_PROBE_BUILD',
-        'PASS_SUCCESSION_TRANSITION_PROBE_BUILD','PASS_SUCCESSION_RECOVERY_COMPONENTS','PASS_SUCCESSION_INSTALLED_COMPONENTS')
+    if ordinary_regression:
+        model.ordinary_qualification(built,component,qualification)
+    else:
+        assert qualification['status'] in ('PASS_SUCCESSION_TRANSITION_COMPONENTS','PASS_SUCCESSION_HISTORY_PROBE_BUILD',
+            'PASS_SUCCESSION_TRANSITION_PROBE_BUILD','PASS_SUCCESSION_RECOVERY_COMPONENTS','PASS_SUCCESSION_INSTALLED_COMPONENTS')
     assert report['build']==built and report['component']==component and component['status']=='PASS'
     assert component['source']==built['source']==qualification['source']
     for field in ('tree','source_manifest_sha256','lockfile_sha256'): assert component[field]==built[field]==qualification[field]
@@ -296,15 +323,18 @@ def replay(root):
         if name.startswith(('apps/','crates/','migrations/')) or name in ('Cargo.toml','Cargo.lock','rust-toolchain.toml'):
             assert sha(raw(root/'source'/name))==digest
     assert raw(folder/'installed_prepared_client.py')==raw(root/'source/experiments/ingest-succession/installed_prepared_client.py')
-    assert sha(raw(folder/'installed-prepared-proxy.py'))==setup.PROXY_SHA256
-    assert raw(folder/'installed-prepared-proxy.py')==raw(root/'source/experiments/control-migrations/fault_proxy.py')
+    if ordinary_regression:
+        assert not (folder/'installed-prepared-proxy.py').exists()
+    else:
+        assert sha(raw(folder/'installed-prepared-proxy.py'))==setup.PROXY_SHA256
+        assert raw(folder/'installed-prepared-proxy.py')==raw(root/'source/experiments/control-migrations/fault_proxy.py')
     results=[];previous_time=started
     for clone in report['clones']:
         name=clone['name'];origin=clone['origin'];seed=origins[origin]
         assert origin==ORIGIN_FOR_CLONE[name] and clone['directory']==name and clone['status']=='PASS'
-        assert clone['database']=='bb_installed_prepared_'+report['source'][:7]+'_'+name
+        assert clone['database']==database_prefix+report['source'][:7]+'_'+name
         assert clone['config']=='/lab/'+clone['database']+'.toml' and clone['final_backends']==[]
-        specs=[s for s in SPECS if s[1]==name];assert clone['final_case']==specs[-1][0]
+        specs=[s for s in selected_specs if s[1]==name];assert clone['final_case']==specs[-1][0]
         same(seed[0],read(folder/(name+'-copy-before.json')))
         migrated=read(folder/(name+'-migrated.json'));seed=(migrated,*seed[1:])
         first_window=read(folder/(specs[0][0]+'-clock.json'))
@@ -400,7 +430,7 @@ def replay(root):
                 assert context['catalog_before']==context['catalog_after']==clone['catalog_before']
                 assert set(item('provisional-sql'))==set(before) and item('provisional-inputs')==inputs
                 assert context['input_contents']=={n:raw(folder/name/'store/producer-inputs-v1'/n).hex() for n in after_inputs}
-                result,controls=verify(context,seed),negative_controls(context,seed)
+                result,controls=verify(context,seed),negative_controls(context,seed,ordinary_regression=ordinary_regression)
                 assert case['status']==result['status']
             assert item('custody')==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
             assert not (folder/(label+'-external-unavailable.json')).exists()
@@ -408,15 +438,17 @@ def replay(root):
             assert case['oracle']==result and case['negative_controls']==controls
             results.append(dict(name=label,oracle=result,negative_controls=controls));expected=(after,after_native,after_inputs)
         same(expected[0],read(folder/(name+'-final-sql.json')))
-    return dict(status=STATUS+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
+    return dict(status=status+'_CAPTURE_REPLAY',source=report['source'],cases=results,bound_files=bound,
         original_preservation='Original physical/input bytes reread; original SQL/catalog preservation is captured-run evidence',
-        scope='Two genuine setup faults, empty gap/OPEN/CLOSING retirement/retries, Serve4/5, activated/legacy refusals; no writer adoption or new job')
+        scope='Ordinary PreparedOpen4 retirement and exact terminal retry; current pinned product,75-table original basis' if ordinary_regression else
+            'Two genuine setup faults, empty gap/OPEN/CLOSING retirement/retries, Serve4/5, activated/legacy refusals; no writer adoption or new job')
 
 
 if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('root',type=Path);parser.add_argument('--output',type=Path)
-    args=parser.parse_args();result=replay(args.root);rendered=json.dumps(result,indent=2)+'\n'
+    parser.add_argument('--ordinary-regression',action='store_true')
+    args=parser.parse_args();result=replay(args.root,ordinary_regression=args.ordinary_regression);rendered=json.dumps(result,indent=2)+'\n'
     if args.output:
         with args.output.open('x') as stream:stream.write(rendered)
     else:print(rendered,end='')
