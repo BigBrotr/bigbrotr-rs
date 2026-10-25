@@ -9,6 +9,7 @@ The explicit history-fault profile copies a qualified PreparedOpen3 endpoint and
 observes read delivery through the existing finite rollback proxy.
 """
 import argparse
+import copy
 import json
 from datetime import datetime, timezone
 from functools import partial
