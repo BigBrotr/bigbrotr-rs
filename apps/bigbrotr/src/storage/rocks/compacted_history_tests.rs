@@ -548,3 +548,274 @@ fn compacted_history_correction_census_counts_reclaimed_requests_beyond_spool_ca
 
 #[path = "compacted_successor_tests.rs"]
 mod compacted_successor_tests;
+
+fn archive_limits() -> PendingReadLimits {
+    PendingReadLimits {
+        max_records: 64,
+        max_encoded_bytes: MIB as usize,
+        fact: FactDecodeLimits::default(),
+    }
+}
+
+fn archive_pending(
+    f: &Fixture,
+    proof: &ResolvedLineage<'_>,
+    first: SourceRecordId,
+) -> Result<PendingBatch, LineagePendingError> {
+    let limits = archive_limits();
+    proof.read_complete_compacted_pending_batch(
+        first,
+        limits,
+        grant(&f.budget, limits.required_data_bytes().unwrap(), 0),
+        &NOT_CANCELLED,
+    )
+}
+
+#[test]
+fn compacted_archive_pending_preserves_complete_original_bytes_with_optional_residuals() {
+    for residuals in [false, true] {
+        let (f, r) = fixture();
+        if !residuals {
+            for sequence in 1..=4 {
+                std::fs::remove_file(
+                    f.path()
+                        .join("producer-inputs-v1")
+                        .join(input_name(1, sequence)),
+                )
+                .unwrap();
+            }
+        }
+        let before = kv(&r.store);
+        let original_inputs = inputs(&f.path());
+        let sequence = r.store.db.latest_sequence_number();
+        let lineage = inspect_compacted(&f, &r).unwrap();
+        let proof = complete(
+            &f,
+            &r,
+            &lineage,
+            3,
+            Some(PredecessorTerminalKind::Activated),
+        );
+        let used = f.budget.snapshot().used().data_bytes();
+        let permits = f.budget.snapshot().active_permits();
+        for (epoch, first, last) in [(1, 1, 4), (1, 5, 5), (1, 6, 9), (3, 1, 1)] {
+            // Capture expected canonical bytes from the frozen input fixture's
+            // full rows, before invoking the accessor under test.
+            let expected: Vec<_> = (first..=last)
+                .map(|number| {
+                    let key = IngestKey::Fact {
+                        source_record_id: fact_id(epoch, number),
+                    }
+                    .encode()
+                    .unwrap();
+                    before
+                        .iter()
+                        .find(|(cf, bytes, _)| cf == "facts" && bytes == key.as_bytes())
+                        .unwrap()
+                        .2[34..]
+                        .to_vec()
+                })
+                .collect();
+            let batch = archive_pending(&f, &proof, fact_id(epoch, first)).unwrap();
+            assert_eq!(batch.batch().first(), fact_id(epoch, first));
+            assert_eq!(batch.batch().last(), fact_id(epoch, last));
+            assert_eq!(batch.records(), expected);
+            assert_eq!(f.budget.snapshot().active_permits(), permits + 1);
+            assert_eq!(
+                f.budget.snapshot().used().data_bytes(),
+                used + archive_limits().required_data_bytes().unwrap()
+            );
+            drop(batch);
+            assert_eq!(f.budget.snapshot().active_permits(), permits);
+            assert_eq!(f.budget.snapshot().used().data_bytes(), used);
+        }
+        assert_eq!(
+            proof
+                .read_complete_pending_batch(
+                    fact_id(1, 1),
+                    archive_limits(),
+                    grant(
+                        &f.budget,
+                        archive_limits().required_data_bytes().unwrap(),
+                        0
+                    ),
+                    &NOT_CANCELLED
+                )
+                .err(),
+            Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+        );
+        assert_eq!(kv(&r.store), before);
+        assert_eq!(inputs(&f.path()), original_inputs);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence);
+    }
+}
+
+#[test]
+fn compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch() {
+    let (f, r) = fixture();
+    let lineage = inspect_compacted(&f, &r).unwrap();
+    let prefix = complete(&f, &r, &lineage, 2, None);
+    assert_eq!(
+        archive_pending(&f, &prefix, fact_id(1, 1)).err(),
+        Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+    );
+    let pending = RetainedLineage::inspect_compacted_initial(
+        &r,
+        Some(4),
+        grant(&f.budget, 256 * 1024, 0),
+        &NOT_CANCELLED,
+    )
+    .unwrap();
+    let pending_proof = complete(
+        &f,
+        &r,
+        &pending,
+        3,
+        Some(PredecessorTerminalKind::Activated),
+    );
+    assert_eq!(
+        archive_pending(&f, &pending_proof, fact_id(1, 1)).err(),
+        Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+    );
+    let proof = complete(
+        &f,
+        &r,
+        &lineage,
+        3,
+        Some(PredecessorTerminalKind::Activated),
+    );
+    assert!(archive_pending(&f, &proof, fact_id(1, 1)).is_ok());
+    for id in [fact_id(1, 10), fact_id(2, 1), fact_id(3, 2), fact_id(4, 1)] {
+        assert_eq!(
+            archive_pending(&f, &proof, id).err(),
+            Some(LineagePendingError::OutsideVerifiedCut)
+        );
+    }
+    assert_eq!(
+        archive_pending(&f, &proof, fact_id(1, 2)).err(),
+        Some(LineagePendingError::RequiredBatchMissing)
+    );
+    assert_eq!(
+        archive_pending(
+            &f,
+            &proof,
+            SourceRecordId {
+                dataset_id: [2; 16].try_into().unwrap(),
+                ..fact_id(1, 1)
+            }
+        )
+        .err(),
+        Some(LineagePendingError::Read(
+            crate::storage::rocks::store::PendingError::ForeignDataset
+        ))
+    );
+
+    let ordinary = prepared_fixture();
+    let original = valid_empty_third(&ordinary);
+    correction(&ordinary, &original, false);
+    let old = inspect(&ordinary, &original, None).unwrap();
+    let positive = replay(
+        &ordinary,
+        &original,
+        &old,
+        3,
+        Some(PredecessorTerminalKind::Activated),
+    )
+    .unwrap();
+    assert!(
+        positive
+            .read_complete_pending_batch(
+                fact_id(1, 1),
+                archive_limits(),
+                grant(
+                    &ordinary.budget,
+                    archive_limits().required_data_bytes().unwrap(),
+                    0
+                ),
+                &NOT_CANCELLED
+            )
+            .is_ok()
+    );
+    assert_eq!(
+        archive_pending(&ordinary, &positive, fact_id(1, 1)).err(),
+        Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+    );
+}
+
+#[test]
+fn compacted_archive_pending_rechecks_required_inputs_native_stamp_and_grants() {
+    use crate::storage::rocks::store::PendingError;
+    for fault in 0..4 {
+        let (f, r) = fixture();
+        let lineage = inspect_compacted(&f, &r).unwrap();
+        let proof = complete(
+            &f,
+            &r,
+            &lineage,
+            3,
+            Some(PredecessorTerminalKind::Activated),
+        );
+        let required = archive_limits().required_data_bytes().unwrap();
+        assert!(archive_pending(&f, &proof, fact_id(1, 1)).is_ok());
+        assert_eq!(
+            proof
+                .read_complete_compacted_pending_batch(
+                    fact_id(1, 1),
+                    archive_limits(),
+                    grant(&f.budget, required, 0),
+                    &AtomicBool::new(true)
+                )
+                .err(),
+            Some(LineagePendingError::Proof(
+                BootstrapError::AuthorityUnavailable
+            ))
+        );
+        match fault {
+            0 => put(&r.store, source_key(3), &value(&r.store, source_key(3))),
+            1 => std::fs::remove_file(f.path().join("producer-inputs-v1").join(input_name(3, 1)))
+                .unwrap(),
+            2 => {
+                let path = f.path().join("producer-inputs-v1").join(input_name(1, 1));
+                let mut bytes = std::fs::read(&path).unwrap();
+                bytes[0] ^= 1;
+                std::fs::write(path, bytes).unwrap();
+            }
+            3 => {
+                let path = f.path().join("producer-inputs-v1").join(input_name(3, 1));
+                let replacement = f.root.path().join("replacement");
+                std::fs::write(&replacement, std::fs::read(&path).unwrap()).unwrap();
+                std::fs::set_permissions(&replacement, std::fs::Permissions::from_mode(0o600))
+                    .unwrap();
+                std::fs::rename(replacement, path).unwrap();
+            }
+            _ => unreachable!(),
+        }
+        let before = kv(&r.store);
+        let original_inputs = inputs(&f.path());
+        let sequence = r.store.db.latest_sequence_number();
+        let permits = f.budget.snapshot().active_permits();
+        // The exact allocation refusal must still precede the stale native or
+        // physical-input read, and release only the attempted read's grant.
+        assert_eq!(
+            proof
+                .read_complete_compacted_pending_batch(
+                    fact_id(1, 1),
+                    archive_limits(),
+                    grant(&f.budget, required - 1, 0),
+                    &NOT_CANCELLED
+                )
+                .err(),
+            Some(LineagePendingError::Read(
+                PendingError::InsufficientReservation
+            ))
+        );
+        assert_eq!(
+            archive_pending(&f, &proof, fact_id(1, 1)).err(),
+            Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+        );
+        assert_eq!(f.budget.snapshot().active_permits(), permits);
+        assert_eq!(kv(&r.store), before);
+        assert_eq!(inputs(&f.path()), original_inputs);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence);
+    }
+}

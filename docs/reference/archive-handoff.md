@@ -656,6 +656,15 @@ entry shapes are genuine terminal legacy epoch 2 and terminal later-family heads
 No next-generation allocation or candidate is needed to archive the last admitted
 epoch, including the profile's maximum epoch.
 
+For a schema3/epoch3-or-later lineage with an initial closed-producer floor,
+the explicit compacted path checks the canonical initial H/D and replays every
+required later original. Initial residual files are optional; each present file
+remains authenticated and shares the existing physical input bounds. The floor
+does not replace retained pending markers or scientific facts. Ordinary and
+legacy epoch2 access retain their original-only entrypoints. The compacted
+extension is source implementation only until its exact component/installed
+qualification; no Archive runtime result is implied by earlier Ingest recovery.
+
 A narrow native accessor borrows the complete `ResolvedLineage` and reads one
 original pending batch from its own retained recovery owner. It checks the same
 root/sequence/input stamp, dataset and qualified stream, and requires the whole
@@ -756,6 +765,23 @@ capacity and refuses further dispatch or cleanup. Preserve original inputs,
 journals, files and all partial results for explicit fresh-process reconciliation.
 Refresh accepted authority and check cancellation/current UTC after lock waits and
 before effects and delivery; no historical issuer needs to remain live.
+
+The compacted path reserves its existing frontier owner and canonical Check before
+connecting. Reserved is not an absent observation: loading and input binding
+borrow that owner and advance only after success. Errors retain the same Check,
+grant and prior state. Issuance and frontier publication check H/D in their own
+Control transaction under the ordered lineage locks, including exact retry;
+short checks also surround joined native/catalog work. Native proof validation
+alone is not a SQL H/D check. Final census and Control checks precede the final
+live catalog barrier, with policy/cancellation checked again before COMMIT and
+delivery. No Control transaction spans a native worker wait.
+
+Outer custody closes native before transferring this keeper to the actual Control
+driver. The local driver destroys its transport before its receiver or keeper,
+including abort, and is joined by the existing supervisor. Early connection
+completion still waits for owner teardown. Admission includes the retained Check
+overlapping transient replay, all inputs, pending/cut allocations and worker lanes;
+the ordinary resource minimum and existing operation deadlines are unchanged.
 
 Successful delivery follows native close and the actual worker/driver joins and
 Control teardown; finite completion is not role readiness. This consumer creates

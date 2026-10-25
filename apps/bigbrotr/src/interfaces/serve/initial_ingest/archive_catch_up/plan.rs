@@ -35,8 +35,10 @@ pub(super) async fn build(
     proof: &VerifiedSuccessorHistory<'_>,
     coordinator: &LocalCoordinator,
     inventory: &Inventory,
+    frontier: &RetainedArchiveFrontier,
     reader: &native::Reader,
 ) -> Result<Plan> {
+    let current = frontier.bound_current_inputs().map_err(error)?;
     let permit = grant(budget, MIB, 0)?;
     let lineage = proof.history().lineage();
     let target = lineage
@@ -118,10 +120,7 @@ pub(super) async fn build(
             else {
                 continue;
             };
-            if !inventory
-                .current
-                .admits_new_attempts(missing.len() as u64 + 1)
-            {
+            if !current.admits_new_attempts(missing.len() as u64 + 1) {
                 return Err(error("issued plus planned attempts exceed finite profile"));
             }
             let archive = ArchiveBatch::new(1, topology, std::slice::from_ref(pending.batch()))
@@ -134,7 +133,7 @@ pub(super) async fn build(
                 coordinator.identity().catalog(),
                 owner.identity().process_incarnation,
                 fresh()?,
-                inventory.current.issued_attempts() + missing.len() as u64,
+                current.issued_attempts() + missing.len() as u64,
                 &archive,
             )
             .map_err(error)?;
@@ -175,7 +174,7 @@ pub(super) async fn build(
     native::validate_cut(reader, coordinator.identity(), &complete, limits)?;
     // Validate every required zero-extension shape before any writer is issued.
     // Only one intermediate serialization/vector exists at a time.
-    if let Some(current) = inventory.current.current_cut() {
+    if let Some(current) = current.current_cut() {
         for entry in lineage
             .entries()
             .iter()

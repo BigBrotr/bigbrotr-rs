@@ -4,14 +4,14 @@
 use super::{
     ArchiveFrontierReceipt, ControlSession, InitialHistoryRequest, OwnerError,
     ProducerResolveError, SuccessorHistoryState, VerifiedSuccessorHistory, initial_history,
-    successor_history,
+    successor_history, successor_transition::SuccessorCompactionCheck,
 };
 use crate::{
     runtime::OwnedPermit,
     storage::{
         archive::{LocalCoordinator, RetainedInputs},
         postgres::archive_attempt::{ArchiveAttemptRequest, ArchiveAttemptScan},
-        rocks::store::{BootstrapError, IngestRecovery, PendingBatchHeader},
+        rocks::store::{AdmissionLimits, BootstrapError, IngestRecovery, PendingBatchHeader},
     },
 };
 use bigbrotr_model::{
@@ -85,6 +85,21 @@ struct Current {
     attempts: Vec<SelectedAttempt>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Phase {
+    Reserved,
+    Loaded,
+    Bound,
+}
+
+struct Observation {
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+    binding: Digest256,
+    issued: u64,
+    current: Option<Current>,
+}
+
 /// Bounded SQL observation anchored in a complete positive terminal history.
 /// Input handles still have to be bound; receipt/file presence remains separate.
 /// The caller keeps the actual native/coordinator and database driver custody.
@@ -95,6 +110,9 @@ pub struct RetainedArchiveFrontier {
     issued: u64,
     current: Option<Current>,
     permit: OwnedPermit,
+    phase: Phase,
+    compacted: Option<SuccessorCompactionCheck>,
+    bound: Option<BoundRetainedArchiveFrontier>,
 }
 
 /// Historical cut reconstructed from original retained headers. This owns its
@@ -103,7 +121,9 @@ pub struct BoundRetainedArchiveFrontier {
     receipt: Option<ArchiveFrontierReceipt>,
     read: Option<CutRead>,
     issued: u64,
-    _permit: OwnedPermit,
+    // In-place binding borrows the outer frontier owner which keeps its permit.
+    // The historical consuming conversion instead transfers that same permit.
+    _permit: Option<OwnedPermit>,
 }
 
 /// Actual retained coordinator and completed, current-Control inventory. Neither
@@ -116,16 +136,142 @@ impl RetainedArchiveFrontier {
     pub const fn required_data_bytes() -> u64 {
         METADATA_BYTES
     }
-    pub fn current_receipt(&self) -> Option<ArchiveFrontierReceipt> {
-        self.current.as_ref().map(|value| value.receipt)
+    /// Resource reservation only. Install this owner in native-first custody
+    /// before connecting; no query or observation has succeeded at this point.
+    pub fn reserve_compacted(
+        coordinator: &LocalCoordinator,
+        limits: AdmissionLimits,
+        effects: OwnedPermit,
+        metadata: OwnedPermit,
+    ) -> Result<Self, Error> {
+        require_capacity(0, &metadata)?;
+        let check = SuccessorCompactionCheck::new(limits, effects)?;
+        Ok(Self {
+            dataset: coordinator.identity().dataset(),
+            catalog: coordinator.identity().catalog(),
+            binding: coordinator.binding_digest(),
+            issued: 0,
+            current: None,
+            permit: metadata,
+            phase: Phase::Reserved,
+            compacted: Some(check),
+            bound: None,
+        })
     }
-    pub fn issued_attempts(&self) -> u64 {
-        self.issued
+
+    fn observed(observation: Observation, permit: OwnedPermit) -> Self {
+        Self {
+            dataset: observation.dataset,
+            catalog: observation.catalog,
+            binding: observation.binding,
+            issued: observation.issued,
+            current: observation.current,
+            permit,
+            phase: Phase::Loaded,
+            compacted: None,
+            bound: None,
+        }
     }
-    pub fn selected_attempt_ids(&self) -> impl Iterator<Item = [u8; 16]> + '_ {
-        self.current
+
+    fn require_phase(&self, phase: Phase) -> Result<(), Error> {
+        if self.phase == phase {
+            Ok(())
+        } else {
+            Err(Error::InvalidInput)
+        }
+    }
+
+    pub fn current_receipt(&self) -> Result<Option<ArchiveFrontierReceipt>, Error> {
+        self.require_phase(Phase::Loaded)?;
+        Ok(self.current.as_ref().map(|value| value.receipt))
+    }
+    pub fn issued_attempts(&self) -> Result<u64, Error> {
+        self.require_phase(Phase::Loaded)?;
+        Ok(self.issued)
+    }
+    pub fn selected_attempt_ids(&self) -> Result<impl Iterator<Item = [u8; 16]> + '_, Error> {
+        self.require_phase(Phase::Loaded)?;
+        Ok(self
+            .current
             .iter()
-            .flat_map(|value| value.attempts.iter().map(|attempt| attempt.id))
+            .flat_map(|value| value.attempts.iter().map(|attempt| attempt.id)))
+    }
+
+    /// Binding does not consume this resource keeper, even on allocation or
+    /// input failure. Only a fully validated result advances the private phase.
+    pub fn bind_current_inputs_in_place(
+        &mut self,
+        inputs: &[&RetainedInputs],
+    ) -> Result<(), Error> {
+        self.require_phase(Phase::Loaded)?;
+        let read = self.bind(inputs.iter().map(|input| Input {
+            request: input.request(),
+            headers: input.headers(),
+            expectation: input.expectation(),
+            binding: input.coordinator_binding(),
+        }))?;
+        let bound = BoundRetainedArchiveFrontier {
+            receipt: self.current_receipt()?,
+            read,
+            issued: self.issued,
+            _permit: None,
+        };
+        // No fallible operation follows. Current projection is no longer needed;
+        // the same outer permit covers the bound cut for its entire lifetime.
+        self.current = None;
+        self.bound = Some(bound);
+        self.phase = Phase::Bound;
+        Ok(())
+    }
+
+    pub fn bound_current_inputs(&self) -> Result<&BoundRetainedArchiveFrontier, Error> {
+        self.require_phase(Phase::Bound)?;
+        self.bound.as_ref().ok_or(Error::InvalidInput)
+    }
+
+    pub fn has_compacted_history(&self) -> bool {
+        self.compacted.is_some()
+    }
+
+    pub(super) fn compacted_check(&self) -> Result<&SuccessorCompactionCheck, Error> {
+        self.require_phase(Phase::Bound)?;
+        self.compacted.as_ref().ok_or(Error::InvalidInput)
+    }
+
+    pub(super) fn require_compacted_context(
+        &self,
+        proof: &VerifiedSuccessorHistory<'_>,
+        recovery: &IngestRecovery,
+        catalog: OwnerResourceId,
+        binding: Digest256,
+    ) -> Result<&SuccessorCompactionCheck, Error> {
+        require_terminal_basis(proof, true)?;
+        self.require_binding(recovery.manifest().identity().dataset_id, catalog, binding)?;
+        self.compacted_check()
+    }
+
+    fn require_binding(
+        &self,
+        dataset: DatasetId,
+        catalog: OwnerResourceId,
+        binding: Digest256,
+    ) -> Result<(), Error> {
+        if self.dataset != dataset || self.catalog != catalog || self.binding != binding {
+            Err(Error::InvalidInput)
+        } else {
+            Ok(())
+        }
+    }
+
+    pub(super) fn validate_compacted(
+        &self,
+        proof: &VerifiedSuccessorHistory<'_>,
+        recovery: &IngestRecovery,
+        cancelled: &std::sync::atomic::AtomicBool,
+    ) -> Result<(), Error> {
+        self.compacted_check()?
+            .validate_history(recovery, proof.history(), cancelled)?;
+        proof.validate(cancelled).map_err(Error::Native)
     }
     /// References may include the complete retained inventory, including failed
     /// attempts. No nonclone custody/permit owner is copied or consumed here.
@@ -135,6 +281,11 @@ impl RetainedArchiveFrontier {
         self,
         inputs: &[&RetainedInputs],
     ) -> Result<BoundRetainedArchiveFrontier, Error> {
+        self.require_phase(Phase::Loaded)?;
+        // Compacted custody must remain in its outer owner on every Err path.
+        if self.compacted.is_some() {
+            return Err(Error::InvalidInput);
+        }
         if inputs.len() > MAX_ATTEMPTS as usize {
             return Err(Error::ResourceLimit);
         }
@@ -145,10 +296,10 @@ impl RetainedArchiveFrontier {
             binding: input.coordinator_binding(),
         }))?;
         Ok(BoundRetainedArchiveFrontier {
-            receipt: self.current_receipt(),
+            receipt: self.current_receipt()?,
             read,
             issued: self.issued,
-            _permit: self.permit,
+            _permit: Some(self.permit),
         })
     }
 
@@ -156,6 +307,7 @@ impl RetainedArchiveFrontier {
         &self,
         inputs: impl Iterator<Item = Input<'a>> + Clone,
     ) -> Result<Option<CutRead>, Error> {
+        self.require_phase(Phase::Loaded)?;
         let count = inputs.clone().take(MAX_ATTEMPTS as usize + 1).count();
         if count > MAX_ATTEMPTS as usize {
             return Err(Error::ResourceLimit);
@@ -338,6 +490,114 @@ fn require_headers(input: &Input<'_>) -> Result<(), Error> {
 }
 
 impl ControlSession {
+    /// Load into an already retained resource owner. Cancellation or any loader
+    /// error cannot consume its canonical Check or turn Reserved into absence.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "existing history, custody, authority and bounded metadata"
+    )]
+    pub async fn inspect_compacted_retained_archive_frontier(
+        &mut self,
+        frontier: &mut RetainedArchiveFrontier,
+        proof: &VerifiedSuccessorHistory<'_>,
+        recovery: &IngestRecovery,
+        retained: RetainedArchiveRequest<'_>,
+        input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(), Error> {
+        frontier.require_phase(Phase::Reserved)?;
+        let check = frontier.compacted.as_ref().ok_or(Error::InvalidInput)?;
+        require_terminal_basis(proof, true)?;
+        let coordinator = retained.coordinator;
+        let scan = retained.attempts;
+        if coordinator.identity().dataset() != self.request.dataset
+            || coordinator.identity().catalog() == self.identity.resource_id
+            || frontier.dataset != coordinator.identity().dataset()
+            || frontier.catalog != coordinator.identity().catalog()
+            || frontier.binding != coordinator.binding_digest()
+            || !scan.belongs_to(self.request.dataset, self.identity)
+            || !scan.is_complete()
+        {
+            return Err(Error::InvalidInput);
+        }
+        require_capacity(scan.high_water(), &frontier.permit)?;
+        proof.validate(input.cancelled).map_err(Error::Native)?;
+        check.validate_history(recovery, proof.history(), input.cancelled)?;
+        let current = self.identity;
+        let (tx, mut lease, policy) = self
+            .begin_checked_successor_history(proof.history(), recovery, &input, validate)
+            .await?;
+        check
+            .require_history(
+                &tx,
+                recovery,
+                proof.history(),
+                &mut lease,
+                policy,
+                input.cancelled,
+            )
+            .await?;
+        let observation = load(&tx, proof, coordinator, scan.high_water()).await?;
+        proof.validate(input.cancelled).map_err(Error::Native)?;
+        check.validate_history(recovery, proof.history(), input.cancelled)?;
+        successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
+        proof.validate(input.cancelled).map_err(Error::Native)?;
+        check.validate_history(recovery, proof.history(), input.cancelled)?;
+        initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+        if self.client.is_closed() {
+            return Err(Error::Unavailable);
+        }
+        // All fallible work finished. The original keeper and allocation stay.
+        frontier.issued = observation.issued;
+        frontier.current = observation.current;
+        frontier.phase = Phase::Loaded;
+        self.available = true;
+        Ok(())
+    }
+
+    /// Short same-transaction SQL H/D check at a downstream proof-use boundary.
+    /// No transaction is carried across a native worker or catalog await.
+    pub async fn recheck_compacted_archive_history(
+        &mut self,
+        frontier: &RetainedArchiveFrontier,
+        proof: &VerifiedSuccessorHistory<'_>,
+        recovery: &IngestRecovery,
+        input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(), Error> {
+        let check = frontier.compacted_check()?;
+        require_terminal_basis(proof, true)?;
+        if frontier.dataset != self.request.dataset
+            || frontier.dataset != recovery.manifest().identity().dataset_id
+        {
+            return Err(Error::InvalidInput);
+        }
+        let current = self.identity;
+        let (tx, mut lease, policy) = self
+            .begin_checked_successor_history(proof.history(), recovery, &input, validate)
+            .await?;
+        check
+            .require_history(
+                &tx,
+                recovery,
+                proof.history(),
+                &mut lease,
+                policy,
+                input.cancelled,
+            )
+            .await?;
+        proof.validate(input.cancelled).map_err(Error::Native)?;
+        successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
+        check.validate_history(recovery, proof.history(), input.cancelled)?;
+        proof.validate(input.cancelled).map_err(Error::Native)?;
+        initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+        if self.client.is_closed() {
+            return Err(Error::Unavailable);
+        }
+        self.available = true;
+        Ok(())
+    }
+
     /// Inspect only: no new attempt, native operation, catalog seal or frontier.
     /// A completed ordinary inventory cursor is required, not a caller counter.
     /// Every returned collection and all temporary decoding own this permit.
@@ -382,7 +642,7 @@ impl ControlSession {
         let (tx, mut lease, policy) = self
             .begin_checked_successor_history(proof.history(), recovery, &input, validate)
             .await?;
-        let result = load(&tx, proof, coordinator, scan.high_water(), permit).await?;
+        let observation = load(&tx, proof, coordinator, scan.high_water()).await?;
         proof.validate(input.cancelled).map_err(Error::Native)?;
         proof
             .history()
@@ -403,8 +663,23 @@ impl ControlSession {
             return Err(Error::Unavailable);
         }
         self.available = true;
-        Ok(result)
+        Ok(RetainedArchiveFrontier::observed(observation, permit))
     }
+}
+
+pub(super) fn require_terminal_basis(
+    proof: &VerifiedSuccessorHistory<'_>,
+    compacted: bool,
+) -> Result<(), Error> {
+    let history = proof.history();
+    require_terminal_in(
+        history.state(),
+        history.native_epoch(),
+        history.registered_epoch(),
+        proof.verified_through(),
+        proof.compacted_initial_requests(),
+        compacted,
+    )
 }
 
 fn require_terminal(
@@ -414,9 +689,19 @@ fn require_terminal(
     through: u64,
     compacted_initial: u64,
 ) -> Result<(), Error> {
-    // Archive input replay and frontier observation retain their original-only
-    // prerequisite until their compacted-history boundary is explicitly wired.
-    if compacted_initial != 0
+    require_terminal_in(state, native, registered, through, compacted_initial, false)
+}
+
+fn require_terminal_in(
+    state: SuccessorHistoryState,
+    native: u64,
+    registered: u64,
+    through: u64,
+    compacted_initial: u64,
+    compacted: bool,
+) -> Result<(), Error> {
+    if (compacted_initial != 0) != compacted
+        || compacted && (!(1..=64).contains(&compacted_initial) || native < 3)
         || state != SuccessorHistoryState::Terminal
         || native != registered
         || native != through
@@ -444,8 +729,7 @@ async fn load(
     proof: &VerifiedSuccessorHistory<'_>,
     coordinator: &LocalCoordinator,
     issued: u64,
-    permit: OwnedPermit,
-) -> Result<RetainedArchiveFrontier, Error> {
+) -> Result<Observation, Error> {
     let dataset = coordinator.identity().dataset();
     let catalog = coordinator.identity().catalog();
     let binding = coordinator.binding_digest();
@@ -470,13 +754,12 @@ async fn load(
             .try_get(0)
             .map_err(backend)?;
         require_absent(contradictory)?;
-        return Ok(RetainedArchiveFrontier {
+        return Ok(Observation {
             dataset,
             catalog,
             binding,
             issued,
             current: None,
-            permit,
         });
     };
     if row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true) {
@@ -636,7 +919,7 @@ async fn load(
         }
         attempts.push(attempt);
     }
-    Ok(RetainedArchiveFrontier {
+    Ok(Observation {
         dataset,
         catalog,
         binding,
@@ -647,7 +930,6 @@ async fn load(
             bounds,
             attempts,
         }),
-        permit,
     })
 }
 

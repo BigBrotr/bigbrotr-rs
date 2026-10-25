@@ -130,6 +130,9 @@ impl Fixture {
                 }],
             }),
             permit: permit(&budget(), METADATA_BYTES, 1),
+            phase: Phase::Loaded,
+            compacted: None,
+            bound: None,
         };
         Self {
             request,
@@ -173,7 +176,7 @@ fn old_topology_and_sparse_attempts_retain_exact_snapshot_and_complete_headers()
     assert_eq!(read.topology_generation.get(), 1);
     assert_eq!(read.snapshot_id, Some(9));
     assert_eq!(
-        f.owner.selected_attempt_ids().collect::<Vec<_>>(),
+        f.owner.selected_attempt_ids().unwrap().collect::<Vec<_>>(),
         vec![[6; 16]]
     );
     // Header grouping remains independently meaningful even when the semantic
@@ -212,7 +215,7 @@ fn missing_duplicate_foreign_or_different_selected_input_cannot_match() {
 #[test]
 fn exact_request_snapshot_attestation_and_family_counts_are_bound() {
     let mut f = Fixture::new(false);
-    let receipt = f.owner.current_receipt().unwrap();
+    let receipt = f.owner.current_receipt().unwrap().unwrap();
     f.owner.current.as_mut().unwrap().receipt.snapshot_id += 1;
     assert_eq!(f.read(), Err(Error::InvalidMetadata));
     f.owner.current.as_mut().unwrap().receipt = receipt;
@@ -312,8 +315,11 @@ fn metadata_ownership_and_whole_job_limit_include_failed_attempts() {
         issued: 128,
         current: None,
         permit: permit(&budget, METADATA_BYTES, 1),
+        phase: Phase::Loaded,
+        compacted: None,
+        bound: None,
     };
-    assert!(absent.current_receipt().is_none());
+    assert!(absent.current_receipt().unwrap().is_none());
     let bound = absent.bind_current_inputs(&[]).unwrap();
     assert!(bound.current_cut().is_none());
     assert_eq!(bound.issued_attempts(), 128);
@@ -324,4 +330,151 @@ fn metadata_ownership_and_whole_job_limit_include_failed_attempts() {
     assert_eq!(budget.snapshot().used().data_bytes(), METADATA_BYTES);
     drop(bound);
     assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[test]
+fn compacted_frontier_reservation_and_bind_errors_preserve_outer_check_and_state() {
+    // Pure owner lifecycle control: no SQL observation is fabricated by a loader.
+    let limits = AdmissionLimits::default();
+    let bytes = crate::storage::rocks::store::compacted_outcome_data_bytes(limits).unwrap();
+    let effects = ResourceBudget::new(
+        ProcessEnvelope::new(
+            bytes,
+            0,
+            ResourceLimits::new(bytes, 1, 0, 0),
+            WaiterLimits::new(1, 1),
+        )
+        .unwrap(),
+    );
+    let mut f = Fixture::new(false);
+    f.owner.compacted =
+        Some(SuccessorCompactionCheck::new(limits, permit(&effects, bytes, 1)).unwrap());
+    let check = std::ptr::from_ref(f.owner.compacted.as_ref().unwrap());
+    let retained = f.owner.current_receipt().unwrap();
+    f.owner.phase = Phase::Reserved;
+    assert_eq!(f.owner.current_receipt(), Err(Error::InvalidInput));
+    assert_eq!(f.owner.issued_attempts(), Err(Error::InvalidInput));
+    assert!(f.owner.selected_attempt_ids().is_err());
+    assert!(f.owner.bound_current_inputs().is_err());
+    assert_eq!(
+        f.owner.bind_current_inputs_in_place(&[]),
+        Err(Error::InvalidInput)
+    );
+    assert_eq!(f.owner.phase, Phase::Reserved);
+    assert_eq!(effects.snapshot().used().data_bytes(), bytes);
+    assert_eq!(effects.snapshot().active_permits(), 1);
+
+    f.owner.phase = Phase::Loaded;
+    assert_eq!(
+        f.owner.bind_current_inputs_in_place(&[]),
+        Err(Error::InvalidMetadata)
+    );
+    assert_eq!(f.owner.phase, Phase::Loaded);
+    assert_eq!(f.owner.current_receipt().unwrap(), retained);
+    assert_eq!(
+        std::ptr::from_ref(f.owner.compacted.as_ref().unwrap()),
+        check
+    );
+    assert_eq!(effects.snapshot().used().data_bytes(), bytes);
+    assert_eq!(effects.snapshot().active_permits(), 1);
+
+    // An independently represented genuinely absent observation may bind empty;
+    // Reserved above could not. Binding still does not transfer/drop Check.
+    f.owner.current = None;
+    f.owner.issued = 0;
+    f.owner.bind_current_inputs_in_place(&[]).unwrap();
+    assert_eq!(f.owner.phase, Phase::Bound);
+    assert!(f.owner.current_receipt().is_err());
+    assert!(
+        f.owner
+            .bound_current_inputs()
+            .unwrap()
+            .current_receipt()
+            .is_none()
+    );
+    assert_eq!(
+        std::ptr::from_ref(f.owner.compacted.as_ref().unwrap()),
+        check
+    );
+    assert_eq!(effects.snapshot().active_permits(), 1);
+    assert!(f.owner.bind_current_inputs_in_place(&[]).is_err());
+    drop(f);
+    assert_eq!(effects.snapshot().active_permits(), 0);
+}
+
+#[test]
+fn compacted_frontier_requires_exact_dataset_catalog_binding_and_terminal_basis() {
+    let f = Fixture::new(false);
+    assert_eq!(
+        f.owner
+            .require_binding(f.owner.dataset, f.owner.catalog, f.owner.binding),
+        Ok(())
+    );
+    assert_eq!(
+        f.owner.require_binding(
+            [11; 16].try_into().unwrap(),
+            f.owner.catalog,
+            f.owner.binding
+        ),
+        Err(Error::InvalidInput)
+    );
+    assert_eq!(
+        f.owner.require_binding(
+            f.owner.dataset,
+            [11; 16].try_into().unwrap(),
+            f.owner.binding
+        ),
+        Err(Error::InvalidInput)
+    );
+    assert_eq!(
+        f.owner.require_binding(
+            f.owner.dataset,
+            f.owner.catalog,
+            Digest256::from_bytes([11; 32])
+        ),
+        Err(Error::InvalidInput)
+    );
+    for count in [1, 7, 64] {
+        for epoch in [3, 255] {
+            assert_eq!(
+                require_terminal_in(
+                    SuccessorHistoryState::Terminal,
+                    epoch,
+                    epoch,
+                    epoch,
+                    count,
+                    true
+                ),
+                Ok(())
+            );
+            assert_eq!(
+                require_terminal_in(
+                    SuccessorHistoryState::Terminal,
+                    epoch,
+                    epoch,
+                    epoch,
+                    count,
+                    false
+                ),
+                Err(Error::InvalidInput)
+            );
+        }
+    }
+    for (state, native, registered, through, count) in [
+        (SuccessorHistoryState::Terminal, 2, 2, 2, 7),
+        (SuccessorHistoryState::Terminal, 3, 3, 3, 0),
+        (SuccessorHistoryState::Terminal, 3, 3, 3, 65),
+        (SuccessorHistoryState::Terminal, 3, 4, 3, 7),
+        (SuccessorHistoryState::Terminal, 3, 3, 2, 7),
+        (SuccessorHistoryState::PreparedClosing, 3, 3, 3, 7),
+    ] {
+        assert_eq!(
+            require_terminal_in(state, native, registered, through, count, true),
+            Err(Error::InvalidInput)
+        );
+    }
+    assert!(
+        f.owner.compacted_check().is_err(),
+        "ordinary observation is no compacted authority"
+    );
 }

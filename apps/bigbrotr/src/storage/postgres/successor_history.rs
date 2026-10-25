@@ -735,6 +735,15 @@ pub(super) async fn finish_read(
     cancelled: &AtomicBool,
     current: ingest_registry::ControlOwner,
 ) -> Result<(), ProducerResolveError> {
+    require_current(&tx, current).await?;
+    initial_history::finish(tx, lease, policy, cancelled).await
+}
+
+/// Final UTC/fence observation shared by short read and Archive effect transactions.
+pub(super) async fn require_current(
+    tx: &Transaction<'_>,
+    current: ingest_registry::ControlOwner,
+) -> Result<(), ProducerResolveError> {
     // The flat checker samples UTC after registry/workflow lock waits. Sample
     // again after replay/copy queries, before releasing the actual authority.
     let row = tx.query_one("SELECT control.require_control_owner(dataset_id,resource_id,epoch,process_incarnation),
@@ -748,7 +757,7 @@ pub(super) async fn finish_read(
         return Err(OwnerError::Unavailable.into());
     }
     drop(row);
-    initial_history::finish(tx, lease, policy, cancelled).await
+    Ok(())
 }
 
 fn pending_target(native: u64, registered: u64) -> Result<Option<u64>, OwnerError> {

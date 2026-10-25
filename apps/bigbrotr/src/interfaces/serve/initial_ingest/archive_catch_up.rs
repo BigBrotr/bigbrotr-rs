@@ -4,8 +4,8 @@ use super::*;
 use bigbrotr::storage::{
     archive::LocalCoordinator,
     postgres::control_owner::{
-        InitialHistoryRequest, PolicySnapshot, SuccessorHistory, SuccessorHistoryState,
-        SuccessorReplayRequest, VerifiedSuccessorHistory,
+        InitialHistoryRequest, PolicySnapshot, RetainedArchiveFrontier, SuccessorHistory,
+        SuccessorHistoryState, SuccessorReplayRequest, VerifiedSuccessorHistory,
     },
     rocks::{store::IngestRecovery, succession::MAX_LINEAGE_METADATA_BYTES},
 };
@@ -16,6 +16,7 @@ mod capture;
 mod inventory;
 mod plan;
 mod publication;
+mod retained_driver;
 use authority::Authority;
 
 const MAX_ATTEMPTS: usize = 128;
@@ -30,6 +31,18 @@ struct Custody {
     coordinator: Option<LocalCoordinator>,
     owner: Option<ControlSession>,
     client: Option<tokio_postgres::Client>,
+    frontier: Option<RetainedArchiveFrontier>,
+    frontier_sender: Option<tokio::sync::oneshot::Sender<Option<RetainedArchiveFrontier>>>,
+}
+impl Drop for Custody {
+    fn drop(&mut self) {
+        drop(self.native.take());
+        if let Some(sender) = self.frontier_sender.take() {
+            // On send failure the named driver has already destroyed transport
+            // before its receiver. Native is closed before either drop path.
+            drop(sender.send(self.frontier.take()));
+        }
+    }
 }
 
 struct ClaimExit<'a>(Option<&'a mut Option<IngestRecovery>>);
@@ -132,16 +145,38 @@ async fn own(
             "requires retained schema2/epoch2 or schema3/epoch3..255",
         ));
     }
-    let mut custody = Custody {
-        native: Some(native),
-        ..Custody::default()
-    };
+    let mut custody = Custody::default();
+    custody.native = Some(native);
+    let compacted = custody
+        .native
+        .as_ref()
+        .expect("exclusive native")
+        .manifest()
+        .key_schema()
+        == 3
+        && custody
+            .native
+            .as_ref()
+            .expect("exclusive native")
+            .has_compacted_successor_ancestor(&cancellation.requested)
+            .map_err(error)?;
     phase(&progress, timeout)?;
     let identity = root.catalog_identity().map_err(error)?;
     custody.coordinator = Some(
         LocalCoordinator::open(&identity, &root.archive_state_path().map_err(error)?)
             .map_err(error)?,
     );
+    if compacted {
+        custody.frontier = Some(
+            RetainedArchiveFrontier::reserve_compacted(
+                custody.coordinator.as_ref().expect("opened coordinator"),
+                recovery::limits().event,
+                grant(&budget, compacted_bytes()?, 0)?,
+                grant(&budget, RetainedArchiveFrontier::required_data_bytes(), 0)?,
+            )
+            .map_err(error)?,
+        );
+    }
     let (prepared, control_grant) = postgres_command::prepare_control_shared(
         &root,
         required(&root, "postgres.control.user")?,
@@ -155,6 +190,11 @@ async fn own(
         recovery::limits().required_data_bytes().map_err(error)?,
         0,
     )?);
+    if compacted {
+        // The permanent Check remains retained while transient canonical replay
+        // is admitted. Ordinary resource minima retain the original path.
+        drop(grant(&budget, compacted_bytes()?, 0)?);
+    }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared).await.map_err(error)
@@ -169,7 +209,13 @@ async fn own(
             .retain_connection(connection)
             .map_err(error)?,
     );
-    let driver = tokio::spawn(connection);
+    let driver = if compacted {
+        let (sender, receiver) = tokio::sync::oneshot::channel();
+        custody.frontier_sender = Some(sender);
+        tokio::spawn(retained_driver::RetainedDriver::new(connection, receiver))
+    } else {
+        tokio::spawn(connection)
+    };
     if let Err((driver, grant)) = driver_custody.send((driver, control_grant)) {
         drop(custody);
         postgres_command::join(driver).await;
@@ -230,7 +276,24 @@ async fn own(
     authority
         .refresh(custody.owner.as_mut().expect("claimed Control"))
         .await?;
-    custody.history = Some(
+    custody.history = Some(if compacted {
+        authority
+            .operation(
+                custody
+                    .owner
+                    .as_mut()
+                    .expect("claimed Control")
+                    .inspect_compacted_successor_history(
+                        custody.native.as_ref().expect("exclusive native"),
+                        request(&runtime_root, &cancellation)?,
+                        recovery::limits().event,
+                        metadata,
+                        grant(&budget, compacted_bytes()?, 0)?,
+                        |d, h| validate(&runtime_root, d, h),
+                    ),
+            )
+            .await?
+    } else {
         authority
             .operation(
                 custody
@@ -244,8 +307,8 @@ async fn own(
                         |d, h| validate(&runtime_root, d, h),
                     ),
             )
-            .await?,
-    );
+            .await?
+    });
     let report = {
         let native = custody.native.as_ref().expect("exclusive native");
         let history = custody.history.as_ref().expect("retained history");
@@ -273,6 +336,7 @@ async fn own(
             native,
             &proof,
             custody.coordinator.as_ref().expect("retained coordinator"),
+            &mut custody.frontier,
         )
         .await?
     };
@@ -291,6 +355,11 @@ async fn own(
     .await?;
     // The parent joins Control's actual driver before reporting completion.
     Ok(report)
+}
+
+fn compacted_bytes() -> Result<u64> {
+    bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(recovery::limits().event)
+        .map_err(error)
 }
 
 fn request<'a>(root: &'a Resolved, cancel: &'a Cancellation) -> Result<InitialHistoryRequest<'a>> {
@@ -314,6 +383,18 @@ async fn replay<'a>(
     let mut resolution = history
         .resolution(native, &cancel.requested)
         .map_err(error)?;
+    if resolution.needs_compacted_initial() {
+        authority.refresh(owner).await?;
+        authority
+            .operation(owner.inspect_successor_compacted_initial(
+                &mut resolution,
+                request(root, cancel)?,
+                recovery::limits().event,
+                grant(budget, compacted_bytes()?, 0)?,
+                |d, h| validate(root, d, h),
+            ))
+            .await?;
+    }
     while resolution.current_epoch().is_some() {
         while resolution.next_request().is_some() {
             authority.refresh(owner).await?;

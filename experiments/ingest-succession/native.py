@@ -298,6 +298,7 @@ if installed or archive_installed:
 if archive_components:
     tests = [(name, ['--lib', selection]) for name, selection in [
         ('historical_pending', 'lineage_pending_tests'),
+        ('compacted_pending', 'compacted_archive_pending'),
         ('retained_frontier', 'archive_retained_frontier::tests'),
         ('archive_receipts', 'storage::archive::receipts::tests'),
         ('archive_membership', 'storage::archive::membership::tests'),
@@ -396,7 +397,7 @@ for name, selection in (tests + [('probe_build', None)] if build_probe else test
     if summaries:
         assert len(summaries) == 1
         counts[name] = int(summaries[0])
-        if producer_progress or producer_floor:
+        if producer_progress or producer_floor or archive_components or archive_installed:
             test_names[name] = re.findall(r'^test (\S+) \.\.\. ok$', content, re.MULTILINE)
     paths = set()
     kind = ['example'] if selection is None else [selection[0][2:]]
@@ -704,13 +705,40 @@ if producer_floor:
             'compacted_successor_recovery_stale_sequence_and_failed_final_close_poison_owner',
             'compacted_successor_recovery_tail_is_stamped_but_cannot_complete_or_acknowledge',
             'compacted_successor_recovery_equal_ack_rechecks_inputs_grant_and_final_authority'])
+# Archive uses its existing component and exact-worker build profiles. Keep
+# fixed required names in both retained receipts, not merely nonempty filters.
+archive_pending_controls = [
+    'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::' + name for name in [
+        'compacted_archive_pending_preserves_complete_original_bytes_with_optional_residuals',
+        'compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch',
+        'compacted_archive_pending_rechecks_required_inputs_native_stamp_and_grants']]
+archive_frontier_controls = [
+    'storage::postgres::control_owner::archive_retained_frontier::tests::' + name for name in [
+        'compacted_frontier_reservation_and_bind_errors_preserve_outer_check_and_state',
+        'compacted_frontier_requires_exact_dataset_catalog_binding_and_terminal_basis']]
+if producer_floor:
+    required_controls['initial_reconstruction'].extend(archive_pending_controls)
+    required_controls['archive_retained_frontier'].extend(archive_frontier_controls)
+if archive_components:
+    required_controls['compacted_pending'] = archive_pending_controls
+    required_controls['retained_frontier'] = archive_frontier_controls + [
+        'storage::postgres::control_owner::archive_retained_frontier::tests::' + name for name in [
+            'only_complete_terminal_history_is_a_loader_prerequisite',
+            'compacted_history_is_not_an_archive_frontier_prerequisite']]
+if archive_installed:
+    required_controls['serve_owner'] = [
+        'interfaces::serve::initial_ingest::archive_catch_up::retained_driver::tests::' + name for name in [
+            'retained_driver_destroys_transport_before_queued_or_received_keeper',
+            'retained_driver_waits_for_owner_after_early_connection_completion',
+            'retained_driver_sender_failure_and_closed_sender_do_not_skip_transport',
+            'retained_driver_abort_join_confirms_transport_before_keeper_release']]
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}
 receipt = dict(identity, status='FAIL' if missing_controls else result['status'], test_counts=counts,
                executables_sha256=executables,
                independent_fixture_sha256=file_hash(SOURCE / 'experiments/ingest-succession/portable-handoff-v2.json'))
-if producer_progress or producer_floor:
+if producer_progress or producer_floor or archive_components or archive_installed:
     receipt.update(test_names=test_names, required_controls=required_controls,
                    missing_controls=missing_controls)
 (artifacts / 'component-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
