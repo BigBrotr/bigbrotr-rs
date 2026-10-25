@@ -1324,14 +1324,20 @@ def later_input_observation(pg,database,actor=None,*,source_publication=False):
         observations=[dict(actor,present=False)],after_us=after_absence))
 
 
-def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False,later_input=False,baseline=None,later_source=False):
+def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False,later_input=False,baseline=None,later_source=False,later_source_faults=False):
     from fault_cases import Process,safe_event
     assert type(empty_proof) is bool and not (empty_proof and (empty_initial or post_proof))
     assert type(later_input) is bool and not (later_input and (post_proof or empty_proof or empty_initial))
-    assert type(later_source) is bool and not (later_source and (post_proof or empty_proof or empty_initial or later_input))
+    assert type(later_source_faults) is bool and not (later_source_faults and later_source)
+    assert type(later_source) is bool and not ((later_source or later_source_faults) and (post_proof or empty_proof or empty_initial or later_input))
     proof=post_proof or empty_proof or later_input
     assert type(empty_initial) is bool and not (empty_initial and post_proof)
-    if later_source:
+    if later_source_faults:
+        name,step=oracle.later_source_specification(case,faults=True);assert step=='loss'
+        assert baseline['product_source']==oracle.LATER_SOURCE_PRODUCT and baseline['publication_commit']==15
+        target,later=baseline['publication_commit'],0;operation='source';normal=False
+        mode='before-forward' if name=='publication-before' else 'after-complete'
+    elif later_source:
         assert oracle.later_source_specification(case)==('finite','source')
         target,later=oracle.LATER_SOURCE_PUBLICATION_CANDIDATE,3;operation='source';normal=True;mode='hold'
     elif later_input:
@@ -2497,7 +2503,7 @@ def run_later_recovery(root,build,product_source):
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_recovery=True,product_source=product_source)
 
 
-def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*,seeds,delivery=False):
+def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*,seeds,delivery=False,faults=False,baseline=None):
     name=clone['name'];seed=seeds[clone['origin']]
     oracle.same(expected[0],seed[0]);assert expected[1:]==seed[1:]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
@@ -2514,8 +2520,9 @@ def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*
         expected=history_quarantine(output,directory,expected,selection,'missing-required')
         after=schema.rows(pg,clone['database']);oracle.same(after,seed[0]);lab.write_json(output/(label+'-after.json'),after)
     predecessor=None
-    profile=oracle.LaterSourceDeliveryProfile if delivery else oracle.LaterSourceProfile
-    if delivery:
+    profile=oracle.LaterSourceFaultProfile if faults else oracle.LaterSourceDeliveryProfile if delivery else oracle.LaterSourceProfile
+    if faults:lab.write_json(output/'measured-source-baseline.json',baseline)
+    if delivery or faults:
         source=history.SOURCE/oracle.ACTIVATED_PROXY;path=output/source.name
         if not path.exists():shutil.copy2(source,path)
         assert history.digest(path)==history.digest(source)==oracle.LATER_PROXY_SHA256
@@ -2527,25 +2534,28 @@ def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*
             if step=='closed-positive':
                 context['source_diagnostic']=later_digest_log(pg,output,case,context['server_window'])
                 lab.write_json(output/(case['name']+'-verification.json'),context)
-            return oracle.verify_later_source(context,seed,expected,delivery=delivery)
+            return oracle.verify_later_source(context,seed,expected,delivery=delivery,faults=faults,baseline=baseline)
         expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],seed,
-            checks=(verify,lambda c,s:oracle.later_source_controls(c,seed,expected,delivery=delivery),oracle.later_source_closed),
-            fault=terminal_delivery_hook(pg,client,output,case,directory,expected=expected,later_source=True) if delivery else None)
+            checks=(verify,lambda c,s:oracle.later_source_controls(c,seed,expected,delivery=delivery,faults=faults,baseline=baseline),
+                lambda r,c:oracle.later_source_closed(r,c,faults=faults)),
+            fault=terminal_delivery_hook(pg,client,output,case,directory,expected=expected,later_source=delivery,
+                later_source_faults=faults,baseline=baseline) if delivery or (faults and step=='loss') else None)
         case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
         predecessor=case['name'];lab.write_json(output/'result.json',report)
     return predecessor
 
 
-def run_later_source(root,build,product_source,*,delivery=False):
+def run_later_source(root,build,product_source,*,delivery=False,faults=False):
     assert oracle.LATER_SOURCE_PRODUCT is not None and product_source==oracle.LATER_SOURCE_PRODUCT
-    assert type(delivery) is bool
-    seeds=oracle.later_recovery_origins_checked(root);profile=oracle.LaterSourceDeliveryProfile if delivery else oracle.LaterSourceProfile
+    assert type(delivery) is bool and type(faults) is bool and not (delivery and faults)
+    baseline=oracle.later_source_baseline_checked(root) if faults else None
+    seeds=oracle.later_recovery_origins_checked(root);profile=oracle.LaterSourceFaultProfile if faults else oracle.LaterSourceDeliveryProfile if delivery else oracle.LaterSourceProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
         client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
-        scope='Measured held-success later Source publication boundary at cut4/C1/A1; losses NOT_RUN' if delivery else 'Compacted later Source closure at cut4/C1 or quiet cut0, exact retries and three named installed refusals',not_run=profile.NOT_RUN)
-    return transition.run(root,build,suite=suite,sequence=partial(run_later_source_sequence,seeds=seeds,delivery=delivery),
-        origin_specs=oracle.LATER_SOURCE_ORIGINS[:1] if delivery else oracle.LATER_SOURCE_ORIGINS,
-        origin_for_clone={n:oracle.LATER_SOURCE_ORIGIN_NAMES[n] for n in profile.CLONES},extra_grants=profile.GRANTS,
+        scope='Measured Source publication loss before/after COMMIT, fresh completion or exact retry with C1/A1/cut4 preserved' if faults else 'Measured held-success later Source publication boundary at cut4/C1/A1; losses NOT_RUN' if delivery else 'Compacted later Source closure at cut4/C1 or quiet cut0, exact retries and three named installed refusals',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_source_sequence,seeds=seeds,delivery=delivery,faults=faults,baseline=baseline),
+        origin_specs=oracle.LATER_SOURCE_ORIGINS[:1] if delivery or faults else oracle.LATER_SOURCE_ORIGINS,
+        origin_for_clone={n:'live-absent' if faults else oracle.LATER_SOURCE_ORIGIN_NAMES[n] for n in profile.CLONES},extra_grants=profile.GRANTS,
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_source=True,product_source=product_source)
 
 
@@ -2556,6 +2566,7 @@ if __name__ == '__main__':
     profile=parser.add_mutually_exclusive_group()
     profile.add_argument('--later-recovery-faults',action='store_true',help='Measured dictionary outcome loss and fresh installed repair/ACK/retry')
     profile.add_argument('--later-recovery-delivery',action='store_true',help='Measure first dictionary outcome/progress COMMIT before any fault schedule')
+    profile.add_argument('--later-source-faults',action='store_true',help='Measured Source publication loss and fresh completion/exact retry')
     profile.add_argument('--later-source-delivery',action='store_true',help='Measure the exact later Source publication COMMIT with a joined held-success baseline')
     profile.add_argument('--later-source',action='store_true',help='Compacted later Source closure, exact retries and strict installed refusals')
     profile.add_argument('--later-recovery',action='store_true',help='Fresh compacted positive recovery, equal-watermark ACK, retries and required-input refusals')
@@ -2579,4 +2590,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
