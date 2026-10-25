@@ -6,11 +6,11 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main before this integration is `d672e0f01fb9b31b9229c3d1a37ec30420cdf1e2`, pushed
-(74896 joined0). Conflict-free merge of qualified fixture
-`d7c4ad2bf5d28708f70135214d2c049dd5395875` is being committed with four document
-owners. Product/native runner remain exact `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`.
-Observe actual resulting commit/push on resumption; never guess a future hash.
+Main `01557819292c67eff5b2613750c45705707cd472` is pushed (88562 joined0),
+including qualified fixture `d7c4ad2bf5d28708f70135214d2c049dd5395875`.
+Product/native runner remain exact `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`.
+Integration checks1e19cb3e verified unchanged product and exact fixture identities;
+no merge/rebase pending. This follow-up records push and preserved ref retirement.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
@@ -52,8 +52,9 @@ rows, not processes. Both origins pass all five preservation predicates; isolati
 arrays empty. Freeafter185,373,667,328bytes. Preserve every database, dataset,
 .research/worktree, log, original failure and quarantined input.
 
-- `.research/compacted-later-retirement-guards-20261025`: clean frozen d7c4ad2,
-  branch `work/compacted-later-retirement-guards`; integrated-source candidate.
+- `.research/compacted-later-retirement-guards-20261025`: clean detached d7c4ad2;
+  merged local ref retired after push, remote absent. Archive ref and verified
+  18,913,947-byte0600 bundle retained; receipt4397dab5. No artifact deleted.
 - `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-guards-d7c4ad2`
   retains detached exact source, both databases/captures and verified-run.json.
   Missing2:1 remains298B in private quarantine; optional originals also retained.
@@ -69,8 +70,7 @@ arrays empty. Freeafter185,373,667,328bytes. Preserve every database, dataset,
 
 ## Next action
 
-Finish current fixture integration/push and reconcile its redundant ref without
-removing worktree/artifacts. Review the import capture audit and assign the minimal
-existing-runner extension in a new worktree. Reuse exact06 build. Read and reconcile
+Review the import capture audit and assign the minimal existing-runner extension
+in a new worktree. Reuse exact06 build. Read and reconcile
 Archive audit305ae9a5 with critical review before any product implementation;
 new real Archive initialization must not rebind historical physical roots.

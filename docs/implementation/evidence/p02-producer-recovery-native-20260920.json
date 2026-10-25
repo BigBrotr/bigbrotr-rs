@@ -46794,7 +46794,7 @@
                     "next_guard_work": {
                       "status": "PASS_EXACT06_INSTALLED_REFUSALS_AND_RAW",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-guards-20261025",
-                      "branch": "work/compacted-later-retirement-guards",
+                      "branch": null,
                       "base": "d1216bfd35b8f2080d645ee88d62930d52fde11f",
                       "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
                       "owners": "compacted_reader_fixture implementation; compacted_reader_review critical; root engine/integration",
@@ -46830,11 +46830,27 @@
                         "Archive, reclamation, mixed restore and capacity qualification"
                       ],
                       "integration": {
-                        "status": "QUALIFIED_MERGE_PREPARED",
+                        "status": "MERGED_PUSHED_REDUNDANT_REF_RETIRED",
                         "main_before": "d672e0f01fb9b31b9229c3d1a37ec30420cdf1e2",
                         "merge_source": "d7c4ad2bf5d28708f70135214d2c049dd5395875",
-                        "scope": "Conflict-free exact three-file fixture merge; product06 unchanged. Commit/push outcome follows."
-                      }
+                        "scope": "Exact three-file qualified fixture merged conflict-free; product06 unchanged. Local merged ref retired after push; archive ref, verified bundle and clean detached worktree preserved.",
+                        "main": "01557819292c67eff5b2613750c45705707cd472",
+                        "push": {
+                          "session": 88562,
+                          "joined": true,
+                          "exit": 0
+                        },
+                        "checks": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-guards-integration-checks-v1.json",
+                          "sha256": "1e19cb3e95a75baa84292ce46d7d45c9c6d4dd99e12200deb76cd5fe7f1eb079"
+                        },
+                        "ref_retirement": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-guards-ref-retirement-20261025.json",
+                          "sha256": "4397dab5681ed1ab6e040624b4d0d9bdba5ae4be5efca5f62da798978a588d04"
+                        }
+                      },
+                      "archive_ref": "refs/archive/20261025/compacted-later-retirement-guards",
+                      "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
                       "status": "READ_ONLY_PREREQUISITE_AUDIT_COMPLETE; DESIGN_REVIEW_PENDING; IMPLEMENTATION_NOT_STARTED",

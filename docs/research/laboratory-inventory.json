@@ -64785,9 +64785,9 @@
           "main": "00d13147094d9a0484cab700fe28fb6b55c707b6"
         },
         "later_retirement_guard_work": {
-          "status": "FROZEN_REVIEWED_INSTALLED_AND_RAW_PASS; INTEGRATION_PREPARED",
+          "status": "QUALIFIED_INTEGRATED_PUSHED_CLEAN_DETACHED_PRESERVED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-guards-20261025",
-          "branch": "work/compacted-later-retirement-guards",
+          "branch": null,
           "base": "d1216bfd35b8f2080d645ee88d62930d52fde11f",
           "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
           "owners": "compacted_reader_fixture implementation; compacted_reader_review critical; root engine/integration",
@@ -64840,7 +64840,13 @@
           ],
           "processes": "Runtime97412/raw20474 joined0; clientc9222a0a exited143 and PG71775507 exited0/PID0/noOOM with expected labels. All four custodys closed/joined/backend absent; failed SQL Control12/14 remain active rows, not active processes.",
           "preservation": "Both origin SQL/catalog/native/input/physical maps unchanged, isolation arrays empty. Required2:1 original298B remains in missing-required/quarantined-missing-required, plus seven optional originals in claims quarantine. Preserve databases, worktrees, logs, diagnostics and failures.",
-          "free_bytes_after": 185373667328
+          "free_bytes_after": 185373667328,
+          "archive_ref": "refs/archive/20261025/compacted-later-retirement-guards",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-guards-ref-retirement-20261025.json",
+            "sha256": "4397dab5681ed1ab6e040624b4d0d9bdba5ae4be5efca5f62da798978a588d04"
+          },
+          "main": "01557819292c67eff5b2613750c45705707cd472"
         }
       }
     }
