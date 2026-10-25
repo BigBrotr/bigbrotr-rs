@@ -6,11 +6,10 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites and later compacted
-consumers. This merge integrates qualified Source delivery baseline `b2c9b723`
-into main `cb9a2bb2` (last pushed, driver24904 joined0). The containing commit owns
-its exact revision. Product files remain exact5ed; no new build. Previous689e94fb
-integrates Source5ed/b370 and outcome loss c814. All original qualifications keep
-their exact identities; integration review/compatibility limits are linked below.
+consumers. Main `b660a179231e14ad766b578f4327e533c069509d` is pushed (42398 joined0),
+including Source delivery baselineb2c9; product remains exact5ed. This documentation
+checkpoint records the separate reviewed85a abandonment build. Main has no pending
+merge/rebase. Source85 is not integrated or installed-qualified.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 exact identities/results under `initial_successor_preparation_20261012.
@@ -44,9 +43,13 @@ owns retained resources. Reuse unchanged evidence.
 
 ## Work and resources
 
-All actual build/runtime/raw drivers joined, including latest54272/60135 exit0.
+Prior actual build/runtime/raw drivers joined, including latest54272/60135 exit0.
+New exact85a build42575 is RUNNING; no final exit observed. Its retainedrun
+`/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-85a4308/resources.json`
+owns fetchb91f253343aa and nativea9ce09ec196c under the exclusive existing cache.
 Last inspected Sourceclient3d885c5bd57b exited143; borrowedPG71775507 exited0;
-both PID0/noOOM. No root engine active. Faultclient148fe012 also stopped.
+both PID0/noOOM. No PG/installed runtime active; only the new build is active.
+Faultclient148fe012 also stopped.
 
 Source5ed, fixtureb370 and faultc814 worktrees remain clean/detached at their exact
 revisions. Their three redundant local refs are retired; archive refs and a verified
@@ -57,18 +60,19 @@ Old837/d8 refs were already retired and their worktrees preserved.
 `compacted_reader_fixture` continues authentic Source publication loss and fresh
 completion/retry source in `.research/compacted-later-source-delivery-fixture-20261025`,
 branch `work/compacted-later-source-delivery-fixture`, frozen baselineb2c9.
-`empty_malformed_floor` implements explicit compacted abandonment in
+`empty_malformed_floor` froze explicit compacted abandonment85a in
 `.research/compacted-later-abandonment-20261025`, branch
-`work/compacted-later-abandonment`, basecb9a2bb2; source is partial/unbuilt.
+`work/compacted-later-abandonment`, basecb9a2bb2; eight files reviewed/formatted,
+build42575 pending. Author now audits genuine compacted claim setup read-only.
 `compacted_reader_review` handles critical reviews; root retains formatting/build/
-engine ownership. No root engine active. Current author work is source only.
+engine ownership. Build42575 is the only root execution; agents have no engines.
 
 ## Next action
 
 Review/execute two authentic Source publication loss clones (before-forward and
 after-complete) and fresh Source completion/exactretry using the measured baseline
-and existing proxy/custody/oracle. In parallel finish the bounded abandonment
-product review, then root format/freeze/build. Nonzero abandonment requires a real
+and existing proxy/custody/oracle. Join exact abandonment85a build42575 and verify actual tests/artifacts/custody;
+229/120/13 remain predictions until then. Nonzero abandonment requires a real
 claim under the still-live activating Control; never retrofit attribution on a
 closed origin. Canonical H/D exclusion relies on existing same-transaction locks
 and immutable guards, separately from native validation and final typed ACK.

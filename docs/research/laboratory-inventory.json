@@ -64586,7 +64586,7 @@
           "processes": "Root54272/60135 joined0; client3d885c5bd57b exited143 and PG71775507 exited0/PID0/noOOM. No active root engine; author source only."
         },
         "later_abandonment_work": {
-          "status": "SOURCE_IN_PROGRESS; BUILD_AND_RUNTIME_NOT_RUN",
+          "status": "FROZEN_REVIEWED_FORMATTED; BUILD_IN_PROGRESS_RUNTIME_NOT_RUN",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-abandonment-20261025",
           "branch": "work/compacted-later-abandonment",
           "base": "cb9a2bb2118b0983bd040bfd8c587e71a8f869ed",
@@ -64596,7 +64596,32 @@
           },
           "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
           "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
-          "next": "Review bounded product/source and component declarations, root format/freeze/build. Genuine claimed-job origin requires actual compacted activating Control plus authenticated claim before release; current finite/quiet endpoints only prove jobs0. Full existing acceptance including waits/H-D/loss stays required."
+          "next": "Join actual build and verify its result/ELFs/custody. Author read-only genuine compacted claim-origin audit while85 remains frozen; installed zero-job/nonzero qualification not started.",
+          "source": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
+          "tree": "efa1520a24b6d03bfd03c1191c71c50df2cefe07",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-abandonment-implementation-v1.json",
+            "sha256": "2de59d59f18043641973cdbbe229afc122673400acebdddde018ab59755d374f"
+          },
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-abandonment-critical-v1.json",
+            "sha256": "17c87e60094f4b001db2f37175e829ae6e868f600b09fa462ba17cda4e9d2b14"
+          },
+          "format": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-abandonment-format-v1.json",
+            "sha256": "ff66b70dbd8b64ded101462b10061180b427c3c59705df0166320585d50df509"
+          },
+          "declarations": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-abandonment-declarations-v2.json",
+            "sha256": "9b8c2bf05c60e19d348bda0161f6e14b9482a69a646037e011b22e8150e0e543"
+          },
+          "build": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-85a4308",
+            "session": 42575,
+            "state": "RUNNING; EXIT_NOT_OBSERVED",
+            "expected_only": "229 components/120 mandatory/13 selectors; no actual pass claim"
+          },
+          "processes": "Root build42575 running; exactrun resources.json owns fetchb91f253343aa and nativea9ce09ec196c, existing exclusive compiler cache. No PG/installed runtime concurrent. Source85WT frozen; author next-origin audit read-only."
         }
       }
     }
