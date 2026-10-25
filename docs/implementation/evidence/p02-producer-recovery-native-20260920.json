@@ -46581,8 +46581,13 @@
                     },
                     "result": "Actual2clones/4commands/111controls/6506rawbindings PASS. Loss before C15: SourceOPEN/nativeCLOSING110/162; fresh completion publishes with0nativewrites. Loss after server C15: SourceCLOSED; fresh retry preserves exact row/time/xmin with0nativewrites. Both losses exactCommitUnknownexit4, no later ACK/release delivery; full77tables/input/H-D/C1/A1/cut4 retained. Driver33364/raw71468 joined0.",
                     "review_finding": "New before-complete branch requires maxretained<fence<Source<finalControl; coordinated older unused XID negative rejects. Old profile semantics retained.",
-                    "integration": "Included in this coherent main merge; three Python files equal frozen24fb91b, product remains5ed. Push pending this commit."
-                  }
+                    "integration": "862db645055caedb9ac147fc94489cffd673a673; push29981 joined0. Three Python files match frozen24; product remains5ed."
+                  },
+                  "ref_retirement": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-source-publication-ref-retirement-20261025.json",
+                    "sha256": "42e50c86ba9d471bfe7f60d6f8719fdbe399fb4bcaf04fc6fbb7aecbefd3b69c"
+                  },
+                  "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; WT_CLEAN_DETACHED24; archive/bundle retained"
                 },
                 "next_abandonment_work_20261025": {
                   "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
@@ -46595,7 +46600,7 @@
                   },
                   "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
                   "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
-                  "next": "Root accepted genuine compacted claims audit; minimal four-owner finite probe authorized in a separate85-based worktree. Independent full-state fixture and actual zero-job/nonzero installed abandonment remain NOT_RUN. Product85 frozen, not integrated.",
+                  "next": "Review/freeze independent one-clone/four-command fixture, then root executes actual claims, installed Source, Abandon and exactretry on exact2d5 artifacts. Product85 and probe2d remain outside main until connected qualification.",
                   "source": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
                   "tree": "efa1520a24b6d03bfd03c1191c71c50df2cefe07",
                   "source_receipt": {
@@ -46627,7 +46632,48 @@
                   "claims_prerequisite_audit": {
                     "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-claims-prerequisite-20261025.json",
                     "sha256": "988ded07518da23088d133a60d9a99d6474103152984b787310922c0af572fce"
-                  }
+                  },
+                  "claims_probe": {
+                    "status": "FROZEN_REVIEWED_BUILD_PASS; CONNECTED_NOT_RUN",
+                    "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-claims-probe-20261025",
+                    "branch": "work/compacted-later-claims-probe",
+                    "base": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
+                    "source": "2d5e161363b71b1c1c475e5eb654185011238eb1",
+                    "tree": "03619ec2e4fda060df3bf42f8ee125840faa2f50",
+                    "source_receipt": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-claims-probe-implementation-v1.json",
+                      "sha256": "08470984ed4716a2fd8dd039011c3e68bbe65834588bc1abf6110dff6b4f716e"
+                    },
+                    "critical_review": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-claims-probe-critical-v1.json",
+                      "sha256": "57bb5f091aed2866facb1c07720d001e4af736c871cad7806dbd60761f79b318"
+                    },
+                    "format": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-claims-probe-format-v1.json",
+                      "sha256": "16b936cd1400c70626905bb642433b8f37db7c644211a22fb29a354edf876c01"
+                    },
+                    "build": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2d5e161/verified-build.json",
+                      "sha256": "b2635c3babd21729b5f23c50d3d545a2afd343faf8d32fbffc250b77017502de"
+                    },
+                    "result": "Build31391 joined0;229tests/120mandatory/13selectors/all15checksinclClippy. ProbeandCLI newhashes verified, three componentELFs unchanged85. RuntimeNOT_RUN.",
+                    "scope": "Named finite same-Control compacted prepare/activate/renew plus genuine browser-authenticated a6claim and a7unclaimed; zero requests, exact mixed-input census and Check/hash65MiB overlap. Four existing probe owners only."
+                  },
+                  "next_fixture_work": {
+                    "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+                    "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-acquisition-fixture-20261025",
+                    "branch": "work/compacted-later-acquisition-fixture",
+                    "base": "c365c6cdffa114c09071c86661b49f4b37ad1aff",
+                    "product_source": "2d5e161363b71b1c1c475e5eb654185011238eb1",
+                    "audit": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-fixture-reuse-audit-v1.json",
+                      "sha256": "e0771e9790bfaac96c063c4d3472e593dc6581f7ad900e379fc06b8a26115462"
+                    },
+                    "scope": "One Terminal2 clone, optional initial7 originals reversibly quarantined; actualclaims then Source/Abandon/retry. Full77tables/native/inputs/auth/actualactivator/custody. Fourcommands expected, no runtime pass claim; optionalzerojob slice not selected.",
+                    "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only engines/integration",
+                    "prerequisite_merge": "Root merged main862 and probe2d in isolated fixture branch; docs-only conflict reconciled. Apps/Cargo/native.py exact2d, sourceguard retained. No product integration into main yet."
+                  },
+                  "next_retirement_audit": "empty_malformed_floor read-only prerequisite audit of existing activated-later retirement boundary; no implementation/engine authorized for that next consumer."
                 }
               }
             }
