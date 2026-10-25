@@ -1,79 +1,90 @@
 # Current execution checkpoint
 
-Observed 2026-10-25 on Tux. Goal **ACTIVE** after explicit owner resume.
-M1–M5 remain incomplete; Q37/Q38 apply. Root owns integration/runtime.
+Observed 2026-10-25 on Tux. Development **STOPPED** on explicit owner pause.
+M1–M5 remain incomplete; Q37/Q38 apply. The only remaining closure actions are
+saving/pushing this checkpoint and setting the actual goal control to **PAUSED**.
+Do not resume development without the owner's explicit resume.
 
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Observed main/pushed `8de6972dcf04d899a7ab24ca5e6ee73b184bf4c1`; current main
-changes record the newly qualified later consumer, its contract and resource state.
-No merge/rebase pending. Next integration source is
-`28cd644df26b29ab2c5a05d61a4ac5a5faad2c32` on `work/compacted-later-empty-fixture`,
-which contains exact qualified product `2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f`.
-Both old worktrees remain preserved under `.research/compacted-later-empty*-20261024`.
-Remote fixture branch still names saved WIPd8ceb013 until this integration is pushed.
+Integrated/pushed main is `ae913a4fec9f495c5752b2e2f9984ee5debe4276`; remote
+identity rechecked at pause. Main was clean before this documentation-only closure
+commit; no merge/rebase pending. Resolve this checkpoint's commit with Git rather
+than treating its observed parent as a guessed final revision.
+
+Qualified fixture `28cd644df26b29ab2c5a05d61a4ac5a5faad2c32` and product
+`2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f` are integrated. The merged delta
+against28cd contains only four documentation files; product/fixture bytes are
+unchanged. Their two old branch refs were already retired locally/remotely;
+clean detached worktrees, protected archive refs and verified full bundle remain.
+No further cleanup was performed for this pause.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
-compacted_successor_preparation.later_empty_consumer_work`, owns exact source,
-review, diagnostics, qualifications and failures. The
-[inventory](../research/laboratory-inventory.json) owns resources/worktrees.
+compacted_successor_preparation.later_empty_consumer_work`, owns qualifications,
+original failures, integration and partial source/review/audit receipts. The
+[inventory](../research/laboratory-inventory.json) owns worktrees and resources.
 
-## Verified result
+## Preserved verification
 
-Exact product2bdf build1741 joined0: CLI/probe,196 component tests/87 mandatory
-controls and all11 checks including Clippy PASS; retained ELFs unchanged at resume.
-Fixture28cd installed43206 and raw53590 both joined0: four copies/eight stages
-(two probes/six installed commands),121 case controls and5935 raw file bindings.
-Run and root receipt:
+**PASS:** exact2bdf build1741 joined0,196 component tests/87 mandatory controls,
+all11 checks including Clippy. Exact28cd installed43206 and raw53590 joined0:
+four copies/eight stages,121 case controls and5935 raw file bindings. Source,
+correction and outcome reviews found no unresolved scoped blocker. Reused results;
+no build, test or experiment started during suspension. Root receipt:
 `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-28cd644/verified-run.json`.
-Critical source/correction/outcome reviews found no unresolved scoped blocker.
 
-The measured preparation COMMIT6 baseline completes native+4 before it supplies
-the loss selector. Lost reply leaves SQL prepared/native old, then fresh recovery
-performs+4 handoff/+1 close. OPEN retirement adds one close; genuine late SQL
-failure leaves native CLOSING, then fresh completion adds no native write. Exact
-terminal retry preserves target SQL metadata/xmins and native bytes. Complete77
-SQL tables and input maps checked; both origins retain all five preservation facts.
+**FAIL/UNKNOWN retained:** c843 nested qualification mismatch;887 timestamp
+comparison with unknown native-after;f645 proxy checker failure after captured
+native+4/closed custody. Earlier fb4 compilation/c1 Clippy failures, preparer83
+unknown outcome and original a99 Sync timeout remain recorded, not relabeled.
 
-Three earlier fixture attempts remain FAIL: c843 nested qualification mismatch
-before engines;887 timestamp comparison caused unreleased/UNKNOWN native-after;
-f645 proxy-version checker failed after captured native+4/closed custody. All
-captures, fixes, synthetic diagnostic limits and original failures remain linked.
-Earlier fb4 compilation/c1 Clippy failures, preparer83 unknown outcome and original
-Sync timeout are unchanged. Existing valid preparer16/malformed2b results are reused.
+**NOT_RUN:** final validation of the live draft below, remaining original-input/
+H/D use-time/ordinary-basis cases and all broader open gates. Existing valid
+preparer16/malformed2b results remain reusable at their recorded identities.
 
-## Work and resources
+## Partial work and stopped agents
 
-No root build/installed/raw runner active. Actual client437b85de exited143 and
-borrowedPG71775507 exited0, both PID0/noOOM, with owner labels checked. No cleanup
-errors, unrelated changes, missing resources or unexpected containers. All
-.research, worktrees, databases, raw captures, ELFs and failures preserved.
-Measured free space after the run:250666803200 bytes; check before allocation.
+`/root/compacted_reader_fixture` stopped with10 unstaged, uncommitted Rust files
+in `.research/compacted-later-live-20261025`, branch `work/compacted-later-live`,
+HEAD28cd644d. This is an incomplete borrowed-store/canonical-read/frontier draft,
+not a buildable source freeze. No staged or untracked source; no WIP integration.
+Root matched all10 file hashes and the saved exact binary patch.
 
-`/root/compacted_reader_fixture` implements the next continuous activation/live
-frontier responsibility in `.research/compacted-later-live-20261025`, branch
-`work/compacted-later-live`, base28cd644d (clean when allocated). Existing installed
-entrypoint; shared compacted native/canonical checks and retained grants must span
-admission/read/progress/ACK/renewal. No engine/build, new format or Archive scope.
-`/root/empty_malformed_floor` performs a read-only audit of remaining original-input
-and proof-use cases against2bdf; no new fixture implementation/engine authorized
-by that audit. `/root/compacted_reader_review` completed the scoped runtime review.
-All reuse verified Astra/xhigh continuity; root remains sole runtime/integration owner.
+The existing review folder `.research/producer-checkpoint-ack-review-20261020/`
+contains `compacted-later-live-pause-source-20261025.json` and
+`compacted-later-live-pause-wip-20261025.patch` (SHA256
+`ee4162b40c73a9774d22ef9f7d2b689ddb723fbc66fc8469ac2433d169cceb7f`).
+Author diff-check PASS; format/compile/components/Clippy/runtime/raw NOT_RUN.
+`compacted-later-live-critical-review-partial-v1.json` records the stopped
+reviewer's findings: final capability/census/grant/cancellation/ACK/PG delivery
+review is pending, with no WIP approval.
 
-## Next action and open gates
+`/root/empty_malformed_floor` stopped after saving the read-only
+`compacted-later-consumer-fixture-audit-20261025.json`. Input/H/D/ordinary proposals
+are unimplemented; preparation COMMIT6 does not establish the separate installed
+retirement baseline. No agent-owned background process or exec session remains.
 
-Commit the coherent qualification record, integrate exact28cd source into main,
-reconcile merged product/fixture identities without rerunning unchanged engines,
-push and retire only redundant old refs after actual ancestry/cleanliness checks.
-Preserve their worktrees and ignored/external evidence. Then reconcile the new
-source implementation and remaining-fixture audit under the same task plan.
+## Resources and next action
 
-Preparation without optional initial files, actual missing required later input,
-H/D use-time drift, remaining delivery/cancellation/native uncertainty and ordinary
+Fresh readable /proc command/cwd inspection found no repository/laboratory
+process outside the checkpoint inspection ancestry. No project container runs.
+Client437b85de exited143; borrowedPG71775507 exited0, both PID0/noOOM. Detailed
+observation: review folder `compacted-later-pause-resources-20261025.json`.
+All .research, worktrees, databases, raw captures, ELFs, logs and original failures
+remain preserved; unrelated workloads untouched. No operation required stopping.
+
+On explicit resume, first reconcile main/remote and the exact ten-file live WIP
+with its source/review receipts. Continue its missing type/visibility and retained
+Check/grant wiring through activation and the same live frontier/ACK/renewal;
+finish focused source controls and critical review before root-owned build/runtime.
+Use the saved remaining-fixture audit when selecting subsequent qualification.
+
+Preparation without optional initial files, missing required later input, H/D
+use-time drift, remaining delivery/cancellation/native uncertainty and ordinary
 basis regression remain open. Later activation/live and Archive, physical64-file/
 32MiB bounds, loss/mixed restore, backup/capacity and M1–M5 remain incomplete.
 No product floor writer/unlink qualified. Original a99 Sync timeout cause remains

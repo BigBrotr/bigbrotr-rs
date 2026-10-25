@@ -63789,15 +63789,22 @@
         },
         "later_preparation_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-20261024",
-          "branch": "work/compacted-later-empty",
+          "branch": null,
           "base": "b57116901324111742f04faa175e4386647cac2d",
-          "state": "QUALIFIED_CLEAN_PRODUCT2bdf; integration pending, later empty runtime scoped",
+          "state": "INTEGRATED_PUSHED_MAIN_ae913a4f; exact clean detached worktree retained",
           "scope": "Explicit compacted later preparation/gap and existing --retire-empty-successor four-state recovery; source/probe/component controls only, no new CLI/SQLformat/migration, activation/live/Archive remain gated",
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "source": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
           "tree": "32d7686923857b0cf83415447f69e37f17e3ed17",
-          "remote": "origin/work/compacted-later-empty at2bdf513c; push47771 joined0",
-          "owner_state": "Author stopped; root owns resume/integration; partial next-consumer audit preserved in existing review folder."
+          "remote": "Former work branch retired after integration; original commits reachable from pushed main, protected archive refs and verified full bundle.",
+          "owner_state": "Stopped; integrated increment qualified; subsequent activation/live draft preserved separately.",
+          "retired_branch": "work/compacted-later-empty",
+          "detached": true,
+          "integration_main": "ae913a4fec9f495c5752b2e2f9984ee5debe4276",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-ref-retirement-v1.json",
+            "sha256": "ecaec9c65a8a90e081e32567472ce9690acd166361afcaa1e8f8759f7b0de94a"
+          }
         },
         "original_preparer_attempts": [
           {
@@ -63827,16 +63834,16 @@
         },
         "later_empty_fixture_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-fixture-20261024",
-          "branch": "work/compacted-later-empty-fixture",
+          "branch": null,
           "base": "3b30393fc6619bf4dd08aef314cb55793911922a",
           "owner": "/root/empty_malformed_floor; reused verified Astra/xhigh",
-          "state": "QUALIFIED_CLEAN; integration pending, source28cd/2bdf runtime scoped",
-          "scope": "Four isolated copies/eight stages: real preparation+installed empty+exact retry; captured PreparedOpen; observed preparation COMMIT-response loss+fresh installed gap/empty; late SQL failure after native close+fresh Closing completion. Independent whole-state/native/input/custody expectations and negative checker controls. Existing harness/client only; actual product revision pending freeze.",
+          "state": "INTEGRATED_PUSHED_MAIN_ae913a4f; exact clean detached worktree retained",
+          "scope": "Four isolated copies/eight qualified stages at exact fixture28cd/product2bdf; scoped independent SQL/native/input/custody expectations and negative controls. Historical partial receipts retained below; completed qualification and corrections are owned by the recovery report.",
           "source": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
           "tree": "71d1abcb04e038eeb4f8cbcd083fea88d72c1ee9",
           "merged_product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
           "current_product_pin": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
-          "remote": "origin/work/compacted-later-empty-fixture atd8ceb013; push47771 joined0",
+          "remote": "Former work branch retired after integration; original commits reachable from pushed main, protected archive refs and verified full bundle.",
           "source_receipt": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-fixture-paused-source-v1.json",
             "sha256": "1edbe35f7376c183e9b7281b84479698f14e9cc153b9f286b40ce9ce8fd1028b"
@@ -63844,6 +63851,13 @@
           "partial_review": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-fixture-critical-review-partial-v1.json",
             "sha256": "a69bc839bae9845667b9c1dffebe43e7fb4a97f2d39cbb9ec885d453807a3c61"
+          },
+          "retired_branch": "work/compacted-later-empty-fixture",
+          "detached": true,
+          "integration_main": "ae913a4fec9f495c5752b2e2f9984ee5debe4276",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-ref-retirement-v1.json",
+            "sha256": "ecaec9c65a8a90e081e32567472ce9690acd166361afcaa1e8f8759f7b0de94a"
           }
         },
         "later_preparation_build": {
@@ -63969,17 +63983,63 @@
           "branch": "work/compacted-later-live",
           "base": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
           "owner": "/root/compacted_reader_fixture; reused Astra/xhigh",
-          "state": "SOURCE_IMPLEMENTATION_ASSIGNED; observed clean28cd; no engine/build",
+          "state": "PARTIAL_PAUSED;10 UNSTAGED_UNCOMMITTED_FILES;NOT_BUILDABLE_FREEZE",
           "scope": "Explicit compacted continuous activation and same live frontier/admission/read/progress/ACK/renewal. Private shared native/canonical view and retained check/grant. Fresh activated3 recovery and Archive remain separate explicit gates.",
           "audit": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-activation-frontier-audit-20261025.json",
             "sha256": "6f8c34bf1ca320ae8bf2e10bd6abdb6f3b3b2e0c206b5800c65c1877a085e928"
-          }
+          },
+          "head": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-pause-source-20261025.json",
+            "sha256": "65dbeae6e2c1ecfd8d42bbfbded2428a13c809bfc7e4295f715a6afda262814f"
+          },
+          "partial_critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-critical-review-partial-v1.json",
+            "sha256": "5db36af952b41a06692b5bd47fd4249408ac96b5954beb9bcd7a5980d7e26f68"
+          },
+          "saved_patch": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-pause-wip-20261025.patch",
+            "sha256": "ee4162b40c73a9774d22ef9f7d2b689ddb723fbc66fc8469ac2433d169cceb7f"
+          },
+          "git_status": "Ten modified tracked Rust files only; no staged or untracked source. Root matched exact author file hashes and saved binary diff. Worktree/branch preserved, no commit or integration of this incomplete draft.",
+          "validation": "diff-check PASS by author; format/compile/tests/Clippy/runtime/raw/final review NOT_RUN",
+          "processes": "None; author and reviewer stopped, all commands completed."
         },
         "later_remaining_fixture_audit": {
           "owner": "/root/empty_malformed_floor; reused Astra/xhigh",
-          "state": "READ_ONLY_SOURCE_AUDIT_ACTIVE",
-          "scope": "Remaining later original-input/proof-use qualification using existing runner/origins; no edits or engine activity."
+          "state": "READ_ONLY_AUDIT_SAVED;AUTHOR_STOPPED",
+          "scope": "Remaining later original-input/proof-use qualification using existing runner/origins; no edits or engine activity.",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-consumer-fixture-audit-20261025.json",
+            "sha256": "6ed48c11a4fbccc1e95a1f0170dcb1b88bb6b6b40f00cdd9870464796fbfef49"
+          },
+          "validation": "No source/index/branch edits or engine/SQL/native-open/build/test/verifier run; advisory only, implementation and qualification remain pending."
+        },
+        "later_empty_integration_20261025": {
+          "main": "ae913a4fec9f495c5752b2e2f9984ee5debe4276",
+          "archive": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-integrated-archive-v1.json",
+            "sha256": "b77ad4fafc030dddba04fe2ba395c6eed9eacb5b3c152db0b19862762a55d8a3"
+          },
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-ref-retirement-v1.json",
+            "sha256": "ecaec9c65a8a90e081e32567472ce9690acd166361afcaa1e8f8759f7b0de94a"
+          },
+          "preservation": "Only completed branch-ref retirement reconciled during pause. Exact detached worktrees, all ignored/external data and original commits retained. Active partial work branch preserved."
+        },
+        "pause_20261025": {
+          "observed_at": "2026-10-25T08:06:02.239733+00:00",
+          "resources": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-pause-resources-20261025.json",
+            "sha256": "dccfc156a37323b2ebc4e7add689e3a2779d292262eba34cbb7a5e130f9c954f"
+          },
+          "agents": "compacted_reader_fixture, compacted_reader_review and empty_malformed_floor all stopped; source and review partial, remaining-fixture audit saved. No autonomous development/writing process remains.",
+          "active_project_processes": [],
+          "active_project_containers": [],
+          "retained": "All .research, worktrees, databases, logs, results, original failures and incomplete source. Known client437b85de exited143 and borrowedPG71775507 exited0, both PID0/noOOM; unrelated running containers untouched.",
+          "git": "Main qualification mergeae913a4f already pushed; this closure changes only checkpoint/report/inventory. Incomplete live code remains local in its original worktree with exact saved patch; not merged or claimed verified.",
+          "goal_control": "After checkpoint commit/push apply actual PAUSED; do not mark complete or resume without explicit owner instruction."
         }
       }
     }
