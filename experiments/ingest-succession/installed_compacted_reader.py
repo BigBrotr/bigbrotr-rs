@@ -2683,6 +2683,100 @@ def run_later_retirement_guards(root,build,product_source):
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_retirement=True,product_source=product_source)
 
 
+def later_import_claim(pg,output,case,directory,initialized,value):
+    from concurrency_cases import Session
+    from initial_empty_locks import guards,session_identity
+    from initial_empty_preparer import statements
+    label=case['name']+'-import-claim';database=case['database'];sessions=[]
+    assert initialized['stage']=='activated' and value==dict(status='INCOMPLETE',cleanup_errors=[])
+    value.update(transactions=[],actor_exit_code=None,actor_absence=None)
+    def save():lab.write_json(output/(label+'.json'),value)
+    def owned():
+        item,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert item['Id']==value['postgres']['id'] and item['Name']==value['postgres']['name']
+        assert item['State']['Running'] and item['Config']['Labels'][lab.LABEL]==value['postgres']['owner']
+    def live(control):
+        return json.loads(lab.sql(pg,database,"SELECT json_build_object('pid',pid,'backend_start',backend_start,'database',datname,'user',usename) FROM pg_stat_activity WHERE pid="+str(control['control_backend_pid'])+" AND backend_start='"+control['control_backend_start']+"'::timestamptz AND datname='"+database+"';"))
+    try:
+        item,=json.loads(lab.docker('inspect',pg['postgres']).stdout)
+        assert item['Name']=='/'+pg['postgres'] and item['State']['Running'] and item['Config']['Labels'][lab.LABEL]==pg['owner']
+        assert len(item['Id'])==64 and all(c in '0123456789abcdef' for c in item['Id'])
+        value['postgres']=dict(id=item['Id'],name=item['Name'],owner=pg['owner'])
+        value['server_window']=dict(before_us=history.server_clock(pg,database))
+        value['before']=schema.rows(pg,database);value['before_observed_us']=history.server_clock(pg,database)
+        control=oracle.only(value['before']['owner_epochs'],role='control',state='active');value['control']=control
+        activation=oracle.only(value['before']['ingest_activations'],target_epoch=3)
+        assert tuple(control[k] for k in ('resource_id','epoch','process_incarnation'))==tuple(activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+        value.update(inputs_before=history.inputs_at(directory/'store'),guards_before=guards(pg,database),live_before=live(control))
+        actor=Session(pg,database,'later_import_claim',sessions,role='bigbrotr_control')
+        value.update(backend=actor.backend,identity=session_identity(actor),created_at_us=history.server_clock(pg,database))
+        value['statements']=statements(control,value['created_at_us']);save()
+        for statement in value['statements']:
+            value['transactions'].append(actor.execute(statement));save()
+        value['server_window']['after_us']=history.server_clock(pg,database)
+        value.update(after=schema.rows(pg,database),inputs_after=history.inputs_at(directory/'store'),guards_after=guards(pg,database),live_after=live(control))
+        value['observed_by_us']=history.server_clock(pg,database)
+        assert value['observed_by_us']<control['lease_expires_at_us']
+        assert value['guards_before']==value['guards_after'] and value['inputs_before']==value['inputs_after']
+    except BaseException as error:
+        value['failure']=repr(error);raise
+    finally:
+        for actor in reversed(sessions):
+            try:
+                actor.close(owned)
+                value['actor_exit_code']=actor.process.returncode
+                b=actor.backend
+                value['actor_absence']=lab.sql(pg,'postgres',"SELECT count(*) FROM pg_stat_activity WHERE pid="+str(b['pid'])+" AND backend_start='"+b['backend_start']+"'::timestamptz AND datname='"+database+"';")
+            except BaseException as error:value['cleanup_errors'].append(dict(stage='import-actor',error=repr(error)))
+        try:value['closed_by_us']=history.server_clock(pg,database)
+        except BaseException as error:value['cleanup_errors'].append(dict(stage='import-final-clock',error=repr(error)))
+        if 'failure' not in value and not value['cleanup_errors'] and type(value['actor_exit_code']) is int and value['actor_absence']=='0':value['status']='CAPTURED'
+        save()
+    assert value['status']=='CAPTURED'
+
+
+def run_later_retirement_import_sequence(pg,client,output,clone,directory,expected,report,*,seed,initial):
+    assert clone['name']=='installed' and clone['origin']=='later-terminal' and expected==seed
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
+    assert clone['catalog_before']==report['origins']['later-terminal']['catalog']
+    configure(pg,client,output,clone['config'],ack=True)
+    helper=Path(__file__).with_name('installed_cycle_client.py');target=output/helper.name
+    shutil.copy2(helper,target);assert history.digest(helper)==history.digest(target)
+    transition.observe_origin_absence(pg,clone['database'],output,'installed-residual')
+    oracle.same(schema.rows(pg,clone['database']),expected[0])
+    assert history.dump(client,output,'installed-residual-before',directory)==expected[1]
+    expected=later_live_inputs(output,directory,expected,initial)
+    oracle.same(schema.rows(pg,clone['database']),expected[0])
+    predecessor=None;live_seed=None
+    for step in oracle.LaterRetirementImportProfile.STEPS['installed']:
+        case=dict(name='installed-'+step,clone='installed',origin='later-terminal',operation='retire' if step=='refuse' else step,
+            predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case);lab.write_json(output/'result.json',report)
+        def verify(context,_seed):
+            if step=='refuse':
+                context['guard_diagnostic']=later_digest_log(pg,output,case,context['server_window'])
+                lab.write_json(output/(case['name']+'-verification.json'),context)
+            return oracle.verify_later_retirement_import(context,initial,live_seed,expected)
+        expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
+            checks=(verify,lambda c,s:oracle.later_retirement_import_controls(c,initial,live_seed,expected),oracle.later_retirement_import_closed),
+            after_activated=partial(later_import_claim,pg,output,case,directory) if step=='live' else None)
+        if step=='live':live_seed=expected
+        case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
+        predecessor=case['name'];lab.write_json(output/'result.json',report)
+    return predecessor
+
+
+def run_later_retirement_import(root,build,product_source):
+    assert product_source==oracle.LATER_RETIREMENT_PRODUCT
+    seed,initial=oracle.qualified_endpoint(root,None,initial_journey=False,later_terminal=True);profile=oracle.LaterRetirementImportProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
+        client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
+        scope='Actual live-activator ordinary import claim, Source closure and isolated named import retirement veto',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_retirement_import_sequence,seed=seed,initial=initial),
+        origin_specs=(oracle.LATER_TERMINAL_ORIGIN,),origin_for_clone={'installed':'later-terminal'},extra_grants=profile.GRANTS,
+        producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_retirement=True,product_source=product_source)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
@@ -2690,6 +2784,7 @@ if __name__ == '__main__':
     profile=parser.add_mutually_exclusive_group()
     profile.add_argument('--later-recovery-faults',action='store_true',help='Measured dictionary outcome loss and fresh installed repair/ACK/retry')
     profile.add_argument('--later-recovery-delivery',action='store_true',help='Measure first dictionary outcome/progress COMMIT before any fault schedule')
+    profile.add_argument('--later-retirement-import',action='store_true',help='Actual live-activator import claim and isolated retirement refusal')
     profile.add_argument('--later-retirement-guards',action='store_true',help='Genuine unabandoned acquisition and missing required-input retirement refusals')
     profile.add_argument('--later-retirement',action='store_true',help='Compacted successor retirement and exact fresh retry from the qualified acquisition gap')
     profile.add_argument('--later-acquisition',action='store_true',help='Authentic compacted acquisition claims and installed Source/Abandon/retry')
@@ -2717,4 +2812,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (run_later_retirement_guards if args.later_retirement_guards else run_later_retirement if args.later_retirement else run_later_acquisition if args.later_acquisition else partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_later_retirement_import if args.later_retirement_import else run_later_retirement_guards if args.later_retirement_guards else run_later_retirement if args.later_retirement else run_later_acquisition if args.later_acquisition else partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

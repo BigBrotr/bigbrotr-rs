@@ -31,7 +31,7 @@ SUITE = transition.Suite(directory='installed-cycle',label='org.bigbrotr.install
              'Import closure, Archive, acknowledgement/GC, injected faults and capacity/RSS qualification'))
 
 
-def execute(pg, client, output, case, directory, expected, catalog, seed, *, checks=None, fault=None):
+def execute(pg, client, output, case, directory, expected, catalog, seed, *, checks=None, fault=None, after_activated=None):
     if checks is None:
         from installed_cycle_replay import verify, negative_controls, process_closed
     else:
@@ -39,6 +39,7 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
         # retaining this exact process/backend/native capture and join path.
         verify, negative_controls, process_closed = checks
     assert fault is None or (checks is not None and callable(fault) and case['operation'] in ('complete-initial','source','source-activated','abandon-activated','retire-activated','retire-empty','retire-empty-successor'))
+    assert after_activated is None or (checks is not None and callable(after_activated) and case['operation']=='live' and fault is None)
     name,database=case['name'],case['database']; prefix=output/name
     before=schema.rows(pg,database)
     native=history.dump(client,output,name+'-before',directory)
@@ -74,6 +75,9 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
             assert isinstance(published,list) and len(published)==1, 'Serve exited before activation'
             initial,=published
             initialized=snapshot('activated')
+            if after_activated is not None:
+                fixture['after_activated']=dict(status='INCOMPLETE',cleanup_errors=[])
+                after_activated(initialized,fixture['after_activated'])
             epoch=int(initial['producer_epoch'])
             target,=[r for r in initialized['control']['owner_epochs'] if r['role']=='ingest' and r['epoch']==epoch]
             deadline=int(initial['initial_lease_expires_at_us' if case['operation']=='live-initial' else 'lease_expires_at_us'])
@@ -135,6 +139,12 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
         backend,errors={},[]
         if fault is not None and fixture['cleanup_errors']:
             errors.append(dict(stage='delivery-fault-custody',error='proxy/config lifecycle incomplete'))
+        if after_activated is not None:
+            callback=fixture.get('after_activated')
+            if not (isinstance(callback,dict) and callback.get('status')=='CAPTURED'
+                    and callback.get('cleanup_errors')==[] and 'failure' not in callback
+                    and type(callback.get('actor_exit_code')) is int and callback.get('actor_absence')=='0'):
+                errors.append(dict(stage='activation-fixture-custody',error='callback actor closure incomplete'))
         # Always retain provisional SQL/input observations, even if the wrapper
         # reply cannot prove native custody. They are not a final-state claim.
         for stage,action in [('sql',lambda:schema.rows(pg,database)),
