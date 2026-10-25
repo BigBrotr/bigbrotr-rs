@@ -38,7 +38,7 @@ def execute(pg, client, output, case, directory, expected, catalog, seed, *, che
         # An explicit bounded profile may change semantic expectations while
         # retaining this exact process/backend/native capture and join path.
         verify, negative_controls, process_closed = checks
-    assert fault is None or (checks is not None and callable(fault) and case['operation'] in ('complete-initial','source-activated','abandon-activated','retire-activated','retire-empty','retire-empty-successor'))
+    assert fault is None or (checks is not None and callable(fault) and case['operation'] in ('complete-initial','source','source-activated','abandon-activated','retire-activated','retire-empty','retire-empty-successor'))
     name,database=case['name'],case['database']; prefix=output/name
     before=schema.rows(pg,database)
     native=history.dump(client,output,name+'-before',directory)
