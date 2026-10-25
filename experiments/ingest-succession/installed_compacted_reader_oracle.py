@@ -7336,10 +7336,12 @@ def later_source_basis(seed,quiet):
     return dict(issued=issued,ack=ack,cut=cut,digest=sha(preimage+be(cut)))
 
 
-def later_source_diagnostic(record,case,window,control):
+def later_source_diagnostic(record,case,window,control,*,retirement_guard=False):
     """Exact named positive-purpose SQL refusal, bound to its actual claim."""
     from datetime import datetime,timezone
-    assert case['clone']=='finite' and later_source_specification(case)[1]=='closed-positive'
+    assert type(retirement_guard) is bool
+    if retirement_guard:assert later_retirement_guard_specification(case)==('claims','refuse')
+    else:assert case['clone']=='finite' and later_source_specification(case)[1]=='closed-positive'
     assert set(record)=={'command','returncode','stdout','stderr'} and type(record['returncode']) is int and record['returncode']==0
     bounds=[datetime.fromtimestamp(window[k]/1_000_000,timezone.utc).isoformat() for k in ('before_us','after_us')]
     assert record['command']==['docker','logs','--timestamps','--since',bounds[0],'--until',bounds[1],record['command'][-1]]
@@ -7358,12 +7360,18 @@ def later_source_diagnostic(record,case,window,control):
     index,=[i for i,r in enumerate(records) if r['level']=='ERROR'];error=records[index]
     message=error['message'];sqlstate=None
     if message.startswith('23514:  '):sqlstate='23514';message=message[len('23514:  '):]
-    assert message=='lineage purpose requires active owner and open source'
+    assert message==('lineage acquisition claims remain unresolved' if retirement_guard else 'lineage purpose requires active owner and open source')
     start=retained.instant(control['control_backend_start'])
     assert window['before_us']<=start<=control['acquired_at_us']<error['time']+1000 and error['time']<=window['after_us']
     context=records[index+1];assert context['level']=='CONTEXT' and error['time']<=context['time']<=window['after_us']
-    assert context['message']=='PL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 43 at RAISE' and len(context['lines'])==1
-    return dict(boundary='SQL_POSITIVE_REQUIRES_OPEN_SOURCE',backend=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database']),
+    if retirement_guard:
+        assert context['message']=='PL/pgSQL function control.require_ingest_lineage_workflows(bytea,numeric,numeric) line 22 at RAISE'
+        assert context['lines'][1:]==[
+            '\tSQL statement "SELECT control.require_ingest_lineage_workflows(wanted_resource,wanted_epoch,c.epoch)"',
+            '\tPL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 73 at PERFORM']
+    else:
+        assert context['message']=='PL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 43 at RAISE' and len(context['lines'])==1
+    return dict(boundary='SQL_RETIREMENT_REQUIRES_ABANDONED_ACQUISITION' if retirement_guard else 'SQL_POSITIVE_REQUIRES_OPEN_SOURCE',backend=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database']),
         error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)
 
 
@@ -8245,4 +8253,141 @@ def later_retirement_controls(context,seed,expected):
     else:
         reject('retry-terminal-xmin-rewritten',lambda c:terminal_xmin(c,int(only(c['after']['owner_epochs'],role='control',epoch=15)['xmin'])-1))
         reject('retry-issuer-adopted',lambda c:receipt(c).update(control_epoch=15))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+class LaterRetirementGuardProfile:
+    DIRECTORY='installed-compacted-later-retirement-guards'
+    LABEL='org.bigbrotr.installed-compacted-later-retirement-guards'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_RETIREMENT_GUARDS'
+    DATABASE_PREFIX='bb_compacted_later_retirement_guard_'
+    CLIENT_PREFIX='bigbrotr-compacted-retirement-guard-'
+    CLONES=('claims','missing-required')
+    STEPS={'claims':('claims','source','refuse'),'missing-required':('refuse',)}
+    CASES=('claims-claims','claims-source','claims-refuse','missing-required-refuse')
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Genuine live-activator import claim retirement refusal',
+        *LaterRetirementProfile.NOT_RUN[1:])
+
+
+LATER_RETIREMENT_GUARD_ORIGINS={'claims':'later-terminal','missing-required':'claims-terminal'}
+LATER_RETIREMENT_GUARD_ERRORS={
+    'claims':'error: successor recovery unavailable: producer operation unavailable: Control(Backend)\n',
+    'missing-required':'error: successor recovery unavailable: producer operation unavailable: Native(Native(RequestInput(Missing)))\n'}
+
+
+def later_retirement_guard_specification(case):
+    name=case['clone'];assert name in LaterRetirementGuardProfile.CLONES
+    assert case['origin']==LATER_RETIREMENT_GUARD_ORIGINS[name]
+    assert case['name'].startswith(name+'-');step=case['name'][len(name)+1:]
+    steps=LaterRetirementGuardProfile.STEPS[name];assert step in steps;index=steps.index(step)
+    assert case['predecessor']==(name+'-'+steps[index-1] if index else None)
+    assert case['operation']==('successor-compacted-acquisition-claims' if step=='claims' else 'source' if step=='source' else 'retire')
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def later_retirement_guard_closed(response,case):
+    name,step=later_retirement_guard_specification(case)
+    if step=='source':return later_source_closed(response,case,acquisition=True)
+    assert step=='refuse'
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==4
+    t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True);number(t['start_ticks'],1,integer=True);number(t['elapsed_seconds'],0,60)
+    assert t['command']==argv('retire',Path(case['config'])) and t['config']==case['config'] and t['prefix']=='/lab/'+case['name']
+    assert type(t['exit_code']) is int and t['exit_code']==4 and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    assert response['stdout']=='' and response['stderr']==LATER_RETIREMENT_GUARD_ERRORS[name]
+
+
+def verify_later_retirement_guard(context,initial,seed,expected):
+    case=context['case'];name,step=later_retirement_guard_specification(case)
+    if step in ('claims','source'):return verify_later_acquisition(context,initial,seed,expected)
+    assert set(context)==CONTEXT_FIELDS|({'guard_diagnostic'} if name=='claims' else set())
+    assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert set(context['after'])==set(seed[0])==set(expected[0]) and len(seed[0])==77
+    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    w=context['server_window'];assert set(w)=={'before_us','after_us'}
+    number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
+    assert (len(expected[1]['rows']),expected[1]['sequence'])==(93,139) and context['native_after']==expected[1]
+    inputs=seed[2] if name=='claims' else {}
+    assert context['inputs_after']==expected[2]==inputs and len(inputs)==int(name=='claims')
+    assert set(context['input_contents'])==set(inputs)
+    for n,v in context['input_contents'].items():
+        data=bytes.fromhex(v);assert inputs[n]==dict(bytes=len(data),sha256=sha(data))
+    if name=='claims':
+        known=later_source_basis(seed,True)
+        activation=only(expected[0]['ingest_activations'],target_epoch=3)
+        job=only(expected[0]['jobs'],request_key='\\x'+'a6'*16)
+        assert job['state']=='queued' and job['job_revision']==2
+        assert tuple(job[k] for k in ('owner_resource_id','owner_epoch','owner_incarnation'))==tuple(
+            activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+        assert not [g for g in expected[0]['acquisition_gaps'] if g['producer_epoch']==3]
+    else:
+        known=later_retirement_basis(seed);same(expected[0],seed[0]);assert expected[1]==seed[1]
+        assert later_recovery_missing_basis(seed,'missing-ancestor')[2]=={}
+    source=only(expected[0]['source_streams'],owner_epoch=3)
+    assert source['state']=='closed' and source['last_complete_sequence']==0 and source['closure_digest']=='\\x'+known['digest']
+    assert only(expected[0]['producer_epochs'],producer_epoch=3)['state']=='closing'
+    assert not [r for r in expected[0]['ingest_terminal_transactions'] if r['target_epoch']==3]
+    backend_checked(context['backend'],case['database'],context['before'],context['after'])
+    later_retirement_guard_closed(context['response'],case)
+    m=model.Model(*expected,w);preparation_control(m,context['after'],success=False)
+    control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    assert control['epoch']==(12 if name=='claims' else 14) and control['state']=='active'
+    assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(control['xmin'])
+    same(m.pg,context['after']);assert sum(map(len,m.pg.values()))==(228 if name=='claims' else 233)
+    guard=later_source_diagnostic(context['guard_diagnostic'],case,w,control,retirement_guard=True) if name=='claims' else None
+    return dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=93,native_sequence=139,
+        input_files=len(inputs),target_requests=0,target_checkpoint=0,target_acknowledged=0,source_cut=0,source_digest=known['digest'],
+        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=0,native_writes=0,lifecycle_updates=0,
+        terminal_receipts_inserted=0,refused_before_observation=True,control_epoch=control['epoch'],control_released=False,
+        refusal_guard=guard,boundary='unabandoned-acquisition' if name=='claims' else 'required-input-census')
+
+
+def later_retirement_guard_controls(context,initial,seed,expected):
+    name,step=later_retirement_guard_specification(context['case'])
+    if step in ('claims','source'):return later_acquisition_controls(context,initial,seed,expected)
+    verify_later_retirement_guard(context,initial,seed,expected);rejected=[]
+    def reject(label,change):
+        c=copy.deepcopy(context);change(c)
+        try:verify_later_retirement_guard(c,initial,seed,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,OverflowError):rejected.append(label);return
+        raise AssertionError('retirement guard control accepted: '+label)
+    def current(c):return max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    reject('unknown-custody',lambda c:c['case'].update(custody='OUTCOME_UNKNOWN'))
+    reject('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False))
+    reject('forced-process',lambda c:c['response']['terminal'].update(forced=True))
+    reject('backend-present',lambda c:c['backend'].update(all=[dict(pid=1)]))
+    reject('cleanup-error',lambda c:c['fixture']['cleanup_errors'].append('unjoined'))
+    reject('false-success',lambda c:c['response'].update(returncode=0,stderr=''))
+    reject('wrong-refusal',lambda c:c['response'].update(stderr=LATER_RETIREMENT_GUARD_ERRORS['missing-required' if name=='claims' else 'claims']))
+    reject('success-report-on-refusal',lambda c:c['response'].update(stdout='{}\n'))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'\nALTER ROLE unrelated;'))
+    reject('native-write',lambda c:c['native_after'].update(sequence=140))
+    reject('native-row-removed',lambda c:c['native_after']['rows'].pop())
+    reject('Control-released',lambda c:current(c).update(state='released'))
+    reject('producer-retired',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(state='retired'))
+    reject('source-time-rewritten',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closed_at_us=current(c)['acquired_at_us']))
+    reject('unclaimed-job-rewritten',lambda c:only(c['after']['jobs'],request_key='\\x'+'a7'*16).update(job_revision=2))
+    used={int(r['xmin']) for rows in expected[0].values() for r in rows};old=next(v for v in range(max(used)-1,0,-1) if v not in used)
+    def old_claim(c):
+        control=current(c);control['xmin']=str(old);only(c['after']['role_instances'],role_instance_id=control['role_instance_id'])['xmin']=str(old)
+    reject('coordinated-older-unused-claim-xmin',old_claim)
+    if name=='claims':
+        reject('missing-required-input',lambda c:c['inputs_after'].clear())
+        reject('claim-abandoned',lambda c:only(c['after']['jobs'],request_key='\\x'+'a6'*16).update(state='cancelled',job_revision=4))
+        reject('claim-reattributed',lambda c:only(c['after']['jobs'],request_key='\\x'+'a6'*16).update(owner_epoch=current(c)['epoch']))
+        reject('named-veto-missing',lambda c:c['guard_diagnostic'].update(stdout='',stderr=''))
+        def replace_log(c,old,new):
+            for stream in ('stdout','stderr'):c['guard_diagnostic'][stream]=c['guard_diagnostic'][stream].replace(old,new)
+        reject('wrong-named-veto',lambda c:replace_log(c,'lineage acquisition claims remain unresolved','lineage import claims remain unresolved'))
+        reject('wrong-error-backend',lambda c:replace_log(c,'['+str(current(c)['control_backend_pid'])+']','[1]'))
+        reject('wrong-inner-context',lambda c:replace_log(c,'require_ingest_lineage_workflows(bytea,numeric,numeric) line 22','require_ingest_successor(bytea,numeric,text) line 22'))
+        reject('wrong-outer-context',lambda c:replace_log(c,'require_ingest_successor(bytea,numeric,text) line 73','require_ingest_successor(bytea,numeric,text) line 72'))
+    else:
+        reject('quarantined-input-restored',lambda c:c['inputs_after'].update(seed[2]))
+        reject('gap-history-rewritten',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=3).update(previous_owner_epoch=current(c)['epoch']))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
