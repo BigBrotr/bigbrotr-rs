@@ -64785,14 +64785,62 @@
           "main": "00d13147094d9a0484cab700fe28fb6b55c707b6"
         },
         "later_retirement_guard_work": {
-          "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "status": "FROZEN_REVIEWED_INSTALLED_AND_RAW_PASS; INTEGRATION_PREPARED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-guards-20261025",
           "branch": "work/compacted-later-retirement-guards",
           "base": "d1216bfd35b8f2080d645ee88d62930d52fde11f",
           "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
           "owners": "compacted_reader_fixture implementation; compacted_reader_review critical; root engine/integration",
           "scope": "Two clones/four commands. Genuine claims->Source->retirement unresolved-acquisition refusal; separate actual claims-retry origin with isolated reversible required2:1 quarantine and retirement refusal. Reuse exact06 build and existing runners; import refusal remains separate NOT_RUN.",
-          "resources": "Only new writable worktree allocated; no engine/container/database run yet."
+          "resources": [
+            {
+              "id": "c9222a0a7e7417501035883b1b153de10314d5a78560ad22a6d69a37ff39eb2c",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-25T14:04:54.97497227Z",
+                "FinishedAt": "2026-10-25T14:05:09.646839562Z"
+              }
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-25T14:04:53.314851142Z",
+                "FinishedAt": "2026-10-25T14:05:10.510475023Z"
+              }
+            }
+          ],
+          "source": "d7c4ad2bf5d28708f70135214d2c049dd5395875",
+          "tree": "6a668fd01a765e863af4c02a67839ceaea128ea6",
+          "retained_run": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-guards-d7c4ad2",
+          "runtime": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-guards-d7c4ad2/verified-run.json",
+            "sha256": "6d7623344692c2e2b64c2315361628004f38e762a1f87522b73b40b5f267c47f"
+          },
+          "owner": "a72b3ca9a79d8602987d17fadfdc31d4",
+          "databases": [
+            "bb_compacted_later_retirement_guard_d7c4ad2_claims",
+            "bb_compacted_later_retirement_guard_d7c4ad2_missing_required"
+          ],
+          "processes": "Runtime97412/raw20474 joined0; clientc9222a0a exited143 and PG71775507 exited0/PID0/noOOM with expected labels. All four custodys closed/joined/backend absent; failed SQL Control12/14 remain active rows, not active processes.",
+          "preservation": "Both origin SQL/catalog/native/input/physical maps unchanged, isolation arrays empty. Required2:1 original298B remains in missing-required/quarantined-missing-required, plus seven optional originals in claims quarantine. Preserve databases, worktrees, logs, diagnostics and failures.",
+          "free_bytes_after": 185373667328
         }
       }
     }

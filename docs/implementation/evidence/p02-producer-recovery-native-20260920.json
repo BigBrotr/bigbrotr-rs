@@ -46702,7 +46702,7 @@
                     "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
                     "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
                     "scope": "Explicit compacted observation/Check/typed ACK/retirement and retained-count/window distinction. Actual qualified5b claims-retry supplies genuine acquired-and-abandoned origin. No Archive/floor/unlink qualification.",
-                    "next": "Extend existing fixture for genuine unabandoned acquisition and missing-required-input refusals; source audit first, same06 artifact reuse. Remaining delivery/wait/drift and other product gates stay open.",
+                    "next": "Genuine live-activator import refusal source audit, then existing-runner extension; remaining delivery/wait/drift and Archive consumers stay separate incomplete gates.",
                     "source_receipt": {
                       "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-implementation-v1.json",
                       "sha256": "ae46ff04042fd221033f42e51fb8a78ce9f917582ede125d218950b8fe6e0da9"
@@ -46762,7 +46762,7 @@
                       "sha256": "5d5cee57509e70556707dea64969e248a965242a357e9cada3201c3c2fe37dd9"
                     },
                     "not_run": [
-                      "Genuine unabandoned/import job and missing required input retirement refusals",
+                      "Genuine live-activator import claim retirement refusal",
                       "Nonzero/Event/Sync retirement and ACK advancement",
                       "Retirement COMMIT loss, lock cancellation/UTC expiry and post-proof H/D/input drift",
                       "Archive, reclamation, mixed restore and capacity qualification"
@@ -46792,13 +46792,58 @@
                     "archive_ref": "refs/archive/20261025/compacted-later-retirement",
                     "worktree_state": "CLEAN_DETACHED_PRESERVED",
                     "next_guard_work": {
-                      "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+                      "status": "PASS_EXACT06_INSTALLED_REFUSALS_AND_RAW",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-guards-20261025",
                       "branch": "work/compacted-later-retirement-guards",
                       "base": "d1216bfd35b8f2080d645ee88d62930d52fde11f",
                       "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
                       "owners": "compacted_reader_fixture implementation; compacted_reader_review critical; root engine/integration",
-                      "scope": "Two clones/four commands. Genuine claims->Source->retirement unresolved-acquisition refusal; separate actual claims-retry origin with isolated reversible required2:1 quarantine and retirement refusal. Reuse exact06 build and existing runners; import refusal remains separate NOT_RUN."
+                      "scope": "Two clones/four commands. Genuine claims->Source->retirement unresolved-acquisition refusal; separate actual claims-retry origin with isolated reversible required2:1 quarantine and retirement refusal. Reuse exact06 build and existing runners; import refusal remains separate NOT_RUN.",
+                      "source": "d7c4ad2bf5d28708f70135214d2c049dd5395875",
+                      "tree": "6a668fd01a765e863af4c02a67839ceaea128ea6",
+                      "audit": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-refusals-audit-v1.json",
+                        "sha256": "57f3808a11a3f2b117ee57ae9d5789be23257e9e5d7b4e9583cfed8c1c01a395"
+                      },
+                      "design_review": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-refusals-design-critical-v1.json",
+                        "sha256": "a04e4dd9d1ce39e99d9b8c9fbcc1cf6e25e9e11fada835f2b271ce2d02780cea"
+                      },
+                      "source_receipt": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-guards-source-v1.json",
+                        "sha256": "af2b20f2aa8b805f30b3a5fe05a25c5992fc51bb659286ae3087f17c247edb47"
+                      },
+                      "critical_review": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-guards-critical-v1.json",
+                        "sha256": "fd52dd512a00fe6a8f11a0cac999a6afefabd9f1eb27d12d344ddb3f38d2f131"
+                      },
+                      "runtime": {
+                        "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-guards-d7c4ad2/verified-run.json",
+                        "sha256": "6d7623344692c2e2b64c2315361628004f38e762a1f87522b73b40b5f267c47f"
+                      },
+                      "result": "Runtime97412/raw20474 joined0:2clones/4commands/77controls/7965bindings. Full77 SQL224/226/228 and independent233, native93/138->139 and unchanged139 at both refusals. Actual named acquisition-veto nested22/73 matches Control12 PID391. Missing2:1 remains298B in private quarantine. Failed Control12/14 SQL owners stay active; actual processes/backends joined/absent. No terminal/native writes on either refusal.",
+                      "findings": "Draft undefined helper corrected before execution; static-v1 standard __file__ false positive preserved with corrected v2. Actual runtime/raw pass first attempt. Author/source/critical receipts own original diagnostics.",
+                      "not_run": [
+                        "Genuine live-activator import claim retirement refusal",
+                        "Nonzero/Event/Sync retirement and ACK advancement",
+                        "Retirement COMMIT loss, lock cancellation/UTC expiry and post-proof H/D/input drift",
+                        "Archive, reclamation, mixed restore and capacity qualification"
+                      ],
+                      "integration": {
+                        "status": "QUALIFIED_MERGE_PREPARED",
+                        "main_before": "d672e0f01fb9b31b9229c3d1a37ec30420cdf1e2",
+                        "merge_source": "d7c4ad2bf5d28708f70135214d2c049dd5395875",
+                        "scope": "Conflict-free exact three-file fixture merge; product06 unchanged. Commit/push outcome follows."
+                      }
+                    },
+                    "next_archive_work": {
+                      "status": "READ_ONLY_PREREQUISITE_AUDIT_COMPLETE; DESIGN_REVIEW_PENDING; IMPLEMENTATION_NOT_STARTED",
+                      "audit": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
+                        "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
+                      },
+                      "owners": "empty_malformed_floor audit; compacted_reader_review critical; root integrating/runtime owner",
+                      "scope": "Explicit compacted pending/frontier/issuance ownership using existing Check and kernels. Initial retirement origin has8batches/28facts/cuts27,1,0 and no Archive tables; real initialization required. Publication-before-succession/read/export is a separate outstanding journey."
                     }
                   },
                   "integration": {

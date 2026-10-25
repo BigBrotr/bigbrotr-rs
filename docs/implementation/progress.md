@@ -1,80 +1,76 @@
 # Current execution checkpoint
 
-Observed 2026-10-25 on Tux. Goal **ACTIVE** after explicit owner resume.
-M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integration.
+Observed 2026-10-25 on Tux. Goal **ACTIVE**; M1–M5 remain incomplete.
+Q37/Q38 apply. Root owns builds, engines and integration.
 
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `d1216bfd35b8f2080d645ee88d62930d52fde11f` is pushed (91049 joined0).
-Its product integration is `00d13147094d9a0484cab700fe28fb6b55c707b6` (13818 joined0).
-It integrates exact qualified product `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`
-and fixture `4d9a1902f7941b4cda3bc13101a48e50c579802e`, conflict-free.
-Targeted integration checksa7141479 confirm exact source identities and document
-consistency. This follow-up records verified push and retirement of redundant refs;
-no merge/rebase remains pending and no product source has changed.
+Main before this integration is `d672e0f01fb9b31b9229c3d1a37ec30420cdf1e2`, pushed
+(74896 joined0). Conflict-free merge of qualified fixture
+`d7c4ad2bf5d28708f70135214d2c049dd5395875` is being committed with four document
+owners. Product/native runner remain exact `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`.
+Observe actual resulting commit/push on resumption; never guess a future hash.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
 repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.compacted_successor_preparation.
 later_empty_consumer_work.next_source_work_20261025.next_abandonment_work_20261025.
-next_retirement_work`. Its `next_fixture_work` links independent source/critical
-receipts; `runtime` links verified-run. The [inventory](../research/laboratory-inventory.json)
-owns retained resources. Reuse unchanged earlier qualifications.
+next_retirement_work`. Its `next_guard_work` owns the current source/critical/runtime
+receipts; `next_archive_work` records the read-only next-consumer audit.
+The [inventory](../research/laboratory-inventory.json) owns retained resources.
 
-## Current evidence and gaps
+## Evidence and remaining gates
 
-- **PASS:** exact06 build82645 joined0:239tests/130mandatory/14selectors/all16checks
-  includingClippy; receiptc5c607ac. Five ELF identities verified. Product source,
-  critical, format and declarations receipts remain linked in the report.
-- **PASS:** installed4d9 retirement and exact retry, runtime57875/raw1857 joined0:
-  1clone/2commands/43controls/4276bindings, receipt5d5cee57. Full77-table SQL
-  231->234->236;12 lifecycle updates+receipt first, no terminal changes on retry.
-  Original Source/gap/jobs and receipt issuer/time/xmin preserved. Native93/139
-  and required2:1 input unchanged; target I/C/A0 distinct from ancestor floor7.
-- **PASS:** prior exact2d claims->Source->Abandon->retry5b remains separately
-  qualified (4commands/79controls/5811bindings, receipt71a16e17) and supplies
-  the genuine final origin. Original masked component negatives were corrected
-  before build. Offline fixture qualifier v1FAIL is preserved; corrected v2 and
-  final runtime pass. No original failure was overwritten.
-- **NOT_RUN:** genuine unabandoned/import job and missing-input retirement refusals,
-  nonzero/Event/Sync retirement, delivery loss, waits/cancellation/UTCexpiry and
-  post-proof H/D/input drift. Archive, floor writer/unlink, physical limits,
-  mixed restore/backup/capacity and the remaining selected product are incomplete.
-  Initial a99 Sync timeout cause remains unknown. Q33 CI billing, arm64 and
-  signing/registry remain separate gates; no task checkbox is newly closed.
+- **PASS:** exact06 build82645:239tests/130mandatory/14selectors/all16checks
+  includingClippy, receiptc5c607ac; unchanged and reused.
+- **PASS:** installed retirement/retry4d9:1clone/2commands/43controls/4276bindings,
+  receipt5d5cee57. Full77SQL234/236, native93/139/input1,12lifecycle updates+receipt
+  first and immutable terminal retry. Integrated00d13147, pushed13818 joined0.
+- **PASS:** exact06 guards d7c4ad2, runtime97412/raw20474 joined0:
+  2clones/4commands/77controls/7965bindings, receipt6d762334. Genuine claims->Source
+  gives224/226rows, then named acquisition-veto gives228; native138->139->139.
+  Independent ready origin with required2:1 quarantined refuses at233rows,
+  native139/input0. Both refusals add only their actual failed Control claim;
+  no terminal/native writes. Exact workflow22/successor73 observed in PG log.
+  Sourceaf2b20f2/criticalfd52dd51; draft helper correction and static-v1 heuristic
+  false positive preserved. Actual runtime/raw pass on first attempt.
+- **NOT_RUN:** genuine activator-owned import refusal; nonzero/Event/Sync retirement;
+  COMMIT loss, waits/cancellation/UTCexpiry and post-proof H/D/input drift.
+  Archive, floor writer/unlink, physical limits, restore/backup/capacity and
+  remaining selected product stay incomplete. Earlier qualifications/failures
+  remain at their exact sources. Initial a99 Sync timeout cause remains unknown.
+  Q33 CI billing, arm64 and signing/registry are separate gates; no task is closed.
 
-## Active work and preserved resources
+## Owners and preserved resources
 
-No active root engine; runtime/raw/build handles joined. Both installed children
-were unforced/reaped, custody closed/joined and backend absent. Fresh inspections
-show client13cb7cf2 exited143/PID0/noOOM and borrowedPG71775507 exited0/PID0/noOOM,
-with expected owner labels. Isolation arrays empty; all five origin-preservation
-predicates true. Freeafter185,591,275,520bytes. All databases, datasets, .research,
-worktrees, logs, failures and quarantined originals remain.
+No active root engine; all build/runtime/raw handles joined. Four custody receipts
+closed/joined/backend absent. Fresh clientc9222a0a/PG71775507 inspections show
+exited143/0, PID0/noOOM and expected labels. Failed SQL Control12/14 remain active
+rows, not processes. Both origins pass all five preservation predicates; isolation
+arrays empty. Freeafter185,373,667,328bytes. Preserve every database, dataset,
+.research/worktree, log, original failure and quarantined input.
 
-- `.research/compacted-later-retirement-20261025`: clean detached06; author done.
-- `.research/compacted-later-retirement-fixture-20261025`: clean detached4d9;
-  source99cfc3f7/criticaled8cbca7. Both archive refs and verified18,891,904-byte
-  0600 bundle remain; receipt78f4ba10 records local ref retirement after push.
-  Remote branches were absent. No worktree/artifact/database/cache was deleted.
-- `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190`
-  retains exact detached source, database/captures and verified-run.json.
-- Earlier85/2d/5b worktrees remain clean detached, with archive refs and verified
-  bundle; receipt3bec2bb2 owns details. All ignored/external evidence remains.
-- `compacted_reader_fixture` implements the bounded refusal extension in
-  `.research/compacted-later-retirement-guards-20261025`, branch
-  `work/compacted-later-retirement-guards`, based1216bfd. Four actual commands
-  across two clones planned; no runtime yet. `compacted_reader_review` reviews it.
-- `empty_malformed_floor` has a separate read-only prerequisite audit of compacted
-  Archive consumers; no implementation/engine is authorized for that audit.
-  No agent owns builds or laboratory mutations.
+- `.research/compacted-later-retirement-guards-20261025`: clean frozen d7c4ad2,
+  branch `work/compacted-later-retirement-guards`; integrated-source candidate.
+- `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-guards-d7c4ad2`
+  retains detached exact source, both databases/captures and verified-run.json.
+  Missing2:1 remains298B in private quarantine; optional originals also retained.
+- Previous06/4d9 and85/2d/5b worktrees are clean detached with archive refs and
+  verified bundles (receipts78f4ba10/3bec2bb2). No artifact/cache deletion occurred.
+- `compacted_reader_fixture`: read-only audit of genuine live-activator import
+  capture using the existing quiet activation lifecycle/callback; no implementation
+  or new engine assigned yet.
+- `empty_malformed_floor`: Archive audit305ae9a5 complete, no implementation.
+  `compacted_reader_review`: critical design audit of that proposed boundary.
+  Native proof.validate alone is not SQL H/D revalidation; same-transaction guards
+  and retained Check/grant across actual effects are prerequisites.
 
 ## Next action
 
-Review/freeze the existing-runner refusal extension, then root executes its four
-commands and raw replay against exact06. A new actual claims->Source endpoint
-must stop before abandonment; never pair its intermediate SQL with a mutated
-final native store. Missing2:1 uses an isolated clone and reversible quarantine.
-Retain the exact06 build; no unrelated rebuild or repeat of valid prior campaigns.
+Finish current fixture integration/push and reconcile its redundant ref without
+removing worktree/artifacts. Review the import capture audit and assign the minimal
+existing-runner extension in a new worktree. Reuse exact06 build. Read and reconcile
+Archive audit305ae9a5 with critical review before any product implementation;
+new real Archive initialization must not rebind historical physical roots.

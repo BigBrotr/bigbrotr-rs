@@ -547,9 +547,14 @@ retirement and fresh retry from a genuine acquired-and-abandoned origin. All 77
 SQL tables match; the first call updates twelve lifecycle rows and adds its
 terminal receipt, while the retry preserves their original time, row versions
 and issuer. Native state and the required later input remain unchanged; 43 controls
-and raw replay pass. Genuine unresolved-job and missing-input refusals, waits,
-H/D drift and retirement delivery faults remain NOT_RUN. No native retirement,
-floor write, input unlink or Archive capability follows.
+and raw replay pass. Exact fixture `d7c4ad2` also qualifies the actual refusal of
+an unresolved activator-owned acquisition job and an independently quarantined
+required later input. The named SQL guard and distinct native input error match;
+all 77 SQL tables, native data and retained input bytes are checked, including
+77 controls and raw replay. The failed Control claim stays recorded while its
+process and backend are closed. Import-job refusal, waits, H/D drift and retirement
+delivery faults remain NOT_RUN. No native retirement, floor write, input unlink
+or Archive capability follows.
 
 Retry a mode only while its prerequisites remain valid: positive recovery is
 source-open-only, and terminal retirement has its own retry. No mode starts
