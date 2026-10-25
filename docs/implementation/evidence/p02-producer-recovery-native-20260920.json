@@ -46698,7 +46698,7 @@
                   "next_retirement_work": {
                     "status": "PASS_EXACT06_BUILD_AND_INSTALLED_FIRST_RETRY; BROADER_GATES_OPEN",
                     "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
-                    "branch": "work/compacted-later-retirement",
+                    "branch": null,
                     "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
                     "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
                     "scope": "Explicit compacted observation/Check/typed ACK/retirement and retained-count/window distinction. Actual qualified5b claims-retry supplies genuine acquired-and-abandoned origin. No Archive/floor/unlink qualification.",
@@ -46733,7 +46733,7 @@
                     "next_fixture_work": {
                       "status": "FROZEN_REVIEWED_INSTALLED_AND_RAW_PASS",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-fixture-20261025",
-                      "branch": "work/compacted-later-retirement-fixture",
+                      "branch": null,
                       "base": "c803ebb435172a61de6a21e64e6c3762ae18d85a",
                       "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
                       "owners": "compacted_reader_fixture author; compacted_reader_review critical; root runtime/integration",
@@ -46753,7 +46753,9 @@
                         "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190/verified-run.json",
                         "sha256": "5d5cee57509e70556707dea64969e248a965242a357e9cada3201c3c2fe37dd9"
                       },
-                      "result": "Actual two commands match independent full-state model and raw replay. Both custody receipts closed/joined; original Source/gap/job time/xmin and terminal issuer preserved. Offline v1 redundant historical qualifier failure retained; corrected v2 keeps exact14/13/12 sets. All author diagnostics and original failures remain linked in source receipt."
+                      "result": "Actual two commands match independent full-state model and raw replay. Both custody receipts closed/joined; original Source/gap/job time/xmin and terminal issuer preserved. Offline v1 redundant historical qualifier failure retained; corrected v2 keeps exact14/13/12 sets. All author diagnostics and original failures remain linked in source receipt.",
+                      "archive_ref": "refs/archive/20261025/compacted-later-retirement-fixture",
+                      "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "runtime": {
                       "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190/verified-run.json",
@@ -46766,13 +46768,29 @@
                       "Archive, reclamation, mixed restore and capacity qualification"
                     ],
                     "integration": {
-                      "status": "QUALIFIED_MERGE_PREPARED",
+                      "status": "MERGED_AND_PUSHED",
                       "main_before": "1283523175d0fb368594a3d6a9364e889774a082",
                       "last_main_push": "93173 joined0",
                       "merge_source": "4d9a1902f7941b4cda3bc13101a48e50c579802e",
                       "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
-                      "scope": "Conflict-free merge of exact qualified product06 and fixture4d9; reference/report/checkpoint/inventory updated together. Commit/push outcome recorded at next boundary."
-                    }
+                      "scope": "Conflict-free merge retains exact qualified product06 and five fixture4d9 source files. Four documentation owners reconcile actual scope. Two redundant local refs retired after push; clean detached worktrees, archive refs and verified bundle retained.",
+                      "main": "00d13147094d9a0484cab700fe28fb6b55c707b6",
+                      "push": {
+                        "session": 13818,
+                        "joined": true,
+                        "exit": 0
+                      },
+                      "checks": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-integration-checks-v1.json",
+                        "sha256": "a714147905cfda9be368dea777bbe38a7d53657c01c50f3894f8e4809dd95849"
+                      },
+                      "ref_retirement": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-ref-retirement-20261025.json",
+                        "sha256": "78f4ba10ced1d5f39c101939d10fc49fd910b60b57470785579e844e62aa57fe"
+                      }
+                    },
+                    "archive_ref": "refs/archive/20261025/compacted-later-retirement",
+                    "worktree_state": "CLEAN_DETACHED_PRESERVED"
                   },
                   "integration": {
                     "main": "29d0d0dca5f4d1f06c4dcf807bb205ca9aeb07f8",

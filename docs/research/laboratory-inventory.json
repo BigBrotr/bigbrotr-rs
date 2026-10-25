@@ -64694,9 +64694,9 @@
           }
         },
         "later_retirement_work": {
-          "status": "FROZEN_REVIEWED_BUILD_AND_INSTALLED_PASS; INTEGRATION_PREPARED",
+          "status": "QUALIFIED_INTEGRATED_PUSHED_CLEAN_DETACHED_PRESERVED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
-          "branch": "work/compacted-later-retirement",
+          "branch": null,
           "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
           "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
           "audit": {
@@ -64711,12 +64711,18 @@
             "sha256": "c5c607acbc7959e18fc550d1099d93fb0b4c2fa7effa44e9001f794c649a538a"
           },
           "retained_run": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-06d85a8",
-          "processes": "Build82645 joined0; fetch08a9d8111434/native0e5adce77d53 inspected exited0/PID0/noOOM, inventoryunchanged;185681932288bytes freeafterbuild. No active root engine."
+          "processes": "Build82645 joined0; fetch08a9d8111434/native0e5adce77d53 inspected exited0/PID0/noOOM, inventoryunchanged;185681932288bytes freeafterbuild. No active root engine.",
+          "archive_ref": "refs/archive/20261025/compacted-later-retirement",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-ref-retirement-20261025.json",
+            "sha256": "78f4ba10ced1d5f39c101939d10fc49fd910b60b57470785579e844e62aa57fe"
+          },
+          "main": "00d13147094d9a0484cab700fe28fb6b55c707b6"
         },
         "later_retirement_fixture_work": {
-          "status": "FROZEN_REVIEWED_INSTALLED_AND_RAW_PASS; INTEGRATION_PREPARED",
+          "status": "QUALIFIED_INTEGRATED_PUSHED_CLEAN_DETACHED_PRESERVED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-fixture-20261025",
-          "branch": "work/compacted-later-retirement-fixture",
+          "branch": null,
           "base": "c803ebb435172a61de6a21e64e6c3762ae18d85a",
           "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
           "owners": "compacted_reader_fixture author; compacted_reader_review critical; root runtime/integration",
@@ -64770,7 +64776,13 @@
           ],
           "processes": "Runtime57875/raw1857 joined0. Client13cb7cf2 exited143/PID0/noOOM; borrowedPG71775507 exited0/PID0/noOOM, labels verified. Both installed children unforced/reaped; backend absent; isolation unchanged.",
           "preservation": "All original SQL/catalog/native/input/physical predicates true. Retain source worktrees, detached run source, database, .research, original failures, logs and quarantined originals.",
-          "free_bytes_after": 185591275520
+          "free_bytes_after": 185591275520,
+          "archive_ref": "refs/archive/20261025/compacted-later-retirement-fixture",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-ref-retirement-20261025.json",
+            "sha256": "78f4ba10ced1d5f39c101939d10fc49fd910b60b57470785579e844e62aa57fe"
+          },
+          "main": "00d13147094d9a0484cab700fe28fb6b55c707b6"
         }
       }
     }
