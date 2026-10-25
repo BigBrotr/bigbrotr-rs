@@ -5677,7 +5677,7 @@ def verify_later_probe(context,initial,expected,baseline=None,*,input_proof=Fals
     failure=step=='prepare-loss' or missing or drift
     if input_proof:later_input_set(case,expected,initial)
     assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
-        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','wire'}
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','wire'}|({'digest_diagnostic'} if input_proof and name=='prepare_digest' else set())
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after'] and context['inputs_after']==expected[2]
@@ -5726,6 +5726,9 @@ def verify_later_probe(context,initial,expected,baseline=None,*,input_proof=Fals
     result=dict(status='PASS',case=case['name'],tables=77,native_rows=len(t.model.native['rows']),native_sequence=t.model.native['sequence'],
         compacted_requests=0 if missing else 7,original_initial_requests_replayed=0,later_original_requests=0 if missing else 1,input_files=len(expected[2]),
         result='REFUSED_MISSING_REQUIRED_INPUT' if missing else 'PREPARED_SQL_REFUSED_PROOF_DRIFT' if drift else 'PREPARED_NATIVE_OLD_CALLER_UNKNOWN' if failure else 'PREPARED',snapshots=t.snapshots)
+    if input_proof and name=='prepare_digest':
+        result['result']='PREPARED_SQL_REFUSED_CLOSED_SOURCE_COMMITMENT'
+        result['refusal_guard']=later_digest_diagnostic(context['digest_diagnostic'],case,w,held,context['wire']['mutation'])
     if not failure:
         result['prepare_commit']=dict(ordinal=context['wire']['target'],backend=held['backend'],
             preparation_transaction=only(held['control']['ingest_successions'])['preparation_transaction'],
@@ -5758,7 +5761,7 @@ def verify_later_installed(context,initial,expected,baseline=None,*,input_proof=
     drift=input_proof and name in ('empty_head','empty_digest');held=input_proof and name!='installed_missing'
     failure=step=='failure' or refusal
     if input_proof:later_input_set(case,expected,initial)
-    assert set(context)==CONTEXT_FIELDS|({'later_fault'} if name=='closing' else set())
+    assert set(context)==CONTEXT_FIELDS|({'later_fault'} if name=='closing' else set())|({'digest_diagnostic'} if input_proof and name=='empty_digest' else set())
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
@@ -5801,6 +5804,10 @@ def verify_later_installed(context,initial,expected,baseline=None,*,input_proof=
         target_epoch=3,compacted_requests=0 if refusal and not drift else 7,later_original_requests=0 if refusal and not drift else 1,input_files=len(expected[2]),
         result='REFUSED_PROOF_DRIFT' if drift else 'REFUSED_MISSING_REQUIRED_INPUT' if refusal else 'NATIVE_CLOSING_SQL_PREPARED' if failure else 'EXACT_TERMINAL_RETRY' if step=='retry' else 'RETIRED')
     if held:result['empty_proof_commit']=delivery['qualification']
+    if input_proof and name=='empty_digest':
+        record=context['fixture']['delivery_fault']
+        result['result']='REFUSED_CLOSED_SOURCE_COMMITMENT'
+        result['refusal_guard']=later_digest_diagnostic(context['digest_diagnostic'],case,w,record['held'],record['mutation'])
     return result
 
 
@@ -5852,7 +5859,7 @@ def later_controls(context,initial,expected,baseline=None,*,input_proof=False):
 LATER_INPUT_STEPS=dict(absent=('prepare','retire'),prepare_missing=('prepare',),installed_missing=('prepare','retire'),
     prepare_head=('prepare',),prepare_digest=('prepare',),empty_head=('retire',),empty_digest=('retire',))
 LATER_INPUT_ORIGINS={name:'compacted' if name.startswith('empty_') else 'later-terminal' for name in LATER_INPUT_STEPS}
-LATER_INPUT_ERRORS={name:'Progress(InvalidContext)' if name.endswith('_head') else 'Native(Native(StateMismatch))' if name.endswith('_digest')
+LATER_INPUT_ERRORS={name:'Progress(InvalidContext)' if name.endswith('_head') else 'Control(Backend)' if name.endswith('_digest')
     else 'Native(Native(RequestInput(Missing)))' for name in LATER_INPUT_STEPS if name!='absent'}
 # Source candidate only. A fresh successful installed baseline must bind it.
 LATER_EMPTY_PROOF_CANDIDATE=6
@@ -5869,7 +5876,7 @@ class LaterInputProofProfile:
     CASES=tuple(n+'-'+s for n in LATER_INPUT_STEPS for s in LATER_INPUT_STEPS[n])
     GRANTS=HISTORY_GRANTS
     NOT_RUN=('Ordinary75-table basis regression; activation, live and Archive consumers',
-        'Sealed-empty-plan/native dispatch drift, gap proof-use drift and remaining delivery/cancellation/native uncertainty',
+        'Rust canonical D recheck after the earlier SQL closed-source guard; sealed-empty-plan/native dispatch drift, gap proof-use drift and remaining delivery/cancellation/native uncertainty',
         'Actual floor installation, reclamation/unlink, mixed restores and capacity')
 
 
@@ -6041,9 +6048,61 @@ def later_input_controls(context,initial,expected,baseline):
         reject('actor-still-present',lambda v:fault(v)['mutation']['actor_absence']['observations'][0].update(present=True))
         reject('actor-other-delta',lambda v:fault(v)['mutation']['after']['datasets'][0].update(xmin='4294967000'))
         reject('invented-terminal-receipt',lambda v:v['context']['after']['ingest_terminal_transactions'].append(dict(target_epoch=3)))
+    if name in ('prepare_digest','empty_digest'):
+        reject('missing-causal-log',lambda v:v['context'].pop('digest_diagnostic'))
+        reject('wrong-log-command',lambda v:v['context']['digest_diagnostic']['command'].__setitem__(4,'2000-01-01T00:00:00+00:00'))
+        reject('unobserved-log-read',lambda v:v['context']['digest_diagnostic'].update(returncode=1))
+        def corrupt_log(v,old,new):
+            record=v['context']['digest_diagnostic']
+            for stream in ('stdout','stderr'):record[stream]=record[stream].replace(old,new)
+        reject('generic-backend-log',lambda v:corrupt_log(v,'lineage closed-source commitment differs','statement timeout'))
+        reject('wrong-guard-function',lambda v:corrupt_log(v,'lock_ingest_lineage','require_other_lineage'))
+        reject('missing-caller-function',lambda v:corrupt_log(v,'require_ingest_successor','require_other_successor'))
+        reject('foreign-log-pid',lambda v:corrupt_log(v,'['+str(fault(v)['held']['backend']['pid'])+']','[1]'))
     if name=='prepare_missing' or (name=='installed_missing' and not probe):
         reject('wrong-refusal',lambda v:v['context']['response'].update(**({'stdout':v['context']['response']['stdout'].replace('RequestInput(Missing)','StateMismatch')} if probe else {'stderr':'error: timeout\n'})))
     if not probe and name=='absent':
         reject('changed-terminal-attribution',lambda v:only(v['context']['after']['ingest_terminal_transactions'],target_epoch=3).update(control_epoch=999))
         reject('changed-terminal-xmin',lambda v:only(v['context']['after']['source_streams'],owner_epoch=3).update(xmin='4294967000'))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def later_digest_diagnostic(record,case,window,held,mutation):
+    """Bind Backend to the earlier actual SQL D guard, not the Rust resolver."""
+    from datetime import datetime,timezone
+    assert case['clone'] in ('prepare_digest','empty_digest')
+    assert set(record)=={'command','returncode','stdout','stderr'}
+    assert type(record['returncode']) is int and record['returncode']==0
+    command=record['command'];bounds=[datetime.fromtimestamp(window[k]/1_000_000,timezone.utc).isoformat() for k in ('before_us','after_us')]
+    assert command[:7]==['docker','logs','--timestamps','--since',bounds[0],'--until',bounds[1]]
+    assert len(command)==8 and re.fullmatch('[0-9a-f]{64}',command[-1])
+    log=record['stdout']+record['stderr'];assert len(log.encode())<=256*1024
+    backend=held['backend'];start=retained.instant(backend['backend_start'])
+    assert backend['database']==case['database'] and start<held['release_before_us']
+    expression=re.compile(r'^(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d{3}) UTC \[(\d+)\] ([A-Z]+):  (.*)$')
+    records=[]
+    for line in log.splitlines():
+        transport,separator,body=line.partition(' ')
+        assert separator and re.fullmatch(r'\d{4}-\d\d-\d\dT\S+',transport)
+        number(retained.instant(transport),window['before_us'],window['after_us'],integer=True)
+        match=expression.match(body)
+        if match:
+            records.append(dict(time=retained.instant(match[1]+'+00:00'),pid=int(match[2]),level=match[3],message=match[4],lines=[body]))
+        else:
+            assert records and (body.startswith('\t') or body.startswith(' '))
+            records[-1]['lines'].append(body)
+    # PID reuse is excluded by the observed start and the held live claim. The
+    # millisecond server timestamp denotes a1ms interval, never invented us.
+    records=[r for r in records if r['pid']==backend['pid']]
+    index,=[i for i,r in enumerate(records) if r['level']=='ERROR']
+    error=records[index];message=error['message'];sqlstate=None
+    if message.startswith('23514:  '):sqlstate='23514';message=message[len('23514:  '):]
+    assert message=='lineage closed-source commitment differs'
+    assert max(start,held['release_before_us'],mutation['actor_absence']['after_us'])<error['time']+1000
+    assert error['time']<=window['after_us'] and index+1<len(records)
+    context=records[index+1]
+    assert context['level']=='CONTEXT' and error['time']<=context['time']<=window['after_us']
+    assert re.fullmatch(r'PL/pgSQL function control\.lock_ingest_lineage\(bytea,numeric\) line 225 at RAISE',context['message'])
+    assert len(context['lines'])==2 and context['lines'][1]=='\tPL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 9 at assignment'
+    return dict(boundary='SQL_CLOSED_SOURCE_COMMITMENT',backend={k:backend[k] for k in ('pid','backend_start','database')},
+        error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)

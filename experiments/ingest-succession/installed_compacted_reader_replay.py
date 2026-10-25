@@ -720,6 +720,14 @@ def later_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,f
         assert case['status']=='PASS' and case['custody']=='OBSERVED_CLOSED_AND_JOINED' and case['catalog_after']==clone['catalog_before']
         item=lambda suffix:read(folder/(label+'-'+suffix+'.json'))
         context=item('verification');probe=step.startswith('prepare')
+        if input_proof and name in ('prepare_digest','empty_digest'):
+            assert item('digest-diagnostic')==context['digest_diagnostic']
+            assert context['digest_diagnostic']['command'][-1]==report['postgres']
+            # Bind every bounded diagnostic line to the complete saved server log.
+            retained_lines=set(raw(folder/'postgres.log').decode().splitlines())
+            diagnostic=context['digest_diagnostic']
+            for line in (diagnostic['stdout']+diagnostic['stderr']).splitlines():
+                assert re.sub(r'^\d{4}-\d\d-\d\dT\S+ ', '', line) in retained_lines
         fields=('name','clone','origin','operation','predecessor','database','config','custody')+(('proxy_port',) if probe else ())
         assert context['case']=={k:case[k] for k in fields}|dict(status='RUNNING')
         for suffix,key in [('before','before'),('after','after'),('before-native','native_before'),('after-native','native_after'),

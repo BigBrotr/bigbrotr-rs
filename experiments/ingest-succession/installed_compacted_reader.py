@@ -2048,6 +2048,17 @@ def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseli
     return response,window,fault,args
 
 
+def later_digest_log(pg,output,case,window):
+    # Existing finite docker-log observation; no additional SQL or retry.
+    bounds=[datetime.fromtimestamp(window[k]/1_000_000,timezone.utc).isoformat() for k in ('before_us','after_us')]
+    command=['logs','--timestamps','--since',bounds[0],'--until',bounds[1],pg['postgres']]
+    reply=lab.docker(*command,check=False,timeout=5)
+    record=dict(command=['docker',*command],returncode=reply.returncode,stdout=reply.stdout,stderr=reply.stderr)
+    lab.write_json(output/(case['name']+'-digest-diagnostic.json'),record)
+    assert len((reply.stdout+reply.stderr).encode())<=256*1024
+    return record
+
+
 def later_prepare(pg,client,output,case,directory,expected,catalog,initial,baseline,*,input_proof=False):
     label=case['name'];before=schema.rows(pg,case['database']);native=history.dump(client,output,label+'-before',directory)
     inputs=history.inputs_at(directory/'store');oracle.same(before,expected[0]);assert (native,inputs)==expected[1:]
@@ -2061,6 +2072,7 @@ def later_prepare(pg,client,output,case,directory,expected,catalog,initial,basel
         response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,case['database']),
         backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),
         custody=transition.read(output/(label+'-custody.json')),arguments=args,wire=fault)
+    if input_proof and case['clone']=='prepare_digest':context['digest_diagnostic']=later_digest_log(pg,output,case,window)
     lab.write_json(output/(label+'-verification.json'),context)
     result=oracle.verify_later_probe(context,initial,expected,baseline,input_proof=input_proof)
     controls=oracle.later_controls(context,initial,expected,baseline,input_proof=input_proof)
@@ -2118,6 +2130,9 @@ def run_later_sequence(pg,client,output,clone,directory,expected,report,*,seeds,
                         fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
                         assert fault['hit']=='1true';lab.write_json(output/'closing-late-sql.json',fault)
                     context['later_fault']=json.loads(json.dumps(fault));lab.write_json(output/(case['name']+'-verification.json'),context)
+                if input_proof and name=='empty_digest':
+                    context['digest_diagnostic']=later_digest_log(pg,output,case,context['server_window'])
+                    lab.write_json(output/(case['name']+'-verification.json'),context)
                 return oracle.verify_later_installed(context,initial,expected,baseline,input_proof=input_proof)
             expected=installed_cycle.execute(pg,client,output,case,directory,expected,history.catalog(pg,clone['database']),initial,
                 checks=(verify,lambda c,s:oracle.later_controls(c,initial,expected,baseline,input_proof=input_proof),partial(oracle.later_closed,input_proof=input_proof)),fault=hook)
