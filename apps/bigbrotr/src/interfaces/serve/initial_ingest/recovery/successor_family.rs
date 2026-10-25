@@ -111,7 +111,7 @@ async fn own(
     };
     let compacted_replay = matches!(
         mode,
-        Mode::Resolve | Mode::CloseSource | Mode::AbandonAcquisition
+        Mode::Resolve | Mode::CloseSource | Mode::AbandonAcquisition | Mode::Retire
     ) && custody
         .native
         .as_ref()
@@ -161,7 +161,7 @@ async fn own(
         drop(ack_effects);
     }
     if matches!(mode, Mode::AbandonAcquisition | Mode::Retire) {
-        // Abandonment retains its canonical Check through terminal job writes.
+        // Abandonment and retirement retain Check through terminal job writes.
         // The compacted ACK overlap above already dominates this grant; admit
         // the actual job overlap explicitly rather than rely on equal constants.
         drop(grant(&budget, FINAL_JOB_BYTES, 0)?);
@@ -231,7 +231,10 @@ async fn own(
             work.source(&mut custody, metadata, closing, mode, compacted_replay)
                 .await?
         }
-        Mode::Retire => work.retire(&mut custody, metadata, closing).await?,
+        Mode::Retire => {
+            work.retire(&mut custody, metadata, closing, compacted_replay)
+                .await?
+        }
         Mode::RetireEmpty => work.retire_empty(&mut custody, metadata, closing).await?,
     };
     let grace = duration(&root, "graceful_shutdown_timeout");

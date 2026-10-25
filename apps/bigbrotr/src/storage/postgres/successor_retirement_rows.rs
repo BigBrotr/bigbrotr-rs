@@ -55,7 +55,9 @@ pub(super) fn require_head(
         || head.source_cut.is_none()
         || head.source_digest.is_none()
         || issued != head.reserved
-        || issued > u64::from(limit)
+        // The immutable window bounds outstanding credit, not the cumulative
+        // retained prefix. Typed progress and native ACK are checked separately.
+        || issued > 64
         || head.producer
             != if terminal.retired_at.is_some() {
                 ProducerState::Retired

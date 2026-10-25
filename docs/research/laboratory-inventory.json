@@ -64694,7 +64694,7 @@
           }
         },
         "later_retirement_work": {
-          "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
+          "status": "FROZEN_REVIEWED_BUILD_AND_INSTALLED_PASS; INTEGRATION_PREPARED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
           "branch": "work/compacted-later-retirement",
           "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
@@ -64714,7 +64714,7 @@
           "processes": "Build82645 joined0; fetch08a9d8111434/native0e5adce77d53 inspected exited0/PID0/noOOM, inventoryunchanged;185681932288bytes freeafterbuild. No active root engine."
         },
         "later_retirement_fixture_work": {
-          "status": "SOURCE_IN_PROGRESS; INSTALLED_NOT_RUN",
+          "status": "FROZEN_REVIEWED_INSTALLED_AND_RAW_PASS; INTEGRATION_PREPARED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-fixture-20261025",
           "branch": "work/compacted-later-retirement-fixture",
           "base": "c803ebb435172a61de6a21e64e6c3762ae18d85a",
@@ -64724,7 +64724,53 @@
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-fixture-reuse-audit-v1.json",
             "sha256": "4455550e39f6f3e4fdad2581902d4825fae2b760d4b4e4612915ad635f8c6a64"
           },
-          "scope": "Separate writable fixture worktree; no engine/resources allocated for this future installed run."
+          "scope": "One clone/two installed commands with genuine retained acquired-and-abandoned origin; no engine/artifact deletion.",
+          "source": "4d9a1902f7941b4cda3bc13101a48e50c579802e",
+          "tree": "68d48154a17caba0de9a872dbfb3ce17404a63b9",
+          "retained_run": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190",
+          "runtime": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190/verified-run.json",
+            "sha256": "5d5cee57509e70556707dea64969e248a965242a357e9cada3201c3c2fe37dd9"
+          },
+          "database": "bb_compacted_later_retirement_4d9a190_retirement",
+          "owner": "40c3c2854b271fbce854cdedb95bb9a6",
+          "resources": [
+            {
+              "id": "13cb7cf2e84b34697226015108328e3f6d8538c46bc8a3c31a29e467e0791826",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-25T13:43:21.23519287Z",
+                "FinishedAt": "2026-10-25T13:43:27.221273707Z"
+              }
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "state": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-25T13:43:19.971862974Z",
+                "FinishedAt": "2026-10-25T13:43:27.731663174Z"
+              }
+            }
+          ],
+          "processes": "Runtime57875/raw1857 joined0. Client13cb7cf2 exited143/PID0/noOOM; borrowedPG71775507 exited0/PID0/noOOM, labels verified. Both installed children unforced/reaped; backend absent; isolation unchanged.",
+          "preservation": "All original SQL/catalog/native/input/physical predicates true. Retain source worktrees, detached run source, database, .research, original failures, logs and quarantined originals.",
+          "free_bytes_after": 185591275520
         }
       }
     }

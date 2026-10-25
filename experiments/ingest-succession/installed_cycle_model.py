@@ -268,7 +268,8 @@ class Model:
         self.pg['role_instances'].append(dict(role_instance_id=rid, dataset_id=self.ds['dataset_id'],
             role='control', created_at_us=role['created_at_us'], retired_at_us=role['retired_at_us'], xmin=actual['xmin']))
 
-    def mutation(self, observed, operation, known):
+    def mutation(self, observed, operation, known, *, retirement_claim_key=None):
+        assert retirement_claim_key is None or (operation == 'retire' and retirement_claim_key == 'a6' * 16)
         head, issued, cut, digest = (known[k] for k in ('head', 'issued', 'cut', 'digest'))
         producer = only(self.pg['producer_epochs'], producer_epoch=head)
         source = only(self.pg['source_streams'], owner_epoch=head)
@@ -324,7 +325,7 @@ class Model:
                 assert job['state'] == 'cancelled' and job['job_revision'] == 4
         else:
             assert operation == 'retire' and source['state'] == 'closed'
-            job = only(self.pg['jobs'], request_key='\\x' + 'e4' * 16)
+            job = only(self.pg['jobs'], request_key='\\x' + (retirement_claim_key or 'e4' * 16))
             gap = only(self.pg['acquisition_gaps'], job_id=job['job_id'])
             assert job['state'] == 'cancelled' and gap['producer_epoch'] == head
             if producer['state'] == 'closing':

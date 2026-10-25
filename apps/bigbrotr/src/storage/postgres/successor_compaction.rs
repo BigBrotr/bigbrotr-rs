@@ -39,6 +39,54 @@ impl Check {
         let view = owner
             .compacted_predecessor(recovery, self.limits, &self.effects, cancelled)
             .map_err(effect_error)?;
+        self.resolve_recovery_view(tx, recovery, view, lease, policy, cancelled)
+            .await
+    }
+    pub(super) fn validate_retirement(
+        &self,
+        recovery: &IngestRecovery,
+        owner: &crate::storage::rocks::store::NativeSuccessorRetirement,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        owner
+            .compacted_predecessor(recovery, self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        Ok(())
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "retained retirement view, transaction and unchanged authority"
+    )]
+    pub(super) async fn resolve_retirement<'a>(
+        &self,
+        tx: &Transaction<'_>,
+        recovery: &'a IngestRecovery,
+        owner: &'a crate::storage::rocks::store::NativeSuccessorRetirement,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &'a AtomicBool,
+    ) -> Result<crate::storage::rocks::store::VerifiedCompactedPrefix<'a>, ProducerResolveError>
+    {
+        let view = owner
+            .compacted_predecessor(recovery, self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        self.resolve_recovery_view(tx, recovery, view, lease, policy, cancelled)
+            .await
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "one shared H/D protocol under the retained grant and transaction"
+    )]
+    async fn resolve_recovery_view<'a>(
+        &self,
+        tx: &Transaction<'_>,
+        recovery: &'a IngestRecovery,
+        view: crate::storage::rocks::store::CompactedRecoveryPredecessor<'a>,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &'a AtomicBool,
+    ) -> Result<crate::storage::rocks::store::VerifiedCompactedPrefix<'a>, ProducerResolveError>
+    {
         producer_progress::recovery::require_compacted_recovery(
             tx,
             recovery,

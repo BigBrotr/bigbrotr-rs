@@ -46696,13 +46696,13 @@
                     "sha256": "5b121b79df99289771e296093e47460559d225a32db97c6ce447e147e57d4ec8"
                   },
                   "next_retirement_work": {
-                    "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
+                    "status": "PASS_EXACT06_BUILD_AND_INSTALLED_FIRST_RETRY; BROADER_GATES_OPEN",
                     "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
                     "branch": "work/compacted-later-retirement",
                     "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
                     "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
-                    "scope": "Explicit compacted retirement wrapper/Check/ACK reuse and retained-count/window distinction; no Archive/floor/unlink. First prospective installed origin is qualified5b2f7f3 claims-retry; no synthetic historical attribution.",
-                    "next": "Review/freeze existing-runner one-clone/two-command independent retirement fixture, then root executes installed first/retry and raw replay at exact06 before integration.",
+                    "scope": "Explicit compacted observation/Check/typed ACK/retirement and retained-count/window distinction. Actual qualified5b claims-retry supplies genuine acquired-and-abandoned origin. No Archive/floor/unlink qualification.",
+                    "next": "Extend existing fixture for genuine unabandoned acquisition and missing-required-input refusals; source audit first, same06 artifact reuse. Remaining delivery/wait/drift and other product gates stay open.",
                     "source_receipt": {
                       "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-implementation-v1.json",
                       "sha256": "ae46ff04042fd221033f42e51fb8a78ce9f917582ede125d218950b8fe6e0da9"
@@ -46729,16 +46729,49 @@
                       "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-06d85a8/verified-build.json",
                       "sha256": "c5c607acbc7959e18fc550d1099d93fb0b4c2fa7effa44e9001f794c649a538a"
                     },
-                    "result": "Build82645 joined0;239tests/130mandatory/14selectors/all16checks includingClippy PASS. Old13/120 preserved plus5native/5PG;5ELFs verified, build containersstopped0, isolationunchanged. Installed/runtime NOT_RUN.",
+                    "result": "Build82645 joined0:239tests/130mandatory/14selectors/all16checks includingClippy. Installed57875/raw1857 joined0:1clone/2commands/43controls/4276bindings; full77SQL234->236, native93/139/input1 unchanged, terminal12updates+receipt then preserved exact retry.",
                     "next_fixture_work": {
-                      "status": "SOURCE_IN_PROGRESS; INSTALLED_NOT_RUN",
+                      "status": "FROZEN_REVIEWED_INSTALLED_AND_RAW_PASS",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-fixture-20261025",
                       "branch": "work/compacted-later-retirement-fixture",
                       "base": "c803ebb435172a61de6a21e64e6c3762ae18d85a",
                       "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
                       "owners": "compacted_reader_fixture author; compacted_reader_review critical; root runtime/integration",
                       "scope": "One isolated clone of actual qualified5b claims-retry; installed Retire+retry. Expected whole77SQL234\u2192236, native93/139/input1 unchanged,12target lifecycle updates+receipt first and preserved exact retry. No new probe/client/proxy or invented historical attribution.",
-                      "prerequisite_merge": "Root merged main2fbb+06 in separate fixture branch, resolving only reference conflict to preserve qualified5b claims. Apps/Cargo/native.py exactly06; main product remains2d until connected qualification."
+                      "prerequisite_merge": "c803ebb combined main2fbb+06 in separate fixture branch, resolving only reference conflict to retain qualified5b claims. Exact apps/Cargo/native.py06 reused for current qualification.",
+                      "source": "4d9a1902f7941b4cda3bc13101a48e50c579802e",
+                      "tree": "68d48154a17caba0de9a872dbfb3ce17404a63b9",
+                      "source_receipt": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-fixture-source-v1.json",
+                        "sha256": "99cfc3f76ea50867c7eb2a469007aba0329fa5f36e46c718b08c4b0332028e9a"
+                      },
+                      "critical_review": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-fixture-critical-v1.json",
+                        "sha256": "ed8cbca70f0d8f7a1d58f2e4dca653bd6489314d26ca2b94a6f85b1f5937b291"
+                      },
+                      "runtime": {
+                        "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190/verified-run.json",
+                        "sha256": "5d5cee57509e70556707dea64969e248a965242a357e9cada3201c3c2fe37dd9"
+                      },
+                      "result": "Actual two commands match independent full-state model and raw replay. Both custody receipts closed/joined; original Source/gap/job time/xmin and terminal issuer preserved. Offline v1 redundant historical qualifier failure retained; corrected v2 keeps exact14/13/12 sets. All author diagnostics and original failures remain linked in source receipt."
+                    },
+                    "runtime": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-4d9a190/verified-run.json",
+                      "sha256": "5d5cee57509e70556707dea64969e248a965242a357e9cada3201c3c2fe37dd9"
+                    },
+                    "not_run": [
+                      "Genuine unabandoned/import job and missing required input retirement refusals",
+                      "Nonzero/Event/Sync retirement and ACK advancement",
+                      "Retirement COMMIT loss, lock cancellation/UTC expiry and post-proof H/D/input drift",
+                      "Archive, reclamation, mixed restore and capacity qualification"
+                    ],
+                    "integration": {
+                      "status": "QUALIFIED_MERGE_PREPARED",
+                      "main_before": "1283523175d0fb368594a3d6a9364e889774a082",
+                      "last_main_push": "93173 joined0",
+                      "merge_source": "4d9a1902f7941b4cda3bc13101a48e50c579802e",
+                      "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+                      "scope": "Conflict-free merge of exact qualified product06 and fixture4d9; reference/report/checkpoint/inventory updated together. Commit/push outcome recorded at next boundary."
                     }
                   },
                   "integration": {
