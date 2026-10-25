@@ -64694,7 +64694,7 @@
           }
         },
         "later_retirement_work": {
-          "status": "SOURCE_IN_PROGRESS; BUILD_AND_INSTALLED_NOT_RUN",
+          "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
           "branch": "work/compacted-later-retirement",
           "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
@@ -64703,7 +64703,28 @@
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-prerequisite-audit-20261025.json",
             "sha256": "5b121b79df99289771e296093e47460559d225a32db97c6ce447e147e57d4ec8"
           },
-          "preservation": "Dedicated writable worktree; no engine or build started. Previous source/build/run/negative artifacts unchanged."
+          "preservation": "Exact frozen06 worktree and detached build source retained; all prior sources/runs/failures intact.",
+          "source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+          "tree": "9732001b5771e52c805398dcbb0f0c7ad289e230",
+          "build": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-06d85a8/verified-build.json",
+            "sha256": "c5c607acbc7959e18fc550d1099d93fb0b4c2fa7effa44e9001f794c649a538a"
+          },
+          "retained_run": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-06d85a8",
+          "processes": "Build82645 joined0; fetch08a9d8111434/native0e5adce77d53 inspected exited0/PID0/noOOM, inventoryunchanged;185681932288bytes freeafterbuild. No active root engine."
+        },
+        "later_retirement_fixture_work": {
+          "status": "SOURCE_IN_PROGRESS; INSTALLED_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-fixture-20261025",
+          "branch": "work/compacted-later-retirement-fixture",
+          "base": "c803ebb435172a61de6a21e64e6c3762ae18d85a",
+          "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+          "owners": "compacted_reader_fixture author; compacted_reader_review critical; root runtime/integration",
+          "audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-fixture-reuse-audit-v1.json",
+            "sha256": "4455550e39f6f3e4fdad2581902d4825fae2b760d4b4e4612915ad635f8c6a64"
+          },
+          "scope": "Separate writable fixture worktree; no engine/resources allocated for this future installed run."
         }
       }
     }

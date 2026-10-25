@@ -46696,13 +46696,50 @@
                     "sha256": "5b121b79df99289771e296093e47460559d225a32db97c6ce447e147e57d4ec8"
                   },
                   "next_retirement_work": {
-                    "status": "SOURCE_IN_PROGRESS; BUILD_AND_INSTALLED_NOT_RUN",
+                    "status": "FROZEN_REVIEWED_BUILD_PASS; INSTALLED_NOT_RUN",
                     "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-20261025",
                     "branch": "work/compacted-later-retirement",
                     "base": "2d5e161363b71b1c1c475e5eb654185011238eb1",
                     "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
                     "scope": "Explicit compacted retirement wrapper/Check/ACK reuse and retained-count/window distinction; no Archive/floor/unlink. First prospective installed origin is qualified5b2f7f3 claims-retry; no synthetic historical attribution.",
-                    "next": "Review/freeze minimal source and component declarations, root build then existing-runner whole-state retirement/retry fixture."
+                    "next": "Review/freeze existing-runner one-clone/two-command independent retirement fixture, then root executes installed first/retry and raw replay at exact06 before integration.",
+                    "source_receipt": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-implementation-v1.json",
+                      "sha256": "ae46ff04042fd221033f42e51fb8a78ce9f917582ede125d218950b8fe6e0da9"
+                    },
+                    "critical_review": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-critical-v1.json",
+                      "sha256": "dd2db0edc1d2244ab47b60650c166078218d03d713bc6837bdee38b4d61ad307"
+                    },
+                    "format": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-format-v1.json",
+                      "sha256": "2020b982885448dd72074b1f05bce43cc4293c95f62e45d2e888583690dba2b4"
+                    },
+                    "declarations": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-declarations-v1.json",
+                      "sha256": "a8a7460ba489e00b48d9161a46e297209dc31473687264130347b49eea5304f1"
+                    },
+                    "fixture_reuse_audit": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-fixture-reuse-audit-v1.json",
+                      "sha256": "4455550e39f6f3e4fdad2581902d4825fae2b760d4b4e4612915ad635f8c6a64"
+                    },
+                    "source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+                    "tree": "9732001b5771e52c805398dcbb0f0c7ad289e230",
+                    "build": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-06d85a8/verified-build.json",
+                      "sha256": "c5c607acbc7959e18fc550d1099d93fb0b4c2fa7effa44e9001f794c649a538a"
+                    },
+                    "result": "Build82645 joined0;239tests/130mandatory/14selectors/all16checks includingClippy PASS. Old13/120 preserved plus5native/5PG;5ELFs verified, build containersstopped0, isolationunchanged. Installed/runtime NOT_RUN.",
+                    "next_fixture_work": {
+                      "status": "SOURCE_IN_PROGRESS; INSTALLED_NOT_RUN",
+                      "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-fixture-20261025",
+                      "branch": "work/compacted-later-retirement-fixture",
+                      "base": "c803ebb435172a61de6a21e64e6c3762ae18d85a",
+                      "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+                      "owners": "compacted_reader_fixture author; compacted_reader_review critical; root runtime/integration",
+                      "scope": "One isolated clone of actual qualified5b claims-retry; installed Retire+retry. Expected whole77SQL234\u2192236, native93/139/input1 unchanged,12target lifecycle updates+receipt first and preserved exact retry. No new probe/client/proxy or invented historical attribution.",
+                      "prerequisite_merge": "Root merged main2fbb+06 in separate fixture branch, resolving only reference conflict to preserve qualified5b claims. Apps/Cargo/native.py exactly06; main product remains2d until connected qualification."
+                    }
                   },
                   "integration": {
                     "main": "29d0d0dca5f4d1f06c4dcf807bb205ca9aeb07f8",

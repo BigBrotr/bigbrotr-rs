@@ -6,11 +6,12 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `29d0d0dca5f4d1f06c4dcf807bb205ca9aeb07f8` is pushed (27956 joined0),
+Main `2fbb3c5797a15be481ea06356e90b20bdd2401b2` is pushed (41154 joined0),
 including qualified fixture `5b2f7f3072c0480aee05c9021c405802de866951` and its
 product85/probe2d ancestors. Product sources/native build runner remain exact
 `2d5e161363b71b1c1c475e5eb654185011238eb1`; five fixture files remain exact5b2f7f3.
-This documentation update records ref retirement. No merge/rebase is pending.
+This documentation update records retirement06 build qualification and its fixture.
+No merge/rebase is pending; product main remains2d until the connected test passes.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
@@ -34,6 +35,11 @@ owns resources. Reuse unchanged evidence and linked earlier qualifications.
   includingClippy. Source/critical fixture receipts037d43a6/4b7393df.
   Original diagnostic lookup failure and missing-custody negative are preserved;
   corrected final source and actual runtime pass.
+- **PASS:** exact retirement06 build82645 joined0:239tests/130mandatory/14selectors/
+  all16checks includingClippy, fiveELFs verified; receiptc5c607ac. Sourceae46ff04,
+  criticaldd2db0ed, format2020b982 and declarationsa8a7460b linked in report.
+  Two masked basis negatives were corrected before execution; all final tests pass.
+  Installed retirement is still **NOT_RUN**.
 - Prior exact5ed Sourcepublication faults24 and baselineb2/Sourceb370 remain
   separately qualified at their original sources, as do earlier recovery/live/
   input/empty/retirement results. Changed verifiers retain strict source bindings.
@@ -49,7 +55,8 @@ No active root engine; all build/runtime/raw handles joined. After5b2f7f3,
 clientecaad6f6 and borrowedPG71775507 were inspected exited143/0, PID0/noOOM.
 All four custody receipts report closed/joined and backend absence; isolation
 arrays are empty and all five origin-preservation predicates pass.
-Freeafterrun185,992,122,368bytes. All originals, databases, datasets, logs,
+Build fetch08a9d811/native0e5adce7 were inspected exited0/PID0/noOOM.
+Freeafterbuild185,681,932,288bytes. All originals, databases, datasets, logs,
 .research, worktrees and failures remain.
 
 - Abandonment85, claimsprobe2d and acquisitionfixture5b2f7f3 worktrees are clean
@@ -61,15 +68,21 @@ Freeafterrun185,992,122,368bytes. All originals, databases, datasets, logs,
   retains the detached exact source, raw captures, quarantined originals and
   verified-run.json. Its claims-retry endpoint is now a genuine positive origin.
 - `.research/compacted-later-retirement-20261025`, branch
-  `work/compacted-later-retirement`, base2d: `empty_malformed_floor` implements
-  the bounded adaptation; `compacted_reader_review` reviews it. Source in progress,
-  build/runtime **NOT_RUN**. `compacted_reader_fixture` audits existing fixture
-  reuse read-only. No agent engine or build is authorized.
+  `work/compacted-later-retirement`: clean frozen06d85a8, reviewed and build-qualified.
+  Author completed; no active author process.
+- `.research/compacted-later-retirement-fixture-20261025`, branch
+  `work/compacted-later-retirement-fixture`, basec803ebb4: root merged main2fbb+06
+  here only, reconciling one reference conflict; product/native runner exactly06.
+  `compacted_reader_fixture` writes five Python owners; `compacted_reader_review`
+  reviews them. Fixture audit4455550e read; runtime **NOT_RUN**. No agent engine
+  or build is authorized.
 
 ## Next action
 
-Review/freeze the existing retirement wrapper/Check/ACK adaptation, including the
-retained-count64 versus outstanding-window bound. Root builds its exact revision
-and qualifies installed retirement/retry from the retained5b2f7f3 claims-retry
-endpoint using the existing whole-state/raw runner. Keep required refusal,
-concurrency, fault and remaining product gates explicit; no new parallel plan.
+Review/freeze the existing-runner retirement fixture (one clone/two installed
+commands), then root executes Retire and exact retry from retained5b2f7f3
+claims-retry using qualified06 artifacts, followed by raw replay. Expected full
+77-table SQL234→236, native93/139 and required2:1 unchanged;12 lifecycle updates
+plus receipt only on first call. Integrate only the coherent qualified result.
+Required job/import/input refusals, concurrency/fault and remaining product gates
+remain explicit in the report; no new parallel plan.
