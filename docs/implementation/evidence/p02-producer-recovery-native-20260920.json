@@ -46853,7 +46853,7 @@
                       "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
-                      "status": "SOURCE_REVIEW_CLEAR; CORRECTED_COMPONENTS_PASS; INSTALLED_BUILD_RUNNING; ENGINE_NOT_RUN",
+                      "status": "SOURCE_INTEGRATED_PUSHED; DUAL_BUILD_PASS; ENGINE_FIXTURE_IN_PROGRESS",
                       "audit": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
@@ -46876,15 +46876,16 @@
                         "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; ENGINE_NOT_RUN",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
                         "branch": "work/compacted-later-archive-fixture",
-                        "base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
+                        "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "audit": {
                           "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-audit-v1.json",
                           "sha256": "6bf32a9efae58b21ffc7c1e36c0c1bf851841929ade9ddf2c34c7701fd704fc0"
                         },
                         "owner": "compacted_reader_fixture; root sole runtime/integration",
                         "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-                        "prerequisites": "c49 components qualified; same-source archive-installed worker/CLI still running. Complete virgin mapping/stat, full77 state, five invocations, custody and raw binding review before execution.",
-                        "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained."
+                        "prerequisites": "Exact c49 dual builds qualified; draft reconciled onto integrated eb4933af with preserved pre-update patch. Final caller/raw/dual-build review and freeze pending.",
+                        "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained.",
+                        "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b"
                       },
                       "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
                       "tree": "60d9d237a06b85eb8b10d9b5feba56620d7d353a",
@@ -46921,12 +46922,27 @@
                         "sha256": "b1b6b362ece86637c4194ce3ecc183b261f8940241ff43af09f8726abf2fcbc3"
                       },
                       "installed_build": {
-                        "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-c49cfe5",
-                        "session": 42512,
-                        "status": "RUNNING; NOT_YET_JOINED"
+                        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-c49cfe5/verified-build.json",
+                        "sha256": "7ea05b5c46cfbdcf4076c5808e2f1929c147366bfe218cb82991f230d84570e5"
                       },
-                      "result": "c49 components80612 joined0:45 tests,7 mandatory controls,6 selectors/all7 checks incl library Clippy. Original280 test-premise failures retained, corrected only in test owner. Installed CLI/worker and actual first publication/retry remain separate.",
-                      "next": "Join exact c49 archive-installed build, inspect actual artifacts/tests; integrate only coherent qualified source, then reconcile and freeze independent modern Archive fixture for five actual commands."
+                      "result": "c49 components80612 joined0:45 tests/7mandatory/6selectors/all7checks incl library Clippy. Installed42512 joined0:56tests/4mandatory/3selectors/all5checks incl Clippy; actual CLI/probe/worker, embedded identity and pinned bundle postchecks PASS. Original280 test-premise failures retained. Actual first publication/retry and SQL cancellation remain unqualified.",
+                      "next": "Freeze and critically review the reconciled modern Archive fixture, including dual-build identities, virgin setup, five actual invocations, full77 SQL, signed rows, physical journals and raw replay. Root then executes exact source.",
+                      "integration": {
+                        "commit": "eb4933afaba61c505594d4502fb0774da5cec91e",
+                        "push": {
+                          "session": 50532,
+                          "exit": 0,
+                          "joined": true
+                        },
+                        "checks": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-integration-checks-v1.json",
+                          "sha256": "4817903755962ce8233776fdec9c5ff3298cacc9f0b1d0f43b03489b517dcd46"
+                        }
+                      },
+                      "ref_retirement": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-ref-retirement-20261025.json",
+                        "sha256": "dcaf38cf1c6f02ef95de8277f91b8b920dec2e9710665e79ea4438dcaf3368c0"
+                      }
                     },
                     "next_import_work": {
                       "status": "PASS_INTEGRATED_PUSHED; CLEAN_DETACHED_SOURCE_PRESERVED",
