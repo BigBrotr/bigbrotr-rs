@@ -47009,7 +47009,7 @@
                         "sha256": "7ea05b5c46cfbdcf4076c5808e2f1929c147366bfe218cb82991f230d84570e5"
                       },
                       "result": "Unchanged c49 dual builds PASS (45component+56installed tests and required Clippy/worker controls); e040 first-publication/retry and raw PASS62controls; d6a actual loader cancellation/loss and raw PASS86controls. Original280,995,598 and loader diagnosticv1 failures preserved. No phase/task closure.",
-                      "next": "Loader qualified; integrate and push, then audited successful post-proof reader hold baseline before H/D mutations. M1-M5 and remaining task gates incomplete.",
+                      "next": "Review minimal explicit proxy identity and held-context capture/model/raw changes; freeze, then root qualifies actual baseline with unchanged c49 builds.",
                       "integration": {
                         "commit": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "push": {
@@ -47039,9 +47039,9 @@
                         "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
                       },
                       "next_loader_work": {
-                        "status": "D6A_QUALIFIED; INTEGRATION_IN_CURRENT_MERGE",
+                        "status": "D6A_QUALIFIED_INTEGRATED_PUSHED_STOPPED_RETAINED",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-loader-fixture-20261025",
-                        "branch": "work/compacted-later-archive-loader-fixture",
+                        "branch": "DETACHED",
                         "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
                         "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
                         "scope": "Two actual genuinely initialized roots from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control-backend loss. Scope limits and immutable diagnostic v1 NameError are in linked source/critical/runtime receipts.",
@@ -47075,9 +47075,16 @@
                         },
                         "result": "Runtime18069 and raw45851 joined0;2clones/8commands/86controls/4401bindings. Per clone236/236/240/242; exact failed activeControl+role only, native93/139/input1/catalog/journals unchanged. Actions before conservative refresh+1s by663362us/663686us; actual unforced child/holder closure and all backend absence before native-after.",
                         "integration": {
-                          "parent": "0c9bb861508aa7cb4b361db8544e503ec905987a",
-                          "fixture": "d6a6b6f112742b9360fac17e1480a3019b6ca42e",
-                          "status": "Part of current merge; push pending"
+                          "commit": "190dd5c57b252edbb7590bcaf3917a341eaae5ce",
+                          "push": {
+                            "session": 74892,
+                            "joined": true,
+                            "exit": 0
+                          },
+                          "checks": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-loader-integration-checks-v1.json",
+                            "sha256": "05a7cb8ea945ef60429d195926c461da1c9117be0f475a425670f8eb3b484de5"
+                          }
                         },
                         "not_run": [
                           "Archive post-proof H/D/input drift and capacity refusals",
@@ -47085,7 +47092,23 @@
                           "Internal grant lifetime telemetry, read/export, adoption and retention/GC",
                           "Power-loss, reboot, mixed restore and hostile filesystem mutation",
                           "Actual harness exception/deferred-holder cleanup path; source-reviewed only"
-                        ]
+                        ],
+                        "archived_branch": "work/compacted-later-archive-loader-fixture",
+                        "ref_retirement": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-loader-ref-retirement-20261025.json",
+                          "sha256": "cbcaa791b287251b6dd07ac0a8cec0f06435dde203c4c550b349bffb5145c6ab"
+                        }
+                      },
+                      "next_proof_work": {
+                        "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; RUNTIME_NOT_RUN",
+                        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-proof-fixture-20261025",
+                        "branch": "work/compacted-later-archive-proof-fixture",
+                        "base": "190dd5c57b252edbb7590bcaf3917a341eaae5ce",
+                        "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
+                        "scope": "Measured successful first retained-reader hold/release baseline after genuine initialization; exact provisioned reader/catalog binding in existing proxy, no H/D actor yet. Full independent first-publication expectations and custody; same c49 builds and limits.",
+                        "prerequisites": "Audit58f59342/criticala9fbee10 and qualified e040/d6a; successful actual hold baseline must precede separate post-proof H/D faults.",
+                        "resources": "Only isolated source worktree allocated; no new runtime or build.",
+                        "next": "Review minimal explicit proxy identity and held-context capture/model/raw changes; freeze, then root qualifies actual baseline with unchanged c49 builds."
                       }
                     },
                     "next_import_work": {

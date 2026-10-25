@@ -64998,9 +64998,9 @@
           }
         },
         "later_archive_loader_fixture_work": {
-          "status": "D6A_QUALIFIED_STOPPED_RETAINED; INTEGRATION_PENDING",
+          "status": "D6A_QUALIFIED_INTEGRATED_PUSHED_STOPPED_RETAINED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-loader-fixture-20261025",
-          "branch": "work/compacted-later-archive-loader-fixture",
+          "branch": "DETACHED",
           "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
           "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
           "scope": "Two fresh genuine initializations from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control backend loss. Expected240\u2192242 only failed activeControl/role, immutable native93/139/input1 and catalog/journals; exact exit4 and full custody.",
@@ -65042,7 +65042,23 @@
               "free_after": 175383117824
             }
           ],
-          "preservation": "Source worktree and runtime source, all four databases, two native/input/Archive roots, process/SQL/raw logs and original diagnostic failures retained. No resources deleted."
+          "preservation": "Source worktree and runtime source, all four databases, two native/input/Archive roots, process/SQL/raw logs and original diagnostic failures retained. No resources deleted. Merged local ref retired after archive ref and verified19030335B0600 bundle; clean detached worktree remains.",
+          "archived_branch": "work/compacted-later-archive-loader-fixture",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-loader-ref-retirement-20261025.json",
+            "sha256": "cbcaa791b287251b6dd07ac0a8cec0f06435dde203c4c550b349bffb5145c6ab"
+          }
+        },
+        "later_archive_proof_fixture_work": {
+          "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-proof-fixture-20261025",
+          "branch": "work/compacted-later-archive-proof-fixture",
+          "base": "190dd5c57b252edbb7590bcaf3917a341eaae5ce",
+          "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
+          "scope": "Measured successful first retained-reader hold/release baseline after genuine initialization; exact provisioned reader/catalog binding in existing proxy, no H/D actor yet. Full independent first-publication expectations and custody; same c49 builds and limits.",
+          "prerequisites": "Audit58f59342/criticala9fbee10 and qualified e040/d6a; successful actual hold baseline must precede separate post-proof H/D faults.",
+          "resources": "Only isolated source worktree allocated; no new runtime or build.",
+          "next": "Review minimal explicit proxy identity and held-context capture/model/raw changes; freeze, then root qualifies actual baseline with unchanged c49 builds."
         }
       }
     }

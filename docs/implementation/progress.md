@@ -6,9 +6,9 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main parent `0c9bb861508aa7cb4b361db8544e503ec905987a` is pushed.
-This merge integrates qualified loader fixture
-`d6a6b6f112742b9360fac17e1480a3019b6ca42e` and its evidence; push pending.
+Main `190dd5c57b252edbb7590bcaf3917a341eaae5ce` is pushed
+(74892 joined0), integrating qualified loader fixtured6a and evidence.
+All six blobs match the runtime source (integration05a7cb8e). No merge pending.
 Six changed Python owners; product remains exact qualifiedc49. No product build
 or Rust change was needed. Source and independent critical reviews are complete.
 
@@ -43,25 +43,28 @@ The [inventory](../research/laboratory-inventory.json) owns retained resources.
 
 ## Owners and resources
 
-No active engine/build or author/reviewer process. Actual loader cliente9bff81d
+No active engine/build. Source author and reviewer are active on the new proof
+fixture below; they have no engine authority. Actual loader cliente9bff81d
 exited143/PID0/noOOM; borrowed PostgreSQL71775507 exited0/PID0/noOOM.
 Root verified actual owned resource state after both driver handles joined.
 Origin preservation and empty cleanup/isolation arrays passed.
 
-- `.research/compacted-later-archive-loader-fixture-20261025`, clean branch
-  `work/compacted-later-archive-loader-fixture`, source d6a. Sourcec56da1d8 and
-  criticala2973d85 bind six blobs and reviewed cleanup. Branch retirement follows
-  integration/push; keep the worktree and ignored evidence.
+- `.research/compacted-later-archive-loader-fixture-20261025`, clean detached d6a.
+  Sourcec56da1d8 and criticala2973d85 bind six blobs and reviewed cleanup. Merged
+  local ref retired with archive ref/bundle (cbcaa791); all artifacts preserved.
 - `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f`
   retains exact source, four databases, two native/input/Archive roots and all
   logs/raw results. Freeafter175383117824bytes. Prior995/598/e040 and all other
   inventories remain retained. No datasets, caches or containers deleted.
 
+- `.research/compacted-later-archive-proof-fixture-20261025`, branch
+  `work/compacted-later-archive-proof-fixture`, base190dd5c5. Author/reviewer own
+  the bounded successful reader hold/release fixture. No runtime yet. Report
+  `next_archive_work.next_proof_work` and inventory own the source scope.
+
 ## Next action
 
-Finish integration/push and retire only the redundant merged branch ref with
-archive/bundle preservation. Then qualify the audited successful reader hold and
-release baseline: bind the existing proxy to the actual provisioned reader and
+Review and freeze the audited successful reader hold/release baseline: bind the existing proxy to the actual provisioned reader and
 catalog database before separate post-proof H and D mutations. Reuse audit58f59342,
 criticala9fbee10 and currentc49 builds. Preserve existing limits and complete
 independent expectations; root alone runs engines and strict raw replay.
