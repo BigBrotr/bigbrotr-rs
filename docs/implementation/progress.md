@@ -6,7 +6,8 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `00d13147094d9a0484cab700fe28fb6b55c707b6` is pushed (13818 joined0).
+Main `d1216bfd35b8f2080d645ee88d62930d52fde11f` is pushed (91049 joined0).
+Its product integration is `00d13147094d9a0484cab700fe28fb6b55c707b6` (13818 joined0).
 It integrates exact qualified product `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`
 and fixture `4d9a1902f7941b4cda3bc13101a48e50c579802e`, conflict-free.
 Targeted integration checksa7141479 confirm exact source identities and document
@@ -62,15 +63,18 @@ worktrees, logs, failures and quarantined originals remain.
   retains exact detached source, database/captures and verified-run.json.
 - Earlier85/2d/5b worktrees remain clean detached, with archive refs and verified
   bundle; receipt3bec2bb2 owns details. All ignored/external evidence remains.
-- `compacted_reader_fixture` is performing a read-only audit of the next bounded
-  refusal extension. No engine, new implementation or product mutation assigned.
-  Critical reviewer completed current review; no reviewer process remains.
+- `compacted_reader_fixture` implements the bounded refusal extension in
+  `.research/compacted-later-retirement-guards-20261025`, branch
+  `work/compacted-later-retirement-guards`, based1216bfd. Four actual commands
+  across two clones planned; no runtime yet. `compacted_reader_review` reviews it.
+- `empty_malformed_floor` has a separate read-only prerequisite audit of compacted
+  Archive consumers; no implementation/engine is authorized for that audit.
+  No agent owns builds or laboratory mutations.
 
 ## Next action
 
-Reuse the reviewed runner for genuine unabandoned acquisition and required-input
-retirement refusals,
-first reconciling the author's source audit. A new actual claims->Source endpoint
+Review/freeze the existing-runner refusal extension, then root executes its four
+commands and raw replay against exact06. A new actual claims->Source endpoint
 must stop before abandonment; never pair its intermediate SQL with a mutated
 final native store. Missing2:1 uses an isolated clone and reversible quarantine.
 Retain the exact06 build; no unrelated rebuild or repeat of valid prior campaigns.

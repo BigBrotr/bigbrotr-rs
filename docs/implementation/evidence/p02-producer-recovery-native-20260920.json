@@ -46790,7 +46790,16 @@
                       }
                     },
                     "archive_ref": "refs/archive/20261025/compacted-later-retirement",
-                    "worktree_state": "CLEAN_DETACHED_PRESERVED"
+                    "worktree_state": "CLEAN_DETACHED_PRESERVED",
+                    "next_guard_work": {
+                      "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+                      "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-guards-20261025",
+                      "branch": "work/compacted-later-retirement-guards",
+                      "base": "d1216bfd35b8f2080d645ee88d62930d52fde11f",
+                      "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+                      "owners": "compacted_reader_fixture implementation; compacted_reader_review critical; root engine/integration",
+                      "scope": "Two clones/four commands. Genuine claims->Source->retirement unresolved-acquisition refusal; separate actual claims-retry origin with isolated reversible required2:1 quarantine and retirement refusal. Reuse exact06 build and existing runners; import refusal remains separate NOT_RUN."
+                    }
                   },
                   "integration": {
                     "main": "29d0d0dca5f4d1f06c4dcf807bb205ca9aeb07f8",
