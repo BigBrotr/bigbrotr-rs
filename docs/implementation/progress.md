@@ -6,81 +6,73 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites, including later
-compacted consumers. Product `5df6b942` and qualified live fixture `fa76466a` are
-integrated and pushed in `ee2f3c6d292c802d0c5610abfdcb071d3427d407`; this
-documentation-only checkpoint follows that push. No merge/rebase is pending.
-Input fixture `82103420`, later-empty `28cd644d` and ordinary `c3bec54c` were already
-integrated. Four Python routing conflicts were reconciled and independently
-reviewed; all product bytes match qualified 5df. The merged fixture has scoped
-AST/CLI/routing checks, not a new engine qualification attributed to this commit.
+compacted consumers. This main integration incorporates product
+`83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c` and fixture
+`d8f45b8ab793f8c82ca317e5cc23444e683ed3cb`. Previous main/remote checkpoint:
+`eaa54b0bc197843d971aecda34261c668896e012`. Push of this integration is the next
+Git action; its exact commit and retired refs will be recorded at the next checkpoint.
+No product divergence from qualified837 is introduced by integration.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), at
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
-compacted_successor_preparation.later_empty_consumer_work`, owns exact source,
-review and outcome receipts. The [inventory](../research/laboratory-inventory.json)
-owns worktrees and retained resources. Reuse unchanged evidence.
+compacted_successor_preparation.later_empty_consumer_work.
+next_fresh_recovery_work_20261025`, owns exact source, review, build and runtime
+receipts. The [inventory](../research/laboratory-inventory.json) owns retained
+worktrees/resources. Reuse unchanged evidence rather than rerunning it.
 
 ## Verified work and open findings
 
-**PASS:** exact 5df build: 205 tests, 96 mandatory controls and all 12 checks,
-including Clippy. Live fa drivers 58109/51292 joined 0: four cases, 77 controls
-and 5,911 raw file bindings. Finite full/partial/absent residual cases preserve
-all 77 SQL tables and reach native 110 rows/sequence161, checkpoint1/ACK1.
-Installed quiet activation reaches 93/138, issues no target request, renews beyond
-its initial deadline and joins after SIGTERM. Origin preservation and isolation
-checks pass. Receipt:
-`/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-live-fa76466/verified-run.json`.
+**PASS:** exact837 build72774 joined0: 220 tests, 111 mandatory controls and all
+13 checks, including Clippy. Corrected fixture d8 drivers32220/10754 joined0:
+four clones, six installed commands, 112 controls and 4,540 raw file bindings.
+All77 SQL tables/row versions, native bytes, inputs and custody are checked.
+Finite recovery preserves checkpoint1/ACK1: native110/161→162→162, four inputs.
+Quiet recovery preserves checkpoint0/ACK0: native93/138→139→139, one input.
+Missing required ancestor2:1 or current3:2 refuses before native close, even when
+all optional initial residuals remain. Those two stores stay110/161.
+Original preservation and resource isolation pass. Exact receipt:
+`/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8/verified-run.json`.
 
-**PASS, reused:** input821 nine stages/188 controls/6,006 bindings; later-empty28cd
-eight stages/121 controls/5,935 bindings; ordinaryc3 retirement/retry with
-30 controls/787 bindings. Input observation batching retains the one-second bound.
-Actual D corruption refuses at the earlier SQL closed-source guard; the narrower
-Rust D recheck remains unqualified.
+**PASS, reused:** livefa4/77/5911 with finite activity and installed renewal/join;
+input8219/188/6006; later-empty28cd8/121/5935; ordinaryc3 retirement/retry30/787.
+Their source/build limitations and raw identities remain in the linked report.
 
-**Preserved failures:** live521 verifier response-shape failure and its discovered
-nullable-column model omission, input736/a9/409 and non-isolated raw invocation,
-earlier build/fixture failures, unknown outcomes and original a99 Sync timeout.
-Corrections have fresh qualifications; original failed evidence is unchanged.
+**Preserved failures:** original4a build passed220 tests but failed Clippy on the
+bounded ACK enum;837 adds only a scoped rationale. Original15da installed fixture
+passed four commands/76 controls, then its underscore label violated the shared
+guard before either negative command; d8 corrects only naming. Both review misses,
+original logs/artifacts, earlier live/input failures and original a99 Sync timeout
+remain recorded. No failed run was relabeled PASS.
 
 ## Work and resources
 
-- `/root/empty_malformed_floor` implements positive-only compacted fresh
-  `--successor` recovery through final ACK in
-  `.research/compacted-later-recovery-20261025`, branch
-  `work/compacted-later-recovery`, base fa76466a. Source is in progress and untested.
-  `/root/compacted_reader_review` reviews private proof/census/ACK ownership.
-  The completed source audit is linked from the report. Source, retirement and
-  Archive capabilities remain strict; no writer adoption is authorized by recovery.
-- `/root/compacted_reader_fixture` designs the independent four-copy/six-command
-  recovery fixture from qualified fa endpoints in
-  `.research/compacted-later-recovery-fixture-20261025`, branch
-  `work/compacted-later-recovery-fixture`, base ee2f3c6d: finite and quiet
-  first/retry, missing required ancestor input, missing required current input.
-  Source is in progress and unqualified. Existing live worktrees remain clean
-  and detached at 5df/fa.
-- All root build/runtime/raw drivers have joined. Last observed live client
-  e6ff888d exited143 and borrowed PG71775507 exited0, PID0/noOOM. All originals,
-  logs, failures, databases, datasets, .research and worktrees are retained.
-  Agents perform source work only. No cleanup was performed.
-- Input821, ordinaryc3 and both live redundant local branch refs are retired with
-  clean detached worktrees, protected archive refs and verified bundles preserved.
-  The new recovery implementation and fixture branches remain active.
+- Product worktree `.research/compacted-later-recovery-20261025` is clean at837,
+  branch `work/compacted-later-recovery`. Fixture worktree
+  `.research/compacted-later-recovery-fixture-20261025` is clean atd8, branch
+  `work/compacted-later-recovery-fixture`. Both are retained until verified push
+  and evidence-preserving ref retirement; detached run sources are also retained.
+- Source author, independent fixture author and critical reviewer have finished
+  this increment. No pending edits or unsaved agent work. Their source reviews
+  are linked; the next genuine-interruption source audit is complete, not executed.
+- All root build/runtime/raw drivers have joined. Last observed client1551b3e7
+  exited143 and borrowedPG71775507 exited0, PID0/noOOM; build containers also
+  stopped. No root engine or autonomous agent work is active. All originals,
+  datasets, databases, failures, logs, .research and worktrees are retained.
 
 ## Next action
 
-Finish and critically review the positive recovery source and independent fixture,
-run its exact build/components and the independent installed/raw profile. Reuse
-qualified fa origins and preserve ACK1/ACK0; do not infer ACK advancement or
-missing-copy repair from these endpoints.
+Push the reviewed integration, retire only verified redundant refs with archive
+refs/bundles and clean detached worktrees preserved, then extend the existing
+recovery qualification using a genuine first-dictionary outcome COMMIT interruption.
+Measure the exact successful boundary first; before-forward loss should leave a
+missing current copy/no checkpoint, after-complete loss should leave C1>A0.
+Use the existing proxy and fresh installed recovery/retry; never manufacture
+these origins by deleting SQL rows or infer an ordinal from an older profile.
 
-The source review caught original-cancellation retention and unnecessary
-compacted reservations on ordinary Resolve. The first is corrected; basis-sensitive
-preflight is being reconciled before source freeze. No new build/tests have run.
-
-Real Sync/fault qualification, genuine interrupted recovery/ACK advancement,
-Source/retirement/Archive, physical 64-file/32MiB limits under live load, mixed
-restore/backup/capacity and M1–M5 remain incomplete. No floor writer/unlink is
-qualified. Original a99 Sync cause remains unknown; Q33 CI billing, arm64 and
-signing/registry remain separate gates.
+Actual copy repair/ACK advancement, Sync/fault schedules, staged/reserved tails,
+Source/retirement/Archive, physical limits under live load, mixed restore/backup/
+capacity and M1–M5 remain incomplete. No floor writer/unlink is qualified.
+Original a99 Sync cause remains unknown; Q33 CI billing, arm64 and signing/registry
+remain separate gates. No whole-product completion claim.

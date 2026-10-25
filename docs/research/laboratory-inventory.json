@@ -64320,17 +64320,105 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-20261025",
           "branch": "work/compacted-later-recovery",
           "base": "fa76466a65d55a106cdf541e1fe4332d85eca031",
-          "state": "SOURCE_ONLY_IMPLEMENTATION_AND_REVIEW; no runtime qualification",
+          "state": "CLEAN837_BUILD_AND_INSTALLED_PROFILE_QUALIFIED; main integration underway; branch retained until verified push",
           "owner": "empty_malformed_floor author, compacted_reader_review critical; existing verified Astra/xhigh assignments",
-          "scope": "Positive-only fresh --successor through final ACK, private proof and mixed census. Root solely owns builds/engines/SQL/integration; independent fixture now in separately inventoried worktree."
+          "scope": "Positive-only fresh --successor through final ACK, private proof and mixed census. Root solely owns builds/engines/SQL/integration; independent fixture now in separately inventoried worktree.",
+          "source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+          "tree": "bdd31d038142a4111e14b0b84f46e2874865a1dd",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-source-v1.json",
+            "sha256": "e1b03a42ec0f45f529cc9e0dacfeaa0f63d5f9c3b95e639c7af65d84198f2ffb"
+          },
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-critical-review-v1.json",
+            "sha256": "458181b49b1efcef0328d640d451bd94a16e1e4d163f2fcc9859829412947e08"
+          },
+          "build": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-83791a5",
+            "session": 72774,
+            "status": "JOINED_EXIT_0_PASS",
+            "verified": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-83791a5/verified-build.json",
+              "sha256": "61018c7954bff003eba2f46ab3dc9b75a0aa7ef48a6c2604160ef4dda568e886"
+            }
+          },
+          "build_attempts": [
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-4a7efad/failed-build.json",
+              "sha256": "2d1459ebc4f41c7a4304baaf3905366576195e469cf6f2b07069b1315f0590ad"
+            }
+          ],
+          "correction": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-clippy-source-v1.json",
+            "sha256": "8bc6149f6018ea0b6699ab850780cc2e23b896a03628163eb03d3ef7ad1c63b6"
+          },
+          "correction_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-ackstamp-critical-review-v1.json",
+            "sha256": "0f006b3d168d8da21482e76fcd079cbe9f1862ea7bb972758f60221efaf8bfff"
+          },
+          "runtime": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8",
+            "source": "d8f45b8ab793f8c82ca317e5cc23444e683ed3cb",
+            "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+            "driver_session": 32220,
+            "driver_exit": 0,
+            "raw_session": 10754,
+            "raw_exit": 0,
+            "status": "PASS_EXACT_SOURCE_INSTALLED_RECOVERY_AND_RAW",
+            "commands": 6,
+            "controls": 112,
+            "raw_file_bindings": 4540,
+            "receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8/verified-run.json",
+              "sha256": "60c4cde595e95bf79970f1236350d247f5db3dc2aa42ca967defb138dbc60bde"
+            }
+          }
         },
         "later_fresh_recovery_fixture_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-fixture-20261025",
           "branch": "work/compacted-later-recovery-fixture",
           "base": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
           "owner": "compacted_reader_fixture, existing verified Astra/xhigh; root sole engine/build/integration owner",
-          "state": "SOURCE_ONLY_IMPLEMENTATION; no runtime/build qualification",
-          "scope": "Four clones/six existing installed --successor commands, literal77-table/native/input expectations from qualifiedfa endpoints; existing reader/oracle/raw/transition owners, no new runner."
+          "state": "CLEANd8_EXACT_INSTALLED_AND_RAW_PASS; original15daFAIL and all sources retained",
+          "scope": "Four clones/six existing installed --successor commands, literal77-table/native/input expectations from qualifiedfa endpoints; existing reader/oracle/raw/transition owners, no new runner.",
+          "product_integration": "047998512a3219ef0a4ecdc6432053e9b3834b2d",
+          "source": "d8f45b8ab793f8c82ca317e5cc23444e683ed3cb",
+          "tree": "ecc901471fe7cf42c890868d65d675076678659c",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-fixture-source-v1.json",
+            "sha256": "96a4edd81d4e69dc1649a114522fc6ce39bd95cb95d372c24b44198db9405110"
+          },
+          "label_correction": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-label-correction-source-v1.json",
+            "sha256": "22d2049817928f28f5e4292fb0bc144ecdba64013d7f0b1b21f43a3d777368b1"
+          },
+          "label_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-label-critical-review-v1.json",
+            "sha256": "ddbf0c16a82e383abcc6b3d0a7810e9c1a9a03b3390d222540c6c5a67ffb2dd4"
+          },
+          "runtime_attempts": [
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-15da0b3/failed-run.json",
+              "sha256": "ff2af4e2f924102c640308c68794a25a0b4def729a5b071b903556abac059599"
+            }
+          ],
+          "runtime": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8",
+            "source": "d8f45b8ab793f8c82ca317e5cc23444e683ed3cb",
+            "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+            "driver_session": 32220,
+            "driver_exit": 0,
+            "raw_session": 10754,
+            "raw_exit": 0,
+            "status": "PASS_EXACT_SOURCE_INSTALLED_RECOVERY_AND_RAW",
+            "commands": 6,
+            "controls": 112,
+            "raw_file_bindings": 4540,
+            "receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8/verified-run.json",
+              "sha256": "60c4cde595e95bf79970f1236350d247f5db3dc2aa42ca967defb138dbc60bde"
+            }
+          }
         }
       }
     }

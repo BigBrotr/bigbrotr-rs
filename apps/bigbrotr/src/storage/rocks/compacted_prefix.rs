@@ -42,6 +42,7 @@ enum PrefixOwner<'a> {
     EmptyRetirement(crate::storage::rocks::store::CompactedEmptyInitialPredecessor<'a>),
     Acknowledgement(crate::storage::rocks::store::CompactedAcknowledgementPredecessor<'a>),
     Successor(crate::storage::rocks::store::CompactedSuccessorPredecessor<'a>),
+    Recovery(CompactedRecoveryPredecessor<'a>),
     Live(CompactedLiveSuccessor<'a>),
 }
 // The optional floor and all simultaneous borrowed cursor headers use the
@@ -108,6 +109,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.manifest(),
             Self::Acknowledgement(view) => view.manifest(),
             Self::Successor(view) => view.manifest(),
+            Self::Recovery(view) => view.manifest(),
             Self::Live(view) => view.manifest(),
         }
     }
@@ -119,6 +121,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.floor(),
             Self::Acknowledgement(view) => view.floor(),
             Self::Successor(view) => view.floor(),
+            Self::Recovery(view) => view.floor(),
             Self::Live(view) => view.floor(),
         }
     }
@@ -130,6 +133,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.producer_slot_id(),
             Self::Acknowledgement(view) => view.producer_slot_id(),
             Self::Successor(view) => view.producer_slot_id(),
+            Self::Recovery(view) => view.producer_slot_id(),
             Self::Live(view) => view.producer_slot_id(),
         }
     }
@@ -145,6 +149,7 @@ impl PrefixOwner<'_> {
             Self::EmptyRetirement(view) => view.validate(recovery, cancelled).map_err(Into::into),
             Self::Acknowledgement(view) => view.validate(recovery, cancelled),
             Self::Successor(view) => view.validate(recovery, cancelled),
+            Self::Recovery(view) => view.validate(recovery, cancelled),
             Self::Live(_) => Err(AdmissionError::StateMismatch),
         }
     }
@@ -158,6 +163,7 @@ impl PrefixOwner<'_> {
             Self::Live(_) => return Err(AdmissionError::StateMismatch),
             Self::Acknowledgement(view) => return view.require_input(recovery, checked, cancelled),
             Self::Successor(view) => return view.require_input(recovery, checked, cancelled),
+            Self::Recovery(view) => return view.require_input(recovery, checked, cancelled),
             Self::Initial(prefix) => (
                 recovery.store.require_compacted_input(
                     prefix.floor.fields().issued_through,
@@ -344,6 +350,45 @@ pub(super) fn initial_entry(
 }
 
 impl IngestRecovery {
+    /// Native budget classification only, before a connected positive factory.
+    /// This does not inspect original inputs or grant recovery/source authority.
+    /// A malformed retained floor is an error, never an ordinary fallback.
+    pub fn has_compacted_successor_ancestor(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<bool, BootstrapError> {
+        check_cancelled(cancelled)?;
+        if self.store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        let id = self.manifest().identity();
+        if self.manifest().key_schema() != 3
+            || !(3..=crate::storage::rocks::succession::MAX_LINEAGE_EPOCHS)
+                .contains(&id.owner_epoch.get())
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let root = self.store.handoff_root_identity()?;
+        let sequence = self.store.db.latest_sequence_number();
+        let initial =
+            InitialHandoffRecord::decode(&value(self, handoff_key(self.manifest(), 1)?)?)?;
+        let previous = initial.previous_manifest().identity();
+        if previous.dataset_id != id.dataset_id
+            || previous.owner_resource_id != id.owner_resource_id
+            || previous.shard_id != id.shard_id
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let compacted = initial_entry(self, &initial, true)?.is_some();
+        if self.store.handoff_root_identity()? != root
+            || self.store.db.latest_sequence_number() != sequence
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        check_cancelled(cancelled)?;
+        Ok(compacted)
+    }
+
     /// Select the initial closed-floor reader without granting any authority.
     /// Ordinary legacy decoding/recovery still refuses the new version.
     pub fn closed_producer_floor(

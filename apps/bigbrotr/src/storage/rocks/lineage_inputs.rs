@@ -175,6 +175,20 @@ impl IngestStore {
             .map(|scan| scan.all)
     }
 
+    /// Recovery authenticates a retained initial residual without hiding its
+    /// separately observed issued+1 tail. Neither optional class grants credit.
+    pub(in crate::storage::rocks::store) fn require_compacted_recovery_input(
+        &self,
+        inputs: LineageInputSet,
+        accepts: impl FnMut(ProducerRequestId) -> bool,
+        tail: ProducerRequestId,
+        checked: (ProducerRequestId, [u8; 32], u64),
+        cancelled: &AtomicBool,
+    ) -> Result<([u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
+        self.lineage_input_scan(inputs, accepts, None, Some(tail), Some(checked), cancelled)
+            .map(|scan| (scan.all, scan.tail))
+    }
+
     fn lineage_input_scan(
         &self,
         inputs: LineageInputSet,

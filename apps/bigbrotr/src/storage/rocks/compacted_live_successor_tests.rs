@@ -7,6 +7,9 @@ use crate::storage::rocks::store::{
     producer_checkpoint::CheckpointStamp,
 };
 
+#[path = "compacted_successor_recovery_tests.rs"]
+mod compacted_successor_recovery_tests;
+
 fn prepared(
     residuals: usize,
 ) -> (

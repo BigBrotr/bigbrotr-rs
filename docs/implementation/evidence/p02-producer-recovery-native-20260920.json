@@ -46270,13 +46270,13 @@
                 "sha256": "c4839b5e63cce132790f87e5b8e75c82463b74e2bc56299f906de88a3065219c"
               },
               "next_fresh_recovery_work_20261025": {
-                "status": "SOURCE_IMPLEMENTATION_AND_INDEPENDENT_REVIEW_IN_PROGRESS_RUNTIME_NOT_RUN",
+                "status": "QUALIFIED_EXACT_PRODUCT837_AND_FIXTUREd8_MAIN_INTEGRATION",
                 "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-20261025",
                 "branch": "work/compacted-later-recovery",
                 "base": "fa76466a65d55a106cdf541e1fe4332d85eca031",
                 "scope": "Existing positive --successor only, private tail-aware recovery prefix/one retained allocation, separate H/D authority and owned later mixed-census ACK seal. Ordinary defaults and Source/retirement/Archive remain strict.",
                 "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture independent installed matrix design; root builds/engines/integration",
-                "next": "Complete source/component/reference changes and independent review; four-clone/six-command first/retry and missing-required-input fixture from qualifiedfa origins. No second plan or completion claim.",
+                "next": "Integrate/push qualified source and retire only verified redundant refs while preserving worktrees/artifacts. Then existing genuine interruption gate: measured first dictionary outcome COMMIT baseline, before-forward missing copy and after-complete C1>A0 using existing proxy; no synthetic row deletion. Actual Sync and all broader remaining gates stay open.",
                 "fixture_audit": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-fresh-recovery-fixture-audit-20261025.json",
                   "sha256": "2d72e0f454fc83bdbd4ec05242342a07a721ce12fedc1e3b4b171f25c99ec7b8"
@@ -46284,7 +46284,96 @@
                 "fixture_worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-fixture-20261025",
                 "fixture_branch": "work/compacted-later-recovery-fixture",
                 "fixture_base": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
-                "review_findings": "Original cancellation retained after reviewer finding; basis-sensitive Resolve preflight being reconciled to preserve ordinary resource minimum. Source/tests/fixture still in progress, no execution claim."
+                "review_findings": "Original cancellation before/after borrowed proof and final ACK conversion corrected; actual-basis preflight preserves ordinary reservation minimum. Stale unselected window assertion replaced using explicit A/C contract, no production-bound change. Critical source gate clear; execution qualification pending.",
+                "source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+                "tree": "bdd31d038142a4111e14b0b84f46e2874865a1dd",
+                "source_receipt": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-source-v1.json",
+                  "sha256": "e1b03a42ec0f45f529cc9e0dacfeaa0f63d5f9c3b95e639c7af65d84198f2ffb"
+                },
+                "critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-critical-review-v1.json",
+                  "sha256": "458181b49b1efcef0328d640d451bd94a16e1e4d163f2fcc9859829412947e08"
+                },
+                "format": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-format-v1.json",
+                  "sha256": "8e28a59f8e34fbdb1cf5326d5b79121d0556ae107d1d48b96b0ed98afc5763bb"
+                },
+                "build": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-83791a5",
+                  "session": 72774,
+                  "status": "JOINED_EXIT_0_PASS",
+                  "verified": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-83791a5/verified-build.json",
+                    "sha256": "61018c7954bff003eba2f46ab3dc9b75a0aa7ef48a6c2604160ef4dda568e886"
+                  }
+                },
+                "root_review_boundary": "Root reused complete baseline native recovery and contract/audit reads, reviewed selected implementation deltas, qualification declarations and reference changes, formatted all16 Rust and read both final receipts. Full affected owner/caller review is the independent critical review above; no blanket root full-file-read claim.",
+                "build_attempts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-4a7efad/failed-build.json",
+                    "sha256": "2d1459ebc4f41c7a4304baaf3905366576195e469cf6f2b07069b1315f0590ad"
+                  }
+                ],
+                "correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-clippy-source-v1.json",
+                  "sha256": "8bc6149f6018ea0b6699ab850780cc2e23b896a03628163eb03d3ef7ad1c63b6"
+                },
+                "correction_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-ackstamp-critical-review-v1.json",
+                  "sha256": "0f006b3d168d8da21482e76fcd079cbe9f1862ea7bb972758f60221efaf8bfff"
+                },
+                "fixture_product_integration": "047998512a3219ef0a4ecdc6432053e9b3834b2d",
+                "next_fault_origin_audit": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-fault-origin-audit-v1.json",
+                  "sha256": "e5df2e9d71c6c48dcafe9291e893df899e1ec2919a9cdc779ded7e0bcc434390"
+                },
+                "fixture_source": "d8f45b8ab793f8c82ca317e5cc23444e683ed3cb",
+                "fixture_tree": "ecc901471fe7cf42c890868d65d675076678659c",
+                "fixture_source_receipt": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-fixture-source-v1.json",
+                  "sha256": "96a4edd81d4e69dc1649a114522fc6ce39bd95cb95d372c24b44198db9405110"
+                },
+                "fixture_critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-fixture-critical-review-v1.json",
+                  "sha256": "b4a10c094b5f72ea5320fd31334a2c4d06764e947d838767aaf26cae29fce60f"
+                },
+                "fixture_label_correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-label-correction-source-v1.json",
+                  "sha256": "22d2049817928f28f5e4292fb0bc144ecdba64013d7f0b1b21f43a3d777368b1"
+                },
+                "fixture_label_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-label-critical-review-v1.json",
+                  "sha256": "ddbf0c16a82e383abcc6b3d0a7810e9c1a9a03b3390d222540c6c5a67ffb2dd4"
+                },
+                "runtime_attempts": [
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-15da0b3/failed-run.json",
+                    "sha256": "ff2af4e2f924102c640308c68794a25a0b4def729a5b071b903556abac059599"
+                  }
+                ],
+                "runtime": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8",
+                  "source": "d8f45b8ab793f8c82ca317e5cc23444e683ed3cb",
+                  "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+                  "driver_session": 32220,
+                  "driver_exit": 0,
+                  "raw_session": 10754,
+                  "raw_exit": 0,
+                  "status": "PASS_EXACT_SOURCE_INSTALLED_RECOVERY_AND_RAW",
+                  "commands": 6,
+                  "controls": 112,
+                  "raw_file_bindings": 4540,
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8/verified-run.json",
+                    "sha256": "60c4cde595e95bf79970f1236350d247f5db3dc2aa42ca967defb138dbc60bde"
+                  }
+                },
+                "result": "Finite110/161->162->162 withI3/C1/A1 and4inputs; quiet93/138->139->139 withI0/C0/A0 and1input. Required2:1/3:2 refusals leave native110/161 unchanged and preserve10/3remaining inputs. All77SQL tables/row xmins, source state, initial floor and actual custody checked. Originals all5preservation true; isolation empty; client1551b3e7 exited143 andPG71775507 exited0/PID0/noOOM.",
+                "main_integration": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-main-integration-20261025.json",
+                  "sha256": "4d01079877cbfa84f57be3be2906640f3a0f4beca0d0cdd054ec2de4cd7641da"
+                }
               }
             }
           }

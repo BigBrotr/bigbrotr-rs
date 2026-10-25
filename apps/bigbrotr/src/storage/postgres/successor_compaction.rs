@@ -11,6 +11,59 @@ pub(in crate::storage::postgres::control_owner) struct Check {
     effects: OwnedPermit,
 }
 impl Check {
+    pub(super) fn validate_recovery(
+        &self,
+        recovery: &IngestRecovery,
+        owner: &crate::storage::rocks::store::NativeSuccessorRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        owner
+            .compacted_predecessor(recovery, self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        Ok(())
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "locked transaction, retained recovery/cancellation and unchanged authority deadline"
+    )]
+    pub(super) async fn resolve_recovery<'a>(
+        &self,
+        tx: &Transaction<'_>,
+        recovery: &'a IngestRecovery,
+        owner: &'a crate::storage::rocks::store::NativeSuccessorRecovery,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &'a AtomicBool,
+    ) -> Result<crate::storage::rocks::store::VerifiedCompactedPrefix<'a>, ProducerResolveError>
+    {
+        let view = owner
+            .compacted_predecessor(recovery, self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        producer_progress::recovery::require_compacted_recovery(
+            tx,
+            recovery,
+            &view,
+            cancelled,
+            || producer_progress::recovery::authority(lease, policy, cancelled),
+        )
+        .await?;
+        let verified = producer_compaction::resolve_initial_outcomes(
+            tx,
+            view.resolution(cancelled).map_err(effect_error)?,
+            self.limits,
+            &self.effects,
+            lease,
+            policy,
+            cancelled,
+        )
+        .await
+        .map_err(super::super::successor_history::compacted_error)?;
+        verified
+            .validate(recovery, cancelled)
+            .map_err(effect_error)?;
+        initial_history::check_delivery(lease, policy, cancelled)?;
+        Ok(verified)
+    }
     pub(super) fn new(
         limits: AdmissionLimits,
         effects: OwnedPermit,

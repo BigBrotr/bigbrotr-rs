@@ -65,7 +65,6 @@ fn activated_recovery_accepts_only_the_native_first_barrier_gap() {
 #[test]
 fn reserved_suffix_is_bounded_but_never_a_complete_prefix() {
     projection::require_head(&head(3, 64, false), 1, false, 64).unwrap();
-    assert!(projection::require_head(&head(3, 33, false), 1, false, 32).is_err());
     assert!(projection::require_head(&head(3, 65, false), 1, false, 64).is_err());
     assert!(projection::require_head(&head(3, 1, false), 2, false, 32).is_err());
     assert!(projection::require_head(&head(3, 0, false), 0, false, 0).is_err());
@@ -79,6 +78,32 @@ fn reserved_suffix_is_bounded_but_never_a_complete_prefix() {
     }
     require_complete(0, 0, false).unwrap();
     require_complete(64, 64, false).unwrap();
+}
+
+#[test]
+fn recovered_retained_count_is_separate_from_acknowledged_outstanding_window() {
+    // These are complete credit premises, not inferred by require_head (which
+    // checks lifecycle/retained bounds and has no typed-C/native-A arguments).
+    // Migration0040 validates reservation<=C+window; native issue requires A.
+    for (issued, window) in [(33, 32), (3, 2)] {
+        let (acknowledged, complete, reserved) = (1, 1, issued);
+        assert!(acknowledged <= complete && complete <= issued);
+        assert_eq!(issued - acknowledged, window);
+        assert_eq!(reserved, complete + window);
+        projection::require_head(&head(3, reserved, false), issued, false, window as u32).unwrap();
+        require_complete(issued, reserved, false).unwrap();
+    }
+}
+
+#[test]
+fn compacted_recovery_requires_positive_purpose_and_matching_private_basis() {
+    require_recovery_basis(Purpose::Positive, true, true).unwrap();
+    for purpose in [Purpose::Positive, Purpose::Source] {
+        require_recovery_basis(purpose, false, false).unwrap();
+        assert!(require_recovery_basis(purpose, false, true).is_err());
+        assert!(require_recovery_basis(purpose, true, false).is_err());
+    }
+    assert!(require_recovery_basis(Purpose::Source, true, true).is_err());
 }
 
 #[test]

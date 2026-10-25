@@ -7,7 +7,8 @@ use crate::storage::rocks::{
     store::{
         CompactedAcknowledgementPredecessor, CompactedEmptyInitialPredecessor,
         CompactedInitialAncestor, CompactedInitialPredecessor, CompactedLiveSuccessor,
-        CompactedSuccessorPredecessor, IngestRecovery, ProgressRead, RetainedCompactedPrefix,
+        CompactedRecoveryPredecessor, CompactedSuccessorPredecessor, IngestRecovery, ProgressRead,
+        RetainedCompactedPrefix,
     },
 };
 use bigbrotr_model::{ProducerEpoch, SourceRecordId};
@@ -145,6 +146,34 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_succe
         predecessor.manifest(),
         predecessor.producer_slot_id(),
         scratch,
+        Some(predecessor.floor()),
+        authority,
+    )
+    .await?;
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
+/// Fresh positive recovery retains its own closing/tail-aware native owner;
+/// it cannot borrow the ordinary history or live writer interpretation.
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_recovery(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    predecessor: &CompactedRecoveryPredecessor<'_>,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    predecessor
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        predecessor.manifest(),
+        predecessor.producer_slot_id(),
+        predecessor.progress_scratch(),
         Some(predecessor.floor()),
         authority,
     )
@@ -574,6 +603,43 @@ mod tests {
     use super::*;
     use crate::storage::rocks::producer_floor::ClosedProducerFloorFields;
     use bigbrotr_model::DatasetId;
+
+    #[test]
+    fn compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint() {
+        let context = Context {
+            dataset: DatasetId::try_from([1; 16]).unwrap(),
+            slot: ProducerSlotId::try_from([2; 16]).unwrap(),
+            epoch: 1,
+            manifest: [3; 32],
+        };
+        let floor = ClosedProducerFloor::new(ClosedProducerFloorFields {
+            issued_through: 7,
+            manifest_sha256: context.manifest,
+            source_through: 27,
+            closure_digest: [4; 32],
+            checkpoint_revision: 8,
+            checkpoint_digest: [5; 32],
+        })
+        .unwrap();
+        require_compacted_head(context, &floor, 7, 8, 7, Some([5; 32])).unwrap();
+        // The later C1/ACK1 head cannot substitute for retained initial H8/N7.
+        assert!(require_compacted_head(context, &floor, 7, 1, 1, Some([6; 32])).is_err());
+        assert!(
+            require_compacted_head(
+                Context {
+                    epoch: 3,
+                    ..context
+                },
+                &floor,
+                7,
+                8,
+                7,
+                Some([5; 32])
+            )
+            .is_err()
+        );
+        assert!(require_compacted_head(context, &floor, 7, 8, 7, None).is_err());
+    }
 
     #[test]
     fn compacted_floor_requires_exact_retained_checkpoint() {
