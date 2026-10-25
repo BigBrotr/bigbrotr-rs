@@ -2303,7 +2303,7 @@ def run_later_recovery_sequence(pg,client,output,clone,directory,expected,report
     source=Path(__file__).with_name('installed_cycle_client.py');path=output/source.name
     if not path.exists():shutil.copy2(source,path)
     assert history.digest(path)==history.digest(source)
-    if name.startswith('missing_'):
+    if name.startswith('missing-'):
         label=name+'-quarantine';transition.observe_origin_absence(pg,clone['database'],output,label)
         before=schema.rows(pg,clone['database']);oracle.same(before,expected[0]);lab.write_json(output/(label+'-before.json'),before)
         assert history.dump(client,output,label+'-before',directory)==expected[1]

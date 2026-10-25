@@ -869,7 +869,7 @@ def later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,pre
 
 def later_recovery_clone_replay(folder,clone,report,seed,raw,read,absent,previous_time,finished):
     name=clone['name'];directory=folder/name;expected=seed;results=[]
-    if name.startswith('missing_'):
+    if name.startswith('missing-'):
         label=name+'-quarantine';absent(label,clone['database'])
         same(read(folder/(label+'-before.json')),seed[0]);same(read(folder/(label+'-after.json')),seed[0])
         assert read(folder/(label+'-before-native.json'))==seed[1]

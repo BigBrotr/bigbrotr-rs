@@ -6434,8 +6434,8 @@ LATER_RECOVERY_ORIGINS = ({'name': 'live-absent',
 LATER_RECOVERY_CONTEXTS = {'live-absent': 'dc6f87ef0eb027a58866bdd442e5d178949d3c7fc2914ceb4ac51c05758749bb',
  'live-installed': 'fae68fed35c790d56aa190ff96f855233d5efa027924f99269abf553a6a1e5da',
  'live-full': 'dd3ad3a2d984515803dfa5be9bf2db225d274cfab2c770a952f74ae0fa99cdcf'}
-LATER_RECOVERY_STEPS = dict(finite=('recover','retry'),quiet=('recover','retry'),missing_ancestor=('refuse',),missing_current=('refuse',))
-LATER_RECOVERY_ORIGIN_NAMES = dict(finite='live-absent',quiet='live-installed',missing_ancestor='live-full',missing_current='live-absent')
+LATER_RECOVERY_STEPS = {'finite':('recover','retry'),'quiet':('recover','retry'),'missing-ancestor':('refuse',),'missing-current':('refuse',)}
+LATER_RECOVERY_ORIGIN_NAMES = {'finite':'live-absent','quiet':'live-installed','missing-ancestor':'live-full','missing-current':'live-absent'}
 
 
 class LaterRecoveryProfile:
@@ -6554,8 +6554,8 @@ def later_recovery_specification(case):
 
 def later_recovery_missing_basis(expected,name):
     """Selection-only membership for the existing exact single-file quarantine."""
-    assert name in ('missing_ancestor','missing_current')
-    epoch,sequence=(2,1) if name=='missing_ancestor' else (3,2)
+    assert name in ('missing-ancestor','missing-current')
+    epoch,sequence=(2,1) if name=='missing-ancestor' else (3,2)
     filename='36a0253e6d94c18099f6c4dae9b7e040-'+format(epoch,'016x')+'-'+format(sequence,'016x')+'.cbor'
     assert filename in expected[2]
     return expected[0],expected[1],{n:v for n,v in expected[2].items() if n!=filename}
@@ -6592,7 +6592,7 @@ def verify_later_recovery(context,seed,expected):
     for n,v in context['input_contents'].items():
         data=bytes.fromhex(v);assert expected[2][n]==dict(bytes=len(data),sha256=sha(data))
     wanted_inputs=seed[2] if not failure else later_recovery_missing_basis(seed,name)[2]
-    assert expected[2]==wanted_inputs and len(wanted_inputs)==(10 if name=='missing_ancestor' else 3 if failure else 1 if quiet else 4)
+    assert expected[2]==wanted_inputs and len(wanted_inputs)==(10 if name=='missing-ancestor' else 3 if failure else 1 if quiet else 4)
     backend_checked(context['backend'],case['database'],context['before'],context['after'])
     report=later_recovery_closed(context['response'],case)
     m=model.Model(*expected,w);preparation_control(m,context['after'],success=not failure)
