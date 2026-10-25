@@ -6,13 +6,14 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites, including later
-compacted consumers. Main parent `fbb35c653f1ea5d6b6755017355e781752f584ff`
-is pushed; this merge integrates qualified delivery baseline
+compacted consumers. Main `a36e0a3867e33687765bebf79f5e8948b2b49f99`
+is pushed (driver5568 joined0) and integrates qualified delivery baseline
 `9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b`. The existing product remains
 `83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c` and fixture
 `d8f45b8ab793f8c82ca317e5cc23444e683ed3cb` remains qualified for positive recovery.
 All product bytes still match qualified837. Source extension5ed remains separate,
-reviewed but unbuilt and not integrated. No rebase or conflict is pending.
+reviewed and built but not installed-qualified or integrated. No merge/rebase or
+conflict is pending; this documentation update follows the successful build.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), at
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -24,6 +25,12 @@ receipts. The [inventory](../research/laboratory-inventory.json) owns retained
 worktrees/resources. Reuse unchanged evidence rather than rerunning it.
 
 ## Verified work and open findings
+
+**PASS:** Source5ed exact build driver44010 joined0:226 tests,117 mandatory controls,
+12 selectors and all14 checks, including Clippy. Both owned build containers are
+stopped/PID0/noOOM; inventory unchanged. Its `verified-build.json` and final source/
+critical receipts are linked from `next_source_work_20261025`. Installed Source
+first/retry/refusal and raw replay remain NOT_RUN.
 
 **PASS:** delivery baseline9f drivers91467/40051 joined0: one command, 39 controls,
 5,743 raw bindings. Exact held SQL/backend/input/prefix state identifies outcome
@@ -72,9 +79,12 @@ failure, provisional captures and the review miss remain preserved;9f adds one i
   only. `/root/compacted_reader_review` independently reviews critical changes.
 - `/root/empty_malformed_floor` froze Source-only implementation5eddf46a in
   `.research/compacted-later-source-20261025`, branch `work/compacted-later-source`,
-  basefbb. Nine files formatted/reviewed; components/build/installed tests NOT_RUN.
-  Audit, format and declaration receipts are in the report's sibling
-  `next_source_work_20261025`; inventory retains the worktree.
+  basefbb. Nine files formatted/reviewed and build-qualified; installed tests NOT_RUN.
+  The author now works only in `.research/compacted-later-source-fixture-20261025`,
+  branch `work/compacted-later-source-fixture`, with maina36 and Source5ed merged.
+  Its independent expected-state matrix has three clones/seven commands and remains
+  source work; reviewer checks its models. All exact identities/receipts are in the
+  report's sibling `next_source_work_20261025`; inventory retains both worktrees.
 - All root build/runtime/raw drivers have joined. Last observed client06102bb1
   exited143 and borrowedPG71775507 exited0, PID0/noOOM; build containers also
   stopped. No root engine is active; agents perform source/review work only. All originals,
@@ -87,8 +97,9 @@ positive recovery/retry. Before-forward loss should leave a
 missing current copy/no checkpoint, after-complete loss should leave C1>A0.
 Use the existing proxy and fresh installed recovery/retry; never manufacture
 these origins by deleting SQL rows or infer an ordinal from an older profile.
-Root can build the separately reviewed Source5ed after binding its final receipts;
-keep build/runtime ownership serial and use the existing laboratory tools.
+Finish/review the separate Source fixture and run its installed first/retry/refusal
+matrix on the already qualified5ed build. Keep root engine ownership serial;
+no additional build is needed for fixture-only changes.
 
 Actual copy repair/ACK advancement, Sync/fault schedules, staged/reserved tails,
 Source/retirement/Archive, physical limits under live load, mixed restore/backup/

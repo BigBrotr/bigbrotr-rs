@@ -64438,7 +64438,7 @@
           "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
           "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
           "scope": "Existing positive recovery gates: measure the actual first dictionary outcome/progress COMMIT on proxy-capable compacted live path, then authentic missing current copy and C>A recovery/retry. Reuse current complete models/transport; no synthetic SQL deletion, new Rust hook or inferred old ordinal.",
-          "next": "Implement/review genuine before-forward and after-complete COMMIT11 loss plus fresh installed positive recovery/retry using exact independent states and qualified837. No SQL-deletion origins; loss/copy-repair/ACK advancement still NOT_RUN.",
+          "next": "Review source for two genuine COMMIT11 loss clones and installed recover/retry (six commands). Before copy repair must not invent C; after C1 permits ACK1. Exact actual driver flag/joins and independent state required.",
           "source": "9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b",
           "state": "Baseline9f integrated by current merge; author continuing separate loss fixture in same worktree. All original frozen revisions/runs preserved.",
           "runtime": {
@@ -64449,10 +64449,14 @@
             "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-delivery-0169de4/failed-run.json",
             "sha256": "e80cce801346299ea4d16eaec21c26b2557be86d6df0c6df7832f3f08fbc9444"
           },
-          "processes": "Root drivers91467/40051 joined0; last observed client06102bb1 exited143/PG71775507 exited0, bothPID0/noOOM. No active engine. Future source edits only."
+          "processes": "Root drivers91467/40051 joined0; last observed client06102bb1 exited143/PG71775507 exited0, bothPID0/noOOM. No active engine. Future source edits only.",
+          "main_integration": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-delivery-main-integration-20261025.json",
+            "sha256": "3074d27ad2d1f86891dbd9350a8f4a4586d02d7306e7f0afd6a2f5eb98529caf"
+          }
         },
         "later_source_work": {
-          "status": "FROZEN_SOURCE_REVIEW_CLEAR_BUILD_RUNTIME_NOT_RUN",
+          "status": "REVIEWED_AND_BUILT; INSTALLED_FIXTURE_SOURCE_IN_PROGRESS",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-20261025",
           "branch": "work/compacted-later-source",
           "base": "fbb35c653f1ea5d6b6755017355e781752f584ff",
@@ -64472,7 +64476,41 @@
             "sha256": "c9477dd4f8a81151f68464e5755b0aa1c4a5463196e4dc5bf9f597bcfee9a5c3"
           },
           "scope": "Explicit compacted Source publication and final typed ACK only; public abandonment consumes/refuses compacted proof before effects. Existing positive/original/retirement/Archive scopes remain distinct. Nine reviewed files; 12 selectors/117 mandatory/226 components are predictions until actual build.",
-          "next": "Bind final source/critical receipts, exact build, then independent installed Source first-close/retry and refusal matrix using qualified openfa origins."
+          "next": "Complete/review existing-owner Source fixture, then root actual3clones/7commands and raw: finite/quiet first close and exact retry, closed-source positive refusal, strict installed abandonment refusal, required-current input refusal.",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-implementation-v1.json",
+            "sha256": "e733e9a0a6c0d0473e16f70769cc97e69efd05e7a2b4f360f6f4ada24863d4a2"
+          },
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-critical-review-v1.json",
+            "sha256": "fbfb7876fb7dd16bdf7e4e26b4f8fdc7b541377bb3d23d1128280c04fcd53b07"
+          },
+          "build": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5eddf46",
+            "session": 44010,
+            "exit": 0,
+            "receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5eddf46/verified-build.json",
+              "sha256": "e33a06d0e64795190deb99d18b0255075bca3124975311d2c09b180715d36ff6"
+            }
+          },
+          "result": "Actual226 components,117 mandatory controls,12 selectors and all14checks including ClippyPASS. Exact five ELFs hashed; both owned containers exited0/PID0/noOOM, inventory unchanged. Installed Source and raw replay NOT_RUN.",
+          "fixture": {
+            "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-fixture-20261025",
+            "branch": "work/compacted-later-source-fixture",
+            "base": "7855fdd055cf9e00e98823f7fc2629ce2e23f464",
+            "owner": "empty_malformed_floor source, compacted_reader_review independent expected-state and critical review; root execution",
+            "state": "SOURCE_IN_PROGRESS_UNQUALIFIED",
+            "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile."
+          }
+        },
+        "later_source_fixture_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-fixture-20261025",
+          "branch": "work/compacted-later-source-fixture",
+          "base": "7855fdd055cf9e00e98823f7fc2629ce2e23f464",
+          "owner": "empty_malformed_floor source, compacted_reader_review independent expected-state and critical review; root execution",
+          "state": "SOURCE_IN_PROGRESS_UNQUALIFIED",
+          "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile."
         }
       }
     }
