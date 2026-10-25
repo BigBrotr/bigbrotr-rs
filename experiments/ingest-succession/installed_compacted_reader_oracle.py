@@ -132,10 +132,10 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
             'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
         required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
-    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component)
+    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty)
     if compacted_activated: activated_qualification(component)
     if compacted_terminal: terminal_qualification(component)
-    if empty_initial: empty_qualification(component)
+    if empty_initial: empty_qualification(component,later_empty=later_empty)
     if later_empty: later_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated or empty_initial: executables |= {'claim_custody','control_runtime_entrypoint'}
@@ -2116,10 +2116,13 @@ class InitialPreparationProfile:
         'Mixed restore/backup and capacity; synthetic target-closing is not a product closing journey')
 
 
-def preparation_qualification(component):
+def preparation_qualification(component,*,later_empty=False):
+    assert type(later_empty) is bool
     names=component['test_names']
-    assert set(names)=={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
+    selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
         'archive_retained_frontier','claim_custody','control_runtime_entrypoint'}
+    if later_empty: selectors.add('successor_transition')
+    assert set(names)==selectors
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'
     assert {prefix+n for n in ('initial_preparation_selector_accepts_original_and_compacted_without_writes',
         'initial_preparation_selector_refuses_incompatible_head_and_census',
@@ -4773,8 +4776,8 @@ def empty_fault_guard_delta(value,*,epoch=2):
     else: assert value['catalog_restored'] is None
 
 
-def empty_qualification(component):
-    preparation_qualification(component)
+def empty_qualification(component,*,later_empty=False):
+    preparation_qualification(component,later_empty=later_empty)
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_empty_tests::'
     assert {prefix+n for n in (
         'compacted_empty_exact_one_write_preserves_science_and_fresh_closing_retry',
