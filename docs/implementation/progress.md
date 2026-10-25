@@ -6,11 +6,11 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Observed main/origin `825f21a7d61ede1670bf460260a10ba378e5f1f7` before this
-integration. This commit merges qualified fixture `5b2f7f3072c0480aee05c9021c405802de866951`
-and its product85/probe2d ancestors without conflicts. Product sources and native
-build runner remain exact `2d5e161363b71b1c1c475e5eb654185011238eb1`; five fixture
-files remain exact5b2f7f3. The pending push must be observed, never inferred.
+Main `29d0d0dca5f4d1f06c4dcf807bb205ca9aeb07f8` is pushed (27956 joined0),
+including qualified fixture `5b2f7f3072c0480aee05c9021c405802de866951` and its
+product85/probe2d ancestors. Product sources/native build runner remain exact
+`2d5e161363b71b1c1c475e5eb654185011238eb1`; five fixture files remain exact5b2f7f3.
+This documentation update records ref retirement. No merge/rebase is pending.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
@@ -53,8 +53,10 @@ Freeafterrun185,992,122,368bytes. All originals, databases, datasets, logs,
 .research, worktrees and failures remain.
 
 - Abandonment85, claimsprobe2d and acquisitionfixture5b2f7f3 worktrees are clean
-  frozen under their existing `.research/compacted-later-*` paths. Branch refs
-  remain until the integrated push is confirmed; preserve worktrees and evidence.
+  detached at their exact revisions under existing `.research/compacted-later-*`
+  paths. Redundant local refs retired after push; all three archive refs and a
+  verified18,163,837-byte0600 bundle remain. Receipt3bec2bb2 owns details.
+  No worktree/artifact/database/cache deletion occurred.
 - `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3`
   retains the detached exact source, raw captures, quarantined originals and
   verified-run.json. Its claims-retry endpoint is now a genuine positive origin.
@@ -66,9 +68,7 @@ Freeafterrun185,992,122,368bytes. All originals, databases, datasets, logs,
 
 ## Next action
 
-Finish this coherent integration/push and retire only the resulting redundant
-refs with the established archive/bundle preservation. Then review/freeze the
-existing retirement wrapper/Check/ACK adaptation, including the independent
+Review/freeze the existing retirement wrapper/Check/ACK adaptation, including the
 retained-count64 versus outstanding-window bound. Root builds its exact revision
 and qualifies installed retirement/retry from the retained5b2f7f3 claims-retry
 endpoint using the existing whole-state/raw runner. Keep required refusal,

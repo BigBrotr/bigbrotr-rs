@@ -64638,6 +64638,12 @@
           "claims_prerequisite_audit": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-claims-prerequisite-20261025.json",
             "sha256": "988ded07518da23088d133a60d9a99d6474103152984b787310922c0af572fce"
+          },
+          "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; CLEAN_DETACHED_WORKTREE_PRESERVED",
+          "archive_ref": "refs/archive/20261025/compacted-later-abandonment",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-ref-retirement-20261025.json",
+            "sha256": "3bec2bb232e09ff260c9dd9597f49391d6425685e44dd53ed4b5099956708f45"
           }
         },
         "later_claims_probe_work": {
@@ -64652,7 +64658,13 @@
             "sha256": "b2635c3babd21729b5f23c50d3d545a2afd343faf8d32fbffc250b77017502de"
           },
           "retained_run": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2d5e161",
-          "processes": "Root31391 joined0; fetchd9409680fe33/native4dd0eb257258 exited0/PID0/noOOM; inventory unchanged,186202632192bytes freeafterbuild. No active root engine."
+          "processes": "Root31391 joined0; fetchd9409680fe33/native4dd0eb257258 exited0/PID0/noOOM; inventory unchanged,186202632192bytes freeafterbuild. No active root engine.",
+          "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; CLEAN_DETACHED_WORKTREE_PRESERVED",
+          "archive_ref": "refs/archive/20261025/compacted-later-claims-probe",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-ref-retirement-20261025.json",
+            "sha256": "3bec2bb232e09ff260c9dd9597f49391d6425685e44dd53ed4b5099956708f45"
+          }
         },
         "later_acquisition_fixture_work": {
           "status": "FROZEN_REVIEWED_CONNECTED_AND_RAW_PASS",
@@ -64661,7 +64673,7 @@
           "base": "c365c6cdffa114c09071c86661b49f4b37ad1aff",
           "product_source": "2d5e161363b71b1c1c475e5eb654185011238eb1",
           "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only engines/integration",
-          "scope": "One real Terminal2 clone; optional7 originals preserved in quarantine, required2:1 retained. Same-Control genuine claims then installed Source/Abandon/retry;1clone4commands79controls5811rawbindings,77tables. SQL224/226/229/231, native93/138\u2192139/139/139, targetC0/A0/cut0; one cancelled job/gap and one unchanged unclaimed job.",
+          "scope": "Retains one claims clone, reversible input quarantine and exact source/captures; detailed results owned by linked runtime and recovery report.",
           "source": "5b2f7f3072c0480aee05c9021c405802de866951",
           "tree": "1f2861073f977f9cfd7c41445a846d8430f38933",
           "runtime": {
@@ -64673,7 +64685,13 @@
           "database": "bb_compacted_later_acquisition_5b2f7f3_claims",
           "owner": "a3a005286129d05ef3600a3f0d24f68b",
           "client": "ecaad6f6fdbeb30f19b81d12f5b180f0947f60c052853c5e5b43134a81f6b89f",
-          "processes": "Root81154/raw8098 joined0; client exited143/PG717 exited0, bothPID0/noOOM freshly inspected. All four custody receipts closed/joined with backend absence; isolation arrays empty; original5preservation predicates true;185992122368bytes freeafterrun. No active root engine."
+          "processes": "Root81154/raw8098 joined0; client exited143/PG717 exited0, bothPID0/noOOM freshly inspected. All four custody receipts closed/joined with backend absence; isolation arrays empty; original5preservation predicates true;185992122368bytes freeafterrun. No active root engine.",
+          "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; CLEAN_DETACHED_WORKTREE_PRESERVED",
+          "archive_ref": "refs/archive/20261025/compacted-later-acquisition-fixture",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-ref-retirement-20261025.json",
+            "sha256": "3bec2bb232e09ff260c9dd9597f49391d6425685e44dd53ed4b5099956708f45"
+          }
         },
         "later_retirement_work": {
           "status": "SOURCE_IN_PROGRESS; BUILD_AND_INSTALLED_NOT_RUN",

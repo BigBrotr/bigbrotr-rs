@@ -46600,7 +46600,7 @@
                   },
                   "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
                   "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
-                  "next": "Integrate qualified85/2d/5b2f7f3 into main; next bounded consumer is explicit compacted retirement, with remaining abandonment faults/cancellation/H-D gates retained.",
+                  "next": "Review/freeze the bounded compacted retirement adaptation and qualify its exact build before the installed retirement/retry fixture; remaining abandonment faults/cancellation/H-D gates retained.",
                   "source": "85a4308c25a0c7f40d4d92dc28bed0dbbb13eca0",
                   "tree": "efa1520a24b6d03bfd03c1191c71c50df2cefe07",
                   "source_receipt": {
@@ -46657,7 +46657,9 @@
                       "sha256": "b2635c3babd21729b5f23c50d3d545a2afd343faf8d32fbffc250b77017502de"
                     },
                     "result": "Build31391 joined0;229tests/120mandatory/13selectors/all15checks includingClippy. Connected claims/source/abandon/retry on exact2d qualified by next_fixture_work runtime; no acquisition execution claim.",
-                    "scope": "Named finite same-Control compacted prepare/activate/renew plus genuine browser-authenticated a6claim and a7unclaimed; zero requests, exact mixed-input census and Check/hash65MiB overlap. Four existing probe owners only."
+                    "scope": "Named finite same-Control compacted prepare/activate/renew plus genuine browser-authenticated a6claim and a7unclaimed; zero requests, exact mixed-input census and Check/hash65MiB overlap. Four existing probe owners only.",
+                    "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; CLEAN_DETACHED_WORKTREE_PRESERVED",
+                    "archive_ref": "refs/archive/20261025/compacted-later-claims-probe"
                   },
                   "next_fixture_work": {
                     "status": "FROZEN_REVIEWED_CONNECTED_AND_RAW_PASS",
@@ -46685,7 +46687,9 @@
                     "runtime": {
                       "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-acquisition-5b2f7f3/verified-run.json",
                       "sha256": "71a16e175cc11bda325115579f006927494dc3e3c8c17d95c037ba2b182ac817"
-                    }
+                    },
+                    "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; CLEAN_DETACHED_WORKTREE_PRESERVED",
+                    "archive_ref": "refs/archive/20261025/compacted-later-acquisition-fixture"
                   },
                   "next_retirement_audit": {
                     "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-prerequisite-audit-20261025.json",
@@ -46699,7 +46703,22 @@
                     "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture read-only fixture reuse audit; root build/runtime/integration",
                     "scope": "Explicit compacted retirement wrapper/Check/ACK reuse and retained-count/window distinction; no Archive/floor/unlink. First prospective installed origin is qualified5b2f7f3 claims-retry; no synthetic historical attribution.",
                     "next": "Review/freeze minimal source and component declarations, root build then existing-runner whole-state retirement/retry fixture."
-                  }
+                  },
+                  "integration": {
+                    "main": "29d0d0dca5f4d1f06c4dcf807bb205ca9aeb07f8",
+                    "push_session": 27956,
+                    "push_state": "JOINED_EXIT0",
+                    "checks": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-integration-checks-v1.json",
+                      "sha256": "5b09fd2e99bd6179b1dd8264aaa0a77f0a69d17f28643ce4a8cc4c5f812b7fdd"
+                    },
+                    "ref_retirement": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-ref-retirement-20261025.json",
+                      "sha256": "3bec2bb232e09ff260c9dd9597f49391d6425685e44dd53ed4b5099956708f45"
+                    }
+                  },
+                  "branch_state": "REDUNDANT_LOCAL_REF_RETIRED; CLEAN_DETACHED_WORKTREE_PRESERVED",
+                  "archive_ref": "refs/archive/20261025/compacted-later-abandonment"
                 }
               }
             }
