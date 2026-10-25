@@ -7,6 +7,38 @@ use bigbrotr_model::{
     TopologyGeneration,
 };
 
+#[test]
+fn abandonment_requires_exact_basis_and_spends_before_refusal() {
+    // The two public consumers pass fixed expectations to the same terminal
+    // transaction. A mismatched attempt cannot fall back using this owner.
+    for (compacted, expected_compacted, expected) in [
+        (false, false, Ok(())),
+        (true, true, Ok(())),
+        (true, false, Err(OwnerError::InvalidInput)),
+        (false, true, Err(OwnerError::InvalidInput)),
+    ] {
+        let publication = PublicationState::default();
+        publication.require_available().unwrap();
+        assert_eq!(
+            publication.start_abandonment(compacted, expected_compacted),
+            expected
+        );
+        assert_eq!(
+            publication.require_available(),
+            Err(OwnerError::Unavailable)
+        );
+        // Neither a corrected basis nor Source publication rearms success,
+        // failure or an operation whose eventual delivery is unknown.
+        for retry_basis in [false, true] {
+            assert_eq!(
+                publication.start_abandonment(compacted, retry_basis),
+                Err(OwnerError::Unavailable)
+            );
+        }
+        assert_eq!(publication.start(), Err(OwnerError::Unavailable));
+    }
+}
+
 fn head(epoch: u64) -> Epoch {
     Epoch {
         manifest: IngestManifest::for_repeatable_successor(

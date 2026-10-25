@@ -227,22 +227,22 @@ fn compacted_source_abandonment_refusal_spends_publication() {
         let publication = PublicationState::default();
         publication.require_available().unwrap();
         assert_eq!(
-            publication.start_abandonment(compacted),
+            publication.start_abandonment(compacted, false),
             if compacted {
                 Err(OwnerError::InvalidInput)
             } else {
                 Ok(())
             }
         );
-        // Both the accepted original consumer and the refused compacted
-        // consumer spend the owner before any transaction or job effect.
+        // The original-only API spends both the accepted original proof and
+        // the refused compacted proof before any transaction or job effect.
         assert_eq!(
             publication.require_available(),
             Err(OwnerError::Unavailable)
         );
         assert_eq!(publication.start(), Err(OwnerError::Unavailable));
         assert_eq!(
-            publication.start_abandonment(false),
+            publication.start_abandonment(false, false),
             Err(OwnerError::Unavailable)
         );
     }

@@ -486,20 +486,37 @@ and digest under fresh Control authority. A current head with three issued
 requests, Fact cut4 and typed checkpoint1 closes at cut4 and acknowledges only
 checkpoint1. An exact closed retry preserves the closure timestamp, digest and
 row version. The report adds the same compacted basis/count fields as positive
-recovery; it confers no abandonment, retirement or Archive capability. Installed
-closed-source positive recovery refuses at the SQL open-source guard, while
-installed abandonment still refuses at its strict factory. Source-publication
-response loss and final-ACK fault schedules remain separate gates.
+recovery; the report itself confers no abandonment, retirement or Archive
+capability. Installed closed-source positive recovery refuses at the SQL
+open-source guard. The qualified product `5eddf46` also refused installed compacted
+abandonment at its strict factory; the explicit extension below is not covered
+by that result. Source-publication response loss and final-ACK fault schedules
+remain separate gates.
 
 Source publication spends its owner before fallible work and retains native and
-proof custody through known publication, final ACK and shutdown. The public
-acquisition-abandonment consumer separately refuses a compacted Source proof
-before SQL effects and leaves that attempted owner spent. Ordinary Source and
-abandonment keep their original-input readers.
+proof custody through known publication, final ACK and shutdown. The original
+public acquisition-abandonment consumer still refuses a compacted Source proof
+before SQL effects and leaves that attempted owner spent. The separate compacted
+consumer requires that exact basis; passing it an original-input proof also
+spends and refuses the owner. Ordinary Source and abandonment keep their
+original-input readers.
 
 `--abandon-successor-acquisition` requires the source already closed and verifies
 it again in a fresh process. It records whole-intent coverage gaps for the
 original activator's queued acquisition jobs, preserving unclaimed jobs.
+Its compacted extension reuses the Source recovery proof, retained canonical
+Check and final typed-checkpoint ACK. It requires Source already CLOSED before
+the native barrier, authenticates required later originals and any initial
+residuals, and selects jobs using the actual activating Control tuple. Both
+bases use the same terminal SQL transaction, immutable gap validation and
+whole-batch job checks. The installed reservation preflight explicitly retains
+the Check during the final job grant; the existing compacted ACK overlap already
+dominates that reservation. This extension is source-only: component, installed
+whole-state/retry, genuine nonzero-job, cancellation, lock-wait, H/D and delivery
+fault qualification remain NOT_RUN. Existing finite and quiet compacted origins
+have no jobs owned by their activating Control and cannot establish nonzero
+abandonment. Retirement and Archive remain strict on the compacted basis.
+
 `--retire-successor` requires completed source closure and workflow abandonment;
 it verifies existing copies and retires the producer, its nine allocation domains
 and Ingest owner. An exact retry preserves original attribution and row versions.
@@ -508,8 +525,8 @@ Unresolved import obligations and unbound historical Events refuse retirement.
 Retry a mode only while its prerequisites remain valid: positive recovery is
 source-open-only, and terminal retirement has its own retry. No mode starts
 acquisition, resolves an unactivated preparation or reclaims space. On the compacted
-basis, positive recovery and the explicit Source path perform their final
-typed-checkpoint ACK. A successful
+basis, positive recovery and the explicit Source and abandonment paths perform
+their final typed-checkpoint ACK. A successful
 `bigbrotr-ingest-recovery/1` report contains the actual epoch,
 request bounds and verified history; it is published after native closure,
 Control release and driver join. Preserve state after errors or unknown outcomes.

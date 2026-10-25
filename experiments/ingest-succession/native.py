@@ -343,6 +343,7 @@ if producer_floor:
         ('successor_activation', 'storage::postgres::control_owner::successor_transition::activation::tests::'),
         ('successor_recovery', 'storage::postgres::control_owner::successor_transition::recovery::tests::'),
         ('successor_source', 'storage::postgres::control_owner::successor_transition::recovery::source::tests::'),
+        ('successor_acquisition', 'storage::postgres::control_owner::successor_transition::recovery::source::acquisition::tests::'),
         ('archive_retained_frontier', 'storage::postgres::control_owner::archive_retained_frontier::tests::'),
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
@@ -658,6 +659,11 @@ if producer_floor:
             'publication_is_spent_before_failure_and_never_rearms',
             'compacted_source_abandonment_refusal_spends_publication',
             'source_cut_is_independent_of_checkpoint_credit_and_initial_floor']]
+    required_controls['successor_acquisition'] = [
+        'storage::postgres::control_owner::successor_transition::recovery::source::acquisition::tests::' + name for name in [
+            'abandonment_requires_exact_basis_and_spends_before_refusal',
+            'abandonment_requires_previously_closed_source_without_retirement_veto',
+            'abandonment_bound_counts_retained_and_zero_request_claims_together']]
     required_controls['initial_reconstruction'].extend(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::' + name for name in [
             'compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry',
