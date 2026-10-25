@@ -342,6 +342,7 @@ if producer_floor:
         ('successor_transition', 'storage::postgres::control_owner::successor_transition::tests::'),
         ('successor_activation', 'storage::postgres::control_owner::successor_transition::activation::tests::'),
         ('successor_recovery', 'storage::postgres::control_owner::successor_transition::recovery::tests::'),
+        ('successor_source', 'storage::postgres::control_owner::successor_transition::recovery::source::tests::'),
         ('archive_retained_frontier', 'storage::postgres::control_owner::archive_retained_frontier::tests::'),
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
@@ -646,9 +647,17 @@ if producer_floor:
             'activated_recovery_accepts_only_the_native_first_barrier_gap',
             'reserved_suffix_is_bounded_but_never_a_complete_prefix',
             'recovered_retained_count_is_separate_from_acknowledged_outstanding_window',
-            'compacted_recovery_requires_positive_purpose_and_matching_private_basis',
+            'compacted_recovery_requires_matching_private_basis',
             'tail_bytes_are_observation_until_an_exact_reservation_binds_them',
             'close_attempt_is_spent_before_any_fallible_dispatch']]
+    required_controls['successor_source'] = [
+        'storage::postgres::control_owner::successor_transition::recovery::source::tests::' + name for name in [
+            'source_closed_requires_both_barriers_without_broadening_positive',
+            'source_summary_binds_closed_cut_digest_and_keeps_event_mask_separate',
+            'publication_allows_only_the_exact_source_change_and_exact_retry',
+            'publication_is_spent_before_failure_and_never_rearms',
+            'compacted_source_abandonment_refusal_spends_publication',
+            'source_cut_is_independent_of_checkpoint_credit_and_initial_floor']]
     required_controls['initial_reconstruction'].extend(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::' + name for name in [
             'compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry',

@@ -232,7 +232,7 @@ impl ControlSession {
     }
 
     /// Require the retained compacted basis for positive recovery only. Ordinary
-    /// state is refused; original and source/retirement factories stay strict.
+    /// state is refused; original factories and retirement stay strict.
     #[allow(
         clippy::too_many_arguments,
         reason = "distinct native metadata, original input and retained canonical effect grants"
@@ -273,9 +273,6 @@ impl ControlSession {
         compacted: Option<successor_compaction::Check>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedSuccessorRecovery, ProducerResolveError> {
-        if compacted.is_some() && purpose != Purpose::Positive {
-            return Err(OwnerError::InvalidInput.into());
-        }
         let current = self.identity;
         let operation = history_request(&input);
         let (tx, mut lease, policy) = self
@@ -298,11 +295,7 @@ impl ControlSession {
             NativeSuccessorRecovery::inspect(recovery, metadata_permit, input.cancelled)
         }
         .map_err(native_error)?;
-        require_recovery_basis(
-            purpose,
-            compacted.is_some(),
-            native.compacted_requests() != 0,
-        )?;
+        require_recovery_basis(compacted.is_some(), native.compacted_requests() != 0)?;
         let owner = ActivatedSuccessorRecovery {
             native,
             intent,
@@ -766,15 +759,8 @@ impl ControlSession {
         }
         projection::require_native(&tx, recovery, owner, input.cancelled).await?;
         projection::require_tail(&tx, owner).await?;
-        require_recovery_basis(
-            owner.purpose,
-            owner.compacted.is_some(),
-            owner.compacted_requests() != 0,
-        )?;
+        require_recovery_basis(owner.compacted.is_some(), owner.compacted_requests() != 0)?;
         if let Some(check) = &owner.compacted {
-            if owner.purpose != Purpose::Positive {
-                return Err(OwnerError::InvalidInput.into());
-            }
             check
                 .resolve_recovery(
                     &tx,
@@ -797,14 +783,7 @@ fn history_request<'a>(input: &SuccessorReplayRequest<'a>) -> InitialHistoryRequ
         cancelled: input.cancelled,
     }
 }
-fn require_recovery_basis(
-    purpose: Purpose,
-    check: bool,
-    retained: bool,
-) -> Result<(), ProducerResolveError> {
-    if check && purpose != Purpose::Positive {
-        return Err(OwnerError::InvalidInput.into());
-    }
+fn require_recovery_basis(check: bool, retained: bool) -> Result<(), ProducerResolveError> {
     successor_compaction::require_basis_presence(check, retained, check)
 }
 fn native_error(error: BootstrapError) -> ProducerResolveError {

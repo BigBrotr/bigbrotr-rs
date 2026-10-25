@@ -64460,7 +64460,7 @@
           }
         },
         "later_source_work": {
-          "status": "REVIEWED_AND_BUILT; INSTALLED_FIXTURE_SOURCE_IN_PROGRESS",
+          "status": "SOURCE_BUILD_AND_INSTALLED_QUALIFIED; MAIN_INTEGRATION",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-20261025",
           "branch": "work/compacted-later-source",
           "base": "fbb35c653f1ea5d6b6755017355e781752f584ff",
@@ -64479,8 +64479,8 @@
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-declarations-v1.json",
             "sha256": "c9477dd4f8a81151f68464e5755b0aa1c4a5463196e4dc5bf9f597bcfee9a5c3"
           },
-          "scope": "Explicit compacted Source publication and final typed ACK only; public abandonment consumes/refuses compacted proof before effects. Existing positive/original/retirement/Archive scopes remain distinct. Nine reviewed files; 12 selectors/117 mandatory/226 components are predictions until actual build.",
-          "next": "Complete/review existing-owner Source fixture, then root actual3clones/7commands and raw: finite/quiet first close and exact retry, closed-source positive refusal, strict installed abandonment refusal, required-current input refusal.",
+          "scope": "Explicit compacted Source publication and final typed ACK only; public abandonment consumes/refuses compacted proof before effects. Existing positive/original/retirement/Archive scopes remain distinct.",
+          "next": "Measure actual Source publication delivery baseline before fault schedules; preserve exact Source C1/A1/cut4/H/D and fresh installed recovery/retry.",
           "source_receipt": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-implementation-v1.json",
             "sha256": "e733e9a0a6c0d0473e16f70769cc97e69efd05e7a2b4f360f6f4ada24863d4a2"
@@ -64498,23 +64498,50 @@
               "sha256": "e33a06d0e64795190deb99d18b0255075bca3124975311d2c09b180715d36ff6"
             }
           },
-          "result": "Actual226 components,117 mandatory controls,12 selectors and all14checks including ClippyPASS. Exact five ELFs hashed; both owned containers exited0/PID0/noOOM, inventory unchanged. Installed Source and raw replay NOT_RUN.",
+          "result": "See owning next_source_work_20261025 evidence; all Source build/runtime/raw drivers joined0.",
           "fixture": {
             "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-fixture-20261025",
             "branch": "work/compacted-later-source-fixture",
             "base": "7855fdd055cf9e00e98823f7fc2629ce2e23f464",
             "owner": "empty_malformed_floor source, compacted_reader_review independent expected-state and critical review; root execution",
-            "state": "SOURCE_IN_PROGRESS_UNQUALIFIED",
-            "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile."
-          }
+            "state": "CLEAN_FROZEN_QUALIFIED; INCLUDED_BY_CURRENT_MAIN_MERGE",
+            "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile.",
+            "source": "b370238e92c16057c6a96aa924b901caa8897e30",
+            "tree": "64f2f5b8ceca26aa6ec33392c3ae4e3481240888",
+            "source_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-fixture-source-v1.json",
+              "sha256": "cc19c8bed0fac1cfc6a660827aa6446426127f443073bfb6e669de490b3e4e30"
+            },
+            "critical_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-fixture-critical-v1.json",
+              "sha256": "f0212ad25cd8e93d73365988a7544927d8aeb4f691020448a477562726646e1e"
+            },
+            "offline_failure": "Author v2 synthetic quarantine inode diagnostic failed; v3 uses actual synthetic inode census. Both retained in source receipt; verifier unchanged, no runtime failure."
+          },
+          "runtime": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-source-b370238/verified-run.json",
+            "sha256": "0f97642cc2e5b7f6966e53da7f2de5a941a399cd314394c28a9bd08fda0268ea"
+          },
+          "processes": "Driver99804/raw90689 joined0; client36357a22621a exited143 and PG71775507 exited0/PID0/noOOM. Build44010 joined0; no engine active."
         },
         "later_source_fixture_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-fixture-20261025",
           "branch": "work/compacted-later-source-fixture",
           "base": "7855fdd055cf9e00e98823f7fc2629ce2e23f464",
           "owner": "empty_malformed_floor source, compacted_reader_review independent expected-state and critical review; root execution",
-          "state": "SOURCE_IN_PROGRESS_UNQUALIFIED",
-          "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile."
+          "state": "CLEAN_FROZEN_QUALIFIED; INCLUDED_BY_CURRENT_MAIN_MERGE",
+          "scope": "Independent full77-table/native/input/custody models reuse qualified OPENfa finite/quiet endpoints; no Rust/proxy changes; explicit strict12-selector product5ed profile.",
+          "source": "b370238e92c16057c6a96aa924b901caa8897e30",
+          "tree": "64f2f5b8ceca26aa6ec33392c3ae4e3481240888",
+          "source_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-fixture-source-v1.json",
+            "sha256": "cc19c8bed0fac1cfc6a660827aa6446426127f443073bfb6e669de490b3e4e30"
+          },
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-fixture-critical-v1.json",
+            "sha256": "f0212ad25cd8e93d73365988a7544927d8aeb4f691020448a477562726646e1e"
+          },
+          "offline_failure": "Author v2 synthetic quarantine inode diagnostic failed; v3 uses actual synthetic inode census. Both retained in source receipt; verifier unchanged, no runtime failure."
         }
       }
     }

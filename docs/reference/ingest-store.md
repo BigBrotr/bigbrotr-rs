@@ -471,13 +471,31 @@ qualifies ACK advancement from the retained checkpoint; exact retries add no
 native writes. These fault results use product837 and measured COMMIT11. The path adds
 `recovery_basis = closed-producer-floor-v3` and
 `compacted_requests = N` to the existing successful report; `resolved_requests`
-still counts current-head original requests. It does not enable source closure,
-acquisition abandonment, retirement or Archive consumption on this basis. Those
-entrypoints retain their strict original-history readers. Fault/Sync, physical
+still counts current-head original requests. That qualification does not establish
+the Source extension below, acquisition abandonment, retirement or Archive
+consumption on this basis. Fault/Sync, physical
 loss/restore and capacity qualification remain separate gates.
 
 `--close-successor-source` proves the complete ordered history and publishes the
 source cut and digest. A closed retry requires existing exact outcome copies.
+Its compacted extension is component- and installed-qualified for finite and
+quiet closure, exact retries and required-input refusal. It selects the actual
+floor with the same required-original and
+residual checks, verifies initial H/D, and publishes only the current Source cut
+and digest under fresh Control authority. A current head with three issued
+requests, Fact cut4 and typed checkpoint1 closes at cut4 and acknowledges only
+checkpoint1. An exact closed retry preserves the closure timestamp, digest and
+row version. The report adds the same compacted basis/count fields as positive
+recovery; it confers no abandonment, retirement or Archive capability. Installed
+closed-source positive recovery refuses at the SQL open-source guard, while
+installed abandonment still refuses at its strict factory. Source-publication
+response loss and final-ACK fault schedules remain separate gates.
+
+Source publication spends its owner before fallible work and retains native and
+proof custody through known publication, final ACK and shutdown. The public
+acquisition-abandonment consumer separately refuses a compacted Source proof
+before SQL effects and leaves that attempted owner spent. Ordinary Source and
+abandonment keep their original-input readers.
 
 `--abandon-successor-acquisition` requires the source already closed and verifies
 it again in a fresh process. It records whole-intent coverage gaps for the
@@ -490,7 +508,8 @@ Unresolved import obligations and unbound historical Events refuse retirement.
 Retry a mode only while its prerequisites remain valid: positive recovery is
 source-open-only, and terminal retirement has its own retry. No mode starts
 acquisition, resolves an unactivated preparation or reclaims space. On the compacted
-basis, only this positive recovery path performs its final typed-checkpoint ACK. A successful
+basis, positive recovery and the explicit Source path perform their final
+typed-checkpoint ACK. A successful
 `bigbrotr-ingest-recovery/1` report contains the actual epoch,
 request bounds and verified history; it is published after native closure,
 Control release and driver join. Preserve state after errors or unknown outcomes.
