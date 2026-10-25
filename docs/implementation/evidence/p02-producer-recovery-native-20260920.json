@@ -46073,10 +46073,14 @@
                 "scope": "One genuine ordinary PreparedOpen4 copy/two installed commands with exact qualified2bdf artifacts. Full75-table state, four original inputs and native58rows/sequence72->73->73. Retirement13target updates+terminal receipt; retry changes only two current-Control rows and preserves target timestamps/xmins/receipt. No compacted report fields or floor inferred.",
                 "validation": "Root driver12103 joined0; raw driver completed0,787boundfiles and30case counterexamples. Actual owned client69c1d0a4 exited143/PG71775507 exited0/PID0/noOOM; original5preservation facts true; cleanup/unrelated/missing/unexpected empty. No new build.",
                 "integration": "Fast-forward integrated into main at exactc3bec54; current documentation-only record follows. No product/fixture byte change or new merged-source runtime claim.",
-                "remaining": "Broader ordinary lifecycle/faults, compacted input/H/D qualification, continuous activation/live, Archive and reclamation/restore/capacity remain separate gates."
+                "remaining": "Broader ordinary lifecycle/faults, compacted input/H/D qualification, continuous activation/live, Archive and reclamation/restore/capacity remain separate gates.",
+                "ref_retirement": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/ordinary-regression-ref-retirement-20261025.json",
+                  "sha256": "74ac491f06d8c16c29b153d274c1bddd07be7b801868e3cfc17b362c03ecac69"
+                }
               },
               "later_input_proof_20261025": {
-                "status": "SOURCE_REVIEWED_RUNTIME_ATTEMPT_FAIL_CORRECTION_IN_PROGRESS",
+                "status": "PASS_EXACT_SOURCE_INSTALLED_AND_RAW",
                 "source": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-proof-source-v1.json",
                   "sha256": "e795bd85b4030be12d4ea09b4eb7bf7492cffba4652d7ad71b99824e9e871d36"
@@ -46089,14 +46093,61 @@
                   {
                     "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-input-proof-736cbd5/failed-run.json",
                     "sha256": "c9d0454bce0fa344ebfaaeb3bee372e6661f885ed7ede5547b9a0120e053b8ac"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-input-proof-a9e2aa7/failed-run.json",
+                    "sha256": "23f04fd1e8d8adcf1a0760c65ac16cc5275f6a72e99c3db0eab875877f447d30"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-input-proof-409a40b/failed-run.json",
+                    "sha256": "ac47872176c627205298e546126d189b33604ab73450e4d455af3f4091aacebc"
+                  },
+                  {
+                    "source": "821034206137733138779cc8b30d31a9fdd414c4",
+                    "status": "PASS_RUNTIME_AND_ISOLATED_RAW",
+                    "receipt": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-input-proof-8210342/verified-run.json",
+                      "sha256": "16795b5a50a251a2371a11dd489b5df2f13773b5d9bd14d1f0ef2ace8269b630"
+                    },
+                    "drivers": "13411/63756 joined0; non-isolated raw67963 joined1 retained in same run, caused by foreign /etc/python3.13/sitecustomize.py; corrected -B -E -S invocation, unchanged capture/source."
                   }
                 ],
                 "finding": "First6cases PASS, including own installed COMMIT6 hold baseline. Fixed D mutant reaches SQL closed-source commitment guard before canonical Rust recheck: actual Control(Backend), expected Native(Native(StateMismatch)). Native134 unchanged and known closed custody. This is not a passing full profile or Rust recheck qualification. Final2cases/raw NOT_RUN.",
-                "next": "Keep fixed independent D mutation; bind exact SQL guard refusal causally to actual backend/time/log and name the observed boundary honestly. Preserve narrower post-SQL Rust recheck as open. Root reviews corrected source before fresh exact-source runtime.",
-                "preservation": "Both original sources pass all5preservation facts; owned client/PG stopped, no unexpected/unrelated changes or cleanup errors. Original failed captures immutable."
+                "next": "Integrate qualified821 fixture on main and preserve branch evidence. Later live/Sync/fault and fresh-recovery gates remain separate.",
+                "preservation": "Both original sources pass all5preservation facts; owned client/PG stopped, no unexpected/unrelated changes or cleanup errors. Original failed captures immutable.",
+                "digest_correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-digest-correction-source-v1.json",
+                  "sha256": "0345e43ccb80de50ed6493f0c654dc90ffa83904d588972099b10427e722c340"
+                },
+                "digest_correction_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-proof-sql-guard-critical-review-v1.json",
+                  "sha256": "8b3e7a37fd61caa3431f623d1e42108328781db7db77db42511f067cb7fdfe15"
+                },
+                "current_source": "821034206137733138779cc8b30d31a9fdd414c4",
+                "latest_finding": "All9cases/188controls and isolated raw6006bindings PASS. Measured installed release_after deltas180034/414091/522151us retain1s limit. SQL D guard is the observed refusal; narrower Rust recheck remains NOT_RUN.",
+                "log_identity_correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-log-identity-source-v1.json",
+                  "sha256": "12122f5aa10c0584a296b4b4dc044ef4f213723d147ba4ed376a0bb3e89908fd"
+                },
+                "log_identity_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-log-identity-critical-review-v1.json",
+                  "sha256": "20e2e43b2c05f1179569d4cbd618a16254d8778523c1c12ce9c862e1d3a6dce0"
+                },
+                "batch_correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-batch-source-v1.json",
+                  "sha256": "ae72daf4a9c7f3af974f59f814c88f36531d7f3a3f8455186484cdc46f29596c"
+                },
+                "batch_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-input-batch-critical-review-v1.json",
+                  "sha256": "924a0dab807d6ad0ab3ec664d261eebe500104dfb369ec99cc988fa2ee0c5241"
+                },
+                "qualification": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-input-proof-8210342/verified-run.json",
+                  "sha256": "16795b5a50a251a2371a11dd489b5df2f13773b5d9bd14d1f0ef2ace8269b630"
+                }
               },
               "later_live_source_20261025": {
-                "status": "CORRECTED_SOURCE_REVIEWED_BUILD_RUNNING",
+                "status": "PASS_EXACT_BUILD_COMPONENTS_CONNECTED_LIVE_PENDING",
                 "source": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-source-v1.json",
                   "sha256": "cf9ce1f31f0e360fed91c5b762f97288fd212e6123e90411e0a9dedf125fdc11"
@@ -46109,10 +46160,14 @@
                   {
                     "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-63a8fbf/verified-failure.json",
                     "sha256": "d8c4cfa2aa3ad8e091d02df830b4023b6e06d07f264d16481bdce4afe421e3f2"
+                  },
+                  {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2622fc8/verified-failure.json",
+                    "sha256": "cbe00b22ae476b49b35225667dca33d466c8d6f2b2c3e80897f7b289d319b846"
                   }
                 ],
                 "finding": "Exact63a8fbf compile E0599: historical InitialWriterCandidate still calls removed VerifiedCompactedPrefix::recovery. One build checkFAIL,11NOT_RUN. Prior review missed this caller; receipt retained unchanged.",
-                "next": "Join existing build2308, inspect actual checks/artifacts, correct only observed failures. Complete separately authored live fixture and critical review before connected runtime.",
+                "next": "Correct strict verifier for actual four-key history.capture response; author/reviewer first apply complete actual saved context offline. Root next exact-source runtime after freeze; product5df build reused.",
                 "remaining": "Connected live/Sync/faults, fresh activated3 adoption, Archive, capacity and reclamation remain unqualified.",
                 "correction": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-recovery-identity-correction-v1.json",
@@ -46122,12 +46177,49 @@
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-recovery-identity-critical-review-v1.json",
                   "sha256": "0155b1dc7d57833a1b9dc8580b8e3bae53ef4d61646cb4b56158f172139bba07"
                 },
-                "current_source": "2622fc82ba79b7e20c0ba039a68f84b9b999ea5b",
+                "current_source": "5df6b94264300103a7385b174f6272070dc94e98",
                 "current_build": {
-                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2622fc8",
-                  "driver_session": 2308,
-                  "status": "RUNNING_NO_RESULT_CLAIM"
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5df6b94",
+                  "driver_session": 98772,
+                  "status": "PASS_JOINED0",
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5df6b94/verified-build.json",
+                    "sha256": "3f0eeaa45b09d1fe756bc37882db7e7e43eeaba0393e92663813beb4a038fdf0"
+                  }
+                },
+                "modern_probe_correction": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-modern-probe-correction-v1.json",
+                  "sha256": "8d16fa5e2664b7d1e88717e2c42a963a29a1f8b0597cf7cf133a4bfeb3548784"
+                },
+                "modern_probe_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-modern-probe-critical-review-v1.json",
+                  "sha256": "2ea27f12d4591dafe7d1c7a6a792b0140ca065b28218f66d118373e7ce229525"
+                },
+                "build_qualification": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-5df6b94/verified-build.json",
+                  "sha256": "3f0eeaa45b09d1fe756bc37882db7e7e43eeaba0393e92663813beb4a038fdf0"
+                },
+                "fixture_source": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-fixture-source-v1.json",
+                  "sha256": "539e9f3976781844115f912488f6544be2a24cad6e799b1bf547fffbdc644d52"
+                },
+                "fixture_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-fixture-critical-review-v1.json",
+                  "sha256": "56bb0e3d3ee5fff0741c04b77019ae6af7e3103ec4dc26014399a531c89e33f8"
+                },
+                "current_runtime": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-live-521de06",
+                  "driver": 7760,
+                  "status": "FAIL_FIXTURE_RESPONSE_CONTRACT_JOINED1",
+                  "receipt": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-live-521de06/failed-run.json",
+                    "sha256": "10689fbd63dfdc8960e392709c25d348d5f540de88a96dad5ee25145b9758be5"
+                  }
                 }
+              },
+              "next_fresh_recovery_audit_partial_20261025": {
+                "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-fresh-recovery-audit-partial-20261025.json",
+                "sha256": "bbcd714261230504edaeccc762cb21c3631ba34eb37bb691f0ff78d1cae6a86f"
               }
             }
           }

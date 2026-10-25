@@ -115,19 +115,23 @@ def blocked_backend(pg, database, holder):
         time.sleep(min(.02, max(0, deadline - time.monotonic())))
 
 
+def exact_absence_sql(database, backend):
+    assert type(backend['pid']) is int and backend['pid'] > 0
+    assert backend['database'] == database and re.fullmatch(r'[a-z0-9_]+', database)
+    start = backend['backend_start']
+    datetime.fromisoformat(start)
+    assert "'" not in start
+    return (f"SELECT EXISTS(SELECT FROM pg_stat_activity "
+        f"WHERE pid={backend['pid']} AND backend_start='{start}'::timestamptz "
+        f"AND datname='{database}')")
+
+
 def exact_absence(pg, database, expected):
     observations = []
     for backend in expected:
-        assert type(backend['pid']) is int and backend['pid'] > 0
-        assert backend['database'] == database and re.fullmatch(r'[a-z0-9_]+', database)
-        start = backend['backend_start']
-        datetime.fromisoformat(start)
-        assert "'" not in start
         # Global absence was positively observed first; retain an independent
         # exact-tuple observation rather than treating a closed socket as proof.
-        present = bounded_sql(pg, database, f"SELECT EXISTS(SELECT FROM pg_stat_activity "
-            f"WHERE pid={backend['pid']} AND backend_start='{start}'::timestamptz "
-            f"AND datname='{database}')", 5)
+        present = bounded_sql(pg, database, exact_absence_sql(database, backend), 5)
         assert present == 'f', 'original installed backend still present'
         observations.append(dict(backend, present=False))
     return observations

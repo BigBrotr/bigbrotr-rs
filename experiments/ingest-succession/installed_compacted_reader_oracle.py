@@ -5506,13 +5506,16 @@ def later_qualification(component):
         'compacted_successor_dispatch_failure_keeps_exact_completed_retry')}<=set(component['test_names']['initial_reconstruction'])
 
 
-def later_specification(case):
-    name=case['clone']; assert name in LATER_STEPS
-    step=case['name'].removeprefix(name+'-'); steps=LATER_STEPS[name]; index=steps.index(step)
-    assert case['name']==name+'-'+step and case['origin']==LATER_ORIGIN_NAMES[name]
+def later_specification(case,*,input_proof=False):
+    assert type(input_proof) is bool
+    profile=LaterInputProofProfile if input_proof else LaterEmptyProfile
+    origins=LATER_INPUT_ORIGINS if input_proof else LATER_ORIGIN_NAMES
+    name=case['clone']; assert name in profile.STEPS
+    step=case['name'].removeprefix(name+'-'); steps=profile.STEPS[name]; index=steps.index(step)
+    assert case['name']==name+'-'+step and case['origin']==origins[name]
     assert case['predecessor']==(name+'-'+steps[index-1] if index else None)
     assert case['operation']==('successor-compacted-prepare' if step.startswith('prepare') else 'retire-empty-successor')
-    assert re.fullmatch(LaterEmptyProfile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name,case['database'])
+    assert re.fullmatch(profile.DATABASE_PREFIX+'[0-9a-f]{7}_'+name,case['database'])
     assert case['config']=='/lab/'+case['database']+'.toml'
     return name,step
 
@@ -5537,9 +5540,9 @@ def later_prefix(t,expected,initial):
     t.snapshot('proof')
 
 
-def later_preparation_prefix(events,expected,initial,case,window):
+def later_preparation_prefix(events,expected,initial,case,window,*,input_proof=False):
     import transition_replay as tr
-    name,step=later_specification(case); assert step.startswith('prepare')
+    name,step=later_specification(case,input_proof=input_proof); assert step.startswith('prepare')
     m=tr.Model(*expected,window,compacted_history=True); t=tr.Transcript(events,m)
     candidate=t.take('candidate',True)
     assert set(candidate)=={'event','role','incarnation','namespaces'}
@@ -5560,7 +5563,11 @@ def later_preparation_prefix(events,expected,initial,case,window):
     t.snapshot('after-claim',lambda pg:m.claim(pg,planned))
     assert claimed==dict(event='lineage-history-control',phase='claimed',resource=m.control['resource_id'][2:],epoch=m.control['epoch'],role=planned['role'],incarnation=planned['incarnation'])
     assert backend==dict(event='lineage-history-backend',pid=m.control['control_backend_pid'],backend_start=m.control['control_backend_start'],database=case['database'],control_epoch=m.control['epoch'],present=True)
-    t.policy(policy,'acquired',None,None); t.snapshot('before-read'); later_prefix(t,expected,initial)
+    t.policy(policy,'acquired',None,None); t.snapshot('before-read')
+    if input_proof and name=='prepare_missing':
+        for identity in [candidate['role'],candidate['incarnation']]+[r['id'] for r in candidate['namespaces']]:m.identity(identity)
+        return t,None,backend
+    later_prefix(t,expected,initial)
     e=t.take('plan',True); at,deadline=e['created_at_us'],e['lease_expires_at_us']
     assert re.fullmatch('[1-9][0-9]*',at) and re.fullmatch('[1-9][0-9]*',deadline)
     plan=m.plan(candidate['role'],candidate['incarnation'],[r['id'] for r in candidate['namespaces']],3,int(at),int(deadline))
@@ -5580,9 +5587,9 @@ def later_prepare_sql(m,observed,plan):
     assert set(changed)=={'role_instances','owner_epochs','source_streams','allocation_domains','producer_epochs','topology_generations','topology_streams','datasets','ingest_successions'}
 
 
-def later_held_checked(held,events,expected,initial,case,window):
+def later_held_checked(held,events,expected,initial,case,window,*,input_proof=False):
     assert set(held)=={'event','control','inputs','backend','before_us','after_us','release_before_us','release_after_us'}
-    t,plan,backend=later_preparation_prefix(events,expected,initial,case,window)
+    t,plan,backend=later_preparation_prefix(events,expected,initial,case,window,input_proof=input_proof)
     later_prepare_sql(t.model,held['control'],plan)
     assert held['inputs']==expected[2] and t.position==len(events)
     b=held['backend']; c=t.model.control
@@ -5597,7 +5604,7 @@ def later_held_checked(held,events,expected,initial,case,window):
     return t,plan,backend
 
 
-def later_wire_checked(value,case,baseline):
+def later_original_wire_checked(value,case,baseline):
     from fault_cases import safe_event
     from transition_fault_replay import COUNTERS
     name,step=later_specification(case); normal=step=='prepare'; target=value['target']
@@ -5646,11 +5653,31 @@ def later_wire_checked(value,case,baseline):
     else:assert events[1]['reason']=='after-complete'
 
 
-def verify_later_probe(context,initial,expected,baseline=None):
+def later_wire_checked(value,case,baseline,*,input_proof=False):
+    if not input_proof:return later_original_wire_checked(value,case,baseline)
+    name,step=later_specification(case,input_proof=True);assert step=='prepare'
+    missing=name=='prepare_missing';drift=name in ('prepare_head','prepare_digest')
+    assert set(value)=={'mode','target','held','prefix','wire','errors','mutation'} and value['errors']==[]
+    assert type(value['target']) is int and value['target']==LATER_PREPARE_CANDIDATE
+    mode='pass' if missing else 'hold-after-complete';assert value['mode']==mode
+    if drift:
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']=='absent-prepare'
+        assert baseline['prepare_commit']['ordinal']==value['target']
+    else:assert baseline is None and value['mutation'] is None
+    if missing:assert value['held'] is None and value['prefix'] is None
+    later_input_wire(value['wire'],case,mode,value['target'],1 if missing else 6 if drift else 7,
+        held=not missing,later=0 if missing or drift else 1,port=case['proxy_port'])
+    if not missing:assert value['held']['event']==value['wire']['events'][1]
+
+
+def verify_later_probe(context,initial,expected,baseline=None,*,input_proof=False):
     import transition_replay as tr
-    case=context['case']; name,step=later_specification(case); failure=step=='prepare-loss'
+    case=context['case']; name,step=later_specification(case,input_proof=input_proof)
+    missing=input_proof and name=='prepare_missing';drift=input_proof and name in ('prepare_head','prepare_digest')
+    failure=step=='prepare-loss' or missing or drift
+    if input_proof:later_input_set(case,expected,initial)
     assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
-        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','wire'}
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments','wire'}|({'digest_diagnostic'} if input_proof and name=='prepare_digest' else set())
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after'] and context['inputs_after']==expected[2]
@@ -5663,22 +5690,26 @@ def verify_later_probe(context,initial,expected,baseline=None):
     args=[case['operation'],case['database'],'/run/secrets/application',case['config'],'262144',str(case['proxy_port'])]
     assert context['arguments']==args and response['command']==['docker','exec',context['wire']['wire']['command'][3],'/build/ingest_bootstrap_probe',*args]
     events=[loads(line) for line in response['stdout'].splitlines()]
-    t,plan,backend=later_preparation_prefix(events,expected,initial,case,w)
-    later_wire_checked(context['wire'],case,baseline)
+    t,plan,backend=later_preparation_prefix(events,expected,initial,case,w,input_proof=input_proof)
+    later_wire_checked(context['wire'],case,baseline,input_proof=input_proof)
     held=context['wire']['held']
-    if not failure:
+    if not failure or drift:
         prefix=context['wire']['prefix'];assert prefix==events[:t.position]
-        held_t,_,_=later_held_checked(held,prefix,expected,initial,case,w)
+        held_t,_,_=later_held_checked(held,prefix,expected,initial,case,w,input_proof=input_proof)
         assert all(held[k] is not None for k in ('release_before_us','release_after_us'))
         assert held['release_before_us']<=held['release_after_us']
         same(held['control'],held_t.model.pg)
-    t.snapshot('transition-returned',lambda pg:later_prepare_sql(t.model,pg,plan) if failure else t.model.prepare(pg,plan))
+    if drift:
+        wanted=later_input_mutation(context['wire']['mutation'],held_t.model.pg,initial,case,w,held)
+        later_prepare_sql(t.model,held['control'],plan)
+        t.model.pg=copy.deepcopy(wanted)
+    if not missing:t.snapshot('transition-returned',None if drift else lambda pg:later_prepare_sql(t.model,pg,plan) if failure else t.model.prepare(pg,plan))
     if not failure:
         assert t.take('observed',True)==dict(event='lineage-transition-observed',operation='prepare',prepared=True,record=tr.record_value(plan['record'],3),activation=False)
-    assert t.take('result',True)==dict(event='lineage-transition-result',operation='prepare',stage='prepare' if failure else 'complete',
-        epoch=None,sequence=None,error='CommitUnknown' if failure else None,
+    assert t.take('result',True)==dict(event='lineage-transition-result',operation='prepare',stage='inspect' if missing else 'prepare' if failure else 'complete',
+        epoch=None,sequence=None,error=LATER_INPUT_ERRORS[name] if missing or drift else 'CommitUnknown' if failure else None,
         observation=None if failure else dict(prepared=True,target_epoch=3,retired_at_us=None))
-    history_end(t,backend,success=not failure,transition=True,control_failed=failure)
+    history_end(t,backend,success=not failure,transition=True,control_failed=step=='prepare-loss')
     same(context['after'],t.model.pg);assert context['native_after']==t.model.native
     assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
     absence=context['backend_absence'];assert set(absence)=={'database','user','limit_seconds','status','attempts','seconds'}
@@ -5693,8 +5724,11 @@ def verify_later_probe(context,initial,expected,baseline=None):
     number(absence['seconds'],elapsed,6)
     assert absence['attempts'][-1]['count']==0 and absence['attempts'][-1]['backends']==[]
     result=dict(status='PASS',case=case['name'],tables=77,native_rows=len(t.model.native['rows']),native_sequence=t.model.native['sequence'],
-        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests=1,input_files=len(expected[2]),
-        result='PREPARED_NATIVE_OLD_CALLER_UNKNOWN' if failure else 'PREPARED',snapshots=t.snapshots)
+        compacted_requests=0 if missing else 7,original_initial_requests_replayed=0,later_original_requests=0 if missing else 1,input_files=len(expected[2]),
+        result='REFUSED_MISSING_REQUIRED_INPUT' if missing else 'PREPARED_SQL_REFUSED_PROOF_DRIFT' if drift else 'PREPARED_NATIVE_OLD_CALLER_UNKNOWN' if failure else 'PREPARED',snapshots=t.snapshots)
+    if input_proof and name=='prepare_digest':
+        result['result']='PREPARED_SQL_REFUSED_CLOSED_SOURCE_COMMITMENT'
+        result['refusal_guard']=later_digest_diagnostic(context['digest_diagnostic'],case,w,held,context['wire']['mutation'])
     if not failure:
         result['prepare_commit']=dict(ordinal=context['wire']['target'],backend=held['backend'],
             preparation_transaction=only(held['control']['ingest_successions'])['preparation_transaction'],
@@ -5702,8 +5736,9 @@ def verify_later_probe(context,initial,expected,baseline=None):
     return result
 
 
-def later_closed(response,case):
-    _,step=later_specification(case);failure=step=='failure';code=4 if failure else 0
+def later_closed(response,case,*,input_proof=False):
+    name,step=later_specification(case,input_proof=input_proof)
+    failure=step=='failure' or (input_proof and name in ('installed_missing','empty_head','empty_digest'));code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert type(response['returncode']) is int and response['returncode']==code and response['outcome']=='PROCESS_EXITED'
     t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -5711,33 +5746,42 @@ def later_closed(response,case):
     assert t['config']==case['config'] and t['prefix']=='/lab/'+case['name'] and t['command']==argv(case['operation'],Path(case['config']))
     assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
     if failure:
-        assert response['stdout']=='' and response['stderr']=='error: successor recovery unavailable: producer operation unavailable: Control(Backend)\n'
+        error=LATER_INPUT_ERRORS[name] if input_proof else 'Control(Backend)'
+        assert response['stdout']=='' and response['stderr']=='error: successor recovery unavailable: producer operation unavailable: '+error+'\n'
         return None
     assert response['stderr']=='';report,=[loads(line) for line in response['stdout'].splitlines()]
     assert report['native']=='closed' and report['owner_release']=='committed' and report['ready'] is False
     return report
 
 
-def verify_later_installed(context,initial,expected,baseline=None):
+def verify_later_installed(context,initial,expected,baseline=None,*,input_proof=False):
     import installed_prepared_model as prepared
-    case=context['case'];name,step=later_specification(case);failure=step=='failure'
-    assert set(context)==CONTEXT_FIELDS|({'later_fault'} if name=='closing' else set())
+    case=context['case'];name,step=later_specification(case,input_proof=input_proof)
+    refusal=input_proof and name in ('installed_missing','empty_head','empty_digest')
+    drift=input_proof and name in ('empty_head','empty_digest');held=input_proof and name!='installed_missing'
+    failure=step=='failure' or refusal
+    if input_proof:later_input_set(case,expected,initial)
+    assert set(context)==CONTEXT_FIELDS|({'later_fault'} if name=='closing' else set())|({'digest_diagnostic'} if input_proof and name=='empty_digest' else set())
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
     for filename,value in context['input_contents'].items():
         raw=bytes.fromhex(value);assert expected[2][filename]==dict(bytes=len(raw),sha256=sha(raw))
-    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[]
+    if held:assert set(context['fixture'])=={'cleanup_errors','delivery_fault'} and context['fixture']['cleanup_errors']==[]
+    else:assert context['fixture']==dict(cleanup_errors=[])
     w=context['server_window'];assert set(w)=={'before_us','after_us'}
     number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
     backend_checked(context['backend'],case['database'],context['before'],context['after'])
-    report=later_closed(context['response'],case)
+    report=later_closed(context['response'],case,input_proof=input_proof)
     if name=='closing':
         empty_fault_guard_delta(context['later_fault'],epoch=3)
         assert context['later_fault']['hit']=='1true'
         assert (context['later_fault']['removed'] is None)==failure
         assert context['catalog_before']==context['later_fault']['catalog_installed' if failure else 'catalog_restored']
-    m=prepared.Model(*expected,w);preparation_control(m,context['after'],success=not failure,renewed=failure)
+    m=prepared.Model(*expected,w);preparation_control(m,context['after'],success=not failure,renewed=step=='failure' or drift)
+    delivery=later_input_delivery(context['fixture']['delivery_fault'],case,w,baseline,expected,context['after'],initial) if held else None
+    if drift:m.pg=copy.deepcopy(delivery['after'])
     intent=only(expected[0]['ingest_successions']);assert intent['target_epoch']==3 and intent['previous_epoch']==2
     assert expected[0]['ingest_activations']==[]
     source=only(expected[0]['source_streams'],owner_epoch=2);producer=only(expected[0]['producer_epochs'],producer_epoch=2)
@@ -5746,7 +5790,8 @@ def verify_later_installed(context,initial,expected,baseline=None):
     predecessor=dict(epoch=2,terminal_kind='activated',resolved_requests=1,last_complete_sequence=1,digest=digest,event_request_mask=0)
     if failure:
         assert only(m.pg['producer_epochs'],producer_epoch=3)['state']=='open'
-        prepared.close(m.native,m.slot,3);same(m.pg,context['after'])
+        if not refusal:prepared.close(m.native,m.slot,3)
+        same(m.pg,context['after'])
         assert not m.pg['ingest_terminal_transactions']
     else:
         wanted=m.empty(context['after'],predecessor=predecessor)
@@ -5755,12 +5800,19 @@ def verify_later_installed(context,initial,expected,baseline=None):
     assert context['native_after']==m.native
     same({'intent':expected[0]['ingest_successions']},{'intent':context['after']['ingest_successions']})
     assert model.native_map(m.native)['receipts',known(initial)['state_key']]==floor_bytes(initial,'positive').hex()
-    return dict(status='PASS',case=case['name'],tables=77,native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
-        target_epoch=3,compacted_requests=7,later_original_requests=1,input_files=len(expected[2]),
-        result='NATIVE_CLOSING_SQL_PREPARED' if failure else 'EXACT_TERMINAL_RETRY' if step=='retry' else 'RETIRED')
+    result=dict(status='PASS',case=case['name'],tables=77,native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
+        target_epoch=3,compacted_requests=0 if refusal and not drift else 7,later_original_requests=0 if refusal and not drift else 1,input_files=len(expected[2]),
+        result='REFUSED_PROOF_DRIFT' if drift else 'REFUSED_MISSING_REQUIRED_INPUT' if refusal else 'NATIVE_CLOSING_SQL_PREPARED' if failure else 'EXACT_TERMINAL_RETRY' if step=='retry' else 'RETIRED')
+    if held:result['empty_proof_commit']=delivery['qualification']
+    if input_proof and name=='empty_digest':
+        record=context['fixture']['delivery_fault']
+        result['result']='REFUSED_CLOSED_SOURCE_COMMITMENT'
+        result['refusal_guard']=later_digest_diagnostic(context['digest_diagnostic'],case,w,record['held'],record['mutation'])
+    return result
 
 
-def later_controls(context,initial,expected,baseline=None):
+def later_controls(context,initial,expected,baseline=None,*,input_proof=False):
+    if input_proof:return later_input_controls(context,initial,expected,baseline)
     name,step=later_specification(context['case']);probe=step.startswith('prepare')
     check=verify_later_probe if probe else verify_later_installed
     original=dict(context=context,initial=initial,expected=expected,baseline=baseline); rejected=[]
@@ -5802,3 +5854,255 @@ def later_controls(context,initial,expected,baseline=None):
             reject('unobserved-late-trigger-hit',lambda v:v['context']['later_fault'].update(hit='1false'))
             reject('invented-terminal-receipt',lambda v:v['context']['after']['ingest_terminal_transactions'].append(dict(target_epoch=3)))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+LATER_INPUT_STEPS=dict(absent=('prepare','retire'),prepare_missing=('prepare',),installed_missing=('prepare','retire'),
+    prepare_head=('prepare',),prepare_digest=('prepare',),empty_head=('retire',),empty_digest=('retire',))
+LATER_INPUT_ORIGINS={name:'compacted' if name.startswith('empty_') else 'later-terminal' for name in LATER_INPUT_STEPS}
+LATER_INPUT_ERRORS={name:'Progress(InvalidContext)' if name.endswith('_head') else 'Control(Backend)' if name.endswith('_digest')
+    else 'Native(Native(RequestInput(Missing)))' for name in LATER_INPUT_STEPS if name!='absent'}
+# Source candidate only. A fresh successful installed baseline must bind it.
+LATER_EMPTY_PROOF_CANDIDATE=6
+
+
+class LaterInputProofProfile:
+    DIRECTORY='installed-compacted-later-input-proof'
+    LABEL='org.bigbrotr.installed-compacted-later-input-proof'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_INPUT_PROOF'
+    DATABASE_PREFIX='bb_later_input_'
+    CLIENT_PREFIX='bigbrotr-later-input-'
+    CLONES=tuple(LATER_INPUT_STEPS)
+    STEPS=LATER_INPUT_STEPS
+    CASES=tuple(n+'-'+s for n in LATER_INPUT_STEPS for s in LATER_INPUT_STEPS[n])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Ordinary75-table basis regression; activation, live and Archive consumers',
+        'Rust canonical D recheck after the earlier SQL closed-source guard; sealed-empty-plan/native dispatch drift, gap proof-use drift and remaining delivery/cancellation/native uncertainty',
+        'Actual floor installation, reclamation/unlink, mixed restores and capacity')
+
+
+def later_input_quarantines(name,step):
+    assert name in LATER_INPUT_STEPS and step in LATER_INPUT_STEPS[name]
+    if step=='prepare' and name in ('absent','prepare_head','prepare_digest'):return ('partial','absent')
+    if name=='prepare_missing' or (name=='installed_missing' and step=='retire'):return ('missing-required',)
+    return ()
+
+
+def later_input_set(case,expected,initial):
+    name,step=later_specification(case,input_proof=True)
+    pg,native,inputs=expected;assert len(pg)==77 and len(initial[2])==7
+    initial_names=set(initial[2]);residual=initial_names&set(inputs);later=set(inputs)-initial_names
+    missing=name=='prepare_missing' or (name=='installed_missing' and step=='retire')
+    full=name=='installed_missing' and step=='prepare'
+    assert residual==(initial_names if missing or full else set())
+    assert len(later)==(0 if missing else 1)
+    for n in later:assert '-0000000000000002-' in n
+    assert model.native_map(native)['receipts',known(initial)['state_key']]==floor_bytes(initial,'positive').hex()
+    assert inputs and all(inputs[n]==initial[2][n] for n in residual)
+
+
+def later_input_wire(w,case,mode,target,total,*,held,later,port):
+    from fault_cases import safe_event
+    from transition_fault_replay import COUNTERS
+    assert set(w)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
+    assert w['source_sha256']==LATER_PROXY_SHA256 and w['stderr']=='' and type(w['exit_code']) is int and w['exit_code']==0
+    assert w['readers_joined'] is True and w['overflow'] is False and w['forced_wrapper_stop'] is False
+    revision=case['database'].removeprefix(LaterInputProofProfile.DATABASE_PREFIX)[:7]
+    assert w['command']==['docker','exec','-i',LaterInputProofProfile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py',
+        '--upstream-port','5432','--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits',str(later),'--deadline-seconds','30']
+    events=[safe_event(loads(line)) for line in w['stdout'].splitlines()]
+    assert events==w['events'] and events[0]==w['ready'] and events[-1]==w['receipt']
+    assert [e['event'] for e in events]==(['ready','held','released','receipt'] if held else ['ready','receipt'])
+    elapsed=0
+    for i,e in enumerate(events):
+        number(e['elapsed_ns'],elapsed,35_000_000_000,integer=True);elapsed=e['elapsed_ns']
+        assert e['mode']==mode and type(e['commit_number']) is int and e['commit_number']==target
+        counts=[0]*5 if i==0 else [total]*4+[int(held)] if i==len(events)-1 else [target,target,target,target-1,1]
+        assert all(type(e[k]) is int for k in COUNTERS) and [e[k] for k in COUNTERS]==counts
+        assert e['held'] is (held and i==1)
+        assert e['hold_action']==('release' if held and i>=2 else None)
+    ready,receipt=events[0],events[-1]
+    assert ready['proxy_sha256']==LATER_PROXY_SHA256 and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    number(port,1,65535,integer=True);number(ready['pid'],1,integer=True)
+    assert port!=5432 and ready['listen_port']==port and ready['deadline_seconds']==30
+    assert ready['max_frame_bytes']==1024**2 and ready['max_wire_bytes']==64*1024**2 and ready['max_messages']==20000
+    assert receipt['reason'] in ('frontend-eof','backend-eof') and set(receipt['tags'])==set(receipt['frames'])=={'frontend','backend'}
+    for direction,tags in receipt['tags'].items():
+        assert all(re.fullmatch('[0-9a-f]{2}',k) and type(n) is int and n>0 for k,n in tags.items())
+        assert type(receipt['frames'][direction]) is int and receipt['frames'][direction]==sum(tags.values())>0
+    assert sum(receipt['frames'].values())<=20000
+    number(receipt['declared_wire_bytes'],1,64*1024**2,integer=True)
+
+
+def later_input_mutation(record,pg,initial,case,window,held):
+    name,_=later_specification(case,input_proof=True)
+    assert name in ('prepare_head','prepare_digest','empty_head','empty_digest')
+    kind='proof-head' if name.endswith('_head') else 'proof-digest'
+    assert set(record)=={'kind','database','before','after','statement','response','before_us','after_us','actor_absence'}
+    wanted=empty_shape_corruption_checked({k:v for k,v in record.items() if k!='actor_absence'},pg,initial,kind,window,case['database'])
+    assert held['after_us']<=record['before_us']<=record['after_us']<=held['release_before_us']
+    actor=loads(record['response']['stdout'].splitlines()[0])['actor']
+    absence=record['actor_absence'];assert set(absence)=={'before_us','observations','after_us'}
+    assert absence['observations']==[{k:actor[k] for k in ('pid','backend_start','database')}|dict(present=False)]
+    for field in ('before_us','after_us'):number(absence[field],record['after_us'],held['release_before_us'],integer=True)
+    assert absence['before_us']<=absence['after_us']
+    control=max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    assert actor['pid']!=control['control_backend_pid']
+    assert int(max((r for rows in wanted.values() for r in rows),key=lambda r:int(r['xmin']))['xmin'])>int(control['xmin'])
+    return wanted
+
+
+def later_input_held(expected,held,case,window):
+    assert set(held)=={'event','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
+    m=terminal_held_state(expected,held['control'],window,'retire-empty-successor')
+    assert held['inputs']==expected[2]
+    c=m.control;b=held['backend']
+    assert retained.instant(b['backend_start'])==retained.instant(c['control_backend_start'])
+    assert b==dict(pid=c['control_backend_pid'],backend_start=b['backend_start'],database=case['database'],user='bigbrotr_control',
+        state='idle',xact_start=None,query='COMMIT',observed_at_us=b['observed_at_us'])
+    refreshed=c['lease_expires_at_us']-6_000_000
+    number(held['before_us'],max(window['before_us'],refreshed),window['after_us'],integer=True)
+    number(b['observed_at_us'],held['before_us'],held['after_us'],integer=True)
+    number(held['after_us'],held['before_us'],min(window['after_us'],refreshed+1_000_000,c['lease_expires_at_us']-1),integer=True)
+    for field in ('release_before_us','release_after_us'):
+        if held[field] is not None:number(held[field],held['after_us'],min(window['after_us'],refreshed+1_000_000,c['lease_expires_at_us']-1),integer=True)
+    return m
+
+
+def later_input_delivery(record,case,window,baseline,expected,after,initial):
+    import tomllib
+    name,step=later_specification(case,input_proof=True);assert step=='retire' and name in ('absent','empty_head','empty_digest')
+    normal=name=='absent';target=LATER_EMPTY_PROOF_CANDIDATE
+    if normal:assert baseline is None
+    else:
+        assert baseline is not None and baseline['status']=='PASS' and baseline['case']=='absent-retire'
+        assert baseline['empty_proof_commit']['ordinal']==target and baseline['empty_proof_commit']['boundary']=='installed-post-full-proof-refresh'
+    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors','mutation'}
+    assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[]
+    assert (record['operation'],record['mode'],record['target_commit'])==('retire-empty-successor','hold-after-complete',target)
+    settings=record['configuration'];assert set(settings)=={'path','direct','proxied','restored'} and settings['path']==case['config']
+    assert settings['direct']==settings['restored'];direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'))
+    empty_delivery_config(direct,case)
+    port=record['wire']['ready']['listen_port'];wanted=copy.deepcopy(direct)
+    wanted['postgres']['control']['endpoint']='127.0.0.1:'+str(port);assert proxied==wanted
+    later_input_wire(record['wire'],case,'hold-after-complete',target,8 if normal else 6,held=True,later=2,port=port)
+    held=record['held'];assert held['event']==record['wire']['events'][1]
+    m=later_input_held(expected,held,case,window)
+    assert held['release_before_us'] is not None and held['release_after_us'] is not None
+    assert held['release_before_us']<=held['release_after_us']
+    current=only(after['owner_epochs'],role='control',epoch=m.control['epoch'])
+    if normal:
+        assert record['mutation'] is None
+        assert current['lease_expires_at_us']==m.control['lease_expires_at_us']
+        producer=only(after['producer_epochs'],producer_epoch=3)
+        assert int(m.control['xmin'])<int(producer['xmin'])<int(current['xmin'])
+        assert held['release_before_us']<=producer['retired_at_us']<=current['released_at_us']
+    else:
+        assert current==m.control
+        m.pg=later_input_mutation(record['mutation'],m.pg,initial,case,window,held)
+        same(m.pg,after)
+    qualification=dict(ordinal=target,boundary='installed-post-full-proof-refresh',backend=held['backend'],
+        control_epoch=m.control['epoch'],held_sql_sha256=sha(model.encoded(held['control'])))
+    return dict(after=m.pg,qualification=qualification)
+
+
+def later_input_controls(context,initial,expected,baseline):
+    name,step=later_specification(context['case'],input_proof=True);probe=step=='prepare'
+    check=verify_later_probe if probe else verify_later_installed
+    original=dict(context=context,initial=initial,expected=expected,baseline=baseline,input_proof=True);rejected=[]
+    def reject(label,change):
+        v=copy.deepcopy(original);change(v)
+        try:check(**v)
+        except (AssertionError,KeyError,TypeError,ValueError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted later input/proof counterexample: '+label)
+    reject('extra-native-sequence',lambda v:v['context']['native_after'].update(sequence=999))
+    reject('missing-native-row',lambda v:v['context']['native_after']['rows'].pop())
+    reject('changed-native-value',lambda v:v['context']['native_after']['rows'][0].update(value='00'))
+    reject('unrelated-retained-xmin',lambda v:v['context']['after']['producer_requests'][0].update(xmin='4294967000'))
+    reject('changed-input-map',lambda v:v['context']['inputs_after'].pop(next(iter(v['context']['inputs_after']))))
+    reject('catalog-drift',lambda v:v['context'].update(catalog_after='changed'))
+    reject('unknown-process-custody',lambda v:v['context']['case'].update(custody='UNKNOWN_PROCESS_OUTCOME'))
+    reject('unknown-response',lambda v:v['context']['response'].update(outcome='UNKNOWN'))
+    if context['after']['ingest_successions']:
+        reject('old-preparer-substitution',lambda v:only(v['context']['after']['ingest_successions']).update(prepared_by_epoch=999))
+    if probe:
+        fault=lambda v:v['context']['wire']
+        reject('unjoined-reader',lambda v:v['context']['response'].update(readers_joined=False))
+    else:
+        fault=lambda v:v['context']['fixture']['delivery_fault']
+        reject('forced-child',lambda v:v['context']['response']['terminal'].update(forced=True))
+        reject('wrong-installed-argv',lambda v:v['context']['response']['terminal']['command'].append('--retire-empty-attempt'))
+        reject('foreign-backend-custody',lambda v:v['context']['backend'].update(all=[{}]))
+    if name!='installed_missing' or probe:
+        reject('proxy-not-joined',lambda v:fault(v)['wire'].update(readers_joined=False))
+        reject('wrong-proxy-source',lambda v:fault(v)['wire'].update(source_sha256='00'*32))
+        reject('wrong-COMMIT-selector',lambda v:fault(v).update(**({'target':11} if probe else {'target_commit':11})))
+        if name!='prepare_missing':
+            reject('held-not-committed',lambda v:fault(v)['held']['backend'].update(state='idle in transaction',xact_start='2026-01-01'))
+            reject('held-backend-substitution',lambda v:fault(v)['held']['backend'].update(pid=1))
+            reject('released-after-expiry',lambda v:fault(v)['held'].update(release_after_us=2**63))
+    if name.endswith(('_head','_digest')):
+        reject('unqualified-baseline',lambda v:v['baseline'].update(status='NOT_RUN'))
+        reject('missing-actor-commit',lambda v:fault(v)['mutation']['response'].update(returncode=1))
+        reject('actor-unbounded-identity',lambda v:fault(v)['mutation'].update(database='other'))
+        reject('actor-after-release',lambda v:fault(v)['mutation'].update(after_us=2**63))
+        reject('actor-still-present',lambda v:fault(v)['mutation']['actor_absence']['observations'][0].update(present=True))
+        reject('actor-other-delta',lambda v:fault(v)['mutation']['after']['datasets'][0].update(xmin='4294967000'))
+        reject('invented-terminal-receipt',lambda v:v['context']['after']['ingest_terminal_transactions'].append(dict(target_epoch=3)))
+    if name in ('prepare_digest','empty_digest'):
+        reject('missing-causal-log',lambda v:v['context'].pop('digest_diagnostic'))
+        reject('wrong-log-command',lambda v:v['context']['digest_diagnostic']['command'].__setitem__(4,'2000-01-01T00:00:00+00:00'))
+        reject('unobserved-log-read',lambda v:v['context']['digest_diagnostic'].update(returncode=1))
+        def corrupt_log(v,old,new):
+            record=v['context']['digest_diagnostic']
+            for stream in ('stdout','stderr'):record[stream]=record[stream].replace(old,new)
+        reject('generic-backend-log',lambda v:corrupt_log(v,'lineage closed-source commitment differs','statement timeout'))
+        reject('wrong-guard-function',lambda v:corrupt_log(v,'lock_ingest_lineage','require_other_lineage'))
+        reject('missing-caller-function',lambda v:corrupt_log(v,'require_ingest_successor','require_other_successor'))
+        reject('foreign-log-pid',lambda v:corrupt_log(v,'['+str(fault(v)['held']['backend']['pid'])+']','[1]'))
+    if name=='prepare_missing' or (name=='installed_missing' and not probe):
+        reject('wrong-refusal',lambda v:v['context']['response'].update(**({'stdout':v['context']['response']['stdout'].replace('RequestInput(Missing)','StateMismatch')} if probe else {'stderr':'error: timeout\n'})))
+    if not probe and name=='absent':
+        reject('changed-terminal-attribution',lambda v:only(v['context']['after']['ingest_terminal_transactions'],target_epoch=3).update(control_epoch=999))
+        reject('changed-terminal-xmin',lambda v:only(v['context']['after']['source_streams'],owner_epoch=3).update(xmin='4294967000'))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def later_digest_diagnostic(record,case,window,held,mutation):
+    """Bind Backend to the earlier actual SQL D guard, not the Rust resolver."""
+    from datetime import datetime,timezone
+    assert case['clone'] in ('prepare_digest','empty_digest')
+    assert set(record)=={'command','returncode','stdout','stderr'}
+    assert type(record['returncode']) is int and record['returncode']==0
+    command=record['command'];bounds=[datetime.fromtimestamp(window[k]/1_000_000,timezone.utc).isoformat() for k in ('before_us','after_us')]
+    assert command[:7]==['docker','logs','--timestamps','--since',bounds[0],'--until',bounds[1]]
+    assert len(command)==8 and re.fullmatch('[0-9a-f]{64}',command[-1])
+    log=record['stdout']+record['stderr'];assert len(log.encode())<=256*1024
+    backend=held['backend'];start=retained.instant(backend['backend_start'])
+    assert backend['database']==case['database'] and start<held['release_before_us']
+    expression=re.compile(r'^(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d{3}) UTC \[(\d+)\] ([A-Z]+):  (.*)$')
+    records=[]
+    for line in log.splitlines():
+        transport,separator,body=line.partition(' ')
+        assert separator and re.fullmatch(r'\d{4}-\d\d-\d\dT\S+',transport)
+        number(retained.instant(transport),window['before_us'],window['after_us'],integer=True)
+        match=expression.match(body)
+        if match:
+            records.append(dict(time=retained.instant(match[1]+'+00:00'),pid=int(match[2]),level=match[3],message=match[4],lines=[body]))
+        else:
+            assert records and (body.startswith('\t') or body.startswith(' '))
+            records[-1]['lines'].append(body)
+    # PID reuse is excluded by the observed start and the held live claim. The
+    # millisecond server timestamp denotes a1ms interval, never invented us.
+    records=[r for r in records if r['pid']==backend['pid']]
+    index,=[i for i,r in enumerate(records) if r['level']=='ERROR']
+    error=records[index];message=error['message'];sqlstate=None
+    if message.startswith('23514:  '):sqlstate='23514';message=message[len('23514:  '):]
+    assert message=='lineage closed-source commitment differs'
+    assert max(start,held['release_before_us'],mutation['actor_absence']['after_us'])<error['time']+1000
+    assert error['time']<=window['after_us'] and index+1<len(records)
+    context=records[index+1]
+    assert context['level']=='CONTEXT' and error['time']<=context['time']<=window['after_us']
+    assert re.fullmatch(r'PL/pgSQL function control\.lock_ingest_lineage\(bytea,numeric\) line 225 at RAISE',context['message'])
+    assert len(context['lines'])==2 and context['lines'][1]=='\tPL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 9 at assignment'
+    return dict(boundary='SQL_CLOSED_SOURCE_COMMITMENT',backend={k:backend[k] for k in ('pid','backend_start','database')},
+        error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)
