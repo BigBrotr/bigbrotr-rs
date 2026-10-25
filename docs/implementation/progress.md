@@ -6,12 +6,13 @@ M1–M5 remain incomplete. Q37/Q38 apply; root owns builds, engines and integrat
 ## Objective and revision
 
 P02-T02 Steps 4/5/7: closed-producer reclamation prerequisites, including later
-compacted consumers. Main integration `5414e1be61eea1fd827a9cda72a241de4c56a950`
-is pushed (driver62019 joined0) and incorporates product
+compacted consumers. Main parent `fbb35c653f1ea5d6b6755017355e781752f584ff`
+is pushed; this merge integrates qualified delivery baseline
+`9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b`. The existing product remains
 `83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c` and fixture
-`d8f45b8ab793f8c82ca317e5cc23444e683ed3cb`. This documentation checkpoint
-follows that integration. No merge/rebase is pending; all product bytes match
-qualified837, and all fixture bytes match qualifiedd8.
+`d8f45b8ab793f8c82ca317e5cc23444e683ed3cb` remains qualified for positive recovery.
+All product bytes still match qualified837. Source extension5ed remains separate,
+reviewed but unbuilt and not integrated. No rebase or conflict is pending.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), at
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
@@ -23,6 +24,13 @@ receipts. The [inventory](../research/laboratory-inventory.json) owns retained
 worktrees/resources. Reuse unchanged evidence rather than rerunning it.
 
 ## Verified work and open findings
+
+**PASS:** delivery baseline9f drivers91467/40051 joined0: one command, 39 controls,
+5,743 raw bindings. Exact held SQL/backend/input/prefix state identifies outcome
+COMMIT11 after reservation10; release completes all22 commits, native110/161,
+checkpoint1/ACK1. Release is740615us after reservation under unchanged5s policy.
+No native observer opens while the writer is held. Exact receipt is linked from
+`next_delivery_work` in the report. This is a successful baseline, not loss recovery.
 
 **PASS:** exact837 build (driver72774 joined0): 220 tests, 111 mandatory controls and all
 13 checks, including Clippy. Corrected fixture d8 drivers32220/10754 joined0:
@@ -45,6 +53,10 @@ passed four commands/76 controls, then its underscore label violated the shared
 guard before either negative command; d8 corrects only naming. Both review misses,
 original logs/artifacts, earlier live/input failures and original a99 Sync timeout
 remain recorded. No failed run was relabeled PASS.
+Delivery0169 additionally failed on a missing Python `copy` import after the proxy
+held11. Its process outcome/custody remained unknown; external native reopen and
+raw replay were NOT_RUN. Outer shutdown stopped both owned containers. Original
+failure, provisional captures and the review miss remain preserved;9f adds one import.
 
 ## Work and resources
 
@@ -56,22 +68,27 @@ remain recorded. No failed run was relabeled PASS.
 - `/root/compacted_reader_fixture` now works only in
   `.research/compacted-later-recovery-delivery-fixture-20261025`, branch
   `work/compacted-later-recovery-delivery-fixture`, base5414.
-  `/root/compacted_reader_review` independently reviews the next baseline/selector.
-  This new source work is unqualified; the read-only origin audit is linked from
-  the report. Prior product and fixture work is fully saved and integrated.
-- All root build/runtime/raw drivers have joined. Last observed client1551b3e7
+  Baseline9f is qualified; the next authentic loss/recovery matrix is source work
+  only. `/root/compacted_reader_review` independently reviews critical changes.
+- `/root/empty_malformed_floor` froze Source-only implementation5eddf46a in
+  `.research/compacted-later-source-20261025`, branch `work/compacted-later-source`,
+  basefbb. Nine files formatted/reviewed; components/build/installed tests NOT_RUN.
+  Audit, format and declaration receipts are in the report's sibling
+  `next_source_work_20261025`; inventory retains the worktree.
+- All root build/runtime/raw drivers have joined. Last observed client06102bb1
   exited143 and borrowedPG71775507 exited0, PID0/noOOM; build containers also
-  stopped. No root engine is active; the two agents perform source/review work only. All originals,
+  stopped. No root engine is active; agents perform source/review work only. All originals,
   datasets, databases, failures, logs, .research and worktrees are retained.
 
 ## Next action
 
-Complete and review the baseline fixture for the existing recovery qualification
-using a genuine first-dictionary outcome COMMIT interruption.
-Measure the exact successful boundary first; before-forward loss should leave a
+Use measured baseline9f to implement/review authentic COMMIT11 loss and installed
+positive recovery/retry. Before-forward loss should leave a
 missing current copy/no checkpoint, after-complete loss should leave C1>A0.
 Use the existing proxy and fresh installed recovery/retry; never manufacture
 these origins by deleting SQL rows or infer an ordinal from an older profile.
+Root can build the separately reviewed Source5ed after binding its final receipts;
+keep build/runtime ownership serial and use the existing laboratory tools.
 
 Actual copy repair/ACK advancement, Sync/fault schedules, staged/reserved tails,
 Source/retirement/Archive, physical limits under live load, mixed restore/backup/

@@ -46386,15 +46386,63 @@
                 "retired_branch": "work/compacted-later-recovery",
                 "fixture_retired_branch": "work/compacted-later-recovery-fixture",
                 "next_delivery_work": {
-                  "status": "BASELINE_SOURCE_AND_CRITICAL_REVIEW_IN_PROGRESS_NO_EXECUTION",
+                  "status": "BASELINE_QUALIFIED; AUTHENTIC_LOSS_AND_FRESH_REPAIR_SOURCE_IN_PROGRESS",
                   "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-delivery-fixture-20261025",
                   "branch": "work/compacted-later-recovery-delivery-fixture",
                   "base": "5414e1be61eea1fd827a9cda72a241de4c56a950",
                   "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
                   "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
                   "scope": "Existing positive recovery gates: measure the actual first dictionary outcome/progress COMMIT on proxy-capable compacted live path, then authentic missing current copy and C>A recovery/retry. Reuse current complete models/transport; no synthetic SQL deletion, new Rust hook or inferred old ordinal.",
-                  "next": "Reconcile existing proxy trace/hold mode and source-only baseline fixture, critically review it, then root actual baseline measurement. Fault execution waits for the measured boundary and independently reviewed exact expected states."
+                  "next": "Implement/review genuine before-forward and after-complete COMMIT11 loss plus fresh installed positive recovery/retry using exact independent states and qualified837. No SQL-deletion origins; loss/copy-repair/ACK advancement still NOT_RUN.",
+                  "source": "9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b",
+                  "tree": "b9ecdda37f3aa429a7f08ce547627cc51db4e4ad",
+                  "source_receipt": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-delivery-baseline-source-v1.json",
+                    "sha256": "134bd653ec67e603021947d15f56d037db4de60f2beba4ac2c2010304eea2f40"
+                  },
+                  "critical_review": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-delivery-baseline-critical-v1.json",
+                    "sha256": "30e55749cdc2eef154281e471093b30c459b67ef095384fcf3ac04a7be278f25"
+                  },
+                  "import_correction": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-delivery-import-source-v1.json",
+                    "sha256": "b10256eb0ff26d5e7f67398f31d3e4defada5dbacd104b286396a1dbff63becf"
+                  },
+                  "runtime_attempts": [
+                    {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-delivery-0169de4/failed-run.json",
+                      "sha256": "e80cce801346299ea4d16eaec21c26b2557be86d6df0c6df7832f3f08fbc9444"
+                    }
+                  ],
+                  "runtime": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-delivery-9f6fa4b/verified-run.json",
+                    "sha256": "437c239e83cccebe84229a4736c7d118553901787d8a93fb41311b0a20a8171d"
+                  },
+                  "result": "One actual command/39 controls/5743 raw bindings. Measured outcome COMMIT11, prior reservation10, final22; exact held77-table reservation-only state and checkpoint INSERT. Release740615us after reservation under unchanged5s policy. Native110/161,C1/A1,4inputs; actual process/proxy/backend custody complete. Original0169 missing-import failure and UNKNOWN custody preserved; not reclassified."
                 }
+              },
+              "next_source_work_20261025": {
+                "status": "FROZEN_SOURCE_REVIEW_CLEAR_BUILD_RUNTIME_NOT_RUN",
+                "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-20261025",
+                "branch": "work/compacted-later-source",
+                "base": "fbb35c653f1ea5d6b6755017355e781752f584ff",
+                "source": "5eddf46a11c4ae8bc7098e3eea1be3f832cdfba7",
+                "tree": "119a0cfc26963a890e777745ea7a113d5e0b8be0",
+                "owners": "empty_malformed_floor author; compacted_reader_review critical; root format/build/runtime/integration",
+                "audit": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-closure-audit-20261025.json",
+                  "sha256": "db5549b112557739cd1100a9bee9b546737aec51d255d6b920a70c351fc6466c"
+                },
+                "format": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-format-v1.json",
+                  "sha256": "27a9e29ad98f8f9da24628390e0e96cab7563151fdda1df2b32b45779c0b4f64"
+                },
+                "declarations": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-declarations-v1.json",
+                  "sha256": "c9477dd4f8a81151f68464e5755b0aa1c4a5463196e4dc5bf9f597bcfee9a5c3"
+                },
+                "scope": "Explicit compacted Source publication and final typed ACK only; public abandonment consumes/refuses compacted proof before effects. Existing positive/original/retirement/Archive scopes remain distinct. Nine reviewed files; 12 selectors/117 mandatory/226 components are predictions until actual build.",
+                "next": "Bind final source/critical receipts, exact build, then independent installed Source first-close/retry and refusal matrix using qualified openfa origins."
               }
             }
           }
