@@ -1291,12 +1291,18 @@ def terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kin
 
 
 
-def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False):
+def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False,later_input=False,baseline=None):
     from fault_cases import Process,safe_event
     assert type(empty_proof) is bool and not (empty_proof and (empty_initial or post_proof))
-    proof=post_proof or empty_proof
+    assert type(later_input) is bool and not (later_input and (post_proof or empty_proof or empty_initial))
+    proof=post_proof or empty_proof or later_input
     assert type(empty_initial) is bool and not (empty_initial and post_proof)
-    if empty_proof:
+    if later_input:
+        name,step=oracle.later_specification(case,input_proof=True);assert step=='retire' and name in ('absent','empty_head','empty_digest')
+        normal=name=='absent';operation='retire-empty-successor';later=2;mode='hold-after-complete'
+        target=oracle.LATER_EMPTY_PROOF_CANDIDATE if normal else baseline['empty_proof_commit']['ordinal']
+        if not normal:assert baseline['status']=='PASS' and baseline['case']=='absent-retire'
+    elif empty_proof:
         name,step=oracle.empty_shape_specification(case);assert step=='proof'
         operation='retire-empty';target,later=2,2;normal=name=='proof-baseline';mode='hold-after-complete'
     elif empty_initial:
@@ -1355,13 +1361,19 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                     if proof:
                         assert expected is not None and initial is not None
                         window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
-                        checked=oracle.terminal_held_state(expected,capture['control'],window,operation)
+                        checked=oracle.later_input_held(expected,capture,case,window) if later_input else oracle.terminal_held_state(expected,capture['control'],window,operation)
                         assert capture['inputs']==expected[2] and capture['after_us']<checked.control['lease_expires_at_us']
                         backend=capture['backend']; assert backend['state']=='idle' and backend['xact_start'] is None and backend['query']=='COMMIT'
-                        assert backend['pid']==checked.control['control_backend_pid'] and backend['backend_start']==checked.control['control_backend_start']
+                        assert backend['pid']==checked.control['control_backend_pid']
+                        if later_input:assert oracle.retained.instant(backend['backend_start'])==oracle.retained.instant(checked.control['control_backend_start'])
+                        else:assert backend['backend_start']==checked.control['control_backend_start']
                         assert backend['database']==case['database'] and backend['user']=='bigbrotr_control'
                         assert [held[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==[target,target,target,target-1]
-                        if empty_proof and not normal:
+                        if later_input and not normal:
+                            kind='proof-head' if name=='empty_head' else 'proof-digest'
+                            record['mutation']=empty_shape_corruption(pg,output,case['database'],label+'-mutation',capture['control'],initial,kind,observe_actor=True)
+                            assert record['mutation']['after_us']<checked.control['lease_expires_at_us'];save()
+                        elif empty_proof and not normal:
                             record['mutation']=empty_shape_corruption(pg,output,case['database'],label+'-mutation',capture['control'],initial,name)
                             assert record['mutation']['after_us']<checked.control['lease_expires_at_us'];save()
                         elif not normal:
@@ -1372,8 +1384,13 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                             mutation['sql_output']=lab.sql(pg,case['database'],mutation['statement']); save()
                             mutation['after']=schema.rows(pg,case['database']); mutation['after_us']=history.server_clock(pg,case['database']); save()
                             oracle.terminal_drift_checked(mutation,capture['control'],initial,kind,dict(before_us=window['before_us'],after_us=mutation['after_us']))
-                    capture['release_before_us']=history.server_clock(pg,case['database']); proxy.send('release')
-                    capture['release_after_us']=history.server_clock(pg,case['database']); proxy.event('released',5); save()
+                    capture['release_before_us']=history.server_clock(pg,case['database'])
+                    if later_input:
+                        refreshed=checked.control['lease_expires_at_us']-6_000_000
+                        assert capture['release_before_us']<=refreshed+1_000_000
+                    proxy.send('release');capture['release_after_us']=history.server_clock(pg,case['database'])
+                    if later_input:assert capture['release_after_us']<=refreshed+1_000_000
+                    proxy.event('released',5); save()
             else:
                 assert phase=='child-joined'
                 try:
@@ -1688,8 +1705,9 @@ def empty_lock_hook(pg,client,output,case,directory,expected):
     return callback
 
 
-def empty_shape_corruption(pg,output,database,label,expected,initial,name):
+def empty_shape_corruption(pg,output,database,label,expected,initial,name,*,observe_actor=False):
     import subprocess
+    assert type(observe_actor) is bool
     statement=oracle.empty_shape_actor_sql('before')+oracle.empty_shape_corruption_sql(name,expected,initial)+oracle.empty_shape_actor_sql('after')
     record=dict(kind='privileged-isolated-empty-'+name,database=database,before=expected,after=None,statement=statement,
         response=None,before_us=history.server_clock(pg,database),after_us=None)
@@ -1703,6 +1721,13 @@ def empty_shape_corruption(pg,output,database,label,expected,initial,name):
         record['after']=schema.rows(pg,database);record['after_us']=history.server_clock(pg,database);save()
         oracle.empty_shape_corruption_checked(record,expected,initial,name,
             dict(before_us=record['before_us'],after_us=record['after_us']),database)
+        if observe_actor:
+            from installed_empty import exact_absence
+            actor=json.loads(response.stdout.splitlines()[0])['actor']
+            identity={k:actor[k] for k in ('pid','backend_start','database')}
+            record['actor_absence']=dict(before_us=history.server_clock(pg,database),observations=None,after_us=None);save()
+            record['actor_absence']['observations']=exact_absence(pg,database,[identity])
+            record['actor_absence']['after_us']=history.server_clock(pg,database);save()
         return record
     except subprocess.TimeoutExpired as error:
         def text(value):return value.decode(errors='replace') if isinstance(value,bytes) else value or ''
@@ -1947,15 +1972,19 @@ def run_empty_initial(root,build,product_source,*,delivery=False,locks=False,sha
 
 
 ORIGIN = oracle.ORIGIN
-def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseline):
+def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseline,*,input_proof=False):
     from fault_cases import Process,safe_event
     from initial_empty_locks import Probe
     from activated_retirement_expiry import wait_event
-    _,step=oracle.later_specification(case);normal=step=='prepare';label=case['name'];database=case['database']
-    target=oracle.LATER_PREPARE_CANDIDATE if normal else baseline['prepare_commit']['ordinal']
-    if not normal:assert baseline['status']=='PASS' and baseline['case']=='normal-prepare'
-    mode='hold-after-complete' if normal else 'after-complete'
+    name,step=oracle.later_specification(case,input_proof=input_proof);label=case['name'];database=case['database']
+    missing=input_proof and name=='prepare_missing';drift=input_proof and name in ('prepare_head','prepare_digest')
+    normal=step=='prepare' and not missing
+    target=oracle.LATER_PREPARE_CANDIDATE if step=='prepare' else baseline['prepare_commit']['ordinal']
+    if drift:assert baseline['status']=='PASS' and baseline['case']=='absent-prepare' and baseline['prepare_commit']['ordinal']==target
+    if step!='prepare':assert baseline['status']=='PASS' and baseline['case']=='normal-prepare'
+    mode='pass' if missing else 'hold-after-complete' if normal else 'after-complete'
     fault=dict(mode=mode,target=target,held=None,prefix=None,wire=None,errors=[])
+    if input_proof:fault['mutation']=None
     probe=proxy=None;started=time.monotonic();window=dict(before_us=history.server_clock(pg,database))
     response=dict(returncode=None,stdout='',stderr='',seconds=None,outcome='UNKNOWN',readers_joined=False,overflow=False,command=None)
     args=None
@@ -1964,7 +1993,7 @@ def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseli
         lab.write_json(output/(label+'-clock.json'),window)
     try:
         command=['docker','exec','-i',client,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432','--listen-port','0',
-            '--mode',mode,'--commit-number',str(target),'--later-commits','1' if normal else '0','--deadline-seconds','30']
+            '--mode',mode,'--commit-number',str(target),'--later-commits','1' if normal and not drift else '0','--deadline-seconds','30']
         fault['wire']=dict(command=command,source_sha256=history.digest(output/'fault_proxy.py'),ready=None,receipt=None,
             events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False)
         save();proxy=Process(command,input_pipe=True);ready=proxy.event('ready',5);fault['wire']['ready']=ready
@@ -1984,7 +2013,10 @@ def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseli
             # Establish the actual committed intent before forwarding its reply.
             # A source-predicted ordinal alone never authorizes the later loss.
             oracle.later_held_checked(capture,fault['prefix'],expected,initial,case,
-                dict(before_us=window['before_us'],after_us=capture['after_us']))
+                dict(before_us=window['before_us'],after_us=capture['after_us']),input_proof=input_proof)
+            if drift:
+                fault['mutation']=empty_shape_corruption(pg,output,database,label+'-mutation',capture['control'],initial,
+                    'proof-head' if name=='prepare_head' else 'proof-digest',observe_actor=True);save()
             capture['release_before_us']=history.server_clock(pg,database)
             control=oracle.only(capture['control']['owner_epochs'],role='control',state='active')
             assert capture['release_before_us']<control['lease_expires_at_us']
@@ -1992,7 +2024,7 @@ def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseli
             proxy.event('released',5);assert capture['release_after_us']<control['lease_expires_at_us'];save()
         code=probe.wait(15);probe.observe()
         response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
-        if not normal:proxy.event('fault',5)
+        if not normal and not missing:proxy.event('fault',5)
         fault['wire']['receipt']=proxy.event('receipt',5);assert proxy.wait(5)==0
     except BaseException as error:
         fault['errors'].append(dict(stage='invoke',error=repr(error)))
@@ -2016,11 +2048,11 @@ def later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseli
     return response,window,fault,args
 
 
-def later_prepare(pg,client,output,case,directory,expected,catalog,initial,baseline):
+def later_prepare(pg,client,output,case,directory,expected,catalog,initial,baseline,*,input_proof=False):
     label=case['name'];before=schema.rows(pg,case['database']);native=history.dump(client,output,label+'-before',directory)
     inputs=history.inputs_at(directory/'store');oracle.same(before,expected[0]);assert (native,inputs)==expected[1:]
     lab.write_json(output/(label+'-before.json'),before);lab.write_json(output/(label+'-inputs.json'),inputs)
-    response,window,fault,args=later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseline)
+    response,window,fault,args=later_prepare_invoke(pg,client,output,case,directory,expected,initial,baseline,input_proof=input_proof)
     wire=fault['wire'] or {}
     closed=not fault['errors'] and wire.get('exit_code')==0 and wire.get('readers_joined') is True and wire.get('forced_wrapper_stop') is False and wire.get('overflow') is False and wire.get('stderr')==''
     events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,
@@ -2030,8 +2062,8 @@ def later_prepare(pg,client,output,case,directory,expected,catalog,initial,basel
         backend_absence=transition.read(output/(label+'-control-backends.json')),backends=transition.read(output/(label+'-backends.json')),
         custody=transition.read(output/(label+'-custody.json')),arguments=args,wire=fault)
     lab.write_json(output/(label+'-verification.json'),context)
-    result=oracle.verify_later_probe(context,initial,expected,baseline)
-    controls=oracle.later_controls(context,initial,expected,baseline)
+    result=oracle.verify_later_probe(context,initial,expected,baseline,input_proof=input_proof)
+    controls=oracle.later_controls(context,initial,expected,baseline,input_proof=input_proof)
     case.update(status='PASS',returncode=response['returncode'],oracle=result,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
@@ -2055,7 +2087,7 @@ def later_sql_fault(pg,database,output,record=None):
     return record
 
 
-def run_later_sequence(pg,client,output,clone,directory,expected,report,*,seeds,initial):
+def run_later_sequence(pg,client,output,clone,directory,expected,report,*,seeds,initial,input_proof=False):
     name=clone['name'];assert expected==seeds[clone['origin']]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
     assert clone['catalog_before']==report['origins'][clone['origin']]['catalog']
@@ -2064,40 +2096,47 @@ def run_later_sequence(pg,client,output,clone,directory,expected,report,*,seeds,
         path=output/source.name
         if not path.exists():shutil.copy2(source,path)
         assert history.digest(source)==history.digest(path)
+    profile=oracle.LaterInputProofProfile if input_proof else oracle.LaterEmptyProfile
     previous=None;fault=None
-    for step in oracle.LATER_STEPS[name]:
+    for step in profile.STEPS[name]:
+        if input_proof:
+            for quarantine in oracle.later_input_quarantines(name,step):
+                expected=history_quarantine(output,directory,expected,initial,quarantine)
         if step=='failure':fault=later_sql_fault(pg,clone['database'],output)
         case=dict(name=name+'-'+step,clone=name,origin=clone['origin'],operation='successor-compacted-prepare' if step.startswith('prepare') else 'retire-empty-successor',
             predecessor=previous,database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case);lab.write_json(output/'result.json',report)
         if step.startswith('prepare'):
-            baseline=oracle.only(report['cases'],name='normal-prepare')['oracle'] if name=='gap' else None
-            expected=later_prepare(pg,client,output,case,directory,expected,clone['catalog_before'],initial,baseline)
+            baseline=oracle.only(report['cases'],name='absent-prepare' if input_proof else 'normal-prepare')['oracle'] if name in ('gap','prepare_head','prepare_digest') else None
+            expected=later_prepare(pg,client,output,case,directory,expected,clone['catalog_before'],initial,baseline,input_proof=input_proof)
         else:
+            baseline=oracle.only(report['cases'],name='absent-retire')['oracle'] if input_proof and name in ('empty_head','empty_digest') else None
+            hook=terminal_delivery_hook(pg,client,output,case,directory,expected=expected,initial=initial,later_input=True,baseline=baseline) if input_proof and name!='installed_missing' else None
             def verify(context,_seed):
                 if name=='closing':
                     if step=='failure':
                         fault['hit']=lab.sql(pg,clone['database'],'SELECT last_value::text||is_called::text FROM empty_retirement_fixture.source_hit')
                         assert fault['hit']=='1true';lab.write_json(output/'closing-late-sql.json',fault)
                     context['later_fault']=json.loads(json.dumps(fault));lab.write_json(output/(case['name']+'-verification.json'),context)
-                return oracle.verify_later_installed(context,initial,expected)
+                return oracle.verify_later_installed(context,initial,expected,baseline,input_proof=input_proof)
             expected=installed_cycle.execute(pg,client,output,case,directory,expected,history.catalog(pg,clone['database']),initial,
-                checks=(verify,lambda c,s:oracle.later_controls(c,initial,expected),oracle.later_closed))
+                checks=(verify,lambda c,s:oracle.later_controls(c,initial,expected,baseline,input_proof=input_proof),partial(oracle.later_closed,input_proof=input_proof)),fault=hook)
             if step=='failure':fault=later_sql_fault(pg,clone['database'],output,fault)
         case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
         previous=case['name'];lab.write_json(output/'result.json',report)
     return previous
 
 
-def run_later_empty(root,build,product_source):
+def run_later_empty(root,build,product_source,*,input_proof=False):
+    assert type(input_proof) is bool
     assert product_source==oracle.LATER_PRODUCT and oracle.LATER_PRODUCT is not None
     seeds,initial=oracle.later_origins_checked(root)
-    profile=oracle.LaterEmptyProfile
+    profile=oracle.LaterInputProofProfile if input_proof else oracle.LaterEmptyProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
-        client_prefix='bigbrotr-compacted-later-',database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
-        scope='Actual compacted later preparation, measured preparation COMMIT loss, installed OPEN/gap/CLOSING empty recovery and exact terminal retry',not_run=profile.NOT_RUN)
-    return transition.run(root,build,suite=suite,sequence=partial(run_later_sequence,seeds=seeds,initial=initial),origin_specs=oracle.LATER_ORIGINS,
-        origin_for_clone=oracle.LATER_ORIGIN_NAMES,extra_grants=profile.GRANTS,producer_progress=True,producer_ack=True,preparation_hole=True,
+        client_prefix=profile.CLIENT_PREFIX if input_proof else 'bigbrotr-compacted-later-',database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
+        scope='Actual optional-absent preparation, required-later-input refusals and H/D proof-use at preparation and measured installed refresh' if input_proof else 'Actual compacted later preparation, measured preparation COMMIT loss, installed OPEN/gap/CLOSING empty recovery and exact terminal retry',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_sequence,seeds=seeds,initial=initial,input_proof=input_proof),origin_specs=oracle.LATER_ORIGINS,
+        origin_for_clone=oracle.LATER_INPUT_ORIGINS if input_proof else oracle.LATER_ORIGIN_NAMES,extra_grants=profile.GRANTS,producer_progress=True,producer_ack=True,preparation_hole=True,
         compacted_reader=True,compacted_history=True,later_empty=True,product_source=product_source)
 
 
@@ -2106,6 +2145,7 @@ if __name__ == '__main__':
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
     parser.add_argument('--product-source',required=True,help='Exact reviewed and qualified integrated build revision')
     profile=parser.add_mutually_exclusive_group()
+    profile.add_argument('--later-input-proof',action='store_true',help='Later original-input obligations and H/D proof-use at actual preparation/installed boundaries')
     profile.add_argument('--later-empty',action='store_true',help='Actual compacted later preparation and installed gap/OPEN/CLOSING retirement')
     profile.add_argument("--history",action="store_true",help="Explicit connected Terminal2/PreparedOpen3 synthetic floor profile")
     profile.add_argument('--history-faults',action='store_true',help='Exact retained PreparedOpen3 delivery fault profile')
@@ -2124,4 +2164,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
