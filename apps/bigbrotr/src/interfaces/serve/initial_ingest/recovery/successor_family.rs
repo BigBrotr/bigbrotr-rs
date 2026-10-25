@@ -109,6 +109,13 @@ async fn own(
         native: Some(native),
         ..Custody::default()
     };
+    let compacted_positive = mode == Mode::Resolve
+        && custody
+            .native
+            .as_ref()
+            .expect("exclusive native owner")
+            .has_compacted_successor_ancestor(&cancellation.requested)
+            .map_err(error)?;
     phase(&progress, timeout)?;
     let (prepared, control_grant) = postgres_command::prepare_control_shared(
         &root,
@@ -126,18 +133,32 @@ async fn own(
         4096
     };
     let closing = grant(&budget, mutation_bytes, mutation_bytes)?;
+    // Positive compacted recovery retains its canonical grant across every
+    // replay step and through final ACK. Preflight those actual overlaps.
+    let retained_compacted = compacted_positive
+        .then(|| compacted_grant(&budget))
+        .transpose()?;
     drop(replay_grants(&budget)?);
     drop(effect_grant(&budget)?);
     if mode == Mode::RetireEmpty {
         drop(compacted_grant(&budget)?);
     }
     if mode != Mode::RetireEmpty {
+        let ack_effects = compacted_positive
+            .then(|| compacted_grant(&budget))
+            .transpose()?;
         drop(grant(
             &budget,
-            RecoveryAcknowledgement::REQUIRED_DATA_BYTES,
+            if compacted_positive {
+                RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES
+            } else {
+                RecoveryAcknowledgement::REQUIRED_DATA_BYTES
+            },
             RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
         )?);
+        drop(ack_effects);
     }
+    drop(retained_compacted);
     if matches!(mode, Mode::AbandonAcquisition | Mode::Retire) {
         drop(grant(&budget, FINAL_JOB_BYTES, 0)?);
     }
@@ -197,7 +218,10 @@ async fn own(
         claim_exit.0 = None;
     }
     let report = match mode {
-        Mode::Resolve => work.resolve(&mut custody, metadata, closing).await?,
+        Mode::Resolve => {
+            work.resolve(&mut custody, metadata, closing, compacted_positive)
+                .await?
+        }
         Mode::CloseSource | Mode::AbandonAcquisition => {
             work.source(&mut custody, metadata, closing, mode).await?
         }
@@ -287,10 +311,21 @@ impl Work<'_> {
         custody: &mut Custody,
         metadata: OwnedPermit,
         closing: OwnedPermit,
+        compacted: bool,
     ) -> Result<Value> {
         let native = custody.native.as_mut().expect("exclusive native owner");
         let owner = custody.owner.as_mut().expect("claimed Control");
-        custody.positive = Some(
+        custody.positive = Some(if compacted {
+            self.operation(owner.inspect_activated_successor_producer_with_compacted(
+                native,
+                self.replay_request(),
+                metadata,
+                self.input_grant()?,
+                compacted_grant(self.budget)?,
+                |d, h| self.validate(d, h),
+            ))
+            .await?
+        } else {
             self.operation(owner.inspect_activated_successor_producer(
                 native,
                 self.replay_request(),
@@ -298,8 +333,8 @@ impl Work<'_> {
                 self.input_grant()?,
                 |d, h| self.validate(d, h),
             ))
-            .await?,
-        );
+            .await?
+        });
         let recovered = custody.positive.as_mut().expect("retained positive owner");
         self.operation(owner.close_activated_successor_producer(
             native,
@@ -313,6 +348,16 @@ impl Work<'_> {
             .resolution(native, &self.cancellation.requested)
             .map_err(error)?;
         while resolution.current_epoch().is_some() {
+            if resolution.needs_compacted_initial() {
+                self.refresh(owner).await?;
+                self.operation(owner.inspect_activated_successor_compacted_initial(
+                    &mut resolution,
+                    self.request(),
+                    |d, h| self.validate(d, h),
+                ))
+                .await?;
+                continue;
+            }
             while resolution.next_request().is_some() {
                 self.refresh(owner).await?;
                 let (input, outcome) = replay_grants(self.budget)?;
@@ -356,6 +401,7 @@ impl Work<'_> {
         let replay = proof
             .into_recovery_acknowledgement(&self.cancellation.requested)
             .map_err(error)?;
+        let compacted = replay.compacted_requests();
         acknowledge(
             self.root,
             self.budget,
@@ -366,7 +412,12 @@ impl Work<'_> {
             replay,
         )
         .await?;
-        Ok(completed.report(native, Mode::Resolve))
+        let mut report = completed.report(native, Mode::Resolve);
+        if compacted != 0 {
+            report["recovery_basis"] = json!("closed-producer-floor-v3");
+            report["compacted_requests"] = json!(compacted.to_string());
+        }
+        Ok(report)
     }
 }
 

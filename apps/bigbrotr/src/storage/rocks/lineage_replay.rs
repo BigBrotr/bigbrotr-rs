@@ -90,7 +90,8 @@ impl RetainedLineage {
     }
 
     /// Only the connected historical owner can select the pending compacted
-    /// step. The ordinary public cursor and recovery/retirement stay strict.
+    /// step. The ordinary public cursor and retirement stay strict; fresh
+    /// positive recovery uses its distinct private owner-bound entry below.
     pub(in crate::storage) fn compacted_resolution<'a>(
         &'a self,
         recovery: &'a IngestRecovery,
@@ -113,7 +114,8 @@ impl RetainedLineage {
         // This reader always completes a later original epoch. Initial-only
         // history keeps its separate proof and transaction contracts.
         if self.has_compacted_initial() != compacted
-            || (compacted && (through_epoch < 2 || recovery_owner.is_some()))
+            || (compacted && through_epoch < 2)
+            || recovery_owner.is_some_and(|owner| !std::ptr::eq(owner.lineage(), self))
         {
             return Err(BootstrapError::StateMismatch);
         }
@@ -182,7 +184,7 @@ impl<'a> LineageResolution<'a> {
             Some(PredecessorTerminalKind::Activated),
             cancelled,
             Some(owner),
-            false,
+            lineage.has_compacted_initial(),
         )
     }
     pub(super) fn validate(&self) -> Result<(), BootstrapError> {
@@ -222,7 +224,11 @@ impl<'a> LineageResolution<'a> {
         verified: &VerifiedCompactedPrefix<'_>,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<CompactedInitialSummary, AdmissionError> {
-        if !self.needs_compacted_initial() || !verified.matches_lineage(self.lineage) {
+        let matches = match self.recovery_owner {
+            Some(owner) => verified.matches_successor_recovery(owner),
+            None => verified.matches_lineage(self.lineage),
+        };
+        if !self.needs_compacted_initial() || !matches {
             return Err(AdmissionError::StateMismatch);
         }
         self.validate()?;
