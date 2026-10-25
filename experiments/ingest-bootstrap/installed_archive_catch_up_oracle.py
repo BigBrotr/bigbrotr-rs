@@ -113,7 +113,11 @@ def cut_digest(dataset,topology,receipts,bounds,snapshot):
     return sha(data+b'\x01'+be(snapshot))
 
 
-def archive(phase,science,initial_revision):
+def archive(phase,science,initial_revision,*,compacted=False):
+    assert type(compacted) is bool
+    if compacted:
+        assert initial_revision==0
+        return archive_first(phase,science)
     before,after=phase['before'],phase['after']; observed=after['control']; window=phase['window']
     model=Model(before['control'],before['native'],before['inputs'],window);model.completed_control(observed)
     wanted=model.pg; control=model.control; ds=model.ds['dataset_id'];consumer=only(wanted['consumers']);catalog=consumer['consumer_id']
@@ -200,6 +204,101 @@ def archive(phase,science,initial_revision):
     return receipts
 
 
+def archive_first(phase,science):
+    """Virgin compacted publication; expected rows never come from Archive output."""
+    before,after=phase['before'],phase['after']; observed=after['control'];window=phase['window']
+    assert len(before['control'])==77 and len(science['batches'])==8
+    assert [len(science['tables'][t]) for t in TABLES]==[12,4,4,4,4]
+    model=Model(before['control'],before['native'],before['inputs'],window)
+    model.completed_control(observed);wanted=model.pg;control=model.control;ds=model.ds['dataset_id']
+    persistence=only(wanted['archive_persistence']);catalog=persistence['catalog_id']
+    assert persistence['dataset_id']==ds and persistence['protocol_version']==1
+    retry=phase['step']=='catchup-retry';assert phase['step'] in ('catchup','catchup-retry')
+    retained_max=max(int(r['xmin']) for rows in before['control'].values() for r in rows)
+    previous_xid=retained_max;previous_at=control['acquired_at_us'];receipts=[]
+    attempts=sorted(observed['archive_attempts'],key=lambda r:r['ordinal'])
+    assert len(attempts)==8
+    for index,(attempt,batch) in enumerate(zip(attempts,science['batches']),1):
+        assert batch['topology']==2
+        receipts.append(dict(dataset_id=ds[2:].upper(),schema_version=1,topology_generation=2,
+            batch_digest=batch['archive_digest'].upper(),record_count=batch['last']-batch['first']+1,
+            input_ranges=[dict(shard_id=0,owner_epoch=batch['epoch'],first_sequence=batch['first'],last_sequence=batch['last'])],
+            attempt_id=attempt['attempt_id'][2:].upper(),publication_ordinal=index))
+        if retry:continue
+        for field in ('attempt_id','worker_incarnation'):model.identity(attempt[field][2:])
+        at,tx=attempt['issued_at_us'],attempt['xmin'];clock(at,window);fresh_xmin(tx,wanted)
+        assert previous_xid<int(tx)<int(control['xmin'])
+        assert previous_at<=at<control['released_at_us']<control['lease_expires_at_us']
+        wanted['archive_attempts'].append(dict(attempt_id=attempt['attempt_id'],dataset_id=ds,catalog_id=catalog,
+            ordinal=index,expected_predecessor=index-1,schema_version=1,topology_generation=2,
+            batch_digest='\\x'+batch['archive_digest'],coordinator_incarnation=control['process_incarnation'],
+            worker_incarnation=attempt['worker_incarnation'],issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],
+            issuer_role='control',issuer_incarnation=control['process_incarnation'],issued_at_us=at,
+            coordinator_binding_sha256=persistence['coordinator_binding_sha256'],persistence_protocol=1,xmin=tx))
+        previous_xid,previous_at=int(tx),at
+    if not retry:
+        assert not before['control']['archive_attempts']
+        for table in ('consumers','consumer_frontier_revisions','consumer_frontiers','archive_frontier_snapshots',
+                'archive_frontier_batches','archive_owner_sessions'):
+            assert not wanted[table]
+        assert not any(r['role']=='archive' for r in wanted['owner_epochs']+wanted['role_instances'])
+        owner=only(observed['owner_epochs'],role='archive');roleid=model.identity(owner['role_instance_id'][2:])
+        role=only(observed['role_instances'],role_instance_id=roleid)
+        consumer=only(observed['consumers']);revision=only(observed['consumer_frontier_revisions'])
+        snapshot=only(observed['archive_frontier_snapshots']);operation=model.identity(snapshot['operation_id'][2:])
+        tx=revision['xmin'];fresh_xmin(tx,wanted);assert previous_xid<int(tx)<int(control['xmin'])
+        for at in (role['created_at_us'],owner['acquired_at_us'],owner['lease_expires_at_us']-6_000_000,
+                consumer['created_at_us'],revision['created_at_us']):clock(at,window)
+        # archive_owner copies the already refreshed Control deadline; it does
+        # not renew a six-second lease from its later INSERT clock.
+        refreshed=owner['lease_expires_at_us']-6_000_000
+        assert previous_at<=refreshed<=role['created_at_us']<=owner['acquired_at_us']<=consumer['created_at_us']<=revision['created_at_us']<=control['released_at_us']
+        assert revision['created_at_us']<owner['lease_expires_at_us']
+        wanted['owner_epochs'].append(dict(resource_id=catalog,epoch=1,dataset_id=ds,role='archive',
+            role_instance_id=roleid,process_incarnation=control['process_incarnation'],acquired_at_us=owner['acquired_at_us'],
+            lease_expires_at_us=owner['lease_expires_at_us'],state='active',released_at_us=None,exclusion_method=None,
+            exclusion_digest=None,control_fence_version=None,control_backend_pid=None,control_backend_start=None,
+            archive_frontier_protocol=1,xmin=tx))
+        wanted['role_instances'].append(dict(role_instance_id=roleid,dataset_id=ds,role='archive',
+            created_at_us=role['created_at_us'],retired_at_us=None,xmin=tx))
+        wanted['archive_owner_sessions'].append(dict(dataset_id=ds,catalog_id=catalog,owner_epoch=1,owner_role='archive',
+            owner_incarnation=control['process_incarnation'],coordinator_binding_sha256=persistence['coordinator_binding_sha256'],
+            persistence_protocol=1,issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],issuer_role='control',
+            issuer_incarnation=control['process_incarnation'],xmin=tx))
+        wanted['consumers'].append(dict(consumer_id=catalog,dataset_id=ds,consumer_role='archive',
+            created_at_us=consumer['created_at_us'],current_revision=1,current_topology_generation=2,xmin=tx))
+        wanted['consumer_frontier_revisions'].append(dict(consumer_id=catalog,frontier_revision=1,dataset_id=ds,
+            consumer_role='archive',topology_generation=2,previous_revision=None,owner_resource_id=catalog,owner_epoch=1,
+            owner_incarnation=control['process_incarnation'],created_at_us=revision['created_at_us'],sealed=True,xmin=tx))
+        bounds=[(1,27),(2,1),(3,0)]
+        wanted['archive_frontier_snapshots'].append(dict(operation_id=operation,consumer_id=catalog,frontier_revision=1,
+            dataset_id=ds,topology_generation=2,catalog_id=catalog,owner_epoch=1,owner_incarnation=control['process_incarnation'],
+            snapshot_id=9,request_digest='\\x'+cut_digest(ds,2,receipts,bounds,9),**dict(zip(COUNTS,[12,4,4,4,4])),xmin=tx))
+        for epoch,cut in bounds:
+            batch=next((b for b in science['batches'] if b['epoch']==epoch and b['last']==cut),None)
+            wanted['consumer_frontiers'].append(dict(consumer_id=catalog,frontier_revision=1,dataset_id=ds,
+                topology_generation=2,shard_id=0,owner_epoch=epoch,last_complete_sequence=cut,
+                attestation_kind='archive-batch' if cut else None,attestation_digest='\\x'+batch['archive_digest'] if cut else None,xmin=tx))
+        wanted['archive_frontier_batches']=[dict(consumer_id=catalog,frontier_revision=1,attempt_id=a['attempt_id'],xmin=tx) for a in attempts]
+    same(wanted,observed)
+    assert after['native']==before['native'] and after['inputs']==before['inputs'] and after['contents']==before['contents']
+    snapshot=only(observed['archive_frontier_snapshots'])
+    assert json.loads(phase['response']['stdout'])==dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],
+        catalog_id=catalog[2:],terminal_epoch=3,issued_attempts_before=8 if retry else 0,new_attempts=0 if retry else 8,
+        frontier_revision=1,snapshot_id=9,operation_id=list(binary(snapshot['operation_id'])),request_digest=snapshot['request_digest'][2:],
+        family_counts=[12,4,4,4,4],new_frontier_revisions=0 if retry else 1,
+        recovery_basis='closed-producer-floor-v3',compacted_requests='7')
+    assert json.loads(phase['readback']['stdout'])==dict(format='bigbrotr-independent-installed-archive-read/1',
+        tables={**science['tables'],'archive_commits':receipts})
+    if retry:
+        assert before['catalog']==after['catalog']
+        assert before['physical']['data']==after['physical']['data'] and before['physical']['state']==after['physical']['state']
+    else:
+        from installed_archive_catch_up_catalog import verify_catalog
+        verify_catalog(phase,science,virgin=True)
+    return receipts
+
+
 def initial(value):
     from installed_archive_oracle import expected
     from installed_archive_frontier import validate,current_owner_view
@@ -245,8 +344,9 @@ def retained(state,science):
     assert stored==expected
 
 
-def roles(before,after,phase):
+def roles(before,after,phase,*,virgin_manager=None):
     """Only catch-up can issue workers; seals may rewrite role catalog xmin."""
+    assert virgin_manager is None or (type(virgin_manager) is str and re.fullmatch('bb_archive_[0-9a-f]{24}',virgin_manager))
     if phase!='catchup':
         if phase=='catchup-retry':
             names={r['login_name'] for r in after['catalog']['bigbrotr_archive.attempts']}
@@ -261,24 +361,37 @@ def roles(before,after,phase):
     for row in wanted['roles']:
         if row['rolname'] in oldnames:row['xmin']=only(observed['roles'],oid=row['oid'])['xmin']
     additions=[r for r in observed['roles'] if r['oid'] not in {p['oid'] for p in wanted['roles']}]
-    attempts=[r for r in after['catalog']['bigbrotr_archive.attempts'] if r['ordinal']>4]
-    assert len(additions)==len(attempts)==3
+    attempts=[r for r in after['catalog']['bigbrotr_archive.attempts'] if r['ordinal']>(0 if virgin_manager else 4)]
+    assert len(additions)==len(attempts)==(8 if virgin_manager else 3)
     assert {(r['rolname'],r['oid']) for r in additions}=={(r['login_name'],r['login_oid']) for r in attempts}
     for row in additions:
-        old=only(before['system_roles']['roles'],rolname=next(iter(oldnames)))
-        assert {k:v for k,v in row.items() if k not in ('oid','rolname','xmin')}=={k:v for k,v in old.items() if k not in ('oid','rolname','xmin')}
+        if virgin_manager:
+            assert not oldnames
+            assert row==dict(oid=row['oid'],rolname=row['rolname'],xmin=row['xmin'],rolsuper=False,rolinherit=False,
+                rolcreaterole=False,rolcreatedb=False,rolcanlogin=False,rolreplication=False,rolconnlimit=8,
+                rolvaliduntil=None,rolbypassrls=False,credential_present=False)
+            assert re.fullmatch('[1-9][0-9]*',str(row['oid'])) and re.fullmatch('[1-9][0-9]*',row['xmin'])
+        else:
+            old=only(before['system_roles']['roles'],rolname=next(iter(oldnames)))
+            assert {k:v for k,v in row.items() if k not in ('oid','rolname','xmin')}=={k:v for k,v in old.items() if k not in ('oid','rolname','xmin')}
         assert not row['rolcanlogin'] and not row['credential_present']
     wanted['roles']+=additions;wanted['roles'].sort(key=lambda r:int(r['oid']))
     newmembers=[r for r in observed['members'] if r not in wanted['members']]
-    assert len(newmembers)==3 and {r['roleid'] for r in newmembers}=={r['oid'] for r in additions}
+    assert len(newmembers)==len(additions) and {r['roleid'] for r in newmembers}=={r['oid'] for r in additions}
     # PostgreSQL 16 assigns each membership its own row OID.
     assert len({r['oid'] for r in observed['members']})==len(observed['members'])
     oldoids={r['oid'] for r in wanted['members']}
-    oldmember=next(r for r in wanted['members'] if r['roleid'] in {p['oid'] for p in before['system_roles']['roles'] if p['rolname'] in oldnames})
+    if virgin_manager:
+        manager=only(before['system_roles']['roles'],rolname=virgin_manager)
+        bootstrap=only(before['system_roles']['roles'],rolname='postgres');assert bootstrap['rolsuper'] is True
+        member_shape=dict(member=manager['oid'],grantor=bootstrap['oid'],admin_option=True,inherit_option=False,set_option=False)
+    else:
+        oldmember=next(r for r in wanted['members'] if r['roleid'] in {p['oid'] for p in before['system_roles']['roles'] if p['rolname'] in oldnames})
+        member_shape={k:v for k,v in oldmember.items() if k not in ('oid','roleid','xmin')}
     for r in newmembers:
         assert str(r['oid']).isdecimal() and int(r['oid'])>0 and r['oid'] not in oldoids
         assert str(r['xmin']).isdecimal() and int(r['xmin'])>0
-        assert {k:v for k,v in r.items() if k not in ('oid','roleid','xmin')}=={k:v for k,v in oldmember.items() if k not in ('oid','roleid','xmin')}
+        assert {k:v for k,v in r.items() if k not in ('oid','roleid','xmin')}==member_shape
     wanted['members']+=newmembers;wanted['members'].sort(key=lambda r:tuple(int(r[k]) for k in ('roleid','member','grantor')))
     assert wanted==observed
 

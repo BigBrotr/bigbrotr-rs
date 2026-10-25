@@ -159,8 +159,10 @@ def global_roles(pg):
 
 
 def prepare(pg, client, output, database, name, rows, resources, save, build, built,
-            setup_upgrade=None, attempt_limits_profile=False):
+            setup_upgrade=None, attempt_limits_profile=False,*,compacted_config=None):
     assert type(attempt_limits_profile) is bool
+    compacted=compacted_config is not None
+    assert not compacted or (type(compacted_config) is str and setup_upgrade is None and not attempt_limits_profile)
     assert not attempt_limits_profile or name == 'archive-export'
     verified = artifacts(build, built)
     info = invoke(client, output, name + '-build-info', 'build-info')
@@ -171,17 +173,26 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     assert verification['result'] == 'verified' and verification['executable'] == verified['worker']
     assert verification['target'] == TARGET
     lab.write_json(output / (name + '-artifacts.json'), verified)
-    upgrade_registry(pg, client, output, database, name, rows)
-    upgrade_scopes(pg, client, output, database, name, rows)
-    if setup_upgrade is not None:
-        setup_upgrade(pg, client, output, database, name, rows)
-    policy_setup(pg, database, name, rows, output, administration=True)
+    if not compacted:
+        upgrade_registry(pg, client, output, database, name, rows)
+        upgrade_scopes(pg, client, output, database, name, rows)
+        if setup_upgrade is not None:
+            setup_upgrade(pg, client, output, database, name, rows)
+        policy_setup(pg, database, name, rows, output, administration=True)
     before = rows(database)
-    assert not before['owner_epochs'] and not before['producer_requests']
+    if compacted:
+        assert len(before)==77 and sum(map(len,before.values()))==236
+        assert all(r['state']=='released' for r in before['owner_epochs'])
+        assert not any(before[t] for t in ('consumers','consumer_frontiers','consumer_frontier_revisions',
+            'archive_owner_sessions','archive_frontier_batches','archive_frontier_snapshots','archive_snapshot_pins','archive_pin_recoveries'))
+    else:assert not before['owner_epochs'] and not before['producer_requests']
     assert not before['archive_coordinators'] and not before['archive_persistence'] and not before['archive_attempts']
     assert {10, 15, 23, 24, 26} <= {r['migration'] for r in before['schema_versions']}
     home = output / name
-    home.mkdir(mode=0o700)
+    if compacted:
+        assert home.is_dir() and not home.is_symlink() and (home/'store').is_dir()
+        assert not any((home/d).exists() for d in ('data','state','scratch','manager.secret'))
+    else:home.mkdir(mode=0o700)
     for directory in ('data', 'state', 'scratch'):
         (home / directory).mkdir(mode=0o700)
     catalog_db = database + '_cat'
@@ -193,6 +204,10 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     resources.setdefault('archive_resources', []).append(resource)
     resources['databases'].append(catalog_db)
     save()
+    if compacted:
+        virgin_files=files(home)
+        assert all(not list((home/d).iterdir()) for d in ('data','state','scratch'))
+        lab.write_json(output/(name+'-virgin-files.json'),virgin_files)
     original_roles = global_roles(pg)
     secret = home / 'manager.secret'
     with secret.open('x') as stream:
@@ -202,9 +217,9 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     lab.sql(pg, 'postgres', f'CREATE DATABASE {catalog_db}')
     lab.sql(pg, catalog_db, f'REVOKE ALL ON DATABASE {catalog_db} FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC;')
     assert catalog_rows(pg, catalog_db) == {}
-    config = lab.config(output, dict(pg, client=client), database, endpoint='127.0.0.1:5432', boundary='loopback')
+    config = compacted_config if compacted else lab.config(output, dict(pg, client=client), database, endpoint='127.0.0.1:5432', boundary='loopback')
     path = output / Path(config).name
-    text = configuration(path.read_text(), before, name)
+    text = path.read_text() if compacted else configuration(path.read_text(), before, name)
     if attempt_limits_profile:
         # 126 retained input grants must coexist with Control/catalog preparation.
         # Preserve every component allowance and the 3 GiB aggregate envelope.
@@ -227,8 +242,21 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     ]:
         text = set_value(text, section, key, value)
     path.write_text(text)
+    if compacted:lab.write_json(output/(name+'-setup-before.json'),before)
     invoke(client, output, name + '-validate', 'config', 'validate', '--file', config)
     dataset = before['datasets'][0]['dataset_id'][2:]
+    if compacted:
+        from initial_history import server_clock
+        setup_window=dict(before_us=server_clock(pg,database))
+        stages=[]
+        def stage(label):
+            absence={db:lab.sql(pg,db,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')
+                for db in (database,catalog_db)}
+            assert set(absence.values())=={'0'}
+            entry=dict(label=label,control=rows(database),catalog=catalog_rows(pg,catalog_db),
+                roles=global_roles(pg),files=files(home),backend_absence=absence,
+                observed_at_us=server_clock(pg,database))
+            stages.append(entry);lab.write_json(output/(name+'-setup-stages.json'),stages)
     initialized = invoke(client, output, name + '-initialize', 'archive', 'initialize', '--file', config,
         '--initializer-user', 'postgres', '--initializer-password-ref', 'file:/run/secrets/bootstrap',
         '--worker-root', '/build/archive-worker')
@@ -251,6 +279,7 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     lab.write_json(output / (name + '-setup-roles.json'), dict(before=original_roles, after=final_roles))
     resource.update(roles=roles, state='catalog-initialized'); save()
     assert rows(database) == before, 'catalog-initialization-mutated-control'
+    if compacted:stage('initialize')
     bound = invoke(client, output, name + '-state', 'archive', 'state-initialize', '--file', config)
     assert bound == dict(format='bigbrotr-coordinator-state/1', state='bound', dataset_id=dataset,
         catalog_id=catalog, catalog_inspection='not-performed', attempt_adoption='not-performed',
@@ -259,9 +288,12 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     assert binding == (home / 'data/.bigbrotr-initialization/coordinator.json').read_bytes()
     binding_hash = hashlib.sha256(binding).hexdigest()
     local = files(home)
-    for retry in (False, True):
+    if compacted:stage('state')
+    for retry in ((False,) if compacted else (False, True)):
+        if compacted:coordinator_window=dict(before_us=server_clock(pg,database))
         result = invoke(client, output, name + ('-coordinator-retry' if retry else '-coordinator'),
             'archive', 'coordinator-initialize', '--file', config)
+        if compacted:coordinator_window['after_us']=server_clock(pg,database)
         assert result == dict(format='bigbrotr-coordinator-initialization/1', state='bound',
             created=not retry, dataset_id=dataset, catalog_id=catalog, binding_sha256=binding_hash,
             owner_release='committed', catalog_inspection='verified', persistence_protocol=1,
@@ -269,8 +301,14 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
         current = rows(database)
         for table in before.keys() - {'owner_epochs', 'role_instances', 'archive_coordinators', 'archive_persistence'}:
             assert current[table] == before[table], table
-        assert len(current['owner_epochs']) == len(current['role_instances']) == (2 if retry else 1)
-        assert all(r['role'] == 'control' and r['state'] == 'released' and r['released_at_us'] is not None for r in current['owner_epochs'])
+        if compacted:
+            for table in ('owner_epochs','role_instances'):
+                assert len(current[table])==len(before[table])+1 and all(r in current[table] for r in before[table])
+            new=[r for r in current['owner_epochs'] if r not in before['owner_epochs']]
+        else:
+            assert len(current['owner_epochs']) == len(current['role_instances']) == (2 if retry else 1)
+            new=current['owner_epochs']
+        assert all(r['role'] == 'control' and r['state'] == 'released' and r['released_at_us'] is not None for r in new)
         assert all(r['retired_at_us'] is not None for r in current['role_instances'])
         coordinator, = current['archive_coordinators']; persistence, = current['archive_persistence']
         assert coordinator['binding_sha256'] == persistence['coordinator_binding_sha256'] == '\\x' + binding_hash
@@ -294,11 +332,22 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
             first = current
         assert catalog_rows(pg, catalog_db) == empty and files(home) == local
         assert global_roles(pg) == final_roles
+        if compacted:stage('coordinator')
     resource.update(state='setup-retained', config=config, binding_sha256=binding_hash); save()
     lab.write_json(output / (name + '-setup-control.json'), current)
     lab.write_json(output / (name + '-setup-catalog.json'), empty)
     lab.write_json(output / (name + '-setup-files.json'), local)
-    return dict(config=config, home=home, resource=resource, control=current, catalog=empty, files=local, roles=final_roles)
+    setup=dict(config=config, home=home, resource=resource, control=current, catalog=empty, files=local, roles=final_roles)
+    if compacted:
+        # No external native or C API opening is permitted until every genuine
+        # initializer has delivered success and both databases are absent.
+        setup_window['after_us']=server_clock(pg,database)
+        absence={db:lab.sql(pg,db,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')
+            for db in (database,catalog_db)}
+        assert set(absence.values())=={'0'}
+        setup.update(compacted=True,before=before,window=setup_window,coordinator_window=coordinator_window,backend_absence=absence,stages=stages)
+        lab.write_json(output/(name+'-setup-boundaries.json'),dict(window=setup_window,coordinator_window=coordinator_window,backend_absence=absence))
+    return setup
 
 
 def run(pg, client, output, database, name, rows, **context):
