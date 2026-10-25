@@ -473,6 +473,29 @@ impl ResolvedLineage<'_> {
         permit: OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<PendingBatch, LineagePendingError> {
+        self.read_complete_pending_batch_in(first, limits, permit, cancelled, false)
+    }
+
+    /// Explicit compacted-history read of retained complete pending bytes. The
+    /// compacted prefix does not authorize publication or replace those bytes.
+    pub fn read_complete_compacted_pending_batch(
+        &self,
+        first: SourceRecordId,
+        limits: PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<PendingBatch, LineagePendingError> {
+        self.read_complete_pending_batch_in(first, limits, permit, cancelled, true)
+    }
+
+    fn read_complete_pending_batch_in(
+        &self,
+        first: SourceRecordId,
+        limits: PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        compacted: bool,
+    ) -> Result<PendingBatch, LineagePendingError> {
         // Admit the complete pending allocation before even rereading sidecars.
         // The snapshot reader independently enforces the same floor.
         let required = limits
@@ -484,8 +507,7 @@ impl ResolvedLineage<'_> {
                 PendingError::InsufficientReservation,
             ));
         }
-        // Archive publication has not yet adapted its compacted proof boundary.
-        if self.lineage.has_compacted_initial()
+        if self.lineage.has_compacted_initial() != compacted
             || self.verified_through()
                 != self
                     .lineage

@@ -1,12 +1,17 @@
 //! Actual native observation -> fenced, complete immutable Archive frontier.
 //! A receipt records publication; it is not a read pin or principal authority.
-use super::{ControlSession, application_transaction, fresh_id, require};
+use super::{
+    ControlSession, InitialHistoryRequest, OwnerError, RetainedArchiveFrontier,
+    VerifiedSuccessorHistory, application_transaction, fresh_id, initial_history, require,
+    successor_history,
+};
 use crate::storage::{
     archive::RetainedInputs,
     postgres::{
         archive_attempt::ArchiveAttemptError as Error, catalog_guard::CapturedCut,
         ingest_registry::ControlOwner,
     },
+    rocks::store::IngestRecovery,
 };
 use bigbrotr_model::{Digest256, OwnerResourceId};
 use bigbrotr_protocol::archive_cut::CutRead;
@@ -38,6 +43,14 @@ fn fixed<const N: usize>(row: &Row, i: usize) -> Result<[u8; N], Error> {
         .ok()
         .and_then(|v| v.try_into().ok())
         .ok_or(Error::InvalidMetadata)
+}
+
+// Borrowed call context only; the outer frontier owns the one private Check.
+struct CompactedPublication<'a, 'h> {
+    frontier: &'a RetainedArchiveFrontier,
+    proof: &'a VerifiedSuccessorHistory<'h>,
+    recovery: &'a IngestRecovery,
+    input: InitialHistoryRequest<'a>,
 }
 
 impl ControlSession {
@@ -104,6 +117,66 @@ impl ControlSession {
         expected_revision: u64,
         commit_started: &Cell<bool>,
     ) -> Result<ArchiveFrontierReceipt, Error> {
+        self.publish_archive_frontier_in(
+            captured,
+            inputs,
+            operation_id,
+            expected_revision,
+            commit_started,
+            None,
+            |_, _| Ok(()),
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "captured native result, retained history and exact transaction authority"
+    )]
+    pub async fn publish_compacted_archive_frontier<'a, 'h>(
+        &mut self,
+        captured: &CapturedCut<'_, '_>,
+        inputs: &[RetainedInputs],
+        operation_id: [u8; 16],
+        expected_revision: u64,
+        commit_started: &Cell<bool>,
+        frontier: &'a RetainedArchiveFrontier,
+        proof: &'a VerifiedSuccessorHistory<'h>,
+        recovery: &'a IngestRecovery,
+        input: InitialHistoryRequest<'a>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ArchiveFrontierReceipt, Error> {
+        self.publish_archive_frontier_in(
+            captured,
+            inputs,
+            operation_id,
+            expected_revision,
+            commit_started,
+            Some(CompactedPublication {
+                frontier,
+                proof,
+                recovery,
+                input,
+            }),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "one shared publication kernel with optional private retained-history context"
+    )]
+    async fn publish_archive_frontier_in(
+        &mut self,
+        captured: &CapturedCut<'_, '_>,
+        inputs: &[RetainedInputs],
+        operation_id: [u8; 16],
+        expected_revision: u64,
+        commit_started: &Cell<bool>,
+        history: Option<CompactedPublication<'_, '_>>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ArchiveFrontierReceipt, Error> {
         let read = captured.observed().read();
         let observation = captured.observed().observation();
         let coordinator = captured.coordinator();
@@ -126,13 +199,38 @@ impl ControlSession {
             .verify_barrier()
             .await
             .map_err(|_| Error::Unavailable)?;
-        self.begin_operation().map_err(|_| Error::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 16)
-            .await
-            .map_err(|_| Error::Prerequisite)?;
-        require(&tx, self.request.dataset, self.identity)
-            .await
-            .map_err(|_| Error::Unavailable)?;
+        let current = self.identity;
+        let (tx, mut authority) = if let Some(h) = &history {
+            let check = h.frontier.require_compacted_context(
+                h.proof,
+                h.recovery,
+                identity.catalog(),
+                coordinator.binding_digest(),
+            )?;
+            let (tx, mut lease, policy) = self
+                .begin_checked_successor_history(h.proof.history(), h.recovery, &h.input, validate)
+                .await?;
+            check
+                .require_history(
+                    &tx,
+                    h.recovery,
+                    h.proof.history(),
+                    &mut lease,
+                    policy,
+                    h.input.cancelled,
+                )
+                .await?;
+            (tx, Some((lease, policy)))
+        } else {
+            self.begin_operation().map_err(|_| Error::Unavailable)?;
+            let tx = application_transaction(&mut self.client, 16)
+                .await
+                .map_err(|_| Error::Prerequisite)?;
+            require(&tx, self.request.dataset, current)
+                .await
+                .map_err(|_| Error::Unavailable)?;
+            (tx, None)
+        };
         let dataset = &read.dataset_id.as_bytes()[..];
         let catalog_id = identity.catalog();
         let catalog = &catalog_id.as_bytes()[..];
@@ -152,11 +250,31 @@ impl ControlSession {
             created: true,
         };
         if let Some(existing) = resolve(&tx, &receipt, dataset).await? {
+            if let Some(h) = &history {
+                h.frontier
+                    .validate_compacted(h.proof, h.recovery, h.input.cancelled)?;
+                successor_history::require_current(&tx, current).await?;
+            }
             captured
                 .verify_barrier()
                 .await
                 .map_err(|_| Error::Unavailable)?;
+            if let Some((h, (lease, policy))) = history.as_ref().zip(authority.as_mut()) {
+                initial_history::check_delivery(lease, *policy, h.input.cancelled)?;
+            }
             tx.rollback().await.map_err(backend)?;
+            if let Some((h, (lease, policy))) = history.as_ref().zip(authority.as_mut()) {
+                h.frontier
+                    .validate_compacted(h.proof, h.recovery, h.input.cancelled)?;
+                captured
+                    .verify_barrier()
+                    .await
+                    .map_err(|_| Error::Unavailable)?;
+                initial_history::check_delivery(lease, *policy, h.input.cancelled)?;
+                if self.client.is_closed() {
+                    return Err(Error::Unavailable);
+                }
+            }
             self.available = true;
             return Ok(existing);
         }
@@ -171,7 +289,7 @@ impl ControlSession {
                 return Err(Error::Conflict);
             }
         }
-        let epoch = archive_owner(&tx, captured, self.identity).await?;
+        let epoch = archive_owner(&tx, captured, current).await?;
         let consumer = tx.query_opt("SELECT dataset_id=$2::bytea AND consumer_role='archive',coalesce(current_revision,0)::text FROM control.consumers WHERE consumer_id=$1::bytea FOR UPDATE", &[&catalog,&dataset]).await.map_err(backend)?;
         if let Some(row) = consumer {
             if !row.try_get::<_, bool>(0).map_err(backend)? || number(&row, 1)? != expected_revision
@@ -186,7 +304,7 @@ impl ControlSession {
         }
         let rev = revision.to_string();
         let topology = read.topology_generation.get().to_string();
-        let incarnation = &self.identity.process_incarnation.as_bytes()[..];
+        let incarnation = &current.process_incarnation.as_bytes()[..];
         tx.execute("INSERT INTO control.consumer_frontier_revisions(consumer_id,frontier_revision,dataset_id,consumer_role,topology_generation,previous_revision,owner_resource_id,owner_epoch,owner_incarnation,created_at_us) VALUES ($1::bytea,$2::text::numeric,$3::bytea,'archive',$4::text::numeric,NULLIF($5::text::numeric,0),$1::bytea,$6::text::numeric,$7::bytea,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)", &[&catalog,&rev,&dataset,&topology,&expected_revision.to_string(),&epoch.to_string(),&incarnation]).await.map_err(backend)?;
         let counts = observation.family_counts.map(|n| n.to_string());
         tx.execute("INSERT INTO control.archive_frontier_snapshots(operation_id,consumer_id,frontier_revision,dataset_id,topology_generation,catalog_id,owner_epoch,owner_incarnation,snapshot_id,request_digest,dictionary_count,payload_count,eligibility_count,receive_count,provenance_count) VALUES ($1::bytea,$2::bytea,$3::text::numeric,$4::bytea,$5::text::numeric,$2::bytea,$6::text::numeric,$7::bytea,$8::bigint,$9::bytea,$10::text::numeric,$11::text::numeric,$12::text::numeric,$13::text::numeric,$14::text::numeric)", &[&&operation_id[..],&catalog,&rev,&dataset,&topology,&epoch.to_string(),&incarnation,&(observation.snapshot_id as i64),&&observation.request_digest.as_bytes()[..],&counts[0],&counts[1],&counts[2],&counts[3],&counts[4]]).await.map_err(backend)?;
@@ -219,13 +337,33 @@ impl ControlSession {
         tx.batch_execute("SET CONSTRAINTS ALL IMMEDIATE")
             .await
             .map_err(backend)?;
+        if let Some(h) = &history {
+            h.frontier
+                .validate_compacted(h.proof, h.recovery, h.input.cancelled)?;
+            successor_history::require_current(&tx, current).await?;
+        }
         captured
             .verify_barrier()
             .await
             .map_err(|_| Error::Unavailable)?;
         tx.query_one("SELECT control.require_archive_frontier_owner($1::bytea,$2::bytea,$3::text::numeric,$4::bytea)", &[&dataset,&catalog,&epoch.to_string(),&incarnation]).await.map_err(backend)?;
+        if let Some((h, (lease, policy))) = history.as_ref().zip(authority.as_mut()) {
+            initial_history::check_delivery(lease, *policy, h.input.cancelled)?;
+        }
         commit_started.set(true);
         tx.commit().await.map_err(|_| Error::CommitUnknown)?;
+        if let Some((h, (lease, policy))) = history.as_ref().zip(authority.as_mut()) {
+            h.frontier
+                .validate_compacted(h.proof, h.recovery, h.input.cancelled)?;
+            captured
+                .verify_barrier()
+                .await
+                .map_err(|_| Error::Unavailable)?;
+            initial_history::check_delivery(lease, *policy, h.input.cancelled)?;
+            if self.client.is_closed() {
+                return Err(Error::Unavailable);
+            }
+        }
         self.available = true;
         Ok(receipt)
     }

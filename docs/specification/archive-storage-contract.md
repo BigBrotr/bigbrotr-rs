@@ -1121,6 +1121,17 @@ positive replay covers the actual registered/native head and all original inputs
 It repairs no Ingest outcomes, closes no source or workflow and performs no Ingest
 retirement. Such prerequisites have their own finite commands.
 
+The explicit compacted later-family path instead checks the retained initial
+canonical H/D plus every required later original and any present initial
+residual. It retains one charged Check outside cancellable constructors and
+binding futures. The same actual dataset/catalog/coordinator binding is checked
+at each effect consumer; a resource Check alone supplies no identity. Each
+attempt/frontier transaction rechecks H/D under the same ordered lineage locks
+as its effect and preserves the existing current-Control, catalog capture and
+post-wait expiry checks. Exact attempt retry and an identical captured frontier
+also recheck this history before delivery. All pending scientific batches remain
+required; compaction is not publication authority or permission to repair them.
+
 #### Complete retained-state reconciliation
 
 Inventory every issued Archive attempt through one fixed, checked cutoff, in
@@ -1237,6 +1248,14 @@ drivers are joined, native custody is closed and actual Control teardown has
 completed. Unknown cleanup or termination cannot become a success response.
 
 #### Required connected journey and limits
+
+A first compacted consumer qualification may initialize a genuinely new Archive
+on a qualified terminal Ingest root only when all Archive bindings/ledgers and
+the new physical Archive roots are actually virgin. It must publish the complete
+retained batches and preserve an exact fresh-process retry. This narrower case,
+and the new component controls, remain `NOT_RUN` for the source extension until
+recorded exact-build/installed evidence exists. They do not close the following
+pre-succession publication, signed later-event, read/export and restart journey.
 
 Qualification uses a fresh genuine dataset/catalog/coordinator with actual typed
 initialization and at least one original Archive publication, then preserves those

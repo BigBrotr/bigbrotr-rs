@@ -5,9 +5,7 @@ use bigbrotr::storage::{
     archive::{LocalAttempt, RetainedInputs, WorkerBudgets},
     postgres::{
         archive_attempt::ArchiveAttemptReceipt,
-        control_owner::{
-            BoundRetainedArchiveFrontier, RetainedArchiveFrontier, RetainedArchiveRequest,
-        },
+        control_owner::{RetainedArchiveFrontier, RetainedArchiveRequest},
     },
     rocks::store::{PendingBatch, PendingBatchHeader, PendingReadLimits},
 };
@@ -31,7 +29,6 @@ pub(super) struct Attempt {
 }
 pub(super) struct Inventory {
     pub(super) attempts: Vec<Attempt>,
-    pub(super) current: BoundRetainedArchiveFrontier,
     // Fixed receipt pages, vector headers and temporary input references. The
     // scientific inputs each retain their separate required allocation grant.
     _metadata: OwnedPermit,
@@ -46,6 +43,7 @@ pub(super) async fn load(
     recovery: &IngestRecovery,
     proof: &VerifiedSuccessorHistory<'_>,
     coordinator: &LocalCoordinator,
+    frontier: &mut Option<RetainedArchiveFrontier>,
 ) -> Result<Inventory> {
     let metadata = grant(budget, MIB, 0)?;
     authority.refresh(owner).await?;
@@ -92,24 +90,45 @@ pub(super) async fn load(
     }
     authority.refresh(owner).await?;
     let history_request = request(root, authority.cancellation)?;
-    let current = authority
-        .operation(owner.inspect_retained_archive_frontier(
-            proof,
-            recovery,
-            RetainedArchiveRequest {
-                coordinator,
-                attempts: &scan,
-            },
-            history_request,
-            grant(budget, RetainedArchiveFrontier::required_data_bytes(), 0)?,
-            |d, h| validate(root, d, h),
-        ))
-        .await?;
+    if let Some(keeper) = frontier.as_mut() {
+        authority
+            .operation(owner.inspect_compacted_retained_archive_frontier(
+                keeper,
+                proof,
+                recovery,
+                RetainedArchiveRequest {
+                    coordinator,
+                    attempts: &scan,
+                },
+                history_request,
+                |d, h| validate(root, d, h),
+            ))
+            .await?;
+    } else {
+        *frontier = Some(
+            authority
+                .operation(owner.inspect_retained_archive_frontier(
+                    proof,
+                    recovery,
+                    RetainedArchiveRequest {
+                        coordinator,
+                        attempts: &scan,
+                    },
+                    history_request,
+                    grant(budget, RetainedArchiveFrontier::required_data_bytes(), 0)?,
+                    |d, h| validate(root, d, h),
+                ))
+                .await?,
+        );
+    }
     let references: Vec<_> = attempts.iter().map(|attempt| &attempt.inputs).collect();
-    let current = current.bind_current_inputs(&references).map_err(error)?;
+    frontier
+        .as_mut()
+        .expect("loaded frontier")
+        .bind_current_inputs_in_place(&references)
+        .map_err(error)?;
     Ok(Inventory {
         attempts,
-        current,
         _metadata: metadata,
     })
 }
@@ -121,15 +140,14 @@ pub(super) fn pending(
     first: SourceRecordId,
 ) -> Result<PendingBatch> {
     authority.local(|cancel| {
-        proof
-            .resolved_lineage()
-            .read_complete_pending_batch(
-                first,
-                limits(),
-                grant(budget, limits().required_data_bytes().map_err(error)?, 0)?,
-                cancel,
-            )
-            .map_err(error)
+        let resolved = proof.resolved_lineage();
+        let permit = grant(budget, limits().required_data_bytes().map_err(error)?, 0)?;
+        if proof.compacted_initial_requests() != 0 {
+            resolved.read_complete_compacted_pending_batch(first, limits(), permit, cancel)
+        } else {
+            resolved.read_complete_pending_batch(first, limits(), permit, cancel)
+        }
+        .map_err(error)
     })
 }
 
@@ -180,6 +198,8 @@ impl Inventory {
         proof: &VerifiedSuccessorHistory<'_>,
         coordinator: &LocalCoordinator,
         reader: &Arc<native::Reader>,
+        recovery: &IngestRecovery,
+        frontier: &RetainedArchiveFrontier,
     ) -> Result<()> {
         // Move each nonclone custody/input owner into actual joined work. Keep
         // the vector allocation and every other input grant until it returns.
@@ -189,6 +209,7 @@ impl Inventory {
             .map_err(error)?;
         for mut attempt in &mut remaining {
             authority.refresh(owner).await?;
+            authority.history(owner, recovery, proof, frontier).await?;
             let local = authority.local(|cancel| {
                 proof.validate(cancel).map_err(error)?;
                 LocalAttempt::recover(
@@ -233,10 +254,14 @@ impl Inventory {
                 };
                 Ok(attempt)
             }).await?;
-            authority.local(|cancel| proof.validate(cancel).map_err(error))?;
+            authority.history(owner, recovery, proof, frontier).await?;
             self.attempts.push(attempt);
         }
-        if let Some(current) = self.current.current_cut() {
+        if let Some(current) = frontier
+            .bound_current_inputs()
+            .map_err(error)?
+            .current_cut()
+        {
             for expected in &current.receipts {
                 if !self
                     .attempts

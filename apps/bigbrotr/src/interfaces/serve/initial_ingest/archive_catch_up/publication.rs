@@ -16,10 +16,32 @@ pub(super) async fn run(
     recovery: &IngestRecovery,
     proof: &VerifiedSuccessorHistory<'_>,
     coordinator: &LocalCoordinator,
+    frontier: &mut Option<RetainedArchiveFrontier>,
 ) -> Result<Value> {
-    let mut inventory =
-        inventory::load(root, budget, authority, owner, recovery, proof, coordinator).await?;
-    let journal = resolve_intents(budget, authority, owner, proof, coordinator, &inventory).await?;
+    let mut inventory = inventory::load(
+        root,
+        budget,
+        authority,
+        owner,
+        recovery,
+        proof,
+        coordinator,
+        frontier,
+    )
+    .await?;
+    let frontier = frontier.as_ref().expect("loaded frontier keeper");
+    let current = frontier.bound_current_inputs().map_err(error)?;
+    authority.history(owner, recovery, proof, frontier).await?;
+    let journal = resolve_intents(
+        budget,
+        authority,
+        owner,
+        proof,
+        coordinator,
+        &inventory,
+        frontier,
+    )
+    .await?;
     let native_budget = native_budget(root)?;
     authority.refresh(owner).await?;
     let prepared = authority.local(|_| native::reader(root, budget))?;
@@ -48,6 +70,8 @@ pub(super) async fn run(
             proof,
             coordinator,
             &reader,
+            recovery,
+            frontier,
         )
         .await?;
     let context = capture::Context {
@@ -57,6 +81,8 @@ pub(super) async fn run(
         reader: &reader,
         proof,
         coordinator,
+        recovery,
+        frontier,
     };
     let plan = plan::build(
         root,
@@ -66,12 +92,13 @@ pub(super) async fn run(
         proof,
         coordinator,
         &inventory,
+        frontier,
         &reader,
     )
     .await?;
-    let mut current_cut = inventory.current.current_cut().cloned();
-    let mut current_receipt = inventory.current.current_receipt();
-    let issued = inventory.current.issued_attempts();
+    let mut current_cut = current.current_cut().cloned();
+    let mut current_receipt = current.current_receipt();
+    let issued = current.issued_attempts();
     let planned = plan.missing.len();
     // Authenticate the actual native reader even with no old attempts. This
     // observation never invents an empty/virgin initialization or a snapshot ID.
@@ -164,6 +191,7 @@ pub(super) async fn run(
     }
     for missing in plan.missing {
         authority.refresh(owner).await?;
+        authority.history(owner, recovery, proof, frontier).await?;
         let pending = inventory::pending(budget, authority, proof, missing.header.first())?;
         if PendingBatchHeader::from_batch(pending.batch()) != missing.header {
             return Err(error("planned original pending batch changed"));
@@ -189,9 +217,24 @@ pub(super) async fn run(
         };
         authority.refresh(owner).await?;
         authority.local(|cancel| proof.validate(cancel).map_err(error))?;
-        let receipt = authority
-            .operation(owner.register_retained_archive_attempt(&retained, &Cell::new(false)))
-            .await?;
+        let receipt = if frontier.has_compacted_history() {
+            let input = request(root, authority.cancellation)?;
+            authority
+                .operation(owner.register_compacted_retained_archive_attempt(
+                    frontier,
+                    proof,
+                    recovery,
+                    &retained,
+                    input,
+                    &Cell::new(false),
+                    |d, h| validate(root, d, h),
+                ))
+                .await?
+        } else {
+            authority
+                .operation(owner.register_retained_archive_attempt(&retained, &Cell::new(false)))
+                .await?
+        };
         let local = authority.local(|_| {
             LocalAttempt::create(coordinator.state_root(), &receipt, coordinator.identity())
                 .map_err(error)
@@ -202,6 +245,7 @@ pub(super) async fn run(
             reader.clone(),
             coordinator.identity().clone(),
         );
+        authority.history(owner, recovery, proof, frontier).await?;
         let deadline = Instant::now() + OPERATION;
         authority
             .blocking(owner, deadline, move |cancel| {
@@ -219,7 +263,7 @@ pub(super) async fn run(
                 )
             })
             .await?;
-        authority.local(|cancel| proof.validate(cancel).map_err(error))?;
+        authority.history(owner, recovery, proof, frontier).await?;
         additional.push(retained);
     }
 
@@ -275,14 +319,17 @@ pub(super) async fn run(
         .receipt
         .ok_or_else(|| error("missing final frontier delivery"))?;
     created_frontiers += u64::from(result.created);
-    Ok(
-        json!({"format":"bigbrotr-archive-catch-up/1", "dataset_id":coordinator.identity().dataset(),
+    let mut report = json!({"format":"bigbrotr-archive-catch-up/1", "dataset_id":coordinator.identity().dataset(),
         "catalog_id":coordinator.identity().catalog(), "terminal_epoch":proof.verified_through(),
         "issued_attempts_before":issued, "new_attempts":planned,
         "frontier_revision":receipt.revision,"snapshot_id":receipt.snapshot_id,
         "operation_id":receipt.operation_id,"request_digest":receipt.request_digest,
-        "family_counts":receipt.family_counts,"new_frontier_revisions":created_frontiers}),
-    )
+        "family_counts":receipt.family_counts,"new_frontier_revisions":created_frontiers});
+    if frontier.has_compacted_history() {
+        report["recovery_basis"] = json!("closed-producer-floor-v3");
+        report["compacted_requests"] = json!(proof.compacted_initial_requests().to_string());
+    }
+    Ok(report)
 }
 
 fn native_budget(root: &Resolved) -> Result<ResourceBudget> {
@@ -326,17 +373,24 @@ async fn publisher(
     authority: &mut Authority<'_>,
     owner: &mut ControlSession,
 ) -> Result<native::Publisher> {
+    authority
+        .history(owner, context.recovery, context.proof, context.frontier)
+        .await?;
     let (root, app, identity) = (
         context.root.clone(),
         context.budget.clone(),
         context.coordinator.identity().clone(),
     );
     let deadline = Instant::now() + OPERATION;
-    authority
+    let result = authority
         .blocking(owner, deadline, move |cancel| {
             native::publisher(&root, &app, &identity, deadline, cancel)
         })
-        .await
+        .await?;
+    authority
+        .history(owner, context.recovery, context.proof, context.frontier)
+        .await?;
+    Ok(result)
 }
 
 async fn resolve_intents(
@@ -346,7 +400,9 @@ async fn resolve_intents(
     proof: &VerifiedSuccessorHistory<'_>,
     coordinator: &LocalCoordinator,
     inventory: &inventory::Inventory,
+    frontier: &RetainedArchiveFrontier,
 ) -> Result<FrontierIntentScan> {
+    let current = frontier.bound_current_inputs().map_err(error)?;
     authority.refresh(owner).await?;
     let mut scan = authority.local(|cancel| {
         coordinator
@@ -369,11 +425,7 @@ async fn resolve_intents(
             .ok_or_else(|| error("incomplete frontier intent scan"))?;
         let read = intent.read();
         let entries = proof.history().lineage().entries();
-        if intent.expected_revision()
-            > inventory
-                .current
-                .current_receipt()
-                .map_or(0, |r| r.revision)
+        if intent.expected_revision() > current.current_receipt().map_or(0, |r| r.revision)
             || read.dataset_id != coordinator.identity().dataset()
             || !entries.iter().any(|entry| {
                 entry.manifest().identity().topology_generation == read.topology_generation
@@ -413,7 +465,7 @@ async fn resolve_intents(
             .await?;
         if let Some(receipt) = receipt
             && (!intent.matches_receipt(&receipt)
-                || inventory.current.current_receipt().is_none_or(|current| {
+                || current.current_receipt().is_none_or(|current| {
                     current.revision < receipt.revision
                         || current.revision == receipt.revision && current != receipt
                 }))

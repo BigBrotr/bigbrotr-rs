@@ -17,6 +17,7 @@ pub enum ArchiveAttemptError {
     Conflict,
     Backend,
     CommitUnknown,
+    Retained(super::control_owner::RetainedArchiveError),
 }
 impl fmt::Display for ArchiveAttemptError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -24,6 +25,16 @@ impl fmt::Display for ArchiveAttemptError {
     }
 }
 impl std::error::Error for ArchiveAttemptError {}
+impl From<super::control_owner::RetainedArchiveError> for ArchiveAttemptError {
+    fn from(value: super::control_owner::RetainedArchiveError) -> Self {
+        Self::Retained(value)
+    }
+}
+impl From<super::control_owner::ProducerResolveError> for ArchiveAttemptError {
+    fn from(value: super::control_owner::ProducerResolveError) -> Self {
+        Self::Retained(super::control_owner::RetainedArchiveError::History(value))
+    }
+}
 fn backend(_: tokio_postgres::Error) -> ArchiveAttemptError {
     ArchiveAttemptError::Backend
 }
@@ -325,6 +336,26 @@ async fn register_inner(
     binding: Option<Digest256>,
     commit_started: &Cell<bool>,
 ) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
+    let receipt = register_in(&tx, request, issuer, binding).await?;
+    if receipt.created {
+        commit_started.set(true);
+        tx.commit()
+            .await
+            .map_err(|_| ArchiveAttemptError::CommitUnknown)?;
+    } else {
+        tx.rollback().await.map_err(backend)?;
+    }
+    Ok(receipt)
+}
+
+/// Same immutable issuance kernel; the history-aware caller owns final authority
+/// validation and the commit while its lineage locks remain held.
+pub(super) async fn register_in(
+    tx: &Transaction<'_>,
+    request: &ArchiveAttemptRequest,
+    issuer: ControlOwner,
+    binding: Option<Digest256>,
+) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
     let dataset = &request.dataset.as_bytes()[..];
     let attempt = &request.attempt_id[..];
     let catalog = &request.catalog.as_bytes()[..];
@@ -352,7 +383,6 @@ async fn register_inner(
             return Err(ArchiveAttemptError::Conflict);
         }
         let latest = tx.query_one("SELECT NOT EXISTS (SELECT 1 FROM control.archive_attempts WHERE dataset_id=$1::bytea AND ordinal>$2::text::numeric)", &[&dataset,&ordinal]).await.map_err(backend)?.try_get(0).map_err(backend)?;
-        tx.rollback().await.map_err(backend)?;
         return Ok(ArchiveAttemptReceipt {
             request: request.clone(),
             ordinal: request.ordinal,
@@ -407,10 +437,6 @@ async fn register_inner(
             backend(error)
         }
     })?;
-    commit_started.set(true);
-    tx.commit()
-        .await
-        .map_err(|_| ArchiveAttemptError::CommitUnknown)?;
     Ok(ArchiveAttemptReceipt {
         request: request.clone(),
         ordinal: request.ordinal,

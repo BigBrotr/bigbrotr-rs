@@ -1,9 +1,13 @@
 //! Explicit virgin-history boundary for cooperating local Archive coordinators.
 //! The caller retains actual driver custody; this is not catalog recovery.
-use super::{ControlSession, application_transaction, require};
+use super::{
+    ControlSession, InitialHistoryRequest, OwnerError, RetainedArchiveFrontier,
+    VerifiedSuccessorHistory, application_transaction, initial_history, require, successor_history,
+};
 use crate::storage::{
     archive::{LocalCoordinator, RetainedInputs},
     postgres::archive_attempt::{self, ArchiveAttemptError, ArchiveAttemptReceipt},
+    rocks::store::IngestRecovery,
 };
 use bigbrotr_model::{DatasetId, Digest256, OwnerResourceId};
 use std::cell::Cell;
@@ -14,6 +18,81 @@ fn backend(_: tokio_postgres::Error) -> ArchiveAttemptError {
 }
 
 impl ControlSession {
+    /// Explicit compacted positive-history issuance. The caller retains the
+    /// same outer frontier keeper and both actual transports through teardown.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "retained inputs, history, exact authority and commit custody"
+    )]
+    pub async fn register_compacted_retained_archive_attempt(
+        &mut self,
+        frontier: &RetainedArchiveFrontier,
+        proof: &VerifiedSuccessorHistory<'_>,
+        recovery: &IngestRecovery,
+        inputs: &RetainedInputs,
+        input: InitialHistoryRequest<'_>,
+        commit_started: &Cell<bool>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
+        let request = inputs.request();
+        if request.dataset() != self.request.dataset
+            || request.catalog() == self.identity.resource_id
+        {
+            return Err(ArchiveAttemptError::InvalidInput);
+        }
+        let check = frontier.require_compacted_context(
+            proof,
+            recovery,
+            request.catalog(),
+            inputs.coordinator_binding(),
+        )?;
+        let current = self.identity;
+        let (tx, mut lease, policy) = self
+            .begin_checked_successor_history(proof.history(), recovery, &input, validate)
+            .await?;
+        check
+            .require_history(
+                &tx,
+                recovery,
+                proof.history(),
+                &mut lease,
+                policy,
+                input.cancelled,
+            )
+            .await?;
+        if !binding(
+            &tx,
+            request.dataset(),
+            request.catalog(),
+            inputs.coordinator_binding(),
+        )
+        .await?
+        {
+            return Err(ArchiveAttemptError::Prerequisite);
+        }
+        let receipt =
+            archive_attempt::register_in(&tx, request, current, Some(inputs.coordinator_binding()))
+                .await?;
+        frontier.validate_compacted(proof, recovery, input.cancelled)?;
+        successor_history::require_current(&tx, current).await?;
+        initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+        if receipt.created {
+            commit_started.set(true);
+            tx.commit()
+                .await
+                .map_err(|_| ArchiveAttemptError::CommitUnknown)?;
+        } else {
+            tx.rollback().await.map_err(backend)?;
+        }
+        frontier.validate_compacted(proof, recovery, input.cancelled)?;
+        initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+        if self.client.is_closed() {
+            return Err(ArchiveAttemptError::Unavailable);
+        }
+        self.available = true;
+        Ok(receipt)
+    }
+
     /// Explicit initialization only. Existing pre-protocol attempts refuse;
     /// identical committed binding retries preserve original issuer attribution.
     /// A lost response requires a new fenced session and the same local binding.

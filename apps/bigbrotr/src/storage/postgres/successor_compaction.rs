@@ -112,7 +112,7 @@ impl Check {
         initial_history::check_delivery(lease, policy, cancelled)?;
         Ok(verified)
     }
-    pub(super) fn new(
+    pub(in crate::storage::postgres::control_owner) fn new(
         limits: AdmissionLimits,
         effects: OwnedPermit,
     ) -> Result<Self, ProducerResolveError> {
@@ -272,7 +272,7 @@ impl Check {
         initial_history::check_delivery(lease, policy, cancelled)
     }
 
-    pub(super) fn validate_history(
+    pub(in crate::storage::postgres::control_owner) fn validate_history(
         &self,
         recovery: &IngestRecovery,
         history: &SuccessorHistory,
@@ -286,7 +286,7 @@ impl Check {
         Ok(())
     }
 
-    pub(super) async fn require_history(
+    pub(in crate::storage::postgres::control_owner) async fn require_history(
         &self,
         tx: &Transaction<'_>,
         recovery: &IngestRecovery,

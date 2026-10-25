@@ -15,6 +15,28 @@ pub(super) struct Authority<'a> {
 }
 
 impl<'a> Authority<'a> {
+    pub(super) async fn history(
+        &mut self,
+        owner: &mut ControlSession,
+        recovery: &IngestRecovery,
+        proof: &VerifiedSuccessorHistory<'_>,
+        frontier: &RetainedArchiveFrontier,
+    ) -> Result<()> {
+        if frontier.has_compacted_history() {
+            let root = self.root;
+            let input = request(root, self.cancellation)?;
+            self.operation(owner.recheck_compacted_archive_history(
+                frontier,
+                proof,
+                recovery,
+                input,
+                |d, h| validate(root, d, h),
+            ))
+            .await?;
+        }
+        self.local(|cancel| proof.validate(cancel).map_err(error))
+    }
+
     pub(super) fn new(
         root: &'a Resolved,
         progress: &'a watch::Sender<Progress>,

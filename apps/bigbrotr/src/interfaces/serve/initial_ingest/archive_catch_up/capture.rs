@@ -17,6 +17,8 @@ pub(super) struct Context<'a, 'lineage> {
     pub(super) reader: &'a Arc<native::Reader>,
     pub(super) proof: &'a VerifiedSuccessorHistory<'lineage>,
     pub(super) coordinator: &'a LocalCoordinator,
+    pub(super) recovery: &'a IngestRecovery,
+    pub(super) frontier: &'a RetainedArchiveFrontier,
 }
 pub(super) struct Current<'a> {
     pub(super) receipt: ArchiveFrontierReceipt,
@@ -65,7 +67,9 @@ impl Context<'_, '_> {
         action: Action<'_>,
     ) -> Result<Outcome> {
         authority.refresh(owner).await?;
-        authority.local(|cancel| self.proof.validate(cancel).map_err(error))?;
+        authority
+            .history(owner, self.recovery, self.proof, self.frontier)
+            .await?;
         let deadline = Instant::now() + OPERATION;
         let prepared = self.prepare_manager(authority, owner, deadline).await?;
         let (mut manager, connection) = authority
@@ -132,6 +136,9 @@ impl Context<'_, '_> {
                         capture.accept(observed).await.map_err(error)
                     })
                     .await?;
+                authority
+                    .history(owner, self.recovery, self.proof, self.frontier)
+                    .await?;
                 let observed = captured.observed();
                 let mut outcome = Outcome {
                     snapshot: observed.observation().snapshot_id,
@@ -175,16 +182,36 @@ impl Context<'_, '_> {
                         // The synchronized original survives every subsequent
                         // failure, including an unknown Control COMMIT delivery.
                         authority.refresh(owner).await?;
-                        authority.local(|cancel| self.proof.validate(cancel).map_err(error))?;
-                        let receipt = authority
-                            .operation(owner.publish_archive_frontier(
-                                &captured,
-                                inputs,
-                                intent.operation_id(),
-                                revision,
-                                &Cell::new(false),
-                            ))
+                        authority
+                            .history(owner, self.recovery, self.proof, self.frontier)
                             .await?;
+                        let receipt = if self.frontier.has_compacted_history() {
+                            let input = request(self.root, authority.cancellation)?;
+                            authority
+                                .operation(owner.publish_compacted_archive_frontier(
+                                    &captured,
+                                    inputs,
+                                    intent.operation_id(),
+                                    revision,
+                                    &Cell::new(false),
+                                    self.frontier,
+                                    self.proof,
+                                    self.recovery,
+                                    input,
+                                    |d, h| validate(self.root, d, h),
+                                ))
+                                .await?
+                        } else {
+                            authority
+                                .operation(owner.publish_archive_frontier(
+                                    &captured,
+                                    inputs,
+                                    intent.operation_id(),
+                                    revision,
+                                    &Cell::new(false),
+                                ))
+                                .await?
+                        };
                         if !intent.matches_receipt(&receipt) {
                             return Err(error(
                                 "frontier delivery differs from synchronized original intent",
@@ -195,7 +222,9 @@ impl Context<'_, '_> {
                     }
                 }
                 authority.refresh(owner).await?;
-                authority.local(|cancel| self.proof.validate(cancel).map_err(error))?;
+                authority
+                    .history(owner, self.recovery, self.proof, self.frontier)
+                    .await?;
                 authority
                     .external(owner, deadline, async {
                         captured.verify_barrier().await.map_err(error)
@@ -215,6 +244,10 @@ impl Context<'_, '_> {
         })
         .await;
         drop(prepared.1);
-        result
+        let outcome = result?;
+        authority
+            .history(owner, self.recovery, self.proof, self.frontier)
+            .await?;
+        Ok(outcome)
     }
 }
