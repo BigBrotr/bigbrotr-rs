@@ -26,6 +26,30 @@ SCHEMA_SQL="""SELECT jsonb_build_object(
    JOIN pg_namespace n ON n.oid=c.connamespace WHERE n.nspname='control'))"""
 
 
+# One unresolved loader aborts the sequence. Retain its Session/pipe until the
+# existing outer owner has observed the exact client container stopped; losing
+# the Python pipe earlier would silently release the lock via EOF.
+_UNRESOLVED_LOADER_HOLDERS=[]
+
+
+def close_loader_holder_after_client_stop(pg,client,owned):
+    assert len(_UNRESOLVED_LOADER_HOLDERS)<=1
+    for entry in list(_UNRESOLVED_LOADER_HOLDERS):
+        session=entry['session'];assert entry['client']==client and session.state['postgres']==pg['postgres']
+        value=dict(status='UNKNOWN',original_outcome='UNKNOWN',holder=session.backend,errors=[])
+        path=entry['output']/(entry['name']+'-deferred-holder-custody.json')
+        lab.write_json(path,value)
+        try:
+            session.close(owned)
+            assert type(session.process.returncode) is int
+            value.update(exit_code=session.process.returncode,absence=normal.exact_absence(pg,session.database,
+                [dict(pid=session.backend['pid'],backend_start=session.backend['backend_start'],database=session.database)]),
+                status='HOLDER_CLOSED_AFTER_OUTER_CLIENT_STOP')
+            _UNRESOLVED_LOADER_HOLDERS.remove(entry)
+        except BaseException as error:value['errors'].append(repr(error));raise
+        finally:lab.write_json(path,value)
+
+
 def mutation_sql(case,consumer):
     assert re.fullmatch(r'\\x[0-9a-f]{32}',consumer)
     target="decode('"+consumer[2:]+"','hex')"
@@ -116,41 +140,75 @@ def act_on_wait(pg,client,output,database,prefix,holder,schedule):
     lab.write_json(output/(prefix.name+'-schedule.json'),schedule)
 
 
-def execute(pg,client,output,database,rows,setup,case,previous):
-    from installed_archive_catch_up_refusal_oracle import process_checked
+def loader_blocked(pg,database,holder):
+    from installed_archive_catch_up_refusal_oracle import loader_observation_sql
+    statement=loader_observation_sql(database,holder)
+    return statement,json.loads(lab.sql(pg,database,statement))
+
+
+def act_on_loader(pg,client,output,database,prefix,holder,schedule):
+    from installed_archive_catch_up_refusal_oracle import LOADER_QUERY,loader_wait_checked,loader_termination_sql
+    def observe():
+        sql,rows=loader_blocked(pg,database,holder)
+        if rows:return sql,rows
+        assert not Path(str(prefix)+'.terminal.json').exists(), 'installed child ended before loader wait'
+        return None
+    statement,rows=wait_for(observe,prefix.name+' actual loader wait',5)
+    waiter,=rows;schedule.update(observation_sql=statement,blocked=waiter)
+    loader_wait_checked(waiter,holder,database)
+    assert waiter['query']==LOADER_QUERY
+    schedule['action_before_us']=server_clock(pg,database)
+    assert schedule['action_before_us']<waiter['control']['lease_expires_at_us']-6_000_000+1_000_000
+    lab.write_json(output/(prefix.name+'-schedule.json'),schedule)
+    if schedule['mode']=='loader-cancel':
+        identity=read(Path(str(prefix)+'.pid.json'));schedule['signal']=identity
+        normal.signal_child(client,identity);schedule['action_response']='SIGTERM_SENT_TO_EXACT_PROCESS'
+    else:
+        statement=loader_termination_sql(waiter,holder,database)
+        schedule['termination_sql']=statement;schedule['action_response']=lab.sql(pg,database,statement)
+        assert schedule['action_response']=='t'
+    schedule['action_after_us']=server_clock(pg,database)
+    lab.write_json(output/(prefix.name+'-schedule.json'),schedule)
+    assert schedule['action_after_us']<waiter['control']['lease_expires_at_us']-6_000_000+1_000_000
+
+
+def execute(pg,client,output,database,rows,setup,case,previous,*,loader=False):
+    from installed_archive_catch_up_refusal_oracle import process_checked,LOADER_CASES
+    assert type(loader) is bool and (case in LOADER_CASES if loader else case in CASES)
+    waiting=loader or case in WAIT_CASES
     sys.path.insert(0,str(SOURCE/'experiments/control-migrations'))
     from concurrency_cases import Session
     name='catch-up-refusal-'+case;prefix=output/name
     before=observed(pg,client,output,name+'-before',database,rows,setup)
     assert {k:v for k,v in before.items() if k not in ('physical','local_records')}=={k:v for k,v in previous.items() if k not in ('physical','local_records')}
-    mutation=mutate(pg,client,output,database,rows,setup,case,before,name)
+    mutation=None if loader else mutate(pg,client,output,database,rows,setup,case,before,name)
     config=setup['config'];config_text=(output/Path(config).name).read_text()
     (output/(name+'-config.toml')).write_text(config_text)
     window=dict(before_us=server_clock(pg,database));fixture=dict(errors=[],snapshots=[])
-    schedule=None;sessions=[];holder=None;holder_closed=case not in WAIT_CASES
+    schedule=None;sessions=[];holder=None;holder_closed=not waiting
     failure=None;after=None;closed=False;backend={};answer=dict(outcome='OUTCOME_UNKNOWN')
     def save_schedule():lab.write_json(output/(name+'-schedule.json'),schedule)
     def preserve(suffix,value):
         try:lab.write_json(output/(name+'-'+suffix+'.json'),value)
         except BaseException as error:fixture['errors'].append(dict(stage=suffix+'-capture',error=repr(error)))
     try:
-        if case in WAIT_CASES:
+        if waiting:
             schedule=dict(mode=case,status='UNKNOWN',holder=None,blocked=None,cleanup_errors=[])
             save_schedule()
-            holder=Session(pg,database,'bb_catchup_refusal_holder',sessions,role='bigbrotr_migrator')
+            holder=Session(pg,database,'bb_catchup_loader_holder' if loader else 'bb_catchup_refusal_holder',sessions,role='bigbrotr_migrator')
             schedule['holder']=dict(identity=holder.backend)
             schedule['holder']['begin']=holder.execute('BEGIN; SET LOCAL idle_in_transaction_session_timeout=120000;')
-            schedule['holder']['held']=holder.execute('LOCK TABLE control.archive_frontier_snapshots IN SHARE MODE;')
+            schedule['holder']['held']=holder.execute('LOCK TABLE control.consumers IN ACCESS EXCLUSIVE MODE;' if loader else 'LOCK TABLE control.archive_frontier_snapshots IN SHARE MODE;')
             save_schedule()
         lab.docker('exec','-d',client,'python3','-B','/lab/installed_archive_catch_up_client.py','catchup',config,'/lab/'+name,timeout=5)
         wait_for(lambda:Path(str(prefix)+'.pid.json').exists() or Path(str(prefix)+'.terminal.json').exists(),name+' identity',5)
         if holder:
-            act_on_wait(pg,client,output,database,prefix,holder.backend,schedule)
-            # Keep the INSERT blocked until the actual executable has exited.
+            (act_on_loader if loader else act_on_wait)(pg,client,output,database,prefix,holder.backend,schedule)
+            # Keep the selected statement blocked until the actual executable has exited.
             # SIGTERM delivery alone must not race a newly unblocked COMMIT.
             wait_for(Path(str(prefix)+'.terminal.json').exists,name+' terminal while held',6)
             schedule['terminal_before_release']=normal.response(prefix)
-            process_checked(schedule['terminal_before_release'],case,config,name)
+            process_checked(schedule['terminal_before_release'],case,config,name,loader=loader)
             schedule['terminal_observed_us']=server_clock(pg,database);save_schedule()
             schedule['release_before_us']=server_clock(pg,database)
             schedule['holder']['rollback']=holder.execute('ROLLBACK;')
@@ -158,9 +216,28 @@ def execute(pg,client,output,database,rows,setup,case,previous):
         wait_for(Path(str(prefix)+'.terminal.json').exists,name+' process join',110)
     except BaseException as error:failure=error
     finally:
-        # Finish the owned SQL holder even if malformed process output or an
-        # observation failed. Wrapper reap alone is never backend exclusion.
+        unlock=not loader
+        if loader:
+            try:
+                if not Path(str(prefix)+'.terminal.json').exists() and Path(str(prefix)+'.pid.json').exists():
+                    normal.signal_child(client,read(Path(str(prefix)+'.pid.json')))
+                    wait_for(Path(str(prefix)+'.terminal.json').exists,name+' cleanup terminal while held',5)
+                terminal=normal.response(prefix);t=terminal['terminal'];identity=read(Path(str(prefix)+'.pid.json'))
+                assert terminal['outcome']=='PROCESS_EXITED' and t['reaped'] is True and t['forced'] is False and t['error'] is None
+                assert set(identity)=={'pid','start_ticks','command','config','prefix'} and all(t[k]==v for k,v in identity.items())
+                assert t['command']==normal.argv('catchup',Path(config)) and t['config']==config and t['prefix']=='/lab/'+name
+                assert type(t['pid']) is int and t['pid']>0 and type(t['start_ticks']) is int and t['start_ticks']>0
+                unlock=True
+            except BaseException as error:
+                fixture['errors'].append(dict(stage='terminal-before-holder-cleanup',error=repr(error)))
+                if sessions:
+                    assert len(sessions)==1 and not _UNRESOLVED_LOADER_HOLDERS
+                    _UNRESOLVED_LOADER_HOLDERS.append(dict(session=sessions[0],client=client,output=output,name=name))
+                    setup['resource']['loader_holder_unknown']=dict(database=database,holder=sessions[0].backend,prefix=name)
+        # On loader uncertainty, neither rollback nor Python pipe destruction
+        # may unblock the child. The existing outer owner stops that client first.
         for session in reversed(sessions):
+            if not unlock:continue
             try:
                 if session.pending is None:
                     if schedule and 'rollback' not in schedule['holder']:
@@ -175,23 +252,30 @@ def execute(pg,client,output,database,rows,setup,case,previous):
                 fixture['errors'].append(dict(stage='holder-custody',error=repr(error)))
                 try:session.close(lambda:None)
                 except BaseException as cleanup:fixture['errors'].append(dict(stage='holder-cleanup',error=repr(cleanup)))
+        if loader and not holder_closed and sessions:
+            if not _UNRESOLVED_LOADER_HOLDERS:
+                assert len(sessions)==1
+                _UNRESOLVED_LOADER_HOLDERS.append(dict(session=sessions[0],client=client,output=output,name=name))
+            setup['resource']['loader_holder_unknown']=dict(database=database,holder=sessions[0].backend,prefix=name)
         if schedule:
             schedule['status']='OBSERVED_CLOSED_AND_JOINED' if holder_closed else 'UNKNOWN'
         preserve('schedule',schedule)
         try:
-            if not Path(str(prefix)+'.terminal.json').exists() and Path(str(prefix)+'.pid.json').exists():
+            if not loader and not Path(str(prefix)+'.terminal.json').exists() and Path(str(prefix)+'.pid.json').exists():
                 normal.signal_child(client,read(Path(str(prefix)+'.pid.json')))
                 wait_for(Path(str(prefix)+'.terminal.json').exists,name+' cleanup join',5)
         except BaseException as error:fixture['errors'].append(dict(stage='join',error=repr(error)))
         try:
-            answer=normal.response(prefix);process_checked(answer,case,config,name);closed=True
+            answer=normal.response(prefix);process_checked(answer,case,config,name,loader=loader);closed=True
         except BaseException as error:fixture['errors'].append(dict(stage='process-custody',error=repr(error)))
         try:window['after_us']=server_clock(pg,database)
         except BaseException as error:fixture['errors'].append(dict(stage='clock',error=repr(error)))
         for label,value in [('response',answer),('clock',window),('fixture',fixture)]:preserve(label,value)
-        try:observed(pg,client,output,name+'-provisional',database,rows,setup,native=False)
+        try:
+            if not loader or holder_closed:observed(pg,client,output,name+'-provisional',database,rows,setup,native=False)
         except BaseException as error:fixture['errors'].append(dict(stage='provisional',error=repr(error)))
         try:
+            assert not loader or holder_closed, 'loader holder custody unresolved'
             normal.observe_backend_absence(pg,database,output,name+'-control')
             current=rows(database);old={(r['resource_id'],r['epoch']) for r in before['control']['owner_epochs']}
             expected=[dict(pid=r['control_backend_pid'],backend_start=r['control_backend_start'],database=database)
@@ -201,13 +285,14 @@ def execute(pg,client,output,database,rows,setup,case,previous):
             backend['all']={db:lab.sql(pg,db,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')
                 for db in (database,setup['resource']['catalog_database'])}
             assert all(v=='0' for v in backend['all'].values())
-            if closed and holder_closed:after=observed(pg,client,output,name+'-after',database,rows,setup)
+            if closed and holder_closed and (not loader or (failure is None and not fixture['errors'])):
+                after=observed(pg,client,output,name+'-after',database,rows,setup)
         except BaseException as error:fixture['errors'].append(dict(stage='external',error=repr(error)))
         preserve('backends',backend);preserve('fixture',fixture)
         preserve('custody',dict(status='OBSERVED_CLOSED_AND_JOINED' if after else 'UNKNOWN',process_closed=closed,holder_closed=holder_closed,errors=fixture['errors']))
     if failure:raise failure
     assert after is not None and not fixture['errors']
-    value=dict(step=case,operation='catchup',database=database,config=config,config_text=config_text,before=mutation['after'],after=after,
+    value=dict(step=case,operation='catchup',database=database,config=config,config_text=config_text,before=before if loader else mutation['after'],after=after,
         response=answer,window=window,fixture=fixture,backend=backend,mutation=mutation,schedule=schedule)
     lab.write_json(output/(name+'-verification.json'),value);return value
 

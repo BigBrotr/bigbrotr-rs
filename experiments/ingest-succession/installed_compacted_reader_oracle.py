@@ -8077,6 +8077,22 @@ class LaterArchiveProfile:
         'Power-loss, reboot, mixed restore and hostile filesystem mutation')
 
 
+class LaterArchiveLoaderProfile:
+    DIRECTORY='installed-compacted-later-archive-loader'
+    LABEL='org.bigbrotr.installed-compacted-later-archive-loader'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_ARCHIVE_LOADER'
+    DATABASE_PREFIX='bb_compacted_archive_loader_'
+    CLIENT_PREFIX='bigbrotr-compacted-archive-loader-'
+    CLONES=('loader-cancel','loader-control-loss')
+    STEPS={name:('initialize','state','coordinator','refusal') for name in CLONES}
+    CASES=tuple(name+'-'+step for name in CLONES for step in ('initialize','state','coordinator','refusal'))
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Archive post-proof H/D/input drift and capacity refusals',
+        'Issuance/frontier lock waits, UTC expiry and publication/COMMIT delivery loss',
+        'Internal grant lifetime telemetry, read/export, adoption and retention/GC',
+        'Power-loss, reboot, mixed restore and hostile filesystem mutation')
+
+
 def later_archive_qualification(built,component,qualification,source,components,component_qualification):
     assert LATER_ARCHIVE_PRODUCT is not None and source==LATER_ARCHIVE_PRODUCT
     assert component['status']==components['status']=='PASS'
@@ -8164,7 +8180,10 @@ def later_archive_structure_checked(record,database):
     return '\\x'+structural_checksum(rows)
 
 
-def later_archive_setup_checked(value,seed):
+def later_archive_setup_checked(value,seed,*,name="archive"):
+    assert name in ("archive",*LaterArchiveLoaderProfile.CLONES)
+    assert Path(value["resource"]["home"]).name==name
+    root_name=name
     archive,_=later_archive_modules();later_archive_basis(seed)
     assert value['status']=='OBSERVED_INITIALIZERS_CLOSED' and value['native_opened'] is False
     resource=value['resource'];database=resource['control_database'];catalog=resource['catalog_database']
@@ -8224,7 +8243,7 @@ def later_archive_setup_checked(value,seed):
     installation=only(cat['bigbrotr_archive.installation']);schema=only(cat['bigbrotr_archive.scientific_schema'])
     source=Path(__file__).resolve().parents[2]
     checksum=lambda name:'\\x'+sha((source/name).read_bytes())
-    assert installation==dict(singleton=True,protocol=1,dataset_id=ds,catalog_id=cid,data_root='/lab/archive/data/',
+    assert installation==dict(singleton=True,protocol=1,dataset_id=ds,catalog_id=cid,data_root='/lab/'+root_name+'/data/',
         sql_checksum=checksum('migrations/catalog/0001_writer_guard.sql'),layout_checksum=later_archive_structure_checked(value['structure'],catalog),xmin=installation['xmin'])
     assert schema==dict(singleton=True,format_version=1,declaration_checksum=checksum('contracts/archive/v1/schema.json'),
         native_layout_checksum=checksum('contracts/archive/v1/native-layout.json'),sql_checksum=checksum('migrations/catalog/0002_scientific_schema.sql'),
@@ -8257,12 +8276,12 @@ def later_archive_setup_checked(value,seed):
     assert re.fullmatch('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',initial['boot_id'])
     lock=value['files']['data/.bigbrotr-initialization/custody.lock']
     manifest=dict(format='bigbrotr-local-initialization/1',initialization_id=identity,dataset_id=ds[2:],catalog_id=cid[2:],
-        catalog_root='/lab/archive/data/',boot_id=initial['boot_id'],root_device=virgin['data']['device'],root_inode=virgin['data']['inode'],
+        catalog_root='/lab/'+root_name+'/data/',boot_id=initial['boot_id'],root_device=virgin['data']['device'],root_inode=virgin['data']['inode'],
         lock_device=lock['device'],lock_inode=lock['inode'])
     assert initialization==archive.json.dumps(manifest,separators=(',',':')).encode()
     assert value['files']['data/.bigbrotr-initialization/intent.json']['sha256']==sha(initialization)
     expected_binding=dict(format='bigbrotr-local-coordinator/1',initialization_sha256=list(bytes.fromhex(sha(initialization))),
-        state_root='/lab/archive/state',state_device=virgin['state']['device'],state_inode=virgin['state']['inode'])
+        state_root='/lab/'+root_name+'/state',state_device=virgin['state']['device'],state_inode=virgin['state']['inode'])
     assert binding==archive.json.dumps(expected_binding,separators=(',',':')).encode()
     assert lock['sha256']==sha(b'')
     for name in ('data/.bigbrotr-initialization/custody.lock','data/.bigbrotr-initialization/intent.json',
@@ -8349,13 +8368,13 @@ def verify_later_archive(phase,seed,setup,previous):
         family_counts=[12,4,4,4,4],native_rows=93,native_sequence=139,inputs=1)
 
 
-def later_archive_setup_controls(value,seed):
+def later_archive_setup_controls(value,seed,*,name="archive"):
     rejected=[]
-    def reject(name,change):
+    def reject(label,change):
         candidate=copy.deepcopy(value);change(candidate)
-        try:later_archive_setup_checked(candidate,seed)
-        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(name)
-        else:raise AssertionError('accepted setup control '+name)
+        try:later_archive_setup_checked(candidate,seed,name=name)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted setup control '+label)
     reject('incomplete-initializer-custody',lambda c:c.update(status='UNKNOWN'))
     reject('backend-still-present',lambda c:c['backend_absence'].update({c['resource']['catalog_database']:'1'}))
     reject('nonvirgin-data-root',lambda c:c['virgin_files'].update({'data/old.parquet':dict(c['virgin_files']['data'])}))
@@ -8419,6 +8438,98 @@ def later_archive_controls(phase,seed,setup,previous):
     else:
         reject('retry-attempt-rewritten',lambda c:c['after']['control']['archive_attempts'][0].update(xmin='1'))
         reject('retry-new-frontier',lambda c:c['after']['control']['consumer_frontier_revisions'].append(copy.deepcopy(c['after']['control']['consumer_frontier_revisions'][0])))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def verify_later_archive_loader(phase,seed,setup,previous):
+    import tomllib
+    archive,_=later_archive_modules();later_archive_reader_checked(setup)
+    from installed_archive_catch_up_refusal_oracle import process_checked,loader_schedule_checked,LOADER_CASES
+    assert phase['step'] in LOADER_CASES and phase['operation']=='catchup' and phase['mutation'] is None
+    assert set(phase)=={'step','operation','database','config','config_text','before','after','response','window','fixture','backend','mutation','schedule'}
+    resource=setup['resource'];assert Path(resource['home']).name==phase['step']
+    assert phase['database']==resource['control_database'] and phase['config']==setup['config']=='/lab/'+phase['database']+'.toml'
+    config=tomllib.loads(phase['config_text'])
+    assert {k:config['runtime'][k] for k in ('lease_ttl','heartbeat_interval','renewal_timeout','authorization_ttl','graceful_shutdown_timeout')}==dict(
+        lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
+    assert archive.semantic(phase['before'])==archive.semantic(previous)
+    assert phase['fixture']==dict(errors=[],snapshots=[])
+    assert set(phase['response'])=={'returncode','stdout','stderr','outcome','terminal'}
+    process_checked(phase['response'],phase['step'],phase['config'],'catch-up-refusal-'+phase['step'],loader=True)
+    window=phase['window'];assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True);number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    before,after=phase['before'],phase['after'];m=archive.Model(before['control'],seed[1],seed[2],window)
+    preparation_control(m,after['control'],success=False,renewed=True)
+    same(m.pg,after['control'])
+    assert len(after['control'])==77 and sum(map(len,before['control'].values()))==240 and sum(map(len,m.pg.values()))==242
+    current=max((r for r in after['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    role=only(after['control']['role_instances'],role_instance_id=current['role_instance_id'])
+    oldmax=max(int(r['xmin']) for rows in before['control'].values() for r in rows)
+    assert oldmax<int(role['xmin'])<int(current['xmin'])
+    assert phase['backend']==dict(exact=[dict(pid=current['control_backend_pid'],backend_start=current['control_backend_start'],database=phase['database'],present=False)],
+        all={phase['database']:'0',resource['catalog_database']:'0'})
+    loader_schedule_checked(phase)
+    for state in (before,after):
+        assert set(state)=={'control','native','inputs','contents','catalog','system_roles','physical','retained','local_records'}
+        assert state['native']==seed[1] and state['inputs']==seed[2] and set(state['contents'])==set(seed[2])
+        for name,raw in state['contents'].items():assert dict(bytes=len(bytes.fromhex(raw)),sha256=sha(bytes.fromhex(raw)))==seed[2][name]
+        for area in ('store','data','state','scratch'):
+            assert {k:v for k,v in state['physical'][area].items() if k!='files'}=={k:v for k,v in setup['baseline']['physical'][area].items() if k!='files'}
+    for key in ('catalog','system_roles','retained','local_records','contents'):
+        assert before[key]==after[key]==previous[key],key
+    for area in ('data','state','scratch'):assert before['physical'][area]==after['physical'][area]==previous['physical'][area]
+    for name in seed[2]:
+        path='producer-inputs-v1/'+name
+        assert before['physical']['store']['files'][path]==after['physical']['store']['files'][path]
+    return dict(status='PASS',expected_refusal=True,case=phase['step'],exit_code=4,sql_rows=242,control_released=False,
+        archive_attempts=0,frontier_revisions=0,native_rows=93,native_sequence=139,inputs=1,
+        scope='Observed loader query/lock and action before refresh+1s; internal grant lifetime is not black-box telemetry')
+
+
+def later_archive_loader_controls(phase,seed,setup,previous):
+    verify_later_archive_loader(phase,seed,setup,previous);rejected=[]
+    def reject(label,change):
+        c=copy.deepcopy(phase);change(c)
+        try:verify_later_archive_loader(c,seed,setup,previous)
+        except (AssertionError,KeyError,ValueError,TypeError,IndexError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted loader control: '+label)
+    reject('forced-child',lambda c:c['response']['terminal'].update(forced=True))
+    reject('unknown-child',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN'))
+    reject('wrong-refusal',lambda c:c['response'].update(stderr='error: timeout\n'))
+    reject('cleanup-error',lambda c:c['fixture']['errors'].append('unresolved'))
+    reject('control-backend-present',lambda c:c['backend']['exact'][0].update(present=True))
+    reject('catalog-backend-present',lambda c:c['backend']['all'].update({setup['resource']['catalog_database']:'1'}))
+    reject('holder-backend-present',lambda c:c['schedule']['holder']['absence'][0].update(present=True))
+    reject('holder-unjoined',lambda c:c['schedule']['holder'].update(exit=1))
+    reject('holder-no-rollback',lambda c:c['schedule']['holder']['rollback'].update(sqlstate='57014'))
+    reject('foreign-waiter',lambda c:c['schedule']['blocked'].update(pid=c['schedule']['blocked']['pid']+1))
+    reject('wrong-loader-query',lambda c:c['schedule']['blocked'].update(query='COMMIT'))
+    reject('wrong-lock',lambda c:c['schedule']['blocked']['waiting_locks'][0].update(relation='control.archive_frontier_snapshots'))
+    reject('holder-not-granted',lambda c:c['schedule']['blocked']['holder']['locks'][0].update(granted=False))
+    reject('wrong-observation-sql',lambda c:c['schedule'].update(observation_sql='SELECT 1'))
+    reject('no-real-action',lambda c:c['schedule'].update(action_response=''))
+    reject('holder-released-before-terminal',lambda c:c['schedule'].update(release_before_us=c['schedule']['terminal_observed_us']-1))
+    def late(c):
+        s=c['schedule'];b=s['blocked'];deadline=b['control']['lease_expires_at_us']-5_000_000
+        assert deadline<int(retained.instant(b['query_start']))+1_000_000
+        s['action_after_us']=deadline
+        for k in ('terminal_observed_us','release_before_us','release_after_us'):s[k]=max(s[k],deadline)
+        c['window']['after_us']=max(c['window']['after_us'],s['release_after_us'])
+    reject('action-after-refresh-deadline-before-query-deadline',late)
+    reject('native-write',lambda c:c['after']['native'].update(sequence=140))
+    reject('required-input-lost',lambda c:c['after']['inputs'].clear())
+    reject('source-rewritten',lambda c:only(c['after']['control']['source_streams'],owner_epoch=3).update(closed_at_us=1))
+    reject('attempt-created',lambda c:c['after']['control']['archive_attempts'].append(dict(ordinal=1)))
+    reject('catalog-owner-enabled',lambda c:c['after']['catalog']['bigbrotr_archive.owner'][0].update(enabled=True))
+    reject('journal-rewritten',lambda c:c['after']['local_records'].update({'coordinator.json':'00'}))
+    reject('physical-state-changed',lambda c:c['after']['physical']['state']['files']['coordinator.json'].update(inode=1))
+    def old_claim(c):
+        pg=c['after']['control'];current=max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        role=only(pg['role_instances'],role_instance_id=current['role_instance_id'])
+        used={int(r['xmin']) for rows in c['before']['control'].values() for r in rows}
+        old=next(n for n in range(max(used)-1,0,-1) if n not in used)
+        role['xmin']=str(old);c['schedule']['blocked']['role']['xmin']=str(old)
+    reject('older-unused-claim-xmin',old_claim)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
 
 

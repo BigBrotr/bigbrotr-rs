@@ -2777,63 +2777,79 @@ def run_later_retirement_import(root,build,product_source):
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_retirement=True,product_source=product_source)
 
 
-def run_later_archive_sequence(pg,client,output,clone,directory,expected,report,*,seed,build):
+def run_later_archive_sequence(pg,client,output,clone,directory,expected,report,*,seed,build,loader=False):
     import installed_archive as setup_owner
     import installed_archive_catch_up as catchup
     from installed_archive_journey import provision_reader
     from installed import set_value
-    assert clone['name']=='archive' and clone['origin']=='retired-terminal'
+    assert type(loader) is bool
+    name=clone['name'];assert name in (oracle.LaterArchiveLoaderProfile.CLONES if loader else ('archive',))
+    assert clone['origin']=='retired-terminal'
     oracle.same(expected[0],seed[0]);assert expected[1:]==seed[1:];oracle.later_archive_basis(seed)
     configure(pg,client,output,clone['config'],ack=True)
-    for folder,name in (('ingest-bootstrap','installed_archive_catch_up_client.py'),
+    for folder,filename in (('ingest-bootstrap','installed_archive_catch_up_client.py'),
             ('ingest-bootstrap','installed_archive_read.py'),('ingest-succession','installed_cycle_client.py')):
-        helper=transition.SOURCE/'experiments'/folder/name;shutil.copy2(helper,output/name)
-        assert history.digest(helper)==history.digest(output/name)
+        helper=transition.SOURCE/'experiments'/folder/filename;shutil.copy2(helper,output/filename)
+        assert history.digest(helper)==history.digest(output/filename)
     save=lambda:lab.write_json(output/'result.json',report)
     predecessor=None
     for step in ('initialize','state','coordinator'):
-        case=dict(name='archive-'+step,clone='archive',origin='retired-terminal',operation=step,
+        case=dict(name=name+'-'+step,clone=name,origin='retired-terminal',operation=step,
             predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case);predecessor=case['name']
     save()
     rows=partial(schema.rows,pg)
-    setup=setup_owner.prepare(pg,client,output,clone['database'],'archive',rows,report,save,build,report['build'],
+    setup=setup_owner.prepare(pg,client,output,clone['database'],name,rows,report,save,build,report['build'],
         compacted_config=clone['config'])
     value={k:copy.deepcopy(v) for k,v in setup.items() if k!='home'}
     value.update(status='OBSERVED_INITIALIZERS_CLOSED',native_opened=False,
-        virgin_files=transition.read(output/'archive-virgin-files.json'),
-        setup_roles=transition.read(output/'archive-setup-roles.json'),
+        virgin_files=transition.read(output/(name+'-virgin-files.json')),
+        setup_roles=transition.read(output/(name+'-setup-roles.json')),
         initialization_hex=(directory/'data/.bigbrotr-initialization/intent.json').read_bytes().hex(),
         binding_hex=(directory/'state/coordinator.json').read_bytes().hex(),commands={})
     for label in ('build-info','worker','validate','initialize','state','coordinator'):
-        name='archive-'+label
-        value['commands'][label]=dict(command=transition.read(output/(name+'.command.json')),
-            stdout=(output/(name+'.stdout')).read_text(),stderr=(output/(name+'.stderr')).read_text())
-    lab.write_json(output/'archive-setup-verification.json',value)
-    setup_result=oracle.later_archive_setup_checked(value,seed)
+        command_name=name+'-'+label
+        value['commands'][label]=dict(command=transition.read(output/(command_name+'.command.json')),
+            stdout=(output/(command_name+'.stdout')).read_text(),stderr=(output/(command_name+'.stderr')).read_text())
+    lab.write_json(output/(name+'-setup-verification.json'),value)
+    setup_result=oracle.later_archive_setup_checked(value,seed,name=name)
     # The observer account has no catalog mutation rights. Provisioning and
     # catalog/role evidence precede the first native/C API snapshot.
-    reader=provision_reader(pg,output,'archive',setup,save)
+    reader=provision_reader(pg,output,name,setup,save)
     config=output/Path(clone['config']).name;text=config.read_text()
     text=set_value(text,'postgres.catalog','read_user',reader)
-    text=set_value(text,'postgres.catalog','read_password_ref','file:/lab/archive/reader.secret');config.write_text(text)
-    setup_owner.invoke(client,output,'archive-reader-validate','config','validate','--file',clone['config'])
-    baseline=catchup.snapshot(pg,client,output,'archive-baseline',clone['database'],rows,setup)
+    text=set_value(text,'postgres.catalog','read_password_ref','file:/lab/'+name+'/reader.secret');config.write_text(text)
+    setup_owner.invoke(client,output,name+'-reader-validate','config','validate','--file',clone['config'])
+    baseline=catchup.snapshot(pg,client,output,name+'-baseline',clone['database'],rows,setup)
     assert baseline['control']==setup['control'] and baseline['catalog']==setup['catalog']
     assert baseline['native']==seed[1] and baseline['inputs']==seed[2]
     value.update(resource=copy.deepcopy(setup['resource']),baseline=baseline,
-        reader_privileges=transition.read(output/'archive-reader-privileges.json'))
-    lab.write_json(output/'archive-setup-verification.json',value)
+        reader_privileges=transition.read(output/(name+'-reader-privileges.json')))
+    lab.write_json(output/(name+'-setup-verification.json'),value)
     oracle.later_archive_reader_checked(value)
-    setup_controls=oracle.later_archive_setup_controls(value,seed)
+    setup_controls=oracle.later_archive_setup_controls(value,seed,name=name)
     for case in report['cases']:
-        assert case['name'].startswith('archive-')
+        if case['clone']!=name:continue
+        assert case['name'].startswith(name+'-')
         case.update(status='PASS',returncode=0,custody='OBSERVED_PROCESS_EXITED_AND_BACKENDS_ABSENT',
             oracle=setup_result,negative_controls=setup_controls if case['operation']=='coordinator' else dict(status='PASS',count=0,rejected=[]))
     save()
     previous=baseline
+    if loader:
+        import installed_archive_catch_up_refusals as refusals
+        case=dict(name=name+'-refusal',clone=name,origin='retired-terminal',operation='catchup',
+            predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
+        report['cases'].append(case);save()
+        phase=refusals.execute(pg,client,output,clone['database'],rows,setup,name,previous,loader=True)
+        checked=oracle.verify_later_archive_loader(phase,seed,value,previous)
+        controls=oracle.later_archive_loader_controls(phase,seed,value,previous)
+        case.update(status='PASS',returncode=4,custody='OBSERVED_CLOSED_AND_JOINED',oracle=checked,
+            negative_controls=controls,server_window=phase['window'])
+        for suffix,record in (('after.json',phase['after']['control']),('after-native.json',phase['after']['native']),('after-inputs.json',phase['after']['inputs'])):
+            lab.write_json(output/(case['name']+'-'+suffix),record)
+        save();return case['name']
     for step in ('catchup','catchup-retry'):
-        case=dict(name='archive-'+step,clone='archive',origin='retired-terminal',operation='catchup',
+        case=dict(name=name+'-'+step,clone=name,origin='retired-terminal',operation='catchup',
             predecessor=predecessor,database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case);save()
         phase=catchup.execute(pg,client,output,clone['database'],rows,setup,step,previous)
@@ -2864,14 +2880,15 @@ def run_later_archive_sequence(pg,client,output,clone,directory,expected,report,
     return predecessor
 
 
-def run_later_archive(root,build,product_source,*,archive_components):
+def run_later_archive(root,build,product_source,*,archive_components,loader=False):
+    assert type(loader) is bool
     assert archive_components is not None and product_source==oracle.LATER_ARCHIVE_PRODUCT
-    seed=oracle.later_retirement_origin_checked(root,archive=True);profile=oracle.LaterArchiveProfile
+    seed=oracle.later_retirement_origin_checked(root,archive=True);profile=oracle.LaterArchiveLoaderProfile if loader else oracle.LaterArchiveProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
         client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
-        scope='Genuine virgin compacted Archive initialization, complete first publication and fresh exact retry',not_run=profile.NOT_RUN)
-    return transition.run(root,build,suite=suite,sequence=partial(run_later_archive_sequence,seed=seed,build=build),
-        origin_specs=(oracle.LATER_ARCHIVE_ORIGIN,),origin_for_clone={'archive':'retired-terminal'},extra_grants=profile.GRANTS,
+        scope='Genuine compacted Archive loader cancellation and exact Control-backend loss after fresh virgin initializations' if loader else 'Genuine virgin compacted Archive initialization, complete first publication and fresh exact retry',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_archive_sequence,seed=seed,build=build,loader=loader),
+        origin_specs=(oracle.LATER_ARCHIVE_ORIGIN,),origin_for_clone={name:'retired-terminal' for name in profile.CLONES},extra_grants=profile.GRANTS,
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,
         later_archive=True,archive_components=archive_components,product_source=product_source)
 
@@ -2882,6 +2899,7 @@ if __name__ == '__main__':
     parser.add_argument('--product-source',required=True,help='Exact reviewed and qualified integrated build revision')
     parser.add_argument('--archive-components',type=Path,help='Separate exact-source Archive component artifact directory')
     profile=parser.add_mutually_exclusive_group()
+    profile.add_argument('--later-archive-loader',action='store_true',help='Actual compacted loader cancellation and exact Control-backend loss')
     profile.add_argument('--later-archive',action='store_true',help='Virgin compacted Archive initialization, first publication and exact retry')
     profile.add_argument('--later-recovery-faults',action='store_true',help='Measured dictionary outcome loss and fresh installed repair/ACK/retry')
     profile.add_argument('--later-recovery-delivery',action='store_true',help='Measure first dictionary outcome/progress COMMIT before any fault schedule')
@@ -2913,5 +2931,5 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    assert (args.archive_components is not None)==args.later_archive
-    (partial(run_later_archive,archive_components=args.archive_components) if args.later_archive else run_later_retirement_import if args.later_retirement_import else run_later_retirement_guards if args.later_retirement_guards else run_later_retirement if args.later_retirement else run_later_acquisition if args.later_acquisition else partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    assert (args.archive_components is not None)==(args.later_archive or args.later_archive_loader)
+    (partial(run_later_archive,archive_components=args.archive_components,loader=True) if args.later_archive_loader else partial(run_later_archive,archive_components=args.archive_components) if args.later_archive else run_later_retirement_import if args.later_retirement_import else run_later_retirement_guards if args.later_retirement_guards else run_later_retirement if args.later_retirement else run_later_acquisition if args.later_acquisition else partial(run_later_source,faults=True) if args.later_source_faults else partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
