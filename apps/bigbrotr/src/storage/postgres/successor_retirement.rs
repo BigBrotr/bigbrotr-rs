@@ -15,12 +15,14 @@ pub struct ActivatedSuccessorRetirement {
     native: NativeSuccessorRetirement,
     context: Context,
     state: ClosingState,
+    compacted: Option<successor_compaction::Check>,
 }
 pub struct ActivatedSuccessorRetirementResolution<'a> {
     context: &'a Context,
     recovery: &'a IngestRecovery,
     cancelled: &'a AtomicBool,
     native: SuccessorRetirementResolution<'a>,
+    compacted: Option<&'a successor_compaction::Check>,
 }
 /// One non-cloneable result of the one-shot retirement replay. It is consumed
 /// by the terminal operation, including on error or unknown commit; the owner
@@ -29,6 +31,7 @@ pub struct ResolvedActivatedSuccessorRetirement<'a> {
     context: &'a Context,
     recovery: &'a IngestRecovery,
     native: ResolvedSuccessorRetirement<'a>,
+    compacted: Option<&'a successor_compaction::Check>,
 }
 
 // Native owns the same compact Vec and half of the 128KiB scratch. Account for
@@ -56,6 +59,9 @@ impl ActivatedSuccessorRetirement {
     }
     pub fn issued_through(&self) -> u64 {
         self.native.issued_through()
+    }
+    pub fn compacted_requests(&self) -> u64 {
+        self.native.compacted_requests()
     }
     pub fn reserved_through(&self) -> u64 {
         self.context.head.reserved
@@ -85,10 +91,14 @@ impl ActivatedSuccessorRetirement {
             recovery,
             cancelled,
             native: self.native.resolution(recovery, cancelled)?,
+            compacted: self.compacted.as_ref(),
         })
     }
 }
 impl ActivatedSuccessorRetirementResolution<'_> {
+    pub fn needs_compacted_initial(&self) -> bool {
+        self.native.needs_compacted_initial()
+    }
     pub fn current_epoch(&self) -> Option<u64> {
         self.native.current_epoch()
     }
@@ -130,6 +140,57 @@ impl ControlSession {
         input_permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedSuccessorRetirement, ProducerResolveError> {
+        self.inspect_activated_successor_retirement_in(
+            recovery,
+            input,
+            metadata_permit,
+            input_permit,
+            None,
+            validate,
+        )
+        .await
+    }
+
+    /// Require a compacted initial floor for existing-only retirement. This
+    /// neither creates a native barrier nor repairs copies or workflow state.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "distinct metadata, input and retained canonical grants"
+    )]
+    pub async fn inspect_activated_successor_retirement_with_compacted(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: SuccessorReplayRequest<'_>,
+        metadata_permit: OwnedPermit,
+        input_permit: OwnedPermit,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedSuccessorRetirement, ProducerResolveError> {
+        let check = successor_compaction::Check::new(input.limits.event, effects)?;
+        self.inspect_activated_successor_retirement_in(
+            recovery,
+            input,
+            metadata_permit,
+            input_permit,
+            Some(check),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "private fixed-basis factory with separately retained grants"
+    )]
+    async fn inspect_activated_successor_retirement_in(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: SuccessorReplayRequest<'_>,
+        metadata_permit: OwnedPermit,
+        input_permit: OwnedPermit,
+        compacted: Option<successor_compaction::Check>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedSuccessorRetirement, ProducerResolveError> {
         // Admit the same bounded original decoder as the subsequent replay.
         // No staged original is decoded or normalized during this inspection.
         let required = RetainedRequestInput::required_data_bytes(input.limits.input)
@@ -151,8 +212,21 @@ impl ControlSession {
         let activation = projection::activation(&tx, &intent).await?;
         let head = history_rows::read_epoch(&tx, recovery, epoch).await?;
         let terminal = retirement_rows::terminal(&tx, &intent, current, retired).await?;
-        let native = NativeSuccessorRetirement::inspect(recovery, metadata_permit, input.cancelled)
-            .map_err(native_error)?;
+        let native = if compacted.is_some() {
+            NativeSuccessorRetirement::inspect_with_compacted_initial(
+                recovery,
+                metadata_permit,
+                input.cancelled,
+            )
+        } else {
+            NativeSuccessorRetirement::inspect(recovery, metadata_permit, input.cancelled)
+        }
+        .map_err(native_error)?;
+        successor_compaction::require_basis_presence(
+            compacted.is_some(),
+            native.compacted_requests() != 0,
+            compacted.is_some(),
+        )?;
         let context = Context {
             intent,
             activation,
@@ -161,9 +235,17 @@ impl ControlSession {
             control: current,
         };
         retirement_rows::require_native(&tx, recovery, &context, &native, input.cancelled).await?;
+        if let Some(check) = &compacted {
+            check
+                .resolve_retirement(&tx, recovery, &native, &mut lease, policy, input.cancelled)
+                .await?;
+        }
         // No input decoder is live during this fixed streaming read. Its
         // retained staging allowance is separate from the native lineage Vec.
         for epoch in 1..=context.head.epoch() {
+            if epoch == 1 && compacted.is_some() {
+                continue;
+            }
             let entry = native.entry(epoch).ok_or(OwnerError::InvalidMetadata)?;
             producer_progress::recovery::require(
                 &tx,
@@ -176,6 +258,9 @@ impl ControlSession {
             .await?;
         }
         successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current).await?;
+        if let Some(check) = &compacted {
+            check.validate_retirement(recovery, &native, input.cancelled)?;
+        }
         native
             .validate(recovery, input.cancelled)
             .map_err(native_error)?;
@@ -188,6 +273,7 @@ impl ControlSession {
             native,
             context,
             state: ClosingState::Inspected,
+            compacted,
         })
     }
 
@@ -208,6 +294,7 @@ impl ControlSession {
                 recovery,
                 &owner.context,
                 &owner.native,
+                owner.compacted.as_ref(),
                 &input,
                 validate,
             )
@@ -232,6 +319,60 @@ impl ControlSession {
         Ok(())
     }
 
+    /// Confirm the canonical floor under this exact retirement owner. There is
+    /// no reconstructed initial Event mask and no ordinary replay of its inputs.
+    pub async fn inspect_activated_successor_retirement_compacted_initial(
+        &mut self,
+        resolution: &mut ActivatedSuccessorRetirementResolution<'_>,
+        input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<crate::storage::rocks::store::CompactedInitialSummary, ProducerResolveError> {
+        let result = async {
+            if !resolution.native.needs_compacted_initial() {
+                return Err(OwnerError::InvalidInput.into());
+            }
+            let current = self.identity;
+            let (tx, mut lease, policy) = self
+                .begin_checked_successor_retirement(
+                    resolution.recovery,
+                    resolution.context,
+                    resolution.native.owner(),
+                    resolution.compacted,
+                    &input,
+                    validate,
+                )
+                .await?;
+            let check = resolution.compacted.ok_or(OwnerError::InvalidInput)?;
+            let proof = check
+                .resolve_retirement(
+                    &tx,
+                    resolution.recovery,
+                    resolution.native.owner(),
+                    &mut lease,
+                    policy,
+                    resolution.cancelled,
+                )
+                .await?;
+            successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current)
+                .await?;
+            resolution
+                .native
+                .accept_compacted_initial(&proof, || {
+                    if self.client.is_closed() {
+                        return Err(AdmissionError::AuthorityUnavailable);
+                    }
+                    producer_progress::recovery::authority(&mut lease, policy, input.cancelled)
+                })
+                .map_err(|error| ProducerResolveError::Native(error.into()))
+        }
+        .await;
+        if result.is_err() {
+            resolution.native.poison();
+        }
+        self.available = result.is_ok();
+        result
+    }
+
     /// Both current and ancestral originals require an existing exact copy.
     /// Native Event classification includes rejected and already durable input;
     /// nullable SQL fields cannot silently turn that request into Evidence.
@@ -252,6 +393,7 @@ impl ControlSession {
                     resolution.recovery,
                     resolution.context,
                     resolution.native.owner(),
+                    resolution.compacted,
                     &operation,
                     validate,
                 )
@@ -339,6 +481,7 @@ impl ControlSession {
                     resolution.recovery,
                     resolution.context,
                     resolution.native.owner(),
+                    resolution.compacted,
                     &input,
                     validate,
                 )
@@ -389,6 +532,7 @@ impl ControlSession {
                 resolution.recovery,
                 resolution.context,
                 resolution.native.owner(),
+                resolution.compacted,
                 &input,
                 validate,
             )
@@ -423,6 +567,7 @@ impl ControlSession {
             context: resolution.context,
             recovery: resolution.recovery,
             native,
+            compacted: resolution.compacted,
         })
     }
 
@@ -436,6 +581,39 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<u64, ProducerResolveError> {
+        self.retire_activated_successor_producer_in(proof, input, permit, false, validate)
+            .await
+    }
+
+    /// Consume only a compacted retirement proof. The ordinary consumer stays
+    /// strict; neither path can repair prerequisites or rearm the spent owner.
+    pub async fn retire_activated_successor_producer_with_compacted(
+        &mut self,
+        proof: ResolvedActivatedSuccessorRetirement<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, ProducerResolveError> {
+        self.retire_activated_successor_producer_in(proof, input, permit, true, validate)
+            .await
+    }
+
+    async fn retire_activated_successor_producer_in(
+        &mut self,
+        proof: ResolvedActivatedSuccessorRetirement<'_>,
+        input: InitialHistoryRequest<'_>,
+        permit: OwnedPermit,
+        expected_compacted: bool,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<u64, ProducerResolveError> {
+        // Taking this non-Clone proof spends the only completed replay even on
+        // a wrong-basis or grant refusal. Its native owner already spent its
+        // cursor phase and remains in caller custody; there is no fallback.
+        successor_compaction::require_basis_presence(
+            proof.compacted.is_some(),
+            proof.native.owner().compacted_requests() != 0,
+            expected_compacted,
+        )?;
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
         {
@@ -449,6 +627,7 @@ impl ControlSession {
                 proof.recovery,
                 context,
                 proof.native.owner(),
+                proof.compacted,
                 &input,
                 validate,
             )
@@ -507,18 +686,23 @@ impl ControlSession {
         Ok(gaps)
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "fixed retirement context, retained Check and transaction authority"
+    )]
     async fn begin_checked_successor_retirement<'a>(
         &'a mut self,
         recovery: &IngestRecovery,
         context: &Context,
         native: &NativeSuccessorRetirement,
+        compacted: Option<&successor_compaction::Check>,
         input: &InitialHistoryRequest<'_>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerResolveError> {
         if context.control != self.identity {
             return Err(OwnerError::InvalidInput.into());
         }
-        let (tx, lease, policy) = self
+        let (tx, mut lease, policy) = self
             .begin_activated_successor_recovery(recovery, input, validate)
             .await?;
         let retired =
@@ -530,6 +714,18 @@ impl ControlSession {
             return Err(OwnerError::InvalidMetadata.into());
         }
         retirement_rows::require_native(&tx, recovery, context, native, input.cancelled).await?;
+        successor_compaction::require_basis_presence(
+            compacted.is_some(),
+            native.compacted_requests() != 0,
+            compacted.is_some(),
+        )?;
+        if let Some(check) = compacted {
+            // The classifier already holds Control/dataset, all lineage parents
+            // and ordered job locks. H/D stay protected through this transaction.
+            check
+                .resolve_retirement(&tx, recovery, native, &mut lease, policy, input.cancelled)
+                .await?;
+        }
         Ok((tx, lease, policy))
     }
 }

@@ -52,6 +52,7 @@ const _: () = assert!(
         + size_of::<SuccessorRetirementResolution<'_>>()
         + size_of::<PendingSuccessorRetirementRequest<'_, '_>>()
         + size_of::<ResolvedSuccessorRetirement<'_>>()
+        + size_of::<super::recovery::CompactedRecoveryPredecessor<'_>>()
         + size_of::<InitialHandoffRecord>()
         + 2 * size_of::<SuccessionRecord>()
         + super::census::COUNTER_BYTES
@@ -65,7 +66,26 @@ impl NativeSuccessorRetirement {
         permit: OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<Self, BootstrapError> {
-        let inner = NativeSuccessorRecovery::inspect(recovery, permit, cancelled)?;
+        Self::inspect_in(recovery, permit, cancelled, false)
+    }
+    pub(in crate::storage) fn inspect_with_compacted_initial(
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        Self::inspect_in(recovery, permit, cancelled, true)
+    }
+    fn inspect_in(
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        compacted: bool,
+    ) -> Result<Self, BootstrapError> {
+        let inner = if compacted {
+            NativeSuccessorRecovery::inspect_with_compacted_initial(recovery, permit, cancelled)
+        } else {
+            NativeSuccessorRecovery::inspect(recovery, permit, cancelled)
+        }?;
         // Retirement may not complete an absent barrier or unresolved staging.
         // Ordinary recovery retains its broader classifier unchanged.
         if !inner.is_closing() || inner.staged_input().is_some() {
@@ -87,6 +107,21 @@ impl NativeSuccessorRetirement {
     }
     pub(in crate::storage) fn issued_through(&self) -> u64 {
         self.inner.issued_through()
+    }
+    pub(in crate::storage) fn compacted_requests(&self) -> u64 {
+        self.inner.compacted_requests()
+    }
+    // Borrow only the existing private prefix view. The inner recovery owner
+    // never escapes this observe-only retirement capability.
+    pub(in crate::storage) fn compacted_predecessor<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &'a AtomicBool,
+    ) -> Result<super::recovery::CompactedRecoveryPredecessor<'a>, AdmissionError> {
+        self.inner
+            .compacted_predecessor(recovery, limits, effects, cancelled)
     }
     pub(in crate::storage) fn validate(
         &self,
@@ -132,8 +167,18 @@ impl NativeSuccessorRetirement {
 }
 
 impl<'a> SuccessorRetirementResolution<'a> {
-    pub(in crate::storage) fn owner(&self) -> &NativeSuccessorRetirement {
+    pub(in crate::storage) fn owner(&self) -> &'a NativeSuccessorRetirement {
         self.owner
+    }
+    pub(in crate::storage) fn needs_compacted_initial(&self) -> bool {
+        self.inner.needs_compacted_initial()
+    }
+    pub(in crate::storage) fn accept_compacted_initial(
+        &mut self,
+        proof: &super::super::VerifiedCompactedPrefix<'_>,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<super::super::CompactedInitialSummary, AdmissionError> {
+        self.inner.accept_compacted_initial(proof, authority)
     }
     pub(in crate::storage) fn current_epoch(&self) -> Option<u64> {
         self.inner.current_epoch()

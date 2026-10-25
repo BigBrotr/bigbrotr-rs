@@ -344,6 +344,7 @@ if producer_floor:
         ('successor_recovery', 'storage::postgres::control_owner::successor_transition::recovery::tests::'),
         ('successor_source', 'storage::postgres::control_owner::successor_transition::recovery::source::tests::'),
         ('successor_acquisition', 'storage::postgres::control_owner::successor_transition::recovery::source::acquisition::tests::'),
+        ('successor_retirement', 'storage::postgres::control_owner::successor_transition::recovery::retirement::tests::'),
         ('archive_retained_frontier', 'storage::postgres::control_owner::archive_retained_frontier::tests::'),
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
@@ -664,6 +665,20 @@ if producer_floor:
             'abandonment_requires_exact_basis_and_spends_before_refusal',
             'abandonment_requires_previously_closed_source_without_retirement_veto',
             'abandonment_bound_counts_retained_and_zero_request_claims_together']]
+    required_controls['successor_retirement'] = [
+        'storage::postgres::control_owner::successor_transition::recovery::retirement::tests::' + name for name in [
+            'retirement_accepts_only_complete_ready_or_unchanged_terminal_heads',
+            'native_event_mask_requires_each_exact_binding_but_not_evidence_jobs',
+            'terminal_retry_preserves_source_and_original_transaction_under_fresh_control',
+            'retirement_retained_prefix_is_independent_of_outstanding_credit',
+            'retirement_consumers_require_the_exact_retained_basis']]
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::compacted_live_successor_tests::compacted_successor_recovery_tests::' + name for name in [
+            'compacted_successor_retirement_observes_only_and_preserves_typed_ack',
+            'compacted_successor_retirement_requires_exact_basis_closed_state_and_no_tail',
+            'compacted_successor_retirement_wrong_prefix_and_cancelled_proof_stay_spent',
+            'compacted_successor_retirement_ack_keeps_required_and_residual_census',
+            'compacted_successor_retirement_rechecks_canonical_floor_without_residuals'])
     required_controls['initial_reconstruction'].extend(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::' + name for name in [
             'compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry',

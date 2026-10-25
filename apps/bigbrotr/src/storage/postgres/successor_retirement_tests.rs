@@ -115,7 +115,7 @@ fn retirement_accepts_only_complete_ready_or_unchanged_terminal_heads() {
     // No repair of a reservation suffix or adoption of an issued prefix.
     assert!(retirement_rows::require_head(&row, 1, 32, &ready()).is_err());
     assert!(retirement_rows::require_head(&row, 3, 32, &ready()).is_err());
-    for limit in [0, 1, 65] {
+    for limit in [0, 65] {
         assert!(retirement_rows::require_head(&row, 2, limit, &ready()).is_err());
     }
     let retired = Epoch {
@@ -137,6 +137,38 @@ fn retirement_accepts_only_complete_ready_or_unchanged_terminal_heads() {
         },
     ] {
         assert!(retirement_rows::require_head(&retired, 2, 32, &partial).is_err());
+    }
+}
+
+#[test]
+fn retirement_retained_prefix_is_independent_of_outstanding_credit() {
+    // Full contract premises: I=R, A=C, I-A<=window. This fixed lifecycle
+    // projection does not itself authenticate A/C; the connected progress and
+    // final ACK readers do that separately. In particular I3 is not cut4/C1.
+    for (issued, acknowledged, window) in [(3, 1, 2), (33, 1, 32), (64, 63, 1)] {
+        assert!(issued - acknowledged <= u64::from(window));
+        let row = head(3, issued);
+        retirement_rows::require_head(&row, issued, window, &ready()).unwrap();
+        assert!(retirement_rows::require_head(&row, issued - 1, window, &ready()).is_err());
+        assert!(retirement_rows::require_head(&row, issued + 1, window, &ready()).is_err());
+    }
+    assert!(retirement_rows::require_head(&head(3, 65), 65, 64, &ready()).is_err());
+}
+
+#[test]
+fn retirement_consumers_require_the_exact_retained_basis() {
+    // Both public terminal consumers move the non-Clone completed proof into
+    // their private kernel before this guard. Native resolution has already
+    // spent its owner: even a mismatch cannot be retried via the other API.
+    for expected in [false, true] {
+        for check in [false, true] {
+            for retained in [false, true] {
+                assert_eq!(
+                    successor_compaction::require_basis_presence(check, retained, expected).is_ok(),
+                    check == expected && retained == expected
+                );
+            }
+        }
     }
 }
 
